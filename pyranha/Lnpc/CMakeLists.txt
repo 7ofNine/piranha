@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Lnpc SHARED Lnpc.cpp)
+PYTHONCMOD(_Lnpc)

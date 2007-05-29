@@ -1,0 +1,364 @@
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c
+c  Routine for the computation of Saturn satellites' positions using the
+c  TASS1.7 theory. Taken from the website of the IMCCE:
+c  ftp://ftp.imcce.fr
+c  Used with the kind permission of Professor Alain Vienne, please
+c  contact him for exact copyright and usage terms.
+c  This routine uses the redtass7.dat file in the "theories" directory.
+c
+*************************************************************************
+
+************************************************************************
+* SUBROUTINES  to read series of TASS1.7 and to compute positions:
+* put all these subroutines in a file called for example 'POSIRED7.FOR'
+*************************************************************************
+
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c
+c  TASS1.7  :  New version including HYPERION  (5 Nov 1996)
+c
+*************************************************************************
+*
+*  from TASS1.6 by A. Vienne and L. Duriez (1995, A&A 297, 588-605)
+*  and 'Theory of motion and ephemerides of Hyperion', to appear in A&A
+*        e-mail: VIENNE@GAT.UNIV-LILLE1.FR
+*        e-mail: DURIEZ@GAT.UNIV-LILLE1.FR
+*
+*    Positions and velocities of the satellites Mimas, Enceladus, Tethys,
+*    Dione, Rhea, Titan, Hyperion and Iapetus referred to the center of
+*    Saturn and to the mean ecliptic and mean equinox for J2000.0 epoch
+*
+*************************************************************************
+
+      SUBROUTINE POSIRED(DJ,IS,XYZ,VXYZ)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DIMENSION XYZ(3),VXYZ(3),ELEM(6),DLO(8)
+      ICRT=0
+      CALL LECSER('@THEORIES_INSTALL_PATH@/redtass7.dat',ICRT)
+      if(IS.EQ.7) then
+       CALL ELEMHYP(DJ,ELEM)
+      ELSE
+       CALL CALCLON(DJ,DLO)
+       CALL CALCELEM(DJ,IS,ELEM,DLO)
+      END IF
+      CALL EDERED(ELEM,XYZ,VXYZ,IS)
+      RETURN
+      END
+*************************************************************************
+      SUBROUTINE CALCELEM(DJ,IS,ELEM,DLO)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DIMENSION ELEM(6)
+      PARAMETER(NTMX=250)
+      DIMENSION SERIES(NTMX,3,4,8),NTR(5,8),AL0(8),AN0(8)
+        DIMENSION IKS(NTMX,4,8,8)
+        DIMENSION DLO(8)
+      COMMON /TASERIES/ SERIES,NTR,AL0,AN0,IKS
+        T=(DJ-2444240.D0)/365.25D0
+      S=0
+      DO I=1,NTR(1,IS)
+          PHAS=SERIES(I,2,1,IS)
+          DO JK=1,8
+            PHAS=PHAS+IKS(I,1,IS,JK)*DLO(JK)
+          END DO
+        S=S+SERIES(I,1,1,IS)*COS(PHAS+T*SERIES(I,3,1,IS))
+      ENDDO
+      ELEM(1)=S
+      S=DLO(IS)+AL0(IS)
+      DO I=NTR(5,IS)+1,NTR(2,IS)
+          PHAS=SERIES(I,2,2,IS)
+          DO JK=1,8
+            PHAS=PHAS+IKS(I,2,IS,JK)*DLO(JK)
+          END DO
+        S=S+SERIES(I,1,2,IS)*SIN(PHAS+T*SERIES(I,3,2,IS))
+      ENDDO
+      S=S+AN0(IS)*T
+        CS=COS(S)
+        SN=SIN(S)
+        ELEM(2)=DATAN2(SN,CS)
+      S1=0
+      S2=0
+      DO I=1,NTR(3,IS)
+          PHAS=SERIES(I,2,3,IS)
+          DO JK=1,8
+            PHAS=PHAS+IKS(I,3,IS,JK)*DLO(JK)
+          END DO
+        S1=S1+SERIES(I,1,3,IS)*COS(PHAS+T*SERIES(I,3,3,IS))
+        S2=S2+SERIES(I,1,3,IS)*SIN(PHAS+T*SERIES(I,3,3,IS))
+      ENDDO
+      ELEM(3)=S1
+      ELEM(4)=S2
+      S1=0
+      S2=0
+      DO I=1,NTR(4,IS)
+          PHAS=SERIES(I,2,4,IS)
+          DO JK=1,8
+            PHAS=PHAS+IKS(I,4,IS,JK)*DLO(JK)
+          END DO
+        S1=S1+SERIES(I,1,4,IS)*COS(PHAS+T*SERIES(I,3,4,IS))
+        S2=S2+SERIES(I,1,4,IS)*SIN(PHAS+T*SERIES(I,3,4,IS))
+      ENDDO
+      ELEM(5)=S1
+      ELEM(6)=S2
+      RETURN
+      END
+      SUBROUTINE CALCLON(DJ,DLO)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      PARAMETER(NTMX=250)
+      DIMENSION SERIES(NTMX,3,4,8),NTR(5,8),AL0(8),AN0(8)
+        DIMENSION IKS(NTMX,4,8,8)
+        DIMENSION DLO(8)
+      COMMON /TASERIES/ SERIES,NTR,AL0,AN0,IKS
+        T=(DJ-2444240.D0)/365.25D0
+        DO IS=1,8
+        IF (IS.NE.7) THEN
+      S=0
+      DO I=1,NTR(5,IS)
+        S=S+SERIES(I,1,2,IS)*SIN(SERIES(I,2,2,IS)+T*SERIES(I,3,2,IS))
+      END DO
+      DLO(IS)=S
+        ELSE
+        DLO(IS)=0.D0
+        END IF
+        END DO
+      RETURN
+      END
+      SUBROUTINE LECSER(NOMF,ICRT)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      PARAMETER(NTMX=250)
+      DIMENSION SERIES(NTMX,3,4,8),NTR(5,8),AL0(8),AN0(8)
+        DIMENSION IKS(NTMX,4,8,8),IK(8)
+      CHARACTER NOMF*( *)
+      DIMENSION AM(9),AAM(9)
+      DIMENSION TAM(9),TMAS(9)
+      COMMON /TASERIES/ SERIES,NTR,AL0,AN0,IKS
+
+      COMMON /MYRD/  AAM
+      COMMON /EDRE/ AIA,OMA,TMAS,GK1
+      COMMON /TRIGO/ PI,RADSDG
+         SAVE
+      RADSDG=DATAN(1.D0)/45.D0
+      PI=180.D0*RADSDG
+      OPEN(15,FILE=NOMF,STATUS='OLD')
+        READ(15,*) GK
+        READ(15,*) TAS
+        GK1=(GK*365.25D0)**2.D0/TAS
+        READ(15,*) AIA,OMA
+        AIA=AIA*RADSDG
+        OMA=OMA*RADSDG
+        READ(15,*) (TAM(I),I=1,9)
+      DO I=1,9
+       TMAS(I)=1.D0/TAM(I)
+      END DO
+        READ(15,*) (AM(I),I=1,9)
+      DO I=1,9
+       AAM(I)=AM(I)*365.25D0
+      ENDDO
+      CALL DZER(SERIES,NTMX*3*4*8)
+      CALL NZER(NTR,5*8)
+      CALL DZER(AL0,8)
+      CALL DZER(AN0,8)
+10      READ(15,*,END=11) IS,IEQ
+        IF(IS.EQ.7) GOTO 17
+      IF(IEQ.EQ.2)THEN
+            READ(15,*) NT, AL0(IS),AN0(IS)
+      ENDIF
+      KT=0
+        ISAUT=0
+9      READ(15,*) NT,A1,A2,A3,IK
+        IF (NT.LT.9998) THEN
+        IF(KT.EQ.NTMX)THEN
+         WRITE(*,*)'NTMX TROP PETIT'
+         STOP
+        ENDIF
+          IF (ISAUT.EQ.1) GOTO 9
+        KT=KT+1
+        SERIES(KT,1,IEQ,IS)=A1
+        SERIES(KT,2,IEQ,IS)=A2
+        SERIES(KT,3,IEQ,IS)=A3
+          DO JS=1,8
+            IKS(KT,IEQ,IS,JS)=IK(JS)
+          END DO
+        GOTO 9
+        ELSE
+          IF (NT.EQ.9998) THEN
+            IF (ICRT.EQ.1) ISAUT=1
+            IF (IEQ.EQ.2) NTR(5,IS)=KT
+            GOTO 9
+          END IF
+        IF(NT.EQ.9999) THEN
+            IF ((IEQ.EQ.2).AND.(NTR(5,IS).EQ.0)) NTR(5,IS)=KT
+          NTR(IEQ,IS)=KT
+          GOTO 10
+        END IF
+        END IF
+17      CALL LITHYP(15)
+11      CLOSE(15)
+      RETURN
+      END
+      SUBROUTINE EDERED(ELEM,XYZ,VXYZ,ISAT)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      PARAMETER(EPS=1.D-14)
+      DIMENSION ELEM(6),XYZ(3),VXYZ(3)
+      DIMENSION AAM(9),TMAS(9)
+      DIMENSION XYZ2(3),VXYZ2(3)
+      COMMON /MYRD/  AAM
+      COMMON /EDRE/ AIA,OMA,TMAS,GK1
+      AMO=AAM(ISAT)*(1.D0+ELEM(1))
+      RMU=GK1*(1.D0+TMAS(ISAT))
+      DGA=(RMU/(AMO*AMO))**(1.D0/3.D0)
+      RL=ELEM(2)
+      RK=ELEM(3)
+      RH=ELEM(4)
+      FLE=RL-RK*DSIN(RL)+RH*DCOS(RL)
+20    CONTINUE
+        CF=DCOS(FLE)
+        SF=DSIN(FLE)
+        CORF=(RL-FLE+RK*SF-RH*CF)/(1-RK*CF-RH*SF)
+        FLE=FLE+CORF
+      IF (DABS(CORF).GE.EPS) GOTO 20
+      CF=DCOS(FLE)
+      SF=DSIN(FLE)
+      DLF=-RK*SF+RH*CF
+      RSAM1=-RK*CF-RH*SF
+      ASR=1.D0/(1.D0+RSAM1)
+      PHI=DSQRT(1.D0-RK*RK-RH*RH)
+      PSI=1.D0/(1.D0+PHI)
+      X1=DGA*(CF-RK-PSI*RH*DLF)
+      Y1=DGA*(SF-RH+PSI*RK*DLF)
+      VX1=AMO*ASR*DGA*(-SF-PSI*RH*RSAM1)
+      VY1=AMO*ASR*DGA*( CF+PSI*RK*RSAM1)
+      DWHO=2.D0*DSQRT(1.D0-ELEM(6)*ELEM(6)-ELEM(5)*ELEM(5))
+      RTP=1.D0-2.D0*ELEM(6)*ELEM(6)
+      RTQ=1.D0-2.D0*ELEM(5)*ELEM(5)
+      RDG=2.D0*ELEM(6)*ELEM(5)
+      XYZ2(1) =      X1 *   RTP   +  Y1 *   RDG
+      XYZ2(2) =      X1 *   RDG   +  Y1 *   RTQ
+      XYZ2(3) =  ( - X1 * ELEM(6) +  Y1 * ELEM(5) )  *  DWHO
+      VXYZ2(1)=     VX1 *   RTP   + VY1 *   RDG
+      VXYZ2(2)=     VX1 *   RDG   + VY1 *   RTQ
+      VXYZ2(3)=  ( -VX1 * ELEM(6) + VY1 * ELEM(5) )  *  DWHO
+      CI=DCOS(AIA)
+      SI=DSIN(AIA)
+      CO=DCOS(OMA)
+      SO=DSIN(OMA)
+       XYZ(1)=CO *  XYZ2(1) - SO*CI *  XYZ2(2) + SO*SI *  XYZ2(3)
+       XYZ(2)=SO *  XYZ2(1) + CO*CI *  XYZ2(2) - CO*SI *  XYZ2(3)
+       XYZ(3)=                  SI  *  XYZ2(2) +  CI   *  XYZ2(3)
+      VXYZ(1)=CO * VXYZ2(1) - SO*CI * VXYZ2(2) + SO*SI * VXYZ2(3)
+      VXYZ(2)=SO * VXYZ2(1) + CO*CI * VXYZ2(2) - CO*SI * VXYZ2(3)
+      VXYZ(3)=                  SI  * VXYZ2(2) +  CI   * VXYZ2(3)
+      RETURN
+      END
+      SUBROUTINE NZER(ITAB,N)
+      INTEGER ITAB(N)
+      DO 10 I=1,N
+       ITAB(I)=0
+10    CONTINUE
+      RETURN
+      END
+      SUBROUTINE DZER(RTAB,N)
+      REAL*8 RTAB(N)
+      DO 10 I=1,N 
+        RTAB(I)=0.D0
+10    CONTINUE
+      RETURN
+      END
+      SUBROUTINE LITHYP(NF)
+      IMPLICIT REAL*8(A-H,O-Z)
+      PARAMETER(NTP=120, NTQ=240, NTZ=200, NTZT=65)
+      DIMENSION SERP(NTP),SERQ(NTQ),SERZ(NTZ),SERZT(NTZT)
+      DIMENSION FAP(NTP),FAQ(NTQ),FAZ(NTZ),FAZT(NTZT)
+      DIMENSION FRP(NTP),FRQ(NTQ),FRZ(NTZ),FRZT(NTZT)
+      COMMON /SERHYP/NBTP,NBTQ,NBTZ,NBTZT,T0,CSTP,CSTQ,AMM7,
+     &               SERP,FAP,FRP,
+     &               SERQ,FAQ,FRQ,
+     &               SERZ,FAZ,FRZ,
+     &               SERZT,FAZT,FRZT
+      SAVE
+      READ(NF,'(f15.2)') T0
+      READ(NF,'(d25.16)') AMM7
+
+      READ(NF,'(i5)') NBTP
+      READ(NF,'(d25.16)') CSTP
+      DO I=1,NBTP
+        READ(NF,'(3d25.16)') SERP(I),FAP(I),FRP(I)
+      END DO
+
+      READ(NF,'(i5)') NBTQ
+      READ(NF,'(d25.16)') CSTQ
+      DO I=1,NBTQ
+        READ(NF,'(3d25.16)') SERQ(I),FAQ(I),FRQ(I)
+      END DO
+
+      READ(NF,'(i5)') NBTZ
+      DO I=1,NBTZ
+        READ(NF,'(3d25.16)') SERZ(I),FAZ(I),FRZ(I)
+      END DO
+
+      READ(NF,'(i5)') NBTZT
+      DO I=1,NBTZT
+        READ(NF,'(3d25.16)') SERZT(I),FAZT(I),FRZT(I)
+      END DO
+      RETURN
+      END
+************************************************************************
+      SUBROUTINE ELEMHYP(DJ,ELEM)
+      IMPLICIT REAL*8(A-H,O-Z)
+      DIMENSION ELEM(6)
+      PARAMETER(PI2=2*3.14159265358979323846D0)
+      PARAMETER(NTP=120, NTQ=240, NTZ=200, NTZT=65)
+      DIMENSION SERP(NTP),SERQ(NTQ),SERZ(NTZ),SERZT(NTZT)
+      DIMENSION FAP(NTP),FAQ(NTQ),FAZ(NTZ),FAZT(NTZT)
+      DIMENSION FRP(NTP),FRQ(NTQ),FRZ(NTZ),FRZT(NTZT)
+      COMMON /SERHYP/NBTP,NBTQ,NBTZ,NBTZT,T0,CSTP,CSTQ,AMM7,
+     &               SERP,FAP,FRP,
+     &               SERQ,FAQ,FRQ,
+     &               SERZ,FAZ,FRZ,
+     &               SERZT,FAZT,FRZT
+
+      T = DJ - T0
+
+        P=CSTP
+        DO I=1,NBTP
+          WT=T*FRP(I)+FAP(I)
+          P = P + SERP(I)*DCOS(WT)
+        END DO
+
+        Q=CSTQ
+        DO I=1,NBTQ
+          WT=T*FRQ(I)+FAQ(I)
+          Q = Q + SERQ(I)*DSIN(WT)
+        END DO
+
+        ZR=0.D0
+        ZI=0.D0
+        DO I=1,NBTZ
+          WT=T*FRZ(I)+FAZ(I)
+          ZR = ZR + SERZ(I)*DCOS(WT)
+          ZI = ZI + SERZ(I)*DSIN(WT)
+        END DO
+
+        ZTR=0.D0
+        ZTI=0.D0
+        DO I=1,NBTZT
+          WT=T*FRZT(I)+FAZT(I)
+          ZTR = ZTR + SERZT(I)*DCOS(WT)
+          ZTI = ZTI + SERZT(I)*DSIN(WT)
+        END DO
+
+      VL=MOD(AMM7*T+Q,PI2)
+      IF(VL.LT.0.D0) VL=VL+PI2
+      ELEM(1)=P
+      ELEM(2)=VL
+      ELEM(3)=ZR
+      ELEM(4)=ZI
+      ELEM(5)=ZTR
+      ELEM(6)=ZTI
+
+      RETURN
+      END
+************************************************************************
+*  End of the file 'POSIRED7.FOR'
+************************************************************************

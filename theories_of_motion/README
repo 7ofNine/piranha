@@ -1,0 +1,19 @@
+The files in these directories are the solutions of the ELP2000 lunar theory
+by Chapront-Touze' and Chapront, and of the TASS17 theory for the motions of
+Saturn's satellites, by Vienne and Duriez.
+
+The files were obtained from the ftp server of the imcce,
+
+	ftp://ftp.imcce.fr
+
+and are adapted for the Piranha format. The files are freely downloadable.
+
+
+
+Bibliographical references:
+
+Chapront-Touze', M., Chapront, J., January 1988. "ELP2000-85: a semianalytical lunar
+ephemeris adequate for historical times". Astronomy & Astrophysics 190 (1-2), 342–352.
+
+Vienne, A., Duriez, L., May 1995. "TASS1.6: Ephemerides of the major Saturnian
+satellites". Astronomy & Astrophysics 297, 588.

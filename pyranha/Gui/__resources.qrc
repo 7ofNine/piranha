@@ -1,0 +1,6 @@
+<RCC>
+  <qresource>
+    <file>images/folder_open.png</file>
+    <file>images/reload.png</file>
+  </qresource>
+</RCC>

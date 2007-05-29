@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Core SHARED Core.cpp)
+PYTHONCMOD(_Core)

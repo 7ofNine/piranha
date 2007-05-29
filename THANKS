@@ -1,0 +1,7 @@
+Joaquin Lopez Munoz provided helpful suggestions and explanations about the inner
+workings of his multiindex container class, included in the excellent collection
+of C++ libraries, Boost - http://www.boost.org.
+
+Alain Vienne provided helpful insight about his TASS theory, and kindly allowed
+for his posired.f routine, for the calculation of Saturn's satellites position,
+to be included inside piranha.

@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Npc SHARED Npc.cpp)
+PYTHONCMOD(_Npc)

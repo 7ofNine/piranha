@@ -1,0 +1,112 @@
+# Perturbations from Jupiter and Sun
+[trig_arg]
+name=\Omega_9
+poly_eval=0;0
+[trig_arg]
+name=\varpi_9
+poly_eval=0;0
+[trig_arg]
+name=\lambda_9
+poly_eval=0;0.2132991200778630E+00
+[trig_arg]
+name=19\mu
+poly_eval=0;0.6919778790613740E-02
+[trig_arg]
+name=287\mu
+poly_eval=0;0.1031868899480124E+00
+[trig_arg]
+name=880\mu
+poly_eval=0;0.3163918576803169E+00
+# Mean mean longitudes
+[trig_arg]
+name=\lambda_{o1}
+poly_eval=0.1822484926062486E+00;0.2435144296437475E+04
+[trig_arg]
+name=\lambda_{o2}
+poly_eval=0.7997716657090215E+00;0.1674867298497696E+04
+[trig_arg]
+name=\lambda_{o3}
+poly_eval=0.5239109365414447E+01;0.1215663929056177E+04
+[trig_arg]
+name=\lambda_{o4}
+poly_eval=0.1994592585279060E+01;0.8385108703595477E+03
+[trig_arg]
+name=\lambda_{o5}
+poly_eval=0.6221340947932125E+01;0.5080093197533360E+03
+[trig_arg]
+name=\lambda_{o6}
+poly_eval=0.4936792168079816E+01;0.1439240478491399E+03
+[trig_arg]
+name=\lambda_{o7}
+poly_eval=0;0
+[trig_arg]
+name=\lambda_{o8}
+poly_eval=0.1661250302251527E+00;0.2892852233006167E+02
+[trig_arg]
+name=\lambda_{o9}
+poly_eval=0;0.2132991136443998E+00
+# --------------------------------------------------------------
+# 1 - MIMAS
+# Libration argument of Mimas-Tethys resonance
+[trig_arg]
+name=\omega_1
+poly_eval=0;0.8904537688864059E-01
+[trig_arg]
+name=\phi_1
+poly_eval=0;0.1019765304355295E+02
+[trig_arg]
+name=\Phi_1
+poly_eval=0;-0.2555443364710459E+01
+# --------------------------------------------------------------
+# 2 - ENCELADUS
+# Libration argument of Enceladus-Dione resonance
+[trig_arg]
+name=\omega_2
+poly_eval=0;0.5659095156176798E+00
+[trig_arg]
+name=\Phi_2
+poly_eval=0;-0.4813638809818089E+01
+# --------------------------------------------------------------
+# 3 - TETHYS
+[trig_arg]
+name=\phi_3
+poly_eval=0;0.5079494734209352E+01
+# --------------------------------------------------------------
+# 4 - DIONE
+[trig_arg]
+name=\phi_4
+poly_eval=0;-0.1617016547228022E+01
+[trig_arg]
+name=\Phi_4
+poly_eval=0;-0.2692073749367942E+01
+# --------------------------------------------------------------
+# 5 - RHEA
+[trig_arg]
+name=\phi_5
+poly_eval=0;0.1755492171961483E+00
+[trig_arg]
+name=\Phi_5
+poly_eval=0;-0.1754676234867099E+00
+# --------------------------------------------------------------
+# 6 - TITAN
+[trig_arg]
+name=\phi_6
+poly_eval=0;0.8933864296234374E-02
+[trig_arg]
+name=\Phi_6
+poly_eval=0;-0.8931239595284827E-02
+# --------------------------------------------------------------
+# 8 - JAPETUS
+[trig_arg]
+name=\phi_8
+poly_eval=0;0.1974690825885564E-02
+[trig_arg]
+name=\Phi_8
+poly_eval=0;-0.1925543592528062E-02
+# END ARGUMENTS ------------------------------------------------
+[data]
+0.5602364095311453E-02;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;c
+0.2789942947721349E-02;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;0;0;c
+0.1312363309291625E-03;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1;c
+0.1125670790406430E-03;0;0;2;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;c
+0.1916668518784865E-04;0;0;-1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;c
