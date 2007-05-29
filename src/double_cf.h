@@ -99,6 +99,10 @@ namespace piranha
         {
           return self(math::besselJ(n,value_));
         }
+      self pow(const double &y) const
+        {
+          return self(std::pow(value_,y));
+        }
       // Needed operators.
       self operator-() const
         {

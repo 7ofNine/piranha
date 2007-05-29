@@ -30,7 +30,9 @@ namespace piranha
       base_pseries<Cf,Trig,I> &ps2)
   {
     if (this==&ps2)
-      return;
+      {
+        return;
+      }
     set_=ps2.set_;
     norm_=ps2.norm_;
     cf_s_vec_=ps2.cf_s_vec_;
@@ -340,22 +342,22 @@ namespace piranha
         std::cout << "ERROR! series' top term is not suitable for real power." << std::endl;
         std::exit(1);
       }
-    // FIXME: what does it mean to evaluate here for symbolic coefficients? To be really effective
+    // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
     // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
     // Need to think about this, but it is not essential until symbolic coefficients are introduced.
-    if (s_index().begin()->t_eval(0.,cf_s_vec_,trig_s_vec_)<0)
+    const cf_type &a=s_index().begin()->c();
+    if (a.t_eval(0.,cf_s_vec_)<0)
       {
-        std::cout << "ERROR! I want a positive evaluation for the greatest term." << std::endl;
+        std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;
         std::exit(1);
       }
-    const double a=s_index().begin()->norm(cf_s_vec_);
-    // Top term must be greater than half of the series' norm
-    if (2*a<=norm())
+    // Top term must be greater than half of the series' norm.
+    if (2*a.norm(cf_s_vec_)<=norm())
       {
-        std::cout << "ERROR! series' top term is not big enough for negative power" << std::endl;
+        std::cout << "ERROR! series' top term is not big enough for negative power." << std::endl;
         std::exit(1);
       }
-    // Hard coded: fix binomial expansion error to 1/10 of desired precision
+    // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
     const double error=.1*std::pow(norm(),power)*settings_manager::prec();
     const unsigned int limit_index=pow_limit(error,power);
     base_pseries retval, x(*this), tmp(cf_type(1.));
@@ -365,7 +367,7 @@ namespace piranha
         {
           base_pseries tmp2(tmp);
           tmp2*=math::choose(power,i);
-          tmp2*=std::pow(a,power-i);
+          tmp2*=a.pow(power-i);
           retval+=tmp2;
         }
         tmp*=x;

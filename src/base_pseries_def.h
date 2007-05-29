@@ -290,6 +290,11 @@ namespace piranha
       void put_phases_freqs(long int limit = -1) const;
       // Maths.
       __PS_OPERATORS(base_pseries, base_pseries);
+      base_pseries &operator*=(const cf_type &x)
+      {
+        generic_mult(x);
+        return *this;
+      }
       // Probing.
       /// Check whether a series is empty or not.
       bool empty() const
