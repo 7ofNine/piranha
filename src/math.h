@@ -575,6 +575,14 @@ namespace piranha
       {
         return x.sine();
       }
+      /**
+       * Return absolute value of difference from nearest integer.
+       * @param x input value.
+       */
+      static double delta_nearbyint(const double &x)
+      {
+        return std::abs(x-nearbyint(x));
+      }
     private:
       // Low-level factorial function.
       template <class T>
