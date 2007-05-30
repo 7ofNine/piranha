@@ -176,6 +176,15 @@ namespace piranha
         {
           return (value_>0);
         }
+      /// Calculate norm (absolute value).
+      double norm() const
+        {
+          return abs();
+        }
+      self inv() const
+        {
+          return self(1./value_);
+        }
       self &operator/=(const double &x)
       {
         value_/=x;
@@ -186,6 +195,10 @@ namespace piranha
           self retval(*this);
           retval*=x;
           return retval;
+        }
+      bool operator<(const double &x) const
+        {
+          return (value_<x);
         }
       // ancestor::value() is part of the interface too.
       //-------------------------------------------------------
