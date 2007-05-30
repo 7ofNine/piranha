@@ -183,6 +183,7 @@ namespace piranha
       void mult_by_double(const double &);
       template <class U>
       void mult_by_self(const base_polynomial<U> &);
+      void basic_pow(const double &);
     protected:
       static const std::string  separator_;
       set_type                  set_;
@@ -524,6 +525,58 @@ namespace piranha
         }
       return std::abs(retval);
     }
+
+
+  /// Basic real power.
+  template <class T>
+  inline void base_polynomial<T>::basic_pow(const double &x)
+  {
+    // Special handling in case of empty polynomial.
+    if (set_.empty())
+      {
+        if (std::abs(x)<settings_manager::numerical_zero())
+          {
+            std::cout << "ERROR: want to calculate 0^0 in polynomial." << std::endl;
+            std::abort();
+          }
+        if (x<0)
+          {
+            std::cout << "ERROR: negative power of zero in polynomial." << std::endl;
+            std::abort();
+          }
+        // 0^x, just return.
+        return;
+      }
+    if (std::abs(1-x)<settings_manager::numerical_zero())
+      {
+        // this^1.
+        return;
+      }
+    if (std::abs(x)<settings_manager::numerical_zero())
+      {
+        // this^0.
+        clear();
+        insert(m_type(1));
+        return;
+      }
+    if (set_.size()>1)
+      {
+        std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
+        std::abort();
+      }
+    base_polynomial retval;
+    if (math::delta_nearbyint(x)<=settings_manager::numerical_zero())
+      {
+        // Integer case.
+        retval.insert(d_index().begin()->pow((int)nearbyint(x)));
+      }
+    else
+      {
+        // Real case.
+        retval.insert(d_index().begin()->pow(x));
+      }
+    swap(retval);
+  }
 }
 
 #endif

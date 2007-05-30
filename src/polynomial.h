@@ -155,6 +155,12 @@ namespace piranha
           return retval;
         }
 #undef __max_bessel_iter
+      polynomial pow(const double &x) const
+        {
+          polynomial retval(*this);
+          retval.basic_pow(x);
+          return retval;
+        }
       // End INTERFACE definition.
       //-------------------------------------------------------
       polynomial &operator/=(const mpz_class &n)
