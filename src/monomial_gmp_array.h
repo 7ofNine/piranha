@@ -211,6 +211,8 @@ namespace piranha
       void mult_by(const monomial_gmp_array<U> &, monomial_gmp_array &) const;
       static void cfs_algebraic_sum(const numerical_type &, const numerical_type &,
                                     const rational_type &, const rational_type &, numerical_type &, rational_type &, bool);
+      monomial_gmp_array pow(int) const;
+      monomial_gmp_array pow(const double &) const;
       // Operators.
       template <class U>
       monomial_gmp_array &operator=(const monomial_gmp_array<U> &);
@@ -222,6 +224,7 @@ namespace piranha
       void basic_assignment(const monomial_gmp_array<U> &);
       template <class U>
       bool basic_comparison(const U &) const;
+      bool symbolic() const;
     protected:
       container_type              container_;
       numerical_type              numerical_cf_;
@@ -377,6 +380,22 @@ namespace piranha
           retval+=container_[i];
         }
       return retval;
+    }
+
+
+  /// Check whether monomial is symbolic or purely numerical.
+  template <class T>
+  inline bool monomial_gmp_array<T>::symbolic() const
+    {
+      const size_t w=width();
+      for (size_t i=0;i<w;++i)
+        {
+          if (container_[i]!=0)
+            {
+              return true;
+            }
+        }
+      return false;
     }
 
 
@@ -638,6 +657,59 @@ namespace piranha
           }
       }
   }
+
+
+  /// Integer power.
+  template <class T>
+  inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(int n_) const
+    {
+      p_assert(numerical_cf_.norm()>settings_manager::numerical_zero());
+      p_assert(rational_cf_!=0);
+      const size_t w=width();
+      monomial_gmp_array retval(w);
+      unsigned int n;
+      if (n_<0)
+        {
+          n=(unsigned int)(-n_);
+          retval.numerical_cf_=math::natural_pow(n,numerical_cf_.inv());
+          retval.rational_cf_=math::natural_pow(n,
+            rational_type(rational_cf_.get_den(),rational_cf_.get_num()));
+        }
+      else
+        {
+          n=(unsigned int)(n_);
+          retval.numerical_cf_=math::natural_pow(n,numerical_cf_);
+          retval.rational_cf_=math::natural_pow(n,rational_cf_);
+        }
+      // Take care of arguments.
+      for (size_t i=0;i<w;++i)
+        {
+          retval.container_[i]=container_[i]*n_;
+        }
+      return retval;
+    }
+
+
+    /// Real power.
+    template <class T>
+    inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(const double &x) const
+      {
+        if (symbolic())
+          {
+            std::cout << "ERROR: real power of symbolic monomial." << std::endl;
+            std::abort();
+          }
+        if (numerical_cf_<0)
+          {
+            std::cout << "ERROR: real power of negative numerical coefficient." << std::endl;
+            std::abort();
+          }
+        // NOTICE: here we are counting on the fact that container_ is zero-initialized.
+        monomial_gmp_array retval(width());
+        retval.numerical_cf_=(numerical_cf_.pow(x)*=std::pow(rational_cf_.get_d(),x));
+        retval.rational_cf_=1;
+        return retval;
+      }
 }
 
 #endif
