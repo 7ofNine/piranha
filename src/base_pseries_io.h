@@ -360,10 +360,6 @@ namespace piranha
       size_t j;
       for (j=0;j<cf_s_vec_.size();++j)
         {
-          cf_s_vec_[j]->print(out_stream);
-        }
-      for (j=0;j<cf_s_vec_.size();++j)
-        {
           out_stream << "[cf_arg]" << std::endl;
           cf_s_vec_[j]->print(out_stream);
         }
