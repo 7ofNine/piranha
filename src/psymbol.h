@@ -28,11 +28,13 @@
 #include <string>
 #include <vector>
 
+#include "common_typedefs.h"
+#include "p_assert.h"
 #include "stream_manager.h"
 
 namespace piranha
   {
-  /// Simple symbol class
+  /// Simple symbol class.
   /**
   * This class is used in piranha to represent symbolic entitites (arguments and, in a later stage,
   * symbolic coefficients). It features a string representing the symbol's name and a numerical vector
@@ -52,27 +54,8 @@ namespace piranha
     {
     public:
       // Ctors
-      /// Default constructor.
-      /**
-      * Assigns 'null' as name of the symbol.
-      */
-      //psymbol():name_(null_name_)
-      //{}
-      /// Constructor from std::string.
-      /**
-      * It just assigns psymbol::name_. psymbol::poly_eval_ will be empty.
-      * @param[in] str symbol's name.
-      */
-      //psymbol(const std::string &str):name_(valid_name(str))
-      //{}
-      /// Constructor from std::string and std::vector<double>.
-      /**
-      * Assigns both psymbol::name_ and psymbol::poly_eval_.
-      * @param[in] str symbol's name.
-      * @param[in] pol symbol's polynomial evaluation vector.
-      */
-      //psymbol(const std::string &str, const std::vector<double> &pol):name_(valid_name(str)),poly_eval_(pol)
-      //{}
+      psymbol();
+      psymbol(const std::string &, const vector_double &);
       /// Copy constructor.
       psymbol(const psymbol &psym):name_(psym.name_),poly_eval_(psym.poly_eval_)
       {}
@@ -93,17 +76,6 @@ namespace piranha
           print(std::cout);
         }
       double eval (double) const;
-      // Setters
-      /// Set symbol's name.
-      void set_name(const std::string &str)
-      {
-        name_=valid_name(str);
-      }
-      /// Set polynomial evaluation vector.
-      void set_poly_eval(const std::vector<double> &pol)
-      {
-        poly_eval_=pol;
-      }
       // Getters
       /// Get symbol's name.
       const std::string &name() const
@@ -111,7 +83,7 @@ namespace piranha
           return name_;
         }
       /// Get polynomial evaluation vector.
-      const std::vector<double> &poly_eval() const
+      const vector_double &poly_eval() const
         {
           return poly_eval_;
         }
@@ -158,7 +130,7 @@ namespace piranha
       // Data members.
     private:
       std::string                 name_;
-      std::vector<double>         poly_eval_;
+      vector_double               poly_eval_;
       static const std::string    null_name_;
     };
 
@@ -170,6 +142,7 @@ namespace piranha
   class psymbol_manager
     {
     public:
+      friend class psymbol;
       /// Functor used in psymbol comparison in set.
       struct ltpsymbol
         {
@@ -189,7 +162,15 @@ namespace piranha
       {
         print();
       }
-      static iterator reg(const psymbol &);
+      static iterator get_pointer(const psymbol &psym)
+      {
+        iterator retval=p_set_.find(psym);
+        p_assert(retval!=p_set_.end());
+        return retval;
+      }
+    private:
+      static void reg(const psymbol &);
+    // Data members.
     private:
       static set_type             p_set_;
       static boost::mutex         mutex_;
@@ -210,7 +191,7 @@ namespace piranha
 
 
   /// Register a symbol in the manager.
-  inline psymbol_manager::iterator psymbol_manager::reg(const psymbol &psym)
+  inline void psymbol_manager::reg(const psymbol &psym)
   {
     // Guard with mutex, we could be registering symbols from more than one thread.
     boost::mutex::scoped_lock lock(mutex_)
@@ -220,12 +201,7 @@ namespace piranha
       {
         // Symbol is not already present, add it.
         std::pair<iterator,bool> result=p_set_.insert(psym);
-        if (!result.second)
-          {
-            std::cout << "Damn!" << std::endl;
-            std::exit(1);
-          }
-        return result.first;
+        p_assert(result.second);
       }
     else
       {
@@ -240,13 +216,35 @@ namespace piranha
             std::cout << std::endl;
             std::exit(1);
           }
-        return it;
       }
   }
 
   /// Typedefs used in series, terms, coefficients and trigonometric parts.
   typedef psymbol_manager::iterator psym_p;
   typedef std::vector<psym_p> vector_psym_p;
+
+
+  /// Default constructor.
+  /**
+   * Assigns 'null' as name of the symbol.
+   */
+  inline psymbol::psymbol():name_(null_name_)
+  {
+    psymbol_manager::reg(*this);
+  }
+
+
+  /// Constructor from std::string and vector_double.
+  /**
+   * Assigns both psymbol::name_ and psymbol::poly_eval_.
+   * @param[in] str symbol's name.
+   * @param[in] pol symbol's polynomial evaluation vector.
+   */
+  inline psymbol::psymbol(const std::string &str, const vector_double &pol):
+    name_(valid_name(str)),poly_eval_(pol)
+  {
+    psymbol_manager::reg(*this);
+  }
 
 
   /// Print to stream.

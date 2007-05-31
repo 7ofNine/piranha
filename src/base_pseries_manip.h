@@ -134,7 +134,7 @@ namespace piranha
       {
         p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_add_cf_arg()));
       }
-    cf_s_vec_.push_back(psymbol_manager::reg(psym));
+    cf_s_vec_.push_back(psymbol_manager::get_pointer(psym));
   }
 
 
@@ -153,7 +153,7 @@ namespace piranha
       {
         p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_add_trig_arg()));
       }
-    trig_s_vec_.push_back(psymbol_manager::reg(psym));
+    trig_s_vec_.push_back(psymbol_manager::get_pointer(psym));
     lin_args_.push_back(0);
   }
 

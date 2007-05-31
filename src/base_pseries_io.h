@@ -25,12 +25,13 @@
 
 namespace piranha
   {
+  // FIXME: abstract and make generic wrt below.
   /// Read coefficient argument.
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::read_cf_arg(std::ifstream &inf)
   {
-    psymbol tmp_symbol;
-    std::string temp;
+    std::string temp, temp_name;
+    vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
     while (utils::get_valid_string(inf,temp)==0)
       {
@@ -38,7 +39,7 @@ namespace piranha
           {
             std::cout << "Finished parsing cf_arg." << std::endl;
             inf.seekg(cur_pos);
-            add_cf_arg(tmp_symbol);
+            add_cf_arg(psymbol(temp_name,temp_vdouble));
             return;
           }
         deque_string split_v;
@@ -50,12 +51,12 @@ namespace piranha
         else if (split_v[0]=="name")
           {
             std::cout << "name=" << split_v[1] << std::endl;
-            tmp_symbol.set_name(split_v[1]);
+            temp_name=split_v[1];
           }
         else if (split_v[0]=="poly_eval")
           {
             std::cout << "poly_eval=" << split_v[1] << std::endl;
-            tmp_symbol.set_poly_eval(utils::str_to_vector_double(split_v[1]));
+            temp_vdouble=utils::str_to_vector_double(split_v[1]);
           }
         else
           {
@@ -70,8 +71,8 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::read_trig_arg(std::ifstream &inf)
   {
-    psymbol tmp_symbol;
-    std::string temp;
+    std::string temp, temp_name;
+    vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
     while (utils::get_valid_string(inf,temp)==0)
       {
@@ -79,7 +80,7 @@ namespace piranha
           {
             std::cout << "Finished parsing trig_arg." << std::endl;
             inf.seekg(cur_pos);
-            add_trig_arg(tmp_symbol);
+            add_trig_arg(psymbol(temp_name,temp_vdouble));
             return;
           }
         deque_string split_v;
@@ -91,12 +92,12 @@ namespace piranha
         else if (split_v[0]=="name")
           {
             std::cout << "name=" << split_v[1] << std::endl;
-            tmp_symbol.set_name(split_v[1]);
+            temp_name=split_v[1];
           }
         else if (split_v[0]=="poly_eval")
           {
             std::cout << "poly_eval=" << split_v[1] << std::endl;
-            tmp_symbol.set_poly_eval(utils::str_to_vector_double(split_v[1]));
+            temp_vdouble=utils::str_to_vector_double(split_v[1]);
           }
         else
           {
