@@ -90,10 +90,10 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   typedef psymbol (T::*trig_arg_n)(const size_t &) const;
   typedef psymbol (T::*trig_arg_name)(const std::string &) const;
   class_<T> inst(name.c_str(),description.c_str());
-  inst.def(init<T>());
-  inst.def(init<std::string>());
-  inst.def(init<typename T::cf_type>());
-  inst.def(init<double>());
+  inst.def(init<const T &>());
+  inst.def(init<const std::string &>());
+  inst.def(init<const typename T::cf_type &>());
+  inst.def(init<const double &>());
   inst.def(init<int>());
   inst.def("__copy__", &T::copy);
   inst.def("__iter__", iterator<T,return_internal_reference<> >());
@@ -166,7 +166,6 @@ void ps_instantiate_real_specifics(class_<T> &real)
   typedef T real_ps;
   typedef void (real_ps::*real_add_ps_to_arg_index)(trig_size_t, const real_ps &);
   typedef void (real_ps::*real_add_ps_to_arg_string)(const std::string &, const real_ps &);
-  real.def(init<const double &>());
   real.def(init<const psymbol &>());
   real.def("complex_multiangle", &real_ps::complex_multiangle);
   real.def("complexp", &real_ps::complexp);
