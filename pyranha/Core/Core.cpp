@@ -171,10 +171,10 @@ BOOST_PYTHON_MODULE(_Core)
   class_<phase_list>("phase_list","List of phases.",init<std::string>());
 
   // Psymbols.
-  /*class_<psymbol>("psymbol","Symbol class.")
+  class_<psymbol>("psymbol","Symbol class.")
   .def("__copy__",&psymbol::copy)
   .def("put",&psymbol::put)
   .def("name",&psymbol::name,return_value_policy<copy_const_reference>())
   .def("phase",&psymbol::phase)
-  .def("freq",&psymbol::freq);*/
+  .def("freq",&psymbol::freq);
 }
