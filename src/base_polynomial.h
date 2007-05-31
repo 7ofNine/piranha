@@ -85,6 +85,14 @@ namespace piranha
       {
         insert(m_type(x));
       }
+      /// Constructor from psymbol.
+      explicit base_polynomial(const psymbol &)
+      {
+        m_type tmp_m((size_t)1);
+        tmp_m.rational_cf()=1;
+        tmp_m.numerical_cf()=typename m_type::numerical_type(1.);
+        insert(tmp_m);
+      }
       /// Copy constructor.
       base_polynomial(const base_polynomial &p):set_(p.set_)
       {}

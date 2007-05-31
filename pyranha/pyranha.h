@@ -167,6 +167,7 @@ void ps_instantiate_real_specifics(class_<T> &real)
   typedef void (real_ps::*real_add_ps_to_arg_index)(trig_size_t, const real_ps &);
   typedef void (real_ps::*real_add_ps_to_arg_string)(const std::string &, const real_ps &);
   real.def(init<const double &>());
+  real.def(init<const psymbol &>());
   real.def("complex_multiangle", &real_ps::complex_multiangle);
   real.def("complexp", &real_ps::complexp);
   real.def("cosine", &real_ps::cosine);

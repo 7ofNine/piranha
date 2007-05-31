@@ -39,7 +39,7 @@ public:\
 public:                                                                                           \
     ps():ancestor::base_pseries() {}                                                              \
     ps(const ps &p):ancestor::base_pseries(p) {}                                                  \
-    explicit ps(const std::string &filename){ancestor::load_from(filename);}                         \
+    explicit ps(const std::string &filename):ancestor::base_pseries(filename) {}                  \
     explicit ps(const cf_type &c):ancestor::base_pseries(c) {}                                    \
     ps copy() const {return ps(*this);}                                                           \
 
@@ -87,6 +87,9 @@ namespace piranha
         term_type tmp=term_type(cf_type(x));
         ancestor::insert(tmp);
       }
+      /// Constructor from psymbol.
+      explicit ps(const psymbol &psym):ancestor::base_pseries(psym)
+      {}
     };
 }
 

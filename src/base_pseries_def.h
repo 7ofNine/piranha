@@ -124,6 +124,7 @@ namespace piranha
       base_pseries(const base_pseries &);
       explicit base_pseries(const std::string &);
       explicit base_pseries(const cf_type &);
+      explicit base_pseries(const psymbol &);
       /// Destructor.
       ~base_pseries()
       {}
@@ -426,6 +427,17 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class I>
   inline base_pseries<Cf, Trig, I>::base_pseries(const cf_type &c): __base_pseries_init_list
   {
+    term_type term(c);
+    insert(term);
+  }
+
+
+  /// Constructor from piranha::psymbol.
+  template <class Cf, class Trig, template <class, class> class I>
+  inline base_pseries<Cf, Trig, I>::base_pseries(const psymbol &psym): __base_pseries_init_list
+  {
+    add_cf_arg(psym);
+    cf_type c(psym);
     term_type term(c);
     insert(term);
   }

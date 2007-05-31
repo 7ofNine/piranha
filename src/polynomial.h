@@ -45,6 +45,9 @@ namespace piranha
       /// Constructor from double.
       explicit polynomial(const double &x):ancestor::base_polynomial(x)
       {}
+      /// Constructor from psymbol
+      explicit polynomial(const psymbol &psym):ancestor::base_polynomial(psym)
+      {}
       /// Copy constructor.
       polynomial(const polynomial &p):ancestor::base_polynomial(p)
       {}

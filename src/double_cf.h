@@ -60,6 +60,11 @@ namespace piranha
       /// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::simple_container(s)
       {}
+      /// Constructor from symbol.
+      explicit double_cf(const psymbol &):ancestor::simple_container()
+      {
+        std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
+      }
       /// Copy constructor.
       double_cf(const self &dc):ancestor::simple_container(dc)
       {}
