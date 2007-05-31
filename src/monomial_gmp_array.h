@@ -505,7 +505,7 @@ namespace piranha
       for (size_t i=0;i<w;++i)
         {
           // FIXME: use natural_pow or the like here, to speed up.
-          retval*=std::pow(v[i]->eval(t),container_[i]);
+          retval*=std::pow(v[i]->t_eval(t),container_[i]);
         }
       return retval;
     }

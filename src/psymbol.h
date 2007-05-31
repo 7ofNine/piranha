@@ -75,7 +75,7 @@ namespace piranha
         {
           print(std::cout);
         }
-      double eval (double) const;
+      double t_eval(const double &) const;
       // Getters
       /// Get symbol's name.
       const std::string &name() const
@@ -283,8 +283,7 @@ namespace piranha
 
 
   /// Time evaluation.
-  //FIXME: rename to t_eval?
-  inline double psymbol::eval(double t) const
+  inline double psymbol::t_eval(const double &t) const
     {
       double retval=0.;
       const size_t w=poly_eval_.size();

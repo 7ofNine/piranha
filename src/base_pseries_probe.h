@@ -44,7 +44,7 @@ namespace piranha
       // Linear arguments
       for (size_t j=0;j<w;++j)
         {
-          retval+=lin_args()[j]*trig_s_vec_[j]->eval(value);
+          retval+=lin_args()[j]*trig_s_vec_[j]->t_eval(value);
         }
       return retval;
     };

@@ -400,7 +400,7 @@ namespace piranha
       const const_iterator it_f=end();
       for (const_iterator it=begin();it!=it_f;++it)
         {
-          retval+=it->second*v[it->first]->eval(t);
+          retval+=it->second*v[it->first]->t_eval(t);
         }
       return retval;
     }

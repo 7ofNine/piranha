@@ -593,7 +593,7 @@ namespace piranha
           // Linear arguments
           for (size_t j=0;j<w;++j)
             {
-              retval+=orig_->lin_args()[j]*orig_->trig_s_vec()[j]->eval(t);
+              retval+=orig_->lin_args()[j]*orig_->trig_s_vec()[j]->t_eval(t);
             }
           return retval;
         }
@@ -664,7 +664,7 @@ namespace piranha
           // Linear arguments.
           for (size_t j=0;j<w;++j)
             {
-              retval+=a_->lin_args()[j]*a_->trig_s_vec()[j]->eval(t);
+              retval+=a_->lin_args()[j]*a_->trig_s_vec()[j]->t_eval(t);
             }
           return retval;
         }
