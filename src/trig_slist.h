@@ -26,7 +26,7 @@
 
 #include "common_typedefs.h"
 #include "p_assert.h"
-#include "psymbol_manager.h"
+#include "psymbol.h"
 #include "utils.h"            // lexical_converter.
 
 namespace piranha

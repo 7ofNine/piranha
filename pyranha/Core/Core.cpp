@@ -27,7 +27,7 @@
 
 #include "../../src/astro.h"
 #include "../../src/phase_list.h"
-#include "../../src/psymbol_manager.h"
+#include "../../src/psymbol.h"
 #include "../../src/stats.h"
 #include "../../src/stream_manager.h"
 
@@ -171,10 +171,10 @@ BOOST_PYTHON_MODULE(_Core)
   class_<phase_list>("phase_list","List of phases.",init<std::string>());
 
   // Psymbols.
-  class_<psymbol>("psymbol","Symbol class.")
+  /*class_<psymbol>("psymbol","Symbol class.")
   .def("__copy__",&psymbol::copy)
   .def("put",&psymbol::put)
   .def("name",&psymbol::name,return_value_policy<copy_const_reference>())
   .def("phase",&psymbol::phase)
-  .def("freq",&psymbol::freq);
+  .def("freq",&psymbol::freq);*/
 }

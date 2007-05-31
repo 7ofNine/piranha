@@ -24,7 +24,7 @@
 #include <iostream>
 #include <string>
 
-#include "psymbol_manager.h"
+#include "psymbol.h"
 #include "utils.h"            // Lexical converter.
 
 namespace piranha

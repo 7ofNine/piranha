@@ -24,4 +24,6 @@ namespace piranha
   {
   // Initialize static member of psymbol.
   const std::string psymbol::null_name_= "null" ;
+  boost::mutex psymbol_manager::mutex_;
+  psymbol_manager::set_type psymbol_manager::p_set_;
 }

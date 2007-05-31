@@ -21,7 +21,7 @@
 #ifndef PIRANHA_ARG_MANAGER_H
 #define PIRANHA_ARG_MANAGER_H
 
-#include "psymbol_manager.h"
+#include "psymbol.h"
 
 namespace piranha
   {
