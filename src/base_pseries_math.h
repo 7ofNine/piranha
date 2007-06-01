@@ -85,6 +85,8 @@ namespace piranha
           }
         return;
       }
+    // Arg_assign now, since if we need to add arguments we need to be able to compare terms.
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Check that trig_args are compatible
     if (!merge_args(ps2))
       {
@@ -96,7 +98,6 @@ namespace piranha
     alg_sum_lin_args(ps2,sign);
     // Use hint, since as we add terms we have an idea of where they are going to be placed
     it_s_index it_hint=s_index().end();
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // NOTE: At this point this' size is greater or equal to ps2'
     for (typename base_pseries<Cf2,Trig2,I2>::it_h_index it=ps2.h_index().begin();
          it!=ps2.h_index().end();++it)
