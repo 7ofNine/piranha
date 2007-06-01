@@ -50,9 +50,9 @@ namespace piranha
     };
 
 
-  /// Compatibility check for coefficient arguments.
+  /// Compatibility check for arguments.
   /**
-   * Test whether series' coefficient arguments are compatible with those from ps2. Compatibility
+   * Test whether series' arguments are compatible with those from ps2. Compatibility
    * means that the first n arguments are equal, where n is the number of arguments of the series with
    * fewer arguments.
    * @param[in] ps2 piranha::base_pseries compatibility is tested against.
@@ -60,34 +60,18 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   template <class Cf2,class Trig2,
   template <class,class> class I2>
-  inline bool base_pseries<Cf,Trig,I>::cf_args_compatible(const base_pseries<Cf2,Trig2,I2> &ps2) const
+  inline bool base_pseries<Cf,Trig,I>::args_compatible(const base_pseries<Cf2,Trig2,I2> &ps2) const
     {
-      const size_t minwidth=math::min(cf_width(),ps2.cf_width());
-      for (size_t j=0;j<minwidth;++j)
+      size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
+      for (j=0;j<minwidth;++j)
         {
           if (!(cf_s_vec_[j]==ps2.cf_s_vec()[j]))
             {
               return false;
             }
         }
-      return true;
-    }
-
-
-  /// Compatibility check for trigonometric arguments.
-  /**
-   * Test whether series' trigonometric arguments are compatible with those from ps2. Compatibility
-   * means that the first n arguments are equal, where n is the number of arguments of the series with
-   * fewer arguments.
-   * @param[in] ps2 piranha::base_pseries compatibility is tested against.
-   */
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,
-  template <class,class> class I2>
-  inline bool base_pseries<Cf,Trig,I>::trig_args_compatible(const base_pseries<Cf2,Trig2,I2> &ps2) const
-    {
-      const size_t minwidth=math::min(trig_width(),ps2.trig_width());
-      for (size_t j=0;j<minwidth;++j)
+      minwidth=math::min(trig_width(),ps2.trig_width());
+      for (j=0;j<minwidth;++j)
         {
           if (!(trig_s_vec_[j]==ps2.trig_s_vec()[j]))
             {

@@ -413,15 +413,9 @@ namespace piranha
         std::exit(1);
         return true;
       }
-    if (!cf_args_compatible(ps2))
+    if (!args_compatible(ps2))
       {
-        std::cout << "The base_pseries are not cf_args_compatible." << std::endl;
-        std::exit(1);
-        return false;
-      }
-    if (!trig_args_compatible(ps2))
-      {
-        std::cout << "The base_pseries are not trig_args_compatible." << std::endl;
+        std::cout << "The base_pseries are not args_compatible." << std::endl;
         std::exit(1);
         return false;
       }

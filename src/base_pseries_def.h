@@ -350,11 +350,8 @@ namespace piranha
       // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
       template <class Cf2, class Trig2, template <class, class> class I2>
-      bool cf_args_compatible(const
+      bool args_compatible(const
                               base_pseries<Cf2, Trig2, I2> &) const;
-      template <class Cf2, class Trig2, template <class, class> class I2>
-      bool trig_args_compatible(const
-                                base_pseries<Cf2, Trig2, I2> &) const;
       // Low level maths.
       void basic_assignment(const base_pseries &);
       template <class Cf2, class Trig2, template <class, class> class I2>
