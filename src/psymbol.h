@@ -22,6 +22,7 @@
 #define PIRANHA_PSYMBOL_H
 
 #include <boost/algorithm/string.hpp>
+#include <boost/array.hpp>
 #include <boost/thread/mutex.hpp>
 #include <cmath>
 #include <set>
@@ -56,6 +57,34 @@ namespace piranha
       // Ctors
       psymbol();
       psymbol(const std::string &, const vector_double &);
+      psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
+      {
+        boost::array<double,1> tmp = { { x1 } };
+        build_from_array(tmp);
+      }
+      psymbol(const std::string &s, const double &x1, const double &x2):name_(s),poly_eval_((size_t)2)
+      {
+        boost::array<double,2> tmp = { { x1, x2 } };
+        build_from_array(tmp);
+      }
+      psymbol(const std::string &s, const double &x1, const double &x2, const double &x3):
+        name_(s),poly_eval_((size_t)3)
+      {
+        boost::array<double,3> tmp = { { x1, x2, x3 } };
+        build_from_array(tmp);
+      }
+      psymbol(const std::string &s, const double &x1, const double &x2, const double &x3, const double &x4):
+        name_(s),poly_eval_((size_t)4)
+      {
+        boost::array<double,4> tmp = { { x1, x2, x3, x4 } };
+        build_from_array(tmp);
+      }
+      psymbol(const std::string &s, const double &x1, const double &x2, const double &x3,
+        const double &x4, const double &x5):name_(s),poly_eval_((size_t)5)
+      {
+        boost::array<double,5> tmp = { { x1, x2, x3, x4, x5 } };
+        build_from_array(tmp);
+      }
       /// Copy constructor.
       psymbol(const psymbol &psym):name_(psym.name_),poly_eval_(psym.poly_eval_)
       {}
@@ -127,6 +156,8 @@ namespace piranha
             return tmp_str;
           }
       }
+      // Helper for ctor from boost::array.
+      template <class T> void build_from_array(const T &);
       // Data members.
     private:
       std::string                 name_;
@@ -243,6 +274,19 @@ namespace piranha
   inline psymbol::psymbol(const std::string &str, const vector_double &pol):
     name_(valid_name(str)),poly_eval_(pol)
   {
+    psymbol_manager::reg(*this);
+  }
+
+
+  // Helper for ctor from boost::array.
+  template <class T>
+  inline void psymbol::build_from_array(const T &a)
+  {
+    p_assert(a.size()==poly_eval_.size());
+    for (size_t i=0;i<a.size();++i)
+      {
+        poly_eval_[i]=a[i];
+      }
     psymbol_manager::reg(*this);
   }
 
