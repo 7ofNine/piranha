@@ -88,9 +88,11 @@ namespace piranha
       /// Constructor from psymbol.
       explicit base_polynomial(const psymbol &)
       {
+        std::cout << "ctor from symbol\n";
         m_type tmp_m((size_t)1);
         tmp_m.rational_cf()=1;
         tmp_m.numerical_cf()=typename m_type::numerical_type(1.);
+        tmp_m.container()[0]=1;
         insert(tmp_m);
       }
       /// Copy constructor.
