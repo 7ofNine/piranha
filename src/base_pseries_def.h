@@ -271,13 +271,17 @@ namespace piranha
             }
         }
       /// Print to screen the first "limit" terms, including series' header.
-      void put(int limit = -1) const
+      void put(int limit) const
         {
           std::cout << "Put called with " << limit << std::endl;
           print(std::cout, limit);
         }
+      void put() const
+        {
+          put(-1);
+        }
       /// Print to screen the first "limit" terms, without series' header.
-      void put_terms(int limit = -1) const
+      void put_terms(int limit) const
         {
           switch (stream_manager::format())
             {
@@ -288,8 +292,16 @@ namespace piranha
               print_terms_latex(std::cout,limit);
             }
         }
+      void put_terms() const
+        {
+          put_terms(-1);
+        }
       void save_to(const std::string &) const;
-      void put_phases_freqs(int limit = -1) const;
+      void put_phases_freqs(int limit) const;
+      void put_phases_freqs() const
+        {
+          put_phases_freqs(-1);
+        }
       // Maths.
       __PS_OPERATORS(base_pseries, base_pseries);
       base_pseries &operator*=(const cf_type &x)
