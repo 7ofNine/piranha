@@ -233,7 +233,7 @@ namespace piranha
           ++it;
           if (it!=d_index().end())
             {
-              std::cout << '&';
+              out_stream << '&';
             }
           --it;
         }
