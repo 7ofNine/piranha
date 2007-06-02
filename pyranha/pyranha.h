@@ -92,7 +92,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   class_<T> inst(name.c_str(),description.c_str());
   inst.def(init<const T &>());
   inst.def(init<const std::string &>());
-  inst.def(init<const typename T::cf_type &>());
   inst.def(init<const double &>());
   inst.def(init<int>());
   inst.def("__copy__", &T::copy);
