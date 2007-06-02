@@ -352,6 +352,18 @@ namespace piranha
       template <class Cf2, class Trig2, template <class, class> class I2>
       bool args_compatible(const
                               base_pseries<Cf2, Trig2, I2> &) const;
+      struct psym_p_cmp
+      {
+        psym_p_cmp()
+        {}
+        bool operator()(psym_p p1, psym_p p2) const
+          {
+            return (p1->name()<p2->name());
+          }
+      };
+      template <class Cf2, class Trig2, template <class, class> class I2>
+      bool args_different(const
+                              base_pseries<Cf2, Trig2, I2> &) const;
       // Low level maths.
       void basic_assignment(const base_pseries &);
       template <class Cf2, class Trig2, template <class, class> class I2>

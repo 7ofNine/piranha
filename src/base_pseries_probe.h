@@ -21,6 +21,10 @@
 #ifndef PIRANHA_BASE_PSERIES_PROBE_H
 #define PIRANHA_BASE_PSERIES_PROBE_H
 
+#include <algorithm>
+#include <iterator>
+#include <set>
+
 namespace piranha
   {
   /// Evaluate numerically a series at a specified time.
@@ -79,6 +83,69 @@ namespace piranha
             }
         }
       return true;
+    }
+
+
+typedef std::vector<double> vdbl;
+
+struct foocmp
+{
+  foocmp()
+  {}
+  bool operator()(double x1, double x2) const
+    {
+      return (x1<x2);
+    }
+};
+
+typedef std::set<double,foocmp> sdbl;
+typedef sdbl::iterator my_iterator;
+
+
+  /// Check whether arguments are different.
+  /**
+   * Returns true if the intersection of the two series' sets of arguments (both coefficient and trigonometric)
+   * is void.
+   */
+  // NOTICE: not inlined, this should not be called often and hence it would just end up increasing binary size.
+  template <class Cf,class Trig,template <class,class> class I>
+  template <class Cf2,class Trig2,
+  template <class,class> class I2>
+  bool base_pseries<Cf,Trig,I>::args_different(const base_pseries<Cf2,Trig2,I2> &ps2) const
+    {
+      // Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
+      // we are only interested in the presence or not of that argument. If there are duplicate arguments
+      // the insertion functions below will simply fail silently.
+      typedef std::set<psym_p,psym_p_cmp> psym_set;
+      psym_set set1, set2, set_res;
+      // Populate the two sets of pointer to psymbols.
+      size_t j, w;
+      w=cf_width();
+      for (j=0;j<w;++j)
+        {
+          set1.insert(cf_s_vec_[j]);
+        }
+      w=trig_width();
+      for (j=0;j<w;++j)
+        {
+          set1.insert(trig_s_vec_[j]);
+        }
+      w=ps2.cf_width();
+      for (j=0;j<w;++j)
+        {
+          set2.insert(ps2.cf_s_vec()[j]);
+        }
+      w=ps2.trig_width();
+      for (j=0;j<w;++j)
+        {
+          set2.insert(ps2.trig_s_vec()[j]);
+        }
+      // Compute intersection of the two sets of psymbol pointers.
+      std::set_intersection(set1.begin(),set1.end(),
+                            set2.begin(),set2.end(),
+                            std::inserter(set_res,set_res.begin()),
+                            psym_p_cmp());
+      return set_res.empty();
     }
 
 

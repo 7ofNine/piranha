@@ -416,8 +416,26 @@ namespace piranha
     if (!args_compatible(ps2))
       {
         std::cout << "The base_pseries are not args_compatible." << std::endl;
-        std::exit(1);
-        return false;
+        if (args_different(ps2))
+          {
+            std::cout << "But they are args_different. Lolrus!" << std::endl;
+            size_t i, w=ps2.cf_width();
+            for (i=0;i<w;++i)
+              {
+                add_cf_arg(*ps2.cf_s_vec()[i]);
+              }
+            w=ps2.trig_width();
+            for (i=0;i<w;++i)
+              {
+                add_trig_arg(*ps2.trig_s_vec()[i]);
+              }
+            return true;
+          }
+        else
+          {
+            std::exit(1);
+            return false;
+          }
       }
     size_t old_w=cf_width(), j;
     for (j=old_w;j<ps2.cf_width();++j)

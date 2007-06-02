@@ -25,7 +25,6 @@
 
 namespace piranha
   {
-  // FIXME: abstract and make generic wrt below.
   /// Read coefficient argument.
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::read_cf_arg(std::ifstream &inf)
