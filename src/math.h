@@ -105,7 +105,7 @@ namespace piranha
     {
     public:
       /// Sign function.
-      static short int sgn(const int &x)
+      static short int sgn(int x)
       {
         if (x<0)
           {

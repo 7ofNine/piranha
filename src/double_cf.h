@@ -55,7 +55,7 @@ namespace piranha
       explicit double_cf(const double &val):ancestor::simple_container(val)
       {}
       /// Constructor from integer.
-      explicit double_cf(int &val):ancestor::simple_container(val)
+      explicit double_cf(int val):ancestor::simple_container(val)
       {}
       /// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::simple_container(s)

@@ -292,7 +292,7 @@ namespace piranha
   /// Print the first n terms in plain format.
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::print_terms_plain(std::ostream &out_stream,
-      const long int &n) const
+      int n) const
     {
       stream_manager::setup_print(out_stream);
       size_t j=0, lim;
@@ -320,7 +320,7 @@ namespace piranha
   /// Print the first n terms in LaTeX format.
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::print_terms_latex(std::ostream &out_stream,
-      const long int &n) const
+      int n) const
     {
       stream_manager::setup_print(out_stream);
       size_t i=0, lim;
@@ -353,7 +353,7 @@ namespace piranha
    */
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::print_plain(std::ostream &out_stream,
-      long int limit) const
+      int limit) const
     {
       stream_manager::setup_print(out_stream);
       size_t j;
@@ -391,7 +391,7 @@ namespace piranha
    * LaTeX document.
    */
   template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::print_latex(std::ostream &out_stream, long int limit) const
+  inline void base_pseries<Cf,Trig,I>::print_latex(std::ostream &out_stream, int limit) const
     {
       stream_manager::setup_print(out_stream);
       out_stream << "\\begin{xtabular}{rrrrrl}" << std::endl;
@@ -423,7 +423,7 @@ namespace piranha
 
   /// Print to screen frequencies and phases.
   template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::put_phases_freqs(long int limit) const
+  inline void base_pseries<Cf,Trig,I>::put_phases_freqs(int limit) const
     {
       stream_manager::setup_print(std::cout);
       size_t i=0, lim;

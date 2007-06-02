@@ -128,7 +128,7 @@ namespace piranha
       base_pseries &retval, const double &Delta)
   {
     const double Delta_threshold=Delta/(2*length()*ps2.length());
-    unsigned long int n=0;
+    size_t n=0;
     // NOTE: at this point retval's width() is greater or equal to _both_ this
     // and ps2. It's the max width indeed.
     p_assert(math::max(trig_width(),ps2.trig_width())==retval.trig_width());

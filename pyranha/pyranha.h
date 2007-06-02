@@ -79,11 +79,11 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   typedef void (T::*crop_it)(const typename T::it_s_index &);
   typedef void (T::*crop_real)(const double &);
   typedef void (T::*put_noargs)() const;
-  typedef void (T::*put_n)(size_t) const;
+  typedef void (T::*put_n)(int) const;
   typedef void (T::*put_terms_noargs)() const;
-  typedef void (T::*put_terms_n)(size_t) const;
+  typedef void (T::*put_terms_n)(int) const;
   typedef void (T::*put_phases_freqs_noargs)() const;
-  typedef void (T::*put_phases_freqs_n)(size_t) const;
+  typedef void (T::*put_phases_freqs_n)(int) const;
   typedef typename T::eval_type (T::*mean_def) (const double &, const double &) const;
   typedef typename T::eval_type (T::*mean_n)(const double &, const double &,
       const size_t &) const;

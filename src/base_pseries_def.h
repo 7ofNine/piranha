@@ -252,14 +252,14 @@ namespace piranha
                       base_pseries<Cf2, Trig2, I2> &);
       void set_flavour(iterator, bool);
       // I/O
-      void print_plain(std::ostream &out_stream = std::cout, long int limit = -1) const;
-      void print_latex(std::ostream &out_stream = std::cout, long int limit = -1) const;
+      void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
+      void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
       /// Print series to std::ostream.
       /**
        * Print first "limit" terms. If limit is negative, print all terms. The output format is read
        * from the piranha::stream_manager class.
        */
-      void print(std::ostream &out_stream, long int limit=-1) const
+      void print(std::ostream &out_stream, int limit=-1) const
         {
           switch (stream_manager::format())
             {
@@ -271,12 +271,13 @@ namespace piranha
             }
         }
       /// Print to screen the first "limit" terms, including series' header.
-      void put(long int limit = -1) const
+      void put(int limit = -1) const
         {
+          std::cout << "Put called with " << limit << std::endl;
           print(std::cout, limit);
         }
       /// Print to screen the first "limit" terms, without series' header.
-      void put_terms(long int limit = -1) const
+      void put_terms(int limit = -1) const
         {
           switch (stream_manager::format())
             {
@@ -288,7 +289,7 @@ namespace piranha
             }
         }
       void save_to(const std::string &) const;
-      void put_phases_freqs(long int limit = -1) const;
+      void put_phases_freqs(int limit = -1) const;
       // Maths.
       __PS_OPERATORS(base_pseries, base_pseries);
       base_pseries &operator*=(const cf_type &x)
@@ -329,8 +330,8 @@ namespace piranha
       void read_trig_arg(std::ifstream &);
       void read_lin_args(std::ifstream &);
       void read_terms(std::ifstream &, const std::string &);
-      void print_terms_plain(std::ostream &, const long int &) const;
-      void print_terms_latex(std::ostream &, const long int &) const;
+      void print_terms_plain(std::ostream &, int ) const;
+      void print_terms_latex(std::ostream &, int ) const;
       // Low level manipulation.
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
