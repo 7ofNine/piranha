@@ -273,7 +273,6 @@ namespace piranha
       /// Print to screen the first "limit" terms, including series' header.
       void put(int limit) const
         {
-          std::cout << "Put called with " << limit << std::endl;
           print(std::cout, limit);
         }
       void put() const
@@ -349,6 +348,8 @@ namespace piranha
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void add_cf_arg(const psymbol &psym = psymbol());
       void add_trig_arg(const psymbol &psym = psymbol());
+      void prepend_cf_args(const vector_psym_p &);
+      void prepend_trig_args(const vector_psym_p &);
       void upgrade_norm(const double &);
       void downgrade_norm(const double &);
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
