@@ -97,7 +97,7 @@ namespace piranha
         std::swap(value_,dc.value_);
       }
       /// Add argument.
-      void add_arg()
+      void append_args(const size_t &)
       {}
       /// Resize.
       void resize(const size_t &)

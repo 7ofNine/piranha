@@ -51,30 +51,6 @@ namespace piranha
           // NOTICE: evaluate the impact of using const & here, esp. when using gmp
           const cf_type &new_cf_;
         };
-      /// Functor to add a coefficient argument.
-      struct modifier_add_cf_arg
-        {
-          modifier_add_cf_arg()
-          {}
-          ~modifier_add_cf_arg()
-          {}
-          void operator()(ps_term &term)
-          {
-            term.c_.add_arg();
-          }
-        };
-      /// Functor to add a trigonometric argument.
-      struct modifier_add_trig_arg
-        {
-          modifier_add_trig_arg()
-          {}
-          ~modifier_add_trig_arg()
-          {}
-          void operator()(ps_term &term)
-          {
-            term.trig_args_.add_arg();
-          }
-        };
       /// Functor to update flavour.
       struct modifier_flavour
         {

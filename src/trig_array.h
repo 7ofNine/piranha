@@ -46,7 +46,7 @@ namespace piranha
       // Manip.
       // FIXME: deprecate?
       void insert(trig_size_t,mult_t);
-      void add_arg();
+      void append_args(const size_t &);
       void resize(const size_t &);
       void invert_sign();
       // Probing.
@@ -161,9 +161,9 @@ namespace piranha
   }
 
 
-  inline void trig_array::add_arg()
+  inline void trig_array::append_args(const size_t &n)
   {
-    resize(width()+1);
+    resize(width()+n);
   }
 
 

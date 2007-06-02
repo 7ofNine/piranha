@@ -38,7 +38,7 @@ namespace piranha
           {
             std::cout << "Finished parsing cf_arg." << std::endl;
             inf.seekg(cur_pos);
-            add_cf_arg(psymbol(temp_name,temp_vdouble));
+            append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
             return;
           }
         deque_string split_v;
@@ -79,7 +79,7 @@ namespace piranha
           {
             std::cout << "Finished parsing trig_arg." << std::endl;
             inf.seekg(cur_pos);
-            add_trig_arg(psymbol(temp_name,temp_vdouble));
+            append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
             return;
           }
         deque_string split_v;
@@ -175,7 +175,7 @@ namespace piranha
           {
             std::cout << "Warning: cf width is larger than expected, assigning 'null' to extra cf args."
             << std::endl;
-            add_cf_arg();
+            append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
           }
         new_term.c()=cf;
         // Ditch out first element of string vector, now that we read it.
@@ -197,7 +197,7 @@ namespace piranha
           {
             std::cout << "Warning: trig width is larger than expected, assigning 'null' to extra trig args."
             << std::endl;
-            add_trig_arg();
+            append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
           }
         new_term.trig_args()=trig;
         // Deal with phases.

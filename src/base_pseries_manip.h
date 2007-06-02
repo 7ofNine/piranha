@@ -120,41 +120,72 @@ namespace piranha
   }
 
 
-  /// Add a coefficient argument.
+  /// Prepend coefficient arguments.
   /**
-   * The argument will be appended at the end of the coefficient argument list. If no argument is
-   * specified, an empty psymbol (named 'null') will be used.
-   * @param[in] psym piranha::psymbol to be appended.
-   * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
+   * Prepend a vector of argument pointers to the current vector of coefficient arguments.
    */
   template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::add_cf_arg(const psymbol &psym)
+  inline void base_pseries<Cf,Trig,I>::prepend_cf_args(const vector_psym_p &v)
   {
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
-      {
-        p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_add_cf_arg()));
-      }
-    cf_s_vec_.push_back(psymbol_manager::get_pointer(psym));
+
   }
 
 
-  /// Add a trigonometric argument.
+  /// Append coefficient arguments.
   /**
-   * The argument will be appended at the end of the trigonometric argument list. If no argument is
-   * specified, an empty psymbol (named 'null') will be used.
-   * @param[in] psym piranha::psymbol to be appended.
+   * The arguments will be appended at the end of the coefficient argument vector.
+   * @param[in] v vector_psym_p to be appended.
+   * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
+   */
+  template <class Cf,class Trig,template <class,class> class I>
+  inline void base_pseries<Cf,Trig,I>::append_cf_args(const vector_psym_p &v)
+  {
+    base_pseries retval=base_pseries();
+    retval.lin_args_=lin_args_;
+    retval.cf_s_vec_=cf_s_vec_;
+    retval.trig_s_vec_=trig_s_vec_;
+    // Append psymbols from v.
+    retval.cf_s_vec_.insert(retval.cf_s_vec_.end(),v.begin(),v.end());
+    const it_h_index it_f=h_index().end();
+    term_type tmp_term;
+    const size_t n=v.size();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
+      {
+        tmp_term=(*it);
+        tmp_term.c().append_args(n);
+        // NOTICE: use hinted insertion here?
+        retval.insert(tmp_term);
+      }
+    swap(retval);
+  }
+
+
+  /// Append trigonometric arguments.
+  /**
+   * The argument will be appended at the end of the trigonometric argument vector.
+   * @param[in] v vector_psym_p to be appended.
    * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
    */
   template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::add_trig_arg(const psymbol &psym)
+  inline void base_pseries<Cf,Trig,I>::append_trig_args(const vector_psym_p &v)
   {
-    // We should be safe here, if zeroes get added to trigonometric parts the order won't change.
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+    base_pseries retval=base_pseries();
+    retval.lin_args_=lin_args_;
+    retval.cf_s_vec_=cf_s_vec_;
+    retval.trig_s_vec_=trig_s_vec_;
+    // Append psymbols from v.
+    retval.trig_s_vec_.insert(retval.trig_s_vec_.end(),v.begin(),v.end());
+    const it_h_index it_f=h_index().end();
+    term_type tmp_term;
+    const size_t n=v.size();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
       {
-        p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_add_trig_arg()));
+        tmp_term=(*it);
+        tmp_term.trig_args().append_args(n);
+        // NOTICE: use hinted insertion here?
+        retval.insert(tmp_term);
       }
-    trig_s_vec_.push_back(psymbol_manager::get_pointer(psym));
-    lin_args_.push_back(0);
+    swap(retval);
   }
 
 
@@ -338,7 +369,7 @@ namespace piranha
    * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
    * ones.
    * Otherwise an assertion fails and the program aborts. base_pseries::merge_args,
-   * base_pseries::add_cf_arg and base_pseries::add_trig_arg can be used to add the needed arguments
+   * base_pseries::append_cf_args and base_pseries::append_trig_args can be used to add the needed arguments
    * to the series.
    *
    * This function performs some checks and then calls base_pseries::ll_insert.
@@ -422,12 +453,13 @@ namespace piranha
             size_t i, w=ps2.cf_width();
             for (i=0;i<w;++i)
               {
-                add_cf_arg(*ps2.cf_s_vec()[i]);
+                // FIXME: optimize here.
+                append_cf_args(vector_psym_p(1,ps2.cf_s_vec()[i]));
               }
             w=ps2.trig_width();
             for (i=0;i<w;++i)
               {
-                add_trig_arg(*ps2.trig_s_vec()[i]);
+                append_trig_args(vector_psym_p(1,ps2.trig_s_vec()[i]));
               }
             return true;
           }
@@ -440,12 +472,12 @@ namespace piranha
     size_t old_w=cf_width(), j;
     for (j=old_w;j<ps2.cf_width();++j)
       {
-        add_cf_arg(*ps2.cf_s_vec()[j]);
+        append_cf_args(vector_psym_p(1,ps2.cf_s_vec()[j]));
       }
     old_w=trig_width();
     for (size_t j=old_w;j<ps2.trig_width();++j)
       {
-        add_trig_arg(*ps2.trig_s_vec()[j]);
+        append_trig_args(vector_psym_p(1,ps2.trig_s_vec()[j]));
       }
     return true;
   }

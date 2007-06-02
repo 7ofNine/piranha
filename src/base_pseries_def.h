@@ -346,8 +346,8 @@ namespace piranha
       // Low level manipulation.
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
-      void add_cf_arg(const psymbol &psym = psymbol());
-      void add_trig_arg(const psymbol &psym = psymbol());
+      void append_cf_args(const vector_psym_p &);
+      void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
       void upgrade_norm(const double &);
@@ -459,7 +459,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class I>
   inline base_pseries<Cf, Trig, I>::base_pseries(const psymbol &psym): __base_pseries_init_list
   {
-    add_cf_arg(psym);
+    append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
     cf_type c(psym);
     term_type term(c);
     insert(term);
