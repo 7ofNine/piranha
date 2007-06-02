@@ -185,17 +185,34 @@ namespace piranha
 
 
   // Probing implementations
-  // FIXME: use container_=l2.container_ directly here?
+  /// Equality
+  /**
+   * This is used in the hashed index of base_pseries, hence it must cope with addition of arguments:
+   * when a trig_arg is added to the series we will have to add an argument to all terms one by one, and so
+   * it will happen that terms with different number of trig_args are present in the series at the same time.
+   * We take into account this by coping with differently-sized trig_array and assuring that arguments in excess
+   * are all zero.
+   */
   inline bool trig_array::operator==(const trig_array &l2) const
     {
-      const size_t w=width();
-      p_assert(w==l2.width());
-      for (size_t i=0;i<w;++i)
+      const trig_array *min=this, *max=&l2;
+      if (l2.width()<width())
         {
-          if (container_[i]!=l2.container_[i])
+          min=&l2;
+          max=this;
+        }
+      const size_t min_w=min->width(), max_w=max->width();
+      size_t i;
+      for (i=0;i<min_w;++i)
+        {
+          if (min->container_[i]!=max->container_[i])
             {
               return false;
             }
+        }
+      for (;i<max_w;++i)
+        {
+          p_assert(max->container_[i]==0);
         }
       return true;
     }
