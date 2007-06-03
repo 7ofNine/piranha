@@ -60,8 +60,17 @@ namespace piranha
       // Manip.
       // FIXME: move to protected once it is deprecated?
       void insert(trig_size_t,mult_t);
-      void add_arg()
+      void append_args(const size_t &)
       {}
+      void prepend_args(const size_t &w)
+      {
+        const iterator it_f=end();
+        for (iterator it=begin();it!=it_f;++it)
+          {
+            // Prepending arguments implies an increase in the index number of each element.
+            it->first+=(trig_size_t)w;
+          }
+      }
       void increase_size(const size_t &)
       {}
       void invert_sign();
@@ -655,7 +664,7 @@ namespace piranha
     }
 
 
-  // FIXME: maybe we can place this struct inside trig_slist and require that all trig_args provide
+  // NOTE: maybe we can place this struct inside trig_slist and require that all trig_args provide
   // it, as an interface request? But then all classes that are expected to use the hasher should then
   // multi-inherit from a base hasher class? Otherwise how can we overload hash-value? Mh, maybe we
   // can specificy the hasher in multiindex containers. Investigate.
