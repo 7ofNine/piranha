@@ -469,15 +469,16 @@ namespace piranha
             return false;
           }
       }
-    size_t old_w=cf_width(), j;
-    for (j=old_w;j<ps2.cf_width();++j)
+    size_t w1=cf_width(), w2=ps2.cf_width();
+    if (w2>w1)
       {
-        append_cf_args(vector_psym_p(1,ps2.cf_s_vec()[j]));
+        append_cf_args(vector_psym_p(ps2.cf_s_vec().begin()+w1,ps2.cf_s_vec().end()));
       }
-    old_w=trig_width();
-    for (size_t j=old_w;j<ps2.trig_width();++j)
+    w1=trig_width();
+    w2=ps2.trig_width();
+    if (w2>w1)
       {
-        append_trig_args(vector_psym_p(1,ps2.trig_s_vec()[j]));
+        append_trig_args(vector_psym_p(ps2.trig_s_vec().begin()+w1,ps2.trig_s_vec().end()));
       }
     return true;
   }
