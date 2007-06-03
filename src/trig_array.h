@@ -46,6 +46,7 @@ namespace piranha
       // Manip.
       // FIXME: deprecate?
       void insert(trig_size_t,mult_t);
+      void prepend_args(const size_t &);
       void append_args(const size_t &);
       void resize(const size_t &);
       void invert_sign();
@@ -161,12 +162,6 @@ namespace piranha
   }
 
 
-  inline void trig_array::append_args(const size_t &n)
-  {
-    resize(width()+n);
-  }
-
-
   inline void trig_array::resize(const size_t &w)
   {
     p_assert(w>=width());
@@ -183,8 +178,29 @@ namespace piranha
   }
 
 
+  inline void trig_array::append_args(const size_t &n)
+  {
+    resize(width()+n);
+  }
+
+
+  inline void trig_array::prepend_args(const size_t &n)
+  {
+    if (n>0)
+      {
+        std::valarray<mult_t> old_container_(container_);
+        const size_t old_w=old_container_.size();
+        container_.resize(old_w+n);
+        for (size_t i=0;i<old_w;++i)
+          {
+            container_[i+n]=old_container_[i];
+          }
+      }
+  }
+
+
   // Probing implementations
-  /// Equality
+  /// Equality.
   inline bool trig_array::operator==(const trig_array &l2) const
     {
       const size_t w=width();

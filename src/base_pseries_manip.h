@@ -123,11 +123,29 @@ namespace piranha
   /// Prepend coefficient arguments.
   /**
    * Prepend a vector of argument pointers to the current vector of coefficient arguments.
+   * @param[in] v vector_psym_p to be prepended.
+   * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
    */
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::prepend_cf_args(const vector_psym_p &v)
   {
-
+    base_pseries retval=base_pseries();
+    retval.lin_args_=lin_args_;
+    retval.cf_s_vec_=cf_s_vec_;
+    retval.trig_s_vec_=trig_s_vec_;
+    // Prepend psymbols from v.
+    retval.cf_s_vec_.insert(retval.cf_s_vec_.begin(),v.begin(),v.end());
+    const it_h_index it_f=h_index().end();
+    const size_t n=v.size();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
+      {
+        // NOTICE: find a way to avoid resizes here?
+        term_type tmp_term=(*it);
+        tmp_term.c().prepend_args(n);
+        // NOTICE: use hinted insertion here?
+        retval.insert(tmp_term);
+      }
+    swap(retval);
   }
 
 
@@ -147,12 +165,41 @@ namespace piranha
     // Append psymbols from v.
     retval.cf_s_vec_.insert(retval.cf_s_vec_.end(),v.begin(),v.end());
     const it_h_index it_f=h_index().end();
-    term_type tmp_term;
     const size_t n=v.size();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
       {
-        tmp_term=(*it);
+        // NOTICE: find a way to avoid resizes here?
+        term_type tmp_term=(*it);
         tmp_term.c().append_args(n);
+        // NOTICE: use hinted insertion here?
+        retval.insert(tmp_term);
+      }
+    swap(retval);
+  }
+
+
+  /// Prepend trigonometric arguments.
+  /**
+   * Prepend a vector of argument pointers to the current vector of trigonometric arguments.
+   * @param[in] v vector_psym_p to be prepended.
+   * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
+   */
+  template <class Cf,class Trig,template <class,class> class I>
+  inline void base_pseries<Cf,Trig,I>::prepend_trig_args(const vector_psym_p &v)
+  {
+    base_pseries retval=base_pseries();
+    retval.lin_args_=lin_args_;
+    retval.cf_s_vec_=cf_s_vec_;
+    retval.trig_s_vec_=trig_s_vec_;
+    // Prepend psymbols from v.
+    retval.trig_s_vec_.insert(retval.trig_s_vec_.begin(),v.begin(),v.end());
+    const it_h_index it_f=h_index().end();
+    const size_t n=v.size();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
+      {
+        // NOTICE: find a way to avoid resizes here?
+        term_type tmp_term=(*it);
+        tmp_term.trig_args().prepend_args(n);
         // NOTICE: use hinted insertion here?
         retval.insert(tmp_term);
       }
@@ -176,11 +223,10 @@ namespace piranha
     // Append psymbols from v.
     retval.trig_s_vec_.insert(retval.trig_s_vec_.end(),v.begin(),v.end());
     const it_h_index it_f=h_index().end();
-    term_type tmp_term;
     const size_t n=v.size();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
       {
-        tmp_term=(*it);
+        term_type tmp_term=(*it);
         tmp_term.trig_args().append_args(n);
         // NOTICE: use hinted insertion here?
         retval.insert(tmp_term);
@@ -450,17 +496,8 @@ namespace piranha
         if (args_different(ps2))
           {
             std::cout << "But they are args_different. Lolrus!" << std::endl;
-            size_t i, w=ps2.cf_width();
-            for (i=0;i<w;++i)
-              {
-                // FIXME: optimize here.
-                append_cf_args(vector_psym_p(1,ps2.cf_s_vec()[i]));
-              }
-            w=ps2.trig_width();
-            for (i=0;i<w;++i)
-              {
-                append_trig_args(vector_psym_p(1,ps2.trig_s_vec()[i]));
-              }
+            prepend_cf_args(ps2.cf_s_vec());
+            prepend_trig_args(ps2.trig_s_vec());
             return true;
           }
         else
