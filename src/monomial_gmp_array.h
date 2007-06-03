@@ -59,15 +59,15 @@ namespace piranha
       /// Evaluation result.
       typedef typename numerical_type::eval_type eval_type;
       /// Functor to resize the monomial.
-      struct modifier_resize
+      struct modifier_increase_size
         {
-          modifier_resize(const size_t &w):w_(w)
+          modifier_increase_size(const size_t &w):w_(w)
           {}
-          ~modifier_resize()
+          ~modifier_increase_size()
           {}
           void operator()(monomial_gmp_array &m) const
             {
-              m.resize(w_);
+              m.increase_size(w_);
             }
           const size_t  &w_;
         }
@@ -195,7 +195,7 @@ namespace piranha
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
       // Manip.
-      void resize(const size_t &);
+      void increase_size(const size_t &);
       // Evaluation.
       eval_type t_eval(const double &, const vector_psym_p &) const;
       // Probing.
@@ -279,7 +279,7 @@ namespace piranha
     boost::trim_right_if(split_v[2],boost::is_any_of("]"));
     deque_string exponent_v;
     boost::split(exponent_v,split_v[2],boost::is_any_of(separator2_));
-    container_.resize(exponent_v.size());
+    container_.increase_size(exponent_v.size());
     for (size_t i=0;i<exponent_v.size();++i)
       {
         if (exponent_v[i]!="")
@@ -451,7 +451,7 @@ namespace piranha
     if ((void *)&m2!=(void *)this)
       {
         // First we must resize, before assigning: valarray does not do it automatically.
-        resize(m2.width());
+        increase_size(m2.width());
         container_=m2.container();
         numerical_cf_=m2.numerical_cf();
         rational_cf_=m2.rational_cf();
@@ -538,7 +538,7 @@ namespace piranha
 
   /// Resize monomial.
   template <class T>
-  inline void monomial_gmp_array<T>::resize(const size_t &new_w)
+  inline void monomial_gmp_array<T>::increase_size(const size_t &new_w)
   {
     p_assert(new_w>=width());
     if (new_w>width())

@@ -48,7 +48,7 @@ namespace piranha
       void insert(trig_size_t,mult_t);
       void prepend_args(const size_t &);
       void append_args(const size_t &);
-      void resize(const size_t &);
+      void increase_size(const size_t &);
       void invert_sign();
       // Probing.
       double freq(const vector_psym_p &) const;
@@ -162,7 +162,7 @@ namespace piranha
   }
 
 
-  inline void trig_array::resize(const size_t &w)
+  inline void trig_array::increase_size(const size_t &w)
   {
     p_assert(w>=width());
     if (w>width())
@@ -180,7 +180,7 @@ namespace piranha
 
   inline void trig_array::append_args(const size_t &n)
   {
-    resize(width()+n);
+    increase_size(width()+n);
   }
 
 
@@ -404,14 +404,15 @@ namespace piranha
   /// Assignment operator.
   /**
    * After the assignment the data members of the two classes must be equal, both from a mathematical
-   * point of view and with respect to the computer representation.
+   * point of view and with respect to the computer representation. Assignment to a larger trig_array
+   * is allowed, assignment to smaller results in assertion failure.
    * @param[in] l2 right-hand side piranha::trig_array.
    */
   inline trig_array &trig_array::operator=(const trig_array &l2)
   {
     if (&l2!=this)
       {
-        resize(l2.width());
+        increase_size(l2.width());
         container_=l2.container_;
       }
     return *this;
@@ -443,8 +444,8 @@ namespace piranha
         {
           std::swap(min_w,max_w);
         }
-      ret1.resize(max_w);
-      ret2.resize(max_w);
+      ret1.increase_size(max_w);
+      ret2.increase_size(max_w);
       for (i=0;i<min_w;++i)
         {
           ret1.container_[i]=container_[i]-l2.container_[i];

@@ -109,7 +109,7 @@ namespace piranha
       bool is_ignorable(const vector_psym_p &) const;
       bool operator<(const ps_term &) const;
       // Manipulation.
-      void resize(const size_t &, const size_t &);
+      void increase_size(const size_t &, const size_t &);
       void invert_trig_args();
       // Maths.
       ps_term &operator=(const ps_term &);

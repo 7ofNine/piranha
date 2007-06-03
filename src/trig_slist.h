@@ -62,7 +62,7 @@ namespace piranha
       void insert(trig_size_t,mult_t);
       void add_arg()
       {}
-      void resize(const size_t &)
+      void increase_size(const size_t &)
       {}
       void invert_sign();
       // Probing.

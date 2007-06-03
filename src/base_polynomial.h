@@ -106,7 +106,7 @@ namespace piranha
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
       // Manipulation.
-      void resize(const size_t &w);
+      void increase_size(const size_t &);
       void add_arg();
       void swap(base_polynomial &);
       void clear()
@@ -259,13 +259,13 @@ namespace piranha
 
   /// Resize base_polynomial.
   template <class T>
-  inline void base_polynomial<T>::resize(const size_t &w)
+  inline void base_polynomial<T>::increase_size(const size_t &w)
   {
     p_assert(w>=width());
     const it_d_index it_f=d_index().end();
     for (it_d_index it=d_index().begin();it!=it_f;++it)
       {
-        p_assert(d_index().modify(it,typename m_type::modifier_resize(w)));
+        p_assert(d_index().modify(it,typename m_type::modifier_increase_size(w)));
       }
   }
 
@@ -274,7 +274,7 @@ namespace piranha
   template <class T>
   inline void base_polynomial<T>::add_arg()
   {
-    resize(width()+1);
+    increase_size(width()+1);
   }
 
 
@@ -300,7 +300,7 @@ namespace piranha
     m_type *new_m=0;
     if (m.smaller(w))
       {
-        new_m->resize(w);
+        new_m->increase_size(w);
       }
     if (!set_.empty() && m.larger(w))
       {
@@ -310,7 +310,7 @@ namespace piranha
         // by addition and multiplication routines
         //std::cout << "NOOOOOOOOOOOO!!!! That should not happen!!!!" << std::endl;
         //std::exit(1);
-        resize(w);
+        increase_size(w);
         w=width();
       }
     const m_type *insert_m;

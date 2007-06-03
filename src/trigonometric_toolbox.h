@@ -141,7 +141,7 @@ namespace piranha
           complex_ps retval;
           retval.merge_args(*static_cast<Derived const *>(this));
           typename complex_ps::term_type in_term(typename Derived::complex_cf_type(1),true);
-          in_term.trig_args().resize(static_cast<Derived const *>(this)->trig_width());
+          in_term.trig_args().increase_size(static_cast<Derived const *>(this)->trig_width());
           in_term.trig_args().insert(pos,n);
           retval.insert(in_term);
           in_term.flavour()=false;
@@ -174,8 +174,8 @@ namespace piranha
           p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
           typename complex_ps::term_type term1(typename Derived::complex_cf_type(1),true),
           term2(typename Derived::complex_cf_type(0,1),false);
-          term1.trig_args().resize(retval.trig_width());
-          term2.trig_args().resize(retval.trig_width());
+          term1.trig_args().increase_size(retval.trig_width());
+          term2.trig_args().increase_size(retval.trig_width());
           for (unsigned int j=0;
                j<static_cast<Derived const *>
                (this)->lin_args().size();
@@ -219,8 +219,8 @@ namespace piranha
              )
             {
               typename complex_ps::term_type term1, term2;
-              term1.trig_args().resize(w);
-              term2.trig_args().resize(w);
+              term1.trig_args().increase_size(w);
+              term2.trig_args().increase_size(w);
               for (i=0;i<settings_manager::jacang_lim();++i)
                 {
                   term1.c().set_real(__jaccosRecf(i,_cf));
@@ -236,8 +236,8 @@ namespace piranha
           else
             {
               typename complex_ps::term_type term1, term2(typename Derived::complex_cf_type(0),false);
-              term1.trig_args().resize(w);
-              term2.trig_args().resize(w);
+              term1.trig_args().increase_size(w);
+              term2.trig_args().increase_size(w);
               for (i=0;i<settings_manager::jacang_lim();++i)
                 {
                   term1.c().set_real(__jacsinRecf(i,_cf));

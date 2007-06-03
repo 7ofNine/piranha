@@ -38,10 +38,10 @@ namespace piranha
 
   /// Resize term.
   template <class Cf,class Trig>
-  inline void ps_term<Cf,Trig>::resize(const size_t &cw, const size_t &tw)
+  inline void ps_term<Cf,Trig>::increase_size(const size_t &cw, const size_t &tw)
   {
-    c_.resize(cw);
-    trig_args_.resize(tw);
+    c_.increase_size(cw);
+    trig_args_.increase_size(tw);
   }
 }
 #endif

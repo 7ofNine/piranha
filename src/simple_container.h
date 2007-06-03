@@ -103,7 +103,7 @@ namespace piranha
       void prepend_args(const size_t &)
       {}
       /// Resize.
-      void resize(const size_t &)
+      void increase_size(const size_t &)
       {}
       // Probing.
       /// Diagnostic checkup.

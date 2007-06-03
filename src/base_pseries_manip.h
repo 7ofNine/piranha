@@ -437,7 +437,7 @@ namespace piranha
     if (term.c().smaller(cw) || term.trig_args().smaller(tw))
       {
         new_term = new term_type(term);
-        new_term->resize(cw,tw);
+        new_term->increase_size(cw,tw);
       }
     if (term.trig_args().sign()<0)
       {
