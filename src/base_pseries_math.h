@@ -198,15 +198,15 @@ namespace piranha
             std::cout << "Non-zero linargs!" << std::endl;
             std::exit(1);
           }
-        p_assert(retval.merge_args(*this));
-        if (!retval.merge_args(ps2))
+        arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
+        if (!merge_args(ps2))
           {
-            std::cout << "mult trig_argss are not compatible, returning self." << std::endl;
+            std::cout << "args are not compatible, returning self." << std::endl;
             std::exit(1);
             return;
           }
+        p_assert(retval.merge_args(*this));
         const double Delta=norm()*ps2.norm()*settings_manager::prec();
-        arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
         mult_terms(ps2,retval,Delta);
       }
     else
