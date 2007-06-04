@@ -58,20 +58,6 @@ namespace piranha
       typedef std::valarray<expo_t> container_type;
       /// Evaluation result.
       typedef typename numerical_type::eval_type eval_type;
-      /// Functor to resize the monomial.
-      struct modifier_increase_size
-        {
-          modifier_increase_size(const size_t &w):w_(w)
-          {}
-          ~modifier_increase_size()
-          {}
-          void operator()(monomial_gmp_array &m) const
-            {
-              m.increase_size(w_);
-            }
-          const size_t  &w_;
-        }
-      ;
       /// Functor to update monomial's coefficients.
       struct update_cfs
         {
@@ -196,6 +182,7 @@ namespace piranha
       void print_latex(std::ostream &, const vector_psym_p &) const;
       // Manip.
       void increase_size(const size_t &);
+      void prepend_args(const size_t &);
       // Evaluation.
       eval_type t_eval(const double &, const vector_psym_p &) const;
       // Probing.
@@ -279,7 +266,7 @@ namespace piranha
     boost::trim_right_if(split_v[2],boost::is_any_of("]"));
     deque_string exponent_v;
     boost::split(exponent_v,split_v[2],boost::is_any_of(separator2_));
-    container_.increase_size(exponent_v.size());
+    container_.resize(exponent_v.size());
     for (size_t i=0;i<exponent_v.size();++i)
       {
         if (exponent_v[i]!="")
@@ -444,6 +431,9 @@ namespace piranha
 
 
   /// Basic assignment.
+  /**
+   * Assignation to a smaller monomial will result in assertion failure.
+   */
   template <class T>
   template <class U>
   inline void monomial_gmp_array<T>::basic_assignment(const monomial_gmp_array<U> &m2)
@@ -499,9 +489,9 @@ namespace piranha
   inline typename monomial_gmp_array<T>::eval_type
   monomial_gmp_array<T>::t_eval(const double &t, const vector_psym_p &v) const
     {
-      p_assert(v.size()==width());
-      eval_type retval=numerical_cf_.value()*rational_cf_.get_d();
       const size_t w=width();
+      p_assert(v.size()==w);
+      eval_type retval=numerical_cf_.value()*rational_cf_.get_d();
       for (size_t i=0;i<w;++i)
         {
           // FIXME: use natural_pow or the like here, to speed up.
@@ -536,7 +526,7 @@ namespace piranha
     }
 
 
-  /// Resize monomial.
+  /// Increrase size.
   template <class T>
   inline void monomial_gmp_array<T>::increase_size(const size_t &new_w)
   {
@@ -549,6 +539,23 @@ namespace piranha
         for (size_t i=0;i<old_w;++i)
           {
             container_[i]=old[i];
+          }
+      }
+  }
+
+
+  /// Prepend arguments.
+  template <class T>
+  inline void monomial_gmp_array<T>::prepend_args(const size_t &n)
+  {
+    if (n>0)
+      {
+        container_type old=container_;
+        const size_t old_w=old.size();
+        container_.resize(old_w+n);
+        for (size_t i=0;i<old_w;++i)
+          {
+            container_[i+n]=old[i];
           }
       }
   }

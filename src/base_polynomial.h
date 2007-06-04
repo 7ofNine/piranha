@@ -88,7 +88,6 @@ namespace piranha
       /// Constructor from psymbol.
       explicit base_polynomial(const psymbol &)
       {
-        std::cout << "ctor from symbol\n";
         m_type tmp_m((size_t)1);
         tmp_m.rational_cf()=1;
         tmp_m.numerical_cf()=typename m_type::numerical_type(1.);
@@ -107,7 +106,8 @@ namespace piranha
       void print_latex(std::ostream &, const vector_psym_p &) const;
       // Manipulation.
       void increase_size(const size_t &);
-      void add_arg();
+      void append_args(const size_t &);
+      void prepend_args(const size_t &);
       void swap(base_polynomial &);
       void clear()
       {
@@ -257,24 +257,44 @@ namespace piranha
     }
 
 
-  /// Resize base_polynomial.
+  /// Increase size.
   template <class T>
   inline void base_polynomial<T>::increase_size(const size_t &w)
   {
     p_assert(w>=width());
+    base_polynomial retval=base_polynomial();
     const it_d_index it_f=d_index().end();
     for (it_d_index it=d_index().begin();it!=it_f;++it)
       {
-        p_assert(d_index().modify(it,typename m_type::modifier_increase_size(w)));
+        m_type tmp_m(*it);
+        tmp_m.increase_size(w);
+        retval.insert(tmp_m);
       }
+    swap(retval);
   }
 
 
-  /// Add argument to base_polynomial.
+  /// Append arguments.
   template <class T>
-  inline void base_polynomial<T>::add_arg()
+  inline void base_polynomial<T>::append_args(const size_t &n)
   {
-    increase_size(width()+1);
+    increase_size(width()+n);
+  }
+
+
+  /// Prepend arguments.
+  template <class T>
+  inline void base_polynomial<T>::prepend_args(const size_t &n)
+  {
+    base_polynomial retval=base_polynomial();
+    const it_d_index it_f=d_index().end();
+    for (it_d_index it=d_index().begin();it!=it_f;++it)
+      {
+        m_type tmp_m(*it);
+        tmp_m.prepend_args(n);
+        retval.insert(tmp_m);
+      }
+    swap(retval);
   }
 
 
@@ -288,7 +308,7 @@ namespace piranha
 
   // FIXME: clean up and review code here. Clean up comments and make them reflect code (they
   // were taken from pseries).
-  /// Insert a new element in the base_polynomial.
+  /// Insert a new element.
   template <class T>
   inline void base_polynomial<T>::insert(const m_type &m, bool sign)
   {
@@ -300,19 +320,10 @@ namespace piranha
     m_type *new_m=0;
     if (m.smaller(w))
       {
+        new_m = new m_type(m);
         new_m->increase_size(w);
       }
-    if (!set_.empty() && m.larger(w))
-      {
-        // Mhhh... maybe the resize should stay, probably not a performance hit since
-        // It is just a simple check
-        // It should not happen because resizing in this case should already be managed
-        // by addition and multiplication routines
-        //std::cout << "NOOOOOOOOOOOO!!!! That should not happen!!!!" << std::endl;
-        //std::exit(1);
-        increase_size(w);
-        w=width();
-      }
+    p_assert(!(!set_.empty() && m.larger(w)));
     const m_type *insert_m;
     if (new_m==0)
       {
