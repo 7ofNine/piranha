@@ -85,8 +85,6 @@ namespace piranha
           }
         return;
       }
-    // Arg_assign now, since if we need to add arguments we need to be able to compare terms.
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Check that trig_args are compatible
     if (!merge_args(ps2))
       {
@@ -141,7 +139,7 @@ namespace piranha
     for (it1=s_index().begin();it1!=it1_f;++it1)
       {
         it2=ps2.s_index().begin();
-        if ((it1->norm(cf_s_vec_)*it2->norm(ps2.cf_s_vec_))/2<Delta_threshold)
+        if ((it1->norm(cf_s_vec_)*it2->norm(ps2.cf_s_vec()))/2<Delta_threshold)
           {
             break;
           }
@@ -150,7 +148,7 @@ namespace piranha
             // We are going to calculate a term's norm twice... We need to profile
             // this at a later stage and see if it is worth to store the norm inside
             // the term.
-            if ((it1->norm(cf_s_vec_)*it2->norm(ps2.cf_s_vec_))/2<Delta_threshold)
+            if ((it1->norm(cf_s_vec_)*it2->norm(ps2.cf_s_vec()))/2<Delta_threshold)
               {
                 break;
               }
@@ -198,7 +196,6 @@ namespace piranha
             std::cout << "Non-zero linargs!" << std::endl;
             std::exit(1);
           }
-        arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
         if (!merge_args(ps2))
           {
             std::cout << "args are not compatible, returning self." << std::endl;
@@ -233,7 +230,6 @@ namespace piranha
         std::exit(1);
       }
     base_pseries tmp_ps;
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     tmp_ps.merge_args(*this);
     term_type tmp_term;
     it_s_index it_hint=tmp_ps.s_index().end();

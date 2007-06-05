@@ -250,7 +250,7 @@ namespace piranha
       template <class Cf2, class Trig2, template <class, class> class I2>
       bool merge_args(const
                       base_pseries<Cf2, Trig2, I2> &);
-      void set_flavour(iterator, bool);
+      void set_flavour(bool);
       // I/O
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;

@@ -49,22 +49,15 @@ namespace piranha
           arg_assigner(vector_psym_p const *cf_a, vector_psym_p const *trig_a)
               :was_assigned_(assigned_)
           {
-            if (!was_assigned_)
-              {
-                lock_.lock();
-                cf_args_=cf_a;
-                trig_args_=trig_a;
-                assigned_=true;
-              }
+            p_assert(!was_assigned_);
+            cf_args_=cf_a;
+            trig_args_=trig_a;
+            assigned_=true;
           }
           /// Destructor: undoes assignment and unlocks resources.
           ~arg_assigner()
           {
-            if (!was_assigned_)
-              {
-                assigned_=false;
-                lock_.unlock();
-              }
+            assigned_=false;
           }
         private:
           bool was_assigned_;

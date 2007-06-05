@@ -51,19 +51,6 @@ namespace piranha
           // NOTICE: evaluate the impact of using const & here, esp. when using gmp
           const cf_type &new_cf_;
         };
-      /// Functor to update flavour.
-      struct modifier_flavour
-        {
-          modifier_flavour(bool new_flavour): new_flavour_(new_flavour)
-          {}
-          ~modifier_flavour()
-          {}
-          void operator()(ps_term &term)
-          {
-            term.flavour_ = new_flavour_;
-          }
-          bool new_flavour_;
-        };
       explicit ps_term();
       // FIXME: replace bool with enum.
       explicit ps_term(const cf_type &, bool flavour=true);

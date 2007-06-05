@@ -48,8 +48,6 @@ namespace piranha
           }
         mult_t tmp_mult;
         // FIXME: cache end() here.
-        arg_manager::arg_assigner aa(&static_cast<Derived *>(this)->cf_s_vec(),
-                                     &static_cast<Derived *>(this)->trig_s_vec());
         for (typename Derived::it_s_index
              it=static_cast<Derived *>(this)->begin();it!=static_cast<Derived *>(this)->end();++it)
           {
@@ -72,12 +70,12 @@ namespace piranha
                   {
                   case true:
                     // Change tmp2's flavour.
-                    tmp2.set_flavour(tmp2.begin(),false);
+                    tmp2.set_flavour(false);
                     retval+=(tmp1*=cosp);
                     retval-=(tmp2*=sinp);
                     break;
                   case false:
-                    tmp2.set_flavour(tmp2.begin(),true);
+                    tmp2.set_flavour(true);
                     retval+=(tmp1*=cosp);
                     retval+=(tmp2*=sinp);
                   }
@@ -113,8 +111,6 @@ namespace piranha
           p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
           retval.insert(typename complex_ps::term_type(typename Derived::complex_cf_type(1.)));
           typename Derived::r_it_s_index it=static_cast<Derived const *>(this)->set().rbegin();
-          arg_manager::arg_assigner aa(&static_cast<Derived const *>(this)->cf_s_vec(),
-                                       &static_cast<Derived const *>(this)->trig_s_vec());
           for (;it!=static_cast<Derived const *>(this)->set().rend();++it)
             {
               retval*=jacangdev(it);

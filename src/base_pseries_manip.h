@@ -191,10 +191,11 @@ namespace piranha
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
+    const size_t n=v.size();
     // Prepend psymbols from v.
     retval.trig_s_vec_.insert(retval.trig_s_vec_.begin(),v.begin(),v.end());
+    retval.lin_args_.insert(retval.lin_args_.begin(),n,0);
     const it_h_index it_f=h_index().end();
-    const size_t n=v.size();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
       {
         // NOTICE: find a way to avoid resizes here?
@@ -220,10 +221,11 @@ namespace piranha
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
+    const size_t n=v.size();
     // Append psymbols from v.
     retval.trig_s_vec_.insert(retval.trig_s_vec_.end(),v.begin(),v.end());
+    retval.lin_args_.insert(retval.lin_args_.end(),n,0);
     const it_h_index it_f=h_index().end();
-    const size_t n=v.size();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
       {
         term_type tmp_term=(*it);
@@ -236,9 +238,22 @@ namespace piranha
 
 
   template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::set_flavour(iterator it, bool flavour)
+  inline void base_pseries<Cf,Trig,I>::set_flavour(bool flavour)
   {
-    p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_flavour(flavour)));
+    base_pseries retval=base_pseries();
+    retval.lin_args_=lin_args_;
+    retval.cf_s_vec_=cf_s_vec_;
+    retval.trig_s_vec_=trig_s_vec_;
+    // Insert terms from this into retval.
+    const it_h_index it_f=h_index().end();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
+      {
+        term_type tmp_term=(*it);
+        tmp_term.flavour()=flavour;
+        // NOTICE: use hinted insertion here?
+        retval.insert(tmp_term);
+      }
+    swap(retval);
   }
 
 
@@ -278,6 +293,7 @@ namespace piranha
   base_pseries<Cf,Trig,I>::term_insert_new(const term_type &term, bool sign, const
       it_s_index *it_hint)
   {
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     it_s_index it_new;
     if (it_hint==0)
       {
@@ -311,6 +327,7 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::term_erase(const it_h_index &it)
   {
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     h_index().erase(it);
   }
@@ -318,6 +335,7 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::term_erase(const it_s_index &it)
   {
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     s_index().erase(it);
   }
@@ -325,6 +343,7 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::term_update(const it_h_index &it, const cf_type &new_c)
   {
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Delete old c from norm
     downgrade_norm(it->norm(cf_s_vec_));
     // Update the existing term
@@ -336,6 +355,7 @@ namespace piranha
   template <class Cf,class Trig,template <class,class> class I>
   inline void base_pseries<Cf,Trig,I>::term_update(const it_s_index &it, const cf_type &new_c)
   {
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Delete old c from norm
     downgrade_norm(it->norm());
     // Update the existing term
@@ -355,11 +375,9 @@ namespace piranha
     p_assert(term.c().compatible(cf_width()));
     p_assert(term.trig_args().compatible(trig_width()));
     p_assert(term.trig_args().sign()>0);
-
     it_s_index ret_it;
     it_h_index it=h_index().find(boost::make_tuple(term.flavour(),
                                  term.trig_args()));
-
     if (it==h_index().end())
       {
         // The term is NOT a duplicate, insert in the set. Record where we inserted,
@@ -382,7 +400,7 @@ namespace piranha
             new_c=it->c();
             new_c-=term.c();
           }
-        // Check if the resulting coefficient can be ignored (ie it is small)
+        // Check if the resulting coefficient can be ignored (ie it is small).
         if (new_c.is_zero(cf_s_vec_))
           {
             term_erase(it);
@@ -392,7 +410,7 @@ namespace piranha
             term_update(it,new_c);
           }
         // If we are erasing or updating there's no point in giving an hint on where
-        // the action took place, just return the end() iterator
+        // the action took place, just return the end() iterator.
         ret_it=s_index().end();
         stats::pack();
       }

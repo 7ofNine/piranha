@@ -45,8 +45,6 @@ namespace piranha
             "series passed to ctor are not argument compatible."<< std::endl;
             return;
           }
-        arg_manager::arg_assigner aa(&static_cast<Derived *>(this)->cf_s_vec(),
-                                     &static_cast<Derived *>(this)->trig_s_vec());
         // Insert p (real_ part).
         {
           typename Derived::term_type term;
@@ -86,8 +84,6 @@ namespace piranha
           const typename Derived::it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
           typename real_Derived::it_s_index it_hint=retval.s_index().end();
           typename real_Derived::term_type term(real_cf_type(0),true);
-          piranha::arg_manager::arg_assigner aa(&static_cast<Derived const *>(this)->cf_s_vec(),
-                                                &static_cast<Derived const *>(this)->trig_s_vec());
           for (typename Derived::it_s_index it=static_cast<Derived const *>
                                                (this)->s_index().begin();
                it!=it_f;

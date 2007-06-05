@@ -281,7 +281,6 @@ namespace piranha
     // Read from file
     if (inf.is_open())
       {
-        arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
         read_data_from_file(inf,filename);
         // Close file
         inf.close();
