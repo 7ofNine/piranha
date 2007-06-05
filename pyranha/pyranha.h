@@ -135,12 +135,15 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def(self-double());
   inst.def(self*=self);
   inst.def(self*self);
+  // NOTICE: the order seems important here, if we place *=int before *=double we
+  // will get just *=double in Python. Go figure...
   inst.def(self*=double());
   inst.def(self*double());
   inst.def(self*=int());
   inst.def(self*int());
   inst.def(self/=double());
   inst.def(self/double());
+  inst.def(self/=int());
 
   // Instantiate spectral comparison.
   sc_instatiation<T>(name);

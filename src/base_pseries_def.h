@@ -392,6 +392,7 @@ namespace piranha
       void basic_ps_mult(const T &);
       template <class T>
       void generic_mult(const T &);
+      void basic_div_by_int(int);
       void mult_by_int(int);
       unsigned int pow_limit(const double &, const double &) const;
       void basic_pow(const double &);

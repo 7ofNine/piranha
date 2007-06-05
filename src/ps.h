@@ -71,6 +71,12 @@ namespace piranha
       // Common stuff.
       __COMMON_PS();
       __PS_OPERATORS(ps,ancestor);
+      // FIXME: cram this into operator toolbox.
+      ps &operator/=(int n)
+      {
+        ancestor::basic_div_by_int(n);
+        return *this;
+      }
       //|----------------------|
       //|Public Specializations|
       //|----------------------|
@@ -191,6 +197,12 @@ public:
         build_from_components(real_ps(file1),real_ps(file2));
       }
       // OPERATORS
+      // FIXME: cram this into operator toolbox.
+      complex &operator/=(int n)
+      {
+        ancestor::basic_div_by_int(n);
+        return *this;
+      }
       template <class Cf2,class Trig2,template <class,class> class I2>
       complex &operator*=(const complex<piranha::ps<Cf2,Trig2,I2> > &p)
       {

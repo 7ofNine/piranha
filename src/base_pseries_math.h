@@ -243,6 +243,39 @@ namespace piranha
   }
 
 
+  /// Division by an integer.
+  template <class Cf,class Trig,template <class,class> class I>
+  inline void base_pseries<Cf,Trig,I>::basic_div_by_int(int n)
+  {
+    if (n==0)
+      {
+        std::cout << "ERROR: division by zero in /= int, returning self." << std::endl;
+        std::abort();
+        return;
+      }
+    if (length()==0)
+      {
+        return;
+      }
+    if (!is_zero_vec(lin_args_))
+      {
+        std::cout << "Non-zero linargs in /= int!" << std::endl;
+        std::exit(1);
+      }
+    base_pseries tmp_ps;
+    tmp_ps.merge_args(*this);
+    term_type tmp_term;
+    it_s_index it_hint=tmp_ps.s_index().end();
+    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+      {
+        tmp_term=*it;
+        tmp_term.c()/=n;
+        it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+      }
+    swap(tmp_ps);
+  }
+
+
   // Multiplication by an integer
   // ----------------------------
   template <class Cf,class Trig,template <class,class> class I>
