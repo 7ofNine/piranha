@@ -259,6 +259,8 @@ namespace piranha
       }
     if (!is_zero_vec(lin_args_))
       {
+        // NOTICE: maybe here we could deal with exact int/int divisions. Not really important
+        // ATM though.
         std::cout << "Non-zero linargs in /= int!" << std::endl;
         std::exit(1);
       }
