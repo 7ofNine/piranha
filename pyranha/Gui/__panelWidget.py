@@ -44,6 +44,8 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.theoriesPathLineEdit,QtCore.SIGNAL("textChanged(const QString &)"),
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
+    #FIXME: drop this once we understand why designer is b0rking out.
+    self.ui.treeWidget.clear()
     self.show()
   def __setTheoriesPathDialog(self):
     dialog=QtGui.QFileDialog()
@@ -67,11 +69,68 @@ class panelWidget(QtGui.QWidget):
       self.ui.theoriesPathLineEdit.setText(settings_manager.theories_path())
     if not self.ui.fpComboBox.hasFocus():
       self.ui.fpComboBox.setCurrentIndex(int(stream_manager.fp_rep()))
+    self.__updatePsymbolList()
   def __setTheoriesPath(self,path):
     settings_manager.set_theories_path(path.__str__().__str__())
   def __setFpRep(self,n):
     stream_manager.set_fp_rep(fp_representation(n))
-
+  #def __updatePixmapCache(self)
+  def __updatePsymbolList(self):
+    n_psym=psymbol_manager.__len__() 
+    n_twi=self.ui.treeWidget.topLevelItemCount()
+    if n_psym == n_twi:
+      #print "phew nothing to do"
+      return
+    for i in psymbol_manager():
+      if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
+        newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
+        newSym.setText(0,i.name())
+        newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
+        self.ui.treeWidget.addTopLevelItem(newSym)
+  def __latexRender(self,str_):
+    str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
+    tmpFileTex=QtCore.QTemporaryFile()
+    if tmpFileTex.open():
+      print "Opened file " + tmpFileTex.fileName()
+      out=QtCore.QTextStream(tmpFileTex)
+      out << str
+      tmpFileTex.close()
+    else:
+      print "Error opening file " + tmpFileTex.fileName()
+      print "Aborting"
+      return QtGui.QPixmap()
+    tmpFileTex.open()
+    latexProcess=QtCore.QProcess()
+    latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
+    arguments=QtCore.QStringList()
+    arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
+    latexProcess.start("latex",arguments)
+    latexProcess.waitForFinished()
+    latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
+    if latexProcess.exitCode():
+      print "Latex exited with an error."
+      print latexErr
+      return QtGui.QPixmap()
+    tmpFilePng=QtCore.QTemporaryFile()
+    if tmpFilePng.open():
+      print "Opened file " + tmpFilePng.fileName()
+    else:
+      print "Error opening file " + tmpFilePng.fileName()
+      print "Aborting."
+      return QtGui.QPixmap()
+    dvipngProcess=QtCore.QProcess()
+    dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
+    arguments.clear()
+    arguments << "--dvinum*" << "-T" << "tight" << "qt_temp.dvi" << "-o" << tmpFilePng.fileName()
+    dvipngProcess.start("dvipng",arguments)
+    dvipngProcess.waitForFinished()
+    dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
+    if dvipngProcess.exitCode():
+      print "dvipng exited with an error."
+      print dvipngErr
+      return QtGui.QPixmap()
+    print "Png file complete path is: " + tmpFilePng.fileName()
+    return QtGui.QPixmap(tmpFilePng.fileName())
 
 global panel
 panel = panelWidget()
