@@ -164,6 +164,8 @@ BOOST_PYTHON_MODULE(_Core)
   // We don't do no_init here because we need to be able to instantiate it in order to iterate.
   class_<psymbol_manager>("psymbol_manager","Manager for psymbols.",init<>())
   .def("__iter__", iterator<psymbol_manager,return_internal_reference<> >())
+  .def("__len__", &psymbol_manager::length)
+  .staticmethod("__len__")
   .def("put", &psymbol_manager::put,"Show registered symbols.")
   .staticmethod("put")
   ;
