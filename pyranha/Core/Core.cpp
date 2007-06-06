@@ -22,6 +22,7 @@
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/enum.hpp>
+#include <boost/python/iterator.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/return_value_policy.hpp>
 
@@ -161,6 +162,7 @@ BOOST_PYTHON_MODULE(_Core)
 
   // Symbols.
   class_<psymbol_manager>("psymbol_manager","Manager for psymbols.",no_init)
+  .def("__iter__", iterator<psymbol_manager,return_internal_reference<> >())
   .def("put", &psymbol_manager::put,"Show registered symbols.")
   .staticmethod("put")
   ;

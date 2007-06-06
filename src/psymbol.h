@@ -186,7 +186,15 @@ namespace piranha
       typedef std::set
         <psymbol,ltpsymbol> set_type;
       /// Alias for standard iterator.
-      typedef set_type::iterator iterator;
+      typedef set_type::const_iterator iterator;
+      iterator begin() const
+        {
+          return p_set_.begin();
+        }
+      iterator end() const
+        {
+          return p_set_.end();
+        }
       static void print(std::ostream &stream=std::cout);
       /// Print to screen.
       static void put()
