@@ -44,6 +44,7 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.theoriesPathLineEdit,QtCore.SIGNAL("textChanged(const QString &)"),
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
+    self.show()
   def __setTheoriesPathDialog(self):
     dialog=QtGui.QFileDialog()
     dialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
