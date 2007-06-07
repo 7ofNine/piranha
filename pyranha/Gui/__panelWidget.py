@@ -84,6 +84,7 @@ class panelWidget(QtGui.QWidget):
           if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
               newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
           newSym.setText(0,i.name())
+          newSym.setText(1,i.powers_string())
           self.ui.treeWidget.addTopLevelItem(newSym)
   def __changeLatexRender(self):
     self.ui.treeWidget.clear()
@@ -99,7 +100,7 @@ def latex_render(str_):
   str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
   tmpFileTex=QtCore.QTemporaryFile()
   if tmpFileTex.open():
-    print "Opened file " + tmpFileTex.fileName()
+    #print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
     out << str
     tmpFileTex.close()
@@ -121,7 +122,8 @@ def latex_render(str_):
     return QtGui.QPixmap()
   tmpFilePng=QtCore.QTemporaryFile()
   if tmpFilePng.open():
-    print "Opened file " + tmpFilePng.fileName()
+    #print "Opened file " + tmpFilePng.fileName()
+    pass
   else:
     print "Error opening file " + tmpFilePng.fileName()
     print "Aborting."
@@ -137,7 +139,7 @@ def latex_render(str_):
     print "dvipng exited with an error."
     print dvipngErr
     return QtGui.QPixmap()
-  print "Png file complete path is: " + tmpFilePng.fileName()
+  #print "Png file complete path is: " + tmpFilePng.fileName()
   return QtGui.QPixmap(tmpFilePng.fileName())
 
 global panel
