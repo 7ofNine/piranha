@@ -44,6 +44,7 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.theoriesPathLineEdit,QtCore.SIGNAL("textChanged(const QString &)"),
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
+    self.connect(self.ui.latexRenderCheckBox,QtCore.SIGNAL("stateChanged(int)"),self.__changeLatexRender)
     #FIXME: drop this once we understand why designer is b0rking out.
     self.ui.treeWidget.clear()
     self.show()
@@ -77,14 +78,17 @@ class panelWidget(QtGui.QWidget):
   def __updatePsymbolList(self):
     n_psym=psymbol_manager.__len__() 
     n_twi=self.ui.treeWidget.topLevelItemCount()
-    if n_psym == n_twi:
-      return
-    for i in psymbol_manager():
-      if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
-        newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
-        newSym.setText(0,i.name())
-        newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
-        self.ui.treeWidget.addTopLevelItem(newSym)
+    if n_psym != n_twi:
+      for i in psymbol_manager():
+        if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
+          newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
+          if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
+              newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
+          else:
+              newSym.setText(0,i.name())
+          self.ui.treeWidget.addTopLevelItem(newSym)
+  def __changeLatexRender(self):
+    self.ui.treeWidget.clear()
   def __latexRender(self,str_):
     str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
     tmpFileTex=QtCore.QTemporaryFile()
