@@ -47,6 +47,9 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
     self.connect(self.ui.latexRenderCheckBox,QtCore.SIGNAL("stateChanged(int)"),self.__changeLatexRender)
     self.show()
+  #class __latexRenderThread(QtCore.QThread):
+   # def run(self):
+    #  
   def __setTheoriesPathDialog(self):
     dialog=QtGui.QFileDialog()
     dialog.setFileMode(QtGui.QFileDialog.DirectoryOnly)
@@ -123,7 +126,7 @@ class panelWidget(QtGui.QWidget):
     dvipngProcess=QtCore.QProcess()
     dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
     arguments.clear()
-    arguments << "--dvinum*" << "-T" << "tight" << "qt_temp.dvi" << "-bg" << "Transparent" << "-o" <<  tmpFilePng.fileName()
+    arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << "qt_temp.dvi" << "-o" <<  tmpFilePng.fileName()
     dvipngProcess.start("dvipng",arguments)
     dvipngProcess.waitForFinished()
     dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
