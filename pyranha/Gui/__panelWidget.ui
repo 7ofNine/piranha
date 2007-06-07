@@ -271,7 +271,7 @@
         </widget>
        </item>
        <item row="0" column="0" >
-        <widget class="QCheckBox" name="latexRenderCheckBox" >
+        <widget class="QCheckBox" name="checkBox" >
          <property name="toolTip" >
           <string>Enable TeX rendering (a TeX installation must be available)</string>
          </property>

@@ -84,8 +84,7 @@ class panelWidget(QtGui.QWidget):
           newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
           if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
               newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
-          else:
-              newSym.setText(0,i.name())
+          newSym.setText(0,i.name())
           self.ui.treeWidget.addTopLevelItem(newSym)
   def __changeLatexRender(self):
     self.ui.treeWidget.clear()
