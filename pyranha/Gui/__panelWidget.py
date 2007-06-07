@@ -93,51 +93,55 @@ class panelWidget(QtGui.QWidget):
   def __latexRender(self,str_):
     if self.symCache.has_key(str_):
       return self.symCache[str_]
-    str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
-    tmpFileTex=QtCore.QTemporaryFile()
-    if tmpFileTex.open():
-      print "Opened file " + tmpFileTex.fileName()
-      out=QtCore.QTextStream(tmpFileTex)
-      out << str
-      tmpFileTex.close()
-    else:
-      print "Error opening file " + tmpFileTex.fileName()
-      print "Aborting"
-      return QtGui.QPixmap()
-    tmpFileTex.open()
-    latexProcess=QtCore.QProcess()
-    latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
-    arguments=QtCore.QStringList()
-    arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
-    latexProcess.start("latex",arguments)
-    latexProcess.waitForFinished()
-    latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
-    if latexProcess.exitCode():
-      print "Latex exited with an error."
-      print latexErr
-      return QtGui.QPixmap()
-    tmpFilePng=QtCore.QTemporaryFile()
-    if tmpFilePng.open():
-      print "Opened file " + tmpFilePng.fileName()
-    else:
-      print "Error opening file " + tmpFilePng.fileName()
-      print "Aborting."
-      return QtGui.QPixmap()
-    dvipngProcess=QtCore.QProcess()
-    dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
-    arguments.clear()
-    arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << "qt_temp.dvi" << "-o" <<  tmpFilePng.fileName()
-    dvipngProcess.start("dvipng",arguments)
-    dvipngProcess.waitForFinished()
-    dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
-    if dvipngProcess.exitCode():
-      print "dvipng exited with an error."
-      print dvipngErr
-      return QtGui.QPixmap()
-    print "Png file complete path is: " + tmpFilePng.fileName()
-    retval=QtGui.QPixmap(tmpFilePng.fileName())
+    retval=latex_render(str_)
     self.symCache[str_]=retval
     return retval
+
+
+def latex_render(str_):
+  str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
+  tmpFileTex=QtCore.QTemporaryFile()
+  if tmpFileTex.open():
+    print "Opened file " + tmpFileTex.fileName()
+    out=QtCore.QTextStream(tmpFileTex)
+    out << str
+    tmpFileTex.close()
+  else:
+    print "Error opening file " + tmpFileTex.fileName()
+    print "Aborting"
+    return QtGui.QPixmap()
+  tmpFileTex.open()
+  latexProcess=QtCore.QProcess()
+  latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
+  arguments=QtCore.QStringList()
+  arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
+  latexProcess.start("latex",arguments)
+  latexProcess.waitForFinished()
+  latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
+  if latexProcess.exitCode():
+    print "Latex exited with an error."
+    print latexErr
+    return QtGui.QPixmap()
+  tmpFilePng=QtCore.QTemporaryFile()
+  if tmpFilePng.open():
+    print "Opened file " + tmpFilePng.fileName()
+  else:
+    print "Error opening file " + tmpFilePng.fileName()
+    print "Aborting."
+    return QtGui.QPixmap()
+  dvipngProcess=QtCore.QProcess()
+  dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
+  arguments.clear()
+  arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << "qt_temp.dvi" << "-o" <<  tmpFilePng.fileName()
+  dvipngProcess.start("dvipng",arguments)
+  dvipngProcess.waitForFinished()
+  dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
+  if dvipngProcess.exitCode():
+    print "dvipng exited with an error."
+    print dvipngErr
+    return QtGui.QPixmap()
+  print "Png file complete path is: " + tmpFilePng.fileName()
+  return QtGui.QPixmap(tmpFilePng.fileName())
 
 global panel
 panel = panelWidget()
