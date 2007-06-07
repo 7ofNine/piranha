@@ -102,7 +102,7 @@ def latex_render(str_):
   if tmpFileTex.open():
     #print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
-    out << str
+    out << str << "\n"
     tmpFileTex.close()
   else:
     print "Error opening file " + tmpFileTex.fileName()
