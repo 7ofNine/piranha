@@ -36,6 +36,7 @@ class panelWidget(QtGui.QWidget):
     self.ui.theoriesPathLineEdit.setText(settings_manager.default_theories_path())
     self.ui.fpComboBox.addItem("Scientific")
     self.ui.fpComboBox.addItem("Decimal")
+    self.symCache=dict()
     # Connections
     self.connect(self.ui.digitsSlider,QtCore.SIGNAL("valueChanged(int)"),self.__setDigits)
     self.connect(self.ui.theoriesPathButton,QtCore.SIGNAL("clicked()"),self.__setTheoriesPathDialog)
@@ -87,6 +88,8 @@ class panelWidget(QtGui.QWidget):
   def __changeLatexRender(self):
     self.ui.treeWidget.clear()
   def __latexRender(self,str_):
+    if self.symCache.has_key(str_):
+      return self.symCache[str_]
     str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
     tmpFileTex=QtCore.QTemporaryFile()
     if tmpFileTex.open():
@@ -129,7 +132,9 @@ class panelWidget(QtGui.QWidget):
       print dvipngErr
       return QtGui.QPixmap()
     print "Png file complete path is: " + tmpFilePng.fileName()
-    return QtGui.QPixmap(tmpFilePng.fileName())
+    retval=QtGui.QPixmap(tmpFilePng.fileName())
+    self.symCache[str_]=retval
+    return retval
 
 global panel
 panel = panelWidget()
