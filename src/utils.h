@@ -129,7 +129,7 @@ namespace piranha
       /**
       * @param[in] str std::string to be converted.
       */
-      static vector_double str_to_vector_double(std::string &str)
+      static vector_double str_to_vector_double(const std::string &str)
       {
         deque_string split_v;
         boost::split(split_v,str,boost::is_any_of(stream_manager::data_separator()));
@@ -137,6 +137,23 @@ namespace piranha
         for (unsigned int j=0;j<split_v.size();++j)
           {
             retval[j]=lexical_converter<double>(split_v[j]);
+          }
+        return retval;
+      }
+      /// Convert a vector of numerical values into a string
+      /**
+      * @param[in] v vector_double to be converted.
+      */
+      static std::string vector_double_to_str(const vector_double &v)
+      {
+        std::string retval;
+        for (size_t i=0;i<v.size();++i)
+          {
+            retval.append(boost::lexical_cast<std::string>(v[i]));
+            if (i!=v.size()-1)
+              {
+                retval.append(stream_manager::data_separator());
+              }
           }
         return retval;
       }

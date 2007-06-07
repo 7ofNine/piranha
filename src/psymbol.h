@@ -32,6 +32,7 @@
 #include "common_typedefs.h"
 #include "p_assert.h"
 #include "stream_manager.h"
+#include "utils.h"
 
 namespace piranha
   {
@@ -130,6 +131,10 @@ namespace piranha
       static const std::string &null_name()
       {
         return null_name_;
+      }
+      std::string powers_string() const
+      {
+        return utils::vector_double_to_str(poly_eval_);
       }
     private:
       // Helper for getting poly evals.

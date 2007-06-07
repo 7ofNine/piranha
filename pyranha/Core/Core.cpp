@@ -187,5 +187,6 @@ BOOST_PYTHON_MODULE(_Core)
   .def("put",&psymbol::put)
   .def("name",&psymbol::name,return_value_policy<copy_const_reference>())
   .def("phase",&psymbol::phase)
-  .def("freq",&psymbol::freq);
+  .def("freq",&psymbol::freq)
+  .def("powers_string",&psymbol::powers_string);
 }
