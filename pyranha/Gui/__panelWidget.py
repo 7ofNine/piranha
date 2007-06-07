@@ -107,7 +107,7 @@ def latex_render(str_):
   else:
     print "Error opening file " + tmpFileTex.fileName()
     print "Aborting"
-    return QtGui.QPixmap()
+    return QtGui.QPixmap(":/images/symbol_broken.png")
   tmpFileTex.open()
   latexProcess=QtCore.QProcess()
   latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
@@ -119,7 +119,7 @@ def latex_render(str_):
   if latexProcess.exitCode():
     print "Latex exited with an error."
     print latexErr
-    return QtGui.QPixmap()
+    return QtGui.QPixmap(":/images/symbol_broken.png")
   tmpFilePng=QtCore.QTemporaryFile()
   if tmpFilePng.open():
     #print "Opened file " + tmpFilePng.fileName()
@@ -127,7 +127,7 @@ def latex_render(str_):
   else:
     print "Error opening file " + tmpFilePng.fileName()
     print "Aborting."
-    return QtGui.QPixmap()
+    return QtGui.QPixmap(":/images/symbol_broken.png")
   dvipngProcess=QtCore.QProcess()
   dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
   arguments.clear()

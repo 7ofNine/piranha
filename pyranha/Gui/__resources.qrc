@@ -2,5 +2,6 @@
   <qresource>
     <file>images/folder_open.png</file>
     <file>images/reload.png</file>
+    <file>images/symbol_broken.png</file>
   </qresource>
 </RCC>
