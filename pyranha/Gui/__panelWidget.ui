@@ -247,6 +247,12 @@
          <property name="rootIsDecorated" >
           <bool>false</bool>
          </property>
+         <property name="sortingEnabled" >
+          <bool>true</bool>
+         </property>
+         <property name="animated" >
+          <bool>false</bool>
+         </property>
          <column>
           <property name="text" >
            <string>Name</string>
@@ -257,21 +263,10 @@
            <string>Power expansion</string>
           </property>
          </column>
-         <item>
-          <property name="text" >
-           <string>Test</string>
-          </property>
-          <property name="icon" >
-           <iconset resource="__resources.qrc" >:/images/reload.png</iconset>
-          </property>
-          <property name="text" >
-           <string>0;1.23</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="0" column="0" >
-        <widget class="QCheckBox" name="checkBox" >
+        <widget class="QCheckBox" name="latexRenderCheckBox" >
          <property name="toolTip" >
           <string>Enable TeX rendering (a TeX installation must be available)</string>
          </property>

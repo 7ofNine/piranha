@@ -45,8 +45,6 @@ class panelWidget(QtGui.QWidget):
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
     self.connect(self.ui.latexRenderCheckBox,QtCore.SIGNAL("stateChanged(int)"),self.__changeLatexRender)
-    #FIXME: drop this once we understand why designer is b0rking out.
-    self.ui.treeWidget.clear()
     self.show()
   def __setTheoriesPathDialog(self):
     dialog=QtGui.QFileDialog()
