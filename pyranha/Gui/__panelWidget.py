@@ -74,12 +74,10 @@ class panelWidget(QtGui.QWidget):
     settings_manager.set_theories_path(path.__str__().__str__())
   def __setFpRep(self,n):
     stream_manager.set_fp_rep(fp_representation(n))
-  #def __updatePixmapCache(self)
   def __updatePsymbolList(self):
     n_psym=psymbol_manager.__len__() 
     n_twi=self.ui.treeWidget.topLevelItemCount()
     if n_psym == n_twi:
-      #print "phew nothing to do"
       return
     for i in psymbol_manager():
       if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
@@ -121,7 +119,7 @@ class panelWidget(QtGui.QWidget):
     dvipngProcess=QtCore.QProcess()
     dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
     arguments.clear()
-    arguments << "--dvinum*" << "-T" << "tight" << "qt_temp.dvi" << "-o" << tmpFilePng.fileName()
+    arguments << "--dvinum*" << "-T" << "tight" << "qt_temp.dvi" << "-bg" << "Transparent" << "-o" <<  tmpFilePng.fileName()
     dvipngProcess.start("dvipng",arguments)
     dvipngProcess.waitForFinished()
     dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
