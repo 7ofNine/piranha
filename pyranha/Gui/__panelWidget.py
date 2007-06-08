@@ -43,6 +43,7 @@ class panelWidget(QtGui.QWidget):
     self.ui.theoriesPathLineEdit.setText(settings_manager.default_theories_path())
     self.ui.fpComboBox.addItem("Scientific")
     self.ui.fpComboBox.addItem("Decimal")
+    self.ui.latexRenderingProgressBar.hide()
     self.symCache=dict()
     # Connections
     self.connect(self.ui.digitsSlider,QtCore.SIGNAL("valueChanged(int)"),self.__setDigits)
@@ -93,10 +94,21 @@ class panelWidget(QtGui.QWidget):
           self.ui.treeWidget.addTopLevelItem(newSym)
   def __updateSymbolsIcons(self):
     twiList=self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard)
+    nIcons=0
+    for i in twiList:
+      if i.icon(0).isNull():
+        nIcons=nIcons+1
     if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
+      if nIcons>0:
+        self.ui.latexRenderingProgressBar.reset()
+        self.ui.latexRenderingProgressBar.setMaximum(nIcons)
+        self.ui.latexRenderingProgressBar.setValue(0)
+        self.ui.latexRenderingProgressBar.show()
       for i in twiList:
         if i.icon(0).isNull():
-            i.setIcon(0,QtGui.QIcon(self.__latexRender(i.text(0))))
+          i.setIcon(0,QtGui.QIcon(self.__latexRender(i.text(0))))
+          self.ui.latexRenderingProgressBar.setValue(self.ui.latexRenderingProgressBar.value()+1)
+      self.ui.latexRenderingProgressBar.hide()
     else:
       for i in twiList:
         if not i.icon(0).isNull():
@@ -104,12 +116,6 @@ class panelWidget(QtGui.QWidget):
   def __latexRender(self,str):
     if self.symCache.has_key(str):
       return self.symCache[str]
-    #renderThread=latexRenderThread(str)
-    #renderThread.start()
-    #while renderThread.isRunning():
-    #  QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
-    #  time.sleep(.05) 
-    #retval=renderThread.returnValue
     retval=latexRender(str)
     self.symCache[str]=retval
     return retval
@@ -136,7 +142,7 @@ def latexRender(str_):
   while latexProcess.state()!=QtCore.QProcess.NotRunning:
     QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
     time.sleep(.05)
-  tmpFileTex.close()
+  assert tmpFileTex.remove()
   latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
   if latexProcess.exitCode():
     print "Latex exited with an error."
@@ -165,7 +171,7 @@ def latexRender(str_):
     return QtGui.QPixmap()
   #print "Png file complete path is: " + tmpFilePng.fileName()
   retval=QtGui.QPixmap(tmpFilePng.fileName())
-  tmpFilePng.close()
+  assert tmpFilePng.remove()
   return retval
 
 global panel

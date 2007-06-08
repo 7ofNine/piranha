@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>422</width>
-    <height>396</height>
+    <width>435</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -61,13 +61,6 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
-          <string>Precision</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="1" colspan="3" >
         <widget class="QComboBox" name="fpComboBox" >
          <property name="layoutDirection" >
@@ -75,72 +68,17 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="label_3" >
-         <property name="text" >
-          <string>Floating point representation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2" colspan="2" >
-        <widget class="QLabel" name="label_5" >
-         <property name="minimumSize" >
-          <size>
-           <width>30</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text" >
-          <string>1.2E-15</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
-          <string>I/O format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3" >
-        <widget class="QPushButton" name="resetPathButton" >
-         <property name="minimumSize" >
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="toolTip" >
-          <string>Reset path for theories of motion to default value</string>
-         </property>
-         <property name="text" >
-          <string/>
-         </property>
-         <property name="icon" >
-          <iconset resource="__resources.qrc" >:/images/reload.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QSlider" name="precSlider" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="1" >
         <widget class="QSlider" name="digitsSlider" >
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="label_7" >
+         <property name="text" >
+          <string>Theories path</string>
          </property>
         </widget>
        </item>
@@ -154,30 +92,17 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QLineEdit" name="theoriesPathLineEdit" />
-       </item>
-       <item row="2" column="1" colspan="3" >
-        <widget class="QComboBox" name="comboBox" >
-         <property name="layoutDirection" >
-          <enum>Qt::LeftToRight</enum>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>I/O format</string>
          </property>
-         <item>
-          <property name="text" >
-           <string>Plain</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>Latex</string>
-          </property>
-         </item>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_7" >
+       <item row="3" column="0" >
+        <widget class="QLabel" name="label_3" >
          <property name="text" >
-          <string>Theories path</string>
+          <string>Floating point representation</string>
          </property>
         </widget>
        </item>
@@ -206,12 +131,103 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="2" colspan="2" >
+        <widget class="QLabel" name="label_5" >
+         <property name="minimumSize" >
+          <size>
+           <width>30</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text" >
+          <string>1.2E-15</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_4" >
+         <property name="text" >
+          <string>Precision</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="3" >
+        <widget class="QComboBox" name="comboBox" >
+         <property name="layoutDirection" >
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Plain</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Latex</string>
+          </property>
+         </item>
+        </widget>
+       </item>
        <item row="4" column="0" >
         <widget class="QLabel" name="label_2" >
          <property name="text" >
           <string>Number of decimal digits</string>
          </property>
         </widget>
+       </item>
+       <item row="1" column="3" >
+        <widget class="QPushButton" name="resetPathButton" >
+         <property name="minimumSize" >
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Reset path for theories of motion to default value</string>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="icon" >
+          <iconset resource="__resources.qrc" >:/images/reload.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLineEdit" name="theoriesPathLineEdit" />
+       </item>
+       <item row="0" column="1" >
+        <widget class="QSlider" name="precSlider" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>200</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -226,7 +242,53 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="1" column="0" >
+       <item row="0" column="0" >
+        <widget class="QCheckBox" name="latexRenderCheckBox" >
+         <property name="toolTip" >
+          <string>Enable TeX rendering (a TeX installation must be available)</string>
+         </property>
+         <property name="text" >
+          <string>LaTeX rendering</string>
+         </property>
+         <property name="icon" >
+          <iconset/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QProgressBar" name="latexRenderingProgressBar" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>100</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+         <property name="value" >
+          <number>0</number>
+         </property>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2" >
         <widget class="QTreeWidget" name="treeWidget" >
          <property name="alternatingRowColors" >
           <bool>true</bool>
@@ -256,19 +318,6 @@
            <string>Power expansion</string>
           </property>
          </column>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QCheckBox" name="latexRenderCheckBox" >
-         <property name="toolTip" >
-          <string>Enable TeX rendering (a TeX installation must be available)</string>
-         </property>
-         <property name="text" >
-          <string>LaTeX rendering</string>
-         </property>
-         <property name="icon" >
-          <iconset/>
-         </property>
         </widget>
        </item>
       </layout>
