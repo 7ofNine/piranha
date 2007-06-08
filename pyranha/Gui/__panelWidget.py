@@ -120,14 +120,15 @@ class panelWidget(QtGui.QWidget):
     return retval
 
 
-global __renderMutex
-__renderMutex=QtCore.QMutex()
+def __latexCleanup(baseName):
+  assert QtCore.QFile(baseName+".log").remove()
+  assert QtCore.QFile(baseName+".aux").remove()
+  assert QtCore.QFile(baseName+".dvi").remove()
 
 
 def latexRender(str_):
-  __renderMutex.lock()
   str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
-  tmpFileTex=QtCore.QTemporaryFile()
+  tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+"pyranha_tmp_XXXXXX.tex")
   if tmpFileTex.open():
     #print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
@@ -137,36 +138,36 @@ def latexRender(str_):
   else:
     print "Error opening file " + tmpFileTex.fileName()
     print "Aborting"
-    __renderMutex.unlock()
     return QtGui.QPixmap(":/images/symbol_broken.png")
+  # Basename of latex files, including directory.
+  baseName=QtCore.QDir.tempPath()+QtCore.QFileInfo(tmpFileTex).baseName()
   latexProcess=QtCore.QProcess()
   latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
   arguments=QtCore.QStringList()
-  arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
+  arguments << "-interaction=nonstopmode" << QtCore.QFileInfo(tmpFileTex).fileName()
   latexProcess.start("latex",arguments)
   while latexProcess.state()!=QtCore.QProcess.NotRunning:
     QtCore.QCoreApplication.processEvents()
     time.sleep(.05)
-  assert tmpFileTex.remove()
   latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
   if latexProcess.exitCode():
     print "Latex exited with an error."
     print latexErr
-    __renderMutex.unlock()
+    __latexCleanup(baseName)
     return QtGui.QPixmap(":/images/symbol_broken.png")
-  tmpFilePng=QtCore.QTemporaryFile()
+  tmpFilePng=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+"pyranha_tmp_XXXXXX.png")
   if tmpFilePng.open():
     #print "Opened file " + tmpFilePng.fileName()
     pass
   else:
     print "Error opening file " + tmpFilePng.fileName()
     print "Aborting."
-    __renderMutex.unlock()
+    __latexCleanup(baseName)
     return QtGui.QPixmap(":/images/symbol_broken.png")
   dvipngProcess=QtCore.QProcess()
   dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
   arguments.clear()
-  arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << "qt_temp.dvi" << "-o" <<  tmpFilePng.fileName()
+  arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << (baseName+".dvi") << "-o" <<  QtCore.QFileInfo(tmpFilePng).fileName()
   dvipngProcess.start("dvipng",arguments)
   while dvipngProcess.state()!=QtCore.QProcess.NotRunning:
     QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
@@ -175,12 +176,12 @@ def latexRender(str_):
   if dvipngProcess.exitCode():
     print "dvipng exited with an error."
     print dvipngErr
-    __renderMutex.unlock()
+    __latexCleanup(baseName)
     return QtGui.QPixmap()
   #print "Png file complete path is: " + tmpFilePng.fileName()
   retval=QtGui.QPixmap(tmpFilePng.fileName())
-  assert tmpFilePng.remove()
-  __renderMutex.unlock()
+  # Clean up temp files.
+  __latexCleanup(baseName)
   return retval
 
 global panel
