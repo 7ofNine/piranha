@@ -100,7 +100,6 @@ class panelWidget(QtGui.QWidget):
         nIcons=nIcons+1
     if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
       if nIcons>0:
-        self.ui.latexRenderingProgressBar.reset()
         self.ui.latexRenderingProgressBar.setMaximum(nIcons)
         self.ui.latexRenderingProgressBar.setValue(0)
         self.ui.latexRenderingProgressBar.show()
@@ -121,7 +120,12 @@ class panelWidget(QtGui.QWidget):
     return retval
 
 
+global __renderMutex
+__renderMutex=QtCore.QMutex()
+
+
 def latexRender(str_):
+  __renderMutex.lock()
   str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
   tmpFileTex=QtCore.QTemporaryFile()
   if tmpFileTex.open():
@@ -133,6 +137,7 @@ def latexRender(str_):
   else:
     print "Error opening file " + tmpFileTex.fileName()
     print "Aborting"
+    __renderMutex.unlock()
     return QtGui.QPixmap(":/images/symbol_broken.png")
   latexProcess=QtCore.QProcess()
   latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
@@ -140,13 +145,14 @@ def latexRender(str_):
   arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
   latexProcess.start("latex",arguments)
   while latexProcess.state()!=QtCore.QProcess.NotRunning:
-    QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
+    QtCore.QCoreApplication.processEvents()
     time.sleep(.05)
   assert tmpFileTex.remove()
   latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
   if latexProcess.exitCode():
     print "Latex exited with an error."
     print latexErr
+    __renderMutex.unlock()
     return QtGui.QPixmap(":/images/symbol_broken.png")
   tmpFilePng=QtCore.QTemporaryFile()
   if tmpFilePng.open():
@@ -155,6 +161,7 @@ def latexRender(str_):
   else:
     print "Error opening file " + tmpFilePng.fileName()
     print "Aborting."
+    __renderMutex.unlock()
     return QtGui.QPixmap(":/images/symbol_broken.png")
   dvipngProcess=QtCore.QProcess()
   dvipngProcess.setWorkingDirectory(QtCore.QDir.tempPath())
@@ -168,10 +175,12 @@ def latexRender(str_):
   if dvipngProcess.exitCode():
     print "dvipng exited with an error."
     print dvipngErr
+    __renderMutex.unlock()
     return QtGui.QPixmap()
   #print "Png file complete path is: " + tmpFilePng.fileName()
   retval=QtGui.QPixmap(tmpFilePng.fileName())
   assert tmpFilePng.remove()
+  __renderMutex.unlock()
   return retval
 
 global panel

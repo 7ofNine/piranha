@@ -48,7 +48,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab1" >
       <attribute name="title" >
@@ -267,13 +267,13 @@
          </property>
          <property name="minimumSize" >
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>15</height>
           </size>
          </property>
          <property name="maximumSize" >
           <size>
-           <width>100</width>
+           <width>150</width>
            <height>15</height>
           </size>
          </property>
@@ -285,6 +285,9 @@
          </property>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="format" >
+          <string>Rendering - %p%</string>
          </property>
         </widget>
        </item>
