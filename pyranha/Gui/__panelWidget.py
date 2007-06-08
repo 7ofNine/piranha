@@ -16,10 +16,17 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import sys
+import sys,time
 from PyQt4 import QtGui,QtCore
 from ui___panelWidget import Ui_panelWidget
 from pyranha.Core import *
+
+class latexRenderThread(QtCore.QThread):
+  def __init__(self,str_):
+    QtCore.QThread.__init__(self)
+    self.str=str_
+  def run(self):
+    self.returnValue=latexRender(self.str)
 
 class panelWidget(QtGui.QWidget):
   def __init__(self):
@@ -45,7 +52,6 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.theoriesPathLineEdit,QtCore.SIGNAL("textChanged(const QString &)"),
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
-    self.connect(self.ui.latexRenderCheckBox,QtCore.SIGNAL("stateChanged(int)"),self.__changeLatexRender)
     self.show()
   def __setTheoriesPathDialog(self):
     dialog=QtGui.QFileDialog()
@@ -70,6 +76,7 @@ class panelWidget(QtGui.QWidget):
     if not self.ui.fpComboBox.hasFocus():
       self.ui.fpComboBox.setCurrentIndex(int(stream_manager.fp_rep()))
     self.__updatePsymbolList()
+    self.__updateSymbolsIcons()
   def __setTheoriesPath(self,path):
     settings_manager.set_theories_path(path.__str__().__str__())
   def __setFpRep(self,n):
@@ -81,40 +88,55 @@ class panelWidget(QtGui.QWidget):
       for i in psymbol_manager():
         if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
           newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
-          if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
-              newSym.setIcon(0,QtGui.QIcon(self.__latexRender(i.name())))
           newSym.setText(0,i.name())
           newSym.setText(1,i.powers_string())
           self.ui.treeWidget.addTopLevelItem(newSym)
-  def __changeLatexRender(self):
-    self.ui.treeWidget.clear()
-  def __latexRender(self,str_):
-    if self.symCache.has_key(str_):
-      return self.symCache[str_]
-    retval=latex_render(str_)
-    self.symCache[str_]=retval
+  def __updateSymbolsIcons(self):
+    twiList=self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard)
+    if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
+      for i in twiList:
+        if i.icon(0).isNull():
+            i.setIcon(0,QtGui.QIcon(self.__latexRender(i.text(0))))
+    else:
+      for i in twiList:
+        if not i.icon(0).isNull():
+            i.setIcon(0,QtGui.QIcon())
+  def __latexRender(self,str):
+    if self.symCache.has_key(str):
+      return self.symCache[str]
+    #renderThread=latexRenderThread(str)
+    #renderThread.start()
+    #while renderThread.isRunning():
+    #  QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
+    #  time.sleep(.05) 
+    #retval=renderThread.returnValue
+    retval=latexRender(str)
+    self.symCache[str]=retval
     return retval
 
 
-def latex_render(str_):
+def latexRender(str_):
   str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
   tmpFileTex=QtCore.QTemporaryFile()
   if tmpFileTex.open():
     #print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
     out << str << "\n"
-    tmpFileTex.close()
+    out.flush()
+    #print "writing " + str + " to file"
   else:
     print "Error opening file " + tmpFileTex.fileName()
     print "Aborting"
     return QtGui.QPixmap(":/images/symbol_broken.png")
-  tmpFileTex.open()
   latexProcess=QtCore.QProcess()
   latexProcess.setWorkingDirectory(QtCore.QDir.tempPath())
   arguments=QtCore.QStringList()
   arguments << "-interaction=nonstopmode" << tmpFileTex.fileName()
   latexProcess.start("latex",arguments)
-  latexProcess.waitForFinished()
+  while latexProcess.state()!=QtCore.QProcess.NotRunning:
+    QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
+    time.sleep(.05)
+  tmpFileTex.close()
   latexErr=QtCore.QString(latexProcess.readAllStandardOutput())
   if latexProcess.exitCode():
     print "Latex exited with an error."
@@ -133,14 +155,18 @@ def latex_render(str_):
   arguments.clear()
   arguments << "--dvinum*" << "-T" << "tight" << "-D" << "120" << "-bg" << "Transparent" << "qt_temp.dvi" << "-o" <<  tmpFilePng.fileName()
   dvipngProcess.start("dvipng",arguments)
-  dvipngProcess.waitForFinished()
+  while dvipngProcess.state()!=QtCore.QProcess.NotRunning:
+    QtCore.QCoreApplication.processEvents(QtCore.QEventLoop.ExcludeUserInputEvents)
+    time.sleep(.05)
   dvipngErr=QtCore.QString(dvipngProcess.readAllStandardOutput())
   if dvipngProcess.exitCode():
     print "dvipng exited with an error."
     print dvipngErr
     return QtGui.QPixmap()
   #print "Png file complete path is: " + tmpFilePng.fileName()
-  return QtGui.QPixmap(tmpFilePng.fileName())
+  retval=QtGui.QPixmap(tmpFilePng.fileName())
+  tmpFilePng.close()
+  return retval
 
 global panel
 panel = panelWidget()
