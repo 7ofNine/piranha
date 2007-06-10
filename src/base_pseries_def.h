@@ -178,8 +178,6 @@ namespace piranha
         {
           return set_;
         }
-      psymbol trig_arg(const size_t &) const;
-      psymbol trig_arg(const std::string &) const;
       /// Return a const reference to the sorted index.
       /**
        * @see base_pseries::sorted_index.
@@ -468,25 +466,5 @@ namespace piranha
 
 #undef __base_pseries_init_list
 
-
-  /// Return a copy of the trigonometric argument corresponding to a certain position n.
-  template <class Cf, class Trig, template <class, class> class I>
-  inline psymbol base_pseries<Cf, Trig, I>::trig_arg(const size_t &n) const
-    {
-      if (n >= trig_width())
-        {
-          std::cout << "WARNING: invalid arg index requested, returning null argument." << std::endl;
-          return psymbol();
-        }
-      return *trig_s_vec_[n];
-    }
-
-
-  /// Return a copy of the trigonometric argument by name s.
-  template <class Cf, class Trig, template <class, class> class I>
-  inline psymbol base_pseries<Cf, Trig, I>::trig_arg(const std::string &s) const
-    {
-      return trig_arg(trig_index(s));
-    }
 }
 #endif

@@ -87,8 +87,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   typedef typename T::eval_type (T::*mean_def) (const double &, const double &) const;
   typedef typename T::eval_type (T::*mean_n)(const double &, const double &,
       const size_t &) const;
-  typedef psymbol (T::*trig_arg_n)(const size_t &) const;
-  typedef psymbol (T::*trig_arg_name)(const std::string &) const;
   class_<T> inst(name.c_str(),description.c_str());
   inst.def(init<const T &>());
   inst.def(init<const std::string &>());
@@ -100,8 +98,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("begin", &T::begin);
   inst.def("end", &T::end);
   inst.def("address", &T::address);
-  inst.def("trig_arg", trig_arg_n(&T::trig_arg));
-  inst.def("trig_arg", trig_arg_name(&T::trig_arg));
   inst.def("save_to", &T::save_to, "Save series to file.");
   inst.def("put", put_noargs(&T::put));
   inst.def("put", put_n(&T::put));
