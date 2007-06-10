@@ -27,8 +27,14 @@ namespace piranha
   class complex_toolbox
     {
     protected:
-      typedef typename real_Derived::cf_type real_cf_type;
-      typedef typename real_Derived::complex_ps Derived;
+      // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
+      // parses this part it does not know enough about Derived yet. They are ok in the body of
+      // the methods tough, because instantiation happens later.
+      typedef std::complex<real_Derived> Derived;
+      typedef typename real_Derived::ancestor::cf_type real_cf_type;
+      typedef std::complex<real_cf_type> cf_type;
+      typedef typename real_Derived::ancestor::it_s_index real_it_s_index;
+      typedef typename real_Derived::ancestor::term_type real_term_type;
       enum component {
         Real,
         Imag,
@@ -45,16 +51,17 @@ namespace piranha
             "series passed to ctor are not argument compatible."<< std::endl;
             return;
           }
+        typedef typename Derived::ancestor::term_type term_type;
+        // FIXME: hinted insertion here.
         // Insert p (real_ part).
         {
-          typename Derived::term_type term;
-          typename real_Derived::it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
+          term_type term;
+          real_it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
           for (;
                it!=it_f;
                ++it)
             {
-              term.c()
-              =typename Derived::cf_type(it->c(),typename real_Derived::cf_type(0));
+              term.c()=cf_type(it->c(),real_cf_type(0));
               term.trig_args()=it->trig_args();
               term.flavour()=it->flavour();
               static_cast<Derived *>(this)->insert(term);
@@ -62,14 +69,13 @@ namespace piranha
         }
         // Insert q (imaginary part).
         {
-          typename Derived::term_type term;
-          typename real_Derived::it_s_index it=q.s_index().begin(), it_f=q.s_index().end();
+          term_type term;
+          real_it_s_index it=q.s_index().begin(), it_f=q.s_index().end();
           for (;
                it!=it_f;
                ++it)
             {
-              term.c()
-              =typename Derived::cf_type(typename real_Derived::cf_type(0),it->c());
+              term.c()=cf_type(real_cf_type(0),it->c());
               term.trig_args()=it->trig_args();
               term.flavour()=it->flavour();
               static_cast<Derived *>(this)->insert(term);
@@ -78,13 +84,14 @@ namespace piranha
       }
       real_Derived get_comp(component cmp) const
         {
+          typedef typename Derived::ancestor::it_s_index it_s_index;
           real_Derived retval;
           retval.merge_args(*static_cast<Derived const *>(this));
           retval.lin_args()=static_cast<Derived const *>(this)->lin_args();
-          const typename Derived::it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
-          typename real_Derived::it_s_index it_hint=retval.s_index().end();
-          typename real_Derived::term_type term(real_cf_type(0),true);
-          for (typename Derived::it_s_index it=static_cast<Derived const *>
+          const it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
+          real_it_s_index it_hint=retval.s_index().end();
+          real_term_type term(real_cf_type(0),true);
+          for (it_s_index it=static_cast<Derived const *>
                                                (this)->s_index().begin();
                it!=it_f;
                ++it)
@@ -97,7 +104,7 @@ namespace piranha
           return retval;
         }
       // Extract component from complex pseries
-      real_cf_type get_cf_comp(const typename real_Derived::complex_cf_type &cf,component cmp) const
+      real_cf_type get_cf_comp(const cf_type &cf,component cmp) const
         {
           switch (cmp)
             {
