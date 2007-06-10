@@ -220,8 +220,7 @@ namespace piranha
       static iterator get_pointer(const std::string &name)
       {
         iterator retval=end();
-        const iterator it_f=retval;
-        for (iterator it=begin();it!=it_f;++it)
+        for (iterator it=begin();it!=retval;++it)
           {
             if (it->name()==name)
               {
