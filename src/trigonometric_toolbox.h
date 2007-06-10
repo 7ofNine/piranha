@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TRIGONOMETRIC_TOOLBOX_H
-#define TRIGONOMETRIC_TOOLBOX_H
+#ifndef PIRANHA_TRIGONOMETRIC_TOOLBOX_H
+#define PIRANHA_TRIGONOMETRIC_TOOLBOX_H
 
 namespace piranha
   {
