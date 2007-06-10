@@ -148,7 +148,13 @@ namespace piranha
 
   inline lnp tass17::r6()
   {
-    const double N=z6().trig_arg("\\lambda_{o6}").freq();
+    psym_p p=psymbol_manager::get_pointer("\\lambda_{o6}");
+    if (p==psymbol_manager::end())
+      {
+        std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning defaul series." << std::endl;
+        return lnp();
+      }
+    const double N=p->freq();
     lnp e6=e(z6());
     lnpc complexp_M=eiM(lambda6(),z6(),e6);
     lnp cosE=astro::kep_cosE(e6,complexp_M,settings_manager::prec());

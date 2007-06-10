@@ -216,6 +216,21 @@ namespace piranha
         p_assert(retval!=p_set_.end());
         return retval;
       }
+      // NOTICE: this is an O(n) operation, maybe it can be sped up.
+      static iterator get_pointer(const std::string &name)
+      {
+        iterator retval=end();
+        const iterator it_f=retval;
+        for (iterator it=begin();it!=it_f;++it)
+          {
+            if (it->name()==name)
+              {
+                retval=it;
+                break;
+              }
+          }
+        return retval;
+      }
     private:
       static void reg(const psymbol &);
     // Data members.
@@ -230,10 +245,10 @@ namespace piranha
   {
     stream_manager::setup_print(stream);
     const iterator it_f=p_set_.end();
-    for (iterator it1=p_set_.begin();it1!=it_f;++it1)
+    for (iterator it=p_set_.begin();it!=it_f;++it)
       {
         stream << "Symbol:" << std::endl;
-        it1->print(stream);
+        it->print(stream);
       }
   }
 
