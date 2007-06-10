@@ -28,8 +28,10 @@ namespace piranha
   class common_trig_toolbox
     {
     public:
+      typedef std::complex<real_Derived> complex_ps;
       void add_ps_to_arg(trig_size_t sym_index, const real_Derived &p)
       {
+        typedef typename Derived::ancestor::it_s_index it_s_index;
         if (sym_index>=static_cast<Derived *>(this)->
             trig_width())
           {
@@ -48,7 +50,7 @@ namespace piranha
           }
         mult_t tmp_mult;
         // FIXME: cache end() here.
-        for (typename Derived::it_s_index
+        for (it_s_index
              it=static_cast<Derived *>(this)->begin();it!=static_cast<Derived *>(this)->end();++it)
           {
             tmp_mult=it->trig_args().multiplier(sym_index);
@@ -59,7 +61,7 @@ namespace piranha
               }
             else
               {
-                typename real_Derived::complex_ps psc=(p*tmp_mult).complexp();
+                complex_ps psc=(p*tmp_mult).complexp();
                 real_Derived cosp=psc.real(), sinp=psc.imag();
                 Derived tmp1, tmp2;
                 p_assert(tmp1.merge_args(*static_cast<Derived *>(this)));
@@ -106,11 +108,14 @@ namespace piranha
       // Maths
       complex_ps complexp() const
         {
+          typedef typename complex_ps::ancestor::term_type complex_term_type;
+          typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+          typedef typename Derived::ancestor::r_it_s_index real_r_it_s_index;
           complex_ps retval;
           p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
           p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-          retval.insert(typename complex_ps::term_type(typename Derived::complex_cf_type(1.)));
-          typename Derived::r_it_s_index it=static_cast<Derived const *>(this)->set().rbegin();
+          retval.insert(complex_term_type(complex_cf_type(1.)));
+          real_r_it_s_index it=static_cast<Derived const *>(this)->set().rbegin();
           for (;it!=static_cast<Derived const *>(this)->set().rend();++it)
             {
               retval*=jacangdev(it);
@@ -127,6 +132,8 @@ namespace piranha
       /// Complex multiangle.
       complex_ps complex_multiangle(trig_size_t pos, mult_t n) const
         {
+          typedef typename complex_ps::ancestor::term_type complex_term_type;
+          typedef typename complex_ps::ancestor::cf_type complex_cf_type;
           if (pos>=static_cast<Derived const *>(this)->
               trig_width())
             {
@@ -136,7 +143,7 @@ namespace piranha
             }
           complex_ps retval;
           retval.merge_args(*static_cast<Derived const *>(this));
-          typename complex_ps::term_type in_term(typename Derived::complex_cf_type(1),true);
+          complex_term_type in_term(complex_cf_type(1),true);
           in_term.trig_args().increase_size(static_cast<Derived const *>(this)->trig_width());
           in_term.trig_args().insert(pos,n);
           retval.insert(in_term);
@@ -165,11 +172,13 @@ namespace piranha
        */
       complex_ps complexp_linargs() const
         {
+          typedef typename complex_ps::ancestor::term_type complex_term_type;
+          typedef typename complex_ps::ancestor::cf_type complex_cf_type;
           complex_ps retval;
           p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
           p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-          typename complex_ps::term_type term1(typename Derived::complex_cf_type(1),true),
-          term2(typename Derived::complex_cf_type(0,1),false);
+          complex_term_type term1(complex_cf_type(1),true),
+          term2(complex_cf_type(0,1),false);
           term1.trig_args().increase_size(retval.trig_width());
           term2.trig_args().increase_size(retval.trig_width());
           for (unsigned int j=0;
@@ -206,15 +215,18 @@ namespace piranha
       template <class Iterator>
       complex_ps jacangdev(Iterator it) const
         {
+          typedef typename complex_ps::ancestor::term_type complex_term_type;
+          typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+          typedef typename Derived::ancestor::cf_type real_cf_type;
           unsigned int i, w=static_cast<Derived const *>(this)->trig_width();
           complex_ps retval;
           p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
           p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-          typename Derived::cf_type _cf=it->c();
+          real_cf_type _cf=it->c();
           if (it->flavour()
              )
             {
-              typename complex_ps::term_type term1, term2;
+              complex_term_type term1, term2;
               term1.trig_args().increase_size(w);
               term2.trig_args().increase_size(w);
               for (i=0;i<settings_manager::jacang_lim();++i)
@@ -231,7 +243,7 @@ namespace piranha
             }
           else
             {
-              typename complex_ps::term_type term1, term2(typename Derived::complex_cf_type(0),false);
+              complex_term_type term1, term2(complex_cf_type(0),false);
               term1.trig_args().increase_size(w);
               term2.trig_args().increase_size(w);
               for (i=0;i<settings_manager::jacang_lim();++i)
