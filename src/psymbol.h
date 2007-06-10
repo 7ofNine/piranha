@@ -58,6 +58,7 @@ namespace piranha
       // Ctors
       psymbol();
       psymbol(const std::string &, const vector_double &);
+      psymbol(const std::string &);
       psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
       {
         boost::array<double,1> tmp = { { x1 } };
@@ -212,7 +213,7 @@ namespace piranha
       }
       static iterator get_pointer(const psymbol &psym)
       {
-        iterator retval=p_set_.find(psym);
+        iterator retval=get_pointer(psym.name());
         p_assert(retval!=p_set_.end());
         return retval;
       }
@@ -293,6 +294,27 @@ namespace piranha
   inline psymbol::psymbol():name_(null_name_)
   {
     psymbol_manager::reg(*this);
+  }
+
+
+  /// Constructor from std::string.
+  /**
+   * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
+   * it assigns the null symbol.
+   */
+  inline psymbol::psymbol(const std::string &str):name_(null_name_)
+  {
+    psym_p p=psymbol_manager::get_pointer(str);
+    if (p!=psymbol_manager::end())
+      {
+        name_=p->name();
+        poly_eval_=p->poly_eval();
+      }
+    else
+      {
+        std::cout << "Symbol '" << str << "' not found, building null symbol." << std::endl;
+        psymbol_manager::reg(*this);
+      }
   }
 
 

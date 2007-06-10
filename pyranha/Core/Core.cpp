@@ -177,6 +177,7 @@ BOOST_PYTHON_MODULE(_Core)
 
   // Psymbols.
   class_<psymbol>("psymbol","Symbol class.")
+  .def(init<const std::string &>())
   .def(init<const std::string &, const double &>())
   .def(init<const std::string &, const double &, const double &>())
   .def(init<const std::string &, const double &, const double &, const double &>())
