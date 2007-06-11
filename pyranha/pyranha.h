@@ -121,6 +121,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("mean", mean_def(&T::mean));
   inst.def("mean", mean_n(&T::mean));
   inst.def("swap", &T::swap);
+  inst.def("partial", &T::partial);
   inst.def(self+=self);
   inst.def(self+self);
   inst.def(self+=double());

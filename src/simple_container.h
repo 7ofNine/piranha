@@ -127,6 +127,16 @@ namespace piranha
         {
           return true;
         }
+      // Maths.
+      /// Partial derivative.
+      /**
+       * Always returns 0, since thi is a purely numerical quantity.
+       * @param[out] x, piranha::double_cf return value.
+       */
+      void partial(const size_t &, self &x) const
+        {
+          x=self();
+        }
     protected:
       T   value_;
     }

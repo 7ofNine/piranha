@@ -196,6 +196,36 @@ namespace piranha
           return set_.template get
                    <1>();
         }
+      /// Return index of coefficient argument "name".
+      int cf_arg_index(const std::string &name) const
+        {
+          int retval=-1;
+          const size_t w=cf_width();
+          for (size_t i=0;i<w;++i)
+            {
+              if (cf_s_vec_[i]->name()==name)
+                {
+                  retval=(int)i;
+                  break;
+                }
+            }
+          return retval;
+        }
+      /// Return index of trigonometric argument "name".
+      int trig_arg_index(const std::string &name) const
+        {
+          int retval=-1;
+          const size_t w=trig_width();
+          for (size_t i=0;i<w;++i)
+            {
+              if (trig_s_vec_[i]->name()==name)
+                {
+                  retval=(int)i;
+                  break;
+                }
+            }
+          return retval;
+        }
       // Setters for indices.
       sorted_index &s_index()
       {

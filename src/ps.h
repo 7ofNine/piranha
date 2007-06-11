@@ -25,6 +25,7 @@
 
 #include "base_pseries.h"
 #include "complex_toolbox.h"
+#include "differential_toolbox.h"
 #include "trigonometric_toolbox.h"
 
 #define __COMMON_PS_TYPEDEFS(Cf,Trig,I)\
@@ -55,7 +56,8 @@ namespace piranha
   class ps:
         public base_pseries<Cf,Trig,I>,
         public common_trig_toolbox<ps<Cf,Trig,I>,ps<Cf,Trig,I> >,
-        public real_trig_toolbox<ps<Cf,Trig,I> >
+        public real_trig_toolbox<ps<Cf,Trig,I> >,
+        public differential_toolbox<ps<Cf,Trig,I> >
     {
       //|-----------------------|
       //|Typedef Specializations|
@@ -108,7 +110,8 @@ namespace std
   struct complex<piranha::ps<Cf,Trig,I> >:
         public piranha::base_pseries <complex<Cf>,Trig,I>,
         public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,I> >,piranha::ps<Cf,Trig,I> >,
-        public piranha::complex_toolbox<piranha::ps<Cf,Trig,I> >
+        public piranha::complex_toolbox<piranha::ps<Cf,Trig,I> >,
+        public differential_toolbox<complex<piranha::ps<Cf,Trig,I> > >
     {
 public:
       /// Alias for the ancestor.

@@ -108,6 +108,15 @@ namespace piranha
         {
           return self(std::pow(value_,y));
         }
+      /// Partial derivative.
+      /**
+       * Always returns 0, since thi is a purely numerical quantity.
+       * @param[out] x, piranha::double_cf return value.
+       */
+      void partial(const size_t &, self &x) const
+        {
+          x=self(0);
+        }
       // Needed operators.
       self operator-() const
         {
@@ -311,6 +320,16 @@ public:
       bool is_zero(const piranha::vector_psym_p &) const
         {
           return (abs()<piranha::settings_manager::numerical_zero());
+        }
+      // Maths
+      /// Partial derivative.
+      /**
+       * Always returns 0, since thi is a purely numerical quantity.
+       * @param[out] x, piranha::double_cf return value.
+       */
+      void partial(const size_t &, self &x) const
+        {
+          x=self(0);
         }
       // Operators.
       self operator-() const
