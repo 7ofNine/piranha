@@ -152,7 +152,7 @@ namespace piranha
             retval.append(boost::lexical_cast<std::string>(v[i]));
             if (i!=v.size()-1)
               {
-                retval.append(stream_manager::data_separator());
+                retval.append("\n");
               }
           }
         return retval;
