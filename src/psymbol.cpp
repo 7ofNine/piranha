@@ -26,4 +26,6 @@ namespace piranha
   const std::string psymbol::null_name_= "null" ;
   boost::mutex psymbol_manager::mutex_;
   psymbol_manager::set_type psymbol_manager::p_set_;
+  // NOTICE: this must be the last one initialized, it relies on p_set_ to be available.
+  const psymbol_manager::static_ctor psymbol_manager::ctor_;
 }

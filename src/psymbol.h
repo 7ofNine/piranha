@@ -148,20 +148,6 @@ namespace piranha
             }
           return poly_eval_[n];
         }
-      // Helper for ctor.
-      std::string valid_name(const std::string &str)
-      {
-        std::string tmp_str=str;
-        boost::trim(tmp_str);
-        if (tmp_str=="" || tmp_str.empty())
-          {
-            return std::string(null_name_);
-          }
-        else
-          {
-            return tmp_str;
-          }
-      }
       // Helper for ctor from boost::array.
       template <class T> void build_from_array(const T &);
       // Data members.
@@ -233,10 +219,24 @@ namespace piranha
       }
     private:
       static void reg(const psymbol &);
+      /// Static constructor.
+      /**
+       * When instantiatied (in psymbol.cpp) this class register the "null" and "t" (time) symbols.
+       */
+      class static_ctor
+        {
+          public:
+            static_ctor()
+              {
+                psymbol();
+                psymbol("t",0,1);
+              }
+        };
     // Data members.
     private:
       static set_type             p_set_;
       static boost::mutex         mutex_;
+      static const static_ctor    ctor_;
     };
 
 
@@ -325,7 +325,7 @@ namespace piranha
    * @param[in] pol symbol's polynomial evaluation vector.
    */
   inline psymbol::psymbol(const std::string &str, const vector_double &pol):
-    name_(valid_name(str)),poly_eval_(pol)
+    name_(str),poly_eval_(pol)
   {
     psymbol_manager::reg(*this);
   }
