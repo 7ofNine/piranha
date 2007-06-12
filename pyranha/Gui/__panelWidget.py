@@ -91,7 +91,7 @@ class panelWidget(QtGui.QWidget):
         if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
           newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
           newSym.setText(0,i.name())
-          newSym.setText(1,i.powers_string())
+          newSym.setText(1,i.powers_string().replace(stream_manager.data_separator(),'\n'))
           self.ui.treeWidget.addTopLevelItem(newSym)
   def __updateSymbolsIcons(self):
     if self.renderFlag:
@@ -121,6 +121,7 @@ class panelWidget(QtGui.QWidget):
   def __latexRender(self,str):
     if self.symCache.has_key(str):
       return self.symCache[str]
+    print "no cache for " + str
     retval=latexRender(str)
     self.symCache[str]=retval
     return retval
@@ -134,7 +135,7 @@ def __latexCleanup(baseName):
 
 def latexRender(str_):
   str=QtCore.QString(r"\documentclass{article}\thispagestyle{empty}\begin{document}$")+str_+r"$\end{document}"
-  tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.tex")
+  tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.__str__().replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.tex")
   if tmpFileTex.open():
     print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
@@ -162,7 +163,7 @@ def latexRender(str_):
     __latexCleanup(baseName)
     return QtGui.QPixmap(":/images/symbol_broken.png")
   assert tmpFileTex.remove()
-  tmpFilePng=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.png")
+  tmpFilePng=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.__str__().replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.png")
   if tmpFilePng.open():
     print "Opened file " + tmpFilePng.fileName()
     pass
