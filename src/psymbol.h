@@ -355,7 +355,7 @@ namespace piranha
           out_stream << poly_eval_[j];
           if (j!=poly_eval_.size()-1)
             {
-              out_stream << ';';
+              out_stream << stream_manager::data_separator();
             }
         }
       out_stream << std::endl;
