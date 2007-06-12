@@ -309,6 +309,9 @@
           <bool>true</bool>
          </property>
          <property name="animated" >
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus" >
           <bool>false</bool>
          </property>
          <column>

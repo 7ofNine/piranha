@@ -45,6 +45,7 @@ class panelWidget(QtGui.QWidget):
     self.ui.fpComboBox.addItem("Decimal")
     self.ui.latexRenderingProgressBar.hide()
     self.symCache=dict()
+    self.renderFlag=False
     # Connections
     self.connect(self.ui.digitsSlider,QtCore.SIGNAL("valueChanged(int)"),self.__setDigits)
     self.connect(self.ui.theoriesPathButton,QtCore.SIGNAL("clicked()"),self.__setTheoriesPathDialog)
@@ -93,6 +94,10 @@ class panelWidget(QtGui.QWidget):
           newSym.setText(1,i.powers_string())
           self.ui.treeWidget.addTopLevelItem(newSym)
   def __updateSymbolsIcons(self):
+    if self.renderFlag:
+        print "I want to render, but slot is busy. Waiting for next opportunity."
+        return
+    self.renderFlag=True
     twiList=self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard)
     nIcons=0
     for i in twiList:
@@ -112,6 +117,7 @@ class panelWidget(QtGui.QWidget):
       for i in twiList:
         if not i.icon(0).isNull():
             i.setIcon(0,QtGui.QIcon())
+    self.renderFlag=False
   def __latexRender(self,str):
     if self.symCache.has_key(str):
       return self.symCache[str]
@@ -127,14 +133,14 @@ def __latexCleanup(baseName):
 
 
 def latexRender(str_):
-  str=QtCore.QString("\\documentclass{article}\\thispagestyle{empty}\\begin{document}$")+str_+"$\\end{document}"
-  tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+"pyranha_tmp_XXXXXX.tex")
+  str=QtCore.QString(r"\documentclass{article}\thispagestyle{empty}\begin{document}$")+str_+r"$\end{document}"
+  tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.tex")
   if tmpFileTex.open():
-    #print "Opened file " + tmpFileTex.fileName()
+    print "Opened file " + tmpFileTex.fileName()
     out=QtCore.QTextStream(tmpFileTex)
     out << str << "\n"
     out.flush()
-    #print "writing " + str + " to file"
+    print "writing " + str + " to file"
   else:
     print "Error opening file " + tmpFileTex.fileName()
     print "Aborting"
@@ -155,9 +161,10 @@ def latexRender(str_):
     print latexErr
     __latexCleanup(baseName)
     return QtGui.QPixmap(":/images/symbol_broken.png")
-  tmpFilePng=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+"pyranha_tmp_XXXXXX.png")
+  assert tmpFileTex.remove()
+  tmpFilePng=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.png")
   if tmpFilePng.open():
-    #print "Opened file " + tmpFilePng.fileName()
+    print "Opened file " + tmpFilePng.fileName()
     pass
   else:
     print "Error opening file " + tmpFilePng.fileName()
@@ -178,8 +185,9 @@ def latexRender(str_):
     print dvipngErr
     __latexCleanup(baseName)
     return QtGui.QPixmap()
-  #print "Png file complete path is: " + tmpFilePng.fileName()
+  print "Png file complete path is: " + tmpFilePng.fileName()
   retval=QtGui.QPixmap(tmpFilePng.fileName())
+  assert tmpFilePng.remove()
   # Clean up temp files.
   __latexCleanup(baseName)
   return retval
