@@ -37,7 +37,7 @@ namespace piranha
   /**
    * Implemented as a sorted and hashed multiindex container for monomials M.
    */
-  template <class T>
+  template <class T, class Derived>
   class base_polynomial
     {
     protected:
@@ -191,8 +191,8 @@ namespace piranha
       }
       void mult_by_int(int);
       void mult_by_double(const double &);
-      template <class U>
-      void mult_by_self(const base_polynomial<U> &);
+      template <class U, class Derived2>
+      void mult_by_self(const base_polynomial<U,Derived2> &);
       void basic_pow(const double &);
     protected:
       static const std::string  separator_;
@@ -201,13 +201,13 @@ namespace piranha
   ;
 
 
-  template <class T>
-  const std::string base_polynomial<T>::separator_="&";
+  template <class T, class Derived>
+  const std::string base_polynomial<T,Derived>::separator_="&";
 
 
   /// Constructor from string.
-  template <class T>
-  inline base_polynomial<T>::base_polynomial(const std::string &str)
+  template <class T, class Derived>
+  inline base_polynomial<T,Derived>::base_polynomial(const std::string &str)
   {
     deque_string split_v;
     boost::split(split_v,str,boost::is_any_of(separator_));
@@ -222,8 +222,8 @@ namespace piranha
 
 
   /// Print in plain format.
-  template <class T>
-  inline void base_polynomial<T>::print_plain(std::ostream &out_stream, const vector_psym_p &cv) const
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::print_plain(std::ostream &out_stream, const vector_psym_p &cv) const
     {
       stream_manager::setup_print(out_stream);
       out_stream << '{';
@@ -242,8 +242,8 @@ namespace piranha
 
 
   /// Print in latex format.
-  template <class T>
-  inline void base_polynomial<T>::print_latex(std::ostream &out_stream, const vector_psym_p &cv) const
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::print_latex(std::ostream &out_stream, const vector_psym_p &cv) const
     {
       stream_manager::setup_print(out_stream);
       for (it_d_index it=d_index().begin();it!=d_index().end();++it)
@@ -258,8 +258,8 @@ namespace piranha
 
 
   /// Increase size.
-  template <class T>
-  inline void base_polynomial<T>::increase_size(const size_t &w)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::increase_size(const size_t &w)
   {
     p_assert(w>=width());
     base_polynomial retval=base_polynomial();
@@ -275,16 +275,16 @@ namespace piranha
 
 
   /// Append arguments.
-  template <class T>
-  inline void base_polynomial<T>::append_args(const size_t &n)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::append_args(const size_t &n)
   {
     increase_size(width()+n);
   }
 
 
   /// Prepend arguments.
-  template <class T>
-  inline void base_polynomial<T>::prepend_args(const size_t &n)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::prepend_args(const size_t &n)
   {
     base_polynomial retval=base_polynomial();
     const it_d_index it_f=d_index().end();
@@ -299,8 +299,8 @@ namespace piranha
 
 
   /// Swap contents with another base_polynomial.
-  template <class T>
-  inline void base_polynomial<T>::swap(base_polynomial &p)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::swap(base_polynomial &p)
   {
     set_.swap(p.set_);
   }
@@ -309,8 +309,8 @@ namespace piranha
   // FIXME: clean up and review code here. Clean up comments and make them reflect code (they
   // were taken from pseries).
   /// Insert a new element.
-  template <class T>
-  inline void base_polynomial<T>::insert(const m_type &m, bool sign)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::insert(const m_type &m, bool sign)
   {
     if (m.is_zero())
       {
@@ -370,8 +370,8 @@ namespace piranha
   }
 
 
-  template <class T>
-  inline void base_polynomial<T>::base_merge(const base_polynomial &p, bool op)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::base_merge(const base_polynomial &p, bool op)
   {
     if (&p==this)
       {
@@ -389,20 +389,20 @@ namespace piranha
   }
 
 
-  template <class T>
-  template <class U>
-  inline void base_polynomial<T>::mult_by_self(const base_polynomial<U> &p)
+  template <class T, class Derived>
+  template <class U, class Derived2>
+  inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p)
   {
     if ((void *)&p==(void *)this)
       {
-        mult_by_self(base_polynomial<U>(p));
+        mult_by_self(base_polynomial<U,Derived2>(p));
         return;
       }
     base_polynomial retval;
     m_type temp_m;
     const it_h_index it_f1=h_index().end();
-    const typename base_polynomial<U>::it_h_index it_f2=p.h_index().end();
-    typename base_polynomial<U>::it_h_index it2;
+    const typename base_polynomial<U,Derived2>::it_h_index it_f2=p.h_index().end();
+    typename base_polynomial<U,Derived2>::it_h_index it2;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
       {
         for (it2=p.h_index().begin();it2!=it_f2;++it2)
@@ -415,8 +415,8 @@ namespace piranha
   }
 
 
-  template <class T>
-  inline void base_polynomial<T>::mult_by_int(int n)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::mult_by_int(int n)
   {
     if (n==0)
       {
@@ -440,8 +440,8 @@ namespace piranha
   }
 
 
-  template <class T>
-  inline void base_polynomial<T>::mult_by_double(const double &x)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::mult_by_double(const double &x)
   {
     if (std::abs(x)<settings_manager::numerical_zero())
       {
@@ -457,9 +457,9 @@ namespace piranha
 
 
   // Low-level generic division by integer type.
-  template <class T>
+  template <class T, class Derived>
   template <class N>
-  inline void base_polynomial<T>::ll_generic_integer_division(const N &n)
+  inline void base_polynomial<T,Derived>::ll_generic_integer_division(const N &n)
   {
     if (n==0)
       {
@@ -484,8 +484,8 @@ namespace piranha
 
 
   /// Time evaluation.
-  template <class T>
-  inline typename base_polynomial<T>::eval_type base_polynomial<T>::t_eval(const double &t, const vector_psym_p &v) const
+  template <class T, class Derived>
+  inline typename base_polynomial<T,Derived>::eval_type base_polynomial<T,Derived>::t_eval(const double &t, const vector_psym_p &v) const
     {
       p_assert(width()==v.size());
       eval_type retval=0;
@@ -499,8 +499,8 @@ namespace piranha
 
 
   /// Diagnostic checkup.
-  template <class T>
-  inline bool base_polynomial<T>::checkup(const size_t &s) const
+  template <class T, class Derived>
+  inline bool base_polynomial<T,Derived>::checkup(const size_t &s) const
     {
       const it_h_index it_f=h_index().end();
       size_t w=width();
@@ -523,8 +523,8 @@ namespace piranha
 
 
   /// Check whether a base_polynomial is zero.
-  template <class T>
-  inline bool base_polynomial<T>::is_zero(const vector_psym_p &) const
+  template <class T, class Derived>
+  inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &) const
     {
       if (set_.empty())
         {
@@ -535,8 +535,8 @@ namespace piranha
 
 
   /// Get base_polynomial's norm.
-  template <class T>
-  inline double base_polynomial<T>::norm(const vector_psym_p &v) const
+  template <class T, class Derived>
+  inline double base_polynomial<T,Derived>::norm(const vector_psym_p &v) const
     {
       eval_type retval=0.;
       const it_h_index it_f=h_index().end();
@@ -549,8 +549,8 @@ namespace piranha
 
 
   /// Basic real power.
-  template <class T>
-  inline void base_polynomial<T>::basic_pow(const double &x)
+  template <class T, class Derived>
+  inline void base_polynomial<T,Derived>::basic_pow(const double &x)
   {
     // Special handling in case of empty polynomial.
     if (set_.empty())

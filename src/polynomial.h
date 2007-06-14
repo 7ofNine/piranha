@@ -26,10 +26,10 @@
 namespace piranha
   {
   template <class T>
-  class polynomial : public base_polynomial<T>
+  class polynomial : public base_polynomial<T,polynomial<T> >
     {
     public:
-      typedef base_polynomial<T> ancestor;
+      typedef base_polynomial<T,polynomial> ancestor;
       typedef typename ancestor::m_type m_type;
       // Start INTERFACE definition for the real version.
       //-------------------------------------------------------
@@ -180,12 +180,12 @@ namespace std
   // COMPLEX COUNTERPART
   template <class T>
   struct complex<piranha::polynomial<T> > :
-        public piranha::base_polynomial<complex<T> >
+        public piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > >
     {
 private:
       typedef complex self;
       typedef piranha::polynomial<T> real_type;
-      typedef piranha::base_polynomial<complex<T> > ancestor;
+      typedef piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > > ancestor;
       typedef typename ancestor::m_type m_type;
       typedef typename real_type::m_type real_m_type;
       typedef typename m_type::numerical_type numerical_type;
