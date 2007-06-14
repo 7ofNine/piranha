@@ -67,7 +67,8 @@ namespace piranha
       typedef typename set_type::template index<hash>
       ::type hashed_index;
       typedef typename hashed_index::iterator it_h_index;
-      // Start INTERFACE definition for the real version.
+      friend class std::complex<Derived>;
+      // Start INTERFACE definition.
       //-------------------------------------------------------
       /// Alias for the evaluation type.
       typedef typename m_type::eval_type eval_type;
@@ -146,10 +147,13 @@ namespace piranha
         basic_assignment(p);
         return *this;
       }
-      void insert(const m_type &, bool sign=true);
+      // Maths.
+      /*void partial(const size_t &n, Derived &x) const
+        {
+          x.clear();
+        }*/
       // End INTERFACE definition.
       //-------------------------------------------------------
-    public:
       const degree_index &d_index() const
         {
           return set_.template get
@@ -161,6 +165,7 @@ namespace piranha
                    <hash>();
         }
     protected:
+      void insert(const m_type &, bool sign=true);
       degree_index &d_index()
       {
         return set_.template get
