@@ -34,7 +34,7 @@ namespace piranha
    * This class can be used as a base class for coefficients that consist of a simple entity
    * (float, mpf_class, long double, etc.).
    */
-  template <class T>
+  template <class T, class Derived>
   class simple_container
     {
     public:
@@ -126,6 +126,15 @@ namespace piranha
       bool compatible(const size_t &) const
         {
           return true;
+        }
+      /// Partial derivative.
+      /**
+       * Always returns 0, since thi is a purely numerical quantity.
+       * @param[out] x, piranha::double_cf return value.
+       */
+      void partial(const size_t &, Derived &retval) const
+        {
+          retval=Derived(0);
         }
     protected:
       T   value_;

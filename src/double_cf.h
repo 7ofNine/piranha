@@ -36,13 +36,13 @@ namespace piranha
    *
    * A set of operators are provided to enable interoperability with basic numerical data types.
    */
-  class double_cf : public simple_container<double>
+  class double_cf : public simple_container<double,double_cf>
     {
     public:
       /// Alias for itself.
       typedef double_cf self;
       /// Alias for the parent class.
-      typedef simple_container<double> ancestor;
+      typedef simple_container<double,double_cf> ancestor;
       // Start INTERFACE definition for the real version.
       //-------------------------------------------------------
       /// Evaluation result (double).
@@ -107,15 +107,6 @@ namespace piranha
       self pow(const double &y) const
         {
           return self(std::pow(value_,y));
-        }
-      /// Partial derivative.
-      /**
-       * Always returns 0, since thi is a purely numerical quantity.
-       * @param[out] x, piranha::double_cf return value.
-       */
-      void partial(const size_t &, self &x) const
-        {
-          x=self(0);
         }
       // Needed operators.
       self operator-() const
@@ -254,12 +245,13 @@ namespace piranha
 namespace std
   {
   template <>
-  struct complex<piranha::double_cf> : public piranha::simple_container<complex_double>
+  struct complex<piranha::double_cf> :
+    public piranha::simple_container<complex_double,complex<piranha::double_cf> >
     {
 public:
       typedef complex self;
       typedef piranha::double_cf double_type;
-      typedef piranha::simple_container<complex_double> ancestor;
+      typedef piranha::simple_container<complex_double,complex<piranha::double_cf> > ancestor;
       // Start INTERFACE definition for the complex specialization. FIXME: is this different from
       // the above???
       //-------------------------------------------------------
@@ -320,16 +312,6 @@ public:
       bool is_zero(const piranha::vector_psym_p &) const
         {
           return (abs()<piranha::settings_manager::numerical_zero());
-        }
-      // Maths
-      /// Partial derivative.
-      /**
-       * Always returns 0, since thi is a purely numerical quantity.
-       * @param[out] x, piranha::double_cf return value.
-       */
-      void partial(const size_t &, self &x) const
-        {
-          x=self(0);
         }
       // Operators.
       self operator-() const
