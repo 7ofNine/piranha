@@ -112,7 +112,7 @@ namespace std
         public piranha::base_pseries <complex<Cf>,Trig,I>,
         public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,I> >,piranha::ps<Cf,Trig,I> >,
         public piranha::complex_toolbox<piranha::ps<Cf,Trig,I> >,
-        public differential_toolbox<complex<piranha::ps<Cf,Trig,I> > >
+        public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,I> > >
     {
 public:
       /// Alias for the ancestor.
