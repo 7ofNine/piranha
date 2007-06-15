@@ -505,7 +505,6 @@ namespace piranha
     if ((void *)this==(void *)&ps2)
       {
         std::cout << "Trying to merge with self, returning true." << std::endl;
-        std::exit(1);
         return true;
       }
     if (!args_compatible(ps2))

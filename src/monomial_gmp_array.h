@@ -198,8 +198,49 @@ namespace piranha
       void mult_by(const monomial_gmp_array<U> &, monomial_gmp_array &) const;
       static void cfs_algebraic_sum(const numerical_type &, const numerical_type &,
                                     const rational_type &, const rational_type &, numerical_type &, rational_type &, bool);
+      // TODO: these two should provide a retval as parameter.
       monomial_gmp_array pow(int) const;
       monomial_gmp_array pow(const double &) const;
+      /// Partial derivative.
+      /**
+       * Calculated with respect to argument at position n. No assumptions are made on retval.
+       * @param[out] retval: piranha::monomial_gmp_array where result is stored.
+       */
+      void partial(const size_t &n, monomial_gmp_array &retval) const
+        {
+          const size_t w=width();
+          p_assert(n<w);
+          const expo_t multiplier=container_[n];
+          // Reserve space nevertheless, we want to make sure right-sized monomial get inserted
+          // in polynomials to avoid headaches.
+          retval.reserve(w);
+          if (multiplier==0)
+            {
+              // If the exponent is zero, partial derivative will be zero too.
+              retval.numerical_cf()=numerical_type(0);
+            }
+          else
+            {
+              // The rational cf of retval gets multiplied by the exponent.
+              retval.rational_cf()=rational_cf_;
+              // Take abs because only numerical cf can be negative.
+              retval.rational_cf()*=(expo_t)std::abs(multiplier);
+              if (multiplier>0)
+                {
+                  retval.numerical_cf()=numerical_cf_;
+                }
+              else
+                {
+                  retval.numerical_cf()=-numerical_cf_;
+                }
+              // Assign same exponents as this...
+              retval.container_=container_;
+              // ... just modify the interested one.
+              --retval.container_[n];
+              // TODO: place assert to make sure we don't go out expo_t range?
+              // This should be generalized, if we decide this way.
+            }
+        }
       // Operators.
       template <class U>
       monomial_gmp_array &operator=(const monomial_gmp_array<U> &);
@@ -211,7 +252,20 @@ namespace piranha
       void basic_assignment(const monomial_gmp_array<U> &);
       template <class U>
       bool basic_comparison(const U &) const;
+      // TODO: replace with is_symbolic?
       bool symbolic() const;
+      /// Reserve space for exponents.
+      /**
+       * Postcondition: container is large enough to hold w elements. No assumptions can be made on
+       * its contents.
+       */
+      void reserve(const size_t &w)
+      {
+        if (w!=width())
+          {
+            container_.resize(w);
+          }
+      }
     protected:
       container_type              container_;
       numerical_type              numerical_cf_;

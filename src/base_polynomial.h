@@ -148,10 +148,22 @@ namespace piranha
         return *this;
       }
       // Maths.
-      /*void partial(const size_t &n, Derived &x) const
+      /// Partial derivative with respect to nth argument.
+      /**
+       * Result is stored in input parameter "retval". No assumptions on retval are made.
+       * @param[out] retval, Derived class in which the result will be stored.
+       */
+      void partial(const size_t &n, Derived &retval) const
         {
-          x.clear();
-        }*/
+          retval.clear();
+          m_type tmp_m;
+          const it_d_index it_f=d_index().end();
+          for (it_d_index it=d_index().begin();it!=it_f;++it)
+            {
+              it->partial(n,tmp_m);
+              retval.insert(tmp_m);
+            }
+        }
       // End INTERFACE definition.
       //-------------------------------------------------------
       const degree_index &d_index() const
