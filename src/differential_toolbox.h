@@ -22,7 +22,7 @@
 #define PIRANHA_DIFFERENTIAL_TOOLBOX_H
 
 namespace piranha
-{
+  {
   /// Toolbox for differential calculus.
   template <class Derived>
   class differential_toolbox
@@ -44,7 +44,7 @@ namespace piranha
           Derived retval=Derived();
           retval.merge_args(*static_cast<Derived const *>(this));
           const int cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
-            trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
+                               trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
           // If "name" is not a symbol of the series, return empty series.
           if (cf_s_index<0 && trig_s_index<0)
             {
@@ -53,7 +53,10 @@ namespace piranha
             }
           const it_h_index it_f=static_cast<Derived const *>(this)->h_index().end();
           term_type tmp_term;
-          for (it_h_index it=static_cast<Derived const *>(this)->h_index().begin();it!=it_f;++it)
+          for (it_h_index it=static_cast<Derived const *>(this)->
+                             h_index().begin();
+               it!=it_f;
+               ++it)
             {
               // First part of the derivation of the product coefficient * trigonometric_part.
               if (cf_s_index>=0)

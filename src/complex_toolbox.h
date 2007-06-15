@@ -61,7 +61,8 @@ namespace piranha
                it!=it_f;
                ++it)
             {
-              term.c()=cf_type(it->c(),real_cf_type(0));
+              term.c()
+              =cf_type(it->c(),real_cf_type(0));
               term.trig_args()=it->trig_args();
               term.flavour()=it->flavour();
               static_cast<Derived *>(this)->insert(term);
@@ -75,7 +76,8 @@ namespace piranha
                it!=it_f;
                ++it)
             {
-              term.c()=cf_type(real_cf_type(0),it->c());
+              term.c()
+              =cf_type(real_cf_type(0),it->c());
               term.trig_args()=it->trig_args();
               term.flavour()=it->flavour();
               static_cast<Derived *>(this)->insert(term);
@@ -92,7 +94,8 @@ namespace piranha
           real_it_s_index it_hint=retval.s_index().end();
           real_term_type term(real_cf_type(0),true);
           for (it_s_index it=static_cast<Derived const *>
-                                               (this)->s_index().begin();
+                             (this)->
+                             s_index().begin();
                it!=it_f;
                ++it)
             {

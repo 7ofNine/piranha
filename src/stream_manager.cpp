@@ -96,10 +96,10 @@ namespace piranha
         out_stream << std::fixed;
       break;
     }
-  }
+}
 
 
-  stream_manager::out_format stream_manager::format()
+stream_manager::out_format stream_manager::format()
   {
     return format_;
   }

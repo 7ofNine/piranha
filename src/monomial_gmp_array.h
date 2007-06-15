@@ -734,7 +734,7 @@ namespace piranha
           n=(unsigned int)(-n_);
           retval.numerical_cf_=math::natural_pow(n,numerical_cf_.inv());
           retval.rational_cf_=math::natural_pow(n,
-            rational_type(rational_cf_.get_den(),rational_cf_.get_num()));
+                                                rational_type(rational_cf_.get_den(),rational_cf_.get_num()));
         }
       else
         {
@@ -751,26 +751,26 @@ namespace piranha
     }
 
 
-    /// Real power.
-    template <class T>
-    inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(const double &x) const
-      {
-        if (symbolic())
-          {
-            std::cout << "ERROR: real power of symbolic monomial." << std::endl;
-            std::abort();
-          }
-        if (numerical_cf_<0)
-          {
-            std::cout << "ERROR: real power of negative numerical coefficient." << std::endl;
-            std::abort();
-          }
-        // NOTICE: here we are counting on the fact that container_ is zero-initialized.
-        monomial_gmp_array retval(width());
-        retval.numerical_cf_=(numerical_cf_.pow(x)*=std::pow(rational_cf_.get_d(),x));
-        retval.rational_cf_=1;
-        return retval;
-      }
+  /// Real power.
+  template <class T>
+  inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(const double &x) const
+    {
+      if (symbolic())
+        {
+          std::cout << "ERROR: real power of symbolic monomial." << std::endl;
+          std::abort();
+        }
+      if (numerical_cf_<0)
+        {
+          std::cout << "ERROR: real power of negative numerical coefficient." << std::endl;
+          std::abort();
+        }
+      // NOTICE: here we are counting on the fact that container_ is zero-initialized.
+      monomial_gmp_array retval(width());
+      retval.numerical_cf_=(numerical_cf_.pow(x)*=std::pow(rational_cf_.get_d(),x));
+      retval.rational_cf_=1;
+      return retval;
+    }
 }
 
 #endif

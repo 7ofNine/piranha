@@ -183,7 +183,7 @@ BOOST_PYTHON_MODULE(_Core)
   .def(init<const std::string &, const double &, const double &, const double &>())
   .def(init<const std::string &, const double &, const double &, const double &, const double &>())
   .def(init<const std::string &, const double &, const double &, const double &, const double &,
-     const double &>())
+       const double &>())
   .def("__copy__",&psymbol::copy)
   .def("put",&psymbol::put)
   .def("name",&psymbol::name,return_value_policy<copy_const_reference>())

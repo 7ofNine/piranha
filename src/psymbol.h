@@ -70,19 +70,19 @@ namespace piranha
         build_from_array(tmp);
       }
       psymbol(const std::string &s, const double &x1, const double &x2, const double &x3):
-        name_(s),poly_eval_((size_t)3)
+          name_(s),poly_eval_((size_t)3)
       {
         boost::array<double,3> tmp = { { x1, x2, x3 } };
         build_from_array(tmp);
       }
       psymbol(const std::string &s, const double &x1, const double &x2, const double &x3, const double &x4):
-        name_(s),poly_eval_((size_t)4)
+          name_(s),poly_eval_((size_t)4)
       {
         boost::array<double,4> tmp = { { x1, x2, x3, x4 } };
         build_from_array(tmp);
       }
       psymbol(const std::string &s, const double &x1, const double &x2, const double &x3,
-        const double &x4, const double &x5):name_(s),poly_eval_((size_t)5)
+              const double &x4, const double &x5):name_(s),poly_eval_((size_t)5)
       {
         boost::array<double,5> tmp = { { x1, x2, x3, x4, x5 } };
         build_from_array(tmp);
@@ -134,9 +134,9 @@ namespace piranha
         return null_name_;
       }
       std::string powers_string() const
-      {
-        return utils::vector_double_to_str(poly_eval_);
-      }
+        {
+          return utils::vector_double_to_str(poly_eval_);
+        }
     private:
       // Helper for getting poly evals.
       double get_poly_eval_elem(const size_t &n) const
@@ -149,7 +149,8 @@ namespace piranha
           return poly_eval_[n];
         }
       // Helper for ctor from boost::array.
-      template <class T> void build_from_array(const T &);
+      template <class T>
+      void build_from_array(const T &);
       // Data members.
     private:
       std::string                 name_;
@@ -225,14 +226,14 @@ namespace piranha
        */
       class static_ctor
         {
-          public:
-            static_ctor()
-              {
-                psymbol();
-                psymbol("t",0,1);
-              }
+        public:
+          static_ctor()
+          {
+            psymbol();
+            psymbol("t",0,1);
+          }
         };
-    // Data members.
+      // Data members.
     private:
       static set_type             p_set_;
       static boost::mutex         mutex_;
@@ -325,7 +326,7 @@ namespace piranha
    * @param[in] pol symbol's polynomial evaluation vector.
    */
   inline psymbol::psymbol(const std::string &str, const vector_double &pol):
-    name_(str),poly_eval_(pol)
+      name_(str),poly_eval_(pol)
   {
     psymbol_manager::reg(*this);
   }

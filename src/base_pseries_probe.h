@@ -86,20 +86,21 @@ namespace piranha
     }
 
 
-typedef std::vector<double> vdbl;
+  typedef std::vector<double> vdbl;
 
-struct foocmp
-{
-  foocmp()
-  {}
-  bool operator()(double x1, double x2) const
+  struct foocmp
     {
-      return (x1<x2);
-    }
-};
+      foocmp()
+      {}
+      bool operator()(double x1, double x2) const
+        {
+          return (x1<x2);
+        }
+    };
 
-typedef std::set<double,foocmp> sdbl;
-typedef sdbl::iterator my_iterator;
+  typedef std::set
+    <double,foocmp> sdbl;
+  typedef sdbl::iterator my_iterator;
 
 
   /// Check whether arguments are different.
@@ -116,7 +117,8 @@ typedef sdbl::iterator my_iterator;
       // Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
       // we are only interested in the presence or not of that argument. If there are duplicate arguments
       // the insertion functions below will simply fail silently.
-      typedef std::set<psym_p,psym_p_cmp> psym_set;
+      typedef std::set
+        <psym_p,psym_p_cmp> psym_set;
       psym_set set1, set2, set_res;
       // Populate the two sets of pointer to psymbols.
       size_t j, w;

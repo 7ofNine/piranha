@@ -98,7 +98,8 @@ namespace piranha
       /// Constructor from psymbol.
       explicit ps(const psymbol &psym):ancestor::base_pseries(psym)
       {}
-    };
+    }
+  ;
 }
 
 

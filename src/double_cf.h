@@ -246,7 +246,7 @@ namespace std
   {
   template <>
   struct complex<piranha::double_cf> :
-    public piranha::simple_container<complex_double,complex<piranha::double_cf> >
+        public piranha::simple_container<complex_double,complex<piranha::double_cf> >
     {
 public:
       typedef complex self;
