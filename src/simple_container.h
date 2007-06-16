@@ -130,7 +130,7 @@ namespace piranha
       /// Partial derivative.
       /**
        * Always returns 0, since this is a purely numerical quantity.
-       * @param[out] retval, piranha::double_cf return value.
+       * @param[out] retval, Derived return value.
        */
       void partial(const size_t &, Derived &retval) const
         {
