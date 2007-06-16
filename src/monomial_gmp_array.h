@@ -616,11 +616,17 @@ namespace piranha
 
 
   /// Check whether monomial is zero.
-  // FIXME: this will have to include the handling of degree limit for polynomial variables.
+  // TODO: maybe this will have to include the handling of degree limit for polynomial variables.
   template <class T>
   inline bool monomial_gmp_array<T>::is_zero() const
     {
-      if (std::abs(numerical_cf_.value()*rational_cf_.get_d())<settings_manager::numerical_zero())
+      // We must do this way because if we get_d() immediately on rational_cf_ we may obtain zero for very
+      // small fractions, but the numerical_cf_ could counter-balance the smallness hence leading to a
+      // "non-zero" monomial.
+      rational_type tmp(rational_cf_);
+      tmp*=std::abs(numerical_cf_.value());
+      p_assert(tmp>=0);
+      if (std::abs(tmp.get_d())<settings_manager::numerical_zero())
         {
           return true;
         }
@@ -639,6 +645,8 @@ namespace piranha
   template <class U>
   inline void monomial_gmp_array<T>::mult_by(const monomial_gmp_array<U> &m2, monomial_gmp_array &out_m) const
     {
+      // TODO: is it faster here to assign and do operator*= instead of using operator*?
+      // Build fake classes, report copy ctor and check.
       out_m.numerical_cf_=numerical_cf_*m2.numerical_cf();
       out_m.rational_cf_=rational_cf_*m2.rational_cf();
       // Find big and small monomial_gmp_arrays.
@@ -721,6 +729,9 @@ namespace piranha
 
 
   /// Integer power.
+  // TODO: uniform naming of power? i.e., natural power and pow, but here IIRC we need also negative int powers?
+  // Mmhmm... check out.
+  // Also: use return values as parameters for inv, powers, etc.
   template <class T>
   inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(int n_) const
     {
