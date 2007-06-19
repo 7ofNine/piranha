@@ -104,60 +104,11 @@ namespace piranha
       }
       // Maths
       /// Bessel function of the first kind.
-#define __max_bessel_iter (120)
-      polynomial besselJ(int n_, const vector_psym_p &v) const
+      polynomial besselJ(int n, const vector_psym_p &v) const
         {
-          if (std::abs(ancestor::t_eval(0,v))<settings_manager::numerical_zero())
-            {
-              return polynomial(0);
-            }
-          unsigned int n;
-          short int sign_mult;
-          mpz_class fact;
-          if (n_<0)
-            {
-              n=-n_;
-              sign_mult=math::cs_phase(n);
-            }
-          else
-            {
-              n=n_;
-              sign_mult=1;
-            }
-          if (n==0)
-            {
-              fact=1;
-            }
-          else
-            {
-              fact=math::generic_factorial<mpz_class>(n);
-            }
-          polynomial half_x=*this;
-          half_x/=2;
-          polynomial retval=polynomial(1), a_jm1=polynomial(1), a_j,
-                                                 half_x_pow2=polynomial(math::natural_pow(2,half_x));
-          // Target is multiplied that way because the retval is modified after the "for" cycle,
-          // so we must "anticipate" the modification to test whether we are ok with the precision.
-          const double target=math::besselJ(n,ancestor::t_eval(0,v))/math::natural_pow(n,half_x.t_eval(0,v))*fact.get_d()/sign_mult,
-                              target_precision=target*settings_manager::prec();
-          unsigned int j=0;
-          do
-            {
-              ++j;
-              (a_jm1/=(j*(n+j)))*=-1;
-              a_j=a_jm1;
-              a_j*=half_x_pow2;
-              retval+=a_j;
-              a_jm1=a_j;
-            }
-          while (std::abs(retval.t_eval(0,v)-target)>target_precision &&
-                 j <= __max_bessel_iter);
-          retval*=math::natural_pow(n,half_x);
-          retval/=fact;
-          retval*=sign_mult;
-          return retval;
+          const unsigned short int iterations=math::besselJ_series_limit(n,ancestor::t_eval(0,v));
+          return math::naive_besselJ<polynomial,mpz_class>(n,*this,iterations);
         }
-#undef __max_bessel_iter
       polynomial pow(const double &x) const
         {
           polynomial retval(*this);

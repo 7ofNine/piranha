@@ -27,6 +27,7 @@
 
 #include "p_assert.h"
 #include "platform_switches.h" // For NAN detection.
+#include "settings_manager.h"
 
 // Sign function - FIXME: turn into a template?
 #define __sgn(x) (x==0.0 ? 0.0 : (x > 0.0 ? 1.0 : -1.0))
@@ -225,13 +226,102 @@ namespace piranha
           }
         return k;
       }
+      /// Bessel J series limit.
+      /**
+       * Identifies the number of iterations needed to compute a Bessel function of the first kind
+       * through the power series definition in order to reach a precision of the same order of magnitude of
+       * Piranha's general relative precision.
+       * @param[in] n_, integer order of the Bessel function.
+       * @param[in] x, double argument of the Bessel function.
+       */
+#define __max_bessel_iter (20)
+      static unsigned short int besselJ_series_limit(int n_, const double &x)
+      {
+        if (std::abs(x)<settings_manager::numerical_zero())
+          {
+            return 0;
+          }
+        unsigned int n;
+        short int sign_mult;
+        double fact;
+        if (n_<0)
+          {
+            n=-n_;
+            sign_mult=cs_phase(n);
+          }
+        else
+          {
+            n=n_;
+            sign_mult=1;
+          }
+        if (n==0)
+          {
+            fact=1;
+          }
+        else
+          {
+            fact=generic_factorial<double>(n);
+          }
+        double half_x=(x/2);
+        double tmp=1, a_jm1=1, a_j, half_x_pow2=natural_pow(2,half_x);
+        unsigned short int j=0;
+        double tmp_besselJ=besselJ(n_,x), tmp_pow=natural_pow(n,half_x);
+        double target=0;
+        if (std::abs(tmp_besselJ)<settings_manager::numerical_zero())
+          {
+            //std::cout << "Numerical limits of double reached, returning 0." << std::endl;
+          }
+        else if (std::abs(tmp_pow)<settings_manager::numerical_zero())
+          {
+            // We have problems here since we will be dividing by tmp_pow. Exit with j=0.
+            // TODO: add precision warning.
+            //std::cout << "Numerical limits of natural_pow reached, returning 0." << std::endl;
+          }
+        else
+          {
+            // Target is multiplied that way because the retval is modified after the "for" cycle,
+            // so we must "anticipate" the modification to test whether we are ok with the precision.
+            target=(tmp_besselJ*fact)/tmp_pow*sign_mult;
+            const double target_precision=target*settings_manager::prec();
+            do
+              {
+                //std::cout << "tmp is: " << tmp << '\n';
+                ++j;
+                (a_jm1/=(j*(n+j)))*=-1;
+                a_j=a_jm1;
+                a_j*=half_x_pow2;
+                //std::cout << "a_j is: " << a_j << '\n';
+                if (std::abs(a_j)<settings_manager::numerical_zero())
+                  {
+                    // We cannot improve precision any more, since a_j went to zero. Exit the cycle.
+                    // TODO: add precision warning.
+                    //std::cout << "a_j went zero, returning current j\n";
+                    break;
+                  }
+                tmp+=a_j;
+                a_jm1=a_j;
+              }
+            while (std::abs(tmp-target)>target_precision &&
+                    j <= __max_bessel_iter);
+          }
+        if (j>__max_bessel_iter)
+          {
+            std::cout << "OH NOES!\n";
+            std::exit(1);
+          }
+        return j;
+      }
+#undef __max_bessel_iter
       /// Bessel function of the first kind. Naive implementation.
       /**
        * Uses the series definition for Bessel functions. To be used with symbolic types,
        * for numerical types it is much better to use math::besselJ.
+       * @param[in] n_, integer order of the Bessel function.
+       * @param[in] x, double argument of the Bessel function.
+       * @param[in] iterations, unsigned short int number of iterations.
        */
       template <class T, class Integer>
-      static T naive_besselJ(int n_, const T &x, unsigned int max_besselJ)
+      static T naive_besselJ(int n_, const T &x, unsigned short int iterations)
       {
         unsigned int n;
         short int sign_mult;
@@ -257,7 +347,7 @@ namespace piranha
         T half_x=x;
         half_x/=2;
         T retval=T(1), a_jm1=T(1), a_j, half_x_pow2=T(natural_pow(2,half_x));
-        for (unsigned int j=1;j<=max_besselJ;++j)
+        for (unsigned int j=1;j<=iterations;++j)
           {
             (a_jm1/=(j*(n+j)))*=-1;
             a_j=a_jm1;
@@ -277,6 +367,7 @@ namespace piranha
         // Check needed apparently under MinGW/GCC.
         if (__ISNAN(retval))
           {
+            std::cout << "I don't believe it!\n";
             retval=0.;
           }
         return retval;
