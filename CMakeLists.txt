@@ -12,6 +12,31 @@ OPTION(BUILD_LNP "Build numerical series with trigonometric lists." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_GSP "Build symbolic series with polynomial coefficients." OFF "BUILD_GMP_SUPPORT" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
 
+# TODO: remove debugging messages.
+MACRO(FIND_BOOST_LIBRARY arg1 arg2)
+  IF(WIN32)
+    SET(LIBRARY_BASENAME "libboost_${arg2}")
+    SET(LIBRARY_NAME_SUFFICES "mgw-mt-d" "mt-d")
+  ELSE(WIN32)
+    SET(LIBRARY_BASENAME "boost_${arg2}")
+    SET(LIBRARY_NAME_SUFFICES "gcc-mt" "mt")
+  ENDIF(WIN32)
+  SET(BOOST_LIBRARY_NAMES "${LIBRARY_BASENAME}")
+  # First we look for plain old name for library.
+  FIND_LIBRARY(${arg1} "${LIBRARY_BASENAME}")
+  MESSAGE(STATUS "Trying " "${LIBRARY_BASENAME}")
+  # Then we iterate over the possible names.
+  FOREACH(tmp ${LIBRARY_NAME_SUFFICES})
+    SET(BOOST_LIBRARY_NAME "${LIBRARY_BASENAME}-${tmp}")
+    # Try to find library only if we did not find it before.
+    IF("${arg1}" MATCHES ".*-NOT_FOUND")
+      FIND_LIBRARY(${arg1} NAMES "${BOOST_LIBRARY_NAME}")
+      MESSAGE(STATUS "Trying " "${BOOST_LIBRARY_NAME}")
+    ENDIF("${arg1}" MATCHES ".*-NOT_FOUND")
+  ENDFOREACH(tmp ${LIBRARY_NAME_SUFFICES})
+  MESSAGE(STATUS "Done macro")
+ENDMACRO(FIND_BOOST_LIBRARY)
+
 # Platform switches
 IF(WIN32)
   ADD_DEFINITIONS(-D_PIRANHA_WIN32)
@@ -54,30 +79,15 @@ ENDIF(${CMAKE_C_COMPILER} MATCHES "icc")
 # Boost general
 INCLUDE(${CMAKE_ROOT}/Modules/FindBoost.cmake)
 FIND_PACKAGE(Boost REQUIRED)
+MESSAGE(STATUS "Boost include path: " "${Boost_INCLUDE_DIRS}")
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+MESSAGE(STATUS "Boost link path: " "${Boost_LIBRARY_DIRS}")
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-# FIXME: we need to find a way to search for these libraries in a more generic way.
-# For instance under FreeBSD the "gcc" part does not appear, and under linux there is a symlink
-# which also does not have "gcc". If windows also has a symlink to a name without "mgw" we can
-# skip "gcc" and "mgw" altogether.
-# Boost filesystem
-SET(BOOST_FS_NAME "boost_filesystem")
-IF(WIN32)
-  SET(BOOST_FS_NAME "lib${BOOST_FS_NAME}-mgw-mt-d")
-ELSE(WIN32)
-  SET(BOOST_FS_NAME "${BOOST_FS_NAME}-gcc-mt")
-ENDIF(WIN32)
-FIND_LIBRARY(BOOST_FS_LIBRARY NAMES ${BOOST_FS_NAME})
-
+# Boost filesystem.
+FIND_BOOST_LIBRARY(BOOST_FS_LIBRARY "filesystem")
 # Boost thread
-SET(BOOST_THREAD_NAME "boost_thread")
-IF(WIN32)
-  SET(BOOST_THREAD_NAME "lib${BOOST_THREAD_NAME}-mgw-mt-d")
-ELSE(WIN32)
-  SET(BOOST_THREAD_NAME "${BOOST_THREAD_NAME}-gcc-mt")
-ENDIF(WIN32)
-FIND_LIBRARY(BOOST_THREAD_LIBRARY NAMES ${BOOST_THREAD_NAME})
+FIND_BOOST_LIBRARY(BOOST_THREAD_LIBRARY "thread")
 
 # Mandatory linking
 SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_FS_NAME} ${BOOST_THREAD_NAME})
