@@ -90,7 +90,7 @@ FIND_BOOST_LIBRARY(BOOST_FS_LIBRARY "filesystem")
 FIND_BOOST_LIBRARY(BOOST_THREAD_LIBRARY "thread")
 
 # Mandatory linking
-SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_FS_NAME} ${BOOST_THREAD_NAME})
+SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_FS_LIBRARY} ${BOOST_THREAD_LIBRARY})
 
 # Find GMP and setup support
 # Search in this position because it potentially influences many parts of the code -
