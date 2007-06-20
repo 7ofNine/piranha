@@ -279,6 +279,22 @@ namespace piranha
       bool merge_args(const
                       base_pseries<Cf2, Trig2, I2> &);
       void set_flavour(bool);
+      /// Add coefficient argument.
+      /**
+       * @param[in] psym, piranha::psymbol to be added.
+       */
+      void add_cf_arg(const psymbol &psym)
+      {
+        append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+      }
+      /// Add trigonometric argument.
+      /**
+       * @param[in] psym, piranha::psymbol to be added.
+       */
+      void add_trig_arg(const psymbol &psym)
+      {
+        append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+      }
       // I/O
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
@@ -359,7 +375,7 @@ namespace piranha
       eval_type mean(const double &, const double &,
                      const size_t &n = 1000) const;
       bool checkup() const;
-      // FIXME: temporarily here.
+      // NOTICE: temporarily here.
     protected:
       // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);

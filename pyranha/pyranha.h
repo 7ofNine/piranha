@@ -117,6 +117,8 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("spectral_cutoff", &T::spectral_cutoff);
   inst.def("cumulative_crop", &T::cumulative_crop);
   inst.def("insert_phases", &T::insert_phases);
+  inst.def("add_cf_arg", &T::add_cf_arg);
+  inst.def("add_trig_arg", &T::add_trig_arg);
   inst.def("t_eval", &T::t_eval);
   inst.def("mean", mean_def(&T::mean));
   inst.def("mean", mean_n(&T::mean));
