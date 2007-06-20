@@ -12,29 +12,24 @@ OPTION(BUILD_LNP "Build numerical series with trigonometric lists." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_GSP "Build symbolic series with polynomial coefficients." OFF "BUILD_GMP_SUPPORT" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
 
-# TODO: remove debugging messages.
+# Macro to find boost libraries, which have the nasty tendency to have different suffices
+# according to platform and toolchain.
 MACRO(FIND_BOOST_LIBRARY arg1 arg2)
   IF(WIN32)
     SET(LIBRARY_BASENAME "libboost_${arg2}")
-    SET(LIBRARY_NAME_SUFFICES "mgw-mt-d" "mt-d")
+    FIND_LIBRARY(${arg1} NAMES
+      "${LIBRARY_BASENAME}"
+      "${LIBRARY_BASENAME}-mgw-mt-d"
+      "${LIBRARY_BASENAME}-mt-d"
+    )
   ELSE(WIN32)
     SET(LIBRARY_BASENAME "boost_${arg2}")
-    SET(LIBRARY_NAME_SUFFICES "gcc-mt" "mt")
+    FIND_LIBRARY(${arg1} NAMES
+      "${LIBRARY_BASENAME}"
+      "${LIBRARY_BASENAME}-gcc-mt"
+      "${LIBRARY_BASENAME}-mt"
+    )
   ENDIF(WIN32)
-  SET(BOOST_LIBRARY_NAMES "${LIBRARY_BASENAME}")
-  # First we look for plain old name for library.
-  FIND_LIBRARY(${arg1} "${LIBRARY_BASENAME}")
-  MESSAGE(STATUS "Trying " "${LIBRARY_BASENAME}")
-  # Then we iterate over the possible names.
-  FOREACH(tmp ${LIBRARY_NAME_SUFFICES})
-    SET(BOOST_LIBRARY_NAME "${LIBRARY_BASENAME}-${tmp}")
-    # Try to find library only if we did not find it before.
-    IF("${arg1}" MATCHES ".*-NOT_FOUND")
-      FIND_LIBRARY(${arg1} NAMES "${BOOST_LIBRARY_NAME}")
-      MESSAGE(STATUS "Trying " "${BOOST_LIBRARY_NAME}")
-    ENDIF("${arg1}" MATCHES ".*-NOT_FOUND")
-  ENDFOREACH(tmp ${LIBRARY_NAME_SUFFICES})
-  MESSAGE(STATUS "Done macro")
 ENDMACRO(FIND_BOOST_LIBRARY)
 
 # Platform switches
@@ -122,7 +117,7 @@ IF(BUILD_FORTRAN)
   ENDIF(NOT CMAKE_Fortran_COMPILER)
   # We need to determine if it is g77 or gfortran: the libraries we will have to link to
   # (manually, since it is fortran inside c++ toolchain) are different. Support for other
-  # compilers is a TODO.
+  # compilers can be added.
   STRING(REGEX MATCH "(gfortran|g77|f77?)" FORTRAN_COMPILER_TYPE ${CMAKE_Fortran_COMPILER})
   IF(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
     SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} gfortran)
