@@ -28,23 +28,6 @@
 #include "differential_toolbox.h"
 #include "trigonometric_toolbox.h"
 
-#define __COMMON_PS_TYPEDEFS(Cf,Trig,I)\
-public:\
-    typedef piranha::base_pseries<Cf,Trig,I> ancestor;\
-    typedef typename ancestor::term_type term_type;\
-    typedef typename ancestor::it_s_index it_s_index;\
-    typedef typename ancestor::r_it_s_index r_it_s_index;\
-    typedef typename ancestor::cf_type cf_type;
-
-#define __COMMON_PS()                                                                             \
-public:                                                                                           \
-    ps():ancestor::base_pseries() {}                                                              \
-    ps(const ps &p):ancestor::base_pseries(p) {}                                                  \
-    explicit ps(const std::string &filename):ancestor::base_pseries(filename) {}                  \
-    explicit ps(const cf_type &c):ancestor::base_pseries(c) {}                                    \
-    ps copy() const {return ps(*this);}                                                           \
-
-
 namespace piranha
 {
   /// Default derived class for Poisson series.
@@ -52,27 +35,42 @@ namespace piranha
    * This derived class provides support for complex arithmetic and for trigonometric operations on
    * series.
    */
-  template <class Cf, class Trig, template <class,class> class I>
+  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
   class ps:
-        public base_pseries<Cf,Trig,I>,
-        public common_trig_toolbox<ps<Cf,Trig,I>,ps<Cf,Trig,I> >,
-        public real_trig_toolbox<ps<Cf,Trig,I> >,
-        public differential_toolbox<ps<Cf,Trig,I> >
+        public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I> >,
+        public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
+        public real_trig_toolbox<ps<Cf,Trig,Term,I> >,
+        public differential_toolbox<ps<Cf,Trig,Term,I> >
     {
       //|-----------------------|
       //|Typedef Specializations|
       //|-----------------------|
-      __COMMON_PS_TYPEDEFS(Cf,Trig,I);
+      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
+      typedef typename ancestor::term_type term_type;
+      typedef typename ancestor::it_s_index it_s_index;
+      typedef typename ancestor::r_it_s_index r_it_s_index;
+      typedef typename ancestor::cf_type cf_type;
     public:
       /// Alias for self.
       typedef ps real_ps;
       /// Alias for complex coefficient type.
       typedef std::complex<cf_type> complex_cf_type;
       /// Alias for complex counterpart.
-      typedef std::complex<ps<cf_type,Trig,I> > complex_ps;
+      typedef std::complex<ps<cf_type,Trig,Term,I> > complex_ps;
       // Common stuff.
-      __COMMON_PS();
-      __PS_OPERATORS(ps,ancestor);
+      ps():ancestor::base_pseries()
+      {}
+      ps(const ps &p):ancestor::base_pseries(p)
+      {}
+      explicit ps(const std::string &filename):ancestor::base_pseries(filename)
+      {}
+      explicit ps(const cf_type &c):ancestor::base_pseries(c)
+      {}
+      ps copy() const
+      {
+        return ps(*this);
+      }
+      //__PS_OPERATORS(ps,ancestor);
       // FIXME: cram this into operator toolbox.
       ps &operator/=(int n)
       {
@@ -107,16 +105,16 @@ namespace std
   {
   // COMPLEX COUNTERPART
   /// Complex specialization for default derived class.
-  template <class Cf,class Trig,template <class,class> class I>
-  struct complex<piranha::ps<Cf,Trig,I> >:
-        public piranha::base_pseries <complex<Cf>,Trig,I>,
-        public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,I> >,piranha::ps<Cf,Trig,I> >,
-        public piranha::complex_toolbox<piranha::ps<Cf,Trig,I> >,
-        public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,I> > >
+  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
+  struct complex<piranha::ps<Cf,Trig,Term,I> >:
+        public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > >,
+        public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
+        public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I> >,
+        public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >
     {
 public:
       /// Alias for the ancestor.
-      typedef piranha::base_pseries<complex<Cf>,Trig,I> ancestor;
+      typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > > ancestor;
       /// Alias for term type.
       typedef typename ancestor::term_type term_type;
       /// Alias for the iterator to sorted index.
@@ -128,7 +126,7 @@ public:
       /// Alias for self.
       typedef complex complex_ps;
       /// Alias for real counterpart.
-      typedef piranha::ps<Cf,Trig,I> real_ps;
+      typedef piranha::ps<Cf,Trig,Term,I> real_ps;
       /// Alias for real coefficient.
       typedef Cf real_cf_type;
       // Common stuff
@@ -207,14 +205,14 @@ public:
         ancestor::basic_div_by_int(n);
         return *this;
       }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex &operator*=(const complex<piranha::ps<Cf2,Trig2,I2> > &p)
+      template <class Cf2>
+      complex &operator*=(const complex<piranha::ps<Cf2,Trig,Term,I> > &p)
       {
         ancestor::basic_ps_mult(p);
         return *this;
       }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex &operator*=(const piranha::ps<Cf2,Trig2,I2> &p)
+      template <class Cf2>
+      complex &operator*=(const piranha::ps<Cf2,Trig,Term,I> &p)
       {
         ancestor::basic_ps_mult(p);
         return *this;
@@ -234,14 +232,14 @@ public:
         ancestor::generic_mult(x);
         return *this;
       }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex &operator+=(const complex<piranha::ps<Cf2,Trig2,I2> > &p)
+      template <class Cf2>
+      complex &operator+=(const complex<piranha::ps<Cf2,Trig,Term,I> > &p)
       {
         ancestor::merge_with(p);
         return *this;
       }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex &operator+=(const piranha::ps<Cf2,Trig2,I2> &p)
+      template <class Cf2>
+      complex &operator+=(const piranha::ps<Cf2,Trig,Term,I> &p)
       {
         ancestor::merge_with(p);
         return *this;
@@ -261,15 +259,15 @@ public:
         ancestor::generic_merge(x);
         return *this;
       }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex operator+(const complex<piranha::ps<Cf2,Trig2,I2> > &p) const
+      template <class Cf2>
+      complex operator+(const complex<piranha::ps<Cf2,Trig,Term,I> > &p) const
         {
           complex retval(*this);
           retval+=p;
           return retval;
         }
-      template <class Cf2,class Trig2,template <class,class> class I2>
-      complex operator+(const piranha::ps<Cf2,Trig2,I2> &p) const
+      template <class Cf2>
+      complex operator+(const piranha::ps<Cf2,Trig,Term,I> &p) const
         {
           complex retval(*this);
           retval+=p;

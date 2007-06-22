@@ -28,53 +28,53 @@
         ancestor_type::basic_assignment(p);\
         return *this;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type &operator+=(const ps_type<Cf2,Trig2,I2> &p)\
+    template <class Cf2,class Derived2>\
+        ps_type &operator+=(const ps_type<Cf2,trig_type,Term,I,Derived2> &p)\
     {\
         ancestor_type::merge_with(p);\
         return *this;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type &operator-=(const ps_type<Cf2,Trig2,I2> &p)\
+    template <class Cf2,class Derived2>\
+        ps_type &operator-=(const ps_type<Cf2,trig_type,Term,I,Derived2> &p)\
     {\
         ancestor_type::merge_with(p,false);\
         return *this;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type &operator*=(const ps_type<Cf2,Trig2,I2> &p)\
+    template <class Cf2,class Derived2>\
+        ps_type &operator*=(const ps_type<Cf2,trig_type,Term,I,Derived2> &p)\
     {\
         ancestor_type::basic_ps_mult(p);\
         return *this;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type &operator/=(const ps_type<Cf2,Trig2,I2> &p)\
+    template <class Cf2,class Derived2>\
+        ps_type &operator/=(const ps_type<Cf2,trig_type,Term,I,Derived2> &p)\
     {\
         *this*=(p.pow(-1));\
         return *this;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type operator+(const ps_type<Cf2,Trig2,I2> &p) const\
+    template <class Cf2,class Derived2>\
+        ps_type operator+(const ps_type<Cf2,trig_type,Term,I,Derived2> &p) const\
     {\
         ps_type retval(*this);\
         retval+=p;\
         return retval;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type operator-(const ps_type<Cf2,Trig2,I2> &p) const\
+    template <class Cf2,class Derived2>\
+        ps_type operator-(const ps_type<Cf2,trig_type,Term,I,Derived2> &p) const\
     {\
         ps_type retval(*this);\
         retval-=p;\
         return retval;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type operator*(const ps_type<Cf2,Trig2,I2> &p) const\
+    template <class Cf2,class Derived2>\
+        ps_type operator*(const ps_type<Cf2,trig_type,Term,I,Derived2> &p) const\
     {\
         ps_type retval(*this);\
         retval*=p;\
         return retval;\
     }\
-    template <class Cf2,class Trig2,template <class,class> class I2>\
-        ps_type operator/(const ps_type<Cf2,Trig2,I2> &p) const\
+    template <class Cf2,class Derived2>\
+        ps_type operator/(const ps_type<Cf2,trig_type,Term,I,Derived2> &p) const\
     {\
         ps_type retval(*this);\
         retval/=p;\

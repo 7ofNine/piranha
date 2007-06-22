@@ -26,7 +26,7 @@ namespace piranha
   /// Piranha-specific statistics class.
   class stats
     {
-      template <class Cf,class Trig,template <class,class> class I>
+     template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
       friend class base_pseries;
     public:
       static double pack_ratio();

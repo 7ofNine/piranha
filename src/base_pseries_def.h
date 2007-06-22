@@ -30,7 +30,6 @@
 #include <complex>
 
 #include "phase_list.h"
-#include "ps_term.h"
 #include "ps_operators.h"
 
 namespace piranha
@@ -41,19 +40,19 @@ namespace piranha
    * of terms and a sorted index to discard terms in multiplications. The class is to be used as the I
    * parameter in piranha::base_pseries classes.
    */
-  template <class Cf, class Trig>
+  template <class Cf, class Trig, template <class, class> class Term>
   struct default_ps_index
     {
       typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
-      boost::multi_index::identity<ps_term<Cf, Trig> > > ,
+      boost::multi_index::identity<Term<Cf, Trig> > > ,
       boost::multi_index::hashed_unique <
       boost::multi_index::composite_key <
-      ps_term<Cf, Trig>,
-      boost::multi_index::const_mem_fun < ps_term<Cf, Trig>, bool,
-      &ps_term<Cf, Trig>::flavour > ,
-      boost::multi_index::const_mem_fun < ps_term<Cf, Trig>, const Trig &,
-      &ps_term<Cf, Trig>::trig_args >
+      Term<Cf, Trig>,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, bool,
+      &Term<Cf, Trig>::flavour > ,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+      &Term<Cf, Trig>::trig_args >
       >
       >
       > type;
@@ -69,24 +68,25 @@ namespace piranha
    * A default specialized class, piranha::ps, exists.
    * @see piranha:ps, default specialized Poisson series class.
    */
-  template <class Cf, class Trig, template <class, class> class I>
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
   class base_pseries
     {
     public:
-      /// Alias for itself.
+      /// Alias for self.
       typedef base_pseries self;
       /// Alias for coefficient type.
       typedef Cf cf_type;
+      /// Alias for trigonometric type.
+      typedef Trig trig_type;
+      /// Alias for term type.
+      typedef Term<cf_type, trig_type> term_type;
+      typedef I<cf_type, trig_type, Term> index_type;
+      typedef Derived derived_type;
       /// Alias for the evaluation type.
       /**
        * @see base_pseries::t_eval.
        */
       typedef typename cf_type::eval_type eval_type;
-      /// Alias for trigonometric type.
-      typedef Trig trig_type;
-      typedef I<cf_type, trig_type> index_type;
-      /// Alias for term type.
-      typedef ps_term<cf_type, trig_type> term_type;
       typedef typename boost::multi_index_container < term_type,
       typename index_type::type > set_type;
       /// Alias for the sorted index.
@@ -266,8 +266,8 @@ namespace piranha
         }
       // Basic manipulation
       it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
-      template <class Cf2, class Trig2>
-      it_s_index insert(const ps_term<Cf2, Trig2> &,
+      template <class Cf2>
+      it_s_index insert(const Term<Cf2, trig_type> &,
                         bool sign = true, const it_s_index *it_hint = 0);
       void swap(base_pseries &);
       void cumulative_crop(const double &);
@@ -275,9 +275,9 @@ namespace piranha
       void crop(const it_s_index &);
       void insert_phases(const phase_list &);
       void spectral_cutoff(const double &, const double &);
-      template <class Cf2, class Trig2, template <class, class> class I2>
+      template <class Cf2, class Derived2>
       bool merge_args(const
-                      base_pseries<Cf2, Trig2, I2> &);
+                      base_pseries<Cf2, trig_type, Term, I, Derived2> &);
       void set_flavour(bool);
       /// Add coefficient argument.
       /**
@@ -402,14 +402,15 @@ namespace piranha
       void term_update(const it_h_index &, const cf_type &);
       void term_update(const it_s_index &, const cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
-      template <class Cf2, class Trig2>
-      it_s_index ll_insert(const ps_term<Cf2, Trig2> &,
+      template <class Cf2>
+      it_s_index ll_insert(const Term<Cf2, trig_type> &,
                            bool, const it_s_index *);
       // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
-      template <class Cf2, class Trig2, template <class, class> class I2>
+      template <class Cf2, class Derived2>
       bool args_compatible(const
-                           base_pseries<Cf2, Trig2, I2> &) const;
+                           base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
+      // TODO: move into private?
       struct psym_p_cmp
         {
           psym_p_cmp()
@@ -419,19 +420,19 @@ namespace piranha
               return (p1->name()<p2->name());
             }
         };
-      template <class Cf2, class Trig2, template <class, class> class I2>
+      template <class Cf2, class Derived2>
       bool args_different(const
-                          base_pseries<Cf2, Trig2, I2> &) const;
+                          base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
       // Low level maths.
       void basic_assignment(const base_pseries &);
-      template <class Cf2, class Trig2, template <class, class> class I2>
-      void alg_sum_lin_args(const base_pseries<Cf2, Trig2, I2> &, bool);
-      template <class Cf2, class Trig2, template <class, class> class I2>
-      void merge_with(const base_pseries<Cf2, Trig2, I2>&, bool sign = true);
+      template <class Cf2, class Derived2>
+      void alg_sum_lin_args(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, bool);
+      template <class Cf2, class Derived2>
+      void merge_with(const base_pseries<Cf2, trig_type, Term, I, Derived2>&, bool sign = true);
       template <class T>
       void generic_merge(const T &);
-      template <class Cf2, class Trig2, template <class, class> class I2>
-      void mult_terms(const base_pseries<Cf2, Trig2, I2> &, base_pseries &, const double &);
+      template <class Cf2, class Derived2>
+      void mult_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, base_pseries &, const double &);
       template <class T>
       void basic_ps_mult(const T &);
       template <class T>
@@ -457,16 +458,16 @@ namespace piranha
   /**
    * Constructs an empty series.
    */
-  template <class Cf, class Trig, template <class, class> class I>
-  inline base_pseries<Cf, Trig, I>::base_pseries(): __base_pseries_init_list {}
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(): __base_pseries_init_list {}
 
 
   /// Copy constructor.
   /**
    * Constructs a series from another one.
    */
-  template <class Cf, class Trig, template <class, class> class I>
-  inline base_pseries<Cf, Trig, I>::base_pseries(const base_pseries &ps):
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const base_pseries &ps):
       norm_(ps.norm_), lin_args_(ps.lin_args_), cf_s_vec_(ps.cf_s_vec_),
       trig_s_vec_(ps.trig_s_vec_), set_(ps.set_)
   {
@@ -478,8 +479,8 @@ namespace piranha
   /**
    * Read a series from file.
    */
-  template <class Cf, class Trig, template <class, class> class I>
-  inline base_pseries<Cf, Trig, I>::base_pseries(const std::string &fn): __base_pseries_init_list
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const std::string &fn): __base_pseries_init_list
   {
     load_from(fn);
   }
@@ -492,8 +493,8 @@ namespace piranha
    * and provided coefficient.
    * @see base_pseries::cf_type.
    */
-  template <class Cf, class Trig, template <class, class> class I>
-  inline base_pseries<Cf, Trig, I>::base_pseries(const cf_type &c): __base_pseries_init_list
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c): __base_pseries_init_list
   {
     term_type term(c);
     insert(term);
@@ -501,8 +502,8 @@ namespace piranha
 
 
   /// Constructor from piranha::psymbol.
-  template <class Cf, class Trig, template <class, class> class I>
-  inline base_pseries<Cf, Trig, I>::base_pseries(const psymbol &psym): __base_pseries_init_list
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const psymbol &psym): __base_pseries_init_list
   {
     append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
     cf_type c(psym);

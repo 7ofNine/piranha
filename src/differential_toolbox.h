@@ -68,7 +68,7 @@ namespace piranha
                 }
               // Second part of the derivation.
               // NOTICE: this may be placed somewhere inside trig_args() classes, but probably to do this
-              // we need to make trig_args() aware of flavour (i.e., move flavour outside ps_term class).
+              // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
               if (trig_s_index>=0)
                 {
                   tmp_term.c()=it->c();

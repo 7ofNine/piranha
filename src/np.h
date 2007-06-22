@@ -28,8 +28,7 @@
 
 namespace piranha
   {
-  typedef ps_term<double_cf,trig_array> np_term;
-  typedef ps<double_cf,trig_array,default_ps_index> np;
+  typedef ps<double_cf,trig_array,ps_term,default_ps_index> np;
 }
 
 #endif

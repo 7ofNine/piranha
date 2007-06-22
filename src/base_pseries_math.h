@@ -25,9 +25,9 @@ namespace piranha
   {
   // Assignment operator
   // -------------------
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::basic_assignment(const
-      base_pseries<Cf,Trig,I> &ps2)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_assignment(const
+      base_pseries<Cf, Trig, Term, I, Derived> &ps2)
   {
     if (this==&ps2)
       {
@@ -47,9 +47,9 @@ namespace piranha
 
   // Base merge operator
   // -------------------
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,template <class,class> class I2>
-  inline void base_pseries<Cf,Trig,I>::alg_sum_lin_args(const base_pseries<Cf2,Trig2,I2> &ps2,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2, class Derived2>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::alg_sum_lin_args(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2,
       bool sign)
   {
     vector_mult_t tmp(trig_width());
@@ -64,9 +64,9 @@ namespace piranha
     lin_args_=tmp;
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,template <class,class> class I2>
-  inline void base_pseries<Cf,Trig,I>::merge_with(const base_pseries<Cf2,Trig2,I2> &ps2, bool sign)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2, class Derived2>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::merge_with(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2, bool sign)
   {
     if ((void *)&ps2==(void *)this)
       {
@@ -97,7 +97,7 @@ namespace piranha
     // Use hint, since as we add terms we have an idea of where they are going to be placed
     it_s_index it_hint=s_index().end();
     // NOTE: At this point this' size is greater or equal to ps2'
-    for (typename base_pseries<Cf2,Trig2,I2>::it_h_index it=ps2.h_index().begin();
+    for (typename base_pseries<Cf2, trig_type, Term, I, Derived2>::it_h_index it=ps2.h_index().begin();
          it!=ps2.h_index().end();++it)
       {
         it_hint=insert(*it,sign,&it_hint);
@@ -107,9 +107,9 @@ namespace piranha
 
   // Merge with a generic entity - NOT with another series
   // -----------------------------------------------------
-  template <class Cf,class Trig,template <class,class> class I>
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
   template <class T>
-  inline void base_pseries<Cf,Trig,I>::generic_merge(const T &x)
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_merge(const T &x)
   {
     // Build a series from x
     base_pseries tmp=base_pseries(cf_type(x));
@@ -120,9 +120,9 @@ namespace piranha
 
   // Low-level mutiplication of terms
   // --------------------------------
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,template <class,class> class I2>
-  inline void base_pseries<Cf,Trig,I>::mult_terms(const base_pseries<Cf2,Trig2,I2> &ps2,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2,class Derived2>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::mult_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2,
       base_pseries &retval, const double &Delta)
   {
     const double Delta_threshold=Delta/(2*length()*ps2.length());
@@ -133,8 +133,8 @@ namespace piranha
     term_type tmp1, tmp2;
     boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
     const it_s_index it1_f=s_index().end();
-    const typename base_pseries<Cf2,Trig2,I2>::it_s_index it2_f=ps2.s_index().end();
-    typename base_pseries<Cf2,Trig2,I2>::it_s_index it2;
+    const typename base_pseries<Cf2, trig_type, Term, I, Derived2>::it_s_index it2_f=ps2.s_index().end();
+    typename base_pseries<Cf2, trig_type, Term, I, Derived2>::it_s_index it2;
     it_s_index it1, it_hint=retval.s_index().end();
     for (it1=s_index().begin();it1!=it1_f;++it1)
       {
@@ -181,9 +181,9 @@ namespace piranha
 
   // Basic multiplication
   // --------------------
-  template <class Cf,class Trig,template <class,class> class I>
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
   template <class T>
-  inline void base_pseries<Cf,Trig,I>::basic_ps_mult(const
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_ps_mult(const
       T &ps2)
   {
     base_pseries retval;
@@ -216,9 +216,9 @@ namespace piranha
 
   // Multiplication by a generic entity
   // ----------------------------------
-  template <class Cf,class Trig,template <class,class> class I>
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
   template <class T>
-  inline void base_pseries<Cf,Trig,I>::generic_mult(const T &c)
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_mult(const T &c)
   {
     if (length()==0)
       {
@@ -244,8 +244,8 @@ namespace piranha
 
 
   /// Division by an integer.
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::basic_div_by_int(int n)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_div_by_int(int n)
   {
     if (n==0)
       {
@@ -280,8 +280,8 @@ namespace piranha
 
   // Multiplication by an integer
   // ----------------------------
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::mult_by_int(int n)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::mult_by_int(int n)
   {
     const vector_mult_t old_lin_args=lin_args_;
     unsigned int j;
@@ -311,8 +311,8 @@ namespace piranha
   // Requirements: error >= 0.
 
 #define __pow_hard_limit 20
-  template <class Cf,class Trig,template <class,class> class I>
-  inline unsigned int base_pseries<Cf,Trig,I>::pow_limit(const double &error,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline unsigned int base_pseries<Cf, Trig, Term, I, Derived>::pow_limit(const double &error,
       const double &power) const
     {
       p_assert(error>=0);
@@ -351,8 +351,8 @@ namespace piranha
    * will have to be a complex series.
    * @param[in] power real power the series will be raised to.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::basic_pow(const double &power)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_pow(const double &power)
   {
     if (length()==0)
       {

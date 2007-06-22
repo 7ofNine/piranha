@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_PSERIES_MANIP_H
 #define PIRANHA_BASE_PSERIES_MANIP_H
 
+#include "arg_manager.h"
 #include "stats.h"
 
 namespace piranha
@@ -36,8 +37,8 @@ namespace piranha
    * @param[out] retps series to which the terms will be added.
    * @see base_pseries::add_phase_to_term(const double &, iterator,term_type &, base_pseries &).
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::add_phase_to_term(const double &phase, const term_type &src,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::add_phase_to_term(const double &phase, const term_type &src,
       term_type &tmp_term, base_pseries &retps) const
     {
       tmp_term=src;
@@ -69,8 +70,8 @@ namespace piranha
    * term_type &, base_pseries &), the only difference is that it accepts an iterator as source term.
    * @see base_pseries::add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &).
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::add_phase_to_term(const double &phase, iterator it,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::add_phase_to_term(const double &phase, iterator it,
       term_type &tmp_term, base_pseries &retps) const
     {
       add_phase_to_term(phase,*it,tmp_term,retps);
@@ -87,8 +88,8 @@ namespace piranha
    * @param[in] pl piranha::phase_list to be inserted.
    * @see piranha::phase_list.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::insert_phases(const phase_list &pl)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::insert_phases(const phase_list &pl)
   {
     base_pseries tmp_ps;
     p_assert(tmp_ps.merge_args(*this));
@@ -126,8 +127,8 @@ namespace piranha
    * @param[in] v vector_psym_p to be prepended.
    * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::prepend_cf_args(const vector_psym_p &v)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::prepend_cf_args(const vector_psym_p &v)
   {
     base_pseries retval=base_pseries();
     retval.lin_args_=lin_args_;
@@ -155,8 +156,8 @@ namespace piranha
    * @param[in] v vector_psym_p to be appended.
    * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::append_cf_args(const vector_psym_p &v)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::append_cf_args(const vector_psym_p &v)
   {
     base_pseries retval=base_pseries();
     retval.lin_args_=lin_args_;
@@ -184,8 +185,8 @@ namespace piranha
    * @param[in] v vector_psym_p to be prepended.
    * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::prepend_trig_args(const vector_psym_p &v)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::prepend_trig_args(const vector_psym_p &v)
   {
     base_pseries retval=base_pseries();
     retval.lin_args_=lin_args_;
@@ -214,8 +215,8 @@ namespace piranha
    * @param[in] v vector_psym_p to be appended.
    * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::append_trig_args(const vector_psym_p &v)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::append_trig_args(const vector_psym_p &v)
   {
     base_pseries retval=base_pseries();
     retval.lin_args_=lin_args_;
@@ -237,8 +238,8 @@ namespace piranha
   }
 
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::set_flavour(bool flavour)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::set_flavour(bool flavour)
   {
     base_pseries retval=base_pseries();
     retval.lin_args_=lin_args_;
@@ -257,14 +258,14 @@ namespace piranha
   }
 
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::upgrade_norm(const double &new_real)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::upgrade_norm(const double &new_real)
   {
     norm_+=std::abs(new_real);
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::downgrade_norm(const double &new_real)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::downgrade_norm(const double &new_real)
   {
     norm_-=std::abs(new_real);
   }
@@ -274,8 +275,8 @@ namespace piranha
   /**
    * All data members get swapped. This is an O(1) time operation.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::swap(base_pseries<Cf,Trig,I> &ps2)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::swap(base_pseries<Cf, Trig, Term, I, Derived> &ps2)
   {
     // Swap sets' contents
     set_.swap(ps2.set_);
@@ -288,9 +289,9 @@ namespace piranha
 
   // Insert a term into the series
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index
-  base_pseries<Cf,Trig,I>::term_insert_new(const term_type &term, bool sign, const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index
+  base_pseries<Cf, Trig, Term, I, Derived>::term_insert_new(const term_type &term, bool sign, const
       it_s_index *it_hint)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
@@ -316,7 +317,7 @@ namespace piranha
         // creating a new term though. Investigate.
         cf_type new_c=it_new->c();
         // FIXME: change sign directly here, so we do not do a copy below!
-        p_assert(s_index().modify(it_new,typename ps_term<cf_type,trig_type>::
+        p_assert(s_index().modify(it_new,typename Term<cf_type,trig_type>::
                                   modifier_update_cf(-new_c)));
       }
     // No need do differentiate between + and -, will get abs()-ed anyway
@@ -324,42 +325,42 @@ namespace piranha
     return it_new;
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::term_erase(const it_h_index &it)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_h_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     h_index().erase(it);
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::term_erase(const it_s_index &it)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_s_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     s_index().erase(it);
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::term_update(const it_h_index &it, const cf_type &new_c)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_h_index &it, const cf_type &new_c)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Delete old c from norm
     downgrade_norm(it->norm(cf_s_vec_));
     // Update the existing term
-    p_assert(h_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_update_cf(new_c)));
+    p_assert(h_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
     // Update the norm with the new c
     upgrade_norm(new_c.norm(cf_s_vec_));
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::term_update(const it_s_index &it, const cf_type &new_c)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_s_index &it, const cf_type &new_c)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     // Delete old c from norm
     downgrade_norm(it->norm());
     // Update the existing term
-    p_assert(s_index().modify(it,typename ps_term<cf_type,trig_type>::modifier_update_cf(new_c)));
+    p_assert(s_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
     // Update the norm with the new c
     upgrade_norm(new_c.norm());
   }
@@ -368,8 +369,8 @@ namespace piranha
   // **************** //
   // INSERT FUNCTIONS //
   // **************** //
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::ll_insert(
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::ll_insert(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
     p_assert(term.c().compatible(cf_width()));
@@ -417,10 +418,10 @@ namespace piranha
     return ret_it;
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2, class Trig2>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::ll_insert(
-    const ps_term<Cf2,Trig2> &term, bool sign, const it_s_index *it_hint)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::ll_insert(
+    const Term<Cf2,trig_type> &term, bool sign, const it_s_index *it_hint)
   {
     //BOOST_STATIC_ASSERT(sizeof(U)==0);
     return ll_insert(term_type(term),sign,it_hint);
@@ -438,8 +439,8 @@ namespace piranha
    *
    * This function performs some checks and then calls base_pseries::ll_insert.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::insert(
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::insert(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
     if (term.is_ignorable(cf_s_vec_))
@@ -479,10 +480,10 @@ namespace piranha
     return ret_it;
   }
 
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2, class Trig2>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::insert(
-    const ps_term<Cf2,Trig2> &term, bool sign, const it_s_index *it_hint)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::insert(
+    const Term<Cf2,trig_type> &term, bool sign, const it_s_index *it_hint)
   {
     //        BOOST_STATIC_ASSERT(sizeof(U)==0);
     return insert(term_type(term),sign,it_hint);
@@ -497,10 +498,9 @@ namespace piranha
    * symbols also with complex counterparts.
    * @param[in] ps2 piranha::base_pseries arguments are to be merged with.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,
-  template <class,class> class I2>
-  inline bool base_pseries<Cf,Trig,I>::merge_args(const base_pseries<Cf2,Trig2,I2> &ps2)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2, class Derived2>
+  inline bool base_pseries<Cf, Trig, Term, I, Derived>::merge_args(const base_pseries<Cf2,trig_type,Term,I,Derived2> &ps2)
   {
     if ((void *)this==(void *)&ps2)
       {
@@ -543,8 +543,8 @@ namespace piranha
    * Crop the series from the bottom so that the sum of the norms of the cropped terms is not
    * greater than delta.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::cumulative_crop(const double &delta)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::cumulative_crop(const double &delta)
   {
     // Won't crop a nil series
     if (length()==0)
@@ -575,8 +575,8 @@ namespace piranha
 
 
   /// Crop all terms whose norm is <= delta.
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::crop(const double &delta)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::crop(const double &delta)
   {
     // Won't crop a nil series
     if (length()==0)
@@ -606,8 +606,8 @@ namespace piranha
 
   /// Crop all terms from end to it_f (included).
   // Beware that no checks are made on the validity of the iterator!
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::crop(const it_s_index &it_f)
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::crop(const it_s_index &it_f)
   {
     // Won't crop a nil series or if the crop limit is the end of the series
     if (length()==0 || it_f==s_index().end())
@@ -638,8 +638,8 @@ namespace piranha
    * @param[in] desired relative precision in the spectral domain.
    * @see base_pseries::sdp_cutoff for a description of the cutoff procedure.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline void base_pseries<Cf,Trig,I>::spectral_cutoff(const double &achieved_tdp,
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline void base_pseries<Cf, Trig, Term, I, Derived>::spectral_cutoff(const double &achieved_tdp,
       const double &desired_sdp)
   {
     crop(sdp_cutoff(achieved_tdp,desired_sdp));

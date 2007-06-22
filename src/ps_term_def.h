@@ -55,9 +55,8 @@ namespace piranha
       // FIXME: replace bool with enum.
       explicit ps_term(const cf_type &, bool flavour=true);
       /// Copy constructor from term with different template parameters.
-      // FIXME: here we do not really deal with different trig args.
-      template <class Cf2,class Trig2>
-      explicit ps_term(const ps_term<Cf2,Trig2> &term):
+      template <class Cf2>
+      explicit ps_term(const ps_term<Cf2,trig_type> &term):
           flavour_(term.flavour()),c_(term.c()),trig_args_(term.trig_args())
       {/*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
       }

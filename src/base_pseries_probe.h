@@ -33,8 +33,8 @@ namespace piranha
    * part methods are called internally.
    * @param[in] value, double for the time of evaluation.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  typename base_pseries<Cf,Trig,I>::eval_type base_pseries<Cf,Trig,I>::t_eval(const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  typename base_pseries<Cf, Trig, Term, I, Derived>::eval_type base_pseries<Cf, Trig, Term, I, Derived>::t_eval(const
       double &value) const
     {
       eval_type retval(0.);
@@ -61,10 +61,9 @@ namespace piranha
    * fewer arguments.
    * @param[in] ps2 piranha::base_pseries compatibility is tested against.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,
-  template <class,class> class I2>
-  inline bool base_pseries<Cf,Trig,I>::args_compatible(const base_pseries<Cf2,Trig2,I2> &ps2) const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2,class Derived2>
+  inline bool base_pseries<Cf, Trig, Term, I, Derived>::args_compatible(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2) const
     {
       size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
       for (j=0;j<minwidth;++j)
@@ -109,10 +108,9 @@ namespace piranha
    * is void.
    */
   // NOTICE: not inlined, this should not be called often and hence it would just end up increasing binary size.
-  template <class Cf,class Trig,template <class,class> class I>
-  template <class Cf2,class Trig2,
-  template <class,class> class I2>
-  bool base_pseries<Cf,Trig,I>::args_different(const base_pseries<Cf2,Trig2,I2> &ps2) const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  template <class Cf2, class Derived2>
+  bool base_pseries<Cf, Trig, Term, I, Derived>::args_different(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2) const
     {
       // Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
       // we are only interested in the presence or not of that argument. If there are duplicate arguments
@@ -155,8 +153,8 @@ namespace piranha
   /**
    * Calculate norm instead of getting it from the value stored internally. Used for debugging.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline double base_pseries<Cf,Trig,I>::calc_norm() const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline double base_pseries<Cf, Trig, Term, I, Derived>::calc_norm() const
     {
       double retval=0.;
       const it_h_index it_f=h_index().end();
@@ -169,8 +167,8 @@ namespace piranha
 
 
   // Return an iterator pointing to the last term before the worst discontinuity in the series
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::discontinuity() const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::discontinuity() const
     {
       // We need at least 3 elements to detect a discontinuity
       if (length()<3)
@@ -208,8 +206,8 @@ namespace piranha
    * and smaller. We want to be able to ditch those term whose amplitude is a certain multiplier
    * of the ste, i.e. the ste must be a certain fraction of the term's amplitude.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::it_s_index base_pseries<Cf,Trig,I>::sdp_cutoff(
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::sdp_cutoff(
     const double &achieved_tdp_, const double &desired_sdp_) const
     {
       if (length()==0)
@@ -234,8 +232,8 @@ namespace piranha
 
 
   /// Find index of argument by its name.
-  template <class Cf,class Trig,template <class,class> class I>
-  inline size_t base_pseries<Cf,Trig,I>::trig_index(const std::string &name) const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline size_t base_pseries<Cf, Trig, Term, I, Derived>::trig_index(const std::string &name) const
     {
       size_t i;
       for (i=0;i<trig_width();++i)
@@ -254,8 +252,8 @@ namespace piranha
 
 
   /// Find the mean value of a series' evaluation over a timespan.
-  template <class Cf,class Trig,template <class,class> class I>
-  inline typename base_pseries<Cf,Trig,I>::eval_type base_pseries<Cf,Trig,I>::mean(
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline typename base_pseries<Cf, Trig, Term, I, Derived>::eval_type base_pseries<Cf, Trig, Term, I, Derived>::mean(
     const double &t0, const double &t1, const size_t &n) const
     {
       if (n==0)
@@ -278,8 +276,8 @@ namespace piranha
   /**
    * Internally it invokes the footprint methods of coefficients and trigonometric parts.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline size_t base_pseries<Cf,Trig,I>::footprint() const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline size_t base_pseries<Cf, Trig, Term, I, Derived>::footprint() const
     {
       size_t retval=sizeof(self)+trig_width()*(sizeof(psymbol *)+sizeof(mult_t));
       it_h_index it_f=h_index().end();
@@ -293,12 +291,11 @@ namespace piranha
 
   /// Diagnostic check on terms.
   /**
-   * This functions calls piranha::ps_term::checkup on all terms of the series. If an error is
+   * This functions calls Term::checkup on all terms of the series. If an error is
    * encountered it returns false, otherwise it will return true.
-   * @see piranha::ps_term::checkup.
    */
-  template <class Cf,class Trig,template <class,class> class I>
-  inline bool base_pseries<Cf,Trig,I>::checkup() const
+ template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+  inline bool base_pseries<Cf, Trig, Term, I, Derived>::checkup() const
     {
       it_s_index it_f=s_index().end();
       const size_t cw=cf_width(), tw=trig_width();
