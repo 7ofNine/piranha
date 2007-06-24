@@ -29,10 +29,7 @@
 
 namespace piranha
   {
-  //typedef ps_term<polynomial<monomial_gmp_array<double_cf> >,trig_array> gsp_term;
-  //typedef ps_term<complex_version<double_cf>,trig_array> npc_term;
-  typedef std::complex<ps<polynomial<double_cf>,trig_array,default_ps_index> > gspc;
-  //typedef ps<complex_version<double_cf>,trig_array> npc;
+  typedef std::complex<ps<polynomial<double_cf>,trig_array,ps_term,default_ps_index> > gspc;
 }
 
 #endif
