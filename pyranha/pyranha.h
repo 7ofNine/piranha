@@ -220,6 +220,10 @@ void ps_instantiate_complex_specifics(class_<T> &complex)
   complex.def("abs", &complex_ps::abs);
   complex.def("conj", &complex_ps::conj);
   complex.def("make_conj", &complex_ps::make_conj);
+  complex.def(self+=real_ps());
+  complex.def(self+real_ps());
+  complex.def(self-=real_ps());
+  complex.def(self-real_ps());
   complex.def(self*=real_ps());
   complex.def(self*real_ps());
   // Additional ctor(s) for complex series
