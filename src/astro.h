@@ -68,6 +68,7 @@ namespace piranha
         std::complex<T> eiphi=math::complexp(phi);
         for (int i=0;i<=n;++i)
           {
+            // TODO: see if we can reduce the number of temporaries here.
             phi=e*(sinM*eiphi.real()+cosM*eiphi.imag());
             eiphi=math::complexp(phi);
           }
