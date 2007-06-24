@@ -40,6 +40,7 @@ namespace piranha
   template <class T, class Derived>
   class base_polynomial
     {
+    struct is_cf{};
     protected:
       typedef monomial_gmp_array<T> m_type;
       /// Tag for the degree index.
