@@ -49,7 +49,7 @@ namespace piranha
             return;
           }
         mult_t tmp_mult;
-        // FIXME: cache end() here.
+        // TODO: cache end() here.
         for (it_s_index
              it=static_cast<Derived *>(this)->begin();it!=static_cast<Derived *>(this)->end();++it)
           {
