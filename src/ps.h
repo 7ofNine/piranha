@@ -24,6 +24,8 @@
 #include <complex>
 
 #include "base_pseries.h"
+#include "operators_toolbox.h"
+#include "math_toolbox.h"
 #include "complex_toolbox.h"
 #include "differential_toolbox.h"
 #include "trigonometric_toolbox.h"
@@ -38,6 +40,8 @@ namespace piranha
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
   class ps:
         public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I> >,
+        public operators_toolbox<ps<Cf,Trig,Term,I> >,
+        public math_toolbox<ps<Cf,Trig,Term,I> >,
         public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
         public real_trig_toolbox<ps<Cf,Trig,Term,I> >,
         public differential_toolbox<ps<Cf,Trig,Term,I> >
@@ -45,12 +49,12 @@ namespace piranha
       //|-----------------------|
       //|Typedef Specializations|
       //|-----------------------|
+    public:
       typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
       typedef typename ancestor::term_type term_type;
       typedef typename ancestor::it_s_index it_s_index;
       typedef typename ancestor::r_it_s_index r_it_s_index;
       typedef typename ancestor::cf_type cf_type;
-    public:
       /// Alias for self.
       typedef ps real_ps;
       /// Alias for complex coefficient type.
@@ -69,13 +73,6 @@ namespace piranha
       ps copy() const
       {
         return ps(*this);
-      }
-      //__PS_OPERATORS(ps,ancestor);
-      // FIXME: cram this into operator toolbox.
-      ps &operator/=(int n)
-      {
-        ancestor::basic_div_by_int(n);
-        return *this;
       }
       //|----------------------|
       //|Public Specializations|

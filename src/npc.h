@@ -28,8 +28,7 @@
 
 namespace piranha
   {
-  typedef ps_term<std::complex<double_cf>,trig_array> npc_term;
-  typedef std::complex<ps<double_cf,trig_array,default_ps_index> > npc;
+  typedef std::complex<ps<double_cf,trig_array,ps_term,default_ps_index> > npc;
 }
 
 #endif

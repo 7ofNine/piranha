@@ -30,7 +30,6 @@
 #include <complex>
 
 #include "phase_list.h"
-#include "ps_operators.h"
 
 namespace piranha
   {
@@ -269,6 +268,8 @@ namespace piranha
       template <class Cf2>
       it_s_index insert(const Term<Cf2, trig_type> &,
                         bool sign = true, const it_s_index *it_hint = 0);
+      void term_erase(const it_h_index &);
+      void term_erase(const it_s_index &);
       void swap(base_pseries &);
       void cumulative_crop(const double &);
       void crop(const double &);
@@ -345,13 +346,6 @@ namespace piranha
         {
           put_phases_freqs(-1);
         }
-      // Maths.
-      __PS_OPERATORS(base_pseries, base_pseries);
-      base_pseries &operator*=(const cf_type &x)
-      {
-        generic_mult(x);
-        return *this;
-      }
       // Probing.
       /// Check whether a series is empty or not.
       bool empty() const
@@ -397,8 +391,6 @@ namespace piranha
       void upgrade_norm(const double &);
       void downgrade_norm(const double &);
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
-      void term_erase(const it_h_index &);
-      void term_erase(const it_s_index &);
       void term_update(const it_h_index &, const cf_type &);
       void term_update(const it_s_index &, const cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
@@ -411,15 +403,6 @@ namespace piranha
       bool args_compatible(const
                            base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
       // TODO: move into private?
-      struct psym_p_cmp
-        {
-          psym_p_cmp()
-          {}
-          bool operator()(psym_p p1, psym_p p2) const
-            {
-              return (p1->name()<p2->name());
-            }
-        };
       template <class Cf2, class Derived2>
       bool args_different(const
                           base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
@@ -427,6 +410,7 @@ namespace piranha
       void basic_assignment(const base_pseries &);
       template <class Cf2, class Derived2>
       void alg_sum_lin_args(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, bool);
+    public:
       template <class Cf2, class Derived2>
       void merge_with(const base_pseries<Cf2, trig_type, Term, I, Derived2>&, bool sign = true);
       template <class T>
@@ -439,9 +423,17 @@ namespace piranha
       void generic_mult(const T &);
       void basic_div_by_int(int);
       void mult_by_int(int);
-      unsigned int pow_limit(const double &, const double &) const;
-      void basic_pow(const double &);
-      // Data members.
+    private:
+      struct psym_p_cmp
+        {
+          psym_p_cmp()
+          {}
+          bool operator()(psym_p p1, psym_p p2) const
+            {
+              return (p1->name()<p2->name());
+            }
+        };
+    // Data members.
     protected:
       double          norm_;
       vector_mult_t   lin_args_;
