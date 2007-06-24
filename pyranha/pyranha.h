@@ -175,8 +175,6 @@ void ps_instantiate_real_specifics(class_<T> &real)
   real.def("pow", &real_ps::pow);
   real.def("add_ps_to_arg", real_add_ps_to_arg_index(&real_ps::add_ps_to_arg));
   real.def("add_ps_to_arg", real_add_ps_to_arg_string(&real_ps::add_ps_to_arg));
-  real.def(self/=self);
-  real.def(self/self);
   // External functions.
   def("kep_cosE",&astro::kep_cosE<real_ps>,"Solve Kepler's equation for cosE.");
   // NOTE: which functions does it make sense to keep here?
