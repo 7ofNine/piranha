@@ -24,7 +24,7 @@
 namespace piranha
   {
   template <class Derived>
-  class operators_toolbox
+  class real_operators_toolbox
     {
     public:
       Derived &operator=(const Derived &p)
@@ -124,6 +124,147 @@ namespace piranha
       {
         Derived retval(*static_cast<Derived const *>(this));
         retval/=x;
+        return retval;
+      }
+    };
+
+
+  template <class real_Derived>
+  class complex_operators_toolbox
+    {
+    public:
+      typedef std::complex<real_Derived> Derived;
+      Derived &operator=(const Derived &p)
+      {
+          static_cast<Derived *>(this)->basic_assignment(p);
+          return *static_cast<Derived *>(this);
+      }
+      Derived &operator+=(const double &x)
+      {
+        static_cast<Derived *>(this)->generic_merge(x);
+        return *static_cast<Derived *>(this);
+      }
+      Derived &operator+=(const Derived &p)
+      {
+          static_cast<Derived *>(this)->merge_with(p);
+          return *static_cast<Derived *>(this);
+      }
+      Derived operator+(const double &x) const
+      {
+          Derived retval(*static_cast<Derived const *>(this));
+          retval+=x;
+          return retval;
+      }
+      Derived operator+(const Derived &p) const
+      {
+          Derived retval(*static_cast<Derived const *>(this));
+          retval+=p;
+          return retval;
+      }
+      Derived &operator-=(const double &x)
+      {
+        static_cast<Derived *>(this)->generic_merge(-x);
+        return *static_cast<Derived *>(this);
+      }
+      Derived &operator-=(const Derived &p)
+      {
+          static_cast<Derived *>(this)->merge_with(p,false);
+          return *static_cast<Derived *>(this);
+      }
+      Derived operator-(const double &x) const
+      {
+          Derived retval(*static_cast<Derived const *>(this));
+          retval-=x;
+          return retval;
+      }
+      Derived operator-(const Derived &p) const
+      {
+          Derived retval(*static_cast<Derived const *>(this));
+          retval-=p;
+          return retval;
+      }
+      Derived &operator*=(int n)
+      {
+       static_cast<Derived *>(this)->mult_by_int(n);
+       return *static_cast<Derived *>(this);
+      }
+      Derived &operator*=(const Derived &p)
+      {
+          static_cast<Derived *>(this)->basic_ps_mult(p);
+          return *static_cast<Derived *>(this);
+      }
+      Derived &operator*=(const double &x)
+      {
+          static_cast<Derived *>(this)->generic_mult(x);
+          return *static_cast<Derived *>(this);
+      }
+      template <class T>
+      Derived &operator*=(const T &x)
+      {
+          // NOTICE: this typedef is placed here to make sure we multiply only by cf_type.
+          typedef typename T::is_cf is_cf;
+          static_cast<Derived *>(this)->generic_mult(x);
+          return *static_cast<Derived *>(this);
+      }
+      Derived operator*(int n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval*=n;
+        return retval;
+      }
+      Derived operator*(const Derived &p) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval*=p;
+        return retval;
+      }
+      Derived &operator/=(int n)
+      {
+        static_cast<Derived *>(this)->basic_div_by_int(n);
+        return *static_cast<Derived *>(this);
+      }
+      Derived &operator/=(const double &x)
+      {
+        return *static_cast<Derived *>(this)*=(1./x);
+      }
+      Derived operator/(const double &x) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval/=x;
+        return retval;
+      }
+      // Complex specifics.
+      Derived &operator+=(const real_Derived &p)
+      {
+        static_cast<Derived *>(this)->merge_with(p);
+        return *static_cast<Derived *>(this);
+      }
+      Derived operator+(const real_Derived &p) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval+=p;
+        return retval;
+      }
+      Derived &operator-=(const real_Derived &p)
+      {
+        static_cast<Derived *>(this)->merge_with(p,false);
+        return *static_cast<Derived *>(this);
+      }
+      Derived operator-(const real_Derived &p) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval-=p;
+        return retval;
+      }
+      Derived &operator*=(const real_Derived &p)
+      {
+        static_cast<Derived *>(this)->basic_ps_mult(p);
+        return *static_cast<Derived *>(this);
+      }
+      Derived operator*(const real_Derived &p) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval*=p;
         return retval;
       }
     };

@@ -40,15 +40,12 @@ namespace piranha
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
   class ps:
         public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I> >,
-        public operators_toolbox<ps<Cf,Trig,Term,I> >,
+        public real_operators_toolbox<ps<Cf,Trig,Term,I> >,
         public math_toolbox<ps<Cf,Trig,Term,I> >,
         public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
         public real_trig_toolbox<ps<Cf,Trig,Term,I> >,
         public differential_toolbox<ps<Cf,Trig,Term,I> >
     {
-      //|-----------------------|
-      //|Typedef Specializations|
-      //|-----------------------|
     public:
       typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
       typedef typename ancestor::term_type term_type;
@@ -61,7 +58,7 @@ namespace piranha
       typedef std::complex<cf_type> complex_cf_type;
       /// Alias for complex counterpart.
       typedef std::complex<ps<cf_type,Trig,Term,I> > complex_ps;
-      // Common stuff.
+      // Ctors.
       ps():ancestor::base_pseries()
       {}
       ps(const ps &p):ancestor::base_pseries(p)
@@ -74,10 +71,6 @@ namespace piranha
       {
         return ps(*this);
       }
-      //|----------------------|
-      //|Public Specializations|
-      //|----------------------|
-    public:
       /// Constructor from int.
       explicit ps(int n)
       {
@@ -105,6 +98,7 @@ namespace std
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
   struct complex<piranha::ps<Cf,Trig,Term,I> >:
         public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > >,
+        public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I> >,
         public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
         public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I> >,
         public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >
@@ -126,9 +120,7 @@ public:
       typedef piranha::ps<Cf,Trig,Term,I> real_ps;
       /// Alias for real coefficient.
       typedef Cf real_cf_type;
-      // Common stuff
-      // ---------------------------------------------------------
-      // FIXME: this is shared with above, find a way to share.
+      // TODO: this is shared with above, find a way to share.
       /// Default constructor.
       complex():ancestor::base_pseries()
       {}
@@ -146,12 +138,6 @@ public:
         {
           return complex(*this);
         }
-      // ---------------------------------------------------------
-      //__PS_OPERATORS(ps,ancestor);
-      //|----------------------|
-      //|Public Specializations|
-      //|----------------------|
-public:
       /// Constructor from pair of real coefficients.
       explicit complex(const real_cf_type &a, const real_cf_type &b)
       {
@@ -171,7 +157,7 @@ public:
         ancestor::insert(tmp);
       }
       /// Constructor from real series.
-      // WARNING: here and below we are discarding lin_args.
+      // FIXME: here and below we are discarding lin_args.
       explicit complex(const real_ps &p):ancestor::base_pseries()
       {
         p_assert(ancestor::merge_args(p));
@@ -195,87 +181,6 @@ public:
       {
         build_from_components(real_ps(file1),real_ps(file2));
       }
-      // OPERATORS
-      // FIXME: cram this into operator toolbox.
-      complex &operator/=(int n)
-      {
-        ancestor::basic_div_by_int(n);
-        return *this;
-      }
-      template <class Cf2>
-      complex &operator*=(const complex<piranha::ps<Cf2,Trig,Term,I> > &p)
-      {
-        ancestor::basic_ps_mult(p);
-        return *this;
-      }
-      template <class Cf2>
-      complex &operator*=(const piranha::ps<Cf2,Trig,Term,I> &p)
-      {
-        ancestor::basic_ps_mult(p);
-        return *this;
-      }
-      complex &operator*=(int n)
-      {
-        ancestor::mult_by_int(n);
-        return *this;
-      }
-      complex &operator*=(const double &x)
-      {
-        ancestor::generic_mult(x);
-        return *this;
-      }
-      complex &operator*=(const long double &x)
-      {
-        ancestor::generic_mult(x);
-        return *this;
-      }
-      template <class Cf2>
-      complex &operator+=(const complex<piranha::ps<Cf2,Trig,Term,I> > &p)
-      {
-        ancestor::merge_with(p);
-        return *this;
-      }
-      template <class Cf2>
-      complex &operator+=(const piranha::ps<Cf2,Trig,Term,I> &p)
-      {
-        ancestor::merge_with(p);
-        return *this;
-      }
-      complex &operator+=(int x)
-      {
-        ancestor::generic_merge(x);
-        return *this;
-      }
-      complex &operator+=(const double &x)
-      {
-        ancestor::generic_merge(x);
-        return *this;
-      }
-      complex &operator+=(const long double &x)
-      {
-        ancestor::generic_merge(x);
-        return *this;
-      }
-      template <class Cf2>
-      complex operator+(const complex<piranha::ps<Cf2,Trig,Term,I> > &p) const
-        {
-          complex retval(*this);
-          retval+=p;
-          return retval;
-        }
-      template <class Cf2>
-      complex operator+(const piranha::ps<Cf2,Trig,Term,I> &p) const
-        {
-          complex retval(*this);
-          retval+=p;
-          return retval;
-        }
-      complex operator+(const double &x) const
-        {
-          complex retval(*this);
-          retval+=x;
-          return retval;
-        }
     };
 }
 #endif
