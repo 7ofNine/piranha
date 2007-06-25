@@ -174,7 +174,7 @@ namespace piranha
           << std::endl;
         append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
       }
-      new_term.c()=cf;
+      new_term.s_c()=cf;
 // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
 // Read flavour.
@@ -424,7 +424,7 @@ namespace piranha
     }
     for (iterator it=begin();it!=end();++it)
     {
-      it->c().print_plain(std::cout,cf_s_vec_);
+      it->g_c().print_plain(std::cout,cf_s_vec_);
       std::cout << stream_manager::data_separator() << it->phase(trig_s_vec_) <<
         stream_manager::data_separator() << it->freq(trig_s_vec_) << std::endl;
       ++i;

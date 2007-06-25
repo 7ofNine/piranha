@@ -165,7 +165,7 @@ namespace std
         typename real_ps::it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
         for (;it!=it_f;++it)
         {
-          term.c()=cf_type(it->c());
+          term.s_c()=cf_type(it->g_c());
           term.trig_args()=it->trig_args();
           term.s_flavour()=it->g_flavour();
           ancestor::insert(term);

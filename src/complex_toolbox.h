@@ -62,8 +62,8 @@ namespace piranha
             it!=it_f;
             ++it)
           {
-            term.c()
-              =cf_type(it->c(),real_cf_type(0));
+            term.s_c()
+              =cf_type(it->g_c(),real_cf_type(0));
             term.trig_args()=it->trig_args();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -77,8 +77,8 @@ namespace piranha
             it!=it_f;
             ++it)
           {
-            term.c()
-              =cf_type(real_cf_type(0),it->c());
+            term.s_c()
+              =cf_type(real_cf_type(0),it->g_c());
             term.trig_args()=it->trig_args();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -100,7 +100,7 @@ namespace piranha
           it!=it_f;
           ++it)
         {
-          term.c()=get_cf_comp(it->c(),cmp);
+          term.s_c()=get_cf_comp(it->g_c(),cmp);
           term.trig_args()=it->trig_args();
           term.s_flavour()=it->g_flavour();
           it_hint=retval.insert(term,true,&it_hint);

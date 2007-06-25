@@ -573,7 +573,7 @@ namespace piranha
             multiplier=0;
           }
           tmp=it->trig_args().t_eval(t,orig_->trig_s_vec());
-          c_eval=it->c().t_eval(t,orig_->cf_s_vec());
+          c_eval=it->g_c().t_eval(t,orig_->cf_s_vec());
           switch (it->g_flavour())
           {
             case true:
@@ -637,7 +637,7 @@ namespace piranha
                 tmp_phase=*it2-it->phase(a_->trig_s_vec());
             }
             tmp=it->trig_args().t_eval(t,a_->trig_s_vec());
-            c_eval=it->c().t_eval(t,a_->cf_s_vec());
+            c_eval=it->g_c().t_eval(t,a_->cf_s_vec());
             switch (it->g_flavour())
             {
               case true:

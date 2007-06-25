@@ -43,22 +43,22 @@ namespace piranha
   {
     tmp_term=src;
 // Store coefficient for later.
-    cf_type tmp_c=src.c();
+    cf_type tmp_c=src.g_c();
 // Insert first term.
-    tmp_term.c()*=std::cos(phase);
+    tmp_term.s_c()*=std::cos(phase);
     retps.insert(tmp_term);
 // Second term: change flavour and sign.
     switch (src.g_flavour())
     {
       case true:
         tmp_term.s_flavour()=false;
-        tmp_term.c()=tmp_c;
-        tmp_term.c()*=(-std::sin(phase));
+        tmp_term.s_c()=tmp_c;
+        tmp_term.s_c()*=(-std::sin(phase));
         break;
       case false:
         tmp_term.s_flavour()=true;
-        tmp_term.c()=tmp_c;
-        tmp_term.c()*=std::sin(phase);
+        tmp_term.s_c()=tmp_c;
+        tmp_term.s_c()*=std::sin(phase);
     }
     retps.insert(tmp_term);
   }
@@ -139,7 +139,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.c().prepend_args(n);
+      tmp_term.s_c().prepend_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -167,7 +167,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.c().append_args(n);
+      tmp_term.s_c().append_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -306,13 +306,13 @@ namespace piranha
 // This is an O(1) operation, since the order in the set is not changed
 // Yes.. but there is a re-hash involved, it still should be cheaper than
 // creating a new term though. Investigate.
-      cf_type new_c=it_new->c();
+      cf_type new_c=it_new->g_c();
 // FIXME: change sign directly here, so we do not do a copy below!
       p_assert(s_index().modify(it_new,typename Term<cf_type,trig_type>::
         modifier_update_cf(-new_c)));
     }
 // No need do differentiate between + and -, will get abs()-ed anyway
-    upgrade_norm(term.c().norm(cf_s_vec_));
+    upgrade_norm(term.g_c().norm(cf_s_vec_));
     return it_new;
   }
 
@@ -363,7 +363,7 @@ namespace piranha
     inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::ll_insert(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
-    p_assert(term.c().compatible(cf_width()));
+    p_assert(term.g_c().compatible(cf_width()));
     p_assert(term.trig_args().compatible(trig_width()));
     p_assert(term.trig_args().sign()>0);
     it_s_index ret_it;
@@ -383,13 +383,13 @@ namespace piranha
       cf_type new_c;
       if (sign)
       {
-        new_c=it->c();
-        new_c+=term.c();
+        new_c=it->g_c();
+        new_c+=term.g_c();
       }
       else
       {
-        new_c=it->c();
-        new_c-=term.c();
+        new_c=it->g_c();
+        new_c-=term.g_c();
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_zero(cf_s_vec_))
@@ -439,10 +439,10 @@ namespace piranha
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
-    p_assert(!term.c().larger(cw));
+    p_assert(!term.g_c().larger(cw));
     p_assert(!term.trig_args().larger(tw));
     term_type *new_term=0;
-    if (term.c().smaller(cw) || term.trig_args().smaller(tw))
+    if (term.g_c().smaller(cw) || term.trig_args().smaller(tw))
     {
       new_term = new term_type(term);
       new_term->increase_size(cw,tw);

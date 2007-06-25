@@ -46,7 +46,7 @@ namespace piranha
           {}
         void operator()(ps_term &term)
         {
-          term.c_ = new_cf_;
+          term.s_c() = new_cf_;
         }
 // NOTICE: evaluate the impact of using const & here, esp. when using gmp
         const cf_type &new_cf_;
@@ -57,18 +57,18 @@ namespace piranha
 /// Copy constructor from term with different template parameters.
       template <class Cf2>
         explicit ps_term(const ps_term<Cf2,trig_type> &term):
-      private_flavour_(term.g_flavour()),c_(term.c()),trig_args_(term.trig_args())
+      private_flavour_(term.g_flavour()),private_c_(term.g_c()),trig_args_(term.trig_args())
       {                                           /*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
       }
 // Getters
 /// Get coefficient reference.
-      cf_type &c()
+      cf_type &s_c()
       {
-        return c_;
+        return private_c_;
       }
-      const cf_type &c() const
+      const cf_type &g_c() const
       {
-        return c_;
+        return private_c_;
       }
 /// Get reference to trigonometric part.
       trig_type &trig_args()
@@ -137,21 +137,21 @@ namespace piranha
     private:
 // Data members
       bool        private_flavour_;
-      cf_type     c_;
+      cf_type     private_c_;
       trig_type   trig_args_;
   };
 
 /// Default constructor.
   template <class Cf, class Trig>
     inline ps_term<Cf,Trig>::ps_term():
-  private_flavour_(true),c_(),trig_args_()
+  private_flavour_(true),private_c_(),trig_args_()
     {}
 
 /// Constructor from coefficient and flavour.
   template <class Cf, class Trig>
     inline ps_term<Cf,Trig>::
     ps_term(const cf_type &c, bool flavour):
-  private_flavour_(flavour),c_(c)
+  private_flavour_(flavour),private_c_(c)
     {}
 }
 #endif

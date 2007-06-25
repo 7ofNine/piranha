@@ -231,7 +231,7 @@ namespace piranha
     for (it_s_index it=s_index().begin();it!=s_index().end();++it)
     {
       tmp_term=*it;
-      tmp_term.c()*=c;
+      tmp_term.s_c()*=c;
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);
@@ -265,7 +265,7 @@ namespace piranha
     for (it_s_index it=s_index().begin();it!=s_index().end();++it)
     {
       tmp_term=*it;
-      tmp_term.c()/=n;
+      tmp_term.s_c()/=n;
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);

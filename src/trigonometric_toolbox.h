@@ -221,7 +221,7 @@ namespace piranha
         complex_ps retval;
         p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-        real_cf_type _cf=it->c();
+        real_cf_type _cf=it->g_c();
         if (it->g_flavour()
           )
         {
@@ -230,11 +230,11 @@ namespace piranha
           term2.trig_args().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
-            term1.c().set_real(__jaccosRecf(i,_cf));
+            term1.s_c().set_real(__jaccosRecf(i,_cf));
             term1.trig_args()=it->trig_args();
             term1.trig_args()*=(i<<1);
             retval.insert(term1);
-            term2.c().set_imag(__jaccosImcf(i,_cf));
+            term2.s_c().set_imag(__jaccosImcf(i,_cf));
             term2.trig_args()=it->trig_args();
             term2.trig_args()*=((i<<1)+1);
             retval.insert(term2);
@@ -247,11 +247,11 @@ namespace piranha
           term2.trig_args().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
-            term1.c().set_real(__jacsinRecf(i,_cf));
+            term1.s_c().set_real(__jacsinRecf(i,_cf));
             term1.trig_args()=it->trig_args();
             term1.trig_args()*=(i<<1);
             retval.insert(term1);
-            term2.c().set_imag(__jacsinImcf(i,_cf));
+            term2.s_c().set_imag(__jacsinImcf(i,_cf));
             term2.trig_args()=it->trig_args();
             term2.trig_args()*=((i<<1)+1);
             retval.insert(term2);
