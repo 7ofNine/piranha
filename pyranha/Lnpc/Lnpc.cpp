@@ -24,6 +24,6 @@
 BOOST_PYTHON_MODULE(_Lnpc)
 {
   class_<lnpc> inst=ps_basic_instantiation<lnpc>("lnpc","Complex numerical Poisson series class, "
-                    "trigonometric lists version.");
+    "trigonometric lists version.");
   ps_instantiate_complex_specifics(inst);
 }

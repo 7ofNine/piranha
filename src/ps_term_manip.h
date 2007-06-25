@@ -22,23 +22,22 @@
 #define PIRANHA_PS_TERM_MANIP_H
 
 namespace piranha
-  {
-  /// Invert the sign of trigonometric arguments multiplicers.
+{
+/// Invert the sign of trigonometric arguments multiplicers.
   template <class Cf,class Trig>
-  inline void ps_term<Cf,Trig>::invert_trig_args()
+    inline void ps_term<Cf,Trig>::invert_trig_args()
   {
     trig_args_.invert_sign();
     if (!flavour_)
-      {
-        // FIXME: maybe here a invert_sign function for the coefficient should be used?
-        c_*=-1;
-      }
+    {
+// FIXME: maybe here a invert_sign function for the coefficient should be used?
+      c_*=-1;
+    }
   }
 
-
-  /// Resize term.
+/// Resize term.
   template <class Cf,class Trig>
-  inline void ps_term<Cf,Trig>::increase_size(const size_t &cw, const size_t &tw)
+    inline void ps_term<Cf,Trig>::increase_size(const size_t &cw, const size_t &tw)
   {
     c_.increase_size(cw);
     trig_args_.increase_size(tw);

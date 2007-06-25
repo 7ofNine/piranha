@@ -24,6 +24,6 @@
 BOOST_PYTHON_MODULE(_Gsp)
 {
   class_<gsp> inst=ps_basic_instantiation<gsp>(std::string("gsp"),
-                   std::string("Series with symbolic polynomial coefficients."));
+    std::string("Series with symbolic polynomial coefficients."));
   ps_instantiate_real_specifics(inst);
 }

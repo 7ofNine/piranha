@@ -26,13 +26,12 @@
 #define p_assert(result) \
 if ((result)==false) \
 { \
-    std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-    exit(1); \
+  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+  exit(1); \
 }
 
 #else
 
 #define p_assert(__arg,...) __arg
 #endif
-
 #endif

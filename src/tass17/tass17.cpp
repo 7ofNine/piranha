@@ -21,8 +21,8 @@
 #include "tass17.h"
 
 namespace piranha
-  {
-  // Initialization of tass17's static variables
+{
+// Initialization of tass17's static variables
   bool tass17::loaded=false;
   bool tass17::has_deltas=false;
 

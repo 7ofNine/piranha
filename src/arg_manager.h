@@ -24,56 +24,56 @@
 #include "psymbol.h"
 
 namespace piranha
-  {
-  /// Manager for arguments.
-  /**
-   * This class is used to manage information about arguments in those context where such information
-   * is not available. For instance when managing the elements of the multiindex container in a series
-   * class the functors used to order the terms do not know anything about arguments, since they do not
-   * appear inside each term. In those cases, before manipulating a multiindex container, an
-   * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
-   * through the arg_manager::cf_args and arg_manager::trig_args methods.
-   */
+{
+/// Manager for arguments.
+/**
+ * This class is used to manage information about arguments in those context where such information
+ * is not available. For instance when managing the elements of the multiindex container in a series
+ * class the functors used to order the terms do not know anything about arguments, since they do not
+ * appear inside each term. In those cases, before manipulating a multiindex container, an
+ * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
+ * through the arg_manager::cf_args and arg_manager::trig_args methods.
+ */
   class arg_manager
-    {
+  {
     public:
-      /// Argument assigner.
-      /**
-       * Create an instance of this class whenever there is need to refer to arguments but the context
-       * does not provide a method to pass such arguments.
-       */
+/// Argument assigner.
+/**
+ * Create an instance of this class whenever there is need to refer to arguments but the context
+ * does not provide a method to pass such arguments.
+ */
       class arg_assigner
-        {
+      {
         public:
-          /// Constructor from pointers to piranha::vector_psym_p.
+/// Constructor from pointers to piranha::vector_psym_p.
           arg_assigner(vector_psym_p const *cf_a, vector_psym_p const *trig_a)
-              :was_assigned_(assigned_)
+            :was_assigned_(assigned_)
           {
             p_assert(!was_assigned_);
             cf_args_=cf_a;
             trig_args_=trig_a;
             assigned_=true;
           }
-          /// Destructor: undoes assignment and unlocks resources.
+/// Destructor: undoes assignment and unlocks resources.
           ~arg_assigner()
           {
             assigned_=false;
           }
         private:
           bool was_assigned_;
-        }
+      }
       ;
-      /// Check whether arguments were assigned or not.
+/// Check whether arguments were assigned or not.
       static bool assigned()
       {
         return assigned_;
       }
-      /// Retrieve pointer to coefficient arguments vector.
+/// Retrieve pointer to coefficient arguments vector.
       static vector_psym_p const *cf_args()
       {
         return cf_args_;
       }
-      /// Retrieve pointer to trigonometric arguments vector.
+/// Retrieve pointer to trigonometric arguments vector.
       static vector_psym_p const *trig_args()
       {
         return trig_args_;
@@ -84,8 +84,7 @@ namespace piranha
       static boost::mutex::scoped_lock  lock_;
       static vector_psym_p const        *cf_args_;
       static vector_psym_p const        *trig_args_;
-    }
+  }
   ;
 }
-
 #endif

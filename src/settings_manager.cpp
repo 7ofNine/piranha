@@ -23,8 +23,8 @@
 #include "version.h"
 
 namespace piranha
-  {
-  // Settings manager static members.
+{
+// Settings manager static members.
   double settings_manager::numerical_zero_ = 1E-80;
   const unsigned int settings_manager::jacang_limit_ = 20;
   double settings_manager::prec_ = 1E-6;
@@ -35,7 +35,7 @@ namespace piranha
 
   settings_manager::greeter::greeter()
   {
-    // Startup report.
+// Startup report.
     std::cout << "This is Piranha version " << __piranha_version << std::endl;
     std::cout << "Default parameters initialized:" << std::endl;
     std::cout << "Print precision\t\t\t=\t" << stream_manager::digits() << std::endl;
@@ -46,8 +46,7 @@ namespace piranha
     std::cout << "_______________________________" << std::endl << std::endl;
   }
 
-
-  /// Set precision in multiplication of series.
+/// Set precision in multiplication of series.
   void settings_manager::set_prec(const double &value)
   {
     boost::mutex::scoped_lock lock(mutex_)
@@ -55,8 +54,7 @@ namespace piranha
     prec_=value;
   }
 
-
-  /// Set path to theories of motion.
+/// Set path to theories of motion.
   void settings_manager::set_theories_path(const std::string &str)
   {
     boost::mutex::scoped_lock lock(mutex_)

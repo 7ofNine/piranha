@@ -27,12 +27,12 @@
 #include "../prectest.h"
 
 namespace piranha
-  {
+{
 #ifdef _PIRANHA_FORTRAN
   extern "C"
-    {
-      extern void posired_(const double &dj, const int &i, double xyz[3], double vxyz[3]);
-    }
+  {
+    extern void posired_(const double &dj, const int &i, double xyz[3], double vxyz[3]);
+  }
 #else
   inline void posired_(const double &dj, const int &i, double xyz[3], double vxyz[3])
   {
@@ -41,10 +41,9 @@ namespace piranha
   }
 #endif
 
-
-  /// Class for TASS series.
+/// Class for TASS series.
   class tass17
-    {
+  {
     public:
       static void load();
       static void status();
@@ -52,19 +51,19 @@ namespace piranha
       static lnp a(const double &, const lnp &);
       static lnpc eiM(const lnp &, const lnpc &, const lnp &);
       static lnp r6();
-      /// Calculate radius with Alain Vienne's FORTRAN routine.
-      /**
-       * If FORTRAN support was not compiled in a warning message is displayed and the function returns 0.
-       * @param[in] dj julian date.
-       * @param[in] i satellite number.
-       */
+/// Calculate radius with Alain Vienne's FORTRAN routine.
+/**
+ * If FORTRAN support was not compiled in a warning message is displayed and the function returns 0.
+ * @param[in] dj julian date.
+ * @param[in] i satellite number.
+ */
       static double vienne_r(const double &dj, int i)
       {
         double xyz[3], vxyz[3];
         posired_(dj,i,xyz,vxyz);
         return std::sqrt(xyz[0]*xyz[0]+xyz[1]*xyz[1]+xyz[2]*xyz[2]);
       }
-      // Getters.
+// Getters.
       static const double &m0()
       {
         return m0_;
@@ -93,14 +92,14 @@ namespace piranha
       {
         return zeta6_;
       }
-      // Add delta lambdas to all series.
+// Add delta lambdas to all series.
       static void add_delta_lambdas();
     private:
       template <class T>
-      static void add_delta_lambda(T &);
-      // Data members.
+        static void add_delta_lambda(T &);
+// Data members.
     private:
-      // Tass physical parameters.
+// Tass physical parameters.
       static const double m0_;
       static const double m6_;
 
@@ -120,16 +119,16 @@ namespace piranha
       static lnp dlambda5_;
       static lnp dlambda6_;
       static lnp dlambda8_;
-      // Flag to see if series were already loaded.
+// Flag to see if series were already loaded.
       static bool loaded;
-      // Flag to see if deltas have been added
+// Flag to see if deltas have been added
       static bool has_deltas;
-    };
+  };
 
   class tc_vienne_r6:public base_tc<lnp>
-    {
+  {
     public:
-      // b_type stands for "benchmarked type"
+// b_type stands for "benchmarked type"
       typedef lnp b_type;
       typedef base_tc<lnp>::eval_type eval_type;
       tc_vienne_r6(const lnp &b, const double &t1, const double &t2, const size_t &ntot)
@@ -137,23 +136,22 @@ namespace piranha
         base_tc<lnp>::init(t1,t2,ntot,b);
       }
     private:
-      // t is expressed in Julian years from J1980.0.
+// t is expressed in Julian years from J1980.0.
       virtual eval_type eval_hs_computed(const double &t) const
-        {
-          return tass17::vienne_r((astro::J1980dot0()+t*astro::JD_per_JY()),6)*
-                 astro::AU();
-        }
-    };
-
+      {
+        return tass17::vienne_r((astro::J1980dot0()+t*astro::JD_per_JY()),6)*
+          astro::AU();
+      }
+  };
 
   inline lnp tass17::r6()
   {
     psym_p p=psymbol_manager::get_pointer("\\lambda_{o6}");
     if (p==psymbol_manager::end())
-      {
-        std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning defaul series." << std::endl;
-        return lnp();
-      }
+    {
+      std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning defaul series." << std::endl;
+      return lnp();
+    }
     const double N=p->freq();
     lnp e6=e(z6());
     lnpc complexp_M=eiM(lambda6(),z6(),e6);
@@ -165,21 +163,20 @@ namespace piranha
     return e6;
   }
 
-
-  /// Load into memory TASS series.
-  /**
-   * The series are loaded in the same form seen in Alain Vienne's paper. They still are missing the
-   * addition of the non-linear parts of the lambdas (i.e., the long period perturbations).
-   * To correct the series use tass17::add_delta_lambdas.
-   * If called more than once, the series will be reset to their default values.
-   * @see tass17::add_delta_lambdas, to add long period perturbations to series.
-   */
+/// Load into memory TASS series.
+/**
+ * The series are loaded in the same form seen in Alain Vienne's paper. They still are missing the
+ * addition of the non-linear parts of the lambdas (i.e., the long period perturbations).
+ * To correct the series use tass17::add_delta_lambdas.
+ * If called more than once, the series will be reset to their default values.
+ * @see tass17::add_delta_lambdas, to add long period perturbations to series.
+ */
   inline void tass17::load()
   {
     if (loaded)
-      {
-        std::cout << "Series already loaded, resetting them to the default values." << std::endl;
-      }
+    {
+      std::cout << "Series already loaded, resetting them to the default values." << std::endl;
+    }
 
     lambda4_=lnp("tass_lambda4.csv");
     lambda6_=lnp("tass_lambda6.csv");
@@ -188,7 +185,7 @@ namespace piranha
 
     z6_=lnpc("tass_z6_real.csv","tass_z6_imag.csv");
 
-    //zeta6_=lnpc(tass_zeta6); FIXME -> series is not available in electronic format yet.
+//zeta6_=lnpc(tass_zeta6); FIXME -> series is not available in electronic format yet.
 
     dlambda1_=lnp("tass_dlambda1.csv");
     dlambda2_=lnp("tass_dlambda2.csv");
@@ -202,8 +199,7 @@ namespace piranha
     has_deltas=false;
   }
 
-
-  /// Print to screen useful info about theory.
+/// Print to screen useful info about theory.
   inline void tass17::status()
   {
     std::cout << "This is TASS version 1.7." << std::endl;
@@ -212,9 +208,8 @@ namespace piranha
     std::cout << "Have deltas been added?\t" << has_deltas << std::endl;
   }
 
-
   template <class T>
-  inline void tass17::add_delta_lambda(T &p)
+    inline void tass17::add_delta_lambda(T &p)
   {
     p.add_ps_to_arg("\\lambda_{o1}",dlambda1_);
     p.add_ps_to_arg("\\lambda_{o2}",dlambda2_);
@@ -225,58 +220,55 @@ namespace piranha
     p.add_ps_to_arg("\\lambda_{o8}",dlambda8_);
   }
 
-
-  /// Add \f$ \delta\lambda_i \f$ to all series.
-  /**
-   * Add the long period perturbations (\f$ \delta\lambda_i \f$ in Vienne's papers) to the series
-   * of the theory.
-   */
+/// Add \f$ \delta\lambda_i \f$ to all series.
+/**
+ * Add the long period perturbations (\f$ \delta\lambda_i \f$ in Vienne's papers) to the series
+ * of the theory.
+ */
   inline void tass17::add_delta_lambdas()
   {
     if (!loaded)
-      {
-        std::cout << "Please load series before adding deltas." << std::endl;
-      }
+    {
+      std::cout << "Please load series before adding deltas." << std::endl;
+    }
     else if (!has_deltas)
-      {
-        add_delta_lambda(lambda4_);
-        add_delta_lambda(lambda6_);
+    {
+      add_delta_lambda(lambda4_);
+      add_delta_lambda(lambda6_);
 
-        add_delta_lambda(p6_);
+      add_delta_lambda(p6_);
 
-        add_delta_lambda(z6_);
+      add_delta_lambda(z6_);
 
-        //lnpc tass17::zeta6_; FIXME!
+//lnpc tass17::zeta6_; FIXME!
 
-        has_deltas=true;
-      }
+      has_deltas=true;
+    }
     else
-      {
-        std::cout << "Deltas have already been added, doing nothing." << std::endl;
-      }
+    {
+      std::cout << "Deltas have already been added, doing nothing." << std::endl;
+    }
   }
 
-
-  /// Convert elliptic orbital element z into eccentricity e.
-  /**
-   * This function simply calculates the absolute value of the complex ilnput series.
-   * @param[in] z ilnput complex series for elliptic orbital element z.
-   */
+/// Convert elliptic orbital element z into eccentricity e.
+/**
+ * This function simply calculates the absolute value of the complex ilnput series.
+ * @param[in] z ilnput complex series for elliptic orbital element z.
+ */
   inline lnp tass17::e(const lnpc &z)
   {
     return z.abs();
   }
 
-
-  /// Convert elliptic orbital element p into semi-major axis a.
-  /**
-   * The returned value is expressed in the same time unit of input N to the power of \f$-\frac{2}{3}\f$.
-   * Multiply by \f$ \sqrt[3]{\mu} \f$ to get a metric quantity.
-   * \f$ \mu \f$ is the sum of the
-   * gravitational parameters of Saturn and of the satellite whose semi-major axis we are calculating.
-   * @param[in] N double precision mean motion.
-   * @param[in] p input real series for the elliptic orbital element p.
-   */
+/// Convert elliptic orbital element p into semi-major axis a.
+/**
+ * The returned value is expressed in the same time unit of input N to the power of \f$-\frac{2}{3}\f$.
+ * Multiply by \f$ \sqrt[3]{\mu} \f$ to get a metric quantity.
+ * \f$ \mu \f$ is the sum of the
+ * gravitational parameters of Saturn and of the satellite whose semi-major axis we are calculating.
+ * @param[in] N double precision mean motion.
+ * @param[in] p input real series for the elliptic orbital element p.
+ */
   inline lnp tass17::a(const double &N, const lnp &p)
   {
     lnp a=p;
@@ -286,8 +278,7 @@ namespace piranha
     return a;
   }
 
-
-  /// Find complex exponential of mean mean motion M.
+/// Find complex exponential of mean mean motion M.
   inline lnpc tass17::eiM(const lnp &lambda, const lnpc &z, const lnp &e)
   {
     lnpc retval=lambda.complexp();
@@ -296,5 +287,4 @@ namespace piranha
     return retval;
   }
 }
-
 #endif

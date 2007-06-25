@@ -21,7 +21,7 @@
 #include "arg_manager.h"
 
 namespace piranha
-  {
+{
   bool arg_manager::assigned_ = false;
   boost::mutex arg_manager::mutex_;
   boost::mutex::scoped_lock arg_manager::lock_(arg_manager::mutex_,false);

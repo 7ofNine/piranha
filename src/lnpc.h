@@ -27,8 +27,7 @@
 #include "trig_slist.h"
 
 namespace piranha
-  {
+{
   typedef std::complex<ps<double_cf,trig_slist,ps_term,default_ps_index> > lnpc;
 }
-
 #endif

@@ -24,96 +24,96 @@
 #include <complex>
 
 #include "common_typedefs.h"
-#include "math.h"             // besselJ.
+#include "math.h"                                 // besselJ.
 #include "simple_container.h"
 
 namespace piranha
-  {
-  /// Double-precision numerical coefficient.
-  /**
-   * This class can be used as coefficient in Poisson series. It encapsulate a double precision
-   * numerical value and provides the meand to access it.
-   *
-   * A set of operators are provided to enable interoperability with basic numerical data types.
-   */
+{
+/// Double-precision numerical coefficient.
+/**
+ * This class can be used as coefficient in Poisson series. It encapsulate a double precision
+ * numerical value and provides the meand to access it.
+ *
+ * A set of operators are provided to enable interoperability with basic numerical data types.
+ */
   class double_cf : public simple_container<double,double_cf>
-    {
+  {
     public:
       struct is_cf{};
-      /// Alias for itself.
+/// Alias for itself.
       typedef double_cf self;
-      /// Alias for the parent class.
+/// Alias for the parent class.
       typedef simple_container<double,double_cf> ancestor;
-      // Start INTERFACE definition for the real version.
-      //-------------------------------------------------------
-      /// Evaluation result (double).
+// Start INTERFACE definition for the real version.
+//-------------------------------------------------------
+/// Evaluation result (double).
       typedef double eval_type;
-      // Ctors and dtor.
-      /// Empty constructor.
+// Ctors and dtor.
+/// Empty constructor.
       explicit double_cf():ancestor::simple_container()
-      {}
-      /// Constructor from double.
+        {}
+/// Constructor from double.
       explicit double_cf(const double &val):ancestor::simple_container(val)
-      {}
-      /// Constructor from integer.
+        {}
+/// Constructor from integer.
       explicit double_cf(int val):ancestor::simple_container(val)
-      {}
-      /// Constructor from string.
+        {}
+/// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::simple_container(s)
-      {}
-      /// Constructor from symbol.
+        {}
+/// Constructor from symbol.
       explicit double_cf(const psymbol &):ancestor::simple_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
-      /// Copy constructor.
+/// Copy constructor.
       double_cf(const self &dc):ancestor::simple_container(dc)
-      {}
-      /// Destructor.
+        {}
+/// Destructor.
       ~double_cf()
-      {}
-      // Getters
-      /// Calculate norm (absolute value).
+        {}
+// Getters
+/// Calculate norm (absolute value).
       double norm(const vector_psym_p &) const
-        {
-          return abs();
-        }
-      /// Evaluation.
-      /**
-       * Evaluation for this class always returns the same value.
-       */
+      {
+        return abs();
+      }
+/// Evaluation.
+/**
+ * Evaluation for this class always returns the same value.
+ */
       double t_eval(const double &, const vector_psym_p &) const
-        {
-          return value_;
-        }
-      // Probing
-      /// Is value zero?
-      /**
-       * If value is less than settings_manager::numerical_zero() in absolute value it is considered
-       * to be zero.
-       */
+      {
+        return value_;
+      }
+// Probing
+/// Is value zero?
+/**
+ * If value is less than settings_manager::numerical_zero() in absolute value it is considered
+ * to be zero.
+ */
       bool is_zero(const vector_psym_p &) const
-        {
-          return (abs()<settings_manager::numerical_zero());
-        }
-      // Maths
-      /// Bessel function of the first kind.
-      /**
-       * Uses C standard library call.
-       */
+      {
+        return (abs()<settings_manager::numerical_zero());
+      }
+// Maths
+/// Bessel function of the first kind.
+/**
+ * Uses C standard library call.
+ */
       self besselJ(int n, const vector_psym_p &) const
-        {
-          return self(math::besselJ(n,value_));
-        }
+      {
+        return self(math::besselJ(n,value_));
+      }
       self pow(const double &y) const
-        {
-          return self(std::pow(value_,y));
-        }
-      // Needed operators.
+      {
+        return self(std::pow(value_,y));
+      }
+// Needed operators.
       self operator-() const
-        {
-          return (self(*this)*=-1);
-        }
+      {
+        return (self(*this)*=-1);
+      }
       self &operator/=(int n)
       {
         value_/=n;
@@ -125,11 +125,11 @@ namespace piranha
         return *this;
       }
       self operator*(int n) const
-        {
-          self retval(*this);
-          retval*=n;
-          return retval;
-        }
+      {
+        self retval(*this);
+        retval*=n;
+        return retval;
+      }
       self &operator=(const self &val2)
       {
         ancestor::value_=val2.value_;
@@ -150,82 +150,82 @@ namespace piranha
         value_*=val2.value_;
         return *this;
       }
-      // End INTERFACE definition.
-      //-------------------------------------------------------
-      // Interface for monomial.
+// End INTERFACE definition.
+//-------------------------------------------------------
+// Interface for monomial.
       double abs() const
-        {
-          return std::abs(value_);
-        }
-      /// Test whether two double_cf are equal or opposite in sign.
+      {
+        return std::abs(value_);
+      }
+/// Test whether two double_cf are equal or opposite in sign.
       bool equal_or_opposite(const self &val2) const
-        {
-          return (std::abs(abs()-val2.abs())<settings_manager::numerical_zero());
-        }
-      /// Test whether two double_cf have the same sign.
+      {
+        return (std::abs(abs()-val2.abs())<settings_manager::numerical_zero());
+      }
+/// Test whether two double_cf have the same sign.
       bool same_sign(const self &val2) const
-        {
-          return ((value_>0)==(val2.value()>0));
-        }
-      /// Test whether value is unity.
+      {
+        return ((value_>0)==(val2.value()>0));
+      }
+/// Test whether value is unity.
       bool is_unity() const
-        {
-          return (std::abs(abs()-1)<settings_manager::numerical_zero());
-        }
-      /// Test whether value is negative.
+      {
+        return (std::abs(abs()-1)<settings_manager::numerical_zero());
+      }
+/// Test whether value is negative.
       bool is_negative() const
-        {
-          return (value_<0);
-        }
-      /// Test whether value is positive.
+      {
+        return (value_<0);
+      }
+/// Test whether value is positive.
       bool is_positive() const
-        {
-          return (value_>0);
-        }
-      /// Calculate norm (absolute value).
+      {
+        return (value_>0);
+      }
+/// Calculate norm (absolute value).
       double norm() const
-        {
-          return abs();
-        }
+      {
+        return abs();
+      }
       self inv() const
-        {
-          return self(1./value_);
-        }
+      {
+        return self(1./value_);
+      }
       self &operator/=(const double &x)
       {
         value_/=x;
         return *this;
       }
       self operator*(const double &x) const
-        {
-          self retval(*this);
-          retval*=x;
-          return retval;
-        }
+      {
+        self retval(*this);
+        retval*=x;
+        return retval;
+      }
       bool operator<(const double &x) const
-        {
-          return (value_<x);
-        }
-      // ancestor::value() is part of the interface too.
-      //-------------------------------------------------------
+      {
+        return (value_<x);
+      }
+// ancestor::value() is part of the interface too.
+//-------------------------------------------------------
       self operator+(const self &val2) const
-        {
-          return (self(*this)+=val2);
-        }
+      {
+        return (self(*this)+=val2);
+      }
       self operator-(const self &val2) const
-        {
-          return (self(*this)-=val2);
-        }
+      {
+        return (self(*this)-=val2);
+      }
       self operator*(const self &val2) const
-        {
-          return (self(*this)*=val2);
-        }
+      {
+        return (self(*this)*=val2);
+      }
       self &operator*=(const double &x)
       {
         value_*=x;
         return *this;
       }
-    }
+  }
   ;
 
   inline std::istream &operator>>(std::istream &is, double_cf &dc)
@@ -243,59 +243,60 @@ namespace piranha
   }
 }
 
+
 namespace std
-  {
+{
   template <>
-  struct complex<piranha::double_cf> :
-        public piranha::simple_container<complex_double,complex<piranha::double_cf> >
-    {
-public:
+    struct complex<piranha::double_cf> :
+  public piranha::simple_container<complex_double,complex<piranha::double_cf> >
+  {
+    public:
       typedef complex self;
       typedef piranha::double_cf double_type;
       typedef piranha::simple_container<complex_double,complex<piranha::double_cf> > ancestor;
-      // Start INTERFACE definition for the complex specialization. FIXME: is this different from
-      // the above???
-      //-------------------------------------------------------
+// Start INTERFACE definition for the complex specialization. FIXME: is this different from
+// the above???
+//-------------------------------------------------------
       typedef complex_double eval_type;
-      // Ctors and dtor.
+// Ctors and dtor.
       explicit complex():ancestor::simple_container()
-      {}
+        {}
       explicit complex(const std::string &s):ancestor::simple_container(s)
-      {}
+        {}
       explicit complex(const double_type &r, const double_type &i):
-          ancestor::simple_container(complex_double(r.value(),i.value()))
-      {}
+      ancestor::simple_container(complex_double(r.value(),i.value()))
+        {}
       explicit complex(const double_type &r):
-          ancestor::simple_container(complex_double(r.value(),0.))
-      {}
+      ancestor::simple_container(complex_double(r.value(),0.))
+        {}
       explicit complex(const complex_double &c):ancestor::simple_container(c)
-      {}
+        {}
       explicit complex(int n):ancestor::simple_container(complex_double(n,0.))
-      {}
+        {}
       explicit complex(int n1, int n2):ancestor::simple_container(complex_double(n1,n2))
-      {}
+        {}
       explicit complex(const double &x):
-          ancestor::simple_container(complex_double(x,0.))
-      {}
+      ancestor::simple_container(complex_double(x,0.))
+        {}
       explicit complex(const double &x1, const double x2):
-          ancestor::simple_container(complex_double(x1,x2))
-      {}
+      ancestor::simple_container(complex_double(x1,x2))
+        {}
       ~complex()
-      {}
-      // Getters.
+        {}
+// Getters.
       double norm(const piranha::vector_psym_p &) const
-        {
-          return abs();
-        }
+      {
+        return abs();
+      }
       double_type real() const
-        {
-          return double_type(value_.real());
-        }
+      {
+        return double_type(value_.real());
+      }
       double_type imag() const
-        {
-          return double_type(value_.imag());
-        }
-      // Setters.
+      {
+        return double_type(value_.imag());
+      }
+// Setters.
       void set_real(const double_type &r)
       {
         value_.real()=r.value();
@@ -304,21 +305,21 @@ public:
       {
         value_.imag()=i.value();
       }
-      // Evaluation.
+// Evaluation.
       complex_double t_eval(const double &, const piranha::vector_psym_p &) const
-        {
-          return value_;
-        }
-      // Probing.
+      {
+        return value_;
+      }
+// Probing.
       bool is_zero(const piranha::vector_psym_p &) const
-        {
-          return (abs()<piranha::settings_manager::numerical_zero());
-        }
-      // Operators.
+      {
+        return (abs()<piranha::settings_manager::numerical_zero());
+      }
+// Operators.
       self operator-() const
-        {
-          return (self(*this)*=-1);
-        }
+      {
+        return (self(*this)*=-1);
+      }
       self &operator/=(int n)
       {
         value_/=n;
@@ -366,86 +367,85 @@ public:
         return *this;
       }
       self operator+(const self &val2) const
-        {
-          return (self(*this)+=val2);
-        }
+      {
+        return (self(*this)+=val2);
+      }
       self operator-(const self &val2) const
-        {
-          return (self(*this)-=val2);
-        }
+      {
+        return (self(*this)-=val2);
+      }
       self operator*(const self &val2) const
-        {
-          return (self(*this)*=val2);
-        }
-      // Interaction with the real counterpart.
+      {
+        return (self(*this)*=val2);
+      }
+// Interaction with the real counterpart.
       self &operator*=(const double_type &r)
       {
         value_*=r.value();
         return *this;
       }
       self operator*(const double_type &r) const
-        {
-          return (self(*this)*=r);
-        }
-      // End INTERFACE definition.
-      //-------------------------------------------------------
-      // Interface for monomial.
-      /// Absolute value.
+      {
+        return (self(*this)*=r);
+      }
+// End INTERFACE definition.
+//-------------------------------------------------------
+// Interface for monomial.
+/// Absolute value.
       double abs() const
-        {
-          return std::abs(value_);
-        }
-      /// Test whether two complex double_cf are equal or opposite in sign.
+      {
+        return std::abs(value_);
+      }
+/// Test whether two complex double_cf are equal or opposite in sign.
       bool equal_or_opposite(const self &val2) const
-        {
-          return (std::abs(value_+val2.value())<piranha::settings_manager::numerical_zero() ||
-                  std::abs(value_-val2.value())<piranha::settings_manager::numerical_zero());
-        }
-      /// Test whether two complex double_cf are in the same quadrant of the complex plane.
+      {
+        return (std::abs(value_+val2.value())<piranha::settings_manager::numerical_zero() ||
+          std::abs(value_-val2.value())<piranha::settings_manager::numerical_zero());
+      }
+/// Test whether two complex double_cf are in the same quadrant of the complex plane.
       bool same_sign(const self &val2) const
-        {
-          return ((value_.real()>=0 && val2.value().real()>=0) || (value_.real()<0 && val2.value().real()<0)) &&
-                 ((value_.imag()>=0 && val2.value().imag()>=0) || (value_.imag()<0 && val2.value().imag()<0));
-        }
-      /// Test whether value is real unity.
+      {
+        return ((value_.real()>=0 && val2.value().real()>=0) || (value_.real()<0 && val2.value().real()<0)) &&
+          ((value_.imag()>=0 && val2.value().imag()>=0) || (value_.imag()<0 && val2.value().imag()<0));
+      }
+/// Test whether value is real unity.
       bool is_unity() const
-        {
-          return (is_real() &&
-                  std::abs(std::abs(value_.real())-1)<piranha::settings_manager::numerical_zero());
-        }
-      /// Test whether value is negative.
+      {
+        return (is_real() &&
+          std::abs(std::abs(value_.real())-1)<piranha::settings_manager::numerical_zero());
+      }
+/// Test whether value is negative.
       bool is_negative() const
-        {
-          return (value_.real()<0 && is_real());
-        }
-      /// Test whether value is positive.
+      {
+        return (value_.real()<0 && is_real());
+      }
+/// Test whether value is positive.
       bool is_positive() const
-        {
-          return (value_.real()>0 && is_real());
-        }
+      {
+        return (value_.real()>0 && is_real());
+      }
       self &operator/=(const double &x)
       {
         value_/=x;
         return *this;
       }
       self operator*(const double &x) const
-        {
-          self retval(*this);
-          retval*=x;
-          return retval;
-        }
-      // ancestor::value() is part of the interface too.
-      //-------------------------------------------------------
-private:
+      {
+        self retval(*this);
+        retval*=x;
+        return retval;
+      }
+// ancestor::value() is part of the interface too.
+//-------------------------------------------------------
+    private:
       bool is_real() const
-        {
-          return (std::abs(value_.imag())<piranha::settings_manager::numerical_zero());
-        }
-    }
+      {
+        return (std::abs(value_.imag())<piranha::settings_manager::numerical_zero());
+      }
+  }
   ;
 
-
-  // Overloads for I/O operators.
+// Overloads for I/O operators.
   inline istream &operator>>(istream &is, complex<piranha::double_cf> &dc)
   {
     string tmp;
@@ -460,5 +460,4 @@ private:
     return os;
   }
 }
-
 #endif

@@ -21,22 +21,21 @@
 #include "stats.h"
 
 namespace piranha
-  {
-  // Stats class static members.
+{
+// Stats class static members.
   double stats::total_insertions_ = 0.;
   double stats::packed_insertions_ = 0.;
 
-
-  /// Report ratio of packed terms against inserted terms.
+/// Report ratio of packed terms against inserted terms.
   double stats::pack_ratio()
   {
     if (total_insertions_==0)
-      {
-        return 0.;
-      }
+    {
+      return 0.;
+    }
     else
-      {
-        return packed_insertions_/total_insertions_;
-      }
+    {
+      return packed_insertions_/total_insertions_;
+    }
   }
 }

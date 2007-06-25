@@ -22,131 +22,131 @@
 #define COMPLEX_TOOLBOX_H
 
 namespace piranha
-  {
+{
   template <class real_Derived>
-  class complex_toolbox
-    {
+    class complex_toolbox
+  {
     protected:
-      // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
-      // parses this part it does not know enough about Derived yet. They are ok in the body of
-      // the methods tough, because instantiation happens later.
+// NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
+// parses this part it does not know enough about Derived yet. They are ok in the body of
+// the methods tough, because instantiation happens later.
       typedef std::complex<real_Derived> Derived;
       typedef typename real_Derived::ancestor::cf_type real_cf_type;
       typedef std::complex<real_cf_type> cf_type;
       typedef typename real_Derived::ancestor::it_s_index real_it_s_index;
       typedef typename real_Derived::ancestor::term_type real_term_type;
-      enum component {
+      enum component
+      {
         Real,
         Imag,
       };
-      // Build series from two components.
+// Build series from two components.
       void build_from_components(const real_Derived &p,
-                                 const real_Derived &q)
+        const real_Derived &q)
       {
         p_assert(static_cast<Derived *>(this)->merge_args(p));
         if (!static_cast<Derived *>
-            (this)->merge_args(q))
-          {
-            std::cout << "WARNING: constructing empty complex series because real and complex "
+          (this)->merge_args(q))
+        {
+          std::cout << "WARNING: constructing empty complex series because real and complex "
             "series passed to ctor are not argument compatible."<< std::endl;
-            return;
-          }
+          return;
+        }
         typedef typename Derived::ancestor::term_type term_type;
-        // FIXME: hinted insertion here.
-        // Insert p (real_ part).
+// FIXME: hinted insertion here.
+// Insert p (real_ part).
         {
           term_type term;
           real_it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
           for (;
-               it!=it_f;
-               ++it)
-            {
-              term.c()
+            it!=it_f;
+            ++it)
+          {
+            term.c()
               =cf_type(it->c(),real_cf_type(0));
-              term.trig_args()=it->trig_args();
-              term.flavour()=it->flavour();
-              static_cast<Derived *>(this)->insert(term);
-            }
+            term.trig_args()=it->trig_args();
+            term.flavour()=it->flavour();
+            static_cast<Derived *>(this)->insert(term);
+          }
         }
-        // Insert q (imaginary part).
+// Insert q (imaginary part).
         {
           term_type term;
           real_it_s_index it=q.s_index().begin(), it_f=q.s_index().end();
           for (;
-               it!=it_f;
-               ++it)
-            {
-              term.c()
+            it!=it_f;
+            ++it)
+          {
+            term.c()
               =cf_type(real_cf_type(0),it->c());
-              term.trig_args()=it->trig_args();
-              term.flavour()=it->flavour();
-              static_cast<Derived *>(this)->insert(term);
-            }
+            term.trig_args()=it->trig_args();
+            term.flavour()=it->flavour();
+            static_cast<Derived *>(this)->insert(term);
+          }
         }
       }
       real_Derived get_comp(component cmp) const
+      {
+        typedef typename Derived::ancestor::it_s_index it_s_index;
+        real_Derived retval;
+        retval.merge_args(*static_cast<Derived const *>(this));
+        retval.lin_args()=static_cast<Derived const *>(this)->lin_args();
+        const it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
+        real_it_s_index it_hint=retval.s_index().end();
+        real_term_type term(real_cf_type(0),true);
+        for (it_s_index it=static_cast<Derived const *>
+          (this)->
+          s_index().begin();
+          it!=it_f;
+          ++it)
         {
-          typedef typename Derived::ancestor::it_s_index it_s_index;
-          real_Derived retval;
-          retval.merge_args(*static_cast<Derived const *>(this));
-          retval.lin_args()=static_cast<Derived const *>(this)->lin_args();
-          const it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
-          real_it_s_index it_hint=retval.s_index().end();
-          real_term_type term(real_cf_type(0),true);
-          for (it_s_index it=static_cast<Derived const *>
-                             (this)->
-                             s_index().begin();
-               it!=it_f;
-               ++it)
-            {
-              term.c()=get_cf_comp(it->c(),cmp);
-              term.trig_args()=it->trig_args();
-              term.flavour()=it->flavour();
-              it_hint=retval.insert(term,true,&it_hint);
-            }
-          return retval;
+          term.c()=get_cf_comp(it->c(),cmp);
+          term.trig_args()=it->trig_args();
+          term.flavour()=it->flavour();
+          it_hint=retval.insert(term,true,&it_hint);
         }
-      // Extract component from complex pseries
+        return retval;
+      }
+// Extract component from complex pseries
       real_cf_type get_cf_comp(const cf_type &cf,component cmp) const
+      {
+        switch (cmp)
         {
-          switch (cmp)
-            {
-            case Real:
-              return cf.real();
-            case Imag:
-              return cf.imag();
-            }
-          std::cout << "WTF? enum is botched!" << std::endl;
-          std::exit(1);
+          case Real:
+            return cf.real();
+          case Imag:
+            return cf.imag();
         }
+        std::cout << "WTF? enum is botched!" << std::endl;
+        std::exit(1);
+      }
     public:
-      /// Get real part.
+/// Get real part.
       real_Derived real() const
-        {
-          return get_comp(Real);
-        }
-      /// Get imaginary part.
+      {
+        return get_comp(Real);
+      }
+/// Get imaginary part.
       real_Derived imag() const
-        {
-          return get_comp(Imag);
-        }
-      /// Absolute value.
+      {
+        return get_comp(Imag);
+      }
+/// Absolute value.
       real_Derived abs() const
-        {
-          return (real()*real()+imag()*imag()).pow(.5);
-        }
-      /// Complex conjugate.
+      {
+        return (real()*real()+imag()*imag()).pow(.5);
+      }
+/// Complex conjugate.
       Derived conj() const
-        {
-          return Derived(real(),imag()*=-1.);
-        }
-      /// Make complex conjugate.
+      {
+        return Derived(real(),imag()*=-1.);
+      }
+/// Make complex conjugate.
       void make_conj()
       {
         Derived tmp(real(),imag()*=-1.);
         static_cast<Derived *>(this)->swap(tmp);
       }
-    };
+  };
 }
-
 #endif

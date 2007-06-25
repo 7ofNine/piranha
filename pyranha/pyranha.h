@@ -73,9 +73,9 @@ void tc_common_instantiation(class_<T> &time_c)
 template <class T>
 class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
 {
-  // FIXME: we need to define all the operations on ints, double, rationals (?) etc etc.
-  // FIXME: ... as well as the ctors.
-  // This is a trick to help resolve overloaded methods inside classes.
+// FIXME: we need to define all the operations on ints, double, rationals (?) etc etc.
+// FIXME: ... as well as the ctors.
+// This is a trick to help resolve overloaded methods inside classes.
   typedef void (T::*crop_it)(const typename T::it_s_index &);
   typedef void (T::*crop_real)(const double &);
   typedef void (T::*put_noargs)() const;
@@ -86,7 +86,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   typedef void (T::*put_phases_freqs_n)(int) const;
   typedef typename T::eval_type (T::*mean_def) (const double &, const double &) const;
   typedef typename T::eval_type (T::*mean_n)(const double &, const double &,
-      const size_t &) const;
+    const size_t &) const;
   class_<T> inst(name.c_str(),description.c_str());
   inst.def(init<const T &>());
   inst.def(init<const std::string &>());
@@ -134,8 +134,8 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def(self-double());
   inst.def(self*=self);
   inst.def(self*self);
-  // NOTICE: the order seems important here, if we place *=int before *=double we
-  // will get just *=double in Python. Go figure...
+// NOTICE: the order seems important here, if we place *=int before *=double we
+// will get just *=double in Python. Go figure...
   inst.def(self*=double());
   inst.def(self*double());
   inst.def(self*=int());
@@ -144,17 +144,17 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def(self/double());
   inst.def(self/=int());
 
-  // Instantiate spectral comparison.
+// Instantiate spectral comparison.
   sc_instatiation<T>(name);
-  // Instantiate common time comparisons.
+// Instantiate common time comparisons.
   class_<tc_equal<T> > tc_equal_inst("tc_equal",
-                                     init<typename tc_equal<T>::b_type,double,double,size_t,T>());
+    init<typename tc_equal<T>::b_type,double,double,size_t,T>());
   tc_common_instantiation(tc_equal_inst);
   class_<tc_mult<T> > tc_mult_inst("tc_mult",
-                                   init<typename tc_mult<T>::b_type,double,double,size_t,T,T>());
+    init<typename tc_mult<T>::b_type,double,double,size_t,T,T>());
   tc_common_instantiation(tc_mult_inst);
   class_<tc_insert_phases<T> > tc_insert_phases_inst("tc_insert_phases",
-      init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
+    init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
   tc_common_instantiation(tc_insert_phases_inst);
 
   return inst;
@@ -175,36 +175,36 @@ void ps_instantiate_real_specifics(class_<T> &real)
   real.def("pow", &real_ps::pow);
   real.def("add_ps_to_arg", real_add_ps_to_arg_index(&real_ps::add_ps_to_arg));
   real.def("add_ps_to_arg", real_add_ps_to_arg_string(&real_ps::add_ps_to_arg));
-  // External functions.
+// External functions.
   def("kep_cosE",&astro::kep_cosE<real_ps>,"Solve Kepler's equation for cosE.");
-  // NOTE: which functions does it make sense to keep here?
+// NOTE: which functions does it make sense to keep here?
   def("Pnm",math::Pnm<real_ps>,"Legendre function of the first kind - Pnm(cos(theta)).");
   def("Ynm",math::Ynm<real_ps>,"Non-normalized spherical harmonic.");
   def("wig_rot",math::wig_rot<real_ps>,"Wigner rotation theorem for spherical harmonics.");
   class_<tc_complexp<real_ps> > tc_complexp_inst("tc_complexp",
-      init<typename tc_complexp<real_ps>::b_type,double,double,size_t,real_ps>());
+    init<typename tc_complexp<real_ps>::b_type,double,double,size_t,real_ps>());
   tc_common_instantiation(tc_complexp_inst);
   class_<tc_cosine<real_ps> > tc_cosine_inst("tc_cosine",
-      init<typename tc_cosine<real_ps>::b_type,double,double,size_t,real_ps>());
+    init<typename tc_cosine<real_ps>::b_type,double,double,size_t,real_ps>());
   tc_common_instantiation(tc_cosine_inst);
   class_<tc_sine<real_ps> > tc_sine_inst("tc_sine",
-                                         init<typename tc_sine<real_ps>::b_type,double,double,size_t,real_ps>());
+    init<typename tc_sine<real_ps>::b_type,double,double,size_t,real_ps>());
   tc_common_instantiation(tc_sine_inst);
   class_<tc_Pnm<real_ps> > tc_Pnm_inst("tc_Pnm",
-                                       init<typename tc_Pnm<real_ps>::b_type,double,double,size_t,int,int,real_ps>());
+    init<typename tc_Pnm<real_ps>::b_type,double,double,size_t,int,int,real_ps>());
   tc_common_instantiation(tc_Pnm_inst);
   class_<tc_Ynm<real_ps> > tc_Ynm_inst("tc_Ynm",
-                                       init<typename tc_Ynm<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps>());
+    init<typename tc_Ynm<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps>());
   tc_common_instantiation(tc_Ynm_inst);
   class_<tc_wig_rot<real_ps> > tc_wig_rot_inst("tc_wig_rot",
-      init<typename tc_wig_rot<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps,
-      real_ps,real_ps,real_ps>());
+    init<typename tc_wig_rot<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps,
+    real_ps,real_ps,real_ps>());
   tc_common_instantiation(tc_wig_rot_inst);
   class_<tc_pow<real_ps> > tc_pow_inst("tc_pow",
-                                       init<typename tc_pow<real_ps>::b_type,double,double,size_t,double,real_ps>());
+    init<typename tc_pow<real_ps>::b_type,double,double,size_t,double,real_ps>());
   tc_common_instantiation(tc_pow_inst);
   class_<tc_add_ps_to_arg<real_ps> > tc_add_ps_to_arg_inst("tc_add_ps_to_arg",
-      init<typename tc_add_ps_to_arg<real_ps>::b_type,double,double,size_t,std::string,real_ps,real_ps>());
+    init<typename tc_add_ps_to_arg<real_ps>::b_type,double,double,size_t,std::string,real_ps,real_ps>());
   tc_common_instantiation(tc_add_ps_to_arg_inst);
 }
 
@@ -226,10 +226,9 @@ void ps_instantiate_complex_specifics(class_<T> &complex)
   complex.def(self-real_ps());
   complex.def(self*=real_ps());
   complex.def(self*real_ps());
-  // Additional ctor(s) for complex series
+// Additional ctor(s) for complex series
   complex.def(init<real_ps>());
   complex.def(init<real_ps,real_ps>());
   complex.def(init<typename real_ps::cf_type,typename real_ps::cf_type>());
 }
-
 #endif

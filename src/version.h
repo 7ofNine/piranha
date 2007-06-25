@@ -22,5 +22,4 @@
 #define PIRANHA_VERSION_H
 
 #define __piranha_version "0.0.6"
-
-#endif // PIRANHA_VERSION_H
+#endif                                            // PIRANHA_VERSION_H

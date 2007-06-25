@@ -27,9 +27,9 @@
 #include <string>
 
 namespace piranha
-  {
+{
   class stream_manager
-    {
+  {
     public:
       enum out_format
       {
@@ -41,12 +41,12 @@ namespace piranha
         scientific,
         decimal
       };
-      // Getters.
+// Getters.
       static unsigned int digits();
       static const std::string &data_separator();
       static unsigned int min_digits();
       static unsigned int max_digits();
-      // Setters
+// Setters
       static void set_digits(int n);
       static void setup_print(std::ostream &out_stream=std::cout);
       static out_format format();
@@ -54,21 +54,20 @@ namespace piranha
       static fp_representation fp_rep();
       static void set_fp_rep(fp_representation);
     private:
-      /// Mutex for protected access.
+/// Mutex for protected access.
       static boost::mutex             mutex_;
-      /// Minimum number of digits for output streams.
+/// Minimum number of digits for output streams.
       static const unsigned int       min_digits_;
-      /// Maximum number of digits for output streams.
+/// Maximum number of digits for output streams.
       static const unsigned int       max_digits_;
-      /// Number of digits to display in output stream.
+/// Number of digits to display in output stream.
       static unsigned int             digits_;
-      /// Data separator for formatted I/O.
+/// Data separator for formatted I/O.
       static const std::string        data_separator_;
-      /// Format for output.
+/// Format for output.
       static out_format               format_;
-      /// Floating point representation.
+/// Floating point representation.
       static fp_representation        fp_rep_;
-    };
+  };
 }
-
 #endif

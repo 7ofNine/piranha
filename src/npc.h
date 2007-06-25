@@ -27,8 +27,7 @@
 #include "trig_array.h"
 
 namespace piranha
-  {
+{
   typedef std::complex<ps<double_cf,trig_array,ps_term,default_ps_index> > npc;
 }
-
 #endif

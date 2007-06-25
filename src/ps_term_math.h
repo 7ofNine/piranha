@@ -22,85 +22,84 @@
 #define PIRANHA_PS_TERM_MATH_H
 
 namespace piranha
-  {
-  /// Assignment operator.
+{
+/// Assignment operator.
   template <class Cf,class Trig>
-  inline ps_term<Cf,Trig> &ps_term<Cf,Trig>::operator=(const ps_term<Cf,Trig> &t2)
+    inline ps_term<Cf,Trig> &ps_term<Cf,Trig>::operator=(const ps_term<Cf,Trig> &t2)
   {
     if (this==&t2)
-      {
-        return *this;
-      }
+    {
+      return *this;
+    }
     c_=t2.c_;
     trig_args_=t2.trig_args_;
     flavour_=t2.flavour_;
     return *this;
   }
 
-
   template <class Cf,class Trig>
-  template <class U,class V>
-  inline void ps_term<Cf,Trig>::mult_by(const U &t2, boost::tuple<V,V> &term_pair) const
+    template <class U,class V>
+    inline void ps_term<Cf,Trig>::mult_by(const U &t2, boost::tuple<V,V> &term_pair) const
+  {
+    cf_type new_c=c_;
+    new_c*=t2.c();
+    new_c/=2;
+    if (flavour_)
     {
-      cf_type new_c=c_;
-      new_c*=t2.c();
-      new_c/=2;
-      if (flavour_)
-        {
-          if(t2.flavour())
-            {
-              trig_args_.trigmult(t2.trig_args(),term_pair.template get
-                                    <0>().trig_args(),
-                                    term_pair.template get<1>().trig_args());
-              term_pair.template get
-                <0>().c()=term_pair.template get
-                            <1>().c()=new_c;
-              term_pair.template get
-                <0>().flavour()=term_pair.template get
-                                  <1>().flavour()=true;
-            }
-          else
-            {
-              trig_args_.trigmult(t2.trig_args(),term_pair.template get
-                                    <0>().trig_args(),
-                                    term_pair.template get<1>().trig_args());
-              term_pair.template get
-                <0>().c()=-new_c;
-              term_pair.template get
-                <1>().c()=new_c;
-              term_pair.template get
-                <0>().flavour()=term_pair.template get
-                                  <1>().flavour()=false;
-            }
-        }
+      if(t2.flavour())
+      {
+        trig_args_.trigmult(t2.trig_args(),term_pair.template get
+          <0>().trig_args(),
+          term_pair.template get<1>().trig_args());
+        term_pair.template get
+          <0>().c()=term_pair.template get
+          <1>().c()=new_c;
+        term_pair.template get
+          <0>().flavour()=term_pair.template get
+          <1>().flavour()=true;
+      }
       else
-        {
-          if(t2.flavour())
-            {
-              trig_args_.trigmult(t2.trig_args(),term_pair.template get
-                                    <0>().trig_args(),
-                                    term_pair.template get<1>().trig_args());
-              term_pair.template get
-                <0>().c()=term_pair.template get
-                            <1>().c()=new_c;
-              term_pair.template get
-                <0>().flavour_=term_pair.template get
-                                 <1>().flavour()=false;
-            }
-          else
-            {
-              trig_args_.trigmult(t2.trig_args(),term_pair.template get
-                                    <0>().trig_args(),
-                                    term_pair.template get<1>().trig_args());
-              term_pair.template get
-                <0>().c()=new_c;
-              term_pair.template get
-                <1>().c()=-new_c;
-              term_pair.template get
-                <0>().flavour()=term_pair.template get
-                                  <1>().flavour()=true;
-            }
-        }
+      {
+        trig_args_.trigmult(t2.trig_args(),term_pair.template get
+          <0>().trig_args(),
+          term_pair.template get<1>().trig_args());
+        term_pair.template get
+          <0>().c()=-new_c;
+        term_pair.template get
+          <1>().c()=new_c;
+        term_pair.template get
+          <0>().flavour()=term_pair.template get
+          <1>().flavour()=false;
+      }
     }
+    else
+    {
+      if(t2.flavour())
+      {
+        trig_args_.trigmult(t2.trig_args(),term_pair.template get
+          <0>().trig_args(),
+          term_pair.template get<1>().trig_args());
+        term_pair.template get
+          <0>().c()=term_pair.template get
+          <1>().c()=new_c;
+        term_pair.template get
+          <0>().flavour_=term_pair.template get
+          <1>().flavour()=false;
+      }
+      else
+      {
+        trig_args_.trigmult(t2.trig_args(),term_pair.template get
+          <0>().trig_args(),
+          term_pair.template get<1>().trig_args());
+        term_pair.template get
+          <0>().c()=new_c;
+        term_pair.template get
+          <1>().c()=-new_c;
+        term_pair.template get
+          <0>().flavour()=term_pair.template get
+          <1>().flavour()=true;
+      }
+    }
+  }
 }
 #endif

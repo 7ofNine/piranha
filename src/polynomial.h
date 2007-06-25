@@ -24,39 +24,39 @@
 #include "base_polynomial.h"
 
 namespace piranha
-  {
+{
   template <class T>
-  class polynomial : public base_polynomial<T,polynomial<T> >
-    {
+    class polynomial : public base_polynomial<T,polynomial<T> >
+  {
     public:
       typedef base_polynomial<T,polynomial> ancestor;
       typedef typename ancestor::m_type m_type;
-      // Start INTERFACE definition for the real version.
-      //-------------------------------------------------------
-      /// Alias for the evaluation type.
+// Start INTERFACE definition for the real version.
+//-------------------------------------------------------
+/// Alias for the evaluation type.
       typedef typename m_type::eval_type eval_type;
-      // Ctors.
-      /// Default constructor.
+// Ctors.
+/// Default constructor.
       explicit polynomial():ancestor::base_polynomial()
-      {}
-      /// Constructor from int.
+        {}
+/// Constructor from int.
       explicit polynomial(int n):ancestor::base_polynomial(n)
-      {}
-      /// Constructor from double.
+        {}
+/// Constructor from double.
       explicit polynomial(const double &x):ancestor::base_polynomial(x)
-      {}
-      /// Constructor from psymbol
+        {}
+/// Constructor from psymbol
       explicit polynomial(const psymbol &psym):ancestor::base_polynomial(psym)
-      {}
-      /// Copy constructor.
+        {}
+/// Copy constructor.
       polynomial(const polynomial &p):ancestor::base_polynomial(p)
-      {}
+        {}
       explicit polynomial(const std::string &s):ancestor::base_polynomial(s)
-      {}
-      /// Destructor.
+        {}
+/// Destructor.
       ~polynomial()
-      {}
-      /// Assignment operator.
+        {}
+/// Assignment operator.
       polynomial &operator=(const polynomial &p)
       {
         ancestor::basic_assignment(p);
@@ -78,11 +78,11 @@ namespace piranha
         return *this;
       }
       polynomial operator*(int n) const
-        {
-          polynomial retval(*this);
-          retval*=n;
-          return retval;
-        }
+      {
+        polynomial retval(*this);
+        retval*=n;
+        return retval;
+      }
       polynomial &operator+=(const polynomial &p)
       {
         ancestor::base_merge(p,true);
@@ -102,38 +102,38 @@ namespace piranha
       {
         return (polynomial(*this)*=-1);
       }
-      // Maths
-      /// Bessel function of the first kind.
+// Maths
+/// Bessel function of the first kind.
       polynomial besselJ(int n, const vector_psym_p &v) const
-        {
-          const unsigned short int iterations=math::besselJ_series_limit(n,ancestor::t_eval(0,v));
-          return math::naive_besselJ<polynomial,mpz_class>(n,*this,iterations);
-        }
+      {
+        const unsigned short int iterations=math::besselJ_series_limit(n,ancestor::t_eval(0,v));
+        return math::naive_besselJ<polynomial,mpz_class>(n,*this,iterations);
+      }
       polynomial pow(const double &x) const
-        {
-          polynomial retval(*this);
-          retval.basic_pow(x);
-          return retval;
-        }
-      // End INTERFACE definition.
-      //-------------------------------------------------------
+      {
+        polynomial retval(*this);
+        retval.basic_pow(x);
+        return retval;
+      }
+// End INTERFACE definition.
+//-------------------------------------------------------
       polynomial &operator/=(const mpz_class &n)
       {
         ancestor::ll_generic_integer_division(n);
         return *this;
       }
-    };
+  };
 }
 
 
 namespace std
-  {
-  // COMPLEX COUNTERPART
+{
+// COMPLEX COUNTERPART
   template <class T>
-  struct complex<piranha::polynomial<T> > :
-        public piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > >
-    {
-private:
+    struct complex<piranha::polynomial<T> > :
+  public piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > >
+  {
+    private:
       typedef complex self;
       typedef piranha::polynomial<T> real_type;
       typedef piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > > ancestor;
@@ -141,62 +141,62 @@ private:
       typedef typename real_type::m_type real_m_type;
       typedef typename m_type::numerical_type numerical_type;
       typedef typename real_m_type::numerical_type real_numerical_type;
-      // Access to iterators and indices of base.
+// Access to iterators and indices of base.
       typedef typename ancestor::degree_index degree_index;
       typedef typename degree_index::iterator it_d_index;
       typedef typename ancestor::hashed_index hashed_index;
       typedef typename hashed_index::iterator it_h_index;
       typedef typename real_type::it_h_index real_it_h_index;
-      // Start INTERFACE definition for the complex specialization.
-      //-------------------------------------------------------
-public:
+// Start INTERFACE definition for the complex specialization.
+//-------------------------------------------------------
+    public:
       typedef complex_double eval_type;
-      // Ctors and dtor.
+// Ctors and dtor.
       explicit complex():ancestor::base_polynomial()
-      {}
+        {}
       explicit complex(const std::string &s):ancestor::base_polynomial(s)
-      {}
-      /// Constructor from real counterparts.
-      /**
-       * Takes monomials from r and i, turns them into complex monomials and inserts into self.
-       */
+        {}
+/// Constructor from real counterparts.
+/**
+ * Takes monomials from r and i, turns them into complex monomials and inserts into self.
+ */
       explicit complex(const real_type &r, const real_type &i)
       {
-        // We do not need to care about widths because insertion in base_polynomial can cope with
-        // larger and smaller polynomials.
-        // In any case, this is a problem pseries should take care of, so maybe:
-        // FIXME: assert equality between widths once we are using polynomials exclusively in pseries.
+// We do not need to care about widths because insertion in base_polynomial can cope with
+// larger and smaller polynomials.
+// In any case, this is a problem pseries should take care of, so maybe:
+// FIXME: assert equality between widths once we are using polynomials exclusively in pseries.
         real_it_h_index it, it_f;
         it_f=r.h_index().end();
-        // Insert real part.
+// Insert real part.
         for (it=r.h_index().begin();it!=it_f;++it)
-          {
-            ancestor::insert(m_type(*it));
-          }
-        // Insert imaginary part.
+        {
+          ancestor::insert(m_type(*it));
+        }
+// Insert imaginary part.
         it_f=i.h_index().end();
         m_type tmp;
         for (it=i.h_index().begin();it!=it_f;++it)
-          {
-            tmp=*it;
-            tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
-            ancestor::insert(tmp);
-          }
+        {
+          tmp=*it;
+          tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
+          ancestor::insert(tmp);
+        }
       }
       bool operator==(const complex &p2) const
-        {
-          return ancestor::basic_comparison(p2);
-        }
+      {
+        return ancestor::basic_comparison(p2);
+      }
       explicit complex(const real_type &r)
       {
-        // FIXME: share with ctor from real+imaginary?
+// FIXME: share with ctor from real+imaginary?
         real_it_h_index it, it_f;
         it_f=r.h_index().end();
-        // Insert real part.
+// Insert real part.
         for (it=r.h_index().begin();it!=it_f;++it)
-          {
-            ancestor::insert(m_type(*it));
-          }
+        {
+          ancestor::insert(m_type(*it));
+        }
       }
       explicit complex(const complex_double &c)
       {
@@ -206,7 +206,7 @@ public:
       {
         ancestor::insert(m_type(n));
       }
-      // FIXME: where is this used?
+// FIXME: where is this used?
       explicit complex(int n1, int n2)
       {
         m_type tmp(n1);
@@ -215,66 +215,66 @@ public:
         tmp.numerical_cf()=numerical_type(real_numerical_type(0.),tmp.numerical_cf().real());
         ancestor::insert(tmp);
       }
-      /*explicit complex(const double &x):
-          ancestor::simple_container(complex_double(x,0.))
-      {}
-      explicit complex(const double &x1, const double x2):
-          ancestor::simple_container(complex_double(x1,x2))
-      {}*/
+/*explicit complex(const double &x):
+    ancestor::simple_container(complex_double(x,0.))
+{}
+explicit complex(const double &x1, const double x2):
+    ancestor::simple_container(complex_double(x1,x2))
+{}*/
       ~complex()
-      {}
+        {}
       real_type real() const
+      {
+// FIXME: share this code with above ctors?
+// FIXME: use hinted insertion for improved performance.
+        real_type retval;
+        it_h_index it, it_f;
+        it_f=ancestor::h_index().end();
+// Insert real part.
+        real_m_type tmp;
+        for (it=ancestor::h_index().begin();it!=it_f;++it)
         {
-          // FIXME: share this code with above ctors?
-          // FIXME: use hinted insertion for improved performance.
-          real_type retval;
-          it_h_index it, it_f;
-          it_f=ancestor::h_index().end();
-          // Insert real part.
-          real_m_type tmp;
-          for (it=ancestor::h_index().begin();it!=it_f;++it)
-            {
-              tmp.numerical_cf()=it->numerical_cf().real();
-              tmp.container()=it->container();
-              tmp.rational_cf()=it->rational_cf();
-              retval.insert(tmp);
-            }
-          return retval;
+          tmp.numerical_cf()=it->numerical_cf().real();
+          tmp.container()=it->container();
+          tmp.rational_cf()=it->rational_cf();
+          retval.insert(tmp);
         }
+        return retval;
+      }
 
       real_type imag() const
+      {
+// FIXME: share this code with above ctors?
+// FIXME: share also with real().
+        real_type retval;
+        it_h_index it, it_f;
+        it_f=ancestor::h_index().end();
+// Insert real part.
+        real_m_type tmp;
+        for (it=ancestor::h_index().begin();it!=it_f;++it)
         {
-          // FIXME: share this code with above ctors?
-          // FIXME: share also with real().
-          real_type retval;
-          it_h_index it, it_f;
-          it_f=ancestor::h_index().end();
-          // Insert real part.
-          real_m_type tmp;
-          for (it=ancestor::h_index().begin();it!=it_f;++it)
-            {
-              tmp.numerical_cf()=it->numerical_cf().imag();
-              tmp.container()=it->container();
-              tmp.rational_cf()=it->rational_cf();
-              retval.insert(tmp);
-            }
-          return retval;
+          tmp.numerical_cf()=it->numerical_cf().imag();
+          tmp.container()=it->container();
+          tmp.rational_cf()=it->rational_cf();
+          retval.insert(tmp);
         }
-      // Setters.
-      /// Like constructor from real.
-      // FIXME: abstract and share.
+        return retval;
+      }
+// Setters.
+/// Like constructor from real.
+// FIXME: abstract and share.
       void set_real(const real_type &r)
       {
         ancestor::clear();
         real_it_h_index it, it_f;
         it_f=r.h_index().end();
-        // Insert real part.
+// Insert real part.
         for (it=r.h_index().begin();it!=it_f;++it)
-          {
-            ancestor::insert(m_type(*it));
-          }
+        {
+          ancestor::insert(m_type(*it));
+        }
       }
-      // FIXME: complete set/add API here.
+// FIXME: complete set/add API here.
       void set_imag(const real_type &i)
       {
         ancestor::clear();
@@ -286,11 +286,11 @@ public:
         it_f=i.h_index().end();
         m_type tmp;
         for (it=i.h_index().begin();it!=it_f;++it)
-          {
-            tmp=*it;
-            tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
-            ancestor::insert(tmp);
-          }
+        {
+          tmp=*it;
+          tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
+          ancestor::insert(tmp);
+        }
       }
       complex &operator=(const complex &c)
       {
@@ -338,28 +338,27 @@ public:
         return *this;
       }
       complex operator+(const complex &c) const
-        {
-          return (self(*this)+=c);
-        }
+      {
+        return (self(*this)+=c);
+      }
       complex operator-(const complex &c) const
-        {
-          return (self(*this)-=c);
-        }
+      {
+        return (self(*this)-=c);
+      }
       complex operator*(const complex &c) const
-        {
-          return (self(*this)*=c);
-        }
-      // Interaction with the real counterpart.
+      {
+        return (self(*this)*=c);
+      }
+// Interaction with the real counterpart.
       complex &operator*=(const real_type &r)
       {
         ancestor::mult_by_self(r);
         return *this;
       }
       complex operator*(const real_type &r) const
-        {
-          return (complex(*this)*=r);
-        }
-    };
+      {
+        return (complex(*this)*=r);
+      }
+  };
 }
-
 #endif

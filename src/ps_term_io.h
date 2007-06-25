@@ -22,48 +22,46 @@
 #define PIRANHA_PS_TERM_IO_H
 
 namespace piranha
+{
+/// Print in plain format.
+  template <class Cf,class Trig>
+    inline void ps_term<Cf,Trig>::print_plain(std::ostream &out_stream, const vector_psym_p &cv,
+    const vector_psym_p &tv) const
   {
-  /// Print in plain format.
-  template <class Cf,class Trig>
-  inline void ps_term<Cf,Trig>::print_plain(std::ostream &out_stream, const vector_psym_p &cv,
-      const vector_psym_p &tv) const
+// Setup formatting.
+    stream_manager::setup_print(out_stream);
+    c_.print_plain(out_stream,cv);
+    out_stream << stream_manager::data_separator();
+    trig_args_.print_plain(out_stream,tv);
+    switch (flavour_)
     {
-      // Setup formatting.
-      stream_manager::setup_print(out_stream);
-      c_.print_plain(out_stream,cv);
-      out_stream << stream_manager::data_separator();
-      trig_args_.print_plain(out_stream,tv);
-      switch (flavour_)
-        {
-        case true:
-          out_stream << "c";
-          break;
-        case false:
-          out_stream << "s";
-        }
+      case true:
+        out_stream << "c";
+        break;
+      case false:
+        out_stream << "s";
     }
+  }
 
-
-  /// Print in latex format.
+/// Print in latex format.
   template <class Cf,class Trig>
-  inline void ps_term<Cf,Trig>::print_latex(std::ostream &out_stream, const vector_psym_p &cv,
-      const vector_psym_p &tv) const
+    inline void ps_term<Cf,Trig>::print_latex(std::ostream &out_stream, const vector_psym_p &cv,
+    const vector_psym_p &tv) const
+  {
+// Setup formatting
+    stream_manager::setup_print(out_stream);
+    c_.print_latex(out_stream,cv);
+    out_stream << "&";
+    out_stream << "$" << phase(tv) << "$" << "&" << "$" << freq(tv) << "$" << "&";
+    switch (flavour_)
     {
-      // Setup formatting
-      stream_manager::setup_print(out_stream);
-      c_.print_latex(out_stream,cv);
-      out_stream << "&";
-      out_stream << "$" << phase(tv) << "$" << "&" << "$" << freq(tv) << "$" << "&";
-      switch (flavour_)
-        {
-        case true:
-          out_stream << "c&";
-          break;
-        case false:
-          out_stream << "s&";
-        }
-      trig_args_.print_latex(out_stream,tv);
+      case true:
+        out_stream << "c&";
+        break;
+      case false:
+        out_stream << "s&";
     }
+    trig_args_.print_latex(out_stream,tv);
+  }
 }
-
 #endif

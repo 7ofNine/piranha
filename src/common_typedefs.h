@@ -43,5 +43,4 @@ typedef std::vector<mult_t> vector_mult_t;
 typedef std::vector<double> vector_double;
 /// Deque of strings. Convenience typedef.
 typedef std::deque<std::string> deque_string;
-
 #endif

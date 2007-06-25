@@ -25,121 +25,120 @@
 #include <string>
 
 #include "psymbol.h"
-#include "utils.h"            // Lexical converter.
+#include "utils.h"                                // Lexical converter.
 
 namespace piranha
-  {
-  /// Simple container class.
-  /**
-   * This class can be used as a base class for coefficients that consist of a simple entity
-   * (float, mpf_class, long double, etc.).
-   */
+{
+/// Simple container class.
+/**
+ * This class can be used as a base class for coefficients that consist of a simple entity
+ * (float, mpf_class, long double, etc.).
+ */
   template <class T, class Derived>
-  class simple_container
-    {
+    class simple_container
+  {
     public:
-      /// Alias for self.
+/// Alias for self.
       typedef simple_container self;
-      // Start INTERFACE definition.
-      //-------------------------------------------------------
-      // Ctors.
-      /// Default constructor.
+// Start INTERFACE definition.
+//-------------------------------------------------------
+// Ctors.
+/// Default constructor.
       explicit simple_container():value_(T())
-      {}
-      /// Constructor from T value.
+        {}
+/// Constructor from T value.
       explicit simple_container(const T &val):value_(val)
-      {}
-      /// Copy constructor.
+        {}
+/// Copy constructor.
       explicit simple_container(const self &sc):value_(sc.value_)
-      {}
-      /// Constructor from string.
+        {}
+/// Constructor from string.
       explicit simple_container(const std::string &s)
       {
         value_=utils::lexical_converter<T>(s);
       }
-      /// Destructor.
+/// Destructor.
       ~simple_container()
-      {}
-      // Getters.
-      /// Get value.
+        {}
+// Getters.
+/// Get value.
       const T &value() const
-        {
-          return value_;
-        }
-      /// Get actual width.
+      {
+        return value_;
+      }
+/// Get actual width.
       size_t actual_width() const
-        {
-          return 0;
-        }
-      // Setters
-      /// Set value.
+      {
+        return 0;
+      }
+// Setters
+/// Set value.
       T &value()
       {
         return value_;
       }
-      // I/O.
-      /// Print in plain format.
+// I/O.
+/// Print in plain format.
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
-        {
-          stream_manager::setup_print(out_stream);
-          out_stream << value_;
-        }
-      /// Print in latex format.
+      {
+        stream_manager::setup_print(out_stream);
+        out_stream << value_;
+      }
+/// Print in latex format.
       void print_latex(std::ostream &out_stream, const vector_psym_p &) const
-        {
-          stream_manager::setup_print(out_stream);
-          out_stream << "$" << value_ << "$";
-        }
-      // Manipulation
-      /// Swap values with anothe container.
+      {
+        stream_manager::setup_print(out_stream);
+        out_stream << "$" << value_ << "$";
+      }
+// Manipulation
+/// Swap values with anothe container.
       void swap(self &dc)
       {
         std::swap(value_,dc.value_);
       }
-      /// Prepend arguments.
+/// Prepend arguments.
       void append_args(const size_t &)
-      {}
-      /// Append arguments.
+        {}
+/// Append arguments.
       void prepend_args(const size_t &)
-      {}
-      /// Resize.
+        {}
+/// Resize.
       void increase_size(const size_t &)
-      {}
-      // Probing.
-      /// Diagnostic checkup.
+        {}
+// Probing.
+/// Diagnostic checkup.
       bool checkup(const size_t &) const
-        {
-          return true;
-        }
-      /// Check whether contained value is larger than size.
-      // FIXME: maybe here we should check against 0 size?
+      {
+        return true;
+      }
+/// Check whether contained value is larger than size.
+// FIXME: maybe here we should check against 0 size?
       bool larger(const size_t &) const
-        {
-          return false;
-        }
-      /// Check whether contained value is smaller than size.
+      {
+        return false;
+      }
+/// Check whether contained value is smaller than size.
       bool smaller(const size_t &) const
-        {
-          return false;
-        }
-      /// Check whether contained value is size compatible.
+      {
+        return false;
+      }
+/// Check whether contained value is size compatible.
       bool compatible(const size_t &) const
-        {
-          return true;
-        }
-      /// Partial derivative.
-      /**
-       * Always returns 0, since this is a purely numerical quantity.
-       * @param[out] retval, Derived return value.
-       */
+      {
+        return true;
+      }
+/// Partial derivative.
+/**
+ * Always returns 0, since this is a purely numerical quantity.
+ * @param[out] retval, Derived return value.
+ */
       void partial(const size_t &, Derived &retval) const
-        {
-          retval=Derived(0);
-        }
+      {
+        retval=Derived(0);
+      }
     protected:
       T   value_;
-    }
+  }
   ;
 }
-
 #endif
