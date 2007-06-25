@@ -178,9 +178,9 @@ namespace piranha
 // Basic multiplication
 // --------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class T>
+    template <class Cf2, class Derived2>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_ps_mult(const
-    T &ps2)
+    base_pseries<Cf2, Trig, Term, I, Derived2> &ps2)
   {
     base_pseries retval;
 // OPTIMIZE: optimize in the case one series is a c value
