@@ -65,7 +65,7 @@ namespace piranha
 // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
 // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
 // Need to think about this, but it is not essential until symbolic coefficients are introduced.
-        const cf_type &a=static_cast<Derived const *>(this)->s_index().begin()->g_c();
+        const cf_type &a=static_cast<Derived const *>(this)->s_index().begin()->g_cf();
         if (a.t_eval(0.,static_cast<Derived const *>(this)->cf_s_vec())<0)
         {
           std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;

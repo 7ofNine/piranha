@@ -31,7 +31,7 @@ namespace piranha
     {
       return *this;
     }
-    s_c()=t2.g_c();
+    s_cf()=t2.g_cf();
     s_trig()=t2.g_trig();
     s_flavour()=t2.g_flavour();
     return *this;
@@ -41,8 +41,8 @@ namespace piranha
     template <class T,class U>
     inline void ps_term<Cf,Trig>::mult_by(const T &t2, boost::tuple<U,U> &term_pair) const
   {
-    cf_type new_c=g_c();
-    new_c*=t2.g_c();
+    cf_type new_c=g_cf();
+    new_c*=t2.g_cf();
     new_c/=2;
     if (g_flavour())
     {
@@ -52,8 +52,8 @@ namespace piranha
           <0>().s_trig(),
           term_pair.template get<1>().s_trig());
         term_pair.template get
-          <0>().s_c()=term_pair.template get
-          <1>().s_c()=new_c;
+          <0>().s_cf()=term_pair.template get
+          <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
           <1>().s_flavour()=true;
@@ -64,9 +64,9 @@ namespace piranha
           <0>().s_trig(),
           term_pair.template get<1>().s_trig());
         term_pair.template get
-          <0>().s_c()=-new_c;
+          <0>().s_cf()=-new_c;
         term_pair.template get
-          <1>().s_c()=new_c;
+          <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
           <1>().s_flavour()=false;
@@ -80,8 +80,8 @@ namespace piranha
           <0>().s_trig(),
           term_pair.template get<1>().s_trig());
         term_pair.template get
-          <0>().s_c()=term_pair.template get
-          <1>().s_c()=new_c;
+          <0>().s_cf()=term_pair.template get
+          <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
           <1>().s_flavour()=false;
@@ -92,9 +92,9 @@ namespace piranha
           <0>().s_trig(),
           term_pair.template get<1>().s_trig());
         term_pair.template get
-          <0>().s_c()=new_c;
+          <0>().s_cf()=new_c;
         term_pair.template get
-          <1>().s_c()=-new_c;
+          <1>().s_cf()=-new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
           <1>().s_flavour()=true;
