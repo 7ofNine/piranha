@@ -226,8 +226,8 @@ namespace piranha
           )
         {
           complex_term_type term1, term2;
-          // TODO: check if the increase_size here is really necessary, isn't it done during assignment
-          // below?
+// TODO: check if the increase_size here is really necessary, isn't it done during assignment
+// below?
           term1.s_trig().increase_size(w);
           term2.s_trig().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
