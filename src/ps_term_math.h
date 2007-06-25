@@ -38,8 +38,8 @@ namespace piranha
   }
 
   template <class Cf,class Trig>
-    template <class U,class V>
-    inline void ps_term<Cf,Trig>::mult_by(const U &t2, boost::tuple<V,V> &term_pair) const
+    template <class T,class U>
+    inline void ps_term<Cf,Trig>::mult_by(const T &t2, boost::tuple<U,U> &term_pair) const
   {
     cf_type new_c=c_;
     new_c*=t2.c();
