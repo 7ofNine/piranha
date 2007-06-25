@@ -167,7 +167,7 @@ namespace std
         {
           term.c()=cf_type(it->c());
           term.trig_args()=it->trig_args();
-          term.flavour()=it->flavour();
+          term.s_flavour()=it->g_flavour();
           ancestor::insert(term);
         }
       }

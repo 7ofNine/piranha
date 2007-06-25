@@ -68,7 +68,7 @@ namespace piranha
             tmp1.insert(*it);
             p_assert(tmp2.merge_args(*static_cast<Derived *>(this)));
             tmp2.insert(*it);
-            switch (it->flavour())
+            switch (it->g_flavour())
             {
               case true:
 // Change tmp2's flavour.
@@ -146,7 +146,7 @@ namespace piranha
         in_term.trig_args().increase_size(static_cast<Derived const *>(this)->trig_width());
         in_term.trig_args().insert(pos,n);
         retval.insert(in_term);
-        in_term.flavour()=false;
+        in_term.s_flavour()=false;
         retval.insert(in_term);
         return retval;
       }
@@ -222,7 +222,7 @@ namespace piranha
         p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
         real_cf_type _cf=it->c();
-        if (it->flavour()
+        if (it->g_flavour()
           )
         {
           complex_term_type term1, term2;

@@ -28,7 +28,7 @@ namespace piranha
     inline void ps_term<Cf,Trig>::invert_trig_args()
   {
     trig_args_.invert_sign();
-    if (!flavour_)
+    if (!g_flavour())
     {
 // FIXME: maybe here a invert_sign function for the coefficient should be used?
       c_*=-1;

@@ -33,7 +33,7 @@ namespace piranha
     c_.print_plain(out_stream,cv);
     out_stream << stream_manager::data_separator();
     trig_args_.print_plain(out_stream,tv);
-    switch (flavour_)
+    switch (g_flavour())
     {
       case true:
         out_stream << "c";
@@ -53,7 +53,7 @@ namespace piranha
     c_.print_latex(out_stream,cv);
     out_stream << "&";
     out_stream << "$" << phase(tv) << "$" << "&" << "$" << freq(tv) << "$" << "&";
-    switch (flavour_)
+    switch (g_flavour())
     {
       case true:
         out_stream << "c&";

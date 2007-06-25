@@ -91,7 +91,7 @@ namespace piranha
     double max_diff=0.;
     for (typename T::it_s_index it=ps1.s_index().begin();it!=it_f;++it)
     {
-      it_h=ps2.h_index().find(boost::make_tuple(it->flavour(),
+      it_h=ps2.h_index().find(boost::make_tuple(it->g_flavour(),
         boost::cref(it->trig_args())));
       if (it_h==ps2.h_index().end())
       {
@@ -574,7 +574,7 @@ namespace piranha
           }
           tmp=it->trig_args().t_eval(t,orig_->trig_s_vec());
           c_eval=it->c().t_eval(t,orig_->cf_s_vec());
-          switch (it->flavour())
+          switch (it->g_flavour())
           {
             case true:
               retval+=c_eval*std::cos(tmp)*std::cos(multiplier*a_->t_eval(t))-
@@ -638,7 +638,7 @@ namespace piranha
             }
             tmp=it->trig_args().t_eval(t,a_->trig_s_vec());
             c_eval=it->c().t_eval(t,a_->cf_s_vec());
-            switch (it->flavour())
+            switch (it->g_flavour())
             {
               case true:
                 retval+=c_eval*std::cos(tmp)*std::cos(tmp_phase)-

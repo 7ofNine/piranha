@@ -36,11 +36,11 @@ namespace piranha
     }
     else
     {
-      if (flavour()<t2.flavour())
+      if (g_flavour()<t2.g_flavour())
       {
         return true;
       }
-      else if (t2.flavour()<flavour())
+      else if (t2.g_flavour()<g_flavour())
       {
         return false;
       }
@@ -63,7 +63,7 @@ namespace piranha
       return true;
     }
 // Second check: if sine, check that there is at least 1 non-zero trig arg. Otherwise ignore.
-    if (flavour_==false)
+    if (g_flavour()==false)
     {
       return trig_args_.is_zero();
     }
@@ -90,7 +90,7 @@ namespace piranha
     ps_term<Cf,Trig>::t_eval(double t,const vector_psym_p &vc, const vector_psym_p &vt) const
   {
     typename cf_type::eval_type retval=c_.t_eval(t,vc);
-    switch (flavour_)
+    switch (g_flavour())
     {
       case true:
         retval*=std::cos(trig_args_.t_eval(t,vt));
@@ -139,7 +139,7 @@ namespace piranha
     inline bool operator==(const ps_term<Cf,Trig> &a,
     const ps_term<Cf,Trig> &b)
   {
-    if (a.flavour()!=b.flavour())
+    if (a.g_flavour()!=b.g_flavour())
     {
       return false;
     }

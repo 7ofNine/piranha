@@ -33,7 +33,7 @@ namespace piranha
     }
     c_=t2.c_;
     trig_args_=t2.trig_args_;
-    flavour_=t2.flavour_;
+    s_flavour()=t2.g_flavour();
     return *this;
   }
 
@@ -44,9 +44,9 @@ namespace piranha
     cf_type new_c=c_;
     new_c*=t2.c();
     new_c/=2;
-    if (flavour_)
+    if (g_flavour())
     {
-      if(t2.flavour())
+      if(t2.g_flavour())
       {
         trig_args_.trigmult(t2.trig_args(),term_pair.template get
           <0>().trig_args(),
@@ -55,8 +55,8 @@ namespace piranha
           <0>().c()=term_pair.template get
           <1>().c()=new_c;
         term_pair.template get
-          <0>().flavour()=term_pair.template get
-          <1>().flavour()=true;
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=true;
       }
       else
       {
@@ -68,13 +68,13 @@ namespace piranha
         term_pair.template get
           <1>().c()=new_c;
         term_pair.template get
-          <0>().flavour()=term_pair.template get
-          <1>().flavour()=false;
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=false;
       }
     }
     else
     {
-      if(t2.flavour())
+      if(t2.g_flavour())
       {
         trig_args_.trigmult(t2.trig_args(),term_pair.template get
           <0>().trig_args(),
@@ -83,8 +83,8 @@ namespace piranha
           <0>().c()=term_pair.template get
           <1>().c()=new_c;
         term_pair.template get
-          <0>().flavour_=term_pair.template get
-          <1>().flavour()=false;
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=false;
       }
       else
       {
@@ -96,8 +96,8 @@ namespace piranha
         term_pair.template get
           <1>().c()=-new_c;
         term_pair.template get
-          <0>().flavour()=term_pair.template get
-          <1>().flavour()=true;
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=true;
       }
     }
   }

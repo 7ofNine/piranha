@@ -48,15 +48,15 @@ namespace piranha
     tmp_term.c()*=std::cos(phase);
     retps.insert(tmp_term);
 // Second term: change flavour and sign.
-    switch (src.flavour())
+    switch (src.g_flavour())
     {
       case true:
-        tmp_term.flavour()=false;
+        tmp_term.s_flavour()=false;
         tmp_term.c()=tmp_c;
         tmp_term.c()*=(-std::sin(phase));
         break;
       case false:
-        tmp_term.flavour()=true;
+        tmp_term.s_flavour()=true;
         tmp_term.c()=tmp_c;
         tmp_term.c()*=std::sin(phase);
     }
@@ -243,7 +243,7 @@ namespace piranha
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
-      tmp_term.flavour()=flavour;
+      tmp_term.s_flavour()=flavour;
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -367,7 +367,7 @@ namespace piranha
     p_assert(term.trig_args().compatible(trig_width()));
     p_assert(term.trig_args().sign()>0);
     it_s_index ret_it;
-    it_h_index it=h_index().find(boost::make_tuple(term.flavour(),
+    it_h_index it=h_index().find(boost::make_tuple(term.g_flavour(),
       term.trig_args()));
     if (it==h_index().end())
     {

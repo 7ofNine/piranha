@@ -180,11 +180,11 @@ namespace piranha
 // Read flavour.
       if (*split_v.back().c_str()=='s')
       {
-        new_term.flavour()=false;
+        new_term.s_flavour()=false;
       }
       else
       {
-        new_term.flavour()=true;
+        new_term.s_flavour()=true;
       }
 // Ditch out last element of string vector, now that we read it.
       split_v.pop_back();

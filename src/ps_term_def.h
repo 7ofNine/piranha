@@ -57,7 +57,7 @@ namespace piranha
 /// Copy constructor from term with different template parameters.
       template <class Cf2>
         explicit ps_term(const ps_term<Cf2,trig_type> &term):
-      flavour_(term.flavour()),c_(term.c()),trig_args_(term.trig_args())
+      private_flavour_(term.g_flavour()),c_(term.c()),trig_args_(term.trig_args())
       {                                           /*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
       }
 // Getters
@@ -80,13 +80,13 @@ namespace piranha
         return trig_args_;
       }
 /// Get flavour.
-      bool &flavour()
+      bool &s_flavour()
       {
-        return flavour_;
+        return private_flavour_;
       }
-      bool flavour() const
+      const bool &g_flavour() const
       {
-        return flavour_;
+        return private_flavour_;
       }
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
@@ -136,7 +136,7 @@ namespace piranha
       int trig_sign() const;
     private:
 // Data members
-      bool        flavour_;
+      bool        private_flavour_;
       cf_type     c_;
       trig_type   trig_args_;
   };
@@ -144,14 +144,14 @@ namespace piranha
 /// Default constructor.
   template <class Cf, class Trig>
     inline ps_term<Cf,Trig>::ps_term():
-  flavour_(true),c_(),trig_args_()
+  private_flavour_(true),c_(),trig_args_()
     {}
 
 /// Constructor from coefficient and flavour.
   template <class Cf, class Trig>
     inline ps_term<Cf,Trig>::
     ps_term(const cf_type &c, bool flavour):
-  flavour_(flavour),c_(c)
+  private_flavour_(flavour),c_(c)
     {}
 }
 #endif
