@@ -25,6 +25,7 @@ namespace piranha
   bool arg_manager::assigned_ = false;
   boost::mutex arg_manager::mutex_;
   boost::mutex::scoped_lock arg_manager::lock_(arg_manager::mutex_,false);
-  vector_psym_p const *arg_manager::cf_args_ = 0;
-  vector_psym_p const *arg_manager::trig_args_ = 0;
+  vector_psym_p arg_manager::start_args_;
+  vector_psym_p &arg_manager::cf_args_ = arg_manager::start_args_;
+  vector_psym_p &arg_manager::trig_args_ = arg_manager::start_args_;
 }
