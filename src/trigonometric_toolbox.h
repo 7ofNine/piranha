@@ -53,7 +53,7 @@ namespace piranha
         for (it_s_index
           it=static_cast<Derived *>(this)->begin();it!=static_cast<Derived *>(this)->end();++it)
         {
-          tmp_mult=it->trig_args().multiplier(sym_index);
+          tmp_mult=it->g_trig().multiplier(sym_index);
 // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {
@@ -143,8 +143,8 @@ namespace piranha
         complex_ps retval;
         retval.merge_args(*static_cast<Derived const *>(this));
         complex_term_type in_term(complex_cf_type(1),true);
-        in_term.trig_args().increase_size(static_cast<Derived const *>(this)->trig_width());
-        in_term.trig_args().insert(pos,n);
+        in_term.s_trig().increase_size(static_cast<Derived const *>(this)->trig_width());
+        in_term.s_trig().insert(pos,n);
         retval.insert(in_term);
         in_term.s_flavour()=false;
         retval.insert(in_term);
@@ -178,15 +178,15 @@ namespace piranha
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
         complex_term_type term1(complex_cf_type(1),true),
           term2(complex_cf_type(0,1),false);
-        term1.trig_args().increase_size(retval.trig_width());
-        term2.trig_args().increase_size(retval.trig_width());
+        term1.s_trig().increase_size(retval.trig_width());
+        term2.s_trig().increase_size(retval.trig_width());
         for (unsigned int j=0;
           j<static_cast<Derived const *>
           (this)->lin_args().size();
           ++j)
         {
-          term1.trig_args().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
-          term2.trig_args().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
+          term1.s_trig().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
+          term2.s_trig().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
         }
         retval.insert(term1);
         retval.insert(term2);
@@ -226,34 +226,36 @@ namespace piranha
           )
         {
           complex_term_type term1, term2;
-          term1.trig_args().increase_size(w);
-          term2.trig_args().increase_size(w);
+          // TODO: check if the increase_size here is really necessary, isn't it done during assignment
+          // below?
+          term1.s_trig().increase_size(w);
+          term2.s_trig().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             term1.s_c().set_real(__jaccosRecf(i,_cf));
-            term1.trig_args()=it->trig_args();
-            term1.trig_args()*=(i<<1);
+            term1.s_trig()=it->g_trig();
+            term1.s_trig()*=(i<<1);
             retval.insert(term1);
             term2.s_c().set_imag(__jaccosImcf(i,_cf));
-            term2.trig_args()=it->trig_args();
-            term2.trig_args()*=((i<<1)+1);
+            term2.s_trig()=it->g_trig();
+            term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
           }
         }
         else
         {
           complex_term_type term1, term2(complex_cf_type(0),false);
-          term1.trig_args().increase_size(w);
-          term2.trig_args().increase_size(w);
+          term1.s_trig().increase_size(w);
+          term2.s_trig().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             term1.s_c().set_real(__jacsinRecf(i,_cf));
-            term1.trig_args()=it->trig_args();
-            term1.trig_args()*=(i<<1);
+            term1.s_trig()=it->g_trig();
+            term1.s_trig()*=(i<<1);
             retval.insert(term1);
             term2.s_c().set_imag(__jacsinImcf(i,_cf));
-            term2.trig_args()=it->trig_args();
-            term2.trig_args()*=((i<<1)+1);
+            term2.s_trig()=it->g_trig();
+            term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
           }
         }

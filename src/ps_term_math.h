@@ -32,7 +32,7 @@ namespace piranha
       return *this;
     }
     s_c()=t2.g_c();
-    trig_args_=t2.trig_args_;
+    s_trig()=t2.g_trig();
     s_flavour()=t2.g_flavour();
     return *this;
   }
@@ -48,9 +48,9 @@ namespace piranha
     {
       if(t2.g_flavour())
       {
-        trig_args_.trigmult(t2.trig_args(),term_pair.template get
-          <0>().trig_args(),
-          term_pair.template get<1>().trig_args());
+        g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_c()=term_pair.template get
           <1>().s_c()=new_c;
@@ -60,9 +60,9 @@ namespace piranha
       }
       else
       {
-        trig_args_.trigmult(t2.trig_args(),term_pair.template get
-          <0>().trig_args(),
-          term_pair.template get<1>().trig_args());
+        g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_c()=-new_c;
         term_pair.template get
@@ -76,9 +76,9 @@ namespace piranha
     {
       if(t2.g_flavour())
       {
-        trig_args_.trigmult(t2.trig_args(),term_pair.template get
-          <0>().trig_args(),
-          term_pair.template get<1>().trig_args());
+        g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_c()=term_pair.template get
           <1>().s_c()=new_c;
@@ -88,9 +88,9 @@ namespace piranha
       }
       else
       {
-        trig_args_.trigmult(t2.trig_args(),term_pair.template get
-          <0>().trig_args(),
-          term_pair.template get<1>().trig_args());
+        g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_c()=new_c;
         term_pair.template get

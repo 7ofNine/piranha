@@ -30,6 +30,8 @@ namespace piranha
     inline bool ps_term<Cf,Trig>::operator<(const ps_term &t2) const
   {
     p_assert(arg_manager::assigned());
+    // FIXME:  do not pass through dereference twice here, make a norm function that uses pointer
+    // directly.
     if (norm(*arg_manager::cf_args())!=t2.norm(*arg_manager::cf_args()))
     {
       return norm(*arg_manager::cf_args())>t2.norm(*arg_manager::cf_args());
@@ -44,7 +46,7 @@ namespace piranha
       {
         return false;
       }
-      return (trig_args()>t2.trig_args());
+      return (g_trig()>t2.g_trig());
     }
   }
 
@@ -65,7 +67,7 @@ namespace piranha
 // Second check: if sine, check that there is at least 1 non-zero trig arg. Otherwise ignore.
     if (g_flavour()==false)
     {
-      return trig_args_.is_zero();
+      return g_trig().is_zero();
     }
     return false;
   }
@@ -74,7 +76,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline int ps_term<Cf,Trig>::trig_sign() const
   {
-    return trig_args_.sign();
+    return g_trig().sign();
   }
 
 /// Numerical evaluation.
@@ -93,10 +95,10 @@ namespace piranha
     switch (g_flavour())
     {
       case true:
-        retval*=std::cos(trig_args_.t_eval(t,vt));
+        retval*=std::cos(g_trig().t_eval(t,vt));
         break;
       case false:
-        retval*=std::sin(trig_args_.t_eval(t,vt));
+        retval*=std::sin(g_trig().t_eval(t,vt));
     }
     return retval;
   }
@@ -120,7 +122,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline double ps_term<Cf,Trig>::phase(const vector_psym_p &v) const
   {
-    return trig_args_.phase(v);
+    return g_trig().phase(v);
   }
 
 /// Frequency of the term.
@@ -131,7 +133,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline double ps_term<Cf,Trig>::freq(const vector_psym_p &v) const
   {
-    return trig_args_.freq(v);
+    return g_trig().freq(v);
   }
 
 /// Test for equality (used in the hashed index).
@@ -143,14 +145,14 @@ namespace piranha
     {
       return false;
     }
-    return a.trig_args()==b.trig_args();
+    return a.g_trig()==b.g_trig();
   }
 
 /// Memory footprint.
   template <class Cf,class Trig>
     inline size_t ps_term<Cf,Trig>::footprint() const
   {
-    return (sizeof(self)+trig_args_.data_footprint());
+    return (sizeof(self)+g_trig().data_footprint());
   }
 
 /// Diagnose problems.
@@ -166,7 +168,7 @@ namespace piranha
       std::cout << "Coefficient failed checkup." << std::endl;
       return false;
     }
-    if (!trig_args_.checkup(tw))
+    if (!g_trig().checkup(tw))
     {
       std::cout << "Trigonometric part failed checkup." << std::endl;
       return false;

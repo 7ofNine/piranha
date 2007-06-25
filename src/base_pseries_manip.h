@@ -196,7 +196,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.trig_args().prepend_args(n);
+      tmp_term.s_trig().prepend_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -224,7 +224,7 @@ namespace piranha
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
-      tmp_term.trig_args().append_args(n);
+      tmp_term.s_trig().append_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -364,11 +364,11 @@ namespace piranha
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
     p_assert(term.g_c().compatible(cf_width()));
-    p_assert(term.trig_args().compatible(trig_width()));
-    p_assert(term.trig_args().sign()>0);
+    p_assert(term.g_trig().compatible(trig_width()));
+    p_assert(term.g_trig().sign()>0);
     it_s_index ret_it;
     it_h_index it=h_index().find(boost::make_tuple(term.g_flavour(),
-      term.trig_args()));
+      term.g_trig()));
     if (it==h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,
@@ -440,14 +440,14 @@ namespace piranha
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
     p_assert(!term.g_c().larger(cw));
-    p_assert(!term.trig_args().larger(tw));
+    p_assert(!term.g_trig().larger(tw));
     term_type *new_term=0;
-    if (term.g_c().smaller(cw) || term.trig_args().smaller(tw))
+    if (term.g_c().smaller(cw) || term.g_trig().smaller(tw))
     {
       new_term = new term_type(term);
       new_term->increase_size(cw,tw);
     }
-    if (term.trig_args().sign()<0)
+    if (term.g_trig().sign()<0)
     {
       if (new_term==0)
       {

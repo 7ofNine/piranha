@@ -196,7 +196,7 @@ namespace piranha
           << std::endl;
         append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
       }
-      new_term.trig_args()=trig;
+      new_term.s_trig()=trig;
 // Deal with phases.
       if (it_pl==pl.end())
       {

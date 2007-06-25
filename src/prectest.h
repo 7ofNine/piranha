@@ -92,7 +92,7 @@ namespace piranha
     for (typename T::it_s_index it=ps1.s_index().begin();it!=it_f;++it)
     {
       it_h=ps2.h_index().find(boost::make_tuple(it->g_flavour(),
-        boost::cref(it->trig_args())));
+        it->g_trig()));
       if (it_h==ps2.h_index().end())
       {
         diffs_[i]=-.1;
@@ -566,13 +566,13 @@ namespace piranha
 // Check that we are not going outside the boundaries.
           if (sym_index_ < orig_->trig_width())
           {
-            multiplier=it->trig_args().multiplier(sym_index_);
+            multiplier=it->g_trig().multiplier(sym_index_);
           }
           else
           {
             multiplier=0;
           }
-          tmp=it->trig_args().t_eval(t,orig_->trig_s_vec());
+          tmp=it->g_trig().t_eval(t,orig_->trig_s_vec());
           c_eval=it->g_c().t_eval(t,orig_->cf_s_vec());
           switch (it->g_flavour())
           {
@@ -636,7 +636,7 @@ namespace piranha
               default:
                 tmp_phase=*it2-it->phase(a_->trig_s_vec());
             }
-            tmp=it->trig_args().t_eval(t,a_->trig_s_vec());
+            tmp=it->g_trig().t_eval(t,a_->trig_s_vec());
             c_eval=it->g_c().t_eval(t,a_->cf_s_vec());
             switch (it->g_flavour())
             {

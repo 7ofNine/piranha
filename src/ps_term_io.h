@@ -32,7 +32,7 @@ namespace piranha
     stream_manager::setup_print(out_stream);
     g_c().print_plain(out_stream,cv);
     out_stream << stream_manager::data_separator();
-    trig_args_.print_plain(out_stream,tv);
+    g_trig().print_plain(out_stream,tv);
     switch (g_flavour())
     {
       case true:
@@ -61,7 +61,7 @@ namespace piranha
       case false:
         out_stream << "s&";
     }
-    trig_args_.print_latex(out_stream,tv);
+    g_trig().print_latex(out_stream,tv);
   }
 }
 #endif

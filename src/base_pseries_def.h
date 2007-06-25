@@ -51,7 +51,7 @@ namespace piranha
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::trig_args >
+      &Term<Cf, Trig>::g_trig >
       >
       >
       > type;

@@ -27,7 +27,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline void ps_term<Cf,Trig>::invert_trig_args()
   {
-    trig_args_.invert_sign();
+    s_trig().invert_sign();
     if (!g_flavour())
     {
 // FIXME: maybe here a invert_sign function for the coefficient should be used?
@@ -40,7 +40,7 @@ namespace piranha
     inline void ps_term<Cf,Trig>::increase_size(const size_t &cw, const size_t &tw)
   {
     s_c().increase_size(cw);
-    trig_args_.increase_size(tw);
+    s_trig().increase_size(tw);
   }
 }
 #endif
