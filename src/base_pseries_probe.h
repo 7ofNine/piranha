@@ -83,22 +83,6 @@ namespace piranha
     return true;
   }
 
-  typedef std::vector<double> vdbl;
-
-  struct foocmp
-  {
-    foocmp()
-      {}
-    bool operator()(double x1, double x2) const
-    {
-      return (x1<x2);
-    }
-  };
-
-  typedef std::set
-    <double,foocmp> sdbl;
-  typedef sdbl::iterator my_iterator;
-
 /// Check whether arguments are different.
 /**
  * Returns true if the intersection of the two series' sets of arguments (both coefficient and trigonometric)
