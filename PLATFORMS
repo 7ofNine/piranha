@@ -1,0 +1,14 @@
+FreeBSD:
+=======
+
+Tested on version 6.2. The Boost libraries from package collection are ok,
+even if they print a warning message during compilation that seems quite
+unharmful.
+
+Pyranha works too, provided that boost_python is installed (it is in a separate
+package) and provided that you do _not_ have Python 2.5 installed, since boost_python
+has been compiled against Python 2.4 and CMake picks up the latest Python version
+available.
+
+GMP libraries can be installed from packages and used in piranha. Haven't tried
+pyranha's GUI yet. PyQt4 version >= 4.2 are is most likely the minimum requirement.
