@@ -11,4 +11,4 @@ has been compiled against Python 2.4 and CMake picks up the latest Python versio
 available.
 
 GMP libraries can be installed from packages and used in piranha. Haven't tried
-pyranha's GUI yet. PyQt4 version >= 4.2 are is most likely the minimum requirement.
+pyranha's GUI yet. PyQt4 version >= 4.2 is most likely the minimum requirement.
