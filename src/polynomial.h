@@ -107,7 +107,7 @@ namespace piranha
       polynomial besselJ(int n, const vector_psym_p &v) const
       {
         const unsigned short int iterations=math::besselJ_series_limit(n,ancestor::t_eval(0,v));
-        return math::naive_besselJ<polynomial,mpz_class>(n,*this,iterations);
+        return math::pow_besselJ<polynomial,mpz_class>(n,*this,iterations);
       }
       polynomial pow(const double &x) const
       {

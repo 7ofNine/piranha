@@ -311,7 +311,7 @@ namespace piranha
         return j;
       }
 #undef __max_bessel_iter
-/// Bessel function of the first kind. Naive implementation.
+/// Bessel function of the first kind. Power series implementation.
 /**
  * Uses the series definition for Bessel functions. To be used with symbolic types,
  * for numerical types it is much better to use math::besselJ.
@@ -320,7 +320,7 @@ namespace piranha
  * @param[in] iterations, unsigned short int number of iterations.
  */
       template <class T, class Integer>
-        static T naive_besselJ(int n_, const T &x, unsigned short int iterations)
+        static T pow_besselJ(int n_, const T &x, unsigned short int iterations)
       {
         unsigned int n;
         short int sign_mult;
