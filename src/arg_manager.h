@@ -54,7 +54,7 @@ namespace piranha
             trig_args_=trig_a;
             assigned_=true;
           }
-/// Destructor: undoes assignment and unlocks resources.
+/// Destructor: undoes assignment.
           ~arg_assigner()
           {
             assigned_=false;
