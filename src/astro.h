@@ -33,7 +33,7 @@ namespace piranha
 /// Transform given Julian Date into time unit suitable for use in the ELP2000 theory.
 /**
  * ELP2000 time is measured in Julian centuries from J2000.0.
- * @param[in] jd double precision Julian Date to be converted.
+ * @param[in] jd double: Julian Date to be converted.
  */
       static double JD_to_elp2000(const double &jd)
       {
@@ -43,9 +43,9 @@ namespace piranha
 /**
  * Find the cosine of eccentric anomaly by successive approximations,
  * given eccentricity and complex exponential of mean anomaly.
- * @param[in] e eccentricity.
- * @param[in] eiM complex exponential of mean anomaly.
- * @param[in] prec double precision desired for the solution, relative to \f$ E \f$.
+ * @param[in] e: eccentricity.
+ * @param[in] eiM: complex exponential of mean anomaly.
+ * @param[in] prec: double precision desired for the solution, relative to \f$ E \f$.
  */
       template <class T>
         static T kep_cosE(const T &e,
