@@ -30,9 +30,11 @@ namespace piranha
     inline bool ps_term<Cf,Trig>::operator<(const ps_term &t2) const
   {
     p_assert(arg_manager::assigned());
-    if (norm(arg_manager::cf_args())!=t2.norm(arg_manager::cf_args()))
+    // FIXME:  do not pass through dereference twice here, make a norm function that uses pointer
+    // directly.
+    if (norm(*arg_manager::cf_args())!=t2.norm(*arg_manager::cf_args()))
     {
-      return norm(arg_manager::cf_args())>t2.norm(arg_manager::cf_args());
+      return norm(*arg_manager::cf_args())>t2.norm(*arg_manager::cf_args());
     }
     else
     {

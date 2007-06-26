@@ -45,8 +45,8 @@ namespace piranha
       class arg_assigner
       {
         public:
-/// Constructor from references to piranha::vector_psym_p.
-          arg_assigner(vector_psym_p const &cf_a, vector_psym_p const &trig_a)
+/// Constructor from pointers to piranha::vector_psym_p.
+          arg_assigner(vector_psym_p const *cf_a, vector_psym_p const *trig_a)
             :was_assigned_(assigned_)
           {
             p_assert(!was_assigned_);
@@ -54,7 +54,7 @@ namespace piranha
             trig_args_=trig_a;
             assigned_=true;
           }
-/// Destructor: undoes assignment.
+/// Destructor: undoes assignment and unlocks resources.
           ~arg_assigner()
           {
             assigned_=false;
@@ -64,17 +64,17 @@ namespace piranha
       }
       ;
 /// Check whether arguments were assigned or not.
-      static const bool &assigned()
+      static bool assigned()
       {
         return assigned_;
       }
 /// Retrieve pointer to coefficient arguments vector.
-      static vector_psym_p const &cf_args()
+      static vector_psym_p const *cf_args()
       {
         return cf_args_;
       }
 /// Retrieve pointer to trigonometric arguments vector.
-      static vector_psym_p const &trig_args()
+      static vector_psym_p const *trig_args()
       {
         return trig_args_;
       }
@@ -82,9 +82,8 @@ namespace piranha
       static bool                       assigned_;
       static boost::mutex               mutex_;
       static boost::mutex::scoped_lock  lock_;
-      static vector_psym_p              start_args_;
-      static vector_psym_p              &cf_args_;
-      static vector_psym_p              &trig_args_;
+      static vector_psym_p const        *cf_args_;
+      static vector_psym_p const        *trig_args_;
   }
   ;
 }

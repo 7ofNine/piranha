@@ -285,7 +285,7 @@ namespace piranha
     base_pseries<Cf, Trig, Term, I, Derived>::term_insert_new(const term_type &term, bool sign, const
     it_s_index *it_hint)
   {
-    arg_manager::arg_assigner aa(cf_s_vec_,trig_s_vec_);
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     it_s_index it_new;
     if (it_hint==0)
     {
@@ -319,7 +319,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_h_index &it)
   {
-    arg_manager::arg_assigner aa(cf_s_vec_,trig_s_vec_);
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     h_index().erase(it);
   }
@@ -327,7 +327,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_s_index &it)
   {
-    arg_manager::arg_assigner aa(cf_s_vec_,trig_s_vec_);
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     downgrade_norm(it->norm(cf_s_vec_));
     s_index().erase(it);
   }
@@ -335,7 +335,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_h_index &it, const cf_type &new_c)
   {
-    arg_manager::arg_assigner aa(cf_s_vec_,trig_s_vec_);
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
 // Delete old c from norm
     downgrade_norm(it->norm(cf_s_vec_));
 // Update the existing term
@@ -347,7 +347,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_s_index &it, const cf_type &new_c)
   {
-    arg_manager::arg_assigner aa(cf_s_vec_,trig_s_vec_);
+    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
 // Delete old c from norm
     downgrade_norm(it->norm());
 // Update the existing term
