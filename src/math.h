@@ -234,7 +234,7 @@ namespace piranha
  * @param[in] x, double argument of the Bessel function.
  */
 #define __max_bessel_iter (20)
-      static unsigned short int besselJ_series_limit(int n_, const double &x)
+      static unsigned int besselJ_series_limit(int n_, const double &x)
       {
         if (std::abs(x)<settings_manager::numerical_zero())
         {
@@ -263,7 +263,7 @@ namespace piranha
         }
         double half_x=(x/2);
         double tmp=1, a_jm1=1, a_j, half_x_pow2=natural_pow(2,half_x);
-        unsigned short int j=0;
+        unsigned int j=0;
         double tmp_besselJ=besselJ(n_,x), tmp_pow=natural_pow(n,half_x);
         double target=0;
         if (std::abs(tmp_besselJ)<settings_manager::numerical_zero())
@@ -317,13 +317,13 @@ namespace piranha
  * for numerical types it is much better to use math::besselJ.
  * @param[in] n_, integer order of the Bessel function.
  * @param[in] x, double argument of the Bessel function.
- * @param[in] iterations, unsigned short int number of iterations.
+ * @param[in] iterations, unsigned int number of iterations.
  */
       template <class T, class Integer>
-        static T pow_besselJ(int n_, const T &x, unsigned short int iterations)
+        static T pow_besselJ(int n_, const T &x, unsigned int iterations)
       {
         unsigned int n;
-        short int sign_mult;
+        int sign_mult;
         Integer fact;
         if (n_<0)
         {
