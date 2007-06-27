@@ -527,13 +527,23 @@ namespace piranha
 
 /// Check whether a base_polynomial is zero.
   template <class T, class Derived>
-    inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &) const
+    inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &v) const
   {
     if (set_.empty())
     {
       return true;
     }
-    return false;
+    // We have to check that monomials do not all evaluate to zero... In case there are
+    // symbols with zero constant part.
+    const it_h_index it_f=h_index().end();
+    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    {
+      if (std::abs(it->t_eval(0,v))>settings_manager::numerical_zero())
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
 /// Get base_polynomial's norm.
