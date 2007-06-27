@@ -120,6 +120,12 @@ namespace piranha
       {
         return *static_cast<Derived *>(this)*=(1./x);
       }
+      template <class Integer>
+        Derived &operator/=(const Integer &n)
+      {
+        static_cast<Derived *>(this)->basic_div_by_int(n);
+        return *static_cast<Derived *>(this);
+      }
       Derived operator/(const double &x) const
       {
         Derived retval(*static_cast<Derived const *>(this));
@@ -225,6 +231,12 @@ namespace piranha
       Derived &operator/=(const double &x)
       {
         return *static_cast<Derived *>(this)*=(1./x);
+      }
+      template <class Integer>
+        Derived &operator/=(const Integer &n)
+      {
+        static_cast<Derived *>(this)->basic_div_by_int(n);
+        return *static_cast<Derived *>(this);
       }
       Derived operator/(const double &x) const
       {

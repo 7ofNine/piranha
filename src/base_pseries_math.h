@@ -239,7 +239,8 @@ namespace piranha
 
 /// Division by an integer.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_div_by_int(int n)
+    template <class Integer>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_div_by_int(const Integer &n)
   {
     if (n==0)
     {

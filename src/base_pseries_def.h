@@ -420,7 +420,7 @@ namespace piranha
         void basic_ps_mult(const base_pseries<Cf2, trig_type, Term, I, Derived2> &);
       template <class T>
         void generic_mult(const T &);
-      void basic_div_by_int(int);
+      template <class Integer> void basic_div_by_int(const Integer &);
       void mult_by_int(int);
     private:
       struct psym_p_cmp
