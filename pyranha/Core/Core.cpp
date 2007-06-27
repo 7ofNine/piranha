@@ -79,14 +79,16 @@ BOOST_PYTHON_MODULE(_Core)
 
 // Instantiate mathematical functions.
   class_<math> class_math("math","Pyranha mathematical functions for double precision numbers.",no_init);
-  class_math.def("norm",math::norm<double>,"Norm.");
-  class_math.def("natural_pow",math::natural_pow<double>,"Natural power.");
-  class_math.def("Pnm",math::Pnm<double>,"Legendre function of the first kind - Pnm(cos(theta)).");
-  class_math.def("complexp",math::complexp<double>,"Complex exponential.");
-  class_math.def("cosine",math::cosine<double>,"Cosine.");
-  class_math.def("sine",math::sine<double>,"Sine.");
-  class_math.def("Ynm",math::Ynm<double>,"Non-normalized spherical harmonic.");
-  class_math.def("wig_rot",math::wig_rot<double>,"Wigner rotation theorem for spherical harmonics.");
+  class_math.def("norm",&math::norm<double>,"Norm.");
+  class_math.def("natural_pow",&math::natural_pow<double>,"Natural power.");
+  class_math.def("Pnm",&math::Pnm<double>,"Legendre function of the first kind - Pnm(cos(theta)).");
+  class_math.def("complexp",&math::complexp<double>,"Complex exponential.");
+  class_math.def("cosine",&math::cosine<double>,"Cosine.");
+  class_math.def("sine",&math::sine<double>,"Sine.");
+  class_math.def("Ynm",&math::Ynm<double>,"Non-normalized spherical harmonic.");
+  class_math.def("wig_rot",&math::wig_rot<double>,"Wigner rotation theorem for spherical harmonics.");
+  class_math.def("besselJ_series_limit",&math::besselJ_series_limit,
+    "Find limit of power series expansion to calculate Bessel functions of the first kind to piranha's general precision.");
   class_math.staticmethod("norm");
   class_math.staticmethod("natural_pow");
   class_math.staticmethod("cosine");
@@ -95,6 +97,8 @@ BOOST_PYTHON_MODULE(_Core)
   class_math.staticmethod("Pnm");
   class_math.staticmethod("Ynm");
   class_math.staticmethod("wig_rot");
+  class_math.staticmethod("besselJ_series_limit");
+
 
 // Settings.
   class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
