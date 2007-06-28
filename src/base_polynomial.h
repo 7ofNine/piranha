@@ -334,7 +334,7 @@ namespace piranha
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
-    p_assert(!(!set_.empty() && m.larger(w)));
+    p_assert(set_.empty() || !m.larger(w));
     const m_type *insert_m;
     if (new_m==0)
     {
