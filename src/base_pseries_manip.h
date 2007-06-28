@@ -432,10 +432,6 @@ namespace piranha
     inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::insert(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
-    if (term.is_ignorable(cf_s_vec_))
-    {
-      return s_index().end();
-    }
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
@@ -463,6 +459,12 @@ namespace piranha
     else
     {
       insert_term=new_term;
+    }
+    // We must check for ignorability here, since we need term's cf to be the right size when dealing
+    // with non-numerical cf (i.e., polynomials, etc.) by passing the vector of symbols.
+    if (insert_term->is_ignorable(cf_s_vec_))
+    {
+      return s_index().end();
     }
     it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
     delete new_term;
