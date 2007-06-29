@@ -216,8 +216,8 @@ namespace piranha
         const size_t w=width();
         p_assert(n<w);
         p_assert(w==retval.width());
-        const expo_t multiplier=container_[n];
-        if (multiplier==0)
+        const expo_t exponent=container_[n];
+        if (exponent==0)
         {
 // If the exponent is zero, partial derivative will be zero too.
           retval.numerical_cf()=numerical_type(0);
@@ -227,8 +227,8 @@ namespace piranha
 // The rational cf of retval gets multiplied by the exponent.
           retval.rational_cf()=rational_cf_;
 // Take abs because only numerical cf can be negative.
-          retval.rational_cf()*=(expo_t)std::abs(multiplier);
-          if (multiplier>0)
+          retval.rational_cf()*=(expo_t)std::abs(exponent);
+          if (exponent>0)
           {
             retval.numerical_cf()=numerical_cf_;
           }
