@@ -231,12 +231,9 @@ explicit complex(const double &x1, const double x2):
         it_h_index it, it_f;
         it_f=ancestor::h_index().end();
 // Insert real part.
-        real_m_type tmp;
         for (it=ancestor::h_index().begin();it!=it_f;++it)
         {
-          tmp.numerical_cf()=it->numerical_cf().real();
-          tmp.container()=it->container();
-          tmp.rational_cf()=it->rational_cf();
+          real_m_type tmp(it->numerical_cf().real(),it->rational_cf(),it->container());
           retval.insert(tmp);
         }
         return retval;
@@ -250,12 +247,9 @@ explicit complex(const double &x1, const double x2):
         it_h_index it, it_f;
         it_f=ancestor::h_index().end();
 // Insert real part.
-        real_m_type tmp;
         for (it=ancestor::h_index().begin();it!=it_f;++it)
         {
-          tmp.numerical_cf()=it->numerical_cf().imag();
-          tmp.container()=it->container();
-          tmp.rational_cf()=it->rational_cf();
+          real_m_type tmp(it->numerical_cf().real(),it->rational_cf(),it->container());
           retval.insert(tmp);
         }
         return retval;
@@ -278,18 +272,13 @@ explicit complex(const double &x1, const double x2):
       void set_imag(const real_type &i)
       {
         ancestor::clear();
-        add_imag(i);
-      }
-      void add_imag(const real_type &i)
-      {
         real_it_h_index it, it_f;
         it_f=i.h_index().end();
-        m_type tmp;
+// Insert imag part.
         for (it=i.h_index().begin();it!=it_f;++it)
         {
-          tmp=*it;
-          tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
-          ancestor::insert(tmp);
+          ancestor::insert(m_type(numerical_type(real_numerical_type(0.),it->numerical_cf()),
+            it->rational_cf(),it->container()));
         }
       }
       complex &operator=(const complex &c)
