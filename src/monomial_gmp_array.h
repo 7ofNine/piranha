@@ -131,6 +131,10 @@ namespace piranha
         numerical_cf_(x),rational_cf_(1)
         {}
       explicit monomial_gmp_array(const std::string &);
+/// Constructor from numerical, rational and exponent container.
+      explicit monomial_gmp_array(const numerical_type &num, const rational_type &rat, const container_type &cont)
+        :container_(cont),numerical_cf_(num),rational_cf_(rat)
+      {}
 /// Copy constructor.
       monomial_gmp_array(const monomial_gmp_array &m):container_(m.container_),numerical_cf_(m.numerical_cf_),
         rational_cf_(m.rational_cf_)
