@@ -55,6 +55,16 @@ namespace piranha
   class psymbol
   {
     public:
+/// Enum for psymbol type.
+/**
+ * Used to identify psymbols in piranha::base_pseries. Psymbol can be in the coefficient
+ * or in the trigonometric part of a term.
+ */
+      enum type
+      {
+        cf,
+        trig,
+      };
 // Ctors
       psymbol();
       psymbol(const std::string &, const vector_double &);
