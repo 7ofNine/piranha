@@ -47,7 +47,7 @@ namespace piranha
       typedef short int expo_t;
 // Start INTERFACE definition.
 //-------------------------------------------------------
-// FIXME: use "self" type here (and polynomial too)?
+// TODO: use "self" type here (and polynomial too)?
 /// Alias for the degree type.
       typedef int degree_type;
 /// Alias for the numerical coefficient.
@@ -354,11 +354,12 @@ namespace piranha
   template <class T>
     inline void monomial_gmp_array<T>::print_latex(std::ostream &out_stream, const vector_psym_p &v) const
   {
+    p_assert(v.size()==width());
     std::ostringstream tmp;
     stream_manager::setup_print(tmp);
     tmp << std::string("$");
-// Print only if it is not 1 in abs. If it is -1 print the sign.
-    if (numerical_cf_.is_unity())
+// Print only if it is not 1 in abs and it is not the only element to be printed. If it is -1 print the sign.
+    if (numerical_cf_.is_unity() && (symbolic() || rational_cf_ != 1))
     {
       if (numerical_cf_.is_negative())
       {
@@ -398,7 +399,7 @@ namespace piranha
       else
       {
 // Trailing space needed to avoid problems with symbols whose name starts with a number.
-        tmp << v[i]->name() << std::string("^") << container_[i] << " ";
+        tmp << v[i]->name() << std::string("^{") << container_[i] << "} ";
       }
     }
     tmp << std::string("$");
