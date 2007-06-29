@@ -249,7 +249,7 @@ explicit complex(const double &x1, const double x2):
 // Insert real part.
         for (it=ancestor::h_index().begin();it!=it_f;++it)
         {
-          real_m_type tmp(it->numerical_cf().real(),it->rational_cf(),it->container());
+          real_m_type tmp(it->numerical_cf().imag(),it->rational_cf(),it->container());
           retval.insert(tmp);
         }
         return retval;
