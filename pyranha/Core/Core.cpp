@@ -169,6 +169,12 @@ BOOST_PYTHON_MODULE(_Core)
     .staticmethod("put")
     ;
 
+// Psymbol type.
+  enum_<psymbol::type>("psymbol_type")
+    .value("cf", psymbol::cf)
+    .value("trig", psymbol::trig)
+    .export_values();
+
 // List of phases.
 // FIXME: expose method to manipulate them?
   class_<phase_list>("phase_list","List of phases.",init<std::string>());

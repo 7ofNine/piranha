@@ -84,7 +84,7 @@ namespace piranha
         ancestor::insert(tmp);
       }
 /// Constructor from psymbol.
-      explicit ps(const psymbol &psym):ancestor::base_pseries(psym)
+      explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
   }
   ;

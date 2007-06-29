@@ -122,7 +122,7 @@ namespace piranha
       base_pseries(const base_pseries &);
       explicit base_pseries(const std::string &);
       explicit base_pseries(const cf_type &);
-      explicit base_pseries(const psymbol &);
+      explicit base_pseries(const psymbol &, psymbol::type);
 /// Destructor.
       ~base_pseries()
         {}
@@ -488,12 +488,27 @@ namespace piranha
 
 /// Constructor from piranha::psymbol.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const psymbol &psym): __base_pseries_init_list
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const psymbol &psym, psymbol::type ptype)
+    : __base_pseries_init_list
   {
-    append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-    cf_type c(psym);
-    term_type term(c);
-    insert(term);
+    if (ptype==psymbol::cf)
+    {
+// When building to cf create a coefficient from the symvol.
+      append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+      cf_type c(psym);
+      term_type term(c);
+      insert(term);
+    }
+    else if (ptype==psymbol::trig)
+    {
+// When building to trig assign argument in lin_args.
+      append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+      lin_args_[0]=1;
+    }
+    else
+    {
+      p_assert(false);
+    }
   }
 
 #undef __base_pseries_init_list
