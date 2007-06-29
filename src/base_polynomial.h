@@ -327,14 +327,17 @@ namespace piranha
     {
       return;
     }
-    size_t w=width();
+    const size_t w=width();
     m_type *new_m=0;
     if (m.smaller(w))
     {
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
-    p_assert(set_.empty() || !m.larger(w));
+    if (!set_.empty() && m.larger(w))
+    {
+      increase_size(m.width());
+    }
     const m_type *insert_m;
     if (new_m==0)
     {
