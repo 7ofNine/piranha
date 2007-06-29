@@ -160,6 +160,8 @@ namespace piranha
       {
         retval.clear();
         m_type tmp_m;
+        const size_t w=width();
+        tmp_m.reserve(w);
         const it_d_index it_f=d_index().end();
         for (it_d_index it=d_index().begin();it!=it_f;++it)
         {

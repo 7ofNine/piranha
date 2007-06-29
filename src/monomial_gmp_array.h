@@ -207,17 +207,16 @@ namespace piranha
       monomial_gmp_array pow(const double &) const;
 /// Partial derivative.
 /**
- * Calculated with respect to argument at position n. No assumptions are made on retval.
+ * Calculated with respect to argument at position n. Retval is assumed to be able to accept the result,
+ * i.e. its exponent container must be the right size.
  * @param[out] retval: piranha::monomial_gmp_array where result is stored.
  */
       void partial(const size_t &n, monomial_gmp_array &retval) const
       {
         const size_t w=width();
         p_assert(n<w);
+        p_assert(w==retval.width());
         const expo_t multiplier=container_[n];
-// Reserve space nevertheless, we want to make sure right-sized monomial get inserted
-// in polynomials to avoid headaches.
-        retval.reserve(w);
         if (multiplier==0)
         {
 // If the exponent is zero, partial derivative will be zero too.
@@ -251,13 +250,6 @@ namespace piranha
       bool operator<(const monomial_gmp_array &) const;
 // End INTERFACE definition.
 //-------------------------------------------------------
-    protected:
-      template <class U>
-        void basic_assignment(const monomial_gmp_array<U> &);
-      template <class U>
-        bool basic_comparison(const U &) const;
-// TODO: replace with is_symbolic?
-      bool symbolic() const;
 /// Reserve space for exponents.
 /**
  * Postcondition: container is large enough to hold w elements. No assumptions can be made on
@@ -270,6 +262,13 @@ namespace piranha
           container_.resize(w);
         }
       }
+    protected:
+      template <class U>
+        void basic_assignment(const monomial_gmp_array<U> &);
+      template <class U>
+        bool basic_comparison(const U &) const;
+// TODO: replace with is_symbolic?
+      bool symbolic() const;
     protected:
       container_type              container_;
       numerical_type              numerical_cf_;
