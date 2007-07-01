@@ -193,6 +193,8 @@ namespace piranha
       static const std::string    null_name_;
   };
 
+
+// TODO: see if there is a way to move this insed psymbol class, and remove friendness etc.
 /// Manage a global set of psymbols.
 /**
  * piranha::psymbol must be registered here to keep a global list of symbol for use in Poisson series.
