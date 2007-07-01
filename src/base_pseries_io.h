@@ -383,7 +383,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::print_latex(std::ostream &out_stream, int limit) const
   {
     stream_manager::setup_print(out_stream);
-    out_stream << "\\begin{xtabular}{rrrrrl}" << std::endl;
+    out_stream << "\\begin{xtabular}{rlrrrl}" << std::endl;
     print_terms_latex(out_stream,limit);
     out_stream << "\\end{xtabular}" << std::endl;
   }
