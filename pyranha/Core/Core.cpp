@@ -81,6 +81,7 @@ BOOST_PYTHON_MODULE(_Core)
   class_<math> class_math("math","Pyranha mathematical functions for double precision numbers.",no_init);
   class_math.def("norm",&math::norm<double>,"Norm.");
   class_math.def("natural_pow",&math::natural_pow<double>,"Natural power.");
+  class_math.def("besselJ",&math::besselJ,"Bessel function of the first kind.");
   class_math.def("Pnm",&math::Pnm<double>,"Legendre function of the first kind - Pnm(cos(theta)).");
   class_math.def("complexp",&math::complexp<double>,"Complex exponential.");
   class_math.def("cosine",&math::cosine<double>,"Cosine.");
@@ -94,6 +95,7 @@ BOOST_PYTHON_MODULE(_Core)
   class_math.staticmethod("cosine");
   class_math.staticmethod("sine");
   class_math.staticmethod("complexp");
+  class_math.staticmethod("besselJ");
   class_math.staticmethod("Pnm");
   class_math.staticmethod("Ynm");
   class_math.staticmethod("wig_rot");
