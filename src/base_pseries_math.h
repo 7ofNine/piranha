@@ -137,6 +137,7 @@ namespace piranha
     for (it1=s_index().begin();it1!=it1_f;++it1)
     {
       it2=ps2.s_index().begin();
+// TODO: probably we can cache it1->norm() here, can't we?
       if ((it1->norm(cf_s_vec_)*it2->norm(ps2.cf_s_vec()))/2<Delta_threshold)
       {
         break;
