@@ -258,7 +258,7 @@ namespace piranha
       static void reg(const psymbol &);
 /// Static constructor.
 /**
- * When instantiatied (in psymbol.cpp) this class register the "null" and "t" (time) symbols.
+ * When instantiatied (in psymbol.cpp), this class registers the "null" and "t" (time) symbols.
  */
       class static_ctor
       {
