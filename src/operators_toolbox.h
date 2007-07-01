@@ -132,6 +132,12 @@ namespace piranha
         retval/=x;
         return retval;
       }
+      Derived operator/(int n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval/=n;
+        return retval;
+      }
   };
 
   template <class real_Derived>
@@ -242,6 +248,12 @@ namespace piranha
       {
         Derived retval(*static_cast<Derived const *>(this));
         retval/=x;
+        return retval;
+      }
+      Derived operator/(int n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval/=n;
         return retval;
       }
 // Complex specifics.
