@@ -10,6 +10,7 @@ OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
 OPTION(BUILD_NP "Build numerical series with array lists." ON)
 OPTION(BUILD_LNP "Build numerical series with trigonometric lists." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_GSP "Build symbolic series with polynomial coefficients." OFF "BUILD_GMP_SUPPORT" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_KEPLERIAN_PROCESSOR "Build keplerian processor." OFF "BUILD_GSP" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
 
 # Macro to find boost libraries, which have the nasty tendency to have different suffices
