@@ -217,19 +217,14 @@ namespace piranha
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
         typedef typename Derived::ancestor::cf_type real_cf_type;
-        unsigned int i, w=static_cast<Derived const *>(this)->trig_width();
+        unsigned int i;
         complex_ps retval;
         p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
         real_cf_type _cf=it->g_cf();
-        if (it->g_flavour()
-          )
+        if (it->g_flavour())
         {
           complex_term_type term1, term2;
-// TODO: check if the increase_size here is really necessary, isn't it done during assignment
-// below?
-          term1.s_trig().increase_size(w);
-          term2.s_trig().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             term1.s_cf().set_real(__jaccosRecf(i,_cf));
@@ -245,8 +240,6 @@ namespace piranha
         else
         {
           complex_term_type term1, term2(complex_cf_type(0),false);
-          term1.s_trig().increase_size(w);
-          term2.s_trig().increase_size(w);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             term1.s_cf().set_real(__jacsinRecf(i,_cf));
@@ -265,7 +258,6 @@ namespace piranha
 #undef __jaccosImcf
 #undef __jacsinRecf
 #undef __jacsinImcf
-
   };
 }
 #endif
