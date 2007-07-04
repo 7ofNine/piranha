@@ -319,8 +319,6 @@ namespace piranha
     set_.swap(p.set_);
   }
 
-// FIXME: clean up and review code here. Clean up comments and make them reflect code (they
-// were taken from pseries).
 /// Insert a new element.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::insert(const m_type &m, bool sign)
@@ -352,8 +350,7 @@ namespace piranha
     it_h_index it=h_index().find(*insert_m);
     if (it==h_index().end())
     {
-// The term is NOT a duplicate, insert in the set. Record where we inserted,
-// so it can be used in additions and multiplications
+// The term is NOT a duplicate, insert in the set.
       std::pair<it_h_index,bool> result=h_index().insert(*insert_m);
       p_assert(result.second);
 // If requested, subtract.

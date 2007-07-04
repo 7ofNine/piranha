@@ -304,10 +304,9 @@ namespace piranha
     if (sign==false)
     {
 // This is an O(1) operation, since the order in the set is not changed
-// Yes.. but there is a re-hash involved, it still should be cheaper than
-// creating a new term though. Investigate.
+// There is a re-hash involved, it still should be cheaper than
+// creating a new term though.
       cf_type new_c=it_new->g_cf();
-// FIXME: change sign directly here, so we do not do a copy below!
       p_assert(s_index().modify(it_new,typename Term<cf_type,trig_type>::
         modifier_update_cf(-new_c)));
     }
