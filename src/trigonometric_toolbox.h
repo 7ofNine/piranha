@@ -32,24 +32,25 @@ namespace piranha
       void add_ps_to_arg(trig_size_t sym_index, const real_Derived &p)
       {
         typedef typename Derived::ancestor::it_s_index it_s_index;
-        if (sym_index>=static_cast<Derived *>(this)->trig_width())
+        Derived *derived_cast=static_cast<Derived *>(this);
+        if (sym_index>=derived_cast->trig_width())
         {
           std::cout << "Invalid index in 'basic_add_ps_to_arg', returning same series." << std::endl;
           return;
         }
         Derived retval;
 // Model retval after this.
-        p_assert(retval.merge_args(*static_cast<Derived *>(this)));
+        p_assert(retval.merge_args(*derived_cast));
 // Import also linear arguments.
-        retval.lin_args()=static_cast<Derived *>(this)->lin_args();
+        retval.lin_args()=derived_cast->lin_args();
 // Merge with other series. If we don't succeed just return *this.
         if (!retval.merge_args(p))
         {
           return;
         }
         mult_t tmp_mult;
-        const it_s_index it_f=static_cast<Derived *>(this)->end();
-        for (it_s_index it=static_cast<Derived *>(this)->begin();it!=it_f;++it)
+        const it_s_index it_f=derived_cast->end();
+        for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {
           tmp_mult=it->g_trig().multiplier(sym_index);
 // If the symbol's multiplier is zero we simply insert the term.
@@ -62,9 +63,9 @@ namespace piranha
             complex_ps psc=(p*tmp_mult).complexp();
             real_Derived cosp=psc.real(), sinp=psc.imag();
             Derived tmp1, tmp2;
-            p_assert(tmp1.merge_args(*static_cast<Derived *>(this)));
+            p_assert(tmp1.merge_args(*derived_cast));
             tmp1.insert(*it);
-            p_assert(tmp2.merge_args(*static_cast<Derived *>(this)));
+            p_assert(tmp2.merge_args(*derived_cast));
             tmp2.insert(*it);
             switch (it->g_flavour())
             {
@@ -82,12 +83,12 @@ namespace piranha
           }
         }
 // Take care of lin_args.
-        if (static_cast<Derived *>(this)->lin_args()[sym_index]!=0)
+        if (derived_cast->lin_args()[sym_index]!=0)
         {
-          retval+=(p*static_cast<Derived *>(this)->
+          retval+=(p*derived_cast->
             lin_args()[sym_index]);
         }
-        static_cast<Derived *>(this)->swap(retval);
+        derived_cast->swap(retval);
         return;
       }
       void add_ps_to_arg(const std::string &name, const real_Derived &p)
@@ -108,21 +109,21 @@ namespace piranha
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
         typedef typename Derived::ancestor::r_it_s_index real_r_it_s_index;
+        const Derived *derived_cast=static_cast<Derived const *>(this);
         complex_ps retval;
-        p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
-        p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
+        p_assert(retval.merge_args(*derived_cast));
+        p_assert(retval.trig_width()==derived_cast->trig_width());
         retval.insert(complex_term_type(complex_cf_type(1.)));
-        real_r_it_s_index it=static_cast<Derived const *>(this)->set().rbegin();
-        for (;it!=static_cast<Derived const *>(this)->set().rend();++it)
+        real_r_it_s_index it=derived_cast->set().rbegin();
+        for (;it!=derived_cast->set().rend();++it)
         {
           retval*=jacangdev(it);
           std::cout << retval.length() << std::endl;
         }
         std::cout << "Final size=" << retval.length() << std::endl;
-        if (!is_zero_vec(static_cast<Derived const *>(this)->lin_args()))
+        if (!is_zero_vec(derived_cast->lin_args()))
         {
-          retval*=complexp_linargs()
-            ;
+          retval*=complexp_linargs();
         }
         return retval;
       }
