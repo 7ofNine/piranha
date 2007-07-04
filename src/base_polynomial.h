@@ -143,13 +143,6 @@ namespace piranha
       {
         return width();
       }
-// Operators.
-/// Assignment operator.
-      base_polynomial &operator=(const base_polynomial &p)
-      {
-        basic_assignment(p);
-        return *this;
-      }
 // Maths.
 /// Partial derivative with respect to nth argument.
 /**
