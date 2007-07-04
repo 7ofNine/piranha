@@ -172,20 +172,19 @@ namespace piranha
       {
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+        const Derived *derived_cast=static_cast<Derived const *>(this);
         complex_ps retval;
-        p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
-        p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
+        p_assert(retval.merge_args(*derived_cast));
+        p_assert(retval.trig_width()==derived_cast->trig_width());
         complex_term_type term1(complex_cf_type(1),true),
           term2(complex_cf_type(0,1),false);
         term1.s_trig().increase_size(retval.trig_width());
         term2.s_trig().increase_size(retval.trig_width());
-        for (unsigned int j=0;
-          j<static_cast<Derived const *>
-          (this)->lin_args().size();
-          ++j)
+        const size_t w=derived_cast->lin_args().size();
+        for (size_t j=0;j<w;++j)
         {
-          term1.s_trig().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
-          term2.s_trig().insert(j,static_cast<Derived const *>(this)->lin_args()[j]);
+          term1.s_trig().insert(j,derived_cast->lin_args()[j]);
+          term2.s_trig().insert(j,derived_cast->lin_args()[j]);
         }
         retval.insert(term1);
         retval.insert(term2);
