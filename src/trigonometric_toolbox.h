@@ -32,8 +32,7 @@ namespace piranha
       void add_ps_to_arg(trig_size_t sym_index, const real_Derived &p)
       {
         typedef typename Derived::ancestor::it_s_index it_s_index;
-        if (sym_index>=static_cast<Derived *>(this)->
-          trig_width())
+        if (sym_index>=static_cast<Derived *>(this)->trig_width())
         {
           std::cout << "Invalid index in 'basic_add_ps_to_arg', returning same series." << std::endl;
           return;
@@ -49,9 +48,8 @@ namespace piranha
           return;
         }
         mult_t tmp_mult;
-// TODO: cache end() here.
-        for (it_s_index
-          it=static_cast<Derived *>(this)->begin();it!=static_cast<Derived *>(this)->end();++it)
+        const it_s_index it_f=static_cast<Derived *>(this)->end();
+        for (it_s_index it=static_cast<Derived *>(this)->begin();it!=it_f;++it)
         {
           tmp_mult=it->g_trig().multiplier(sym_index);
 // If the symbol's multiplier is zero we simply insert the term.
