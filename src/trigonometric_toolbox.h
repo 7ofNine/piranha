@@ -190,6 +190,30 @@ namespace piranha
         retval.insert(term2);
         return retval;
       }
+      template <class real_cf_type>
+        void jaccosRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
+      {
+        retval=cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec());
+        retval*=(2-math::Kdelta((unsigned int)0,i))*math::cs_phase(i);
+      }
+      template <class real_cf_type>
+        void jaccosImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
+      {
+        retval=cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec());
+        retval*=2*math::cs_phase(i);
+      }
+      template <class real_cf_type>
+        void jacsinRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
+      {
+        retval=cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec());
+        retval*=(2-math::Kdelta((unsigned int)0,i));
+      }
+      template <class real_cf_type>
+        void jacsinImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
+      {
+        retval=cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec());
+        retval*=2;
+      }
 /// Jacobi-Anger development of a term.
 /**
  * Mathematically speaking this development converges gracely for series whose coefficients are
@@ -197,14 +221,7 @@ namespace piranha
  * perturbation(s) must be less than 1rad/timeunit - maybe then it is enough to change timescale?
  * Or maybe we can split up the biggest terms, do separate complexps and multiply at the end
  * and assemble the result....
- * If we start using these besselJ inside symbolic manipulation we need to turn the macro below
- * into proper functions.
  */
-#define __jaccosRecf(i,cf) (cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec())*(2-math::Kdelta((unsigned int)0,i))*math::cs_phase(i))
-#define __jaccosImcf(i,cf) (cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec())*2*math::cs_phase(i))
-
-#define __jacsinRecf(i,cf) (cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec())*(2-math::Kdelta((unsigned int)0,i)))
-#define __jacsinImcf(i,cf) (cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec())*2)
 // This has to be templated this way because we don't know, during multiple inheritance,
 // about typedefs in Derived class. Fortunately the problem is not serious here, since this
 // function is private and when it is called the compiler determines automatically the iterator
@@ -219,17 +236,19 @@ namespace piranha
         complex_ps retval;
         p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-        real_cf_type _cf=it->g_cf();
+        real_cf_type _cf=it->g_cf(), tmp;
         if (it->g_flavour())
         {
           complex_term_type term1, term2;
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
-            term1.s_cf().set_real(__jaccosRecf(i,_cf));
+            jaccosRecf<real_cf_type>(i,_cf,tmp);
+            term1.s_cf().set_real(tmp);
             term1.s_trig()=it->g_trig();
             term1.s_trig()*=(i<<1);
             retval.insert(term1);
-            term2.s_cf().set_imag(__jaccosImcf(i,_cf));
+            jaccosImcf<real_cf_type>(i,_cf,tmp);
+            term2.s_cf().set_imag(tmp);
             term2.s_trig()=it->g_trig();
             term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
@@ -240,11 +259,13 @@ namespace piranha
           complex_term_type term1, term2(complex_cf_type(0),false);
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
-            term1.s_cf().set_real(__jacsinRecf(i,_cf));
+            jacsinRecf(i,_cf,tmp);
+            term1.s_cf().set_real(tmp);
             term1.s_trig()=it->g_trig();
             term1.s_trig()*=(i<<1);
             retval.insert(term1);
-            term2.s_cf().set_imag(__jacsinImcf(i,_cf));
+            jacsinImcf(i,_cf,tmp);
+            term2.s_cf().set_imag(tmp);
             term2.s_trig()=it->g_trig();
             term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
@@ -252,10 +273,6 @@ namespace piranha
         }
         return retval;
       }
-#undef __jaccosRecf
-#undef __jaccosImcf
-#undef __jacsinRecf
-#undef __jacsinImcf
   };
 }
 #endif
