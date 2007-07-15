@@ -50,7 +50,7 @@ namespace piranha
     }
   }
 
-/// See if a term can be ingored when inserting it into a series.
+/// See if a term can be ignored when inserting it into a series.
 /**
  * @param[in] v vector of piranha::psymbol objects for the coefficient.
  */
