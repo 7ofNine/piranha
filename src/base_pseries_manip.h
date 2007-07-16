@@ -459,8 +459,8 @@ namespace piranha
     {
       insert_term=new_term;
     }
-    // We must check for ignorability here, since we need term's cf to be the right size when dealing
-    // with non-numerical cf (i.e., polynomials, etc.) by passing the vector of symbols.
+// We must check for ignorability here, since we need term's cf to be the right size when dealing
+// with non-numerical cf (i.e., polynomials, etc.) by passing the vector of symbols.
     if (insert_term->is_ignorable(cf_s_vec_))
     {
       return s_index().end();

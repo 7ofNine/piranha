@@ -101,7 +101,6 @@ BOOST_PYTHON_MODULE(_Core)
   class_math.staticmethod("wig_rot");
   class_math.staticmethod("besselJ_series_limit");
 
-
 // Settings.
   class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
   class_setm.def("set_prec", &settings_manager::set_prec,

@@ -23,19 +23,19 @@
 namespace piranha
 {
   gsp keplerian_processor::E_pow_e(const psymbol &e, const psymbol &M, int n)
+  {
+    if (n<0)
     {
-      if (n<0)
-      {
-        std::cout << "WARNING: a positive integer must be supplied for the order of the development." << std::endl;
-        std::cout << "WARNING: returning empty series." << std::endl;
-        return gsp();
-      }
-      gsp retval(M,psymbol::trig);
-      for (int i=1;i<=n;++i)
-      {
-        gsp tmp=math::pow_besselJ<gsp,mpz_class>(i,gsp(e,psymbol::cf)*i,(unsigned int)n);
-        //retval+=(math::pow_besselJ(i,Gsp.gsp(e,psymbol::cf)*i,6)*2)/n*(Gsp.gsp(psymbol("M",0,1),trig)*n).sine()
-      }
-      return retval;
+      std::cout << "WARNING: a positive integer must be supplied for the order of the development." << std::endl;
+      std::cout << "WARNING: returning empty series." << std::endl;
+      return gsp();
     }
+    gsp retval(M,psymbol::trig);
+    for (int i=1;i<=n;++i)
+    {
+      gsp tmp=math::pow_besselJ<gsp,mpz_class>(i,gsp(e,psymbol::cf)*i,(unsigned int)n);
+//retval+=(math::pow_besselJ(i,Gsp.gsp(e,psymbol::cf)*i,6)*2)/n*(Gsp.gsp(psymbol("M",0,1),trig)*n).sine()
+    }
+    return retval;
+  }
 }

@@ -528,8 +528,8 @@ namespace piranha
     {
       return true;
     }
-    // We have to check that monomials do not all evaluate to zero... In case there are
-    // symbols with zero constant part.
+// We have to check that monomials do not all evaluate to zero... In case there are
+// symbols with zero constant part.
     const it_h_index it_f=h_index().end();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {

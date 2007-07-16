@@ -297,12 +297,12 @@ namespace std
         return double_type(value_.imag());
       }
 // Setters.
-      /// Set value_ to be a real only value.
+/// Set value_ to be a real only value.
       void set_real(const double_type &r)
       {
         value_=r.value();
       }
-      /// Set value_ to be an imag only value.
+/// Set value_ to be an imag only value.
       void set_imag(const double_type &i)
       {
         value_=complex_double(0,i.value());
