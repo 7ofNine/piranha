@@ -123,7 +123,7 @@ namespace piranha
     template <class T>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_multiplication(const T &c)
   {
-    if (length()==0)
+    if (empty())
     {
       return;
     }
@@ -136,7 +136,8 @@ namespace piranha
     tmp_ps.merge_args(*this);
     term_type tmp_term;
     it_s_index it_hint=tmp_ps.s_index().end();
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+    const it_s_index it_f=s_index().end();
+    for (it_s_index it=s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
       tmp_term.s_cf()*=c;
@@ -171,7 +172,8 @@ namespace piranha
     tmp_ps.merge_args(*this);
     term_type tmp_term;
     it_s_index it_hint=tmp_ps.s_index().end();
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+    const it_s_index it_f=s_index().end();
+    for (it_s_index it=s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
       tmp_term.s_cf()/=x;
