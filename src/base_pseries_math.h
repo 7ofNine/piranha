@@ -184,7 +184,7 @@ namespace piranha
     base_pseries<Cf2, Trig, Term, I, Derived2> &ps2)
   {
     base_pseries retval;
-// OPTIMIZE: optimize in the case one series is a c value
+// NOTE: optimize in the case one series is a c value?
 // If one length is zero do not do anything
     if (length()!=0 && ps2.length()!=0)
     {
