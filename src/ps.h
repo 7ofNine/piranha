@@ -25,6 +25,7 @@
 
 #include "base_pseries.h"
 #include "operators_toolbox.h"
+#include "numerical_elementary_math_toolbox.h"
 #include "math_toolbox.h"
 #include "complex_toolbox.h"
 #include "differential_toolbox.h"
@@ -44,7 +45,8 @@ namespace piranha
     public math_toolbox<ps<Cf,Trig,Term,I> >,
     public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
     public real_trig_toolbox<ps<Cf,Trig,Term,I> >,
-    public differential_toolbox<ps<Cf,Trig,Term,I> >
+    public differential_toolbox<ps<Cf,Trig,Term,I> >,
+    public numerical_elementary_math_toolbox<ps<Cf,Trig,Term,I> >
   {
     public:
       typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
@@ -101,7 +103,8 @@ namespace std
     public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I> >,
     public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
     public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I> >,
-    public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >
+    public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >,
+    public piranha::numerical_elementary_math_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >
   {
     public:
 /// Alias for the ancestor.
