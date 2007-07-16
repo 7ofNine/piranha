@@ -88,7 +88,7 @@ namespace piranha
       }
       Derived &operator*=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_mult(x);
+        static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
       template <class T>
@@ -96,7 +96,7 @@ namespace piranha
       {
 // NOTICE: this typedef is placed here to make sure we multiply only by cf_type.
         typedef typename T::is_cf is_cf;
-        static_cast<Derived *>(this)->generic_mult(x);
+        static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
       Derived operator*(int n) const
@@ -206,7 +206,7 @@ namespace piranha
       }
       Derived &operator*=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_mult(x);
+        static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
       template <class T>
@@ -214,7 +214,7 @@ namespace piranha
       {
 // NOTICE: this typedef is placed here to make sure we multiply only by cf_type.
         typedef typename T::is_cf is_cf;
-        static_cast<Derived *>(this)->generic_mult(x);
+        static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
       Derived operator*(int n) const

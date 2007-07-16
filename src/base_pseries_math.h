@@ -121,7 +121,7 @@ namespace piranha
 // ----------------------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class T>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_mult(const T &c)
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_multiplication(const T &c)
   {
     if (length()==0)
     {
@@ -193,7 +193,7 @@ namespace piranha
       lin_args_[j]=0;
     }
 // Now perform the generic multiplication
-    generic_mult(n);
+    generic_multiplication(n);
 // Multiply the old linargs and restore them
     const unsigned int w=lin_args_.size();
     for (j=0;j<w;++j)

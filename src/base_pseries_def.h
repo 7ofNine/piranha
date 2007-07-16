@@ -409,7 +409,7 @@ namespace piranha
       template <class T>
         void generic_merge(const T &);
       template <class T>
-        void generic_mult(const T &);
+        void generic_multiplication(const T &);
       template <class Integer>
         void basic_div_by_int(const Integer &);
       void mult_by_int(int);
