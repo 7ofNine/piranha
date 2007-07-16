@@ -248,7 +248,6 @@ namespace piranha
         p_assert(retval!=p_set_.end());
         return retval;
       }
-/// Register a symbol.
 // NOTICE: this is an O(n) operation, maybe it can be sped up.
       static iterator get_pointer(const std::string &name)
       {
@@ -264,6 +263,7 @@ namespace piranha
         return retval;
       }
     private:
+/// Register a symbol.
       static void reg(const psymbol &psym)
       {
 // Guard with mutex, we could be registering symbols from more than one thread.
