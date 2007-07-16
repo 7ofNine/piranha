@@ -79,6 +79,11 @@ namespace piranha
         return trig_args_;
       }
     private:
+      arg_manager()
+        {}
+      ~arg_manager()
+        {}
+    private:
       static bool                       assigned_;
       static boost::mutex               mutex_;
       static boost::mutex::scoped_lock  lock_;
