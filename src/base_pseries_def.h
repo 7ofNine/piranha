@@ -30,6 +30,7 @@
 #include <complex>
 
 #include "phase_list.h"
+#include "psymbol.h"
 
 namespace piranha
 {
