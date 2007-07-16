@@ -409,9 +409,9 @@ namespace piranha
       template <class T>
         void generic_merge(const T &);
       template <class Cf2, class Derived2>
-        void mult_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, base_pseries &, const double &);
+        void multiply_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, base_pseries &, const double &);
       template <class Cf2, class Derived2>
-        void basic_ps_mult(const base_pseries<Cf2, trig_type, Term, I, Derived2> &);
+        void series_multiplication(const base_pseries<Cf2, trig_type, Term, I, Derived2> &);
       template <class T>
         void generic_mult(const T &);
       template <class Integer>

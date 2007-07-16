@@ -120,7 +120,7 @@ namespace piranha
 // --------------------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class Cf2,class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::mult_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2,
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::multiply_terms(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2,
     base_pseries &retval, const double &Delta)
   {
     const double Delta_threshold=Delta/(2*length()*ps2.length());
@@ -180,7 +180,7 @@ namespace piranha
 // --------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class Cf2, class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_ps_mult(const
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::series_multiplication(const
     base_pseries<Cf2, Trig, Term, I, Derived2> &ps2)
   {
     base_pseries retval;
@@ -201,7 +201,7 @@ namespace piranha
       }
       p_assert(retval.merge_args(*this));
       const double Delta=norm()*ps2.norm()*settings_manager::prec();
-      mult_terms(ps2,retval,Delta);
+      multiply_terms(ps2,retval,Delta);
     }
     else
     {

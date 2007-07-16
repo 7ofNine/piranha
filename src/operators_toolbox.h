@@ -83,7 +83,7 @@ namespace piranha
       }
       Derived &operator*=(const Derived &p)
       {
-        static_cast<Derived *>(this)->basic_ps_mult(p);
+        static_cast<Derived *>(this)->series_multiplication(p);
         return *static_cast<Derived *>(this);
       }
       Derived &operator*=(const double &x)
@@ -201,7 +201,7 @@ namespace piranha
       }
       Derived &operator*=(const Derived &p)
       {
-        static_cast<Derived *>(this)->basic_ps_mult(p);
+        static_cast<Derived *>(this)->series_multiplication(p);
         return *static_cast<Derived *>(this);
       }
       Derived &operator*=(const double &x)
@@ -281,7 +281,7 @@ namespace piranha
       }
       Derived &operator*=(const real_Derived &p)
       {
-        static_cast<Derived *>(this)->basic_ps_mult(p);
+        static_cast<Derived *>(this)->series_multiplication(p);
         return *static_cast<Derived *>(this);
       }
       Derived operator*(const real_Derived &p) const
