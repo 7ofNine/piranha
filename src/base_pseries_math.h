@@ -145,18 +145,18 @@ namespace piranha
     swap(tmp_ps);
   }
 
-/// Division by an integer.
+/// Generic division.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class Integer>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_div_by_int(const Integer &n)
+    template <class T>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_division(const T &x)
   {
-    if (n==0)
+    if (x==0)
     {
-      std::cout << "ERROR: division by zero in /= int, returning self." << std::endl;
+      std::cout << "ERROR: division by zero in /=, returning self." << std::endl;
       std::abort();
       return;
     }
-    if (length()==0)
+    if (empty())
     {
       return;
     }
@@ -174,7 +174,7 @@ namespace piranha
     for (it_s_index it=s_index().begin();it!=s_index().end();++it)
     {
       tmp_term=*it;
-      tmp_term.s_cf()/=n;
+      tmp_term.s_cf()/=x;
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);

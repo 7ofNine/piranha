@@ -410,8 +410,8 @@ namespace piranha
         void generic_merge(const T &);
       template <class T>
         void generic_multiplication(const T &);
-      template <class Integer>
-        void basic_div_by_int(const Integer &);
+      template <class T>
+        void generic_division(const T &);
       void mult_by_int(int);
     private:
 /// Name comparison functor for psymbol pointers.
