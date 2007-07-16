@@ -399,13 +399,6 @@ namespace piranha
         bool, const it_s_index *);
 // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
-      template <class Cf2, class Derived2>
-        bool args_compatible(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
-// TODO: move into private?
-      template <class Cf2, class Derived2>
-        bool args_different(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
 // Low level maths.
       void basic_assignment(const base_pseries &);
       template <class Cf2, class Derived2>
@@ -421,9 +414,14 @@ namespace piranha
         void basic_ps_mult(const base_pseries<Cf2, trig_type, Term, I, Derived2> &);
       template <class T>
         void generic_mult(const T &);
-      template <class Integer> void basic_div_by_int(const Integer &);
+      template <class Integer>
+        void basic_div_by_int(const Integer &);
       void mult_by_int(int);
     private:
+/// Name comparison functor for psymbol pointers.
+/**
+ * Used in merging of arguments.
+ */
       struct psym_p_cmp
       {
         psym_p_cmp()
@@ -433,6 +431,12 @@ namespace piranha
           return (p1->name()<p2->name());
         }
       };
+      template <class Cf2, class Derived2>
+        bool args_different(const
+        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
+      template <class Cf2, class Derived2>
+        bool args_compatible(const
+        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
 // Data members.
     protected:
       double          norm_;
