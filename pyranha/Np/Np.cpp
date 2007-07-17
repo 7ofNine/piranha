@@ -25,4 +25,8 @@ BOOST_PYTHON_MODULE(_Np)
 {
   class_<np> inst=ps_basic_instantiation<np>("np","Numerical Poisson series class.");
   ps_instantiate_real_specifics(inst);
+  def("kep_cosE",&astro::kep_cosE<np>,"Solve Kepler's equation for cosE.");
+  def("Pnm",&math::Pnm<np>,"Legendre function of the first kind - Pnm(cos(theta)).");
+  def("Ynm",&math::Ynm<np>,"Non-normalized spherical harmonic.");
+  def("wig_rot",&math::wig_rot<np>,"Wigner rotation theorem for spherical harmonics.");
 }

@@ -177,11 +177,11 @@ void ps_instantiate_real_specifics(class_<T> &real)
   real.def("add_ps_to_arg", real_add_ps_to_arg_index(&real_ps::add_ps_to_arg));
   real.def("add_ps_to_arg", real_add_ps_to_arg_string(&real_ps::add_ps_to_arg));
 // External functions.
-  def("kep_cosE",&astro::kep_cosE<real_ps>,"Solve Kepler's equation for cosE.");
-// NOTE: which functions does it make sense to keep here?
-  def("Pnm",math::Pnm<real_ps>,"Legendre function of the first kind - Pnm(cos(theta)).");
-  def("Ynm",math::Ynm<real_ps>,"Non-normalized spherical harmonic.");
-  def("wig_rot",math::wig_rot<real_ps>,"Wigner rotation theorem for spherical harmonics.");
+//   def("kep_cosE",&astro::kep_cosE<real_ps>,"Solve Kepler's equation for cosE.");
+// // NOTE: which functions does it make sense to keep here?
+//   def("Pnm",&math::Pnm<real_ps>,"Legendre function of the first kind - Pnm(cos(theta)).");
+//   def("Ynm",&math::Ynm<real_ps>,"Non-normalized spherical harmonic.");
+//   def("wig_rot",&math::wig_rot<real_ps>,"Wigner rotation theorem for spherical harmonics.");
   class_<tc_complexp<real_ps> > tc_complexp_inst("tc_complexp",
     init<typename tc_complexp<real_ps>::b_type,double,double,size_t,real_ps>());
   tc_common_instantiation(tc_complexp_inst);
