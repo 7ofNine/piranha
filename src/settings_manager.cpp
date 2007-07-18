@@ -31,7 +31,6 @@ namespace piranha
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
   settings_manager::greeter settings_manager::grt_;
-  boost::mutex settings_manager::mutex_;
 
   settings_manager::greeter::greeter()
   {
@@ -49,16 +48,12 @@ namespace piranha
 /// Set precision in multiplication of series.
   void settings_manager::set_prec(const double &value)
   {
-    boost::mutex::scoped_lock lock(mutex_)
-      ;
     prec_=value;
   }
 
 /// Set path to theories of motion.
   void settings_manager::set_theories_path(const std::string &str)
   {
-    boost::mutex::scoped_lock lock(mutex_)
-      ;
     theories_path_=str;
   }
 }

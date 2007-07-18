@@ -25,7 +25,6 @@ namespace piranha
   unsigned int stream_manager::digits_ = 15;
   const std::string stream_manager::data_separator_ = ";";
   stream_manager::out_format stream_manager::format_ = stream_manager::plain;
-  boost::mutex stream_manager::mutex_;
   const unsigned int stream_manager::min_digits_ = 0;
   const unsigned int stream_manager::max_digits_ = 50;
   stream_manager::fp_representation stream_manager::fp_rep_ = stream_manager::scientific;
@@ -52,9 +51,6 @@ namespace piranha
 
   void stream_manager::set_digits(int n)
   {
-// Guard with lock, we can set this from gui too.
-    boost::mutex::scoped_lock lock(mutex_)
-      ;
     if (n<(int)min_digits_ || n>(int)max_digits_)
     {
       std::cout << "Invalid number of digits." << std::endl;
@@ -67,8 +63,6 @@ namespace piranha
 
   void stream_manager::set_fp_rep(fp_representation fpr)
   {
-    boost::mutex::scoped_lock lock(mutex_)
-      ;
     fp_rep_=fpr;
   }
 
@@ -98,8 +92,6 @@ namespace piranha
 
   void stream_manager::set_format(out_format fmt)
   {
-    boost::mutex::scoped_lock lock(mutex_)
-      ;
     format_=fmt;
   }
 }

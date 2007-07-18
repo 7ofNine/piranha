@@ -21,7 +21,6 @@
 #ifndef PIRANHA_SETTINGS_MANAGER_H
 #define PIRANHA_SETTINGS_MANAGER_H
 
-#include <boost/thread/mutex.hpp>
 #include <string>
 
 namespace piranha
@@ -81,7 +80,6 @@ namespace piranha
 /// Relative precision of series multiplications.
       static double             prec_;
       static greeter            grt_;
-      static boost::mutex       mutex_;
   };
 }
 #endif                                            // PIRANHA_SETTINGS_H

@@ -23,7 +23,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/array.hpp>
-#include <boost/thread/mutex.hpp>
 #include <cmath>
 #include <set>
 #include <string>
@@ -266,9 +265,6 @@ namespace piranha
 /// Register a symbol.
       static void reg(const psymbol &psym)
       {
-// Guard with mutex, we could be registering symbols from more than one thread.
-        boost::mutex::scoped_lock lock(mutex_)
-          ;
         const iterator it=p_set_.find(psym);
         if (it==p_set_.end())
         {
@@ -307,7 +303,6 @@ namespace piranha
 // Data members.
     private:
       static set_type             p_set_;
-      static boost::mutex         mutex_;
       static const static_ctor    ctor_;
   };
 

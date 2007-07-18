@@ -72,19 +72,8 @@ ENDIF(${CMAKE_C_COMPILER} MATCHES "icc")
 
 # Find stuff
 # ---------------------------------------------------------------------------------
-# Boost general
-INCLUDE(${CMAKE_ROOT}/Modules/FindBoost.cmake)
-FIND_PACKAGE(Boost REQUIRED)
-MESSAGE(STATUS "Boost include path: " "${Boost_INCLUDE_DIRS}")
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-MESSAGE(STATUS "Boost link path: " "${Boost_LIBRARY_DIRS}")
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-
-# Boost thread
-FIND_BOOST_LIBRARY(BOOST_THREAD_LIBRARY "thread")
-
 # Mandatory linking
-SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_THREAD_LIBRARY})
+SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha)
 
 # Find GMP and setup support
 # Search in this position because it potentially influences many parts of the code -

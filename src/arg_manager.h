@@ -85,8 +85,6 @@ namespace piranha
         {}
     private:
       static bool                       assigned_;
-      static boost::mutex               mutex_;
-      static boost::mutex::scoped_lock  lock_;
       static vector_psym_p const        *cf_args_;
       static vector_psym_p const        *trig_args_;
   }

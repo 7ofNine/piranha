@@ -1,3 +1,11 @@
+# Find Boost
+INCLUDE(${CMAKE_ROOT}/Modules/FindBoost.cmake)
+FIND_PACKAGE(Boost REQUIRED)
+MESSAGE(STATUS "Boost include path: " "${Boost_INCLUDE_DIRS}")
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+MESSAGE(STATUS "Boost link path: " "${Boost_LIBRARY_DIRS}")
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+
 # Find Python libraries
 INCLUDE(${CMAKE_ROOT}/Modules/FindPythonLibs.cmake)
 FIND_PACKAGE(PythonLibs REQUIRED)
