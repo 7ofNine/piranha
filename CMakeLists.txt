@@ -80,13 +80,11 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 MESSAGE(STATUS "Boost link path: " "${Boost_LIBRARY_DIRS}")
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-# Boost filesystem.
-FIND_BOOST_LIBRARY(BOOST_FS_LIBRARY "filesystem")
 # Boost thread
 FIND_BOOST_LIBRARY(BOOST_THREAD_LIBRARY "thread")
 
 # Mandatory linking
-SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_FS_LIBRARY} ${BOOST_THREAD_LIBRARY})
+SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha ${BOOST_THREAD_LIBRARY})
 
 # Find GMP and setup support
 # Search in this position because it potentially influences many parts of the code -

@@ -137,12 +137,6 @@ namespace piranha
       outf_data.close();
       return;
     }
-    if (utils::check_filename_dir(plot_file) || utils::check_filename_dir(data_file))
-    {
-      outf_plot.close();
-      outf_data.close();
-      return;
-    }
     stream_manager::setup_print(outf_data);
     for (size_t i=0;i<diffs_.size();++i)
     {
@@ -302,12 +296,6 @@ namespace piranha
     if (outf_plot.fail() || outf_data.fail())
     {
       std::cout << "Error saving to file " << filename << std::endl;
-      outf_plot.close();
-      outf_data.close();
-      return;
-    }
-    if (utils::check_filename_dir(plot_file) || utils::check_filename_dir(data_file))
-    {
       outf_plot.close();
       outf_data.close();
       return;

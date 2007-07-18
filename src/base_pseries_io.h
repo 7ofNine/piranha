@@ -143,17 +143,8 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::read_terms(std::ifstream &inf,const std::string &filename)
   {
-    phase_list pl;
     const std::string pl_name=filename+".phl";
-    if (boost::filesystem::exists(pl_name) && !utils::check_filename_dir(pl_name))
-    {
-      std::cout << "Phases list '" << pl_name << "' exists." << std::endl;
-      pl=phase_list(pl_name);
-    }
-    else
-    {
-      std::cout << "Phases list '" << pl_name << "' does not exist." << std::endl;
-    }
+    phase_list pl=phase_list(pl_name);
     phase_list::const_iterator it_pl=pl.begin();
     deque_string split_v;
     std::string temp;
@@ -396,11 +387,6 @@ namespace piranha
     if (outf.fail())
     {
       std::cout << "Error saving to file " << filename << "." << std::endl;
-      outf.close();
-      return;
-    }
-    if (utils::check_filename_dir(filename))
-    {
       outf.close();
       return;
     }

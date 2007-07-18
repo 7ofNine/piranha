@@ -22,7 +22,6 @@
 #define PIRANHA_UTILS_H
 
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <fstream>
@@ -107,23 +106,7 @@ namespace piranha
           }
           std::cout << "Found \"" << fn << "\" in theories of motion." << std::endl;
         }
-        if (check_filename_dir(filename))
-        {
-          std::cout << "Invalid filename: it is a directory." << std::endl;
-          inf.close();
-          return std::string();
-        }
         return filename;
-      }
-/// Check whether a path string corresponds to a directory using boost::filesystem.
-      static bool check_filename_dir(const std::string &filename)
-      {
-        if (boost::filesystem::is_directory(boost::filesystem::path(filename,boost::filesystem::native)))
-        {
-          std::cout << "Error: \"" << filename << "\" is a directory, not a file." << std::endl;
-          return true;
-        }
-        return false;
       }
 /// Convert a string into a vector of numerical values.
 /**
