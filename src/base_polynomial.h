@@ -40,9 +40,6 @@ namespace piranha
   template <class T, class Derived>
     class base_polynomial
   {
-    public:
-// Signal that this is going to be used as a coefficient.
-      struct is_cf{};
     protected:
       typedef monomial_gmp_array<T> m_type;
 /// Tag for the degree index.

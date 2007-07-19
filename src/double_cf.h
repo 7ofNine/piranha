@@ -39,7 +39,6 @@ namespace piranha
   class double_cf : public simple_container<double,double_cf>
   {
     public:
-      struct is_cf{};
 /// Alias for itself.
       typedef double_cf self;
 /// Alias for the parent class.

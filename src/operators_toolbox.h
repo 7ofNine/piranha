@@ -94,8 +94,6 @@ namespace piranha
       template <class T>
         Derived &operator*=(const T &x)
       {
-// NOTICE: this typedef is placed here to make sure we multiply only by cf_type.
-        typedef typename T::is_cf is_cf;
         static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
@@ -213,8 +211,6 @@ namespace piranha
       template <class T>
         Derived &operator*=(const T &x)
       {
-// NOTICE: this typedef is placed here to make sure we multiply only by cf_type.
-        typedef typename T::is_cf is_cf;
         static_cast<Derived *>(this)->generic_multiplication(x);
         return *static_cast<Derived *>(this);
       }
