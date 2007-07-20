@@ -153,7 +153,7 @@ namespace piranha
       {
         return (n&1);
       }
-/// Find norm, generic version.
+/// Return norm, generic version.
       template <class T>
         static double norm(const T &x)
       {
