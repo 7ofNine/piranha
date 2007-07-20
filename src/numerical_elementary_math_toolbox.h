@@ -98,7 +98,7 @@ namespace piranha
             {
               break;
             }
-            it1->mult_by(*it2,term_pair);
+            term_by_term_multiplication(*it1,*it2,term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
             if (term_pair.template get
@@ -122,6 +122,70 @@ namespace piranha
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
         std::cout << "Out length=" << retval.length() << std::endl;
       }
+    template <class T,class U>
+      void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair) const
+    {
+      typedef typename Derived::ancestor::cf_type cf_type;
+      cf_type new_c=t1.g_cf();
+      new_c*=t2.g_cf();
+      new_c/=2;
+      if (t1.g_flavour())
+      {
+        if(t2.g_flavour())
+        {
+          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+            <0>().s_trig(),
+            term_pair.template get<1>().s_trig());
+          term_pair.template get
+            <0>().s_cf()=term_pair.template get
+            <1>().s_cf()=new_c;
+          term_pair.template get
+            <0>().s_flavour()=term_pair.template get
+            <1>().s_flavour()=true;
+        }
+        else
+        {
+          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+            <0>().s_trig(),
+            term_pair.template get<1>().s_trig());
+          term_pair.template get
+            <0>().s_cf()=-new_c;
+          term_pair.template get
+            <1>().s_cf()=new_c;
+          term_pair.template get
+            <0>().s_flavour()=term_pair.template get
+            <1>().s_flavour()=false;
+        }
+      }
+      else
+      {
+        if(t2.g_flavour())
+        {
+          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+            <0>().s_trig(),
+            term_pair.template get<1>().s_trig());
+          term_pair.template get
+            <0>().s_cf()=term_pair.template get
+            <1>().s_cf()=new_c;
+          term_pair.template get
+            <0>().s_flavour()=term_pair.template get
+            <1>().s_flavour()=false;
+        }
+        else
+        {
+          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+            <0>().s_trig(),
+            term_pair.template get<1>().s_trig());
+          term_pair.template get
+            <0>().s_cf()=new_c;
+          term_pair.template get
+            <1>().s_cf()=-new_c;
+          term_pair.template get
+            <0>().s_flavour()=term_pair.template get
+            <1>().s_flavour()=true;
+        }
+      }
+    }
   };
 }
 #endif

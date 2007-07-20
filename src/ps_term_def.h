@@ -98,13 +98,18 @@ namespace piranha
       void increase_size(const size_t &, const size_t &);
       void invert_trig_args();
 // Maths.
-      ps_term &operator=(const ps_term &);
-// Templatized this way to allow interoperability between real and complex series,
-// but maybe also between different types?
-// Probably not,in that case it is better to provide a converter between classes.
-      template <class T,class U>
-        void mult_by(const T &,
-        boost::tuple<U,U> &) const;
+/// Assignment operator.
+      ps_term &operator=(const ps_term &t2)
+      {
+        if (this==&t2)
+        {
+          return *this;
+        }
+        s_cf()=t2.g_cf();
+        s_trig()=t2.g_trig();
+        s_flavour()=t2.g_flavour();
+        return *this;
+      }
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &, const vector_psym_p &) const;

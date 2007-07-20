@@ -25,5 +25,4 @@
 #include "ps_term_io.h"
 #include "ps_term_probe.h"
 #include "ps_term_manip.h"
-#include "ps_term_math.h"
 #endif
