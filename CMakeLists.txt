@@ -1,5 +1,6 @@
 PROJECT(piranha)
 INCLUDE(${CMAKE_ROOT}/Modules/CMakeDependentOption.cmake)
+INCLUDE(CPack)
 ENABLE_LANGUAGE(C CXX)
 
 # General options
