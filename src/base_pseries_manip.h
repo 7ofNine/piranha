@@ -343,17 +343,6 @@ namespace piranha
     upgrade_norm(new_c.norm(cf_s_vec_));
   }
 
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_s_index &it, const cf_type &new_c)
-  {
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-// Delete old c from norm
-    downgrade_norm(it->norm());
-// Update the existing term
-    p_assert(s_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
-// Update the norm with the new c
-    upgrade_norm(new_c.norm());
-  }
 
 // **************** //
 // INSERT FUNCTIONS //

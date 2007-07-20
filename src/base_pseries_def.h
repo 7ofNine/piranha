@@ -392,7 +392,6 @@ namespace piranha
       void downgrade_norm(const double &);
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
       void term_update(const it_h_index &, const cf_type &);
-      void term_update(const it_s_index &, const cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
       template <class Cf2>
         it_s_index ll_insert(const Term<Cf2, trig_type> &,
