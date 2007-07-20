@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NUMERICAL_ELEMENTARY_MATH_TOOLBOX_H
-#define PIRANHA_NUMERICAL_ELEMENTARY_MATH_TOOLBOX_H
+#ifndef PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
+#define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 namespace piranha
 {
@@ -28,7 +28,7 @@ namespace piranha
  * Implements series multiplication and truncation according to norms.
  */
   template <class Derived>
-    class numerical_elementary_math_toolbox
+    class norm_based_elementary_math_toolbox
   {
     public:
       template <class Derived2>
