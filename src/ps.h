@@ -161,6 +161,7 @@ namespace std
       }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
+// TODO: can we re-use some function from complex_toolbox to achieve this result?
       explicit complex(const real_ps &p):ancestor::base_pseries()
       {
         p_assert(ancestor::merge_args(p));
