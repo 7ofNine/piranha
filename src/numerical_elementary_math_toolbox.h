@@ -129,62 +129,7 @@ namespace piranha
       cf_type new_c=t1.g_cf();
       new_c*=t2.g_cf();
       new_c/=2;
-      if (t1.g_flavour())
-      {
-        if(t2.g_flavour())
-        {
-          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
-            <0>().s_trig(),
-            term_pair.template get<1>().s_trig());
-          term_pair.template get
-            <0>().s_cf()=term_pair.template get
-            <1>().s_cf()=new_c;
-          term_pair.template get
-            <0>().s_flavour()=term_pair.template get
-            <1>().s_flavour()=true;
-        }
-        else
-        {
-          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
-            <0>().s_trig(),
-            term_pair.template get<1>().s_trig());
-          term_pair.template get
-            <0>().s_cf()=-new_c;
-          term_pair.template get
-            <1>().s_cf()=new_c;
-          term_pair.template get
-            <0>().s_flavour()=term_pair.template get
-            <1>().s_flavour()=false;
-        }
-      }
-      else
-      {
-        if(t2.g_flavour())
-        {
-          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
-            <0>().s_trig(),
-            term_pair.template get<1>().s_trig());
-          term_pair.template get
-            <0>().s_cf()=term_pair.template get
-            <1>().s_cf()=new_c;
-          term_pair.template get
-            <0>().s_flavour()=term_pair.template get
-            <1>().s_flavour()=false;
-        }
-        else
-        {
-          t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
-            <0>().s_trig(),
-            term_pair.template get<1>().s_trig());
-          term_pair.template get
-            <0>().s_cf()=new_c;
-          term_pair.template get
-            <1>().s_cf()=-new_c;
-          term_pair.template get
-            <0>().s_flavour()=term_pair.template get
-            <1>().s_flavour()=true;
-        }
-      }
+      static_cast<Derived const *>(this)->term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
     }
   };
 }

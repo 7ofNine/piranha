@@ -203,5 +203,71 @@ namespace piranha
       lin_args_[j]=old_lin_args[j]*n;
     }
   }
+
+
+
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    template <class Cf2>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::term_by_term_multiplication_trig(
+    const term_type &t1, const Term<Cf2,trig_type> &t2, boost::tuple<term_type &,term_type &> &term_pair,
+    cf_type &new_c) const
+  {
+    if (t1.g_flavour())
+    {
+      if(t2.g_flavour())
+      {
+        t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
+        term_pair.template get
+          <0>().s_cf()=term_pair.template get
+          <1>().s_cf()=new_c;
+        term_pair.template get
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=true;
+      }
+      else
+      {
+        t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
+        term_pair.template get
+          <0>().s_cf()=-new_c;
+        term_pair.template get
+          <1>().s_cf()=new_c;
+        term_pair.template get
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=false;
+      }
+    }
+    else
+    {
+      if(t2.g_flavour())
+      {
+        t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
+        term_pair.template get
+          <0>().s_cf()=term_pair.template get
+          <1>().s_cf()=new_c;
+        term_pair.template get
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=false;
+      }
+      else
+      {
+        t1.g_trig().trigmult(t2.g_trig(),term_pair.template get
+          <0>().s_trig(),
+          term_pair.template get<1>().s_trig());
+        term_pair.template get
+          <0>().s_cf()=new_c;
+        term_pair.template get
+          <1>().s_cf()=-new_c;
+        term_pair.template get
+          <0>().s_flavour()=term_pair.template get
+          <1>().s_flavour()=true;
+      }
+    }
+  }
 }
 #endif
