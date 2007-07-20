@@ -210,7 +210,7 @@ namespace piranha
     template <class Cf2>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_by_term_multiplication_trig(
     const term_type &t1, const Term<Cf2,trig_type> &t2, boost::tuple<term_type &,term_type &> &term_pair,
-    cf_type &new_c) const
+    cf_type &new_c)
   {
     if (t1.g_flavour())
     {

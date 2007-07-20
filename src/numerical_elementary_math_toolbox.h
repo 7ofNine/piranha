@@ -123,13 +123,13 @@ namespace piranha
         std::cout << "Out length=" << retval.length() << std::endl;
       }
     template <class T,class U>
-      void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair) const
+      static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair)
     {
       typedef typename Derived::ancestor::cf_type cf_type;
       cf_type new_c=t1.g_cf();
       new_c*=t2.g_cf();
       new_c/=2;
-      static_cast<Derived const *>(this)->term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
+      Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
     }
   };
 }

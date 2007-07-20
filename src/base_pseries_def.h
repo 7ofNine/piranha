@@ -408,8 +408,8 @@ namespace piranha
       template <class T>
         void generic_merge(const T &);
       template <class Cf2>
-        void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
-        boost::tuple<term_type &,term_type &> &, cf_type &) const;
+        static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
+        boost::tuple<term_type &,term_type &> &, cf_type &);
       template <class T>
         void generic_multiplication(const T &);
       template <class T>
