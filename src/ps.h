@@ -70,17 +70,11 @@ namespace piranha
       explicit ps(const cf_type &c):ancestor::base_pseries(c)
         {}
 /// Constructor from int.
-      explicit ps(int n)
-      {
-        term_type tmp=term_type(cf_type(n));
-        ancestor::insert(tmp);
-      }
+      explicit ps(int n):ancestor::base_pseries(cf_type(n))
+        {}
 /// Constructor from double.
-      explicit ps(const double &x)
-      {
-        term_type tmp=term_type(cf_type(x));
-        ancestor::insert(tmp);
-      }
+      explicit ps(const double &x):ancestor::base_pseries(cf_type(x))
+        {}
 /// Constructor from psymbol.
       explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
