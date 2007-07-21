@@ -69,10 +69,6 @@ namespace piranha
         {}
       explicit ps(const cf_type &c):ancestor::base_pseries(c)
         {}
-      ps copy() const
-      {
-        return ps(*this);
-      }
 /// Constructor from int.
       explicit ps(int n)
       {
@@ -136,11 +132,6 @@ namespace std
 /// Constructor from coefficient.
       explicit complex(const cf_type &c):ancestor::base_pseries(c)
         {}
-/// Copy to another complex series.
-      complex copy() const
-      {
-        return complex(*this);
-      }
 /// Constructor from pair of real coefficients.
       explicit complex(const real_cf_type &a, const real_cf_type &b)
       {

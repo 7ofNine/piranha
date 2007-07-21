@@ -127,6 +127,11 @@ namespace piranha
 /// Destructor.
       ~base_pseries()
         {}
+/// Copy.
+      Derived copy() const
+      {
+        return Derived(*static_cast<Derived const *>(this));
+      }
 // Getters
 /// Return series length.
       size_t length() const
