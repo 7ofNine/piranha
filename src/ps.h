@@ -50,16 +50,7 @@ namespace piranha
   {
     public:
       typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
-      typedef typename ancestor::term_type term_type;
-      typedef typename ancestor::it_s_index it_s_index;
-      typedef typename ancestor::r_it_s_index r_it_s_index;
       typedef typename ancestor::cf_type cf_type;
-/// Alias for self.
-      typedef ps real_ps;
-/// Alias for complex coefficient type.
-      typedef std::complex<cf_type> complex_cf_type;
-/// Alias for complex counterpart.
-      typedef std::complex<ps<cf_type,Trig,Term,I> > complex_ps;
 // Ctors.
       ps():ancestor::base_pseries()
         {}
