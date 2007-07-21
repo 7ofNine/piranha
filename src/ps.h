@@ -94,12 +94,8 @@ namespace std
       typedef typename ancestor::term_type term_type;
 /// Alias for the iterator to sorted index.
       typedef typename ancestor::it_s_index it_s_index;
-/// Alias for the iterator to the reversed sorted index.
-      typedef typename ancestor::r_it_s_index r_it_s_index;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
-/// Alias for self.
-      typedef complex complex_ps;
 /// Alias for real counterpart.
       typedef piranha::ps<Cf,Trig,Term,I> real_ps;
 /// Alias for real coefficient.
@@ -129,6 +125,7 @@ namespace std
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
+// If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
       explicit complex(const real_ps &p):ancestor::base_pseries()
       {
         p_assert(ancestor::merge_args(p));
