@@ -133,11 +133,8 @@ namespace std
       explicit complex(const cf_type &c):ancestor::base_pseries(c)
         {}
 /// Constructor from pair of real coefficients.
-      explicit complex(const real_cf_type &a, const real_cf_type &b)
-      {
-        term_type tmp(cf_type(a,b));
-        ancestor::insert(tmp);
-      }
+      explicit complex(const real_cf_type &a, const real_cf_type &b):ancestor::base_pseries(cf_type(a,b))
+        {}
 /// Constructor from complex.
       explicit complex(const complex_double &c)
       {
