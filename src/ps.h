@@ -136,17 +136,11 @@ namespace std
       explicit complex(const real_cf_type &a, const real_cf_type &b):ancestor::base_pseries(cf_type(a,b))
         {}
 /// Constructor from complex.
-      explicit complex(const complex_double &c)
-      {
-        term_type tmp=term_type(cf_type(c));
-        ancestor::insert(tmp);
-      }
+      explicit complex(const complex_double &c):ancestor::base_pseries(cf_type(c))
+        {}
 /// Constructor from pair of doubles.
-      explicit complex(const double &a, const double &b)
-      {
-        term_type tmp(cf_type(a,b));
-        ancestor::insert(tmp);
-      }
+      explicit complex(const double &a, const double &b):ancestor::base_pseries(cf_type(complex_double(a,b)))
+        {}
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
