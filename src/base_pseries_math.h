@@ -72,13 +72,13 @@ namespace piranha
     {
       if (sign)
       {
-        base_pseries tmp_ps(*this);
+        Derived tmp_ps(*static_cast<Derived *>(this));
         tmp_ps.merge_with(ps2,sign);
         swap(tmp_ps);
       }
       else
       {
-        base_pseries tmp_ps;
+        Derived tmp_ps;
         tmp_ps.merge_args(*this);
         tmp_ps.lin_args_=lin_args();
         swap(tmp_ps);
@@ -132,7 +132,7 @@ namespace piranha
       std::cout << "Non-zero linargs in *= T!" << std::endl;
       std::exit(1);
     }
-    base_pseries tmp_ps;
+    Derived tmp_ps;
     tmp_ps.merge_args(*this);
     term_type tmp_term;
     it_s_index it_hint=tmp_ps.s_index().end();
@@ -168,7 +168,7 @@ namespace piranha
       std::cout << "Non-zero linargs in /= int!" << std::endl;
       std::exit(1);
     }
-    base_pseries tmp_ps;
+    Derived tmp_ps;
     tmp_ps.merge_args(*this);
     term_type tmp_term;
     it_s_index it_hint=tmp_ps.s_index().end();

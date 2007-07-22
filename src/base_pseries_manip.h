@@ -89,7 +89,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::insert_phases(const phase_list &pl)
   {
-    base_pseries tmp_ps;
+    Derived tmp_ps;
     p_assert(tmp_ps.merge_args(*this));
     phase_list::const_iterator it2=pl.begin();
     term_type tmp_term;
@@ -127,7 +127,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::prepend_cf_args(const vector_psym_p &v)
   {
-    base_pseries retval=base_pseries();
+    Derived retval;
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
@@ -155,7 +155,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::append_cf_args(const vector_psym_p &v)
   {
-    base_pseries retval=base_pseries();
+    Derived retval;
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
@@ -183,7 +183,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::prepend_trig_args(const vector_psym_p &v)
   {
-    base_pseries retval=base_pseries();
+    Derived retval;
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
@@ -212,7 +212,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::append_trig_args(const vector_psym_p &v)
   {
-    base_pseries retval=base_pseries();
+    Derived retval;
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
@@ -234,7 +234,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::set_flavour(bool flavour)
   {
-    base_pseries retval=base_pseries();
+    Derived retval;
     retval.lin_args_=lin_args_;
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
