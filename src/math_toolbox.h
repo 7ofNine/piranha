@@ -21,6 +21,8 @@
 #ifndef PIRANHA_MATH_TOOLBOX_H
 #define PIRANHA_MATH_TOOLBOX_H
 
+
+// TODO: cache static_cast.
 namespace piranha
 {
   template <class Derived>
@@ -73,13 +75,13 @@ namespace piranha
         }
 // Top term must be greater than half of the series' norm.
         if (2*a.norm(static_cast<Derived const *>(this)->cf_s_vec())<=
-          static_cast<Derived const *>(this)->norm())
+          static_cast<Derived const *>(this)->g_norm())
         {
           std::cout << "ERROR! series' top term is not big enough for negative power." << std::endl;
           std::exit(1);
         }
 // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
-        const double error=.1*std::pow(static_cast<Derived const *>(this)->norm(),power)*
+        const double error=.1*std::pow(static_cast<Derived const *>(this)->g_norm(),power)*
           settings_manager::prec();
         const unsigned int limit_index=pow_limit(error,power);
         Derived retval, x(*static_cast<Derived const *>(this)), tmp(cf_type(1.));
@@ -108,7 +110,7 @@ namespace piranha
         unsigned int retval=0;
         const double a=static_cast<Derived const *>(this)->s_index().begin()->
           norm(static_cast<Derived const *>(this)->cf_s_vec()),
-          absx=static_cast<Derived const *>(this)->norm()-a,
+          absx=static_cast<Derived const *>(this)->g_norm()-a,
           exactM=std::pow(a+absx,power), exactm=std::pow(a-absx,power), absratio=absx/a;
         p_assert(a>0);
         p_assert(a>absx);

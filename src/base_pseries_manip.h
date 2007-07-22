@@ -250,32 +250,21 @@ namespace piranha
     swap(retval);
   }
 
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::upgrade_norm(const double &new_real)
-  {
-    norm_+=std::abs(new_real);
-  }
-
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::downgrade_norm(const double &new_real)
-  {
-    norm_-=std::abs(new_real);
-  }
 
 /// Swap the content of with another series.
 /**
  * All data members get swapped. This is an O(1) time operation.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::swap(base_pseries<Cf, Trig, Term, I, Derived> &ps2)
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::swap(Derived &ps2)
   {
 // Swap sets' contents
     set_.swap(ps2.set_);
 // Swap other members
-    std::swap(norm_,ps2.norm_);
     cf_s_vec_.swap(ps2.cf_s_vec_);
     trig_s_vec_.swap(ps2.trig_s_vec_);
     lin_args_.swap(ps2.lin_args_);
+    static_cast<Derived *>(this)->swap_hook(ps2);
   }
 
 // Insert a term into the series
@@ -311,7 +300,7 @@ namespace piranha
         modifier_update_cf(-new_c)));
     }
 // No need do differentiate between + and -, will get abs()-ed anyway
-    upgrade_norm(term.g_cf().norm(cf_s_vec_));
+    static_cast<Derived *>(this)->upgrade_norm(term.g_cf().norm(cf_s_vec_));
     return it_new;
   }
 
@@ -319,7 +308,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_h_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-    downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
     h_index().erase(it);
   }
 
@@ -327,7 +316,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_s_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-    downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
     s_index().erase(it);
   }
 
@@ -336,11 +325,11 @@ namespace piranha
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
 // Delete old c from norm
-    downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
 // Update the existing term
     p_assert(h_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
 // Update the norm with the new c
-    upgrade_norm(new_c.norm(cf_s_vec_));
+    static_cast<Derived *>(this)->upgrade_norm(new_c.norm(cf_s_vec_));
   }
 
 

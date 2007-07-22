@@ -275,7 +275,7 @@ namespace piranha
         bool sign = true, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
-      void swap(base_pseries &);
+      void swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
       void crop(const it_s_index &);
@@ -357,15 +357,6 @@ namespace piranha
       {
         return set_.empty();
       }
-/// Return series' norm.
-/**
- * The norm is kept up-to-date during term insertions. It is calculated using a norm() method
- * provided by the coefficient class.
- */
-      double norm() const
-      {
-        return norm_;
-      }
       size_t footprint() const;
       double calc_norm() const;
       it_s_index discontinuity() const;
@@ -393,8 +384,6 @@ namespace piranha
       void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
-      void upgrade_norm(const double &);
-      void downgrade_norm(const double &);
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
       void term_update(const it_h_index &, const cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
@@ -440,9 +429,14 @@ namespace piranha
       template <class Cf2, class Derived2>
         bool args_compatible(const
         base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
+/// Default implementation of assignment hook.
+      void assignment_hook(const Derived &)
+        {}
+/// Default implementation of swap hook.
+      void swap_hook(Derived &)
+        {}
 // Data members.
     protected:
-      double          norm_;
       vector_mult_t   lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
@@ -450,7 +444,7 @@ namespace piranha
   };
 
 // Default ctor
-#define __base_pseries_init_list norm_(0),lin_args_(),cf_s_vec_(),trig_s_vec_(),set_()
+#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),set_()
 
 /// Default constructor.
 /**
@@ -459,17 +453,18 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(): __base_pseries_init_list {}
 
+
 /// Copy constructor.
 /**
  * Constructs a series from another one.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const base_pseries &ps):
-  norm_(ps.norm_), lin_args_(ps.lin_args_), cf_s_vec_(ps.cf_s_vec_),
-    trig_s_vec_(ps.trig_s_vec_), set_(ps.set_)
+    lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),set_(ps.set_)
   {
     std::cout << "Copy ctor" << std::endl;
   }
+
 
 /// Constructor from filename.
 /**

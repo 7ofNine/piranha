@@ -23,10 +23,42 @@
 
 namespace piranha
 {
+/// Norm toolbox.
+/**
+ * The norm should kept up-to-date during term insertions. It is calculated using a norm() method
+ * provided by the coefficient class.
+ */
   template <class Derived>
     class norm_toolbox
   {
-
+    public:
+/// Default ctor.
+      norm_toolbox():norm_(0.)
+        {}
+/// Copy ctor.
+      norm_toolbox(const norm_toolbox &n):norm_(n.norm_)
+        {}
+      void upgrade_norm(const double &new_real)
+      {
+        norm_+=std::abs(new_real);
+      }
+      void downgrade_norm(const double &new_real)
+      {
+        norm_-=std::abs(new_real);
+      }
+/// Const getter for norm.
+      const double &g_norm() const
+      {
+        return norm_;
+      }
+    protected:
+/// Getter for norm.
+      double &norm()
+      {
+        return norm_;
+      }
+    protected:
+      double    norm_;
   };
 }
 

@@ -157,7 +157,7 @@ namespace piranha
       template <class T>
         static double norm(const T &x)
       {
-        return x.norm();
+        return x.g_norm();
       }
 /// Condon-Shortley phase.
       static short int cs_phase(const long int &n)

@@ -27,17 +27,17 @@ namespace piranha
 // -------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_assignment(const
-    base_pseries<Cf, Trig, Term, I, Derived> &ps2)
+    base_pseries &ps2)
   {
     if (this==&ps2)
     {
       return;
     }
     set_=ps2.set_;
-    norm_=ps2.norm_;
     cf_s_vec_=ps2.cf_s_vec_;
     trig_s_vec_=ps2.trig_s_vec_;
     lin_args_=ps2.lin_args_;
+    static_cast<Derived *>(this)->assignment_hook(ps2);
     std::cout << "Assignment operator!" << std::endl;
   }
 
@@ -270,4 +270,5 @@ namespace piranha
     }
   }
 }
+
 #endif

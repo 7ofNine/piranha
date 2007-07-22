@@ -52,7 +52,7 @@ namespace piranha
             return;
           }
           p_assert(retval.merge_args(*derived_cast));
-          const double Delta=derived_cast->norm()*ps2.norm()*settings_manager::prec();
+          const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
           multiply_terms(ps2,retval,Delta);
         }
         else
