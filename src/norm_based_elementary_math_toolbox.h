@@ -84,8 +84,8 @@ namespace piranha
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
           it2=ps2.s_index().begin();
-          norm1=it1->norm(derived_cast->cf_s_vec());
-          if ((norm1*it2->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+          norm1=it1->g_cf().norm(derived_cast->cf_s_vec());
+          if ((norm1*it2->g_cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
           {
             break;
           }
@@ -94,7 +94,7 @@ namespace piranha
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-            if ((norm1*it2->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*it2->g_cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }

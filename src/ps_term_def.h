@@ -135,7 +135,6 @@ namespace piranha
       }
 
       typename cf_type::eval_type t_eval(double, const vector_psym_p &, const vector_psym_p &) const;
-      double norm(const vector_psym_p &) const;
     private:
 // Probing.
       int trig_sign() const;

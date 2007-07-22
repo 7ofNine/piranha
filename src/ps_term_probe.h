@@ -32,9 +32,9 @@ namespace piranha
     p_assert(arg_manager::assigned());
 // FIXME:  do not pass through dereference twice here, make a norm function that uses pointer
 // directly.
-    if (norm(*arg_manager::cf_args())!=t2.norm(*arg_manager::cf_args()))
+    if (g_cf().norm(*arg_manager::cf_args())!=t2.g_cf().norm(*arg_manager::cf_args()))
     {
-      return norm(*arg_manager::cf_args())>t2.norm(*arg_manager::cf_args());
+      return g_cf().norm(*arg_manager::cf_args())>t2.g_cf().norm(*arg_manager::cf_args());
     }
     else
     {
@@ -103,15 +103,6 @@ namespace piranha
     return retval;
   }
 
-/// Get term's norm.
-/**
- * @param[in] vc vector of piranha::psymbol objects for the coefficient.
- */
-  template <class Cf,class Trig>
-    inline double ps_term<Cf,Trig>::norm(const vector_psym_p &vc) const
-  {
-    return g_cf().norm(vc);
-  }
 
 // NOTICE: drop freq and phase from here, define only in trig_args and call from there?
 /// Numerical phase of the term.

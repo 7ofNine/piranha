@@ -101,11 +101,11 @@ namespace piranha
       {
         if (relative)
         {
-          diffs_[i]=std::abs(1.-std::abs(it_h->norm(ps2.cf_s_vec())/it->norm(ps1.cf_s_vec())));
+          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf().norm(ps2.cf_s_vec())/it->g_cf().norm(ps1.cf_s_vec())));
         }
         else
         {
-          diffs_[i]=std::abs(it_h->norm(ps2.cf_s_vec())-it->norm(ps1.cf_s_vec()));
+          diffs_[i]=std::abs(it_h->g_cf().norm(ps2.cf_s_vec())-it->g_cf().norm(ps1.cf_s_vec()));
         }
         if (diffs_[i]>max_diff)
         {

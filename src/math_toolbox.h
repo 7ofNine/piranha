@@ -109,7 +109,7 @@ namespace piranha
         p_assert(error>=0);
         unsigned int retval=0;
         const double a=static_cast<Derived const *>(this)->s_index().begin()->
-          norm(static_cast<Derived const *>(this)->cf_s_vec()),
+          g_cf().norm(static_cast<Derived const *>(this)->cf_s_vec()),
           absx=static_cast<Derived const *>(this)->g_norm()-a,
           exactM=std::pow(a+absx,power), exactm=std::pow(a-absx,power), absratio=absx/a;
         p_assert(a>0);

@@ -140,7 +140,7 @@ namespace piranha
     const it_h_index it_f=h_index().end();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
-      retval+=it->norm(cf_s_vec_);
+      retval+=it->g_cf().norm(cf_s_vec_);
     }
     return retval;
   }
@@ -160,7 +160,7 @@ namespace piranha
     size_t index=0;
     for (it=s_index().begin();it!=it_f;++it)
     {
-      rel_delta=(it->norm(cf_s_vec_)-boost::next(it)->norm(cf_s_vec_))/it->norm(cf_s_vec_);
+      rel_delta=(it->g_cf().norm(cf_s_vec_)-boost::next(it)->g_cf().norm(cf_s_vec_))/it->g_cf().norm(cf_s_vec_);
       if (rel_delta>candidate)
       {
         std::cout << "Found discontinuity candidate at index position: " <<
@@ -200,7 +200,7 @@ namespace piranha
     it_s_index it;
     for (it=s_index().begin();it!=s_index().end();++it)
     {
-      if (it->norm(cf_s_vec_)*desired_sdp<ste)
+      if (it->g_cf().norm(cf_s_vec_)*desired_sdp < ste)
       {
         break;
       }

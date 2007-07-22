@@ -517,7 +517,7 @@ namespace piranha
     it_s_index it=boost::prior(s_index().end());
     while (1)
     {
-      part_norm+=it->norm(cf_s_vec_);
+      part_norm+=it->g_cf().norm(cf_s_vec_);
       if (part_norm>=delta)
       {
         break;
@@ -547,7 +547,7 @@ namespace piranha
     it_s_index it=boost::prior(s_index().end());
     while (1)
     {
-      if (it->norm(cf_s_vec_)>=delta)
+      if (it->g_cf().norm(cf_s_vec_)>=delta)
       {
         break;
       }
