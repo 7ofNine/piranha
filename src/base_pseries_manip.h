@@ -466,8 +466,8 @@ namespace piranha
  * @param[in] ps2 piranha::base_pseries arguments are to be merged with.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class Cf2, class Derived2>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived>::merge_args(const base_pseries<Cf2,trig_type,Term,I,Derived2> &ps2)
+    template <class Derived2>
+    inline bool base_pseries<Cf, Trig, Term, I, Derived>::merge_args(const Derived2 &ps2)
   {
     if ((void *)this==(void *)&ps2)
     {

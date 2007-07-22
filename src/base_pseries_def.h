@@ -281,9 +281,8 @@ namespace piranha
       void crop(const it_s_index &);
       void insert_phases(const phase_list &);
       void spectral_cutoff(const double &, const double &);
-      template <class Cf2, class Derived2>
-        bool merge_args(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2> &);
+      template <class Derived2>
+        bool merge_args(const Derived2 &);
       void set_flavour(bool);
 /// Add coefficient argument.
 /**
@@ -394,11 +393,11 @@ namespace piranha
       it_s_index sdp_cutoff(const double &, const double &) const;
 // Low level maths.
       void basic_assignment(const base_pseries &);
-      template <class Cf2, class Derived2>
-        void alg_sum_lin_args(const base_pseries<Cf2, trig_type, Term, I, Derived2> &, bool);
+      template <class Derived2>
+        void alg_sum_lin_args(const Derived2 &, bool);
     public:
-      template <class Cf2, class Derived2>
-        void merge_with(const base_pseries<Cf2, trig_type, Term, I, Derived2>&, bool sign = true);
+      template <class Derived2>
+        void merge_with(const Derived2 &, bool sign = true);
       template <class T>
         void generic_merge(const T &);
       template <class Cf2>
@@ -426,9 +425,8 @@ namespace piranha
       template <class Cf2, class Derived2>
         bool args_different(const
         base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
-      template <class Cf2, class Derived2>
-        bool args_compatible(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
+      template <class Derived2>
+        bool args_compatible(const Derived2 &) const;
 /// Default implementation of assignment hook.
       void assignment_hook(const Derived &)
         {}

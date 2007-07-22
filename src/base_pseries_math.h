@@ -48,8 +48,8 @@ namespace piranha
 // Base merge operator
 // -------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class Cf2, class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::alg_sum_lin_args(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2,
+    template <class Derived2>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::alg_sum_lin_args(const Derived2 &ps2,
     bool sign)
   {
     vector_mult_t tmp(trig_width());
@@ -65,8 +65,8 @@ namespace piranha
   }
 
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class Cf2, class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::merge_with(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2, bool sign)
+    template <class Derived2>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::merge_with(const Derived2 &ps2, bool sign)
   {
     if ((void *)&ps2==(void *)this)
     {
@@ -97,7 +97,7 @@ namespace piranha
 // Use hint, since as we add terms we have an idea of where they are going to be placed
     it_s_index it_hint=s_index().end();
 // NOTE: At this point this' size is greater or equal to ps2'
-    for (typename base_pseries<Cf2, trig_type, Term, I, Derived2>::it_h_index it=ps2.h_index().begin();
+    for (typename Derived2::ancestor::it_h_index it=ps2.h_index().begin();
       it!=ps2.h_index().end();++it)
     {
       it_hint=insert(*it,sign,&it_hint);
@@ -111,7 +111,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_merge(const T &x)
   {
 // Build a series from x
-    base_pseries tmp=base_pseries(cf_type(x));
+    Derived tmp=Derived(cf_type(x));
 // Merge with this
     merge_with(tmp);
   }

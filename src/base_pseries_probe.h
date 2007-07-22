@@ -61,8 +61,8 @@ namespace piranha
  * @param[in] ps2 piranha::base_pseries compatibility is tested against.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    template <class Cf2,class Derived2>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived>::args_compatible(const base_pseries<Cf2, trig_type, Term, I, Derived2> &ps2) const
+    template <class Derived2>
+    inline bool base_pseries<Cf, Trig, Term, I, Derived>::args_compatible(const Derived2 &ps2) const
   {
     size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
     for (j=0;j<minwidth;++j)
