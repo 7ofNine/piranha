@@ -299,8 +299,7 @@ namespace piranha
       p_assert(s_index().modify(it_new,typename Term<cf_type,trig_type>::
         modifier_update_cf(-new_c)));
     }
-// No need do differentiate between + and -, will get abs()-ed anyway
-    static_cast<Derived *>(this)->upgrade_norm(term.g_cf().norm(cf_s_vec_));
+    static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
     return it_new;
   }
 
@@ -308,7 +307,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_h_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->term_pre_erase_hook(*it);
     h_index().erase(it);
   }
 
@@ -316,7 +315,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_erase(const it_s_index &it)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->term_pre_erase_hook(*it);
     s_index().erase(it);
   }
 
@@ -324,12 +323,9 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_h_index &it, const cf_type &new_c)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
-// Delete old c from norm
-    static_cast<Derived *>(this)->downgrade_norm(it->norm(cf_s_vec_));
+    static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
 // Update the existing term
     p_assert(h_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
-// Update the norm with the new c
-    static_cast<Derived *>(this)->upgrade_norm(new_c.norm(cf_s_vec_));
   }
 
 

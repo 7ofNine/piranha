@@ -55,6 +55,8 @@ namespace piranha
       typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
+/// Alias for term type.
+      typedef typename ancestor::term_type term_type;
 /// Alias for norm toolbox.
       typedef norm_toolbox<ps<Cf,Trig,Term,I> > norm_toolbox;
 /// Alias for self.
@@ -77,6 +79,7 @@ namespace piranha
 /// Constructor from psymbol.
       explicit ps(const psymbol &psym, psymbol::type ptype):norm_toolbox(),ancestor::base_pseries(psym,ptype)
         {}
+// Hooks.
 /// Re-implementation of assignment hook.
       void assignment_hook(const ps &ps2)
       {
@@ -87,6 +90,25 @@ namespace piranha
       {
         std::swap(self::norm_,ps2.norm_);
       }
+/// Re-implementation of the hook for post-insertion of a new term.
+      void new_term_post_insertion_hook(const term_type &term)
+        {
+// No need do differentiate between + and -, will get abs()-ed anyway
+          upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        }
+/// Re-implementation of the hook for post-erase of a term.
+      void term_pre_erase_hook(const term_type &term)
+        {
+          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        }
+/// Re-implementation of the hook for pre-update of a term.
+      void term_pre_update_hook(const term_type &term, const cf_type &new_c)
+        {
+// Delete old c from norm
+          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+// Update the norm with the new c
+          upgrade_norm(new_c.norm(self::cf_s_vec_));
+        }
   }
   ;
 }
@@ -176,6 +198,7 @@ namespace std
       {
         build_from_components(real_ps(file1),real_ps(file2));
       }
+// Hooks.
 /// Re-implementation of assignment hook.
       void assignment_hook(const complex &ps2)
       {
@@ -186,6 +209,25 @@ namespace std
       {
         std::swap(self::norm_,ps2.norm_);
       }
+/// Re-implementation of the hook for post-insertion of a new term.
+      void new_term_post_insertion_hook(const term_type &term)
+        {
+// No need do differentiate between + and -, will get abs()-ed anyway
+          upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        }
+/// Re-implementation of the hook for post-erase of a term.
+      void term_pre_erase_hook(const term_type &term)
+        {
+          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        }
+/// Re-implementation of the hook for pre-update of a term.
+      void term_pre_update_hook(const term_type &term, const cf_type &new_c)
+        {
+// Delete old c from norm
+          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+// Update the norm with the new c
+          upgrade_norm(new_c.norm(self::cf_s_vec_));
+        }
   };
 }
 #endif
