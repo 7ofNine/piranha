@@ -123,6 +123,7 @@ BOOST_PYTHON_MODULE(_Core)
   class_setm.staticmethod("theories_path");
   class_setm.staticmethod("default_theories_path");
   class_setm.staticmethod("set_theories_path");
+  class_setm.staticmethod("version");
 
 // Stream manager.
   enum_<stream_manager::out_format>("out_format")
