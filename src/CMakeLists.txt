@@ -3,7 +3,8 @@
 SET(SRC_LIST "")
 IF(BUILD_TASS)
   IF(BUILD_FORTRAN)
-    CONFIGURE_FILE(./tass17/posired7.f.template src/tass17/posired7.f)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/tass17/posired7.f.template
+      ${CMAKE_CURRENT_SOURCE_DIR}/tass17/posired7.f)
     SET(SRC_LIST ${SRC_LIST} tass17/posired7.f)
   ENDIF(BUILD_FORTRAN)
   SET(SRC_LIST ${SRC_LIST} tass17/tass17.cpp)
