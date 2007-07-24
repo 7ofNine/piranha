@@ -48,6 +48,8 @@ namespace piranha
       {
         return theories_path_;
       }
+/// Get Piranha version.
+      static const std::string &version();
 /// Get default path to theories of motion files.
       static const std::string &default_theories_path()
       {
@@ -80,6 +82,7 @@ namespace piranha
 /// Path to theories of motion.
       static std::string        theories_path_;
       static const std::string  default_theories_path_;
+      static const std::string  version_;
 /// Relative precision of series multiplications.
       static double             prec_;
       static greeter            grt_;

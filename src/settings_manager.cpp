@@ -24,18 +24,19 @@
 
 namespace piranha
 {
-// Settings manager static members.
+// Settings manager's static members.
   double settings_manager::numerical_zero_ = 1E-80;
   const unsigned int settings_manager::jacang_limit_ = 20;
   double settings_manager::prec_ = 1E-6;
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
+  const std::string settings_manager::version_ = __piranha_version;
   settings_manager::greeter settings_manager::grt_;
 
   settings_manager::greeter::greeter()
   {
 // Startup report.
-    std::cout << "This is Piranha version " << __piranha_version << std::endl;
+    std::cout << "This is Piranha version " << version() << std::endl;
     std::cout << "Default parameters initialized:" << std::endl;
     std::cout << "Print precision\t\t\t=\t" << stream_manager::digits() << std::endl;
     std::cout << "Numerical zero\t\t\t=\t" << numerical_zero() << std::endl;
@@ -55,5 +56,11 @@ namespace piranha
   void settings_manager::set_theories_path(const std::string &str)
   {
     theories_path_=str;
+  }
+
+/// Get version.
+  const std::string &settings_manager::version()
+  {
+    return version_;
   }
 }
