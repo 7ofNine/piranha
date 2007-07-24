@@ -25,8 +25,8 @@ namespace piranha
 {
 /// Norm toolbox.
 /**
- * The norm should kept up-to-date during term insertions. It is calculated using a norm() method
- * provided by the coefficient class.
+ * The norm should be kept up-to-date during term insertions. It is calculated using a norm()
+ * method provided by the coefficient class.
  */
   template <class Derived>
     class norm_toolbox
@@ -46,6 +46,9 @@ namespace piranha
       {
         norm_-=std::abs(new_real);
       }
+/// Dtor.
+      ~norm_toolbox()
+        {}
 /// Const getter for norm.
       const double &g_norm() const
       {
@@ -57,6 +60,7 @@ namespace piranha
       {
         return norm_;
       }
+// Data members.
     protected:
       double    norm_;
   };
