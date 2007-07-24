@@ -32,15 +32,6 @@ namespace piranha
   class settings_manager
   {
     public:
-/// Greeter class.
-/**
- * Greeter class is constructed at piranha invocation and sets default parameters.
- */
-      class greeter
-      {
-        public:
-          greeter();
-      };
 // Getters.
 /// Get Jacobi-Anger expansion limit.
       static unsigned int jacang_lim()
@@ -70,6 +61,18 @@ namespace piranha
       static void set_prec(const double &);
       static void set_theories_path(const std::string &);
     private:
+/// Private ctor.
+      settings_manager()
+        {}
+/// Greeter class.
+/**
+ * Greeter class is constructed at piranha invocation and sets default parameters.
+ */
+      class greeter
+      {
+        public:
+          greeter();
+      };
 /// Numerical zero.
       static double             numerical_zero_;
 /// Jacobi Anger expansion limit.
