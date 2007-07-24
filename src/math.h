@@ -34,76 +34,62 @@
 
 namespace piranha
 {
-// Operations on vectors
-
-// Add/subtract two differently sized containers, whose members can be accessed through the
-// "[]" operator.
-// The result goes into retval.
-  template <class T>
-    inline void vec_add(const T &v1, const T &v2, const T &min, const T &max,
-    T &retval)
-  {
-    unsigned int j;
-    if (retval.size()!=max.size())
-    {
-      retval.resize(max.size());
-    }
-    for (j=0;j<min.size();++j)
-    {
-      retval[j]=v1[j]+v2[j];
-    }
-    for (;j<max.size();++j)
-    {
-      retval[j]=max[j];
-    }
-  }
-
-  template <class T>
-    inline bool is_zero_vec(const T &v)
-  {
-    for (unsigned int j=0;j<v.size();++j)
-    {
-      if (v[j]!=0)
-      {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  template <class T>
-    inline void vec_sub(const T &v1, const T &v2, const T &min, const T &max,
-    T &retval)
-  {
-    unsigned int j;
-    if (retval.size()!=max.size())
-    {
-      retval.resize(max.size());
-    }
-    for (j=0;j<min.size();++j)
-    {
-      retval[j]=v1[j]-v2[j];
-    }
-    if (max.size()==v1.size())
-    {
-      for (;j<max.size();++j)
-      {
-        retval[j]=v1[j];
-      }
-    }
-    else
-    {
-      for (;j<max.size();++j)
-      {
-        retval[j]=-v2[j];
-      }
-    }
-  }
-
 /// Class that groups together useful mathematical functions.
   class math
   {
     public:
+// Operations on vectors
+// Add/subtract two differently sized containers, whose members can be accessed through the
+// "[]" operator.
+// The result goes into retval.
+// Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
+      template <class T>
+        static void vec_add(const T &v1, const T &v2, T &retval)
+      {
+        const size_t w1=v1.size(), w2=v2.size();
+        p_assert(w1>=w2);
+        p_assert(w1==retval.size());
+        size_t j;
+        for (j=0;j<w2;++j)
+        {
+          retval[j]=v1[j]+v2[j];
+        }
+        for (;j<w1;++j)
+        {
+          retval[j]=v1[j];
+        }
+      }
+// Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
+      template <class T>
+        static void vec_sub(const T &v1, const T &v2, T &retval)
+      {
+        const size_t w1=v1.size(), w2=v2.size();
+        p_assert(w1>=w2);
+        p_assert(w1==retval.size());
+        size_t j;
+        for (j=0;j<w2;++j)
+        {
+          retval[j]=v1[j]-v2[j];
+        }
+        for (;j<w1;++j)
+        {
+          retval[j]=v1[j];
+        }
+      }
+/// Check whether a vector is filled with zero elements.
+      template <class T>
+        static bool is_zero_vec(const T &v)
+      {
+        const size_t w=v.size();
+        for (size_t j=0;j<w;++j)
+        {
+          if (v[j]!=0)
+          {
+            return false;
+          }
+        }
+        return true;
+      }
 /// Sign function.
       static short int sgn(int x)
       {
@@ -674,6 +660,9 @@ namespace piranha
         return std::abs(x-nearbyint(x));
       }
     private:
+/// Private ctor.
+      math()
+        {}
 // Low-level factorial function.
       template <class T>
         static T ll_factorial(int n)
