@@ -65,11 +65,9 @@ namespace piranha
  */
       static int get_valid_string(std::ifstream &inf, std::string &str)
       {
-        bool theres_more;
         do
         {
-          theres_more=getline(inf,str,'\n');
-          if (theres_more==false)
+          if (getline(inf,str,'\n').eof())
           {
             return 1;
           }
