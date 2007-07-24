@@ -22,7 +22,6 @@
 #define PIRANHA_MATH_TOOLBOX_H
 
 
-// TODO: cache static_cast.
 namespace piranha
 {
   template <class Derived>
@@ -44,7 +43,8 @@ namespace piranha
       Derived pow(const double &power) const
       {
         typedef typename Derived::ancestor::cf_type cf_type;
-        if (static_cast<Derived const *>(this)->length()==0)
+        const Derived *derived_cast=static_cast<Derived const *>(this);
+        if (derived_cast->length()==0)
         {
           if (std::abs(power)<settings_manager::numerical_zero())
           {
@@ -58,8 +58,8 @@ namespace piranha
           }
           return Derived();
         }
-        if (static_cast<Derived const *>(this)->s_index().begin()->g_flavour()==false ||
-          !(static_cast<Derived const *>(this)->s_index().begin()->g_trig().is_zero()))
+        if (derived_cast->s_index().begin()->g_flavour()==false ||
+          !(derived_cast->s_index().begin()->g_trig().is_zero()))
         {
           std::cout << "ERROR! series' top term is not suitable for real power." << std::endl;
           std::exit(1);
@@ -67,24 +67,23 @@ namespace piranha
 // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
 // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
 // Need to think about this, but it is not essential until symbolic coefficients are introduced.
-        const cf_type &a=static_cast<Derived const *>(this)->s_index().begin()->g_cf();
-        if (a.t_eval(0.,static_cast<Derived const *>(this)->cf_s_vec())<0)
+        const cf_type &a=derived_cast->s_index().begin()->g_cf();
+        if (a.t_eval(0.,derived_cast->cf_s_vec())<0)
         {
           std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;
           std::exit(1);
         }
 // Top term must be greater than half of the series' norm.
-        if (2*a.norm(static_cast<Derived const *>(this)->cf_s_vec())<=
-          static_cast<Derived const *>(this)->g_norm())
+        if (2*a.norm(derived_cast->cf_s_vec()) <= derived_cast->g_norm())
         {
           std::cout << "ERROR! series' top term is not big enough for negative power." << std::endl;
           std::exit(1);
         }
 // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
-        const double error=.1*std::pow(static_cast<Derived const *>(this)->g_norm(),power)*
+        const double error=.1*std::pow(derived_cast->g_norm(),power)*
           settings_manager::prec();
         const unsigned int limit_index=pow_limit(error,power);
-        Derived retval, x(*static_cast<Derived const *>(this)), tmp(cf_type(1.));
+        Derived retval, x(*derived_cast), tmp(cf_type(1.));
         x.term_erase(x.s_index().begin());
         for (unsigned int i=0;i<=limit_index;++i)
         {
@@ -108,9 +107,10 @@ namespace piranha
       {
         p_assert(error>=0);
         unsigned int retval=0;
-        const double a=static_cast<Derived const *>(this)->s_index().begin()->
-          g_cf().norm(static_cast<Derived const *>(this)->cf_s_vec()),
-          absx=static_cast<Derived const *>(this)->g_norm()-a,
+        const Derived *derived_cast=static_cast<Derived const *>(this);
+        const double a=derived_cast->s_index().begin()->
+          g_cf().norm(derived_cast->cf_s_vec()),
+          absx=derived_cast->g_norm()-a,
           exactM=std::pow(a+absx,power), exactm=std::pow(a-absx,power), absratio=absx/a;
         p_assert(a>0);
         p_assert(a>absx);
