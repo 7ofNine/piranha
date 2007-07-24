@@ -121,7 +121,7 @@ namespace piranha
           std::cout << retval.length() << std::endl;
         }
         std::cout << "Final size=" << retval.length() << std::endl;
-        if (!is_zero_vec(derived_cast->lin_args()))
+        if (!math::is_zero_vec(derived_cast->lin_args()))
         {
           retval*=complexp_linargs();
         }

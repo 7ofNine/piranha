@@ -40,7 +40,7 @@ namespace piranha
 // If one length is zero do not do anything
         if (derived_cast->length()!=0 && ps2.length()!=0)
         {
-          if (!is_zero_vec(derived_cast->lin_args())||!is_zero_vec(ps2.lin_args()))
+          if (!math::is_zero_vec(derived_cast->lin_args())||!math::is_zero_vec(ps2.lin_args()))
           {
             std::cout << "Non-zero linargs!" << std::endl;
             std::exit(1);

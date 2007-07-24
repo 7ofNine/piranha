@@ -52,16 +52,14 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::alg_sum_lin_args(const Derived2 &ps2,
     bool sign)
   {
-    vector_mult_t tmp(trig_width());
     if (sign)
     {
-      vec_add(lin_args_,ps2.lin_args(),ps2.lin_args(),lin_args_,tmp);
+      math::vec_add(lin_args_,ps2.lin_args(),lin_args_);
     }
     else
     {
-      vec_sub(lin_args_,ps2.lin_args(),ps2.lin_args(),lin_args_,tmp);
+      math::vec_sub(lin_args_,ps2.lin_args(),lin_args_);
     }
-    lin_args_=tmp;
   }
 
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
@@ -127,7 +125,7 @@ namespace piranha
     {
       return;
     }
-    if (!is_zero_vec(lin_args_))
+    if (!math::is_zero_vec(lin_args_))
     {
       std::cout << "Non-zero linargs in *= T!" << std::endl;
       std::exit(1);
@@ -161,7 +159,7 @@ namespace piranha
     {
       return;
     }
-    if (!is_zero_vec(lin_args_))
+    if (!math::is_zero_vec(lin_args_))
     {
 // NOTICE: maybe here we could deal with exact int/int divisions. Not really important
 // ATM though.
