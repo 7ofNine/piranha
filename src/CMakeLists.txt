@@ -13,7 +13,7 @@ IF(BUILD_KEPLERIAN_PROCESSOR)
   SET(SRC_LIST ${SRC_LIST} keplerian_processor/keplerian_processor.cpp)
 ENDIF(BUILD_KEPLERIAN_PROCESSOR)
 IF(BUILD_SP)
-  SET(SRC_LIST ${SRC_LIST} symbolic_truncator.cpp)
+  SET(SRC_LIST ${SRC_LIST} symbol_limiter.cpp)
 ENDIF(BUILD_SP)
 SET(SRC_LIST ${SRC_LIST} settings_manager.cpp stats.cpp astro.cpp arg_manager.cpp
   stream_manager.cpp psymbol.cpp)

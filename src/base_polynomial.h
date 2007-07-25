@@ -30,6 +30,7 @@
 
 #include "math.h"
 #include "monomial_gmp_array.h"
+#include "symbol_limiter.h"
 
 namespace piranha
 {

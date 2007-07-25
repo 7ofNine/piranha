@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SYMBOLIC_TRUNCATOR_H
-#define PIRANHA_SYMBOLIC_TRUNCATOR_H
+#ifndef PIRANHA_SYMBOL_LIMITER_H
+#define PIRANHA_SYMBOL_LIMITER_H
 
 #include <boost/tuple/tuple.hpp>
 #include <vector>
@@ -31,12 +31,12 @@ namespace piranha
   typedef boost::tuple<psym_p,int> expo_limit;
   typedef std::vector<expo_limit> vec_expo_limit;
 
-  class symbolic_truncator
+  class symbol_limiter
   {
     public:
       static void set_limit(psym_p,int);
     private:
-      symbolic_truncator()
+      symbol_limiter()
         {}
       static int find_expo_limit(psym_p);
     private:

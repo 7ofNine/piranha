@@ -18,17 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "symbolic_truncator.h"
+#include "symbol_limiter.h"
 
 namespace piranha
 {
-  vec_expo_limit symbolic_truncator::vel_;
+  vec_expo_limit symbol_limiter::vel_;
 
 /// Check whether a limit has already been set for a symbol.
 /**
  * Positive result means found, negative means not found.
  */
-  int symbolic_truncator::find_expo_limit(psym_p it)
+  int symbol_limiter::find_expo_limit(psym_p it)
   {
     const size_t w=vel_.size();
     for (size_t j=0;j<w;++j)
@@ -42,8 +42,14 @@ namespace piranha
   }
 
 /// Set exponent limit for psymbol.
-  void symbolic_truncator::set_limit(psym_p it, int n)
+  void symbol_limiter::set_limit(psym_p it, int n)
   {
+    if (it==psymbol_manager::end())
+      {
+        std::cout << "Won't set limit for invalid psymbol pointer." << std::endl;
+        std::abort();
+        return;
+      }
     int j=find_expo_limit(it);
     if (j<0)
       {
