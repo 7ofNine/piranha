@@ -416,7 +416,7 @@ namespace piranha
     swap(retval);
   }
 
-#ifdef 0
+#if 0
   template <class T, class Derived>
     template <class U, class Derived2>
     inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p)
