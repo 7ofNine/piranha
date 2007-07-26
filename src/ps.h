@@ -62,22 +62,22 @@ namespace piranha
 /// Alias for self.
       typedef ps<Cf,Trig,Term,I> self;
 // Ctors.
-      ps():norm_toolbox(),ancestor::base_pseries()
+      ps():ancestor::base_pseries()
         {}
       ps(const ps &p):norm_toolbox(p),ancestor::base_pseries(p)
         {}
-      explicit ps(const std::string &filename):norm_toolbox(),ancestor::base_pseries(filename)
+      explicit ps(const std::string &filename):ancestor::base_pseries(filename)
         {}
-      explicit ps(const cf_type &c):norm_toolbox(),ancestor::base_pseries(c)
+      explicit ps(const cf_type &c):ancestor::base_pseries(c)
         {}
 /// Constructor from int.
-      explicit ps(int n):norm_toolbox(),ancestor::base_pseries(cf_type(n))
+      explicit ps(int n):ancestor::base_pseries(cf_type(n))
         {}
 /// Constructor from double.
-      explicit ps(const double &x):norm_toolbox(),ancestor::base_pseries(cf_type(x))
+      explicit ps(const double &x):ancestor::base_pseries(cf_type(x))
         {}
 /// Constructor from psymbol.
-      explicit ps(const psymbol &psym, psymbol::type ptype):norm_toolbox(),ancestor::base_pseries(psym,ptype)
+      explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
 // Hooks.
 /// Re-implementation of assignment hook.
@@ -147,34 +147,34 @@ namespace std
       typedef complex<piranha::ps<Cf,Trig,Term,I> > self;
 // TODO: this is shared with above, find a way to share.
 /// Default constructor.
-      complex():norm_toolbox(),ancestor::base_pseries()
+      complex():ancestor::base_pseries()
         {}
 /// Copy constructor.
       complex(const complex &p):norm_toolbox(p),ancestor::base_pseries(p)
         {}
 /// Constructor from filename.
-      explicit complex(const std::string &filename):norm_toolbox(),ancestor::base_pseries(filename)
+      explicit complex(const std::string &filename):ancestor::base_pseries(filename)
         {}
 /// Constructor from coefficient.
-      explicit complex(const cf_type &c):norm_toolbox(),ancestor::base_pseries(c)
+      explicit complex(const cf_type &c):ancestor::base_pseries(c)
         {}
 /// Constructor from pair of real coefficients.
       explicit complex(const real_cf_type &a, const real_cf_type &b):
-        norm_toolbox(),ancestor::base_pseries(cf_type(a,b))
+        ancestor::base_pseries(cf_type(a,b))
         {}
 /// Constructor from complex.
       explicit complex(const complex_double &c):
-        norm_toolbox(),ancestor::base_pseries(cf_type(c))
+        ancestor::base_pseries(cf_type(c))
         {}
 /// Constructor from pair of doubles.
       explicit complex(const double &a, const double &b):
-        norm_toolbox(),ancestor::base_pseries(cf_type(complex_double(a,b)))
+        ancestor::base_pseries(cf_type(complex_double(a,b)))
         {}
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const real_ps &p):norm_toolbox(),ancestor::base_pseries()
+      explicit complex(const real_ps &p):ancestor::base_pseries()
       {
         p_assert(ancestor::merge_args(p));
         term_type term;
@@ -188,13 +188,13 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-      explicit complex(const real_ps &p, const real_ps &q):norm_toolbox(),ancestor::base_pseries()
+      explicit complex(const real_ps &p, const real_ps &q):ancestor::base_pseries()
       {
         build_from_components(p,q);
       }
 /// Constructor from real and imaginary series from filenames.
       explicit complex(const std::string &file1, const std::string &file2):
-        norm_toolbox(),ancestor::base_pseries()
+        ancestor::base_pseries()
       {
         build_from_components(real_ps(file1),real_ps(file2));
       }
