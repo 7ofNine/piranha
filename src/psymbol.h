@@ -207,6 +207,8 @@ namespace piranha
         }
       };
 /// Alias for symbol set.
+// TODO: turn into multiindex container, so that we can search by name and drop that ugly O(n)
+// operation somewhere below.
       typedef std::set
         <psymbol,ltpsymbol> set_type;
 /// Alias for standard iterator, to be used in pyranha.
