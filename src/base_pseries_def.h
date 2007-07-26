@@ -430,19 +430,19 @@ namespace piranha
 // Hooks.
 /// Default implementation of assignment hook.
       void assignment_hook(const Derived &)
-        {BOOST_STATIC_ASSERT(sizeof(Derived)==0);}
+        {std::cout << "Default hook called!" << std::endl;}
 /// Default implementation of swap hook.
       void swap_hook(Derived &)
-        {BOOST_STATIC_ASSERT(sizeof(Derived)==0);}
+        {std::cout << "Default hook called!" << std::endl;}
 /// Default implementation of the hook for post-insertion of a new term.
       void new_term_post_insertion_hook(const term_type &)
-        {BOOST_STATIC_ASSERT(sizeof(Derived)==0);}
+        {std::cout << "Default hook called!" << std::endl;}
 /// Default implementation of the hook for post-erase of a term.
       void term_pre_erase_hook(const term_type &)
-        {BOOST_STATIC_ASSERT(sizeof(Derived)==0);}
+        {std::cout << "Default hook called!" << std::endl;}
 /// Default implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &, const cf_type &)
-        {BOOST_STATIC_ASSERT(sizeof(Derived)==0);}
+        {std::cout << "Default hook called!" << std::endl;}
 // Data members.
     protected:
       vector_mult_t   lin_args_;
