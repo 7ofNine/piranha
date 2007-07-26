@@ -22,24 +22,8 @@
 
 namespace piranha
 {
-  vec_expo_limit symbol_limiter::vel_;
-
-/// Check whether a limit has already been set for a symbol.
-/**
- * Positive result means found, negative means not found.
- */
-  int symbol_limiter::find_expo_limit(psym_p it)
-  {
-    const size_t w=vel_.size();
-    for (size_t j=0;j<w;++j)
-      {
-        if (vel_[j].get<0>()==it)
-          {
-            return j;
-          }
-      }
-    return -1;
-  }
+/// Initialization of static member of piranha::symbol_limiter.
+  symbol_limiter::limits_map symbol_limiter::lmap_;
 
 /// Set exponent limit for psymbol.
   void symbol_limiter::set_limit(psym_p it, int n)
@@ -50,16 +34,31 @@ namespace piranha
         std::abort();
         return;
       }
-    int j=find_expo_limit(it);
-    if (j<0)
+    map_iterator mit=find_expo_limit(it);
+    if (mit==lmap_.end())
       {
         std::cout << "Setting new limit." << std::endl;
-        vel_.push_back(expo_limit(it,n));
+        lmap_[it]=n;
       }
     else
       {
         std::cout << "Modifying existing limit." << std::endl;
-        vel_[j].get<1>()=n;
+        mit->second=n;
+      }
+  }
+
+/// Clear limits.
+  void symbol_limiter::clear()
+  {
+    lmap_.clear();
+  }
+
+/// Print to screen limits list.
+  void symbol_limiter::put()
+  {
+    for (map_iterator it=lmap_.begin();it!=lmap_.end();++it)
+      {
+        std::cout << "Limit for '" << it->first->name() << "': " << it->second << std::endl;
       }
   }
 }
