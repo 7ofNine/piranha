@@ -416,6 +416,33 @@ namespace piranha
     swap(retval);
   }
 
+#ifdef 0
+  template <class T, class Derived>
+    template <class U, class Derived2>
+    inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p)
+  {
+    if ((void *)&p==(void *)this)
+    {
+      mult_by_self(base_polynomial<U,Derived2>(p));
+      return;
+    }
+    base_polynomial retval;
+    m_type temp_m;
+    const it_h_index it_f1=h_index().end();
+    const typename base_polynomial<U,Derived2>::it_h_index it_f2=p.h_index().end();
+    typename base_polynomial<U,Derived2>::it_h_index it2;
+    for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
+    {
+      for (it2=p.h_index().begin();it2!=it_f2;++it2)
+      {
+        it1->mult_by(*it2,temp_m);
+        retval.insert(temp_m);
+      }
+    }
+    swap(retval);
+  }
+#endif
+
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::mult_by_int(int n)
   {
