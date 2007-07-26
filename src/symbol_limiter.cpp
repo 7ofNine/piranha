@@ -34,7 +34,8 @@ namespace piranha
         std::abort();
         return;
       }
-    if (find_expo_limit(it)==lmap_.end())
+    map_iterator mit=find_expo_limit(it);
+    if (mit==lmap_.end())
       {
         std::cout << "Setting new limit." << std::endl;
         lmap_[it]=n;
