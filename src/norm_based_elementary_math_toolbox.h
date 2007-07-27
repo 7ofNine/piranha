@@ -79,11 +79,12 @@ namespace piranha
         const it_s_index it1_f=derived_cast->s_index().end();
         const it_s_index2 it2_f=ps2.s_index().end();
         it_s_index2 it2;
+        const it_s_index2 it2_i=ps2.s_index().begin();
         it_s_index it1, it_hint=retval.s_index().end();
         double norm1;
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
-          it2=ps2.s_index().begin();
+          it2=it2_i;
           norm1=it1->g_cf().norm(derived_cast->cf_s_vec());
           if ((norm1*it2->g_cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
           {
