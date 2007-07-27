@@ -110,7 +110,7 @@ namespace piranha
       void increase_size(const size_t &);
       void append_args(const size_t &);
       void prepend_args(const size_t &);
-      void swap(base_polynomial &);
+      void swap(Derived &);
       void clear()
       {
         set_.clear();
@@ -204,8 +204,8 @@ namespace piranha
       }
       void mult_by_int(int);
       void mult_by_double(const double &);
-      template <class U, class Derived2>
-        void mult_by_self(const base_polynomial<U,Derived2> &);
+      template <class Derived2>
+        void mult_by_self(const Derived2 &);
       void basic_pow(const double &);
     protected:
       static const std::string  separator_;
@@ -270,7 +270,7 @@ namespace piranha
     inline void base_polynomial<T,Derived>::increase_size(const size_t &w)
   {
     p_assert(w>=width());
-    base_polynomial retval=base_polynomial();
+    Derived retval;
     const it_d_index it_f=d_index().end();
     for (it_d_index it=d_index().begin();it!=it_f;++it)
     {
@@ -292,7 +292,7 @@ namespace piranha
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::prepend_args(const size_t &n)
   {
-    base_polynomial retval=base_polynomial();
+    Derived retval;
     const it_d_index it_f=d_index().end();
     for (it_d_index it=d_index().begin();it!=it_f;++it)
     {
@@ -305,7 +305,7 @@ namespace piranha
 
 /// Swap contents with another base_polynomial.
   template <class T, class Derived>
-    inline void base_polynomial<T,Derived>::swap(base_polynomial &p)
+    inline void base_polynomial<T,Derived>::swap(Derived &p)
   {
     set_.swap(p.set_);
   }
@@ -392,19 +392,19 @@ namespace piranha
   }
 
   template <class T, class Derived>
-    template <class U, class Derived2>
-    inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p)
+    template <class Derived2>
+    inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p)
   {
     if ((void *)&p==(void *)this)
     {
-      mult_by_self(base_polynomial<U,Derived2>(p));
+      mult_by_self(Derived2(p));
       return;
     }
-    base_polynomial retval;
+    Derived retval;
     m_type temp_m;
     const it_h_index it_f1=h_index().end();
-    const typename base_polynomial<U,Derived2>::it_h_index it_f2=p.h_index().end();
-    typename base_polynomial<U,Derived2>::it_h_index it2;
+    const typename Derived2::it_h_index it_f2=p.h_index().end();
+    typename Derived2::it_h_index it2;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
       for (it2=p.h_index().begin();it2!=it_f2;++it2)
@@ -417,13 +417,15 @@ namespace piranha
   }
 
 #if 0
+/// Multiply by self.
   template <class T, class Derived>
     template <class U, class Derived2>
-    inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p)
+    inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p,
+    const vec_expo_index_limit &v)
   {
     if ((void *)&p==(void *)this)
     {
-      mult_by_self(base_polynomial<U,Derived2>(p));
+      mult_by_self(base_polynomial<U,Derived2>(p),v);
       return;
     }
     base_polynomial retval;
@@ -431,10 +433,19 @@ namespace piranha
     const it_h_index it_f1=h_index().end();
     const typename base_polynomial<U,Derived2>::it_h_index it_f2=p.h_index().end();
     typename base_polynomial<U,Derived2>::it_h_index it2;
+    const size_t w=v.size();
+    p_assert(w<=width());
+    size_t j;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
       for (it2=p.h_index().begin();it2!=it_f2;++it2)
       {
+        for (j=0;j<w;++j)
+          {
+            
+          }
+
+
         it1->mult_by(*it2,temp_m);
         retval.insert(temp_m);
       }
@@ -616,7 +627,7 @@ namespace piranha
       std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
       std::abort();
     }
-    base_polynomial retval;
+    Derived retval;
     if (math::delta_nearbyint(x)<=settings_manager::numerical_zero())
     {
 // Integer case.
