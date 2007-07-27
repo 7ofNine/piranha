@@ -60,6 +60,7 @@ namespace piranha
         boost::multi_index::tag<hash>,
         boost::multi_index::identity<m_type> >
         > index_type;
+      typedef typename m_type::expo_t expo_t;
     public:
       typedef boost::multi_index_container <m_type, index_type> set_type;
       typedef typename set_type::template index<degree>
@@ -206,6 +207,8 @@ namespace piranha
       void mult_by_double(const double &);
       template <class Derived2>
         void mult_by_self(const Derived2 &);
+      template <class Derived2>
+        void mult_by_self(const Derived2 &, const vec_expo_index_limit &);
       void basic_pow(const double &);
     protected:
       static const std::string  separator_;
@@ -391,6 +394,10 @@ namespace piranha
     }
   }
 
+/// Multiply by self, simple implementation.
+/**
+ * Multiply all monomials without truncations.
+ */
   template <class T, class Derived>
     template <class Derived2>
     inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p)
@@ -416,43 +423,74 @@ namespace piranha
     swap(retval);
   }
 
-#if 0
-/// Multiply by self.
+/// Multiply by self limiting the exponents of symbols.
+/**
+ * Exponents limits are usually fetched from piranha::symbol_limiter.
+ * @see piranha::symbol_limiter.
+ */
   template <class T, class Derived>
-    template <class U, class Derived2>
-    inline void base_polynomial<T,Derived>::mult_by_self(const base_polynomial<U,Derived2> &p,
+    template <class Derived2>
+    inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p,
     const vec_expo_index_limit &v)
   {
+// This function is to be used only from Poisson series, in which merging of arguments should
+// ensure the validity of the following assert.
+    p_assert(width()>=p.width());
     if ((void *)&p==(void *)this)
     {
-      mult_by_self(base_polynomial<U,Derived2>(p),v);
+      mult_by_self(Derived2(p),v);
       return;
     }
-    base_polynomial retval;
+    Derived retval;
     m_type temp_m;
     const it_h_index it_f1=h_index().end();
-    const typename base_polynomial<U,Derived2>::it_h_index it_f2=p.h_index().end();
-    typename base_polynomial<U,Derived2>::it_h_index it2;
+    const typename Derived2::it_h_index it_f2=p.h_index().end();
+    typename Derived2::it_h_index it2;
     const size_t w=v.size();
     p_assert(w<=width());
     size_t j;
+    expo_t ex1, ex2;
+    bool proceed;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
       for (it2=p.h_index().begin();it2!=it_f2;++it2)
       {
+        proceed=true;
         for (j=0;j<w;++j)
           {
-            
+// Find the exponents of the limited arguments.
+            const size_t index=v[j].first;
+            if (it1->smaller(index))
+              {
+                ex1=0;
+              }
+            else
+              {
+                ex1=it1->container()[index];
+              }
+            if (it2->smaller(index))
+              {
+                ex2=0;
+              }
+            else
+              {
+                ex2=it2->container()[index];
+              }
+            if ((ex1+ex2)>v[j].second)
+              {
+                proceed=false;
+                break;
+              }
           }
-
-
-        it1->mult_by(*it2,temp_m);
-        retval.insert(temp_m);
+        if (proceed)
+        {
+          it1->mult_by(*it2,temp_m);
+          retval.insert(temp_m);
+        }
       }
     }
     swap(retval);
   }
-#endif
 
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::mult_by_int(int n)
