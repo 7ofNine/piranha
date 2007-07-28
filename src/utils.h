@@ -65,14 +65,13 @@ namespace piranha
  */
       static int get_valid_string(std::ifstream &inf, std::string &str)
       {
-        bool theres_more;
         do
         {
-          theres_more=getline(inf,str,'\n');
-          if (theres_more==false)
+          if (inf.eof())
           {
             return 1;
           }
+          getline(inf,str,'\n');
           boost::trim(str);
         }
         while (is_invalid_string(str));
@@ -144,7 +143,7 @@ namespace piranha
 /// Check whether a string is empty or commented.
       static bool is_invalid_string(std::string &str)
       {
-        if (str=="")
+        if (str.empty())
         {
           return true;
         }
