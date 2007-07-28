@@ -389,6 +389,8 @@ namespace piranha
     return ret_it;
   }
 
+
+// TODO: check that this method is really used only when doing +=/-= from complex to real.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class Cf2>
     inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::ll_insert(
