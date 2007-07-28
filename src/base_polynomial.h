@@ -325,6 +325,7 @@ namespace piranha
     m_type *new_m=0;
     if (m.smaller(w))
     {
+// FIXME: used boost scoped array.
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
