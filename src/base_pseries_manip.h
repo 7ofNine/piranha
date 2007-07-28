@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_MANIP_H
 #define PIRANHA_BASE_PSERIES_MANIP_H
 
+#include <boost/scoped_ptr.hpp>
+
 #include "arg_manager.h"
 #include "stats.h"
 
@@ -336,6 +338,12 @@ namespace piranha
     inline typename base_pseries<Cf, Trig, Term, I, Derived>::it_s_index base_pseries<Cf, Trig, Term, I, Derived>::ll_insert(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
+// We must check for ignorability here, before assertions, since at this point cf_width could be zero
+// for polynomials, and thus assertion would wrongly fail.
+    if (term.is_ignorable(cf_s_vec_))
+    {
+      return s_index().end();
+    }
     p_assert(term.g_cf().compatible(cf_width()));
     p_assert(term.g_trig().compatible(trig_width()));
     p_assert(term.g_trig().sign()>0);
@@ -410,37 +418,30 @@ namespace piranha
 // by addition and multiplication routines.
     p_assert(!term.g_cf().larger(cw));
     p_assert(!term.g_trig().larger(tw));
-    term_type *new_term=0;
+    boost::scoped_ptr<term_type> new_term(0);
     if (term.g_cf().smaller(cw) || term.g_trig().smaller(tw))
     {
-      new_term = new term_type(term);
+      new_term.reset(new term_type(term));
       new_term->increase_size(cw,tw);
     }
     if (term.g_trig().sign()<0)
     {
-      if (new_term==0)
+      if (new_term.get()==0)
       {
-        new_term = new term_type(term);
+        new_term.reset(new term_type(term));
       }
       new_term->invert_trig_args();
     }
     const term_type *insert_term;
-    if (new_term==0)
+    if (new_term.get()==0)
     {
       insert_term=&term;
     }
     else
     {
-      insert_term=new_term;
-    }
-// We must check for ignorability here, since we need term's cf to be the right size when dealing
-// with non-numerical cf (i.e., polynomials, etc.) by passing the vector of symbols.
-    if (insert_term->is_ignorable(cf_s_vec_))
-    {
-      return s_index().end();
+      insert_term=new_term.get();
     }
     it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
-    delete new_term;
     return ret_it;
   }
 
