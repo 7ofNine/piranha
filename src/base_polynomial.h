@@ -122,6 +122,17 @@ namespace piranha
       bool checkup(const size_t &) const;
       bool is_zero(const vector_psym_p &) const;
       double norm(const vector_psym_p &) const;
+      int g_degree() const
+      {
+        if (set_.empty())
+          {
+            return 0;
+          }
+        else
+          {
+            return d_index().begin()->degree();
+          }
+      }
 /// Check whether base_polynomial is larger than size w.
       bool larger(const size_t &w) const
       {
@@ -424,6 +435,7 @@ namespace piranha
     swap(retval);
   }
 
+#if 0
 /// Multiply by self limiting the exponents of symbols.
 /**
  * Exponents limits are usually fetched from piranha::symbol_limiter.
@@ -492,6 +504,7 @@ namespace piranha
     }
     swap(retval);
   }
+#endif
 
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::mult_by_int(int n)

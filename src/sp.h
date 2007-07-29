@@ -29,6 +29,51 @@
 
 namespace piranha
 {
+/// Extract degree from terms with polynomials as coefficients.
+  template <class Term>
+    struct degree_extractor
+    {
+      typedef int result_type;
+      int operator()(const Term &t) const
+      {
+        return t.g_cf().g_degree();
+      }
+    };
+
+/// Degree-based indices for base_pseries.
+/**
+ * This class specifies the following indices to be used in piranha::base_pseries: a hashed index for the
+ * identification
+ * of terms and a degree-sorted index to discard terms in multiplications. The class is to be used as the I
+ * parameter in piranha::base_pseries classes.
+ */
+  template <class Cf, class Trig, template <class, class> class Term>
+    struct degree_based_index
+  {
+    typedef boost::multi_index::indexed_by <
+      boost::multi_index::ordered_unique <
+        boost::multi_index::composite_key <
+          Term<Cf, Trig>,
+          degree_extractor<Term<Cf, Trig> >,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+          &Term<Cf, Trig>::g_flavour > ,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+          &Term<Cf, Trig>::g_trig >
+          >
+        >,
+        boost::multi_index::hashed_unique <
+          boost::multi_index::composite_key <
+            Term<Cf, Trig>,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+          &Term<Cf, Trig>::g_flavour > ,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+          &Term<Cf, Trig>::g_trig >
+          >
+        >
+      > type;
+  };
+
+
 /// Derived class for symbolic Poisson series.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     class sps:
@@ -65,7 +110,7 @@ namespace piranha
   ;
 
 
-  typedef sps<polynomial<double_cf>,trig_array,ps_term,norm_based_index> sp;
+  typedef sps<polynomial<double_cf>,trig_array,ps_term,degree_based_index> sp;
 }
 
 
