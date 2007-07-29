@@ -68,7 +68,6 @@ namespace piranha
         typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
         const Derived *derived_cast=static_cast<Derived const *>(this);
-        size_t n=0;
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
@@ -79,19 +78,13 @@ namespace piranha
         it_s_index2 it2;
         const it_s_index it2_i=ps2.s_index().begin();
         it_s_index it1, it_hint=retval.s_index().end();
+        vec_expo_index_limit limits;
+        symbol_limiter::get_limits_index(derived_cast->cf_s_vec(),limits);
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
           for (it2=it2_i;it2!=it2_f;++it2)
           {
-
-
-
-
-
-
-
-
-            term_by_term_multiplication(*it1,*it2,term_pair);
+            term_by_term_multiplication(*it1,*it2,term_pair,limits);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
             if (term_pair.template get
@@ -108,19 +101,16 @@ namespace piranha
               <0>(),true,&it_hint);
             it_hint=retval.insert(term_pair.template get
               <1>(),true,&it_hint);
-            ++n;
           }
         }
-//retval.cumulative_crop(Delta);
-        std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
-        std::cout << "Out length=" << retval.length() << std::endl;
       }
     template <class T,class U>
-      static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair)
+      static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
+      const vec_expo_index_limit &limits)
     {
       typedef typename Derived::ancestor::cf_type cf_type;
       cf_type new_c=t1.g_cf();
-      new_c*=t2.g_cf();
+      new_c.mult_by_self(t2.g_cf(),limits);
       new_c/=2;
       Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
     }

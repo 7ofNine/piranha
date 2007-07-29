@@ -27,6 +27,9 @@
 #include "ps_term.h"
 #include "trig_array.h"
 
+// Toolboxes.
+#include "symbol_limiting_elementary_math_toolbox.h"
+
 namespace piranha
 {
 /// Extract degree from terms with polynomials as coefficients.
@@ -77,7 +80,8 @@ namespace piranha
 /// Derived class for symbolic Poisson series.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     class sps:
-    public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >
+    public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >,
+    public symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >
   {
     public:
 /// Alias for parent class.

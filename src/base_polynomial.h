@@ -184,6 +184,8 @@ namespace piranha
         return set_.template get
           <hash>();
       }
+      template <class Derived2>
+        void mult_by_self(const Derived2 &, const vec_expo_index_limit &);
     protected:
       void insert(const m_type &, bool sign=true);
       degree_index &d_index()
@@ -218,8 +220,6 @@ namespace piranha
       void mult_by_double(const double &);
       template <class Derived2>
         void mult_by_self(const Derived2 &);
-      template <class Derived2>
-        void mult_by_self(const Derived2 &, const vec_expo_index_limit &);
       void basic_pow(const double &);
     protected:
       static const std::string  separator_;
