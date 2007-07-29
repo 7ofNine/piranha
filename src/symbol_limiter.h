@@ -23,8 +23,11 @@
 
 #include <boost/functional/hash.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <string>
 #include <tr1/unordered_map>
 #include <vector>
+
+//TODO: use multiindex container, so that we can drop the dependency on TR1.
 
 #include "psymbol.h"
 
@@ -35,7 +38,8 @@ namespace piranha
   class symbol_limiter
   {
     public:
-      static void set_limit(psym_p,int);
+      static void set_limit(psym_p, int);
+      static void set_limit(const std::string &, int);
       static void clear();
       static void get_limits_index(const vector_psym_p &v, vec_expo_index_limit &retval)
       {
