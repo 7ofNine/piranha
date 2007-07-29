@@ -25,31 +25,6 @@
 
 namespace piranha
 {
-/// Operator less-than.
-  template <class Cf,class Trig>
-    inline bool ps_term<Cf,Trig>::operator<(const ps_term &t2) const
-  {
-    p_assert(arg_manager::assigned());
-// FIXME:  do not pass through dereference twice here, make a norm function that uses pointer
-// directly.
-    if (g_cf().norm(*arg_manager::cf_args())!=t2.g_cf().norm(*arg_manager::cf_args()))
-    {
-      return g_cf().norm(*arg_manager::cf_args())>t2.g_cf().norm(*arg_manager::cf_args());
-    }
-    else
-    {
-      if (g_flavour()<t2.g_flavour())
-      {
-        return true;
-      }
-      else if (t2.g_flavour()<g_flavour())
-      {
-        return false;
-      }
-      return (g_trig()>t2.g_trig());
-    }
-  }
-
 /// See if a term can be ignored when inserting it into a series.
 /**
  * @param[in] v vector of piranha::psymbol objects for the coefficient.

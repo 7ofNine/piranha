@@ -93,7 +93,6 @@ namespace piranha
       bool checkup(const size_t &, const size_t &) const;
       size_t footprint() const;
       bool is_ignorable(const vector_psym_p &) const;
-      bool operator<(const ps_term &) const;
 // Manipulation.
       void increase_size(const size_t &, const size_t &);
       void invert_trig_args();
