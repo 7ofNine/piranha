@@ -87,7 +87,6 @@ namespace piranha
       size_t data_footprint() const;
       bool checkup(const size_t &) const;
       bool operator==(const trig_slist &) const;
-      bool operator>(const trig_slist &) const;
       bool operator<(const trig_slist &) const;
 // Math.
       void trigmult(const trig_slist &, trig_slist &, trig_slist &) const;
@@ -414,42 +413,6 @@ namespace piranha
       }
     }
     return 1;
-  }
-
-  inline bool trig_slist::operator>(const trig_slist &l2) const
-  {
-    const const_iterator it_f1=end(), it_f2=l2.end();
-    const_iterator it1=begin(), it2=l2.begin();
-    while (it1!=it_f1 && it2!=it_f2)
-    {
-      if (it1->first < it2->first)
-      {
-        return (it1->second > 0);
-      }
-      if (it2->first < it1->first)
-      {
-        return (it2->second < 0);
-      }
-      if (it1->second > it2->second)
-      {
-        return true;
-      }
-      if (it2->second > it1->second)
-      {
-        return false;
-      }
-      ++it1;
-      ++it2;
-    }
-    if (it1!=it_f1)
-    {
-      return (it1->second > 0);
-    }
-    if (it2!=it_f2)
-    {
-      return (it2->second < 0);
-    }
-    return false;
   }
 
   inline bool trig_slist::operator<(const trig_slist &l2) const
