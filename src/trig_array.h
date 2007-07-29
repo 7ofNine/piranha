@@ -63,7 +63,7 @@ namespace piranha
       size_t data_footprint() const;
       bool checkup(const size_t &) const;
       bool operator==(const trig_array &) const;
-      bool operator>(const trig_array &) const;
+      bool operator<(const trig_array &) const;
 // Math.
       void trigmult(const trig_array &, trig_array &, trig_array &) const;
       trig_array &operator=(const trig_array &);
@@ -305,17 +305,22 @@ namespace piranha
     return (width()*sizeof(mult_t));
   }
 
-  inline bool trig_array::operator>(const trig_array &l2) const
+/// Operator less than.
+/**
+ * Needed, for example, in norm-based inidces for piranha::base_pseries, where there could
+ * be terms with equal norms. If that happens, this operator is used to order terms.
+ */
+  inline bool trig_array::operator<(const trig_array &l2) const
   {
     size_t w=width();
     p_assert(w==l2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]>l2.container_[i])
+      if (container_[i]<l2.container_[i])
       {
         return true;
       }
-      else if (container_[i]<l2.container_[i])
+      else if (container_[i]>l2.container_[i])
       {
         return false;
       }
