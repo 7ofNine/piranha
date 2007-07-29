@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef ps<polynomial<double_cf>,trig_array,ps_term,default_ps_index> gsp;
+  typedef ps<polynomial<double_cf>,trig_array,ps_term,norm_based_index> gsp;
 }
 #endif

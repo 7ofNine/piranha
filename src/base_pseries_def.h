@@ -22,42 +22,12 @@
 #define PIRANHA_BASE_PSERIES_DEF_H
 
 #include <boost/multi_index_container.hpp>
-#include <boost/multi_index/composite_key.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/member.hpp>
-#include <complex>
 
 #include "phase_list.h"
 #include "psymbol.h"
 
 namespace piranha
 {
-/// Default indices for base_pseries.
-/**
- * This class specifies the default indices used in Poisson series: an hashed index for the identification
- * of terms and a sorted index to discard terms in multiplications. The class is to be used as the I
- * parameter in piranha::base_pseries classes.
- */
-  template <class Cf, class Trig, template <class, class> class Term>
-    struct default_ps_index
-  {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_unique <
-      boost::multi_index::identity<Term<Cf, Trig> > > ,
-      boost::multi_index::hashed_unique <
-      boost::multi_index::composite_key <
-      Term<Cf, Trig>,
-      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
-      &Term<Cf, Trig>::g_flavour > ,
-      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig >
-      >
-      >
-      > type;
-  };
-
 /// Base series class.
 /**
  * Base class for the representation of Poisson series (PS). It provides the methods for basic manipulation

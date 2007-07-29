@@ -21,8 +21,67 @@
 #ifndef PIRANHA_NORM_TOOLBOX_H
 #define PIRANHA_NORM_TOOLBOX_H
 
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
+
 namespace piranha
 {
+/// Norm extractor.
+/**
+ * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
+ */
+  template <class Term>
+    struct norm_extractor
+  {
+    typedef double result_type;
+    double operator()(const Term &t) const
+    {
+      p_assert(arg_manager::assigned());
+      return t.g_cf().norm(*arg_manager::cf_args());
+    }
+  };
+
+/// Norm-based indices for base_pseries.
+/**
+ * This class specifies the following indices to be used in piranha::base_pseries: a hashed index for the
+ * identification
+ * of terms and a norm-sorted index to discard terms in multiplications. The class is to be used as the I
+ * parameter in piranha::base_pseries classes.
+ */
+  template <class Cf, class Trig, template <class, class> class Term>
+    struct norm_based_index
+  {
+    typedef boost::multi_index::indexed_by <
+      boost::multi_index::ordered_unique <
+        boost::multi_index::composite_key <
+          Term<Cf, Trig>,
+          norm_extractor<Term<Cf, Trig> >,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+          &Term<Cf, Trig>::g_flavour > ,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+          &Term<Cf, Trig>::g_trig >
+          >,
+        boost::multi_index::composite_key_compare<
+          std::greater<double>,
+          std::less<bool>,
+          std::less<Trig>
+          >
+        >,
+        boost::multi_index::hashed_unique <
+          boost::multi_index::composite_key <
+            Term<Cf, Trig>,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+          &Term<Cf, Trig>::g_flavour > ,
+          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+          &Term<Cf, Trig>::g_trig >
+          >
+        >
+      > type;
+  };
+
 /// Norm toolbox.
 /**
  * The norm should be kept up-to-date during term insertions. It is calculated using a norm()
