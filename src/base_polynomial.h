@@ -435,7 +435,6 @@ namespace piranha
     swap(retval);
   }
 
-#if 0
 /// Multiply by self limiting the exponents of symbols.
 /**
  * Exponents limits are usually fetched from piranha::symbol_limiter.
@@ -472,7 +471,7 @@ namespace piranha
         for (j=0;j<w;++j)
           {
 // Find the exponents of the limited arguments.
-            const size_t index=v[j].first;
+            const size_t index=v[j].get<0>();
             if (it1->smaller(index))
               {
                 ex1=0;
@@ -489,7 +488,7 @@ namespace piranha
               {
                 ex2=it2->container()[index];
               }
-            if ((ex1+ex2)>v[j].second)
+            if ((ex1+ex2)>v[j].get<1>())
               {
                 proceed=false;
                 break;
@@ -504,7 +503,6 @@ namespace piranha
     }
     swap(retval);
   }
-#endif
 
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::mult_by_int(int n)
