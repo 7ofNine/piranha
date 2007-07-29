@@ -55,7 +55,7 @@ namespace piranha
         boost::multi_index::ordered_non_unique <
         boost::multi_index::tag<degree>,
         boost::multi_index::const_mem_fun < m_type, typename m_type::degree_type,
-        &m_type::degree > >,
+        &m_type::g_degree > >,
         boost::multi_index::hashed_unique <
         boost::multi_index::tag<hash>,
         boost::multi_index::identity<m_type> >
@@ -130,7 +130,7 @@ namespace piranha
           }
         else
           {
-            return d_index().begin()->degree();
+            return d_index().begin()->g_degree();
           }
       }
 /// Check whether base_polynomial is larger than size w.

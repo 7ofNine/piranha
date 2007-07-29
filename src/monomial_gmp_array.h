@@ -190,7 +190,7 @@ namespace piranha
 // Evaluation.
       eval_type t_eval(const double &, const vector_psym_p &) const;
 // Probing.
-      degree_type degree() const;
+      degree_type g_degree() const;
       size_t hasher() const;
       bool smaller(const size_t &) const;
       bool larger(const size_t &) const;
@@ -412,7 +412,7 @@ namespace piranha
 
 /// Get degree of the monomial.
   template <class T>
-    inline typename monomial_gmp_array<T>::degree_type monomial_gmp_array<T>::degree() const
+    inline typename monomial_gmp_array<T>::degree_type monomial_gmp_array<T>::g_degree() const
   {
     degree_type retval=0;
     const size_t w=width();
