@@ -28,10 +28,12 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------------------
 
-# Try to find the GMP librairies
-# GMP_FOUND - system has GMP lib
-# GMP_INCLUDE_DIR - the GMP include directory
+# Try to find the GMP librairies:
+# GMP_FOUND - System has GMP lib
+# GMP_INCLUDE_DIR - The GMP include directory
 # GMP_LIBRARIES - Libraries needed to use GMP
+# GMPXX_INCLUDE_DIR - The GMP C++ interface include directory
+# GMPXX_LIBRARIES - Libraries needed to use GMP's C++ interface
 
 if (GMP_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_INCLUDE_DIR AND GMPXX_LIBRARIES)
   # Already in cache, be silent

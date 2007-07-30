@@ -1,3 +1,14 @@
+# Try to find PyQt4 utilities, pyuic4 and pyrcc4:
+# PYUIC4BINARY - Location of pyuic4 executable
+# PYRCC4BINARY - Location of pyrcc4 executable
+# PyQt4_FOUND - PyQt4 utilities found.
+
+# Also provides macro similar to FindQt4.cmake's WRAP_UI and WRAP_RC,
+# for the automatic generation of Python code from Qt4's user interface
+# ('.ui') and resource ('.qrc') files. These macros are called:
+# - PYQT4_WRAP_UI
+# - PYQT4_WRAP_RC
+
 IF(PYUIC4BINARY AND PYRCC4BINARY)
   # Already in cache, be silent
   set(PyQt4_FIND_QUIETLY TRUE)
