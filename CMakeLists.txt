@@ -1,39 +1,21 @@
 PROJECT(piranha)
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 INCLUDE(${CMAKE_ROOT}/Modules/CMakeDependentOption.cmake)
+INCLUDE(FindGMP)
 INCLUDE(CPack)
 ENABLE_LANGUAGE(C CXX)
 
-# General options
-# ---------------------------------------------------------------------------------
-OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
+# Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
 OPTION(BUILD_NP "Build numerical series with array lists." ON)
 OPTION(BUILD_LNP "Build numerical series with trigonometric lists." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_GSP "Build symbolic series with polynomial coefficients." OFF "BUILD_GMP_SUPPORT" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_SP "Build sp series." OFF "BUILD_GMP_SUPPORT" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_KEPLERIAN_PROCESSOR "Build keplerian processor." OFF "BUILD_GSP" OFF)
+OPTION(BUILD_GSP "Build symbolic series with polynomial coefficients." OFF)
+OPTION(BUILD_SP "Build sp series." OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_KEPLERIAN_PROCESSOR "Build keplerian processor." OFF "BUILD_SP" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
-
-# Macro to find boost libraries, which have the nasty tendency to have different suffices
-# according to platform and toolchain.
-MACRO(FIND_BOOST_LIBRARY arg1 arg2)
-  IF(WIN32)
-    SET(LIBRARY_BASENAME "libboost_${arg2}")
-    FIND_LIBRARY(${arg1} NAMES
-      "${LIBRARY_BASENAME}"
-      "${LIBRARY_BASENAME}-mgw-mt-d"
-      "${LIBRARY_BASENAME}-mt-d"
-    )
-  ELSE(WIN32)
-    SET(LIBRARY_BASENAME "boost_${arg2}")
-    FIND_LIBRARY(${arg1} NAMES
-      "${LIBRARY_BASENAME}"
-      "${LIBRARY_BASENAME}-gcc-mt"
-      "${LIBRARY_BASENAME}-mt"
-    )
-  ENDIF(WIN32)
-ENDMACRO(FIND_BOOST_LIBRARY)
+OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
+OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 
 # Platform switches
 IF(WIN32)
@@ -50,8 +32,7 @@ ELSE(WIN32)
   SET(LIB_INSTALL_PATH "lib")
 ENDIF(WIN32)
 
-# Compiler flags
-# ---------------------------------------------------------------------------------
+# Compiler switches.
 # Enable verbose reporting of errors when using gcc
 SET(GCC_EXTRA_FLAGS "-Wall")
 IF(${CMAKE_CXX_COMPILER} MATCHES "c\\+\\+")
@@ -72,34 +53,16 @@ IF(${CMAKE_C_COMPILER} MATCHES "icc")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ICC_EXTRA_FLAGS}")
 ENDIF(${CMAKE_C_COMPILER} MATCHES "icc")
 
-# Find stuff
-# ---------------------------------------------------------------------------------
 # Mandatory linking
 SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha)
 
-# Find GMP and setup support
-# Search in this position because it potentially influences many parts of the code -
-# i.e., it is not tied to a specific feature.
-FIND_LIBRARY(GMP_LIBRARY NAMES "gmp")
-FIND_LIBRARY(GMPXX_LIBRARY NAMES "gmpxx")
-IF(GMP_LIBRARY AND GMPXX_LIBRARY)
-  MESSAGE(STATUS "Found GMP libraries:")
-  MESSAGE(STATUS ${GMP_LIBRARY})
-  MESSAGE(STATUS ${GMPXX_LIBRARY})
-  OPTION(BUILD_GMP_SUPPORT "Build GMP support" ON)
-ELSE(GMP_LIBRARY AND GMPXX_LIBRARY)
-  MESSAGE(STATUS "GMP libraries not found")
-  OPTION(BUILD_GMP_SUPPORT "Build GMP support" OFF)
-ENDIF(GMP_LIBRARY AND GMPXX_LIBRARY)
-IF(BUILD_GMP_SUPPORT)
-  IF(GMP_LIBRARY-NOTFOUND OR GMPXX_LIBRARY-NOTFOUND)
-    MESSAGE(FATAL_ERROR "GMP support was requested but libraries were not found.")
-  ENDIF(GMP_LIBRARY-NOTFOUND OR GMPXX_LIBRARY-NOTFOUND)
-  SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMP_LIBRARY} ${GMPXX_LIBRARY})
-ENDIF(BUILD_GMP_SUPPORT)
+# Find GMP if required.
+IF(BUILD_GSP OR BUILD_SP)
+  FIND_PACKAGE(GMP REQUIRED)
+  SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
+ENDIF(BUILD_GSP OR BUILD_SP)
 
 # Fortran
-OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 IF(BUILD_FORTRAN)
   ENABLE_LANGUAGE(Fortran)
   IF(NOT CMAKE_Fortran_COMPILER)
@@ -138,7 +101,6 @@ IF(BUILD_TASS)
 ENDIF(BUILD_TASS)
 
 # Common stuff
-# ---------------------------------------------------------------------------------
 SET(CMAKE_BUILD_TYPE "Release")
 # Find out motion theories files to be installed
 SET(THEORIES_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/share/piranha/theories")
@@ -160,8 +122,6 @@ IF(BUILD_PYRANHA)
   ADD_SUBDIRECTORY(pyranha)
 ENDIF(BUILD_PYRANHA)
 
-# Install phase
-# ---------------------------------------------------------------------------------
-# Find and install theories of motion
+# Install phase: find and install theories of motion
 FILE(GLOB_RECURSE THEORIES theories_of_motion/*.csv theories_of_motion/*.phl theories_of_motion/*.dat)
 INSTALL(FILES ${THEORIES} DESTINATION ${THEORIES_INSTALL_PATH})
