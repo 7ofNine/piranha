@@ -61,6 +61,95 @@ namespace piranha
         }
         derived_cast->swap(retval);
       }
+/// Multiplication by a generic entity.
+      template <class T>
+        void generic_multiplication(const T &c)
+      {
+        typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived::ancestor::it_s_index it_s_index;
+        Derived *derived_cast=static_cast<Derived *>(this);
+        if (derived_cast->empty())
+        {
+          return;
+        }
+        if (!math::is_zero_vec(derived_cast->lin_args()))
+        {
+          std::cout << "Non-zero linargs in *= T!" << std::endl;
+          std::exit(1);
+        }
+        Derived tmp_ps;
+        tmp_ps.merge_args(*derived_cast);
+        term_type tmp_term;
+        it_s_index it_hint=tmp_ps.s_index().end();
+        const it_s_index it_f=derived_cast->s_index().end();
+        for (it_s_index it=derived_cast->s_index().begin();it!=it_f;++it)
+        {
+          tmp_term=*it;
+          tmp_term.s_cf()*=c;
+          it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+        }
+        derived_cast->swap(tmp_ps);
+      }
+/// Generic division.
+      template <class T>
+        void generic_division(const T &x)
+      {
+        if (x==0)
+        {
+          std::cout << "ERROR: division by zero in /=, returning self." << std::endl;
+          std::abort();
+          return;
+        }
+        typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived::ancestor::it_s_index it_s_index;
+        Derived *derived_cast=static_cast<Derived *>(this);
+        if (derived_cast->empty())
+        {
+          return;
+        }
+        if (!math::is_zero_vec(derived_cast->lin_args()))
+        {
+// NOTICE: maybe here we could deal with exact int/int divisions. Not really important
+// ATM though.
+          std::cout << "Non-zero linargs in /= int!" << std::endl;
+          std::exit(1);
+        }
+        Derived tmp_ps;
+        tmp_ps.merge_args(*derived_cast);
+        term_type tmp_term;
+        it_s_index it_hint=tmp_ps.s_index().end();
+        const it_s_index it_f=derived_cast->s_index().end();
+        for (it_s_index it=derived_cast->s_index().begin();it!=it_f;++it)
+        {
+          tmp_term=*it;
+          tmp_term.s_cf()/=x;
+          it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+        }
+        derived_cast->swap(tmp_ps);
+      }
+/// Multiplication by an integer.
+/**
+ * This is specialized because we have to take care of lin_args.
+ */
+      void mult_by_int(int n)
+      {
+        Derived *derived_cast=static_cast<Derived *>(this);
+        const vector_mult_t old_lin_args=derived_cast->lin_args();
+        size_t j;
+        const size_t w=derived_cast->lin_args().size();
+// Zero the linargs, otherwise the generic *= operator complains
+        for (j=0;j<w;++j)
+        {
+          derived_cast->lin_args()[j]=0;
+        }
+// Now perform the generic multiplication
+        generic_multiplication(n);
+// Multiply the old linargs and restore them
+        for (j=0;j<w;++j)
+        {
+          derived_cast->lin_args()[j]=old_lin_args[j]*n;
+        }
+      }
     private:
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval, const double &Delta) const

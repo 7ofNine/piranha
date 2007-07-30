@@ -373,11 +373,6 @@ namespace piranha
       template <class Cf2>
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         boost::tuple<term_type &,term_type &> &, cf_type &);
-      template <class T>
-        void generic_multiplication(const T &);
-      template <class T>
-        void generic_division(const T &);
-      void mult_by_int(int);
     private:
 /// Name comparison functor for psymbol pointers.
 /**
