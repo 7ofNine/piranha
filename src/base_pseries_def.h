@@ -424,7 +424,7 @@ namespace piranha
  * Constructs an empty series.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(): __base_pseries_init_list {}
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries():__base_pseries_init_list {}
 
 
 /// Copy constructor.
@@ -444,7 +444,7 @@ namespace piranha
  * Read a series from file.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const std::string &fn): __base_pseries_init_list
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const std::string &fn):__base_pseries_init_list
   {
     load_from(fn);
   }
@@ -456,7 +456,7 @@ namespace piranha
  * @see base_pseries::cf_type.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c): __base_pseries_init_list
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c):__base_pseries_init_list
   {
     term_type term(c);
     insert(term);
@@ -465,7 +465,7 @@ namespace piranha
 /// Constructor from piranha::psymbol.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const psymbol &psym, psymbol::type ptype)
-    : __base_pseries_init_list
+    :__base_pseries_init_list
   {
     if (ptype==psymbol::cf)
     {
