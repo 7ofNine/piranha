@@ -334,7 +334,7 @@ namespace piranha
         T retval=T(1), a_jm1=T(1), a_j, half_x_pow2=T(natural_pow(2,half_x));
         for (unsigned int j=1;j<=iterations;++j)
         {
-          (a_jm1/=(j*(n+j)))*=-1;
+          (a_jm1/=(int)(j*(n+j)))*=-1;
           a_j=a_jm1;
           a_j*=half_x_pow2;
           retval+=a_j;
