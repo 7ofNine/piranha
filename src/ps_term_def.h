@@ -54,6 +54,14 @@ namespace piranha
       explicit ps_term();
 // FIXME: replace bool with enum.
       explicit ps_term(const cf_type &, bool flavour=true);
+/// Generic builder.
+/**
+ * Build constructing coefficient from variable x, of type T.
+ */
+      template <class T>
+        explicit ps_term(const T &x, bool flavour=true):private_flavour_(flavour),
+        private_cf_(cf_type(x)),private_trig_()
+      {}
 /// Copy constructor from term with different template parameters.
       template <class Cf2>
         explicit ps_term(const ps_term<Cf2,trig_type> &term):
