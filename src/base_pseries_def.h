@@ -90,9 +90,9 @@ namespace piranha
       typedef typename sorted_index::const_iterator const_iterator;
 // Ctors
       base_pseries();
-      base_pseries(const base_pseries &);
+      base_pseries(const Derived &);
       explicit base_pseries(const std::string &);
-      explicit base_pseries(const cf_type &);
+      explicit base_pseries(const cf_type &, const Derived &);
       explicit base_pseries(const psymbol &, psymbol::type);
 /// Destructor.
       ~base_pseries()
@@ -336,6 +336,13 @@ namespace piranha
       bool checkup() const;
 // NOTICE: temporarily here.
     protected:
+/// Generic builder.
+      template <class T>
+        void generic_builder(const T &x)
+      {
+        term_type term(x);
+        insert(term);
+      }
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string&);
@@ -432,7 +439,7 @@ namespace piranha
  * Constructs a series from another one.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const base_pseries &ps):
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const Derived &ps):
     lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),set_(ps.set_)
   {
     std::cout << "Copy ctor" << std::endl;
@@ -456,10 +463,11 @@ namespace piranha
  * @see base_pseries::cf_type.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c):__base_pseries_init_list
+    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c, const Derived &model)
+    :__base_pseries_init_list
   {
-    term_type term(c);
-    insert(term);
+    merge_args(model);
+    generic_builder(c);
   }
 
 /// Constructor from piranha::psymbol.
