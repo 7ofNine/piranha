@@ -466,7 +466,16 @@ namespace piranha
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c, const Derived &model)
     :__base_pseries_init_list
   {
-    merge_args(model);
+    if (!merge_args(model))
+    {
+      std::cout << "Warning: incompatbile arguments in ctor from cf_type." << std::endl;
+      return;
+    }
+    if (c.larger(cf_width()))
+    {
+      std::cout << "Warning: too many arguments in ctor from coefficient." << std::endl;
+      return;
+    }
     generic_builder(c);
   }
 
