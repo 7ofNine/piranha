@@ -230,6 +230,7 @@ void ps_instantiate_complex_specifics(class_<T> &complex)
 // Additional ctor(s) for complex series
   complex.def(init<real_ps>());
   complex.def(init<real_ps,real_ps>());
-  complex.def(init<typename real_ps::cf_type,typename real_ps::cf_type>());
+// FIXME: this needs to be fixed.
+  //complex.def(init<typename real_ps::cf_type,typename real_ps::cf_type>());
 }
 #endif

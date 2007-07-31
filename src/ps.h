@@ -68,14 +68,18 @@ namespace piranha
         {}
       explicit ps(const std::string &filename):ancestor::base_pseries(filename)
         {}
-      explicit ps(const cf_type &c):ancestor::base_pseries(c)
+      explicit ps(const cf_type &c, const ps &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from int.
-      explicit ps(int n):ancestor::base_pseries(cf_type(n))
-        {}
+      explicit ps(int n)
+        {
+          ancestor::generic_builder(n);
+        }
 /// Constructor from double.
-      explicit ps(const double &x):ancestor::base_pseries(cf_type(x))
-        {}
+      explicit ps(const double &x)
+        {
+          ancestor::generic_builder(x);
+        }
 /// Constructor from psymbol.
       explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
@@ -156,25 +160,27 @@ namespace std
       explicit complex(const std::string &filename):ancestor::base_pseries(filename)
         {}
 /// Constructor from coefficient.
-      explicit complex(const cf_type &c):ancestor::base_pseries(c)
+      explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from pair of real coefficients.
-      explicit complex(const real_cf_type &a, const real_cf_type &b):
+      /*explicit complex(const real_cf_type &a, const real_cf_type &b):
         ancestor::base_pseries(cf_type(a,b))
-        {}
+        {}*/
 /// Constructor from complex.
-      explicit complex(const complex_double &c):
-        ancestor::base_pseries(cf_type(c))
-        {}
+      explicit complex(const complex_double &c)
+        {
+          ancestor::generic_builder(c);
+        }
 /// Constructor from pair of doubles.
-      explicit complex(const double &a, const double &b):
-        ancestor::base_pseries(cf_type(complex_double(a,b)))
-        {}
+      explicit complex(const double &a, const double &b)
+        {
+          ancestor::generic_builder(complex_double(a,b));
+        }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const real_ps &p):ancestor::base_pseries()
+      explicit complex(const real_ps &p)
       {
         p_assert(ancestor::merge_args(p));
         term_type term;
@@ -188,13 +194,12 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-      explicit complex(const real_ps &p, const real_ps &q):ancestor::base_pseries()
+      explicit complex(const real_ps &p, const real_ps &q)
       {
         build_from_components(p,q);
       }
 /// Constructor from real and imaginary series from filenames.
-      explicit complex(const std::string &file1, const std::string &file2):
-        ancestor::base_pseries()
+      explicit complex(const std::string &file1, const std::string &file2)
       {
         build_from_components(real_ps(file1),real_ps(file2));
       }
