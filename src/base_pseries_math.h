@@ -109,7 +109,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_merge(const T &x)
   {
 // Build a series from x
-    Derived tmp=Derived(cf_type(x));
+    Derived tmp=Derived(cf_type(x),*static_cast<Derived *>(this));
 // Merge with this
     merge_with(tmp);
   }
