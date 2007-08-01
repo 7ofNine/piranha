@@ -1,2 +1,0 @@
-ADD_LIBRARY(_Gspc SHARED Gspc.cpp)
-PYTHONCMOD(_Gspc)

@@ -1,2 +1,0 @@
-ADD_LIBRARY(_Gsp SHARED Gsp.cpp)
-PYTHONCMOD(_Gsp)
