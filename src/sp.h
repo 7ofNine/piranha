@@ -21,6 +21,11 @@
 #ifndef PIRANHA_SP_H
 #define PIRANHA_SP_H
 
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+
 #include "base_pseries.h"
 #include "double_cf.h"
 #include "polynomial.h"
@@ -28,6 +33,7 @@
 #include "trig_array.h"
 
 // Toolboxes.
+#include "operators_toolbox.h"
 #include "symbol_limiting_elementary_math_toolbox.h"
 
 namespace piranha
@@ -81,7 +87,8 @@ namespace piranha
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     class sps:
     public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >,
-    public symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >
+    public symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >,
+    public real_operators_toolbox<sps<Cf,Trig,Term,I> >
   {
     public:
 /// Alias for parent class.
