@@ -205,9 +205,10 @@ namespace std
       }
 // Hooks.
 /// Re-implementation of assignment hook.
-      void assignment_hook(const complex &ps2)
+      template <class Derived2>
+        void assignment_hook(const Derived2 &ps2)
       {
-        self::norm_=ps2.norm_;
+        self::norm_=ps2.g_norm();
       }
 /// Re-implementation of swap hook.
       void swap_hook(complex &ps2)

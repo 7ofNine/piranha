@@ -336,6 +336,8 @@ namespace piranha
       bool checkup() const;
       bool is_cf() const;
 // NOTICE: temporarily here.
+      template <class Derived2>
+        void generic_series_assignment(const Derived2 &);
     protected:
 /// Generic builder.
       template <class T>
@@ -402,7 +404,11 @@ namespace piranha
         bool args_compatible(const Derived2 &) const;
 // Hooks.
 /// Default implementation of assignment hook.
-      void assignment_hook(const Derived &)
+/**
+ * Templatized this way because we want to be able to assign real series to complex ones.
+ */
+      template <class Derived2>
+        void assignment_hook(const Derived2 &)
         {std::cout << "Default hook called!" << std::endl;}
 /// Default implementation of swap hook.
       void swap_hook(Derived &)
