@@ -62,7 +62,7 @@ namespace piranha
           else if (derived_cast->is_cf())
           {
             cf_type tmp(derived_cast->s_index().begin()->g_cf());
-            *derived_cast=Derived(ps2);
+            derived_cast->generic_series_assignment(ps2);
             generic_multiplication(tmp);
             std::cout << "Cf2\n";
             return;

@@ -23,8 +23,7 @@
 
 namespace piranha
 {
-// Assignment operator
-// -------------------
+/// Basic assignment.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::basic_assignment(const
     base_pseries &ps2)
@@ -39,6 +38,30 @@ namespace piranha
     lin_args_=ps2.lin_args_;
     static_cast<Derived *>(this)->assignment_hook(ps2);
     std::cout << "Assignment operator!" << std::endl;
+  }
+
+/// Assignment from series with differen coefficient.
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    template <class Derived2>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_series_assignment(const Derived2 &ps2)
+  {
+    if ((void *)this==(void *)&ps2)
+    {
+      return;
+    }
+    typedef typename Derived2::it_s_index it_s_index2;
+    set_.clear();
+    cf_s_vec_=ps2.cf_s_vec();
+    trig_s_vec_=ps2.trig_s_vec();
+    lin_args_=ps2.lin_args();
+    const it_s_index2 it_f=ps2.s_index().end();
+// TODO: use hinted insertion.
+    for (it_s_index2 it=ps2.s_index().begin();it!=it_f;++it)
+    {
+      insert(*it);
+    }
+    static_cast<Derived *>(this)->assignment_hook(ps2);
+    std::cout << "Generic assignment operator!" << std::endl;
   }
 
 /************************/
