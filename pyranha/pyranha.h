@@ -122,7 +122,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("mean", mean_def(&T::mean));
   inst.def("mean", mean_n(&T::mean));
   inst.def("swap", &T::swap);
-  inst.def("partial", &T::partial);
   inst.def(self+=self);
   inst.def(self+self);
   inst.def(self+=double());
@@ -160,10 +159,16 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   return inst;
 }
 
-  template <class T>
+template <class T>
 void ps_instantiate_norm_specifics(class_<T> &inst)
 {
   inst.def("g_norm", &T::g_norm, return_value_policy<copy_const_reference>());
+}
+
+template <class T>
+void ps_instantiate_differential_specifics(class_<T> &inst)
+{
+  inst.def("partial", &T::partial);
 }
 
 template <class T>
