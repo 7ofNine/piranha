@@ -107,7 +107,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
   inst.def("length", &T::length);
   inst.def("trig_width", &T::trig_width);
-  inst.def("norm", &T::g_norm, return_value_policy<copy_const_reference>());
   inst.def("footprint", &T::footprint);
   inst.def("checkup", &T::checkup);
   inst.def("calc_norm", &T::calc_norm);
@@ -161,6 +160,11 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   return inst;
 }
 
+  template <class T>
+void ps_instantiate_norm_specifics(class_<T> &inst)
+{
+  inst.def("g_norm", &T::g_norm, return_value_policy<copy_const_reference>());
+}
 
 template <class T>
 void ps_instantiate_real_specifics(class_<T> &real)
