@@ -72,11 +72,6 @@ namespace piranha
         ancestor::mult_by_double(x);
         return *this;
       }
-      polynomial &operator*=(const polynomial &p)
-      {
-        ancestor::mult_by_self(p);
-        return *this;
-      }
       polynomial operator*(int n) const
       {
         polynomial retval(*this);
@@ -311,11 +306,6 @@ explicit complex(const double &x1, const double x2):
         retval*=n;
         return retval;
       }
-      complex &operator*=(const complex &c)
-      {
-        ancestor::mult_by_self(c);
-        return *this;
-      }
       complex &operator+=(const self &c)
       {
         ancestor::base_merge(c,true);
@@ -333,20 +323,6 @@ explicit complex(const double &x1, const double x2):
       complex operator-(const complex &c) const
       {
         return (self(*this)-=c);
-      }
-      complex operator*(const complex &c) const
-      {
-        return (self(*this)*=c);
-      }
-// Interaction with the real counterpart.
-      complex &operator*=(const real_type &r)
-      {
-        ancestor::mult_by_self(r);
-        return *this;
-      }
-      complex operator*(const real_type &r) const
-      {
-        return (complex(*this)*=r);
       }
   };
 }
