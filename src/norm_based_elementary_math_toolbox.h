@@ -34,6 +34,7 @@ namespace piranha
       template <class Derived2>
         void series_multiplication(const Derived2 &ps2)
       {
+        typedef typename Derived::ancestor::cf_type cf_type;
         Derived *derived_cast=static_cast<Derived *>(this);
         Derived retval;
 // NOTE: optimize in the case one series is a c value?
@@ -52,6 +53,20 @@ namespace piranha
             return;
           }
           p_assert(retval.merge_args(*derived_cast));
+          if (ps2.is_cf())
+          {
+            std::cout << "Cf1\n";
+            generic_multiplication(ps2.s_index().begin()->g_cf());
+            return;
+          }
+          else if (derived_cast->is_cf())
+          {
+            cf_type tmp(derived_cast->s_index().begin()->g_cf());
+            *derived_cast=Derived(ps2);
+            generic_multiplication(tmp);
+            std::cout << "Cf2\n";
+            return;
+          }
           const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
           multiply_terms(ps2,retval,Delta);
         }

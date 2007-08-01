@@ -334,6 +334,7 @@ namespace piranha
       eval_type mean(const double &, const double &,
         const size_t &n = 1000) const;
       bool checkup() const;
+      bool is_cf() const;
 // NOTICE: temporarily here.
     protected:
 /// Generic builder.

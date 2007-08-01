@@ -283,5 +283,21 @@ namespace piranha
     std::cout << "All Ok." << std::endl;
     return true;
   }
+
+
+/// Check for single coefficient series.
+/**
+ * Returns true if series contains one single cosine term with null trigonometric part.
+ */
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    inline bool base_pseries<Cf, Trig, Term, I, Derived>::is_cf() const
+  {
+    if (length()==1 && s_index().begin()->g_flavour() && s_index().begin()->g_trig().is_zero())
+    {
+      return true;
+    }
+    return false;
+  };
+
 }
 #endif
