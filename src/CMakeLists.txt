@@ -2,7 +2,7 @@
 # psymbol_manager to be present. Hence psymbol_manager must go after...
 SET(SRC_LIST "")
 IF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
-  MESSAGE(FATAL_ERROR "The GCC extension 'ext/slist' is needed to compile lnp series.")
+  MESSAGE(FATAL_ERROR "The C++ STL extension 'ext/slist' is needed to compile lnp series.")
 ELSE(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
   MESSAGE(STATUS "Header 'ext/slist' is available.")
 ENDIF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
