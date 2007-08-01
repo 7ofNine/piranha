@@ -88,12 +88,18 @@ namespace piranha
         for (unsigned int i=0;i<=limit_index;++i)
         {
           {
+std::cout << "A\n";
             Derived tmp2(tmp);
+std::cout << "B\n";
             tmp2*=math::choose(power,i);
+std::cout << "C\n";
             tmp2*=Derived(a.pow(power-i),tmp2);
+std::cout << "D\n";
             retval+=tmp2;
+std::cout << "E\n";
           }
           tmp*=x;
+          std::cout << "Sizes: " << retval.length() << ',' << tmp.length() << '\n';
         }
         return retval;
       }
