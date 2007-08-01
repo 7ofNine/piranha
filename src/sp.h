@@ -106,14 +106,18 @@ namespace piranha
         {}
       explicit sps(const std::string &filename):ancestor::base_pseries(filename)
         {}
-      explicit sps(const cf_type &c):ancestor::base_pseries(c)
+      explicit sps(const cf_type &c, const sps &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from int.
-      explicit sps(int n):ancestor::base_pseries(cf_type(n))
-        {}
+      explicit sps(int n)
+        {
+          ancestor::generic_builder(n);
+        }
 /// Constructor from double.
-      explicit sps(const double &x):ancestor::base_pseries(cf_type(x))
-        {}
+      explicit sps(const double &x)
+        {
+          ancestor::generic_builder(x);
+        }
 /// Constructor from psymbol.
       explicit sps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
