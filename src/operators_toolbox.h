@@ -137,11 +137,6 @@ namespace piranha
         static_cast<Derived *>(this)->basic_assignment(p);
         return *static_cast<Derived *>(this);
       }
-      Derived &operator=(const real_Derived &r)
-      {
-        static_cast<Derived *>(this)->generic_series_assignment(r);
-        return *static_cast<Derived *>(this);
-      }
       Derived &operator+=(const double &x)
       {
         static_cast<Derived *>(this)->generic_merge(x);
