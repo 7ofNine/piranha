@@ -25,6 +25,7 @@ IF(WIN32)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections")
     SET(LINK_FLAGS "${LINK_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
   ENDIF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
+# TODO: generalize this using variables, e.g. %SystemRoot and such?
   SET(LIB_INSTALL_PATH "c:/windows/system32")
 ELSE(WIN32)
   SET(LINK_FLAGS "")
@@ -56,8 +57,8 @@ IF(${CMAKE_C_COMPILER} MATCHES "icc")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ICC_EXTRA_FLAGS}")
 ENDIF(${CMAKE_C_COMPILER} MATCHES "icc")
 
-# Mandatory linking
-SET(MANDATORY_LIBRARIES ${LINK_FLAGS} piranha)
+# Set linking flags.
+SET(MANDATORY_LIBRARIES ${LINK_FLAGS})
 
 # Find GMP if required.
 IF(BUILD_SP)
@@ -112,14 +113,17 @@ SET(PIRANHA_DEFINITIONS -D_ENABLE_ASSERTS -D_REENTRANT -D_GNU_SOURCE -D_PIRANHA_
 ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
 INCLUDE_DIRECTORIES("external_headers")
 
-# Add library directory
-ADD_SUBDIRECTORY(src)
-
 # Build a main.cpp file included in the source dir
 IF(BUILD_MAIN)
   ADD_EXECUTABLE(main main.cpp)
-  TARGET_LINK_LIBRARIES(main ${MANDATORY_LIBRARIES})
+  TARGET_LINK_LIBRARIES(main ${MANDATORY_LIBRARIES} piranha_static)
 ENDIF(BUILD_MAIN)
+
+# Add library directory
+ADD_SUBDIRECTORY(src)
+
+# Mandatory linking.
+SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
 
 # pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
