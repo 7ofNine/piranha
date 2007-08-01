@@ -22,9 +22,11 @@
 #define PIRANHA_SYMBOL_LIMITER_H
 
 #include <boost/functional/hash.hpp>
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/member.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <string>
-#include <tr1/unordered_map>
 #include <vector>
 
 //TODO: use multiindex container, so that we can drop the dependency on TR1.
@@ -57,7 +59,7 @@ namespace piranha
             if (mit!=mit_f)
               {
                 insert_tuple.get<0>()=i;
-                insert_tuple.get<1>()=mit->second;
+                insert_tuple.get<1>()=mit->limit;
                 retval.push_back(insert_tuple);
               }
           }
@@ -66,7 +68,17 @@ namespace piranha
     private:
       symbol_limiter()
         {}
-// Boilerplate for the unordered map container.
+// Boilerplate for the multiindex container.
+      struct limit_element
+      {
+        limit_element(psym_p s, int n):symbol(s),limit(n)
+        {}
+        psym_p  symbol;
+        int     limit;
+      };
+// We can use this structure as comparison functor, whereas below we hash according to name,
+// because in managing symbols we make sure that there are no symbols with same name. Hence
+// symbol pointer and name are effectively the same thing.
       struct eq_psym_p
       {
         bool operator()(psym_p p1, psym_p p2) const
@@ -81,9 +93,30 @@ namespace piranha
           return boost::hash<std::string>()(p->name());
         }
       };
+      struct limit_modifier
+      {
+        limit_modifier(int n):new_n_(n)
+          {}
+        ~limit_modifier()
+          {}
+        void operator()(limit_element &l)
+        {
+          l.limit = new_n_;
+        }
+        int new_n_;
+      };
+
     public:
-      typedef std::tr1::unordered_map<psym_p,int,hash_psym_p,eq_psym_p> limits_map;
-      typedef limits_map::iterator map_iterator;
+      typedef boost::multi_index_container < limit_element,
+        boost::multi_index::indexed_by <
+          boost::multi_index::hashed_unique <
+            boost::multi_index::member<limit_element,psym_p,&limit_element::symbol>,hash_psym_p,eq_psym_p
+          >
+        >
+      >
+      limits_map;
+      //typedef limits_map::iterator map_iterator;
+      typedef limits_map::nth_index<0>::type::iterator map_iterator;
     private:
 /// Check whether a limit has already been set for a symbol.
       static map_iterator find_expo_limit(psym_p it)

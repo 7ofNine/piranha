@@ -38,12 +38,12 @@ namespace piranha
     if (mit==lmap_.end())
       {
         std::cout << "Setting new limit." << std::endl;
-        lmap_[it]=n;
+        lmap_.insert(limit_element(it,n));
       }
     else
       {
         std::cout << "Modifying existing limit." << std::endl;
-        mit->second=n;
+        lmap_.modify(mit,limit_modifier(n));
       }
   }
 
@@ -64,7 +64,7 @@ namespace piranha
   {
     for (map_iterator it=lmap_.begin();it!=lmap_.end();++it)
       {
-        std::cout << "Limit for '" << it->first->name() << "': " << it->second << std::endl;
+        std::cout << "Limit for '" << it->symbol->name() << "': " << it->limit << std::endl;
       }
   }
 }
