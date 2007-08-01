@@ -198,7 +198,7 @@ namespace piranha
         return set_.template get
           <hash>();
       }
-      const size_t width() const
+      size_t width() const
       {
         if (set_.empty())
         {
