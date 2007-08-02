@@ -34,6 +34,7 @@ namespace piranha
       template <class Derived2>
         void series_multiplication(const Derived2 &ps2)
       {
+        typedef typename Derived::ancestor::cf_type cf_type;
         Derived *derived_cast=static_cast<Derived *>(this);
         Derived retval;
 // NOTE: optimize in the case one series is a c value?
@@ -52,6 +53,20 @@ namespace piranha
             return;
           }
           p_assert(retval.merge_args(*derived_cast));
+          if (ps2.is_cf())
+          {
+            std::cout << "Cf1\n";
+            derived_cast->cf_multiplication(ps2.s_index().begin()->g_cf());
+            return;
+          }
+          else if (derived_cast->is_cf())
+          {
+            cf_type tmp(derived_cast->s_index().begin()->g_cf());
+            derived_cast->generic_series_assignment(ps2);
+            derived_cast->cf_multiplication(tmp);
+            std::cout << "Cf2\n";
+            return;
+          }
           multiply_terms(ps2,retval);
         }
         else
@@ -61,6 +76,31 @@ namespace piranha
         derived_cast->swap(retval);
       }
     private:
+      template <class Cf>
+        void cf_multiplication(const Cf &cf)
+      {
+        typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived::ancestor::it_s_index it_s_index;
+        Derived *derived_cast=static_cast<Derived *>(this);
+        if (derived_cast->empty())
+        {
+          return;
+        }
+        Derived tmp_ps;
+        tmp_ps.merge_args(*derived_cast);
+        term_type tmp_term;
+        it_s_index it_hint=tmp_ps.s_index().end();
+        const it_s_index it_f=derived_cast->s_index().end();
+        vec_expo_index_limit limits;
+        symbol_limiter::get_limits_index(derived_cast->cf_s_vec(),limits);
+        for (it_s_index it=derived_cast->s_index().begin();it!=it_f;++it)
+        {
+          tmp_term=*it;
+          tmp_term.s_cf().mult_by_self(cf,limits);
+          it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+        }
+        derived_cast->swap(tmp_ps);
+      }
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval) const
       {
