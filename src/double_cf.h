@@ -144,11 +144,6 @@ namespace piranha
         value_-=val2.value_;
         return *this;
       }
-      self &operator*=(const self &val2)
-      {
-        value_*=val2.value_;
-        return *this;
-      }
 // End INTERFACE definition.
 //-------------------------------------------------------
 // Interface for monomial.
@@ -214,10 +209,6 @@ namespace piranha
       self operator-(const self &val2) const
       {
         return (self(*this)-=val2);
-      }
-      self operator*(const self &val2) const
-      {
-        return (self(*this)*=val2);
       }
       self &operator*=(const double &x)
       {
@@ -362,11 +353,6 @@ namespace std
         value_-=val2.value_;
         return *this;
       }
-      self &operator*=(const self &val2)
-      {
-        value_*=val2.value_;
-        return *this;
-      }
       self operator+(const self &val2) const
       {
         return (self(*this)+=val2);
@@ -374,20 +360,6 @@ namespace std
       self operator-(const self &val2) const
       {
         return (self(*this)-=val2);
-      }
-      self operator*(const self &val2) const
-      {
-        return (self(*this)*=val2);
-      }
-// Interaction with the real counterpart.
-      self &operator*=(const double_type &r)
-      {
-        value_*=r.value();
-        return *this;
-      }
-      self operator*(const double_type &r) const
-      {
-        return (self(*this)*=r);
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
