@@ -629,10 +629,10 @@ namespace piranha
     template <class U>
     inline void monomial_gmp_array<T>::mult_by(const monomial_gmp_array<U> &m2, monomial_gmp_array &out_m) const
   {
-// TODO: is it faster here to assign and do operator*= instead of using operator*?
-// Build fake classes, report copy ctor and check.
-    out_m.numerical_cf_=numerical_cf_*m2.numerical_cf();
-    out_m.rational_cf_=rational_cf_*m2.rational_cf();
+    out_m.numerical_cf_=numerical_cf_;
+    out_m.numerical_cf_.mult_by_self(m2.numerical_cf());
+    out_m.rational_cf_=rational_cf_;
+    out_m.rational_cf_*=m2.rational_cf();
 // Find big and small monomial_gmp_arrays.
     container_type const *big=&container_;
     container_type const *small=&m2.container();
