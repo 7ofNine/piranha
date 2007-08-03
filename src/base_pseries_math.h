@@ -64,12 +64,8 @@ namespace piranha
     std::cout << "Generic assignment operator!" << std::endl;
   }
 
-/************************/
-/* Low level operations */
-/************************/
 
 // Base merge operator
-// -------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class Derived2>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::alg_sum_lin_args(const Derived2 &ps2,
@@ -126,7 +122,6 @@ namespace piranha
   }
 
 // Merge with a generic entity - NOT with another series
-// -----------------------------------------------------
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class T>
     inline void base_pseries<Cf, Trig, Term, I, Derived>::generic_merge(const T &x)
@@ -201,6 +196,64 @@ namespace piranha
     }
   }
 
+/// Series multiplication preliminaries.
+/**
+ * Perform some preliminary activity regarding series multiplication. If some checks are successful and arguments
+ * were merged successfully return true, otherwise return false.
+ */
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    template <class Derived2>
+    inline bool base_pseries<Cf, Trig, Term, I, Derived>::series_multiplication_preliminaries
+    (const Derived2 &ps2, Derived &retval)
+  {
+    if (length()==0 || ps2.length()==0)
+    {
+      std::cout << "Zero stuff." << std::endl;
+      return false;
+    }
+    if (!math::is_zero_vec(lin_args())||!math::is_zero_vec(ps2.lin_args()))
+    {
+      std::cout << "Non-zero linargs in multiplication." << std::endl;
+      std::exit(1);
+      return false;
+    }
+    if (!merge_args(ps2))
+    {
+      std::cout << "Args are not compatible during multiplication, returning self." << std::endl;
+      std::exit(1);
+      return false;
+    }
+    p_assert(retval.merge_args(*static_cast<Derived *>(this)));
+    return true;
+  }
+
+/// Optimize series multiplication for simple series.
+/**
+ * If at least one of two multiplied series is formed by a single term with trigonometric part null and cosine,
+ * perform a cheaper coefficient multiplication instead of a term multiplication.
+ * Returns true if such optimization could be performed, false otherwise.
+ */
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    template <class Derived2>
+    inline bool base_pseries<Cf, Trig, Term, I, Derived>::series_multiplication_optimize_for_cf
+    (const Derived2 &ps2)
+  {
+    if (ps2.is_cf())
+    {
+      std::cout << "Cf1\n";
+      static_cast<Derived *>(this)->cf_multiplication(ps2.s_index().begin()->g_cf());
+      return true;
+    }
+    else if (is_cf())
+    {
+      cf_type tmp(s_index().begin()->g_cf());
+      generic_series_assignment(ps2);
+      static_cast<Derived *>(this)->cf_multiplication(tmp);
+      std::cout << "Cf2\n";
+      return true;
+    }
+    return false;
+  }
 
 /// Multiplication by a generic entity.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>

@@ -37,46 +37,18 @@ namespace piranha
         typedef typename Derived::ancestor::cf_type cf_type;
         Derived *derived_cast=static_cast<Derived *>(this);
         Derived retval;
-// NOTE: optimize in the case one series is a c value?
-// If one length is zero do not do anything
-        if (derived_cast->length()!=0 && ps2.length()!=0)
+        if (!derived_cast->series_multiplication_preliminaries(ps2,retval))
         {
-          if (!math::is_zero_vec(derived_cast->lin_args())||!math::is_zero_vec(ps2.lin_args()))
-          {
-            std::cout << "Non-zero linargs!" << std::endl;
-            std::exit(1);
-          }
-          if (!derived_cast->merge_args(ps2))
-          {
-            std::cout << "args are not compatible, returning self." << std::endl;
-            std::exit(1);
-            return;
-          }
-          p_assert(retval.merge_args(*derived_cast));
-          if (ps2.is_cf())
-          {
-            std::cout << "Cf1\n";
-            derived_cast->cf_multiplication(ps2.s_index().begin()->g_cf());
-            return;
-          }
-          else if (derived_cast->is_cf())
-          {
-            cf_type tmp(derived_cast->s_index().begin()->g_cf());
-            derived_cast->generic_series_assignment(ps2);
-            derived_cast->cf_multiplication(tmp);
-            std::cout << "Cf2\n";
-            return;
-          }
-          const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
-          multiply_terms(ps2,retval,Delta);
+          return;
         }
-        else
+        if (derived_cast->series_multiplication_optimize_for_cf(ps2))
         {
-          std::cout << "Zero stuff" << std::endl;
+          return;
         }
+        const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
+        multiply_terms(ps2,retval,Delta);
         derived_cast->swap(retval);
       }
-    private:
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -100,6 +72,7 @@ namespace piranha
         }
         derived_cast->swap(tmp_ps);
       }
+    private:
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval, const double &Delta) const
       {

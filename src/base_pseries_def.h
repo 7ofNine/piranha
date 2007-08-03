@@ -385,6 +385,10 @@ namespace piranha
       template <class T>
         void generic_division(const T &);
       void mult_by_int(int);
+      template <class Derived2>
+        bool series_multiplication_preliminaries(const Derived2 &, Derived &);
+      template <class Derived2>
+        bool series_multiplication_optimize_for_cf(const Derived2 &);
       template <class Cf2>
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         boost::tuple<term_type &,term_type &> &, cf_type &);
