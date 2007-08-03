@@ -219,7 +219,7 @@ namespace piranha
     }
     if (!merge_args(ps2))
     {
-      std::cout << "Args are not compatible during multiplication, returning self." << std::endl;
+      std::cout << "Args are not compatible during multiplication, returning null series." << std::endl;
       std::exit(1);
       return false;
     }

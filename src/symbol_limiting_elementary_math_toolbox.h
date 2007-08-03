@@ -37,15 +37,14 @@ namespace piranha
         typedef typename Derived::ancestor::cf_type cf_type;
         Derived *derived_cast=static_cast<Derived *>(this);
         Derived retval;
-        if (!derived_cast->series_multiplication_preliminaries(ps2,retval))
+        if (derived_cast->series_multiplication_preliminaries(ps2,retval))
         {
-          return;
+          if (derived_cast->series_multiplication_optimize_for_cf(ps2))
+          {
+            return;
+          }
+          multiply_terms(ps2,retval);
         }
-        if (derived_cast->series_multiplication_optimize_for_cf(ps2))
-        {
-          return;
-        }
-        multiply_terms(ps2,retval);
         derived_cast->swap(retval);
       }
       template <class Cf>
