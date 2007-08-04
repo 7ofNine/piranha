@@ -267,8 +267,7 @@ namespace piranha
         void basic_assignment(const monomial_gmp_array<U> &);
       template <class U>
         bool basic_comparison(const U &) const;
-// TODO: replace with is_symbolic?
-      bool symbolic() const;
+      bool is_symbolic() const;
     protected:
       container_type              container_;
       numerical_type              numerical_cf_;
@@ -359,7 +358,7 @@ namespace piranha
     stream_manager::setup_print(tmp);
     tmp << std::string("$");
 // Print only if it is not 1 in abs and it is not the only element to be printed. If it is -1 print the sign.
-    if (numerical_cf_.is_unity() && (symbolic() || rational_cf_ != 1))
+    if (numerical_cf_.is_unity() && (is_symbolic() || rational_cf_ != 1))
     {
       if (numerical_cf_.is_negative())
       {
@@ -425,7 +424,7 @@ namespace piranha
 
 /// Check whether monomial is symbolic or purely numerical.
   template <class T>
-    inline bool monomial_gmp_array<T>::symbolic() const
+    inline bool monomial_gmp_array<T>::is_symbolic() const
   {
     const size_t w=width();
     for (size_t i=0;i<w;++i)
@@ -747,7 +746,7 @@ namespace piranha
   template <class T>
     inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(const double &x) const
   {
-    if (symbolic())
+    if (is_symbolic())
     {
       std::cout << "ERROR: real power of symbolic monomial." << std::endl;
       std::abort();
