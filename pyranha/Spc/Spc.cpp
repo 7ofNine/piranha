@@ -19,12 +19,10 @@
  ***************************************************************************/
 
 #include "../pyranha.h"
-#include "../../src/npc.h"
+#include "../../src/spc.h"
 
-BOOST_PYTHON_MODULE(_Npc)
+BOOST_PYTHON_MODULE(_Spc)
 {
-  class_<npc> inst=ps_basic_instantiation<npc>("npc","Complex numerical Poisson series class.");
-  ps_instantiate_norm_specifics(inst);
-  ps_instantiate_differential_specifics(inst);
+  class_<spc> inst=ps_basic_instantiation<spc>("spc","Complex symbolic Poisson series class.");
   ps_instantiate_complex_specifics(inst);
 }

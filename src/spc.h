@@ -21,6 +21,7 @@
 #ifndef PIRANHA_SPC_H
 #define PIRANHA_SPC_H
 
+#include "complex_toolbox.h"
 #include "sp.h"
 
 namespace std
