@@ -55,29 +55,29 @@ namespace piranha
   {
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
-        boost::multi_index::composite_key <
-          Term<Cf, Trig>,
-          norm_extractor<Term<Cf, Trig> >,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
-          &Term<Cf, Trig>::g_flavour > ,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-          &Term<Cf, Trig>::g_trig >
-          >,
-        boost::multi_index::composite_key_compare<
-          std::greater<double>,
-          std::less<bool>,
-          std::less<Trig>
-          >
-        >,
-        boost::multi_index::hashed_unique <
-          boost::multi_index::composite_key <
-            Term<Cf, Trig>,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
-          &Term<Cf, Trig>::g_flavour > ,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-          &Term<Cf, Trig>::g_trig >
-          >
-        >
+      boost::multi_index::composite_key <
+      Term<Cf, Trig>,
+      norm_extractor<Term<Cf, Trig> >,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+      &Term<Cf, Trig>::g_flavour > ,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+      &Term<Cf, Trig>::g_trig >
+      >,
+      boost::multi_index::composite_key_compare<
+      std::greater<double>,
+      std::less<bool>,
+      std::less<Trig>
+      >
+      >,
+      boost::multi_index::hashed_unique <
+      boost::multi_index::composite_key <
+      Term<Cf, Trig>,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+      &Term<Cf, Trig>::g_flavour > ,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+      &Term<Cf, Trig>::g_trig >
+      >
+      >
       > type;
   };
 
@@ -123,5 +123,4 @@ namespace piranha
       double    norm_;
   };
 }
-
 #endif

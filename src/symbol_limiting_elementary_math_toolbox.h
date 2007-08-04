@@ -116,16 +116,16 @@ namespace piranha
           }
         }
       }
-    template <class T,class U>
-      static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
-      const vec_expo_index_limit &limits)
-    {
-      typedef typename Derived::ancestor::cf_type cf_type;
-      cf_type new_c=t1.g_cf();
-      new_c.mult_by_self(t2.g_cf(),limits);
-      new_c/=2;
-      Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
-    }
+      template <class T,class U>
+        static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
+        const vec_expo_index_limit &limits)
+      {
+        typedef typename Derived::ancestor::cf_type cf_type;
+        cf_type new_c=t1.g_cf();
+        new_c.mult_by_self(t2.g_cf(),limits);
+        new_c/=2;
+        Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
+      }
   };
 }
 #endif

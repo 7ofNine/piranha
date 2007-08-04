@@ -284,7 +284,6 @@ namespace piranha
     return true;
   }
 
-
 /// Check for single coefficient series.
 /**
  * Returns true if series contains one single cosine term with null trigonometric part.

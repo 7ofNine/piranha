@@ -61,7 +61,7 @@ namespace piranha
       template <class T>
         explicit ps_term(const T &x, bool flavour=true):private_flavour_(flavour),
         private_cf_(cf_type(x)),private_trig_()
-      {}
+        {}
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
         explicit ps_term(const ps_term<Cf2,trig_type> &term):

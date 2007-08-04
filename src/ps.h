@@ -41,7 +41,7 @@ namespace piranha
  */
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     class ps:
-    public norm_toolbox<ps<Cf,Trig,Term,I> >,
+  public norm_toolbox<ps<Cf,Trig,Term,I> >,
     public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I> >,
     public real_operators_toolbox<ps<Cf,Trig,Term,I> >,
     public math_toolbox<ps<Cf,Trig,Term,I> >,
@@ -72,14 +72,14 @@ namespace piranha
         {}
 /// Constructor from int.
       explicit ps(int n)
-        {
-          ancestor::generic_builder(n);
-        }
+      {
+        ancestor::generic_builder(n);
+      }
 /// Constructor from double.
       explicit ps(const double &x)
-        {
-          ancestor::generic_builder(x);
-        }
+      {
+        ancestor::generic_builder(x);
+      }
 /// Constructor from psymbol.
       explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
@@ -96,23 +96,23 @@ namespace piranha
       }
 /// Re-implementation of the hook for post-insertion of a new term.
       void new_term_post_insertion_hook(const term_type &term)
-        {
+      {
 // No need do differentiate between + and -, will get abs()-ed anyway
-          upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
-        }
+        upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+      }
 /// Re-implementation of the hook for post-erase of a term.
       void term_pre_erase_hook(const term_type &term)
-        {
-          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
-        }
+      {
+        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+      }
 /// Re-implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &term, const cf_type &new_c)
-        {
+      {
 // Delete old c from norm
-          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
 // Update the norm with the new c
-          upgrade_norm(new_c.norm(self::cf_s_vec_));
-        }
+        upgrade_norm(new_c.norm(self::cf_s_vec_));
+      }
   }
   ;
 }
@@ -124,7 +124,7 @@ namespace std
 /// Complex specialization for default derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     struct complex<piranha::ps<Cf,Trig,Term,I> >:
-    public piranha::norm_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >,
+  public piranha::norm_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >,
     public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > >,
     public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I> >,
     public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
@@ -163,19 +163,19 @@ namespace std
       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from pair of real coefficients.
-      /*explicit complex(const real_cf_type &a, const real_cf_type &b):
-        ancestor::base_pseries(cf_type(a,b))
-        {}*/
+/*explicit complex(const real_cf_type &a, const real_cf_type &b):
+  ancestor::base_pseries(cf_type(a,b))
+  {}*/
 /// Constructor from complex.
       explicit complex(const complex_double &c)
-        {
-          ancestor::generic_builder(c);
-        }
+      {
+        ancestor::generic_builder(c);
+      }
 /// Constructor from pair of doubles.
       explicit complex(const double &a, const double &b)
-        {
-          ancestor::generic_builder(complex_double(a,b));
-        }
+      {
+        ancestor::generic_builder(complex_double(a,b));
+      }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
@@ -217,23 +217,23 @@ namespace std
       }
 /// Re-implementation of the hook for post-insertion of a new term.
       void new_term_post_insertion_hook(const term_type &term)
-        {
+      {
 // No need do differentiate between + and -, will get abs()-ed anyway
-          upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
-        }
+        upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+      }
 /// Re-implementation of the hook for post-erase of a term.
       void term_pre_erase_hook(const term_type &term)
-        {
-          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
-        }
+      {
+        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+      }
 /// Re-implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &term, const cf_type &new_c)
-        {
+      {
 // Delete old c from norm
-          downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
 // Update the norm with the new c
-          upgrade_norm(new_c.norm(self::cf_s_vec_));
-        }
+        upgrade_norm(new_c.norm(self::cf_s_vec_));
+      }
   };
 }
 #endif

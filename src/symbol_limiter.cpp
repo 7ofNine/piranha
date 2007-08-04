@@ -29,22 +29,22 @@ namespace piranha
   void symbol_limiter::set_limit(psym_p it, int n)
   {
     if (it==psymbol_manager::end())
-      {
-        std::cout << "Won't set limit for invalid psymbol pointer." << std::endl;
-        std::abort();
-        return;
-      }
+    {
+      std::cout << "Won't set limit for invalid psymbol pointer." << std::endl;
+      std::abort();
+      return;
+    }
     map_iterator mit=find_expo_limit(it);
     if (mit==lmap_.end())
-      {
-        std::cout << "Setting new limit." << std::endl;
-        lmap_.insert(limit_element(it,n));
-      }
+    {
+      std::cout << "Setting new limit." << std::endl;
+      lmap_.insert(limit_element(it,n));
+    }
     else
-      {
-        std::cout << "Modifying existing limit." << std::endl;
-        lmap_.modify(mit,limit_modifier(n));
-      }
+    {
+      std::cout << "Modifying existing limit." << std::endl;
+      lmap_.modify(mit,limit_modifier(n));
+    }
   }
 
 /// Set exponent limit for psymbol, from psymbol name.
@@ -63,8 +63,8 @@ namespace piranha
   void symbol_limiter::put()
   {
     for (map_iterator it=lmap_.begin();it!=lmap_.end();++it)
-      {
-        std::cout << "Limit for '" << it->symbol->name() << "': " << it->limit << std::endl;
-      }
+    {
+      std::cout << "Limit for '" << it->symbol->name() << "': " << it->limit << std::endl;
+    }
   }
 }

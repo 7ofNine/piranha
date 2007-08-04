@@ -21,7 +21,6 @@
 #ifndef PIRANHA_MATH_TOOLBOX_H
 #define PIRANHA_MATH_TOOLBOX_H
 
-
 namespace piranha
 {
   template <class Derived>

@@ -449,18 +449,16 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries():__base_pseries_init_list {}
 
-
 /// Copy constructor.
 /**
  * Constructs a series from another one.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const Derived &ps):
-    lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),set_(ps.set_)
+  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),set_(ps.set_)
   {
     std::cout << "Copy ctor" << std::endl;
   }
-
 
 /// Constructor from filename.
 /**

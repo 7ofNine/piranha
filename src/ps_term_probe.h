@@ -78,7 +78,6 @@ namespace piranha
     return retval;
   }
 
-
 // NOTICE: drop freq and phase from here, define only in trig_args and call from there?
 /// Numerical phase of the term.
 /**

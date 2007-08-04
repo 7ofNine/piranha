@@ -139,9 +139,9 @@ namespace piranha
 /// Mult by self.
       template <class U>
         void mult_by_self(const U &x)
-        {
-          value_*=x.value();
-        }
+      {
+        value_*=x.value();
+      }
     protected:
       T   value_;
   }

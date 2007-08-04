@@ -125,13 +125,13 @@ namespace piranha
       int g_degree() const
       {
         if (set_.empty())
-          {
-            return 0;
-          }
+        {
+          return 0;
+        }
         else
-          {
-            return d_index().begin()->g_degree();
-          }
+        {
+          return d_index().begin()->g_degree();
+        }
       }
 /// Check whether base_polynomial is larger than size w.
       bool larger(const size_t &w) const
@@ -469,31 +469,31 @@ namespace piranha
       {
         proceed=true;
         for (j=0;j<w;++j)
-          {
+        {
 // Find the exponents of the limited arguments.
-            const size_t index=v[j].get<0>();
-            if (it1->smaller(index))
-              {
-                ex1=0;
-              }
-            else
-              {
-                ex1=it1->container()[index];
-              }
-            if (it2->smaller(index))
-              {
-                ex2=0;
-              }
-            else
-              {
-                ex2=it2->container()[index];
-              }
-            if ((ex1+ex2)>v[j].get<1>())
-              {
-                proceed=false;
-                break;
-              }
+          const size_t index=v[j].get<0>();
+          if (it1->smaller(index))
+          {
+            ex1=0;
           }
+          else
+          {
+            ex1=it1->container()[index];
+          }
+          if (it2->smaller(index))
+          {
+            ex2=0;
+          }
+          else
+          {
+            ex2=it2->container()[index];
+          }
+          if ((ex1+ex2)>v[j].get<1>())
+          {
+            proceed=false;
+            break;
+          }
+        }
         if (proceed)
         {
           it1->mult_by(*it2,temp_m);

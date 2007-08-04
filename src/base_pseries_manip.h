@@ -252,7 +252,6 @@ namespace piranha
     swap(retval);
   }
 
-
 /// Swap the content of with another series.
 /**
  * All data members get swapped. This is an O(1) time operation.
@@ -330,7 +329,6 @@ namespace piranha
     p_assert(h_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
   }
 
-
 // **************** //
 // INSERT FUNCTIONS //
 // **************** //
@@ -388,7 +386,6 @@ namespace piranha
     }
     return ret_it;
   }
-
 
 // TODO: check that this method is really used only when doing +=/-= from complex to real.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>

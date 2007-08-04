@@ -54,15 +54,15 @@ namespace piranha
         const map_iterator mit_f=lmap_.end();
         boost::tuple<size_t,int> insert_tuple;
         for (size_t i=0;i<w;++i)
+        {
+          mit=find_expo_limit(v[i]);
+          if (mit!=mit_f)
           {
-            mit=find_expo_limit(v[i]);
-            if (mit!=mit_f)
-              {
-                insert_tuple.get<0>()=i;
-                insert_tuple.get<1>()=mit->limit;
-                retval.push_back(insert_tuple);
-              }
+            insert_tuple.get<0>()=i;
+            insert_tuple.get<1>()=mit->limit;
+            retval.push_back(insert_tuple);
           }
+        }
       }
       static void put();
     private:
@@ -72,7 +72,7 @@ namespace piranha
       struct limit_element
       {
         limit_element(psym_p s, int n):symbol(s),limit(n)
-        {}
+          {}
         psym_p  symbol;
         int     limit;
       };
@@ -109,13 +109,13 @@ namespace piranha
     public:
       typedef boost::multi_index_container < limit_element,
         boost::multi_index::indexed_by <
-          boost::multi_index::hashed_unique <
-            boost::multi_index::member<limit_element,psym_p,&limit_element::symbol>,hash_psym_p,eq_psym_p
-          >
+        boost::multi_index::hashed_unique <
+        boost::multi_index::member<limit_element,psym_p,&limit_element::symbol>,hash_psym_p,eq_psym_p
         >
-      >
-      limits_map;
-      //typedef limits_map::iterator map_iterator;
+        >
+        >
+        limits_map;
+//typedef limits_map::iterator map_iterator;
       typedef limits_map::nth_index<0>::type::iterator map_iterator;
     private:
 /// Check whether a limit has already been set for a symbol.
@@ -128,5 +128,4 @@ namespace piranha
       static limits_map   lmap_;
   };
 }
-
 #endif

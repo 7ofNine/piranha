@@ -88,5 +88,4 @@ namespace piranha
       static greeter            grt_;
   };
 }
-
 #endif

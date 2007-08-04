@@ -41,13 +41,13 @@ namespace piranha
 /// Extract degree from terms with polynomials as coefficients.
   template <class Term>
     struct degree_extractor
+  {
+    typedef int result_type;
+    int operator()(const Term &t) const
     {
-      typedef int result_type;
-      int operator()(const Term &t) const
-      {
-        return t.g_cf().g_degree();
-      }
-    };
+      return t.g_cf().g_degree();
+    }
+  };
 
 /// Degree-based indices for base_pseries.
 /**
@@ -61,32 +61,31 @@ namespace piranha
   {
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
-        boost::multi_index::composite_key <
-          Term<Cf, Trig>,
-          degree_extractor<Term<Cf, Trig> >,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
-          &Term<Cf, Trig>::g_flavour > ,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-          &Term<Cf, Trig>::g_trig >
-          >
-        >,
-        boost::multi_index::hashed_unique <
-          boost::multi_index::composite_key <
-            Term<Cf, Trig>,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
-          &Term<Cf, Trig>::g_flavour > ,
-          boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-          &Term<Cf, Trig>::g_trig >
-          >
-        >
+      boost::multi_index::composite_key <
+      Term<Cf, Trig>,
+      degree_extractor<Term<Cf, Trig> >,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+      &Term<Cf, Trig>::g_flavour > ,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+      &Term<Cf, Trig>::g_trig >
+      >
+      >,
+      boost::multi_index::hashed_unique <
+      boost::multi_index::composite_key <
+      Term<Cf, Trig>,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
+      &Term<Cf, Trig>::g_flavour > ,
+      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
+      &Term<Cf, Trig>::g_trig >
+      >
+      >
       > type;
   };
-
 
 /// Derived class for symbolic Poisson series.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     class sps:
-    public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >,
+  public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >,
     public symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >,
     public real_operators_toolbox<sps<Cf,Trig,Term,I> >
   {
@@ -110,23 +109,20 @@ namespace piranha
         {}
 /// Constructor from int.
       explicit sps(int n)
-        {
-          ancestor::generic_builder(n);
-        }
+      {
+        ancestor::generic_builder(n);
+      }
 /// Constructor from double.
       explicit sps(const double &x)
-        {
-          ancestor::generic_builder(x);
-        }
+      {
+        ancestor::generic_builder(x);
+      }
 /// Constructor from psymbol.
       explicit sps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
   }
   ;
 
-
   typedef sps<polynomial<double_cf>,trig_array,ps_term,degree_based_index> sp;
 }
-
-
 #endif
