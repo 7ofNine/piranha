@@ -122,11 +122,10 @@ ENDIF(BUILD_MAIN)
 # Add library directory
 ADD_SUBDIRECTORY(src)
 
-# Mandatory linking.
-SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
-
 # pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
+# Mandatory linking.
+  SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
   ADD_SUBDIRECTORY(pyranha)
 ENDIF(BUILD_PYRANHA)
 
