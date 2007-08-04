@@ -120,8 +120,7 @@ namespace piranha
 /// Constructor from psymbol.
       explicit sps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
-  }
-  ;
+  };
 
   typedef sps<polynomial<double_cf>,trig_array,ps_term,degree_based_index> sp;
 }
