@@ -678,16 +678,8 @@ namespace piranha
       std::abort();
     }
     Derived retval;
-    if (math::delta_nearbyint(x)<=settings_manager::numerical_zero())
-    {
-// Integer case.
-      retval.insert(d_index().begin()->pow((int)nearbyint(x)));
-    }
-    else
-    {
 // Real case.
-      retval.insert(d_index().begin()->pow(x));
-    }
+    retval.insert(d_index().begin()->pow(x));
     swap(retval);
   }
 }
