@@ -139,12 +139,12 @@ namespace piranha
 /// Complex conjugate.
       Derived conj() const
       {
-        return Derived(real(),imag()*=-1.);
+        return Derived(real(),imag()*=-1);
       }
 /// Make complex conjugate.
       void make_conj()
       {
-        Derived tmp(real(),imag()*=-1.);
+        Derived tmp(real(),imag()*=-1);
         static_cast<Derived *>(this)->swap(tmp);
       }
   };
