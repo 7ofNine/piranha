@@ -566,7 +566,7 @@ namespace piranha
     return true;
   }
 
-/// Increrase size.
+/// Increrase size so that final size is new_w.
   template <class T>
     inline void monomial_gmp_array<T>::increase_size(const size_t &new_w)
   {
