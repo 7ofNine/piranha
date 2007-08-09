@@ -149,7 +149,7 @@ namespace piranha
     psym_p p=psymbol_manager::get_pointer("\\lambda_{o6}");
     if (p==psymbol_manager::end())
     {
-      std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning defaul series." << std::endl;
+      std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning default series." << std::endl;
       return lnp();
     }
     const double N=p->freq();
