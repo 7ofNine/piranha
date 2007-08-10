@@ -30,7 +30,9 @@ namespace piranha
   template <class Derived>
     class symbol_limiting_elementary_math_toolbox
   {
-    public:
+    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived_>
+      friend class base_pseries;
+    private:
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -99,7 +101,6 @@ namespace piranha
           }
         }
       }
-    private:
       template <class T,class U>
         static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
         const vec_expo_index_limit &limits)
