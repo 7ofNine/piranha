@@ -43,8 +43,7 @@ namespace piranha
           {
             return;
           }
-          const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
-          multiply_terms(ps2,retval,Delta);
+          multiply_terms(ps2,retval);
         }
         derived_cast->swap(retval);
       }
@@ -73,12 +72,13 @@ namespace piranha
       }
     private:
       template <class Derived2>
-        void multiply_terms(const Derived2 &ps2, Derived &retval, const double &Delta) const
+        void multiply_terms(const Derived2 &ps2, Derived &retval) const
       {
         typedef typename Derived::ancestor::it_s_index it_s_index;
         typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
         const Derived *derived_cast=static_cast<Derived const *>(this);
+        const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
         const double Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
         size_t n=0;
 // NOTE: at this point retval's width() is greater or equal to _both_ this
