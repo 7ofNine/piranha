@@ -119,6 +119,10 @@ namespace piranha
 // Evaluation
       eval_type t_eval(const double &, const vector_psym_p &) const;
 // Probing
+      size_t length() const
+      {
+        return set_.size();
+      }
       bool checkup(const size_t &) const;
       bool is_zero(const vector_psym_p &) const;
       double norm(const vector_psym_p &) const;
@@ -206,6 +210,35 @@ namespace piranha
         }
         return d_index().begin()->width();
       }
+      void pow_suitable(boost::tuple<bool,int> &s, const size_t &n) const
+      {
+        p_assert(n<width());
+// If assert below fails, the retval tuple may end up uninitialized.
+        p_assert(length()>=1);
+// The minimum index until now is the first monomials's.
+        s.get<1>()=d_index().begin()->container()[n];
+        int candidate;
+        const it_d_index it_f=d_index().end();
+        for (it_d_index it=d_index().begin();it!=it_f;++it)
+        {
+          candidate=it->container()[n];
+          if (candidate<=0)
+          {
+            s.get<0>()=false;
+            std::cout << "Non suitability for real powers detected." << std::endl;
+            return;
+          }
+          else
+          {
+            if (candidate < s.get<1>())
+            {
+              s.get<1>()=candidate;
+            }
+          }
+        }
+        s.get<0>()=true;
+        std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
+      }
       void base_merge(const base_polynomial &, bool);
       template <class N>
         void ll_generic_integer_division(const N &);
@@ -216,11 +249,12 @@ namespace piranha
           set_=p.set_;
         }
       }
+// TODO check if these are really used.
       void mult_by_int(int);
       void mult_by_double(const double &);
       template <class Derived2>
         void mult_by_self(const Derived2 &);
-      void basic_pow(const double &);
+      void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
       set_type                  set_;
@@ -241,7 +275,12 @@ namespace piranha
     {
       boost::trim_left_if(split_v[i],boost::is_any_of("{"));
       boost::trim_right_if(split_v[i],boost::is_any_of("}"));
-      insert(m_type(split_v[i]));
+      m_type tmp_m(split_v[i]);
+      if (tmp_m.larger(width()) && !empty())
+      {
+        resize(tmp_m.width());
+      }
+      insert(tmp_m);
     }
   }
 
@@ -249,6 +288,7 @@ namespace piranha
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::print_plain(std::ostream &out_stream, const vector_psym_p &cv) const
   {
+// TODO: cache end() here.
     stream_manager::setup_print(out_stream);
     out_stream << '{';
     for (it_d_index it=d_index().begin();it!=d_index().end();++it)
@@ -268,6 +308,7 @@ namespace piranha
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::print_latex(std::ostream &out_stream, const vector_psym_p &cv) const
   {
+// TODO: cache end() here.
     stream_manager::setup_print(out_stream);
     for (it_d_index it=d_index().begin();it!=d_index().end();++it)
     {
@@ -336,14 +377,17 @@ namespace piranha
     m_type *new_m=0;
     if (m.smaller(w))
     {
-// FIXME: used boost scoped array.
+// FIXME: used boost shared pointer.
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
+    p_assert(!(m.larger(w) && !empty()))
+/*
     if (!set_.empty() && m.larger(w))
     {
       increase_size(m.width());
     }
+*/
     const m_type *insert_m;
     if (new_m==0)
     {
@@ -472,14 +516,10 @@ namespace piranha
         {
 // Find the exponents of the limited arguments.
           const size_t index=v[j].get<0>();
-          if (it1->smaller(index))
-          {
-            ex1=0;
-          }
-          else
-          {
-            ex1=it1->container()[index];
-          }
+// Make sure we are not going outside boundaries.
+          p_assert(index < width());
+          ex1=it1->container()[index];
+// it2 can be smaller, since we support multiplication by a narrower polynomial.
           if (it2->smaller(index))
           {
             ex2=0;
@@ -513,6 +553,7 @@ namespace piranha
       return;
     }
     const it_h_index it_f=h_index().end();
+// TODO: Move "if" outside "for" and make two cycles to optimize?
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
@@ -554,6 +595,7 @@ namespace piranha
       std::exit(1);
     }
     const it_h_index it_f=h_index().end();
+// TODO: Move "if" outside "for" and make two cycles to optimize?
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
@@ -607,6 +649,7 @@ namespace piranha
   }
 
 /// Check whether a base_polynomial is zero.
+// FIXME: do we really need vector of symbols as input here?
   template <class T, class Derived>
     inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &v) const
   {
@@ -642,7 +685,7 @@ namespace piranha
 
 /// Basic real power.
   template <class T, class Derived>
-    inline void base_polynomial<T,Derived>::basic_pow(const double &x)
+    inline void base_polynomial<T,Derived>::basic_pow(const double &x, const vec_expo_index_limit limits &v)
   {
 // Special handling in case of empty polynomial.
     if (set_.empty())
@@ -672,6 +715,78 @@ namespace piranha
       insert(m_type(1));
       return;
     }
+// Requisite: first monomial of the polynomial must be purely numerical and positive.
+    if (d_index().begin()->is_symbolic() || d_index().begin()->numerical_cf().value() < 0)
+    {
+      std::cout << "Error: in raising polynomial to power, first monomial must be numerical and positive."
+        << std::endl;
+      std::abort();
+      return;
+    }
+// Optimization: if the first monomial, which is numerical, is also the only one, simply compute power.
+    if (length()==1)
+    {
+      Derived retval;
+      retval.insert(m_type(std::pow(d_index().begin()->numerical_cf()*d_index().begin()->rational_cf().get_d(),x)));
+      swap(retval);
+      return;
+    }
+// This is the remainder part of this, i.e. this without the leading term.
+    Derived x(*static_cast<Derived *>(this));
+    x.d_index().erase(x.d_index().begin());
+// Now we have to check if with the provided vector for symbol limits we effectively reach a point after which
+// the binomial expansion will lead to null polynomials being created. We must stop at that point.
+// In binomial expansions, "x" is raised to a power equal to the number of iterations.
+    int iterations=-1;
+    const size_t v_size=v.size();
+    boost::tuple<bool,int> is_suitable(true,0);
+    for (size_t i=0;j<v_size;++j)
+    {
+// Make sure we are not poking outside the boundaries of the monomial's container for exponents.
+      p_assert(v[i].get<0>()<x.width());
+      x.pow_suitable(is_suitable);
+      if (!is_suitable.get<0>())
+      {
+        std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self" << std::endl;
+        std::abort();
+        return;
+      }
+    }
+
+
+
+
+// NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
+    const double error=.1*std::pow(derived_cast->g_norm(),power)*
+      settings_manager::prec();
+    const unsigned int limit_index=pow_limit(error,power);
+    Derived retval, x(*derived_cast), tmp(1.);
+    x.term_erase(x.s_index().begin());
+    for (unsigned int i=0;i<=limit_index;++i)
+    {
+      {
+        Derived tmp2(tmp);
+        tmp2*=math::choose(power,i);
+        tmp2*=Derived(a.pow(power-i),tmp2);
+        retval+=tmp2;
+      }
+      tmp*=x;
+    }
+    return retval;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if (set_.size()>1)
     {
       std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
