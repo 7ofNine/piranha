@@ -17,6 +17,8 @@ OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 
 # Platform switches
+SET(ICC_CXX_COMPILER FALSE)
+SET(GCC_CXX_COMPILER FALSE)
 IF(WIN32)
   ADD_DEFINITIONS(-D_PIRANHA_WIN32)
   # In MinGW we need the following flags.
@@ -24,6 +26,7 @@ IF(WIN32)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdata-sections")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections")
     SET(LINK_FLAGS "${LINK_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
+    SET(GCC_CXX_COMPILER TRUE)
   ENDIF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
 # TODO: generalize this using variables, e.g. %SystemRoot and such?
   SET(LIB_INSTALL_PATH "c:/windows/system32")
@@ -34,7 +37,6 @@ ENDIF(WIN32)
 
 # Compiler switches.
 # Enable verbose reporting of errors when using gcc
-SET(GCC_CXX_COMPILER FALSE)
 SET(GCC_EXTRA_FLAGS "-Wall")
 IF(${CMAKE_CXX_COMPILER} MATCHES "c\\+\\+")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_EXTRA_FLAGS}")
@@ -47,7 +49,7 @@ ENDIF(${CMAKE_C_COMPILER} MATCHES "gcc")
 # Enable further optimization when using icc
 # Disable it temporarily, it consumes tons of RAM
 #SET(ICC_EXTRA_FLAGS "-ipo")
-SET(ICC_CXX_COMPILER FALSE)
+
 SET(ICC_EXTRA_FLAGS "")
 IF(${CMAKE_CXX_COMPILER} MATCHES "icpc")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ICC_EXTRA_FLAGS}")
