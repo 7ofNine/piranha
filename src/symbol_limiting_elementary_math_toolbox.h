@@ -31,22 +31,6 @@ namespace piranha
     class symbol_limiting_elementary_math_toolbox
   {
     public:
-      template <class Derived2>
-        void series_multiplication(const Derived2 &ps2)
-      {
-        typedef typename Derived::ancestor::cf_type cf_type;
-        Derived *derived_cast=static_cast<Derived *>(this);
-        Derived retval;
-        if (derived_cast->series_multiplication_preliminaries(ps2,retval))
-        {
-          if (derived_cast->series_multiplication_optimize_for_cf(ps2))
-          {
-            return;
-          }
-          multiply_terms(ps2,retval);
-        }
-        derived_cast->swap(retval);
-      }
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -72,7 +56,6 @@ namespace piranha
         }
         derived_cast->swap(tmp_ps);
       }
-    private:
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval) const
       {
@@ -116,6 +99,7 @@ namespace piranha
           }
         }
       }
+    private:
       template <class T,class U>
         static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
         const vec_expo_index_limit &limits)

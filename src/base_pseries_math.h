@@ -254,6 +254,28 @@ namespace piranha
     return false;
   }
 
+/// Series multiplication.
+/**
+ * Requires some methods to be implemented in derived classes.
+ */
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    template <class Derived2>
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::series_multiplication(const Derived2 &ps2)
+  {
+    Derived *derived_cast=static_cast<Derived *>(this);
+    Derived retval;
+    if (series_multiplication_preliminaries(ps2,retval))
+    {
+      if (series_multiplication_optimize_for_cf(ps2))
+      {
+        return;
+      }
+      derived_cast->multiply_terms(ps2,retval);
+    }
+    swap(retval);
+  }
+
+
 /// Multiplication by a generic entity.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class T>

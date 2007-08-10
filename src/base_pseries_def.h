@@ -337,6 +337,8 @@ namespace piranha
       bool is_cf() const;
 // NOTICE: temporarily here.
       template <class Derived2>
+        void series_multiplication(const Derived2 &);
+      template <class Derived2>
         void generic_series_assignment(const Derived2 &);
     protected:
 /// Generic builder.
