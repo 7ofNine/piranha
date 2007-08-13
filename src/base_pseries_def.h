@@ -433,6 +433,21 @@ namespace piranha
 /// Default implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &, const cf_type &)
         {std::cout << "Default hook called!" << std::endl;}
+    private:
+/// Functor to update the coefficient.
+      struct modifier_update_cf
+      {
+        modifier_update_cf(const cf_type &new_cf):new_cf_(new_cf)
+          {}
+        ~modifier_update_cf()
+          {}
+        void operator()(term_type &term)
+        {
+          term.s_cf() = new_cf_;
+        }
+// NOTICE: evaluate the impact of using const & here, esp. when using gmp
+        const cf_type &new_cf_;
+      };
 // Data members.
     protected:
       vector_mult_t   lin_args_;

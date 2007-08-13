@@ -297,8 +297,7 @@ namespace piranha
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
       cf_type new_c=it_new->g_cf();
-      p_assert(s_index().modify(it_new,typename Term<cf_type,trig_type>::
-        modifier_update_cf(-new_c)));
+      p_assert(s_index().modify(it_new,modifier_update_cf(-new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
     return it_new;
@@ -326,7 +325,7 @@ namespace piranha
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
 // Update the existing term
-    p_assert(h_index().modify(it,typename Term<cf_type,trig_type>::modifier_update_cf(new_c)));
+    p_assert(h_index().modify(it,modifier_update_cf(new_c)));
   }
 
 // **************** //

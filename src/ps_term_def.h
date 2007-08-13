@@ -37,20 +37,6 @@ namespace piranha
       typedef Cf cf_type;
 /// Alias for trigonometric type.
       typedef Trig trig_type;
-/// Functor to update the coefficient.
-      struct modifier_update_cf
-      {
-        modifier_update_cf(const cf_type &new_cf): new_cf_(new_cf)
-          {}
-        ~modifier_update_cf()
-          {}
-        void operator()(ps_term &term)
-        {
-          term.s_cf() = new_cf_;
-        }
-// NOTICE: evaluate the impact of using const & here, esp. when using gmp
-        const cf_type &new_cf_;
-      };
       explicit ps_term();
 // FIXME: replace bool with enum.
       explicit ps_term(const cf_type &, bool flavour=true);
