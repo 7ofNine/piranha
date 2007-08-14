@@ -35,6 +35,7 @@
 
 namespace piranha
 {
+// FIXME: fix the order of data members (small ones first!)
 /// Base monomial class, array implementation.
 /**
  * Monomial is made of three parts: a numerical coefficient, a rational coefficient implemented
@@ -44,7 +45,7 @@ namespace piranha
     class monomial_gmp_array
   {
     public:
-      typedef short int expo_t;
+      typedef short int expo_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // TODO: use "self" type here (and polynomial too)?
@@ -55,7 +56,7 @@ namespace piranha
 /// Alias for the rational coefficient.
       typedef mpq_class rational_type;
 /// Alias for the container type.
-      typedef std::valarray<expo_t> container_type;
+      typedef std::valarray<expo_type> container_type;
 /// Evaluation result.
       typedef typename numerical_type::eval_type eval_type;
 /// Functor to update monomial's coefficients.
@@ -68,8 +69,8 @@ namespace piranha
           {}
         void operator()(monomial_gmp_array &m) const
         {
-          m.numerical_cf_=numerical_;
-          m.rational_cf_=rational_;
+          m.private_numerical_cf_=numerical_;
+          m.private_rational_cf_=rational_;
         }
         const numerical_type  &numerical_;
         const rational_type   &rational_;
@@ -85,7 +86,7 @@ namespace piranha
           {}
         void operator()(monomial_gmp_array &m) const
         {
-          m.numerical_cf_=numerical_;
+          m.private_numerical_cf_=numerical_;
         }
         const numerical_type   &numerical_;
       }
@@ -100,86 +101,96 @@ namespace piranha
           {}
         void operator()(monomial_gmp_array &m) const
         {
-          m.rational_cf_=rational_;
+          m.private_rational_cf_=rational_;
         }
         const rational_type   &rational_;
       }
       ;
 // Ctors.
 /// Default constructor.
-      explicit monomial_gmp_array():container_(0),numerical_cf_(0.),rational_cf_(0)
+      explicit monomial_gmp_array():private_min_expo_(0),private_degree_(0),private_container_(0),
+        private_numerical_cf_(0.),private_rational_cf_(0)
         {}
 /// Constructor from size.
-      explicit monomial_gmp_array(const size_t &n):container_(n),numerical_cf_(0.),rational_cf_(0)
+      explicit monomial_gmp_array(const size_t &n):private_min_expo_(0),private_degree_(0),private_container_(n),
+        private_numerical_cf_(0.),private_rational_cf_(0)
         {}
 /// Constructor from integer.
-      explicit monomial_gmp_array(int n):container_(0),numerical_cf_(math::sgn(n)),
-        rational_cf_((unsigned int)std::abs(n))
+      explicit monomial_gmp_array(int n):private_min_expo_(0),private_degree_(0),private_container_(0),
+        private_numerical_cf_(math::sgn(n)),private_rational_cf_((unsigned int)std::abs(n))
       {
         if (n==0)
         {
-          numerical_cf_=numerical_type(0.);
-          rational_cf_=1;
+          private_numerical_cf_=numerical_type(0.);
+          private_rational_cf_=1;
         }
       }
 /// Constructor from numerical type.
-      explicit monomial_gmp_array(const numerical_type &x):container_(0),
-        numerical_cf_(x),rational_cf_(1)
+      explicit monomial_gmp_array(const numerical_type &x):private_min_expo_(0),private_degree_(0),private_container_(0),
+        private_numerical_cf_(x),private_rational_cf_(1)
         {}
 /// Constructor from double.
-      explicit monomial_gmp_array(const double &x):container_(0),
-        numerical_cf_(x),rational_cf_(1)
+      explicit monomial_gmp_array(const double &x):private_min_expo_(0),private_degree_(0),private_container_(0),
+        private_numerical_cf_(x),private_rational_cf_(1)
         {}
       explicit monomial_gmp_array(const std::string &);
-/// Constructor from numerical, rational and exponent container.
+/*/// Constructor from numerical, rational and exponent container.
       explicit monomial_gmp_array(const numerical_type &num, const rational_type &rat, const container_type &cont)
-        :container_(cont),numerical_cf_(num),rational_cf_(rat)
-        {}
+        :private_container_(cont),private_numerical_cf_(num),private_rational_cf_(rat)
+        {}*/
 /// Copy constructor.
-      monomial_gmp_array(const monomial_gmp_array &m):container_(m.container_),numerical_cf_(m.numerical_cf_),
-        rational_cf_(m.rational_cf_)
+      monomial_gmp_array(const monomial_gmp_array &m):private_min_expo_(m.private_min_expo_),private_degree_(m.private_degree_),
+        private_container_(m.private_container_),private_numerical_cf_(m.private_numerical_cf_),
+        private_rational_cf_(m.private_rational_cf_)
         {}
 /// Copy constructor from monomial with different numerical type.
       template <class U>
-        monomial_gmp_array(const monomial_gmp_array<U> &m):container_(m.container()),
-        numerical_cf_(m.numerical_cf()),rational_cf_(m.rational_cf())
+        monomial_gmp_array(const monomial_gmp_array<U> &m):private_min_expo_(m.g_min_expo()),private_degree_(m.get_degree()),
+        private_container_(m.g_container()),private_numerical_cf_(m.g_numerical_cf()),private_rational_cf_(m.g_rational_cf())
         {}
 /// Destructor.
       ~monomial_gmp_array()
         {}
-// Getters
+// Getters & Setters.
+/// Get minimum exponent.
+      expo_type g_min_expo() const
+      {
+        return private_min_expo_;
+      }
+/// Get degree.
+      degree_type g_degree() const
+      {
+        return private_degree_;
+      }
 /// Get size of monomial (i.e., the number of variables).
       size_t width() const
       {
-        return container_.size();
+        return g_container().size();
       }
 /// Get const reference to the numerical coefficient.
-      const numerical_type &numerical_cf() const
+      const numerical_type &g_numerical_cf() const
       {
-        return numerical_cf_;
+        return private_numerical_cf_;
       }
 /// Get reference to the numerical coefficient.
-      numerical_type &numerical_cf()
+      numerical_type &s_numerical_cf()
       {
-        return numerical_cf_;
+        return private_numerical_cf_;
+      }
+/// Get const reference to the rational coefficient.
+      const rational_type &g_rational_cf() const
+      {
+        return private_rational_cf_;
       }
 /// Get reference to the rational coefficient.
-      const rational_type &rational_cf() const
+      rational_type &s_rational_cf()
       {
-        return rational_cf_;
-      }
-      rational_type &rational_cf()
-      {
-        return rational_cf_;
+        return private_rational_cf_;
       }
 /// Get const reference to the container.
-      const container_type &container() const
+      const container_type &g_container() const
       {
-        return container_;
-      }
-      container_type &container()
-      {
-        return container_;
+        return private_container_;
       }
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
@@ -190,7 +201,35 @@ namespace piranha
 // Evaluation.
       eval_type t_eval(const double &, const vector_psym_p &) const;
 // Probing.
-      degree_type g_degree() const;
+/// Explicitly calculate minimum exponent.
+      expo_type calc_min_expo() const
+      {
+        const size_t w=width();
+        if (w==0)
+        {
+          return 0;
+        }
+        expo_type retval=g_container()[0];
+        for (size_t i=1;i<w;++i)
+        {
+          if (g_container()[i] < retval)
+          {
+            retval = g_container()[i];
+          }
+        }
+        return retval;
+      }
+/// Explictly calculate degree.
+      degree_type calc_degree() const
+      {
+        const size_t w=width();
+        degree_type retval=0;
+        for (size_t i=0;i<w;++i)
+        {
+          retval+=g_container()[i];
+        }
+        return retval;
+      }
       size_t hasher() const;
       bool smaller(const size_t &) const;
       bool larger(const size_t &) const;
@@ -216,38 +255,46 @@ namespace piranha
         const size_t w=width();
         p_assert(n<w);
         p_assert(w==retval.width());
-        const expo_t exponent=container_[n];
+        const expo_type exponent=g_container()[n];
+        retval.private_min_expo_=private_min_expo_;
+        retval.private_degree_=private_degree_;
         if (exponent==0)
         {
 // If the exponent is zero, partial derivative will be zero too.
-          retval.numerical_cf()=numerical_type(0);
+          retval.s_numerical_cf()=numerical_type(0);
         }
         else
         {
 // The rational cf of retval gets multiplied by the exponent.
-          retval.rational_cf()=rational_cf_;
+          retval.s_rational_cf()=g_rational_cf();
 // Take abs because only numerical cf can be negative.
-          retval.rational_cf()*=(expo_t)std::abs(exponent);
+          retval.s_rational_cf()*=(expo_type)std::abs(exponent);
           if (exponent>0)
           {
-            retval.numerical_cf()=numerical_cf_;
+            retval.s_numerical_cf()=g_numerical_cf();
           }
           else
           {
-            retval.numerical_cf()=-numerical_cf_;
+            retval.s_numerical_cf()=-g_numerical_cf();
           }
 // Assign same exponents as this...
-          retval.container_=container_;
+          retval.private_container_=private_container_;
 // ... just modify the interested one.
-          --retval.container_[n];
-// TODO: place assert to make sure we don't go out expo_t range?
+          --retval.private_container_[n];
+// Take care of degree and minimum exponent.
+          --retval.private_degree_;
+          if (retval.private_container_[n] < retval.private_minimum_expo_)
+          {
+            retval.private_minimum_expo_=retval.private_container_[n];
+          }
+// TODO: place assert to make sure we don't go out expo_type range?
 // This should be generalized, if we decide this way.
         }
       }
 // Operators.
       template <class U>
         monomial_gmp_array &operator=(const monomial_gmp_array<U> &);
-      bool operator<(const monomial_gmp_array &) const;
+      //bool operator<(const monomial_gmp_array &) const;
 // End INTERFACE definition.
 //-------------------------------------------------------
 /// Reserve space for exponents.
@@ -259,7 +306,7 @@ namespace piranha
       {
         if (w!=width())
         {
-          container_.resize(w);
+          private_container_.resize(w);
         }
       }
     protected:
@@ -268,10 +315,12 @@ namespace piranha
       template <class U>
         bool basic_comparison(const U &) const;
       bool is_symbolic() const;
-    protected:
-      container_type              container_;
-      numerical_type              numerical_cf_;
-      rational_type               rational_cf_;
+    private:
+      expo_type                   private_min_expo_;
+      degree_type                 private_degree_;
+      container_type              private_container_;
+      numerical_type              private_numerical_cf_;
+      rational_type               private_rational_cf_;
 // Separator used in I/O.
       static const std::string    separator1_;
       static const std::string    separator2_;
@@ -285,7 +334,8 @@ namespace piranha
 
 /// Constructor from string.
   template <class T>
-    inline monomial_gmp_array<T>::monomial_gmp_array(const std::string &s):container_(0),numerical_cf_(0.),rational_cf_(0)
+    inline monomial_gmp_array<T>::monomial_gmp_array(const std::string &s):private_min_expo_(0),private_degree_(0),
+      private_container_(0),private_numerical_cf_(0.),private_rational_cf_(0)
   {
     deque_string split_v;
     boost::split(split_v,s,boost::is_any_of(separator1_));
@@ -293,8 +343,8 @@ namespace piranha
     {
 // In this case we try to cast to double.
       std::cout << "Trying to build monomial from numerical value." << std::endl;
-      rational_cf_=1;
-      numerical_cf_=utils::lexical_converter<numerical_type>(split_v[0]);
+      private_rational_cf_=1;
+      private_numerical_cf_=utils::lexical_converter<numerical_type>(split_v[0]);
       return;
     }
     if (split_v.size()!=3)
@@ -303,13 +353,14 @@ namespace piranha
       return;
     }
     boost::trim(split_v[0]);
-    numerical_cf_=utils::lexical_converter<numerical_type>(split_v[0]);
+    private_numerical_cf_=utils::lexical_converter<numerical_type>(split_v[0]);
     boost::trim(split_v[1]);
-    rational_cf_=utils::lexical_converter<rational_type>(split_v[1]);
-    rational_cf_.canonicalize();
-    if (rational_cf_<0)
+    private_rational_cf_=utils::lexical_converter<rational_type>(split_v[1]);
+// TODO: this should be removed if we are going to switch to boost rational class.
+    private_rational_cf_.canonicalize();
+    if (private_rational_cf_<0)
     {
-      rational_cf_=abs(rational_cf_);
+      private_rational_cf_=abs(private_rational_cf_);
     }
     boost::trim(split_v[2]);
     if (split_v[2].size()<2 || *(split_v[2].begin())!='[' || *(--split_v[2].end())!=']')
@@ -321,14 +372,22 @@ namespace piranha
     boost::trim_right_if(split_v[2],boost::is_any_of("]"));
     deque_string exponent_v;
     boost::split(exponent_v,split_v[2],boost::is_any_of(separator2_));
-    container_.resize(exponent_v.size());
+    private_container_.resize(exponent_v.size());
     for (size_t i=0;i<exponent_v.size();++i)
     {
       if (exponent_v[i]!="")
       {
-        container_[i]=utils::lexical_converter<expo_t>(exponent_v[i]);
+        private_container_[i]=utils::lexical_converter<expo_type>(exponent_v[i]);
       }
+// TODO: is this necessary or does valarray def-initialize elements to zero?
+//       else
+//       {
+//         private_container_[i]=0;
+//       }
+// Add newfound exponent to monomial's degree.
+      private_degree_+=private_container_[i];
     }
+    private_min_expo_=calc_min_expo();
   }
 
 /// Print in plain format.
@@ -336,11 +395,11 @@ namespace piranha
     inline void monomial_gmp_array<T>::print_plain(std::ostream &out_stream, const vector_psym_p &) const
   {
     stream_manager::setup_print(out_stream);
-    out_stream << numerical_cf_ << separator1_ << rational_cf_ << separator1_;
+    out_stream << g_numerical_cf() << separator1_ << g_rational_cf() << separator1_;
     out_stream << '[';
     for (size_t i=0;i<width();++i)
     {
-      out_stream << container_[i];
+      out_stream << g_container()[i];
       if (i!=width()-1)
       {
         out_stream << separator2_;
@@ -358,47 +417,47 @@ namespace piranha
     stream_manager::setup_print(tmp);
     tmp << std::string("$");
 // Print only if it is not 1 in abs and it is not the only element to be printed. If it is -1 print the sign.
-    if (numerical_cf_.is_unity() && (is_symbolic() || rational_cf_ != 1))
+    if (g_numerical_cf().is_unity() && (is_symbolic() || g_rational_cf() != 1))
     {
-      if (numerical_cf_.is_negative())
+      if (g_numerical_cf().is_negative())
       {
         tmp << std::string("-");
       }
     }
     else
     {
-      tmp << numerical_cf_;
+      tmp << g_numerical_cf();
 // Print cdot if the following fraction is really an integer - but not 1, because in that
 // case it would not be printed.
-      if (rational_cf_.get_den()==1 && rational_cf_.get_num()!=1)
+      if (g_rational_cf().get_den()==1 && g_rational_cf().get_num()!=1)
       {
         tmp << std::string("\\cdot ");
       }
     }
-    if (rational_cf_!=1)
+    if (g_rational_cf()!=1)
     {
 // If fraction is really an integer print only numerator.
-      if (rational_cf_.get_den()==1)
+      if (g_rational_cf().get_den()==1)
       {
-        tmp << rational_cf_.get_num();
+        tmp << g_rational_cf().get_num();
       }
       else
       {
-        tmp << "\\frac{" << rational_cf_.get_num() << "}{" << rational_cf_.get_den() << "}";
+        tmp << "\\frac{" << g_rational_cf().get_num() << "}{" << g_rational_cf().get_den() << "}";
       }
     }
     for (size_t i=0;i<width();++i)
     {
-      if (container_[i]==0)
+      if (g_container()[i]==0)
         {}
-        else if (container_[i]==1)
+        else if (g_container()[i]==1)
       {
         tmp << v[i]->name();
       }
       else
       {
 // Trailing space needed to avoid problems with symbols whose name starts with a number.
-        tmp << v[i]->name() << std::string("^{") << container_[i] << "} ";
+        tmp << v[i]->name() << std::string("^{") << g_container()[i] << "} ";
       }
     }
     tmp << std::string("$");
@@ -409,32 +468,12 @@ namespace piranha
     }
   }
 
-/// Get degree of the monomial.
-  template <class T>
-    inline typename monomial_gmp_array<T>::degree_type monomial_gmp_array<T>::g_degree() const
-  {
-    degree_type retval=0;
-    const size_t w=width();
-    for (size_t i=0;i<w;++i)
-    {
-      retval+=container_[i];
-    }
-    return retval;
-  }
 
 /// Check whether monomial is symbolic or purely numerical.
   template <class T>
     inline bool monomial_gmp_array<T>::is_symbolic() const
   {
-    const size_t w=width();
-    for (size_t i=0;i<w;++i)
-    {
-      if (container_[i]!=0)
-      {
-        return true;
-      }
-    }
-    return false;
+    return (g_min_expo()!=0);
   }
 
 /// Hasher function.
@@ -445,7 +484,7 @@ namespace piranha
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      boost::hash_combine(seed,container_[i]);
+      boost::hash_combine(seed,g_container()[i]);
     }
     return seed;
   }
@@ -458,7 +497,8 @@ namespace piranha
   }
 
 /// Operator less-than.
-  template <class T>
+// FIXME: is this used?
+/*  template <class T>
     inline bool monomial_gmp_array<T>::operator<(const monomial_gmp_array &m2) const
   {
     p_assert(width()==m2.width());
@@ -476,7 +516,7 @@ namespace piranha
     }
     std::cout << "GWABBBBBBBB!!!!" << std::endl;
     std::exit(1);
-  }
+  }*/
 
 /// Basic assignment.
 /**
@@ -490,9 +530,11 @@ namespace piranha
     {
 // First we must resize, before assigning: valarray does not do it automatically.
       increase_size(m2.width());
-      container_=m2.container();
-      numerical_cf_=m2.numerical_cf();
-      rational_cf_=m2.rational_cf();
+      private_container_=m2.g_container();
+      private_numerical_cf_=m2.g_numerical_cf();
+      private_rational_cf_=m2.g_rational_cf();
+      private_degree_=m2.g_degree();
+      private_min_expo_=m2.g_min_expo();
     }
   }
 
@@ -524,7 +566,7 @@ namespace piranha
   template <class T>
     inline bool monomial_gmp_array<T>::checkup(const size_t &w) const
   {
-    return (width()==w);
+    return (width()==w && g_min_expo()==calc_min_expo() && g_degree()==calc_degree());
   }
 
 /// Time evaluation.
@@ -534,11 +576,11 @@ namespace piranha
   {
     const size_t w=width();
     p_assert(v.size()==w);
-    eval_type retval=numerical_cf_.value()*rational_cf_.get_d();
+    eval_type retval=g_numerical_cf().value()*g_rational_cf().get_d();
     for (size_t i=0;i<w;++i)
     {
 // FIXME: use natural_pow or the like here, to speed up.
-      retval*=std::pow(v[i]->t_eval(t),container_[i]);
+      retval*=std::pow(v[i]->t_eval(t),g_container()[i]);
     }
     return retval;
   }
@@ -558,11 +600,12 @@ namespace piranha
     p_assert(w==m2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]!=m2.container_[i])
+      if (g_container()[i]!=m2.g_container()[i])
       {
         return false;
       }
     }
+    p_assert(g_min_expo()==m2.g_min_expo() && g_degree()==m2.g_degree());
     return true;
   }
 
@@ -573,13 +616,18 @@ namespace piranha
     p_assert(new_w>=width());
     if (new_w>width())
     {
-      container_type old=container_;
-      container_.resize(new_w);
+      container_type old=private_container_;
+      private_container_.resize(new_w);
       const size_t old_w=old.size();
       for (size_t i=0;i<old_w;++i)
       {
-        container_[i]=old[i];
+        private_container_[i]=old[i];
       }
+    }
+// Refresh minimum exponent.
+    if (g_min_expo() > 0)
+    {
+      private_min_expo_=0;
     }
   }
 
@@ -589,26 +637,26 @@ namespace piranha
   {
     if (n>0)
     {
-      container_type old=container_;
+      container_type old=private_container_;
       const size_t old_w=old.size();
-      container_.resize(old_w+n);
+      private_container_.resize(old_w+n);
       for (size_t i=0;i<old_w;++i)
       {
-        container_[i+n]=old[i];
+        private_container_[i+n]=old[i];
       }
     }
   }
 
 /// Check whether monomial is zero.
-// TODO: maybe this will have to include the handling of degree limit for polynomial variables.
   template <class T>
     inline bool monomial_gmp_array<T>::is_zero() const
   {
 // We must do this way because if we get_d() immediately on rational_cf_ we may obtain zero for very
 // small fractions, but the numerical_cf_ could counter-balance the smallness hence leading to a
 // "non-zero" monomial.
-    rational_type tmp(rational_cf_);
-    tmp*=std::abs(numerical_cf_.value());
+// FIXME: here we are copying a gmp rational, it is costly. Check if it is really needed.
+    rational_type tmp(g_rational_cf());
+    tmp*=std::abs(g_numerical_cf().value());
     p_assert(tmp>=0);
     if (std::abs(tmp.get_d())<settings_manager::numerical_zero())
     {
@@ -628,29 +676,24 @@ namespace piranha
     template <class U>
     inline void monomial_gmp_array<T>::mult_by(const monomial_gmp_array<U> &m2, monomial_gmp_array &out_m) const
   {
-    out_m.numerical_cf_=numerical_cf_;
-    out_m.numerical_cf_.mult_by_self(m2.numerical_cf());
-    out_m.rational_cf_=rational_cf_;
-    out_m.rational_cf_*=m2.rational_cf();
-// Find big and small monomial_gmp_arrays.
-    container_type const *big=&container_;
-    container_type const *small=&m2.container();
-    if (big->size()<small->size())
-    {
-      big=&m2.container();
-      small=&container_;
-    }
-    out_m.container_.resize(big->size());
-    const size_t max_w=big->size(), min_w=small->size();
+    p_assert(width() >= m2.width());
+    out_m.private_numerical_cf_=g_numerical_cf();
+    out_m.private_numerical_cf_.mult_by_self(m2.g_numerical_cf());
+    out_m.private_rational_cf_=g_rational_cf();
+    out_m.private_rational_cf_*=m2.g_rational_cf();
+    const size_t w1=width(), w2=m2.width();
+    out_m.increase_size(w1);
     size_t i;
-    for (i=0;i<min_w;++i)
+    for (i=0;i<w2;++i)
     {
-      out_m.container_[i]=(*big)[i]+(*small)[i];
+      out_m.private_container_[i]=g_container()[i]+m2.g_container()[i];
     }
-    for(;i<max_w;++i)
+    for(;i<w1;++i)
     {
-      out_m.container_[i]=(*big)[i];
+      out_m.private_container_[i]=g_container()[i];
     }
+    out_m.private_degree_=g_degree()+m2.g_degree();
+    out_m.private_min_expo_=g_min_expo()+m2.g_min_expo();
 //std::cout << "OUT_M is: " << out_m << std::endl;
   }
 
@@ -713,10 +756,10 @@ namespace piranha
 // TODO: uniform naming of power? i.e., natural power and pow, but here IIRC we need also negative int powers?
 // Mmhmm... check out.
 // Also: use return values as parameters for inv, powers, etc.
-  template <class T>
+/*  template <class T>
     inline monomial_gmp_array<T> monomial_gmp_array<T>::pow(int n_) const
   {
-    p_assert(numerical_cf_.norm()>settings_manager::numerical_zero());
+    p_assert(g_numerical_cf().norm()>settings_manager::numerical_zero());
     p_assert(rational_cf_!=0);
     const size_t w=width();
     monomial_gmp_array retval(w);
@@ -761,6 +804,6 @@ namespace piranha
     retval.numerical_cf_=(numerical_cf_.pow(x)*=std::pow(rational_cf_.get_d(),x));
     retval.rational_cf_=1;
     return retval;
-  }
+  }*/
 }
 #endif
