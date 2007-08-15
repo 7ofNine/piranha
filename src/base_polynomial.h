@@ -136,7 +136,7 @@ namespace piranha
       double norm(const vector_psym_p &) const;
       degree_type g_degree() const
       {
-        if (set_.empty())
+        if (empty())
         {
           return 0;
         }
@@ -147,7 +147,7 @@ namespace piranha
       }
       expo_type g_min_expo() const
       {
-        if (set_.empty())
+        if (empty())
         {
           return 0;
         }
@@ -186,8 +186,6 @@ namespace piranha
       {
         retval.clear();
         m_type tmp_m;
-        const size_t w=width();
-        tmp_m.reserve(w);
         const it_d_index it_f=d_index().end();
         for (it_d_index it=d_index().begin();it!=it_f;++it)
         {
@@ -346,8 +344,8 @@ namespace piranha
 // TODO check if these are really used.
       void mult_by_int(int);
       void mult_by_double(const double &);
-      template <class Derived2>
-        void mult_by_self(const Derived2 &);
+      /*template <class Derived2>
+        void mult_by_self(const Derived2 &);*/
       //void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
@@ -544,35 +542,6 @@ namespace piranha
     }
   }
 
-/// Multiply by self, simple implementation.
-/**
- * Multiply all monomials without truncations.
- */
-  template <class T, class Derived>
-    template <class Derived2>
-    inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p)
-  {
-    if ((void *)&p==(void *)this)
-    {
-      mult_by_self(Derived2(p));
-      return;
-    }
-    Derived retval;
-    m_type temp_m;
-    const it_h_index it_f1=h_index().end();
-    const typename Derived2::it_h_index it_f2=p.h_index().end();
-    typename Derived2::it_h_index it2;
-    for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
-    {
-      for (it2=p.h_index().begin();it2!=it_f2;++it2)
-      {
-        it1->mult_by(*it2,temp_m);
-        retval.insert(temp_m);
-      }
-    }
-    swap(retval);
-  }
-
 /// Multiply by self limiting the exponents of symbols.
 /**
  * Exponents limits are usually fetched from piranha::symbol_limiter.
@@ -743,25 +712,10 @@ namespace piranha
   }
 
 /// Check whether a base_polynomial is zero.
-// FIXME: do we really need vector of symbols as input here?
   template <class T, class Derived>
-    inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &v) const
+    inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &) const
   {
-    if (empty())
-    {
-      return true;
-    }
-// We have to check that monomials do not all evaluate to zero... In case there are
-// symbols with zero constant part.
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
-    {
-      if (std::abs(it->t_eval(0,v))>settings_manager::numerical_zero())
-      {
-        return false;
-      }
-    }
-    return true;
+    return empty();
   }
 
 /// Get base_polynomial's norm.
