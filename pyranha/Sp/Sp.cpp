@@ -25,6 +25,7 @@ BOOST_PYTHON_MODULE(_Sp)
 {
   class_<sp> inst=ps_basic_instantiation<sp>(std::string("sp"),
     std::string("Series with symbolic polynomial coefficients."));
+  ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);
   def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
     "Bessel function of the first kind, power series implementation.");*/
