@@ -26,7 +26,7 @@ namespace piranha
   symbol_limiter::limits_map symbol_limiter::lmap_;
 
 /// Set exponent limit for psymbol, from psymbol iterator.
-  void symbol_limiter::set_limit(psym_p it, int n)
+  void symbol_limiter::set_limit(psym_p it, expo_type n)
   {
     if (it==psymbol_manager::end())
     {
@@ -48,7 +48,7 @@ namespace piranha
   }
 
 /// Set exponent limit for psymbol, from psymbol name.
-  void symbol_limiter::set_limit(const std::string &name, int n)
+  void symbol_limiter::set_limit(const std::string &name, expo_type n)
   {
     set_limit(psymbol_manager::get_pointer(name),n);
   }

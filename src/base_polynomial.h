@@ -43,8 +43,6 @@ namespace piranha
   {
     public:
       typedef monomial_gmp_array<T> m_type;
-      typedef typename m_type::expo_type expo_type;
-      typedef typename m_type::degree_type degree_type;
     private:
 /// Tag for the degree index.
       struct degree

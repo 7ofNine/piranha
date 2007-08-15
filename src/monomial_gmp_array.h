@@ -45,12 +45,8 @@ namespace piranha
     class monomial_gmp_array
   {
     public:
-      typedef short int expo_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
-// TODO: use "self" type here (and polynomial too)?
-/// Alias for the degree type.
-      typedef int degree_type;
 /// Alias for the numerical coefficient.
       typedef T numerical_type;
 /// Alias for the rational coefficient.

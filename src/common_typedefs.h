@@ -43,4 +43,9 @@ typedef std::vector<mult_t> vector_mult_t;
 typedef std::vector<double> vector_double;
 /// Deque of strings. Convenience typedef.
 typedef std::deque<std::string> deque_string;
+/// Alias for exponent type.
+typedef short int expo_type;
+/// Alias for degree type.
+typedef int degree_type;
+
 #endif

@@ -43,7 +43,6 @@ namespace piranha
   template <class Term>
     struct min_expo_extractor
   {
-    typedef typename Term::cf_type::expo_type expo_type;
     typedef expo_type result_type;
     expo_type operator()(const Term &t) const
     {
@@ -55,7 +54,6 @@ namespace piranha
   template <class Term>
     struct degree_extractor
   {
-    typedef typename Term::cf_type::degree_type degree_type;
     typedef degree_type result_type;
     degree_type operator()(const Term &t) const
     {

@@ -27,32 +27,27 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <string>
-#include <vector>
-
-//TODO: use multiindex container, so that we can drop the dependency on TR1.
+#include <deque>
 
 #include "psymbol.h"
 
 namespace piranha
 {
-  typedef std::vector<boost::tuple<size_t,int> > vec_expo_index_limit;
+  typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
 
   class symbol_limiter
   {
     public:
-      static void set_limit(psym_p, int);
-      static void set_limit(const std::string &, int);
+      static void set_limit(psym_p, expo_type);
+      static void set_limit(const std::string &, expo_type);
       static void clear();
       static void get_limits_index(const vector_psym_p &v, vec_expo_index_limit &retval)
       {
         p_assert(retval.size()==0);
         const size_t w=v.size();
-// Reserve space so that we potentially save resizes.
-// TODO: check the real impact of this by commenting and benchmarking.
-        retval.reserve(w);
         map_iterator mit;
         const map_iterator mit_f=lmap_.end();
-        boost::tuple<size_t,int> insert_tuple;
+        boost::tuple<size_t,expo_type> insert_tuple;
         for (size_t i=0;i<w;++i)
         {
           mit=find_expo_limit(v[i]);
@@ -71,10 +66,10 @@ namespace piranha
 // Boilerplate for the multiindex container.
       struct limit_element
       {
-        limit_element(psym_p s, int n):symbol(s),limit(n)
+        limit_element(psym_p s, expo_type n):symbol(s),limit(n)
           {}
-        psym_p  symbol;
-        int     limit;
+        psym_p      symbol;
+        expo_type   limit;
       };
 // We can use this structure as comparison functor, whereas below we hash according to name,
 // because in managing symbols we make sure that there are no symbols with same name. Hence
@@ -95,7 +90,7 @@ namespace piranha
       };
       struct limit_modifier
       {
-        limit_modifier(int n):new_n_(n)
+        limit_modifier(expo_type n):new_n_(n)
           {}
         ~limit_modifier()
           {}
@@ -103,7 +98,7 @@ namespace piranha
         {
           l.limit = new_n_;
         }
-        int new_n_;
+        expo_type   new_n_;
       };
 
     public:
