@@ -35,6 +35,7 @@
 // Toolboxes.
 #include "operators_toolbox.h"
 #include "symbol_limiting_elementary_math_toolbox.h"
+#include "differential_toolbox.h"
 
 namespace piranha
 {
@@ -101,7 +102,8 @@ namespace piranha
     class sps:
   public base_pseries<Cf,Trig,Term,I,sps<Cf,Trig,Term,I> >,
     public symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >,
-    public real_operators_toolbox<sps<Cf,Trig,Term,I> >
+    public real_operators_toolbox<sps<Cf,Trig,Term,I> >,
+    public differential_toolbox<sps<Cf,Trig,Term,I> >
   {
     public:
 /// Alias for parent class.
