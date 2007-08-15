@@ -24,5 +24,5 @@
 BOOST_PYTHON_MODULE(_Spc)
 {
   class_<spc> inst=ps_basic_instantiation<spc>("spc","Complex symbolic Poisson series class.");
-  ps_instantiate_complex_specifics(inst);
+  //ps_instantiate_complex_specifics(inst);
 }

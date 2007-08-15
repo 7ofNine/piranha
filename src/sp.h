@@ -38,12 +38,25 @@
 
 namespace piranha
 {
+/// Extract minimum exponent from terms with polynomials as coefficients.
+  template <class Term>
+    struct min_expo_extractor
+  {
+    typedef typename Term::cf_type::expo_type expo_type;
+    typedef expo_type result_type;
+    expo_type operator()(const Term &t) const
+    {
+      return t.g_cf().g_min_expo();
+    }
+  };
+
 /// Extract degree from terms with polynomials as coefficients.
   template <class Term>
     struct degree_extractor
   {
-    typedef int result_type;
-    int operator()(const Term &t) const
+    typedef typename Term::cf_type::degree_type degree_type;
+    typedef degree_type result_type;
+    degree_type operator()(const Term &t) const
     {
       return t.g_cf().g_degree();
     }
@@ -53,7 +66,7 @@ namespace piranha
 /**
  * This class specifies the following indices to be used in piranha::base_pseries: a hashed index for the
  * identification
- * of terms and a degree-sorted index to discard terms in multiplications. The class is to be used as the I
+ * of terms and a minimum exponent sorted index to discard terms in multiplications. The class is to be used as the I
  * parameter in piranha::base_pseries classes.
  */
   template <class Cf, class Trig, template <class, class> class Term>
@@ -63,6 +76,7 @@ namespace piranha
       boost::multi_index::ordered_unique <
       boost::multi_index::composite_key <
       Term<Cf, Trig>,
+      min_expo_extractor<Term<Cf, Trig> >,
       degree_extractor<Term<Cf, Trig> >,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,

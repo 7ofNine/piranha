@@ -41,8 +41,11 @@ namespace piranha
   template <class T, class Derived>
     class base_polynomial
   {
-    protected:
+    public:
       typedef monomial_gmp_array<T> m_type;
+      typedef typename m_type::expo_type expo_type;
+      typedef typename m_type::degree_type degree_type;
+    private:
 /// Tag for the degree index.
       struct degree
         {}
@@ -54,13 +57,17 @@ namespace piranha
       typedef boost::multi_index::indexed_by <
         boost::multi_index::ordered_non_unique <
         boost::multi_index::tag<degree>,
-        boost::multi_index::const_mem_fun < m_type, typename m_type::degree_type,
-        &m_type::g_degree > >,
+        boost::multi_index::composite_key <
+        m_type,
+        boost::multi_index::const_mem_fun < m_type, expo_type,
+        &m_type::g_min_expo > ,
+        boost::multi_index::const_mem_fun < m_type, degree_type,
+        &m_type::g_degree > >
+        >,
         boost::multi_index::hashed_unique <
         boost::multi_index::tag<hash>,
         boost::multi_index::identity<m_type> >
         > index_type;
-      typedef typename m_type::expo_t expo_t;
     public:
       typedef boost::multi_index_container <m_type, index_type> set_type;
       typedef typename set_type::template index<degree>
@@ -92,8 +99,9 @@ namespace piranha
       explicit base_polynomial(const psymbol &)
       {
         m_type tmp_m((size_t)1);
-        tmp_m.rational_cf()=1;
-        tmp_m.numerical_cf()=typename m_type::numerical_type(1.);
+        tmp_m.g_rational_cf()=1;
+// TODO: we can ditch the extra ctor here if we allow for assignment of complex double_cf from real.
+        tmp_m.g_numerical_cf()=typename m_type::numerical_type(1.);
         tmp_m.container()[0]=1;
         insert(tmp_m);
       }
@@ -126,7 +134,7 @@ namespace piranha
       bool checkup(const size_t &) const;
       bool is_zero(const vector_psym_p &) const;
       double norm(const vector_psym_p &) const;
-      int g_degree() const
+      degree_type g_degree() const
       {
         if (set_.empty())
         {
@@ -135,6 +143,17 @@ namespace piranha
         else
         {
           return d_index().begin()->g_degree();
+        }
+      }
+      expo_type g_min_expo() const
+      {
+        if (set_.empty())
+        {
+          return 0;
+        }
+        else
+        {
+          return d_index().begin()->g_min_expo();
         }
       }
 /// Check whether base_polynomial is larger than size w.
@@ -188,6 +207,10 @@ namespace piranha
         return set_.template get
           <hash>();
       }
+      bool empty() const
+      {
+        return set_.empty();
+      }
       template <class Derived2>
         void mult_by_self(const Derived2 &, const vec_expo_index_limit &);
     protected:
@@ -204,13 +227,71 @@ namespace piranha
       }
       size_t width() const
       {
-        if (set_.empty())
+        if (empty())
         {
           return 0;
         }
         return d_index().begin()->width();
       }
-      void pow_suitable(boost::tuple<bool,int> &s, const size_t &n) const
+/// Check if the polynomial can be raised to real power.
+      bool pow_preliminary_checks() const
+      {
+// Requisite: first monomial of the polynomial must be purely numerical and positive.
+        if (length() > 0)
+        {
+          if (d_index().begin()->is_symbolic() || d_index().begin()->g_numerical_cf().value() < 0)
+          {
+            std::cout << "Error: in raising polynomial to power, first monomial must be numerical and positive."
+              << std::endl;
+            std::abort();
+            return false;
+          }
+        }
+        return true;
+      }
+      bool pow_handle_special_cases(const double &x)
+      {
+// Special handling in case of empty polynomial.
+        if (empty())
+        {
+          if (std::abs(x)<settings_manager::numerical_zero())
+          {
+            std::cout << "ERROR: want to calculate 0^0 in polynomial." << std::endl;
+            std::abort();
+            return true;
+          }
+          if (x<0)
+          {
+            std::cout << "ERROR: negative power of zero in polynomial." << std::endl;
+            std::abort();
+            return true;
+          }
+// 0^x, just return.
+          return true;
+        }
+        if (std::abs(1-x)<settings_manager::numerical_zero())
+        {
+// this^1.
+          return true;
+        }
+        if (std::abs(x)<settings_manager::numerical_zero())
+        {
+// this^0.
+          clear();
+          insert(m_type((int)1));
+          return true;
+        }
+// Optimization: if the first monomial, which is numerical, is also the only one, simply compute power.
+        if (length()==1)
+        {
+          Derived retval;
+          retval.insert(m_type(std::pow(d_index().begin()->g_numerical_cf()*d_index().begin()->g_rational_cf().get_d(),x)));
+          swap(retval);
+          return true;
+        }
+        return false;
+      }
+/*      void pow_suitable(boost::tuple<bool,int> &s, const size_t &n) const
       {
         p_assert(n<width());
 // If assert below fails, the retval tuple may end up uninitialized.
@@ -239,6 +320,19 @@ namespace piranha
         s.get<0>()=true;
         std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
       }
+*/
+/// Maximum natural power allowed.
+/**
+ * Maximum natural power that will produce a non-null single-variable polynomial,
+ * given the desired exponent limit for the variable and the variable's minimum exponent
+ * in the polynomial.
+ */
+/*      unsigned int max_natural_power(int limit, int min_expo) const
+      {
+        p_assert(limit >= 0 && min_expo > 0 );
+        return (unsigned int)std::floor(((float)limit)/min_expo);
+      }
+*/
       void base_merge(const base_polynomial &, bool);
       template <class N>
         void ll_generic_integer_division(const N &);
@@ -254,7 +348,7 @@ namespace piranha
       void mult_by_double(const double &);
       template <class Derived2>
         void mult_by_self(const Derived2 &);
-      void basic_pow(const double &, const vec_expo_index_limit limits &);
+      //void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
       set_type                  set_;
@@ -278,7 +372,7 @@ namespace piranha
       m_type tmp_m(split_v[i]);
       if (tmp_m.larger(width()) && !empty())
       {
-        resize(tmp_m.width());
+        increase_size(tmp_m.width());
       }
       insert(tmp_m);
     }
@@ -312,7 +406,7 @@ namespace piranha
     stream_manager::setup_print(out_stream);
     for (it_d_index it=d_index().begin();it!=d_index().end();++it)
     {
-      if (it->numerical_cf().is_positive() && it!=d_index().begin())
+      if (it->g_numerical_cf().is_positive() && it!=d_index().begin())
       {
         out_stream << std::string("$+$");
       }
@@ -407,7 +501,7 @@ namespace piranha
       if (!sign)
       {
         p_assert(h_index().modify(result.first,
-          typename m_type::update_numerical_cf(-result.first->numerical_cf())));
+          typename m_type::update_numerical_cf(-result.first->g_numerical_cf())));
       }
     }
     else
@@ -417,7 +511,7 @@ namespace piranha
       typename m_type::rational_type rational_cf;
 // Add or subtract according to request.
       m_type::cfs_algebraic_sum(
-        it->numerical_cf(),insert_m->numerical_cf(),it->rational_cf(),insert_m->rational_cf(),numerical_cf,
+        it->g_numerical_cf(),insert_m->g_numerical_cf(),it->g_rational_cf(),insert_m->g_rational_cf(),numerical_cf,
         rational_cf,sign);
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (numerical_cf.abs()<settings_manager::numerical_zero() || rational_cf==0)
@@ -505,7 +599,7 @@ namespace piranha
     const size_t w=v.size();
     p_assert(w<=width());
     size_t j;
-    expo_t ex1, ex2;
+    expo_type ex1, ex2;
     bool proceed;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
@@ -518,7 +612,7 @@ namespace piranha
           const size_t index=v[j].get<0>();
 // Make sure we are not going outside boundaries.
           p_assert(index < width());
-          ex1=it1->container()[index];
+          ex1=it1->g_container()[index];
 // it2 can be smaller, since we support multiplication by a narrower polynomial.
           if (it2->smaller(index))
           {
@@ -526,7 +620,7 @@ namespace piranha
           }
           else
           {
-            ex2=it2->container()[index];
+            ex2=it2->g_container()[index];
           }
           if ((ex1+ex2)>v[j].get<1>())
           {
@@ -559,12 +653,12 @@ namespace piranha
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(h_index().modify(it,typename m_type::update_rational_cf(n*it->rational_cf())));
+        p_assert(h_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
       }
       else
       {
-        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->numerical_cf(),
-          (-n)*it->rational_cf())));
+        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+          (-n)*it->g_rational_cf())));
       }
     }
   }
@@ -580,7 +674,7 @@ namespace piranha
     const it_h_index it_f=h_index().end();
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
-      p_assert(h_index().modify(it,typename m_type::update_numerical_cf(it->numerical_cf()*x)));
+      p_assert(h_index().modify(it,typename m_type::update_numerical_cf(it->g_numerical_cf()*x)));
     }
   }
 
@@ -601,12 +695,12 @@ namespace piranha
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(h_index().modify(it,typename m_type::update_rational_cf(it->rational_cf()/n)));
+        p_assert(h_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
       }
       else
       {
-        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->numerical_cf(),
-          it->rational_cf()/(-n))));
+        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+          it->g_rational_cf()/(-n))));
       }
     }
   }
@@ -653,7 +747,7 @@ namespace piranha
   template <class T, class Derived>
     inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &v) const
   {
-    if (set_.empty())
+    if (empty())
     {
       return true;
     }
@@ -684,51 +778,15 @@ namespace piranha
   }
 
 /// Basic real power.
-  template <class T, class Derived>
+/*  template <class T, class Derived>
     inline void base_polynomial<T,Derived>::basic_pow(const double &x, const vec_expo_index_limit limits &v)
   {
-// Special handling in case of empty polynomial.
-    if (set_.empty())
+    if (!pow_preliminary_checks())
     {
-      if (std::abs(x)<settings_manager::numerical_zero())
-      {
-        std::cout << "ERROR: want to calculate 0^0 in polynomial." << std::endl;
-        std::abort();
-      }
-      if (x<0)
-      {
-        std::cout << "ERROR: negative power of zero in polynomial." << std::endl;
-        std::abort();
-      }
-// 0^x, just return.
       return;
     }
-    if (std::abs(1-x)<settings_manager::numerical_zero())
+    if (pow_handle_special_cases(x))
     {
-// this^1.
-      return;
-    }
-    if (std::abs(x)<settings_manager::numerical_zero())
-    {
-// this^0.
-      clear();
-      insert(m_type(1));
-      return;
-    }
-// Requisite: first monomial of the polynomial must be purely numerical and positive.
-    if (d_index().begin()->is_symbolic() || d_index().begin()->numerical_cf().value() < 0)
-    {
-      std::cout << "Error: in raising polynomial to power, first monomial must be numerical and positive."
-        << std::endl;
-      std::abort();
-      return;
-    }
-// Optimization: if the first monomial, which is numerical, is also the only one, simply compute power.
-    if (length()==1)
-    {
-      Derived retval;
-      retval.insert(m_type(std::pow(d_index().begin()->numerical_cf()*d_index().begin()->rational_cf().get_d(),x)));
-      swap(retval);
       return;
     }
 // This is the remainder part of this, i.e. this without the leading term.
@@ -747,12 +805,31 @@ namespace piranha
       x.pow_suitable(is_suitable);
       if (!is_suitable.get<0>())
       {
-        std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self" << std::endl;
+        std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self." << std::endl;
         std::abort();
         return;
       }
+      if (v[i].get<1>() < 0)
+      {
+        std::cout << "Cannot accept a negative symbol limit when raising to power." << std::endl;
+        std::abort();
+        return;
+      }
+max_natural_power(v[i].get<1>(),)
+      if (is_suitable.get<1>() > iterations)
+      {
+        iterations=is_suitable.get<1>();
+      }
+    }
+    if (iterations < 0)
+    {
+      std::cout << "Negative iterations for power, returning self;
+      std::abort();
+      return;
     }
 
+
+max_natural_power(int limit, int min_expo) const
 
 
 
@@ -796,6 +873,6 @@ namespace piranha
 // Real case.
     retval.insert(d_index().begin()->pow(x));
     swap(retval);
-  }
+  }*/
 }
 #endif
