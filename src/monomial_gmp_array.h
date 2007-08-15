@@ -254,6 +254,7 @@ namespace piranha
       {
         const size_t w=width();
         p_assert(n<w);
+        retval.increase_size(w);
         p_assert(w==retval.width());
         const expo_type exponent=g_container()[n];
         retval.private_min_expo_=private_min_expo_;
@@ -283,9 +284,9 @@ namespace piranha
           --retval.private_container_[n];
 // Take care of degree and minimum exponent.
           --retval.private_degree_;
-          if (retval.private_container_[n] < retval.private_minimum_expo_)
+          if (retval.private_container_[n] < retval.private_min_expo_)
           {
-            retval.private_minimum_expo_=retval.private_container_[n];
+            retval.private_min_expo_=retval.private_container_[n];
           }
 // TODO: place assert to make sure we don't go out expo_type range?
 // This should be generalized, if we decide this way.
@@ -297,18 +298,6 @@ namespace piranha
       //bool operator<(const monomial_gmp_array &) const;
 // End INTERFACE definition.
 //-------------------------------------------------------
-/// Reserve space for exponents.
-/**
- * Postcondition: container is large enough to hold w elements. No assumptions can be made on
- * its contents.
- */
-      void reserve(const size_t &w)
-      {
-        if (w!=width())
-        {
-          private_container_.resize(w);
-        }
-      }
     protected:
       template <class U>
         void basic_assignment(const monomial_gmp_array<U> &);
@@ -623,11 +612,11 @@ namespace piranha
       {
         private_container_[i]=old[i];
       }
-    }
 // Refresh minimum exponent.
-    if (g_min_expo() > 0)
-    {
-      private_min_expo_=0;
+      if (g_min_expo() > 0)
+      {
+        private_min_expo_=0;
+      }
     }
   }
 
