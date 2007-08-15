@@ -344,8 +344,6 @@ namespace piranha
 // TODO check if these are really used.
       void mult_by_int(int);
       void mult_by_double(const double &);
-      /*template <class Derived2>
-        void mult_by_self(const Derived2 &);*/
       //void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
