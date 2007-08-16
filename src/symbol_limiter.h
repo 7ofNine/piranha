@@ -129,6 +129,10 @@ namespace piranha
           {
             return private_limits_.size();
           }
+          const expo_type &min_limit() const
+          {
+            return private_min_limit_;
+          }
         private:
 // Make default ctor private, just to make sure it is not called.
           index_limit() {}
