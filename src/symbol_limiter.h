@@ -33,32 +33,12 @@
 
 namespace piranha
 {
-  typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
-
   class symbol_limiter
   {
     public:
       static void set_limit(psym_p, expo_type);
       static void set_limit(const std::string &, expo_type);
       static void clear();
-      static void get_limits_index(const vector_psym_p &v, vec_expo_index_limit &retval)
-      {
-        p_assert(retval.size()==0);
-        const size_t w=v.size();
-        map_iterator mit;
-        const map_iterator mit_f=lmap_.end();
-        boost::tuple<size_t,expo_type> insert_tuple;
-        for (size_t i=0;i<w;++i)
-        {
-          mit=find_expo_limit(v[i]);
-          if (mit!=mit_f)
-          {
-            insert_tuple.get<0>()=i;
-            insert_tuple.get<1>()=mit->limit;
-            retval.push_back(insert_tuple);
-          }
-        }
-      }
       static void put();
     private:
       symbol_limiter()
@@ -100,7 +80,6 @@ namespace piranha
         }
         expo_type   new_n_;
       };
-
     public:
       typedef boost::multi_index_container < limit_element,
         boost::multi_index::indexed_by <
@@ -110,8 +89,53 @@ namespace piranha
         >
         >
         limits_map;
-//typedef limits_map::iterator map_iterator;
       typedef limits_map::nth_index<0>::type::iterator map_iterator;
+      class index_limit
+      {
+          typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
+        public:
+          index_limit(const vector_psym_p &v):private_min_limit_(0),private_limits_()
+          {
+            if (lmap_.empty())
+            {
+              return;
+            }
+// Initial limit is the first element of limit map.
+            private_min_limit_=lmap_.begin()->limit;
+            const size_t w=v.size();
+            map_iterator mit;
+            const map_iterator mit_f=lmap_.end();
+            boost::tuple<size_t,expo_type> insert_tuple;
+            for (size_t i=0;i<w;++i)
+            {
+              mit=find_expo_limit(v[i]);
+              if (mit!=mit_f)
+              {
+                insert_tuple.get<0>()=i;
+                insert_tuple.get<1>()=mit->limit;
+                private_limits_.push_back(insert_tuple);
+                if (insert_tuple.get<1>() < private_min_limit_)
+                {
+                  private_min_limit_ = insert_tuple.get<1>();
+                }
+              }
+            }
+          }
+          const boost::tuple<size_t,expo_type> &operator[](const size_t &n) const
+          {
+            return private_limits_[n];
+          }
+          size_t size() const
+          {
+            return private_limits_.size();
+          }
+        private:
+// Make default ctor private, just to make sure it is not called.
+          index_limit() {}
+// Data members.
+          expo_type             private_min_limit_;
+          vec_expo_index_limit  private_limits_;
+      };
     private:
 /// Check whether a limit has already been set for a symbol.
       static map_iterator find_expo_limit(psym_p it)
@@ -122,5 +146,8 @@ namespace piranha
     private:
       static limits_map   lmap_;
   };
+
+// Raise index_limit to piranha namespace.
+  typedef symbol_limiter::index_limit index_limit;
 }
 #endif

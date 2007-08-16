@@ -208,7 +208,7 @@ namespace piranha
         return set_.empty();
       }
       template <class Derived2>
-        void mult_by_self(const Derived2 &, const vec_expo_index_limit &);
+        void mult_by_self(const Derived2 &, const index_limit &);
     protected:
       void insert(const m_type &, bool sign=true);
       degree_index &d_index()
@@ -540,7 +540,7 @@ namespace piranha
   template <class T, class Derived>
     template <class Derived2>
     inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p,
-    const vec_expo_index_limit &v)
+    const index_limit &v)
   {
 // This function is to be used only from Poisson series, in which merging of arguments should
 // ensure the validity of the following assert.

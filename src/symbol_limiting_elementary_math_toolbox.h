@@ -48,8 +48,7 @@ namespace piranha
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.s_index().end();
         const it_s_index it_f=derived_cast->s_index().end();
-        vec_expo_index_limit limits;
-        symbol_limiter::get_limits_index(derived_cast->cf_s_vec(),limits);
+        index_limit limits(derived_cast->cf_s_vec());
         for (it_s_index it=derived_cast->s_index().begin();it!=it_f;++it)
         {
           tmp_term=*it;
@@ -75,8 +74,7 @@ namespace piranha
         it_s_index2 it2;
         const it_s_index it2_i=ps2.s_index().begin();
         it_s_index it1, it_hint=retval.s_index().end();
-        vec_expo_index_limit limits;
-        symbol_limiter::get_limits_index(derived_cast->cf_s_vec(),limits);
+        index_limit limits(derived_cast->cf_s_vec());
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
           for (it2=it2_i;it2!=it2_f;++it2)
@@ -103,7 +101,7 @@ namespace piranha
       }
       template <class T,class U>
         static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair,
-        const vec_expo_index_limit &limits)
+        const index_limit &limits)
       {
         typedef typename Derived::ancestor::cf_type cf_type;
         cf_type new_c=t1.g_cf();
