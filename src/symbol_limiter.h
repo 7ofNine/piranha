@@ -80,7 +80,6 @@ namespace piranha
         }
         expo_type   new_n_;
       };
-    public:
       typedef boost::multi_index_container < limit_element,
         boost::multi_index::indexed_by <
         boost::multi_index::hashed_unique <
@@ -90,6 +89,7 @@ namespace piranha
         >
         limits_map;
       typedef limits_map::nth_index<0>::type::iterator map_iterator;
+    public:
       class index_limit
       {
           typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
