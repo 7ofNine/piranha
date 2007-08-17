@@ -545,12 +545,21 @@ namespace piranha
 // This function is to be used only from Poisson series, in which merging of arguments should
 // ensure the validity of the following assert.
     p_assert(width()>=p.width());
+    if (empty())
+    {
+      return;
+    }
     if ((void *)&p==(void *)this)
     {
       mult_by_self(Derived2(p),v);
       return;
     }
     Derived retval;
+    if (p.empty())
+    {
+      swap(retval);
+      return;
+    }
     m_type temp_m;
     const it_h_index it_f1=h_index().end();
     const typename Derived2::it_h_index it_f2=p.h_index().end();
@@ -562,17 +571,18 @@ namespace piranha
     bool proceed;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
+      it2=p.h_index().begin();
       min_expo1=it1->g_min_expo();
       if (min_expo1+it2->g_min_expo() > v.g_min_expo())
       {
-        std::cout << "LolEnd1\n";
+        std::cout << "Shortcut1\n";
         break;
       }
-      for (it2=p.h_index().begin();it2!=it_f2;++it2)
+      for (;it2!=it_f2;++it2)
       {
         if (min_expo1+it2->g_min_expo() > v.g_min_expo())
         {
-          std::cout << "LolEnd2\n";
+          std::cout << "Shortcut2\n";
           break;
         }
         proceed=true;
