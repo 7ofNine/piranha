@@ -134,7 +134,7 @@ namespace piranha
           {
             return private_limits_.size();
           }
-          const expo_type &g_min_limit() const
+          const expo_type &g_min_expo() const
           {
             return private_min_limit_;
           }
