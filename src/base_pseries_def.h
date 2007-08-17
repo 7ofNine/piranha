@@ -23,6 +23,7 @@
 
 #include <boost/multi_index_container.hpp>
 
+#include "base_pseries_hooks.h"
 #include "phase_list.h"
 #include "psymbol.h"
 
@@ -38,7 +39,7 @@ namespace piranha
  * @see piranha:ps, default specialized Poisson series class.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    class base_pseries
+    class base_pseries:base_pseries_hooks<base_pseries<Cf,Trig,Term,I,Derived> >
   {
     public:
 /// Alias for self.
@@ -413,26 +414,6 @@ namespace piranha
         base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
       template <class Derived2>
         bool args_compatible(const Derived2 &) const;
-// Hooks.
-/// Default implementation of assignment hook.
-/**
- * Templatized this way because we want to be able to assign real series to complex ones.
- */
-      template <class Derived2>
-        void assignment_hook(const Derived2 &)
-        {std::cout << "Default hook called!" << std::endl;}
-/// Default implementation of swap hook.
-      void swap_hook(Derived &)
-        {std::cout << "Default hook called!" << std::endl;}
-/// Default implementation of the hook for post-insertion of a new term.
-      void new_term_post_insertion_hook(const term_type &)
-        {std::cout << "Default hook called!" << std::endl;}
-/// Default implementation of the hook for post-erase of a term.
-      void term_pre_erase_hook(const term_type &)
-        {std::cout << "Default hook called!" << std::endl;}
-/// Default implementation of the hook for pre-update of a term.
-      void term_pre_update_hook(const term_type &, const cf_type &)
-        {std::cout << "Default hook called!" << std::endl;}
     private:
 /// Functor to update the coefficient.
       struct modifier_update_cf
