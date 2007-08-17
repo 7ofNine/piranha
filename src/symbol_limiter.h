@@ -90,6 +90,11 @@ namespace piranha
         limits_map;
       typedef limits_map::nth_index<0>::type::iterator map_iterator;
     public:
+/// Limits' indices.
+/**
+ * When constructed from a vector of pointers to symbols, it will build a vector specifying limits
+ * in terms of the symbols' positions in the input vector.
+ */
       class index_limit
       {
           typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
@@ -129,7 +134,7 @@ namespace piranha
           {
             return private_limits_.size();
           }
-          const expo_type &min_limit() const
+          const expo_type &g_min_limit() const
           {
             return private_min_limit_;
           }
