@@ -70,9 +70,8 @@ namespace piranha
         term_type tmp1, tmp2;
         boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->s_index().end();
-        const it_s_index2 it2_f=ps2.s_index().end();
+        const it_s_index2 it2_i=ps2.s_index().begin(), it2_f=ps2.s_index().end();
         it_s_index2 it2;
-        const it_s_index it2_i=ps2.s_index().begin();
         it_s_index it1, it_hint=retval.s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
