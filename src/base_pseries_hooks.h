@@ -34,22 +34,22 @@ namespace piranha
  */
       template <class Derived2>
         void assignment_hook(const Derived2 &)
-        {std::cout << "Default hook called!" << std::endl;}
+        {}
 /// Default implementation of swap hook.
       void swap_hook(Derived &)
-        {std::cout << "Default hook called!" << std::endl;}
+        {}
 /// Default implementation of the hook for post-insertion of a new term.
       template <class Term>
         void new_term_post_insertion_hook(const Term &)
-        {std::cout << "Default hook called!" << std::endl;}
+        {}
 /// Default implementation of the hook for post-erase of a term.
       template <class Term>
         void term_pre_erase_hook(const Term &)
-        {std::cout << "Default hook called!" << std::endl;}
+        {}
 /// Default implementation of the hook for pre-update of a term.
       template <class Term, class Cf>
       void term_pre_update_hook(const Term &, const Cf &)
-        {std::cout << "Default hook called!" << std::endl;}
+        {}
   };
 }
 
