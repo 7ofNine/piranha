@@ -21,6 +21,8 @@
 #ifndef PIRANHA_SYMBOL_LIMITING_ELEMENTARY_MATH_TOOLBOX_H
 #define PIRANHA_SYMBOL_LIMITING_ELEMENTARY_MATH_TOOLBOX_H
 
+#include <boost/foreach.hpp>
+
 namespace piranha
 {
 /// Elementary math toolbox for symbolic series.
@@ -47,11 +49,10 @@ namespace piranha
         tmp_ps.merge_args(*derived_cast);
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.s_index().end();
-        const it_s_index it_f=derived_cast->s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
-        for (it_s_index it=derived_cast->s_index().begin();it!=it_f;++it)
+        BOOST_FOREACH(term_type t,derived_cast->s_index())
         {
-          tmp_term=*it;
+          tmp_term=t;
           tmp_term.s_cf().mult_by_self(cf,limits);
           it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
         }
