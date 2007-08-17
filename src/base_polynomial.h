@@ -573,14 +573,14 @@ namespace piranha
     {
       it2=p.h_index().begin();
       min_expo1=it1->g_min_expo();
-      if (min_expo1+it2->g_min_expo() > v.g_min_expo())
+      if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
       {
         std::cout << "Shortcut1\n";
         break;
       }
       for (;it2!=it_f2;++it2)
       {
-        if (min_expo1+it2->g_min_expo() > v.g_min_expo())
+        if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
         {
           std::cout << "Shortcut2\n";
           break;
