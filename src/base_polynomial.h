@@ -564,6 +564,7 @@ namespace piranha
     const it_h_index it_f1=h_index().end();
     const typename Derived2::it_h_index it_f2=p.h_index().end();
     typename Derived2::it_h_index it2;
+    const typename Derived2::it_h_index it2_i=p.h_index().begin();
     const size_t w=v.size();
     p_assert(w<=width());
     size_t j;
@@ -571,7 +572,7 @@ namespace piranha
     bool proceed;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
-      it2=p.h_index().begin();
+      it2=it2_i;
       min_expo1=it1->g_min_expo();
 // TODO: check here if it is worth to cache the result of "w>0" (in that case we need to write different cycles).
       if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
