@@ -573,6 +573,7 @@ namespace piranha
     {
       it2=p.h_index().begin();
       min_expo1=it1->g_min_expo();
+// TODO: check here if it is worth to cache the result of "w>0" (in that case we need to write different cycles).
       if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
       {
         std::cout << "Shortcut1\n";
