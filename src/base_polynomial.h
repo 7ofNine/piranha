@@ -376,10 +376,10 @@ namespace piranha
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::print_plain(std::ostream &out_stream, const vector_psym_p &cv) const
   {
-// TODO: cache end() here.
     stream_manager::setup_print(out_stream);
     out_stream << '{';
-    for (it_d_index it=d_index().begin();it!=d_index().end();++it)
+    const it_d_index it_f=d_index().end();
+    for (it_d_index it=d_index().begin();it!=it_f;++it)
     {
       it->print_plain(out_stream,cv);
       ++it;
