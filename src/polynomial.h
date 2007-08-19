@@ -137,11 +137,9 @@ namespace std
       typedef typename m_type::numerical_type numerical_type;
       typedef typename real_m_type::numerical_type real_numerical_type;
 // Access to iterators and indices of base.
-      typedef typename ancestor::degree_index degree_index;
-      typedef typename degree_index::iterator it_d_index;
-      typedef typename ancestor::hashed_index hashed_index;
-      typedef typename hashed_index::iterator it_h_index;
-      typedef typename real_type::it_h_index real_it_h_index;
+      //typedef typename ancestor::expo_index expo_index;
+      typedef typename ancestor::iterator iterator;
+      typedef typename real_type::iterator real_iterator;
 // Start INTERFACE definition for the complex specialization.
 //-------------------------------------------------------
     public:
@@ -161,17 +159,17 @@ namespace std
 // larger and smaller polynomials.
 // In any case, this is a problem pseries should take care of, so maybe:
 // FIXME: assert equality between widths once we are using polynomials exclusively in pseries.
-        real_it_h_index it, it_f;
-        it_f=r.h_index().end();
+        real_iterator it, it_f;
+        it_f=r.e_index().end();
 // Insert real part.
-        for (it=r.h_index().begin();it!=it_f;++it)
+        for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
         }
 // Insert imaginary part.
-        it_f=i.h_index().end();
+        it_f=i.e_index().end();
         m_type tmp;
-        for (it=i.h_index().begin();it!=it_f;++it)
+        for (it=i.e_index().begin();it!=it_f;++it)
         {
           tmp=*it;
           tmp.numerical_cf()=numerical_type(real_numerical_type(0.),it->numerical_cf());
@@ -185,10 +183,10 @@ namespace std
       explicit complex(const real_type &r)
       {
 // FIXME: share with ctor from real+imaginary?
-        real_it_h_index it, it_f;
-        it_f=r.h_index().end();
+        real_iterator it, it_f;
+        it_f=r.e_index().end();
 // Insert real part.
-        for (it=r.h_index().begin();it!=it_f;++it)
+        for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
         }
@@ -223,10 +221,10 @@ explicit complex(const double &x1, const double x2):
 // FIXME: share this code with above ctors?
 // FIXME: use hinted insertion for improved performance.
         real_type retval;
-        it_h_index it, it_f;
-        it_f=ancestor::h_index().end();
+        iterator it, it_f;
+        it_f=ancestor::e_index().end();
 // Insert real part.
-        for (it=ancestor::h_index().begin();it!=it_f;++it)
+        for (it=ancestor::e_index().begin();it!=it_f;++it)
         {
           real_m_type tmp(it->numerical_cf().real(),it->rational_cf(),it->container());
           retval.insert(tmp);
@@ -239,10 +237,10 @@ explicit complex(const double &x1, const double x2):
 // FIXME: share this code with above ctors?
 // FIXME: share also with real().
         real_type retval;
-        it_h_index it, it_f;
-        it_f=ancestor::h_index().end();
+        iterator it, it_f;
+        it_f=ancestor::e_index().end();
 // Insert real part.
-        for (it=ancestor::h_index().begin();it!=it_f;++it)
+        for (it=ancestor::e_index().begin();it!=it_f;++it)
         {
           real_m_type tmp(it->numerical_cf().imag(),it->rational_cf(),it->container());
           retval.insert(tmp);
@@ -255,10 +253,10 @@ explicit complex(const double &x1, const double x2):
       void set_real(const real_type &r)
       {
         ancestor::clear();
-        real_it_h_index it, it_f;
-        it_f=r.h_index().end();
+        real_iterator it, it_f;
+        it_f=r.e_index().end();
 // Insert real part.
-        for (it=r.h_index().begin();it!=it_f;++it)
+        for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
         }
@@ -267,10 +265,10 @@ explicit complex(const double &x1, const double x2):
       void set_imag(const real_type &i)
       {
         ancestor::clear();
-        real_it_h_index it, it_f;
-        it_f=i.h_index().end();
+        real_iterator it, it_f;
+        it_f=i.e_index().end();
 // Insert imag part.
-        for (it=i.h_index().begin();it!=it_f;++it)
+        for (it=i.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(numerical_type(real_numerical_type(0.),it->numerical_cf()),
             it->rational_cf(),it->container()));

@@ -23,7 +23,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -36,7 +36,7 @@ namespace piranha
 {
 /// Base polynomial class.
 /**
- * Implemented as a sorted and hashed multiindex container for monomials M.
+ * Implemented as a sorted multiindex container for monomials M.
  */
   template <class T, class Derived>
     class base_polynomial
@@ -44,36 +44,15 @@ namespace piranha
     public:
       typedef monomial_gmp_array<T> m_type;
     private:
-/// Tag for the degree index.
-      struct degree
-        {}
-      ;
-/// Tag for the hashed index.
-      struct hash
-        {}
-      ;
       typedef boost::multi_index::indexed_by <
-        boost::multi_index::ordered_non_unique <
-        boost::multi_index::tag<degree>,
-        boost::multi_index::composite_key <
-        m_type,
-        boost::multi_index::const_mem_fun < m_type, expo_type,
-        &m_type::g_min_expo > ,
-        boost::multi_index::const_mem_fun < m_type, degree_type,
-        &m_type::g_degree > >
-        >,
-        boost::multi_index::hashed_unique <
-        boost::multi_index::tag<hash>,
-        boost::multi_index::identity<m_type> >
+        boost::multi_index::ordered_unique <
+        boost::multi_index::identity<m_type>
+        >
         > index_type;
     public:
       typedef boost::multi_index_container <m_type, index_type> set_type;
-      typedef typename set_type::template index<degree>
-        ::type degree_index;
-      typedef typename degree_index::iterator it_d_index;
-      typedef typename set_type::template index<hash>
-        ::type hashed_index;
-      typedef typename hashed_index::iterator it_h_index;
+      typedef typename set_type::template nth_index<0>::type expo_index;
+      typedef typename expo_index::iterator iterator;
       friend class std::complex<Derived>;
 // Start INTERFACE definition.
 //-------------------------------------------------------
@@ -140,7 +119,7 @@ namespace piranha
         }
         else
         {
-          return d_index().begin()->g_degree();
+          return e_index().begin()->g_degree();
         }
       }
       expo_type g_min_expo() const
@@ -151,7 +130,7 @@ namespace piranha
         }
         else
         {
-          return d_index().begin()->g_min_expo();
+          return e_index().begin()->g_min_expo();
         }
       }
 /// Check whether base_polynomial is larger than size w.
@@ -184,8 +163,8 @@ namespace piranha
       {
         retval.clear();
         m_type tmp_m;
-        const it_d_index it_f=d_index().end();
-        for (it_d_index it=d_index().begin();it!=it_f;++it)
+        const iterator it_f=e_index().end();
+        for (iterator it=e_index().begin();it!=it_f;++it)
         {
           it->partial(n,tmp_m);
           retval.insert(tmp_m);
@@ -193,15 +172,10 @@ namespace piranha
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
-      const degree_index &d_index() const
+      const expo_index &e_index() const
       {
         return set_.template get
-          <degree>();
-      }
-      const hashed_index &h_index() const
-      {
-        return set_.template get
-          <hash>();
+          <0>();
       }
       bool empty() const
       {
@@ -211,15 +185,10 @@ namespace piranha
         void mult_by_self(const Derived2 &, const index_limit &);
     protected:
       void insert(const m_type &, bool sign=true);
-      degree_index &d_index()
+      expo_index &e_index()
       {
         return set_.template get
-          <degree>();
-      }
-      hashed_index &h_index()
-      {
-        return set_.template get
-          <hash>();
+          <0>();
       }
       size_t width() const
       {
@@ -227,7 +196,7 @@ namespace piranha
         {
           return 0;
         }
-        return d_index().begin()->width();
+        return e_index().begin()->width();
       }
 /// Check if the polynomial can be raised to real power.
       bool pow_preliminary_checks() const
@@ -235,7 +204,7 @@ namespace piranha
 // Requisite: first monomial of the polynomial must be purely numerical and positive.
         if (length() > 0)
         {
-          if (d_index().begin()->is_symbolic() || d_index().begin()->g_numerical_cf().value() < 0)
+          if (e_index().begin()->is_symbolic() || e_index().begin()->g_numerical_cf().value() < 0)
           {
             std::cout << "Error: in raising polynomial to power, first monomial must be numerical and positive."
               << std::endl;
@@ -281,7 +250,7 @@ namespace piranha
         if (length()==1)
         {
           Derived retval;
-          retval.insert(m_type(std::pow(d_index().begin()->g_numerical_cf()*d_index().begin()->g_rational_cf().get_d(),x)));
+          retval.insert(m_type(std::pow(e_index().begin()->g_numerical_cf()*e_index().begin()->g_rational_cf().get_d(),x)));
           swap(retval);
           return true;
         }
@@ -293,10 +262,10 @@ namespace piranha
 // If assert below fails, the retval tuple may end up uninitialized.
         p_assert(length()>=1);
 // The minimum index until now is the first monomials's.
-        s.get<1>()=d_index().begin()->container()[n];
+        s.get<1>()=e_index().begin()->container()[n];
         int candidate;
-        const it_d_index it_f=d_index().end();
-        for (it_d_index it=d_index().begin();it!=it_f;++it)
+        const iterator it_f=e_index().end();
+        for (iterator it=e_index().begin();it!=it_f;++it)
         {
           candidate=it->container()[n];
           if (candidate<=0)
@@ -378,12 +347,12 @@ namespace piranha
   {
     stream_manager::setup_print(out_stream);
     out_stream << '{';
-    const it_d_index it_f=d_index().end();
-    for (it_d_index it=d_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       it->print_plain(out_stream,cv);
       ++it;
-      if (it!=d_index().end())
+      if (it!=e_index().end())
       {
         out_stream << '&';
       }
@@ -398,9 +367,9 @@ namespace piranha
   {
 // TODO: cache end() here.
     stream_manager::setup_print(out_stream);
-    for (it_d_index it=d_index().begin();it!=d_index().end();++it)
+    for (iterator it=e_index().begin();it!=e_index().end();++it)
     {
-      if (it->g_numerical_cf().is_positive() && it!=d_index().begin())
+      if (it->g_numerical_cf().is_positive() && it!=e_index().begin())
       {
         out_stream << std::string("$+$");
       }
@@ -414,8 +383,8 @@ namespace piranha
   {
     p_assert(w>=width());
     Derived retval;
-    const it_d_index it_f=d_index().end();
-    for (it_d_index it=d_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       m_type tmp_m(*it);
       tmp_m.increase_size(w);
@@ -436,8 +405,8 @@ namespace piranha
     inline void base_polynomial<T,Derived>::prepend_args(const size_t &n)
   {
     Derived retval;
-    const it_d_index it_f=d_index().end();
-    for (it_d_index it=d_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       m_type tmp_m(*it);
       tmp_m.prepend_args(n);
@@ -479,21 +448,26 @@ namespace piranha
     {
       insert_m=new_m;
     }
-    it_h_index it=h_index().find(*insert_m);
-    if (it==h_index().end())
+    std::cout << "Start find\n";
+    iterator it=e_index().find(*insert_m);
+    std::cout << "end find\n";
+    if (it==e_index().end())
     {
 // The term is NOT a duplicate, insert in the set.
-      std::pair<it_h_index,bool> result=h_index().insert(*insert_m);
+      std::cout << "Not duplicate\n";
+      std::pair<iterator,bool> result=e_index().insert(*insert_m);
       p_assert(result.second);
 // If requested, subtract.
       if (!sign)
       {
-        p_assert(h_index().modify(result.first,
+        p_assert(e_index().modify(result.first,
           typename m_type::update_numerical_cf(-result.first->g_numerical_cf())));
       }
+      std::cout << "Done Not duplicate\n";
     }
     else
     {
+      std::cout << "Duplicate\n";
 // The term is in the set, hence an existing term will be modified.
       typename m_type::numerical_type numerical_cf;
       typename m_type::rational_type rational_cf;
@@ -504,12 +478,13 @@ namespace piranha
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (numerical_cf.abs()<settings_manager::numerical_zero() || rational_cf==0)
       {
-        h_index().erase(it);
+        e_index().erase(it);
       }
       else
       {
-        p_assert(h_index().modify(it,typename m_type::update_cfs(numerical_cf,rational_cf)));
+        p_assert(e_index().modify(it,typename m_type::update_cfs(numerical_cf,rational_cf)));
       }
+      std::cout << "Done duplicate\n";
     }
     delete new_m;
   }
@@ -524,8 +499,8 @@ namespace piranha
     }
     else
     {
-      it_h_index it_f=p.h_index().end();
-      for (it_h_index it=p.h_index().begin();it!=it_f;++it)
+      iterator it_f=p.e_index().end();
+      for (iterator it=p.e_index().begin();it!=it_f;++it)
       {
         insert(*it,op);
       }
@@ -561,17 +536,17 @@ namespace piranha
       return;
     }
     m_type temp_m;
-    const it_h_index it_f1=h_index().end();
-    const typename Derived2::it_h_index it_f2=p.h_index().end();
-    typename Derived2::it_h_index it2;
-    const typename Derived2::it_h_index it2_i=p.h_index().begin();
+    const iterator it_f1=e_index().end();
+    const typename Derived2::iterator it_f2=p.e_index().end();
+    typename Derived2::iterator it2;
+    const typename Derived2::iterator it2_i=p.e_index().begin();
     const size_t w=v.size();
     p_assert(w<=width());
     size_t j;
     expo_type ex1, ex2, min_expo1;
     const expo_type limit_min_expo=v.g_min_expo();
     bool proceed;
-    for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
+    for (iterator it1=e_index().begin();it1!=it_f1;++it1)
     {
       it2=it2_i;
       min_expo1=it1->g_min_expo();
@@ -629,18 +604,18 @@ namespace piranha
       set_.clear();
       return;
     }
-    const it_h_index it_f=h_index().end();
+    const iterator it_f=e_index().end();
 // TODO: Move "if" outside "for" and make two cycles to optimize?
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(h_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
+        p_assert(e_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
       }
       else
       {
-        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+        p_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
           (-n)*it->g_rational_cf())));
       }
     }
@@ -654,10 +629,10 @@ namespace piranha
       set_.clear();
       return;
     }
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
-      p_assert(h_index().modify(it,typename m_type::update_numerical_cf(it->g_numerical_cf()*x)));
+      p_assert(e_index().modify(it,typename m_type::update_numerical_cf(it->g_numerical_cf()*x)));
     }
   }
 
@@ -671,18 +646,18 @@ namespace piranha
       std::cout << "FATAL: division by zero." << std::endl;
       std::exit(1);
     }
-    const it_h_index it_f=h_index().end();
+    const iterator it_f=e_index().end();
 // TODO: Move "if" outside "for" and make two cycles to optimize?
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(h_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
+        p_assert(e_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
       }
       else
       {
-        p_assert(h_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+        p_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
           it->g_rational_cf()/(-n))));
       }
     }
@@ -694,8 +669,8 @@ namespace piranha
   {
     p_assert(width()==v.size());
     eval_type retval=0;
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       retval+=it->t_eval(t,v);
     }
@@ -706,7 +681,7 @@ namespace piranha
   template <class T, class Derived>
     inline bool base_polynomial<T,Derived>::checkup(const size_t &s) const
   {
-    const it_h_index it_f=h_index().end();
+    const iterator it_f=e_index().end();
     size_t w=width();
 // Let's check that base_polynomial's size is equal to s.
     if (s!=w)
@@ -714,7 +689,7 @@ namespace piranha
       std::cout << "Size mismatch in base_polynomial." << std::endl;
     }
 // Let's check that all monomials have same size.
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       if (!it->checkup(w))
       {
@@ -737,8 +712,8 @@ namespace piranha
     inline double base_polynomial<T,Derived>::norm(const vector_psym_p &v) const
   {
     eval_type retval=0.;
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const iterator it_f=e_index().end();
+    for (iterator it=e_index().begin();it!=it_f;++it)
     {
       retval+=it->t_eval(0,v);
     }
@@ -759,7 +734,7 @@ namespace piranha
     }
 // This is the remainder part of this, i.e. this without the leading term.
     Derived x(*static_cast<Derived *>(this));
-    x.d_index().erase(x.d_index().begin());
+    x.e_index().erase(x.e_index().begin());
 // Now we have to check if with the provided vector for symbol limits we effectively reach a point after which
 // the binomial expansion will lead to null polynomials being created. We must stop at that point.
 // In binomial expansions, "x" is raised to a power equal to the number of iterations.
@@ -839,7 +814,7 @@ max_natural_power(int limit, int min_expo) const
     }
     Derived retval;
 // Real case.
-    retval.insert(d_index().begin()->pow(x));
+    retval.insert(e_index().begin()->pow(x));
     swap(retval);
   }*/
 }
