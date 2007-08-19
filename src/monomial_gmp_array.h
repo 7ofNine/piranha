@@ -291,14 +291,12 @@ namespace piranha
 // Operators.
       template <class U>
         monomial_gmp_array &operator=(const monomial_gmp_array<U> &);
-      //bool operator<(const monomial_gmp_array &) const;
+      bool operator<(const monomial_gmp_array &) const;
 // End INTERFACE definition.
 //-------------------------------------------------------
     protected:
       template <class U>
         void basic_assignment(const monomial_gmp_array<U> &);
-      template <class U>
-        bool basic_comparison(const U &) const;
       bool is_symbolic() const;
     private:
       expo_type                   private_min_expo_;
@@ -482,26 +480,43 @@ namespace piranha
   }
 
 /// Operator less-than.
-// FIXME: is this used?
-/*  template <class T>
+  template <class T>
     inline bool monomial_gmp_array<T>::operator<(const monomial_gmp_array &m2) const
   {
     p_assert(width()==m2.width());
+    const expo_type ex1=g_min_expo(), ex2=m2.g_min_expo();
+    if (ex1 < ex2)
+    {
+      return true;
+    }
+    if (ex1 > ex2)
+    {
+      return false;
+    }
+    const degree_type deg1=g_degree(), deg2=m2.g_degree();
+    if (deg1 < deg2)
+    {
+      return true;
+    }
+    if (deg1 > deg2)
+    {
+      return false;
+    }
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]<m2.container_[i])
+      if (g_container()[i]<m2.g_container()[i])
       {
         return true;
       }
-      if (container_[i]>m2.container_[i])
+      if (g_container()[i]>m2.g_container()[i])
       {
         return false;
       }
     }
-    std::cout << "GWABBBBBBBB!!!!" << std::endl;
-    std::exit(1);
-  }*/
+// The two monomials are equal.
+    return false;
+  }
 
 /// Basic assignment.
 /**
@@ -573,13 +588,6 @@ namespace piranha
 /// Test for equality.
   template <class T>
     inline bool monomial_gmp_array<T>::operator==(const monomial_gmp_array &m2) const
-  {
-    return basic_comparison(m2);
-  }
-
-  template <class T>
-    template <class U>
-    inline bool monomial_gmp_array<T>::basic_comparison(const U &m2) const
   {
     const size_t w=width();
     p_assert(w==m2.width());
