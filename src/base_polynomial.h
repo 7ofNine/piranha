@@ -448,38 +448,36 @@ namespace piranha
     {
       insert_m=new_m;
     }
-    iterator it=e_index().find(*insert_m);
-    if (it==e_index().end())
+    const std::pair<iterator,bool> insert_result=e_index().insert(*insert_m);
+    if (insert_result.second)
     {
-// The term is NOT a duplicate, insert in the set.
-      std::pair<iterator,bool> result=e_index().insert(*insert_m);
-      p_assert(result.second);
-// If requested, subtract.
+// The term is NOT a duplicate, it has been inserted in the set; if requested, subtract.
       if (!sign)
       {
-        p_assert(e_index().modify(result.first,
-          typename m_type::update_numerical_cf(-result.first->g_numerical_cf())));
+        p_assert(e_index().modify(insert_result.first,
+          typename m_type::update_numerical_cf(-insert_result.first->g_numerical_cf())));
       }
     }
     else
     {
 // The term is in the set, hence an existing term will be modified.
+// TODO: place these into class typedefs?
       typename m_type::numerical_type numerical_cf;
       typename m_type::rational_type rational_cf;
 // Add or subtract according to request.
       m_type::cfs_algebraic_sum(
-        it->g_numerical_cf(),insert_m->g_numerical_cf(),it->g_rational_cf(),insert_m->g_rational_cf(),numerical_cf,
+        insert_result.first->g_numerical_cf(),insert_m->g_numerical_cf(),
+        insert_result.first->g_rational_cf(),insert_m->g_rational_cf(),numerical_cf,
         rational_cf,sign);
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (numerical_cf.abs()<settings_manager::numerical_zero() || rational_cf==0)
       {
-        e_index().erase(it);
+        e_index().erase(insert_result.first);
       }
       else
       {
-        p_assert(e_index().modify(it,typename m_type::update_cfs(numerical_cf,rational_cf)));
+        p_assert(e_index().modify(insert_result.first,typename m_type::update_cfs(numerical_cf,rational_cf)));
       }
-      std::cout << "Done duplicate\n";
     }
     delete new_m;
   }
