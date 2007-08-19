@@ -569,20 +569,21 @@ namespace piranha
     p_assert(w<=width());
     size_t j;
     expo_type ex1, ex2, min_expo1;
+    const expo_type limit_min_expo=v.g_min_expo();
     bool proceed;
     for (it_h_index it1=h_index().begin();it1!=it_f1;++it1)
     {
       it2=it2_i;
       min_expo1=it1->g_min_expo();
 // TODO: check here if it is worth to cache the result of "w>0" (in that case we need to write different cycles).
-      if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
+      if (w>0 && min_expo1+it2->g_min_expo() > limit_min_expo)
       {
         std::cout << "Shortcut1\n";
         break;
       }
       for (;it2!=it_f2;++it2)
       {
-        if (w>0 && min_expo1+it2->g_min_expo() > v.g_min_expo())
+        if (w>0 && min_expo1+it2->g_min_expo() > limit_min_expo)
         {
           std::cout << "Shortcut2\n";
           break;
