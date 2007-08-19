@@ -587,6 +587,8 @@ namespace piranha
     return algebraic_sum<-1>(t2);
   }
 
+// TODO: possible optimization: incorporate a return value in the algebraic sum, so that we can avoid the assignments
+// here. The idea is that we exploit the already allocated list elements in ret1 and ret2 without the need to allocate more.
   inline void trig_slist::trigmult(const trig_slist &l2, trig_slist &ret1, trig_slist &ret2) const
   {
     ret1=*this;
