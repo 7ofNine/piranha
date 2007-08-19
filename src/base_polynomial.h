@@ -448,13 +448,10 @@ namespace piranha
     {
       insert_m=new_m;
     }
-    std::cout << "Start find\n";
     iterator it=e_index().find(*insert_m);
-    std::cout << "end find\n";
     if (it==e_index().end())
     {
 // The term is NOT a duplicate, insert in the set.
-      std::cout << "Not duplicate\n";
       std::pair<iterator,bool> result=e_index().insert(*insert_m);
       p_assert(result.second);
 // If requested, subtract.
@@ -463,11 +460,9 @@ namespace piranha
         p_assert(e_index().modify(result.first,
           typename m_type::update_numerical_cf(-result.first->g_numerical_cf())));
       }
-      std::cout << "Done Not duplicate\n";
     }
     else
     {
-      std::cout << "Duplicate\n";
 // The term is in the set, hence an existing term will be modified.
       typename m_type::numerical_type numerical_cf;
       typename m_type::rational_type rational_cf;
