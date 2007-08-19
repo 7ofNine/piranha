@@ -75,10 +75,24 @@ namespace piranha
         it_s_index2 it2;
         it_s_index it1, it_hint=retval.s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
+        expo_type min_expo1;
+        const expo_type limit_min_expo=limits.g_min_expo();
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
-          for (it2=it2_i;it2!=it2_f;++it2)
+          it2=it2_i;
+          min_expo1=it1->g_cf().g_min_expo();
+          if (min_expo1+it2->g_cf().g_min_expo() > limit_min_expo)
           {
+            std::cout << "External shortcut1\n";
+            break;
+          }
+          for (;it2!=it2_f;++it2)
+          {
+            if (min_expo1+it2->g_cf().g_min_expo() > limit_min_expo)
+            {
+              std::cout << "External shortcut2\n";
+              break;
+            }
             term_by_term_multiplication(*it1,*it2,term_pair,limits);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
