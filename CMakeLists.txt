@@ -2,8 +2,12 @@ PROJECT(piranha)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 INCLUDE(${CMAKE_ROOT}/Modules/CMakeDependentOption.cmake)
 INCLUDE(FindGMP)
+INCLUDE(PiranhaCompilerLinkerSettings)
+INCLUDE(PiranhaFortranSetup)
+INCLUDE(PiranhaPythonSetup)
 INCLUDE(CPack)
 ENABLE_LANGUAGE(C CXX)
+INCLUDE_DIRECTORIES("external_headers")
 
 # Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
@@ -15,92 +19,31 @@ CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
+OPTION(ENABLE_MULTITHREADING "Use multiple threads for calculations. (CURRENTLY INEFFECTIVE)" OFF)
+
+SET(MANDATORY_LIBRARIES "")
+
+PIRANHA_COMPILER_LINKER_SETTINGS()
+PIRANHA_FORTRAN_SETUP()
+PIRANHA_PYTHON_SETUP()
+
+# Set linking flags.
+SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${LINK_FLAGS})
 
 # Platform switches
-SET(ICC_CXX_COMPILER FALSE)
-SET(GCC_CXX_COMPILER FALSE)
 IF(WIN32)
   ADD_DEFINITIONS(-D_PIRANHA_WIN32)
-  # In MinGW we need the following flags.
-  IF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdata-sections")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections")
-    SET(LINK_FLAGS "${LINK_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
-    SET(GCC_CXX_COMPILER TRUE)
-  ENDIF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
 # TODO: generalize this using variables, e.g. %SystemRoot and such?
   SET(LIB_INSTALL_PATH "c:/windows/system32")
 ELSE(WIN32)
-  SET(LINK_FLAGS "")
   SET(LIB_INSTALL_PATH "lib")
 ENDIF(WIN32)
-
-# Compiler switches.
-# Enable verbose reporting of errors when using gcc
-SET(GCC_EXTRA_FLAGS "-Wall")
-IF(${CMAKE_CXX_COMPILER} MATCHES "c\\+\\+")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_EXTRA_FLAGS}")
-  SET(GCC_CXX_COMPILER TRUE)
-ENDIF(${CMAKE_CXX_COMPILER} MATCHES "c\\+\\+")
-IF(${CMAKE_C_COMPILER} MATCHES "gcc")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GCC_EXTRA_FLAGS}")
-ENDIF(${CMAKE_C_COMPILER} MATCHES "gcc")
-
-# Enable further optimization when using icc
-# Disable it temporarily, it consumes tons of RAM
-#SET(ICC_EXTRA_FLAGS "-ipo")
-
-SET(ICC_EXTRA_FLAGS "")
-IF(${CMAKE_CXX_COMPILER} MATCHES "icpc")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ICC_EXTRA_FLAGS}")
-  SET(ICC_CXX_COMPILER TRUE)
-ENDIF(${CMAKE_CXX_COMPILER} MATCHES "icpc")
-IF(${CMAKE_C_COMPILER} MATCHES "icc")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ICC_EXTRA_FLAGS}")
-ENDIF(${CMAKE_C_COMPILER} MATCHES "icc")
-
-# Set linking flags.
-SET(MANDATORY_LIBRARIES ${LINK_FLAGS})
 
 # Find GMP if required.
 IF(BUILD_SP)
   FIND_PACKAGE(GMP REQUIRED)
   SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
 ENDIF(BUILD_SP)
-
-# Fortran
-IF(BUILD_FORTRAN)
-  ENABLE_LANGUAGE(Fortran)
-  IF(NOT CMAKE_Fortran_COMPILER)
-    MESSAGE(FATAL_ERROR "Fortran support was requested but compiler was not found.")
-  ENDIF(NOT CMAKE_Fortran_COMPILER)
-  # We need to determine if it is g77 or gfortran: the libraries we will have to link to
-  # (manually, since it is fortran inside c++ toolchain) are different. Support for other
-  # compilers can be added.
-  STRING(REGEX MATCH "(gfortran|g77|f77|ifort?)" FORTRAN_COMPILER_TYPE ${CMAKE_Fortran_COMPILER})
-  IF(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
-    SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} gfortran)
-    SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2 -Wall -ffixed-line-length-132")
-  ELSE(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
-    IF(${FORTRAN_COMPILER_TYPE} MATCHES "g77")
-      SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} g2c)
-      SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2 -Wall -ffixed-line-length-132")
-    ELSE(${FORTRAN_COMPILER_TYPE} MATCHES "g77")
-      IF(${FORTRAN_COMPILER_TYPE} MATCHES "f77")
-        SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} g2c)
-        SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2 -Wall -ffixed-line-length-132")
-      ELSE(${FORTRAN_COMPILER_TYPE} MATCHES "f77")
-        IF(${FORTRAN_COMPILER_TYPE} MATCHES "ifort")
-          SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ifcoremt)
-          SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2")
-        ELSE(${FORTRAN_COMPILER_TYPE} MATCHES "ifort")
-          MESSAGE(FATAL_ERROR "No supported Fortran compiler was found.")
-        ENDIF(${FORTRAN_COMPILER_TYPE} MATCHES "ifort")
-      ENDIF(${FORTRAN_COMPILER_TYPE} MATCHES "f77")
-    ENDIF(${FORTRAN_COMPILER_TYPE} MATCHES "g77")
-  ENDIF(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
-  ADD_DEFINITIONS(-D_PIRANHA_FORTRAN)
-ENDIF(BUILD_FORTRAN)
 
 # TASS
 IF(BUILD_TASS)
@@ -113,7 +56,6 @@ SET(CMAKE_BUILD_TYPE "Release")
 SET(THEORIES_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/share/piranha/theories")
 SET(PIRANHA_DEFINITIONS -D_ENABLE_ASSERTS -D_REENTRANT -D_GNU_SOURCE -D_PIRANHA_THEORIES_DIR=\\"${THEORIES_INSTALL_PATH}\\")
 ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
-INCLUDE_DIRECTORIES("external_headers")
 
 # Build a main.cpp file included in the source dir
 IF(BUILD_MAIN)
