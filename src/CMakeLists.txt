@@ -23,7 +23,7 @@ ENDIF(BUILD_SP)
 SET(SRC_LIST ${SRC_LIST} settings_manager.cpp stats.cpp astro.cpp arg_manager.cpp
   stream_manager.cpp psymbol.cpp)
 
-IF(ENABLE_MULTITHREADING)
+IF(BUILD_TBB_MULTITHREADING)
   SET(SRC_LIST ${SRC_LIST}
     tbb/cache_aligned_allocator.cpp
     tbb/concurrent_hash_map.cpp
@@ -45,7 +45,7 @@ IF(ENABLE_MULTITHREADING)
     ADD_DEFINITIONS(-DUSE_PTHREAD)
     SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} pthread dl)
   ENDIF(WIN32)
-ENDIF(ENABLE_MULTITHREADING)
+ENDIF(BUILD_TBB_MULTITHREADING)
 
 IF(BUILD_PYRANHA)
   SET(SHARED_SRC_LIST
