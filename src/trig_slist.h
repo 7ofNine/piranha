@@ -310,6 +310,10 @@ namespace piranha
     }
   }
 
+/// Modify a multiplier.
+/**
+ * If the new multiplier is zero, erase the element.
+ */
   inline trig_slist::iterator trig_slist::modify(mult_t multiplier, iterator prev, iterator cur)
   {
     if (multiplier!=0)
@@ -551,24 +555,27 @@ namespace piranha
       {
         old_it1=modify(it1->second+Sign*it2->second,old_it1,it1);
 // Take care in case we erased the element when modifying, we may have run out of elements.
-        if (old_it1!=end())
+        if (old_it1==end())
         {
-          it1=old_it1;
-          ++it1;
+// We erased the first element of this' list.
+          it1=begin();
         }
         else
         {
-          it1=begin();
+// We modified to a non-zero value an element of this' list or erased an element else than the first one.
+          it1=old_it1;
+          ++it1;
         }
         ++it2;
       }
-// We are past.
-      else if (it1->first>it2->first)
+// this has gone past t2.
+      else if (it1->first > it2->first)
       {
         old_it1=insert_after(it2->first,Sign*it2->second,old_it1);
         ++it2;
       }
-      else if (it1->first<it2->first)
+// t2 has gone past this.
+      else if (it1->first < it2->first)
       {
         old_it1=it1;
         ++it1;
@@ -587,8 +594,6 @@ namespace piranha
     return algebraic_sum<-1>(t2);
   }
 
-// TODO: possible optimization: incorporate a return value in the algebraic sum, so that we can avoid the assignments
-// here. The idea is that we exploit the already allocated list elements in ret1 and ret2 without the need to allocate more.
   inline void trig_slist::trigmult(const trig_slist &l2, trig_slist &ret1, trig_slist &ret2) const
   {
     ret1=*this;
