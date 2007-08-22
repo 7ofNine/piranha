@@ -80,8 +80,8 @@ namespace piranha
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
-          norm1=it1->g_cf().norm(derived_cast->cf_s_vec());
-          if ((norm1*it2->g_cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
+          norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());
+          if ((norm1*it2->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
           {
             break;
           }
@@ -90,7 +90,7 @@ namespace piranha
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-            if ((norm1*it2->g_cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*it2->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }
@@ -122,8 +122,8 @@ namespace piranha
         static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair)
       {
         typedef typename Derived::ancestor::cf_type cf_type;
-        cf_type new_c=t1.g_cf();
-        new_c.mult_by_self(t2.g_cf());
+        cf_type new_c=*t1.g_cf();
+        new_c.mult_by_self(*t2.g_cf());
         new_c/=2;
         Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }

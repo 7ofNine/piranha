@@ -236,7 +236,7 @@ namespace piranha
         complex_ps retval;
         p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
-        real_cf_type _cf=it->g_cf(), tmp;
+        real_cf_type _cf=*it->g_cf(), tmp;
         if (it->g_flavour())
         {
           complex_term_type term1, term2;

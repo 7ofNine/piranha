@@ -30,7 +30,7 @@ namespace piranha
   {
 // Setup formatting.
     stream_manager::setup_print(out_stream);
-    g_cf().print_plain(out_stream,cv);
+    g_cf()->print_plain(out_stream,cv);
     out_stream << stream_manager::data_separator();
     g_trig().print_plain(out_stream,tv);
     switch (g_flavour())
@@ -50,7 +50,7 @@ namespace piranha
   {
 // Setup formatting
     stream_manager::setup_print(out_stream);
-    g_cf().print_latex(out_stream,cv);
+    g_cf()->print_latex(out_stream,cv);
     out_stream << "&";
     out_stream << "$" << g_trig().phase(tv) << "$" << "&" << "$" << g_trig().freq(tv) << "$" << "&";
     switch (g_flavour())

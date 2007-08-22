@@ -98,18 +98,18 @@ namespace piranha
       void new_term_post_insertion_hook(const term_type &term)
       {
 // No need do differentiate between + and -, will get abs()-ed anyway
-        upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        upgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
       }
 /// Re-implementation of the hook for post-erase of a term.
       void term_pre_erase_hook(const term_type &term)
       {
-        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
       }
 /// Re-implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &term, const cf_type &new_c)
       {
 // Delete old c from norm
-        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
 // Update the norm with the new c
         upgrade_norm(new_c.norm(self::cf_s_vec_));
       }
@@ -187,7 +187,7 @@ namespace std
         typename real_ps::it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
         for (;it!=it_f;++it)
         {
-          term.s_cf()=cf_type(it->g_cf());
+          term.s_cf()=cf_type(*it->g_cf());
           term.s_trig()=it->g_trig();
           term.s_flavour()=it->g_flavour();
           ancestor::insert(term);
@@ -219,18 +219,18 @@ namespace std
       void new_term_post_insertion_hook(const term_type &term)
       {
 // No need do differentiate between + and -, will get abs()-ed anyway
-        upgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        upgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
       }
 /// Re-implementation of the hook for post-erase of a term.
       void term_pre_erase_hook(const term_type &term)
       {
-        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
       }
 /// Re-implementation of the hook for pre-update of a term.
       void term_pre_update_hook(const term_type &term, const cf_type &new_c)
       {
 // Delete old c from norm
-        downgrade_norm(term.g_cf().norm(self::cf_s_vec_));
+        downgrade_norm(term.g_cf()->norm(self::cf_s_vec_));
 // Update the norm with the new c
         upgrade_norm(new_c.norm(self::cf_s_vec_));
       }

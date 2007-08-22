@@ -51,7 +51,7 @@ namespace piranha
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
         explicit ps_term(const ps_term<Cf2,trig_type> &term):
-      private_flavour_(term.g_flavour()),private_cf_(term.g_cf()),private_trig_(term.g_trig())
+      private_flavour_(term.g_flavour()),private_cf_(*term.g_cf()),private_trig_(term.g_trig())
       {                                           /*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
       }
 // Getters
@@ -60,9 +60,9 @@ namespace piranha
       {
         return private_cf_;
       }
-      const cf_type &g_cf() const
+      const cf_type *g_cf() const
       {
-        return private_cf_;
+        return &private_cf_;
       }
 /// Get reference to trigonometric part.
       trig_type &s_trig()
@@ -95,7 +95,7 @@ namespace piranha
         {
           return *this;
         }
-        s_cf()=t2.g_cf();
+        s_cf()=*t2.g_cf();
         s_trig()=t2.g_trig();
         s_flavour()=t2.g_flavour();
         return *this;

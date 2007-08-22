@@ -81,16 +81,16 @@ namespace piranha
         for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
-          min_expo1=it1->g_cf().g_min_expo();
+          min_expo1=it1->g_cf()->g_min_expo();
 // TODO: consider optimization of removing 'limit_exist' check.
-          if (limit_exist && min_expo1+it2->g_cf().g_min_expo() > limit_min_expo)
+          if (limit_exist && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
           {
             std::cout << "External shortcut1\n";
             break;
           }
           for (;it2!=it2_f;++it2)
           {
-            if (limit_exist && min_expo1+it2->g_cf().g_min_expo() > limit_min_expo)
+            if (limit_exist && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
             {
               std::cout << "External shortcut2\n";
               break;
@@ -120,8 +120,8 @@ namespace piranha
         const index_limit &limits)
       {
         typedef typename Derived::ancestor::cf_type cf_type;
-        cf_type new_c=t1.g_cf();
-        new_c.mult_by_self(t2.g_cf(),limits);
+        cf_type new_c=*t1.g_cf();
+        new_c.mult_by_self(*t2.g_cf(),limits);
         new_c/=2;
         Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }

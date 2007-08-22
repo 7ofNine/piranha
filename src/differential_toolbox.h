@@ -61,7 +61,7 @@ namespace piranha
 // First part of the derivation of the product coefficient * trigonometric_part.
           if (cf_s_index>=0)
           {
-            it->g_cf().partial(cf_s_index,tmp_term.s_cf());
+            it->g_cf()->partial(cf_s_index,tmp_term.s_cf());
             tmp_term.s_trig()=it->g_trig();
             tmp_term.s_flavour()=it->g_flavour();
             retval.insert(tmp_term);
@@ -71,7 +71,7 @@ namespace piranha
 // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
           if (trig_s_index>=0)
           {
-            tmp_term.s_cf()=it->g_cf();
+            tmp_term.s_cf()=*it->g_cf();
             switch (it->g_flavour())
             {
               case true:

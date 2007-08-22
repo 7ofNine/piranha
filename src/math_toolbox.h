@@ -66,14 +66,14 @@ namespace piranha
 // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
 // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
 // Need to think about this, but it is not essential until symbolic coefficients are introduced.
-        const cf_type &a=derived_cast->s_index().begin()->g_cf();
-        if (a.t_eval(0.,derived_cast->cf_s_vec())<0)
+        const cf_type *a=derived_cast->s_index().begin()->g_cf();
+        if (a->t_eval(0.,derived_cast->cf_s_vec())<0)
         {
           std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;
           std::exit(1);
         }
 // Top term must be greater than half of the series' norm.
-        if (2*a.norm(derived_cast->cf_s_vec()) <= derived_cast->g_norm())
+        if (2*a->norm(derived_cast->cf_s_vec()) <= derived_cast->g_norm())
         {
           std::cout << "ERROR! series' top term is not big enough for negative power." << std::endl;
           std::exit(1);
@@ -89,7 +89,7 @@ namespace piranha
           {
             Derived tmp2(tmp);
             tmp2*=math::choose(power,i);
-            tmp2*=Derived(a.pow(power-i),tmp2);
+            tmp2*=Derived(a->pow(power-i),tmp2);
             retval+=tmp2;
           }
           tmp*=x;
@@ -108,7 +108,7 @@ namespace piranha
         unsigned int retval=0;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         const double a=derived_cast->s_index().begin()->
-          g_cf().norm(derived_cast->cf_s_vec()),
+          g_cf()->norm(derived_cast->cf_s_vec()),
           absx=derived_cast->g_norm()-a,
           exactM=std::pow(a+absx,power), exactm=std::pow(a-absx,power), absratio=absx/a;
         p_assert(a>0);

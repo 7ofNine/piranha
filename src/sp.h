@@ -46,7 +46,7 @@ namespace piranha
     typedef expo_type result_type;
     expo_type operator()(const Term &t) const
     {
-      return t.g_cf().g_min_expo();
+      return t.g_cf()->g_min_expo();
     }
   };
 
@@ -57,7 +57,7 @@ namespace piranha
     typedef degree_type result_type;
     degree_type operator()(const Term &t) const
     {
-      return t.g_cf().g_degree();
+      return t.g_cf()->g_degree();
     }
   };
 

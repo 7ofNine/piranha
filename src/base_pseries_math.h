@@ -240,12 +240,12 @@ namespace piranha
     if (ps2.is_cf())
     {
       std::cout << "Cf1\n";
-      static_cast<Derived *>(this)->cf_multiplication(ps2.s_index().begin()->g_cf());
+      static_cast<Derived *>(this)->cf_multiplication(*ps2.s_index().begin()->g_cf());
       return true;
     }
     else if (is_cf())
     {
-      cf_type tmp(s_index().begin()->g_cf());
+      cf_type tmp(*s_index().begin()->g_cf());
       generic_series_assignment(ps2);
       static_cast<Derived *>(this)->cf_multiplication(tmp);
       std::cout << "Cf2\n";

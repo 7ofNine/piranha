@@ -45,7 +45,7 @@ namespace piranha
   {
     tmp_term=src;
 // Store coefficient for later.
-    cf_type tmp_c=src.g_cf();
+    cf_type tmp_c=*src.g_cf();
 // Insert first term.
     tmp_term.s_cf()*=std::cos(phase);
     retps.insert(tmp_term);
@@ -296,7 +296,7 @@ namespace piranha
 // This is an O(1) operation, since the order in the set is not changed
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
-      cf_type new_c=it_new->g_cf();
+      cf_type new_c=*it_new->g_cf();
       p_assert(s_index().modify(it_new,modifier_update_cf(-new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
@@ -341,7 +341,7 @@ namespace piranha
     {
       return s_index().end();
     }
-    p_assert(term.g_cf().compatible(cf_width()));
+    p_assert(term.g_cf()->compatible(cf_width()));
     p_assert(term.g_trig().compatible(trig_width()));
     p_assert(term.g_trig().sign()>0);
     it_s_index ret_it;
@@ -361,13 +361,13 @@ namespace piranha
       cf_type new_c;
       if (sign)
       {
-        new_c=it->g_cf();
-        new_c+=term.g_cf();
+        new_c=*it->g_cf();
+        new_c+=*term.g_cf();
       }
       else
       {
-        new_c=it->g_cf();
-        new_c-=term.g_cf();
+        new_c=*it->g_cf();
+        new_c-=*term.g_cf();
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_zero(cf_s_vec_))
@@ -414,10 +414,10 @@ namespace piranha
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
-    p_assert(!term.g_cf().larger(cw));
+    p_assert(!term.g_cf()->larger(cw));
     p_assert(!term.g_trig().larger(tw));
     boost::scoped_ptr<term_type> new_term(0);
-    if (term.g_cf().smaller(cw) || term.g_trig().smaller(tw))
+    if (term.g_cf()->smaller(cw) || term.g_trig().smaller(tw))
     {
       new_term.reset(new term_type(term));
       new_term->s_cf().increase_size(cw);
@@ -517,7 +517,7 @@ namespace piranha
     it_s_index it=boost::prior(s_index().end());
     while (1)
     {
-      part_norm+=it->g_cf().norm(cf_s_vec_);
+      part_norm+=it->g_cf()->norm(cf_s_vec_);
       if (part_norm>=delta)
       {
         break;
@@ -547,7 +547,7 @@ namespace piranha
     it_s_index it=boost::prior(s_index().end());
     while (1)
     {
-      if (it->g_cf().norm(cf_s_vec_)>=delta)
+      if (it->g_cf()->norm(cf_s_vec_)>=delta)
       {
         break;
       }

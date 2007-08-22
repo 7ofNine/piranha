@@ -39,7 +39,7 @@ namespace piranha
     double operator()(const Term &t) const
     {
       p_assert(arg_manager::assigned());
-      return t.g_cf().norm(*arg_manager::cf_args());
+      return t.g_cf()->norm(*arg_manager::cf_args());
     }
   };
 

@@ -35,7 +35,7 @@ namespace piranha
 // First check: numerical coefficient
 // NOTE: store and use norm here?
 // NOTE: the norm should go in the coefficient manipulator...
-    if (g_cf().is_zero(v))
+    if (g_cf()->is_zero(v))
     {
       return true;
     }
@@ -60,7 +60,7 @@ namespace piranha
     inline typename ps_term<Cf,Trig>::cf_type::eval_type
     ps_term<Cf,Trig>::t_eval(double t,const vector_psym_p &vc, const vector_psym_p &vt) const
   {
-    typename cf_type::eval_type retval=g_cf().t_eval(t,vc);
+    typename cf_type::eval_type retval=g_cf()->t_eval(t,vc);
 // TODO: move this into trig_args, once we move flavour there.
     switch (g_flavour())
     {
@@ -100,7 +100,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline bool ps_term<Cf,Trig>::checkup(const size_t &cw, const size_t &tw) const
   {
-    if (!g_cf().checkup(cw))
+    if (!g_cf()->checkup(cw))
     {
       std::cout << "Coefficient failed checkup." << std::endl;
       return false;

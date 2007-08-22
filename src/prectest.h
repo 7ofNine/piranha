@@ -101,11 +101,11 @@ namespace piranha
       {
         if (relative)
         {
-          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf().norm(ps2.cf_s_vec())/it->g_cf().norm(ps1.cf_s_vec())));
+          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf()->norm(ps2.cf_s_vec())/it->g_cf()->norm(ps1.cf_s_vec())));
         }
         else
         {
-          diffs_[i]=std::abs(it_h->g_cf().norm(ps2.cf_s_vec())-it->g_cf().norm(ps1.cf_s_vec()));
+          diffs_[i]=std::abs(it_h->g_cf()->norm(ps2.cf_s_vec())-it->g_cf()->norm(ps1.cf_s_vec()));
         }
         if (diffs_[i]>max_diff)
         {
@@ -561,7 +561,7 @@ namespace piranha
             multiplier=0;
           }
           tmp=it->g_trig().t_eval(t,orig_->trig_s_vec());
-          c_eval=it->g_cf().t_eval(t,orig_->cf_s_vec());
+          c_eval=it->g_cf()->t_eval(t,orig_->cf_s_vec());
           switch (it->g_flavour())
           {
             case true:
@@ -625,7 +625,7 @@ namespace piranha
                 tmp_phase=*it2-it->g_trig().phase(a_->trig_s_vec());
             }
             tmp=it->g_trig().t_eval(t,a_->trig_s_vec());
-            c_eval=it->g_cf().t_eval(t,a_->cf_s_vec());
+            c_eval=it->g_cf()->t_eval(t,a_->cf_s_vec());
             switch (it->g_flavour())
             {
               case true:
