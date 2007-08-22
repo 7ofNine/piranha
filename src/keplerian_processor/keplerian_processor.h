@@ -21,8 +21,8 @@
 #ifndef PIRANHA_KEPLERIAN_PROCESSOR_H
 #define PIRANHA_KEPLERIAN_PROCESSOR_H
 
-#include "../gsp.h"
-#include "../gspc.h"
+#include "../sp.h"
+//#include "../spc.h"
 
 namespace piranha
 {
@@ -31,7 +31,7 @@ namespace piranha
     public:
 // Proposed format for function names:
 // "returned quantity"_"form of the development"_"variable of the development".
-      static gsp E_pow_e(const psymbol &, const psymbol &, int);
+      static sp E_pow_e(const psymbol &, const psymbol &, int);
   };
 }
 #endif
