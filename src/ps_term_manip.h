@@ -23,6 +23,8 @@
 
 namespace piranha
 {
+// TODO: move this inside trig arg, once we place flavour there.
+
 /// Invert the sign of trigonometric arguments multiplicers.
   template <class Cf,class Trig>
     inline void ps_term<Cf,Trig>::invert_trig_args()
@@ -33,14 +35,6 @@ namespace piranha
 // FIXME: maybe here a invert_sign function for the coefficient should be used?
       s_cf()*=-1;
     }
-  }
-
-/// Resize term.
-  template <class Cf,class Trig>
-    inline void ps_term<Cf,Trig>::increase_size(const size_t &cw, const size_t &tw)
-  {
-    s_cf().increase_size(cw);
-    s_trig().increase_size(tw);
   }
 }
 #endif

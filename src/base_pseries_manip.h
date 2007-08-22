@@ -420,7 +420,8 @@ namespace piranha
     if (term.g_cf().smaller(cw) || term.g_trig().smaller(tw))
     {
       new_term.reset(new term_type(term));
-      new_term->increase_size(cw,tw);
+      new_term->s_cf().increase_size(cw);
+      new_term->s_trig().increase_size(tw);
     }
     if (term.g_trig().sign()<0)
     {
