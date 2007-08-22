@@ -123,7 +123,6 @@ namespace piranha
       {
         print(std::cout,cv,tv);
       }
-
       typename cf_type::eval_type t_eval(double, const vector_psym_p &, const vector_psym_p &) const;
     private:
 // Data members
