@@ -39,19 +39,13 @@ namespace piranha
     {
       return true;
     }
+// TODO: move this into trig_args, once we move flavour there.
 // Second check: if sine, check that there is at least 1 non-zero trig arg. Otherwise ignore.
     if (g_flavour()==false)
     {
       return g_trig().is_zero();
     }
     return false;
-  }
-
-/// Sign of first non-zero trigonometric argument.
-  template <class Cf,class Trig>
-    inline int ps_term<Cf,Trig>::trig_sign() const
-  {
-    return g_trig().sign();
   }
 
 /// Numerical evaluation.
@@ -67,6 +61,7 @@ namespace piranha
     ps_term<Cf,Trig>::t_eval(double t,const vector_psym_p &vc, const vector_psym_p &vt) const
   {
     typename cf_type::eval_type retval=g_cf().t_eval(t,vc);
+// TODO: move this into trig_args, once we move flavour there.
     switch (g_flavour())
     {
       case true:
