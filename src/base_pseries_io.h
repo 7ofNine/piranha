@@ -149,6 +149,7 @@ namespace piranha
     phase_list::const_iterator it_pl=pl.begin();
     deque_string split_v;
     std::string temp;
+    it_s_index it_hint=end();
     while (utils::get_valid_string(inf,temp)==0)
     {
       boost::split(split_v,temp,boost::is_any_of(stream_manager::data_separator()));
@@ -192,7 +193,7 @@ namespace piranha
 // Deal with phases.
       if (it_pl==pl.end())
       {
-        insert(new_term);
+        it_hint=insert(new_term,true,&it_hint);
       }
       else
       {
