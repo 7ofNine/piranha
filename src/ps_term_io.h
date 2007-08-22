@@ -52,7 +52,7 @@ namespace piranha
     stream_manager::setup_print(out_stream);
     g_cf().print_latex(out_stream,cv);
     out_stream << "&";
-    out_stream << "$" << phase(tv) << "$" << "&" << "$" << freq(tv) << "$" << "&";
+    out_stream << "$" << g_trig().phase(tv) << "$" << "&" << "$" << g_trig().freq(tv) << "$" << "&";
     switch (g_flavour())
     {
       case true:

@@ -73,29 +73,6 @@ namespace piranha
     return retval;
   }
 
-// NOTICE: drop freq and phase from here, define only in trig_args and call from there?
-/// Numerical phase of the term.
-/**
- * Get the numerical phase of the term, given a vector of piranha::psymbol describing its arguments.
- * @param[in] v vector of piranha::psymbol objects.
- */
-  template <class Cf,class Trig>
-    inline double ps_term<Cf,Trig>::phase(const vector_psym_p &v) const
-  {
-    return g_trig().phase(v);
-  }
-
-/// Frequency of the term.
-/**
- * Get the frequency of the term, given a vector of piranha::psymbol describing its arguments.
- * @param[in] v vector of piranha::psymbol objects.
- */
-  template <class Cf,class Trig>
-    inline double ps_term<Cf,Trig>::freq(const vector_psym_p &v) const
-  {
-    return g_trig().freq(v);
-  }
-
 /// Test for equality (used in the hashed index).
   template <class Cf,class Trig>
     inline bool operator==(const ps_term<Cf,Trig> &a,

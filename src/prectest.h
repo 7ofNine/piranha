@@ -622,7 +622,7 @@ namespace piranha
               tmp_phase=*it2;
               break;
               default:
-                tmp_phase=*it2-it->phase(a_->trig_s_vec());
+                tmp_phase=*it2-it->g_trig().phase(a_->trig_s_vec());
             }
             tmp=it->g_trig().t_eval(t,a_->trig_s_vec());
             c_eval=it->g_cf().t_eval(t,a_->cf_s_vec());

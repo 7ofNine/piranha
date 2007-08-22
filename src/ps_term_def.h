@@ -82,8 +82,6 @@ namespace piranha
       {
         return private_flavour_;
       }
-      double freq(const vector_psym_p &) const;
-      double phase(const vector_psym_p &) const;
       bool checkup(const size_t &, const size_t &) const;
       size_t footprint() const;
       bool is_ignorable(const vector_psym_p &) const;
