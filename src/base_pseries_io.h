@@ -205,7 +205,7 @@ namespace piranha
           add_phase_to_term(*it_pl,new_term,tmp_term,*this);
           break;
           default:
-            add_phase_to_term(*it_pl-new_term.g_trig().phase(trig_s_vec_),new_term,tmp_term,*this);
+            add_phase_to_term(*it_pl-new_term.g_trig()->phase(trig_s_vec_),new_term,tmp_term,*this);
         }
         ++it_pl;
       }
@@ -413,8 +413,8 @@ namespace piranha
     for (iterator it=begin();it!=end();++it)
     {
       it->g_cf()->print_plain(std::cout,cf_s_vec_);
-      std::cout << stream_manager::data_separator() << it->g_trig().phase(trig_s_vec_) <<
-        stream_manager::data_separator() << it->g_trig().freq(trig_s_vec_) << std::endl;
+      std::cout << stream_manager::data_separator() << it->g_trig()->phase(trig_s_vec_) <<
+        stream_manager::data_separator() << it->g_trig()->freq(trig_s_vec_) << std::endl;
       ++i;
       if (i==lim)
       {

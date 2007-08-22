@@ -291,7 +291,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline bool base_pseries<Cf, Trig, Term, I, Derived>::is_cf() const
   {
-    if (length()==1 && s_index().begin()->g_flavour() && s_index().begin()->g_trig().is_zero())
+    if (length()==1 && s_index().begin()->g_flavour() && s_index().begin()->g_trig()->is_zero())
     {
       return true;
     }

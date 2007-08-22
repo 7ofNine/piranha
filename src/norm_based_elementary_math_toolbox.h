@@ -97,13 +97,14 @@ namespace piranha
             term_by_term_multiplication(*it1,*it2,term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
+// TODO: cache pointers to trigs here?
             if (term_pair.template get
-              <0>().g_trig().sign()<0)
+              <0>().g_trig()->sign()<0)
             {
               term_pair.template get<0>().invert_trig_args();
             }
             if (term_pair.template get
-              <1>().g_trig().sign()<0)
+              <1>().g_trig()->sign()<0)
             {
               term_pair.template get<1>().invert_trig_args();
             }

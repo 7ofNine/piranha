@@ -62,7 +62,7 @@ namespace piranha
           if (cf_s_index>=0)
           {
             it->g_cf()->partial(cf_s_index,tmp_term.s_cf());
-            tmp_term.s_trig()=it->g_trig();
+            tmp_term.s_trig()=*it->g_trig();
             tmp_term.s_flavour()=it->g_flavour();
             retval.insert(tmp_term);
           }
@@ -75,18 +75,18 @@ namespace piranha
             switch (it->g_flavour())
             {
               case true:
-                tmp_term.s_cf()*=-it->g_trig().multiplier(trig_s_index);
+                tmp_term.s_cf()*=-it->g_trig()->multiplier(trig_s_index);
                 tmp_term.s_flavour()=false;
                 break;
               case false:
-                tmp_term.s_cf()*=it->g_trig().multiplier(trig_s_index);
+                tmp_term.s_cf()*=it->g_trig()->multiplier(trig_s_index);
                 tmp_term.s_flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to
 // do it again now.
             if (cf_s_index<0)
             {
-              tmp_term.s_trig()=it->g_trig();
+              tmp_term.s_trig()=*it->g_trig();
             }
             retval.insert(tmp_term);
           }

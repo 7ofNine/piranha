@@ -106,7 +106,7 @@ namespace piranha
           add_phase_to_term(*it2,it1,tmp_term,tmp_ps);
           break;
           default:
-            add_phase_to_term(*it2-it1->g_trig().phase(trig_s_vec_),it1,tmp_term,tmp_ps);
+            add_phase_to_term(*it2-it1->g_trig()->phase(trig_s_vec_),it1,tmp_term,tmp_ps);
         }
         ++it2;
       }
@@ -342,11 +342,12 @@ namespace piranha
       return s_index().end();
     }
     p_assert(term.g_cf()->compatible(cf_width()));
-    p_assert(term.g_trig().compatible(trig_width()));
-    p_assert(term.g_trig().sign()>0);
+    p_assert(term.g_trig()->compatible(trig_width()));
+    p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
+// TODO: change this when flavour goes into trig_arg.
     it_h_index it=h_index().find(boost::make_tuple(term.g_flavour(),
-      term.g_trig()));
+      *term.g_trig()));
     if (it==h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,
@@ -415,15 +416,15 @@ namespace piranha
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
     p_assert(!term.g_cf()->larger(cw));
-    p_assert(!term.g_trig().larger(tw));
+    p_assert(!term.g_trig()->larger(tw));
     boost::scoped_ptr<term_type> new_term(0);
-    if (term.g_cf()->smaller(cw) || term.g_trig().smaller(tw))
+    if (term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw))
     {
       new_term.reset(new term_type(term));
       new_term->s_cf().increase_size(cw);
       new_term->s_trig().increase_size(tw);
     }
-    if (term.g_trig().sign()<0)
+    if (term.g_trig()->sign()<0)
     {
       if (new_term.get()==0)
       {

@@ -43,7 +43,7 @@ namespace piranha
 // Second check: if sine, check that there is at least 1 non-zero trig arg. Otherwise ignore.
     if (g_flavour()==false)
     {
-      return g_trig().is_zero();
+      return g_trig()->is_zero();
     }
     return false;
   }
@@ -65,10 +65,10 @@ namespace piranha
     switch (g_flavour())
     {
       case true:
-        retval*=std::cos(g_trig().t_eval(t,vt));
+        retval*=std::cos(g_trig()->t_eval(t,vt));
         break;
       case false:
-        retval*=std::sin(g_trig().t_eval(t,vt));
+        retval*=std::sin(g_trig()->t_eval(t,vt));
     }
     return retval;
   }
@@ -82,14 +82,14 @@ namespace piranha
     {
       return false;
     }
-    return a.g_trig()==b.g_trig();
+    return *a->g_trig()==*b->g_trig();
   }
 
 /// Memory footprint.
   template <class Cf,class Trig>
     inline size_t ps_term<Cf,Trig>::footprint() const
   {
-    return (sizeof(self)+g_trig().data_footprint());
+    return (sizeof(self)+g_trig()->data_footprint());
   }
 
 /// Diagnose problems.
@@ -105,7 +105,7 @@ namespace piranha
       std::cout << "Coefficient failed checkup." << std::endl;
       return false;
     }
-    if (!g_trig().checkup(tw))
+    if (!g_trig()->checkup(tw))
     {
       std::cout << "Trigonometric part failed checkup." << std::endl;
       return false;

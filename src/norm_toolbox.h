@@ -61,7 +61,7 @@ namespace piranha
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig >
+      &Term<Cf, Trig>::g_trig_ref >
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
@@ -75,7 +75,7 @@ namespace piranha
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig >
+      &Term<Cf, Trig>::g_trig_ref >
       >
       >
       > type;
