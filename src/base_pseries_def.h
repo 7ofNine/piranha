@@ -424,7 +424,7 @@ namespace piranha
           {}
         void operator()(term_type &term)
         {
-          term.s_cf() = new_cf_;
+          *term.s_cf() = new_cf_;
         }
 // NOTICE: evaluate the impact of using const & here, esp. when using gmp
         const cf_type &new_cf_;

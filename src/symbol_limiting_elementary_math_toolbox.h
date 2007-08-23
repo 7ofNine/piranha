@@ -53,7 +53,7 @@ namespace piranha
         BOOST_FOREACH(term_type t,derived_cast->s_index())
         {
           tmp_term=t;
-          tmp_term.s_cf().mult_by_self(cf,limits);
+          tmp_term.s_cf()->mult_by_self(cf,limits);
           it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
         }
         derived_cast->swap(tmp_ps);

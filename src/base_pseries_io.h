@@ -167,7 +167,7 @@ namespace piranha
           << std::endl;
         append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
       }
-      new_term.s_cf()=cf;
+      *new_term.s_cf()=cf;
 // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
 // Read flavour.

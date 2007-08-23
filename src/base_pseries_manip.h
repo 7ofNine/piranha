@@ -47,20 +47,20 @@ namespace piranha
 // Store coefficient for later.
     cf_type tmp_c=*src.g_cf();
 // Insert first term.
-    tmp_term.s_cf()*=std::cos(phase);
+    *tmp_term.s_cf()*=std::cos(phase);
     retps.insert(tmp_term);
 // Second term: change flavour and sign.
     switch (src.g_flavour())
     {
       case true:
         tmp_term.s_flavour()=false;
-        tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()*=(-std::sin(phase));
+        *tmp_term.s_cf()=tmp_c;
+        *tmp_term.s_cf()*=(-std::sin(phase));
         break;
       case false:
         tmp_term.s_flavour()=true;
-        tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()*=std::sin(phase);
+        *tmp_term.s_cf()=tmp_c;
+        *tmp_term.s_cf()*=std::sin(phase);
     }
     retps.insert(tmp_term);
   }
@@ -141,7 +141,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.s_cf().prepend_args(n);
+      tmp_term.s_cf()->prepend_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -169,7 +169,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.s_cf().append_args(n);
+      tmp_term.s_cf()->append_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -421,7 +421,7 @@ namespace piranha
     if (term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw))
     {
       new_term.reset(new term_type(term));
-      new_term->s_cf().increase_size(cw);
+      new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
     if (term.g_trig()->sign()<0)

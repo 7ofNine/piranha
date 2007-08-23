@@ -187,7 +187,7 @@ namespace std
         typename real_ps::it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
         for (;it!=it_f;++it)
         {
-          term.s_cf()=cf_type(*it->g_cf());
+          *term.s_cf()=cf_type(*it->g_cf());
           *term.s_trig()=*it->g_trig();
           term.s_flavour()=it->g_flavour();
           ancestor::insert(term);

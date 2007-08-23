@@ -144,8 +144,8 @@ namespace piranha
         t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
           *term_pair.template get<1>().s_trig());
-        term_pair.template get
-          <0>().s_cf()=term_pair.template get
+        *term_pair.template get
+          <0>().s_cf()=*term_pair.template get
           <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
@@ -156,9 +156,9 @@ namespace piranha
         t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
           *term_pair.template get<1>().s_trig());
-        term_pair.template get
+        *term_pair.template get
           <0>().s_cf()=-new_c;
-        term_pair.template get
+        *term_pair.template get
           <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
@@ -172,8 +172,8 @@ namespace piranha
         t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
           *term_pair.template get<1>().s_trig());
-        term_pair.template get
-          <0>().s_cf()=term_pair.template get
+        *term_pair.template get
+          <0>().s_cf()=*term_pair.template get
           <1>().s_cf()=new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
@@ -184,9 +184,9 @@ namespace piranha
         t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
           *term_pair.template get<1>().s_trig());
-        term_pair.template get
+        *term_pair.template get
           <0>().s_cf()=new_c;
-        term_pair.template get
+        *term_pair.template get
           <1>().s_cf()=-new_c;
         term_pair.template get
           <0>().s_flavour()=term_pair.template get
@@ -298,7 +298,7 @@ namespace piranha
     for (it_s_index it=s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      tmp_term.s_cf()*=c;
+      *tmp_term.s_cf()*=c;
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);
@@ -334,7 +334,7 @@ namespace piranha
     for (it_s_index it=s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      tmp_term.s_cf()/=x;
+      *tmp_term.s_cf()/=x;
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);

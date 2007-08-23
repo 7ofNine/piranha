@@ -56,9 +56,9 @@ namespace piranha
       }
 // Getters
 /// Get coefficient reference.
-      cf_type &s_cf()
+      cf_type *s_cf()
       {
-        return private_cf_;
+        return &private_cf_;
       }
       const cf_type *g_cf() const
       {
@@ -99,7 +99,7 @@ namespace piranha
         {
           return *this;
         }
-        s_cf()=*t2.g_cf();
+        *s_cf()=*t2.g_cf();
         *s_trig()=*t2.g_trig();
         s_flavour()=t2.g_flavour();
         return *this;

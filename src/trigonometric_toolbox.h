@@ -243,12 +243,12 @@ namespace piranha
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             jaccosRecf<real_cf_type>(i,_cf,tmp);
-            term1.s_cf().set_real(tmp);
+            term1.s_cf()->set_real(tmp);
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
             retval.insert(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
-            term2.s_cf().set_imag(tmp);
+            term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
@@ -260,12 +260,12 @@ namespace piranha
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
             jacsinRecf(i,_cf,tmp);
-            term1.s_cf().set_real(tmp);
+            term1.s_cf()->set_real(tmp);
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
             retval.insert(term1);
             jacsinImcf(i,_cf,tmp);
-            term2.s_cf().set_imag(tmp);
+            term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);

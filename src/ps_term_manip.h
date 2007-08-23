@@ -33,7 +33,7 @@ namespace piranha
     if (!g_flavour())
     {
 // FIXME: maybe here a invert_sign function for the coefficient should be used?
-      s_cf()*=-1;
+      *s_cf()*=-1;
     }
   }
 }
