@@ -29,7 +29,7 @@
 #include "base_pseries.h"
 #include "double_cf.h"
 #include "polynomial.h"
-#include "ps_term.h"
+#include "simple_term.h"
 #include "trig_array.h"
 
 // Toolboxes.
@@ -80,7 +80,7 @@ namespace piranha
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig >
+      &Term<Cf, Trig>::g_trig_ref >
       >
       >,
       boost::multi_index::hashed_unique <
@@ -89,7 +89,7 @@ namespace piranha
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const bool &,
       &Term<Cf, Trig>::g_flavour > ,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig >
+      &Term<Cf, Trig>::g_trig_ref >
       >
       >
       > type;
@@ -136,6 +136,6 @@ namespace piranha
         {}
   };
 
-  typedef sps<polynomial<double_cf>,trig_array,ps_term,degree_based_index> sp;
+  typedef sps<polynomial<double_cf>,trig_array,simple_term,degree_based_index> sp;
 }
 #endif

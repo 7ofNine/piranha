@@ -23,11 +23,11 @@
 
 #include "double_cf.h"
 #include "ps.h"
-#include "ps_term.h"
+#include "simple_term.h"
 #include "trig_slist.h"
 
 namespace piranha
 {
-  typedef std::complex<ps<double_cf,trig_slist,ps_term,norm_based_index> > lnpc;
+  typedef std::complex<ps<double_cf,trig_slist,simple_term,norm_based_index> > lnpc;
 }
 #endif

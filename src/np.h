@@ -23,11 +23,11 @@
 
 #include "double_cf.h"
 #include "ps.h"
-#include "ps_term.h"
+#include "simple_term.h"
 #include "trig_array.h"
 
 namespace piranha
 {
-  typedef ps<double_cf,trig_array,ps_term,norm_based_index> np;
+  typedef ps<double_cf,trig_array,simple_term,norm_based_index> np;
 }
 #endif
