@@ -29,7 +29,7 @@ namespace piranha
   template <class Cf,class Trig>
     inline void ps_term<Cf,Trig>::invert_trig_args()
   {
-    s_trig().invert_sign();
+    s_trig()->invert_sign();
     if (!g_flavour())
     {
 // FIXME: maybe here a invert_sign function for the coefficient should be used?

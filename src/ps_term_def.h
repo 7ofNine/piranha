@@ -65,9 +65,9 @@ namespace piranha
         return &private_cf_;
       }
 /// Get reference to trigonometric part.
-      trig_type &s_trig()
+      trig_type *s_trig()
       {
-        return private_trig_;
+        return &private_trig_;
       }
       const trig_type *g_trig() const
       {
@@ -100,7 +100,7 @@ namespace piranha
           return *this;
         }
         s_cf()=*t2.g_cf();
-        s_trig()=*t2.g_trig();
+        *s_trig()=*t2.g_trig();
         s_flavour()=t2.g_flavour();
         return *this;
       }

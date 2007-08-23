@@ -141,9 +141,9 @@ namespace piranha
     {
       if(t2.g_flavour())
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),term_pair.template get
+        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
-          term_pair.template get<1>().s_trig());
+          *term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_cf()=term_pair.template get
           <1>().s_cf()=new_c;
@@ -153,9 +153,9 @@ namespace piranha
       }
       else
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),term_pair.template get
+        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
-          term_pair.template get<1>().s_trig());
+          *term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_cf()=-new_c;
         term_pair.template get
@@ -169,9 +169,9 @@ namespace piranha
     {
       if(t2.g_flavour())
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),term_pair.template get
+        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
-          term_pair.template get<1>().s_trig());
+          *term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_cf()=term_pair.template get
           <1>().s_cf()=new_c;
@@ -181,9 +181,9 @@ namespace piranha
       }
       else
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),term_pair.template get
+        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
           <0>().s_trig(),
-          term_pair.template get<1>().s_trig());
+          *term_pair.template get<1>().s_trig());
         term_pair.template get
           <0>().s_cf()=new_c;
         term_pair.template get

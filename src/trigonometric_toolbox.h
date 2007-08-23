@@ -142,8 +142,8 @@ namespace piranha
         complex_ps retval;
         retval.merge_args(*static_cast<Derived const *>(this));
         complex_term_type in_term(complex_cf_type(1),true);
-        in_term.s_trig().increase_size(static_cast<Derived const *>(this)->trig_width());
-        in_term.s_trig().insert(pos,n);
+        in_term.s_trig()->increase_size(static_cast<Derived const *>(this)->trig_width());
+        in_term.s_trig()->insert(pos,n);
         retval.insert(in_term);
         in_term.s_flavour()=false;
         retval.insert(in_term);
@@ -178,13 +178,13 @@ namespace piranha
         p_assert(retval.trig_width()==derived_cast->trig_width());
         complex_term_type term1(complex_cf_type(1),true),
           term2(complex_cf_type(0,1),false);
-        term1.s_trig().increase_size(retval.trig_width());
-        term2.s_trig().increase_size(retval.trig_width());
+        term1.s_trig()->increase_size(retval.trig_width());
+        term2.s_trig()->increase_size(retval.trig_width());
         const size_t w=derived_cast->lin_args().size();
         for (size_t j=0;j<w;++j)
         {
-          term1.s_trig().insert(j,derived_cast->lin_args()[j]);
-          term2.s_trig().insert(j,derived_cast->lin_args()[j]);
+          term1.s_trig()->insert(j,derived_cast->lin_args()[j]);
+          term2.s_trig()->insert(j,derived_cast->lin_args()[j]);
         }
         retval.insert(term1);
         retval.insert(term2);
@@ -244,13 +244,13 @@ namespace piranha
           {
             jaccosRecf<real_cf_type>(i,_cf,tmp);
             term1.s_cf().set_real(tmp);
-            term1.s_trig()=*it->g_trig();
-            term1.s_trig()*=(i<<1);
+            *term1.s_trig()=*it->g_trig();
+            *term1.s_trig()*=(i<<1);
             retval.insert(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.s_cf().set_imag(tmp);
-            term2.s_trig()=*it->g_trig();
-            term2.s_trig()*=((i<<1)+1);
+            *term2.s_trig()=*it->g_trig();
+            *term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
           }
         }
@@ -261,13 +261,13 @@ namespace piranha
           {
             jacsinRecf(i,_cf,tmp);
             term1.s_cf().set_real(tmp);
-            term1.s_trig()=*it->g_trig();
-            term1.s_trig()*=(i<<1);
+            *term1.s_trig()=*it->g_trig();
+            *term1.s_trig()*=(i<<1);
             retval.insert(term1);
             jacsinImcf(i,_cf,tmp);
             term2.s_cf().set_imag(tmp);
-            term2.s_trig()=*it->g_trig();
-            term2.s_trig()*=((i<<1)+1);
+            *term2.s_trig()=*it->g_trig();
+            *term2.s_trig()*=((i<<1)+1);
             retval.insert(term2);
           }
         }

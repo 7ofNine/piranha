@@ -198,7 +198,7 @@ namespace piranha
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.s_trig().prepend_args(n);
+      tmp_term.s_trig()->prepend_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -226,7 +226,7 @@ namespace piranha
     for (it_h_index it=h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
-      tmp_term.s_trig().append_args(n);
+      tmp_term.s_trig()->append_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert(tmp_term);
     }
@@ -422,7 +422,7 @@ namespace piranha
     {
       new_term.reset(new term_type(term));
       new_term->s_cf().increase_size(cw);
-      new_term->s_trig().increase_size(tw);
+      new_term->s_trig()->increase_size(tw);
     }
     if (term.g_trig()->sign()<0)
     {

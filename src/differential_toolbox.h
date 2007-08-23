@@ -62,7 +62,7 @@ namespace piranha
           if (cf_s_index>=0)
           {
             it->g_cf()->partial(cf_s_index,tmp_term.s_cf());
-            tmp_term.s_trig()=*it->g_trig();
+            *tmp_term.s_trig()=*it->g_trig();
             tmp_term.s_flavour()=it->g_flavour();
             retval.insert(tmp_term);
           }
@@ -86,7 +86,7 @@ namespace piranha
 // do it again now.
             if (cf_s_index<0)
             {
-              tmp_term.s_trig()=*it->g_trig();
+              *tmp_term.s_trig()=*it->g_trig();
             }
             retval.insert(tmp_term);
           }
