@@ -114,8 +114,8 @@ namespace piranha
         p_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
         retval.insert(complex_term_type(complex_cf_type(1.)));
-        real_r_it_s_index it=derived_cast->g_set().rbegin();
-        for (;it!=derived_cast->g_set().rend();++it)
+        real_r_it_s_index it=derived_cast->g_series_set().rbegin();
+        for (;it!=derived_cast->g_series_set().rend();++it)
         {
           retval*=jacangdev(it);
           std::cout << retval.length() << std::endl;

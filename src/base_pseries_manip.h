@@ -260,7 +260,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::swap(Derived &ps2)
   {
 // Swap sets' contents
-    set_.swap(ps2.s_set());
+    set_.swap(ps2.s_series_set());
 // Swap other members
     cf_s_vec_.swap(ps2.cf_s_vec_);
     trig_s_vec_.swap(ps2.trig_s_vec_);

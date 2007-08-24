@@ -32,7 +32,7 @@ namespace piranha
     {
       return;
     }
-    set_=ps2.g_set();
+    set_=ps2.g_series_set();
     cf_s_vec_=ps2.cf_s_vec_;
     trig_s_vec_=ps2.trig_s_vec_;
     lin_args_=ps2.lin_args_;
@@ -50,7 +50,7 @@ namespace piranha
       return;
     }
     typedef typename Derived2::it_s_index it_s_index2;
-    s_set().clear();
+    s_series_set().clear();
     cf_s_vec_=ps2.cf_s_vec();
     trig_s_vec_=ps2.trig_s_vec();
     lin_args_=ps2.lin_args();
