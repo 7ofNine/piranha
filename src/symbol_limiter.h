@@ -97,7 +97,7 @@ namespace piranha
  */
       class index_limit
       {
-          typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
+        typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
         public:
           index_limit(const vector_psym_p &v):private_min_limit_(0),private_limits_()
           {

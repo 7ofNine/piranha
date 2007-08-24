@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [[ "$@" == "" ]]
-then for i in `find ./src -regex "\(.*\.h\\|.*\.cpp\)"`
+then for i in `find src/ src/tass17 src/keplerian_processor/ -maxdepth 1 -type f -regex "\(.*\.h\\|.*\.cpp\)"`
     do bcpp -i 2 "${i}" > "${i}".new
     mv "${i}".new "${i}"
   done

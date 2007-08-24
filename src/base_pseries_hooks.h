@@ -48,9 +48,8 @@ namespace piranha
         {}
 /// Default implementation of the hook for pre-update of a term.
       template <class Term, class Cf>
-      void term_pre_update_hook(const Term &, const Cf &)
+        void term_pre_update_hook(const Term &, const Cf &)
         {}
   };
 }
-
 #endif

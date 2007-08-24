@@ -41,7 +41,7 @@ namespace piranha
       typedef typename cf_type::eval_type eval_type;
 /// Constructor from flavour.
       base_term(bool flavour):private_flavour_(flavour)
-      {}
+        {}
 // Getters
 /// Get flavour.
       bool &s_flavour()
@@ -81,7 +81,7 @@ namespace piranha
 // First check: numerical coefficient
 // NOTE: store and use norm here?
 // NOTE: the norm should go in the coefficient manipulator...
-      if (static_cast<Derived const *>(this)->g_cf()->is_zero(v))
+        if (static_cast<Derived const *>(this)->g_cf()->is_zero(v))
         {
           return true;
         }
@@ -107,7 +107,7 @@ namespace piranha
 /// Print in plain format.
       void print_plain(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
-    // Setup formatting.
+// Setup formatting.
         stream_manager::setup_print(out_stream);
         static_cast<Derived const *>(this)->g_cf()->print_plain(out_stream,cv);
         out_stream << stream_manager::data_separator();
@@ -122,24 +122,24 @@ namespace piranha
         }
       }
 /// Print in latex format.
-    void print_latex(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
-    {
-  // Setup formatting
-      stream_manager::setup_print(out_stream);
-      static_cast<Derived const *>(this)->g_cf()->print_latex(out_stream,cv);
-      out_stream << "&";
-      out_stream << "$" << static_cast<Derived const *>(this)->g_trig()->phase(tv) <<
-        "$" << "&" << "$" << static_cast<Derived const *>(this)->g_trig()->freq(tv) << "$" << "&";
-      switch (g_flavour())
+      void print_latex(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
-        case true:
-          out_stream << "c&";
-          break;
-        case false:
-          out_stream << "s&";
+// Setup formatting
+        stream_manager::setup_print(out_stream);
+        static_cast<Derived const *>(this)->g_cf()->print_latex(out_stream,cv);
+        out_stream << "&";
+        out_stream << "$" << static_cast<Derived const *>(this)->g_trig()->phase(tv) <<
+          "$" << "&" << "$" << static_cast<Derived const *>(this)->g_trig()->freq(tv) << "$" << "&";
+        switch (g_flavour())
+        {
+          case true:
+            out_stream << "c&";
+            break;
+          case false:
+            out_stream << "s&";
+        }
+        static_cast<Derived const *>(this)->g_trig()->print_latex(out_stream,tv);
       }
-      static_cast<Derived const *>(this)->g_trig()->print_latex(out_stream,tv);
-    }
 /// Print to stream.
 /**
  * Print format (i.e., plain or latex) is set in piranha::stream_manager.
@@ -197,4 +197,3 @@ namespace piranha
   };
 }
 #endif
-

@@ -48,20 +48,20 @@ namespace piranha
       typedef boost::shared_ptr<Trig> trig_ptr;
 /// Default constructor.
       explicit trig_cow_term():
-        ancestor(true),private_cf_(),private_trig_(new trig_type())
-      {}
+      ancestor(true),private_cf_(),private_trig_(new trig_type())
+        {}
 // FIXME: replace bool with enum.
 /// Constructor from coefficient and flavour.
       explicit trig_cow_term(const cf_type &c, bool flavour=true):
-        ancestor(flavour),private_cf_(c),private_trig_(new trig_type())
-      {}
+      ancestor(flavour),private_cf_(c),private_trig_(new trig_type())
+        {}
 /// Generic builder.
 /**
  * Build constructing coefficient from variable x, of type T.
  */
       template <class T>
         explicit trig_cow_term(const T &x, bool flavour=true):
-        ancestor(flavour),private_cf_(cf_type(x)),private_trig_(new trig_type())
+      ancestor(flavour),private_cf_(cf_type(x)),private_trig_(new trig_type())
         {}
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
@@ -128,5 +128,4 @@ namespace piranha
       trig_ptr    private_trig_;
   };
 }
-
 #endif

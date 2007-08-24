@@ -137,7 +137,7 @@ namespace std
       typedef typename m_type::numerical_type numerical_type;
       typedef typename real_m_type::numerical_type real_numerical_type;
 // Access to iterators and indices of base.
-      //typedef typename ancestor::expo_index expo_index;
+//typedef typename ancestor::expo_index expo_index;
       typedef typename ancestor::iterator iterator;
       typedef typename real_type::iterator real_iterator;
 // Start INTERFACE definition for the complex specialization.

@@ -29,7 +29,7 @@ namespace std
 /// Complex specialization for sp class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
     struct complex<piranha::sps<Cf,Trig,Term,I> >:
-    public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::sps<Cf,Trig,Term,I> > >,
+  public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::sps<Cf,Trig,Term,I> > >,
     public piranha::symbol_limiting_elementary_math_toolbox<sps<Cf,Trig,Term,I> >,
     public piranha::complex_operators_toolbox<piranha::sps<Cf,Trig,Term,I> >,
     public piranha::complex_toolbox<piranha::sps<Cf,Trig,Term,I> >
@@ -104,6 +104,7 @@ namespace std
       }
   };
 }
+
 
 namespace piranha
 {

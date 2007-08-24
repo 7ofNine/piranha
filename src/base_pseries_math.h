@@ -275,7 +275,6 @@ namespace piranha
     swap(retval);
   }
 
-
 /// Multiplication by a generic entity.
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     template <class T>

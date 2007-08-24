@@ -267,24 +267,24 @@ namespace piranha
         const iterator it_f=e_index().end();
         for (iterator it=e_index().begin();it!=it_f;++it)
         {
-          candidate=it->container()[n];
-          if (candidate<=0)
-          {
-            s.get<0>()=false;
-            std::cout << "Non suitability for real powers detected." << std::endl;
-            return;
-          }
-          else
-          {
-            if (candidate < s.get<1>())
-            {
-              s.get<1>()=candidate;
-            }
-          }
-        }
-        s.get<0>()=true;
-        std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
-      }
+candidate=it->container()[n];
+if (candidate<=0)
+{
+s.get<0>()=false;
+std::cout << "Non suitability for real powers detected." << std::endl;
+return;
+}
+else
+{
+if (candidate < s.get<1>())
+{
+s.get<1>()=candidate;
+}
+}
+}
+s.get<0>()=true;
+std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
+}
 */
 /// Maximum natural power allowed.
 /**
@@ -311,7 +311,7 @@ namespace piranha
 // TODO check if these are really used.
       void mult_by_int(int);
       void mult_by_double(const double &);
-      //void basic_pow(const double &, const vec_expo_index_limit limits &);
+//void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
       set_type                  set_;
@@ -439,7 +439,7 @@ namespace piranha
       new_m->increase_size(w);
     }
     p_assert(!(m.larger(w) && !empty()))
-    const m_type *insert_m;
+      const m_type *insert_m;
     if (new_m==0)
     {
       insert_m=&m;
@@ -726,89 +726,73 @@ namespace piranha
       return;
     }
 // This is the remainder part of this, i.e. this without the leading term.
-    Derived x(*static_cast<Derived *>(this));
-    x.e_index().erase(x.e_index().begin());
+Derived x(*static_cast<Derived *>(this));
+x.e_index().erase(x.e_index().begin());
 // Now we have to check if with the provided vector for symbol limits we effectively reach a point after which
 // the binomial expansion will lead to null polynomials being created. We must stop at that point.
 // In binomial expansions, "x" is raised to a power equal to the number of iterations.
-    int iterations=-1;
-    const size_t v_size=v.size();
-    boost::tuple<bool,int> is_suitable(true,0);
-    for (size_t i=0;j<v_size;++j)
-    {
+int iterations=-1;
+const size_t v_size=v.size();
+boost::tuple<bool,int> is_suitable(true,0);
+for (size_t i=0;j<v_size;++j)
+{
 // Make sure we are not poking outside the boundaries of the monomial's container for exponents.
-      p_assert(v[i].get<0>()<x.width());
-      x.pow_suitable(is_suitable);
-      if (!is_suitable.get<0>())
-      {
-        std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self." << std::endl;
-        std::abort();
-        return;
-      }
-      if (v[i].get<1>() < 0)
-      {
-        std::cout << "Cannot accept a negative symbol limit when raising to power." << std::endl;
-        std::abort();
-        return;
-      }
+p_assert(v[i].get<0>()<x.width());
+x.pow_suitable(is_suitable);
+if (!is_suitable.get<0>())
+{
+std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self." << std::endl;
+std::abort();
+return;
+}
+if (v[i].get<1>() < 0)
+{
+std::cout << "Cannot accept a negative symbol limit when raising to power." << std::endl;
+std::abort();
+return;
+}
 max_natural_power(v[i].get<1>(),)
-      if (is_suitable.get<1>() > iterations)
-      {
-        iterations=is_suitable.get<1>();
-      }
-    }
-    if (iterations < 0)
-    {
-      std::cout << "Negative iterations for power, returning self;
-      std::abort();
-      return;
-    }
-
+if (is_suitable.get<1>() > iterations)
+{
+iterations=is_suitable.get<1>();
+}
+}
+if (iterations < 0)
+{
+std::cout << "Negative iterations for power, returning self;
+std::abort();
+return;
+}
 
 max_natural_power(int limit, int min_expo) const
 
-
-
 // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
-    const double error=.1*std::pow(derived_cast->g_norm(),power)*
-      settings_manager::prec();
-    const unsigned int limit_index=pow_limit(error,power);
-    Derived retval, x(*derived_cast), tmp(1.);
-    x.term_erase(x.s_index().begin());
-    for (unsigned int i=0;i<=limit_index;++i)
-    {
-      {
-        Derived tmp2(tmp);
-        tmp2*=math::choose(power,i);
-        tmp2*=Derived(a.pow(power-i),tmp2);
-        retval+=tmp2;
-      }
-      tmp*=x;
-    }
-    return retval;
+const double error=.1*std::pow(derived_cast->g_norm(),power)*
+settings_manager::prec();
+const unsigned int limit_index=pow_limit(error,power);
+Derived retval, x(*derived_cast), tmp(1.);
+x.term_erase(x.s_index().begin());
+for (unsigned int i=0;i<=limit_index;++i)
+{
+{
+Derived tmp2(tmp);
+tmp2*=math::choose(power,i);
+tmp2*=Derived(a.pow(power-i),tmp2);
+retval+=tmp2;
+}
+tmp*=x;
+}
+return retval;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if (set_.size()>1)
-    {
-      std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
-      std::abort();
-    }
-    Derived retval;
+if (set_.size()>1)
+{
+std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
+std::abort();
+}
+Derived retval;
 // Real case.
-    retval.insert(e_index().begin()->pow(x));
-    swap(retval);
-  }*/
+retval.insert(e_index().begin()->pow(x));
+swap(retval);
+}*/
 }
 #endif

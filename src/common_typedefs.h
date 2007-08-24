@@ -47,5 +47,4 @@ typedef std::deque<std::string> deque_string;
 typedef short int expo_type;
 /// Alias for degree type.
 typedef int degree_type;
-
 #endif
