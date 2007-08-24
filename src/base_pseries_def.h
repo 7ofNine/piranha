@@ -58,16 +58,16 @@ namespace piranha
  */
       typedef typename cf_type::eval_type eval_type;
       typedef typename boost::multi_index_container < term_type,
-        typename index_type::type > set_type;
+        typename index_type::type > series_set_type;
 /// Alias for the sorted index.
-      typedef typename set_type::template nth_index<0>
+      typedef typename series_set_type::template nth_index<0>
         ::type sorted_index;
 /// Alias for the iterator on sorted index.
       typedef typename sorted_index::iterator it_s_index;
 /// Alias for the reversed iterator on sorted index.
       typedef typename sorted_index::const_reverse_iterator r_it_s_index;
 /// Alias for the hashed index.
-      typedef typename set_type::template nth_index<1>
+      typedef typename series_set_type::template nth_index<1>
         ::type hashed_index;
 /// Alias for the iterator on hashed index.
       typedef typename hashed_index::iterator it_h_index;
@@ -75,7 +75,7 @@ namespace piranha
 /**
  * Standard iterator, so that piranha::base_pseries (and its children) can be used as STL
  * containers.
- * It can be defined here since it refers to base_pseries::set_type, which is the same object
+ * It can be defined here since it refers to base_pseries::series_set_type, which is the same object
  * in base_pseries and derived classes.
  * It also enables python iterators in pyranha.
  * @see base_pseries::begin().
@@ -148,12 +148,12 @@ namespace piranha
         return trig_s_vec_;
       }
 /// Return a const reference to the set of terms.
-      const set_type &g_series_set() const
+      const series_set_type &g_series_set() const
       {
         return set_;
       }
 /// Return a reference to the set of terms.
-      set_type &s_series_set()
+      series_set_type &s_series_set()
       {
         return set_;
       }
@@ -438,7 +438,7 @@ namespace piranha
       vector_mult_t   lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
-      set_type        set_;
+      series_set_type        set_;
   };
 
 // Default ctor
