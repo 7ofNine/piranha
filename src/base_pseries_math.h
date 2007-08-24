@@ -113,8 +113,8 @@ namespace piranha
 // Use hint, since as we add terms we have an idea of where they are going to be placed
     it_s_index it_hint=g_s_index().end();
 // NOTE: At this point this' size is greater or equal to ps2'
-    for (typename Derived2::ancestor::it_h_index it=ps2.h_index().begin();
-      it!=ps2.h_index().end();++it)
+    for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
+      it!=ps2.g_h_index().end();++it)
     {
       it_hint=insert(*it,sign,&it_hint);
     }

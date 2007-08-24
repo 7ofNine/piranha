@@ -137,8 +137,8 @@ namespace piranha
     inline double base_pseries<Cf, Trig, Term, I, Derived>::calc_norm() const
   {
     double retval=0.;
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const it_h_index it_f=g_h_index().end();
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
       retval+=it->g_cf()->norm(cf_s_vec_);
     }
@@ -255,8 +255,8 @@ namespace piranha
     inline size_t base_pseries<Cf, Trig, Term, I, Derived>::footprint() const
   {
     size_t retval=sizeof(self)+trig_width()*(sizeof(psymbol *)+sizeof(mult_t));
-    it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    it_h_index it_f=g_h_index().end();
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
       retval+=it->footprint();
     }

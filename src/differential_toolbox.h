@@ -51,10 +51,10 @@ namespace piranha
           std::cout << "No psymbol named '" << name << "', returning empty series." << std::endl;
           return retval;
         }
-        const it_h_index it_f=static_cast<Derived const *>(this)->h_index().end();
+        const it_h_index it_f=static_cast<Derived const *>(this)->g_h_index().end();
         term_type tmp_term;
         for (it_h_index it=static_cast<Derived const *>(this)->
-          h_index().begin();
+          g_h_index().begin();
           it!=it_f;
           ++it)
         {

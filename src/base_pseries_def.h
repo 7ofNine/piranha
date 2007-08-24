@@ -170,7 +170,7 @@ namespace piranha
 /**
  * @see base_pseries::hashed_index.
  */
-      const hashed_index &h_index() const
+      const hashed_index &g_h_index() const
       {
         return g_series_set().template get
           <1>();
@@ -211,7 +211,7 @@ namespace piranha
         return s_series_set().template get
           <0>();
       }
-      hashed_index &h_index()
+      hashed_index &s_h_index()
       {
         return s_series_set().template get
           <1>();

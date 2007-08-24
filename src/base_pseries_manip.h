@@ -135,9 +135,9 @@ namespace piranha
     retval.trig_s_vec_=trig_s_vec_;
 // Prepend psymbols from v.
     retval.cf_s_vec_.insert(retval.cf_s_vec_.begin(),v.begin(),v.end());
-    const it_h_index it_f=h_index().end();
+    const it_h_index it_f=g_h_index().end();
     const size_t n=v.size();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
@@ -163,9 +163,9 @@ namespace piranha
     retval.trig_s_vec_=trig_s_vec_;
 // Append psymbols from v.
     retval.cf_s_vec_.insert(retval.cf_s_vec_.end(),v.begin(),v.end());
-    const it_h_index it_f=h_index().end();
+    const it_h_index it_f=g_h_index().end();
     const size_t n=v.size();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
@@ -193,8 +193,8 @@ namespace piranha
 // Prepend psymbols from v.
     retval.trig_s_vec_.insert(retval.trig_s_vec_.begin(),v.begin(),v.end());
     retval.lin_args_.insert(retval.lin_args_.begin(),n,0);
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const it_h_index it_f=g_h_index().end();
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
@@ -222,8 +222,8 @@ namespace piranha
 // Append psymbols from v.
     retval.trig_s_vec_.insert(retval.trig_s_vec_.end(),v.begin(),v.end());
     retval.lin_args_.insert(retval.lin_args_.end(),n,0);
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const it_h_index it_f=g_h_index().end();
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
       tmp_term.s_trig()->append_args(n);
@@ -241,8 +241,8 @@ namespace piranha
     retval.cf_s_vec_=cf_s_vec_;
     retval.trig_s_vec_=trig_s_vec_;
 // Insert terms from this into retval.
-    const it_h_index it_f=h_index().end();
-    for (it_h_index it=h_index().begin();it!=it_f;++it)
+    const it_h_index it_f=g_h_index().end();
+    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
       tmp_term.s_flavour()=flavour;
@@ -308,7 +308,7 @@ namespace piranha
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_erase_hook(*it);
-    h_index().erase(it);
+    s_h_index().erase(it);
   }
 
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
@@ -325,7 +325,7 @@ namespace piranha
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
 // Update the existing term
-    p_assert(h_index().modify(it,modifier_update_cf(new_c)));
+    p_assert(s_h_index().modify(it,modifier_update_cf(new_c)));
   }
 
 // **************** //
@@ -346,9 +346,9 @@ namespace piranha
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
 // TODO: change this when flavour goes into trig_arg.
-    it_h_index it=h_index().find(boost::make_tuple(term.g_flavour(),
+    it_h_index it=g_h_index().find(boost::make_tuple(term.g_flavour(),
       *term.g_trig()));
-    if (it==h_index().end())
+    if (it==g_h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,
 // so it can be used in additions and multiplications
