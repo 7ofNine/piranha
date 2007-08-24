@@ -147,9 +147,13 @@ namespace piranha
       {
         return trig_s_vec_;
       }
+/// Return a const reference to the set of terms.
+      const set_type &g_set() const
+      {
+        return set_;
+      }
 /// Return a reference to the set of terms.
-      const set_type &g_set
-        () const
+      set_type &s_set()
       {
         return set_;
       }
@@ -159,7 +163,7 @@ namespace piranha
  */
       const sorted_index &s_index() const
       {
-        return set_.template get
+        return g_set().template get
           <0>();
       }
 /// Return a const reference to the hashed index.
@@ -168,7 +172,7 @@ namespace piranha
  */
       const hashed_index &h_index() const
       {
-        return set_.template get
+        return g_set().template get
           <1>();
       }
 /// Return index of coefficient argument "name".
@@ -204,12 +208,12 @@ namespace piranha
 // Setters for indices.
       sorted_index &s_index()
       {
-        return set_.template get
+        return s_set().template get
           <0>();
       }
       hashed_index &h_index()
       {
-        return set_.template get
+        return s_set().template get
           <1>();
       }
 /// Return a numerical value corresponding to the memory address of the series.
@@ -325,7 +329,7 @@ namespace piranha
 /// Check whether a series is empty or not.
       bool empty() const
       {
-        return set_.empty();
+        return g_set().empty();
       }
       size_t footprint() const;
       double calc_norm() const;
