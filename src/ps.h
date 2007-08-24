@@ -184,7 +184,7 @@ namespace std
       {
         p_assert(ancestor::merge_args(p));
         term_type term;
-        typename real_ps::it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
+        typename real_ps::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
         for (;it!=it_f;++it)
         {
           *term.s_cf()=cf_type(*it->g_cf());

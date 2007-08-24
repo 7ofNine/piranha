@@ -289,7 +289,7 @@ namespace piranha
     {
       lim=(size_t)n;
     }
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+    for (it_s_index it=g_s_index().begin();it!=g_s_index().end();++it)
     {
       if (j==lim)
       {
@@ -316,7 +316,7 @@ namespace piranha
     {
       lim=(size_t)n;
     }
-    for (it_s_index it=s_index().begin();it!=s_index().end();++it)
+    for (it_s_index it=g_s_index().begin();it!=g_s_index().end();++it)
     {
       if (i==lim)
       {

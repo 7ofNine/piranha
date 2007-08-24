@@ -40,8 +40,8 @@ namespace piranha
     eval_type retval(0.);
     const size_t w=trig_width();
 // Terms - start from the smallest, so that we keep good precision in the summation
-    const r_it_s_index it_f=s_index().rend();
-    for (r_it_s_index it=s_index().rbegin();it!=it_f;++it)
+    const r_it_s_index it_f=g_s_index().rend();
+    for (r_it_s_index it=g_s_index().rbegin();it!=it_f;++it)
     {
       retval+=it->t_eval(value,cf_s_vec_,trig_s_vec_);
     }
@@ -152,13 +152,13 @@ namespace piranha
 // We need at least 3 elements to detect a discontinuity
     if (length()<3)
     {
-      return s_index().end();
+      return g_s_index().end();
     }
-    const it_s_index it_f=boost::prior(s_index().end());
-    it_s_index it, it_candidate=s_index().end();
+    const it_s_index it_f=boost::prior(g_s_index().end());
+    it_s_index it, it_candidate=g_s_index().end();
     double rel_delta, candidate=0.;
     size_t index=0;
-    for (it=s_index().begin();it!=it_f;++it)
+    for (it=g_s_index().begin();it!=it_f;++it)
     {
       rel_delta=(it->g_cf()->norm(cf_s_vec_)-boost::next(it)->g_cf()->norm(cf_s_vec_))/it->g_cf()->norm(cf_s_vec_);
       if (rel_delta>candidate)
@@ -190,7 +190,7 @@ namespace piranha
   {
     if (length()==0)
     {
-      return s_index().end();
+      return g_s_index().end();
     }
 // Take absolute values, just to prevent disasters in case of invalid input
     const double desired_sdp=std::abs(desired_sdp_), achieved_tdp=std::abs(achieved_tdp_);
@@ -198,7 +198,7 @@ namespace piranha
     const double ste=achieved_tdp/length();
     std::cout << "STE is " << ste << std::endl;
     it_s_index it;
-    for (it=s_index().begin();it!=s_index().end();++it)
+    for (it=g_s_index().begin();it!=g_s_index().end();++it)
     {
       if (it->g_cf()->norm(cf_s_vec_)*desired_sdp < ste)
       {
@@ -271,9 +271,9 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline bool base_pseries<Cf, Trig, Term, I, Derived>::checkup() const
   {
-    it_s_index it_f=s_index().end();
+    it_s_index it_f=g_s_index().end();
     const size_t cw=cf_width(), tw=trig_width();
-    for (it_s_index it=s_index().begin();it!=it_f;++it)
+    for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       if (!it->checkup(cw,tw))
       {
@@ -291,7 +291,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline bool base_pseries<Cf, Trig, Term, I, Derived>::is_cf() const
   {
-    if (length()==1 && s_index().begin()->g_flavour() && s_index().begin()->g_trig()->is_zero())
+    if (length()==1 && g_s_index().begin()->g_flavour() && g_s_index().begin()->g_trig()->is_zero())
     {
       return true;
     }

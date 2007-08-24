@@ -279,7 +279,7 @@ namespace piranha
     it_s_index it_new;
     if (it_hint==0)
     {
-      std::pair<iterator,bool> result=s_index().insert(term);
+      std::pair<iterator,bool> result=s_s_index().insert(term);
       p_assert(result.second);
       it_new=result.first;
     }
@@ -288,7 +288,7 @@ namespace piranha
 // FIXME: use asserts here? The problem here is that we are using hinted
 // insertion, the return value is different from above (but above an assert
 // is needed too
-      it_new=s_index().insert(*it_hint,term);
+      it_new=s_s_index().insert(*it_hint,term);
       p_assert(it_new!=end());
     }
     if (sign==false)
@@ -297,7 +297,7 @@ namespace piranha
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
       cf_type new_c=*it_new->g_cf();
-      p_assert(s_index().modify(it_new,modifier_update_cf(-new_c)));
+      p_assert(s_s_index().modify(it_new,modifier_update_cf(-new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
     return it_new;
@@ -316,7 +316,7 @@ namespace piranha
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_erase_hook(*it);
-    s_index().erase(it);
+    s_s_index().erase(it);
   }
 
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
@@ -339,7 +339,7 @@ namespace piranha
 // for polynomials, and thus assertion would wrongly fail.
     if (term.is_ignorable(cf_s_vec_))
     {
-      return s_index().end();
+      return g_s_index().end();
     }
     p_assert(term.g_cf()->compatible(cf_width()));
     p_assert(term.g_trig()->compatible(trig_width()));
@@ -381,7 +381,7 @@ namespace piranha
       }
 // If we are erasing or updating there's no point in giving an hint on where
 // the action took place, just return the end() iterator.
-      ret_it=s_index().end();
+      ret_it=g_s_index().end();
       stats::pack();
     }
     return ret_it;
@@ -515,7 +515,7 @@ namespace piranha
       return;
     }
     double part_norm=0.;
-    it_s_index it=boost::prior(s_index().end());
+    it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
       part_norm+=it->g_cf()->norm(cf_s_vec_);
@@ -523,7 +523,7 @@ namespace piranha
       {
         break;
       }
-      if (it==s_index().begin())
+      if (it==g_s_index().begin())
       {
         term_erase(it);
         break;
@@ -545,14 +545,14 @@ namespace piranha
     {
       return;
     }
-    it_s_index it=boost::prior(s_index().end());
+    it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
       if (it->g_cf()->norm(cf_s_vec_)>=delta)
       {
         break;
       }
-      if (it==s_index().begin())
+      if (it==g_s_index().begin())
       {
         term_erase(it);
         break;
@@ -571,11 +571,11 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::crop(const it_s_index &it_f)
   {
 // Won't crop a nil series or if the crop limit is the end of the series
-    if (length()==0 || it_f==s_index().end())
+    if (length()==0 || it_f==g_s_index().end())
     {
       return;
     }
-    it_s_index it=boost::prior(s_index().end());
+    it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
       term_erase(it);

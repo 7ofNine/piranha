@@ -86,10 +86,10 @@ namespace piranha
       return;
     }
     typename T::it_h_index it_h;
-    const typename T::it_s_index it_f=ps1.s_index().end();
+    const typename T::it_s_index it_f=ps1.g_s_index().end();
     size_t i=0;
     double max_diff=0.;
-    for (typename T::it_s_index it=ps1.s_index().begin();it!=it_f;++it)
+    for (typename T::it_s_index it=ps1.g_s_index().begin();it!=it_f;++it)
     {
       it_h=ps2.h_index().find(boost::make_tuple(it->g_flavour(),
         *it->g_trig()));
@@ -548,8 +548,8 @@ namespace piranha
         double tmp;
         eval_type c_eval;
 // Terms - start from the smallest, so that we keep good precision in the summation
-        const r_it_s_index it_f=orig_->s_index().rend();
-        for (r_it_s_index it=orig_->s_index().rbegin();it!=it_f;++it)
+        const r_it_s_index it_f=orig_->g_s_index().rend();
+        for (r_it_s_index it=orig_->g_s_index().rbegin();it!=it_f;++it)
         {
 // Check that we are not going outside the boundaries.
           if (sym_index_ < orig_->trig_width())

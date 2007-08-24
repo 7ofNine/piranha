@@ -57,8 +57,8 @@ namespace piranha
           }
           return Derived();
         }
-        if (derived_cast->s_index().begin()->g_flavour()==false ||
-          !(derived_cast->s_index().begin()->g_trig()->is_zero()))
+        if (derived_cast->g_s_index().begin()->g_flavour()==false ||
+          !(derived_cast->g_s_index().begin()->g_trig()->is_zero()))
         {
           std::cout << "ERROR! series' top term is not suitable for real power." << std::endl;
           std::exit(1);
@@ -66,7 +66,7 @@ namespace piranha
 // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
 // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
 // Need to think about this, but it is not essential until symbolic coefficients are introduced.
-        const cf_type *a=derived_cast->s_index().begin()->g_cf();
+        const cf_type *a=derived_cast->g_s_index().begin()->g_cf();
         if (a->t_eval(0.,derived_cast->cf_s_vec())<0)
         {
           std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;
@@ -83,7 +83,7 @@ namespace piranha
           settings_manager::prec();
         const unsigned int limit_index=pow_limit(error,power);
         Derived retval, x(*derived_cast), tmp(1.);
-        x.term_erase(x.s_index().begin());
+        x.term_erase(x.g_s_index().begin());
         for (unsigned int i=0;i<=limit_index;++i)
         {
           {
@@ -107,7 +107,7 @@ namespace piranha
         p_assert(error>=0);
         unsigned int retval=0;
         const Derived *derived_cast=static_cast<Derived const *>(this);
-        const double a=derived_cast->s_index().begin()->
+        const double a=derived_cast->g_s_index().begin()->
           g_cf()->norm(derived_cast->cf_s_vec()),
           absx=derived_cast->g_norm()-a,
           exactM=std::pow(a+absx,power), exactm=std::pow(a-absx,power), absratio=absx/a;

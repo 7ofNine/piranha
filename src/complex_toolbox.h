@@ -57,7 +57,7 @@ namespace piranha
 // Insert p (real_ part).
         {
           term_type term;
-          real_it_s_index it=p.s_index().begin(), it_f=p.s_index().end();
+          real_it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
           for (;
             it!=it_f;
             ++it)
@@ -72,7 +72,7 @@ namespace piranha
 // Insert q (imaginary part).
         {
           term_type term;
-          real_it_s_index it=q.s_index().begin(), it_f=q.s_index().end();
+          real_it_s_index it=q.g_s_index().begin(), it_f=q.g_s_index().end();
           for (;
             it!=it_f;
             ++it)
@@ -91,12 +91,12 @@ namespace piranha
         real_Derived retval;
         retval.merge_args(*static_cast<Derived const *>(this));
         retval.lin_args()=static_cast<Derived const *>(this)->lin_args();
-        const it_s_index it_f=static_cast<Derived const *>(this)->s_index().end();
-        real_it_s_index it_hint=retval.s_index().end();
+        const it_s_index it_f=static_cast<Derived const *>(this)->g_s_index().end();
+        real_it_s_index it_hint=retval.g_s_index().end();
         real_term_type term(real_cf_type(0),true);
         for (it_s_index it=static_cast<Derived const *>
           (this)->
-          s_index().begin();
+          g_s_index().begin();
           it!=it_f;
           ++it)
         {

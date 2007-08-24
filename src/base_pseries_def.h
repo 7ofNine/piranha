@@ -161,7 +161,7 @@ namespace piranha
 /**
  * @see base_pseries::sorted_index.
  */
-      const sorted_index &s_index() const
+      const sorted_index &g_s_index() const
       {
         return g_series_set().template get
           <0>();
@@ -206,7 +206,7 @@ namespace piranha
         return retval;
       }
 // Setters for indices.
-      sorted_index &s_index()
+      sorted_index &s_s_index()
       {
         return s_series_set().template get
           <0>();
@@ -230,7 +230,7 @@ namespace piranha
  */
       it_s_index begin() const
       {
-        return s_index().begin();
+        return g_s_index().begin();
       }
 /// End of series.
 /**
@@ -241,7 +241,7 @@ namespace piranha
  */
       it_s_index end() const
       {
-        return s_index().end();
+        return g_s_index().end();
       }
 // Basic manipulation
       it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);

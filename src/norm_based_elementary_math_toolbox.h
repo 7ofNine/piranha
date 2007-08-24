@@ -48,8 +48,8 @@ namespace piranha
         Derived tmp_ps;
         tmp_ps.merge_args(*derived_cast);
         term_type tmp_term;
-        it_s_index it_hint=tmp_ps.s_index().end();
-        BOOST_FOREACH(term_type t,derived_cast->s_index())
+        it_s_index it_hint=tmp_ps.g_s_index().end();
+        BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
           tmp_term=t;
           tmp_term.s_cf()->mult_by_self(cf);
@@ -72,12 +72,12 @@ namespace piranha
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
         term_type tmp1, tmp2;
         boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
-        const it_s_index it1_f=derived_cast->s_index().end();
-        const it_s_index2 it2_i=ps2.s_index().begin(), it2_f=ps2.s_index().end();
+        const it_s_index it1_f=derived_cast->g_s_index().end();
+        const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
         it_s_index2 it2;
-        it_s_index it1, it_hint=retval.s_index().end();
+        it_s_index it1, it_hint=retval.g_s_index().end();
         double norm1;
-        for (it1=derived_cast->s_index().begin();it1!=it1_f;++it1)
+        for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
           norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());

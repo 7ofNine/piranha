@@ -54,9 +54,9 @@ namespace piranha
     cf_s_vec_=ps2.cf_s_vec();
     trig_s_vec_=ps2.trig_s_vec();
     lin_args_=ps2.lin_args();
-    const it_s_index2 it_f=ps2.s_index().end();
+    const it_s_index2 it_f=ps2.g_s_index().end();
 // TODO: use hinted insertion.
-    for (it_s_index2 it=ps2.s_index().begin();it!=it_f;++it)
+    for (it_s_index2 it=ps2.g_s_index().begin();it!=it_f;++it)
     {
       insert(*it);
     }
@@ -111,7 +111,7 @@ namespace piranha
 // Sum/sub lin_args
     alg_sum_lin_args(ps2,sign);
 // Use hint, since as we add terms we have an idea of where they are going to be placed
-    it_s_index it_hint=s_index().end();
+    it_s_index it_hint=g_s_index().end();
 // NOTE: At this point this' size is greater or equal to ps2'
     for (typename Derived2::ancestor::it_h_index it=ps2.h_index().begin();
       it!=ps2.h_index().end();++it)
@@ -240,12 +240,12 @@ namespace piranha
     if (ps2.is_cf())
     {
       std::cout << "Cf1\n";
-      static_cast<Derived *>(this)->cf_multiplication(*ps2.s_index().begin()->g_cf());
+      static_cast<Derived *>(this)->cf_multiplication(*ps2.g_s_index().begin()->g_cf());
       return true;
     }
     else if (is_cf())
     {
-      cf_type tmp(*s_index().begin()->g_cf());
+      cf_type tmp(*g_s_index().begin()->g_cf());
       generic_series_assignment(ps2);
       static_cast<Derived *>(this)->cf_multiplication(tmp);
       std::cout << "Cf2\n";
@@ -292,9 +292,9 @@ namespace piranha
     Derived tmp_ps;
     tmp_ps.merge_args(*static_cast<Derived *>(this));
     term_type tmp_term;
-    it_s_index it_hint=tmp_ps.s_index().end();
-    const it_s_index it_f=s_index().end();
-    for (it_s_index it=s_index().begin();it!=it_f;++it)
+    it_s_index it_hint=tmp_ps.g_s_index().end();
+    const it_s_index it_f=g_s_index().end();
+    for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
       *tmp_term.s_cf()*=c;
@@ -328,9 +328,9 @@ namespace piranha
     Derived tmp_ps;
     tmp_ps.merge_args(*static_cast<Derived *>(this));
     term_type tmp_term;
-    it_s_index it_hint=tmp_ps.s_index().end();
-    const it_s_index it_f=s_index().end();
-    for (it_s_index it=s_index().begin();it!=it_f;++it)
+    it_s_index it_hint=tmp_ps.g_s_index().end();
+    const it_s_index it_f=g_s_index().end();
+    for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
       *tmp_term.s_cf()/=x;
