@@ -148,7 +148,7 @@ namespace piranha
         return trig_s_vec_;
       }
 /// Return a reference to the set of terms.
-      const set_type &set
+      const set_type &g_set
         () const
       {
         return set_;
