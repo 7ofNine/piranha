@@ -32,7 +32,7 @@ namespace piranha
     {
       return;
     }
-    set_=ps2.g_series_set();
+    s_series_set()=ps2.g_series_set();
     cf_s_vec_=ps2.cf_s_vec_;
     trig_s_vec_=ps2.trig_s_vec_;
     lin_args_=ps2.lin_args_;

@@ -107,7 +107,7 @@ namespace piranha
 /// Return series length.
       size_t length() const
       {
-        return set_.size();
+        return g_series_set().size();
       }
 /// Return trigonometric width.
       size_t trig_width() const
@@ -150,12 +150,12 @@ namespace piranha
 /// Return a const reference to the set of terms.
       const series_set_type &g_series_set() const
       {
-        return set_;
+        return private_series_set_;
       }
 /// Return a reference to the set of terms.
       series_set_type &s_series_set()
       {
-        return set_;
+        return private_series_set_;
       }
 /// Return a const reference to the sorted index.
 /**
@@ -438,11 +438,11 @@ namespace piranha
       vector_mult_t   lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
-      series_set_type        set_;
+      series_set_type private_series_set_;
   };
 
 // Default ctor
-#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),set_()
+#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
 
 /// Default constructor.
 /**
@@ -457,7 +457,7 @@ namespace piranha
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const Derived &ps):
-  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),set_(ps.set_)
+  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),private_series_set_(ps.g_series_set())
   {
     std::cout << "Copy ctor" << std::endl;
   }
