@@ -107,7 +107,7 @@ namespace piranha
 /// Return series length.
       size_t length() const
       {
-        return g_series_set().size();
+        return g_series_set()->size();
       }
 /// Return trigonometric width.
       size_t trig_width() const
@@ -148,14 +148,14 @@ namespace piranha
         return trig_s_vec_;
       }
 /// Return a const reference to the set of terms.
-      const series_set_type &g_series_set() const
+      const series_set_type *g_series_set() const
       {
-        return private_series_set_;
+        return &private_series_set_;
       }
 /// Return a reference to the set of terms.
-      series_set_type &s_series_set()
+      series_set_type *s_series_set()
       {
-        return private_series_set_;
+        return &private_series_set_;
       }
 /// Return a const reference to the sorted index.
 /**
@@ -163,7 +163,7 @@ namespace piranha
  */
       const sorted_index &g_s_index() const
       {
-        return g_series_set().template get
+        return g_series_set()->template get
           <0>();
       }
 /// Return a const reference to the hashed index.
@@ -172,7 +172,7 @@ namespace piranha
  */
       const hashed_index &g_h_index() const
       {
-        return g_series_set().template get
+        return g_series_set()->template get
           <1>();
       }
 /// Return index of coefficient argument "name".
@@ -208,12 +208,12 @@ namespace piranha
 // Setters for indices.
       sorted_index &s_s_index()
       {
-        return s_series_set().template get
+        return s_series_set()->template get
           <0>();
       }
       hashed_index &s_h_index()
       {
-        return s_series_set().template get
+        return s_series_set()->template get
           <1>();
       }
 /// Return a numerical value corresponding to the memory address of the series.
@@ -329,7 +329,7 @@ namespace piranha
 /// Check whether a series is empty or not.
       bool empty() const
       {
-        return g_series_set().empty();
+        return g_series_set()->empty();
       }
       size_t footprint() const;
       double calc_norm() const;
@@ -457,7 +457,7 @@ namespace piranha
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
     inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const Derived &ps):
-  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),private_series_set_(ps.g_series_set())
+  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),private_series_set_(*ps.g_series_set())
   {
     std::cout << "Copy ctor" << std::endl;
   }
