@@ -217,7 +217,7 @@ namespace piranha
           <1>();
       }
 /// Return a numerical value corresponding to the memory address of the series.
-      size_t address()
+      size_t address() const
       {
         return (size_t)(void *)this;
       }
