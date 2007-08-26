@@ -144,6 +144,12 @@ namespace piranha
         monomial_gmp_array(const monomial_gmp_array<U> &m):private_min_expo_(m.g_min_expo()),private_degree_(m.get_degree()),
         private_container_(m.g_container()),private_numerical_cf_(m.g_numerical_cf()),private_rational_cf_(m.g_rational_cf())
         {}
+/// Constructor from psymbol.
+      monomial_gmp_array(const psymbol &):private_min_expo_(1),private_degree_(1),private_container_(size_t(1)),
+        private_numerical_cf_(1.),private_rational_cf_(1)
+      {
+        private_container_[0]=1;
+      }
 /// Destructor.
       ~monomial_gmp_array()
         {}

@@ -73,13 +73,9 @@ namespace piranha
         insert(m_type(x));
       }
 /// Constructor from psymbol.
-      explicit base_polynomial(const psymbol &)
+      explicit base_polynomial(const psymbol &psym)
       {
-        m_type tmp_m((size_t)1);
-        tmp_m.g_rational_cf()=1;
-// TODO: we can ditch the extra ctor here if we allow for assignment of complex double_cf from real.
-        tmp_m.g_numerical_cf()=typename m_type::numerical_type(1.);
-        tmp_m.container()[0]=1;
+        m_type tmp_m(psym);
         insert(tmp_m);
       }
 /// Copy constructor.
