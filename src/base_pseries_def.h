@@ -63,14 +63,14 @@ namespace piranha
       typedef typename series_set_type::template nth_index<0>
         ::type sorted_index;
 /// Alias for the iterator on sorted index.
-      typedef typename sorted_index::iterator it_s_index;
+      typedef typename sorted_index::const_iterator it_s_index;
 /// Alias for the reversed iterator on sorted index.
       typedef typename sorted_index::const_reverse_iterator r_it_s_index;
 /// Alias for the hashed index.
       typedef typename series_set_type::template nth_index<1>
         ::type hashed_index;
 /// Alias for the iterator on hashed index.
-      typedef typename hashed_index::iterator it_h_index;
+      typedef typename hashed_index::const_iterator it_h_index;
 /// Standard iterator.
 /**
  * Standard iterator, so that piranha::base_pseries (and its children) can be used as STL
@@ -80,15 +80,8 @@ namespace piranha
  * It also enables python iterators in pyranha.
  * @see base_pseries::begin().
  * @see base_pseries::end().
- * @see base_pseries::const_iterator.
  */
       typedef it_s_index iterator;
-/// Standard constant iterator.
-/**
- * Constant counterpart of base_pseries::iterator.
- * @see base_pseries::iterator.
- */
-      typedef typename sorted_index::const_iterator const_iterator;
 // Ctors
       base_pseries();
       base_pseries(const Derived &);
