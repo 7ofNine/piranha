@@ -50,8 +50,15 @@ namespace piranha
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.g_s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
+        const bool limit_exists=(limits.size()>0);
+        const expo_type limit_min_expo=limits.g_min_expo(), min_expo_cf=cf.g_min_expo();
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
+          if (limit_exists && min_expo_cf+t.g_cf()->g_min_expo() > limit_min_expo)
+          {
+            std::cout << "Cf shortcut\n";
+            break;
+          }
           tmp_term=t;
           tmp_term.s_cf()->mult_by_self(cf,limits);
           it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
@@ -76,21 +83,21 @@ namespace piranha
         it_s_index it1, it_hint=retval.g_s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
         expo_type min_expo1;
-        const bool limit_exist=(limits.size()>0);
+        const bool limit_exists=(limits.size()>0);
         const expo_type limit_min_expo=limits.g_min_expo();
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
           min_expo1=it1->g_cf()->g_min_expo();
-// TODO: consider optimization of removing 'limit_exist' check.
-          if (limit_exist && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
+// TODO: consider optimization of removing 'limit_exists' check.
+          if (limit_exists && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
           {
             std::cout << "External shortcut1\n";
             break;
           }
           for (;it2!=it2_f;++it2)
           {
-            if (limit_exist && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
+            if (limit_exists && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
             {
               std::cout << "External shortcut2\n";
               break;
