@@ -44,6 +44,7 @@ namespace piranha
     std::cout << "Theories of motion directory\t=\t" << theories_path() << std::endl;
     std::cout << "Piranha is ready." << std::endl;
     std::cout << "_______________________________" << std::endl << std::endl;
+    stream_manager::setup_print(std::cout);
   }
 
 /// Set precision in multiplication of series.
