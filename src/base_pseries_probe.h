@@ -237,11 +237,12 @@ namespace piranha
       std::cout << "Warning: won't calculate mean with zero values, returning 0." << std::endl;
       return 0.;
     }
+    Derived const *derived_cast=static_cast<Derived const *>(this);
     double step=(t1-t0)/n, t=t0;
     eval_type retval(0.);
     for(size_t i=0;i<n;++i)
     {
-      retval+=t_eval(t);
+      retval+=derived_cast->t_eval(t);
       t+=step;
     }
     return retval/(double)n;
