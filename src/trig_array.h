@@ -275,7 +275,10 @@ namespace piranha
     double retval=0.;
     for (size_t i=0;i<v.size();++i)
     {
-      retval+=container_[i]*v[i]->t_eval(t);
+      if (container_[i]!=0)
+      {
+        retval+=container_[i]*v[i]->t_eval(t);
+      }
     }
     return retval;
   }
