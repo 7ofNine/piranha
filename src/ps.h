@@ -71,12 +71,12 @@ namespace piranha
       explicit ps(const cf_type &c, const ps &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from int.
-      explicit ps(int n)
+      explicit ps(int n):norm_toolbox()
       {
         ancestor::generic_builder(n);
       }
 /// Constructor from double.
-      explicit ps(const double &x)
+      explicit ps(const double &x):norm_toolbox()
       {
         ancestor::generic_builder(x);
       }
@@ -167,12 +167,12 @@ namespace std
   ancestor::base_pseries(cf_type(a,b))
   {}*/
 /// Constructor from complex.
-      explicit complex(const complex_double &c)
+      explicit complex(const complex_double &c):norm_toolbox()
       {
         ancestor::generic_builder(c);
       }
 /// Constructor from pair of doubles.
-      explicit complex(const double &a, const double &b)
+      explicit complex(const double &a, const double &b):norm_toolbox()
       {
         ancestor::generic_builder(complex_double(a,b));
       }
