@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_TERM_H
 #define PIRANHA_BASE_TERM_H
 
+#include "trig_evaluator.h"
+
 namespace piranha
 {
 /// Base Poisson series term class.
@@ -160,10 +162,11 @@ namespace piranha
       {
         print(std::cout,cv,tv);
       }
-/// Numerical evaluation.
+/// Numerical evaluation, brute force version.
 /**
  * Evaluate numerically the term given the time of evaluation and a vector of piranha::psymbol describing
- * the arguments.
+ * the arguments. The evaluation is "dumb", in the sense that it happens term by term without caching and reusing
+ * any previous calculation. Slow but reliable, hence useful for debugging purposes.
  * @param[in] t time of evaluation.
  * @param[in] vc vector of piranha::psymbol objects for the coefficient.
  * @param[in] vt vector of piranha::psymbol objects for the trigonometric part.
@@ -179,6 +182,27 @@ namespace piranha
             break;
           case false:
             retval*=std::sin(static_cast<Derived const *>(this)->g_trig()->t_eval(t,vt));
+        }
+        return retval;
+      }
+/// Smarter numerical evaluation
+/**
+ * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
+ * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on the series' characteristics.
+ * @param[in] te piranha::trig_evaluator object that caches complex exponentials of trigonometric arguments.
+ */
+      template <class TrigEvaluator>
+        eval_type t_eval(TrigEvaluator &te) const
+      {
+        eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(te.value(),te.ps()->cf_s_vec());
+// TODO: move this into trig_args, once we move flavour there.
+        switch (g_flavour())
+        {
+          case true:
+            retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te).real();
+            break;
+          case false:
+            retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te).imag();
         }
         return retval;
       }

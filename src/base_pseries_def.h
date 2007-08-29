@@ -327,6 +327,7 @@ namespace piranha
       size_t footprint() const;
       double calc_norm() const;
       it_s_index discontinuity() const;
+      eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;
       size_t trig_index(const std::string &) const;
       eval_type mean(const double &, const double &,

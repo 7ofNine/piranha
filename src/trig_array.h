@@ -21,6 +21,9 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
+#include "common_typedefs.h"    // For t_eval.
+#include "trig_evaluator.h"
+
 namespace piranha
 {
 /// Linear combination of arguments. Array version.
@@ -54,6 +57,8 @@ namespace piranha
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
       double t_eval(const double &, const vector_psym_p &) const;
+      template <class TrigEvaluator>
+        complex_double t_eval(TrigEvaluator &) const;
       short int sign() const;
       size_t hasher() const;
       bool is_zero() const;
@@ -258,9 +263,9 @@ namespace piranha
     return retval;
   }
 
-/// Time evaluation.
+/// Time evaluation of arguments.
 /**
- * Return time evaluation, given time and a vector of piranha::psymbol pointers.
+ * Returns the value assumed by the linear combination of arguments at time t.
  * @param[in] t double time of the evaluation.
  * @param[in] v vector of piranha::psymbol pointers.
  */
@@ -271,6 +276,28 @@ namespace piranha
     for (size_t i=0;i<v.size();++i)
     {
       retval+=container_[i]*v[i]->t_eval(t);
+    }
+    return retval;
+  }
+
+/// Time evaluation of complex exponential of the arguments.
+/**
+ * Returns the complex exponential of the linear combination of arguments at time t.
+ * Uses a TrigEvaluator objet which contains a cache of the complex exponentials of arguments.
+ * @param[in] te piranha::trig_evaluator containing a cache of complex exponentials of arguments.
+ */
+  template <class TrigEvaluator>
+    inline complex_double trig_array::t_eval(TrigEvaluator &te) const
+  {
+    p_assert(te.width()==width());
+    const size_t w=width();
+    complex_double retval(1.);
+    for (size_t i=0;i<w;++i)
+    {
+      if (container_[i]!=0)
+      {
+        retval*=te.request_complexp(i,container_[i]);
+      }
     }
     return retval;
   }

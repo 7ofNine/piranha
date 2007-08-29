@@ -25,16 +25,19 @@
 #include <iterator>
 #include <set>
 
+#include "trig_evaluator.h"
+
 namespace piranha
 {
-/// Evaluate numerically a series at a specified time.
+/// Evaluate numerically a series at a specified time. Brute force version.
 /**
  * Series is evaluated using the information about the arguments. Coefficient and trigonometric
- * part methods are called internally.
+ * part methods are called internally. This version is slow and does not cache any result of evaluation.
+ * Useful for debugging purposes.
  * @param[in] value, double for the time of evaluation.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    typename base_pseries<Cf, Trig, Term, I, Derived>::eval_type base_pseries<Cf, Trig, Term, I, Derived>::t_eval(const
+    typename base_pseries<Cf, Trig, Term, I, Derived>::eval_type base_pseries<Cf, Trig, Term, I, Derived>::t_eval_brute(const
     double &value) const
   {
     eval_type retval(0.);
@@ -46,6 +49,33 @@ namespace piranha
       retval+=it->t_eval(value,cf_s_vec_,trig_s_vec_);
     }
 // Linear arguments
+    for (size_t j=0;j<w;++j)
+    {
+      retval+=lin_args()[j]*trig_s_vec_[j]->t_eval(value);
+    }
+    return retval;
+  };
+
+/// Evaluate numerically a series at a specified time. Smarter version.
+/**
+ * Similar to base_pseries::t_eval_brute, with the different that this kind of evaluation caches evaluation of complex
+ * exponential of arguments. Hence it is faster.
+ * @param[in] value, double for the time of evaluation.
+ */
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
+    typename base_pseries<Cf, Trig, Term, I, Derived>::eval_type base_pseries<Cf, Trig, Term, I, Derived>::t_eval(const
+    double &value) const
+  {
+    trig_evaluator<base_pseries> te(this,value);
+    eval_type retval(0.);
+// Terms - start from the smallest, so that we keep good precision in the summation
+    const r_it_s_index it_f=g_s_index().rend();
+    for (r_it_s_index it=g_s_index().rbegin();it!=it_f;++it)
+    {
+      retval+=it->t_eval(te);
+    }
+// Linear arguments
+    const size_t w=trig_width();
     for (size_t j=0;j<w;++j)
     {
       retval+=lin_args()[j]*trig_s_vec_[j]->t_eval(value);

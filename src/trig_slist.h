@@ -78,6 +78,8 @@ namespace piranha
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
       double t_eval(const double &, const vector_psym_p &) const;
+      template <class TrigEvaluator>
+        complex_double t_eval(TrigEvaluator &) const;
       short int sign() const;
       size_t hasher() const;
       bool is_zero() const;
@@ -398,6 +400,18 @@ namespace piranha
     for (const_iterator it=begin();it!=it_f;++it)
     {
       retval+=it->second*v[it->first]->t_eval(t);
+    }
+    return retval;
+  }
+
+  template <class TrigEvaluator>
+    inline complex_double trig_slist::t_eval(TrigEvaluator &te) const
+  {
+    complex_double retval(1.);
+    const const_iterator it_f=end();
+    for (const_iterator it=begin();it!=it_f;++it)
+    {
+      retval*=te.request_complexp(it->first,it->second);
     }
     return retval;
   }
