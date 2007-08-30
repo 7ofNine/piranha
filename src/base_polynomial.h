@@ -434,8 +434,8 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
-    p_assert(!(m.larger(w) && !empty()))
-      const m_type *insert_m;
+    p_assert(!(m.larger(w) && !empty()));
+    const m_type *insert_m;
     if (new_m==0)
     {
       insert_m=&m;
