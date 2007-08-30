@@ -30,8 +30,18 @@ if ((result)==false) \
   exit(1); \
 }
 
+#define action_assert(action) \
+if ((action)==false) \
+{ \
+  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+  exit(1); \
+}
+
 #else
 
-#define p_assert(__arg,...) __arg
+#define p_assert(__arg,...)
+
+#define action_assert(action,...) action
+
 #endif
 #endif

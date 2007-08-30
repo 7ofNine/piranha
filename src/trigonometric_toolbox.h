@@ -40,7 +40,7 @@ namespace piranha
         }
         Derived retval;
 // Model retval after this.
-        p_assert(retval.merge_args(*derived_cast));
+        action_assert(retval.merge_args(*derived_cast));
 // Import also linear arguments.
         retval.lin_args()=derived_cast->lin_args();
 // Merge with other series. If we don't succeed just return *this.
@@ -63,9 +63,9 @@ namespace piranha
             complex_ps psc=(p*tmp_mult).complexp();
             real_Derived cosp=psc.real(), sinp=psc.imag();
             Derived tmp1, tmp2;
-            p_assert(tmp1.merge_args(*derived_cast));
+            action_assert(tmp1.merge_args(*derived_cast));
             tmp1.insert(*it);
-            p_assert(tmp2.merge_args(*derived_cast));
+            action_assert(tmp2.merge_args(*derived_cast));
             tmp2.insert(*it);
             switch (it->g_flavour())
             {
@@ -111,7 +111,7 @@ namespace piranha
         typedef typename Derived::ancestor::r_it_s_index real_r_it_s_index;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         complex_ps retval;
-        p_assert(retval.merge_args(*derived_cast));
+        action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
         retval.insert(complex_term_type(complex_cf_type(1.)));
         real_r_it_s_index it=derived_cast->g_series_set()->rbegin();
@@ -174,7 +174,7 @@ namespace piranha
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         complex_ps retval;
-        p_assert(retval.merge_args(*derived_cast));
+        action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
         complex_term_type term1(complex_cf_type(1),true),
           term2(complex_cf_type(0,1),false);
@@ -234,7 +234,7 @@ namespace piranha
         typedef typename Derived::ancestor::cf_type real_cf_type;
         unsigned int i;
         complex_ps retval;
-        p_assert(retval.merge_args(*static_cast<Derived const *>(this)));
+        action_assert(retval.merge_args(*static_cast<Derived const *>(this)));
         p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
         real_cf_type _cf=*it->g_cf(), tmp;
         if (it->g_flavour())

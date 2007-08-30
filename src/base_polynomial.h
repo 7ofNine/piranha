@@ -450,7 +450,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
 // The term is NOT a duplicate, it has been inserted in the set; if requested, subtract.
       if (!sign)
       {
-        p_assert(e_index().modify(insert_result.first,
+        action_assert(e_index().modify(insert_result.first,
           typename m_type::update_numerical_cf(-insert_result.first->g_numerical_cf())));
       }
     }
@@ -472,7 +472,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
       }
       else
       {
-        p_assert(e_index().modify(insert_result.first,typename m_type::update_cfs(numerical_cf,rational_cf)));
+        action_assert(e_index().modify(insert_result.first,typename m_type::update_cfs(numerical_cf,rational_cf)));
       }
     }
     delete new_m;
@@ -600,11 +600,11 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(e_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
+        action_assert(e_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
       }
       else
       {
-        p_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+        action_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
           (-n)*it->g_rational_cf())));
       }
     }
@@ -621,7 +621,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     const iterator it_f=e_index().end();
     for (iterator it=e_index().begin();it!=it_f;++it)
     {
-      p_assert(e_index().modify(it,typename m_type::update_numerical_cf(it->g_numerical_cf()*x)));
+      action_assert(e_index().modify(it,typename m_type::update_numerical_cf(it->g_numerical_cf()*x)));
     }
   }
 
@@ -642,11 +642,11 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
 // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
-        p_assert(e_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
+        action_assert(e_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
       }
       else
       {
-        p_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
+        action_assert(e_index().modify(it,typename m_type::update_cfs(-it->g_numerical_cf(),
           it->g_rational_cf()/(-n))));
       }
     }

@@ -222,7 +222,7 @@ namespace piranha
       std::exit(1);
       return false;
     }
-    p_assert(retval.merge_args(*static_cast<Derived *>(this)));
+    action_assert(retval.merge_args(*static_cast<Derived *>(this)));
     return true;
   }
 

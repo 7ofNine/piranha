@@ -44,7 +44,7 @@ namespace piranha
       void build_from_components(const real_Derived &p,
         const real_Derived &q)
       {
-        p_assert(static_cast<Derived *>(this)->merge_args(p));
+        action_assert(static_cast<Derived *>(this)->merge_args(p));
         if (!static_cast<Derived *>
           (this)->merge_args(q))
         {

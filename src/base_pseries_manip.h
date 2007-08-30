@@ -92,7 +92,7 @@ namespace piranha
     inline void base_pseries<Cf, Trig, Term, I, Derived>::insert_phases(const phase_list &pl)
   {
     Derived tmp_ps;
-    p_assert(tmp_ps.merge_args(*this));
+    action_assert(tmp_ps.merge_args(*this));
     phase_list::const_iterator it2=pl.begin();
     term_type tmp_term;
     for (iterator it1=begin();it1!=end();++it1)
@@ -297,7 +297,7 @@ namespace piranha
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
       cf_type new_c=*it_new->g_cf();
-      p_assert(s_s_index().modify(it_new,modifier_update_cf(-new_c)));
+      action_assert(s_s_index().modify(it_new,modifier_update_cf(-new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
     return it_new;
@@ -325,7 +325,7 @@ namespace piranha
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
 // Update the existing term
-    p_assert(s_h_index().modify(it,modifier_update_cf(new_c)));
+    action_assert(s_h_index().modify(it,modifier_update_cf(new_c)));
   }
 
 // **************** //
