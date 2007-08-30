@@ -325,7 +325,7 @@ namespace piranha
         return g_series_set()->empty();
       }
       size_t footprint() const;
-      double calc_norm() const;
+      double g_norm() const;
       it_s_index discontinuity() const;
       eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;

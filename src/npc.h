@@ -22,6 +22,7 @@
 #define PIRANHA_NPC_H
 
 #include "double_cf.h"
+#include "norm_index.h"
 #include "ps.h"
 #include "simple_term.h"
 #include "trig_array.h"

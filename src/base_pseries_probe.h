@@ -164,7 +164,7 @@ namespace piranha
  * Calculate norm instead of getting it from the value stored internally. Used for debugging.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline double base_pseries<Cf, Trig, Term, I, Derived>::calc_norm() const
+    inline double base_pseries<Cf, Trig, Term, I, Derived>::g_norm() const
   {
     double retval=0.;
     const it_h_index it_f=g_h_index().end();

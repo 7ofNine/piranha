@@ -18,13 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NORM_TOOLBOX_H
-#define PIRANHA_NORM_TOOLBOX_H
+#ifndef PIRANHA_NORM_INDEX_H
+#define PIRANHA_NORM_INDEX_H
 
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index_container.hpp>
+
+#include "arg_manager.h"
 
 namespace piranha
 {
@@ -79,48 +82,6 @@ namespace piranha
       >
       >
       > type;
-  };
-
-/// Norm toolbox.
-/**
- * The norm should be kept up-to-date during term insertions. It is calculated using a norm()
- * method provided by the coefficient class.
- */
-  template <class Derived>
-    class norm_toolbox
-  {
-    public:
-/// Default ctor.
-      norm_toolbox():norm_(0.)
-        {}
-/// Copy ctor.
-      norm_toolbox(const norm_toolbox &n):norm_(n.norm_)
-        {}
-      void upgrade_norm(const double &new_real)
-      {
-        norm_+=std::abs(new_real);
-      }
-      void downgrade_norm(const double &new_real)
-      {
-        norm_-=std::abs(new_real);
-      }
-/// Dtor.
-      ~norm_toolbox()
-        {}
-/// Const getter for norm.
-      const double &g_norm() const
-      {
-        return norm_;
-      }
-    protected:
-/// Getter for norm.
-      double &norm()
-      {
-        return norm_;
-      }
-// Data members.
-    protected:
-      double    norm_;
   };
 }
 #endif
