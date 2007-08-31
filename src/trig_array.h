@@ -449,11 +449,11 @@ namespace piranha
 // critical part, so the optimization should be worth the hassle.
   inline void trig_array::trigmult(const trig_array &l2, trig_array &ret1, trig_array &ret2) const
   {
-    size_t min_w=width(), max_w=l2.width(), i;
-    if (min_w > max_w)
-    {
-      std::swap(min_w,max_w);
-    }
+    const size_t max_w=width(), min_w=l2.width();
+// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
+// already adjusted my merge_args in multiplication routines.
+    p_assert(max_w >= min_w);
+    size_t i;
     ret1.increase_size(max_w);
     ret2.increase_size(max_w);
     for (i=0;i<min_w;++i)
@@ -461,21 +461,10 @@ namespace piranha
       ret1.container_[i]=container_[i]-l2.container_[i];
       ret2.container_[i]=container_[i]+l2.container_[i];
     }
-    if (max_w==width())
+    for (;i<max_w;++i)
     {
-      for (;i<max_w;++i)
-      {
-        ret1.container_[i]=container_[i];
-        ret2.container_[i]=container_[i];
-      }
-    }
-    else
-    {
-      for (;i<max_w;++i)
-      {
-        ret1.container_[i]=-l2.container_[i];
-        ret2.container_[i]=l2.container_[i];
-      }
+      ret1.container_[i]=container_[i];
+      ret2.container_[i]=container_[i];
     }
   }
 
