@@ -58,12 +58,15 @@ namespace piranha
         explicit simple_term(const T &x, bool flavour=true):
       ancestor(flavour),private_cf_(cf_type(x)),private_trig_()
         {}
+/// Copy ctor.
+      simple_term(const simple_term &term):
+      ancestor(term.g_flavour()),private_cf_(*term.g_cf()),private_trig_(*term.g_trig())
+      {}
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
         explicit simple_term(const simple_term<Cf2,trig_type> &term):
       ancestor(term.g_flavour()),private_cf_(*term.g_cf()),private_trig_(*term.g_trig())
-      {                                           /*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
-      }
+      {}
 // Getters
 /// Get coefficient reference.
       cf_type *s_cf()
