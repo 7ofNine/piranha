@@ -30,6 +30,7 @@ namespace piranha
   class trig_array
   {
     public:
+      size_t width() const;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
@@ -75,8 +76,6 @@ namespace piranha
       void operator*=(mult_t);
 // End INTERFACE definition.
 //-------------------------------------------------------
-    private:
-      size_t width() const;
 // Data members.
     private:
       std::valarray<mult_t>   container_;
@@ -361,7 +360,8 @@ namespace piranha
   inline size_t trig_array::hasher() const
   {
     size_t seed=0;
-    for (size_t i=0;i<width();++i)
+    const size_t w=width();
+    for (size_t i=0;i<w;++i)
     {
       boost::hash_combine(seed,container_[i]);
     }
