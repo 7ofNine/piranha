@@ -203,15 +203,6 @@ namespace piranha
         }
         return retval;
       }
-/// Test for equality (used in the hashed index).
-      bool operator==(const Derived &t2) const
-      {
-        if (g_flavour()!=t2.g_flavour())
-        {
-          return false;
-        }
-        return *static_cast<Derived const *>(this)->g_trig()==*t2.g_trig();
-      }
   };
 }
 #endif
