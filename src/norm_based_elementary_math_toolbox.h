@@ -22,6 +22,7 @@
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 #include <boost/foreach.hpp>
+#include <ext/hash_map>
 
 namespace piranha
 {
@@ -35,6 +36,15 @@ namespace piranha
     template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived_>
       friend class base_pseries;
     private:
+// Boilerplate for faster multiplication.
+      template <class T>
+        struct trig_hasher
+      {
+        size_t operator()(const T &t) const
+        {
+          return t.hasher();
+        }
+      };
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -63,7 +73,13 @@ namespace piranha
         typedef typename Derived::ancestor::it_s_index it_s_index;
         typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived::ancestor::cf_type cf_type;
+        typedef typename Derived::ancestor::trig_type trig_type;
+        typedef __gnu_cxx::hash_map<trig_type,cf_type,trig_hasher<trig_type> > m_hash;
+        typedef typename m_hash::iterator m_hash_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
+        m_hash hm((derived_cast->length()*ps2.length())/100);
+        m_hash_iterator hm_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
         const double Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
         size_t n=0;
@@ -81,6 +97,7 @@ namespace piranha
         {
           it2=it2_i;
           norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());
+// TODO: cache it2's cf norm here?
           if ((norm1*it2->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
           {
             break;
@@ -108,12 +125,31 @@ namespace piranha
             {
               term_pair.template get<1>().invert_trig_args();
             }
-            it_hint=retval.insert(term_pair.template get
-              <0>(),true,&it_hint);
-            it_hint=retval.insert(term_pair.template get
-              <1>(),true,&it_hint);
+            hm_it=hm.find(*term_pair.template get<0>().g_trig());
+            if (hm_it==hm.end())
+            {
+              hm[*term_pair.template get<0>().g_trig()]=*term_pair.template get<0>().g_cf();
+            }
+            else
+            {
+              hm_it->second+=*term_pair.template get<0>().g_cf();
+            }
+            hm_it=hm.find(*term_pair.template get<1>().g_trig());
+            if (hm_it==hm.end())
+            {
+              hm[*term_pair.template get<1>().g_trig()]=*term_pair.template get<1>().g_cf();
+            }
+            else
+            {
+              hm_it->second+=*term_pair.template get<1>().g_cf();
+            }
             ++n;
           }
+        }
+        const m_hash_iterator hm_it_f=hm.end();
+        for (hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
+        {
+          retval.insert(term_type(hm_it->second,hm_it->first));
         }
 //retval.cumulative_crop(Delta);
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
