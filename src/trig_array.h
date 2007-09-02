@@ -225,11 +225,15 @@ namespace piranha
 /// Equality.
   inline bool trig_array::operator==(const trig_array &l2) const
   {
+    if (g_flavour() != l2.g_flavour())
+    {
+      return false;
+    }
     const size_t w=width();
     p_assert(w==l2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (private_container_[i]!=l2.private_container_[i])
+      if (private_container_[i] != l2.private_container_[i])
       {
         return false;
       }
@@ -369,15 +373,23 @@ namespace piranha
  */
   inline bool trig_array::operator<(const trig_array &l2) const
   {
+    if (g_flavour() < l2.g_flavour())
+    {
+      return true;
+    }
+    else if (g_flavour() > l2.g_flavour())
+    {
+      return false;
+    }
     size_t w=width();
     p_assert(w==l2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (private_container_[i]<l2.private_container_[i])
+      if (private_container_[i] < l2.private_container_[i])
       {
         return true;
       }
-      else if (private_container_[i]>l2.private_container_[i])
+      else if (private_container_[i] > l2.private_container_[i])
       {
         return false;
       }
@@ -387,7 +399,7 @@ namespace piranha
 
   inline size_t trig_array::hasher() const
   {
-    size_t seed=0;
+    size_t seed=g_flavour();
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {

@@ -346,8 +346,7 @@ namespace piranha
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
 // TODO: change this when flavour goes into trig_arg.
-    it_h_index it=g_h_index().find(boost::make_tuple(term.g_flavour(),
-      *term.g_trig()));
+    it_h_index it=g_h_index().find(*term.g_trig());
     if (it==g_h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,

@@ -464,6 +464,14 @@ namespace piranha
 
   inline bool trig_slist::operator<(const trig_slist &l2) const
   {
+    if (g_flavour() < l2.g_flavour())
+    {
+      return true;
+    }
+    else if (g_flavour() > l2.g_flavour())
+    {
+      return false;
+    }
     const const_iterator it_f1=end(), it_f2=l2.end();
     const_iterator it1=begin(), it2=l2.begin();
     while (it1!=it_f1 && it2!=it_f2)
@@ -500,7 +508,7 @@ namespace piranha
 
   inline size_t trig_slist::hasher() const
   {
-    size_t seed=0;
+    size_t seed=g_flavour();
     const const_iterator it_f=end();
     for (const_iterator it=begin();it!=it_f;++it)
     {
@@ -558,7 +566,11 @@ namespace piranha
 
   inline bool trig_slist::operator==(const trig_slist &l2) const
   {
-    return (private_container_==l2.private_container_);
+    if (g_flavour() != l2.g_flavour())
+    {
+      return false;
+    }
+    return (private_container_ == l2.private_container_);
   }
 
   inline trig_slist &trig_slist::operator*=(mult_t n)
