@@ -36,7 +36,7 @@ namespace piranha
 // Ctors.
       trig_array()
         {}
-      trig_array(const trig_array &ta):container_(ta.container_)
+      trig_array(const trig_array &ta):private_container_(ta.private_container_)
         {}
       trig_array(const deque_string &);
       ~trig_array()
@@ -78,28 +78,28 @@ namespace piranha
 //-------------------------------------------------------
 // Data members.
     private:
-      std::valarray<mult_t>   container_;
+      std::valarray<mult_t> private_container_;
   };
 
 /// Ctor from piranha::deque_string.
-  inline trig_array::trig_array(const deque_string &sd):container_(sd.size())
+  inline trig_array::trig_array(const deque_string &sd):private_container_(sd.size())
   {
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      container_[i]=utils::lexical_converter<int>(sd[i]);
+      private_container_[i]=utils::lexical_converter<int>(sd[i]);
     }
   }
 
 // Getters implementations.
   inline mult_t trig_array::multiplier(trig_size_t index) const
   {
-    return container_[index];
+    return private_container_[index];
   }
 
   inline size_t trig_array::width() const
   {
-    return container_.size();
+    return private_container_.size();
   }
 
   inline size_t trig_array::actual_width() const
@@ -113,7 +113,7 @@ namespace piranha
     stream_manager::setup_print(out_stream);
     for (size_t i=0;i<width();++i)
     {
-      out_stream << container_[i] << stream_manager::data_separator();
+      out_stream << private_container_[i] << stream_manager::data_separator();
     }
   }
 
@@ -124,21 +124,21 @@ namespace piranha
     std::string tmp("$");
     for (size_t i=0;i<width();++i)
     {
-      if (container_[i]!=0)
+      if (private_container_[i]!=0)
       {
-        if (container_[i]>0 && !first_one)
+        if (private_container_[i]>0 && !first_one)
         {
           tmp.append("+");
         }
-        if (container_[i]==-1)
+        if (private_container_[i]==-1)
         {
           tmp.append("-");
         }
-        else if (container_[i]==1)
+        else if (private_container_[i]==1)
           {}
           else
         {
-          tmp.append(boost::lexical_cast<std::string>(container_[i]));
+          tmp.append(boost::lexical_cast<std::string>(private_container_[i]));
         }
         tmp.append(v[i]->name());
         first_one=false;
@@ -156,7 +156,7 @@ namespace piranha
 // Manip implementations.
   inline void trig_array::insert(trig_size_t index, mult_t multiplier)
   {
-    container_[index]=multiplier;
+    private_container_[index]=multiplier;
   }
 
   inline void trig_array::increase_size(const size_t &w)
@@ -164,12 +164,12 @@ namespace piranha
     p_assert(w>=width());
     if (w>width())
     {
-      std::valarray<mult_t> old_container_(container_);
-      container_.resize(w);
-      const size_t old_w=old_container_.size();
+      std::valarray<mult_t> old_private_container_(private_container_);
+      private_container_.resize(w);
+      const size_t old_w=old_private_container_.size();
       for (size_t i=0;i<old_w;++i)
       {
-        container_[i]=old_container_[i];
+        private_container_[i]=old_private_container_[i];
       }
     }
   }
@@ -183,12 +183,12 @@ namespace piranha
   {
     if (n>0)
     {
-      std::valarray<mult_t> old_container_(container_);
-      const size_t old_w=old_container_.size();
-      container_.resize(old_w+n);
+      std::valarray<mult_t> old_private_container_(private_container_);
+      const size_t old_w=old_private_container_.size();
+      private_container_.resize(old_w+n);
       for (size_t i=0;i<old_w;++i)
       {
-        container_[i+n]=old_container_[i];
+        private_container_[i+n]=old_private_container_[i];
       }
     }
   }
@@ -201,7 +201,7 @@ namespace piranha
     p_assert(w==l2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]!=l2.container_[i])
+      if (private_container_[i]!=l2.private_container_[i])
       {
         return false;
       }
@@ -235,7 +235,7 @@ namespace piranha
 // We must be sure that there actually is a freq in every symbol we are going to use.
       if (v[i]->poly_eval().size()>1)
       {
-        retval+=container_[i]*v[i]->poly_eval()[1];
+        retval+=private_container_[i]*v[i]->poly_eval()[1];
       }
     }
     return retval;
@@ -256,7 +256,7 @@ namespace piranha
 // We must be sure that there actually is a phase in every symbol we are going to use.
       if (v[i]->poly_eval().size()>0)
       {
-        retval+=container_[i]*v[i]->poly_eval()[0];
+        retval+=private_container_[i]*v[i]->poly_eval()[0];
       }
     }
     return retval;
@@ -274,9 +274,9 @@ namespace piranha
     double retval=0.;
     for (size_t i=0;i<v.size();++i)
     {
-      if (container_[i]!=0)
+      if (private_container_[i]!=0)
       {
-        retval+=container_[i]*v[i]->t_eval(t);
+        retval+=private_container_[i]*v[i]->t_eval(t);
       }
     }
     return retval;
@@ -296,9 +296,9 @@ namespace piranha
     complex_double retval(1.);
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]!=0)
+      if (private_container_[i]!=0)
       {
-        retval*=te.request_complexp(i,container_[i]);
+        retval*=te.request_complexp(i,private_container_[i]);
       }
     }
     return retval;
@@ -313,11 +313,11 @@ namespace piranha
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]>0)
+      if (private_container_[i]>0)
       {
         return 1;
       }
-      if (container_[i]<0)
+      if (private_container_[i]<0)
       {
         return -1;
       }
@@ -345,11 +345,11 @@ namespace piranha
     p_assert(w==l2.width());
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]<l2.container_[i])
+      if (private_container_[i]<l2.private_container_[i])
       {
         return true;
       }
-      else if (container_[i]>l2.container_[i])
+      else if (private_container_[i]>l2.private_container_[i])
       {
         return false;
       }
@@ -363,7 +363,7 @@ namespace piranha
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      boost::hash_combine(seed,container_[i]);
+      boost::hash_combine(seed,private_container_[i]);
     }
     return seed;
   }
@@ -373,7 +373,7 @@ namespace piranha
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      if (container_[i]!=0)
+      if (private_container_[i]!=0)
       {
         return false;
       }
@@ -402,7 +402,7 @@ namespace piranha
     const size_t w=width();
     for (size_t i=0;i<w;++i)
     {
-      container_[i]*=n;
+      private_container_[i]*=n;
     }
   }
 
@@ -424,7 +424,7 @@ namespace piranha
     if (&l2!=this)
     {
       increase_size(l2.width());
-      container_=l2.container_;
+      private_container_=l2.private_container_;
     }
     return *this;
   }
@@ -458,13 +458,13 @@ namespace piranha
     ret2.increase_size(max_w);
     for (i=0;i<min_w;++i)
     {
-      ret1.container_[i]=container_[i]-l2.container_[i];
-      ret2.container_[i]=container_[i]+l2.container_[i];
+      ret1.private_container_[i]=private_container_[i]-l2.private_container_[i];
+      ret2.private_container_[i]=private_container_[i]+l2.private_container_[i];
     }
     for (;i<max_w;++i)
     {
-      ret1.container_[i]=container_[i];
-      ret2.container_[i]=container_[i];
+      ret1.private_container_[i]=private_container_[i];
+      ret2.private_container_[i]=private_container_[i];
     }
   }
 
