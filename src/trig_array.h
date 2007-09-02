@@ -73,7 +73,7 @@ namespace piranha
 // Math.
       void trigmult(const trig_array &, trig_array &, trig_array &) const;
       trig_array &operator=(const trig_array &);
-      void operator*=(mult_t);
+      void operator*=(const mult_t &);
 // End INTERFACE definition.
 //-------------------------------------------------------
 // Data members.
@@ -397,7 +397,7 @@ namespace piranha
   }
 
 /// Multiply by a piranha::mult_t.
-  inline void trig_array::operator*=(mult_t n)
+  inline void trig_array::operator*=(const mult_t &n)
   {
     const size_t w=width();
     for (size_t i=0;i<w;++i)
