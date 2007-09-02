@@ -41,18 +41,15 @@ namespace piranha
       typedef Trig trig_type;
 /// Alias for evaluation type.
       typedef typename cf_type::eval_type eval_type;
-/// Constructor from flavour.
-      base_term(bool flavour):private_flavour_(flavour)
-        {}
 // Getters
 /// Get flavour.
       bool &s_flavour()
       {
-        return private_flavour_;
+        return static_cast<Derived *>(this)->s_trig()->s_flavour();
       }
       const bool &g_flavour() const
       {
-        return private_flavour_;
+        return static_cast<Derived const *>(this)->g_trig()->g_flavour();
       }
 /// Diagnose problems.
 /**
@@ -215,9 +212,6 @@ namespace piranha
         }
         return *static_cast<Derived const *>(this)->g_trig()==*t2.g_trig();
       }
-    protected:
-// Data members
-      bool        private_flavour_;
   };
 }
 #endif
