@@ -297,7 +297,9 @@ namespace piranha
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
       cf_type new_c=*it_new->g_cf();
-      action_assert(s_s_index().modify(it_new,modifier_update_cf(-new_c)));
+// TODO: use some invert_sign() function here?
+      new_c*=-1;
+      action_assert(s_s_index().modify(it_new,modifier_update_cf(new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
     return it_new;
@@ -320,7 +322,7 @@ namespace piranha
   }
 
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_h_index &it, const cf_type &new_c)
+    inline void base_pseries<Cf, Trig, Term, I, Derived>::term_update(const it_h_index &it, cf_type &new_c)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);

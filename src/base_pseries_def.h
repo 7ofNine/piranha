@@ -365,7 +365,7 @@ namespace piranha
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
-      void term_update(const it_h_index &, const cf_type &);
+      void term_update(const it_h_index &, cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
       template <class Cf2>
         it_s_index ll_insert(const Term<Cf2, trig_type> &,
@@ -421,16 +421,16 @@ namespace piranha
 // TODO: use swap here?
       struct modifier_update_cf
       {
-        modifier_update_cf(const cf_type &new_cf):new_cf_(new_cf)
+        modifier_update_cf(cf_type &new_cf):new_cf_(&new_cf)
           {}
         ~modifier_update_cf()
           {}
         void operator()(term_type &term)
         {
-          *term.s_cf() = new_cf_;
+          term.s_cf()->swap(*new_cf_);
         }
 // NOTICE: evaluate the impact of using const & here, esp. when using gmp
-        const cf_type &new_cf_;
+        cf_type *new_cf_;
       };
 // Data members.
     protected:
