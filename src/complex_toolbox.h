@@ -93,7 +93,7 @@ namespace piranha
         retval.lin_args()=static_cast<Derived const *>(this)->lin_args();
         const it_s_index it_f=static_cast<Derived const *>(this)->g_s_index().end();
         real_it_s_index it_hint=retval.g_s_index().end();
-        real_term_type term(real_cf_type(0),true);
+        real_term_type term(real_cf_type(0));
         for (it_s_index it=static_cast<Derived const *>
           (this)->
           g_s_index().begin();

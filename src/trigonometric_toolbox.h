@@ -176,8 +176,8 @@ namespace piranha
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        complex_term_type term1(complex_cf_type(1),true),
-          term2(complex_cf_type(0,1),false);
+        complex_term_type term1(complex_cf_type(1)), term2(complex_cf_type(0,1));
+        term2.s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());
         const size_t w=derived_cast->lin_args().size();

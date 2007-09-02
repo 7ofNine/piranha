@@ -40,9 +40,6 @@ namespace piranha
 /// Copy ctor.
       trig_array(const trig_array &ta):private_flavour_(ta.g_flavour()),private_container_(ta.private_container_)
         {}
-/// Ctor from flavour.
-      trig_array(const bool &flavour):private_flavour_(flavour)
-        {}
       trig_array(const deque_string &);
       ~trig_array()
         {}

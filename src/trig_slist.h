@@ -47,9 +47,6 @@ namespace piranha
 /// Default ctor.
       trig_slist():private_flavour_(true)
         {}
-/// Ctor from flavour.
-      trig_slist(const bool &flavour):private_flavour_(flavour)
-        {}
 /// Copy ctor.
       trig_slist(const trig_slist &ts):private_flavour_(ts.g_flavour()),private_container_(ts.private_container_)
         {}

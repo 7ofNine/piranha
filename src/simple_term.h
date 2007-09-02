@@ -41,20 +41,20 @@ namespace piranha
       typedef Trig trig_type;
 /// Default constructor.
       explicit simple_term():
-      private_cf_(),private_trig_(true)
+      private_cf_(),private_trig_()
         {}
 // TODO: replace bool with enum.
 /// Constructor from coefficient and flavour.
-      explicit simple_term(const cf_type &c, bool flavour=true):
-      private_cf_(c),private_trig_(flavour)
+      explicit simple_term(const cf_type &c):
+      private_cf_(c),private_trig_()
         {}
 /// Generic builder.
 /**
  * Build constructing coefficient from variable x, of type T.
  */
       template <class T>
-        explicit simple_term(const T &x, bool flavour=true):
-     private_cf_(cf_type(x)),private_trig_(flavour)
+        explicit simple_term(const T &x):
+     private_cf_(cf_type(x)),private_trig_()
         {}
 /// Copy ctor.
       simple_term(const simple_term &term):
