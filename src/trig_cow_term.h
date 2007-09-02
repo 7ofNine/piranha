@@ -38,8 +38,6 @@ namespace piranha
     public:
 /// Alias for self.
       typedef trig_cow_term self;
-/// Alias for ancestor.
-      typedef base_term<Cf,Trig,trig_cow_term<Cf,Trig> > ancestor;
 /// Alias for coefficient type.
       typedef Cf cf_type;
 /// Alias for trigonometric type.
@@ -48,12 +46,12 @@ namespace piranha
       typedef boost::shared_ptr<Trig> trig_ptr;
 /// Default constructor.
       explicit trig_cow_term():
-      ancestor(true),private_cf_(),private_trig_(new trig_type())
+      private_cf_(),private_trig_(new trig_type(true))
         {}
 // FIXME: replace bool with enum.
 /// Constructor from coefficient and flavour.
       explicit trig_cow_term(const cf_type &c, bool flavour=true):
-      ancestor(flavour),private_cf_(c),private_trig_(new trig_type())
+      private_cf_(c),private_trig_(new trig_type(flavour))
         {}
 /// Generic builder.
 /**
@@ -61,14 +59,17 @@ namespace piranha
  */
       template <class T>
         explicit trig_cow_term(const T &x, bool flavour=true):
-      ancestor(flavour),private_cf_(cf_type(x)),private_trig_(new trig_type())
+      private_cf_(cf_type(x)),private_trig_(new trig_type(flavour))
+        {}
+/// Copy constructor.
+      trig_cow_term(const trig_cow_term &term):
+      private_cf_(*term.g_cf()),private_trig_(term.g_trig())
         {}
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
         explicit trig_cow_term(const trig_cow_term<Cf2,trig_type> &term):
-      ancestor(term.g_flavour()),private_cf_(*term.g_cf()),private_trig_(term.g_trig())
-      {                                           /*BOOST_STATIC_ASSERT(sizeof(U)==0);*/
-      }
+      private_cf_(*term.g_cf()),private_trig_(term.g_trig())
+        {}
 // Getters
 /// Get coefficient reference.
       cf_type *s_cf()
@@ -79,16 +80,14 @@ namespace piranha
       {
         return &private_cf_;
       }
-// TODO: rework this when flavour is included in trigs. Pay attention to const_mem_fun extractor
-// in norm-based series indices.
 /// Get flavour.
       bool &s_flavour()
       {
-        return ancestor::private_flavour_;
+        return s_trig()->s_flavour();
       }
       const bool &g_flavour() const
       {
-        return ancestor::private_flavour_;
+        return g_trig()->g_flavour();
       }
 /// Get reference to trigonometric part.
       trig_ptr &s_trig()
@@ -120,7 +119,6 @@ namespace piranha
         }
         *s_cf()=*t2.g_cf();
         private_trig_=t2.g_trig();
-        ancestor::s_flavour()=t2.g_flavour();
         return *this;
       }
     private:
