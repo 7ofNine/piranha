@@ -91,8 +91,7 @@ namespace piranha
     double max_diff=0.;
     for (typename T::it_s_index it=ps1.g_s_index().begin();it!=it_f;++it)
     {
-      it_h=ps2.g_h_index().find(boost::make_tuple(it->g_flavour(),
-        *it->g_trig()));
+      it_h=ps2.g_h_index().find(*it->g_trig());
       if (it_h==ps2.g_h_index().end())
       {
         diffs_[i]=-.1;
