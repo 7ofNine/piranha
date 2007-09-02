@@ -46,7 +46,7 @@ namespace piranha
 // Ctors.
       trig_slist()
         {}
-      trig_slist(const trig_slist &ts):container_(ts.container_)
+      trig_slist(const trig_slist &ts):private_container_(ts.private_container_)
         {}
       trig_slist(const deque_string &);
       ~trig_slist()
@@ -96,7 +96,7 @@ namespace piranha
       {
         if (&ts2!=this)
         {
-          container_=ts2.container_;
+          private_container_=ts2.private_container_;
         }
         return *this;
       }
@@ -113,23 +113,23 @@ namespace piranha
       typedef std::pair<const_iterator,const_iterator> const_find_result;
       const_iterator begin() const
       {
-        return container_.begin();
+        return private_container_.begin();
       }
       const_iterator end() const
       {
-        return container_.end();
+        return private_container_.end();
       }
       iterator begin()
       {
-        return container_.begin();
+        return private_container_.begin();
       }
       iterator end()
       {
-        return container_.end();
+        return private_container_.end();
       }
       bool empty() const
       {
-        return container_.empty();
+        return private_container_.empty();
       }
       void find(trig_size_t, const_find_result &) const;
       void find(trig_size_t, find_result &);
@@ -139,7 +139,7 @@ namespace piranha
       template <short int Sign>
         trig_slist &algebraic_sum(const trig_slist &t2);
     private:
-      __gnu_cxx::slist<pair>    container_;
+      __gnu_cxx::slist<pair>    private_container_;
   };
 
   inline trig_slist::trig_slist(const deque_string &sd)
@@ -286,11 +286,11 @@ namespace piranha
     }
     if (fr.first==end())
     {
-      container_.push_front(pair(index,multiplier));
+      private_container_.push_front(pair(index,multiplier));
     }
     else
     {
-      container_.insert_after(fr.first,pair(index,multiplier));
+      private_container_.insert_after(fr.first,pair(index,multiplier));
     }
   }
 
@@ -303,12 +303,12 @@ namespace piranha
     }
     if (it==end())
     {
-      container_.push_front(pair(index,multiplier));
-      return container_.begin();
+      private_container_.push_front(pair(index,multiplier));
+      return private_container_.begin();
     }
     else
     {
-      return container_.insert_after(it,pair(index,multiplier));
+      return private_container_.insert_after(it,pair(index,multiplier));
     }
   }
 
@@ -328,12 +328,12 @@ namespace piranha
       if (prev==end())
       {
         p_assert(cur==begin());
-        container_.pop_front();
+        private_container_.pop_front();
         return end();
       }
       else
       {
-        container_.erase_after(prev);
+        private_container_.erase_after(prev);
         return prev;
       }
     }
@@ -503,7 +503,7 @@ namespace piranha
 
   inline size_t trig_slist::data_footprint() const
   {
-    return (sizeof(std::pair<trig_size_t,mult_t>)*container_.size());
+    return (sizeof(std::pair<trig_size_t,mult_t>)*private_container_.size());
   }
 
   inline bool trig_slist::checkup(const size_t &w) const
@@ -529,14 +529,14 @@ namespace piranha
 
   inline bool trig_slist::operator==(const trig_slist &l2) const
   {
-    return (container_==l2.container_);
+    return (private_container_==l2.private_container_);
   }
 
   inline trig_slist &trig_slist::operator*=(mult_t n)
   {
     if (n==0)
     {
-      container_.clear();
+      private_container_.clear();
     }
     else
     {
