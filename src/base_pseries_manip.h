@@ -345,7 +345,7 @@ namespace piranha
     p_assert(term.g_trig()->compatible(trig_width()));
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
-    it_h_index it=g_h_index().find(*term.g_trig());
+    it_h_index it(find_term(term));
     if (it==g_h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,

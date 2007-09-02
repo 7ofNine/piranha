@@ -377,6 +377,10 @@ namespace piranha
       template <class Derived2>
         void alg_sum_lin_args(const Derived2 &, bool);
     public:
+      it_h_index find_term(const term_type &t) const
+      {
+        return g_h_index().find(*t.g_trig());
+      }
       template <class Derived2>
         void merge_with(const Derived2 &, bool sign = true);
       template <class T>
