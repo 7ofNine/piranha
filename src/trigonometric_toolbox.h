@@ -127,6 +127,7 @@ namespace piranha
         }
         return retval;
       }
+// FIXME: deprecate this.
 /// Complex multiangle.
       complex_ps complex_multiangle(trig_size_t pos, mult_t n) const
       {
@@ -141,7 +142,7 @@ namespace piranha
         }
         complex_ps retval;
         retval.merge_args(*static_cast<Derived const *>(this));
-        complex_term_type in_term(complex_cf_type(1),true);
+        complex_term_type in_term(complex_cf_type(1));
         in_term.s_trig()->increase_size(static_cast<Derived const *>(this)->trig_width());
         in_term.s_trig()->insert(pos,n);
         retval.insert(in_term);
