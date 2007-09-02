@@ -87,18 +87,20 @@ namespace piranha
 // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
         term_type tmp1, tmp2;
+        tmp1.s_trig()->increase_size(retval.trig_width());
+        tmp2.s_trig()->increase_size(retval.trig_width());
         boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->g_s_index().end();
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
         it_s_index2 it2;
         it_s_index it1, it_hint=retval.g_s_index().end();
         double norm1;
+        const double norm2_i=it2_i->g_cf()->norm(ps2.cf_s_vec());
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
           norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());
-// TODO: cache it2's cf norm here?
-          if ((norm1*it2->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+          if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }

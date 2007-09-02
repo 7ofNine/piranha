@@ -494,9 +494,9 @@ namespace piranha
 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 // already adjusted my merge_args in multiplication routines.
     p_assert(max_w >= min_w);
+    p_assert(ret1.width() == max_w);
+    p_assert(ret2.width() == max_w);
     size_t i;
-    ret1.increase_size(max_w);
-    ret2.increase_size(max_w);
     for (i=0;i<min_w;++i)
     {
       ret1.private_container_[i]=private_container_[i]-l2.private_container_[i];
