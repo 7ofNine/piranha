@@ -44,14 +44,27 @@ namespace piranha
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
-      trig_slist()
+/// Default ctor.
+      trig_slist():private_flavour_(true)
         {}
-      trig_slist(const trig_slist &ts):private_container_(ts.private_container_)
+/// Ctor from flavour.
+      trig_slist(const bool &flavour):private_flavour_(flavour)
+        {}
+/// Copy ctor.
+      trig_slist(const trig_slist &ts):private_flavour_(ts.g_flavour()),private_container_(ts.private_container_)
         {}
       trig_slist(const deque_string &);
       ~trig_slist()
         {}
 // Getters.
+      bool &s_flavour()
+      {
+        return private_flavour_;
+      }
+      const bool &g_flavour() const
+      {
+        return private_flavour_;
+      }
       mult_t multiplier(trig_size_t) const;
       size_t actual_width() const;
 // I/O.
@@ -96,6 +109,7 @@ namespace piranha
       {
         if (&ts2!=this)
         {
+          s_flavour()=ts2.g_flavour();
           private_container_=ts2.private_container_;
         }
         return *this;
@@ -139,15 +153,33 @@ namespace piranha
       template <short int Sign>
         trig_slist &algebraic_sum(const trig_slist &t2);
     private:
+      bool                      private_flavour_;
       __gnu_cxx::slist<pair>    private_container_;
   };
 
-  inline trig_slist::trig_slist(const deque_string &sd)
+/// Constructor from piranha::deque_string.
+  inline trig_slist::trig_slist(const deque_string &sd):private_flavour_(true),private_container_()
   {
     const size_t w=sd.size();
-    for (size_t i=0;i<w;++i)
+    if (w==0)
     {
-      insert(i,utils::lexical_converter<mult_t>(sd[i]));
+      std::cout << "Warning: constructing empty trig_slist." << std::endl;
+      std::abort();
+      return;
+    }
+// Now we know  w >= 1.
+    for (size_t i=0;i<w-1;++i)
+     {
+       insert(i,utils::lexical_converter<mult_t>(sd[i]));
+     }
+// Take care of flavour.
+    if (*sd.back().c_str()=='s')
+    {
+      s_flavour()=false;
+    }
+    else
+    {
+      s_flavour()=true;
     }
   }
 

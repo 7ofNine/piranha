@@ -170,19 +170,9 @@ namespace piranha
       *new_term.s_cf()=cf;
 // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
-// Read flavour.
-      if (*split_v.back().c_str()=='s')
-      {
-        new_term.s_flavour()=false;
-      }
-      else
-      {
-        new_term.s_flavour()=true;
-      }
-// Ditch out last element of string vector, now that we read it.
-      split_v.pop_back();
 // Read trigonometric part.
       trig_type trig(split_v);
+// TODO: see if it is possible to group the addition of symbols instead of doing it once at a time.
       while (trig_width()<trig.actual_width())
       {
         std::cout << "Warning: trig width is larger than expected, assigning 'null' to extra trig args."

@@ -34,9 +34,14 @@ namespace piranha
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
-      trig_array()
+/// Default ctor.
+      trig_array():private_flavour_(true)
         {}
-      trig_array(const trig_array &ta):private_container_(ta.private_container_)
+/// Copy ctor.
+      trig_array(const trig_array &ta):private_flavour_(ta.g_flavour()),private_container_(ta.private_container_)
+        {}
+/// Ctor from flavour.
+      trig_array(const bool &flavour):private_flavour_(flavour)
         {}
       trig_array(const deque_string &);
       ~trig_array()
@@ -44,6 +49,14 @@ namespace piranha
 // Getters.
       mult_t multiplier(trig_size_t) const;
       size_t actual_width() const;
+      bool &s_flavour()
+      {
+        return private_flavour_;
+      }
+      const bool &g_flavour() const
+      {
+        return private_flavour_;
+      }
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
@@ -78,16 +91,34 @@ namespace piranha
 //-------------------------------------------------------
 // Data members.
     private:
+      bool                  private_flavour_;
       std::valarray<mult_t> private_container_;
   };
 
 /// Ctor from piranha::deque_string.
-  inline trig_array::trig_array(const deque_string &sd):private_container_(sd.size())
+  inline trig_array::trig_array(const deque_string &sd):private_flavour_(true),private_container_()
   {
-    const size_t w=width();
-    for (size_t i=0;i<w;++i)
+    const size_t w=sd.size();
+    if (w==0)
+    {
+      std::cout << "Warning: constructing empty trig_array." << std::endl;
+      std::abort();
+      return;
+    }
+// Now we know  w >= 1.
+    private_container_.resize(w-1);
+    for (size_t i=0;i<w-1;++i)
     {
       private_container_[i]=utils::lexical_converter<int>(sd[i]);
+    }
+// Take care of flavour.
+    if (*sd.back().c_str()=='s')
+    {
+      s_flavour()=false;
+    }
+    else
+    {
+      s_flavour()=true;
     }
   }
 
@@ -424,6 +455,7 @@ namespace piranha
     if (&l2!=this)
     {
       increase_size(l2.width());
+      s_flavour()=l2.g_flavour();
       private_container_=l2.private_container_;
     }
     return *this;
