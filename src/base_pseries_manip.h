@@ -287,7 +287,7 @@ namespace piranha
     {
 // FIXME: use asserts here? The problem here is that we are using hinted
 // insertion, the return value is different from above (but above an assert
-// is needed too
+// is needed too).
       it_new=s_s_index().insert(*it_hint,term);
       p_assert(it_new!=end());
     }
