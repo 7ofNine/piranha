@@ -414,6 +414,7 @@ namespace piranha
         bool args_compatible(const Derived2 &) const;
     private:
 /// Functor to update the coefficient.
+// TODO: use swap here?
       struct modifier_update_cf
       {
         modifier_update_cf(const cf_type &new_cf):new_cf_(new_cf)

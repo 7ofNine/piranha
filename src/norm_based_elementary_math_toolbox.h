@@ -80,8 +80,8 @@ namespace piranha
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
         m_hash_iterator hm_it;
-        const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec();
-        const double Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
+        const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
+          Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
         size_t n=0;
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.

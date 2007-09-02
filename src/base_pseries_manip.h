@@ -345,7 +345,6 @@ namespace piranha
     p_assert(term.g_trig()->compatible(trig_width()));
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
-// TODO: change this when flavour goes into trig_arg.
     it_h_index it=g_h_index().find(*term.g_trig());
     if (it==g_h_index().end())
     {
