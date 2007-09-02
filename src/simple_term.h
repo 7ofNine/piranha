@@ -45,7 +45,7 @@ namespace piranha
       explicit simple_term():
       ancestor(true),private_cf_(),private_trig_()
         {}
-// FIXME: replace bool with enum.
+// TODO: replace bool with enum.
 /// Constructor from coefficient and flavour.
       explicit simple_term(const cf_type &c, bool flavour=true):
       ancestor(flavour),private_cf_(c),private_trig_()
