@@ -93,9 +93,12 @@ namespace piranha
         const it_s_index it1_f=derived_cast->g_s_index().end();
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
         it_s_index2 it2;
-        it_s_index it1, it_hint=retval.g_s_index().end();
+        it_s_index it1;
         double norm1;
         const double norm2_i=it2_i->g_cf()->norm(ps2.cf_s_vec());
+        trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
+        cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
+        term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
@@ -117,33 +120,31 @@ namespace piranha
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
 // TODO: cache pointers to trigs here?
-            if (term_pair.template get
-              <0>().g_trig()->sign()<0)
+            if (t0->sign()<0)
             {
-              term_pair.template get<0>().invert_trig_args();
+              term0->invert_trig_args();
             }
-            if (term_pair.template get
-              <1>().g_trig()->sign()<0)
+            if (t1->sign()<0)
             {
-              term_pair.template get<1>().invert_trig_args();
+              term1->invert_trig_args();
             }
-            hm_it=hm.find(*term_pair.template get<0>().g_trig());
+            hm_it=hm.find(*t0);
             if (hm_it==hm.end())
             {
-              hm[*term_pair.template get<0>().g_trig()]=*term_pair.template get<0>().g_cf();
+              hm[*t0]=*c0;
             }
             else
             {
-              hm_it->second+=*term_pair.template get<0>().g_cf();
+              hm_it->second+=*c0;
             }
-            hm_it=hm.find(*term_pair.template get<1>().g_trig());
+            hm_it=hm.find(*t1);
             if (hm_it==hm.end())
             {
-              hm[*term_pair.template get<1>().g_trig()]=*term_pair.template get<1>().g_cf();
+              hm[*t1]=*c1;
             }
             else
             {
-              hm_it->second+=*term_pair.template get<1>().g_cf();
+              hm_it->second+=*c1;
             }
             ++n;
           }
