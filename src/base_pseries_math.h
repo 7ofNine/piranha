@@ -137,60 +137,32 @@ namespace piranha
     const term_type &t1, const Term<Cf2,trig_type> &t2, boost::tuple<term_type &,term_type &> &term_pair,
     cf_type &new_c)
   {
-    if (t1.g_flavour())
+    t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
+      <0>().s_trig(),
+      *term_pair.template get<1>().s_trig());
+    *term_pair.template get
+      <0>().s_cf()=*term_pair.template get
+      <1>().s_cf()=new_c;
+    if (t1.g_flavour()==t2.g_flavour())
     {
-      if(t2.g_flavour())
+      term_pair.template get
+        <0>().s_flavour()=term_pair.template get
+        <1>().s_flavour()=true;
+      if(!t1.g_flavour())
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
-          <0>().s_trig(),
-          *term_pair.template get<1>().s_trig());
         *term_pair.template get
-          <0>().s_cf()=*term_pair.template get
-          <1>().s_cf()=new_c;
-        term_pair.template get
-          <0>().s_flavour()=term_pair.template get
-          <1>().s_flavour()=true;
-      }
-      else
-      {
-        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
-          <0>().s_trig(),
-          *term_pair.template get<1>().s_trig());
-        *term_pair.template get
-          <0>().s_cf()=-new_c;
-        *term_pair.template get
-          <1>().s_cf()=new_c;
-        term_pair.template get
-          <0>().s_flavour()=term_pair.template get
-          <1>().s_flavour()=false;
+          <1>().s_cf()*=-1;
       }
     }
     else
     {
-      if(t2.g_flavour())
+      term_pair.template get
+        <0>().s_flavour()=term_pair.template get
+        <1>().s_flavour()=false;
+      if(t1.g_flavour())
       {
-        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
-          <0>().s_trig(),
-          *term_pair.template get<1>().s_trig());
         *term_pair.template get
-          <0>().s_cf()=*term_pair.template get
-          <1>().s_cf()=new_c;
-        term_pair.template get
-          <0>().s_flavour()=term_pair.template get
-          <1>().s_flavour()=false;
-      }
-      else
-      {
-        t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
-          <0>().s_trig(),
-          *term_pair.template get<1>().s_trig());
-        *term_pair.template get
-          <0>().s_cf()=new_c;
-        *term_pair.template get
-          <1>().s_cf()=-new_c;
-        term_pair.template get
-          <0>().s_flavour()=term_pair.template get
-          <1>().s_flavour()=true;
+            <0>().s_cf()*=-1;
       }
     }
   }
