@@ -119,7 +119,6 @@ namespace piranha
             term_by_term_multiplication(*it1,*it2,term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
-// TODO: cache pointers to trigs here?
             if (t0->sign()<0)
             {
               term0->invert_trig_args();
