@@ -37,10 +37,9 @@ namespace piranha
       friend class base_pseries;
     private:
 // Boilerplate for faster multiplication.
-      template <class T>
-        struct trig_hasher
+      struct trig_hasher
       {
-        size_t operator()(const T &t) const
+        size_t operator()(const typename Derived::trig_type &t) const
         {
           return t.hasher();
         }
@@ -75,7 +74,7 @@ namespace piranha
         typedef typename Derived::ancestor::term_type term_type;
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::trig_type trig_type;
-        typedef __gnu_cxx::hash_map<trig_type,cf_type,trig_hasher<trig_type> > m_hash;
+        typedef __gnu_cxx::hash_map<trig_type,cf_type,trig_hasher> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
