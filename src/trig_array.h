@@ -449,7 +449,11 @@ namespace piranha
 /// Invert sign.
   inline void trig_array::invert_sign()
   {
-    *this*=-1;
+    const size_t w=width();
+    for (size_t i=0;i<w;++i)
+    {
+      private_container_[i]=-private_container_[i];
+    }
   }
 
 /// Assignment operator.
