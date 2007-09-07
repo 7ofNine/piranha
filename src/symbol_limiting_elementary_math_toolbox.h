@@ -76,6 +76,8 @@ namespace piranha
 // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
         term_type tmp1, tmp2;
+        tmp1.s_trig()->increase_size(retval.trig_width());
+        tmp2.s_trig()->increase_size(retval.trig_width());
         boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->g_s_index().end();
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
