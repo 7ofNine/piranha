@@ -447,20 +447,13 @@ namespace piranha
 
   inline short int trig_slist::sign() const
   {
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
+    short int retval=1;
+    if (!empty() && begin()->second < 0)
     {
-      if (it->second>0)
-      {
-        return 1;
-      }
-      if (it->second<0)
-      {
-        return -1;
-      }
+      retval=-1;
     }
-    return 1;
-  }
+    return retval;
+ }
 
   inline bool trig_slist::operator<(const trig_slist &l2) const
   {
