@@ -147,8 +147,23 @@ namespace piranha
       void insert_new(trig_size_t, mult_t, const find_result &);
       iterator insert_after(trig_size_t, mult_t, iterator);
       iterator modify(mult_t, iterator, iterator);
-      template <short int Sign>
+      template <class Modifier>
         trig_slist &algebraic_sum(const trig_slist &t2);
+// Functors used in generic algebraic addition routine.
+      struct sign_modifier_plus
+      {
+        static const mult_t &mod(const mult_t &value)
+        {
+          return value;
+        }
+      };
+      struct sign_modifier_minus
+      {
+        static mult_t mod(const mult_t &value)
+        {
+          return (-value);
+        }
+      };
     private:
       bool                      private_flavour_;
       __gnu_cxx::slist<pair>    private_container_;
@@ -583,7 +598,7 @@ namespace piranha
     return *this;
   }
 
-  template <short int Sign>
+  template <class Modifier>
     inline trig_slist &trig_slist::algebraic_sum(const trig_slist &t2)
   {
     p_assert(this!=&t2);
@@ -595,13 +610,13 @@ namespace piranha
 // We are at the end of this, insert new term and do not increase iterators on this.
       if (it1==end())
       {
-        old_it1=insert_after(it2->first,Sign*it2->second,old_it1);
+        old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
         ++it2;
       }
 // We found a duplicate, modify it.
       else if (it1->first==it2->first)
       {
-        old_it1=modify(it1->second+Sign*it2->second,old_it1,it1);
+        old_it1=modify(it1->second+Modifier::mod(it2->second),old_it1,it1);
 // Take care in case we erased the element when modifying, we may have run out of elements.
         if (old_it1==end())
         {
@@ -619,7 +634,7 @@ namespace piranha
 // this has gone past t2.
       else if (it1->first > it2->first)
       {
-        old_it1=insert_after(it2->first,Sign*it2->second,old_it1);
+        old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
         ++it2;
       }
 // t2 has gone past this.
@@ -634,12 +649,12 @@ namespace piranha
 
   inline trig_slist &trig_slist::operator+=(const trig_slist &t2)
   {
-    return algebraic_sum<+1>(t2);
+    return algebraic_sum<sign_modifier_plus>(t2);
   }
 
   inline trig_slist &trig_slist::operator-=(const trig_slist &t2)
   {
-    return algebraic_sum<-1>(t2);
+    return algebraic_sum<sign_modifier_minus>(t2);
   }
 
   inline void trig_slist::trigmult(const trig_slist &l2, trig_slist &ret1, trig_slist &ret2) const
