@@ -387,7 +387,7 @@ namespace piranha
     const iterator it_f=end();
     for (iterator it=begin();it!=it_f;++it)
     {
-      it->second*=-1;
+      it->second=-it->second;
     }
   }
 
