@@ -12,9 +12,9 @@ INCLUDE_DIRECTORIES("external_headers")
 
 # Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
-OPTION(BUILD_NP "Build numerical series with array lists." ON)
-OPTION(BUILD_LNP "Build numerical series with trigonometric lists." OFF)
-OPTION(BUILD_SP "Build sp series." OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_NP "Build numerical series with array lists in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_LNP "Build numerical series with trigonometric lists in Pyranha." OFF "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_KEPLERIAN_PROCESSOR "Build keplerian processor." OFF "BUILD_SP" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
