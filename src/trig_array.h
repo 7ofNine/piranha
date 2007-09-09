@@ -88,8 +88,9 @@ namespace piranha
 //-------------------------------------------------------
 // Data members.
     private:
+      typedef std::valarray<mult_t> container_type;
       bool                  private_flavour_;
-      std::valarray<mult_t> private_container_;
+      container_type        private_container_;
   };
 
 /// Ctor from piranha::deque_string.
@@ -192,7 +193,7 @@ namespace piranha
     p_assert(w>=width());
     if (w>width())
     {
-      std::valarray<mult_t> old_private_container_(private_container_);
+      container_type old_private_container_(private_container_);
       private_container_.resize(w);
       const size_t old_w=old_private_container_.size();
       for (size_t i=0;i<old_w;++i)
@@ -211,7 +212,7 @@ namespace piranha
   {
     if (n>0)
     {
-      std::valarray<mult_t> old_private_container_(private_container_);
+      container_type old_private_container_(private_container_);
       const size_t old_w=old_private_container_.size();
       private_container_.resize(old_w+n);
       for (size_t i=0;i<old_w;++i)
