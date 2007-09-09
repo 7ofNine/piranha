@@ -105,6 +105,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("put_terms", put_terms_n(&T::put_terms));
   inst.def("put_phases_freqs", put_phases_freqs_noargs(&T::put_phases_freqs));
   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
+  inst.def("trig_density", &T::trig_density);
   inst.def("length", &T::length);
   inst.def("trig_width", &T::trig_width);
   inst.def("g_norm", &T::g_norm);
