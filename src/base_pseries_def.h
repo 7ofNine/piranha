@@ -324,6 +324,22 @@ namespace piranha
       {
         return g_series_set()->empty();
       }
+      double trig_density() const
+      {
+        const iterator it_f=end();
+        double retval=0;
+        if (empty())
+        {
+          return retval;
+        }
+        size_t count=0;
+        for (iterator it=begin();it!=it_f;++it)
+        {
+          retval+=it->g_trig()->density(*this);
+          ++count;
+        }
+        return (retval/count);
+      }
       size_t footprint() const;
       double g_norm() const;
       it_s_index discontinuity() const;
