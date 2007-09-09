@@ -12,11 +12,11 @@ INCLUDE_DIRECTORIES("external_headers")
 
 # Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_NP "Build numerical series with array lists in Pyranha." ON "BUILD_PYRANHA" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_LNP "Build numerical series with trigonometric lists in Pyranha." OFF "BUILD_PYRANHA" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_NP "Build numerical series with array lists in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_LNP "Build numerical series with trigonometric lists in Pyranha." OFF "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_LNP" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_PYRANHA_LNP" OFF)
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
@@ -45,10 +45,10 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 # Find GMP if required.
-IF(BUILD_SP)
+IF(BUILD_PYRANHA_SP)
   FIND_PACKAGE(GMP REQUIRED)
   SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
-ENDIF(BUILD_SP)
+ENDIF(BUILD_PYRANHA_SP)
 
 # TASS
 IF(BUILD_TASS)

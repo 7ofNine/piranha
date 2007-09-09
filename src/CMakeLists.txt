@@ -1,17 +1,17 @@
 SET(SRC_LIST "")
-IF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
+IF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_PYRANHA_LNP)
   MESSAGE(FATAL_ERROR "The C++ STL extension 'ext/slist' is needed to compile lnp series.")
-ELSE(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
+ELSE(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_PYRANHA_LNP)
   MESSAGE(STATUS "Header 'ext/slist' is available.")
-ENDIF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_LNP)
+ENDIF(NOT GCC_CXX_COMPILER AND NOT ICC_CXX_COMPILER AND BUILD_PYRANHA_LNP)
 IF(BUILD_FORTRAN)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/tass17/posired7.f.template
     ${CMAKE_CURRENT_SOURCE_DIR}/tass17/posired7.f)
   SET(SRC_LIST ${SRC_LIST} tass17/posired7.f)
 ENDIF(BUILD_FORTRAN)
-IF(BUILD_SP)
+IF(BUILD_PYRANHA_SP)
   SET(SRC_LIST ${SRC_LIST} symbol_limiter.cpp)
-ENDIF(BUILD_SP)
+ENDIF(BUILD_PYRANHA_SP)
 # Order is important here: in tass.cpp, for instance, we have destruction of series that depends on
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
 SET(SRC_LIST ${SRC_LIST} settings_manager.cpp stats.cpp astro.cpp arg_manager.cpp
