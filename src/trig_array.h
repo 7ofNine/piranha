@@ -69,6 +69,10 @@ namespace piranha
         double density(const DerivedPs &p) const
       {
         const size_t w=width();
+        if (w == 0)
+        {
+          return 0;
+        }
         size_t tmp=0;
         for (size_t i=0;i<w;++i)
         {
