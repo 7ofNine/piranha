@@ -286,5 +286,29 @@ namespace piranha
     retval*=e.pow(-1.);
     return retval;
   }
+
+// Initialization of tass17's static variables
+  bool tass17::loaded=false;
+  bool tass17::has_deltas=false;
+
+  const double tass17::m0_=3498.790;
+  const double tass17::m6_=0.4225863977890E+04;
+
+  lnp tass17::lambda4_;
+  lnp tass17::lambda6_;
+
+  lnp tass17::p6_;
+
+  lnpc tass17::z6_;
+
+  lnpc tass17::zeta6_;
+
+  lnp tass17::dlambda1_;
+  lnp tass17::dlambda2_;
+  lnp tass17::dlambda3_;
+  lnp tass17::dlambda4_;
+  lnp tass17::dlambda5_;
+  lnp tass17::dlambda6_;
+  lnp tass17::dlambda8_;
 }
 #endif
