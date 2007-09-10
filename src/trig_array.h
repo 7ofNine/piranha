@@ -30,7 +30,6 @@ namespace piranha
   class trig_array
   {
     public:
-      size_t width() const;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
@@ -104,6 +103,8 @@ namespace piranha
       void operator*=(const mult_t &);
 // End INTERFACE definition.
 //-------------------------------------------------------
+    private:
+      size_t width() const;
 // Data members.
     private:
       typedef std::valarray<mult_t> container_type;
