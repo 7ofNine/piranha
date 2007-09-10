@@ -25,10 +25,10 @@
 #include "norm_index.h"
 #include "ps.h"
 #include "simple_term.h"
-#include "trig_slist.h"
+#include "trig_sparse_array.h"
 
 namespace piranha
 {
-  typedef std::complex<ps<double_cf,trig_slist,simple_term,norm_based_index> > lnpc;
+  typedef std::complex<ps<double_cf,trig_sparse_array,simple_term,norm_based_index> > lnpc;
 }
 #endif
