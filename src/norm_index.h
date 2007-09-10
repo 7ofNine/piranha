@@ -22,9 +22,9 @@
 #define PIRANHA_NORM_INDEX_H
 
 #include <boost/multi_index/composite_key.hpp>
-#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
 
 #include "arg_manager.h"
