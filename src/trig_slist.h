@@ -128,6 +128,16 @@ namespace piranha
 //-------------------------------------------------------
       trig_slist &operator+=(const trig_slist &);
       trig_slist &operator-=(const trig_slist &);
+// Useful for debugging.
+      void dump() const
+      {
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          std::cout << it->first << "," << it->second << '\t';
+        }
+        std::cout << std::endl;
+      }
     private:
       typedef std::pair<trig_size_t,mult_t> pair;
       typedef __gnu_cxx::slist<pair>::iterator iterator;
