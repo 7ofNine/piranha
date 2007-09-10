@@ -155,12 +155,8 @@ namespace piranha
         term2.s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());
-        const size_t w=derived_cast->lin_args().size();
-        for (size_t j=0;j<w;++j)
-        {
-          term1.s_trig()->insert(j,derived_cast->lin_args()[j]);
-          term2.s_trig()->insert(j,derived_cast->lin_args()[j]);
-        }
+        term1.s_trig()->assign_mult_vector(derived_cast->lin_args());
+        term2.s_trig()->assign_mult_vector(derived_cast->lin_args());
         retval.insert(term1);
         retval.insert(term2);
         return retval;

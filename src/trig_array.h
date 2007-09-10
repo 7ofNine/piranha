@@ -57,12 +57,12 @@ namespace piranha
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
 // Manip.
-// FIXME: deprecate?
-      void insert(trig_size_t,mult_t);
       void prepend_args(const size_t &);
       void append_args(const size_t &);
       void increase_size(const size_t &);
       void invert_sign();
+      template <class T>
+        void assign_mult_vector(const T &);
 // Probing.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
@@ -202,9 +202,16 @@ namespace piranha
   }
 
 // Manip implementations.
-  inline void trig_array::insert(trig_size_t index, mult_t multiplier)
+/// Assign vector of multipliers.
+  template <class T>
+    inline void trig_array::assign_mult_vector(const T &v)
   {
-    private_container_[index]=multiplier;
+    const size_t w=width();
+    p_assert(v.size() == w);
+    for (size_t i=0;i<w;++i)
+    {
+      private_container_[i]=v[i];
+    }
   }
 
   inline void trig_array::increase_size(const size_t &w)
