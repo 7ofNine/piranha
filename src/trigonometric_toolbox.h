@@ -52,7 +52,7 @@ namespace piranha
         const it_s_index it_f=derived_cast->end();
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {
-          tmp_mult=it->g_trig()->multiplier(sym_index);
+          tmp_mult=it->g_trig()->at(sym_index);
 // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {

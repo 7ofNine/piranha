@@ -69,7 +69,7 @@ namespace piranha
       {
         return private_flavour_;
       }
-      mult_t multiplier(trig_size_t) const;
+      mult_t at(trig_size_t) const;
       size_t actual_width() const;
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
@@ -255,7 +255,7 @@ namespace piranha
   }
 
 // Getters implementations.
-  inline mult_t trig_sparse_array::multiplier(trig_size_t n) const
+  inline mult_t trig_sparse_array::at(trig_size_t n) const
   {
     const const_iterator it=find(n);
     if (it == end())
@@ -288,7 +288,7 @@ namespace piranha
     const_iterator it=begin();
     for (trig_size_t i=0;i<tv.size();++i)
     {
-      out_stream << multiplier(i) << stream_manager::data_separator();
+      out_stream << at(i) << stream_manager::data_separator();
     }
   }
 

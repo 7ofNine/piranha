@@ -43,7 +43,7 @@ namespace piranha
       ~trig_array()
         {}
 // Getters.
-      mult_t multiplier(trig_size_t) const;
+      mult_t at(trig_size_t) const;
       size_t actual_width() const;
       bool &s_flavour()
       {
@@ -140,7 +140,7 @@ namespace piranha
   }
 
 // Getters implementations.
-  inline mult_t trig_array::multiplier(trig_size_t index) const
+  inline mult_t trig_array::at(trig_size_t index) const
   {
     return private_container_[index];
   }

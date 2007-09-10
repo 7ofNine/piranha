@@ -553,7 +553,7 @@ namespace piranha
 // Check that we are not going outside the boundaries.
           if (sym_index_ < orig_->trig_width())
           {
-            multiplier=it->g_trig()->multiplier(sym_index_);
+            multiplier=it->g_trig()->at(sym_index_);
           }
           else
           {
