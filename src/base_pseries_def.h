@@ -82,6 +82,7 @@ namespace piranha
  * @see base_pseries::end().
  */
       typedef it_s_index iterator;
+      typedef it_s_index const_iterator;
 // Ctors
       base_pseries();
       base_pseries(const Derived &);
