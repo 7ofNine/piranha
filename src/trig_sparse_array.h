@@ -52,15 +52,6 @@ namespace piranha
       ~trig_sparse_array()
         {}
 // Getters.
-      void dump() const
-      {
-        const const_iterator it_f=end();
-        for (const_iterator it=begin();it!=it_f;++it)
-        {
-          std::cout << it->first << "," << it->second << '\t';
-        }
-        std::cout << '\n';
-      }
       bool &s_flavour()
       {
         return private_flavour_;
@@ -103,7 +94,6 @@ namespace piranha
       void increase_size(const size_t &)
         {}
       void invert_sign();
-// Probing.
 // Probing.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
@@ -148,6 +138,15 @@ namespace piranha
 //-------------------------------------------------------
       trig_sparse_array &operator+=(const trig_sparse_array &);
       trig_sparse_array &operator-=(const trig_sparse_array &);
+      void dump() const
+      {
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          std::cout << it->first << "," << it->second << '\t';
+        }
+        std::cout << '\n';
+      }
     private:
       const_iterator begin() const
       {
