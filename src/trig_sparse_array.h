@@ -104,6 +104,19 @@ namespace piranha
         {}
       void invert_sign();
 // Probing.
+// Probing.
+      template <class DerivedPs>
+        double density(const DerivedPs &p) const
+      {
+        if (p.trig_width() == 0)
+        {
+          return 0;
+        }
+        else
+        {
+          return ((double)private_container_.size())/p.trig_width();
+        }
+      }
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
       double t_eval(const double &, const vector_psym_p &) const;
