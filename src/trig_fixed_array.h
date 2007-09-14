@@ -47,7 +47,7 @@ namespace piranha
 /// Copy ctor.
       trig_fixed_array(const trig_fixed_array &ta):private_flavour_(ta.g_flavour())
         {
-          memcpy((void *)private_container_,(const void *)ta.private_container_,sizeof(mult_t)*Dim);
+          assignment(ta);
         }
       trig_fixed_array(const deque_string &);
       ~trig_fixed_array()
@@ -109,6 +109,11 @@ namespace piranha
       void operator*=(const mult_t &);
 // End INTERFACE definition.
 //-------------------------------------------------------
+    private:
+      void assignment(const trig_fixed_array &t)
+      {
+        memcpy((void *)private_container_,(const void *)t.private_container_,sizeof(mult_t)*Dim);
+      }
 // Data members.
     private:
       bool    private_flavour_;
@@ -500,12 +505,6 @@ namespace piranha
   }
 
 /// Assignment operator.
-/**
- * After the assignment the data members of the two classes must be equal, both from a mathematical
- * point of view and with respect to the computer representation. Assignment to a larger trig_fixed_array
- * is allowed, assignment to smaller results in assertion failure.
- * @param[in] l2 right-hand side piranha::trig_fixed_array.
- */
 // TODO: unroll or memcpy?
   template <int Dim>
     inline trig_fixed_array<Dim> &trig_fixed_array<Dim>::operator=(const trig_fixed_array &l2)
@@ -513,7 +512,7 @@ namespace piranha
     if (&l2!=this)
     {
       s_flavour()=l2.g_flavour();
-      memcpy((void *)private_container_,(const void *)l2.private_container_,sizeof(mult_t)*Dim);
+      assignment(l2);
     }
     return *this;
   }
