@@ -239,10 +239,6 @@ namespace piranha
     {
       s_flavour()=false;
     }
-    else
-    {
-      s_flavour()=true;
-    }
   }
 
 /// Find iterator corresponding to index n. O(n) complexity operation.
