@@ -133,10 +133,6 @@ namespace piranha
     {
       s_flavour()=false;
     }
-    else
-    {
-      s_flavour()=true;
-    }
   }
 
 // Getters implementations.
