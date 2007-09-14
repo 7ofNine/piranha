@@ -109,7 +109,6 @@ namespace piranha
       void operator*=(const mult_t &);
 // End INTERFACE definition.
 //-------------------------------------------------------
-    private:
 // Data members.
     private:
       bool    private_flavour_;
@@ -425,15 +424,24 @@ namespace piranha
     return false;
   }
 
-// TODO: unroll.
+  template <int N>
+    inline void hash_unroller(size_t &seed, const mult_t *end_array)
+  {
+    boost::hash_combine(seed,end_array[-N]);
+    hash_unroller<N-1>(seed,end_array);
+  }
+
+  template <>
+    inline void hash_unroller<1>(size_t &seed, const mult_t *end_array)
+  {
+    boost::hash_combine(seed,end_array[-1]);
+  }
+
   template <int Dim>
     inline size_t trig_fixed_array<Dim>::hasher() const
   {
     size_t seed=g_flavour();
-    for (size_t i=0;i<Dim;++i)
-    {
-      boost::hash_combine(seed,private_container_[i]);
-    }
+    hash_unroller<Dim>(seed,private_container_+Dim);
     return seed;
   }
 
@@ -510,6 +518,21 @@ namespace piranha
     return *this;
   }
 
+  template <int N>
+    inline void mult_unroller(const mult_t *end_array1, const mult_t *end_array2, mult_t *ret_array1, mult_t *ret_array2)
+  {
+    ret_array1[-N]=end_array1[-N]-end_array2[-N];
+    ret_array2[-N]=end_array1[-N]+end_array2[-N];
+    mult_unroller<N-1>(end_array1,end_array2,ret_array1,ret_array2);
+  }
+
+  template <>
+    inline void mult_unroller<1>(const mult_t *end_array1, const mult_t *end_array2, mult_t *ret_array1, mult_t *ret_array2)
+  {
+    ret_array1[-1]=end_array1[-1]-end_array2[-1];
+    ret_array2[-1]=end_array1[-1]+end_array2[-1];
+  }
+
 /// Multiplication.
 /**
  * Multiplication of two trigonometric functions using Werner's formulas, i.e.
@@ -531,11 +554,8 @@ namespace piranha
   template <int Dim>
     inline void trig_fixed_array<Dim>::trigmult(const trig_fixed_array &l2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
   {
-    for (size_t i=0;i<Dim;++i)
-    {
-      ret1.private_container_[i]=private_container_[i]-l2.private_container_[i];
-      ret2.private_container_[i]=private_container_[i]+l2.private_container_[i];
-    }
+    mult_unroller<Dim>(private_container_+Dim,l2.private_container_+Dim,
+      ret1.private_container_+Dim,ret2.private_container_+Dim);
   }
 
 /// Overload of hash_value function for piranha::trig_fixed_array.
