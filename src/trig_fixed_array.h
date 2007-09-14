@@ -493,6 +493,20 @@ namespace piranha
     }
   }
 
+// TODO: check the real impact of these unrollers.
+  template <int N>
+    inline void invert_unroller(mult_t *end_array)
+  {
+    end_array[-N]=-end_array[-N];
+    invert_unroller<N-1>(end_array);
+  }
+
+  template <>
+    inline void invert_unroller<1>(mult_t *end_array)
+  {
+    end_array[-1]=-end_array[-1];
+  }
+
 /// Invert sign.
 // TODO: unroll.
   template <int Dim>
