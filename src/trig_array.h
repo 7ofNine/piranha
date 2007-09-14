@@ -199,6 +199,7 @@ namespace piranha
 
 // Manip implementations.
 /// Assign vector of multipliers.
+// TODO: memcpy?
   template <class T>
     inline void trig_array::assign_mult_vector(const T &v)
   {
