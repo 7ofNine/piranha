@@ -24,6 +24,9 @@
 #include "p_assert.h"
 
 #include <boost/integer_traits.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index_container.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_pod.hpp>
@@ -105,6 +108,28 @@ namespace piranha
   template <class Cf, class Index>
     const Index imonomial<Cf,Index>::private_max_index_;
 
+  template <class Cf, class Index>
+    struct mutable_im
+  {
+      mutable_im(const Index &i, const Cf &c):first(i),second(c)
+        {}
+      bool operator==(const mutable_im &m) const
+      {
+        return (first == m.first);
+      }
+      Index       first;
+      mutable Cf  second;
+    private:
+      mutable_im():first(),second()
+        {}
+  };
+
+  template <class Cf, class Index>
+    inline const Index &hash_value(const mutable_im<Cf,Index> &m)
+  {
+    return m.first;
+  }
+
 /// Indexed polynomial.
   template <class Cf, class Index, class Expo>
     class ipoly
@@ -178,9 +203,22 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       {
         return private_width_;
       }
+      bool empty() const
+      {
+        return private_vi_.empty();
+      }
+      void clear()
+      {
+        private_vi_.clear();
+        private_degree_=0;
+      }
       size_t g_length() const
       {
         return private_vi_.size();
+      }
+      const usint &g_degree() const
+      {
+        return private_degree_;
       }
       const im_type &operator[](const size_t &n) const
       {
@@ -245,9 +283,66 @@ std::cout << "Max representable degree is: " << max_d << '\n';
         }
 std::cout << "encoded to " << retval << '\n';
       }
+      typedef boost::multi_index_container<
+        mutable_im<Cf,Index>,
+        boost::multi_index::indexed_by<
+          boost::multi_index::hashed_unique<boost::multi_index::identity<mutable_im<Cf,Index> > >
+        >
+      > hash_map;
       void mult_by(const ipoly &p)
       {
+        if (empty())
+        {
+          p_assert(private_degree_ == 0);
+          return;
+        }
+        if (p.empty())
+        {
+          p_assert(p.g_degree() == 0);
+          clear();
+          return;
+        }
+        if (this == &p)
+        {
+          ipoly tmp(*this);
+          mult_by(tmp);
+          return;
+        }
+        p_assert(private_width_ == p.private_width_);
+        const Expo new_degree=g_degree()+p.g_degree();
+        if (new_degree > private_max_n_cache_.g_max_n(private_width_))
+        {
+          std::cout << "FATAL: polynomial multiplication results in overflow degree." << std::endl;
+          std::abort();
+        }
+        hash_map tmp;
+        typedef typename hash_map::iterator hm_it;
+        std::pair<hm_it,bool> insert_res;
         const const_iterator it1_f=end(), it2_f=p.end();
+        for (const_iterator it1=begin();it1!=it1_f;++it1)
+        {
+          for (const_iterator it2=p.begin();it2!=it2_f;++it2)
+          {
+            mutable_im<Cf,Index> tmp_m(it1->g_index()+it2->g_index(),it1->g_cf()*it2->g_cf());
+            insert_res=tmp.insert(tmp_m);
+            if (!(insert_res.second))
+            {
+// We found a duplicate.
+              insert_res.first->second+=tmp_m.second;
+            }
+          }
+        }
+// Now place the result in a return value.
+        ipoly retval;
+        retval.private_width_=private_width_;
+        retval.private_vi_.reserve(tmp.size());
+        const hm_it it_f=tmp.end();
+        for (hm_it it=tmp.begin();it!=it_f;++it)
+        {
+          retval.private_vi_.push_back(im_type(it->second,it->first));
+        }
+        retval.private_degree_=new_degree;
+        swap(retval);
       }
     class max_n_cache
     {
@@ -286,7 +381,7 @@ std::cout << '\n';
     };
 // Data members.
     private:
-      const usint               private_width_;
+      /*const*/ usint               private_width_;
       Expo                      private_degree_;
       vector_imonomial          private_vi_;
       static const max_n_cache  private_max_n_cache_;
