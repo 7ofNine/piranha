@@ -227,10 +227,6 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       {
         return private_degree_;
       }
-      const im_type &operator[](const size_t &n) const
-      {
-        return private_vi_[n];
-      }
       void decode(const Index &code, vector_expo &v) const
       {
         p_assert(v.size() == private_width_);
@@ -338,10 +334,10 @@ std::cout << "encoded to " << retval << '\n';
         }
         static void mod(vector_imonomial &v)
         {
-          const size_t w=v.size();
-          for (size_t i=0;i<w;++i)
+          const iterator it_f=v.end();
+          for (iterator it=v.begin();it!=it_f;++it)
           {
-            v[i].second=-v[i].second;
+            it->second=-(it->second);
           }
         }
         static void mod(vector_imonomial &v, iterator &, const_iterator &it2, const const_iterator &it2_f)
@@ -554,11 +550,13 @@ namespace std
   template <class Cf, class Index, class Expo>
     ostream &operator<<(ostream &s, const piranha::ipoly<Cf,Index,Expo> &p)
   {
+    typedef typename piranha::ipoly<Cf,Index,Expo>::const_iterator const_iterator;
     typename piranha::ipoly<Cf,Index,Expo>::vector_expo ev(p.g_width());
-    for (size_t i=0;i<p.g_length();++i)
+    const const_iterator it_f=p.end();
+    for (const_iterator it=p.begin();it!=it_f;++it)
     {
-      std::cout << p[i].g_cf() << "\t|\t";
-      p.decode(p[i].g_index(),ev);
+      std::cout << it->g_cf() << "\t|\t";
+      p.decode(it->g_index(),ev);
       for (size_t j=0;j<ev.size();++j)
       {
         std::cout << ev[ev.size()-j-1] << '\t';
