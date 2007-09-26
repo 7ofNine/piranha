@@ -76,6 +76,8 @@ namespace piranha
     public:
       imonomial()
         {}
+      imonomial(const Cf &value, const Index &i):private_index_(i),private_cf_(value)
+        {}
       ~imonomial()
         {}
       static const Index &g_max_index()
@@ -83,8 +85,8 @@ namespace piranha
         return private_max_index_;
       }
     private:
-      Cf                  private_cf_;
       Index               private_index_;
+      Cf                  private_cf_;
       static const Index  private_max_index_ = ((((((Index)1)<<(sizeof(Index)*8-1))-1)<<1)+1);
   };
 
@@ -106,6 +108,13 @@ namespace piranha
       typedef imonomial<Cf,Index> im_type;
       typedef std::vector<im_type> vector_imonomial;
       ipoly():private_width_(0),private_degree_(0),private_vi_()
+        {}
+      ipoly(const Cf &value):private_width_(0),private_degree_(0),private_vi_((size_t)1)
+      {
+        private_vi_[0]=im_type(value,0);
+      }
+      ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
+        private_vi_(p.private_vi_)
         {}
       ~ipoly()
         {}
