@@ -26,8 +26,8 @@
 namespace piranha
 {
 // Forward declaration.
-  template <class Cf, class Index, class Expo>
-    class ipoly;
+  template <class Cf, class Index, class Expo, class Derived>
+    class base_ipoly;
 
 /// Indexed monomial.
   template <class Cf, class Index>
@@ -36,8 +36,8 @@ namespace piranha
       BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
       BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
       BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
-      template <class Cf2, class Index2, class Expo>
-        friend class ipoly;
+      template <class Cf2, class Index2, class Expo, class Derived>
+        friend class base_ipoly;
     public:
       imonomial(const Cf &value, const Index &i):index(i),cf(value)
         {}

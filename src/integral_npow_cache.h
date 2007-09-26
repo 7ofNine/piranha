@@ -18,65 +18,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_IPOLY_H
-#define PIRANHA_IPOLY_H
+#ifndef PIRANHA_INTEGRAL_NPOW_CACHE_H
+#define PIRANHA_INTEGRAL_NPOW_CACHE_H
 
-#include "base_ipoly.h"
+#include <boost/integer_traits.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_pod.hpp>
+#include <cmath>
+#include <vector>
+
+#include "p_assert.h"
 
 namespace piranha
 {
-/// Indexed polynomial.
-  template <class Cf, class Index, class Expo>
-    class ipoly:public base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> >
+/// Natural power cacher for integral type.
+  template <class T>
+    class integral_npow_cache
   {
-      typedef base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> > ancestor;
-      typedef typename ancestor::im_type im_type;
-      typedef typename ancestor::usint usint;
+      BOOST_STATIC_ASSERT(boost::is_integral<T>::value);
+      BOOST_STATIC_ASSERT(boost::is_pod<T>::value);
+      BOOST_STATIC_ASSERT(!(boost::integer_traits<T>::is_signed));
+      typedef std::vector<std::vector<T> > container;
     public:
-      typedef typename ancestor::vector_expo vector_expo;
-      ipoly():ancestor::base_ipoly(),private_width_(0)
-        {}
-      ipoly(const Cf &value):ancestor::base_ipoly(value),private_width_(0)
-        {}
-      ipoly(const Cf &value, const vector_expo &v):private_width_(v.size())
+      static const T &request(const int &n, const T &arg)
       {
-        ancestor::builder_from_vector(value,v);
-      }
-      ipoly(const ipoly &p):ancestor::base_ipoly(p),private_width_(p.private_width_)
-        {}
-      ~ipoly()
-        {}
-      ipoly &operator=(const ipoly &p)
-      {
-        if (this != &p)
+        p_assert(n >= 0);
+        p_assert(arg >= 0);
+        while (arg >= private_cache_.size())
         {
-          private_width_=p.private_width_;
-          ancestor::common_assignment(p);
+// Add a row to the matrix.
+          private_cache_.push_back(std::vector<T>());
+// Add the first element to the row.
+          private_cache_.back().push_back(1);
         }
-        return *this;
-      }
-      const usint &g_width() const
-      {
-        return private_width_;
-      }
-      ipoly &operator+=(const ipoly &p)
-      {
-        ancestor::addition(p);
-        return *this;
-      }
-      ipoly &operator-=(const ipoly &p)
-      {
-        ancestor::subtraction(p);
-        return *this;
-      }
-      ipoly &operator*=(const ipoly &p)
-      {
-        ancestor::mult_by(p);
-        return *this;
+        while ((size_t)n >= private_cache_[arg].size())
+        {
+//std::cout << "before: " << private_cache_[arg].back() << '\n';
+          private_cache_[arg].push_back(arg*private_cache_[arg].back());
+//std::cout << "now: " << private_cache_[arg].back() << '\n';
+        }
+        return private_cache_[arg][n];
       }
     private:
-      usint       private_width_;
+      static container    private_cache_;
   };
+
+  template <class T>
+    typename integral_npow_cache<T>::container integral_npow_cache<T>::private_cache_;
 }
 
 #endif
