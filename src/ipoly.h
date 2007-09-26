@@ -21,6 +21,8 @@
 #ifndef PIRANHA_IPOLY_H
 #define PIRANHA_IPOLY_H
 
+#include "p_assert.h"
+
 #include <boost/integer_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_integral.hpp>
@@ -32,23 +34,26 @@ namespace piranha
   template <class T>
     class npow_cache
   {
+      BOOST_STATIC_ASSERT(boost::is_integral<T>::value);
+      BOOST_STATIC_ASSERT(boost::is_pod<T>::value);
+      BOOST_STATIC_ASSERT(!(boost::integer_traits<T>::is_signed));
       typedef std::vector<std::vector<T> > container;
     public:
       static const T &request(const int &n, const T &arg)
       {
-  // TODO: assert unsignedness of arg and n.
-        while ((unsigned int)arg >= private_cache_.size())
+        p_assert(n >= 0);
+        while (arg >= private_cache_.size())
         {
-  // Add a row to the matrix.
+// Add a row to the matrix.
           private_cache_.push_back(std::vector<T>());
-  // Add the first element to the row.
+// Add the first element to the row.
           private_cache_.back().push_back(1);
         }
-        while ((unsigned int)n >= private_cache_[arg].size())
+        while ((size_t)n >= private_cache_[arg].size())
         {
-        //std::cout << "before: " << private_cache_[arg].back() << '\n';
+//std::cout << "before: " << private_cache_[arg].back() << '\n';
           private_cache_[arg].push_back(arg*private_cache_[arg].back());
-        //std::cout << "now: " << private_cache_[arg].back() << '\n';
+//std::cout << "now: " << private_cache_[arg].back() << '\n';
         }
         return private_cache_[arg][n];
       }
