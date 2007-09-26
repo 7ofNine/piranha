@@ -186,14 +186,6 @@ namespace piranha
         }
         return *this;
       }
-      iterator begin()
-      {
-        return private_container_.begin();
-      }
-      iterator end()
-      {
-        return private_container_.end();
-      }
       const_iterator begin() const
       {
         return private_container_.begin();
@@ -251,12 +243,25 @@ std::cout << '\n';*/
         algebraic_sum<sign_modifier_plus>(p);
         return *this;
       }
+      ipoly &operator-=(const ipoly &p)
+      {
+        algebraic_sum<sign_modifier_minus>(p);
+        return *this;
+      }
       ipoly &operator*=(const ipoly &p)
       {
         mult_by(p);
         return *this;
       }
     private:
+      iterator begin()
+      {
+        return private_container_.begin();
+      }
+      iterator end()
+      {
+        return private_container_.end();
+      }
       void degree_check() const
       {
         if (private_degree_ > private_max_n_cache_.g_max_n(private_width_))
