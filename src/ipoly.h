@@ -27,6 +27,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_pod.hpp>
+#include <cmath>
 #include <limits>
 #include <vector>
 
@@ -118,7 +119,7 @@ namespace piranha
       ipoly(const Cf &value, const vector_expo &v):private_width_(v.size()),private_degree_(0),
         private_vi_((size_t)1)
       {
-        p_assert_(v.size() <= USHRT_MAX);
+        p_assert(v.size() <= USHRT_MAX);
         for (usint i=0;i<private_width_;++i)
         {
           private_degree_+=v[i];
@@ -126,7 +127,7 @@ namespace piranha
 std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
         Index tmp_index;
         encode(v,tmp_index);
-        im_type tmp_im(value,index);
+        im_type tmp_im(value,tmp_index);
         private_vi_[0]=tmp_im;
       }
       ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
@@ -158,19 +159,65 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       void encode(const vector_expo &v, Index &retval) const
       {
         p_assert(v.size() == private_width_);
+// Maximum representable degree.
+        const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
+std::cout << "Max representable degree is: " << max_d << '\n';
         retval=0;
         for (usint i=0;i<private_width_;++i)
         {
-          retval+=v[i]*integral_npow_cache<Expo>::request(i,private_degree_+1);
+          retval+=v[i]*integral_npow_cache<Expo>::request(i,max_d+1);
         }
 //std::cout << "encoded to " << retval << '\n';
       }
+    class max_n_cache
+    {
+      public:
+        max_n_cache():private_container_(std::floor(std::log(im_type::g_max_index())/std::log(2))+1)
+        {
+          const size_t w=private_container_.size();
+          p_assert(w >= 1);
+// With zero-variables polynomials we can go to whatever degree we want.
+          private_container_[0]=private_max_expo_;
+std::cout << "Max expo is: " << private_max_expo_ << '\n';
+std::cout << private_container_[0] << ',';
+          double tmp;
+          for (size_t i=1;i<w;++i)
+          {
+            tmp=std::floor(std::pow(im_type::g_max_index(),1./i))-1;
+            if (tmp > private_max_expo_)
+            {
+              private_container_[i]=private_max_expo_;
+            }
+            else
+            {
+              private_container_[i]=(Expo)(tmp);
+            }
+std::cout << private_container_[i] << ',';
+          }
+std::cout << '\n';
+        }
+        const Expo &g_max_n(const usint &n) const
+        {
+          p_assert(n < private_container_.size());
+          return private_container_[n];
+        }
+      private:
+        vector_expo private_container_;
+    };
 // Data members.
     private:
-      usint               private_width_;
-      Expo                private_degree_;
-      vector_imonomial    private_vi_;
+      const usint               private_width_;
+      Expo                      private_degree_;
+      vector_imonomial          private_vi_;
+      static const max_n_cache  private_max_n_cache_;
+      static const Expo         private_max_expo_ = ((((((Expo)1)<<(sizeof(Expo)*8-1))-1)<<1)+1);
   };
+
+  template <class Cf, class Index, class Expo>
+    const typename ipoly<Cf,Index,Expo>::max_n_cache ipoly<Cf,Index,Expo>::private_max_n_cache_;
+
+  template <class Cf, class Index, class Expo>
+    const Expo ipoly<Cf,Index,Expo>::private_max_expo_;
 }
 
 #endif
