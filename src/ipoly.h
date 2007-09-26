@@ -31,8 +31,10 @@
 
 namespace piranha
 {
+// TODO: move to separate file with other cachers?
+/// Natural power cacher for integral type.
   template <class T>
-    class npow_cache
+    class integral_npow_cache
   {
       BOOST_STATIC_ASSERT(boost::is_integral<T>::value);
       BOOST_STATIC_ASSERT(boost::is_pod<T>::value);
@@ -61,6 +63,10 @@ namespace piranha
       static container    private_cache_;
   };
 
+  template <class T>
+    typename integral_npow_cache<T>::container integral_npow_cache<T>::private_cache_;
+
+/// Indexed monomial.
   template <class Cf, class Index>
     class imonomial
   {
@@ -84,6 +90,31 @@ namespace piranha
 
   template <class Cf, class Index>
     const Index imonomial<Cf,Index>::private_max_index_;
+
+/// Indexed polynomial.
+  template <class Cf, class Index, class Expo>
+    class ipoly
+  {
+      BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
+      BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
+      BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
+      BOOST_STATIC_ASSERT(boost::is_integral<Expo>::value);
+      BOOST_STATIC_ASSERT(boost::is_pod<Expo>::value);
+      BOOST_STATIC_ASSERT(!(boost::integer_traits<Expo>::is_signed));
+    public:
+      typedef std::vector<Expo> vector_expo;
+      typedef imonomial<Cf,Index> im_type;
+      typedef std::vector<im_type> vector_imonomial;
+      ipoly():private_width_(0),private_degree_(0),private_vi_()
+        {}
+      ~ipoly()
+        {}
+// Data members.
+    private:
+      unsigned short int  private_width_;
+      Expo                private_degree_;
+      vector_imonomial    private_vi_;
+  };
 }
 
 #endif
