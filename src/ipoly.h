@@ -95,6 +95,10 @@ namespace piranha
       {
         return private_index_;
       }
+      Cf &s_cf()
+      {
+        return private_cf_;
+      }
       static const Index &g_max_index()
       {
         return private_max_index_;
@@ -246,6 +250,11 @@ for (size_t i=0;i<v.size();++i)
 }
 std::cout << '\n';*/
       }
+      ipoly &operator+=(const ipoly &p)
+      {
+        algebraic_sum<sign_modifier_plus>(p);
+        return *this;
+      }
       ipoly &operator*=(const ipoly &p)
       {
         mult_by(p);
@@ -283,6 +292,114 @@ std::cout << "Max representable degree is: " << max_d << '\n';
         }
 std::cout << "encoded to " << retval << '\n';
       }
+// Boilerplate for algebraic sum.
+      struct sign_modifier_plus
+      {
+        static const Cf &mod(const Cf &value)
+        {
+          return value;
+        }
+        static void mod(const vector_imonomial &)
+        {}
+        static void mod(vector_imonomial &v, iterator it1, const_iterator it2, const_iterator it2_f)
+        {
+          v.insert(it1,it2,it2_f);
+        }
+      };
+      struct sign_modifier_minus
+      {
+        static Cf mod(const Cf &value)
+        {
+          return (-value);
+        }
+        static void mod(vector_imonomial &v)
+        {
+          const size_t w=v.size();
+          for (size_t i=0;i<w;++i)
+          {
+            v[i].second=-v[i].second;
+          }
+        }
+        static void mod(vector_imonomial &v, iterator &, const_iterator &it2, const const_iterator &it2_f)
+        {
+          for (;it2!=it2_f;++it2)
+          {
+            v.push_back(im_type(it2->g_cf(),-it2->g_index()));
+          }
+        }
+      };
+      template <class Modifier>
+        void algebraic_sum(const ipoly &p)
+      {
+        if (p.empty())
+        {
+          return;
+        }
+        if (empty())
+        {
+          private_vi_=p.private_vi_;
+          Modifier::mod(private_vi_);
+          return;
+        }
+        if (this == &p)
+        {
+          ipoly tmp(p);
+          algebraic_sum<Modifier>(tmp);
+          return;
+        }
+        const size_t w1=private_vi_.size(), w2=p.private_vi_.size();
+// TODO: check about this, maybe we risk allocating too much after repeated additions?
+// At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
+        private_vi_.reserve(std::max(w1,w2));
+        iterator it1=begin();
+        const_iterator it2=p.begin();
+        const const_iterator it2_f=p.end();
+        while (it2 != it2_f)
+        {
+// We are at the end of this, insert the remaining elements and bail out of the cycle.
+          if (it1 == end())
+          {
+            Modifier::mod(private_vi_,it1,it2,it2_f);
+            break;
+          }
+          else
+          {
+// Same key, add/subtract.
+            if (it1->g_index() == it2->g_index())
+            {
+              it1->s_cf()+=Modifier::mod(it2->g_cf());
+// If we modified to zero, we have to destroy the element.
+// FIXME: replace with numerical zero.
+              if (it1->g_cf() == 0)
+              {
+                it1=private_vi_.erase(it1); // it1 now points to the element after the erased one (the latter half of the
+                                            // vector was moved down by one position).
+              }
+              else
+// We performed a non-destructive modification. Increase it1.
+              {
+                ++it1;
+              }
+// Increase ip, it was added to this.
+              ++it2;
+            }
+// There is an element which is not present in this and which goes before it1.
+            else if (it1->g_index() > it2->g_index())
+            {
+// it1 will point to the newly inserted element.
+              it1=private_vi_.insert(it1,im_type(Modifier::mod(it2->g_cf()),it2->g_index()));
+              ++it1;
+              ++it2;
+            }
+// ip's index is after it1's. We don't do anything since we don't know if next elements of p will be packed or inserted.
+            else /* if (it1->first < ip->first) */
+            {
+              ++it1;
+            }
+          }
+        }
+      }
+// Multiplication boilerplate.
       typedef boost::multi_index_container<
         mutable_im<Cf,Index>,
         boost::multi_index::indexed_by<
