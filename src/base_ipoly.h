@@ -216,7 +216,7 @@ std::cout << '\n';*/
       }
       void encode(const vector_expo &v, Index &retval) const
       {
-        const usint w=static_cast<Derived const *>(this)->g_width()
+        const usint w=static_cast<Derived const *>(this)->g_width();
         p_assert(v.size() == w);
 // Maximum representable degree.
         const Expo max_d=private_max_n_cache_.g_max_n(w);
