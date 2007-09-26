@@ -125,11 +125,15 @@ namespace piranha
       {
         return (first == m.first);
       }
+      bool operator<(const mutable_im &m) const
+      {
+        return (first < m.first);
+      }
       Index       first;
       mutable Cf  second;
     private:
 // Make it private so we know it is never called.
-      mutable_im():first(),second()
+      mutable_im()
         {}
   };
 
