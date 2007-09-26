@@ -176,7 +176,25 @@ std::cout << "Max representable degree is: " << max_d << '\n';
         {
           retval+=v[i]*integral_npow_cache<Expo>::request(i,max_d+1);
         }
-//std::cout << "encoded to " << retval << '\n';
+std::cout << "encoded to " << retval << '\n';
+      }
+      void decode(const Index &code, vector_expo &v) const
+      {
+        p_assert(v.size() == private_width_);
+        const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
+std::cout << "decoding " << code << '\n';
+        for (usint i=0;i<private_width_-1;++i)
+        {
+          v[i]=(code%integral_npow_cache<Expo>::request(i+1,max_d+1))/
+            integral_npow_cache<Expo>::request(i,max_d+1);
+        }
+        v[private_width_-1]=code/(integral_npow_cache<Expo>::request(private_width_-1,max_d+1));
+/*std::cout << "decoded to: ";
+for (size_t i=0;i<v.size();++i)
+{
+  std::cout << v[i] << ',';
+}
+std::cout << '\n';*/
       }
     class max_n_cache
     {
