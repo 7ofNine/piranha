@@ -133,7 +133,12 @@ std::cout << '\n';*/
     protected:
       void builder_from_vector(const Cf &value, const vector_expo &v)
       {
-        p_assert(v.size() <= USHRT_MAX);
+        if (v.size() > USHRT_MAX)
+        {
+          std::cout << "Fatal: cannot build polynomial, vector is too large." << std::endl;
+          std::cout << "Please use a vector whose size is smaller than " << USHRT_MAX << std::endl;
+          std::abort();
+        }
         private_degree_=0;
         const usint w=static_cast<Derived const *>(this)->g_width();
         for (usint i=0;i<w;++i)
