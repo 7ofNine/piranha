@@ -20,7 +20,7 @@ CMAKE_DEPENDENT_OPTION(BUILD_TASS "Build TASS17 functions." ON "BUILD_PYRANHA_LN
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
-OPTION(BUILD_TBB_MULTITHREADING "Use multiple threads for calculations. (CURRENTLY INEFFECTIVE)" OFF)
+OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-threaded parallelism. (CURRENTLY INEFFECTIVE)" OFF)
 
 SET(MANDATORY_LIBRARIES "")
 
