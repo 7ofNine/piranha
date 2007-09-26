@@ -81,8 +81,6 @@ namespace piranha
       BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
       BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
     public:
-      imonomial()
-        {}
       imonomial(const Cf &value, const Index &i):private_index_(i),private_cf_(value)
         {}
       ~imonomial()
@@ -104,6 +102,9 @@ namespace piranha
       {
         return private_max_index_;
       }
+    private:
+      imonomial()
+        {}
     private:
       Index               private_index_;
       Cf                  private_cf_;
@@ -161,7 +162,7 @@ namespace piranha
         private_vi_[0]=im_type(value,0);
       }
       ipoly(const Cf &value, const vector_expo &v):private_width_(v.size()),private_degree_(0),
-        private_vi_((size_t)1)
+        private_vi_()
       {
         p_assert(v.size() <= USHRT_MAX);
         for (usint i=0;i<private_width_;++i)
@@ -171,8 +172,7 @@ namespace piranha
 //std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
         Index tmp_index;
         encode(v,tmp_index);
-        im_type tmp_im(value,tmp_index);
-        private_vi_[0]=tmp_im;
+        private_vi_.push_back(im_type(value,tmp_index));
         degree_check();
       }
       ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
