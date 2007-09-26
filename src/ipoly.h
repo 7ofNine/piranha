@@ -168,7 +168,7 @@ namespace piranha
         {
           private_degree_+=v[i];
         }
-std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
+//std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
         Index tmp_index;
         encode(v,tmp_index);
         im_type tmp_im(value,tmp_index);
@@ -206,10 +206,6 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       {
         return private_vi_.end();
       }
-      const usint &g_width() const
-      {
-        return private_width_;
-      }
       bool empty() const
       {
         return private_vi_.empty();
@@ -223,6 +219,10 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       {
         return private_vi_.size();
       }
+      const usint &g_width() const
+      {
+        return private_width_;
+      }
       const usint &g_degree() const
       {
         return private_degree_;
@@ -235,7 +235,7 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
           return;
         }
         const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
-std::cout << "decoding " << code << '\n';
+//std::cout << "decoding " << code << '\n';
         for (usint i=0;i<private_width_-1;++i)
         {
           v[i]=(code%integral_npow_cache<Index>::request(i+1,max_d+1))/
@@ -304,13 +304,13 @@ std::cout << '\n';*/
         p_assert(v.size() == private_width_);
 // Maximum representable degree.
         const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
-std::cout << "Max representable degree is: " << max_d << '\n';
+//std::cout << "Max representable degree is: " << max_d << '\n';
         retval=0;
         for (usint i=0;i<private_width_;++i)
         {
           retval+=v[i]*integral_npow_cache<Index>::request(i,max_d+1);
         }
-std::cout << "encoded to " << retval << '\n';
+//std::cout << "encoded to " << retval << '\n';
       }
 // Boilerplate for algebraic sum.
       struct sign_modifier_plus
@@ -457,7 +457,7 @@ std::cout << "encoded to " << retval << '\n';
         }
         p_assert(private_width_ == p.private_width_);
         const Expo new_degree=g_degree()+p.g_degree();
-        std::cout << "New degree will be: " << new_degree << '\n';
+//        std::cout << "New degree will be: " << new_degree << '\n';
         if (new_degree > private_max_n_cache_.g_max_n(private_width_))
         {
           std::cout << "FATAL: polynomial multiplication results in overflow degree." << std::endl;
@@ -493,6 +493,7 @@ std::cout << "encoded to " << retval << '\n';
 // Sort result according to index.
         std::sort(retval.begin(),retval.end(),index_sorter());
         swap(retval);
+std::cout << "Length: " << g_length() << '\n';
       }
     class max_n_cache
     {
@@ -503,8 +504,8 @@ std::cout << "encoded to " << retval << '\n';
           p_assert(w >= 1);
 // With zero-variables polynomials we can go to whatever degree we want.
           private_container_[0]=private_max_expo_;
-std::cout << "Max expo is: " << private_max_expo_ << '\n';
-std::cout << private_container_[0] << ',';
+//std::cout << "Max expo is: " << private_max_expo_ << '\n';
+//std::cout << private_container_[0] << ',';
           double tmp;
           for (size_t i=1;i<w;++i)
           {
@@ -517,9 +518,9 @@ std::cout << private_container_[0] << ',';
             {
               private_container_[i]=(Expo)(tmp);
             }
-std::cout << private_container_[i] << ',';
+//std::cout << private_container_[i] << ',';
           }
-std::cout << '\n';
+//std::cout << '\n';
         }
         const Expo &g_max_n(const usint &n) const
         {
