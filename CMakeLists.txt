@@ -21,6 +21,7 @@ OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used b
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-threaded parallelism. (CURRENTLY INEFFECTIVE)" OFF)
+OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 SET(MANDATORY_LIBRARIES "")
 
@@ -73,6 +74,10 @@ IF(BUILD_MAIN)
   ADD_EXECUTABLE(main main.cpp)
   TARGET_LINK_LIBRARIES(main ${MANDATORY_LIBRARIES} piranha_static)
 ENDIF(BUILD_MAIN)
+
+IF(BUILD_TESTS)
+  ADD_SUBDIRECTORY(tests)
+ENDIF(BUILD_TESTS)
 
 # Add library directory
 ADD_SUBDIRECTORY(src)
