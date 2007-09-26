@@ -21,8 +21,6 @@
 #ifndef PIRANHA_IPOLY_H
 #define PIRANHA_IPOLY_H
 
-#include "p_assert.h"
-
 #include <algorithm>
 #include <boost/integer_traits.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -34,6 +32,8 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+
+#include "p_assert.h"
 
 namespace piranha
 {
