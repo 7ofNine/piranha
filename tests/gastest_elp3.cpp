@@ -28,7 +28,7 @@ typedef fnp<6>::type stype;
 int main()
 {
   settings_manager::set_prec(0);
-  stype elp3("../theories_of_motion/elp2000/elp3.csv"), elp3a(elp3);
+  stype elp3("elp3.csv"), elp3a(elp3);
   for (size_t i=0;i<20;++i)
   {
     elp3*elp3a;
