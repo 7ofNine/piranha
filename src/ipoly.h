@@ -23,6 +23,7 @@
 
 #include "p_assert.h"
 
+#include <algorithm>
 #include <boost/integer_traits.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
@@ -269,6 +270,27 @@ std::cout << '\n';*/
           std::abort();
         }
       }
+      void refresh_degree()
+      {
+        vector_expo v((size_t)private_width_);
+        const iterator it_f=end();
+        private_degree_=0;
+        Expo candidate;
+        usint i;
+        for (iterator it=begin();it!=it_f;++it)
+        {
+          decode(it->g_index(),v);
+          candidate=0;
+          for (i=0;i<private_width_;++i)
+          {
+            candidate+=v[i];
+          }
+          if (candidate > private_degree_)
+          {
+            private_degree_=candidate;
+          }
+        }
+      }
       ipoly &swap(ipoly &p)
       {
         if (this != &p)
@@ -398,8 +420,18 @@ std::cout << "encoded to " << retval << '\n';
             }
           }
         }
+// Refresh degree: we may have introduced higher degree monomials, and we may have destroyed others.
+// Just recalc it explicitly from scracth.
+        refresh_degree();
       }
 // Multiplication boilerplate.
+      struct index_sorter
+      {
+        bool operator()(const im_type &m1, const im_type &m2) const
+        {
+          return (m1.g_index() < m2.g_index());
+        }
+      };
       typedef boost::multi_index_container<
         mutable_im<Cf,Index>,
         boost::multi_index::indexed_by<
@@ -427,6 +459,7 @@ std::cout << "encoded to " << retval << '\n';
         }
         p_assert(private_width_ == p.private_width_);
         const Expo new_degree=g_degree()+p.g_degree();
+        std::cout << "New degree will be: " << new_degree << '\n';
         if (new_degree > private_max_n_cache_.g_max_n(private_width_))
         {
           std::cout << "FATAL: polynomial multiplication results in overflow degree." << std::endl;
@@ -459,6 +492,8 @@ std::cout << "encoded to " << retval << '\n';
           retval.private_vi_.push_back(im_type(it->second,it->first));
         }
         retval.private_degree_=new_degree;
+// Sort result according to index.
+        std::sort(retval.begin(),retval.end(),index_sorter());
         swap(retval);
       }
     class max_n_cache
