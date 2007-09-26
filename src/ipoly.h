@@ -420,14 +420,12 @@ std::cout << '\n';*/
         }
 // This ipoly acts just as a container for the private_container_, which will be swapped in at the end of the cycle.
         ipoly tmp;
-        iterator it;
         const const_iterator it1_f=end(), it2_f=p.end();
         for (const_iterator it1=begin();it1!=it1_f;++it1)
         {
           for (const_iterator it2=p.begin();it2!=it2_f;++it2)
           {
-            im_type tmp_m(it1->g_cf()*it2->g_cf(),it1->g_index()+it2->g_index());
-            tmp.insert<sign_modifier_plus>(tmp_m);
+            tmp.insert<sign_modifier_plus>(im_type(it1->g_cf()*it2->g_cf(),it1->g_index()+it2->g_index()));
           }
         }
         private_container_.swap(tmp.private_container_);
