@@ -234,6 +234,7 @@ namespace piranha
         p_assert(v.size() == g_width());
         if (private_width_ == 0)
         {
+// No need to do anything, v is zero-dimensioned.
           return;
         }
         const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
