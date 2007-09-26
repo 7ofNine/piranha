@@ -21,9 +21,9 @@
 #ifndef PIRANHA_IPOLY_H
 #define PIRANHA_IPOLY_H
 
-#include <algorithm>
 #include <boost/integer_traits.hpp>
 #include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/static_assert.hpp>
@@ -38,6 +38,10 @@
 
 namespace piranha
 {
+// Forward declaration.
+  template <class Cf, class Index, class Expo>
+    class ipoly;
+
 // TODO: move to separate file with other cachers?
 /// Natural power cacher for integral type.
   template <class T>
@@ -81,66 +85,46 @@ namespace piranha
       BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
       BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
       BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
+      template <class Cf2, class Index2, class Expo>
+        friend class ipoly;
     public:
-      imonomial(const Cf &value, const Index &i):private_index_(i),private_cf_(value)
+      imonomial(const Cf &value, const Index &i):index(i),cf(value)
         {}
       ~imonomial()
         {}
-// Getters.
+      bool operator==(const imonomial &m) const
+      {
+        return (index == m.index);
+      }
+      bool operator<(const imonomial &m) const
+      {
+        return (index < m.index);
+      }
       const Cf &g_cf() const
       {
-        return private_cf_;
+        return cf;
       }
       const Index &g_index() const
       {
-        return private_index_;
-      }
-      Cf &s_cf()
-      {
-        return private_cf_;
-      }
-      static const Index &g_max_index()
-      {
-        return private_max_index_;
+        return index;
       }
     private:
       imonomial()
         {}
     private:
-      Index               private_index_;
-      Cf                  private_cf_;
-      static const Index  private_max_index_ = ((((((Index)1)<<(sizeof(Index)*8-1))-1)<<1)+1);
+      Index               index;
+      mutable Cf          cf;
+      static const Index  max_index = ((((((Index)1)<<(sizeof(Index)*8-1))-1)<<1)+1);
   };
 
   template <class Cf, class Index>
-    const Index imonomial<Cf,Index>::private_max_index_;
+    const Index imonomial<Cf,Index>::max_index;
 
-/// Lightweight monomial class used during polynomial multiplication.
+// Hasher function to be used in polynomial container.
   template <class Cf, class Index>
-    struct mutable_im
+    inline const Index &hash_value(const imonomial<Cf,Index> &m)
   {
-      mutable_im(const Index &i, const Cf &c):first(i),second(c)
-        {}
-      bool operator==(const mutable_im &m) const
-      {
-        return (first == m.first);
-      }
-      bool operator<(const mutable_im &m) const
-      {
-        return (first < m.first);
-      }
-      Index       first;
-      mutable Cf  second;
-    private:
-// Make it private so we know it is never called.
-      mutable_im()
-        {}
-  };
-
-  template <class Cf, class Index>
-    inline const Index &hash_value(const mutable_im<Cf,Index> &m)
-  {
-    return m.first;
+    return m.g_index();
   }
 
 /// Indexed polynomial.
@@ -156,18 +140,24 @@ namespace piranha
     public:
       typedef std::vector<Expo> vector_expo;
       typedef imonomial<Cf,Index> im_type;
-      typedef std::vector<im_type> vector_imonomial;
+      typedef boost::multi_index_container<
+        im_type,
+        boost::multi_index::indexed_by<
+          boost::multi_index::hashed_unique<boost::multi_index::identity<im_type> >,
+          boost::multi_index::ordered_unique<boost::multi_index::identity<im_type> >
+        >,
+      __gnu_cxx::__pool_alloc<im_type> > container_type;
       typedef unsigned short int usint;
-      typedef typename vector_imonomial::iterator iterator;
-      typedef typename vector_imonomial::const_iterator const_iterator;
-      ipoly():private_width_(0),private_degree_(0),private_vi_()
+      typedef typename container_type::iterator iterator;
+      typedef typename container_type::const_iterator const_iterator;
+      ipoly():private_width_(0),private_degree_(0),private_container_()
         {}
-      ipoly(const Cf &value):private_width_(0),private_degree_(0),private_vi_((size_t)1)
+      ipoly(const Cf &value):private_width_(0),private_degree_(0),private_container_()
       {
-        private_vi_[0]=im_type(value,0);
+        private_container_.insert(im_type(value,0));
       }
       ipoly(const Cf &value, const vector_expo &v):private_width_(v.size()),private_degree_(0),
-        private_vi_()
+        private_container_()
       {
         p_assert(v.size() <= USHRT_MAX);
         const usint w=g_width();
@@ -178,11 +168,11 @@ namespace piranha
 //std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
         Index tmp_index;
         encode(v,tmp_index);
-        private_vi_.push_back(im_type(value,tmp_index));
+        private_container_.insert(im_type(value,tmp_index));
         degree_check();
       }
       ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
-        private_vi_(p.private_vi_)
+        private_container_(p.private_container_)
         {}
       ~ipoly()
         {}
@@ -192,38 +182,38 @@ namespace piranha
         {
           private_width_=p.g_width();
           private_degree_=p.private_degree_;
-          private_vi_=p.private_vi_;
+          private_container_=p.private_container_;
         }
         return *this;
       }
       iterator begin()
       {
-        return private_vi_.begin();
+        return private_container_.begin();
       }
       iterator end()
       {
-        return private_vi_.end();
+        return private_container_.end();
       }
       const_iterator begin() const
       {
-        return private_vi_.begin();
+        return private_container_.begin();
       }
       const_iterator end() const
       {
-        return private_vi_.end();
+        return private_container_.end();
       }
       bool empty() const
       {
-        return private_vi_.empty();
+        return private_container_.empty();
       }
       void clear()
       {
-        private_vi_.clear();
+        private_container_.clear();
         private_degree_=0;
       }
       size_t g_length() const
       {
-        return private_vi_.size();
+        return private_container_.size();
       }
       const usint &g_width() const
       {
@@ -302,7 +292,7 @@ std::cout << '\n';*/
         {
           std::swap(private_width_,p.private_width_);
           std::swap(private_degree_,p.private_degree_);
-          private_vi_.swap(p.private_vi_);
+          private_container_.swap(p.private_container_);
         }
         return *this;
       }
@@ -326,12 +316,8 @@ std::cout << '\n';*/
         {
           return value;
         }
-        static void mod(const vector_imonomial &)
+        static void mod(const container_type &)
         {}
-        static void mod(vector_imonomial &v, iterator it1, const_iterator it2, const_iterator it2_f)
-        {
-          v.insert(it1,it2,it2_f);
-        }
       };
       struct sign_modifier_minus
       {
@@ -339,19 +325,12 @@ std::cout << '\n';*/
         {
           return (-value);
         }
-        static void mod(vector_imonomial &v)
+        static void mod(container_type &c)
         {
-          const iterator it_f=v.end();
-          for (iterator it=v.begin();it!=it_f;++it)
+          const iterator it_f=c.end();
+          for (iterator it=c.begin();it!=it_f;++it)
           {
-            it->second=-(it->second);
-          }
-        }
-        static void mod(vector_imonomial &v, iterator &, const_iterator &it2, const const_iterator &it2_f)
-        {
-          for (;it2!=it2_f;++it2)
-          {
-            v.push_back(im_type(it2->g_cf(),-it2->g_index()));
+            it->s_cf()=-(it->g_cf());
           }
         }
       };
@@ -364,8 +343,8 @@ std::cout << '\n';*/
         }
         if (empty())
         {
-          private_vi_=p.private_vi_;
-          Modifier::mod(private_vi_);
+          private_container_=p.private_container_;
+          Modifier::mod(private_container_);
           return;
         }
         if (this == &p)
@@ -374,54 +353,18 @@ std::cout << '\n';*/
           algebraic_sum<Modifier>(tmp);
           return;
         }
-        const size_t w1=private_vi_.size(), w2=p.private_vi_.size();
-// TODO: check about this, maybe we risk allocating too much after repeated additions?
-// At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
-        private_vi_.reserve(std::max(w1,w2));
-        iterator it1=begin();
-        const_iterator it2=p.begin();
         const const_iterator it2_f=p.end();
-        while (it2 != it2_f)
+        std::pair<iterator,bool> insert_res;
+        for (const_iterator it2=p.begin();it2!=it2_f;++it2)
         {
-// We are at the end of this, insert the remaining elements and bail out of the cycle.
-          if (it1 == end())
+          insert_res=private_container_.insert(im_type(Modifier::mod(it2->g_cf()),it2->g_index()));
+          if (!(insert_res.second))
           {
-            Modifier::mod(private_vi_,it1,it2,it2_f);
-            break;
-          }
-          else
-          {
-// Same key, add/subtract.
-            if (it1->g_index() == it2->g_index())
+            insert_res.first->cf+=Modifier::mod(it2->g_cf());
+// TODO: improve zero detection here.
+            if (insert_res.first->g_cf() == 0)
             {
-              it1->s_cf()+=Modifier::mod(it2->g_cf());
-// If we modified to zero, we have to destroy the element.
-// FIXME: replace with numerical zero.
-              if (it1->g_cf() == 0)
-              {
-                it1=private_vi_.erase(it1); // it1 now points to the element after the erased one (the latter half of the
-                                            // vector was moved down by one position).
-              }
-              else
-// We performed a non-destructive modification. Increase it1.
-              {
-                ++it1;
-              }
-// Increase ip, it was added to this.
-              ++it2;
-            }
-// There is an element which is not present in this and which goes before it1.
-            else if (it1->g_index() > it2->g_index())
-            {
-// it1 will point to the newly inserted element.
-              it1=private_vi_.insert(it1,im_type(Modifier::mod(it2->g_cf()),it2->g_index()));
-              ++it1;
-              ++it2;
-            }
-// ip's index is after it1's. We don't do anything since we don't know if next elements of p will be packed or inserted.
-            else /* if (it1->first < ip->first) */
-            {
-              ++it1;
+              private_container_.erase(insert_res.first);
             }
           }
         }
@@ -429,20 +372,6 @@ std::cout << '\n';*/
 // Just recalc it explicitly from scracth.
         refresh_degree();
       }
-// Multiplication boilerplate.
-      struct index_sorter
-      {
-        bool operator()(const im_type &m1, const im_type &m2) const
-        {
-          return (m1.g_index() < m2.g_index());
-        }
-      };
-      typedef boost::multi_index_container<
-        mutable_im<Cf,Index>,
-        boost::multi_index::indexed_by<
-          boost::multi_index::hashed_unique<boost::multi_index::identity<mutable_im<Cf,Index> > >
-        >,
-      __gnu_cxx::__pool_alloc<mutable_im<Cf,Index> > > hash_map;
       void mult_by(const ipoly &p)
       {
         if (empty())
@@ -463,49 +392,47 @@ std::cout << '\n';*/
           return;
         }
         p_assert(private_width_ == p.private_width_);
-        const Expo new_degree=g_degree()+p.g_degree();
 //        std::cout << "New degree will be: " << new_degree << '\n';
-        if (new_degree > private_max_n_cache_.g_max_n(private_width_))
+        if (g_degree()+p.g_degree() > private_max_n_cache_.g_max_n(private_width_))
         {
           std::cout << "FATAL: polynomial multiplication results in overflow degree." << std::endl;
           std::abort();
         }
-        hash_map tmp;
-        typedef typename hash_map::iterator hm_it;
-        std::pair<hm_it,bool> insert_res;
+        container_type tmp;
+        iterator it;
         const const_iterator it1_f=end(), it2_f=p.end();
         for (const_iterator it1=begin();it1!=it1_f;++it1)
         {
           for (const_iterator it2=p.begin();it2!=it2_f;++it2)
           {
-            mutable_im<Cf,Index> tmp_m(it1->g_index()+it2->g_index(),it1->g_cf()*it2->g_cf());
-            insert_res=tmp.insert(tmp_m);
-            if (!(insert_res.second))
+            im_type tmp_m(it1->g_cf()*it2->g_cf(),it1->g_index()+it2->g_index());
+            it=tmp.find(tmp_m);
+            if (it == tmp.end())
+            {
+              tmp.insert(tmp_m);
+            }
+            else
             {
 // We found a duplicate.
-              insert_res.first->second+=tmp_m.second;
+              it->cf+=tmp_m.g_cf();
+// Improve zero detection here.
+              if (it->g_cf() == 0)
+              {
+                tmp.erase(it);
+              }
             }
           }
         }
-// Now place the result in a return value.
-        ipoly retval;
-        retval.private_width_=private_width_;
-        retval.private_vi_.reserve(tmp.size());
-        const hm_it it_f=tmp.end();
-        for (hm_it it=tmp.begin();it!=it_f;++it)
-        {
-          retval.private_vi_.push_back(im_type(it->second,it->first));
-        }
-        retval.private_degree_=new_degree;
-// Sort result according to index.
-        std::sort(retval.begin(),retval.end(),index_sorter());
-        swap(retval);
+        private_container_.swap(tmp);
+// Refresh degree: we may have introduced higher degree monomials, and we may have destroyed others.
+// Just recalc it explicitly from scracth.
+        refresh_degree();
 std::cout << "Length: " << g_length() << '\n';
       }
     class max_n_cache
     {
       public:
-        max_n_cache():private_container_(std::floor(std::log(im_type::g_max_index())/std::log(2))+1)
+        max_n_cache():private_container_(std::floor(std::log(im_type::max_index)/std::log(2))+1)
         {
           const size_t w=private_container_.size();
           p_assert(w >= 1);
@@ -516,7 +443,7 @@ std::cout << "Length: " << g_length() << '\n';
           double tmp;
           for (size_t i=1;i<w;++i)
           {
-            tmp=std::floor(std::pow(im_type::g_max_index(),1./i))-1;
+            tmp=std::floor(std::pow(im_type::max_index,1./i))-1;
             if (tmp > private_max_expo_)
             {
               private_container_[i]=private_max_expo_;
@@ -541,7 +468,7 @@ std::cout << "Length: " << g_length() << '\n';
     private:
       /*const*/ usint               private_width_;
       Expo                      private_degree_;
-      vector_imonomial          private_vi_;
+      container_type            private_container_;
       static const max_n_cache  private_max_n_cache_;
       static const Expo         private_max_expo_ = ((((((Expo)1)<<(sizeof(Expo)*8-1))-1)<<1)+1);
   };
