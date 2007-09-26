@@ -129,6 +129,7 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
         encode(v,tmp_index);
         im_type tmp_im(value,tmp_index);
         private_vi_[0]=tmp_im;
+        degree_check();
       }
       ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
         private_vi_(p.private_vi_)
@@ -146,6 +147,14 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
         return *this;
       }
     private:
+      void degree_check() const
+      {
+        if (private_degree_ > private_max_n_cache_.g_max_n(private_width_))
+        {
+          std::cout << "FATAL: polynomial degree is too large." << std::endl;
+          std::abort();
+        }
+      }
       ipoly &swap(ipoly &p)
       {
         if (this != &p)
