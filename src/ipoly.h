@@ -27,6 +27,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_pod.hpp>
+#include <limits>
 #include <vector>
 
 namespace piranha
@@ -113,11 +114,56 @@ namespace piranha
       {
         private_vi_[0]=im_type(value,0);
       }
+      ipoly(const Cf &value, const vector_expo &v):private_width_(v.size()),private_degree_(0),
+        private_vi_((size_t)1)
+      {
+        p_assert_(v.size() <= USHRT_MAX);
+        for (unsigned short int i=0;i<private_width_;++i)
+        {
+          private_degree_+=v[i];
+        }
+std::cout << "Assigned with properties: " << private_width_ << '\t' << private_degree_ << '\n';
+        Index tmp_index;
+        encode(v,tmp_index);
+        im_type tmp_im(value,index);
+        private_vi_[0]=tmp_im;
+      }
       ipoly(const ipoly &p):private_width_(p.private_width_),private_degree_(p.private_degree_),
         private_vi_(p.private_vi_)
         {}
       ~ipoly()
         {}
+      ipoly &operator=(const ipoly &p)
+      {
+        if (this != &p)
+        {
+          private_width_=p.private_width_;
+          private_degree_=p.private_degree_;
+          private_vi_=p.private_vi_;
+        }
+        return *this;
+      }
+    private:
+      ipoly &swap(ipoly &p)
+      {
+        if (this != &p)
+        {
+          std::swap(private_width_,p.private_width_);
+          std::swap(private_degree_,p.private_degree_);
+          private_vi_.swap(p.private_vi_);
+        }
+        return *this;
+      }
+      void encode(const vector_expo &v, Index &retval) const
+      {
+        p_assert(v.size() == private_width_);
+        retval=0;
+        for (unsigned short int i=0;i<private_width_;++i)
+        {
+          retval+=v[i]*integral_npow_cache<Expo>::request(i,private_degree_+1);
+        }
+//std::cout << "encoded to " << retval << '\n';
+      }
 // Data members.
     private:
       unsigned short int  private_width_;
