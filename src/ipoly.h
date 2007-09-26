@@ -34,14 +34,11 @@
 #include <limits>
 #include <vector>
 
+#include "imonomial.h"
 #include "p_assert.h"
 
 namespace piranha
 {
-// Forward declaration.
-  template <class Cf, class Index, class Expo>
-    class ipoly;
-
 // TODO: move to separate file with other cachers?
 /// Natural power cacher for integral type.
   template <class T>
@@ -78,55 +75,6 @@ namespace piranha
   template <class T>
     typename integral_npow_cache<T>::container integral_npow_cache<T>::private_cache_;
 
-/// Indexed monomial.
-  template <class Cf, class Index>
-    class imonomial
-  {
-      BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
-      BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
-      BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
-      template <class Cf2, class Index2, class Expo>
-        friend class ipoly;
-    public:
-      imonomial(const Cf &value, const Index &i):index(i),cf(value)
-        {}
-      ~imonomial()
-        {}
-      bool operator==(const imonomial &m) const
-      {
-        return (index == m.index);
-      }
-      bool operator<(const imonomial &m) const
-      {
-        return (index < m.index);
-      }
-      const Cf &g_cf() const
-      {
-        return cf;
-      }
-      const Index &g_index() const
-      {
-        return index;
-      }
-    private:
-      imonomial()
-        {}
-    private:
-      Index               index;
-      mutable Cf          cf;
-      static const Index  max_index = ((((((Index)1)<<(sizeof(Index)*8-1))-1)<<1)+1);
-  };
-
-  template <class Cf, class Index>
-    const Index imonomial<Cf,Index>::max_index;
-
-// Hasher function to be used in polynomial container.
-  template <class Cf, class Index>
-    inline const Index &hash_value(const imonomial<Cf,Index> &m)
-  {
-    return m.g_index();
-  }
-
 /// Indexed polynomial.
   template <class Cf, class Index, class Expo>
     class ipoly
@@ -143,8 +91,8 @@ namespace piranha
       typedef boost::multi_index_container<
         im_type,
         boost::multi_index::indexed_by<
-          boost::multi_index::hashed_unique<boost::multi_index::identity<im_type> >,
-          boost::multi_index::ordered_unique<boost::multi_index::identity<im_type> >
+          boost::multi_index::hashed_unique<boost::multi_index::identity<im_type> >/*,
+          boost::multi_index::ordered_unique<boost::multi_index::identity<im_type> >*/
         >,
       __gnu_cxx::__pool_alloc<im_type> > container_type;
       typedef unsigned short int usint;
