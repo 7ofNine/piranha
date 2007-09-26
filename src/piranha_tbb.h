@@ -21,11 +21,15 @@
 #ifndef PIRANHA_PIRANHA_TBB_H
 #define PIRANHA_PIRANHA_TBB_H
 
+#ifdef PIRANHA_TBB
+
 #include <tbb/task_scheduler_init.h>
 
 namespace piranha
 {
   static const tbb::task_scheduler_init tbb_init;
 }
+
+#endif
 
 #endif
