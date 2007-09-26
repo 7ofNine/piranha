@@ -46,6 +46,7 @@ namespace piranha
       static const T &request(const int &n, const T &arg)
       {
         p_assert(n >= 0);
+        p_assert(arg >= 0);
         while (arg >= private_cache_.size())
         {
 // Add a row to the matrix.
@@ -82,6 +83,15 @@ namespace piranha
         {}
       ~imonomial()
         {}
+// Getters.
+      const Cf &g_cf() const
+      {
+        return private_cf_;
+      }
+      const Index &g_index() const
+      {
+        return private_index_;
+      }
       static const Index &g_max_index()
       {
         return private_max_index_;
@@ -146,6 +156,40 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
         }
         return *this;
       }
+      const usint &g_width() const
+      {
+        return private_width_;
+      }
+      size_t g_length() const
+      {
+        return private_vi_.size();
+      }
+      const im_type &operator[](const size_t &n) const
+      {
+        return private_vi_[n];
+      }
+      void decode(const Index &code, vector_expo &v) const
+      {
+        p_assert(v.size() == private_width_);
+        if (private_width_ == 0)
+        {
+          return;
+        }
+        const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
+std::cout << "decoding " << code << '\n';
+        for (usint i=0;i<private_width_-1;++i)
+        {
+          v[i]=(code%integral_npow_cache<Index>::request(i+1,max_d+1))/
+            integral_npow_cache<Index>::request(i,max_d+1);
+        }
+        v[private_width_-1]=code/(integral_npow_cache<Index>::request(private_width_-1,max_d+1));
+/*std::cout << "decoded to: ";
+for (size_t i=0;i<v.size();++i)
+{
+  std::cout << v[i] << ',';
+}
+std::cout << '\n';*/
+      }
     private:
       void degree_check() const
       {
@@ -174,27 +218,9 @@ std::cout << "Max representable degree is: " << max_d << '\n';
         retval=0;
         for (usint i=0;i<private_width_;++i)
         {
-          retval+=v[i]*integral_npow_cache<Expo>::request(i,max_d+1);
+          retval+=v[i]*integral_npow_cache<Index>::request(i,max_d+1);
         }
 std::cout << "encoded to " << retval << '\n';
-      }
-      void decode(const Index &code, vector_expo &v) const
-      {
-        p_assert(v.size() == private_width_);
-        const Expo max_d=private_max_n_cache_.g_max_n(private_width_);
-std::cout << "decoding " << code << '\n';
-        for (usint i=0;i<private_width_-1;++i)
-        {
-          v[i]=(code%integral_npow_cache<Expo>::request(i+1,max_d+1))/
-            integral_npow_cache<Expo>::request(i,max_d+1);
-        }
-        v[private_width_-1]=code/(integral_npow_cache<Expo>::request(private_width_-1,max_d+1));
-/*std::cout << "decoded to: ";
-for (size_t i=0;i<v.size();++i)
-{
-  std::cout << v[i] << ',';
-}
-std::cout << '\n';*/
       }
     class max_n_cache
     {
@@ -245,6 +271,26 @@ std::cout << '\n';
 
   template <class Cf, class Index, class Expo>
     const Expo ipoly<Cf,Index,Expo>::private_max_expo_;
+}
+
+namespace std
+{
+  template <class Cf, class Index, class Expo>
+    ostream &operator<<(ostream &s, const piranha::ipoly<Cf,Index,Expo> &p)
+  {
+    typename piranha::ipoly<Cf,Index,Expo>::vector_expo ev(p.g_width());
+    for (size_t i=0;i<p.g_length();++i)
+    {
+      std::cout << p[i].g_cf() << "\t|\t";
+      p.decode(p[i].g_index(),ev);
+      for (size_t j=0;j<ev.size();++j)
+      {
+        std::cout << ev[ev.size()-j-1] << '\t';
+      }
+      std::cout << std::endl;
+    }
+    return s;
+  }
 }
 
 #endif
