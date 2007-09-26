@@ -120,6 +120,8 @@ namespace piranha
       typedef imonomial<Cf,Index> im_type;
       typedef std::vector<im_type> vector_imonomial;
       typedef unsigned short int usint;
+      typedef typename vector_imonomial::iterator iterator;
+      typedef typename vector_imonomial::const_iterator const_iterator;
       ipoly():private_width_(0),private_degree_(0),private_vi_()
         {}
       ipoly(const Cf &value):private_width_(0),private_degree_(0),private_vi_((size_t)1)
@@ -156,6 +158,22 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
         }
         return *this;
       }
+      iterator begin()
+      {
+        return private_vi_.begin();
+      }
+      iterator end()
+      {
+        return private_vi_.end();
+      }
+      const_iterator begin() const
+      {
+        return private_vi_.begin();
+      }
+      const_iterator end() const
+      {
+        return private_vi_.end();
+      }
       const usint &g_width() const
       {
         return private_width_;
@@ -190,6 +208,11 @@ for (size_t i=0;i<v.size();++i)
 }
 std::cout << '\n';*/
       }
+      ipoly &operator*=(const ipoly &p)
+      {
+        mult_by(p);
+        return *this;
+      }
     private:
       void degree_check() const
       {
@@ -221,6 +244,10 @@ std::cout << "Max representable degree is: " << max_d << '\n';
           retval+=v[i]*integral_npow_cache<Index>::request(i,max_d+1);
         }
 std::cout << "encoded to " << retval << '\n';
+      }
+      void mult_by(const ipoly &p)
+      {
+        const const_iterator it1_f=end(), it2_f=p.end();
       }
     class max_n_cache
     {
