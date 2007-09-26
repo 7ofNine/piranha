@@ -166,7 +166,8 @@ namespace piranha
         private_vi_()
       {
         p_assert(v.size() <= USHRT_MAX);
-        for (usint i=0;i<private_width_;++i)
+        const usint w=g_width();
+        for (usint i=0;i<w;++i)
         {
           private_degree_+=v[i];
         }
@@ -185,7 +186,7 @@ namespace piranha
       {
         if (this != &p)
         {
-          private_width_=p.private_width_;
+          private_width_=p.g_width();
           private_degree_=p.private_degree_;
           private_vi_=p.private_vi_;
         }
@@ -230,7 +231,7 @@ namespace piranha
       }
       void decode(const Index &code, vector_expo &v) const
       {
-        p_assert(v.size() == private_width_);
+        p_assert(v.size() == g_width());
         if (private_width_ == 0)
         {
           return;
