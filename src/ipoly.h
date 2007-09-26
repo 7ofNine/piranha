@@ -30,6 +30,7 @@
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_pod.hpp>
 #include <cmath>
+#include <ext/pool_allocator.h>
 #include <limits>
 #include <vector>
 
@@ -434,8 +435,8 @@ std::cout << '\n';*/
         mutable_im<Cf,Index>,
         boost::multi_index::indexed_by<
           boost::multi_index::hashed_unique<boost::multi_index::identity<mutable_im<Cf,Index> > >
-        >
-      > hash_map;
+        >,
+      __gnu_cxx::__pool_alloc<mutable_im<Cf,Index> > > hash_map;
       void mult_by(const ipoly &p)
       {
         if (empty())
