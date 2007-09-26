@@ -108,6 +108,7 @@ namespace piranha
       typedef std::vector<Expo> vector_expo;
       typedef imonomial<Cf,Index> im_type;
       typedef std::vector<im_type> vector_imonomial;
+      typedef unsigned short int usint;
       ipoly():private_width_(0),private_degree_(0),private_vi_()
         {}
       ipoly(const Cf &value):private_width_(0),private_degree_(0),private_vi_((size_t)1)
@@ -118,7 +119,7 @@ namespace piranha
         private_vi_((size_t)1)
       {
         p_assert_(v.size() <= USHRT_MAX);
-        for (unsigned short int i=0;i<private_width_;++i)
+        for (usint i=0;i<private_width_;++i)
         {
           private_degree_+=v[i];
         }
@@ -158,7 +159,7 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       {
         p_assert(v.size() == private_width_);
         retval=0;
-        for (unsigned short int i=0;i<private_width_;++i)
+        for (usint i=0;i<private_width_;++i)
         {
           retval+=v[i]*integral_npow_cache<Expo>::request(i,private_degree_+1);
         }
@@ -166,7 +167,7 @@ std::cout << "Assigned with properties: " << private_width_ << '\t' << private_d
       }
 // Data members.
     private:
-      unsigned short int  private_width_;
+      usint               private_width_;
       Expo                private_degree_;
       vector_imonomial    private_vi_;
   };
