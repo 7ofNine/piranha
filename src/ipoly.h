@@ -286,6 +286,31 @@ std::cout << '\n';*/
           }
         }
       }
+      template <class Modifier>
+        void insert(const im_type &m)
+      {
+// TODO: think about zero detection here.
+        if (m.cf == 0)
+        {
+          return;
+        }
+        iterator it=private_container_.find(m);
+        if (it == end())
+        {
+// Not a duplicate, insert.
+          action_assert(private_container_.insert(im_type(Modifier::mod(m.cf),m.index)).second);
+        }
+        else
+        {
+// Duplicate: merge with existing element.
+          it->cf+=Modifier::mod(m.cf);
+// If the result is zero, erase.
+          if (it->cf == 0)
+          {
+            private_container_.erase(it);
+          }
+        }
+      }
       ipoly &swap(ipoly &p)
       {
         if (this != &p)
@@ -330,7 +355,7 @@ std::cout << '\n';*/
           const iterator it_f=c.end();
           for (iterator it=c.begin();it!=it_f;++it)
           {
-            it->s_cf()=-(it->g_cf());
+            it->cf=-(it->cf);
           }
         }
       };
@@ -354,19 +379,9 @@ std::cout << '\n';*/
           return;
         }
         const const_iterator it2_f=p.end();
-        std::pair<iterator,bool> insert_res;
         for (const_iterator it2=p.begin();it2!=it2_f;++it2)
         {
-          insert_res=private_container_.insert(im_type(Modifier::mod(it2->g_cf()),it2->g_index()));
-          if (!(insert_res.second))
-          {
-            insert_res.first->cf+=Modifier::mod(it2->g_cf());
-// TODO: improve zero detection here.
-            if (insert_res.first->g_cf() == 0)
-            {
-              private_container_.erase(insert_res.first);
-            }
-          }
+          insert<Modifier>(*it2);
         }
 // Refresh degree: we may have introduced higher degree monomials, and we may have destroyed others.
 // Just recalc it explicitly from scracth.
@@ -398,7 +413,8 @@ std::cout << '\n';*/
           std::cout << "FATAL: polynomial multiplication results in overflow degree." << std::endl;
           std::abort();
         }
-        container_type tmp;
+// This ipoly acts just as a container for the private_container_, which will be swapped in at the end of the cycle.
+        ipoly tmp;
         iterator it;
         const const_iterator it1_f=end(), it2_f=p.end();
         for (const_iterator it1=begin();it1!=it1_f;++it1)
@@ -406,24 +422,10 @@ std::cout << '\n';*/
           for (const_iterator it2=p.begin();it2!=it2_f;++it2)
           {
             im_type tmp_m(it1->g_cf()*it2->g_cf(),it1->g_index()+it2->g_index());
-            it=tmp.find(tmp_m);
-            if (it == tmp.end())
-            {
-              tmp.insert(tmp_m);
-            }
-            else
-            {
-// We found a duplicate.
-              it->cf+=tmp_m.g_cf();
-// Improve zero detection here.
-              if (it->g_cf() == 0)
-              {
-                tmp.erase(it);
-              }
-            }
+            tmp.insert<sign_modifier_plus>(tmp_m);
           }
         }
-        private_container_.swap(tmp);
+        private_container_.swap(tmp.private_container_);
 // Refresh degree: we may have introduced higher degree monomials, and we may have destroyed others.
 // Just recalc it explicitly from scracth.
         refresh_degree();
