@@ -113,6 +113,7 @@ namespace piranha
   template <class Cf, class Index>
     const Index imonomial<Cf,Index>::private_max_index_;
 
+/// Lightweight monomial class used during polynomial multiplication.
   template <class Cf, class Index>
     struct mutable_im
   {
@@ -125,6 +126,7 @@ namespace piranha
       Index       first;
       mutable Cf  second;
     private:
+// Make it private so we know it is never called.
       mutable_im():first(),second()
         {}
   };
