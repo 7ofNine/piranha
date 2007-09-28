@@ -26,6 +26,8 @@
 #include <boost/multi_index_container.hpp>
 #include <ext/pool_allocator.h>
 
+#include "light_term.h"
+
 namespace piranha
 {
 /// Elementary math toolbox for numerical series.
