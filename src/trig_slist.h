@@ -22,6 +22,7 @@
 #define PIRANHA_TRIG_SLIST_H
 
 #include <boost/functional/hash/hash.hpp>
+#include <ext/pool_allocator.h>
 #include <ext/slist>
 
 #include "common_typedefs.h"
@@ -140,8 +141,8 @@ namespace piranha
       }
     private:
       typedef std::pair<trig_size_t,mult_t> pair;
-      typedef __gnu_cxx::slist<pair>::iterator iterator;
-      typedef __gnu_cxx::slist<pair>::const_iterator const_iterator;
+      typedef __gnu_cxx::slist<pair,__gnu_cxx::__pool_alloc<pair> >::iterator iterator;
+      typedef __gnu_cxx::slist<pair,__gnu_cxx::__pool_alloc<pair> >::const_iterator const_iterator;
       typedef std::pair<iterator,iterator> find_result;
       typedef std::pair<const_iterator,const_iterator> const_find_result;
       const_iterator begin() const
@@ -188,7 +189,7 @@ namespace piranha
       };
     private:
       bool                      private_flavour_;
-      __gnu_cxx::slist<pair>    private_container_;
+      __gnu_cxx::slist<pair,__gnu_cxx::__pool_alloc<pair> >    private_container_;
   };
 
 /// Constructor from piranha::deque_string.
