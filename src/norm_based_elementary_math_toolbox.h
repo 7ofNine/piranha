@@ -22,7 +22,9 @@
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 #include <boost/foreach.hpp>
-#include <ext/pb_ds/assoc_container.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index_container.hpp>
+#include <ext/pool_allocator.h>
 
 namespace piranha
 {
@@ -74,22 +76,14 @@ namespace piranha
         typedef typename Derived::ancestor::term_type term_type;
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::trig_type trig_type;
-        typedef pb_ds::cc_hash_table<
-          trig_type,
-          cf_type,
-          trig_hasher,
-          std::equal_to<trig_type>,
-          pb_ds::direct_mask_range_hashing<size_t>,
-          pb_ds::hash_standard_resize_policy<
-            pb_ds::hash_exponential_size_policy<size_t>,
-            pb_ds::hash_load_check_resize_trigger<false,size_t>,
-            false,
-            size_t
+        typedef light_term<cf_type,trig_type> light_term;
+        typedef boost::multi_index_container<
+          light_term,
+          boost::multi_index::indexed_by<
+            boost::multi_index::hashed_unique<boost::multi_index::identity<light_term> >
           >,
-          true
-        > m_hash;
-        typedef typename m_hash::point_iterator m_hash_iterator;
-        typedef typename m_hash::const_iterator m_hash_iterator_range;
+        __gnu_cxx::__pool_alloc<light_term> > m_hash;
+        typedef typename m_hash::iterator m_hash_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm;
         m_hash_iterator hm_it;
@@ -99,19 +93,19 @@ namespace piranha
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
-        term_type tmp1, tmp2;
-        tmp1.s_trig()->increase_size(retval.trig_width());
-        tmp2.s_trig()->increase_size(retval.trig_width());
-        boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
+        light_term tmp1, tmp2;
+        tmp1.trig.increase_size(retval.trig_width());
+        tmp2.trig.increase_size(retval.trig_width());
+        boost::tuple<light_term &, light_term &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->g_s_index().end();
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
         it_s_index2 it2;
         it_s_index it1;
         double norm1;
         const double norm2_i=it2_i->g_cf()->norm(ps2.cf_s_vec());
-        trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
-        cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
-        term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
+        trig_type const *t0=&(term_pair.template get<0>().trig), *t1=&(term_pair.template get<1>().trig);
+        cf_type const *c0=&(term_pair.template get<0>().cf), *c1=&(term_pair.template get<1>().cf);
+        light_term *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
@@ -140,38 +134,38 @@ namespace piranha
             {
               term1->invert_trig_args();
             }
-            hm_it=hm.find(*t0);
+            hm_it=hm.find(*term0);
             if (hm_it==hm.end())
             {
-              hm[*t0]=*c0;
+              hm.insert(*term0);
             }
             else
             {
-              hm_it->second+=*c0;
+              hm_it->cf+=*c0;
             }
-            hm_it=hm.find(*t1);
+            hm_it=hm.find(*term1);
             if (hm_it==hm.end())
             {
-              hm[*t1]=*c1;
+              hm.insert(*term1);
             }
             else
             {
-              hm_it->second+=*c1;
+              hm_it->cf+=*c1;
             }
             ++n;
           }
         }
-        const m_hash_iterator_range hm_it_f=hm.end();
-        for (m_hash_iterator_range hm_it_r=hm.begin();hm_it_r!=hm_it_f;++hm_it_r)
+        const m_hash_iterator hm_it_f=hm.end();
+        for (hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
         {
-          retval.insert(term_type(hm_it_r->second,hm_it_r->first));
+          retval.insert(term_type(hm_it->cf,hm_it->trig));
         }
 //retval.cumulative_crop(Delta);
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
         std::cout << "Out length=" << retval.length() << std::endl;
       }
-      template <class T,class U>
-        static void term_by_term_multiplication(const T &t1, const U &t2, boost::tuple<T &,T &> &term_pair)
+      template <class T,class U,class V>
+        static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {
         typedef typename Derived::ancestor::cf_type cf_type;
         cf_type new_c=*t1.g_cf();
