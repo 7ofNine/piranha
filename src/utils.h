@@ -25,6 +25,7 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <fstream>
+#include <valarray>
 
 #include "common_typedefs.h"
 #include "settings_manager.h"
@@ -139,7 +140,21 @@ namespace piranha
         }
         return retval;
       }
-    private:
+      template <class Container>
+        static void array_iter(const Container &c, std::valarray<typename Container::const_iterator> &v)
+      {
+        typedef typename Container::const_iterator const_iterator;
+        const size_t l=c.length();
+        v.resize(l);
+        size_t i=0;
+        const const_iterator it_f=c.end();
+        for (const_iterator it=c.begin();it!=it_f;++it)
+        {
+          v[i]=it;
+          ++i;
+        }
+      }
+      private:
 /// Check whether a string is empty or commented.
       static bool is_invalid_string(std::string &str)
       {
@@ -154,6 +169,5 @@ namespace piranha
         return false;
       }
   };
-
 }
 #endif

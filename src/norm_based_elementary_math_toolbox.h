@@ -99,32 +99,37 @@ namespace piranha
         tmp2.trig.increase_size(retval.trig_width());
         boost::tuple<light_term &, light_term &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->g_s_index().end();
-        const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
-        it_s_index2 it2;
         it_s_index it1;
+// Let's cache all ps2's iterators in a vector, so we don't need to ++it2
+// so many times in the cycle below.
+        std::valarray<it_s_index2> v_it2;
+        utils::array_iter(ps2,v_it2);
         double norm1;
-        const double norm2_i=it2_i->g_cf()->norm(ps2.cf_s_vec());
+        size_t i;
+        const size_t l2=v_it2.size();
+        p_assert(l2 == ps2.length());
+// v_it2[0] is legal because we checked for ps2's size.
+        const double norm2_i=v_it2[0]->g_cf()->norm(ps2.cf_s_vec());
         trig_type const *t0=&(term_pair.template get<0>().trig), *t1=&(term_pair.template get<1>().trig);
         cf_type const *c0=&(term_pair.template get<0>().cf), *c1=&(term_pair.template get<1>().cf);
         light_term *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
-          it2=it2_i;
           norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
-          for (;it2!=it2_f;++it2)
+          for (i=0;i<l2;++i)
           {
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-            if ((norm1*it2->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*v_it2[i]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }
-            term_by_term_multiplication(*it1,*it2,term_pair);
+            term_by_term_multiplication(*it1,*v_it2[i],term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
             if (t0->sign()<0)
