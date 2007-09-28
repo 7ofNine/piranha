@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_PSERIES_DEF_H
 
 #include <boost/multi_index_container.hpp>
-#include <ext/pool_allocator.h>
 
 #include "base_pseries_hooks.h"
 #include "phase_list.h"
@@ -59,7 +58,7 @@ namespace piranha
  */
       typedef typename cf_type::eval_type eval_type;
       typedef typename boost::multi_index_container < term_type,
-        typename index_type::type, __gnu_cxx::__pool_alloc<term_type> > series_set_type;
+        typename index_type::type> series_set_type;
 /// Alias for the sorted index.
       typedef typename series_set_type::template nth_index<0>
         ::type sorted_index;
