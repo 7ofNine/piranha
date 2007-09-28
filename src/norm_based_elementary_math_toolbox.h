@@ -22,7 +22,7 @@
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 #include <boost/foreach.hpp>
-#include <ext/hash_map>
+#include <ext/pb_ds/assoc_container.hpp>
 
 namespace piranha
 {
@@ -74,10 +74,24 @@ namespace piranha
         typedef typename Derived::ancestor::term_type term_type;
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::trig_type trig_type;
-        typedef __gnu_cxx::hash_map<trig_type,cf_type,trig_hasher> m_hash;
-        typedef typename m_hash::iterator m_hash_iterator;
+        typedef pb_ds::cc_hash_table<
+          trig_type,
+          cf_type,
+          trig_hasher,
+          std::equal_to<trig_type>,
+          pb_ds::direct_mask_range_hashing<size_t>,
+          pb_ds::hash_standard_resize_policy<
+            pb_ds::hash_exponential_size_policy<size_t>,
+            pb_ds::hash_load_check_resize_trigger<false,size_t>,
+            false,
+            size_t
+          >,
+          true
+        > m_hash;
+        typedef typename m_hash::point_iterator m_hash_iterator;
+        typedef typename m_hash::const_iterator m_hash_iterator_range;
         const Derived *derived_cast=static_cast<Derived const *>(this);
-        m_hash hm((derived_cast->length()*ps2.length())/100);
+        m_hash hm;
         m_hash_iterator hm_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
           Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
@@ -147,10 +161,10 @@ namespace piranha
             ++n;
           }
         }
-        const m_hash_iterator hm_it_f=hm.end();
-        for (hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
+        const m_hash_iterator_range hm_it_f=hm.end();
+        for (m_hash_iterator_range hm_it_r=hm.begin();hm_it_r!=hm_it_f;++hm_it_r)
         {
-          retval.insert(term_type(hm_it->second,hm_it->first));
+          retval.insert(term_type(hm_it_r->second,hm_it_r->first));
         }
 //retval.cumulative_crop(Delta);
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
