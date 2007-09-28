@@ -86,6 +86,7 @@ namespace piranha
         typedef typename m_hash::iterator m_hash_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm;
+        hm.max_load_factor(.125);
         m_hash_iterator hm_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
           Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
