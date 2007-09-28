@@ -57,6 +57,7 @@ namespace piranha
           boost::multi_index::hashed_unique<boost::multi_index::identity<im_type> >/*,
           boost::multi_index::ordered_unique<boost::multi_index::identity<im_type> >*/
         >,
+// FIXME: check whether we really want to use the pool alloc here.
       __gnu_cxx::__pool_alloc<im_type> > container_type;
       typedef unsigned short int usint;
       typedef typename container_type::iterator iterator;
