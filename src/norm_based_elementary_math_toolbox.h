@@ -71,6 +71,7 @@ namespace piranha
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval) const
       {
+// TODO: use typedeffed "const_iterator" here instead.
         typedef typename Derived::ancestor::it_s_index it_s_index;
         typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
