@@ -79,14 +79,14 @@ namespace piranha
       {
 // TODO: unroll.
         size_t tmp=0;
-        for (size_t i=0;i<Dim;++i)
+        for (usint i=0;i<dimension;++i)
         {
           if (private_container_[i] != 0)
           {
             ++tmp;
           }
         }
-        return ((double)tmp)/Dim;
+        return ((double)tmp)/dimension;
       }
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
@@ -112,12 +112,13 @@ namespace piranha
     private:
       void assignment(const trig_fixed_array &t)
       {
-        memcpy((void *)private_container_,(const void *)t.private_container_,sizeof(mult_t)*Dim);
+        memcpy((void *)private_container_,(const void *)t.private_container_,sizeof(mult_t)*dimension);
       }
 // Data members.
     private:
-      bool    private_flavour_;
-      mult_t  private_container_[Dim];
+      bool                private_flavour_;
+      mult_t              private_container_[Dim];
+      static const usint  dimension = (usint)Dim;
   };
 
 /// Ctor from piranha::deque_string.
@@ -132,18 +133,18 @@ namespace piranha
       return;
     }
 // Now w >= 1.
-    if ((w-1) != Dim)
+    if ((w-1) != dimension)
     {
       std::cout << "Warning: wrong size for trig_fixed_array in ctor from string." << std::endl;
 // TODO: Here we continue really, just remains as debug.
       std::abort();
     }
     size_t i;
-    for (i=0;i<boost::minmax((size_t)Dim,w-1).get<0>();++i)
+    for (i=0;i<boost::minmax((size_t)dimension,w-1).get<0>();++i)
     {
       private_container_[i]=utils::lexical_converter<int>(sd[i]);
     }
-    for (;i<Dim;++i)
+    for (;i<dimension;++i)
     {
       private_container_[i]=0;
     }
@@ -164,7 +165,7 @@ namespace piranha
   template <int Dim>
     inline size_t trig_fixed_array<Dim>::actual_width() const
   {
-    return Dim;
+    return dimension;
   }
 
 // I/O implementations.
@@ -173,7 +174,7 @@ namespace piranha
     inline void trig_fixed_array<Dim>::print_plain(std::ostream &out_stream, const vector_psym_p &) const
   {
     stream_manager::setup_print(out_stream);
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       out_stream << private_container_[i] << stream_manager::data_separator();
     }
@@ -185,7 +186,7 @@ namespace piranha
     stream_manager::setup_print(out_stream);
     bool first_one=true;
     std::string tmp("$");
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i]!=0)
       {
@@ -223,8 +224,8 @@ namespace piranha
     template <class T>
     inline void trig_fixed_array<Dim>::assign_mult_vector(const T &v)
   {
-    p_assert(v.size() == Dim);
-    for (size_t i=0;i<Dim;++i)
+    p_assert(v.size() == dimension);
+    for (usint i=0;i<dimension;++i)
     {
       private_container_[i]=v[i];
     }
@@ -233,7 +234,7 @@ namespace piranha
   template <int Dim>
     inline void trig_fixed_array<Dim>::increase_size(const size_t &w)
   {
-    p_assert(w==Dim);
+    p_assert(w == dimension);
   }
 
   template <int Dim>
@@ -258,7 +259,7 @@ namespace piranha
     {
       return false;
     }
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i] != l2.private_container_[i])
       {
@@ -285,9 +286,9 @@ namespace piranha
   template <int Dim>
     inline double trig_fixed_array<Dim>::freq(const vector_psym_p &v) const
   {
-    p_assert(v.size()==Dim);
+    p_assert(v.size() == dimension);
     double retval=0.;
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
 // We must be sure that there actually is a freq in every symbol we are going to use.
       if (v[i]->poly_eval().size()>1)
@@ -307,9 +308,9 @@ namespace piranha
   template <int Dim>
     inline double trig_fixed_array<Dim>::phase(const vector_psym_p &v) const
   {
-    p_assert(v.size()==Dim);
+    p_assert(v.size()==dimension);
     double retval=0.;
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
 // We must be sure that there actually is a phase in every symbol we are going to use.
       if (v[i]->poly_eval().size()>0)
@@ -330,9 +331,9 @@ namespace piranha
   template <int Dim>
     inline double trig_fixed_array<Dim>::t_eval(const double &t, const vector_psym_p &v) const
   {
-    p_assert(v.size()==Dim);
+    p_assert(v.size()==dimension);
     double retval=0.;
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i]!=0)
       {
@@ -353,9 +354,9 @@ namespace piranha
     template <class TrigEvaluator>
     inline complex_double trig_fixed_array<Dim>::t_eval(TrigEvaluator &te) const
   {
-    p_assert(te.width()==Dim);
+    p_assert(te.width()==dimension);
     complex_double retval(1.);
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i]!=0)
       {
@@ -373,7 +374,7 @@ namespace piranha
   template <int Dim>
     inline short int trig_fixed_array<Dim>::sign() const
   {
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i]>0)
       {
@@ -415,7 +416,7 @@ namespace piranha
       return false;
     }
 // TODO: maybe when unrolling here we have to substitute direct "return" calls with retval and break statements.
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i] < l2.private_container_[i])
       {
@@ -446,7 +447,7 @@ namespace piranha
     inline size_t trig_fixed_array<Dim>::hasher() const
   {
     size_t seed=g_flavour();
-    hash_unroller<Dim>(seed,private_container_+Dim);
+    hash_unroller<dimension>(seed,private_container_+dimension);
     return seed;
   }
 
@@ -454,7 +455,7 @@ namespace piranha
   template <int Dim>
     inline bool trig_fixed_array<Dim>::is_zero() const
   {
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       if (private_container_[i]!=0)
       {
@@ -467,19 +468,19 @@ namespace piranha
   template <int Dim>
     inline bool trig_fixed_array<Dim>::smaller(const size_t &n) const
   {
-    return (Dim<n);
+    return (dimension < n);
   }
 
   template <int Dim>
     inline bool trig_fixed_array<Dim>::larger(const size_t &n) const
   {
-    return (Dim>n);
+    return (dimension > n);
   }
 
   template <int Dim>
     inline bool trig_fixed_array<Dim>::compatible(const size_t &n) const
   {
-    return (Dim==n);
+    return (dimension == n);
   }
 
 /// Multiply by a piranha::mult_t.
@@ -487,7 +488,7 @@ namespace piranha
   template <int Dim>
     inline void trig_fixed_array<Dim>::operator*=(const mult_t &n)
   {
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       private_container_[i]*=n;
     }
@@ -512,7 +513,7 @@ namespace piranha
   template <int Dim>
     inline void trig_fixed_array<Dim>::invert_sign()
   {
-    for (size_t i=0;i<Dim;++i)
+    for (usint i=0;i<dimension;++i)
     {
       private_container_[i]=-private_container_[i];
     }
@@ -567,8 +568,8 @@ namespace piranha
   template <int Dim>
     inline void trig_fixed_array<Dim>::trigmult(const trig_fixed_array &l2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
   {
-    mult_unroller<Dim>(private_container_+Dim,l2.private_container_+Dim,
-      ret1.private_container_+Dim,ret2.private_container_+Dim);
+    mult_unroller<dimension>(private_container_+dimension,l2.private_container_+dimension,
+      ret1.private_container_+dimension,ret2.private_container_+dimension);
   }
 
 /// Overload of hash_value function for piranha::trig_fixed_array.
