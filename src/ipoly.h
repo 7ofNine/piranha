@@ -31,7 +31,6 @@ namespace piranha
   {
       typedef base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> > ancestor;
       typedef typename ancestor::im_type im_type;
-      typedef typename ancestor::usint usint;
     public:
       typedef typename ancestor::vector_expo vector_expo;
       ipoly():ancestor::base_ipoly(),private_width_(0)

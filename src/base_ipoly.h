@@ -29,6 +29,7 @@
 #include <limits>
 #include <valarray>
 
+#include "common_typedefs.h"
 #include "imonomial.h"
 #include "integral_npow_cache.h"
 #include "p_assert.h"
@@ -50,7 +51,6 @@ namespace piranha
       typedef std::vector<Expo> vector_expo;
       typedef imonomial<Cf,Index> im_type;
       typedef __gnu_cxx::hash_set<im_type,monomial_hasher<im_type> > container_type;
-      typedef unsigned short int usint;
       typedef typename container_type::iterator iterator;
       typedef typename container_type::const_iterator const_iterator;
       base_ipoly():private_degree_(0),private_container_()
