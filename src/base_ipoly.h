@@ -27,10 +27,12 @@
 #include <boost/type_traits/is_pod.hpp>
 #include <ext/hash_set>
 #include <limits>
+#include <valarray>
 
 #include "imonomial.h"
 #include "integral_npow_cache.h"
 #include "p_assert.h"
+#include "utils.h"
 
 namespace piranha
 {
@@ -88,7 +90,7 @@ namespace piranha
         private_container_.clear();
         private_degree_=0;
       }
-      size_t g_length() const
+      size_t length() const
       {
         return private_container_.size();
       }
@@ -313,19 +315,23 @@ std::cout << '\n';*/
         }
 // This ipoly acts just as a container for the private_container_, which will be swapped in at the end of the cycle.
         Derived tmp;
-        const const_iterator it1_f=end(), it2_f=p.end();
+        std::valarray<const_iterator> v_it2;
+        utils::array_iter(p,v_it2);
+        size_t i;
+        const size_t l2=p.length();
+        const const_iterator it1_f=end();
         for (const_iterator it1=begin();it1!=it1_f;++it1)
         {
-          for (const_iterator it2=p.begin();it2!=it2_f;++it2)
+          for (i=0;i<l2;++i)
           {
-            tmp.insert<sign_modifier_plus>(im_type(it1->g_cf()*it2->g_cf(),it1->g_index()+it2->g_index()));
+            tmp.insert<sign_modifier_plus>(im_type(it1->g_cf()*v_it2[i]->g_cf(),it1->g_index()+v_it2[i]->g_index()));
           }
         }
         private_container_.swap(tmp.private_container_);
 // Refresh degree: we may have introduced higher degree monomials, and we may have destroyed others.
 // Just recalc it explicitly from scracth.
         refresh_degree();
-std::cout << "Length: " << g_length() << '\n';
+std::cout << "Length: " << length() << '\n';
       }
     class max_n_cache
     {
