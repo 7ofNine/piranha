@@ -133,7 +133,7 @@ namespace piranha
               term1->invert_trig_args();
             }
             hm_it=hm.find(*t0);
-            if (hm_it==hm.end())
+            if (hm_it == hm.end())
             {
               hm[*t0]=*c0;
             }
@@ -142,7 +142,7 @@ namespace piranha
               hm_it->second+=*c0;
             }
             hm_it=hm.find(*t1);
-            if (hm_it==hm.end())
+            if (hm_it == hm.end())
             {
               hm[*t1]=*c1;
             }
