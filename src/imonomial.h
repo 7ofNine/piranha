@@ -47,6 +47,7 @@ namespace piranha
       {
         return (index == m.index);
       }
+// TODO: needed?
       bool operator<(const imonomial &m) const
       {
         return (index < m.index);
@@ -71,12 +72,15 @@ namespace piranha
   template <class Cf, class Index>
     const Index imonomial<Cf,Index>::max_index;
 
-// Hasher function to be used in polynomial container.
-  template <class Cf, class Index>
-    inline const Index &hash_value(const imonomial<Cf,Index> &m)
+// Hasher functor to be used in polynomial container.
+  template <class Monomial>
+    struct monomial_hasher
   {
-    return m.g_index();
-  }
+    const size_t &operator()(const Monomial &m) const
+    {
+      return m.g_index();
+    }
+  };
 }
 
 #endif

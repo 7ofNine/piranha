@@ -22,14 +22,10 @@
 #define PIRANHA_BASE_IPOLY_H
 
 #include <boost/integer_traits.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/identity.hpp>
-#include <boost/multi_index_container.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_pod.hpp>
-#include <ext/pool_allocator.h>
+#include <ext/hash_set>
 #include <limits>
 
 #include "imonomial.h"
@@ -51,14 +47,7 @@ namespace piranha
     public:
       typedef std::vector<Expo> vector_expo;
       typedef imonomial<Cf,Index> im_type;
-      typedef boost::multi_index_container<
-        im_type,
-        boost::multi_index::indexed_by<
-          boost::multi_index::hashed_unique<boost::multi_index::identity<im_type> >/*,
-          boost::multi_index::ordered_unique<boost::multi_index::identity<im_type> >*/
-        >,
-// FIXME: check whether we really want to use the pool alloc here.
-      __gnu_cxx::__pool_alloc<im_type> > container_type;
+      typedef __gnu_cxx::hash_set<im_type,monomial_hasher<im_type> > container_type;
       typedef unsigned short int usint;
       typedef typename container_type::iterator iterator;
       typedef typename container_type::const_iterator const_iterator;
