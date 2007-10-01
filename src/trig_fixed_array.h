@@ -26,8 +26,6 @@
 #include <cstring>
 
 #include "base_trig_array.h"
-#include "common_typedefs.h"    // For t_eval.
-#include "trig_evaluator.h"
 
 namespace piranha
 {
