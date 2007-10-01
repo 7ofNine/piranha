@@ -23,6 +23,8 @@
 
 #include "base_trig_array.h"
 
+// FIXME: place checks for sizes < USHRT_MAX, since usint is used in base_trig_array.
+
 namespace piranha
 {
 /// Trigonometric array, dynamically sized version.
@@ -177,13 +179,13 @@ namespace piranha
       {
         return private_container_.size();
       }
-      const container_type &g_container() const
+      const mult_t *g_container() const
       {
-        return private_container_;
+        return &(private_container_[0]);
       }
-      container_type &s_container()
+      mult_t *s_container()
       {
-        return private_container_;
+        return &(private_container_[0]);
       }
 /// Assignment.
 /**
