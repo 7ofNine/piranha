@@ -181,7 +181,7 @@ namespace piranha
  * and in the second one always goes \f$ \alpha + \beta \f$ one.
  * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
  * that return values are empty).
- * @param[in] l2 factor.
+ * @param[in] t2 factor.
  * @param[out] ret1 first return value.
  * @param[out] ret2 second return value.
  */
