@@ -291,10 +291,6 @@ namespace piranha
           static_cast<const Derived *>(this)->assignment(t2);
         }
       }
-      void assignment(const Derived &t2)
-      {
-
-      }
       bool equality_test(const Derived &t2) const
       {
         p_assert(static_cast<const Derived *>(this)->g_width() == t2.g_width());
