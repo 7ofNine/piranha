@@ -282,12 +282,6 @@ namespace piranha
       {
         return (static_cast<const Derived *>(this)->g_width() == n);
       }
-// Math.
-      Derived &operator*=(const mult_t &n)
-      {
-        mult_by_mult_t(n);
-        return *static_cast<const Derived *>(this);
-      }
     protected:
       void assignment(const base_trig_array &t2)
       {
@@ -311,10 +305,6 @@ namespace piranha
         return true;
       }
 /// Less than.
-/**
- * Needed, for example, in norm-based inidces for piranha::base_pseries, where there could
- * be terms with equal norms. If that happens, this operator is used to order terms.
- */
       bool less_than(const Derived &t2) const
       {
         if (g_flavour() < t2.g_flavour())
