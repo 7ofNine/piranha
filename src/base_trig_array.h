@@ -340,7 +340,7 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          static_cast<const Derived *>(this)->g_container()[i]*=n;
+          static_cast<const Derived *>(this)->s_container()[i]*=n;
         }
       }
     private:
