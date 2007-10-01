@@ -214,9 +214,9 @@ namespace piranha
       {
         return private_container_;
       }
-      void assignment(const trig_fixed_array &t)
+      void assignment(const trig_fixed_array &t2)
       {
-        memcpy((void *)private_container_,(const void *)t.private_container_,sizeof(mult_t)*g_width());
+        memcpy((void *)private_container_,(const void *)t2.private_container_,sizeof(mult_t)*g_width());
       }
 // Data members.
     private:
