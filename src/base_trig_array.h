@@ -49,7 +49,7 @@ namespace piranha
           std::abort();
           return 0;
         }
-        static_cast<const Derived *>(this)->private_container_[n];
+        static_cast<const Derived *>(this)->g_container()[n];
       }
       size_t actual_width() const
       {
@@ -70,7 +70,7 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          out_stream << static_cast<const Derived *>(this)->private_container_[i] << stream_manager::data_separator();
+          out_stream << static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
@@ -81,21 +81,21 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i]!=0)
+          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
-            if (static_cast<const Derived *>(this)->private_container_[i]>0 && !first_one)
+            if (static_cast<const Derived *>(this)->g_container()[i]>0 && !first_one)
             {
               tmp.append("+");
             }
-            if (static_cast<const Derived *>(this)->private_container_[i]==-1)
+            if (static_cast<const Derived *>(this)->g_container()[i]==-1)
             {
               tmp.append("-");
             }
-            else if (static_cast<const Derived *>(this)->private_container_[i]==1)
+            else if (static_cast<const Derived *>(this)->g_container()[i]==1)
               {}
               else
             {
-              tmp.append(boost::lexical_cast<std::string>(static_cast<const Derived *>(this)->private_container_[i]));
+              tmp.append(boost::lexical_cast<std::string>(static_cast<const Derived *>(this)->g_container()[i]));
             }
             tmp.append(v[i]->name());
             first_one=false;
@@ -114,10 +114,11 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          static_cast<const Derived *>(this)->private_container_[i]=
-          -static_cast<const Derived *>(this)->private_container_[i];
+          static_cast<const Derived *>(this)->s_container()[i]=
+          -static_cast<const Derived *>(this)->g_container()[i];
         }
       }
+/// Assign vector of multipliers.
       template <class T>
         void assign_mult_vector(const T &v)
       {
@@ -125,7 +126,7 @@ namespace piranha
         p_assert(v.size() == w);
         for (usint i=0;i<w;++i)
         {
-          static_cast<const Derived *>(this)->private_container_[i]=v[i];
+          static_cast<const Derived *>(this)->g_container()[i]=v[i];
         }
       }
       template <class DerivedPs>
@@ -135,7 +136,7 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i] != 0)
+          if (static_cast<const Derived *>(this)->g_container()[i] != 0)
           {
             ++tmp;
           }
@@ -160,7 +161,7 @@ namespace piranha
 // We must be sure that there actually is a freq in every symbol we are going to use.
           if (v[i]->poly_eval().size()>1)
           {
-            retval+=static_cast<const Derived *>(this)->private_container_[i]*v[i]->poly_eval()[1];
+            retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->poly_eval()[1];
           }
         }
         return retval;
@@ -181,7 +182,7 @@ namespace piranha
 // We must be sure that there actually is a phase in every symbol we are going to use.
           if (v[i]->poly_eval().size()>0)
           {
-            retval+=static_cast<const Derived *>(this)->private_container_[i]*v[i]->poly_eval()[0];
+            retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->poly_eval()[0];
           }
         }
         return retval;
@@ -199,9 +200,9 @@ namespace piranha
         double retval=0.;
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i]!=0)
+          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
-            retval+=static_cast<const Derived *>(this)->private_container_[i]*v[i]->t_eval(t);
+            retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->t_eval(t);
           }
         }
         return retval;
@@ -220,9 +221,9 @@ namespace piranha
         complex_double retval(1.);
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i]!=0)
+          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
-            retval*=te.request_complexp(i,static_cast<const Derived *>(this)->private_container_[i]);
+            retval*=te.request_complexp(i,static_cast<const Derived *>(this)->g_container()[i]);
           }
         }
         return retval;
@@ -236,11 +237,11 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i]>0)
+          if (static_cast<const Derived *>(this)->g_container()[i]>0)
           {
             return 1;
           }
-          if (static_cast<const Derived *>(this)->private_container_[i]<0)
+          if (static_cast<const Derived *>(this)->g_container()[i]<0)
           {
             return -1;
           }
@@ -253,7 +254,7 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (size_t i=0;i<w;++i)
         {
-          boost::hash_combine(seed,static_cast<const Derived *>(this)->private_container_[i]);
+          boost::hash_combine(seed,static_cast<const Derived *>(this)->g_container()[i]);
         }
         return seed;
       }
@@ -262,7 +263,7 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i]!=0)
+          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
             return false;
           }
@@ -281,7 +282,18 @@ namespace piranha
       {
         return (static_cast<const Derived *>(this)->g_width() == n);
       }
-      bool operator==(const base_trig_array &t2) const
+// Math.
+      Derived &operator*=(const mult_t &n)
+      {
+        mult_by_mult_t(n);
+        return *static_cast<const Derived *>(this);
+      }
+    protected:
+      void assignment(const base_trig_array &t2)
+      {
+        private_flavour_=t2.private_flavour_;
+      }
+      bool equality_test(const Derived &t2) const
       {
         p_assert(static_cast<const Derived *>(this)->g_width() == t2.g_width());
         if (g_flavour() != t2.g_flavour())
@@ -291,14 +303,19 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i] != t2.private_container_[i])
+          if (static_cast<const Derived *>(this)->g_container()[i] != t2.g_container()[i])
           {
             return false;
           }
         }
         return true;
       }
-      bool operator<(const base_trig_array &t2) const
+/// Less than.
+/**
+ * Needed, for example, in norm-based inidces for piranha::base_pseries, where there could
+ * be terms with equal norms. If that happens, this operator is used to order terms.
+ */
+      bool less_than(const Derived &t2) const
       {
         if (g_flavour() < t2.g_flavour())
         {
@@ -312,23 +329,25 @@ namespace piranha
         const usint w=static_cast<const Derived *>(this)->g_width();
         for (usint i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->private_container_[i] < t2.private_container_[i])
+          if (static_cast<const Derived *>(this)->g_container()[i] < t2.g_container()[i])
           {
             return true;
           }
-          else if (static_cast<const Derived *>(this)->private_container_[i] > t2.private_container_[i])
+          else if (static_cast<const Derived *>(this)->g_container()[i] > t2.g_container()[i])
           {
             return false;
           }
         }
         return false;
       }
-// Math.
-      void operator*=(const mult_t &);
-    protected:
-      void assign(const base_trig_array &t2)
+/// Multiply by a piranha::mult_t.
+      void mult_by_mult_t(const mult_t &n)
       {
-        private_flavour_=t2.private_flavour_;
+        const usint w=static_cast<const Derived *>(this)->g_width();
+        for (usint i=0;i<w;++i)
+        {
+          static_cast<const Derived *>(this)->g_container()[i]*=n;
+        }
       }
     private:
       bool  private_flavour_;
