@@ -32,6 +32,8 @@ namespace piranha
   {
       typedef base_trig_array<trig_array> ancestor;
       typedef std::valarray<mult_t> container_type;
+      template <class Derived>
+        friend class base_trig_array;
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
@@ -175,6 +177,7 @@ namespace piranha
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
+    private:
       usint g_width() const
       {
         return private_container_.size();

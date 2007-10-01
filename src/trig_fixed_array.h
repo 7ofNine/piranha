@@ -80,6 +80,8 @@ namespace piranha
       BOOST_STATIC_ASSERT(Dim > 0);
       BOOST_STATIC_ASSERT(Dim < 100);
       typedef base_trig_array<trig_fixed_array<Dim> > ancestor;
+      template <class Derived>
+        friend class base_trig_array;
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
@@ -200,6 +202,7 @@ namespace piranha
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
+    private:
       static const usint &g_width()
       {
         return dimension;
