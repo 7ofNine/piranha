@@ -283,9 +283,17 @@ namespace piranha
         return (static_cast<const Derived *>(this)->g_width() == n);
       }
     protected:
-      void assignment(const base_trig_array &t2)
+      void assignment_operator(const Derived &t2)
       {
-        private_flavour_=t2.private_flavour_;
+        if (static_cast<const Derived *>(this) != &t2)
+        {
+          private_flavour_=t2.private_flavour_;
+          static_cast<const Derived *>(this)->assignment(t2);
+        }
+      }
+      void assignment(const Derived &t2)
+      {
+
       }
       bool equality_test(const Derived &t2) const
       {
