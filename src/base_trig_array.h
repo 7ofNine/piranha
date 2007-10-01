@@ -73,7 +73,7 @@ namespace piranha
           out_stream << static_cast<const Derived *>(this)->private_container_[i] << stream_manager::data_separator();
         }
       }
-      void print_latex(std::ostream &, const vector_psym_p &) const
+      void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
         stream_manager::setup_print(out_stream);
         bool first_one=true;
