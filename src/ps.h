@@ -38,9 +38,9 @@ namespace piranha
  * This derived class provides support for complex arithmetic and for trigonometric operations on
  * series.
  */
-  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
+  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
     class ps:
-    public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I> >,
+    public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I>,Allocator>,
     public real_operators_toolbox<ps<Cf,Trig,Term,I> >,
     public math_toolbox<ps<Cf,Trig,Term,I> >,
     public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
@@ -50,7 +50,7 @@ namespace piranha
   {
     public:
 /// Alias for parent class.
-      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I> > ancestor;
+      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I>,Allocator> ancestor;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for term type.
@@ -88,9 +88,9 @@ namespace std
 {
 // COMPLEX COUNTERPART
 /// Complex specialization for default derived class.
-  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I>
-    struct complex<piranha::ps<Cf,Trig,Term,I> >:
-    public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > >,
+  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
+    struct complex<piranha::ps<Cf,Trig,Term,I,Allocator> >:
+    public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator>,
     public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I> >,
     public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
     public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I> >,
@@ -99,7 +99,7 @@ namespace std
   {
     public:
 /// Alias for the ancestor.
-      typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I> > > ancestor;
+      typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator> ancestor;
 /// Alias for term type.
       typedef typename ancestor::term_type term_type;
 /// Alias for the iterator to sorted index.
