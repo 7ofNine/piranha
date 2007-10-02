@@ -65,9 +65,8 @@ namespace pirana
   using std::size_t;
   using std::ptrdiff_t;
 
+/// An allocator that uses _mm_malloc.
 /**
- *  @brief  An allocator that uses _mm_malloc.
- *
  * All allocation calls _mm_malloc, all deallocation calls _mm_free.
  */
   template<typename _Tp, size_t _Alignment>
