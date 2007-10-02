@@ -38,8 +38,8 @@ namespace piranha
  * A default specialized class, piranha::ps, exists.
  * @see piranha:ps, default specialized Poisson series class.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    class base_pseries:base_pseries_hooks<base_pseries<Cf,Trig,Term,I,Derived> >
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator = std::allocator<char> >
+    class base_pseries:base_pseries_hooks<base_pseries<Cf,Trig,Term,I,Derived,Allocator> >
   {
     public:
 /// Alias for self.
@@ -52,13 +52,14 @@ namespace piranha
       typedef Term<cf_type, trig_type> term_type;
       typedef I<cf_type, trig_type, Term> index_type;
       typedef Derived derived_type;
+      typedef Allocator allocator_type;
 /// Alias for the evaluation type.
 /**
  * @see base_pseries::t_eval.
  */
       typedef typename cf_type::eval_type eval_type;
       typedef typename boost::multi_index_container < term_type,
-        typename index_type::type> series_set_type;
+        typename index_type::type, allocator_type> series_set_type;
 /// Alias for the sorted index.
       typedef typename series_set_type::template nth_index<0>
         ::type sorted_index;
@@ -84,11 +85,73 @@ namespace piranha
       typedef it_s_index iterator;
       typedef it_s_index const_iterator;
 // Ctors
-      base_pseries();
-      base_pseries(const Derived &);
-      explicit base_pseries(const std::string &);
-      explicit base_pseries(const cf_type &, const Derived &);
-      explicit base_pseries(const psymbol &, psymbol::type);
+#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
+/// Default constructor.
+/**
+ * Constructs an empty series.
+ */
+      base_pseries():__base_pseries_init_list
+        {}
+/// Copy constructor.
+/**
+ * Constructs a series from another one.
+ */
+      base_pseries(const Derived &ps):lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),
+        trig_s_vec_(ps.trig_s_vec_),private_series_set_(*ps.g_series_set())
+      {
+        std::cout << "Copy ctor" << std::endl;
+      }
+/// Constructor from filename.
+/**
+ * Read a series from file.
+ */
+      explicit base_pseries(const std::string &fn):__base_pseries_init_list
+      {
+        load_from(fn);
+      }
+/// Constructor from coefficient.
+/**
+ * Constructs a series consisting of a single cosine term with zero trigonometric arguments,
+ * provided coefficient and same set of arguments as model.
+ * @see base_pseries::cf_type.
+ */
+      explicit base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
+      {
+        if (!merge_args(model))
+        {
+          std::cout << "Warning: incompatbile arguments in ctor from cf_type." << std::endl;
+          return;
+        }
+        if (c.larger(cf_width()))
+        {
+          std::cout << "Warning: too many arguments in ctor from coefficient." << std::endl;
+          return;
+        }
+        generic_builder(c);
+      }
+/// Constructor from piranha::psymbol.
+      explicit base_pseries(const psymbol &psym, psymbol::type ptype):__base_pseries_init_list
+      {
+        if (ptype==psymbol::cf)
+        {
+    // When building to cf create a coefficient from the symvol.
+          append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+          cf_type c(psym);
+          term_type term(c);
+          insert(term);
+        }
+        else if (ptype==psymbol::trig)
+        {
+    // When building to trig assign argument in lin_args.
+          append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+          lin_args_[0]=1;
+        }
+        else
+        {
+          p_assert(false);
+        }
+      }
+#undef __base_pseries_init_list
 /// Destructor.
       ~base_pseries()
         {}
@@ -430,7 +493,7 @@ namespace piranha
       };
       template <class Cf2, class Derived2>
         bool args_different(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2> &) const;
+        base_pseries<Cf2, trig_type, Term, I, Derived2, Allocator> &) const;
       template <class Derived2>
         bool args_compatible(const Derived2 &) const;
     private:
@@ -456,87 +519,6 @@ namespace piranha
       vector_psym_p   trig_s_vec_;
       series_set_type private_series_set_;
   };
-
-// Default ctor
-#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
-
-/// Default constructor.
-/**
- * Constructs an empty series.
- */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries():__base_pseries_init_list {}
-
-/// Copy constructor.
-/**
- * Constructs a series from another one.
- */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const Derived &ps):
-  lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),trig_s_vec_(ps.trig_s_vec_),private_series_set_(*ps.g_series_set())
-  {
-    std::cout << "Copy ctor" << std::endl;
-  }
-
-/// Constructor from filename.
-/**
- * Read a series from file.
- */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const std::string &fn):__base_pseries_init_list
-  {
-    load_from(fn);
-  }
-
-/// Constructor from coefficient.
-/**
- * Constructs a series consisting of a single cosine term with zero trigonometric arguments
- * and provided coefficient.
- * @see base_pseries::cf_type.
- */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const cf_type &c, const Derived &model)
-    :__base_pseries_init_list
-  {
-    if (!merge_args(model))
-    {
-      std::cout << "Warning: incompatbile arguments in ctor from cf_type." << std::endl;
-      return;
-    }
-    if (c.larger(cf_width()))
-    {
-      std::cout << "Warning: too many arguments in ctor from coefficient." << std::endl;
-      return;
-    }
-    generic_builder(c);
-  }
-
-/// Constructor from piranha::psymbol.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline base_pseries<Cf, Trig, Term, I, Derived>::base_pseries(const psymbol &psym, psymbol::type ptype)
-    :__base_pseries_init_list
-  {
-    if (ptype==psymbol::cf)
-    {
-// When building to cf create a coefficient from the symvol.
-      append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-      cf_type c(psym);
-      term_type term(c);
-      insert(term);
-    }
-    else if (ptype==psymbol::trig)
-    {
-// When building to trig assign argument in lin_args.
-      append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-      lin_args_[0]=1;
-    }
-    else
-    {
-      p_assert(false);
-    }
-  }
-
-#undef __base_pseries_init_list
-
 }
+
 #endif
