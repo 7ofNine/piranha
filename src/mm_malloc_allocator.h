@@ -59,7 +59,7 @@
 #include <bits/functexcept.h>
 #include <mm_malloc.h>
 
-namespace pirana
+namespace piranha
 {
 
   using std::size_t;
