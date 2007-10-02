@@ -140,7 +140,7 @@ namespace piranha
         ret1.private_container_=private_container_;
         ret1.private_container_-=t2.private_container_;
         ret2.private_container_=private_container_;
-        ret2.private_container_+=t2.private_cnotainer_;
+        ret2.private_container_+=t2.private_container_;
       }
       trig_simd_array &operator=(const trig_simd_array &t2)
       {
