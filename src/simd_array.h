@@ -59,13 +59,13 @@ std::cout << "Copy ctor end\n";
 /// Destructor.
       ~simd_array()
         {}
-      const usint *operator[](const usint &n) const
+      const sint &operator[](const usint &n) const
       {
-        return &(private_sub_[n/8].s[n%8]);
+        return private_sub_[n/8].s[n%8];
       }
-      usint *operator[](const usint &n)
+      sint &operator[](const usint &n)
       {
-        return &(private_sub_[n/8].s[n%8]);
+        return private_sub_[n/8].s[n%8];
       }
       simd_array &operator=(const simd_array &s)
       {
@@ -88,20 +88,97 @@ std::cout << "Assignment operator\n";
         }
         return *this;
       }
-      void print(std::ostream &str) const
+      simd_array &operator-=(const simd_array &s)
+      {
+        usint i;
+        for (i=0;i<m128n;++i)
+        {
+          private_sub_[i].m=_mm_sub_epi16(private_sub_[i].m,s.private_sub_[i].m);
+        }
+        return *this;
+      }
+      bool equality_test(const simd_array &s) const
       {
         usint i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
           {
-            str << private_sub_[i].s[j] << '\t';
+            if (private_sub_[i].s[j] != s.private_sub_[i].s[j])
+            {
+              return false;
+            }
           }
         }
         for (i=0;i<rem;++i)
         {
-          str << private_sub_[m128n-1].s[i] << '\t';
+          if (private_sub_[m128n-1].s[i] != s.private_sub_[m128n-1].s[i])
+          {
+            return false;
+          }
         }
+        return true;
+      }
+      bool less_than(const simd_array &s) const
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            if (private_sub_[i].s[j] < s.private_sub_[i].s[j])
+            {
+              return true;
+            }
+            else if (private_sub_[i].s[j] > s.private_sub_[i].s[j])
+            {
+              return false;
+            }
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          if (private_sub_[m128n-1].s[i] < s.private_sub_[m128n-1].s[i])
+          {
+            return true;
+          }
+          else if (private_sub_[m128n-1].s[i] < s.private_sub_[m128n-1].s[i])
+          {
+            return false;
+          }
+        }
+        return false;
+      }
+      void hasher(size_t &seed) const
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            boost::hash_combine(seed,private_sub_[i].s[j]);
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          boost::hash_combine(seed,private_sub_[m128n-1].s[i]);
+        }
+      }
+      simd_array &operator*=(const sint &n)
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            private_sub_[i].s[j]*=n;
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          private_sub_[m128n-1].s[i]*=n;
+        }
+        return *this;
       }
     private:
       static const sint                       m128n = Dim/8+1;
