@@ -21,6 +21,8 @@
 #ifndef PIRANHA_TRIG_SIMD_ARRAY_H
 #define PIRANHA_TRIG_SIMD_ARRAY_H
 
+#include <boost/algorithm/minmax.hpp>
+
 #include "base_trig_array.h"
 #include "simd_array.h"
 
@@ -30,18 +32,16 @@ namespace piranha
   template <int Dim>
     class trig_simd_array: public base_trig_array<trig_simd_array<Dim> >
   {
-// Check that dimension is sane.
-      BOOST_STATIC_ASSERT(Dim > 0);
-      BOOST_STATIC_ASSERT(Dim < 100);
       typedef base_trig_array<trig_simd_array<Dim> > ancestor;
       template <class Derived>
         friend class base_trig_array;
+      typedef simd_array<Dim> container_type;
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default ctor.
-      trig_simd_array():ancestor::base_trig_array()
+      trig_simd_array():ancestor::base_trig_array(),private_container_()
         {}
 /// Copy ctor.
       trig_simd_array(const trig_simd_array &t):ancestor::base_trig_array(t),private_container_(t.private_container_)
@@ -109,38 +109,38 @@ namespace piranha
       }
       bool operator==(const trig_simd_array &t2) const
       {
-        return ancestor::equality_test(t2);
+        if (ancestor::g_flavour() != t2.g_flavour())
+        {
+          return false;
+        }
+        return private_container_.equality_test(t2.private_container_);
       }
       bool operator<(const trig_simd_array &t2) const
       {
-        return ancestor::less_than(t2);
+        if (ancestor::g_flavour() < t2.g_flavour())
+        {
+          return true;
+        }
+        else if (ancestor::g_flavour() > t2.g_flavour())
+        {
+          return false;
+        }
+        return private_container_.less_than(t2.private_container_);
       }
       size_t hasher() const
       {
         size_t seed=ancestor::g_flavour();
-        hash_unroller<dimension>(seed,private_container_+dimension);
+        private_container_.hasher(seed);
         return seed;
       }
 // Math.
 /// Multiplication.
-/**
- * Multiplication of two trigonometric functions using Werner's formulas, i.e.
- * \f[
- * C\cos\alpha\cdot\cos\beta=
- * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
- * \f]
- * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
- * and in the second one always goes \f$ \alpha + \beta \f$ one.
- * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
- * that return values are empty).
- * @param[in] t2 factor.
- * @param[out] ret1 first return value.
- * @param[out] ret2 second return value.
- */
       void trigmult(const trig_simd_array &t2, trig_simd_array &ret1, trig_simd_array &ret2) const
       {
-        mult_unroller<dimension>(private_container_+dimension,t2.private_container_+dimension,
-          ret1.private_container_+dimension,ret2.private_container_+dimension);
+        ret1.private_container_=private_container_;
+        ret1.private_container_-=t2.private_container_;
+        ret2.private_container_=private_container_;
+        ret2.private_container_+=t2.private_cnotainer_;
       }
       trig_simd_array &operator=(const trig_simd_array &t2)
       {
@@ -149,7 +149,7 @@ namespace piranha
       }
       trig_simd_array &operator*=(const mult_t &n)
       {
-        ancestor::mult_by_mult_t(n);
+        private_container_*=n;
         return *this;
       }
 // End INTERFACE definition.
@@ -159,21 +159,21 @@ namespace piranha
       {
         return dimension;
       }
-      const mult_t *g_container() const
+      const container_type &g_container() const
       {
         return private_container_;
       }
-      mult_t *s_container()
+      container_type &s_container()
       {
         return private_container_;
       }
       void assignment(const trig_simd_array &t2)
       {
-        memcpy((void *)private_container_,(const void *)t2.private_container_,sizeof(mult_t)*g_width());
+        private_container_=t2.private_container_;
       }
 // Data members.
     private:
-      simd_array<Dim>     private_container_;
+      container_type      private_container_;
       static const usint  dimension = (usint)Dim;
   };
 }
