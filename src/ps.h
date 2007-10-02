@@ -40,23 +40,23 @@ namespace piranha
  */
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
     class ps:
-    public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I>,Allocator>,
-    public real_operators_toolbox<ps<Cf,Trig,Term,I> >,
-    public math_toolbox<ps<Cf,Trig,Term,I> >,
-    public common_trig_toolbox<ps<Cf,Trig,Term,I>,ps<Cf,Trig,Term,I> >,
-    public real_trig_toolbox<ps<Cf,Trig,Term,I> >,
-    public differential_toolbox<ps<Cf,Trig,Term,I> >,
-    public norm_based_elementary_math_toolbox<ps<Cf,Trig,Term,I> >
+    public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I,Allocator>,Allocator>,
+    public real_operators_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
+    public math_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
+    public common_trig_toolbox<ps<Cf,Trig,Term,I,Allocator>,ps<Cf,Trig,Term,I,Allocator> >,
+    public real_trig_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
+    public differential_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
+    public norm_based_elementary_math_toolbox<ps<Cf,Trig,Term,I,Allocator> >
   {
     public:
 /// Alias for parent class.
-      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I>,Allocator> ancestor;
+      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for term type.
       typedef typename ancestor::term_type term_type;
 /// Alias for self.
-      typedef ps<Cf,Trig,Term,I> self;
+      typedef ps<Cf,Trig,Term,I,Allocator> self;
 // Ctors.
       ps():ancestor::base_pseries()
         {}
@@ -90,12 +90,12 @@ namespace std
 /// Complex specialization for default derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::ps<Cf,Trig,Term,I,Allocator> >:
-    public piranha::base_pseries <complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator>,
-    public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I> >,
-    public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I> >,piranha::ps<Cf,Trig,Term,I> >,
-    public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I> >,
-    public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >,
-    public piranha::norm_based_elementary_math_toolbox<complex<piranha::ps<Cf,Trig,Term,I> > >
+    public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator>,
+    public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I,Allocator> >,
+    public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,piranha::ps<Cf,Trig,Term,I,Allocator> >,
+    public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I,Allocator> >,
+    public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> > >,
+    public piranha::norm_based_elementary_math_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> > >
   {
     public:
 /// Alias for the ancestor.
@@ -107,11 +107,11 @@ namespace std
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for real counterpart.
-      typedef piranha::ps<Cf,Trig,Term,I> real_ps;
+      typedef piranha::ps<Cf,Trig,Term,I,Allocator> real_ps;
 /// Alias for real coefficient.
       typedef Cf real_cf_type;
 /// Alias for self.
-      typedef complex<piranha::ps<Cf,Trig,Term,I> > self;
+      typedef complex<piranha::ps<Cf,Trig,Term,I,Allocator> > self;
 // TODO: this is shared with above, find a way to share.
 /// Default constructor.
       complex():ancestor::base_pseries()
