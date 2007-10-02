@@ -29,6 +29,8 @@
 
 // These are commonly used typedefs.
 
+/// Alias for short int.
+typedef short int sint;
 /// Alias for unsigned short int.
 typedef unsigned short int usint;
 /// Alias for the size of trigonometric containers.
