@@ -49,7 +49,7 @@ namespace piranha
           std::abort();
           return 0;
         }
-        static_cast<const Derived *>(this)->g_container()[n];
+        return static_cast<const Derived *>(this)->g_container()[n];
       }
       size_t actual_width() const
       {
@@ -126,7 +126,7 @@ namespace piranha
         p_assert(v.size() == w);
         for (usint i=0;i<w;++i)
         {
-          static_cast<const Derived *>(this)->g_container()[i]=v[i];
+          static_cast<const Derived *>(this)->s_container()[i]=v[i];
         }
       }
       template <class DerivedPs>
