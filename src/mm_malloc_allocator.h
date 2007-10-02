@@ -57,6 +57,7 @@
 #include <cstdlib>
 #include <new>
 #include <bits/functexcept.h>
+#include <mm_malloc.h>
 
 namespace pirana
 {
