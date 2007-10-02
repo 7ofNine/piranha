@@ -27,8 +27,8 @@
 namespace piranha
 {
 /// Read coefficient argument.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::read_cf_arg(std::ifstream &inf)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::read_cf_arg(std::ifstream &inf)
   {
     std::string temp, temp_name;
     vector_double temp_vdouble;
@@ -67,8 +67,8 @@ namespace piranha
   }
 
 /// Read trigonometric argument.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::read_trig_arg(std::ifstream &inf)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::read_trig_arg(std::ifstream &inf)
   {
     std::string temp, temp_name;
     vector_double temp_vdouble;
@@ -107,8 +107,8 @@ namespace piranha
   }
 
 // Read linear arguments
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::read_lin_args(std::ifstream &inf)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::read_lin_args(std::ifstream &inf)
   {
     std::string temp;
     deque_string split_v;
@@ -141,8 +141,8 @@ namespace piranha
   }
 
 // Read terms.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::read_terms(std::ifstream &inf,const std::string &filename)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::read_terms(std::ifstream &inf,const std::string &filename)
   {
     const std::string pl_name=filename+".phl";
     phase_list pl=phase_list(pl_name);
@@ -203,8 +203,8 @@ namespace piranha
   }
 
 // Identify section
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::identify_sections(std::ifstream &inf,const std::string &filename)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::identify_sections(std::ifstream &inf,const std::string &filename)
   {
     std::string temp;
     while (utils::get_valid_string(inf,temp)==0)
@@ -241,8 +241,8 @@ namespace piranha
   }
 
 // Read data
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::read_data_from_file(std::ifstream &inf,
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::read_data_from_file(std::ifstream &inf,
     const std::string &filename)
   {
     identify_sections(inf,filename);
@@ -250,8 +250,8 @@ namespace piranha
   }
 
 /// Load series from file.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::load_from(const std::string &fn)
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::load_from(const std::string &fn)
   {
     std::ifstream inf;
     std::string filename=utils::open_file(fn,inf);
@@ -265,8 +265,8 @@ namespace piranha
   }
 
 /// Print the first n terms in plain format.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::print_terms_plain(std::ostream &out_stream,
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::print_terms_plain(std::ostream &out_stream,
     int n) const
   {
     stream_manager::setup_print(out_stream);
@@ -292,8 +292,8 @@ namespace piranha
   }
 
 /// Print the first n terms in LaTeX format.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::print_terms_latex(std::ostream &out_stream,
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::print_terms_latex(std::ostream &out_stream,
     int n) const
   {
     stream_manager::setup_print(out_stream);
@@ -324,8 +324,8 @@ namespace piranha
 /**
  * Plain format is the same format used in formatted input from file.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::print_plain(std::ostream &out_stream,
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::print_plain(std::ostream &out_stream,
     int limit) const
   {
     stream_manager::setup_print(out_stream);
@@ -362,8 +362,8 @@ namespace piranha
  * Write to a LaTeX tabular environment. The output can then be included in a
  * LaTeX document.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::print_latex(std::ostream &out_stream, int limit) const
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::print_latex(std::ostream &out_stream, int limit) const
   {
     stream_manager::setup_print(out_stream);
     out_stream << "\\begin{xtabular}{rlrrrl}" << std::endl;
@@ -372,8 +372,8 @@ namespace piranha
   }
 
 /// Save series to file.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::save_to(const std::string &filename) const
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::save_to(const std::string &filename) const
   {
     std::ofstream outf(filename.c_str(),std::ios_base::trunc);
     if (outf.fail())
@@ -387,8 +387,8 @@ namespace piranha
   }
 
 /// Print to screen frequencies and phases.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived>
-    inline void base_pseries<Cf, Trig, Term, I, Derived>::put_phases_freqs(int limit) const
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::put_phases_freqs(int limit) const
   {
     stream_manager::setup_print(std::cout);
     size_t i=0, lim;
