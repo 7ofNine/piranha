@@ -40,22 +40,13 @@ namespace piranha
         sint    s[8];
       };
     public:
-      simd_array(int n)
-      {
-        usint i,j;
-        for (i=0;i<m128n-1;++i)
-        {
-          for (j=0;j<8;++j)
-          {
-            private_sub_[i].s[j]=n;
-          }
-        }
-        for (i=0;i<rem;++i)
-        {
-          private_sub_[m128n-1].s[i]=n;
-        }
-        std::cout << "Features: " << (m128n) << ',' << (rem) << '\n';
-      }
+/// Default constructor.
+/**
+ * Values will be uninitialized.
+ **/
+      simd_array()
+        {}
+/// Copy constructor.
       simd_array(const simd_array &s)
       {
 std::cout << "Copy ctor start\n";
@@ -64,6 +55,17 @@ std::cout << "Copy ctor start\n";
           private_sub_[i].m=s.private_sub_[i].m;
         }
 std::cout << "Copy ctor end\n";
+      }
+/// Destructor.
+      ~simd_array()
+        {}
+      const usint *operator[](const usint &n) const
+      {
+        return &(private_sub_[n/8].s[n%8]);
+      }
+      usint *operator[](const usint &n)
+      {
+        return &(private_sub_[n/8].s[n%8]);
       }
       simd_array &operator=(const simd_array &s)
       {
@@ -107,16 +109,6 @@ std::cout << "Assignment operator\n";
       static const sint                       rem = Dim%8;
       __attribute__ ((aligned (16))) subarray private_sub_[m128n];
   };
-}
-
-namespace std
-{
-  template <int Dim>
-    ostream &operator<<(ostream &str, const simd_array<Dim> &s)
-  {
-    s.print(str);
-    return str;
-  }
 }
 
 #endif
