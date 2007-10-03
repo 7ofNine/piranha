@@ -1,4 +1,22 @@
-// Allocators -*- C++ -*-
+/***************************************************************************
+ *   Copyright (C) 2007 by Francesco Biscani   *
+ *   bluescarni@gmail.com   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 // Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006
 // Free Software Foundation, Inc.
@@ -57,8 +75,6 @@ namespace
 {
   __gnu_cxx::__mutex palloc_init_mutex;
 }
-
-// TODO: inline functions here.
 
 namespace piranha
 {
@@ -134,7 +150,7 @@ namespace piranha
 
 // Definitions for pool_allocator_base.
   template <int Alignment>
-    typename pool_allocator_base<Alignment>::_Obj* volatile*
+    inline typename pool_allocator_base<Alignment>::_Obj* volatile*
     pool_allocator_base<Alignment>::_M_get_free_list(size_t __bytes)
   {
     size_t __i = ((__bytes + (size_t)_S_align - 1) / (size_t)_S_align - 1);
@@ -142,7 +158,7 @@ namespace piranha
   }
 
   template <int Alignment>
-    __mutex&
+    inline __mutex&
     pool_allocator_base<Alignment>::_M_get_mutex()
     { return palloc_init_mutex; }
 
@@ -150,7 +166,7 @@ namespace piranha
 // heap too much.  Assume that __n is properly aligned.  We hold the
 // allocation lock.
   template <int Alignment>
-    char*
+    inline char*
     pool_allocator_base<Alignment>::_M_allocate_chunk(size_t __n, int& __nobjs)
   {
     char* __result;
@@ -221,7 +237,7 @@ namespace piranha
 // __n"'s free list.  We assume that __n is properly aligned.  We
 // hold the allocation lock.
   template <int Alignment>
-    void*
+    inline void*
     pool_allocator_base<Alignment>::_M_refill(size_t __n)
   {
     int __nobjs = 20;
@@ -339,7 +355,7 @@ namespace piranha
     pool_allocator<_Tp,Alignment>::_S_force_new;
 
   template<typename _Tp, int Alignment>
-    _Tp*
+    inline _Tp*
     pool_allocator<_Tp,Alignment>::allocate(size_type __n, const void*)
   {
     pointer __ret = 0;
@@ -383,7 +399,7 @@ namespace piranha
   }
 
   template<typename _Tp, int Alignment>
-    void
+    inline void
     pool_allocator<_Tp,Alignment>::deallocate(pointer __p, size_type __n)
   {
     if (__builtin_expect(__n != 0 && __p != 0, true))
