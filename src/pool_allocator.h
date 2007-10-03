@@ -309,8 +309,7 @@ namespace piranha
       void
         construct(pointer __p, const _Tp& __val)
         {
-          __p=static_cast<pointer>(_mm_malloc(sizeof(_Tp),Alignment));
-          (*__p)=__val;
+          ::new(__p) value_type(__val);
         }
 
       void
