@@ -176,6 +176,9 @@ namespace piranha
       container_type      private_container_;
       static const usint  dimension = (usint)Dim;
   };
+
+  template <int Dim>
+    const usint trig_simd_array<Dim>::dimension;
 }
 
 #endif
