@@ -69,6 +69,7 @@
 #include "simple_term.h"
 // Disabled for now.
 //#include "spc.h"
+#include "snp.h"
 #include "sp.h"
 #include "stats.h"
 #include "stream_manager.h"
