@@ -58,6 +58,8 @@ namespace
   __gnu_cxx::__mutex palloc_init_mutex;
 }
 
+// TODO: inline functions here.
+
 namespace piranha
 {
 
