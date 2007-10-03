@@ -224,6 +224,9 @@ namespace piranha
       mult_t              private_container_[Dim];
       static const usint  dimension = (usint)Dim;
   };
+
+  template <int Dim>
+    const usint trig_fixed_array<Dim>::dimension;
 }
 
 #endif
