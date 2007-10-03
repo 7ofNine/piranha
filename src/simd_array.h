@@ -180,6 +180,51 @@ namespace piranha
         }
         return *this;
       }
+      short int sign() const
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            if (private_sub_[i].s[j] > 0)
+            {
+              return 1;
+            }
+            if (private_sub_[i].s[j] < 0)
+            {
+              return -1;
+            }
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          if (private_sub_[m128n-1].s[i] > 0)
+          {
+            return 1;
+          }
+          if (private_sub_[m128n-1].s[i] < 0)
+          {
+            return -1;
+          }
+        }
+        return 1;
+      }
+      void invert_sign()
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            private_sub_[i].s[j]=-private_sub_[i].s[j];
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          private_sub_[m128n-1].s[i]=-private_sub_[m128n-1].s[i];
+        }
+      }
     private:
       static const sint                       m128n = Dim/8+1;
       static const sint                       dimenstion = Dim;

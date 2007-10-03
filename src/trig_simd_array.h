@@ -94,6 +94,10 @@ namespace piranha
       {
         p_assert(w == g_width());
       }
+      void invert_sign()
+      {
+        private_container_.invert_sign();
+      }
 // Probing.
 /// Data footprint.
 /**
@@ -132,6 +136,10 @@ namespace piranha
         size_t seed=ancestor::g_flavour();
         private_container_.hasher(seed);
         return seed;
+      }
+      short int sign() const
+      {
+        return private_container_.sign();
       }
 // Math.
 /// Multiplication.
