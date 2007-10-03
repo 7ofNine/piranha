@@ -49,12 +49,12 @@ namespace piranha
 /// Copy constructor.
       simd_array(const simd_array &s)
       {
-std::cout << "Copy ctor start\n";
+//std::cout << "Copy ctor start\n";
         for (usint i=0;i<m128n;++i)
         {
           private_sub_[i].m=s.private_sub_[i].m;
         }
-std::cout << "Copy ctor end\n";
+//std::cout << "Copy ctor end\n";
       }
 /// Destructor.
       ~simd_array()
@@ -69,7 +69,7 @@ std::cout << "Copy ctor end\n";
       }
       simd_array &operator=(const simd_array &s)
       {
-std::cout << "Assignment operator\n";
+//std::cout << "Assignment operator\n";
         if (this != &s)
         {
           for (usint i=0;i<m128n;++i)

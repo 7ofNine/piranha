@@ -105,7 +105,7 @@ namespace piranha
       pointer
         allocate(size_type __n, const void* = 0)
       {
-        std::cout << "Allocating\n";
+//std::cout << "Allocating\n";
         if (__builtin_expect(__n > this->max_size(), false))
           std::__throw_bad_alloc();
 
