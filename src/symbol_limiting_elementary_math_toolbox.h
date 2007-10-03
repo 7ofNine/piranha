@@ -32,7 +32,7 @@ namespace piranha
   template <class Derived>
     class symbol_limiting_elementary_math_toolbox
   {
-    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived_>
+    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived_, class Allocator>
       friend class base_pseries;
     private:
       template <class Cf>
