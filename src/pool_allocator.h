@@ -51,6 +51,7 @@
 #include <bits/functexcept.h>
 #include <ext/atomicity.h>
 #include <ext/concurrence.h>
+#include <mm_malloc.h>
 
 namespace
 {
@@ -182,7 +183,7 @@ namespace piranha
         + _M_round_up(_S_heap_size >> 4));
       try
       {
-        _S_start_free = static_cast<char*>(::operator new(__bytes_to_get));
+        _S_start_free = static_cast<char*>(_mm_malloc(__bytes_to_get,Alignment));
       }
       catch (...)
       {
@@ -307,7 +308,10 @@ namespace piranha
 // 402. wrong new expression in [some_] allocator::construct
       void
         construct(pointer __p, const _Tp& __val)
-        { ::new(__p) _Tp(__val); }
+        {
+          __p=static_cast<pointer>(_mm_malloc(sizeof(_Tp),Alignment));
+          (*__p)=__val;
+        }
 
       void
         destroy(pointer __p) { __p->~_Tp(); }
@@ -356,7 +360,7 @@ namespace piranha
 
       const size_t __bytes = __n * sizeof(_Tp);
       if (__bytes > size_t(ancestor::_S_max_bytes) || _S_force_new == 1)
-        __ret = static_cast<_Tp*>(::operator new(__bytes));
+        __ret = static_cast<_Tp*>(_mm_malloc(__bytes,Alignment));
       else
       {
         _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
@@ -385,7 +389,7 @@ namespace piranha
     {
       const size_t __bytes = __n * sizeof(_Tp);
       if (__bytes > static_cast<size_t>(ancestor::_S_max_bytes) || _S_force_new == 1)
-        ::operator delete(__p);
+        _mm_free(__p);
       else
       {
         _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
