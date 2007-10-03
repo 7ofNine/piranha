@@ -7,6 +7,14 @@ namespace piranha
     template <class Cf, class Trig>
       struct light_term
     {
+/// Default ctor.
+/**
+ * Won't initialize anything.
+ */
+      light_term()
+        {}
+      ~light_term()
+        {}
 // Manipulation.
       void invert_trig_args()
       {
@@ -30,25 +38,23 @@ namespace piranha
       {
         return &trig;
       }
-      Cf *g_cf()
+      Cf *s_cf()
       {
         return &cf;
       }
-      Trig *g_trig()
+      Trig *s_trig()
       {
         return &trig;
+      }
+      void calculate_hash()
+      {
+        hash_value=trig.hasher();
       }
 // Data members.
       mutable Cf    cf;
       mutable Trig  trig;
+      size_t        hash_value;
     };
-
-/// Overload for the computation of the hash_value.
-    template <class Cf, class Trig>
-      inline size_t hash_value(const light_term<Cf,Trig> &t)
-    {
-      return t.trig.hasher();
-    }
 }
 
 #endif
