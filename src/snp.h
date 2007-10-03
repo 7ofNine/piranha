@@ -22,7 +22,7 @@
 #define PIRANHA_SNP_H
 
 #include "double_cf.h"
-#include "mm_malloc_allocator.h"
+#include "pool_allocator.h"
 #include "norm_index.h"
 #include "ps.h"
 #include "simple_term.h"
@@ -33,7 +33,7 @@ namespace piranha
   template <int N>
     struct snp
   {
-    typedef ps<double_cf,trig_simd_array<N>,simple_term,norm_based_index,mm_malloc_allocator<char,16> > type;
+    typedef ps<double_cf,trig_simd_array<N>,simple_term,norm_based_index,pool_allocator<char,16> > type;
   };
 }
 #endif
