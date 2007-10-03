@@ -146,8 +146,8 @@ namespace piranha
     if (t1.g_flavour()==t2.g_flavour())
     {
       term_pair.template get
-        <0>().s_flavour()=term_pair.template get
-        <1>().s_flavour()=true;
+        <0>().s_trig()->s_flavour()=term_pair.template get
+        <1>().s_trig()->s_flavour()=true;
       if(!t1.g_flavour())
       {
         *term_pair.template get
