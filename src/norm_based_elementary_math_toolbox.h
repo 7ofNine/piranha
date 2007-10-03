@@ -33,7 +33,7 @@ namespace piranha
   template <class Derived>
     class norm_based_elementary_math_toolbox
   {
-    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived_, class Allocator>
+    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class DerivedPs, class Allocator>
       friend class base_pseries;
     private:
 // Boilerplate for faster multiplication.
