@@ -29,6 +29,10 @@
   + __GNUC_MINOR__ * 1000 \
   + __GNUC_PATCHLEVEL__ * 10)
 
+#if GCC_VERSION < 304000
+#error "Minimum required GCC version is 3.4"
+#endif
+
 //          /* Test for GCC > 3.2.0 */
 //          #if GCC_VERSION > 302000
 
