@@ -25,11 +25,11 @@
 #error "GCC is the only supported compiler"
 #endif
 
-#define GCC_VERSION (__GNUC__ * 10000 \
-  + __GNUC_MINOR__ * 100 \
-  + __GNUC_PATCHLEVEL__)
+#define GCC_VERSION (__GNUC__ * 100000 \
+  + __GNUC_MINOR__ * 1000 \
+  + __GNUC_PATCHLEVEL__ * 10)
 
 //          /* Test for GCC > 3.2.0 */
-//          #if GCC_VERSION > 30200
+//          #if GCC_VERSION > 302000
 
 #endif
