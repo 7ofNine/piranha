@@ -22,8 +22,10 @@
 #define PIRANHA_BASE_PSERIES_DEF_H
 
 #include <boost/multi_index_container.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "base_pseries_hooks.h"
+#include "light_term.h"
 #include "phase_list.h"
 #include "psymbol.h"
 
@@ -53,6 +55,8 @@ namespace piranha
       typedef I<cf_type, trig_type, Term> index_type;
       typedef Derived derived_type;
       typedef Allocator allocator_type;
+      typedef light_term<cf_type,trig_type> light_term_type;
+      typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
 /// Alias for the evaluation type.
 /**
  * @see base_pseries::t_eval.
@@ -476,7 +480,7 @@ namespace piranha
         bool series_multiplication_optimize_for_cf(const Derived2 &);
       template <class Cf2>
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
-        boost::tuple<term_type &,term_type &> &, cf_type &);
+        light_term_pair &, cf_type &);
     private:
 /// Name comparison functor for psymbol pointers.
 /**
