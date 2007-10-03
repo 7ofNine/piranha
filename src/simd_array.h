@@ -225,6 +225,28 @@ namespace piranha
           private_sub_[m128n-1].s[i]=-private_sub_[m128n-1].s[i];
         }
       }
+      bool is_zero() const
+      {
+        usint i,j;
+        for (i=0;i<m128n-1;++i)
+        {
+          for (j=0;j<8;++j)
+          {
+            if (private_sub_[i].s[j] != 0)
+            {
+              return false;
+            }
+          }
+        }
+        for (i=0;i<rem;++i)
+        {
+          if (private_sub_[m128n-1].s[i] != 0)
+          {
+            return false;
+          }
+        }
+        return true;
+      }
     private:
       static const sint                       m128n = Dim/8+1;
       static const sint                       dimenstion = Dim;

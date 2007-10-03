@@ -141,6 +141,10 @@ namespace piranha
       {
         return private_container_.sign();
       }
+      bool is_zero() const
+      {
+        return private_container_.is_zero();
+      }
 // Math.
 /// Multiplication.
       void trigmult(const trig_simd_array &t2, trig_simd_array &ret1, trig_simd_array &ret2) const
