@@ -103,7 +103,7 @@ namespace piranha
  *
  *  @endif
  */
-  template <int Alignment = 8>
+  template <int Alignment>
     class pool_allocator_base
   {
 // Check that Alignment is > 0 and a multiple of 8
@@ -282,7 +282,7 @@ namespace piranha
     size_t pool_allocator_base<Alignment>::_S_heap_size = 0;
 
 /// Class pool_allocator.
-  template<typename _Tp, int Alignment>
+  template<typename _Tp, int Alignment = 8>
     class pool_allocator : private pool_allocator_base<Alignment>
   {
     private:
