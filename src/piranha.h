@@ -23,6 +23,7 @@
 
 // Include all piranha headers.
 
+#include "config.h"
 #include "arg_manager.h"
 #include "astro.h"
 #include "base_ipoly.h"
