@@ -52,11 +52,19 @@
 #include <ext/atomicity.h>
 #include <ext/concurrence.h>
 
+namespace
+{
+  __gnu_cxx::__mutex palloc_init_mutex;
+}
+
 namespace piranha
 {
 
   using std::size_t;
   using std::ptrdiff_t;
+  using __gnu_cxx::__atomic_add_dispatch;
+  using __gnu_cxx::__mutex;
+  using __gnu_cxx::__scoped_lock;
 
 /**
  *  @brief  Base class for pool_allocator.
@@ -121,6 +129,139 @@ namespace piranha
         _M_allocate_chunk(size_t __n, int& __nobjs);
   };
 
+// Definitions for pool_allocator_base.
+  template <int Alignment>
+    typename pool_allocator_base<Alignment>::_Obj* volatile*
+    pool_allocator_base<Alignment>::_M_get_free_list(size_t __bytes)
+  {
+    size_t __i = ((__bytes + (size_t)_S_align - 1) / (size_t)_S_align - 1);
+    return _S_free_list + __i;
+  }
+
+  template <int Alignment>
+    __mutex&
+    pool_allocator_base<Alignment>::_M_get_mutex()
+    { return palloc_init_mutex; }
+
+// Allocate memory in large chunks in order to avoid fragmenting the
+// heap too much.  Assume that __n is properly aligned.  We hold the
+// allocation lock.
+  template <int Alignment>
+    char*
+    pool_allocator_base<Alignment>::_M_allocate_chunk(size_t __n, int& __nobjs)
+  {
+    char* __result;
+    size_t __total_bytes = __n * __nobjs;
+    size_t __bytes_left = _S_end_free - _S_start_free;
+
+    if (__bytes_left >= __total_bytes)
+    {
+      __result = _S_start_free;
+      _S_start_free += __total_bytes;
+      return __result ;
+    }
+    else if (__bytes_left >= __n)
+    {
+      __nobjs = (int)(__bytes_left / __n);
+      __total_bytes = __n * __nobjs;
+      __result = _S_start_free;
+      _S_start_free += __total_bytes;
+      return __result;
+    }
+    else
+    {
+// Try to make use of the left-over piece.
+      if (__bytes_left > 0)
+      {
+        _Obj* volatile* __free_list = _M_get_free_list(__bytes_left);
+        ((_Obj*)(void*)_S_start_free)->_M_free_list_link = *__free_list;
+        *__free_list = (_Obj*)(void*)_S_start_free;
+      }
+
+      size_t __bytes_to_get = (2 * __total_bytes
+        + _M_round_up(_S_heap_size >> 4));
+      try
+      {
+        _S_start_free = static_cast<char*>(::operator new(__bytes_to_get));
+      }
+      catch (...)
+      {
+// Try to make do with what we have.  That can't hurt.  We
+// do not try smaller requests, since that tends to result
+// in disaster on multi-process machines.
+        size_t __i = __n;
+        for (; __i <= (size_t) _S_max_bytes; __i += (size_t) _S_align)
+        {
+          _Obj* volatile* __free_list = _M_get_free_list(__i);
+          _Obj* __p = *__free_list;
+          if (__p != 0)
+          {
+            *__free_list = __p->_M_free_list_link;
+            _S_start_free = (char*)__p;
+            _S_end_free = _S_start_free + __i;
+            return _M_allocate_chunk(__n, __nobjs);
+// Any leftover piece will eventually make it to the
+// right free list.
+          }
+        }
+// What we have wasn't enough.  Rethrow.
+        _S_start_free = _S_end_free = 0;          // We have no chunk.
+        __throw_exception_again;
+      }
+      _S_heap_size += __bytes_to_get;
+      _S_end_free = _S_start_free + __bytes_to_get;
+      return _M_allocate_chunk(__n, __nobjs);
+    }
+  }
+
+// Returns an object of size __n, and optionally adds to "size
+// __n"'s free list.  We assume that __n is properly aligned.  We
+// hold the allocation lock.
+  template <int Alignment>
+    void*
+    pool_allocator_base<Alignment>::_M_refill(size_t __n)
+  {
+    int __nobjs = 20;
+    char* __chunk = _M_allocate_chunk(__n, __nobjs);
+    _Obj* volatile* __free_list;
+    _Obj* __result;
+    _Obj* __current_obj;
+    _Obj* __next_obj;
+
+    if (__nobjs == 1)
+      return __chunk;
+    __free_list = _M_get_free_list(__n);
+
+// Build free list in chunk.
+    __result = (_Obj*)(void*)__chunk;
+    *__free_list = __next_obj = (_Obj*)(void*)(__chunk + __n);
+    for (int __i = 1; ; __i++)
+    {
+      __current_obj = __next_obj;
+      __next_obj = (_Obj*)(void*)((char*)__next_obj + __n);
+      if (__nobjs - 1 == __i)
+      {
+        __current_obj->_M_free_list_link = 0;
+        break;
+      }
+      else
+        __current_obj->_M_free_list_link = __next_obj;
+    }
+    return __result;
+  }
+
+  template <int Alignment>
+    typename pool_allocator_base<Alignment>::_Obj* volatile pool_allocator_base<Alignment>::_S_free_list[_S_free_list_size];
+
+  template <int Alignment>
+    char* pool_allocator_base<Alignment>::_S_start_free = 0;
+
+  template <int Alignment>
+    char* pool_allocator_base<Alignment>::_S_end_free = 0;
+
+  template <int Alignment>
+    size_t pool_allocator_base<Alignment>::_S_heap_size = 0;
+
 /// Class pool_allocator.
   template<typename _Tp, int Alignment>
     class pool_allocator : private pool_allocator_base<Alignment>
@@ -129,24 +270,26 @@ namespace piranha
       static _Atomic_word     _S_force_new;
 
     public:
-      typedef size_t     size_type;
-      typedef ptrdiff_t  difference_type;
-      typedef _Tp*       pointer;
-      typedef const _Tp* const_pointer;
-      typedef _Tp&       reference;
-      typedef const _Tp& const_reference;
-      typedef _Tp        value_type;
+      typedef size_t                          size_type;
+      typedef ptrdiff_t                       difference_type;
+      typedef _Tp*                            pointer;
+      typedef const _Tp*                      const_pointer;
+      typedef _Tp&                            reference;
+      typedef const _Tp&                      const_reference;
+      typedef _Tp                             value_type;
+      typedef pool_allocator_base<Alignment>  ancestor;
+      typedef typename ancestor::_Obj         _Obj;
 
       template<typename _Tp1>
         struct rebind
-        { typedef pool_allocator<_Tp1> other; };
+        { typedef pool_allocator<_Tp1,Alignment> other; };
 
       pool_allocator() throw() { }
 
       pool_allocator(const pool_allocator&) throw() { }
 
       template<typename _Tp1>
-        pool_allocator(const pool_allocator<_Tp1>&) throw() { }
+        pool_allocator(const pool_allocator<_Tp1,Alignment>&) throw() { }
 
       ~pool_allocator() throw() { }
 
@@ -212,16 +355,16 @@ namespace piranha
       }
 
       const size_t __bytes = __n * sizeof(_Tp);
-      if (__bytes > size_t(_S_max_bytes) || _S_force_new == 1)
+      if (__bytes > size_t(ancestor::_S_max_bytes) || _S_force_new == 1)
         __ret = static_cast<_Tp*>(::operator new(__bytes));
       else
       {
-        _Obj* volatile* __free_list = _M_get_free_list(__bytes);
+        _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
 
-        __scoped_lock sentry(_M_get_mutex());
+        __scoped_lock sentry(ancestor::_M_get_mutex());
         _Obj* __restrict__ __result = *__free_list;
         if (__builtin_expect(__result == 0, 0))
-          __ret = static_cast<_Tp*>(_M_refill(_M_round_up(__bytes)));
+          __ret = static_cast<_Tp*>(_M_refill(ancestor::_M_round_up(__bytes)));
         else
         {
           *__free_list = __result->_M_free_list_link;
@@ -241,14 +384,14 @@ namespace piranha
     if (__builtin_expect(__n != 0 && __p != 0, true))
     {
       const size_t __bytes = __n * sizeof(_Tp);
-      if (__bytes > static_cast<size_t>(_S_max_bytes) || _S_force_new == 1)
+      if (__bytes > static_cast<size_t>(ancestor::_S_max_bytes) || _S_force_new == 1)
         ::operator delete(__p);
       else
       {
-        _Obj* volatile* __free_list = _M_get_free_list(__bytes);
+        _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
         _Obj* __q = reinterpret_cast<_Obj*>(__p);
 
-        __scoped_lock sentry(_M_get_mutex());
+        __scoped_lock sentry(ancestor::_M_get_mutex());
         __q ->_M_free_list_link = *__free_list;
         *__free_list = __q;
       }
