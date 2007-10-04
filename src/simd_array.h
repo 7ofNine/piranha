@@ -41,6 +41,7 @@ namespace piranha
       {
         __m128i m;
         sint    s[8];
+        int     i[4];
       };
     public:
 /// Default constructor.
@@ -62,6 +63,7 @@ namespace piranha
 /// Destructor.
       ~simd_array()
         {}
+// These operators are used from piranha::base_trig_array in non-speed-critical operations (I/O, for instance).
       const sint &operator[](const usint &n) const
       {
         return private_sub_[n/8].s[n%8];
@@ -103,9 +105,9 @@ namespace piranha
         usint i,j;
         for (i=0;i<m128n-1;++i)
         {
-          for (j=0;j<8;++j)
+          for (j=0;j<4;++j)
           {
-            if (private_sub_[i].s[j] != s.private_sub_[i].s[j])
+            if (private_sub_[i].i[j] != s.private_sub_[i].i[j])
             {
               return false;
             }
@@ -155,9 +157,9 @@ namespace piranha
         usint i,j;
         for (i=0;i<m128n-1;++i)
         {
-          for (j=0;j<8;++j)
+          for (j=0;j<4;++j)
           {
-            boost::hash_combine(seed,private_sub_[i].s[j]);
+            boost::hash_combine(seed,private_sub_[i].i[j]);
           }
         }
         for (i=0;i<rem;++i)
