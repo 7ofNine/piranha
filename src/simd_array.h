@@ -54,10 +54,7 @@ namespace piranha
       simd_array(const simd_array &s)
       {
 //std::cout << "Copy ctor start\n";
-        for (usint i=0;i<m128n;++i)
-        {
-          private_sub_[i].m=s.private_sub_[i].m;
-        }
+        assignment(s);
 //std::cout << "Copy ctor end\n";
       }
 /// Destructor.
@@ -77,10 +74,7 @@ namespace piranha
 //std::cout << "Assignment operator\n";
         if (this != &s)
         {
-          for (usint i=0;i<m128n;++i)
-          {
-            private_sub_[i].m=s.private_sub_[i].m;
-          }
+          assignment(s);
         }
         return *this;
       }
@@ -249,6 +243,14 @@ namespace piranha
           }
         }
         return true;
+      }
+    private:
+      void assignment(const simd_array &s)
+      {
+        for (usint i=0;i<m128n;++i)
+        {
+          private_sub_[i].m=s.private_sub_[i].m;
+        }
       }
     private:
       static const sint                       m128n = Dim/8+1;
