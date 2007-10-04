@@ -130,14 +130,14 @@ namespace std
   ancestor::base_pseries(cf_type(a,b))
   {}*/
 /// Constructor from complex.
-      explicit complex(const complex_double &c)
+      explicit complex(const piranha::complex_double &c)
       {
         ancestor::generic_builder(c);
       }
 /// Constructor from pair of doubles.
       explicit complex(const double &a, const double &b)
       {
-        ancestor::generic_builder(complex_double(a,b));
+        ancestor::generic_builder(piranha::complex_double(a,b));
       }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.

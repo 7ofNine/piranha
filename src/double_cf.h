@@ -238,38 +238,38 @@ namespace std
 {
   template <>
     struct complex<piranha::double_cf> :
-  public piranha::simple_container<complex_double,complex<piranha::double_cf> >
+  public piranha::simple_container<piranha::complex_double,complex<piranha::double_cf> >
   {
     public:
       typedef complex self;
       typedef piranha::double_cf double_type;
-      typedef piranha::simple_container<complex_double,complex<piranha::double_cf> > ancestor;
+      typedef piranha::simple_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
 // Start INTERFACE definition for the complex specialization. FIXME: is this different from
 // the above???
 //-------------------------------------------------------
-      typedef complex_double eval_type;
+      typedef piranha::complex_double eval_type;
 // Ctors and dtor.
       explicit complex():ancestor::simple_container()
         {}
       explicit complex(const std::string &s):ancestor::simple_container(s)
         {}
       explicit complex(const double_type &r, const double_type &i):
-      ancestor::simple_container(complex_double(r.value(),i.value()))
+      ancestor::simple_container(piranha::complex_double(r.value(),i.value()))
         {}
       explicit complex(const double_type &r):
-      ancestor::simple_container(complex_double(r.value(),0.))
+      ancestor::simple_container(piranha::complex_double(r.value(),0.))
         {}
-      explicit complex(const complex_double &c):ancestor::simple_container(c)
+      explicit complex(const piranha::complex_double &c):ancestor::simple_container(c)
         {}
-      explicit complex(int n):ancestor::simple_container(complex_double(n,0.))
+      explicit complex(int n):ancestor::simple_container(piranha::complex_double(n,0.))
         {}
-      explicit complex(int n1, int n2):ancestor::simple_container(complex_double(n1,n2))
+      explicit complex(int n1, int n2):ancestor::simple_container(piranha::complex_double(n1,n2))
         {}
       explicit complex(const double &x):
-      ancestor::simple_container(complex_double(x,0.))
+      ancestor::simple_container(piranha::complex_double(x,0.))
         {}
       explicit complex(const double &x1, const double x2):
-      ancestor::simple_container(complex_double(x1,x2))
+      ancestor::simple_container(piranha::complex_double(x1,x2))
         {}
       ~complex()
         {}
@@ -295,10 +295,10 @@ namespace std
 /// Set value_ to be an imag only value.
       void set_imag(const double_type &i)
       {
-        value_=complex_double(0,i.value());
+        value_=piranha::complex_double(0,i.value());
       }
 // Evaluation.
-      complex_double t_eval(const double &, const piranha::vector_psym_p &) const
+      piranha::complex_double t_eval(const double &, const piranha::vector_psym_p &) const
       {
         return value_;
       }
@@ -423,7 +423,7 @@ namespace std
   {
     string tmp;
     getline(is,tmp);
-    dc.value()=piranha::utils::lexical_converter<complex_double>(tmp);
+    dc.value()=piranha::utils::lexical_converter<piranha::complex_double>(tmp);
     return is;
   }
 

@@ -143,7 +143,7 @@ namespace std
 // Start INTERFACE definition for the complex specialization.
 //-------------------------------------------------------
     public:
-      typedef complex_double eval_type;
+      typedef piranha::complex_double eval_type;
 // Ctors and dtor.
       explicit complex():ancestor::base_polynomial()
         {}
@@ -191,7 +191,7 @@ namespace std
           ancestor::insert(m_type(*it));
         }
       }
-      explicit complex(const complex_double &c)
+      explicit complex(const piranha::complex_double &c)
       {
         ancestor::insert(m_type(numerical_type(c)));
       }

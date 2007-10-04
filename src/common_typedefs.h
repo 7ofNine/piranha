@@ -29,26 +29,30 @@
 
 // These are commonly used typedefs.
 
+namespace piranha
+{
 /// Alias for short int.
-typedef short int sint;
+  typedef short int sint;
 /// Alias for unsigned short int.
-typedef unsigned short int usint;
+  typedef unsigned short int usint;
 /// Alias for the size of trigonometric containers.
-typedef unsigned short int trig_size_t;
+  typedef unsigned short int trig_size_t;
 /// Alias for the multipliers (elements of j vectors).
-typedef short int mult_t;
+  typedef short int mult_t;
 /// Alias for complex doubles.
-typedef std::complex<double> complex_double;
+  typedef std::complex<double> complex_double;
 /// Alias for array of mult_t.
-typedef std::valarray<mult_t> array_mult_t;
+  typedef std::valarray<mult_t> array_mult_t;
 /// Alias for vector of mult_t.
-typedef std::vector<mult_t> vector_mult_t;
+  typedef std::vector<mult_t> vector_mult_t;
 /// Alias for vector of double.
-typedef std::vector<double> vector_double;
+  typedef std::vector<double> vector_double;
 /// Deque of strings. Convenience typedef.
-typedef std::deque<std::string> deque_string;
+  typedef std::deque<std::string> deque_string;
 /// Alias for exponent type.
-typedef short int expo_type;
+  typedef short int expo_type;
 /// Alias for degree type.
-typedef int degree_type;
+  typedef int degree_type;
+}
+
 #endif
