@@ -17,6 +17,14 @@ ENDIF(BUILD_PYRANHA_SP)
 SET(SRC_LIST ${SRC_LIST} settings_manager.cpp stats.cpp astro.cpp arg_manager.cpp
   stream_manager.cpp psymbol.cpp)
 
+IF(ENABLE_HOARD)
+  INCLUDE_DIRECTORIES("hoard")
+  INCLUDE_DIRECTORIES("hoard/heaplayers")
+  INCLUDE_DIRECTORIES("hoard/heaplayers/util")
+  SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} pthread dl)
+  SET(SRC_LIST ${SRC_LIST} hoard/libhoard.cpp)
+ENDIF(ENABLE_HOARD)
+
 IF(BUILD_TBB_MULTITHREADING)
   SET(SRC_LIST ${SRC_LIST}
     tbb/cache_aligned_allocator.cpp
