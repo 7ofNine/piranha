@@ -21,6 +21,8 @@
 #ifndef PIRANHA_SNP_H
 #define PIRANHA_SNP_H
 
+#ifdef _PIRANHA_SSE2
+
 #include "double_cf.h"
 #include "pool_allocator.h"
 #include "norm_index.h"
@@ -36,4 +38,7 @@ namespace piranha
     typedef ps<double_cf,trig_simd_array<N>,simple_term,norm_based_index,pool_allocator<char,16> > type;
   };
 }
+
+#endif
+
 #endif
