@@ -27,6 +27,9 @@
 
 #include "common_typedefs.h"
 
+// FIXME: here we must pay attention to the fact that mult_t != sint, and on other arch this could
+// be an issue. Maybe we should use the types provided by the compiler? uint32, uint12, etc.
+
 namespace piranha
 {
   template <int Dim>
