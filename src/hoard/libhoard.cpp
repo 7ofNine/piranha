@@ -89,11 +89,11 @@ namespace Hoard {
 
 }
 
-#include "ansiwrapper.h"
-#include "cpuinfo.h"
-#include "hoard.h"
-#include "heapmanager.h"
-#include "tlab.h"
+#include <ansiwrapper.h>
+#include <cpuinfo.h>
+#include <hoard.h>
+#include <heapmanager.h>
+#include <tlab.h>
 
 //
 // The base Hoard heap.
@@ -155,10 +155,10 @@ inline static HoardHeapType * getMainHoardHeap (void) {
                      + __GNUC_MINOR__ * 100 \
                      + __GNUC_PATCHLEVEL__)
 
-#include "userealtls.cpp"
+#include <userealtls.cpp>
 
 //
 // Finally, get the replacements for the rest of the malloc family.
 //
 
-#include "wrapper.cpp"
+#include <wrapper.cpp>
