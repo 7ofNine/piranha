@@ -149,10 +149,8 @@ namespace piranha
 /// Multiplication.
       void trigmult(const trig_simd_array &t2, trig_simd_array &ret1, trig_simd_array &ret2) const
       {
-        ret1.private_container_=private_container_;
-        ret1.private_container_-=t2.private_container_;
-        ret2.private_container_=private_container_;
-        ret2.private_container_+=t2.private_container_;
+        container_type::sub(private_container_,t2.private_container_,ret1.private_container_);
+        container_type::add(private_container_,t2.private_container_,ret2.private_container_);
       }
       trig_simd_array &operator=(const trig_simd_array &t2)
       {

@@ -79,23 +79,21 @@ namespace piranha
         }
         return *this;
       }
-      simd_array &operator+=(const simd_array &s)
+      static void add(const simd_array &s1, const simd_array &s2, simd_array &result)
       {
         usint i;
         for (i=0;i<m128n;++i)
         {
-          private_sub_[i].m=_mm_add_epi16(private_sub_[i].m,s.private_sub_[i].m);
+          result.private_sub_[i].m=_mm_add_epi16(s1.private_sub_[i].m,s2.private_sub_[i].m);
         }
-        return *this;
       }
-      simd_array &operator-=(const simd_array &s)
+      static void sub(const simd_array &s1, const simd_array &s2, simd_array &result)
       {
         usint i;
         for (i=0;i<m128n;++i)
         {
-          private_sub_[i].m=_mm_sub_epi16(private_sub_[i].m,s.private_sub_[i].m);
+          result.private_sub_[i].m=_mm_sub_epi16(s1.private_sub_[i].m,s2.private_sub_[i].m);
         }
-        return *this;
       }
       bool equality_test(const simd_array &s) const
       {
