@@ -52,7 +52,7 @@ namespace piranha
         return private_container_.insert(e).first;
       }
     private:
-      __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator>    private_container_;
+      container_type    private_container_;
   };
 }
 
