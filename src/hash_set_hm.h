@@ -18,29 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CONFIG_H
-#define PIRANHA_CONFIG_H
+#ifndef PIRANHA_HASH_SET_HM_H
+#define PIRANHA_HASH_SET_HM_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
+#include <ext/hash_set>
 
-#define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
-#endif
-
-//#if GCC_VERSION < 402000
-#if GCC_VERSION <= 402000
-#include "hash_set_hm.h"
-#else
-#include "pb_hm.h"
-#endif
-
-//          /* Test for GCC > 3.2.0 */
-//          #if GCC_VERSION > 302000
+namespace piranha
+{
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash = false>
+    class mult_hash
+  {
+      typedef __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator> container_type;
+    public:
+      typedef typename container_type::iterator iterator;
+      mult_hash()
+        {}
+      mult_hash(const size_t &s):private_container_(s)
+        {}
+      iterator begin() const
+      {
+        return private_container_.begin();
+      }
+      iterator end() const
+      {
+        return private_container_.end();
+      }
+      iterator find(const Element &e) const
+      {
+        return private_container_.find(e);
+      }
+      iterator insert(const Element &e)
+      {
+        return private_container_.insert(e).first;
+      }
+    private:
+      __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator>    private_container_;
+  };
+}
 
 #endif

@@ -24,6 +24,8 @@
 #include <boost/foreach.hpp>
 #include <ext/hash_set>
 
+#include "config.h"
+
 namespace piranha
 {
 /// Elementary math toolbox for numerical series.
@@ -78,8 +80,8 @@ namespace piranha
         typedef typename Derived::ancestor::light_term_type light_term_type;
         typedef typename Derived::ancestor::light_term_pair light_term_pair;
         typedef typename Derived::ancestor::allocator_type allocator_type;
-        typedef __gnu_cxx::hash_set<light_term_type,light_term_hasher,
-          std::equal_to<light_term_type>,allocator_type> m_hash;
+        typedef mult_hash<light_term_type,light_term_hasher,
+          std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
