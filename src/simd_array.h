@@ -161,6 +161,7 @@ namespace piranha
           boost::hash_combine(seed,private_sub_[m128n-1].s[i]);
         }
       }
+// TODO: this can probably be optimized.
       simd_array &operator*=(const sint &n)
       {
         usint i,j;
