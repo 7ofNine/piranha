@@ -21,13 +21,34 @@
 #ifndef PIRANHA_PB_HM_H
 #define PIRANHA_PB_HM_H
 
+#if GCC_VERSION < 402000
+#include <ext/pb_assoc/assoc_cntnr.hpp>
+#else
 #include <ext/pb_ds/assoc_container.hpp>
+#endif
 
 namespace piranha
 {
-  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash = false>
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
     class mult_hash
   {
+#if GCC_VERSION < 402000
+      typedef pb_assoc::cc_hash_assoc_container<
+        Element,
+        pb_assoc::null_mapped_type,
+        Hasher,
+        std::equal_to<Element>,
+        pb_assoc::direct_mask_range_hashing<size_t>,
+        pb_assoc::hash_standard_resize_policy<
+          pb_assoc::hash_exponential_size_policy<size_t>,
+          pb_assoc::hash_load_check_resize_trigger<false,size_t>,
+          true,
+          size_t
+        >,
+        true,
+        Allocator
+      > container_type;
+#else
       typedef pb_ds::cc_hash_table<
         Element,
         pb_ds::null_mapped_type,
@@ -43,6 +64,7 @@ namespace piranha
         true,
         Allocator
       > container_type;
+#endif
     public:
       typedef typename container_type::const_iterator iterator;
       typedef typename container_type::point_iterator point_iterator;

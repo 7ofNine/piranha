@@ -25,7 +25,7 @@
 
 namespace piranha
 {
-  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash = false>
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
     class mult_hash
   {
       typedef __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator> container_type;

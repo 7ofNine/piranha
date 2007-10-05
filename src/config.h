@@ -33,7 +33,7 @@
 #error "Minimum required GCC version is 3.4"
 #endif
 
-#if GCC_VERSION < 402000
+#if GCC_VERSION < 401000
 #include "hash_set_hm.h"
 #else
 #include "pb_hm.h"
