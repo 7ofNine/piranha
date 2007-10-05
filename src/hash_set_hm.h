@@ -30,7 +30,8 @@ namespace piranha
   {
       typedef __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator> container_type;
     public:
-      typedef typename container_type::iterator iterator;
+      typedef typename container_type::const_iterator iterator;
+      typedef typename container_type::iterator point_iterator;
       mult_hash()
         {}
       mult_hash(const size_t &s):private_container_(s)
@@ -43,11 +44,11 @@ namespace piranha
       {
         return private_container_.end();
       }
-      iterator find(const Element &e) const
+      point_iterator find(const Element &e) const
       {
         return private_container_.find(e);
       }
-      iterator insert(const Element &e)
+      point_iterator insert(const Element &e)
       {
         return private_container_.insert(e).first;
       }

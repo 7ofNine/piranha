@@ -83,9 +83,10 @@ namespace piranha
         typedef mult_hash<light_term_type,light_term_hasher,
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
+        typedef typename m_hash::point_iterator m_hash_point_iterator;
         const Derived *derived_cast=static_cast<Derived const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
-        m_hash_iterator hm_it;
+        m_hash_point_iterator hm_p_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
           Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
         size_t n=0;
@@ -138,29 +139,29 @@ namespace piranha
             {
               term1->invert_trig_args();
             }
-            hm_it=hm.find(*term0);
-            if (hm_it == hm.end())
+            hm_p_it=hm.find(*term0);
+            if (hm_p_it == hm.end())
             {
               hm.insert(*term0);
             }
             else
             {
-              hm_it->cf+=*c0;
+              hm_p_it->cf+=*c0;
             }
-            hm_it=hm.find(*term1);
-            if (hm_it == hm.end())
+            hm_p_it=hm.find(*term1);
+            if (hm_p_it == hm.end())
             {
               hm.insert(*term1);
             }
             else
             {
-              hm_it->cf+=*c1;
+              hm_p_it->cf+=*c1;
             }
             ++n;
           }
         }
         const m_hash_iterator hm_it_f=hm.end();
-        for (hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
+        for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
         {
           retval.insert(term_type(hm_it->cf,hm_it->trig));
         }
