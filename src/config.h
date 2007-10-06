@@ -39,7 +39,4 @@
 #include "pb_hm.h"
 #endif
 
-//          /* Test for GCC > 3.2.0 */
-//          #if GCC_VERSION > 302000
-
 #endif
