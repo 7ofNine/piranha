@@ -336,7 +336,7 @@ std::cout << "Length: " << length() << '\n';
     class max_n_cache
     {
       public:
-        max_n_cache():private_container_(std::floor(std::log(im_type::max_index)/std::log(2))+1)
+        max_n_cache():private_container_((size_t)std::floor(std::log(im_type::max_index)/std::log(2))+1)
         {
           const size_t w=private_container_.size();
           p_assert(w >= 1);
