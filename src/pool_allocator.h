@@ -67,7 +67,7 @@
 #if GCC_VERSION < 402000
 #include <bits/atomicity.h>
 #include <bits/concurrence.h>
-#define gnu_cxx_mutex __gnu_cxx::mutex
+#define gnu_cxx_mutex __gnu_cxx::mutex_type
 #define gnu_cxx_atomic_add_dispatch __gnu_cxx::__atomic_add
 #define gnu_cxx_scoped_lock __gnu_cxx::lock
 #else
