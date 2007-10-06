@@ -151,6 +151,7 @@ namespace piranha
       {
         return sizeof(trig_fixed_array);
       }
+// FIXME: do a real check here, cf_width in series could be different than 0.
       bool checkup(const size_t &) const
       {
         return true;
