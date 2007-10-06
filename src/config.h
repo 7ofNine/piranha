@@ -33,10 +33,12 @@
 #error "Minimum required GCC version is 3.4"
 #endif
 
-#if GCC_VERSION < 402000
+// Disable this for now, pb hash container has horrible performance in certain
+// cases with boost::hash hash function.
+//#if GCC_VERSION <= 402000
 #include "hash_set_hm.h"
-#else
-#include "pb_hm.h"
-#endif
+//#else
+//#include "pb_hm.h"
+//#endif
 
 #endif
