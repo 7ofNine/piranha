@@ -62,14 +62,22 @@
 #ifndef PIRANHA_POOL_ALLOCATOR_H
 #define PIRANHA_POOL_ALLOCATOR_H
 
+#include "config.h"
+
+#if GCC_VERSION < 402000
+#include <bits/atomicity.h>
+#include <bits/concurrence.h>
+#else
+#include <ext/atomicity.h>
+#include <ext/concurrence.h>
+#endif
 #include <bits/c++config.h>
 #include <boost/static_assert.hpp>
 #include <cstdlib>
 #include <new>
 #include <bits/functexcept.h>
-#include <ext/atomicity.h>
-#include <ext/concurrence.h>
 #include <mm_malloc.h>
+
 
 namespace
 {
