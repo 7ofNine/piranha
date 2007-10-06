@@ -67,9 +67,15 @@
 #if GCC_VERSION < 402000
 #include <bits/atomicity.h>
 #include <bits/concurrence.h>
+#define gnu_cxx_mutex __gnu_cxx::mutex
+#define gnu_cxx_atomic_add_dispatch __gnu_cxx::__atomic_add
+#define gnu_cxx_scoped_lock __gnu_cxx::lock
 #else
 #include <ext/atomicity.h>
 #include <ext/concurrence.h>
+#define gnu_cxx_mutex __gnu_cxx::__mutex
+#define gnu_cxx_atomic_add_dispatch __gnu_cxx::__atomic_add_dispatch
+#define gnu_cxx_scoped_lock __gnu_cxx::__scoped_lock
 #endif
 #include <bits/c++config.h>
 #include <boost/static_assert.hpp>
@@ -78,10 +84,9 @@
 #include <bits/functexcept.h>
 #include <mm_malloc.h>
 
-
 namespace
 {
-  __gnu_cxx::__mutex palloc_init_mutex;
+  gnu_cxx_mutex palloc_init_mutex;
 }
 
 namespace piranha
@@ -89,9 +94,6 @@ namespace piranha
 
   using std::size_t;
   using std::ptrdiff_t;
-  using __gnu_cxx::__atomic_add_dispatch;
-  using __gnu_cxx::__mutex;
-  using __gnu_cxx::__scoped_lock;
 
 /**
  *  @brief  Base class for pool_allocator.
@@ -142,7 +144,7 @@ namespace piranha
       _Obj* volatile*
         _M_get_free_list(size_t __bytes);
 
-      __mutex&
+      gnu_cxx_mutex&
         _M_get_mutex();
 
 // Returns an object of size __n, and optionally adds to size __n
@@ -166,7 +168,7 @@ namespace piranha
   }
 
   template <int Alignment>
-    inline __mutex&
+    inline gnu_cxx_mutex&
     pool_allocator_base<Alignment>::_M_get_mutex()
     { return palloc_init_mutex; }
 
@@ -378,9 +380,9 @@ namespace piranha
       if (_S_force_new == 0)
       {
         if (std::getenv("GLIBCXX_FORCE_NEW"))
-          __atomic_add_dispatch(&_S_force_new, 1);
+          gnu_cxx_atomic_add_dispatch(&_S_force_new, 1);
         else
-          __atomic_add_dispatch(&_S_force_new, -1);
+          gnu_cxx_atomic_add_dispatch(&_S_force_new, -1);
       }
 
       const size_t __bytes = __n * sizeof(_Tp);
@@ -390,7 +392,7 @@ namespace piranha
       {
         _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
 
-        __scoped_lock sentry(ancestor::_M_get_mutex());
+        gnu_cxx_scoped_lock sentry(ancestor::_M_get_mutex());
         _Obj* __restrict__ __result = *__free_list;
         if (__builtin_expect(__result == 0, 0))
           __ret = static_cast<_Tp*>(_M_refill(ancestor::_M_round_up(__bytes)));
@@ -420,11 +422,16 @@ namespace piranha
         _Obj* volatile* __free_list = ancestor::_M_get_free_list(__bytes);
         _Obj* __q = reinterpret_cast<_Obj*>(__p);
 
-        __scoped_lock sentry(ancestor::_M_get_mutex());
+        gnu_cxx_scoped_lock sentry(ancestor::_M_get_mutex());
         __q ->_M_free_list_link = *__free_list;
         *__free_list = __q;
       }
     }
   }
 }
+
+#undef gnu_cxx_mutex
+#undef gnu_cxx_atomic_add_dispatch
+#undef gnu_cxx_scoped_lock
+
 #endif
