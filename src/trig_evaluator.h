@@ -21,7 +21,7 @@
 #ifndef PIRANHA_TRIG_EVALUATOR_H
 #define PIRANHA_TRIG_EVALUATOR_H
 
-#include <boost/tuple/tuple.hpp>
+#include <utility>
 #include <vector>
 
 #include "common_typedefs.h"
@@ -33,8 +33,8 @@ namespace piranha
     class trig_evaluator
   {
       typedef std::vector<complex_double> vector_complex;
-      typedef boost::tuple<vector_complex,vector_complex> internal_tuple;
-      typedef std::vector<internal_tuple> container_type;
+      typedef std::pair<vector_complex,vector_complex> internal_pair;
+      typedef std::vector<internal_pair> container_type;
     public:
       trig_evaluator(const DerivedPs *ps, const double &t):private_ps_(ps),private_width_(ps->trig_width()),
         private_value_(t),private_container_(private_width_)
@@ -42,9 +42,9 @@ namespace piranha
 // Initialize powers 1 and -1 for all trigonometric arguments.
         for (size_t i=0;i<private_width_;++i)
         {
-          private_container_[i].get<0>().push_back(std::polar(1.,private_ps_->trig_s_vec()[i]->t_eval(t)));
-          private_container_[i].get<1>().push_back(complex_double(1.)/
-            private_container_[i].get<0>()[0]);
+          private_container_[i].first.push_back(std::polar(1.,private_ps_->trig_s_vec()[i]->t_eval(t)));
+          private_container_[i].second.push_back(complex_double(1.)/
+            private_container_[i].first[0]);
         }
       }
       complex_double request_complexp(const size_t &index, const int &power_)
@@ -53,12 +53,12 @@ namespace piranha
 // Make sure we are not going outside container's boundaries.
         p_assert(index < private_width_);
         int power=power_;
-        vector_complex *exp_vec=&private_container_[index].get<0>();
+        vector_complex *exp_vec=&private_container_[index].first;
 // Change sign and pointer to vector of complex exponentials if negative.
         if (power_<0)
         {
           power=-power_;
-          exp_vec=&private_container_[index].get<1>();
+          exp_vec=&private_container_[index].second;
         }
 // Add the missing elements.
         while (exp_vec->size() < (size_t)power)
