@@ -1,7 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2007 by Francesco Biscani   *
  *   bluescarni@gmail.com   *
- *   Copyright (C) 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-// NOTE: this allocator is modified from the "malloc_allocator" memory allocator
-// from GCC 4.2.0. Original copyright notice follows.
-
-// ORIGINAL COPYRIGHT BEGINS --------------------------------------------------
 // Copyright (C) 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
@@ -49,7 +44,6 @@
 // the GNU General Public License.  This exception does not however
 // invalidate any other reasons why the executable file might be covered by
 // the GNU General Public License.
-// ORIGINAL COPYRIGHT ENDS ----------------------------------------------------
 
 #ifndef PIRANHA_MM_MALLOC_ALLOCATOR_H
 #define PIRANHA_MM_MALLOC_ALLOCATOR_H
