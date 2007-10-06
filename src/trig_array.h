@@ -58,7 +58,7 @@ namespace piranha
         private_container_.resize(w-1);
         for (usint i=0;i<w-1;++i)
         {
-          private_container_[i]=utils::lexical_converter<int>(sd[i]);
+          private_container_[i]=utils::lexical_converter<mult_t>(sd[i]);
         }
 // Take care of flavour.
         if (*sd.back().c_str()=='s')
