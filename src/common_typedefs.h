@@ -27,10 +27,9 @@
 #include <valarray>
 #include <vector>
 
-// These are commonly used typedefs.
-
 namespace piranha
 {
+// These are commonly used typedefs.
 /// Alias for short int.
   typedef short int sint;
 /// Alias for unsigned short int.
