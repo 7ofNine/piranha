@@ -82,7 +82,12 @@
 #include <cstdlib>
 #include <new>
 #include <bits/functexcept.h>
+
+#if GCC_VERSION < 400000
+#include "mm_malloc.h"
+#else
 #include <mm_malloc.h>
+#endif
 
 namespace
 {
