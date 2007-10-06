@@ -97,6 +97,10 @@ namespace piranha
         std::swap(value_,dc.value_);
       }
 /// Prepend arguments.
+// TODO: place asserts here, to check we never want to resize to > 0.
+// TODO: how does this interact with appending arguments from series?
+// The problem here is how to handle resize request. Maybe coefficient
+// and trigs should have a trait that tells whether they are resizable or not?
       void append_args(const size_t &)
         {}
 /// Append arguments.
