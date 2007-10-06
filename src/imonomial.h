@@ -66,6 +66,7 @@ namespace piranha
     private:
       Index               index;
       mutable Cf          cf;
+    public:
       static const Index  max_index = ((((((Index)1)<<(sizeof(Index)*8-1))-1)<<1)+1);
   };
 
