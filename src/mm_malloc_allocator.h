@@ -48,17 +48,10 @@
 #ifndef PIRANHA_MM_MALLOC_ALLOCATOR_H
 #define PIRANHA_MM_MALLOC_ALLOCATOR_H
 
-#include "config.h"
-
 #include <cstdlib>
 #include <new>
 #include <bits/functexcept.h>
-
-#if GCC_VERSION < 400000
-#include "mm_malloc.h"
-#else
 #include <mm_malloc.h>
-#endif
 
 namespace piranha
 {
