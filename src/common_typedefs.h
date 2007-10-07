@@ -21,6 +21,7 @@
 #ifndef PIRANHA_COMMON_TYPEDEFS_H
 #define PIRANHA_COMMON_TYPEDEFS_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 #include <deque>
 #include <string>
@@ -30,12 +31,12 @@
 namespace piranha
 {
 // These are commonly used typedefs.
-/// Alias for short int.
-  typedef short int int16;
-/// Alias for unsigned short int.
-  typedef unsigned short int uint16;
+/// Alias for 16bit integer.
+  typedef boost::int16_t int16;
+/// Alias for unsigned 16bit integer.
+  typedef boost::uint16_t uint16;
 /// Alias for the size of trigonometric containers.
-  typedef unsigned short int trig_size_t;
+  typedef uint16 trig_size_t;
 /// Alias for the multipliers (elements of j vectors).
   typedef short int mult_t;
 /// Alias for complex doubles.
