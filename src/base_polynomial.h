@@ -118,7 +118,7 @@ namespace piranha
           return e_index().begin()->g_degree();
         }
       }
-      expo_type g_min_expo() const
+      uint16 g_min_expo() const
       {
         if (empty())
         {
@@ -532,8 +532,8 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     const size_t w=v.size();
     p_assert(w<=width());
     size_t j;
-    expo_type ex1, ex2, min_expo1;
-    const expo_type limit_min_expo=v.g_min_expo();
+    uint16 ex1, ex2, min_expo1;
+    const uint16 limit_min_expo=v.g_min_expo();
     bool proceed;
     for (iterator it1=e_index().begin();it1!=it_f1;++it1)
     {

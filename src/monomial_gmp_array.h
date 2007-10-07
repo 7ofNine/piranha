@@ -52,7 +52,7 @@ namespace piranha
 /// Alias for the rational coefficient.
       typedef mpq_class rational_type;
 /// Alias for the container type.
-      typedef std::valarray<expo_type> container_type;
+      typedef std::valarray<uint16> container_type;
 /// Evaluation result.
       typedef typename numerical_type::eval_type eval_type;
 /// Functor to update monomial's coefficients.
@@ -155,7 +155,7 @@ namespace piranha
         {}
 // Getters & Setters.
 /// Get minimum exponent.
-      expo_type g_min_expo() const
+      uint16 g_min_expo() const
       {
         return private_min_expo_;
       }
@@ -204,14 +204,14 @@ namespace piranha
       eval_type t_eval(const double &, const vector_psym_p &) const;
 // Probing.
 /// Explicitly calculate minimum exponent.
-      expo_type calc_min_expo() const
+      uint16 calc_min_expo() const
       {
         const size_t w=width();
         if (w==0)
         {
           return 0;
         }
-        expo_type retval=g_container()[0];
+        uint16 retval=g_container()[0];
         for (size_t i=1;i<w;++i)
         {
           if (g_container()[i] < retval)
@@ -258,7 +258,7 @@ namespace piranha
         p_assert(n<w);
         retval.increase_size(w);
         p_assert(w==retval.width());
-        const expo_type exponent=g_container()[n];
+        const uint16 exponent=g_container()[n];
         retval.private_min_expo_=private_min_expo_;
         retval.private_degree_=private_degree_;
         if (exponent==0)
@@ -271,7 +271,7 @@ namespace piranha
 // The rational cf of retval gets multiplied by the exponent.
           retval.s_rational_cf()=g_rational_cf();
 // Take abs because only numerical cf can be negative.
-          retval.s_rational_cf()*=(expo_type)std::abs(exponent);
+          retval.s_rational_cf()*=(uint16)std::abs(exponent);
           if (exponent>0)
           {
             retval.s_numerical_cf()=g_numerical_cf();
@@ -290,7 +290,7 @@ namespace piranha
           {
             retval.private_min_expo_=retval.private_container_[n];
           }
-// TODO: place assert to make sure we don't go out expo_type range?
+// TODO: place assert to make sure we don't go out uint16 range?
 // This should be generalized, if we decide this way.
         }
       }
@@ -305,7 +305,7 @@ namespace piranha
         void basic_assignment(const monomial_gmp_array<U> &);
       bool is_symbolic() const;
     private:
-      expo_type                   private_min_expo_;
+      uint16                   private_min_expo_;
       degree_type                 private_degree_;
       container_type              private_container_;
       numerical_type              private_numerical_cf_;
@@ -366,7 +366,7 @@ namespace piranha
     {
       if (exponent_v[i]!="")
       {
-        private_container_[i]=utils::lexical_converter<expo_type>(exponent_v[i]);
+        private_container_[i]=utils::lexical_converter<uint16>(exponent_v[i]);
       }
 // TODO: is this necessary or does valarray def-initialize elements to zero?
 //       else
@@ -489,7 +489,7 @@ namespace piranha
     inline bool monomial_gmp_array<T>::operator<(const monomial_gmp_array &m2) const
   {
     p_assert(width()==m2.width());
-    const expo_type ex1=g_min_expo(), ex2=m2.g_min_expo();
+    const uint16 ex1=g_min_expo(), ex2=m2.g_min_expo();
     if (ex1 < ex2)
     {
       return true;

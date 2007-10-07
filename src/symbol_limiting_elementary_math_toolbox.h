@@ -51,7 +51,7 @@ namespace piranha
         it_s_index it_hint=tmp_ps.g_s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
         const bool limit_exists=(limits.size()>0);
-        const expo_type limit_min_expo=limits.g_min_expo(), min_expo_cf=cf.g_min_expo();
+        const uint16 limit_min_expo=limits.g_min_expo(), min_expo_cf=cf.g_min_expo();
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
           if (limit_exists && min_expo_cf+t.g_cf()->g_min_expo() > limit_min_expo)
@@ -84,9 +84,9 @@ namespace piranha
         it_s_index2 it2;
         it_s_index it1, it_hint=retval.g_s_index().end();
         index_limit limits(derived_cast->cf_s_vec());
-        expo_type min_expo1;
+        uint16 min_expo1;
         const bool limit_exists=(limits.size()>0);
-        const expo_type limit_min_expo=limits.g_min_expo();
+        const uint16 limit_min_expo=limits.g_min_expo();
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;

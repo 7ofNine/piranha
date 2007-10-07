@@ -47,8 +47,6 @@ namespace piranha
   typedef std::vector<double> vector_double;
 /// Deque of strings.
   typedef std::deque<std::string> deque_string;
-/// Alias for exponent type.
-  typedef short int expo_type;
 /// Alias for degree type.
   typedef int degree_type;
 }

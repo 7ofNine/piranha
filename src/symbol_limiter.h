@@ -36,8 +36,8 @@ namespace piranha
   class symbol_limiter
   {
     public:
-      static void set_limit(psym_p, expo_type);
-      static void set_limit(const std::string &, expo_type);
+      static void set_limit(psym_p, uint16);
+      static void set_limit(const std::string &, uint16);
       static void clear();
       static void put();
     private:
@@ -46,10 +46,10 @@ namespace piranha
 // Boilerplate for the multiindex container.
       struct limit_element
       {
-        limit_element(psym_p s, expo_type n):symbol(s),limit(n)
+        limit_element(psym_p s, uint16 n):symbol(s),limit(n)
           {}
         psym_p      symbol;
-        expo_type   limit;
+        uint16   limit;
       };
 // We can use this structure as comparison functor, whereas below we hash according to name,
 // because in managing symbols we make sure that there are no symbols with same name. Hence
@@ -70,7 +70,7 @@ namespace piranha
       };
       struct limit_modifier
       {
-        limit_modifier(expo_type n):new_n_(n)
+        limit_modifier(uint16 n):new_n_(n)
           {}
         ~limit_modifier()
           {}
@@ -78,7 +78,7 @@ namespace piranha
         {
           l.limit = new_n_;
         }
-        expo_type   new_n_;
+        uint16   new_n_;
       };
       typedef boost::multi_index_container < limit_element,
         boost::multi_index::indexed_by <
@@ -97,7 +97,7 @@ namespace piranha
  */
       class index_limit
       {
-        typedef std::deque<boost::tuple<size_t,expo_type> > vec_expo_index_limit;
+        typedef std::deque<boost::tuple<size_t,uint16> > vec_expo_index_limit;
         public:
           index_limit(const vector_psym_p &v):private_min_limit_(0),private_limits_()
           {
@@ -110,7 +110,7 @@ namespace piranha
             const size_t w=v.size();
             map_iterator mit;
             const map_iterator mit_f=lmap_.end();
-            boost::tuple<size_t,expo_type> insert_tuple;
+            boost::tuple<size_t,uint16> insert_tuple;
             for (size_t i=0;i<w;++i)
             {
               mit=find_expo_limit(v[i]);
@@ -126,7 +126,7 @@ namespace piranha
               }
             }
           }
-          const boost::tuple<size_t,expo_type> &operator[](const size_t &n) const
+          const boost::tuple<size_t,uint16> &operator[](const size_t &n) const
           {
             return private_limits_[n];
           }
@@ -134,7 +134,7 @@ namespace piranha
           {
             return private_limits_.size();
           }
-          const expo_type &g_min_expo() const
+          const uint16 &g_min_expo() const
           {
             return private_min_limit_;
           }
@@ -142,7 +142,7 @@ namespace piranha
 // Make default ctor private, just to make sure it is not called.
           index_limit() {}
 // Data members.
-          expo_type             private_min_limit_;
+          uint16             private_min_limit_;
           vec_expo_index_limit  private_limits_;
       };
     private:

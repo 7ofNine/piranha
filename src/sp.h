@@ -43,8 +43,8 @@ namespace piranha
   template <class Term>
     struct min_expo_extractor
   {
-    typedef expo_type result_type;
-    expo_type operator()(const Term &t) const
+    typedef uint16 result_type;
+    uint16 operator()(const Term &t) const
     {
       return t.g_cf()->g_min_expo();
     }
