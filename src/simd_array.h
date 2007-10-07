@@ -27,9 +27,6 @@
 
 #include "common_typedefs.h"
 
-// FIXME: here we must pay attention to the fact that int16 != sint, and on other arch this could
-// be an issue. Maybe we should use the types provided by the compiler? uint32, uint16, etc.
-
 namespace piranha
 {
   template <int Dim>
@@ -41,7 +38,7 @@ namespace piranha
       {
         __m128i m;
         int16    s[8];
-        int     i[4];
+        int32    i[4];
       };
     public:
 /// Default constructor.

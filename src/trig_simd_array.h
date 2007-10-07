@@ -67,7 +67,7 @@ namespace piranha
         size_t i;
         for (i=0;i<boost::minmax((size_t)d,w-1).get<0>();++i)
         {
-          private_container_[i]=utils::lexical_converter<int>(sd[i]);
+          private_container_[i]=utils::lexical_converter<int16>(sd[i]);
         }
         for (;i<d;++i)
         {

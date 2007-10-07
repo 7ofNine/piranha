@@ -31,10 +31,16 @@
 namespace piranha
 {
 // These are commonly used typedefs.
+/// Alias for 8bit integer.
+  typedef boost::int8_t int8;
+/// Alias for 8bit unsigned integer.
+  typedef boost::uint8_t uint8;
 /// Alias for 16bit integer.
   typedef boost::int16_t int16;
 /// Alias for unsigned 16bit integer.
   typedef boost::uint16_t uint16;
+/// Alias for 32bit integer.
+  typedef boost::int32_t int32;
 /// Alias for the size of trigonometric containers.
   typedef uint16 trig_size_t;
 /// Alias for complex doubles.
