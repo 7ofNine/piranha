@@ -56,7 +56,7 @@ namespace piranha
           std::abort();
           return;
         }
-        const usint d=g_width();
+        const uint16 d=g_width();
 // Now w >= 1.
         if ((w-1) != d)
         {
@@ -165,7 +165,7 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      static const usint &g_width()
+      static const uint16 &g_width()
       {
         return dimension;
       }
@@ -184,11 +184,11 @@ namespace piranha
 // Data members.
     private:
       container_type      private_container_;
-      static const usint  dimension = (usint)Dim;
+      static const uint16  dimension = (uint16)Dim;
   };
 
   template <int Dim>
-    const usint trig_simd_array<Dim>::dimension;
+    const uint16 trig_simd_array<Dim>::dimension;
 }
 
 #endif

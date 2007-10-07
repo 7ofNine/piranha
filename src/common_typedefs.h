@@ -31,9 +31,9 @@ namespace piranha
 {
 // These are commonly used typedefs.
 /// Alias for short int.
-  typedef short int sint;
+  typedef short int int16;
 /// Alias for unsigned short int.
-  typedef unsigned short int usint;
+  typedef unsigned short int uint16;
 /// Alias for the size of trigonometric containers.
   typedef unsigned short int trig_size_t;
 /// Alias for the multipliers (elements of j vectors).

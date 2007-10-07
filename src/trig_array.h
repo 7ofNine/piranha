@@ -23,7 +23,7 @@
 
 #include "base_trig_array.h"
 
-// FIXME: place checks for sizes < USHRT_MAX, since usint is used in base_trig_array.
+// FIXME: place checks for sizes < USHRT_MAX, since uint16 is used in base_trig_array.
 
 namespace piranha
 {
@@ -56,7 +56,7 @@ namespace piranha
         }
 // Now we know  w >= 1.
         private_container_.resize(w-1);
-        for (usint i=0;i<w-1;++i)
+        for (uint16 i=0;i<w-1;++i)
         {
           private_container_[i]=utils::lexical_converter<mult_t>(sd[i]);
         }
@@ -74,27 +74,27 @@ namespace piranha
         if (n>0)
         {
           container_type old_private_container_(private_container_);
-          const usint old_w=old_private_container_.size();
+          const uint16 old_w=old_private_container_.size();
           private_container_.resize(old_w+n);
-          for (usint i=0;i<old_w;++i)
+          for (uint16 i=0;i<old_w;++i)
           {
             private_container_[i+n]=old_private_container_[i];
           }
         }
       }
-      void append_args(const usint &n)
+      void append_args(const uint16 &n)
       {
         increase_size(g_width()+n);
       }
-      void increase_size(const usint &n)
+      void increase_size(const uint16 &n)
       {
         p_assert(n >= g_width());
         if (n > g_width())
         {
           container_type old_private_container_(private_container_);
           private_container_.resize(n);
-          const usint old_w=old_private_container_.size();
-          for (usint i=0;i<old_w;++i)
+          const uint16 old_w=old_private_container_.size();
+          for (uint16 i=0;i<old_w;++i)
           {
             private_container_[i]=old_private_container_[i];
           }
@@ -147,13 +147,13 @@ namespace piranha
 // because this way we can do two operations (+ and -) every cycle. This is a performance
 // critical part, so the optimization should be worth the hassle.
       {
-        const usint max_w=g_width(), min_w=t2.g_width();
+        const uint16 max_w=g_width(), min_w=t2.g_width();
 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
         p_assert(ret1.g_width() == max_w);
         p_assert(ret2.g_width() == max_w);
-        usint i;
+        uint16 i;
         for (i=0;i<min_w;++i)
         {
           ret1.private_container_[i]=private_container_[i]-t2.private_container_[i];
@@ -178,7 +178,7 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      usint g_width() const
+      uint16 g_width() const
       {
         return private_container_.size();
       }

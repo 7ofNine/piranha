@@ -40,7 +40,7 @@ namespace piranha
       union subarray
       {
         __m128i m;
-        sint    s[8];
+        int16    s[8];
         int     i[4];
       };
     public:
@@ -61,11 +61,11 @@ namespace piranha
       ~simd_array()
         {}
 // These operators are used from piranha::base_trig_array in non-speed-critical operations (I/O, for instance).
-      const sint &operator[](const usint &n) const
+      const int16 &operator[](const uint16 &n) const
       {
         return private_sub_[n/8].s[n%8];
       }
-      sint &operator[](const usint &n)
+      int16 &operator[](const uint16 &n)
       {
         return private_sub_[n/8].s[n%8];
       }
@@ -80,7 +80,7 @@ namespace piranha
       }
       static void add(const simd_array &s1, const simd_array &s2, simd_array &result)
       {
-        usint i;
+        uint16 i;
         for (i=0;i<m128n;++i)
         {
           result.private_sub_[i].m=_mm_add_epi16(s1.private_sub_[i].m,s2.private_sub_[i].m);
@@ -88,7 +88,7 @@ namespace piranha
       }
       static void sub(const simd_array &s1, const simd_array &s2, simd_array &result)
       {
-        usint i;
+        uint16 i;
         for (i=0;i<m128n;++i)
         {
           result.private_sub_[i].m=_mm_sub_epi16(s1.private_sub_[i].m,s2.private_sub_[i].m);
@@ -96,7 +96,7 @@ namespace piranha
       }
       bool equality_test(const simd_array &s) const
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<4;++j)
@@ -118,7 +118,7 @@ namespace piranha
       }
       bool less_than(const simd_array &s) const
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
@@ -148,7 +148,7 @@ namespace piranha
       }
       void hasher(size_t &seed) const
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<4;++j)
@@ -162,9 +162,9 @@ namespace piranha
         }
       }
 // TODO: this can probably be optimized.
-      simd_array &operator*=(const sint &n)
+      simd_array &operator*=(const int16 &n)
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
@@ -180,7 +180,7 @@ namespace piranha
       }
       short int sign() const
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
@@ -210,7 +210,7 @@ namespace piranha
       }
       void invert_sign()
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
@@ -225,7 +225,7 @@ namespace piranha
       }
       bool is_zero() const
       {
-        usint i,j;
+        uint16 i,j;
         for (i=0;i<m128n-1;++i)
         {
           for (j=0;j<8;++j)
@@ -248,15 +248,15 @@ namespace piranha
     private:
       void assignment(const simd_array &s)
       {
-        for (usint i=0;i<m128n;++i)
+        for (uint16 i=0;i<m128n;++i)
         {
           private_sub_[i].m=s.private_sub_[i].m;
         }
       }
     private:
-      static const sint                       m128n = Dim/8+1;
-      static const sint                       dimenstion = Dim;
-      static const sint                       rem = Dim%8;
+      static const int16                       m128n = Dim/8+1;
+      static const int16                       dimenstion = Dim;
+      static const int16                       rem = Dim%8;
       __attribute__ ((aligned (16))) subarray private_sub_[m128n];
   };
 }

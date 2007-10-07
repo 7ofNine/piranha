@@ -94,13 +94,13 @@ namespace piranha
       {
         return private_container_.size();
       }
-      const usint &g_degree() const
+      const uint16 &g_degree() const
       {
         return private_degree_;
       }
       void decode(const Index &code, vector_expo &v) const
       {
-        const usint w=static_cast<Derived const *>(this)->g_width();
+        const uint16 w=static_cast<Derived const *>(this)->g_width();
         p_assert(v.size() == w);
         if (w == 0)
         {
@@ -109,7 +109,7 @@ namespace piranha
         }
         const Expo max_d=private_max_n_cache_.g_max_n(w);
 //std::cout << "decoding " << code << '\n';
-        for (usint i=0;i<w-1;++i)
+        for (uint16 i=0;i<w-1;++i)
         {
           v[i]=(code%integral_npow_cache<Index>::request(i+1,max_d+1))/
             integral_npow_cache<Index>::request(i,max_d+1);
@@ -132,8 +132,8 @@ std::cout << '\n';*/
           std::abort();
         }
         private_degree_=0;
-        const usint w=static_cast<Derived const *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<Derived const *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           private_degree_+=v[i];
         }
@@ -166,12 +166,12 @@ std::cout << '\n';*/
       }
       void refresh_degree()
       {
-        const usint w=static_cast<Derived const *>(this)->g_width();
+        const uint16 w=static_cast<Derived const *>(this)->g_width();
         vector_expo v((size_t)w);
         const iterator it_f=end();
         private_degree_=0;
         Expo candidate;
-        usint i;
+        uint16 i;
         for (iterator it=begin();it!=it_f;++it)
         {
           decode(it->g_index(),v);
@@ -213,13 +213,13 @@ std::cout << '\n';*/
       }
       void encode(const vector_expo &v, Index &retval) const
       {
-        const usint w=static_cast<Derived const *>(this)->g_width();
+        const uint16 w=static_cast<Derived const *>(this)->g_width();
         p_assert(v.size() == w);
 // Maximum representable degree.
         const Expo max_d=private_max_n_cache_.g_max_n(w);
 //std::cout << "Max representable degree is: " << max_d << '\n';
         retval=0;
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
           retval+=v[i]*integral_npow_cache<Index>::request(i,max_d+1);
         }
@@ -305,7 +305,7 @@ std::cout << '\n';*/
           mult_by(tmp);
           return;
         }
-        const usint w=static_cast<Derived const *>(this)->g_width();
+        const uint16 w=static_cast<Derived const *>(this)->g_width();
         p_assert(w == p.g_width());
 //        std::cout << "New degree will be: " << new_degree << '\n';
         if (g_degree()+p.g_degree() > private_max_n_cache_.g_max_n(w))
@@ -360,7 +360,7 @@ std::cout << "Length: " << length() << '\n';
           }
 //std::cout << '\n';
         }
-        const Expo &g_max_n(const usint &n) const
+        const Expo &g_max_n(const uint16 &n) const
         {
           p_assert(n < private_container_.size());
           return private_container_[n];

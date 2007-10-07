@@ -67,8 +67,8 @@ namespace piranha
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
       {
         stream_manager::setup_print(out_stream);
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           out_stream << static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
@@ -78,8 +78,8 @@ namespace piranha
         stream_manager::setup_print(out_stream);
         bool first_one=true;
         std::string tmp("$");
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -111,8 +111,8 @@ namespace piranha
       }
       void invert_sign()
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]=
           -static_cast<const Derived *>(this)->g_container()[i];
@@ -122,9 +122,9 @@ namespace piranha
       template <class T>
         void assign_mult_vector(const T &v)
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size() == w);
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]=v[i];
         }
@@ -133,8 +133,8 @@ namespace piranha
         double density(const DerivedPs &p) const
       {
         size_t tmp=0;
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] != 0)
           {
@@ -153,10 +153,10 @@ namespace piranha
  */
       double freq(const vector_psym_p &v) const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size() == w);
         double retval=0.;
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
 // We must be sure that there actually is a freq in every symbol we are going to use.
           if (v[i]->poly_eval().size()>1)
@@ -174,10 +174,10 @@ namespace piranha
  */
       double phase(const vector_psym_p &v) const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size()==w);
         double retval=0.;
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
 // We must be sure that there actually is a phase in every symbol we are going to use.
           if (v[i]->poly_eval().size()>0)
@@ -195,10 +195,10 @@ namespace piranha
  */
       double t_eval(const double &t, const vector_psym_p &v) const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size()==w);
         double retval=0.;
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -216,10 +216,10 @@ namespace piranha
       template <class TrigEvaluator>
         complex_double t_eval(TrigEvaluator &te) const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         p_assert(te.width() == w);
         complex_double retval(1.);
-        for (usint i=0;i<w;++i)
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -234,8 +234,8 @@ namespace piranha
  */
       short int sign() const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]>0)
           {
@@ -251,7 +251,7 @@ namespace piranha
       size_t hasher() const
       {
         size_t seed=g_flavour();
-        const usint w=static_cast<const Derived *>(this)->g_width();
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
         for (size_t i=0;i<w;++i)
         {
           boost::hash_combine(seed,static_cast<const Derived *>(this)->g_container()[i]);
@@ -260,8 +260,8 @@ namespace piranha
       }
       bool is_zero() const
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -298,8 +298,8 @@ namespace piranha
         {
           return false;
         }
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] != t2.g_container()[i])
           {
@@ -320,8 +320,8 @@ namespace piranha
           return false;
         }
 // TODO: maybe when unrolling here we have to substitute direct "return" calls with retval and break statements.
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] < t2.g_container()[i])
           {
@@ -337,8 +337,8 @@ namespace piranha
 /// Multiply by a piranha::mult_t.
       void mult_by_mult_t(const mult_t &n)
       {
-        const usint w=static_cast<const Derived *>(this)->g_width();
-        for (usint i=0;i<w;++i)
+        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        for (uint16 i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]*=n;
         }

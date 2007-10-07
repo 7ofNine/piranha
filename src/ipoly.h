@@ -54,7 +54,7 @@ namespace piranha
         }
         return *this;
       }
-      const usint &g_width() const
+      const uint16 &g_width() const
       {
         return private_width_;
       }
@@ -74,7 +74,7 @@ namespace piranha
         return *this;
       }
     private:
-      usint       private_width_;
+      uint16       private_width_;
   };
 }
 
