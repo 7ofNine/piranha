@@ -40,7 +40,7 @@ namespace piranha
       ~base_trig_array()
         {}
 // Getters.
-      mult_t at(const trig_size_t &n) const
+      int16 at(const trig_size_t &n) const
       {
         if (static_cast<const Derived *>(this)->g_width() <= n)
         {
@@ -334,8 +334,8 @@ namespace piranha
         }
         return false;
       }
-/// Multiply by a piranha::mult_t.
-      void mult_by_mult_t(const mult_t &n)
+/// Multiply by a piranha::int16.
+      void mult_by_int16(const int16 &n)
       {
         const uint16 w=static_cast<const Derived *>(this)->g_width();
         for (uint16 i=0;i<w;++i)

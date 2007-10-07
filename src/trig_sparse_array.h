@@ -34,7 +34,7 @@ namespace piranha
 /// Sparse array trigonometric class.
   class trig_sparse_array
   {
-      typedef std::pair<trig_size_t,mult_t> pair;
+      typedef std::pair<trig_size_t,int16> pair;
       typedef std::vector<pair> container_type;
       typedef container_type::iterator iterator;
       typedef container_type::const_iterator const_iterator;
@@ -60,7 +60,7 @@ namespace piranha
       {
         return private_flavour_;
       }
-      mult_t at(trig_size_t) const;
+      int16 at(trig_size_t) const;
       size_t actual_width() const;
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
@@ -133,7 +133,7 @@ namespace piranha
         }
         return *this;
       }
-      trig_sparse_array &operator*=(mult_t);
+      trig_sparse_array &operator*=(int16);
 // End INTERFACE definition.
 //-------------------------------------------------------
       trig_sparse_array &operator+=(const trig_sparse_array &);
@@ -174,7 +174,7 @@ namespace piranha
 // Functors used in generic algebraic addition routine.
       struct sign_modifier_plus
       {
-        static const mult_t &mod(const mult_t &value)
+        static const int16 &mod(const int16 &value)
         {
           return value;
         }
@@ -187,7 +187,7 @@ namespace piranha
       };
       struct sign_modifier_minus
       {
-        static mult_t mod(const mult_t &value)
+        static int16 mod(const int16 &value)
         {
           return (-value);
         }
@@ -225,10 +225,10 @@ namespace piranha
 // TODO: check this.
 //    private_container_.reserve(w);
 // Now we know  w >= 1.
-    mult_t tmp_mult;
+    int16 tmp_mult;
     for (size_t i=0;i<w-1;++i)
     {
-      tmp_mult=utils::lexical_converter<mult_t>(sd[i]);
+      tmp_mult=utils::lexical_converter<int16>(sd[i]);
       if (tmp_mult != 0)
       {
         private_container_.push_back(pair(i,tmp_mult));
@@ -263,7 +263,7 @@ namespace piranha
   }
 
 // Getters implementations.
-  inline mult_t trig_sparse_array::at(trig_size_t n) const
+  inline int16 trig_sparse_array::at(trig_size_t n) const
   {
     const const_iterator it=find(n);
     if (it == end())
@@ -517,7 +517,7 @@ namespace piranha
     return (private_container_ == l2.private_container_);
   }
 
-  inline trig_sparse_array &trig_sparse_array::operator*=(mult_t n)
+  inline trig_sparse_array &trig_sparse_array::operator*=(int16 n)
   {
     if (n==0)
     {

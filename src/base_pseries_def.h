@@ -182,11 +182,11 @@ namespace piranha
         return cf_s_vec_.size();
       }
 /// Return reference to the vector of linear arguments.
-      vector_mult_t &lin_args()
+      vector_int16 &lin_args()
       {
         return lin_args_;
       }
-      const vector_mult_t &lin_args() const
+      const vector_int16 &lin_args() const
       {
         return lin_args_;
       }
@@ -518,7 +518,7 @@ namespace piranha
       };
 // Data members.
     protected:
-      vector_mult_t   lin_args_;
+      vector_int16   lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
       series_set_type private_series_set_;

@@ -31,7 +31,7 @@ namespace piranha
   class trig_array: public base_trig_array<trig_array>
   {
       typedef base_trig_array<trig_array> ancestor;
-      typedef std::valarray<mult_t> container_type;
+      typedef std::valarray<int16> container_type;
       template <class Derived>
         friend class base_trig_array;
     public:
@@ -58,7 +58,7 @@ namespace piranha
         private_container_.resize(w-1);
         for (uint16 i=0;i<w-1;++i)
         {
-          private_container_[i]=utils::lexical_converter<mult_t>(sd[i]);
+          private_container_[i]=utils::lexical_converter<int16>(sd[i]);
         }
 // Take care of flavour.
         if (*sd.back().c_str()=='s')
@@ -107,7 +107,7 @@ namespace piranha
  */
       size_t data_footprint() const
       {
-        return (g_width()*sizeof(mult_t));
+        return (g_width()*sizeof(int16));
       }
       bool checkup(const size_t &w) const
       {
@@ -170,9 +170,9 @@ namespace piranha
         ancestor::assignment_operator(t2);
         return *this;
       }
-      trig_array &operator*=(const mult_t &n)
+      trig_array &operator*=(const int16 &n)
       {
-        ancestor::mult_by_mult_t(n);
+        ancestor::mult_by_int16(n);
         return *this;
       }
 // End INTERFACE definition.
@@ -182,11 +182,11 @@ namespace piranha
       {
         return private_container_.size();
       }
-      const mult_t *g_container() const
+      const int16 *g_container() const
       {
         return &(private_container_[0]);
       }
-      mult_t *s_container()
+      int16 *s_container()
       {
         return &(private_container_[0]);
       }

@@ -63,14 +63,14 @@ namespace piranha
       {
         return private_flavour_;
       }
-      mult_t at(trig_size_t) const;
+      int16 at(trig_size_t) const;
       size_t actual_width() const;
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
 // Manip.
 // FIXME: move to protected once it is deprecated?
-      void insert(trig_size_t,mult_t);
+      void insert(trig_size_t,int16);
       void append_args(const size_t &)
         {}
       void prepend_args(const size_t &w)
@@ -124,7 +124,7 @@ namespace piranha
         }
         return *this;
       }
-      trig_slist &operator*=(mult_t);
+      trig_slist &operator*=(int16);
 // End INTERFACE definition.
 //-------------------------------------------------------
       trig_slist &operator+=(const trig_slist &);
@@ -140,7 +140,7 @@ namespace piranha
         std::cout << std::endl;
       }
     private:
-      typedef std::pair<trig_size_t,mult_t> pair;
+      typedef std::pair<trig_size_t,int16> pair;
       typedef __gnu_cxx::slist<pair,__gnu_cxx::bitmap_allocator<pair> >::iterator iterator;
       typedef __gnu_cxx::slist<pair,__gnu_cxx::bitmap_allocator<pair> >::const_iterator const_iterator;
       typedef std::pair<iterator,iterator> find_result;
@@ -167,22 +167,22 @@ namespace piranha
       }
       void find(trig_size_t, const_find_result &) const;
       void find(trig_size_t, find_result &);
-      void insert_new(trig_size_t, mult_t, const find_result &);
-      iterator insert_after(trig_size_t, mult_t, iterator);
-      iterator modify(mult_t, iterator, iterator);
+      void insert_new(trig_size_t, int16, const find_result &);
+      iterator insert_after(trig_size_t, int16, iterator);
+      iterator modify(int16, iterator, iterator);
       template <class Modifier>
         trig_slist &algebraic_sum(const trig_slist &t2);
 // Functors used in generic algebraic addition routine.
       struct sign_modifier_plus
       {
-        static const mult_t &mod(const mult_t &value)
+        static const int16 &mod(const int16 &value)
         {
           return value;
         }
       };
       struct sign_modifier_minus
       {
-        static mult_t mod(const mult_t &value)
+        static int16 mod(const int16 &value)
         {
           return (-value);
         }
@@ -205,7 +205,7 @@ namespace piranha
 // Now we know  w >= 1.
     for (size_t i=0;i<w-1;++i)
      {
-       insert(i,utils::lexical_converter<mult_t>(sd[i]));
+       insert(i,utils::lexical_converter<int16>(sd[i]));
      }
 // Take care of flavour.
     if (*sd.back().c_str()=='s')
@@ -258,7 +258,7 @@ namespace piranha
   }
 
 // Getters implementations.
-  inline mult_t trig_slist::at(trig_size_t n) const
+  inline int16 trig_slist::at(trig_size_t n) const
   {
     const_find_result fr;
     find(n,fr);
@@ -340,7 +340,7 @@ namespace piranha
   }
 
 // Manipulation implementations.
-  inline void trig_slist::insert_new(trig_size_t index, mult_t multiplier, const find_result &fr)
+  inline void trig_slist::insert_new(trig_size_t index, int16 multiplier, const find_result &fr)
   {
 // Do not insert a new zero multiplier.
     if (multiplier==0)
@@ -357,7 +357,7 @@ namespace piranha
     }
   }
 
-  inline trig_slist::iterator trig_slist::insert_after(trig_size_t index, mult_t multiplier, iterator it)
+  inline trig_slist::iterator trig_slist::insert_after(trig_size_t index, int16 multiplier, iterator it)
   {
 // Do not insert a new zero multiplier.
     if (multiplier==0)
@@ -379,7 +379,7 @@ namespace piranha
 /**
  * If the new multiplier is zero, erase the element.
  */
-  inline trig_slist::iterator trig_slist::modify(mult_t multiplier, iterator prev, iterator cur)
+  inline trig_slist::iterator trig_slist::modify(int16 multiplier, iterator prev, iterator cur)
   {
     if (multiplier!=0)
     {
@@ -402,7 +402,7 @@ namespace piranha
     }
   }
 
-  inline void trig_slist::insert(trig_size_t index, mult_t multiplier)
+  inline void trig_slist::insert(trig_size_t index, int16 multiplier)
   {
     find_result fr;
     find(index,fr);
@@ -567,7 +567,7 @@ namespace piranha
 
   inline size_t trig_slist::data_footprint() const
   {
-    return (sizeof(std::pair<trig_size_t,mult_t>)*private_container_.size());
+    return (sizeof(std::pair<trig_size_t,int16>)*private_container_.size());
   }
 
   inline bool trig_slist::checkup(const size_t &w) const
@@ -600,7 +600,7 @@ namespace piranha
     return (private_container_ == l2.private_container_);
   }
 
-  inline trig_slist &trig_slist::operator*=(mult_t n)
+  inline trig_slist &trig_slist::operator*=(int16 n)
   {
     if (n==0)
     {

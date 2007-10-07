@@ -319,7 +319,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
     inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::mult_by_int(int n)
   {
-    const vector_mult_t old_lin_args=lin_args();
+    const vector_int16 old_lin_args=lin_args();
     size_t j;
     const size_t w=lin_args().size();
 // Zero the linargs, otherwise the generic *= operator complains

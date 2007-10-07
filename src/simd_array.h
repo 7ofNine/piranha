@@ -27,7 +27,7 @@
 
 #include "common_typedefs.h"
 
-// FIXME: here we must pay attention to the fact that mult_t != sint, and on other arch this could
+// FIXME: here we must pay attention to the fact that int16 != sint, and on other arch this could
 // be an issue. Maybe we should use the types provided by the compiler? uint32, uint16, etc.
 
 namespace piranha

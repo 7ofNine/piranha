@@ -157,7 +157,7 @@ namespace piranha
         ancestor::assignment_operator(t2);
         return *this;
       }
-      trig_simd_array &operator*=(const mult_t &n)
+      trig_simd_array &operator*=(const int16 &n)
       {
         private_container_*=n;
         return *this;

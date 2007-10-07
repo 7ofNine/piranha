@@ -37,17 +37,15 @@ namespace piranha
   typedef boost::uint16_t uint16;
 /// Alias for the size of trigonometric containers.
   typedef uint16 trig_size_t;
-/// Alias for the multipliers (elements of j vectors).
-  typedef short int mult_t;
 /// Alias for complex doubles.
   typedef std::complex<double> complex_double;
-/// Alias for array of mult_t.
-  typedef std::valarray<mult_t> array_mult_t;
-/// Alias for vector of mult_t.
-  typedef std::vector<mult_t> vector_mult_t;
+/// Alias for array of int16.
+  typedef std::valarray<int16> array_int16;
+/// Alias for vector of int16.
+  typedef std::vector<int16> vector_int16;
 /// Alias for vector of double.
   typedef std::vector<double> vector_double;
-/// Deque of strings. Convenience typedef.
+/// Deque of strings.
   typedef std::deque<std::string> deque_string;
 /// Alias for exponent type.
   typedef short int expo_type;

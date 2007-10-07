@@ -285,7 +285,7 @@ namespace piranha
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
     inline size_t base_pseries<Cf, Trig, Term, I, Derived, Allocator>::footprint() const
   {
-    size_t retval=sizeof(self)+trig_width()*(sizeof(psymbol *)+sizeof(mult_t));
+    size_t retval=sizeof(self)+trig_width()*(sizeof(psymbol *)+sizeof(int16));
     it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {

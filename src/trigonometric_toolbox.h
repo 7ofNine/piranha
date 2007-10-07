@@ -48,7 +48,7 @@ namespace piranha
         {
           return;
         }
-        mult_t tmp_mult;
+        int16 tmp_mult;
         const it_s_index it_f=derived_cast->end();
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {

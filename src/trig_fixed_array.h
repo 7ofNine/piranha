@@ -31,20 +31,20 @@ namespace piranha
 {
 // TODO: check the real impact of these unrollers.
   template <int N>
-    inline void hash_unroller(size_t &seed, const mult_t *end_array)
+    inline void hash_unroller(size_t &seed, const int16 *end_array)
   {
     boost::hash_combine(seed,end_array[-N]);
     hash_unroller<N-1>(seed,end_array);
   }
 
   template <>
-    inline void hash_unroller<1>(size_t &seed, const mult_t *end_array)
+    inline void hash_unroller<1>(size_t &seed, const int16 *end_array)
   {
     boost::hash_combine(seed,end_array[-1]);
   }
 
   template <int N>
-    inline void mult_unroller(const mult_t *end_array1, const mult_t *end_array2, mult_t *ret_array1, mult_t *ret_array2)
+    inline void mult_unroller(const int16 *end_array1, const int16 *end_array2, int16 *ret_array1, int16 *ret_array2)
   {
     ret_array1[-N]=end_array1[-N]-end_array2[-N];
     ret_array2[-N]=end_array1[-N]+end_array2[-N];
@@ -52,7 +52,7 @@ namespace piranha
   }
 
   template <>
-    inline void mult_unroller<1>(const mult_t *end_array1, const mult_t *end_array2, mult_t *ret_array1, mult_t *ret_array2)
+    inline void mult_unroller<1>(const int16 *end_array1, const int16 *end_array2, int16 *ret_array1, int16 *ret_array2)
   {
     ret_array1[-1]=end_array1[-1]-end_array2[-1];
     ret_array2[-1]=end_array1[-1]+end_array2[-1];
@@ -60,14 +60,14 @@ namespace piranha
 
 // TODO: Are these two used?
 //   template <int N>
-//     inline void invert_unroller(mult_t *end_array)
+//     inline void invert_unroller(int16 *end_array)
 //   {
 //     end_array[-N]=-end_array[-N];
 //     invert_unroller<N-1>(end_array);
 //   }
 //
 //   template <>
-//     inline void invert_unroller<1>(mult_t *end_array)
+//     inline void invert_unroller<1>(int16 *end_array)
 //   {
 //     end_array[-1]=-end_array[-1];
 //   }
@@ -196,9 +196,9 @@ namespace piranha
         ancestor::assignment_operator(t2);
         return *this;
       }
-      trig_fixed_array &operator*=(const mult_t &n)
+      trig_fixed_array &operator*=(const int16 &n)
       {
-        ancestor::mult_by_mult_t(n);
+        ancestor::mult_by_int16(n);
         return *this;
       }
 // End INTERFACE definition.
@@ -208,21 +208,21 @@ namespace piranha
       {
         return dimension;
       }
-      const mult_t *g_container() const
+      const int16 *g_container() const
       {
         return private_container_;
       }
-      mult_t *s_container()
+      int16 *s_container()
       {
         return private_container_;
       }
       void assignment(const trig_fixed_array &t2)
       {
-        memcpy((void *)private_container_,(const void *)t2.private_container_,sizeof(mult_t)*g_width());
+        memcpy((void *)private_container_,(const void *)t2.private_container_,sizeof(int16)*g_width());
       }
 // Data members.
     private:
-      mult_t              private_container_[Dim];
+      int16              private_container_[Dim];
       static const uint16  dimension = (uint16)Dim;
   };
 
