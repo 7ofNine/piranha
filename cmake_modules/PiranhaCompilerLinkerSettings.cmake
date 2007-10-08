@@ -1,5 +1,5 @@
 MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
-  SET(GCC_SPECIFIC_FLAGS "-Wall")
+  SET(GCC_SPECIFIC_FLAGS "-Wall -fvisibility-inlines-hidden")
   SET(LINK_FLAGS "")
   IF(NOT ${CMAKE_C_COMPILER} MATCHES "gcc" OR NOT ${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
     MESSAGE(FATAL_ERROR "You need the GCC compiler to build Piranha")
