@@ -46,14 +46,13 @@ namespace piranha
       {
         return &trig;
       }
-      void calculate_hash()
+      size_t hasher() const
       {
-        hash_value=trig.hasher();
+        return trig.hasher();
       }
 // Data members.
       mutable Cf    cf;
       mutable Trig  trig;
-      size_t        hash_value;
     };
 }
 
