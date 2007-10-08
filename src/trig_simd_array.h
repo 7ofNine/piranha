@@ -30,10 +30,10 @@ namespace piranha
 {
 /// Trigonometric array, fixed size SSE2-enabled version.
   template <int Dim>
-    class trig_simd_array: public base_trig_array<trig_simd_array<Dim> >
+    class trig_simd_array: public base_trig_array<int16,trig_simd_array<Dim> >
   {
-      typedef base_trig_array<trig_simd_array<Dim> > ancestor;
-      template <class Derived>
+      typedef base_trig_array<int16,trig_simd_array<Dim> > ancestor;
+      template <class Mult, class Derived>
         friend class base_trig_array;
       typedef simd_array<Dim> container_type;
     public:
@@ -49,6 +49,7 @@ namespace piranha
 /// Ctor from piranha::deque_string.
       trig_simd_array(const deque_string &sd):ancestor::base_trig_array()
       {
+// TODO: check here that we are not loading too many multipliers, outside uint16 range.
         const size_t w=sd.size();
         if (w == 0)
         {

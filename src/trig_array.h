@@ -23,16 +23,20 @@
 
 #include "base_trig_array.h"
 
-// FIXME: place checks for sizes < USHRT_MAX, since uint16 is used in base_trig_array.
+// TODO: replace valarray with custom variable-size array, consistently with the fact
+// that width is defined as uint16 type (max 65535).
 
 namespace piranha
 {
 /// Trigonometric array, dynamically sized version.
-  class trig_array: public base_trig_array<trig_array>
+/**
+ * Supports trigonometric multipliers in the range [−32768,32767].
+ */
+  class trig_array: public base_trig_array<int16,trig_array>
   {
-      typedef base_trig_array<trig_array> ancestor;
+      typedef base_trig_array<int16,trig_array> ancestor;
       typedef std::valarray<int16> container_type;
-      template <class Derived>
+      template <class Mult, class Derived>
         friend class base_trig_array;
     public:
 // Start INTERFACE definition.
@@ -47,6 +51,7 @@ namespace piranha
 /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::base_trig_array()
       {
+// TODO: check here that we are not loading too many multipliers, outside uint16 range.
         const size_t w=sd.size();
         if (w==0)
         {
@@ -69,8 +74,9 @@ namespace piranha
       ~trig_array()
         {}
 // Manip.
-      void prepend_args(const size_t &n)
+      void prepend_args(const uint16 &n)
       {
+// TODO: add checks that we don't want to go over uint16 size. How do we handle this at series level?
         if (n>0)
         {
           container_type old_private_container_(private_container_);
