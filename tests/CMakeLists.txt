@@ -15,8 +15,3 @@ TARGET_LINK_LIBRARIES(gastest_elp3_dynamic_ext ${MANDATORY_LIBRARIES} piranha_st
 
 ADD_EXECUTABLE(tass_r6_test tass_r6_test.cpp)
 TARGET_LINK_LIBRARIES(tass_r6_test ${MANDATORY_LIBRARIES} piranha_static)
-
-IF(ENABLE_SSE2)
-  ADD_EXECUTABLE(gastest_elp3_simd gastest_elp3_simd.cpp)
-  TARGET_LINK_LIBRARIES(gastest_elp3_simd ${MANDATORY_LIBRARIES} piranha_static)
-ENDIF(ENABLE_SSE2)
