@@ -70,7 +70,7 @@ namespace piranha
         const uint16 w=static_cast<const Derived *>(this)->g_width();
         for (uint16 i=0;i<w;++i)
         {
-          out_stream << static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
+          out_stream << (int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
@@ -95,7 +95,7 @@ namespace piranha
               {}
               else
             {
-              tmp.append(boost::lexical_cast<std::string>(static_cast<const Derived *>(this)->g_container()[i]));
+              tmp.append(boost::lexical_cast<std::string>((int)static_cast<const Derived *>(this)->g_container()[i]));
             }
             tmp.append(v[i]->name());
             first_one=false;
