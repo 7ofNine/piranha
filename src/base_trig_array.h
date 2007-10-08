@@ -26,10 +26,9 @@
 
 namespace piranha
 {
-  template <class Mult, class Derived>
+  template <class Derived>
     class base_trig_array
   {
-      typedef Mult mult_type;
     public:
 // Ctors.
 /// Default ctor.
@@ -41,7 +40,7 @@ namespace piranha
       ~base_trig_array()
         {}
 // Getters.
-      mult_type at(const trig_size_t &n) const
+      int16 at(const trig_size_t &n) const
       {
         if (static_cast<const Derived *>(this)->g_width() <= n)
         {
@@ -52,7 +51,7 @@ namespace piranha
         }
         return static_cast<const Derived *>(this)->g_container()[n];
       }
-      uint16 actual_width() const
+      size_t actual_width() const
       {
         return static_cast<const Derived *>(this)->g_width();
       }
@@ -352,8 +351,8 @@ namespace piranha
 /**
  * To be used in piranha::base_pseries for the hashed index.
  */
-  template <class Mult, class Derived>
-    inline size_t hash_value(const base_trig_array<Mult,Derived> &t)
+  template <class Derived>
+    inline size_t hash_value(const base_trig_array<Derived> &t)
   {
     return static_cast<const Derived *>(&t)->hasher();
   }

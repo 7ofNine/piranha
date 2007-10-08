@@ -73,17 +73,14 @@ namespace piranha
 //   }
 
 /// Trigonometric array, fixed size version.
-/**
- * Supports trigonometric multipliers in the range [−32768,32767].
- */
   template <int Dim>
-    class trig_fixed_array: public base_trig_array<int16,trig_fixed_array<Dim> >
+    class trig_fixed_array: public base_trig_array<trig_fixed_array<Dim> >
   {
 // Check that dimension is sane.
       BOOST_STATIC_ASSERT(Dim > 0);
       BOOST_STATIC_ASSERT(Dim < 100);
-      typedef base_trig_array<int16,trig_fixed_array<Dim> > ancestor;
-      template <class Mult, class Derived>
+      typedef base_trig_array<trig_fixed_array<Dim> > ancestor;
+      template <class Derived>
         friend class base_trig_array;
     public:
 // Start INTERFACE definition.
@@ -100,7 +97,6 @@ namespace piranha
 /// Ctor from piranha::deque_string.
       trig_fixed_array(const deque_string &sd):ancestor::base_trig_array()
       {
-// TODO: check here that we are not loading too many multipliers, outside uint16 range.
         const size_t w=sd.size();
         if (w == 0)
         {
@@ -134,15 +130,15 @@ namespace piranha
       ~trig_fixed_array()
         {}
 // Manip.
-      void prepend_args(const uint16 &)
+      void prepend_args(const size_t &)
       {
         p_assert(false);
       }
-      void append_args(const uint16 &)
+      void append_args(const size_t &)
       {
         p_assert(false);
       }
-      void increase_size(const uint16 &w)
+      void increase_size(const size_t &w)
       {
         p_assert(w == g_width());
       }
@@ -156,7 +152,7 @@ namespace piranha
         return sizeof(trig_fixed_array);
       }
 // FIXME: do a real check here, cf_width in series could be different than 0.
-      bool checkup(const uint16 &) const
+      bool checkup(const size_t &) const
       {
         return true;
       }
