@@ -42,6 +42,12 @@ namespace piranha
         ret_array2[-N]=end_array1[-N]+end_array2[-N];
         tfa_unrollers<N-1>::mult(end_array1,end_array2,ret_array1,ret_array2);
       }
+      template <class T>
+        static void invert(T *end_array)
+      {
+        end_array[-N]=-end_array[-N];
+        tfa_unrollers<N-1>::invert(end_array);
+      }
   };
 
   template <>
@@ -54,21 +60,12 @@ namespace piranha
         ret_array1[-1]=end_array1[-1]-end_array2[-1];
         ret_array2[-1]=end_array1[-1]+end_array2[-1];
       }
+      template <class T>
+        static void invert(T *end_array)
+      {
+        end_array[-1]=-end_array[-1];
+      }
   };
-
-// TODO: Are these two used?
-//   template <int N>
-//     inline void invert_unroller(int16 *end_array)
-//   {
-//     end_array[-N]=-end_array[-N];
-//     invert_unroller<N-1>(end_array);
-//   }
-//
-//   template <>
-//     inline void invert_unroller<1>(int16 *end_array)
-//   {
-//     end_array[-1]=-end_array[-1];
-//   }
 
 /// Trigonometric array, fixed size version.
   template <int Dim, int Bits>
@@ -135,6 +132,10 @@ namespace piranha
       void increase_size(const size_t &w)
       {
         p_assert(w == g_width());
+      }
+      void invert_sign()
+      {
+        tfa_unrollers<dimension>::invert(&private_container_[0]+dimension);
       }
 // Probing.
 /// Data footprint.
