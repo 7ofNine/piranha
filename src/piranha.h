@@ -70,7 +70,6 @@
 // Disabled for now.
 //#include "spc.h"
 //#include "sp.h"
-#include "snp.h"
 #include "stats.h"
 #include "stream_manager.h"
 #include "symbol_limiter.h"
