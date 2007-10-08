@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SIMPLE_CONTAINER_H
-#define PIRANHA_SIMPLE_CONTAINER_H
+#ifndef PIRANHA_BASE_CONTAINER_H
+#define PIRANHA_BASE_CONTAINER_H
 
 #include <iostream>
 #include <string>
@@ -35,30 +35,30 @@ namespace piranha
  * (float, mpf_class, long double, etc.).
  */
   template <class T, class Derived>
-    class simple_container
+    class base_container
   {
     public:
 /// Alias for self.
-      typedef simple_container self;
+      typedef base_container self;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default constructor.
-      explicit simple_container():value_(T())
+      explicit base_container():value_(T())
         {}
 /// Constructor from T value.
-      explicit simple_container(const T &val):value_(val)
+      explicit base_container(const T &val):value_(val)
         {}
 /// Copy constructor.
-      explicit simple_container(const self &sc):value_(sc.value_)
+      explicit base_container(const self &sc):value_(sc.value_)
         {}
 /// Constructor from string.
-      explicit simple_container(const std::string &s)
+      explicit base_container(const std::string &s)
       {
         value_=utils::lexical_converter<T>(s);
       }
 /// Destructor.
-      ~simple_container()
+      ~base_container()
         {}
 // Getters.
 /// Get value.

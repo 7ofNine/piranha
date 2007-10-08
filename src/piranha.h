@@ -65,7 +65,6 @@
 #include "ps.h"
 #include "psymbol.h"
 #include "settings_manager.h"
-#include "simple_container.h"
 #include "simple_term.h"
 // Disabled for now.
 //#include "spc.h"
