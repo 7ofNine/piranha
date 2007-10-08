@@ -23,6 +23,9 @@
 
 #include "double_cf.h"
 #include "norm_index.h"
+#ifdef _PIRANHA_SSE2
+#include "pool_allocator.h"
+#endif
 #include "ps.h"
 #include "simple_term.h"
 #include "trig_fixed_array.h"
@@ -32,7 +35,14 @@ namespace piranha
   template <int N>
     struct fnp
   {
-    typedef ps<double_cf,trig_fixed_array<N,8>,simple_term,norm_based_index> type;
+    typedef ps<double_cf,
+      trig_fixed_array<N,8>,
+      simple_term,
+      norm_based_index
+#ifdef _PIRANHA_SSE2
+      , pool_allocator<char,16>
+#endif
+    > type;
   };
 }
 #endif

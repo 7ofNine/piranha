@@ -21,6 +21,9 @@
 #ifndef PIRANHA_PACKED_INT_ARRAY32_H
 #define PIRANHA_PACKED_INT_ARRAY32_H
 
+#ifdef _PIRANHA_SSE2
+#include <emmintrin.h>
+#endif
 #include <boost/integer.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
@@ -43,17 +46,64 @@ namespace piranha
 //     boost::hash_combine(seed,end_array[-1]);
 //   }
 
+  template <int Dim, int Bits> class packed_int_array;
+  template <int Bits> class pia_helper;
+
+#ifdef _PIRANHA_SSE2
+  template <int Bits>
+    class pia_helper
+  {
+    BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
+    template <int Dim, int Bits_> friend class packed_int_array;
+// Default is 16bit operations.
+    template <class T>
+      static void trigmult(const T &t1, const T &t2, T &ret1, T &ret2)
+    {
+      const uint8 w = T::m128n;
+      for (uint8 i=0;i<w;++i)
+      {
+        ret1.private_container_.m[i]=_mm_sub_epi16(t1.private_container_.m[i],t2.private_container_.m[i]);
+        ret2.private_container_.m[i]=_mm_add_epi16(t1.private_container_.m[i],t2.private_container_.m[i]);
+      }
+    }
+  };
+
+  template <>
+    class pia_helper<8>
+  {
+    template <int Dim, int Bits> friend class packed_int_array;
+// Default is 16bit operations.
+    template <class T>
+      static void trigmult(const T &t1, const T &t2, T &ret1, T &ret2)
+    {
+      const uint8 w = T::m128n;
+      for (uint8 i=0;i<w;++i)
+      {
+        ret1.private_container_.m[i]=_mm_sub_epi8(t1.private_container_.m[i],t2.private_container_.m[i]);
+        ret2.private_container_.m[i]=_mm_add_epi8(t1.private_container_.m[i],t2.private_container_.m[i]);
+      }
+    }
+  };
+#endif
+
   template <int Dim, int Bits>
     class packed_int_array
   {
       BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
       BOOST_STATIC_ASSERT(Dim > 0 and Dim < 100);
+#ifdef _PIRANHA_SSE2
+      template <int Bits_> friend class pia_helper;
+#endif
     public:
       typedef typename boost::int_t<Bits>::fast value_type;
     private:
       union container_type
       {
         value_type  v[Dim];
+#ifdef _PIRANHA_SSE2
+// We want to have always at least 1 __m128i object to take advantage of SSE2.
+        __m128i     m[(Dim*Bits)/128+1];
+#endif
       };
     public:
       packed_int_array()
@@ -114,11 +164,21 @@ namespace piranha
       {
         return private_container_.v[n];
       }
+#ifdef _PIRANHA_SSE2
+      static void trigmult(const packed_int_array &t1, const packed_int_array &t2,
+        packed_int_array &ret1, packed_int_array &ret2)
+      {
+        pia_helper<Bits>::trigmult(t1,t2,ret1,ret2);
+      }
+#endif
     private:
       container_type      private_container_;
       static const uint8  size32 = (uint8)((Dim*Bits)/32);
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
+#ifdef _PIRANHA_SSE2
+      static const uint8  m128n = (uint8)((Dim*Bits)/128+1);
+#endif
   };
 
   template <int Dim, int Bits>
@@ -129,6 +189,11 @@ namespace piranha
 
   template <int Dim, int Bits>
     const uint8 packed_int_array<Dim,Bits>::size8;
+
+#ifdef _PIRANHA_SSE2
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::m128n;
+#endif
 }
 
 #endif
