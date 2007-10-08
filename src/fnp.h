@@ -32,7 +32,7 @@ namespace piranha
   template <int N>
     struct fnp
   {
-    typedef ps<double_cf,trig_fixed_array<N>,simple_term,norm_based_index> type;
+    typedef ps<double_cf,trig_fixed_array<N,8>,simple_term,norm_based_index> type;
   };
 }
 #endif

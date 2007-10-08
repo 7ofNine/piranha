@@ -21,42 +21,40 @@
 #ifndef PIRANHA_TRIG_FIXED_ARRAY_H
 #define PIRANHA_TRIG_FIXED_ARRAY_H
 
-#include <boost/static_assert.hpp>
 #include <boost/algorithm/minmax.hpp>
 #include <cstring>
 
 #include "base_trig_array.h"
+#include "common_typedefs.h"
+// TODO: here we will need to place a 64bit ifdef.
+#include "packed_int_array32.h"
 
 namespace piranha
 {
-// TODO: check the real impact of these unrollers.
   template <int N>
-    inline void hash_unroller(size_t &seed, const int16 *end_array)
+    class tfa_unrollers
   {
-    boost::hash_combine(seed,end_array[-N]);
-    hash_unroller<N-1>(seed,end_array);
-  }
+    public:
+      template <class T>
+        static void mult(const T *end_array1, const T *end_array2, T *ret_array1, T *ret_array2)
+      {
+        ret_array1[-N]=end_array1[-N]-end_array2[-N];
+        ret_array2[-N]=end_array1[-N]+end_array2[-N];
+        tfa_unrollers<N-1>::mult(end_array1,end_array2,ret_array1,ret_array2);
+      }
+  };
 
   template <>
-    inline void hash_unroller<1>(size_t &seed, const int16 *end_array)
+    class tfa_unrollers<1>
   {
-    boost::hash_combine(seed,end_array[-1]);
-  }
-
-  template <int N>
-    inline void mult_unroller(const int16 *end_array1, const int16 *end_array2, int16 *ret_array1, int16 *ret_array2)
-  {
-    ret_array1[-N]=end_array1[-N]-end_array2[-N];
-    ret_array2[-N]=end_array1[-N]+end_array2[-N];
-    mult_unroller<N-1>(end_array1,end_array2,ret_array1,ret_array2);
-  }
-
-  template <>
-    inline void mult_unroller<1>(const int16 *end_array1, const int16 *end_array2, int16 *ret_array1, int16 *ret_array2)
-  {
-    ret_array1[-1]=end_array1[-1]-end_array2[-1];
-    ret_array2[-1]=end_array1[-1]+end_array2[-1];
-  }
+    public:
+      template <class T>
+        static void mult(const T *end_array1, const T *end_array2, T *ret_array1, T *ret_array2)
+      {
+        ret_array1[-1]=end_array1[-1]-end_array2[-1];
+        ret_array2[-1]=end_array1[-1]+end_array2[-1];
+      }
+  };
 
 // TODO: Are these two used?
 //   template <int N>
@@ -73,30 +71,25 @@ namespace piranha
 //   }
 
 /// Trigonometric array, fixed size version.
-  template <int Dim>
-    class trig_fixed_array: public base_trig_array<trig_fixed_array<Dim> >
+  template <int Dim, int Bits>
+    class trig_fixed_array: public base_trig_array<trig_fixed_array<Dim,Bits> >
   {
-// Check that dimension is sane.
-      BOOST_STATIC_ASSERT(Dim > 0);
-      BOOST_STATIC_ASSERT(Dim < 100);
-      typedef base_trig_array<trig_fixed_array<Dim> > ancestor;
+      typedef base_trig_array<trig_fixed_array<Dim,Bits> > ancestor;
       template <class Derived>
         friend class base_trig_array;
     public:
+      typedef packed_int_array<Dim,Bits> container_type;
+      typedef typename container_type::value_type value_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default ctor.
       trig_fixed_array():ancestor::base_trig_array()
         {}
-/// Copy ctor.
-      trig_fixed_array(const trig_fixed_array &t):ancestor::base_trig_array(t)
-        {
-          assignment(t);
-        }
 /// Ctor from piranha::deque_string.
       trig_fixed_array(const deque_string &sd):ancestor::base_trig_array()
       {
+// TODO: check for integer limits when building.
         const size_t w=sd.size();
         if (w == 0)
         {
@@ -104,7 +97,7 @@ namespace piranha
           std::abort();
           return;
         }
-        const uint16 d=g_width();
+        const uint8 d=g_width();
 // Now w >= 1.
         if ((w-1) != d)
         {
@@ -112,10 +105,11 @@ namespace piranha
 // TODO: Here we continue really, just remains as debug.
           std::abort();
         }
-        size_t i;
-        for (i=0;i<boost::minmax((size_t)d,w-1).get<0>();++i)
+        uint8 i;
+        for (i=0;i<boost::minmax(d,(uint8)(w-1)).get<0>();++i)
         {
-          private_container_[i]=utils::lexical_converter<int16>(sd[i]);
+// TODO: lexical conversion from int: store in temp and check for boundaries.
+          private_container_[i]=utils::lexical_converter<int>(sd[i]);
         }
         for (;i<d;++i)
         {
@@ -158,7 +152,11 @@ namespace piranha
       }
       bool operator==(const trig_fixed_array &t2) const
       {
-        return ancestor::equality_test(t2);
+        if (ancestor::g_flavour() != t2.g_flavour())
+        {
+          return false;
+        }
+        return (private_container_ == t2.private_container_);
       }
       bool operator<(const trig_fixed_array &t2) const
       {
@@ -167,7 +165,7 @@ namespace piranha
       size_t hasher() const
       {
         size_t seed=ancestor::g_flavour();
-        hash_unroller<dimension>(seed,private_container_+dimension);
+        private_container_.hasher(seed);
         return seed;
       }
 // Math.
@@ -188,13 +186,8 @@ namespace piranha
  */
       void trigmult(const trig_fixed_array &t2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
       {
-        mult_unroller<dimension>(private_container_+dimension,t2.private_container_+dimension,
-          ret1.private_container_+dimension,ret2.private_container_+dimension);
-      }
-      trig_fixed_array &operator=(const trig_fixed_array &t2)
-      {
-        ancestor::assignment_operator(t2);
-        return *this;
+        tfa_unrollers<dimension>::mult(&private_container_[0]+dimension,&t2.private_container_[0]+dimension,
+          &ret1.private_container_[0]+dimension,&ret2.private_container_[0]+dimension);
       }
       trig_fixed_array &operator*=(const int16 &n)
       {
@@ -204,30 +197,26 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      static const uint16 &g_width()
+      static const uint8 &g_width()
       {
         return dimension;
       }
-      const int16 *g_container() const
+      const value_type *g_container() const
       {
-        return private_container_;
+        return &private_container_[0];
       }
-      int16 *s_container()
+      value_type *s_container()
       {
-        return private_container_;
-      }
-      void assignment(const trig_fixed_array &t2)
-      {
-        memcpy((void *)private_container_,(const void *)t2.private_container_,sizeof(int16)*g_width());
+        return &private_container_[0];
       }
 // Data members.
     private:
-      int16              private_container_[Dim];
-      static const uint16  dimension = (uint16)Dim;
+      container_type      private_container_;
+      static const uint8  dimension = (uint8)(Dim);
   };
 
-  template <int Dim>
-    const uint16 trig_fixed_array<Dim>::dimension;
+  template <int Dim, int Bits>
+    const uint8 trig_fixed_array<Dim,Bits>::dimension;
 }
 
 #endif
