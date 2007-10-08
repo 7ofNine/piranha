@@ -75,7 +75,6 @@
 #include "symbol_limiting_elementary_math_toolbox.h"
 #include "tass17/tass17.h"
 #include "trig_array.h"
-#include "trig_cow_term.h"
 #include "trig_evaluator.h"
 #include "trig_fixed_array.h"
 #include "trigonometric_toolbox.h"
