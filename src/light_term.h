@@ -54,6 +54,12 @@ namespace piranha
       mutable Cf    cf;
       mutable Trig  trig;
     };
+
+  template <class Cf, class Trig>
+    size_t hash_value(const light_term<Cf,Trig> &t)
+  {
+    return t.hasher();
+  }
 }
 
 #endif
