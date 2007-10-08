@@ -102,7 +102,7 @@ namespace piranha
         value_type  v[Dim];
 #ifdef _PIRANHA_SSE2
 // We want to have always at least 1 __m128i object to take advantage of SSE2.
-        __m128i     m[(Dim*Bits)/128+1];
+       __attribute__ ((aligned (16))) __m128i     m[(Dim*Bits)/128+1];
 #endif
       };
     public:
