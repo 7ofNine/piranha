@@ -91,18 +91,19 @@ namespace piranha
   {
       BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
       BOOST_STATIC_ASSERT(Dim > 0 and Dim < 100);
-#ifdef _PIRANHA_SSE2
-      template <int Bits_> friend class pia_helper;
-#endif
     public:
       typedef typename boost::int_t<Bits>::fast value_type;
     private:
+#ifdef _PIRANHA_SSE2
+      template <int Bits_> friend class pia_helper;
+      static const uint8  m128n = (uint8)((Dim*Bits)/128+1);
+#endif
       union container_type
       {
         value_type  v[Dim];
 #ifdef _PIRANHA_SSE2
 // We want to have always at least 1 __m128i object to take advantage of SSE2.
-       __attribute__ ((aligned (16))) __m128i     m[(Dim*Bits)/128+1];
+       __attribute__ ((aligned (16))) __m128i     m[m128n];
 #endif
       };
     public:
@@ -176,9 +177,6 @@ namespace piranha
       static const uint8  size32 = (uint8)((Dim*Bits)/32);
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
-#ifdef _PIRANHA_SSE2
-      static const uint8  m128n = (uint8)((Dim*Bits)/128+1);
-#endif
   };
 
   template <int Dim, int Bits>
