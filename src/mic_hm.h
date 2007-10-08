@@ -18,27 +18,54 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CONFIG_H
-#define PIRANHA_CONFIG_H
+#ifndef PIRANHA_MIC_HM_H
+#define PIRANHA_MIC_HM_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index_container.hpp>
 
-#define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
-#endif
-
-// Disable this for now, pb hash container has horrible performance in certain
-// cases with boost::hash hash function.
-//#if GCC_VERSION <= 402000
-#include "mic_hm.h"
-//#else
-//#include "pb_hm.h"
-//#endif
+namespace piranha
+{
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
+    class mult_hash
+  {
+      typedef boost::multi_index_container<
+        Element,
+        boost::multi_index::indexed_by<
+          boost::multi_index::hashed_unique<boost::multi_index::identity<Element> >
+        >,
+      Allocator> container_type;
+    public:
+      typedef typename container_type::const_iterator iterator;
+      typedef typename container_type::iterator point_iterator;
+      mult_hash()
+        {
+          private_container_.max_load_factor(.8);
+        }
+      mult_hash(const size_t &)
+        {
+          private_container_.max_load_factor(.8);
+        }
+      iterator begin() const
+      {
+        return private_container_.begin();
+      }
+      iterator end() const
+      {
+        return private_container_.end();
+      }
+      point_iterator find(const Element &e) const
+      {
+        return private_container_.find(e);
+      }
+      point_iterator insert(const Element &e)
+      {
+        return private_container_.insert(e).first;
+      }
+    private:
+      container_type    private_container_;
+  };
+}
 
 #endif
