@@ -133,10 +133,11 @@ namespace piranha
       {
         p_assert(w == g_width());
       }
-      void invert_sign()
+// TODO: check if it is better this or the base version.
+      /*void invert_sign()
       {
         tfa_unrollers<dimension>::invert(&private_container_[0]+dimension);
-      }
+      }*/
 // Probing.
 /// Data footprint.
 /**

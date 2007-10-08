@@ -30,18 +30,18 @@
 namespace piranha
 {
 // TODO: check the real impact of these unrollers.
-  template <int N>
-    inline void hash_unroller(size_t &seed, const int16 *end_array)
-  {
-    boost::hash_combine(seed,end_array[-N]);
-    hash_unroller<N-1>(seed,end_array);
-  }
-
-  template <>
-    inline void hash_unroller<1>(size_t &seed, const int16 *end_array)
-  {
-    boost::hash_combine(seed,end_array[-1]);
-  }
+//   template <int N>
+//     inline void hash_unroller(size_t &seed, const int16 *end_array)
+//   {
+//     boost::hash_combine(seed,end_array[-N]);
+//     hash_unroller<N-1>(seed,end_array);
+//   }
+//
+//   template <>
+//     inline void hash_unroller<1>(size_t &seed, const int16 *end_array)
+//   {
+//     boost::hash_combine(seed,end_array[-1]);
+//   }
 
   template <int Dim, int Bits>
     class packed_int_array
