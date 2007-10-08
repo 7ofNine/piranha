@@ -52,6 +52,7 @@ namespace piranha
       trig_array(const deque_string &sd):ancestor::base_trig_array()
       {
 // TODO: check here that we are not loading too many multipliers, outside uint16 range.
+// TODO: do it everywhere!
         const size_t w=sd.size();
         if (w==0)
         {
