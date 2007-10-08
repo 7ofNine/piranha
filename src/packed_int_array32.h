@@ -50,6 +50,12 @@ namespace piranha
       BOOST_STATIC_ASSERT(Dim > 0 and Dim < 100);
     public:
       typedef typename boost::int_t<Bits>::fast value_type;
+    private:
+      union container_type
+      {
+        value_type  v[Dim];
+      };
+    public:
       packed_int_array()
         {}
       void hasher(size_t &seed) const
@@ -58,17 +64,17 @@ namespace piranha
         for (i=0;i<size32;++i)
         {
 //std::cout << "Entered 32\n";
-          boost::hash_combine(seed,*((const int32 *)(const void *)(private_container_)+i));
+          boost::hash_combine(seed,*((const int32 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size32<<1);i<size16;++i)
         {
 //std::cout << "Entered 16\n";
-          boost::hash_combine(seed,*((const int16 *)(const void *)(private_container_)+i));
+          boost::hash_combine(seed,*((const int16 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size16<<1);i<size8;++i)
         {
 //std::cout << "Entered 8\n";
-          boost::hash_combine(seed,*((const int8 *)(const void *)(private_container_)+i));
+          boost::hash_combine(seed,*((const int8 *)(const void *)(private_container_.v)+i));
         }
       }
       bool operator==(const packed_int_array &p) const
@@ -76,24 +82,24 @@ namespace piranha
         uint8 i;
         for (i=0;i<size32;++i)
         {
-          if (*((const int32 *)(const void *)(private_container_)+i) !=
-            *((const int32 *)(const void *)(p.private_container_)+i))
+          if (*((const int32 *)(const void *)(private_container_.v)+i) !=
+            *((const int32 *)(const void *)(p.private_container_.v)+i))
           {
             return false;
           }
         }
         for (i=(size32<<1);i<size16;++i)
         {
-          if (*((const int16 *)(const void *)(private_container_)+i) !=
-            *((const int16 *)(const void *)(p.private_container_)+i))
+          if (*((const int16 *)(const void *)(private_container_.v)+i) !=
+            *((const int16 *)(const void *)(p.private_container_.v)+i))
           {
             return false;
           }
         }
         for (i=(size16<<1);i<size8;++i)
         {
-          if (*((const int8 *)(const void *)(private_container_)+i) !=
-            *((const int8 *)(const void *)(p.private_container_)+i))
+          if (*((const int8 *)(const void *)(private_container_.v)+i) !=
+            *((const int8 *)(const void *)(p.private_container_.v)+i))
           {
             return false;
           }
@@ -102,14 +108,14 @@ namespace piranha
       }
       const value_type &operator[](uint8 n) const
       {
-        return private_container_[n];
+        return private_container_.v[n];
       }
       value_type &operator[](uint8 n)
       {
-        return private_container_[n];
+        return private_container_.v[n];
       }
     private:
-      value_type          private_container_[Dim];
+      container_type      private_container_;
       static const uint8  size32 = (uint8)((Dim*Bits)/32);
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
