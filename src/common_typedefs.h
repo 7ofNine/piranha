@@ -41,6 +41,8 @@ namespace piranha
   typedef boost::uint16_t uint16;
 /// Alias for 32bit integer.
   typedef boost::int32_t int32;
+/// Alias for 64bit integer.
+  typedef boost::int64_t int64;
 /// Alias for the size of trigonometric containers.
   typedef uint16 trig_size_t;
 /// Alias for complex doubles.

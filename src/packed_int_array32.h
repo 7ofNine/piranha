@@ -112,7 +112,12 @@ namespace piranha
       void hasher(size_t &seed) const
       {
         uint8 i;
-        for (i=0;i<size32;++i)
+        for (i=0;i<size64;++i)
+        {
+//std::cout << "Entered 64\n";
+          boost::hash_combine(seed,*((const int64 *)(const void *)(private_container_.v)+i));
+        }
+        for (i=(size64<<1);i<size32;++i)
         {
 //std::cout << "Entered 32\n";
           boost::hash_combine(seed,*((const int32 *)(const void *)(private_container_.v)+i));
@@ -131,7 +136,15 @@ namespace piranha
       bool operator==(const packed_int_array &p) const
       {
         uint8 i;
-        for (i=0;i<size32;++i)
+        for (i=0;i<size64;++i)
+        {
+          if (*((const int64 *)(const void *)(private_container_.v)+i) !=
+            *((const int64 *)(const void *)(p.private_container_.v)+i))
+          {
+            return false;
+          }
+        }
+        for (i=(size64<<1);i<size32;++i)
         {
           if (*((const int32 *)(const void *)(private_container_.v)+i) !=
             *((const int32 *)(const void *)(p.private_container_.v)+i))
@@ -174,10 +187,15 @@ namespace piranha
 #endif
     private:
       container_type      private_container_;
+// size64 will be non-zero only on 64bit platforms.
+      static const uint8  size64 = (uint8)((Dim*Bits)/64)*(sizeof(void *) == 8);
       static const uint8  size32 = (uint8)((Dim*Bits)/32);
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
   };
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size64;
 
   template <int Dim, int Bits>
     const uint8 packed_int_array<Dim,Bits>::size32;
