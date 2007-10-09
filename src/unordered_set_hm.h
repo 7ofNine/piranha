@@ -18,25 +18,47 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CONFIG_H
-#define PIRANHA_CONFIG_H
+#ifndef PIRANHA_UNORDERED_SET_HM_H
+#define PIRANHA_UNORDERED_SET_HM_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
+#include <tr1/unordered_set>
 
-#define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
-#endif
-
-#if GCC_VERSION < 401000
-#include "hash_mic_hm.h"
-#else
-#include "unordered_set_hm.h"
-#endif
+namespace piranha
+{
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
+    class mult_hash
+  {
+      typedef std::tr1::unordered_set<Element,Hasher,Eq,Allocator,StoreHash> container_type;
+    public:
+      typedef typename container_type::const_iterator iterator;
+      typedef typename container_type::const_iterator point_iterator;
+      mult_hash()
+      {
+          private_container_.max_load_factor(.5);
+      }
+      mult_hash(const size_t &s):private_container_(s)
+      {
+          private_container_.max_load_factor(.5);
+      }
+      iterator begin() const
+      {
+        return private_container_.begin();
+      }
+      iterator end() const
+      {
+        return private_container_.end();
+      }
+      point_iterator find(const Element &e) const
+      {
+        return private_container_.find(e);
+      }
+      point_iterator insert(const Element &e)
+      {
+        return private_container_.insert(e).first;
+      }
+    private:
+      container_type    private_container_;
+  };
+}
 
 #endif
