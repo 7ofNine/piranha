@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PACKED_INT_ARRAY32_H
-#define PIRANHA_PACKED_INT_ARRAY32_H
+#ifndef PIRANHA_PACKED_INT_ARRAY_H
+#define PIRANHA_PACKED_INT_ARRAY_H
 
 #ifdef _PIRANHA_SSE2
 #include <emmintrin.h>

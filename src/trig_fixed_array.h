@@ -23,14 +23,10 @@
 
 #include <boost/algorithm/minmax.hpp>
 #include <cstring>
-#ifdef _PIRANHA_SSE2
-#include <emmintrin.h>
-#endif
 
 #include "base_trig_array.h"
 #include "common_typedefs.h"
-// TODO: here we will need to place a 64bit ifdef.
-#include "packed_int_array32.h"
+#include "packed_int_array.h"
 
 namespace piranha
 {
