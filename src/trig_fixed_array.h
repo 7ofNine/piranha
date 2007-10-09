@@ -80,6 +80,7 @@ namespace piranha
     public:
       typedef packed_int_array<Dim,Bits> container_type;
       typedef typename container_type::value_type value_type;
+      typedef uint8 size_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
