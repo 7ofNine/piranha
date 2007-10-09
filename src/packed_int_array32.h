@@ -195,8 +195,7 @@ namespace piranha
 #endif
     private:
       container_type      private_container_;
-// size64 will be non-zero only on 64bit platforms.
-      static const uint8  size64 = (uint8)((Dim*Bits)/64)*(sizeof(void *) == 8);
+      static const uint8  size64 = (uint8)((Dim*Bits)/64);
       static const uint8  size32 = (uint8)((Dim*Bits)/32);
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
