@@ -112,12 +112,16 @@ namespace piranha
       void hasher(size_t &seed) const
       {
         uint8 i;
+#ifdef _PIRANHA_64BIT
         for (i=0;i<size64;++i)
         {
 //std::cout << "Entered 64\n";
           boost::hash_combine(seed,*((const int64 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size64<<1);i<size32;++i)
+#else
+        for (i=0;i<size32;++i)
+#endif
         {
 //std::cout << "Entered 32\n";
           boost::hash_combine(seed,*((const int32 *)(const void *)(private_container_.v)+i));
@@ -136,6 +140,7 @@ namespace piranha
       bool operator==(const packed_int_array &p) const
       {
         uint8 i;
+#ifdef _PIRANHA_64BIT
         for (i=0;i<size64;++i)
         {
           if (*((const int64 *)(const void *)(private_container_.v)+i) !=
@@ -145,6 +150,9 @@ namespace piranha
           }
         }
         for (i=(size64<<1);i<size32;++i)
+#else
+        for (i=0;i<size32;++i)
+#endif
         {
           if (*((const int32 *)(const void *)(private_container_.v)+i) !=
             *((const int32 *)(const void *)(p.private_container_.v)+i))
