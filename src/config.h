@@ -34,7 +34,7 @@
 #endif
 
 #if GCC_VERSION < 401000
-#include "hash_mic_hm.h"
+#include "mic_hm.h"
 #else
 #include "unordered_set_hm.h"
 #endif
