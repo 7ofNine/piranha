@@ -29,4 +29,5 @@ BOOST_PYTHON_MODULE(_Np)
   def("Pnm",&math::Pnm<np>,"Legendre function of the first kind - Pnm(cos(theta)).");
   def("Ynm",&math::Ynm<np>,"Non-normalized spherical harmonic.");
   def("wig_rot",&math::wig_rot<np>,"Wigner rotation theorem for spherical harmonics.");
+  instantiate_tass17<lnp>();
 }
