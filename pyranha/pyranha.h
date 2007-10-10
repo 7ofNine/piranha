@@ -31,9 +31,7 @@
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/self.hpp>
 
-#include "../src/astro.h"
-#include "../src/prectest.h"
-#include "../src/psymbol.h"
+#include "../src/piranha.h"
 
 using namespace boost::python;
 using namespace piranha;
