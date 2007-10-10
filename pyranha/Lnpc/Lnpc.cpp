@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include "../pyranha.h"
-#include "../../src/lnpc.h"
 
 BOOST_PYTHON_MODULE(_Lnpc)
 {
