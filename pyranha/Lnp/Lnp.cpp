@@ -22,58 +22,6 @@
 
 BOOST_PYTHON_MODULE(_Lnp)
 {
-// TASS
-#ifdef _PIRANHA_TASS
-
-  class_<tass17<lnp> >("tass17","TASS theory, version 1.7.",no_init)
-    .def("load", &tass17<lnp>::load,"Load series into memory.")
-    .staticmethod("load")
-    .def("status", &tass17<lnp>::status,"Print to screen TASS status.")
-    .staticmethod("status")
-    .def("add_delta_lambdas", &tass17<lnp>::add_delta_lambdas,"Correct series with long term perturbations.")
-    .staticmethod("add_delta_lambdas")
-    .def("m0", &tass17<lnp>::m0,return_value_policy<copy_const_reference>(),"Get Saturn's mass in Sun mass units.")
-    .staticmethod("m0")
-    .def("m6", &tass17<lnp>::m6,return_value_policy<copy_const_reference>(),"Get inverse of Titan's mass in Saturn mass units.")
-    .staticmethod("m6")
-    .def("lambda4", &tass17<lnp>::lambda4,return_value_policy<copy_const_reference>(),"Get Dione's lambda.")
-    .staticmethod("lambda4")
-    .def("lambda6", &tass17<lnp>::lambda6,return_value_policy<copy_const_reference>(),"Get Titan's lambda.")
-    .staticmethod("lambda6")
-    .def("r6", &tass17<lnp>::r6,"Calculate Titan's radius.")
-    .staticmethod("r6")
-    .def("p6", &tass17<lnp>::p6,return_value_policy<copy_const_reference>(),"Get Titan's p.")
-    .staticmethod("p6")
-    .def("z6", &tass17<lnp>::z6,return_value_policy<copy_const_reference>(),"Get Titan's z.")
-    .staticmethod("z6")
-    .def("zeta6", &tass17<lnp>::zeta6,return_value_policy<copy_const_reference>(),"Get Titan's (greek) zeta.")
-    .staticmethod("zeta6")
-    .def("e", &tass17<lnp>::e,"Calculate eccentricity from elliptic orbital element z.")
-    .staticmethod("e")
-    .def("a", &tass17<lnp>::a,"Calculate semi-major axis a from elliptic orbital element p.")
-    .staticmethod("a")
-    .def("eiM", &tass17<lnp>::eiM,"Calculate complex exponential of mean mean motion M.")
-    .staticmethod("eiM")
-    .def("vienne_r", &tass17<lnp>::vienne_r,"Calculate radius using Vienne's FORTRAN routine.")
-    .staticmethod("vienne_r")
-    ;
-
-  class_ <tc_vienne_r6<lnp> >
-    ((std::string("tc_vienne_r6")).c_str(),
-    init<tc_vienne_r6<lnp>::b_type,double,double,size_t>())
-    .def("sigma",&tc_vienne_r6<lnp>::sigma,return_value_policy<copy_const_reference>())
-    .def("max_error",&tc_vienne_r6<lnp>::max_error,
-    return_value_policy<copy_const_reference>())
-    .def("time",&tc_vienne_r6<lnp>::time,return_value_policy<copy_const_reference>())
-    .def("hs",&tc_vienne_r6<lnp>::hs,return_value_policy<copy_const_reference>())
-    .def("hs_computed",&tc_vienne_r6<lnp>::hs_computed,
-    return_value_policy<copy_const_reference>())
-    .def("error",&tc_vienne_r6<lnp>::error)
-    .def("gnuplot_save",&tc_vienne_r6<lnp>::gnuplot_save)
-    .def("size",&tc_vienne_r6<lnp>::size)
-    ;
-#endif
-
   class_<lnp> inst=ps_basic_instantiation<lnp>("lnp","Numerical Poisson series class, "
     "trigonometric lists version.");
   ps_instantiate_differential_specifics(inst);
@@ -82,4 +30,5 @@ BOOST_PYTHON_MODULE(_Lnp)
   def("Pnm",&math::Pnm<lnp>,"Legendre function of the first kind - Pnm(cos(theta)).");
   def("Ynm",&math::Ynm<lnp>,"Non-normalized spherical harmonic.");
   def("wig_rot",&math::wig_rot<lnp>,"Wigner rotation theorem for spherical harmonics.");
+  instantiate_tass17<lnp>();
 }
