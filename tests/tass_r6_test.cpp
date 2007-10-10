@@ -26,8 +26,8 @@ using namespace piranha;
 int main()
 {
   settings_manager::set_prec(1E-6);
-  tass17::load();
-  tass17::add_delta_lambdas();
-  tass17::r6();
+  tass17<lnp>::load();
+  tass17<lnp>::add_delta_lambdas();
+  tass17<lnp>::r6();
   return 0;
 }
