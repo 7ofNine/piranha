@@ -9,6 +9,7 @@ INCLUDE(PiranhaPythonSetup)
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CPack)
 INCLUDE(CheckTypeSize)
+INCLUDE(CheckCXXCompilerFlag)
 ENABLE_LANGUAGE(C CXX)
 INCLUDE_DIRECTORIES("external_headers")
 
