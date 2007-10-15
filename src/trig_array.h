@@ -37,6 +37,8 @@ namespace piranha
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
+      typedef int16 value_type;
+      typedef size_t size_type;
 // Ctors.
 /// Default ctor.
       trig_array():ancestor::base_trig_array()
@@ -49,7 +51,7 @@ namespace piranha
       {
 // TODO: check here that we are not loading too many multipliers, outside uint16 range.
 // TODO: do it everywhere!
-        const size_t w=sd.size();
+        const size_type w=sd.size();
         if (w==0)
         {
           std::cout << "Warning: constructing empty trig_array." << std::endl;
@@ -58,9 +60,9 @@ namespace piranha
         }
 // Now we know  w >= 1.
         private_container_.resize(w-1);
-        for (uint16 i=0;i<w-1;++i)
+        for (size_type i=0;i<w-1;++i)
         {
-          private_container_[i]=utils::lexical_converter<int16>(sd[i]);
+          private_container_[i]=utils::lexical_converter<value_type>(sd[i]);
         }
 // Take care of flavour.
         if (*sd.back().c_str()=='s')
@@ -76,27 +78,27 @@ namespace piranha
         if (n>0)
         {
           container_type old_private_container_(private_container_);
-          const uint16 old_w=old_private_container_.size();
+          const size_type old_w=old_private_container_.size();
           private_container_.resize(old_w+n);
-          for (uint16 i=0;i<old_w;++i)
+          for (size_type i=0;i<old_w;++i)
           {
             private_container_[i+n]=old_private_container_[i];
           }
         }
       }
-      void append_args(const uint16 &n)
+      void append_args(const size_t &n)
       {
         increase_size(g_width()+n);
       }
-      void increase_size(const uint16 &n)
+      void increase_size(const size_t &n)
       {
         p_assert(n >= g_width());
         if (n > g_width())
         {
           container_type old_private_container_(private_container_);
           private_container_.resize(n);
-          const uint16 old_w=old_private_container_.size();
-          for (uint16 i=0;i<old_w;++i)
+          const size_type old_w=old_private_container_.size();
+          for (size_type i=0;i<old_w;++i)
           {
             private_container_[i]=old_private_container_[i];
           }
@@ -109,7 +111,7 @@ namespace piranha
  */
       size_t data_footprint() const
       {
-        return (g_width()*sizeof(int16));
+        return (g_width()*sizeof(value_type));
       }
       bool checkup(const size_t &w) const
       {
@@ -149,13 +151,13 @@ namespace piranha
 // because this way we can do two operations (+ and -) every cycle. This is a performance
 // critical part, so the optimization should be worth the hassle.
       {
-        const uint16 max_w=g_width(), min_w=t2.g_width();
+        const size_type max_w=g_width(), min_w=t2.g_width();
 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
         p_assert(ret1.g_width() == max_w);
         p_assert(ret2.g_width() == max_w);
-        uint16 i;
+        size_type i;
         for (i=0;i<min_w;++i)
         {
           ret1.private_container_[i]=private_container_[i]-t2.private_container_[i];
@@ -180,15 +182,15 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      uint16 g_width() const
+      size_type g_width() const
       {
         return private_container_.size();
       }
-      const int16 *g_container() const
+      const value_type *g_container() const
       {
         return &(private_container_[0]);
       }
-      int16 *s_container()
+      value_type *s_container()
       {
         return &(private_container_[0]);
       }
