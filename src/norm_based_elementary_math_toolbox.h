@@ -146,6 +146,7 @@ namespace piranha
             }
             else
             {
+              __builtin_prefetch(&(*hm_p_it),1,3);
               hm_p_it->cf+=*c0;
             }
             hm_p_it=hm.find(*term1);
