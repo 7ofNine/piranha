@@ -22,7 +22,6 @@
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 #include <boost/foreach.hpp>
-#include <ext/hash_set>
 
 #include "config.h"
 
