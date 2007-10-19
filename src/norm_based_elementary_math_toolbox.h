@@ -145,7 +145,8 @@ namespace piranha
             }
             else
             {
-              __builtin_prefetch(&(*hm_p_it),1,3);
+              __builtin_prefetch(hm_p_it->g_cf(),1,3);
+              __builtin_prefetch(hm_p_it->g_trig(),0,3);
               hm_p_it->cf+=*c0;
             }
             hm_p_it=hm.find(*term1);
