@@ -163,7 +163,7 @@ namespace piranha
         const m_hash_iterator hm_it_f=hm.end();
         for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
         {
-          retval.insert(term_type(hm_it->cf,hm_it->trig));
+          retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
         }
 //retval.cumulative_crop(Delta);
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;

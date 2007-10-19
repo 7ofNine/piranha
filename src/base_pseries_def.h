@@ -305,10 +305,26 @@ namespace piranha
         return g_s_index().end();
       }
 // Basic manipulation
-      it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
+      it_s_index insert(const term_type &term, bool sign = true, const it_s_index *it_hint = 0)
+      {
+        return insert_<true>(term,sign,it_hint);
+      }
+      it_s_index insert_no_sign_check(const term_type &term, bool sign = true, const it_s_index *it_hint = 0)
+      {
+        return insert_<false>(term,sign,it_hint);
+      }
       template <class Cf2>
-        it_s_index insert(const Term<Cf2, trig_type> &,
-        bool sign = true, const it_s_index *it_hint = 0);
+        it_s_index insert(const Term<Cf2, trig_type> &term,
+        bool sign = true, const it_s_index *it_hint = 0)
+      {
+        return insert_<true>(term_type(term),sign,it_hint);
+      }
+      template <class Cf2>
+        it_s_index insert_no_sign_check(const Term<Cf2, trig_type> &term,
+        bool sign = true, const it_s_index *it_hint = 0)
+      {
+        return insert_<false>(term_type(term),sign,it_hint);
+      }
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
       void swap(Derived &);
@@ -454,6 +470,8 @@ namespace piranha
       template <class Cf2>
         it_s_index ll_insert(const Term<Cf2, trig_type> &,
         bool, const it_s_index *);
+      template <bool CheckSign>
+        it_s_index insert_(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
 // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
 // Low level maths.

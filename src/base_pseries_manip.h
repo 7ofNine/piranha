@@ -409,7 +409,8 @@ namespace piranha
  * This function performs some checks and then calls base_pseries::ll_insert.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::insert(
+    template <bool CheckSign>
+    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::insert_(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
     const size_t cw=cf_width(), tw=trig_width();
@@ -418,19 +419,23 @@ namespace piranha
     p_assert(!term.g_cf()->larger(cw));
     p_assert(!term.g_trig()->larger(tw));
     boost::scoped_ptr<term_type> new_term(0);
-    if (term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw))
+    const bool need_resize=(term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw));
+    if (need_resize)
     {
       new_term.reset(new term_type(term));
       new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
-    if (term.g_trig()->sign()<0)
+    if (CheckSign)
     {
-      if (new_term.get()==0)
+      if (term.g_trig()->sign()<0)
       {
-        new_term.reset(new term_type(term));
+        if (new_term.get()==0)
+        {
+          new_term.reset(new term_type(term));
+        }
+        new_term->invert_trig_args();
       }
-      new_term->invert_trig_args();
     }
     const term_type *insert_term;
     if (new_term.get()==0)
@@ -443,15 +448,6 @@ namespace piranha
     }
     it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
     return ret_it;
-  }
-
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    template <class Cf2>
-    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::insert(
-    const Term<Cf2,trig_type> &term, bool sign, const it_s_index *it_hint)
-  {
-//        BOOST_STATIC_ASSERT(sizeof(U)==0);
-    return insert(term_type(term),sign,it_hint);
   }
 
 // --------------
