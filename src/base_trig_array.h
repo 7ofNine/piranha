@@ -40,6 +40,7 @@ namespace piranha
       ~base_trig_array()
         {}
 // Getters.
+// Here we return always int16 because at this stage we cannot know what is value_type.
       int16 at(const trig_size_t &n) const
       {
         if (static_cast<const Derived *>(this)->g_width() <= n)
