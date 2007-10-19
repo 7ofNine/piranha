@@ -430,7 +430,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     m_type *new_m=0;
     if (m.smaller(w))
     {
-// FIXME: used boost shared pointer.
+// FIXME: use proper allocator.
       new_m = new m_type(m);
       new_m->increase_size(w);
     }
