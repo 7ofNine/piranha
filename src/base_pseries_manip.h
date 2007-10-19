@@ -21,9 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_MANIP_H
 #define PIRANHA_BASE_PSERIES_MANIP_H
 
-#include <boost/scoped_ptr.hpp>
-
 #include "arg_manager.h"
+#include "config.h"       // For (un)likely().
 #include "stats.h"
 
 namespace piranha
@@ -420,7 +419,7 @@ namespace piranha
     p_assert(!term.g_trig()->larger(tw));
     term_type *new_term(0);
     const bool need_resize=(term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw));
-    if (need_resize)
+    if (unlikely(need_resize))
     {
       new_term=term_allocator.allocate(1);
       *new_term=term;
