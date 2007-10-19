@@ -55,6 +55,7 @@ namespace piranha
       typedef I<cf_type, trig_type, Term> index_type;
       typedef Derived derived_type;
       typedef Allocator allocator_type;
+      typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
       typedef light_term<cf_type,trig_type> light_term_type;
       typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
 /// Alias for the evaluation type.
@@ -536,11 +537,17 @@ namespace piranha
       };
 // Data members.
     protected:
-      vector_int16   lin_args_;
+      vector_int16    lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
       series_set_type private_series_set_;
+    private:
+      static term_allocator_type term_allocator;
   };
+
+  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    typename base_pseries<Cf,Trig,Term,I,Derived,Allocator>::term_allocator_type
+    base_pseries<Cf,Trig,Term,I,Derived,Allocator>::term_allocator;
 }
 
 #endif

@@ -418,35 +418,41 @@ namespace piranha
 // by addition and multiplication routines.
     p_assert(!term.g_cf()->larger(cw));
     p_assert(!term.g_trig()->larger(tw));
-    boost::scoped_ptr<term_type> new_term(0);
+    term_type *new_term(0);
     const bool need_resize=(term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw));
     if (need_resize)
     {
-      new_term.reset(new term_type(term));
+      new_term=term_allocator.allocate(1);
+      *new_term=term;
       new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
     if (CheckSign)
     {
-      if (term.g_trig()->sign()<0)
+      if (term.g_trig()->sign() < 0)
       {
-        if (new_term.get()==0)
+        if (new_term == 0)
         {
-          new_term.reset(new term_type(term));
+          new_term=term_allocator.allocate(1);
+          *new_term=term;
         }
         new_term->invert_trig_args();
       }
     }
     const term_type *insert_term;
-    if (new_term.get()==0)
+    if (new_term == 0)
     {
       insert_term=&term;
     }
     else
     {
-      insert_term=new_term.get();
+      insert_term=new_term;
     }
     it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
+    if (new_term != 0)
+    {
+      term_allocator.deallocate(new_term,1);
+    }
     return ret_it;
   }
 
