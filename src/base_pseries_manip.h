@@ -422,7 +422,7 @@ namespace piranha
     if (unlikely(need_resize))
     {
       new_term=term_allocator.allocate(1);
-      *new_term=term;
+      term_allocator.construct(new_term,term);
       new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
@@ -433,7 +433,7 @@ namespace piranha
         if (new_term == 0)
         {
           new_term=term_allocator.allocate(1);
-          *new_term=term;
+          term_allocator.construct(new_term,term);
         }
         new_term->invert_trig_args();
       }
@@ -450,6 +450,7 @@ namespace piranha
     it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
     if (new_term != 0)
     {
+      term_allocator.destroy(new_term);
       term_allocator.deallocate(new_term,1);
     }
     return ret_it;
