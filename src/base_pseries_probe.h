@@ -120,8 +120,8 @@ namespace piranha
  */
 // NOTICE: not inlined, this should not be called often and hence it would just end up increasing binary size.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2, class Derived2>
-    bool base_pseries<__PIRANHA_BASE_PS_TP>::args_different(const base_pseries<Cf2, trig_type, Term, I, Derived2, Allocator> &ps2) const
+    template <class Derived2>
+    bool base_pseries<__PIRANHA_BASE_PS_TP>::args_different(const Derived2 &ps2) const
   {
 // Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
 // we are only interested in the presence or not of that argument. If there are duplicate arguments

@@ -518,9 +518,8 @@ namespace piranha
           return (p1->name()<p2->name());
         }
       };
-      template <class Cf2, class Derived2>
-        bool args_different(const
-        base_pseries<Cf2, trig_type, Term, I, Derived2, Allocator> &) const;
+      template <class Derived2>
+        bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool args_compatible(const Derived2 &) const;
     private:
