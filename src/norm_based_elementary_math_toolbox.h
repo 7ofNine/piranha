@@ -133,7 +133,7 @@ namespace piranha
             }
             term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
-// This way we won't do a copy inside insertion function.
+// This way we won't do a copy inside the insertion function.
             if (t0->sign()<0)
             {
               term0->invert_trig_args();
