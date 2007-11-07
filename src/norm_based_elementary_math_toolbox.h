@@ -23,7 +23,8 @@
 
 #include <boost/foreach.hpp>
 
-#include "config.h"
+#include "config.h"         // For selection of temporary multiplication hash container
+#include "light_term.h"
 
 namespace piranha
 {
@@ -76,9 +77,9 @@ namespace piranha
         typedef typename Derived::ancestor::term_type term_type;
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::trig_type trig_type;
-        typedef typename Derived::ancestor::light_term_type light_term_type;
-        typedef typename Derived::ancestor::light_term_pair light_term_pair;
         typedef typename Derived::ancestor::allocator_type allocator_type;
+        typedef light_term<cf_type,trig_type> light_term_type;
+        typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
         typedef mult_hash<light_term_type,light_term_hasher,
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
