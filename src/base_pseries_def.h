@@ -31,6 +31,12 @@
 
 namespace piranha
 {
+/// Template parameters for piranha::base_pseries.
+#define __PIRANHA_BASE_PS_TP Cf,Trig,Term,I,Derived,Allocator
+/// Template parameters for piranha::base_pseries (declaration form).
+#define __PIRANHA_BASE_PS_TP_DECL class Cf, class Trig, template <class, class> class Term, template <class, class, \
+  template <class, class> class> class I, class Derived, class Allocator
+
 /// Base series class.
 /**
  * Base class for the representation of Poisson series. It provides the methods for basic manipulation
@@ -39,7 +45,7 @@ namespace piranha
  * This class should not be used directly, it should be inherited by a more specialized class.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator = std::allocator<char> >
-    class base_pseries:base_pseries_hooks<base_pseries<Cf,Trig,Term,I,Derived,Allocator> >
+    class base_pseries:base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >
   {
     public:
 /// Alias for self.
@@ -543,9 +549,9 @@ namespace piranha
       static term_allocator_type term_allocator;
   };
 
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    typename base_pseries<Cf,Trig,Term,I,Derived,Allocator>::term_allocator_type
-    base_pseries<Cf,Trig,Term,I,Derived,Allocator>::term_allocator;
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    typename base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator_type
+    base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator;
 }
 
 #endif
