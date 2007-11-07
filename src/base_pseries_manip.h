@@ -408,7 +408,7 @@ namespace piranha
  * This function performs some checks and then calls base_pseries::ll_insert.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    template <bool CheckSign>
+    template <bool CheckTrigSign>
     inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::insert_(
     const term_type &term, bool sign, const it_s_index *it_hint)
   {
@@ -426,7 +426,7 @@ namespace piranha
       new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
-    if (CheckSign)
+    if (CheckTrigSign)
     {
       if (term.g_trig()->sign() < 0)
       {

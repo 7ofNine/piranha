@@ -471,7 +471,7 @@ namespace piranha
       template <class Cf2>
         it_s_index ll_insert(const Term<Cf2, trig_type> &,
         bool, const it_s_index *);
-      template <bool CheckSign>
+      template <bool CheckTrigSign>
         it_s_index insert_(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
 // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
