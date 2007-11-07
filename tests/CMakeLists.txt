@@ -1,3 +1,6 @@
+ADD_EXECUTABLE(fateman_test fateman_test.cpp)
+TARGET_LINK_LIBRARIES(fateman_test ${MANDATORY_LIBRARIES} piranha_static)
+
 ADD_EXECUTABLE(gastest_poly gastest_poly.cpp)
 TARGET_LINK_LIBRARIES(gastest_poly ${MANDATORY_LIBRARIES} piranha_static)
 
