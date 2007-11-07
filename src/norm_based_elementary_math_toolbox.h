@@ -38,14 +38,6 @@ namespace piranha
     template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class DerivedPs, class Allocator>
       friend class base_pseries;
     private:
-// Boilerplate for faster multiplication.
-      struct light_term_hasher
-      {
-        size_t operator()(const light_term<typename Derived::cf_type,typename Derived::trig_type> &t) const
-        {
-          return t.trig.hasher();
-        }
-      };
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -68,13 +60,22 @@ namespace piranha
         }
         derived_cast->swap(tmp_ps);
       }
+// Boilerplate for series multiplication.
+      struct light_term_hasher
+      {
+        size_t operator()(const light_term<typename Derived::cf_type,typename Derived::trig_type> &t) const
+        {
+          return t.trig.hasher();
+        }
+      };
       template <class Derived2>
         void multiply_terms(const Derived2 &ps2, Derived &retval) const
       {
 // TODO: use typedeffed "const_iterator" here instead.
         typedef typename Derived::ancestor::it_s_index it_s_index;
-        typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived2::ancestor::it_s_index it_s_index2;
+        typedef typename Derived2::ancestor::term_type term_type2;
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::trig_type trig_type;
         typedef typename Derived::ancestor::allocator_type allocator_type;
@@ -97,38 +98,40 @@ namespace piranha
         tmp1.s_trig()->increase_size(retval.trig_width());
         tmp2.s_trig()->increase_size(retval.trig_width());
         light_term_pair term_pair(tmp1,tmp2);
-        const it_s_index it1_f=derived_cast->g_s_index().end();
-        it_s_index it1;
-// Let's cache all ps2's iterators in a vector, so we don't need to ++it2
-// so many times in the cycle below.
-        std::valarray<it_s_index2> v_it2;
-        utils::array_iter(ps2,v_it2);
+// Cache all pointers to the terms of this and ps2 in vectors.
+        std::valarray<term_type const *> v_p1;
+        std::valarray<term_type2 const *> v_p2;
+        utils::array_pointer(*derived_cast,v_p1);
+        utils::array_pointer(ps2,v_p2);
         double norm1;
-        size_t i;
-        const size_t l2=v_it2.size();
+        size_t i,j;
+        const size_t l1=v_p1.size();
+        const size_t l2=v_p2.size();
+        p_assert(l1 == ps1.length());
         p_assert(l2 == ps2.length());
 // v_it2[0] is legal because we checked for ps2's size.
-        const double norm2_i=v_it2[0]->g_cf()->norm(ps2.cf_s_vec());
+        const double norm2_i=v_p2[0]->g_cf()->norm(ps2.cf_s_vec());
+// Cache some pointers.
         trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
         cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
         light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
-        for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
+        for (i=0;i<l1;++i)
         {
-          norm1=it1->g_cf()->norm(derived_cast->cf_s_vec());
+          norm1=v_p1[i]->g_cf()->norm(derived_cast->cf_s_vec());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
-          for (i=0;i<l2;++i)
+          for (j=0;j<l2;++j)
           {
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-            if ((norm1*v_it2[i]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*v_p2[j]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }
-            term_by_term_multiplication(*it1,*v_it2[i],term_pair);
+            term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside insertion function.
             if (t0->sign()<0)

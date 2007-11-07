@@ -140,9 +140,9 @@ namespace piranha
         }
         return retval;
       }
-/// Cache all const iterators of a container into an array.
-      template <class Container>
-        static void array_iter(const Container &c, std::valarray<typename Container::const_iterator> &v)
+/// Cache all pointers to elements of a container into an array.
+      template <class Container, class Contained>
+        static void array_pointer(const Container &c, std::valarray<Contained const *> &v)
       {
         typedef typename Container::const_iterator const_iterator;
         const size_t l=c.length();
@@ -151,7 +151,7 @@ namespace piranha
         const const_iterator it_f=c.end();
         for (const_iterator it=c.begin();it!=it_f;++it)
         {
-          v[i]=it;
+          v[i]=&(*it);
           ++i;
         }
       }

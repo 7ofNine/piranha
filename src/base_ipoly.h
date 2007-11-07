@@ -315,8 +315,8 @@ std::cout << '\n';*/
         }
 // This ipoly acts just as a container for the private_container_, which will be swapped in at the end of the cycle.
         Derived tmp;
-        std::valarray<const_iterator> v_it2;
-        utils::array_iter(p,v_it2);
+        std::valarray<im_type const *> v_p2;
+        utils::array_pointer(p,v_p2);
         size_t i;
         const size_t l2=p.length();
         const const_iterator it1_f=end();
@@ -324,7 +324,7 @@ std::cout << '\n';*/
         {
           for (i=0;i<l2;++i)
           {
-            tmp.insert<sign_modifier_plus>(im_type(it1->g_cf()*v_it2[i]->g_cf(),it1->g_index()+v_it2[i]->g_index()));
+            tmp.insert<sign_modifier_plus>(im_type(it1->g_cf()*v_p2[i]->g_cf(),it1->g_index()+v_p2[i]->g_index()));
           }
         }
         private_container_.swap(tmp.private_container_);
