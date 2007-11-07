@@ -33,12 +33,10 @@ namespace piranha
 {
 /// Base series class.
 /**
- * Base class for the representation of Poisson series (PS). It provides the methods for basic manipulation
+ * Base class for the representation of Poisson series. It provides the methods for basic manipulation
  * of PS: I/O, management of terms, elementary maths, etc.
  *
  * This class should not be used directly, it should be inherited by a more specialized class.
- * A default specialized class, piranha::ps, exists.
- * @see piranha:ps, default specialized Poisson series class.
  */
   template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator = std::allocator<char> >
     class base_pseries:base_pseries_hooks<base_pseries<Cf,Trig,Term,I,Derived,Allocator> >
