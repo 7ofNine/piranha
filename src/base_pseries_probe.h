@@ -163,8 +163,8 @@ namespace piranha
 /**
  * Calculate norm instead of getting it from the value stored internally. Used for debugging.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline double base_pseries<Cf, Trig, Term, I, Derived, Allocator>::g_norm() const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline double base_pseries<__PIRANHA_BASE_PS_TP>::g_norm() const
   {
     double retval=0.;
     const it_h_index it_f=g_h_index().end();
@@ -176,8 +176,8 @@ namespace piranha
   }
 
 // Return an iterator pointing to the last term before the worst discontinuity in the series
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::discontinuity() const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::discontinuity() const
   {
 // We need at least 3 elements to detect a discontinuity
     if (length()<3)
@@ -214,8 +214,8 @@ namespace piranha
  * and smaller. We want to be able to ditch those term whose amplitude is a certain multiplier
  * of the ste, i.e. the ste must be a certain fraction of the term's amplitude.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::it_s_index base_pseries<Cf, Trig, Term, I, Derived, Allocator>::sdp_cutoff(
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::sdp_cutoff(
     const double &achieved_tdp_, const double &desired_sdp_) const
   {
     if (length()==0)
@@ -239,8 +239,8 @@ namespace piranha
   }
 
 /// Find index of argument by its name.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline size_t base_pseries<Cf, Trig, Term, I, Derived, Allocator>::trig_index(const std::string &name) const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::trig_index(const std::string &name) const
   {
     size_t i;
     for (i=0;i<trig_width();++i)
@@ -258,8 +258,8 @@ namespace piranha
   }
 
 /// Find the mean value of a series' evaluation over a timespan.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::eval_type base_pseries<Cf, Trig, Term, I, Derived, Allocator>::mean(
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::eval_type base_pseries<__PIRANHA_BASE_PS_TP>::mean(
     const double &t0, const double &t1, const size_t &n) const
   {
     if (n==0)
@@ -282,8 +282,8 @@ namespace piranha
 /**
  * Internally it invokes the footprint methods of coefficients and trigonometric parts.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline size_t base_pseries<Cf, Trig, Term, I, Derived, Allocator>::footprint() const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::footprint() const
   {
     size_t retval=sizeof(self)+trig_width()*(sizeof(psymbol *)+sizeof(int16));
     it_h_index it_f=g_h_index().end();
@@ -299,8 +299,8 @@ namespace piranha
  * This functions calls Term::checkup on all terms of the series. If an error is
  * encountered it returns false, otherwise it will return true.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::checkup() const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::checkup() const
   {
     it_s_index it_f=g_s_index().end();
     const size_t cw=cf_width(), tw=trig_width();
@@ -319,8 +319,8 @@ namespace piranha
 /**
  * Returns true if series contains one single cosine term with null trigonometric part.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::is_cf() const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_cf() const
   {
     if (length()==1 && g_s_index().begin()->g_flavour() && g_s_index().begin()->g_trig()->is_zero())
     {
