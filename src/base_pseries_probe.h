@@ -36,8 +36,8 @@ namespace piranha
  * Useful for debugging purposes.
  * @param[in] value, double for the time of evaluation.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::eval_type base_pseries<Cf, Trig, Term, I, Derived, Allocator>::t_eval_brute(const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    typename base_pseries<__PIRANHA_BASE_PS_TP>::eval_type base_pseries<__PIRANHA_BASE_PS_TP>::t_eval_brute(const
     double &value) const
   {
     eval_type retval(0.);
@@ -62,8 +62,8 @@ namespace piranha
  * exponential of arguments. Hence it is faster.
  * @param[in] value, double for the time of evaluation.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    typename base_pseries<Cf, Trig, Term, I, Derived, Allocator>::eval_type base_pseries<Cf, Trig, Term, I, Derived, Allocator>::t_eval(const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    typename base_pseries<__PIRANHA_BASE_PS_TP>::eval_type base_pseries<__PIRANHA_BASE_PS_TP>::t_eval(const
     double &value) const
   {
     trig_evaluator<base_pseries> te(this,value);
@@ -90,9 +90,9 @@ namespace piranha
  * fewer arguments.
  * @param[in] ps2 piranha::base_pseries compatibility is tested against.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::args_compatible(const Derived2 &ps2) const
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::args_compatible(const Derived2 &ps2) const
   {
     size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
     for (j=0;j<minwidth;++j)
@@ -119,9 +119,9 @@ namespace piranha
  * is void.
  */
 // NOTICE: not inlined, this should not be called often and hence it would just end up increasing binary size.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Cf2, class Derived2>
-    bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::args_different(const base_pseries<Cf2, trig_type, Term, I, Derived2, Allocator> &ps2) const
+    bool base_pseries<__PIRANHA_BASE_PS_TP>::args_different(const base_pseries<Cf2, trig_type, Term, I, Derived2, Allocator> &ps2) const
   {
 // Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
 // we are only interested in the presence or not of that argument. If there are duplicate arguments

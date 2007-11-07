@@ -24,8 +24,8 @@
 namespace piranha
 {
 /// Basic assignment.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::basic_assignment(const
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::basic_assignment(const
     base_pseries &ps2)
   {
     if (this==&ps2)
@@ -41,9 +41,9 @@ namespace piranha
   }
 
 /// Assignment from series with differen coefficient.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::generic_series_assignment(const Derived2 &ps2)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_series_assignment(const Derived2 &ps2)
   {
     if ((void *)this==(void *)&ps2)
     {
@@ -65,9 +65,9 @@ namespace piranha
   }
 
 // Base merge operator
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::alg_sum_lin_args(const Derived2 &ps2,
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::alg_sum_lin_args(const Derived2 &ps2,
     bool sign)
   {
     if (sign)
@@ -80,9 +80,9 @@ namespace piranha
     }
   }
 
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::merge_with(const Derived2 &ps2, bool sign)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_with(const Derived2 &ps2, bool sign)
   {
     if ((void *)&ps2==(void *)this)
     {
@@ -121,9 +121,9 @@ namespace piranha
   }
 
 // Merge with a generic entity - NOT with another series
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class T>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::generic_merge(const T &x)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_merge(const T &x)
   {
 // Build a series from x
     Derived tmp=Derived(cf_type(x),*static_cast<Derived *>(this));
@@ -131,9 +131,9 @@ namespace piranha
     merge_with(tmp);
   }
 
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Cf2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_by_term_multiplication_trig(
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_by_term_multiplication_trig(
     const term_type &t1, const Term<Cf2,trig_type> &t2, light_term_pair &term_pair,
     cf_type &new_c)
   {
@@ -172,9 +172,9 @@ namespace piranha
  * Perform some preliminary activity regarding series multiplication. If some checks are successful and arguments
  * were merged successfully return true, otherwise return false.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::series_multiplication_preliminaries
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::series_multiplication_preliminaries
     (const Derived2 &ps2, Derived &retval)
   {
     if (length()==0 || ps2.length()==0)
@@ -204,9 +204,9 @@ namespace piranha
  * perform a cheaper coefficient multiplication instead of a term multiplication.
  * Returns true if such optimization could be performed, false otherwise.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline bool base_pseries<Cf, Trig, Term, I, Derived, Allocator>::series_multiplication_optimize_for_cf
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::series_multiplication_optimize_for_cf
     (const Derived2 &ps2)
   {
     if (ps2.is_cf())
@@ -230,9 +230,9 @@ namespace piranha
 /**
  * Requires some methods to be implemented in derived classes.
  */
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::series_multiplication(const Derived2 &ps2)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::series_multiplication(const Derived2 &ps2)
   {
     Derived *derived_cast=static_cast<Derived *>(this);
     Derived retval;
@@ -248,9 +248,9 @@ namespace piranha
   }
 
 /// Multiplication by a generic entity.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class T>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::generic_multiplication(const T &c)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_multiplication(const T &c)
   {
     if (empty())
     {
@@ -276,9 +276,9 @@ namespace piranha
   }
 
 /// Generic division.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+  template <__PIRANHA_BASE_PS_TP_DECL>
     template <class T>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::generic_division(const T &x)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_division(const T &x)
   {
     if (x==0)
     {
@@ -316,8 +316,8 @@ namespace piranha
  * This is specialized because we have to take care of lin_args.
  */
 /// Generic division.
-  template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
-    inline void base_pseries<Cf, Trig, Term, I, Derived, Allocator>::mult_by_int(int n)
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_int(int n)
   {
     const vector_int16 old_lin_args=lin_args();
     size_t j;
