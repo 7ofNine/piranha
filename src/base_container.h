@@ -31,8 +31,8 @@ namespace piranha
 {
 /// Simple container class.
 /**
- * This class can be used as a base class for coefficients that consist of a simple entity
- * (float, mpf_class, long double, etc.).
+ * This class can be used as a base class for coefficients that consist of a simple
+ * numerical entity (float, long double, GMP classes, etc.).
  */
   template <class T, class Derived>
     class base_container
@@ -44,7 +44,7 @@ namespace piranha
 //-------------------------------------------------------
 // Ctors.
 /// Default constructor.
-      explicit base_container():value_(T())
+      explicit base_container():value_(0)
         {}
 /// Constructor from T value.
       explicit base_container(const T &val):value_(val)
@@ -116,7 +116,7 @@ namespace piranha
         return true;
       }
 /// Check whether contained value is larger than size.
-// FIXME: maybe here we should check against 0 size?
+// TODO: maybe here we should check against 0 size?
       bool larger(const size_t &) const
       {
         return false;
