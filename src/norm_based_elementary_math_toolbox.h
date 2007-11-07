@@ -32,23 +32,23 @@ namespace piranha
 /**
  * Implements series multiplication and truncation according to norms.
  */
-  template <class Derived>
+  template <class DerivedPs>
     class norm_based_elementary_math_toolbox
   {
-    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class DerivedPs, class Allocator>
+    template <__PIRANHA_BASE_PS_TP_DECL>
       friend class base_pseries;
     private:
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
-        typedef typename Derived::ancestor::term_type term_type;
-        typedef typename Derived::ancestor::it_s_index it_s_index;
-        Derived *derived_cast=static_cast<Derived *>(this);
+        typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
         if (derived_cast->empty())
         {
           return;
         }
-        Derived tmp_ps;
+        DerivedPs tmp_ps;
         tmp_ps.merge_args(*derived_cast);
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.g_s_index().end();
@@ -63,29 +63,29 @@ namespace piranha
 // Boilerplate for series multiplication.
       struct light_term_hasher
       {
-        size_t operator()(const light_term<typename Derived::cf_type,typename Derived::trig_type> &t) const
+        size_t operator()(const light_term<typename DerivedPs::cf_type,typename DerivedPs::trig_type> &t) const
         {
           return t.trig.hasher();
         }
       };
-      template <class Derived2>
-        void multiply_terms(const Derived2 &ps2, Derived &retval) const
+      template <class DerivedPs2>
+        void multiply_terms(const DerivedPs2 &ps2, DerivedPs &retval) const
       {
 // TODO: use typedeffed "const_iterator" here instead.
-        typedef typename Derived::ancestor::it_s_index it_s_index;
-        typedef typename Derived::ancestor::term_type term_type;
-        typedef typename Derived2::ancestor::it_s_index it_s_index2;
-        typedef typename Derived2::ancestor::term_type term_type2;
-        typedef typename Derived::ancestor::cf_type cf_type;
-        typedef typename Derived::ancestor::trig_type trig_type;
-        typedef typename Derived::ancestor::allocator_type allocator_type;
+        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef typename DerivedPs2::ancestor::it_s_index it_s_index2;
+        typedef typename DerivedPs2::ancestor::term_type term_type2;
+        typedef typename DerivedPs::ancestor::cf_type cf_type;
+        typedef typename DerivedPs::ancestor::trig_type trig_type;
+        typedef typename DerivedPs::ancestor::allocator_type allocator_type;
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
         typedef mult_hash<light_term_type,light_term_hasher,
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
-        const Derived *derived_cast=static_cast<Derived const *>(this);
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
         m_hash_point_iterator hm_p_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
@@ -175,11 +175,11 @@ namespace piranha
       template <class T,class U, class V>
         static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {
-        typedef typename Derived::ancestor::cf_type cf_type;
+        typedef typename DerivedPs::ancestor::cf_type cf_type;
         cf_type new_c=*t1.g_cf();
         new_c.mult_by_self(*t2.g_cf());
         new_c/=2;
-        Derived::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
+        DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
   };
 }
