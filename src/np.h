@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef ps<double_cf,trig_array<8>,simple_term,norm_based_index> np;
+  typedef ps<double_cf,trig_array<8>,simple_term,norm_index> np;
 }
 #endif

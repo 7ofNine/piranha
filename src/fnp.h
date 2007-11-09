@@ -38,7 +38,7 @@ namespace piranha
     typedef ps<double_cf,
       trig_fixed_array<N,8>,
       simple_term,
-      norm_based_index
+      norm_index
 #ifdef _PIRANHA_SSE2
       , pool_allocator<char,16>
 #endif

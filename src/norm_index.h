@@ -54,7 +54,7 @@ namespace piranha
  * parameter in piranha::base_pseries classes.
  */
   template <class Cf, class Trig, template <class, class> class Term>
-    struct norm_based_index
+    struct norm_index
   {
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <

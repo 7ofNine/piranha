@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef std::complex<ps<double_cf,trig_sparse_array,simple_term,norm_based_index> > lnpc;
+  typedef std::complex<ps<double_cf,trig_sparse_array,simple_term,norm_index> > lnpc;
 }
 #endif
