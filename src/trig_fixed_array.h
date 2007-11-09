@@ -185,19 +185,16 @@ namespace piranha
  * @param[out] ret1 first return value.
  * @param[out] ret2 second return value.
  */
-#ifdef _PIRANHA_SSE2
       void trigmult(const trig_fixed_array &t2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
       {
+#ifdef _PIRANHA_SSE2
         container_type::trigmult(private_container_,t2.private_container_,
           ret1.private_container_,ret2.private_container_);
-      }
 #else
-      void trigmult(const trig_fixed_array &t2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
-      {
         tfa_unrollers<dimension>::mult(&private_container_[0]+dimension,&t2.private_container_[0]+dimension,
           &ret1.private_container_[0]+dimension,&ret2.private_container_[0]+dimension);
-      }
 #endif
+      }
       trig_fixed_array &operator*=(const int16 &n)
       {
         ancestor::mult_by_int16(n);
