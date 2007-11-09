@@ -49,7 +49,7 @@ namespace piranha
       ~base_trig_array()
         {}
 // Getters.
-      const value_type &at(const trig_size_t &n) const
+      value_type at(const trig_size_t &n) const
       {
         if (static_cast<const Derived *>(this)->g_width() <= n)
         {
