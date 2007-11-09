@@ -23,22 +23,22 @@
 
 #include "base_trig_array.h"
 
-// FIXME: place checks for sizes < USHRT_MAX, since uint16 is used in base_trig_array.
-
 namespace piranha
 {
+  template <int Bits>
 /// Trigonometric array, dynamically sized version.
-  class trig_array: public base_trig_array<trig_array>
+    class trig_array: public base_trig_array<Bits,trig_array<Bits> >
   {
-      typedef base_trig_array<trig_array> ancestor;
-      typedef std::valarray<int16> container_type;
-      template <class Derived>
+      typedef base_trig_array<Bits,trig_array> ancestor;
+    public:
+      typedef typename ancestor::value_type value_type;
+    private:
+      typedef std::valarray<value_type> container_type;
+      template <int Bits_, class Derived>
         friend class base_trig_array;
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
-      typedef int16 value_type;
-      typedef size_t size_type;
 // Ctors.
 /// Default ctor.
       trig_array():ancestor::base_trig_array()
@@ -49,9 +49,9 @@ namespace piranha
 /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::base_trig_array()
       {
-// TODO: check here that we are not loading too many multipliers, outside uint16 range.
+// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
 // TODO: do it everywhere!
-        const size_type w=sd.size();
+        const trig_size_t w=sd.size();
         if (w==0)
         {
           std::cout << "Warning: constructing empty trig_array." << std::endl;
@@ -60,14 +60,14 @@ namespace piranha
         }
 // Now we know  w >= 1.
         private_container_.resize(w-1);
-        for (size_type i=0;i<w-1;++i)
+        for (trig_size_t i=0;i<w-1;++i)
         {
           private_container_[i]=utils::lexical_converter<value_type>(sd[i]);
         }
 // Take care of flavour.
         if (*sd.back().c_str()=='s')
         {
-          s_flavour()=false;
+          ancestor::s_flavour()=false;
         }
       }
       ~trig_array()
@@ -78,9 +78,9 @@ namespace piranha
         if (n>0)
         {
           container_type old_private_container_(private_container_);
-          const size_type old_w=old_private_container_.size();
+          const trig_size_t old_w=old_private_container_.size();
           private_container_.resize(old_w+n);
-          for (size_type i=0;i<old_w;++i)
+          for (trig_size_t i=0;i<old_w;++i)
           {
             private_container_[i+n]=old_private_container_[i];
           }
@@ -97,8 +97,8 @@ namespace piranha
         {
           container_type old_private_container_(private_container_);
           private_container_.resize(n);
-          const size_type old_w=old_private_container_.size();
-          for (size_type i=0;i<old_w;++i)
+          const trig_size_t old_w=old_private_container_.size();
+          for (trig_size_t i=0;i<old_w;++i)
           {
             private_container_[i]=old_private_container_[i];
           }
@@ -151,13 +151,13 @@ namespace piranha
 // because this way we can do two operations (+ and -) every cycle. This is a performance
 // critical part, so the optimization should be worth the hassle.
       {
-        const size_type max_w=g_width(), min_w=t2.g_width();
+        const trig_size_t max_w=g_width(), min_w=t2.g_width();
 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
         p_assert(ret1.g_width() == max_w);
         p_assert(ret2.g_width() == max_w);
-        size_type i;
+        trig_size_t i;
         for (i=0;i<min_w;++i)
         {
           ret1.private_container_[i]=private_container_[i]-t2.private_container_[i];
@@ -182,7 +182,7 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      size_type g_width() const
+      trig_size_t g_width() const
       {
         return private_container_.size();
       }

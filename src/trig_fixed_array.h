@@ -68,15 +68,14 @@ namespace piranha
 
 /// Trigonometric array, fixed size version.
   template <int Dim, int Bits>
-    class trig_fixed_array: public base_trig_array<trig_fixed_array<Dim,Bits> >
+    class trig_fixed_array: public base_trig_array<Bits,trig_fixed_array<Dim,Bits> >
   {
-      typedef base_trig_array<trig_fixed_array<Dim,Bits> > ancestor;
-      template <class Derived>
+      typedef base_trig_array<Bits,trig_fixed_array<Dim,Bits> > ancestor;
+      template <int Bits_, class Derived>
         friend class base_trig_array;
     public:
       typedef packed_int_array<Dim,Bits> container_type;
-      typedef typename container_type::value_type value_type;
-      typedef uint8 size_type;
+      typedef typename ancestor::value_type value_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
@@ -94,7 +93,7 @@ namespace piranha
           std::abort();
           return;
         }
-        const uint8 d=g_width();
+        const trig_size_t d=g_width();
 // Now w >= 1.
         if ((w-1) != d)
         {
@@ -102,8 +101,8 @@ namespace piranha
 // TODO: Here we continue really, just remains as debug.
           std::abort();
         }
-        uint8 i;
-        for (i=0;i<boost::minmax(d,(uint8)(w-1)).get<0>();++i)
+        trig_size_t i;
+        for (i=0;i<boost::minmax(d,(trig_size_t)(w-1)).get<0>();++i)
         {
 // TODO: lexical conversion from int: store in temp and check for boundaries.
           private_container_[i]=utils::lexical_converter<int>(sd[i]);
@@ -207,7 +206,7 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      static const uint8 &g_width()
+      static const trig_size_t &g_width()
       {
         return dimension;
       }
@@ -221,12 +220,12 @@ namespace piranha
       }
 // Data members.
     private:
-      container_type      private_container_;
-      static const uint8  dimension = (uint8)(Dim);
+      container_type            private_container_;
+      static const trig_size_t  dimension = (trig_size_t)(Dim);
   };
 
   template <int Dim, int Bits>
-    const uint8 trig_fixed_array<Dim,Bits>::dimension;
+    const trig_size_t trig_fixed_array<Dim,Bits>::dimension;
 }
 
 #endif

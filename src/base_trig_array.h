@@ -21,15 +21,24 @@
 #ifndef PIRANHA_BASE_TRIG_ARRAY_H
 #define PIRANHA_BASE_TRIG_ARRAY_H
 
+#include <boost/integer.hpp>
+#include <boost/static_assert.hpp>
+
 #include "common_typedefs.h"    // For t_eval.
 #include "trig_evaluator.h"
 
 namespace piranha
 {
-  template <class Derived>
+/// Base class for dense trigonometric array.
+/**
+ * Inherited by specialized trigonometric array classes like piranha::trig_array and trig_fixed_array.
+ */
+  template <int Bits, class Derived>
     class base_trig_array
   {
+    BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
     public:
+      typedef typename boost::int_t<Bits>::fast value_type;
 // Ctors.
 /// Default ctor.
       base_trig_array():private_flavour_(true)
@@ -40,8 +49,7 @@ namespace piranha
       ~base_trig_array()
         {}
 // Getters.
-// Here we return always int16 because at this stage we cannot know what is value_type.
-      int16 at(const trig_size_t &n) const
+      const value_type &at(const trig_size_t &n) const
       {
         if (static_cast<const Derived *>(this)->g_width() <= n)
         {
@@ -68,8 +76,8 @@ namespace piranha
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
       {
         stream_manager::setup_print(out_stream);
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           out_stream << (int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
@@ -79,8 +87,8 @@ namespace piranha
         stream_manager::setup_print(out_stream);
         bool first_one=true;
         std::string tmp("$");
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -112,8 +120,8 @@ namespace piranha
       }
       void invert_sign()
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]=
           -static_cast<const Derived *>(this)->g_container()[i];
@@ -123,9 +131,9 @@ namespace piranha
       template <class T>
         void assign_mult_vector(const T &v)
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size() == w);
-        for (uint16 i=0;i<w;++i)
+        for (trig_size_t i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]=v[i];
         }
@@ -134,8 +142,8 @@ namespace piranha
         double density(const DerivedPs &p) const
       {
         size_t tmp=0;
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] != 0)
           {
@@ -154,10 +162,10 @@ namespace piranha
  */
       double freq(const vector_psym_p &v) const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size() == w);
         double retval=0.;
-        for (uint16 i=0;i<w;++i)
+        for (trig_size_t i=0;i<w;++i)
         {
 // We must be sure that there actually is a freq in every symbol we are going to use.
           if (v[i]->poly_eval().size()>1)
@@ -175,10 +183,10 @@ namespace piranha
  */
       double phase(const vector_psym_p &v) const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size()==w);
         double retval=0.;
-        for (uint16 i=0;i<w;++i)
+        for (trig_size_t i=0;i<w;++i)
         {
 // We must be sure that there actually is a phase in every symbol we are going to use.
           if (v[i]->poly_eval().size()>0)
@@ -196,10 +204,10 @@ namespace piranha
  */
       double t_eval(const double &t, const vector_psym_p &v) const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size()==w);
         double retval=0.;
-        for (uint16 i=0;i<w;++i)
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -217,10 +225,10 @@ namespace piranha
       template <class TrigEvaluator>
         complex_double t_eval(TrigEvaluator &te) const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(te.width() == w);
         complex_double retval(1.);
-        for (uint16 i=0;i<w;++i)
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -235,8 +243,8 @@ namespace piranha
  */
       short int sign() const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]>0)
           {
@@ -252,7 +260,7 @@ namespace piranha
       size_t hasher() const
       {
         size_t seed=g_flavour();
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (size_t i=0;i<w;++i)
         {
           boost::hash_combine(seed,static_cast<const Derived *>(this)->g_container()[i]);
@@ -261,8 +269,8 @@ namespace piranha
       }
       bool is_zero() const
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
@@ -299,8 +307,8 @@ namespace piranha
         {
           return false;
         }
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] != t2.g_container()[i])
           {
@@ -321,8 +329,8 @@ namespace piranha
           return false;
         }
 // TODO: maybe when unrolling here we have to substitute direct "return" calls with retval and break statements.
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] < t2.g_container()[i])
           {
@@ -352,8 +360,8 @@ namespace piranha
 /**
  * To be used in piranha::base_pseries for the hashed index.
  */
-  template <class Derived>
-    inline size_t hash_value(const base_trig_array<Derived> &t)
+  template <int Bits, class Derived>
+    inline size_t hash_value(const base_trig_array<Bits,Derived> &t)
   {
     return static_cast<const Derived *>(&t)->hasher();
   }
