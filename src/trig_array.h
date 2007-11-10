@@ -174,9 +174,9 @@ namespace piranha
         ancestor::assignment_operator(t2);
         return *this;
       }
-      trig_array &operator*=(const int16 &n)
+      trig_array &operator*=(const int &n)
       {
-        ancestor::mult_by_int16(n);
+        ancestor::mult_by_int(n);
         return *this;
       }
 // End INTERFACE definition.

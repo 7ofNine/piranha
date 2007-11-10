@@ -195,9 +195,9 @@ namespace piranha
           &ret1.private_container_[0]+dimension,&ret2.private_container_[0]+dimension);
 #endif
       }
-      trig_fixed_array &operator*=(const int16 &n)
+      trig_fixed_array &operator*=(const int &n)
       {
-        ancestor::mult_by_int16(n);
+        ancestor::mult_by_int(n);
         return *this;
       }
 // End INTERFACE definition.

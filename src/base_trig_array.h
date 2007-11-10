@@ -343,11 +343,11 @@ namespace piranha
         }
         return false;
       }
-/// Multiply by a piranha::int16.
-      void mult_by_int16(const int16 &n)
+/// Multiply by a int.
+      void mult_by_int(const int &n)
       {
-        const uint16 w=static_cast<const Derived *>(this)->g_width();
-        for (uint16 i=0;i<w;++i)
+        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        for (trig_size_t i=0;i<w;++i)
         {
           static_cast<const Derived *>(this)->s_container()[i]*=n;
         }
