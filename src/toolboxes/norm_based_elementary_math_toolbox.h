@@ -35,9 +35,7 @@ namespace piranha
   template <class DerivedPs>
     class norm_based_elementary_math_toolbox
   {
-    template <__PIRANHA_BASE_PS_TP_DECL>
-      friend class base_pseries;
-    private:
+    public:
       template <class Cf>
         void cf_multiplication(const Cf &cf)
       {
@@ -172,6 +170,7 @@ namespace piranha
         std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
         std::cout << "Out length=" << retval.length() << std::endl;
       }
+    private:
       template <class T,class U, class V>
         static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {
