@@ -21,9 +21,10 @@
 #ifndef PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
+#include <algorithm> // For sorting of vectors.
 #include <boost/foreach.hpp>
 
-#include "../bits/config.h"         // For selection of temporary hash container for multiplication
+#include "../bits/config.h" // For selection of temporary hash container for multiplication
 #include "../bits/light_term.h"
 
 namespace piranha
@@ -69,7 +70,8 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type trig_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
-        typedef typename trig_type::value_type mult_type;
+        typedef std::valarray<std::pair<typename trig_type::value_type,
+          typename trig_type::value_type> > min_max_mult_vec;
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
         typedef mult_hash<light_term_type,light_term_hasher,
@@ -100,6 +102,9 @@ namespace piranha
         const size_t l2=v_p2.size();
         p_assert(l1 == ps1.length());
         p_assert(l2 == ps2.length());
+// Now find the multiplier limits for output series, to see if we can do coded arithmetics.
+        min_max_mult_vec limits(derived_cast->trig_width());
+        find_multiplier_limits(limits,v_p1,v_p2);
 // v_it2[0] is legal because we checked for ps2's size.
         const double norm2_i=v_p2[0]->g_cf()->norm(ps2.cf_s_vec());
 // Cache some pointers.
@@ -164,6 +169,58 @@ namespace piranha
         std::cout << "Out length=" << retval.length() << std::endl;
       }
     private:
+      template <class T, class U, class V>
+        static void find_multiplier_limits(T &v, const U &v_p1, const V &v_p2)
+      {
+        typedef typename T::value_type::first_type mult_type;
+        const trig_size_t w = v.size(), l1=v_p1.size(), l2=v_p2.size();
+        T limits1(w), limits2(w);
+// Fill first minmax vector.
+        for (trig_size_t i=0;i<w;++i)
+        {
+          limits1[i].first=limits1[i].second=v_p1[0]->g_trig()->at(i);
+          limits2[i].first=limits2[i].second=v_p2[0]->g_trig()->at(i);
+        }
+        mult_type tmp;
+        for (size_t i=1;i<l1;++i)
+        {
+          for (trig_size_t j=0;j<w;++j)
+          {
+            tmp = v_p1[i]->g_trig()->at(j);
+            if (tmp < limits1[j].first)
+              limits1[j].first = tmp;
+            if (tmp > limits1[j].second)
+              limits1[j].second = tmp;
+          }
+        }
+        for (size_t i=1;i<l2;++i)
+        {
+          for (trig_size_t j=0;j<w;++j)
+          {
+            tmp = v_p2[i]->g_trig()->at(j);
+            if (tmp < limits2[j].first)
+              limits2[j].first = tmp;
+            if (tmp > limits2[j].second)
+              limits2[j].second = tmp;
+          }
+        }
+        std::valarray<mult_type> tmp_vec(4);
+        for (trig_size_t j=0;j<w;++j)
+        {
+          tmp_vec[0]=limits1[j].second+limits2[j].second;
+          tmp_vec[1]=limits1[j].first+limits2[j].first;
+          tmp_vec[2]=limits1[j].second-limits2[j].first;
+          tmp_vec[3]=limits1[j].first-limits2[j].second;
+          std::sort(&tmp_vec[0], &tmp_vec[0] + 4);
+          v[j].first=tmp_vec[0];
+          v[j].second=tmp_vec[3];
+        }
+        for (trig_size_t j=0;j<w;++j)
+        {
+          std::cout << (int)v[j].first << ',' << (int)v[j].second << '\t';
+        }
+        std::cout << std::endl;
+      };
       // Boilerplate for series multiplication.
       struct light_term_hasher
       {
