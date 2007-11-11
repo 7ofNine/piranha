@@ -58,14 +58,6 @@ namespace piranha
         }
         derived_cast->swap(tmp_ps);
       }
-// Boilerplate for series multiplication.
-      struct light_term_hasher
-      {
-        size_t operator()(const light_term<typename DerivedPs::cf_type,typename DerivedPs::trig_type> &t) const
-        {
-          return t.trig.hasher();
-        }
-      };
       template <class DerivedPs2>
         void multiply_terms(const DerivedPs2 &ps2, DerivedPs &retval) const
       {
@@ -77,6 +69,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type trig_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
+        typedef typename trig_type::value_type mult_type;
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
         typedef mult_hash<light_term_type,light_term_hasher,
@@ -171,6 +164,14 @@ namespace piranha
         std::cout << "Out length=" << retval.length() << std::endl;
       }
     private:
+      // Boilerplate for series multiplication.
+      struct light_term_hasher
+      {
+        size_t operator()(const light_term<typename DerivedPs::cf_type,typename DerivedPs::trig_type> &t) const
+        {
+          return t.trig.hasher();
+        }
+      };
       template <class T,class U, class V>
         static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {
@@ -182,4 +183,5 @@ namespace piranha
       }
   };
 }
+
 #endif
