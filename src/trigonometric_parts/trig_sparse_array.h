@@ -41,6 +41,7 @@ namespace piranha
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
+      typedef int16 value_type;
 // Ctors.
 /// Default ctor.
       trig_sparse_array():private_flavour_(true)
