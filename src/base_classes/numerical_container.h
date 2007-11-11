@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_BASE_CONTAINER_H
-#define PIRANHA_BASE_CONTAINER_H
+#ifndef PIRANHA_NUMERICAL_CONTAINER_H
+#define PIRANHA_NUMERICAL_CONTAINER_H
 
 #include <iostream>
 #include <string>
 
-#include "psymbol.h"
-#include "utils.h"                                // Lexical converter.
+#include "../bits/psymbol.h"
+#include "../bits/utils.h"                                // Lexical converter.
 
 namespace piranha
 {
@@ -35,30 +35,30 @@ namespace piranha
  * numerical entity (float, long double, GMP classes, etc.).
  */
   template <class T, class Derived>
-    class base_container
+    class numerical_container
   {
     public:
 /// Alias for self.
-      typedef base_container self;
+      typedef numerical_container self;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default constructor.
-      explicit base_container():value_(0)
+      explicit numerical_container():value_(0)
         {}
 /// Constructor from T value.
-      explicit base_container(const T &val):value_(val)
+      explicit numerical_container(const T &val):value_(val)
         {}
 /// Copy constructor.
-      explicit base_container(const self &sc):value_(sc.value_)
+      explicit numerical_container(const self &sc):value_(sc.value_)
         {}
 /// Constructor from string.
-      explicit base_container(const std::string &s)
+      explicit numerical_container(const std::string &s)
       {
         value_=utils::lexical_converter<T>(s);
       }
 /// Destructor.
-      ~base_container()
+      ~numerical_container()
         {}
 // Getters.
 /// Get value.

@@ -21,14 +21,14 @@
 #ifndef PIRANHA_FNP_H
 #define PIRANHA_FNP_H
 
-#include "double_cf.h"
-#include "norm_index.h"
+#include "../coefficients/double_cf.h"
+#include "../bits/norm_index.h"
 #ifdef _PIRANHA_SSE2
-#include "pool_allocator.h"
+#include "../bits/pool_allocator.h"
 #endif
-#include "ps.h"
-#include "simple_term.h"
-#include "trig_fixed_array.h"
+#include "../bits/ps.h"
+#include "../terms/simple_term.h"
+#include "../trigonometric_parts/trig_fixed_array.h"
 
 namespace piranha
 {

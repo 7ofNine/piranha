@@ -21,7 +21,7 @@
 #ifndef PIRANHA_IPOLY_H
 #define PIRANHA_IPOLY_H
 
-#include "base_ipoly.h"
+#include "../base_classes/base_ipoly.h"
 
 namespace piranha
 {

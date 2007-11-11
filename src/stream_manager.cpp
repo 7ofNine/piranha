@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "stream_manager.h"
+#include "bits/stream_manager.h"
 
 namespace piranha
 {

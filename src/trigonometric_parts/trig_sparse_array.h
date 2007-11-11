@@ -24,10 +24,10 @@
 #include <boost/functional/hash/hash.hpp>
 #include <vector>
 
-#include "common_typedefs.h"
-#include "p_assert.h"
-#include "psymbol.h"
-#include "utils.h"                                // lexical_converter.
+#include "../bits/common_typedefs.h"
+#include "../bits/p_assert.h"
+#include "../bits/psymbol.h"
+#include "../bits/utils.h"                                // lexical_converter.
 
 namespace piranha
 {

@@ -23,8 +23,8 @@
 
 #include <boost/foreach.hpp>
 
-#include "config.h"         // For selection of temporary hash container for multiplication
-#include "light_term.h"
+#include "../bits/config.h"         // For selection of temporary hash container for multiplication
+#include "../bits/light_term.h"
 
 namespace piranha
 {

@@ -24,9 +24,9 @@
 #include <boost/algorithm/minmax.hpp>
 #include <cstring>
 
-#include "base_trig_array.h"
-#include "common_typedefs.h"
-#include "packed_int_array.h"
+#include "../base_classes/base_trig_array.h"
+#include "../bits/common_typedefs.h"
+#include "../bits/packed_int_array.h"
 
 namespace piranha
 {

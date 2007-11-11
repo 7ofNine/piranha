@@ -21,11 +21,11 @@
 #ifndef PIRANHA_LNP_H
 #define PIRANHA_LNP_H
 
-#include "double_cf.h"
-#include "norm_index.h"
-#include "ps.h"
-#include "simple_term.h"
-#include "trig_sparse_array.h"
+#include "../coefficients/double_cf.h"
+#include "../bits/norm_index.h"
+#include "../bits/ps.h"
+#include "../terms/simple_term.h"
+#include "../trigonometric_parts/trig_sparse_array.h"
 
 namespace piranha
 {

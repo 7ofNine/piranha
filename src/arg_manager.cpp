@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "arg_manager.h"
+#include "bits/arg_manager.h"
 
 namespace piranha
 {

@@ -25,7 +25,7 @@
 #include <iterator>
 #include <set>
 
-#include "trig_evaluator.h"
+#include "../bits/trig_evaluator.h"
 
 namespace piranha
 {

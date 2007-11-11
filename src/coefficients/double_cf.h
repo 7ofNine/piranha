@@ -23,9 +23,9 @@
 
 #include <complex>
 
-#include "common_typedefs.h"
-#include "math.h"                                 // besselJ.
-#include "base_container.h"
+#include "../bits/common_typedefs.h"
+#include "../bits/math.h"                                 // besselJ.
+#include "../base_classes/numerical_container.h"
 
 namespace piranha
 {
@@ -36,37 +36,37 @@ namespace piranha
  *
  * A set of operators are provided to enable interoperability with basic numerical data types.
  */
-  class double_cf : public base_container<double,double_cf>
+  class double_cf : public numerical_container<double,double_cf>
   {
     public:
 /// Alias for itself.
       typedef double_cf self;
 /// Alias for the parent class.
-      typedef base_container<double,double_cf> ancestor;
+      typedef numerical_container<double,double_cf> ancestor;
 // Start INTERFACE definition for the real version.
 //-------------------------------------------------------
 /// Evaluation result (double).
       typedef double eval_type;
 // Ctors and dtor.
 /// Empty constructor.
-      explicit double_cf():ancestor::base_container()
+      explicit double_cf():ancestor::numerical_container()
         {}
 /// Constructor from double.
-      explicit double_cf(const double &val):ancestor::base_container(val)
+      explicit double_cf(const double &val):ancestor::numerical_container(val)
         {}
 /// Constructor from integer.
-      explicit double_cf(int val):ancestor::base_container(val)
+      explicit double_cf(int val):ancestor::numerical_container(val)
         {}
 /// Constructor from string.
-      explicit double_cf(const std::string &s):ancestor::base_container(s)
+      explicit double_cf(const std::string &s):ancestor::numerical_container(s)
         {}
 /// Constructor from symbol.
-      explicit double_cf(const psymbol &):ancestor::base_container()
+      explicit double_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
 /// Copy constructor.
-      double_cf(const self &dc):ancestor::base_container(dc)
+      double_cf(const self &dc):ancestor::numerical_container(dc)
         {}
 /// Destructor.
       ~double_cf()
@@ -238,38 +238,38 @@ namespace std
 {
   template <>
     struct complex<piranha::double_cf> :
-  public piranha::base_container<piranha::complex_double,complex<piranha::double_cf> >
+  public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
   {
     public:
       typedef complex self;
       typedef piranha::double_cf double_type;
-      typedef piranha::base_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
 // Start INTERFACE definition for the complex specialization. FIXME: is this different from
 // the above???
 //-------------------------------------------------------
       typedef piranha::complex_double eval_type;
 // Ctors and dtor.
-      explicit complex():ancestor::base_container()
+      explicit complex():ancestor::numerical_container()
         {}
-      explicit complex(const std::string &s):ancestor::base_container(s)
+      explicit complex(const std::string &s):ancestor::numerical_container(s)
         {}
       explicit complex(const double_type &r, const double_type &i):
-      ancestor::base_container(piranha::complex_double(r.value(),i.value()))
+      ancestor::numerical_container(piranha::complex_double(r.value(),i.value()))
         {}
       explicit complex(const double_type &r):
-      ancestor::base_container(piranha::complex_double(r.value(),0.))
+      ancestor::numerical_container(piranha::complex_double(r.value(),0.))
         {}
-      explicit complex(const piranha::complex_double &c):ancestor::base_container(c)
+      explicit complex(const piranha::complex_double &c):ancestor::numerical_container(c)
         {}
-      explicit complex(int n):ancestor::base_container(piranha::complex_double(n,0.))
+      explicit complex(int n):ancestor::numerical_container(piranha::complex_double(n,0.))
         {}
-      explicit complex(int n1, int n2):ancestor::base_container(piranha::complex_double(n1,n2))
+      explicit complex(int n1, int n2):ancestor::numerical_container(piranha::complex_double(n1,n2))
         {}
       explicit complex(const double &x):
-      ancestor::base_container(piranha::complex_double(x,0.))
+      ancestor::numerical_container(piranha::complex_double(x,0.))
         {}
       explicit complex(const double &x1, const double x2):
-      ancestor::base_container(piranha::complex_double(x1,x2))
+      ancestor::numerical_container(piranha::complex_double(x1,x2))
         {}
       ~complex()
         {}

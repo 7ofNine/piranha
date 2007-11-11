@@ -26,11 +26,7 @@
 #include <boost/python/module.hpp>
 #include <boost/python/return_value_policy.hpp>
 
-#include "../../src/astro.h"
-#include "../../src/phase_list.h"
-#include "../../src/psymbol.h"
-#include "../../src/stats.h"
-#include "../../src/stream_manager.h"
+#include "../../src/piranha.h"
 
 using namespace boost::python;
 using namespace piranha;

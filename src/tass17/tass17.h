@@ -23,8 +23,8 @@
 
 #include <complex>
 
-#include "../astro.h"
-#include "../prectest.h"
+#include "../bits/astro.h"
+#include "../bits/prectest.h"
 
 namespace piranha
 {

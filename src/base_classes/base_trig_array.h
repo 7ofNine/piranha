@@ -24,8 +24,8 @@
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
 
-#include "common_typedefs.h"    // For t_eval.
-#include "trig_evaluator.h"
+#include "../bits/common_typedefs.h"    // For t_eval.
+#include "../bits/trig_evaluator.h"
 
 namespace piranha
 {
