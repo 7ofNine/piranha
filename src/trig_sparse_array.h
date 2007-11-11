@@ -133,7 +133,7 @@ namespace piranha
         }
         return *this;
       }
-      trig_sparse_array &operator*=(int16);
+      trig_sparse_array &operator*=(const int &);
 // End INTERFACE definition.
 //-------------------------------------------------------
       trig_sparse_array &operator+=(const trig_sparse_array &);
@@ -517,7 +517,7 @@ namespace piranha
     return (private_container_ == l2.private_container_);
   }
 
-  inline trig_sparse_array &trig_sparse_array::operator*=(int16 n)
+  inline trig_sparse_array &trig_sparse_array::operator*=(const int &n)
   {
     if (n==0)
     {
