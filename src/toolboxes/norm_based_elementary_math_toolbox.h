@@ -47,7 +47,7 @@ namespace piranha
         check_viable();
         if (is_viable())
         {
-          //compute_coding_vector();
+
         }
       }
       const bool &is_viable() const
@@ -118,11 +118,19 @@ namespace piranha
         {
           hmin+=ck*e_minmax[i].first;
           hmax+=ck*e_minmax[i].second;
+// Assign also the coding vector, so we avoid doing it later.
+          coding_vector[i]=ck.get_si();
           ck*=(e_minmax[i].second-e_minmax[i].first+1);
         }
         if (hmin > traits::min() && hmax < traits::max())
         {
           viable = true;
+          std::cout << "Coding vector: ";
+          for (trig_size_t i=0;i<twidth;++i)
+          {
+            std::cout << coding_vector[i] << '\t';
+          }
+          std::cout << '\n';
         }
 // This is debug and not really needed.
         std::cout << "h: " << hmin << ',' << hmax << '\n';
