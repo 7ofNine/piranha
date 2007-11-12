@@ -23,12 +23,125 @@
 
 #include <algorithm> // For sorting of vectors.
 #include <boost/foreach.hpp>
+#include <boost/integer_traits.hpp>
+#include <gmp.h>
+#include <gmpxx.h>
 
 #include "../bits/config.h" // For selection of temporary hash container for multiplication
+#include "../bits/common_typedefs.h"
 #include "../bits/light_term.h"
 
 namespace piranha
 {
+  template <class T, class U, class MultType>
+    class series_gl_rep
+  {
+      typedef MultType mult_type;
+      typedef std::valarray<std::pair<mult_type,mult_type> > e_minmax_type;
+      typedef boost::integer_traits<max_fast_int> traits;
+    public:
+      series_gl_rep(const T &a, const U &b, const trig_size_t &w):v_p1(a),v_p2(b),
+        twidth(w),e_minmax(twidth),viable(false),coding_vector(twidth)
+      {
+        find_minmax();
+        check_viable();
+        if (is_viable())
+        {
+          //compute_coding_vector();
+        }
+      }
+      const bool &is_viable() const
+      {
+        return viable;
+      }
+    private:
+// Make this private to make sure we do not call default ctor.
+      series_gl_rep()
+      {}
+      void find_minmax()
+      {
+        const size_t l1 = v_p1.size(), l2 = v_p2.size();
+        e_minmax_type limits1(twidth), limits2(twidth);
+// Fill first minmax vector. This works because at this point we are sure both series have
+// at least one term.
+        p_assert(l1 >= 1 && l2 >= 1);
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          limits1[i].first=limits1[i].second=v_p1[0]->g_trig()->at(i);
+          limits2[i].first=limits2[i].second=v_p2[0]->g_trig()->at(i);
+        }
+        mult_type tmp;
+        for (size_t i=1;i<l1;++i)
+        {
+          for (trig_size_t j=0;j<twidth;++j)
+          {
+            tmp = v_p1[i]->g_trig()->at(j);
+            if (tmp < limits1[j].first)
+              limits1[j].first = tmp;
+            if (tmp > limits1[j].second)
+              limits1[j].second = tmp;
+          }
+        }
+        for (size_t i=1;i<l2;++i)
+        {
+          for (trig_size_t j=0;j<twidth;++j)
+          {
+            tmp = v_p2[i]->g_trig()->at(j);
+            if (tmp < limits2[j].first)
+              limits2[j].first = tmp;
+            if (tmp > limits2[j].second)
+              limits2[j].second = tmp;
+          }
+        }
+        std::valarray<mult_type> tmp_vec(4);
+        for (trig_size_t j=0;j<twidth;++j)
+        {
+          tmp_vec[0]=limits1[j].second+limits2[j].second;
+          tmp_vec[1]=limits1[j].first+limits2[j].first;
+          tmp_vec[2]=limits1[j].second-limits2[j].first;
+          tmp_vec[3]=limits1[j].first-limits2[j].second;
+          std::sort(&tmp_vec[0], &tmp_vec[0] + 4);
+          e_minmax[j].first=tmp_vec[0];
+          e_minmax[j].second=tmp_vec[3];
+        }
+        for (trig_size_t j=0;j<twidth;++j)
+        {
+          std::cout << (int)e_minmax[j].first << ',' << (int)e_minmax[j].second << '\t';
+        }
+        std::cout << std::endl;
+      }
+      void check_viable()
+      {
+// We must do the computations with arbitrary integers not to exceed range.
+        mpz_class hmin=0, hmax=0, ck=1;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          hmin+=ck*e_minmax[i].first;
+          hmax+=ck*e_minmax[i].second;
+          ck*=(e_minmax[i].second-e_minmax[i].first+1);
+        }
+        if (hmin > traits::min() && hmax < traits::max())
+        {
+          viable = true;
+        }
+// This is debug and not really needed.
+        std::cout << "h: " << hmin << ',' << hmax << '\n';
+        mpz_class card=1;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          card*=mpz_class(e_minmax[i].second-e_minmax[i].first+1);
+        }
+        std::cout << "Card is: " << card << '\n';
+      }
+    private:
+      const T                     &v_p1;
+      const U                     &v_p2;
+      const trig_size_t           twidth;
+      e_minmax_type               e_minmax;
+      bool                        viable;
+      std::valarray<max_fast_int> coding_vector;
+  };
+
 /// Elementary math toolbox for numerical series.
 /**
  * Implements series multiplication and truncation according to norms.
@@ -70,8 +183,6 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type trig_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
-        typedef std::valarray<std::pair<typename trig_type::value_type,
-          typename trig_type::value_type> > min_max_mult_vec;
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
         typedef mult_hash<light_term_type,light_term_hasher,
@@ -102,125 +213,83 @@ namespace piranha
         const size_t l2=v_p2.size();
         p_assert(l1 == ps1.length());
         p_assert(l2 == ps2.length());
-// Now find the multiplier limits for output series, to see if we can do coded arithmetics.
-        min_max_mult_vec limits(derived_cast->trig_width());
-        find_multiplier_limits(limits,v_p1,v_p2);
-// v_it2[0] is legal because we checked for ps2's size.
-        const double norm2_i=v_p2[0]->g_cf()->norm(ps2.cf_s_vec());
-// Cache some pointers.
-        trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
-        cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
-        light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
-        for (i=0;i<l1;++i)
+// Try to build the generalized lexicographic representation.
+        series_gl_rep <std::valarray<term_type const *>,
+          std::valarray<term_type2 const *>,
+          typename DerivedPs::ancestor::trig_type::value_type>
+          glr(v_p1,v_p2,derived_cast->trig_width());
+        if (glr.is_viable())
         {
-          norm1=v_p1[i]->g_cf()->norm(derived_cast->cf_s_vec());
-          if ((norm1*norm2_i)/2<Delta_threshold)
+          std::cout << "Can do fast" << '\n';
+        }
+        else
+        {
+          std::cout << "Can't do fast" << '\n';
+// v_it2[0] is legal because we checked for ps2's size.
+          const double norm2_i=v_p2[0]->g_cf()->norm(ps2.cf_s_vec());
+// Cache some pointers.
+          trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
+          cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
+          light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
+          for (i=0;i<l1;++i)
           {
-            break;
-          }
-          for (j=0;j<l2;++j)
-          {
-// We are going to calculate a term's norm twice... We need to profile
-// this at a later stage and see if it is worth to store the norm inside
-// the term.
-            if ((norm1*v_p2[j]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            norm1=v_p1[i]->g_cf()->norm(derived_cast->cf_s_vec());
+            if ((norm1*norm2_i)/2<Delta_threshold)
             {
               break;
             }
-            term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
+            for (j=0;j<l2;++j)
+            {
+// We are going to calculate a term's norm twice... We need to profile
+// this at a later stage and see if it is worth to store the norm inside
+// the term.
+              if ((norm1*v_p2[j]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+              {
+                break;
+              }
+              term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside the insertion function.
-            if (t0->sign()<0)
-            {
-              term0->invert_trig_args();
+              if (t0->sign()<0)
+              {
+                term0->invert_trig_args();
+              }
+              if (t1->sign()<0)
+              {
+                term1->invert_trig_args();
+              }
+              hm_p_it=hm.find(*term0);
+              if (hm_p_it == hm.end())
+              {
+                hm.insert(*term0);
+              }
+              else
+              {
+                hm_p_it->cf+=*c0;
+              }
+              hm_p_it=hm.find(*term1);
+              if (hm_p_it == hm.end())
+              {
+                hm.insert(*term1);
+              }
+              else
+              {
+                hm_p_it->cf+=*c1;
+              }
+              ++n;
             }
-            if (t1->sign()<0)
-            {
-              term1->invert_trig_args();
-            }
-            hm_p_it=hm.find(*term0);
-            if (hm_p_it == hm.end())
-            {
-              hm.insert(*term0);
-            }
-            else
-            {
-              hm_p_it->cf+=*c0;
-            }
-            hm_p_it=hm.find(*term1);
-            if (hm_p_it == hm.end())
-            {
-              hm.insert(*term1);
-            }
-            else
-            {
-              hm_p_it->cf+=*c1;
-            }
-            ++n;
           }
-        }
-        const m_hash_iterator hm_it_f=hm.end();
-        for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
-        {
-          retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
-        }
+          const m_hash_iterator hm_it_f=hm.end();
+          for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
+          {
+            retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
+          }
 //retval.cumulative_crop(Delta);
-        std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
-        std::cout << "Out length=" << retval.length() << std::endl;
+          std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
+          std::cout << "Out length=" << retval.length() << std::endl;
+        }
       }
     private:
-      template <class T, class U, class V>
-        static void find_multiplier_limits(T &v, const U &v_p1, const V &v_p2)
-      {
-        typedef typename T::value_type::first_type mult_type;
-        const trig_size_t w = v.size(), l1=v_p1.size(), l2=v_p2.size();
-        T limits1(w), limits2(w);
-// Fill first minmax vector.
-        for (trig_size_t i=0;i<w;++i)
-        {
-          limits1[i].first=limits1[i].second=v_p1[0]->g_trig()->at(i);
-          limits2[i].first=limits2[i].second=v_p2[0]->g_trig()->at(i);
-        }
-        mult_type tmp;
-        for (size_t i=1;i<l1;++i)
-        {
-          for (trig_size_t j=0;j<w;++j)
-          {
-            tmp = v_p1[i]->g_trig()->at(j);
-            if (tmp < limits1[j].first)
-              limits1[j].first = tmp;
-            if (tmp > limits1[j].second)
-              limits1[j].second = tmp;
-          }
-        }
-        for (size_t i=1;i<l2;++i)
-        {
-          for (trig_size_t j=0;j<w;++j)
-          {
-            tmp = v_p2[i]->g_trig()->at(j);
-            if (tmp < limits2[j].first)
-              limits2[j].first = tmp;
-            if (tmp > limits2[j].second)
-              limits2[j].second = tmp;
-          }
-        }
-        std::valarray<mult_type> tmp_vec(4);
-        for (trig_size_t j=0;j<w;++j)
-        {
-          tmp_vec[0]=limits1[j].second+limits2[j].second;
-          tmp_vec[1]=limits1[j].first+limits2[j].first;
-          tmp_vec[2]=limits1[j].second-limits2[j].first;
-          tmp_vec[3]=limits1[j].first-limits2[j].second;
-          std::sort(&tmp_vec[0], &tmp_vec[0] + 4);
-          v[j].first=tmp_vec[0];
-          v[j].second=tmp_vec[3];
-        }
-        for (trig_size_t j=0;j<w;++j)
-        {
-          std::cout << (int)v[j].first << ',' << (int)v[j].second << '\t';
-        }
-        std::cout << std::endl;
-      };
       // Boilerplate for series multiplication.
       struct light_term_hasher
       {
