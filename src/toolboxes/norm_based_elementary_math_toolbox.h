@@ -41,6 +41,10 @@ namespace piranha
       typedef boost::integer_traits<max_fast_int> traits;
       typedef typename Ps1::ancestor::const_iterator iterator1;
       typedef typename Ps2::ancestor::const_iterator iterator2;
+      typedef typename Ps1::ancestor::cf_type cf_type1;
+      typedef typename Ps2::ancestor::cf_type cf_type2;
+      typedef std::valarray<std::pair<cf_type1,max_fast_int> > coded_series_type1;
+      typedef std::valarray<std::pair<cf_type2,max_fast_int> > coded_series_type2;
     public:
       series_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
@@ -50,6 +54,7 @@ namespace piranha
 // If representation is viable, let's code the series.
         if (is_viable())
         {
+          code_series();
         }
       }
       const bool &is_viable() const
@@ -144,6 +149,38 @@ namespace piranha
 // This is debug and not really needed.
         std::cout << "h: " << hmin << ',' << hmax << '\n';
       }
+      void code_series()
+      {
+        const iterator1 it1_f = p1.end();
+        const iterator2 it2_f = p2.end();
+        iterator1 it1 = p1.begin();
+        iterator2 it2 = p2.begin();
+        const size_t l1 = p1.length(), l2 = p2.length();
+        cs1.resize(l1);
+        cs2.resize(l2);
+        size_t i;
+        for (i=0;i<l1;++i)
+        {
+          cs1[i].first=*it1->g_cf();
+          code_multiindex(*it1->g_trig(),cs1[i].second);
+          ++it1;
+        }
+        for (i=0;i<l2;++i)
+        {
+          cs2[i].first=*it2->g_cf();
+          code_multiindex(*it2->g_trig(),cs2[i].second);
+          ++it2;
+        }
+      }
+      template <class T>
+        void code_multiindex(const T &m,max_fast_int &n)
+      {
+        n=0;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          n+=m.at(i)*coding_vector[i];
+        }
+      }
     private:
       const Ps1                   &p1;
       const Ps2                   &p2;
@@ -151,6 +188,8 @@ namespace piranha
       e_minmax_type               e_minmax;
       bool                        viable;
       std::valarray<max_fast_int> coding_vector;
+      coded_series_type1          cs1;
+      coded_series_type2          cs2;
   };
 
 /// Elementary math toolbox for numerical series.
