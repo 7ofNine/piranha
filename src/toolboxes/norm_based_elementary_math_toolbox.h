@@ -33,15 +33,17 @@
 
 namespace piranha
 {
-  template <class T, class U, class MultType>
+  template <class Ps1, class Ps2>
     class series_gl_rep
   {
-      typedef MultType mult_type;
+      typedef typename Ps1::trig_type::value_type mult_type;
       typedef std::valarray<std::pair<mult_type,mult_type> > e_minmax_type;
       typedef boost::integer_traits<max_fast_int> traits;
+      typedef typename Ps1::ancestor::const_iterator iterator1;
+      typedef typename Ps2::ancestor::const_iterator iterator2;
     public:
-      series_gl_rep(const T &a, const U &b, const trig_size_t &w):v_p1(a),v_p2(b),
-        twidth(w),e_minmax(twidth),viable(false),coding_vector(twidth+1)
+      series_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
+        twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
         find_minmax();
         check_viable();
@@ -60,33 +62,36 @@ namespace piranha
       {}
       void find_minmax()
       {
-        const size_t l1 = v_p1.size(), l2 = v_p2.size();
         e_minmax_type limits1(twidth), limits2(twidth);
+        const iterator1 it1_f = p1.end();
+        const iterator2 it2_f = p2.end();
+        iterator1 it1 = p1.begin();
+        iterator2 it2 = p2.begin();
 // Fill first minmax vector. This works because at this point we are sure both series have
 // at least one term.
-        p_assert(l1 >= 1 && l2 >= 1);
+        p_assert(p1.length() >= 1 && p2.length() >= 1);
         for (trig_size_t i=0;i<twidth;++i)
         {
-          limits1[i].first=limits1[i].second=v_p1[0]->g_trig()->at(i);
-          limits2[i].first=limits2[i].second=v_p2[0]->g_trig()->at(i);
+          limits1[i].first=limits1[i].second=it1->g_trig()->at(i);
+          limits2[i].first=limits2[i].second=it2->g_trig()->at(i);
         }
         mult_type tmp;
-        for (size_t i=1;i<l1;++i)
+        for (;it1!=it1_f;++it1)
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = v_p1[i]->g_trig()->at(j);
+            tmp = it1->g_trig()->at(j);
             if (tmp < limits1[j].first)
               limits1[j].first = tmp;
             if (tmp > limits1[j].second)
               limits1[j].second = tmp;
           }
         }
-        for (size_t i=1;i<l2;++i)
+        for (;it2!=it2_f;++it2)
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = v_p2[i]->g_trig()->at(j);
+            tmp = it2->g_trig()->at(j);
             if (tmp < limits2[j].first)
               limits2[j].first = tmp;
             if (tmp > limits2[j].second)
@@ -140,8 +145,8 @@ namespace piranha
         std::cout << "h: " << hmin << ',' << hmax << '\n';
       }
     private:
-      const T                     &v_p1;
-      const U                     &v_p2;
+      const Ps1                   &p1;
+      const Ps2                   &p2;
       const trig_size_t           twidth;
       e_minmax_type               e_minmax;
       bool                        viable;
@@ -220,10 +225,8 @@ namespace piranha
         p_assert(l1 == ps1.length());
         p_assert(l2 == ps2.length());
 // Try to build the generalized lexicographic representation.
-        series_gl_rep <std::valarray<term_type const *>,
-          std::valarray<term_type2 const *>,
-          typename DerivedPs::ancestor::trig_type::value_type>
-          glr(v_p1,v_p2,derived_cast->trig_width());
+        series_gl_rep <DerivedPs,DerivedPs2>
+          glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
           std::cout << "Can do fast" << '\n';
