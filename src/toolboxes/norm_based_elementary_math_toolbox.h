@@ -41,13 +41,13 @@ namespace piranha
       typedef boost::integer_traits<max_fast_int> traits;
     public:
       series_gl_rep(const T &a, const U &b, const trig_size_t &w):v_p1(a),v_p2(b),
-        twidth(w),e_minmax(twidth),viable(false),coding_vector(twidth)
+        twidth(w),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
         find_minmax();
         check_viable();
+// If representation is viable, let's code the series.
         if (is_viable())
         {
-
         }
       }
       const bool &is_viable() const
@@ -122,24 +122,22 @@ namespace piranha
           coding_vector[i]=ck.get_si();
           ck*=(e_minmax[i].second-e_minmax[i].first+1);
         }
+// We want to fill on extra slot of the coding vector (wrt to "nominal" width twidth).
+// This is handy for decodification.
+        coding_vector[twidth]=ck.get_si();
         if (hmin > traits::min() && hmax < traits::max())
         {
           viable = true;
+// Debug
           std::cout << "Coding vector: ";
           for (trig_size_t i=0;i<twidth;++i)
           {
             std::cout << coding_vector[i] << '\t';
           }
-          std::cout << '\n';
+          std::cout << "+\t" << coding_vector[twidth] << '\n';
         }
 // This is debug and not really needed.
         std::cout << "h: " << hmin << ',' << hmax << '\n';
-        mpz_class card=1;
-        for (trig_size_t i=0;i<twidth;++i)
-        {
-          card*=mpz_class(e_minmax[i].second-e_minmax[i].first+1);
-        }
-        std::cout << "Card is: " << card << '\n';
       }
     private:
       const T                     &v_p1;
