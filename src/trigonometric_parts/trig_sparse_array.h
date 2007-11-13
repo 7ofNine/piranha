@@ -68,6 +68,9 @@ namespace piranha
       void print_latex(std::ostream &, const vector_psym_p &) const;
 // Manip.
 /// Assign vector of multipliers.
+/**
+ * Argument type T must support random access through operator[].
+ */
       template <class T>
         void assign_mult_vector(const T &v)
       {
