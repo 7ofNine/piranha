@@ -138,6 +138,7 @@ namespace piranha
         if (hmin > traits::min() && hmax < traits::max())
         {
           viable = true;
+          chi = hmin.get_si();
 // Debug
           std::cout << "Coding vector: ";
           for (trig_size_t i=0;i<twidth;++i)
@@ -181,6 +182,15 @@ namespace piranha
           n+=m.at(i)*coding_vector[i];
         }
       }
+      //template <class T>
+        void decode_multiindex(const max_fast_int &n/*, T &m*/) const
+      {
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          std::cout << (((n-chi)%coding_vector[i+1])/(coding_vector[i])+e_minmax[i].first) << ';';
+        }
+        std::cout << '\n';
+      }
     private:
       const Ps1                   &p1;
       const Ps2                   &p2;
@@ -190,6 +200,7 @@ namespace piranha
       std::valarray<max_fast_int> coding_vector;
       coded_series_type1          cs1;
       coded_series_type2          cs2;
+      max_fast_int                chi;
   };
 
 /// Elementary math toolbox for numerical series.
