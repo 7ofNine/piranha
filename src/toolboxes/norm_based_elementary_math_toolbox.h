@@ -34,7 +34,7 @@
 namespace piranha
 {
   template <class Ps1, class Ps2>
-    class series_gl_rep
+    class pseries_gl_rep
   {
       typedef typename Ps1::trig_type::value_type mult_type;
       typedef std::valarray<std::pair<mult_type,mult_type> > e_minmax_type;
@@ -63,7 +63,7 @@ namespace piranha
       typedef compact_coded_term_type<cf_type2> cct_type2;
       typedef std::valarray<ct_type1> coded_series_type1;
       typedef std::valarray<ct_type2> coded_series_type2;
-      series_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
+      pseries_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
         find_minmax();
@@ -96,7 +96,7 @@ namespace piranha
       }
     private:
 // Make this private to make sure we do not call default ctor.
-      series_gl_rep()
+      pseries_gl_rep()
       {}
       void find_minmax()
       {
@@ -276,7 +276,7 @@ namespace piranha
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
-        typedef series_gl_rep<DerivedPs,DerivedPs2> glr_type;
+        typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
         typedef typename glr_type::cct_type1 cct_type;
