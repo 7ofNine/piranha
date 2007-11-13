@@ -61,6 +61,14 @@ namespace piranha
       {
         return viable;
       }
+      const coded_series_type1 &g1() const
+      {
+        return cs1;
+      }
+      const coded_series_type1 &g2() const
+      {
+        return cs2;
+      }
     private:
 // Make this private to make sure we do not call default ctor.
       series_gl_rep()
