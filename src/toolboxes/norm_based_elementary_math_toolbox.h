@@ -43,9 +43,26 @@ namespace piranha
       typedef typename Ps2::ancestor::const_iterator iterator2;
       typedef typename Ps1::ancestor::cf_type cf_type1;
       typedef typename Ps2::ancestor::cf_type cf_type2;
-      typedef std::valarray<std::pair<cf_type1,max_fast_int> > coded_series_type1;
-      typedef std::valarray<std::pair<cf_type2,max_fast_int> > coded_series_type2;
+      template <class T>
+        struct coded_term_type
+      {
+        mutable T     cf;
+        max_fast_int  code;
+        bool          flavour;
+      };
+      template <class T>
+        struct compact_coded_term_type
+      {
+        mutable T     cf;
+        max_fast_int  code;
+      };
     public:
+      typedef coded_term_type<cf_type1> ct_type1;
+      typedef coded_term_type<cf_type2> ct_type2;
+      typedef compact_coded_term_type<cf_type1> cct_type1;
+      typedef compact_coded_term_type<cf_type2> cct_type2;
+      typedef std::valarray<ct_type1> coded_series_type1;
+      typedef std::valarray<ct_type2> coded_series_type2;
       series_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
@@ -68,6 +85,14 @@ namespace piranha
       const coded_series_type1 &g2() const
       {
         return cs2;
+      }
+      void decode_multiindex(const max_fast_int &n, std::valarray<mult_type> &v) const
+      {
+        const max_fast_int tmp = n-chi;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          v[i]=((tmp%coding_vector[i+1])/(coding_vector[i])+e_minmax[i].first);
+        }
       }
     private:
 // Make this private to make sure we do not call default ctor.
@@ -130,7 +155,7 @@ namespace piranha
       }
       void check_viable()
       {
-// We must do the computations with arbitrary integers not to exceed range.
+// We must do the computations with arbitrary integers to avoid exceeding range.
         mpz_class hmin=0, hmax=0, ck=1;
         for (trig_size_t i=0;i<twidth;++i)
         {
@@ -170,14 +195,16 @@ namespace piranha
         size_t i;
         for (i=0;i<l1;++i)
         {
-          cs1[i].first=*it1->g_cf();
-          code_multiindex(*it1->g_trig(),cs1[i].second);
+          cs1[i].cf=*it1->g_cf();
+          code_multiindex(*it1->g_trig(),cs1[i].code);
+          cs1[i].flavour=it1->g_flavour();
           ++it1;
         }
         for (i=0;i<l2;++i)
         {
-          cs2[i].first=*it2->g_cf();
-          code_multiindex(*it2->g_trig(),cs2[i].second);
+          cs2[i].cf=*it2->g_cf();
+          code_multiindex(*it2->g_trig(),cs2[i].code);
+          cs2[i].flavour=it2->g_flavour();
           ++it2;
         }
       }
@@ -189,15 +216,6 @@ namespace piranha
         {
           n+=m.at(i)*coding_vector[i];
         }
-      }
-      //template <class T>
-        void decode_multiindex(const max_fast_int &n/*, T &m*/) const
-      {
-        for (trig_size_t i=0;i<twidth;++i)
-        {
-          std::cout << (((n-chi)%coding_vector[i+1])/(coding_vector[i])+e_minmax[i].first) << ';';
-        }
-        std::cout << '\n';
       }
     private:
       const Ps1                   &p1;
@@ -258,6 +276,14 @@ namespace piranha
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
+        typedef series_gl_rep<DerivedPs,DerivedPs2> glr_type;
+        typedef typename glr_type::coded_series_type1 cs_type1;
+        typedef typename glr_type::coded_series_type2 cs_type2;
+        typedef typename glr_type::cct_type1 cct_type;
+        typedef mult_hash<cct_type,cct_hasher<cct_type>,cct_equal_to<cct_type>,
+          allocator_type,true> ccm_hash;
+        typedef typename ccm_hash::iterator ccm_hash_iterator;
+        typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         m_hash hm((derived_cast->length()*ps2.length())/100);
         m_hash_point_iterator hm_p_it;
@@ -280,14 +306,110 @@ namespace piranha
         size_t i,j;
         const size_t l1=v_p1.size();
         const size_t l2=v_p2.size();
-        p_assert(l1 == ps1.length());
+        p_assert(l1 == derived_cast->length());
         p_assert(l2 == ps2.length());
 // Try to build the generalized lexicographic representation.
-        series_gl_rep <DerivedPs,DerivedPs2>
-          glr(*derived_cast,ps2);
+        glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
           std::cout << "Can do fast" << '\n';
+          const cs_type1 &cs1 = glr.g1(), &cs2 = glr.g2();
+          const double norm2_i = cs2[0].cf.norm(ps2.cf_s_vec());
+          cct_type tmp_term1, tmp_term2;
+          ccm_hash cchm_cos((derived_cast->length()*ps2.length())/100),
+            cchm_sin((derived_cast->length()*ps2.length())/100);
+          ccm_hash_point_iterator cchm_p_it;
+          for (i=0;i<l1;++i)
+          {
+            norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+            if ((norm1*norm2_i)/2<Delta_threshold)
+            {
+              break;
+            }
+            for (j=0;j<l2;++j)
+            {
+              if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+              {
+                break;
+              }
+              tmp_term1.cf = cs1[i].cf;
+              tmp_term2.cf = cs1[i].cf;
+              tmp_term1.code = cs1[i].code;
+              tmp_term2.code = cs1[i].code;
+// For now calculate a+b and a-b.
+              tmp_term1.code-=cs2[j].code;
+              tmp_term2.code+=cs2[j].code;
+// Now the coefficients, all with positive signs for now.
+              tmp_term1.cf.mult_by_self(cs2[j].cf);
+              tmp_term1.cf/=2;
+              tmp_term2.cf=tmp_term1.cf;
+// Now fix flavours and coefficient signs.
+              if (cs1[i].flavour == cs2[j].flavour)
+              {
+                if (!(cs1[i].flavour))
+                {
+                  tmp_term2.cf *= -1;
+                }
+// Insert into cosine container.
+                cchm_p_it = cchm_cos.find(tmp_term1);
+                if (cchm_p_it == cchm_cos.end())
+                {
+                  cchm_cos.insert(tmp_term1);
+                }
+                else
+                {
+                  cchm_p_it->cf+=tmp_term1.cf;
+                }
+                cchm_p_it = cchm_cos.find(tmp_term2);
+                if (cchm_p_it == cchm_cos.end())
+                {
+                  cchm_cos.insert(tmp_term2);
+                }
+                else
+                {
+                  cchm_p_it->cf+=tmp_term2.cf;
+                }
+              }
+              else
+              {
+                if (cs1[i].flavour)
+                {
+                  tmp_term1.cf *= -1;
+                }
+// Insert into sine container.
+                cchm_p_it = cchm_sin.find(tmp_term1);
+                if (cchm_p_it == cchm_sin.end())
+                {
+                  cchm_sin.insert(tmp_term1);
+                }
+                else
+                {
+                  cchm_p_it->cf+=tmp_term1.cf;
+                }
+                cchm_p_it = cchm_sin.find(tmp_term2);
+                if (cchm_p_it == cchm_sin.end())
+                {
+                  cchm_sin.insert(tmp_term2);
+                }
+                else
+                {
+                  cchm_p_it->cf+=tmp_term2.cf;
+                }
+              }
+            }
+          }
+          typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
+          term_type tmp_term;
+          tmp_term.s_trig()->increase_size(derived_cast->trig_width());
+          std::valarray<mult_type> tmp_array(derived_cast->trig_width());
+          for (ccm_hash_iterator cchm_it=cchm_cos.begin();cchm_it!=cchm_cos.end();++cchm_it)
+          {
+            *tmp_term.s_cf() = cchm_it->cf;
+            glr.decode_multiindex(cchm_it->code,tmp_array);
+            tmp_term.s_trig()->assign_mult_vector(tmp_array);
+            retval.insert(tmp_term);
+          }
+          std::cout << "Out length=" << retval.length() << std::endl;
         }
         else
         {
@@ -357,12 +479,28 @@ namespace piranha
         }
       }
     private:
-      // Boilerplate for series multiplication.
+// Boilerplate for series multiplication.
       struct light_term_hasher
       {
         size_t operator()(const light_term<typename DerivedPs::cf_type,typename DerivedPs::trig_type> &t) const
         {
           return t.trig.hasher();
+        }
+      };
+      template <class T>
+        struct cct_hasher
+      {
+        size_t operator()(const T &cct) const
+        {
+          return int_hash(cct.code);
+        }
+      };
+      template <class T>
+        struct cct_equal_to
+      {
+        bool operator()(const T &cct1, const T &cct2) const
+        {
+          return (cct1.code == cct2.code);
         }
       };
       template <class T,class U, class V>
@@ -374,7 +512,12 @@ namespace piranha
         new_c/=2;
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
+// Data members.
+      static const  boost::hash<int> int_hash;
   };
+
+  template <class DerivedPs>
+    const boost::hash<int> norm_based_elementary_math_toolbox<DerivedPs>::int_hash = boost::hash<int>();
 }
 
 #endif
