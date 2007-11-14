@@ -86,29 +86,14 @@ namespace piranha
         typedef typename ccm_hash::iterator ccm_hash_iterator;
         typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
-        m_hash hm((derived_cast->length()*ps2.length())/100);
-        m_hash_point_iterator hm_p_it;
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
           Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
-        size_t n=0;
-// NOTE: at this point retval's width() is greater or equal to _both_ this
-// and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
-        light_term_type tmp1, tmp2;
-        tmp1.s_trig()->increase_size(retval.trig_width());
-        tmp2.s_trig()->increase_size(retval.trig_width());
-        light_term_pair term_pair(tmp1,tmp2);
-// Cache all pointers to the terms of this and ps2 in vectors.
-        std::valarray<term_type const *> v_p1;
-        std::valarray<term_type2 const *> v_p2;
-        utils::array_pointer(*derived_cast,v_p1);
-        utils::array_pointer(ps2,v_p2);
         double norm1;
         size_t i,j;
-        const size_t l1=v_p1.size();
-        const size_t l2=v_p2.size();
-        p_assert(l1 == derived_cast->length());
-        p_assert(l2 == ps2.length());
+        const size_t l1=derived_cast->length(), l2=ps2.length();
+// v_it2[0] is legal because we checked for ps2's size.
+        const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
 // Try to build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
@@ -215,8 +200,23 @@ namespace piranha
         else
         {
           std::cout << "Can't do fast" << '\n';
-// v_it2[0] is legal because we checked for ps2's size.
-          const double norm2_i=v_p2[0]->g_cf()->norm(ps2.cf_s_vec());
+          size_t n=0;
+// NOTE: at this point retval's width() is greater or equal to _both_ this
+// and ps2. It's the max width indeed.
+          light_term_type tmp1, tmp2;
+          tmp1.s_trig()->increase_size(retval.trig_width());
+          tmp2.s_trig()->increase_size(retval.trig_width());
+          light_term_pair term_pair(tmp1,tmp2);
+// Cache all pointers to the terms of this and ps2 in vectors.
+          std::valarray<term_type const *> v_p1;
+          std::valarray<term_type2 const *> v_p2;
+          utils::array_pointer(*derived_cast,v_p1);
+          utils::array_pointer(ps2,v_p2);
+          p_assert(v_p1.size() == derived_cast->length());
+          p_assert(v_p2.size() == ps2.length());
+// Prepare the structure for multiplication.
+          m_hash hm((derived_cast->length()*ps2.length())/100);
+          m_hash_point_iterator hm_p_it;
 // Cache some pointers.
           trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
           cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
