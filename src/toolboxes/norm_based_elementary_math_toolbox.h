@@ -88,13 +88,13 @@ namespace piranha
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
           Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
-        p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
+        p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
         double norm1;
         size_t i,j;
         const size_t l1=derived_cast->length(), l2=ps2.length();
-// v_it2[0] is legal because we checked for ps2's size.
+// ps2.begin() is legal because we checked for ps2's size.
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
-// Try to build the generalized lexicographic representation.
+// Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
