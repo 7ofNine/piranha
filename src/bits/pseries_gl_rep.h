@@ -71,6 +71,20 @@ namespace piranha
       typedef compact_coded_term_type<cf_type2> cct_type2;
       typedef std::valarray<ct_type1> coded_series_type1;
       typedef std::valarray<ct_type2> coded_series_type2;
+      struct cct_hasher
+      {
+        size_t operator()(const cct_type1 &cct) const
+        {
+          return int_hash(cct.code);
+        }
+      };
+      struct cct_equal_to
+      {
+        bool operator()(const cct_type1 &cct1, const cct_type1 &cct2) const
+        {
+          return (cct1.code == cct2.code);
+        }
+      };
       pseries_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
@@ -241,16 +255,20 @@ namespace piranha
         }
       }
     private:
-      const Ps1                   &p1;
-      const Ps2                   &p2;
-      const trig_size_t           twidth;
-      e_minmax_type               e_minmax;
-      bool                        viable;
-      std::valarray<max_fast_int> coding_vector;
-      coded_series_type1          cs1;
-      coded_series_type2          cs2;
-      max_fast_int                chi;
+      const Ps1                               &p1;
+      const Ps2                               &p2;
+      const trig_size_t                       twidth;
+      e_minmax_type                           e_minmax;
+      bool                                    viable;
+      std::valarray<max_fast_int>             coding_vector;
+      coded_series_type1                      cs1;
+      coded_series_type2                      cs2;
+      max_fast_int                            chi;
+      static const boost::hash<max_fast_int>  int_hash;
   };
+
+  template <class Ps1, class Ps2>
+    const boost::hash<int> pseries_gl_rep<Ps1,Ps2>::int_hash = boost::hash<max_fast_int>();
 }
 
 #endif

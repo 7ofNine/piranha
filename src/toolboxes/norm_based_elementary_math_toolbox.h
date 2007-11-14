@@ -80,7 +80,8 @@ namespace piranha
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
         typedef typename glr_type::cct_type1 cct_type;
-        typedef mult_hash<cct_type,cct_hasher<cct_type>,cct_equal_to<cct_type>,
+        typedef mult_hash<cct_type,typename glr_type::cct_hasher,
+          typename glr_type::cct_equal_to,
           allocator_type,true> ccm_hash;
         typedef typename ccm_hash::iterator ccm_hash_iterator;
         typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
@@ -287,22 +288,6 @@ namespace piranha
           return t.trig.hasher();
         }
       };
-      template <class T>
-        struct cct_hasher
-      {
-        size_t operator()(const T &cct) const
-        {
-          return int_hash(cct.code);
-        }
-      };
-      template <class T>
-        struct cct_equal_to
-      {
-        bool operator()(const T &cct1, const T &cct2) const
-        {
-          return (cct1.code == cct2.code);
-        }
-      };
       template <class T,class U, class V>
         static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {
@@ -312,12 +297,7 @@ namespace piranha
         new_c/=2;
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
-// Data members.
-      static const  boost::hash<int> int_hash;
   };
-
-  template <class DerivedPs>
-    const boost::hash<int> norm_based_elementary_math_toolbox<DerivedPs>::int_hash = boost::hash<int>();
 }
 
 #endif
