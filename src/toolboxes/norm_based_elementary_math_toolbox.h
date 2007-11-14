@@ -100,7 +100,6 @@ namespace piranha
         {
           std::cout << "Can do fast" << '\n';
           const cs_type1 &cs1 = glr.g1(), &cs2 = glr.g2();
-          const double norm2_i = cs2[0].cf.norm(ps2.cf_s_vec());
           cct_type tmp_term1, tmp_term2;
           ccm_hash cchm_cos((derived_cast->length()*ps2.length())/100),
             cchm_sin((derived_cast->length()*ps2.length())/100);
