@@ -16,5 +16,8 @@ TARGET_LINK_LIBRARIES(gastest_elp3_ext ${MANDATORY_LIBRARIES} piranha_static)
 ADD_EXECUTABLE(gastest_elp3_dynamic_ext gastest_elp3_dynamic_ext.cpp)
 TARGET_LINK_LIBRARIES(gastest_elp3_dynamic_ext ${MANDATORY_LIBRARIES} piranha_static)
 
+ADD_EXECUTABLE(mixed_sin_cos_test mixed_sin_cos_test.cpp)
+TARGET_LINK_LIBRARIES(mixed_sin_cos_test ${MANDATORY_LIBRARIES} piranha_static)
+
 ADD_EXECUTABLE(tass_r6_test tass_r6_test.cpp)
 TARGET_LINK_LIBRARIES(tass_r6_test ${MANDATORY_LIBRARIES} piranha_static)
