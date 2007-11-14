@@ -55,7 +55,7 @@ namespace piranha
       };
 /// Compact coded term structure.
 /**
- * Does not contain flavour because this will be used in series multiplication when we
+ * With respect to coded_term_type it does not contain flavour because this will be used in series multiplication when we
  * will have two different containers for sines and cosines.
  */
       template <class T>
@@ -75,7 +75,7 @@ namespace piranha
       {
         size_t operator()(const cct_type1 &cct) const
         {
-          return int_hash(cct.code);
+          return max_fast_int_hash(cct.code);
         }
       };
       struct cct_equal_to
@@ -121,6 +121,7 @@ namespace piranha
       template <class Array>
         void decode_multiindex(const max_fast_int &n, Array &v) const
       {
+        p_assert(twidth == v.size());
         const max_fast_int tmp = n-chi;
         for (trig_size_t i=0;i<twidth;++i)
         {
@@ -188,6 +189,9 @@ namespace piranha
         std::cout << std::endl;
       }
 /// Check whether representation is usable or not.
+/**
+ * Sets the viable bool flag.
+ */
       void check_viable()
       {
 // We must do the computations with arbitrary integers to avoid exceeding range.
@@ -264,11 +268,11 @@ namespace piranha
       coded_series_type1                      cs1;
       coded_series_type2                      cs2;
       max_fast_int                            chi;
-      static const boost::hash<max_fast_int>  int_hash;
+      static const boost::hash<max_fast_int>  max_fast_int_hash;
   };
 
   template <class Ps1, class Ps2>
-    const boost::hash<int> pseries_gl_rep<Ps1,Ps2>::int_hash = boost::hash<max_fast_int>();
+    const boost::hash<int> pseries_gl_rep<Ps1,Ps2>::max_fast_int_hash = boost::hash<max_fast_int>();
 }
 
 #endif
