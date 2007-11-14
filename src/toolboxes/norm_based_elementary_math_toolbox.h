@@ -103,7 +103,7 @@ namespace piranha
         glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
-          std::cout << "Can do fast" << '\n';
+//          std::cout << "Can do fast" << '\n';
           const cs_type1 &cs1 = glr.g1();
           const cs_type2 &cs2 = glr.g2();
           cct_type tmp_term1, tmp_term2;

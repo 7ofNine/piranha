@@ -182,11 +182,11 @@ namespace piranha
           e_minmax[j].first=tmp_vec[0];
           e_minmax[j].second=tmp_vec[3];
         }
-        for (trig_size_t j=0;j<twidth;++j)
-        {
-          std::cout << (int)e_minmax[j].first << ',' << (int)e_minmax[j].second << '\t';
-        }
-        std::cout << std::endl;
+//         for (trig_size_t j=0;j<twidth;++j)
+//         {
+//           std::cout << (int)e_minmax[j].first << ',' << (int)e_minmax[j].second << '\t';
+//         }
+//         std::cout << std::endl;
       }
 /// Check whether representation is usable or not.
 /**
@@ -212,15 +212,15 @@ namespace piranha
           viable = true;
           chi = hmin.get_si();
 // Debug
-          std::cout << "Coding vector: ";
-          for (trig_size_t i=0;i<twidth;++i)
-          {
-            std::cout << coding_vector[i] << '\t';
-          }
-          std::cout << "+\t" << coding_vector[twidth] << '\n';
+//           std::cout << "Coding vector: ";
+//           for (trig_size_t i=0;i<twidth;++i)
+//           {
+//             std::cout << coding_vector[i] << '\t';
+//           }
+//           std::cout << "+\t" << coding_vector[twidth] << '\n';
         }
 // This is debug and not really needed.
-        std::cout << "h: " << hmin << ',' << hmax << '\n';
+//         std::cout << "h: " << hmin << ',' << hmax << '\n';
       }
 /// Code the series.
       void code_series()
