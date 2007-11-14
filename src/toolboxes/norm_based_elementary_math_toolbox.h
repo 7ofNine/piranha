@@ -63,6 +63,7 @@ namespace piranha
         void multiply_terms(const DerivedPs2 &ps2, DerivedPs &retval) const
       {
 // TODO: use typedeffed "const_iterator" here instead.
+// DerivedPs typedefs.
         typedef typename DerivedPs::ancestor::it_s_index it_s_index;
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs2::ancestor::it_s_index it_s_index2;
@@ -70,28 +71,32 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type trig_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
+// Light_term typedefs.
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
+// Mult_hash typedefs.
         typedef mult_hash<light_term_type,typename light_term_type::hasher,
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
+// Pseries_gl_rep typedefs.
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
         typedef typename glr_type::cct_type1 cct_type;
+// Coded mult_hash typedefs.
         typedef mult_hash<cct_type,typename glr_type::cct_hasher,
           typename glr_type::cct_equal_to,
           allocator_type,true> ccm_hash;
         typedef typename ccm_hash::iterator ccm_hash_iterator;
         typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        const size_t l1=derived_cast->length(), l2=ps2.length();
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
-          Delta_threshold=Delta/(2*derived_cast->length()*ps2.length());
+          Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
         double norm1;
         size_t i,j;
-        const size_t l1=derived_cast->length(), l2=ps2.length();
 // ps2.begin() is legal because we checked for ps2's size.
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
 // Build the generalized lexicographic representation.
@@ -99,10 +104,11 @@ namespace piranha
         if (glr.is_viable())
         {
           std::cout << "Can do fast" << '\n';
-          const cs_type1 &cs1 = glr.g1(), &cs2 = glr.g2();
+          const cs_type1 &cs1 = glr.g1();
+          const cs_type2 &cs2 = glr.g2();
           cct_type tmp_term1, tmp_term2;
-          ccm_hash cchm_cos((derived_cast->length()*ps2.length())/100),
-            cchm_sin((derived_cast->length()*ps2.length())/100);
+          ccm_hash cchm_cos((l1*l2)/100),
+            cchm_sin((l1*l2)/100);
           ccm_hash_point_iterator cchm_p_it;
           for (i=0;i<l1;++i)
           {

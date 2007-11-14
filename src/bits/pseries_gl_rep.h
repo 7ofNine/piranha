@@ -110,7 +110,7 @@ namespace piranha
         return cs1;
       }
 /// Access second coded series.
-      const coded_series_type1 &g2() const
+      const coded_series_type2 &g2() const
       {
         return cs2;
       }
