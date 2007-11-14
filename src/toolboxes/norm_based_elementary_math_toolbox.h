@@ -193,12 +193,28 @@ namespace piranha
           term_type tmp_term;
           tmp_term.s_trig()->increase_size(derived_cast->trig_width());
           std::valarray<mult_type> tmp_array(derived_cast->trig_width());
-          for (ccm_hash_iterator cchm_it=cchm_cos.begin();cchm_it!=cchm_cos.end();++cchm_it)
+          ccm_hash_iterator cchm_it;
           {
-            *tmp_term.s_cf() = cchm_it->cf;
-            glr.decode_multiindex(cchm_it->code,tmp_array);
-            tmp_term.s_trig()->assign_mult_vector(tmp_array);
-            retval.insert(tmp_term);
+            const ccm_hash_iterator cchm_it_f=cchm_cos.end();
+            for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
+            {
+              *tmp_term.s_cf() = cchm_it->cf;
+              glr.decode_multiindex(cchm_it->code,tmp_array);
+              tmp_term.s_trig()->assign_mult_vector(tmp_array);
+              tmp_term.s_trig()->s_flavour()=true;
+              retval.insert(tmp_term);
+            }
+          }
+          {
+            const ccm_hash_iterator cchm_it_f=cchm_sin.end();
+            for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
+            {
+              *tmp_term.s_cf() = cchm_it->cf;
+              glr.decode_multiindex(cchm_it->code,tmp_array);
+              tmp_term.s_trig()->assign_mult_vector(tmp_array);
+              tmp_term.s_trig()->s_flavour()=false;
+              retval.insert(tmp_term);
+            }
           }
           std::cout << "Out length=" << retval.length() << std::endl;
         }
