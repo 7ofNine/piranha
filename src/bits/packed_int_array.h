@@ -108,7 +108,12 @@ namespace piranha
       };
     public:
       packed_int_array()
-        {}
+        {
+          for (uint8 i=0;i<Dim;++i)
+          {
+            private_container_.v[i]=0;
+          }
+        }
       void hasher(size_t &seed) const
       {
         uint8 i;
