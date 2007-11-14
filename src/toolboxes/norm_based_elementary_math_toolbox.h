@@ -72,7 +72,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
         typedef light_term<cf_type,trig_type> light_term_type;
         typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
-        typedef mult_hash<light_term_type,light_term_hasher,
+        typedef mult_hash<light_term_type,typename light_term_type::hasher,
           std::equal_to<light_term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
@@ -279,14 +279,6 @@ namespace piranha
         }
       }
     private:
-// Boilerplate for series multiplication.
-      struct light_term_hasher
-      {
-        size_t operator()(const light_term<typename DerivedPs::cf_type,typename DerivedPs::trig_type> &t) const
-        {
-          return t.trig.hasher();
-        }
-      };
       template <class T,class U, class V>
         static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
       {

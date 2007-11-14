@@ -7,6 +7,13 @@ namespace piranha
     template <class Cf, class Trig>
       struct light_term
     {
+      struct hasher
+      {
+        size_t operator()(const light_term &t) const
+        {
+          return t.trig.hasher();
+        }
+      };
 /// Default ctor.
 /**
  * Won't initialize anything.
