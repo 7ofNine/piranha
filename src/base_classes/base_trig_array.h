@@ -24,7 +24,7 @@
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
 
-#include "../bits/common_typedefs.h"    // For t_eval.
+#include "../bits/common_typedefs.h"    // For t_eval and max_fast_int.
 #include "../bits/trig_evaluator.h"
 
 namespace piranha
@@ -79,7 +79,8 @@ namespace piranha
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (trig_size_t i=0;i<w;++i)
         {
-          out_stream << (int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
+// We cast to max_fast_int, which should be the largest type admitted for multipliers.
+          out_stream << (max_fast_int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
@@ -104,7 +105,7 @@ namespace piranha
               {}
               else
             {
-              tmp.append(boost::lexical_cast<std::string>((int)static_cast<const Derived *>(this)->g_container()[i]));
+              tmp.append(boost::lexical_cast<std::string>((max_fast_int)static_cast<const Derived *>(this)->g_container()[i]));
             }
             tmp.append(v[i]->name());
             first_one=false;
