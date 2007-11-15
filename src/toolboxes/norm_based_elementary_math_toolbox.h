@@ -293,6 +293,7 @@ namespace piranha
           const m_hash_iterator hm_it_f=hm.end();
           for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
           {
+// TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
             retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
           }
 //retval.cumulative_crop(Delta);
