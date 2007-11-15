@@ -74,6 +74,7 @@ namespace piranha
       template <class T>
         void assign_mult_vector(const T &v)
       {
+        private_container_.resize(0);
         p_assert(empty());
         const size_t w=v.size();
         for (size_t i=0;i<w;++i)
