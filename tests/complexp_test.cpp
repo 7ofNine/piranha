@@ -22,17 +22,16 @@
 
 using namespace piranha;
 
-//typedef fnp<6>::type stype;
 typedef np stype;
 
-// Complexp elp1.
+// Complexp of elp1.
 int main()
 {
   settings_manager::set_prec(1E-6);
   stype elp1("elp1.csv");
   for (size_t i=0;i<1;++i)
   {
-    (elp1.complexp()).save_to("foo_complexp2.csv");
+    elp1.complexp();
   }
   return 0;
 }
