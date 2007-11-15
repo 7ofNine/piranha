@@ -255,7 +255,7 @@ namespace piranha
         n=0;
         for (trig_size_t i=0;i<twidth;++i)
         {
-          n+=m.at(i)*coding_vector[i];
+          n+=(coding_vector[i]*m.at(i));
         }
       }
     private:
@@ -267,6 +267,7 @@ namespace piranha
       std::valarray<max_fast_int>             coding_vector;
       coded_series_type1                      cs1;
       coded_series_type2                      cs2;
+// Chi is equivalent to the minimum code.
       max_fast_int                            chi;
       static const boost::hash<max_fast_int>  max_fast_int_hash;
   };
