@@ -122,12 +122,32 @@ namespace piranha
         void decode_multiindex(const max_fast_int &n, Array &v) const
       {
         p_assert(twidth == v.size());
-        const max_fast_int tmp = n-chi;
+        const max_fast_int tmp = n - chi;
         for (trig_size_t i=0;i<twidth;++i)
         {
           v[i]=((tmp%coding_vector[i+1])/(coding_vector[i])+e_minmax[i].first);
         }
+/*        std::cout << std::endl;
+        for (trig_size_t i=0;i<twidth+1;++i)
+        {
+          std::cout << coding_vector[i] << ',';
+        }
+std::cout << "e_mins:\n";
+        std::cout << std::endl;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          std::cout << e_minmax[i].first << ',';
+        }
+        std::cout << std::endl;
+std::cout << "e_maxs:\n";
+        std::cout << std::endl;
+        for (trig_size_t i=0;i<twidth;++i)
+        {
+          std::cout << e_minmax[i].second << ',';
+        }
+        std::cout << std::endl;*/
       }
+
     private:
 // Make this private to make sure we do not call default ctor.
       pseries_gl_rep()
@@ -207,7 +227,7 @@ namespace piranha
 // We want to fill on extra slot of the coding vector (wrt to "nominal" width twidth).
 // This is handy for decodification.
         coding_vector[twidth]=ck.get_si();
-        if (hmin > traits::min() && hmax < traits::max())
+        if (ck > traits::min() && ck < traits::max())
         {
           viable = true;
           chi = hmin.get_si();
@@ -220,7 +240,7 @@ namespace piranha
 //           std::cout << "+\t" << coding_vector[twidth] << '\n';
         }
 // This is debug and not really needed.
-//         std::cout << "h: " << hmin << ',' << hmax << '\n';
+//          std::cout << "h: " << hmin << ',' << hmax << '\n';
       }
 /// Code the series.
       void code_series()
