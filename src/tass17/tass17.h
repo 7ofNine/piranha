@@ -189,7 +189,7 @@ namespace piranha
       static Ps a(const double &N, const Ps &p)
       {
         Ps a=p;
-        a+=1.;
+        a+=1;
         a*=N;
         a=a.pow(-2./3.);
         return a;
