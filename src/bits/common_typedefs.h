@@ -46,11 +46,15 @@ namespace piranha
 #ifdef _PIRANHA_64BIT
 /// Maximum fast integer (64-bits).
   typedef boost::int64_t max_fast_int;
+/// Maximum fast unsigned integer (64-bits).
+  typedef boost::uint64_t max_fast_uint;
 /// Minimum slow integer (64-bits).
   typedef boost::int128_t min_slow_int;
 #else
 /// Maximum fast integer (32-bits).
   typedef boost::int32_t max_fast_int;
+/// Maximum fast unsigned integer (32-bits).
+  typedef boost::uint32_t max_fast_uint;
 /// Minimum slow integer (32-bits).
   typedef boost::int64_t min_slow_int;
 #endif

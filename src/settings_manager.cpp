@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/integer_traits.hpp>
+
+#include "bits/common_typedefs.h"
 #include "bits/settings_manager.h"
 #include "bits/stream_manager.h"
 #include "bits/version.h"
@@ -26,6 +29,10 @@ namespace piranha
 {
 // Settings manager's static members.
   double settings_manager::numerical_zero_ = 1E-80;
+  const max_fast_uint settings_manager::min_u_=0;
+  const max_fast_uint settings_manager::max_u_=boost::integer_traits<max_fast_uint>::max();
+  const max_fast_int  settings_manager::min_i_=boost::integer_traits<max_fast_int>::min();
+  const max_fast_int  settings_manager::max_i_=boost::integer_traits<max_fast_int>::max();
   const unsigned int settings_manager::jacang_limit_ = 20;
   double settings_manager::prec_ = 1E-6;
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
@@ -40,6 +47,8 @@ namespace piranha
     std::cout << "Default parameters initialized:" << std::endl;
     std::cout << "Print precision\t\t\t=\t" << stream_manager::digits() << std::endl;
     std::cout << "Numerical zero\t\t\t=\t" << numerical_zero() << std::endl;
+    std::cout << "Fast unsigned int range\t\t=\t" << "[0," << max_u_ << ']' << std::endl;
+    std::cout << "Fast signed int range\t\t=\t" << '[' << min_i_ << ',' << max_i_ << ']' << std::endl;
     std::cout << "Multiplication precision\t=\t" << prec() << std::endl;
     std::cout << "Theories of motion directory\t=\t" << theories_path() << std::endl;
     std::cout << "Piranha is ready." << std::endl;

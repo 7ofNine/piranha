@@ -23,6 +23,8 @@
 
 #include <string>
 
+#include "common_typedefs.h"
+
 namespace piranha
 {
 /// Manager class for piranha-specific settings.
@@ -77,6 +79,14 @@ namespace piranha
       };
 /// Numerical zero.
       static double             numerical_zero_;
+/// Minimum fast unsigned integer.
+      static const max_fast_uint      min_u_;
+/// Maximum fast unsigned integer.
+      static const max_fast_uint      max_u_;
+/// Minimum fast integer.
+      static const max_fast_int       min_i_;
+/// Maximum fast integer.
+      static const max_fast_int       max_i_;
 /// Jacobi Anger expansion limit.
       static const unsigned int jacang_limit_;
 /// Path to theories of motion.
