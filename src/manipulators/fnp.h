@@ -36,7 +36,7 @@ namespace piranha
     struct fnp
   {
     typedef ps<double_cf,
-      trig_fixed_array<N,8>,
+      trig_fixed_array<N,16>,
       simple_term,
       norm_index
 #ifdef _PIRANHA_SSE2
