@@ -85,9 +85,9 @@ namespace piranha
         typedef typename glr_type::coded_series_type2 cs_type2;
         typedef typename glr_type::cct_type1 cct_type;
 // Coded mult_hash typedefs.
-        typedef mult_hash<cct_type,typename glr_type::cct_hasher,
+        typedef typename c_mult_hash<cct_type,typename glr_type::cct_hasher,
           typename glr_type::cct_equal_to,
-          allocator_type,true> ccm_hash;
+          allocator_type,true>::type ccm_hash;
         typedef typename ccm_hash::iterator ccm_hash_iterator;
         typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);

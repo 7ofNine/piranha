@@ -21,6 +21,7 @@
 #ifndef PIRANHA_UNORDERED_SET_HM_H
 #define PIRANHA_UNORDERED_SET_HM_H
 
+#include <ext/pb_ds/assoc_container.hpp>
 #include <tr1/unordered_set>
 
 namespace piranha
@@ -58,6 +59,57 @@ namespace piranha
       }
     private:
       container_type    private_container_;
+  };
+
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
+    class c_mult_hash_
+  {
+      typedef pb_ds::cc_hash_table<
+        Element,
+        pb_ds::null_mapped_type,
+        Hasher,
+        Eq,
+        pb_ds::direct_mask_range_hashing<size_t>,
+        pb_ds::hash_standard_resize_policy<
+          pb_ds::hash_exponential_size_policy<size_t>,
+          pb_ds::hash_load_check_resize_trigger<false,size_t>,
+          true,
+          size_t
+        >,
+        true,
+        Allocator
+      > container_type;
+    public:
+      typedef typename container_type::const_iterator iterator;
+      typedef typename container_type::point_iterator point_iterator;
+      c_mult_hash_()
+        {}
+      c_mult_hash_(const size_t &)
+        {}
+      iterator begin() const
+      {
+        return private_container_.begin();
+      }
+      iterator end() const
+      {
+        return private_container_.end();
+      }
+      point_iterator find(const Element &e) const
+      {
+        return private_container_.find(e);
+      }
+      point_iterator insert(const Element &e)
+      {
+        return private_container_.insert(e).first;
+      }
+    private:
+      container_type    private_container_;
+  };
+
+  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
+    struct c_mult_hash
+  {
+    typedef c_mult_hash_<Element,Hasher,Eq,Allocator,StoreHash> type;
   };
 }
 
