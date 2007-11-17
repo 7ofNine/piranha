@@ -106,14 +106,14 @@ namespace piranha
         {
           const cs_type1 &cs1 = glr.g1();
           const cs_type2 &cs2 = glr.g2();
+          const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
+          const max_fast_int h_card = (h_max - h_min +1);
+          p_assert(h_card >= 0);
+          std::cout << "h_card: " << h_card << '\n';
+          std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
           if (true)
           {
             std::cout << "Can do fastest" << '\n';
-            const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
-            const max_fast_int h_card = (h_max - h_min +1);
-            p_assert(h_card >= 0);
-            std::cout << "h_card: " << h_card << '\n';
-            std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
             typedef std::pair<cf_type,bool> cf_bool;
             std::valarray<cf_bool> code_vector_cos(h_card), code_vector_sin(h_card);
 // Reset presence bit.
