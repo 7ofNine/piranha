@@ -122,32 +122,20 @@ namespace piranha
         void decode_multiindex(const max_fast_int &n, Array &v) const
       {
         p_assert(twidth == v.size());
-        const max_fast_int tmp = n - chi;
+        const max_fast_int tmp = n - h_min;
         for (trig_size_t i=0;i<twidth;++i)
         {
           v[i]=((tmp%coding_vector[i+1])/(coding_vector[i])+e_minmax[i].first);
         }
-/*        std::cout << std::endl;
-        for (trig_size_t i=0;i<twidth+1;++i)
-        {
-          std::cout << coding_vector[i] << ',';
-        }
-std::cout << "e_mins:\n";
-        std::cout << std::endl;
-        for (trig_size_t i=0;i<twidth;++i)
-        {
-          std::cout << e_minmax[i].first << ',';
-        }
-        std::cout << std::endl;
-std::cout << "e_maxs:\n";
-        std::cout << std::endl;
-        for (trig_size_t i=0;i<twidth;++i)
-        {
-          std::cout << e_minmax[i].second << ',';
-        }
-        std::cout << std::endl;*/
       }
-
+      const max_fast_int &g_h_min() const
+      {
+        return h_min;
+      }
+      const max_fast_int &g_h_max() const
+      {
+        return h_max;
+      }
     private:
 // Make this private to make sure we do not call default ctor.
       pseries_gl_rep()
@@ -230,7 +218,8 @@ std::cout << "e_maxs:\n";
         if (ck > traits::min() && ck < traits::max())
         {
           viable = true;
-          chi = hmin.get_si();
+          h_min = hmin.get_si();
+          h_max = hmax.get_si();
 // Debug
 //           std::cout << "Coding vector: ";
 //           for (trig_size_t i=0;i<twidth;++i)
@@ -240,7 +229,7 @@ std::cout << "e_maxs:\n";
 //           std::cout << "+\t" << coding_vector[twidth] << '\n';
         }
 // This is debug and not really needed.
-//          std::cout << "h: " << hmin << ',' << hmax << '\n';
+        std::cout << "h: " << h_min << ',' << h_max << '\n';
       }
 /// Code the series.
       void code_series()
@@ -287,8 +276,8 @@ std::cout << "e_maxs:\n";
       std::valarray<max_fast_int>             coding_vector;
       coded_series_type1                      cs1;
       coded_series_type2                      cs2;
-// Chi is equivalent to the minimum code.
-      max_fast_int                            chi;
+      max_fast_int                            h_min;
+      max_fast_int                            h_max;
       static const boost::hash<max_fast_int>  max_fast_int_hash;
   };
 
