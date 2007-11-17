@@ -83,11 +83,7 @@
 #include <new>
 #include <bits/functexcept.h>
 
-#ifdef _PIRANHA_PRIVATE_MM_MALLOC_H
-#include "mm_malloc.h"
-#else
-#include <mm_malloc.h>
-#endif
+#include "piranha_malloc.h"
 
 namespace
 {
