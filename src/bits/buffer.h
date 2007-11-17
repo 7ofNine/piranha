@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BUFFER_H
 #define PIRANHA_BUFFER_H
 
+#include "config.h"
 #include "piranha_malloc.h"
 
 namespace piranha
@@ -28,12 +29,11 @@ namespace piranha
   class buffer_init
   {
     public:
-// Allocate 4MB for start.
 // TODO: maybe specify this value somewhere?
 #define _INIT_BUFFER_SIZE_MB 200
-      buffer_init():size(_INIT_BUFFER_SIZE_MB*1024*1024),ptr(piranha_malloc(size))
+      buffer_init():size(_INIT_BUFFER_SIZE_MB*bytes_per_MB),ptr(piranha_malloc(size))
       {
-        std::cout << "Buffer set up, around " << size/(1024*1024) << " MBytes available." << std::endl;
+        std::cout << "Buffer set up, around " << size/(bytes_per_MB) << " MBytes available." << std::endl;
       }
 #undef _INIT_BUFFER_SIZE_MB
       ~buffer_init()
@@ -44,15 +44,27 @@ namespace piranha
       {
         return ptr;
       }
-/// Returns size in bytes.
       const size_t &g_size() const
       {
         return size;
       }
+      void resize(const int &n_MB)
+      {
+        if (n_MB < 0)
+        {
+          std::cout << "Please insert a strictly positive value." << std::endl;
+          return;
+        }
+        piranha_free(ptr);
+        ptr = piranha_malloc(n_MB*bytes_per_MB);
+      }
     private:
-      size_t  size;
-      void    *ptr;
+      size_t              size;
+      void                *ptr;
+      static const size_t bytes_per_MB;
   };
+
+  const size_t buffer_init::bytes_per_MB = 1024*1024;
 
   class buffer
   {
@@ -70,6 +82,10 @@ namespace piranha
         static size_t n_elements()
       {
         return g_size()/sizeof(T);
+      }
+      static void resize(const int &n_MB)
+      {
+        bi.resize(n_MB);
       }
     private:
       static buffer_init  bi;
