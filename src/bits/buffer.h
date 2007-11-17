@@ -26,48 +26,45 @@
 
 namespace piranha
 {
-  class buffer_init
-  {
-    public:
-// TODO: maybe specify this value somewhere?
-#define _INIT_BUFFER_SIZE_MB 200
-      buffer_init():size(_INIT_BUFFER_SIZE_MB*bytes_per_MB),ptr(piranha_malloc(size))
-      {
-        std::cout << "Buffer set up, around " << size/(bytes_per_MB) << " MBytes available." << std::endl;
-      }
-#undef _INIT_BUFFER_SIZE_MB
-      ~buffer_init()
-      {
-        piranha_free(ptr);
-      }
-      void *pointer()
-      {
-        return ptr;
-      }
-      const size_t &g_size() const
-      {
-        return size;
-      }
-      void resize(const int &n_MB)
-      {
-        if (n_MB < 0)
-        {
-          std::cout << "Please insert a strictly positive value." << std::endl;
-          return;
-        }
-        piranha_free(ptr);
-        ptr = piranha_malloc(n_MB*bytes_per_MB);
-      }
-    private:
-      size_t              size;
-      void                *ptr;
-      static const size_t bytes_per_MB;
-  };
-
-  const size_t buffer_init::bytes_per_MB = 1024*1024;
-
   class buffer
   {
+      class buffer_init
+      {
+        public:
+// TODO: maybe specify this value somewhere?
+#define _INIT_BUFFER_SIZE_MB 200
+          buffer_init():size(_INIT_BUFFER_SIZE_MB*bytes_per_MB),ptr(piranha_malloc(size))
+          {
+            std::cout << "Buffer set up, around " << size/(bytes_per_MB) << " MBytes available." << std::endl;
+          }
+#undef _INIT_BUFFER_SIZE_MB
+          ~buffer_init()
+          {
+            piranha_free(ptr);
+          }
+          void *pointer()
+          {
+            return ptr;
+          }
+          const size_t &g_size() const
+          {
+            return size;
+          }
+          void resize(const int &n_MB)
+          {
+            if (n_MB < 0)
+            {
+              std::cout << "Please insert a strictly positive value." << std::endl;
+              return;
+            }
+            piranha_free(ptr);
+            ptr = piranha_malloc(n_MB*bytes_per_MB);
+          }
+        private:
+          size_t              size;
+          void                *ptr;
+          static const size_t bytes_per_MB;
+      };
     public:
       template <class T>
         static T *head()
@@ -91,7 +88,8 @@ namespace piranha
       static buffer_init  bi;
   };
 
-  buffer_init buffer::bi;
+  const size_t buffer::buffer_init::bytes_per_MB = 1024*1024;
+  buffer::buffer_init buffer::bi;
 }
 
 #endif
