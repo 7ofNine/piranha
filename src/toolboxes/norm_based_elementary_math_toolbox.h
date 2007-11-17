@@ -83,6 +83,7 @@ namespace piranha
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
+        typedef typename glr_type::ct_type1 ct_type;
         typedef typename glr_type::cct_type1 cct_type;
 // Coded mult_hash typedefs.
         typedef typename c_mult_hash<cct_type,typename glr_type::cct_hasher,
@@ -103,120 +104,224 @@ namespace piranha
         glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
-          std::cout << "Can do fast" << '\n';
           const cs_type1 &cs1 = glr.g1();
           const cs_type2 &cs2 = glr.g2();
-          cct_type tmp_term1, tmp_term2;
-          ccm_hash cchm_cos((l1*l2)/100),
-            cchm_sin((l1*l2)/100);
-          ccm_hash_point_iterator cchm_p_it;
-          for (i=0;i<l1;++i)
+          if (true)
           {
-            norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
-            if ((norm1*norm2_i)/2<Delta_threshold)
+            std::cout << "Can do fastest" << '\n';
+            const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
+            const max_fast_int h_card = (h_max - h_min +1);
+            p_assert(h_card >= 0);
+            std::cout << "h_card: " << h_card << '\n';
+            std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
+            typedef std::pair<cf_type,bool> cf_bool;
+            std::valarray<cf_bool> code_vector_cos(h_card), code_vector_sin(h_card);
+// Reset presence bit.
+            for (max_fast_uint k=0;k<(size_t)h_card;++k)
             {
-              break;
+              code_vector_cos[k].second = code_vector_sin[k].second = false;
             }
-            for (j=0;j<l2;++j)
+            cf_bool *s_point_cos = &(code_vector_cos[0])-h_min,
+              *s_point_sin = &(code_vector_sin[0])-h_min;
+            cf_type tmp_cf;
+            for (i=0;i<l1;++i)
             {
-              if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+              norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+              if ((norm1*norm2_i)/2<Delta_threshold)
               {
                 break;
               }
-              tmp_term1.cf = cs1[i].cf;
-              tmp_term2.cf = cs1[i].cf;
-              tmp_term1.code = cs1[i].code;
-              tmp_term2.code = cs1[i].code;
-// For now calculate a+b and a-b.
-              tmp_term1.code-=cs2[j].code;
-              tmp_term2.code+=cs2[j].code;
-// Now the coefficients, all with positive signs for now.
-              tmp_term1.cf.mult_by_self(cs2[j].cf);
-              tmp_term1.cf/=2;
-              tmp_term2.cf=tmp_term1.cf;
-// Now fix flavours and coefficient signs.
-              if (cs1[i].flavour == cs2[j].flavour)
+              for (j=0;j<l2;++j)
               {
-                if (!(cs1[i].flavour))
+                if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
                 {
-                  tmp_term2.cf *= -1;
+                  break;
                 }
-// Insert into cosine container.
-                cchm_p_it = cchm_cos.find(tmp_term1);
-                if (cchm_p_it == cchm_cos.end())
+                tmp_cf = cs1[i].cf;
+                tmp_cf.mult_by_self(cs2[j].cf);
+                tmp_cf/=2;
+                const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
+                  tmp_index_minus = cs1[i].code - cs2[j].code;
+                if (cs1[i].flavour == cs2[j].flavour)
                 {
-                  cchm_cos.insert(tmp_term1);
-                }
-                else
-                {
-                  cchm_p_it->cf+=tmp_term1.cf;
-                }
-                cchm_p_it = cchm_cos.find(tmp_term2);
-                if (cchm_p_it == cchm_cos.end())
-                {
-                  cchm_cos.insert(tmp_term2);
-                }
-                else
-                {
-                  cchm_p_it->cf+=tmp_term2.cf;
-                }
-              }
-              else
-              {
-                if (cs1[i].flavour)
-                {
-                  tmp_term1.cf *= -1;
-                }
-// Insert into sine container.
-                cchm_p_it = cchm_sin.find(tmp_term1);
-                if (cchm_p_it == cchm_sin.end())
-                {
-                  cchm_sin.insert(tmp_term1);
+                  if (cs1[i].flavour)
+                  {
+                    s_point_cos[tmp_index_minus].first += tmp_cf;
+                    s_point_cos[tmp_index_minus].second = true;
+                    s_point_cos[tmp_index_plus].first += tmp_cf;
+                    s_point_cos[tmp_index_plus].second = true;
+                  }
+                  else
+                  {
+                    s_point_cos[tmp_index_minus].first += tmp_cf;
+                    s_point_cos[tmp_index_minus].second = true;
+                    s_point_cos[tmp_index_plus].first -= tmp_cf;
+                    s_point_cos[tmp_index_plus].second = true;
+                  }
                 }
                 else
                 {
-                  cchm_p_it->cf+=tmp_term1.cf;
-                }
-                cchm_p_it = cchm_sin.find(tmp_term2);
-                if (cchm_p_it == cchm_sin.end())
-                {
-                  cchm_sin.insert(tmp_term2);
-                }
-                else
-                {
-                  cchm_p_it->cf+=tmp_term2.cf;
+                  if (cs1[i].flavour)
+                  {
+                    s_point_sin[tmp_index_minus].first -= tmp_cf;
+                    s_point_sin[tmp_index_minus].second = true;
+                    s_point_sin[tmp_index_plus].first += tmp_cf;
+                    s_point_sin[tmp_index_plus].second = true;
+                  }
+                  else
+                  {
+                    s_point_sin[tmp_index_minus].first += tmp_cf;
+                    s_point_sin[tmp_index_minus].second = true;
+                    s_point_sin[tmp_index_plus].first += tmp_cf;
+                    s_point_sin[tmp_index_plus].second = true;
+                  }
                 }
               }
             }
-          }
-          typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
-          term_type tmp_term;
-          tmp_term.s_trig()->increase_size(derived_cast->trig_width());
-          std::valarray<mult_type> tmp_array(derived_cast->trig_width());
-          ccm_hash_iterator cchm_it;
-          {
-            const ccm_hash_iterator cchm_it_f=cchm_cos.end();
-            for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
+            typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
+            term_type tmp_term;
+            tmp_term.s_trig()->increase_size(derived_cast->trig_width());
+            std::valarray<mult_type> tmp_array(derived_cast->trig_width());
+            max_fast_int k;
+            for (k=h_min;k<=h_max;++k)
             {
-              *tmp_term.s_cf() = cchm_it->cf;
-              glr.decode_multiindex(cchm_it->code,tmp_array);
-              tmp_term.s_trig()->assign_mult_vector(tmp_array);
-              tmp_term.s_trig()->s_flavour()=true;
-              retval.insert(tmp_term);
+              if (unlikely(s_point_cos[k].second))
+              {
+                *tmp_term.s_cf() = s_point_cos[k].first;
+                glr.decode_multiindex(k,tmp_array);
+                tmp_term.s_trig()->assign_mult_vector(tmp_array);
+                tmp_term.s_trig()->s_flavour()=true;
+                retval.insert(tmp_term);
+              }
             }
-          }
-          {
-            const ccm_hash_iterator cchm_it_f=cchm_sin.end();
-            for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
+            for (k=h_min;k<=h_max;++k)
             {
-              *tmp_term.s_cf() = cchm_it->cf;
-              glr.decode_multiindex(cchm_it->code,tmp_array);
-              tmp_term.s_trig()->assign_mult_vector(tmp_array);
-              tmp_term.s_trig()->s_flavour()=false;
-              retval.insert(tmp_term);
+              if (unlikely(s_point_sin[k].second))
+              {
+                *tmp_term.s_cf() = s_point_sin[k].first;
+                glr.decode_multiindex(k,tmp_array);
+                tmp_term.s_trig()->assign_mult_vector(tmp_array);
+                tmp_term.s_trig()->s_flavour()=false;
+                retval.insert(tmp_term);
+              }
             }
+            std::cout << "Out length=" << retval.length() << std::endl;
           }
-          std::cout << "Out length=" << retval.length() << std::endl;
+          else
+          {
+            std::cout << "Can do fast" << '\n';
+            cct_type tmp_term1, tmp_term2;
+            ccm_hash cchm_cos((l1*l2)/100),
+              cchm_sin((l1*l2)/100);
+            ccm_hash_point_iterator cchm_p_it;
+            for (i=0;i<l1;++i)
+            {
+              norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+              if ((norm1*norm2_i)/2<Delta_threshold)
+              {
+                break;
+              }
+              for (j=0;j<l2;++j)
+              {
+                if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+                {
+                  break;
+                }
+                tmp_term1.cf = cs1[i].cf;
+                tmp_term2.cf = cs1[i].cf;
+                tmp_term1.code = cs1[i].code;
+                tmp_term2.code = cs1[i].code;
+  // For now calculate a+b and a-b.
+                tmp_term1.code-=cs2[j].code;
+                tmp_term2.code+=cs2[j].code;
+  // Now the coefficients, all with positive signs for now.
+                tmp_term1.cf.mult_by_self(cs2[j].cf);
+                tmp_term1.cf/=2;
+                tmp_term2.cf=tmp_term1.cf;
+  // Now fix flavours and coefficient signs.
+                if (cs1[i].flavour == cs2[j].flavour)
+                {
+                  if (!(cs1[i].flavour))
+                  {
+                    tmp_term2.cf *= -1;
+                  }
+  // Insert into cosine container.
+                  cchm_p_it = cchm_cos.find(tmp_term1);
+                  if (cchm_p_it == cchm_cos.end())
+                  {
+                    cchm_cos.insert(tmp_term1);
+                  }
+                  else
+                  {
+                    cchm_p_it->cf+=tmp_term1.cf;
+                  }
+                  cchm_p_it = cchm_cos.find(tmp_term2);
+                  if (cchm_p_it == cchm_cos.end())
+                  {
+                    cchm_cos.insert(tmp_term2);
+                  }
+                  else
+                  {
+                    cchm_p_it->cf+=tmp_term2.cf;
+                  }
+                }
+                else
+                {
+                  if (cs1[i].flavour)
+                  {
+                    tmp_term1.cf *= -1;
+                  }
+  // Insert into sine container.
+                  cchm_p_it = cchm_sin.find(tmp_term1);
+                  if (cchm_p_it == cchm_sin.end())
+                  {
+                    cchm_sin.insert(tmp_term1);
+                  }
+                  else
+                  {
+                    cchm_p_it->cf+=tmp_term1.cf;
+                  }
+                  cchm_p_it = cchm_sin.find(tmp_term2);
+                  if (cchm_p_it == cchm_sin.end())
+                  {
+                    cchm_sin.insert(tmp_term2);
+                  }
+                  else
+                  {
+                    cchm_p_it->cf+=tmp_term2.cf;
+                  }
+                }
+              }
+            }
+            typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
+            term_type tmp_term;
+            tmp_term.s_trig()->increase_size(derived_cast->trig_width());
+            std::valarray<mult_type> tmp_array(derived_cast->trig_width());
+            ccm_hash_iterator cchm_it;
+            {
+              const ccm_hash_iterator cchm_it_f=cchm_cos.end();
+              for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
+              {
+                *tmp_term.s_cf() = cchm_it->cf;
+                glr.decode_multiindex(cchm_it->code,tmp_array);
+                tmp_term.s_trig()->assign_mult_vector(tmp_array);
+                tmp_term.s_trig()->s_flavour()=true;
+                retval.insert(tmp_term);
+              }
+            }
+            {
+              const ccm_hash_iterator cchm_it_f=cchm_sin.end();
+              for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
+              {
+                *tmp_term.s_cf() = cchm_it->cf;
+                glr.decode_multiindex(cchm_it->code,tmp_array);
+                tmp_term.s_trig()->assign_mult_vector(tmp_array);
+                tmp_term.s_trig()->s_flavour()=false;
+                retval.insert(tmp_term);
+              }
+            }
+            std::cout << "Out length=" << retval.length() << std::endl;
+          }
         }
         else
         {
