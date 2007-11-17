@@ -22,7 +22,9 @@
 #define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
 
 #include <boost/foreach.hpp>
+#include <cstring> // For memset.
 
+#include "../bits/buffer.h"
 #include "../bits/config.h" // For selection of temporary hash container for multiplication
 #include "../bits/light_term.h"
 #include "../bits/pseries_gl_rep.h"
@@ -111,18 +113,25 @@ namespace piranha
           p_assert(h_card >= 0);
           std::cout << "h_card: " << h_card << '\n';
           std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
-          if (true)
+          typedef std::pair<cf_type,bool> cf_bool;
+          const double load_factor = ((double)l1*l2)/h_card;
+// TODO: hard-wire this for now, we have to study it a bit.
+#define _MAX_LOAD_FACTOR (1E-1)
+          if (load_factor < _MAX_LOAD_FACTOR)
+          {
+            std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
+          }
+          if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
+#undef _MAX_LOAD_FACTOR
           {
             std::cout << "Can do fastest" << '\n';
-            typedef std::pair<cf_type,bool> cf_bool;
-            std::valarray<cf_bool> code_vector_cos(h_card), code_vector_sin(h_card);
-// Reset presence bit.
-            for (max_fast_uint k=0;k<(size_t)h_card;++k)
-            {
-              code_vector_cos[k].second = code_vector_sin[k].second = false;
-            }
-            cf_bool *s_point_cos = &(code_vector_cos[0])-h_min,
-              *s_point_sin = &(code_vector_sin[0])-h_min;
+            cf_bool *code_vector_cos = buffer::head<cf_bool>(),
+              *code_vector_sin = code_vector_cos + h_card;
+// Reset memory area.
+            memset(code_vector_cos,0,sizeof(cf_bool)*h_card);
+            memset(code_vector_sin,0,sizeof(cf_bool)*h_card);
+            cf_bool *s_point_cos = code_vector_cos - h_min,
+              *s_point_sin = code_vector_sin - h_min;
             cf_type tmp_cf;
             for (i=0;i<l1;++i)
             {
