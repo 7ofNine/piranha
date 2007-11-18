@@ -18,73 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_BUFFER_H
-#define PIRANHA_BUFFER_H
-
-#include <iostream>
-
-#include "config.h"
-#include "piranha_malloc.h"
+#include "bits/buffer.h"
 
 namespace piranha
 {
-  class buffer
+#define _INIT_BUFFER_SIZE_MB 200
+  buffer::buffer_init::buffer_init():size(_INIT_BUFFER_SIZE_MB*bytes_per_MB),ptr(piranha_malloc(size))
   {
-      class buffer_init
-      {
-        public:
-// TODO: maybe specify this value somewhere?
-          buffer_init();
-          ~buffer_init()
-          {
-            piranha_free(ptr);
-          }
-          void *pointer()
-          {
-            return ptr;
-          }
-          const size_t &g_size() const
-          {
-            return size;
-          }
-          void resize(const int &n_MB)
-          {
-            if (n_MB < 0)
-            {
-              std::cout << "Please insert a strictly positive value." << std::endl;
-              return;
-            }
-            piranha_free(ptr);
-            size = n_MB*bytes_per_MB;
-            ptr = piranha_malloc(size);
-          }
-        private:
-          size_t              size;
-          void                *ptr;
-          static const size_t bytes_per_MB;
-      };
-    public:
-      template <class T>
-        static T *head()
-      {
-        return (T *)bi.pointer();
-      }
-      static const size_t &g_size()
-      {
-        return bi.g_size();
-      }
-      template <class T>
-        static size_t n_elements()
-      {
-        return g_size()/sizeof(T);
-      }
-      static void resize(const int &n_MB)
-      {
-        bi.resize(n_MB);
-      }
-    private:
-      static buffer_init  bi;
-  };
-}
+    std::cout << "Buffer set up, around " << size/(bytes_per_MB) << " MBytes available." << std::endl;
+  }
+#undef _INIT_BUFFER_SIZE_MB
 
-#endif
+  const size_t buffer::buffer_init::bytes_per_MB = 1024*1024;
+  buffer::buffer_init buffer::bi;
+}
