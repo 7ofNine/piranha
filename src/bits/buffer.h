@@ -58,7 +58,8 @@ namespace piranha
               return;
             }
             piranha_free(ptr);
-            ptr = piranha_malloc(n_MB*bytes_per_MB);
+            size = n_MB*bytes_per_MB;
+            ptr = piranha_malloc(size);
           }
         private:
           size_t              size;
