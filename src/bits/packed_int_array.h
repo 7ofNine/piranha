@@ -205,6 +205,24 @@ namespace piranha
       static const uint8  size16 = (uint8)((Dim*Bits)/16);
       static const uint8  size8 = (uint8)((Dim*Bits)/8);
   };
+
+// Static inits.
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size64;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size32;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size16;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size8;
+
+#ifdef _PIRANHA_SSE2
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::m128n;
+#endif
 }
 
 #endif

@@ -27,7 +27,6 @@
 
 namespace piranha
 {
-// FIXME: use cpp for this static initialization.
   static const tbb::task_scheduler_init tbb_init;
 }
 
