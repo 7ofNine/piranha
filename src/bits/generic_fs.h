@@ -43,8 +43,7 @@ namespace piranha
     public base_pseries<Cf,Trig,Term,I,generic_fs<Cf,Trig,Term,I,Allocator>,Allocator>,
     public real_operators_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
-    public common_trig_toolbox<generic_fs<Cf,Trig,Term,I,Allocator>,generic_fs<Cf,Trig,Term,I,Allocator> >,
-    public real_trig_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public trigonometric_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public differential_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public norm_based_elementary_math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >
   {
@@ -91,8 +90,7 @@ namespace std
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
     public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,Allocator>,
     public piranha::complex_operators_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
-    public piranha::common_trig_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
-      piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public piranha::trigonometric_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
     public piranha::complex_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
     public piranha::differential_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
     public piranha::norm_based_elementary_math_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >

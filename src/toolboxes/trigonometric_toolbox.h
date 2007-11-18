@@ -24,21 +24,22 @@
 namespace piranha
 {
 /// Toolbox for trigonometric operations common to real and complex series.
-  template <class Derived, class real_Derived>
-    class common_trig_toolbox
+  template <class DerivedPs>
+    class base_trigonometric_toolbox
   {
     public:
-      typedef std::complex<real_Derived> complex_ps;
-      void add_ps_to_arg(trig_size_t sym_index, const real_Derived &p)
+      template <class real_DerivedPs>
+        void add_ps_to_arg(trig_size_t sym_index, const real_DerivedPs &p)
       {
-        typedef typename Derived::ancestor::it_s_index it_s_index;
-        Derived *derived_cast=static_cast<Derived *>(this);
+        typedef std::complex<real_DerivedPs> complex_ps;
+        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
         if (sym_index>=derived_cast->trig_width())
         {
           std::cout << "Invalid index in 'basic_add_ps_to_arg', returning same series." << std::endl;
           return;
         }
-        Derived retval;
+        DerivedPs retval;
 // Model retval after this.
         action_assert(retval.merge_args(*derived_cast));
 // Import also linear arguments.
@@ -61,8 +62,8 @@ namespace piranha
           else
           {
             complex_ps psc=(p*tmp_mult).complexp();
-            real_Derived cosp=psc.real(), sinp=psc.imag();
-            Derived tmp1, tmp2;
+            real_DerivedPs cosp=psc.real(), sinp=psc.imag();
+            DerivedPs tmp1, tmp2;
             action_assert(tmp1.merge_args(*derived_cast));
             tmp1.insert(*it);
             action_assert(tmp2.merge_args(*derived_cast));
@@ -91,25 +92,26 @@ namespace piranha
         derived_cast->swap(retval);
         return;
       }
-      void add_ps_to_arg(const std::string &name, const real_Derived &p)
+      template <class real_DerivedPs>
+        void add_ps_to_arg(const std::string &name, const real_DerivedPs &p)
       {
-        add_ps_to_arg(static_cast<Derived *>(this)->trig_index(name),p);
+        add_ps_to_arg(static_cast<DerivedPs *>(this)->trig_index(name),p);
       }
   };
 
-/// Toolbox for trigonometric operations specific to real series.
-  template <class Derived>
-    class real_trig_toolbox
+/// Toolbox for trigonometric operations.
+  template <class DerivedPs>
+    class trigonometric_toolbox:public base_trigonometric_toolbox<DerivedPs>
   {
     public:
-      typedef std::complex<Derived> complex_ps;
+      typedef std::complex<DerivedPs> complex_ps;
 // Maths
       complex_ps complexp() const
       {
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
-        typedef typename Derived::ancestor::r_it_s_index real_r_it_s_index;
-        const Derived *derived_cast=static_cast<Derived const *>(this);
+        typedef typename DerivedPs::ancestor::r_it_s_index real_r_it_s_index;
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
@@ -128,12 +130,12 @@ namespace piranha
         return retval;
       }
 /// Calculate cosine of series.
-      Derived cosine() const
+      DerivedPs cosine() const
       {
         return complexp().real();
       }
 /// Calculate sine of series.
-      Derived sine() const
+      DerivedPs sine() const
       {
         return complexp().imag();
       }
@@ -147,7 +149,7 @@ namespace piranha
       {
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
-        const Derived *derived_cast=static_cast<Derived const *>(this);
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
@@ -164,25 +166,25 @@ namespace piranha
       template <class real_cf_type>
         void jaccosRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
-        retval=cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec());
+        retval=cf.besselJ(2*i,static_cast<DerivedPs const *>(this)->cf_s_vec());
         retval*=(2-math::Kdelta((unsigned int)0,i))*math::cs_phase(i);
       }
       template <class real_cf_type>
         void jaccosImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
-        retval=cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec());
+        retval=cf.besselJ(2*i+1,static_cast<DerivedPs const *>(this)->cf_s_vec());
         retval*=2*math::cs_phase(i);
       }
       template <class real_cf_type>
         void jacsinRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
-        retval=cf.besselJ(2*i,static_cast<Derived const *>(this)->cf_s_vec());
+        retval=cf.besselJ(2*i,static_cast<DerivedPs const *>(this)->cf_s_vec());
         retval*=(2-math::Kdelta((unsigned int)0,i));
       }
       template <class real_cf_type>
         void jacsinImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
-        retval=cf.besselJ(2*i+1,static_cast<Derived const *>(this)->cf_s_vec());
+        retval=cf.besselJ(2*i+1,static_cast<DerivedPs const *>(this)->cf_s_vec());
         retval*=2;
       }
 /// Jacobi-Anger development of a term.
@@ -194,7 +196,7 @@ namespace piranha
  * and assemble the result....
  */
 // This has to be templated this way because we don't know, during multiple inheritance,
-// about typedefs in Derived class. Fortunately the problem is not serious here, since this
+// about typedefs in DerivedPs class. Fortunately the problem is not serious here, since this
 // function is private and when it is called the compiler determines automatically the iterator
 // type from the context.
       template <class Iterator>
@@ -202,11 +204,11 @@ namespace piranha
       {
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
-        typedef typename Derived::ancestor::cf_type real_cf_type;
+        typedef typename DerivedPs::ancestor::cf_type real_cf_type;
         unsigned int i;
         complex_ps retval;
-        action_assert(retval.merge_args(*static_cast<Derived const *>(this)));
-        p_assert(retval.trig_width()==static_cast<Derived const *>(this)->trig_width());
+        action_assert(retval.merge_args(*static_cast<DerivedPs const *>(this)));
+        p_assert(retval.trig_width()==static_cast<DerivedPs const *>(this)->trig_width());
         real_cf_type _cf=*it->g_cf(), tmp;
         complex_term_type term1, term2;
         if (it->g_flavour())
@@ -248,5 +250,11 @@ namespace piranha
         return retval;
       }
   };
+
+/// Toolbox for trigonometric operations, specialization for complex series.
+  template <>
+    template <class DerivedPs>
+    class trigonometric_toolbox<std::complex<DerivedPs> >:public base_trigonometric_toolbox<std::complex<DerivedPs> >
+  {};
 }
 #endif
