@@ -21,6 +21,7 @@
 #ifndef PIRANHA_UTILS_H
 #define PIRANHA_UTILS_H
 
+#include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>

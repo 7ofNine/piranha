@@ -22,11 +22,14 @@
 #define PIRANHA_TRIG_FIXED_ARRAY_H
 
 #include <boost/algorithm/minmax.hpp>
+#include <boost/functional/hash.hpp>
 #include <cstring>
+#include <iostream>
 
 #include "../base_classes/base_trig_array.h"
 #include "../bits/common_typedefs.h"
 #include "../bits/packed_int_array.h"
+#include "../bits/utils.h"
 
 namespace piranha
 {
