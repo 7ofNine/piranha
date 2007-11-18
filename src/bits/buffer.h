@@ -34,7 +34,12 @@ namespace piranha
       {
         public:
 // TODO: maybe specify this value somewhere?
-          buffer_init();
+#define _INIT_BUFFER_SIZE_MB 200
+          buffer_init():size(_INIT_BUFFER_SIZE_MB*bytes_per_MB),ptr(piranha_malloc(size))
+          {
+            std::cout << "Buffer set up, around " << size/(bytes_per_MB) << " MBytes available." << std::endl;
+          }
+#undef _INIT_BUFFER_SIZE_MB
           ~buffer_init()
           {
             piranha_free(ptr);
