@@ -213,25 +213,25 @@ void ps_instantiate_real_specifics(class_<T> &real)
 
 
 template <class T>
-void ps_instantiate_complex_specifics(class_<T> &complex)
+void ps_instantiate_complex_specifics(class_<T> &complex_inst)
 {
-  typedef T complex_ps;
-  typedef typename complex_ps::real_ps real_ps;
-  complex.def(init<const complex_double &>());
-  complex.def("real", &complex_ps::real);
-  complex.def("imag", &complex_ps::imag);
-  complex.def("abs", &complex_ps::abs);
-  complex.def("conj", &complex_ps::conj);
-  complex.def("make_conj", &complex_ps::make_conj);
-  complex.def(self+=real_ps());
-  complex.def(self+real_ps());
-  complex.def(self-=real_ps());
-  complex.def(self-real_ps());
-  complex.def(self*=real_ps());
-  complex.def(self*real_ps());
+  typedef T complex_type;
+  typedef typename complex_type::real_type real_type;
+  complex_inst.def(init<const complex_double &>());
+  complex_inst.def("real", &complex_type::real);
+  complex_inst.def("imag", &complex_type::imag);
+  complex_inst.def("abs", &complex_type::abs);
+  complex_inst.def("conj", &complex_type::conj);
+  complex_inst.def("make_conj", &complex_type::make_conj);
+  complex_inst.def(self+=real_type());
+  complex_inst.def(self+real_type());
+  complex_inst.def(self-=real_type());
+  complex_inst.def(self-real_type());
+  complex_inst.def(self*=real_type());
+  complex_inst.def(self*real_type());
 // Additional ctor(s) for complex series
-  complex.def(init<real_ps>());
-  complex.def(init<real_ps,real_ps>());
+  complex_inst.def(init<real_type>());
+  complex_inst.def(init<real_type,real_type>());
 // FIXME: this needs to be fixed.
   //complex.def(init<typename real_ps::cf_type,typename real_ps::cf_type>());
 }

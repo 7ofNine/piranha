@@ -108,7 +108,7 @@ namespace std
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for real counterpart.
-      typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> real_generic_fs;
+      typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> real_type;
 /// Alias for real coefficient.
       typedef Cf real_cf_type;
 /// Alias for self.
@@ -144,11 +144,11 @@ namespace std
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const real_generic_fs &p)
+      explicit complex(const real_type &p)
       {
         action_assert(ancestor::merge_args(p));
         term_type term;
-        typename real_generic_fs::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
+        typename real_type::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
         for (;it!=it_f;++it)
         {
           *term.s_cf()=cf_type(*it->g_cf());
@@ -158,14 +158,14 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-      explicit complex(const real_generic_fs &p, const real_generic_fs &q)
+      explicit complex(const real_type &p, const real_type &q)
       {
         build_from_components(p,q);
       }
 /// Constructor from real and imaginary series from filenames.
       explicit complex(const std::string &file1, const std::string &file2)
       {
-        build_from_components(real_generic_fs(file1),real_generic_fs(file2));
+        build_from_components(real_type(file1),real_type(file2));
       }
   };
 }
