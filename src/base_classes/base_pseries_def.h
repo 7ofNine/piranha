@@ -546,6 +546,10 @@ namespace piranha
     private:
       static term_allocator_type term_allocator;
   };
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    typename base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator_type
+    base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator;
 }
 
 #endif
