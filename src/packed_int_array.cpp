@@ -18,19 +18,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_TBB_H
-#define PIRANHA_PIRANHA_TBB_H
-
-#ifdef PIRANHA_TBB
-
-#include <tbb/task_scheduler_init.h>
+#include "bits/packed_int_array.h"
 
 namespace piranha
 {
-// FIXME: use cpp for this static initialization.
-  static const tbb::task_scheduler_init tbb_init;
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size64;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size32;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size16;
+
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::size8;
+
+#ifdef _PIRANHA_SSE2
+  template <int Dim, int Bits>
+    const uint8 packed_int_array<Dim,Bits>::m128n;
+#endif
 }
-
-#endif
-
-#endif

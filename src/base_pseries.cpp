@@ -18,19 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_TBB_H
-#define PIRANHA_PIRANHA_TBB_H
-
-#ifdef PIRANHA_TBB
-
-#include <tbb/task_scheduler_init.h>
+#include "base_classes/base_pseries_def.h"
 
 namespace piranha
 {
-// FIXME: use cpp for this static initialization.
-  static const tbb::task_scheduler_init tbb_init;
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    typename base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator_type
+    base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator;
 }
-
-#endif
-
-#endif

@@ -18,19 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_TBB_H
-#define PIRANHA_PIRANHA_TBB_H
+#include <boost/functional/hash.hpp>
 
-#ifdef PIRANHA_TBB
-
-#include <tbb/task_scheduler_init.h>
+#include "bits/pseries_gl_rep.h"
 
 namespace piranha
 {
-// FIXME: use cpp for this static initialization.
-  static const tbb::task_scheduler_init tbb_init;
+  template <class Ps1, class Ps2>
+    const boost::hash<int> pseries_gl_rep<Ps1,Ps2>::max_fast_int_hash = boost::hash<max_fast_int>();
 }
-
-#endif
-
-#endif

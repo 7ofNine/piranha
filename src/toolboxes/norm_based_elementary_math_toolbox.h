@@ -25,7 +25,7 @@
 #include <cstring> // For memset.
 
 #include "../bits/buffer.h"
-#include "../bits/config.h" // For selection of temporary hash container for multiplication
+#include "../bits/config.h" // For selection of temporary hash container for multiplication.
 #include "../bits/light_term.h"
 #include "../bits/pseries_gl_rep.h"
 

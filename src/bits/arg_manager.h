@@ -87,7 +87,6 @@ namespace piranha
       static bool                       assigned_;
       static vector_psym_p const        *cf_args_;
       static vector_psym_p const        *trig_args_;
-  }
-  ;
+  };
 }
 #endif
