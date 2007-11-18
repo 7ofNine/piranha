@@ -194,4 +194,9 @@ BOOST_PYTHON_MODULE(_Core)
     .def("phase",&psymbol::phase)
     .def("freq",&psymbol::freq)
     .def("powers_string",&psymbol::powers_string);
+
+  class_<buffer>("buffer","Memory buffer",no_init)
+    .def("resize", &buffer::resize,"Resize memory buffer (in megabytes).")
+    .staticmethod("resize")
+    ;
 }
