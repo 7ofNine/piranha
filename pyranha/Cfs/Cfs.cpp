@@ -20,14 +20,15 @@
 
 #include "../pyranha.h"
 
-BOOST_PYTHON_MODULE(_Np)
+BOOST_PYTHON_MODULE(_Cfs)
 {
-  class_<np> inst=ps_basic_instantiation<np>("np","Numerical Poisson series class.");
+  class_<cfs> inst=ps_basic_instantiation<cfs>("cfs","Fourier series class, "
+    "compacted trigonometric part version.");
   ps_instantiate_differential_specifics(inst);
   ps_instantiate_real_specifics(inst);
-  def("kep_cosE",&astro::kep_cosE<np>,"Solve Kepler's equation for cosE.");
-  def("Pnm",&math::Pnm<np>,"Legendre function of the first kind - Pnm(cos(theta)).");
-  def("Ynm",&math::Ynm<np>,"Non-normalized spherical harmonic.");
-  def("wig_rot",&math::wig_rot<np>,"Wigner rotation theorem for spherical harmonics.");
-  instantiate_tass17<lnp>();
+  def("kep_cosE",&astro::kep_cosE<cfs>,"Solve Kepler's equation for cosE.");
+  def("Pnm",&math::Pnm<cfs>,"Legendre function of the first kind - Pnm(cos(theta)).");
+  def("Ynm",&math::Ynm<cfs>,"Non-normalized spherical harmonic.");
+  def("wig_rot",&math::wig_rot<cfs>,"Wigner rotation theorem for spherical harmonics.");
+  instantiate_tass17<cfs>();
 }

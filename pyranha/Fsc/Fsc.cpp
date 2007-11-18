@@ -18,17 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_LNP_H
-#define PIRANHA_LNP_H
+#include "../pyranha.h"
 
-#include "../coefficients/double_cf.h"
-#include "../bits/norm_index.h"
-#include "../bits/ps.h"
-#include "../terms/simple_term.h"
-#include "../trigonometric_parts/trig_sparse_array.h"
-
-namespace piranha
+BOOST_PYTHON_MODULE(_Fsc)
 {
-  typedef ps<double_cf,trig_sparse_array,simple_term,norm_index> lnp;
+  class_<fsc> inst=ps_basic_instantiation<fsc>("fsc","Complex Fourier series class.");
+  ps_instantiate_differential_specifics(inst);
+  ps_instantiate_complex_specifics(inst);
 }
-#endif

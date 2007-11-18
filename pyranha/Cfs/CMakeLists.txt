@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Cfs SHARED Cfs.cpp)
+PYTHONCMOD(_Cfs)

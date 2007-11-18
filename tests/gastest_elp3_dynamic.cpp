@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/np.h"
+#include "../src/manipulators/fs.h"
 
 using namespace piranha;
 
-typedef np stype;
+typedef fs stype;
 
 // Power two of elp3 series without truncation.
 int main()

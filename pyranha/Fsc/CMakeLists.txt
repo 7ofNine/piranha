@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Fsc SHARED Fsc.cpp)
+PYTHONCMOD(_Fsc)

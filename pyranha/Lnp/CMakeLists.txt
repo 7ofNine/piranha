@@ -1,2 +1,0 @@
-ADD_LIBRARY(_Lnp SHARED Lnp.cpp)
-PYTHONCMOD(_Lnp)

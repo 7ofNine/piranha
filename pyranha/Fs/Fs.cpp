@@ -18,31 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_FNP_H
-#define PIRANHA_FNP_H
+#include "../pyranha.h"
 
-#include "../coefficients/double_cf.h"
-#include "../bits/norm_index.h"
-#ifdef _PIRANHA_SSE2
-#include "../bits/pool_allocator.h"
-#endif
-#include "../bits/ps.h"
-#include "../terms/simple_term.h"
-#include "../trigonometric_parts/trig_fixed_array.h"
-
-namespace piranha
+BOOST_PYTHON_MODULE(_Fs)
 {
-  template <int N>
-    struct fnp
-  {
-    typedef ps<double_cf,
-      trig_fixed_array<N,16>,
-      simple_term,
-      norm_index
-#ifdef _PIRANHA_SSE2
-      , pool_allocator<char,16>
-#endif
-    > type;
-  };
+  class_<fs> inst=ps_basic_instantiation<fs>("fs","Fourier series class.");
+  ps_instantiate_differential_specifics(inst);
+  ps_instantiate_real_specifics(inst);
+  def("kep_cosE",&astro::kep_cosE<fs>,"Solve Kepler's equation for cosE.");
+  def("Pnm",&math::Pnm<fs>,"Legendre function of the first kind - Pnm(cos(theta)).");
+  def("Ynm",&math::Ynm<fs>,"Non-normalized spherical harmonic.");
+  def("wig_rot",&math::wig_rot<fs>,"Wigner rotation theorem for spherical harmonics.");
+  instantiate_tass17<fs>();
 }
-#endif

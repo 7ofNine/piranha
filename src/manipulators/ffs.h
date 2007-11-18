@@ -18,17 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NP_H
-#define PIRANHA_NP_H
+#ifndef PIRANHA_FFS_H
+#define PIRANHA_FFS_H
 
 #include "../coefficients/double_cf.h"
 #include "../bits/norm_index.h"
+#ifdef _PIRANHA_SSE2
+#include "../bits/pool_allocator.h"
+#endif
 #include "../bits/ps.h"
 #include "../terms/simple_term.h"
-#include "../trigonometric_parts/trig_array.h"
+#include "../trigonometric_parts/trig_fixed_array.h"
 
 namespace piranha
 {
-  typedef ps<double_cf,trig_array<16>,simple_term,norm_index> np;
+  template <int N>
+    struct ffs
+  {
+    typedef ps<double_cf,
+      trig_fixed_array<N,16>,
+      simple_term,
+      norm_index
+#ifdef _PIRANHA_SSE2
+      , pool_allocator<char,16>
+#endif
+    > type;
+  };
 }
 #endif

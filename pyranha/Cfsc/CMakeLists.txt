@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Cfsc SHARED Cfsc.cpp)
+PYTHONCMOD(_Cfsc)

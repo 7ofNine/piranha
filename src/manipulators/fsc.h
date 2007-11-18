@@ -18,12 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#ifndef PIRANHA_FSC_H
+#define PIRANHA_FSC_H
 
-BOOST_PYTHON_MODULE(_Lnpc)
+#include "../coefficients/double_cf.h"
+#include "../bits/norm_index.h"
+#include "../bits/ps.h"
+#include "../terms/simple_term.h"
+#include "../trigonometric_parts/trig_array.h"
+
+namespace piranha
 {
-  class_<lnpc> inst=ps_basic_instantiation<lnpc>("lnpc","Complex numerical Poisson series class, "
-    "trigonometric lists version.");
-  ps_instantiate_differential_specifics(inst);
-  ps_instantiate_complex_specifics(inst);
+  typedef std::complex<ps<double_cf,trig_array<16>,simple_term,norm_index> > fsc;
 }
+#endif

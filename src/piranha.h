@@ -22,11 +22,11 @@
 #define PIRANHA_PIRANHA_H
 
 // Include all piranha manipulators.
-#include "manipulators/fnp.h"
-#include "manipulators/lnp.h"
-#include "manipulators/lnpc.h"
-#include "manipulators/np.h"
-#include "manipulators/npc.h"
+#include "manipulators/ffs.h"
+#include "manipulators/cfs.h"
+#include "manipulators/cfsc.h"
+#include "manipulators/fs.h"
+#include "manipulators/fsc.h"
 
 // Include ipoly for now.
 // TODO: remove it later.

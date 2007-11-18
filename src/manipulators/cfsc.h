@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_LNPC_H
-#define PIRANHA_LNPC_H
+#ifndef PIRANHA_CFSC_H
+#define PIRANHA_CFSC_H
 
 #include "../coefficients/double_cf.h"
 #include "../bits/norm_index.h"
@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef std::complex<ps<double_cf,trig_sparse_array,simple_term,norm_index> > lnpc;
+  typedef std::complex<ps<double_cf,trig_sparse_array,simple_term,norm_index> > cfsc;
 }
 #endif

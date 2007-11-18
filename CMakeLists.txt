@@ -15,8 +15,8 @@ INCLUDE_DIRECTORIES("external_headers")
 
 # Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_NP "Build numerical series with array lists in Pyranha." ON "BUILD_PYRANHA" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_LNP "Build numerical series with trigonometric lists in Pyranha." OFF "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_FS "Enable Fourier series in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_CFS "Enable compacted Fourier series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." OFF)
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)

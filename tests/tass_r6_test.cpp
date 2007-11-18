@@ -18,17 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/lnp.h"
+#include "../src/manipulators/cfs.h"
 #include "../src/tass17/tass17.h"
 
 using namespace piranha;
+typedef cfs stype;
 
 // Calculate series representing Titan's orbital radius from the TASS theory.
 int main()
 {
   settings_manager::set_prec(1E-6);
-  tass17<lnp>::load();
-  tass17<lnp>::add_delta_lambdas();
-  tass17<lnp>::r6();
+  tass17<stype>::load();
+  tass17<stype>::add_delta_lambdas();
+  tass17<stype>::r6();
   return 0;
 }
