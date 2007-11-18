@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PS_H
-#define PIRANHA_PS_H
+#ifndef PIRANHA_GENERIC_FS_H
+#define PIRANHA_GENERIC_FS_H
 
 #include <complex>
 
@@ -39,48 +39,47 @@ namespace piranha
  * series.
  */
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
-    class ps:
-    public base_pseries<Cf,Trig,Term,I,ps<Cf,Trig,Term,I,Allocator>,Allocator>,
-    public real_operators_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
-    public math_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
-    public common_trig_toolbox<ps<Cf,Trig,Term,I,Allocator>,ps<Cf,Trig,Term,I,Allocator> >,
-    public real_trig_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
-    public differential_toolbox<ps<Cf,Trig,Term,I,Allocator> >,
-    public norm_based_elementary_math_toolbox<ps<Cf,Trig,Term,I,Allocator> >
+    class generic_fs:
+    public base_pseries<Cf,Trig,Term,I,generic_fs<Cf,Trig,Term,I,Allocator>,Allocator>,
+    public real_operators_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public common_trig_toolbox<generic_fs<Cf,Trig,Term,I,Allocator>,generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public real_trig_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public differential_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public norm_based_elementary_math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >
   {
     public:
 /// Alias for parent class.
-      typedef piranha::base_pseries<Cf, Trig, Term, I, ps<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
+      typedef piranha::base_pseries<Cf, Trig, Term, I, generic_fs<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for term type.
       typedef typename ancestor::term_type term_type;
 /// Alias for self.
-      typedef ps<Cf,Trig,Term,I,Allocator> self;
+      typedef generic_fs<Cf,Trig,Term,I,Allocator> self;
 // Ctors.
-      ps():ancestor::base_pseries()
+      generic_fs():ancestor::base_pseries()
         {}
-      ps(const ps &p):ancestor::base_pseries(p)
+      generic_fs(const generic_fs &p):ancestor::base_pseries(p)
         {}
-      explicit ps(const std::string &filename):ancestor::base_pseries(filename)
+      explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename)
         {}
-      explicit ps(const cf_type &c, const ps &model):ancestor::base_pseries(c,model)
+      explicit generic_fs(const cf_type &c, const generic_fs &model):ancestor::base_pseries(c,model)
         {}
 /// Constructor from int.
-      explicit ps(int n)
+      explicit generic_fs(int n)
       {
         ancestor::generic_builder(n);
       }
 /// Constructor from double.
-      explicit ps(const double &x)
+      explicit generic_fs(const double &x)
       {
         ancestor::generic_builder(x);
       }
 /// Constructor from psymbol.
-      explicit ps(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
+      explicit generic_fs(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
         {}
-  }
-  ;
+  };
 }
 
 
@@ -89,17 +88,19 @@ namespace std
 // COMPLEX COUNTERPART
 /// Complex specialization for default derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
-    struct complex<piranha::ps<Cf,Trig,Term,I,Allocator> >:
-    public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator>,
-    public piranha::complex_operators_toolbox<piranha::ps<Cf,Trig,Term,I,Allocator> >,
-    public piranha::common_trig_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,piranha::ps<Cf,Trig,Term,I,Allocator> >,
-    public piranha::complex_toolbox<piranha::ps<Cf,Trig,Term,I,Allocator> >,
-    public piranha::differential_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> > >,
-    public piranha::norm_based_elementary_math_toolbox<complex<piranha::ps<Cf,Trig,Term,I,Allocator> > >
+    struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
+    public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,Allocator>,
+    public piranha::complex_operators_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public piranha::common_trig_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+      piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public piranha::complex_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+    public piranha::differential_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
+    public piranha::norm_based_elementary_math_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >
   {
     public:
 /// Alias for the ancestor.
-      typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::ps<Cf,Trig,Term,I,Allocator> >,Allocator> ancestor;
+      typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
+        Allocator> ancestor;
 /// Alias for term type.
       typedef typename ancestor::term_type term_type;
 /// Alias for the iterator to sorted index.
@@ -107,11 +108,11 @@ namespace std
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for real counterpart.
-      typedef piranha::ps<Cf,Trig,Term,I,Allocator> real_ps;
+      typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> real_generic_fs;
 /// Alias for real coefficient.
       typedef Cf real_cf_type;
 /// Alias for self.
-      typedef complex<piranha::ps<Cf,Trig,Term,I,Allocator> > self;
+      typedef complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > self;
 // TODO: this is shared with above, find a way to share.
 /// Default constructor.
       complex():ancestor::base_pseries()
@@ -143,11 +144,11 @@ namespace std
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const real_ps &p)
+      explicit complex(const real_generic_fs &p)
       {
         action_assert(ancestor::merge_args(p));
         term_type term;
-        typename real_ps::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
+        typename real_generic_fs::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
         for (;it!=it_f;++it)
         {
           *term.s_cf()=cf_type(*it->g_cf());
@@ -157,14 +158,14 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-      explicit complex(const real_ps &p, const real_ps &q)
+      explicit complex(const real_generic_fs &p, const real_generic_fs &q)
       {
         build_from_components(p,q);
       }
 /// Constructor from real and imaginary series from filenames.
       explicit complex(const std::string &file1, const std::string &file2)
       {
-        build_from_components(real_ps(file1),real_ps(file2));
+        build_from_components(real_generic_fs(file1),real_generic_fs(file2));
       }
   };
 }

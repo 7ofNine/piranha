@@ -23,12 +23,12 @@
 
 #include "../coefficients/double_cf.h"
 #include "../bits/norm_index.h"
-#include "../bits/ps.h"
+#include "../bits/generic_fs.h"
 #include "../terms/simple_term.h"
 #include "../trigonometric_parts/trig_array.h"
 
 namespace piranha
 {
-  typedef std::complex<ps<double_cf,trig_array<16>,simple_term,norm_index> > fsc;
+  typedef std::complex<generic_fs<double_cf,trig_array<16>,simple_term,norm_index> > fsc;
 }
 #endif

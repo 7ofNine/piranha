@@ -26,7 +26,7 @@
 #ifdef _PIRANHA_SSE2
 #include "../bits/pool_allocator.h"
 #endif
-#include "../bits/ps.h"
+#include "../bits/generic_fs.h"
 #include "../terms/simple_term.h"
 #include "../trigonometric_parts/trig_fixed_array.h"
 
@@ -35,7 +35,7 @@ namespace piranha
   template <int N>
     struct ffs
   {
-    typedef ps<double_cf,
+    typedef generic_fs<double_cf,
       trig_fixed_array<N,16>,
       simple_term,
       norm_index

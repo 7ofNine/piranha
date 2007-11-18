@@ -23,12 +23,12 @@
 
 #include "../coefficients/double_cf.h"
 #include "../bits/norm_index.h"
-#include "../bits/ps.h"
+#include "../bits/generic_fs.h"
 #include "../terms/simple_term.h"
 #include "../trigonometric_parts/trig_sparse_array.h"
 
 namespace piranha
 {
-  typedef ps<double_cf,trig_sparse_array,simple_term,norm_index> cfs;
+  typedef generic_fs<double_cf,trig_sparse_array,simple_term,norm_index> cfs;
 }
 #endif
