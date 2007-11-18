@@ -211,7 +211,8 @@ void ps_instantiate_real_specifics(class_<T> &real)
   tc_common_instantiation(tc_add_ps_to_arg_inst);
 }
 
-
+// TODO: separate conj into power function instantiation, and use type traits or overloading or specialization to
+// establish if we need to provide conj too (since we don't need it for reals)?
 template <class T>
 void ps_instantiate_complex_specifics(class_<T> &complex_inst)
 {
