@@ -113,10 +113,12 @@ namespace piranha
           if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
 #undef _MAX_LOAD_FACTOR
           {
+            std::cout << "Can do vector coded arithmetics." << '\n';
             coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2);
           }
           else
           {
+            std::cout << "Can do hash coded arithmetics." << '\n';
             coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2);
           }
         }
@@ -218,7 +220,6 @@ namespace piranha
         const double &norm2_i, const double &Delta_threshold, const Glr &glr,
         Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2) const
       {
-        std::cout << "Doing fastest" << '\n';
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::term_type term_type;
@@ -326,7 +327,6 @@ namespace piranha
         Retval &retval, const double &norm2_i, const double &Delta_threshold,
         const DerivedPs2 &ps2) const
       {
-        std::cout << "Can do fast" << '\n';
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
