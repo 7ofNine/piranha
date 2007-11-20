@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
-#define PIRANHA_NORM_BASED_ELEMENTARY_MATH_TOOLBOX_H
+#ifndef FOURIER_MULTIPLICATION_TOOLBOX_H
+#define FOURIER_MULTIPLICATION_TOOLBOX_H
 
 #include <boost/foreach.hpp>
 #include <cstring> // For memset.
@@ -31,12 +31,12 @@
 
 namespace piranha
 {
-/// Elementary math toolbox for numerical series.
+/// Multiplication toolbox for Fourier series.
 /**
- * Implements series multiplication and truncation according to norms.
+ * Series multiplication used a norm-based truncation strategy.
  */
   template <class DerivedPs>
-    class norm_based_elementary_math_toolbox
+    class fourier_multiplication_toolbox
   {
     public:
       template <class Cf>

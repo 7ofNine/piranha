@@ -25,7 +25,7 @@
 
 #include "../base_classes/base_pseries.h"
 #include "../toolboxes/operators_toolbox.h"
-#include "../toolboxes/norm_based_elementary_math_toolbox.h"
+#include "../toolboxes/fourier_multiplication_toolbox.h"
 #include "../toolboxes/math_toolbox.h"
 #include "../toolboxes/complex_toolbox.h"
 #include "../toolboxes/differential_toolbox.h"
@@ -45,7 +45,7 @@ namespace piranha
     public math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public trigonometric_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public differential_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
-    public norm_based_elementary_math_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >
+    public fourier_multiplication_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >
   {
     public:
 /// Alias for parent class.
@@ -93,7 +93,7 @@ namespace std
     public piranha::trigonometric_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
     public piranha::complex_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
     public piranha::differential_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
-    public piranha::norm_based_elementary_math_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >
+    public piranha::fourier_multiplication_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >
   {
     public:
 /// Alias for the ancestor.
