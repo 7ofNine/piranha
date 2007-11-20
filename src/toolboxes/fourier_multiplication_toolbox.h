@@ -83,8 +83,6 @@ namespace piranha
         typedef typename m_hash::point_iterator m_hash_point_iterator;
 // Pseries_gl_rep typedefs.
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
-        typedef typename glr_type::coded_series_type1 cs_type1;
-        typedef typename glr_type::coded_series_type2 cs_type2;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         const size_t l1=derived_cast->length(), l2=ps2.length();
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
@@ -98,8 +96,6 @@ namespace piranha
         glr_type glr(*derived_cast,ps2);
         if (glr.is_viable())
         {
-          const cs_type1 &cs1 = glr.g1();
-          const cs_type2 &cs2 = glr.g2();
           const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
           const max_fast_int h_card = (h_max - h_min +1);
           p_assert(h_card >= 0);
@@ -117,11 +113,11 @@ namespace piranha
           if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
 #undef _MAX_LOAD_FACTOR
           {
-            coded_vector_mult(h_card,h_min,h_max,cs1,cs2,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2);
+            coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2);
           }
           else
           {
-            coded_hash_mult(glr,l1,l2,cs1,cs2,retval,norm2_i,Delta_threshold,ps2);
+            coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2);
           }
         }
         else
@@ -217,17 +213,22 @@ namespace piranha
         new_c/=2;
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
-      template <class Cs1, class Cs2, class Glr, class Retval, class DerivedPs2>
+      template <class Glr, class Retval, class DerivedPs2>
         void coded_vector_mult(const max_fast_int &h_card, const max_fast_int &h_min, const max_fast_int &h_max,
-        const Cs1 &cs1, const Cs2 &cs2, const double &norm2_i, const double &Delta_threshold, const Glr &glr,
+        const double &norm2_i, const double &Delta_threshold, const Glr &glr,
         Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2) const
       {
         std::cout << "Doing fastest" << '\n';
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef Glr glr_type;
+        typedef typename glr_type::coded_series_type1 cs_type1;
+        typedef typename glr_type::coded_series_type2 cs_type2;
         typedef std::pair<cf_type,bool> cf_bool;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        const cs_type1 &cs1 = glr.g1();
+        const cs_type2 &cs2 = glr.g2();
         cf_bool *code_vector_cos = buffer::head<cf_bool>(),
         *code_vector_sin = code_vector_cos + h_card;
 // Reset memory area.
@@ -320,9 +321,9 @@ namespace piranha
         }
         std::cout << "Out length=" << retval.length() << std::endl;
       }
-      template <class Glr, class Cs1, class Cs2, class Retval, class DerivedPs2>
-        void coded_hash_mult(const Glr &glr, const size_t &l1, const size_t &l2, const Cs1 &cs1,
-        const Cs2 &cs2, Retval &retval, const double &norm2_i, const double &Delta_threshold,
+      template <class Glr, class Retval, class DerivedPs2>
+        void coded_hash_mult(const Glr &glr, const size_t &l1, const size_t &l2,
+        Retval &retval, const double &norm2_i, const double &Delta_threshold,
         const DerivedPs2 &ps2) const
       {
         std::cout << "Can do fast" << '\n';
@@ -330,6 +331,8 @@ namespace piranha
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
         typedef Glr glr_type;
+        typedef typename glr_type::coded_series_type1 cs_type1;
+        typedef typename glr_type::coded_series_type2 cs_type2;
         typedef typename glr_type::cct_type1 cct_type;
 // Coded mult_hash typedefs.
         typedef mult_hash<cct_type,typename glr_type::cct_hasher,
@@ -338,6 +341,8 @@ namespace piranha
         typedef typename ccm_hash::iterator ccm_hash_iterator;
         typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        const cs_type1 &cs1 = glr.g1();
+        const cs_type2 &cs2 = glr.g2();
         cct_type tmp_term1, tmp_term2;
         ccm_hash cchm_cos((l1*l2)/100),
           cchm_sin((l1*l2)/100);
