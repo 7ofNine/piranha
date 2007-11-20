@@ -125,97 +125,7 @@ namespace piranha
           if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
 #undef _MAX_LOAD_FACTOR
           {
-            std::cout << "Can do fastest" << '\n';
-            cf_bool *code_vector_cos = buffer::head<cf_bool>(),
-              *code_vector_sin = code_vector_cos + h_card;
-// Reset memory area.
-            memset(code_vector_cos,0,sizeof(cf_bool)*h_card);
-            memset(code_vector_sin,0,sizeof(cf_bool)*h_card);
-            cf_bool *s_point_cos = code_vector_cos - h_min,
-              *s_point_sin = code_vector_sin - h_min;
-            cf_type tmp_cf;
-            for (i=0;i<l1;++i)
-            {
-              norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
-              if ((norm1*norm2_i)/2<Delta_threshold)
-              {
-                break;
-              }
-              for (j=0;j<l2;++j)
-              {
-                if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
-                {
-                  break;
-                }
-                tmp_cf = cs1[i].cf;
-                tmp_cf.mult_by_self(cs2[j].cf);
-                tmp_cf/=2;
-                const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
-                  tmp_index_minus = cs1[i].code - cs2[j].code;
-                if (cs1[i].flavour == cs2[j].flavour)
-                {
-                  if (cs1[i].flavour)
-                  {
-                    s_point_cos[tmp_index_minus].first += tmp_cf;
-                    s_point_cos[tmp_index_minus].second = true;
-                    s_point_cos[tmp_index_plus].first += tmp_cf;
-                    s_point_cos[tmp_index_plus].second = true;
-                  }
-                  else
-                  {
-                    s_point_cos[tmp_index_minus].first += tmp_cf;
-                    s_point_cos[tmp_index_minus].second = true;
-                    s_point_cos[tmp_index_plus].first -= tmp_cf;
-                    s_point_cos[tmp_index_plus].second = true;
-                  }
-                }
-                else
-                {
-                  if (cs1[i].flavour)
-                  {
-                    s_point_sin[tmp_index_minus].first -= tmp_cf;
-                    s_point_sin[tmp_index_minus].second = true;
-                    s_point_sin[tmp_index_plus].first += tmp_cf;
-                    s_point_sin[tmp_index_plus].second = true;
-                  }
-                  else
-                  {
-                    s_point_sin[tmp_index_minus].first += tmp_cf;
-                    s_point_sin[tmp_index_minus].second = true;
-                    s_point_sin[tmp_index_plus].first += tmp_cf;
-                    s_point_sin[tmp_index_plus].second = true;
-                  }
-                }
-              }
-            }
-            typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
-            term_type tmp_term;
-            tmp_term.s_trig()->increase_size(derived_cast->trig_width());
-            std::valarray<mult_type> tmp_array(derived_cast->trig_width());
-            max_fast_int k;
-            for (k=h_min;k<=h_max;++k)
-            {
-              if (unlikely(s_point_cos[k].second))
-              {
-                *tmp_term.s_cf() = s_point_cos[k].first;
-                glr.decode_multiindex(k,tmp_array);
-                tmp_term.s_trig()->assign_mult_vector(tmp_array);
-                tmp_term.s_trig()->s_flavour()=true;
-                retval.insert(tmp_term);
-              }
-            }
-            for (k=h_min;k<=h_max;++k)
-            {
-              if (unlikely(s_point_sin[k].second))
-              {
-                *tmp_term.s_cf() = s_point_sin[k].first;
-                glr.decode_multiindex(k,tmp_array);
-                tmp_term.s_trig()->assign_mult_vector(tmp_array);
-                tmp_term.s_trig()->s_flavour()=false;
-                retval.insert(tmp_term);
-              }
-            }
-            std::cout << "Out length=" << retval.length() << std::endl;
+            coded_vector_mult(h_card,h_min,h_max,cs1,cs2,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2);
           }
           else
           {
@@ -425,6 +335,111 @@ namespace piranha
         new_c.mult_by_self(*t2.g_cf());
         new_c/=2;
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
+      }
+      template <class Cs1, class Cs2, class Glr, class Retval, class DerivedPs2>
+        void coded_vector_mult(const max_fast_int &h_card, const max_fast_int &h_min, const max_fast_int &h_max,
+        const Cs1 &cs1, const Cs2 &cs2, const double &norm2_i, const double &Delta_threshold, const Glr &glr,
+        Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2) const
+      {
+        std::cout << "Doing fastest" << '\n';
+        typedef typename DerivedPs::ancestor::cf_type cf_type;
+        typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef std::pair<cf_type,bool> cf_bool;
+        typedef Cs1 cs_type1;
+        typedef Cs2 cs_type2;
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        cf_bool *code_vector_cos = buffer::head<cf_bool>(),
+        *code_vector_sin = code_vector_cos + h_card;
+// Reset memory area.
+        memset(code_vector_cos,0,sizeof(cf_bool)*h_card);
+        memset(code_vector_sin,0,sizeof(cf_bool)*h_card);
+        cf_bool *s_point_cos = code_vector_cos - h_min,
+          *s_point_sin = code_vector_sin - h_min;
+        cf_type tmp_cf;
+        size_t i, j;
+        double norm1;
+        for (i=0;i<l1;++i)
+        {
+          norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+          if ((norm1*norm2_i)/2<Delta_threshold)
+          {
+            break;
+          }
+          for (j=0;j<l2;++j)
+          {
+            if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            {
+              break;
+            }
+            tmp_cf = cs1[i].cf;
+            tmp_cf.mult_by_self(cs2[j].cf);
+            tmp_cf/=2;
+            const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
+              tmp_index_minus = cs1[i].code - cs2[j].code;
+            if (cs1[i].flavour == cs2[j].flavour)
+            {
+              if (cs1[i].flavour)
+              {
+                s_point_cos[tmp_index_minus].first += tmp_cf;
+                s_point_cos[tmp_index_minus].second = true;
+                s_point_cos[tmp_index_plus].first += tmp_cf;
+                s_point_cos[tmp_index_plus].second = true;
+              }
+              else
+              {
+                s_point_cos[tmp_index_minus].first += tmp_cf;
+                s_point_cos[tmp_index_minus].second = true;
+                s_point_cos[tmp_index_plus].first -= tmp_cf;
+                s_point_cos[tmp_index_plus].second = true;
+              }
+            }
+            else
+            {
+              if (cs1[i].flavour)
+              {
+                s_point_sin[tmp_index_minus].first -= tmp_cf;
+                s_point_sin[tmp_index_minus].second = true;
+                s_point_sin[tmp_index_plus].first += tmp_cf;
+                s_point_sin[tmp_index_plus].second = true;
+              }
+              else
+              {
+                s_point_sin[tmp_index_minus].first += tmp_cf;
+                s_point_sin[tmp_index_minus].second = true;
+                s_point_sin[tmp_index_plus].first += tmp_cf;
+                s_point_sin[tmp_index_plus].second = true;
+              }
+            }
+          }
+        }
+        typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
+        term_type tmp_term;
+        tmp_term.s_trig()->increase_size(derived_cast->trig_width());
+        std::valarray<mult_type> tmp_array(derived_cast->trig_width());
+        max_fast_int k;
+        for (k=h_min;k<=h_max;++k)
+        {
+          if (unlikely(s_point_cos[k].second))
+          {
+            *tmp_term.s_cf() = s_point_cos[k].first;
+            glr.decode_multiindex(k,tmp_array);
+            tmp_term.s_trig()->assign_mult_vector(tmp_array);
+            tmp_term.s_trig()->s_flavour()=true;
+            retval.insert(tmp_term);
+          }
+        }
+        for (k=h_min;k<=h_max;++k)
+        {
+          if (unlikely(s_point_sin[k].second))
+          {
+            *tmp_term.s_cf() = s_point_sin[k].first;
+            glr.decode_multiindex(k,tmp_array);
+            tmp_term.s_trig()->assign_mult_vector(tmp_array);
+            tmp_term.s_trig()->s_flavour()=false;
+            retval.insert(tmp_term);
+          }
+        }
+        std::cout << "Out length=" << retval.length() << std::endl;
       }
   };
 }
