@@ -85,14 +85,6 @@ namespace piranha
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
-        typedef typename glr_type::ct_type1 ct_type;
-        typedef typename glr_type::cct_type1 cct_type;
-// Coded mult_hash typedefs.
-        typedef mult_hash<cct_type,typename glr_type::cct_hasher,
-          typename glr_type::cct_equal_to,
-          allocator_type,true> ccm_hash;
-        typedef typename ccm_hash::iterator ccm_hash_iterator;
-        typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         const size_t l1=derived_cast->length(), l2=ps2.length();
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
@@ -129,118 +121,7 @@ namespace piranha
           }
           else
           {
-            std::cout << "Can do fast" << '\n';
-            cct_type tmp_term1, tmp_term2;
-            ccm_hash cchm_cos((l1*l2)/100),
-              cchm_sin((l1*l2)/100);
-            ccm_hash_point_iterator cchm_p_it;
-            for (i=0;i<l1;++i)
-            {
-              norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
-              if ((norm1*norm2_i)/2<Delta_threshold)
-              {
-                break;
-              }
-              for (j=0;j<l2;++j)
-              {
-                if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
-                {
-                  break;
-                }
-                tmp_term1.cf = cs1[i].cf;
-                tmp_term2.cf = cs1[i].cf;
-                tmp_term1.code = cs1[i].code;
-                tmp_term2.code = cs1[i].code;
-  // For now calculate a+b and a-b.
-                tmp_term1.code-=cs2[j].code;
-                tmp_term2.code+=cs2[j].code;
-  // Now the coefficients, all with positive signs for now.
-                tmp_term1.cf.mult_by_self(cs2[j].cf);
-                tmp_term1.cf/=2;
-                tmp_term2.cf=tmp_term1.cf;
-  // Now fix flavours and coefficient signs.
-                if (cs1[i].flavour == cs2[j].flavour)
-                {
-                  if (!(cs1[i].flavour))
-                  {
-                    tmp_term2.cf *= -1;
-                  }
-  // Insert into cosine container.
-                  cchm_p_it = cchm_cos.find(tmp_term1);
-                  if (cchm_p_it == cchm_cos.end())
-                  {
-                    cchm_cos.insert(tmp_term1);
-                  }
-                  else
-                  {
-                    cchm_p_it->cf+=tmp_term1.cf;
-                  }
-                  cchm_p_it = cchm_cos.find(tmp_term2);
-                  if (cchm_p_it == cchm_cos.end())
-                  {
-                    cchm_cos.insert(tmp_term2);
-                  }
-                  else
-                  {
-                    cchm_p_it->cf+=tmp_term2.cf;
-                  }
-                }
-                else
-                {
-                  if (cs1[i].flavour)
-                  {
-                    tmp_term1.cf *= -1;
-                  }
-  // Insert into sine container.
-                  cchm_p_it = cchm_sin.find(tmp_term1);
-                  if (cchm_p_it == cchm_sin.end())
-                  {
-                    cchm_sin.insert(tmp_term1);
-                  }
-                  else
-                  {
-                    cchm_p_it->cf+=tmp_term1.cf;
-                  }
-                  cchm_p_it = cchm_sin.find(tmp_term2);
-                  if (cchm_p_it == cchm_sin.end())
-                  {
-                    cchm_sin.insert(tmp_term2);
-                  }
-                  else
-                  {
-                    cchm_p_it->cf+=tmp_term2.cf;
-                  }
-                }
-              }
-            }
-            typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
-            term_type tmp_term;
-            tmp_term.s_trig()->increase_size(derived_cast->trig_width());
-            std::valarray<mult_type> tmp_array(derived_cast->trig_width());
-            ccm_hash_iterator cchm_it;
-            {
-              const ccm_hash_iterator cchm_it_f=cchm_cos.end();
-              for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
-              {
-                *tmp_term.s_cf() = cchm_it->cf;
-                glr.decode_multiindex(cchm_it->code,tmp_array);
-                tmp_term.s_trig()->assign_mult_vector(tmp_array);
-                tmp_term.s_trig()->s_flavour()=true;
-                retval.insert(tmp_term);
-              }
-            }
-            {
-              const ccm_hash_iterator cchm_it_f=cchm_sin.end();
-              for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
-              {
-                *tmp_term.s_cf() = cchm_it->cf;
-                glr.decode_multiindex(cchm_it->code,tmp_array);
-                tmp_term.s_trig()->assign_mult_vector(tmp_array);
-                tmp_term.s_trig()->s_flavour()=false;
-                retval.insert(tmp_term);
-              }
-            }
-            std::cout << "Out length=" << retval.length() << std::endl;
+            coded_hash_mult(glr,l1,l2,cs1,cs2,retval,norm2_i,Delta_threshold,ps2);
           }
         }
         else
@@ -343,10 +224,9 @@ namespace piranha
       {
         std::cout << "Doing fastest" << '\n';
         typedef typename DerivedPs::ancestor::cf_type cf_type;
+        typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef std::pair<cf_type,bool> cf_bool;
-        typedef Cs1 cs_type1;
-        typedef Cs2 cs_type2;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         cf_bool *code_vector_cos = buffer::head<cf_bool>(),
         *code_vector_sin = code_vector_cos + h_card;
@@ -412,7 +292,6 @@ namespace piranha
             }
           }
         }
-        typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         term_type tmp_term;
         tmp_term.s_trig()->increase_size(derived_cast->trig_width());
         std::valarray<mult_type> tmp_array(derived_cast->trig_width());
@@ -434,6 +313,137 @@ namespace piranha
           {
             *tmp_term.s_cf() = s_point_sin[k].first;
             glr.decode_multiindex(k,tmp_array);
+            tmp_term.s_trig()->assign_mult_vector(tmp_array);
+            tmp_term.s_trig()->s_flavour()=false;
+            retval.insert(tmp_term);
+          }
+        }
+        std::cout << "Out length=" << retval.length() << std::endl;
+      }
+      template <class Glr, class Cs1, class Cs2, class Retval, class DerivedPs2>
+        void coded_hash_mult(const Glr &glr, const size_t &l1, const size_t &l2, const Cs1 &cs1,
+        const Cs2 &cs2, Retval &retval, const double &norm2_i, const double &Delta_threshold,
+        const DerivedPs2 &ps2) const
+      {
+        std::cout << "Can do fast" << '\n';
+        typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
+        typedef typename DerivedPs::ancestor::allocator_type allocator_type;
+        typedef Glr glr_type;
+        typedef typename glr_type::cct_type1 cct_type;
+// Coded mult_hash typedefs.
+        typedef mult_hash<cct_type,typename glr_type::cct_hasher,
+          typename glr_type::cct_equal_to,
+          allocator_type,true> ccm_hash;
+        typedef typename ccm_hash::iterator ccm_hash_iterator;
+        typedef typename ccm_hash::point_iterator ccm_hash_point_iterator;
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        cct_type tmp_term1, tmp_term2;
+        ccm_hash cchm_cos((l1*l2)/100),
+          cchm_sin((l1*l2)/100);
+        ccm_hash_point_iterator cchm_p_it;
+        double norm1;
+        size_t i, j;
+        for (i=0;i<l1;++i)
+        {
+          norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+          if ((norm1*norm2_i)/2<Delta_threshold)
+          {
+            break;
+          }
+          for (j=0;j<l2;++j)
+          {
+            if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            {
+              break;
+            }
+            tmp_term1.cf = cs1[i].cf;
+            tmp_term2.cf = cs1[i].cf;
+            tmp_term1.code = cs1[i].code;
+            tmp_term2.code = cs1[i].code;
+// For now calculate a+b and a-b.
+            tmp_term1.code-=cs2[j].code;
+            tmp_term2.code+=cs2[j].code;
+// Now the coefficients, all with positive signs for now.
+            tmp_term1.cf.mult_by_self(cs2[j].cf);
+            tmp_term1.cf/=2;
+            tmp_term2.cf=tmp_term1.cf;
+// Now fix flavours and coefficient signs.
+            if (cs1[i].flavour == cs2[j].flavour)
+            {
+              if (!(cs1[i].flavour))
+              {
+                tmp_term2.cf *= -1;
+              }
+// Insert into cosine container.
+              cchm_p_it = cchm_cos.find(tmp_term1);
+              if (cchm_p_it == cchm_cos.end())
+              {
+                cchm_cos.insert(tmp_term1);
+              }
+              else
+              {
+                cchm_p_it->cf+=tmp_term1.cf;
+              }
+              cchm_p_it = cchm_cos.find(tmp_term2);
+              if (cchm_p_it == cchm_cos.end())
+              {
+                cchm_cos.insert(tmp_term2);
+              }
+              else
+              {
+                cchm_p_it->cf+=tmp_term2.cf;
+              }
+            }
+            else
+            {
+              if (cs1[i].flavour)
+              {
+                tmp_term1.cf *= -1;
+              }
+// Insert into sine container.
+              cchm_p_it = cchm_sin.find(tmp_term1);
+              if (cchm_p_it == cchm_sin.end())
+              {
+                cchm_sin.insert(tmp_term1);
+              }
+              else
+              {
+                cchm_p_it->cf+=tmp_term1.cf;
+              }
+              cchm_p_it = cchm_sin.find(tmp_term2);
+              if (cchm_p_it == cchm_sin.end())
+              {
+                cchm_sin.insert(tmp_term2);
+              }
+              else
+              {
+                cchm_p_it->cf+=tmp_term2.cf;
+              }
+            }
+          }
+        }
+        term_type tmp_term;
+        tmp_term.s_trig()->increase_size(derived_cast->trig_width());
+        std::valarray<mult_type> tmp_array(derived_cast->trig_width());
+        ccm_hash_iterator cchm_it;
+        {
+          const ccm_hash_iterator cchm_it_f=cchm_cos.end();
+          for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
+          {
+            *tmp_term.s_cf() = cchm_it->cf;
+            glr.decode_multiindex(cchm_it->code,tmp_array);
+            tmp_term.s_trig()->assign_mult_vector(tmp_array);
+            tmp_term.s_trig()->s_flavour()=true;
+            retval.insert(tmp_term);
+          }
+        }
+        {
+          const ccm_hash_iterator cchm_it_f=cchm_sin.end();
+          for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
+          {
+            *tmp_term.s_cf() = cchm_it->cf;
+            glr.decode_multiindex(cchm_it->code,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=false;
             retval.insert(tmp_term);
