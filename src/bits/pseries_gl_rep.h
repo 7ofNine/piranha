@@ -283,7 +283,7 @@ namespace piranha
   };
 
   template <class Ps1, class Ps2>
-    const boost::hash<int> pseries_gl_rep<Ps1,Ps2>::max_fast_int_hash = boost::hash<max_fast_int>();
+    const boost::hash<max_fast_int> pseries_gl_rep<Ps1,Ps2>::max_fast_int_hash = boost::hash<max_fast_int>();
 }
 
 #endif

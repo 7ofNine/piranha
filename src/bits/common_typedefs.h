@@ -48,15 +48,11 @@ namespace piranha
   typedef boost::int64_t max_fast_int;
 /// Maximum fast unsigned integer (64-bits).
   typedef boost::uint64_t max_fast_uint;
-/// Minimum slow integer (64-bits).
-  typedef boost::int128_t min_slow_int;
 #else
 /// Maximum fast integer (32-bits).
   typedef boost::int32_t max_fast_int;
 /// Maximum fast unsigned integer (32-bits).
   typedef boost::uint32_t max_fast_uint;
-/// Minimum slow integer (32-bits).
-  typedef boost::int64_t min_slow_int;
 #endif
 /// Alias for the size of trigonometric containers.
   typedef uint16 trig_size_t;
