@@ -109,8 +109,6 @@ BOOST_PYTHON_MODULE(_Core)
     "Set search path for theories of motion's data files.");
   class_setm.def("version", &settings_manager::version,
     "Get Piranha's version.", return_value_policy<copy_const_reference>());
-  class_setm.staticmethod("set_prec");
-  class_setm.staticmethod("prec");
   class_setm.staticmethod("numerical_zero");
   class_setm.staticmethod("theories_path");
   class_setm.staticmethod("default_theories_path");
