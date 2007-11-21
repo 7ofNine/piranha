@@ -106,7 +106,7 @@ namespace piranha
           const double load_factor = ((double)l1*l2)/h_card;
           std::cout << "Load factor: " << load_factor << '\n';
 // TODO: hard-wire this for now, we have to study it a bit.
-#define _MAX_LOAD_FACTOR (1E-1)
+#define _MAX_LOAD_FACTOR (1.)
           if (load_factor < _MAX_LOAD_FACTOR)
           {
             std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
