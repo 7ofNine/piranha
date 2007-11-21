@@ -26,4 +26,5 @@ BOOST_PYTHON_MODULE(_Cfsc)
     "compacted trigonometric part version.");
   ps_instantiate_differential_specifics(inst);
   ps_instantiate_complex_specifics(inst);
+  fourier_specifics(inst);
 }

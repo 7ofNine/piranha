@@ -29,12 +29,11 @@ namespace piranha
 {
 // Settings manager's static members.
   double settings_manager::numerical_zero_ = 1E-80;
-  const max_fast_uint settings_manager::min_u_=0;
+  const max_fast_uint settings_manager::min_u_=boost::integer_traits<max_fast_uint>::min();
   const max_fast_uint settings_manager::max_u_=boost::integer_traits<max_fast_uint>::max();
   const max_fast_int  settings_manager::min_i_=boost::integer_traits<max_fast_int>::min();
   const max_fast_int  settings_manager::max_i_=boost::integer_traits<max_fast_int>::max();
   const unsigned int settings_manager::jacang_limit_ = 20;
-  double settings_manager::prec_ = 1E-6;
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::version_ = __piranha_version;
@@ -49,17 +48,10 @@ namespace piranha
     std::cout << "Numerical zero\t\t\t=\t" << numerical_zero() << std::endl;
     std::cout << "Fast unsigned int range\t\t=\t" << "[0," << max_u_ << ']' << std::endl;
     std::cout << "Fast signed int range\t\t=\t" << '[' << min_i_ << ',' << max_i_ << ']' << std::endl;
-    std::cout << "Multiplication precision\t=\t" << prec() << std::endl;
     std::cout << "Theories of motion directory\t=\t" << theories_path() << std::endl;
     std::cout << "Piranha is ready." << std::endl;
     std::cout << "_______________________________" << std::endl << std::endl;
     stream_manager::setup_print(std::cout);
-  }
-
-/// Set precision in multiplication of series.
-  void settings_manager::set_prec(const double &value)
-  {
-    prec_=value;
   }
 
 /// Set path to theories of motion.

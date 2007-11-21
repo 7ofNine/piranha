@@ -57,12 +57,6 @@ namespace piranha
       {
         return default_theories_path_;
       }
-/// Get calculations precision.
-      static const double &prec()
-      {
-        return prec_;
-      }
-      static void set_prec(const double &);
       static void set_theories_path(const std::string &);
     private:
 /// Private ctor.
@@ -88,14 +82,12 @@ namespace piranha
 /// Maximum fast integer.
       static const max_fast_int       max_i_;
 /// Jacobi Anger expansion limit.
-      static const unsigned int jacang_limit_;
+      static const unsigned int       jacang_limit_;
 /// Path to theories of motion.
-      static std::string        theories_path_;
-      static const std::string  default_theories_path_;
-      static const std::string  version_;
-/// Relative precision of series multiplications.
-      static double             prec_;
-      static greeter            grt_;
+      static std::string              theories_path_;
+      static const std::string        default_theories_path_;
+      static const std::string        version_;
+      static greeter                  grt_;
   };
 }
 #endif

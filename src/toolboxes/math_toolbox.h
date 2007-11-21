@@ -80,7 +80,7 @@ namespace piranha
         }
 // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
         const double error=.1*std::pow(derived_cast->g_norm(),power)*
-          settings_manager::prec();
+          derived_cast->get_truncation();
         const unsigned int limit_index=pow_limit(error,power);
         Derived retval, x(*derived_cast), tmp(1.);
         x.term_erase(x.g_s_index().begin());

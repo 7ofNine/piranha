@@ -27,7 +27,7 @@ typedef piranha::ffs<6>::type stype;
 // elp3*elp2 without truncation.
 int main()
 {
-  settings_manager::set_prec(0);
+  stype::set_truncation(0);
   stype elp2("elp2.csv"), elp3("elp3.csv");
   for (size_t i=0;i<20;++i)
   {

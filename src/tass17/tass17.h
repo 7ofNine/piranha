@@ -95,7 +95,7 @@ namespace piranha
         const double N=p->freq();
         Ps e6=e(z6());
         PsC complexp_M=eiM(lambda6(),z6(),e6);
-        Ps cosE=astro::kep_cosE(e6,complexp_M,settings_manager::prec());
+        Ps cosE=astro::kep_cosE(e6,complexp_M,Ps::get_truncation());
         e6*=cosE;
         e6*=-1;
         e6+=1;

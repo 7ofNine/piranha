@@ -218,9 +218,10 @@ namespace piranha
  * Piranha's general relative precision.
  * @param[in] n_, integer order of the Bessel function.
  * @param[in] x, double argument of the Bessel function.
+ * @param[in] prec, desired precision.
  */
 #define __max_bessel_iter (20)
-      static unsigned int besselJ_series_limit(int n_, const double &x)
+      static unsigned int besselJ_series_limit(int n_, const double &x, const double &prec)
       {
         if (std::abs(x)<settings_manager::numerical_zero())
         {
@@ -267,7 +268,7 @@ namespace piranha
 // Target is multiplied that way because the retval is modified after the "for" cycle,
 // so we must "anticipate" the modification to test whether we are ok with the precision.
           target=(tmp_besselJ*fact)/tmp_pow*sign_mult;
-          const double target_precision=target*settings_manager::prec();
+          const double target_precision=target*prec;
           do
           {
 //std::cout << "tmp is: " << tmp << '\n';

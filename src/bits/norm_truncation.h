@@ -18,18 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/cfs.h"
-#include "../src/tass17/tass17.h"
+#ifndef PIRANHA_NORM_TRUNCATION_H
+#define PIRANHA_NORM_TRUNCATION_H
 
-using namespace piranha;
-typedef cfs stype;
+#include <iostream>
 
-// Calculate series representing Titan's orbital radius from the TASS theory.
-int main()
+namespace piranha
 {
-  stype::set_truncation(1E-6);
-  tass17<stype>::load();
-  tass17<stype>::add_delta_lambdas();
-  tass17<stype>::r6();
-  return 0;
+  class norm_truncation
+  {
+    public:
+      static void set_truncation(const double &x)
+      {
+        if (x < 0)
+        {
+          std::cout << "Please provide a non-negative value." << std::endl;
+        }
+        else
+        {
+          trunc_level = x;
+        }
+      }
+      static const double &get_truncation()
+      {
+        return trunc_level;
+      }
+    private:
+      static double trunc_level;
+  };
 }
+
+#endif

@@ -9,8 +9,16 @@ IF(BUILD_PYRANHA_SP)
 ENDIF(BUILD_PYRANHA_SP)
 # Order is important here: in tass.cpp, for instance, we have destruction of series that depends on
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
-SET(SRC_LIST ${SRC_LIST} buffer.cpp settings_manager.cpp stats.cpp astro.cpp arg_manager.cpp
-  stream_manager.cpp psymbol.cpp)
+SET(SRC_LIST ${SRC_LIST}
+  norm_truncation.cpp
+  buffer.cpp
+  settings_manager.cpp
+  stats.cpp
+  astro.cpp
+  arg_manager.cpp
+  stream_manager.cpp
+  psymbol.cpp
+)
 
 IF(ENABLE_HOARD)
   INCLUDE_DIRECTORIES("hoard")

@@ -27,7 +27,7 @@ typedef fs stype;
 // Complexp of elp1.
 int main()
 {
-  settings_manager::set_prec(1E-6);
+  stype::set_truncation(1E-6);
   stype elp1("elp1.csv");
   for (size_t i=0;i<1;++i)
   {

@@ -25,4 +25,5 @@ BOOST_PYTHON_MODULE(_Fsc)
   class_<fsc> inst=ps_basic_instantiation<fsc>("fsc","Complex Fourier series class.");
   ps_instantiate_differential_specifics(inst);
   ps_instantiate_complex_specifics(inst);
+  fourier_specifics(inst);
 }

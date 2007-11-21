@@ -26,6 +26,7 @@ BOOST_PYTHON_MODULE(_Cfs)
     "compacted trigonometric part version.");
   ps_instantiate_differential_specifics(inst);
   ps_instantiate_real_specifics(inst);
+  fourier_specifics(inst);
   def("kep_cosE",&astro::kep_cosE<cfs>,"Solve Kepler's equation for cosE.");
   def("Pnm",&math::Pnm<cfs>,"Legendre function of the first kind - Pnm(cos(theta)).");
   def("Ynm",&math::Ynm<cfs>,"Non-normalized spherical harmonic.");

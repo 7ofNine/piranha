@@ -166,6 +166,14 @@ void ps_instantiate_differential_specifics(class_<T> &inst)
 }
 
 template <class T>
+void fourier_specifics(class_<T> &inst)
+{
+  inst.def("get_truncation", &T::get_truncation, return_value_policy<copy_const_reference>(),
+    "Get norm truncation level.").staticmethod("get_truncation");
+  inst.def("set_truncation", &T::set_truncation,"Set norm truncation level.").staticmethod("set_truncation");
+}
+
+template <class T>
 void ps_instantiate_real_specifics(class_<T> &real)
 {
   typedef T real_ps;

@@ -27,6 +27,7 @@
 #include "../bits/buffer.h"
 #include "../bits/config.h" // For selection of temporary hash container for multiplication.
 #include "../bits/light_term.h"
+#include "../bits/norm_truncation.h"
 #include "../bits/pseries_gl_rep.h"
 
 namespace piranha
@@ -36,7 +37,7 @@ namespace piranha
  * Series multiplication used a norm-based truncation strategy.
  */
   template <class DerivedPs>
-    class fourier_multiplication_toolbox
+    class fourier_multiplication_toolbox:public norm_truncation
   {
     public:
       template <class Cf>
@@ -85,7 +86,7 @@ namespace piranha
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         const size_t l1=derived_cast->length(), l2=ps2.length();
-        const double Delta=derived_cast->g_norm()*ps2.g_norm()*settings_manager::prec(),
+        const double Delta=derived_cast->g_norm()*ps2.g_norm()*get_truncation(),
           Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
         double norm1;

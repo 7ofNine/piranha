@@ -27,7 +27,7 @@ typedef piranha::ffs<6>::type stype;
 // Power two of elp3 series without truncation.
 int main()
 {
-  settings_manager::set_prec(0);
+  stype::set_truncation(0);
   stype elp3("elp3.csv"), elp3a(elp3);
   elp3*=elp3a;
   elp3*=elp3a;

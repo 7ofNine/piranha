@@ -99,10 +99,6 @@ BOOST_PYTHON_MODULE(_Core)
 
 // Settings.
   class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
-  class_setm.def("set_prec", &settings_manager::set_prec,
-    "Set precision of mathematical operations.");
-  class_setm.def("prec", &settings_manager::prec,return_value_policy<copy_const_reference>(),
-    "Get precision of mathematical operations.");
   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
     "Get value of numerical zero.");
   class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
