@@ -33,10 +33,10 @@
 
 namespace piranha
 {
-/// Default derived class for Poisson series.
+/// Derived class for Fourier series.
 /**
  * This derived class provides support for complex arithmetic and for trigonometric operations on
- * series.
+ * Fourier series. Multiplication is norm-truncated.
  */
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
     class generic_fs:
