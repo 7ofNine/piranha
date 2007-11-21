@@ -22,5 +22,6 @@
 
 namespace piranha
 {
+// Initialization of static default truncation level.
   double norm_truncation::trunc_level = 1E-6;
 }
