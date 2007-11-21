@@ -85,7 +85,7 @@ namespace piranha
 namespace std
 {
 // COMPLEX COUNTERPART
-/// Complex specialization for default derived class.
+/// Complex specialization for Fourier series derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
     public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,Allocator>,
