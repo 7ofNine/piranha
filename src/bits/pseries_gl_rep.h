@@ -230,7 +230,6 @@ namespace piranha
 //           std::cout << "+\t" << coding_vector[twidth] << '\n';
         }
 // This is debug and not really needed.
-        std::cout << "h: " << h_min << ',' << h_max << '\n';
       }
 /// Code the series.
       void code_series()
