@@ -90,43 +90,42 @@ namespace piranha
           Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
         double norm1;
-        size_t i,j;
+        size_t i, j, n=0;
 // ps2.begin() is legal because we checked for ps2's size.
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
-        if (glr.is_viable())
+        if (glr.is_viable() and false)
         {
           const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
           const max_fast_int h_card = (h_max - h_min +1);
           p_assert(h_card >= 0);
-          std::cout << "h_card: " << h_card << '\n';
-          std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
+//          std::cout << "h_card: " << h_card << '\n';
+//          std::cout << "h_minmax: " << h_min << ',' << h_max << '\n';
           typedef std::pair<cf_type,bool> cf_bool;
           const double load_factor = ((double)l1*l2)/h_card;
-          std::cout << "Load factor: " << load_factor << '\n';
+//          std::cout << "Load factor: " << load_factor << '\n';
+//          std::cout << "Can't do fast" << '\n';
 // TODO: hard-wire this for now, we have to study it a bit.
 #define _MAX_LOAD_FACTOR (1.)
           if (load_factor < _MAX_LOAD_FACTOR)
           {
-            std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
+//            std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
           }
           if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
 #undef _MAX_LOAD_FACTOR
           {
-            std::cout << "Can do vector coded arithmetics." << '\n';
-            coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2);
+//            std::cout << "Can do vector coded arithmetics." << '\n';
+            coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2,n);
           }
           else
           {
-            std::cout << "Can do hash coded arithmetics." << '\n';
-            coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2);
+//             std::cout << "Can do hash coded arithmetics." << '\n';
+            coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2,n);
           }
         }
         else
         {
-          std::cout << "Can't do fast" << '\n';
-          size_t n=0;
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.
           light_term_type tmp1, tmp2;
@@ -202,9 +201,9 @@ namespace piranha
             retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
           }
 //retval.cumulative_crop(Delta);
-          std::cout << "w/o trunc=" << derived_cast->length()*ps2.length() << "\tw/ trunc=" << n << std::endl;
-          std::cout << "Out length=" << retval.length() << std::endl;
         }
+        std::cout << "w/o trunc=" << l1*l2 << "\tw/ trunc=" << n << std::endl;
+        std::cout << "Out length=" << retval.length() << std::endl;
       }
     private:
       template <class T,class U, class V>
@@ -219,7 +218,7 @@ namespace piranha
       template <class Glr, class Retval, class DerivedPs2>
         void coded_vector_mult(const max_fast_int &h_card, const max_fast_int &h_min, const max_fast_int &h_max,
         const double &norm2_i, const double &Delta_threshold, const Glr &glr,
-        Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2) const
+        Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2, size_t &n) const
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
@@ -293,6 +292,7 @@ namespace piranha
                 s_point_sin[tmp_index_plus].second = true;
               }
             }
+            ++n;
           }
         }
         term_type tmp_term;
@@ -321,12 +321,11 @@ namespace piranha
             retval.insert(tmp_term);
           }
         }
-        std::cout << "Out length=" << retval.length() << std::endl;
       }
       template <class Glr, class Retval, class DerivedPs2>
         void coded_hash_mult(const Glr &glr, const size_t &l1, const size_t &l2,
         Retval &retval, const double &norm2_i, const double &Delta_threshold,
-        const DerivedPs2 &ps2) const
+        const DerivedPs2 &ps2, size_t &n) const
       {
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
@@ -427,6 +426,7 @@ namespace piranha
                 cchm_p_it->cf+=tmp_term2.cf;
               }
             }
+            ++n;
           }
         }
         term_type tmp_term;
@@ -455,7 +455,6 @@ namespace piranha
             retval.insert(tmp_term);
           }
         }
-        std::cout << "Out length=" << retval.length() << std::endl;
       }
   };
 }
