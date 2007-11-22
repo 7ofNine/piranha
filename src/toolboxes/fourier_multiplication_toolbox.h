@@ -95,7 +95,7 @@ namespace piranha
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
-        if (glr.is_viable() and false)
+        if (glr.is_viable())
         {
           const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
           const max_fast_int h_card = (h_max - h_min +1);
