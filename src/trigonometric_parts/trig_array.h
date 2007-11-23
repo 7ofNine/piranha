@@ -22,6 +22,8 @@
 #define PIRANHA_TRIG_ARRAY_H
 
 #include "../base_classes/base_trig_array.h"
+#include "../bits/type_traits/is_resizable.h"
+#include "../bits/type_traits/true_type.h"
 
 namespace piranha
 {
@@ -210,5 +212,11 @@ namespace piranha
     private:
       container_type        private_container_;
   };
+
+/// Resizable type-traits specialization for piranha::trig_array.
+  template <>
+    template <int Bits>
+    struct is_resizable<trig_array<Bits> >:public true_type
+  {};
 }
 #endif
