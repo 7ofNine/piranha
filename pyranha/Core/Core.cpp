@@ -99,6 +99,10 @@ BOOST_PYTHON_MODULE(_Core)
 
 // Settings.
   class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
+  class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
+    "Get value of maximum load factor for hashed containers.");
+  class_setm.def("set_load_factor", &settings_manager::set_load_factor,
+    "Set value of maximum load factor for hashed containers.");
   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
     "Get value of numerical zero.");
   class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
@@ -109,6 +113,8 @@ BOOST_PYTHON_MODULE(_Core)
     "Set search path for theories of motion's data files.");
   class_setm.def("version", &settings_manager::version,
     "Get Piranha's version.", return_value_policy<copy_const_reference>());
+  class_setm.staticmethod("load_factor");
+  class_setm.staticmethod("set_load_factor");
   class_setm.staticmethod("numerical_zero");
   class_setm.staticmethod("theories_path");
   class_setm.staticmethod("default_theories_path");
