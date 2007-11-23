@@ -23,10 +23,12 @@
 
 #include <cstdlib> // For malloc.
 
+#ifdef _PIRANHA_SSE2
 #ifdef _PIRANHA_PRIVATE_MM_MALLOC_H
 #include "mm_malloc.h"
 #else
 #include <mm_malloc.h>
+#endif
 #endif
 
 #include "config.h" // For unlikely().
