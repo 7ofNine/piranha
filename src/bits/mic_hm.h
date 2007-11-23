@@ -66,12 +66,6 @@ namespace piranha
     private:
       container_type    private_container_;
   };
-
-  template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
-    struct c_mult_hash
-  {
-    typedef mult_hash<Element,Hasher,Eq,Allocator,StoreHash> type;
-  };
 }
 
 #endif
