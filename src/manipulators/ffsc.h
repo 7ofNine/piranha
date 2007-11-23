@@ -18,22 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#ifndef PIRANHA_FFSC_H
+#define PIRANHA_FFSC_H
 
-// Include all piranha manipulators.
-#include "manipulators/ffs.h"
-#include "manipulators/ffsc.h"
-#include "manipulators/cfs.h"
-#include "manipulators/cfsc.h"
-#include "manipulators/fs.h"
-#include "manipulators/fsc.h"
+#include "../coefficients/double_cf.h"
+#include "../bits/norm_index.h"
+#ifdef _PIRANHA_SSE2
+#include "../bits/pool_allocator.h"
+#endif
+#include "../bits/generic_fs.h"
+#include "../terms/simple_term.h"
+#include "../trigonometric_parts/trig_fixed_array.h"
 
-// Include ipoly for now.
-// TODO: remove it later.
-#include "bits/ipoly.h"
-
-// Include TASS.
-#include "tass17/tass17.h"
-
+namespace piranha
+{
+  template <int N>
+    struct ffsc
+  {
+    typedef std::complex<generic_fs<double_cf,
+      trig_fixed_array<N,16>,
+      simple_term,
+      norm_index
+#ifdef _PIRANHA_SSE2
+      , pool_allocator<char,16>
+#endif
+    > >type;
+  };
+}
 #endif
