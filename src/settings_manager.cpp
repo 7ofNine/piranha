@@ -28,6 +28,7 @@
 namespace piranha
 {
 // Settings manager's static members.
+  double settings_manager::hash_max_load_factor_ = 0.5;
   double settings_manager::numerical_zero_ = 1E-80;
   const max_fast_uint settings_manager::min_u_=boost::integer_traits<max_fast_uint>::min();
   const max_fast_uint settings_manager::max_u_=boost::integer_traits<max_fast_uint>::max();

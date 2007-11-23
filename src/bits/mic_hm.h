@@ -25,6 +25,8 @@
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index_container.hpp>
 
+#include "settings_manager.h" // For max load factor.
+
 namespace piranha
 {
   template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
@@ -41,11 +43,11 @@ namespace piranha
       typedef typename container_type::iterator point_iterator;
       mult_hash()
         {
-          private_container_.max_load_factor(.8);
+          private_container_.max_load_factor(settings_manager::load_factor());
         }
       mult_hash(const size_t &)
         {
-          private_container_.max_load_factor(.8);
+          private_container_.max_load_factor(settings_manager::load_factor());
         }
       iterator begin() const
       {

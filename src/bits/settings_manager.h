@@ -34,6 +34,14 @@ namespace piranha
   class settings_manager
   {
     public:
+/// Return maximum load factor for hashed containers.
+/**
+ * Relevant only to those containers with support such setting.
+ */
+      static const double &load_factor()
+      {
+        return hash_max_load_factor_;
+      }
 // Getters.
 /// Get Jacobi-Anger expansion limit.
       static unsigned int jacang_lim()
@@ -57,6 +65,14 @@ namespace piranha
       {
         return default_theories_path_;
       }
+/// Set maximum load factor for hashed containers.
+/**
+ * @see settings_manager::load_factor().
+ */
+      static void set_load_factor(const double &value)
+      {
+        hash_max_load_factor_ = value;
+      }
       static void set_theories_path(const std::string &);
     private:
 /// Private ctor.
@@ -71,8 +87,10 @@ namespace piranha
         public:
           greeter();
       };
+/// Load factor for hashed containers.
+      static double                   hash_max_load_factor_;
 /// Numerical zero.
-      static double             numerical_zero_;
+      static double                   numerical_zero_;
 /// Minimum fast unsigned integer.
       static const max_fast_uint      min_u_;
 /// Maximum fast unsigned integer.
