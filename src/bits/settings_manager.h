@@ -21,6 +21,7 @@
 #ifndef PIRANHA_SETTINGS_MANAGER_H
 #define PIRANHA_SETTINGS_MANAGER_H
 
+#include <iostream>
 #include <string>
 
 #include "common_typedefs.h"
@@ -71,6 +72,11 @@ namespace piranha
  */
       static void set_load_factor(const double &value)
       {
+        if (value <= 0 or value >= 1)
+        {
+          std::cout << "Please insert a real number in the ]0,1[ interval." << std::endl;
+          return;
+        }
         hash_max_load_factor_ = value;
       }
       static void set_theories_path(const std::string &);
