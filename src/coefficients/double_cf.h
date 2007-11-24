@@ -89,7 +89,7 @@ namespace piranha
 /**
  * Evaluation for this class always returns the same value.
  */
-      eval_type t_eval(const double &, const vector_psym_p &) const
+      const eval_type &t_eval(const double &, const vector_psym_p &) const
       {
         return value_;
       }

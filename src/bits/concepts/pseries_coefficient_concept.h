@@ -80,6 +80,12 @@ namespace piranha
         __MODEL_SIZE_STATIC_ASSERTION;
         return bool();
       }
+/// Evaluation.
+      double t_eval(const double &, const vector_psym_p &) const
+      {
+        __MODEL_SIZE_STATIC_ASSERTION;
+        return double();
+      }
 /// Bessel function of the first kind of order n.
 // TODO: move into separate concept.
       Model besselJ(int n, const vector_psym_p &) const
