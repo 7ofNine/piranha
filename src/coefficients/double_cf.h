@@ -26,6 +26,7 @@
 #include "../bits/common_typedefs.h"
 #include "../bits/math.h"                                 // besselJ.
 #include "../base_classes/numerical_container.h"
+#include "../bits/concepts/pseries_coefficient_concept.h"
 
 namespace piranha
 {
@@ -36,7 +37,9 @@ namespace piranha
  *
  * A set of operators are provided to enable interoperability with basic numerical data types.
  */
-  class double_cf : public numerical_container<double,double_cf>
+  class double_cf :
+    public pseries_coefficient_concept<double_cf>,
+    public numerical_container<double,double_cf>
   {
     public:
 /// Alias for itself.
