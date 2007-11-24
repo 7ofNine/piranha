@@ -78,21 +78,18 @@ namespace piranha
         return value_;
       }
 // I/O.
-/// Print in plain format.
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
       {
         stream_manager::setup_print(out_stream);
         out_stream << value_;
       }
-/// Print in latex format.
       void print_latex(std::ostream &out_stream, const vector_psym_p &) const
       {
         stream_manager::setup_print(out_stream);
         out_stream << "$" << value_ << "$";
       }
 // Manipulation
-/// Swap values with anothe container.
-      void swap(self &dc)
+      void swap(Derived &dc)
       {
         std::swap(value_,dc.value_);
       }
