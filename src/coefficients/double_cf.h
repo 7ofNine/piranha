@@ -116,41 +116,50 @@ namespace piranha
       {
         return self(std::pow(value_,y));
       }
+      self &invert_sign()
+      {
+        value_*=-1;
+        return *this;
+      }
 // Needed operators.
-      self operator-() const
-      {
-        return (self(*this)*=-1);
-      }
-      self &operator/=(int n)
-      {
-        value_/=n;
-        return *this;
-      }
-      self &operator*=(int n)
-      {
-        value_*=n;
-        return *this;
-      }
-      self operator*(int n) const
-      {
-        self retval(*this);
-        retval*=n;
-        return retval;
-      }
       self &operator=(const self &val2)
       {
         ancestor::value_=val2.value_;
         return *this;
       }
-      self &operator+=(const self &val2)
+      self &add_self(const self &val2)
       {
         value_+=val2.value_;
         return *this;
       }
-      self &operator-=(const self &val2)
+      self &subtract_self(const self &val2)
       {
         value_-=val2.value_;
         return *this;
+      }
+      template <class T>
+        self &mult_by_generic(const T &x)
+      {
+        value_*=x;
+        return *this;
+      }
+      self &mult_by_int(int n)
+      {
+        return mult_by_generic(n);
+      }
+      self &mult_by_double(const double &x)
+      {
+        return mult_by_generic(x);
+      }
+      template <class T>
+        self &divide_by_generic(const T &x)
+      {
+        value_/=x;
+        return *this;
+      }
+      self &divide_by_int(int n)
+      {
+        return divide_by_generic(n);
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
@@ -193,38 +202,13 @@ namespace piranha
       {
         return self(1./value_);
       }
-      self &operator/=(const double &x)
-      {
-        value_/=x;
-        return *this;
-      }
-      self operator*(const double &x) const
-      {
-        self retval(*this);
-        retval*=x;
-        return retval;
-      }
       bool operator<(const double &x) const
       {
         return (value_<x);
       }
 // ancestor::value() is part of the interface too.
 //-------------------------------------------------------
-      self operator+(const self &val2) const
-      {
-        return (self(*this)+=val2);
-      }
-      self operator-(const self &val2) const
-      {
-        return (self(*this)-=val2);
-      }
-      self &operator*=(const double &x)
-      {
-        value_*=x;
-        return *this;
-      }
-  }
-  ;
+  };
 
   inline std::istream &operator>>(std::istream &is, double_cf &dc)
   {
@@ -316,31 +300,6 @@ namespace std
         return (abs()<piranha::settings_manager::numerical_zero());
       }
 // Operators.
-      self operator-() const
-      {
-        return (self(*this)*=-1);
-      }
-      self &operator/=(int n)
-      {
-        value_/=n;
-        return *this;
-      }
-      self &operator*=(int n)
-      {
-        value_*=n;
-        return *this;
-      }
-      self &operator*=(const double x)
-      {
-        value_*=x;
-        return *this;
-      }
-      self operator*(int n)
-      {
-        self retval(*this);
-        retval*=n;
-        return retval;
-      }
       self &operator=(const self &val2)
       {
         ancestor::value_=val2.value_;
@@ -351,23 +310,44 @@ namespace std
         ancestor::value_=r2.value();
         return *this;
       }
-      self &operator+=(const self &val2)
+      self &add_self(const self &val2)
       {
         value_+=val2.value_;
         return *this;
       }
-      self &operator-=(const self &val2)
+      self &subtract_self(const self &val2)
       {
         value_-=val2.value_;
         return *this;
       }
-      self operator+(const self &val2) const
+      template <class T>
+        self &mult_by_generic(const T &x)
       {
-        return (self(*this)+=val2);
+        value_*=x;
+        return *this;
       }
-      self operator-(const self &val2) const
+      self &mult_by_int(int n)
       {
-        return (self(*this)-=val2);
+        return mult_by_generic(n);
+      }
+      self &mult_by_double(const double &x)
+      {
+        return mult_by_generic(x);
+      }
+      template <class T>
+        self &divide_by_generic(const T &x)
+      {
+        value_/=x;
+        return *this;
+      }
+      self &divide_by_int(int n)
+      {
+        return divide_by_generic(n);
+      }
+      self &invert_sign()
+      {
+        value_*=-1;
+        return *this;
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
@@ -404,17 +384,6 @@ namespace std
       bool is_positive() const
       {
         return (value_.real()>0 && is_real());
-      }
-      self &operator/=(const double &x)
-      {
-        value_/=x;
-        return *this;
-      }
-      self operator*(const double &x) const
-      {
-        self retval(*this);
-        retval*=x;
-        return retval;
       }
 // ancestor::value() is part of the interface too.
 //-------------------------------------------------------

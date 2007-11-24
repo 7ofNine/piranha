@@ -100,8 +100,7 @@ namespace piranha
         static_cast<Derived *>(this)->s_trig()->invert_sign();
         if (!(static_cast<Derived const *>(this)->g_trig()->g_flavour()))
         {
-// FIXME: maybe here a invert_sign function for the coefficient should be used?
-          *static_cast<Derived *>(this)->s_cf()*=-1;
+          static_cast<Derived *>(this)->s_cf()->invert_sign();
         }
       }
 // I/O.

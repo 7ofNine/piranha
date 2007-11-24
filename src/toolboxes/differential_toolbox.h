@@ -71,15 +71,15 @@ namespace piranha
 // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
           if (trig_s_index>=0)
           {
-            *tmp_term.s_cf()=*it->g_cf();
+            tmp_term.s_cf()->mult_by_self(*it->g_cf());
             switch (it->g_flavour())
             {
               case true:
-                *tmp_term.s_cf()*=-it->g_trig()->at(trig_s_index);
+                tmp_term.s_cf()->mult_by_int(-it->g_trig()->at(trig_s_index));
                 tmp_term.s_flavour()=false;
                 break;
               case false:
-                *tmp_term.s_cf()*=it->g_trig()->at(trig_s_index);
+                tmp_term.s_cf()->mult_by_int(it->g_trig()->at(trig_s_index));
                 tmp_term.s_flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to

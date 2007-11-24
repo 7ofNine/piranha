@@ -46,7 +46,7 @@ namespace piranha
 // Store coefficient for later.
     cf_type tmp_c=*src.g_cf();
 // Insert first term.
-    *tmp_term.s_cf()*=std::cos(phase);
+    tmp_term.s_cf()->mult_by_double(std::cos(phase));
     retps.insert(tmp_term);
 // Second term: change flavour and sign.
     switch (src.g_flavour())
@@ -54,12 +54,12 @@ namespace piranha
       case true:
         tmp_term.s_flavour()=false;
         *tmp_term.s_cf()=tmp_c;
-        *tmp_term.s_cf()*=(-std::sin(phase));
+        tmp_term.s_cf()->mult_by_double(-std::sin(phase));
         break;
       case false:
         tmp_term.s_flavour()=true;
         *tmp_term.s_cf()=tmp_c;
-        *tmp_term.s_cf()*=std::sin(phase);
+        tmp_term.s_cf()->mult_by_double(std::sin(phase));
     }
     retps.insert(tmp_term);
   }
@@ -296,8 +296,7 @@ namespace piranha
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
       cf_type new_c=*it_new->g_cf();
-// TODO: use some invert_sign() function here?
-      new_c*=-1;
+      new_c.invert_sign();
       action_assert(s_s_index().modify(it_new,modifier_update_cf(new_c)));
     }
     static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
@@ -362,12 +361,12 @@ namespace piranha
       if (sign)
       {
         new_c=*it->g_cf();
-        new_c+=*term.g_cf();
+        new_c.add_self(*term.g_cf());
       }
       else
       {
         new_c=*it->g_cf();
-        new_c-=*term.g_cf();
+        new_c.subtract_self(*term.g_cf());
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_zero(cf_s_vec_))

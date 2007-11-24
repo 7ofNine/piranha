@@ -28,8 +28,7 @@ namespace piranha
         trig.invert_sign();
         if (!trig.g_flavour())
         {
-// FIXME: maybe here a invert_sign function for the coefficient should be used?
-          cf*=-1;
+          cf.invert_sign();
         }
       }
       bool operator==(const light_term &t) const

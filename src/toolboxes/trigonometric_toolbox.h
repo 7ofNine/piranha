@@ -167,25 +167,25 @@ namespace piranha
         void jaccosRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
         retval=cf.besselJ(2*i,static_cast<DerivedPs const *>(this)->cf_s_vec());
-        retval*=(2-math::Kdelta((unsigned int)0,i))*math::cs_phase(i);
+        retval.mult_by_int((2-math::Kdelta((unsigned int)0,i))*math::cs_phase(i));
       }
       template <class real_cf_type>
         void jaccosImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
         retval=cf.besselJ(2*i+1,static_cast<DerivedPs const *>(this)->cf_s_vec());
-        retval*=2*math::cs_phase(i);
+        retval.mult_by_int(2*math::cs_phase(i));
       }
       template <class real_cf_type>
         void jacsinRecf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
         retval=cf.besselJ(2*i,static_cast<DerivedPs const *>(this)->cf_s_vec());
-        retval*=(2-math::Kdelta((unsigned int)0,i));
+        retval.mult_by_int((2-math::Kdelta((unsigned int)0,i)));
       }
       template <class real_cf_type>
         void jacsinImcf(unsigned int i, const real_cf_type &cf, real_cf_type &retval) const
       {
         retval=cf.besselJ(2*i+1,static_cast<DerivedPs const *>(this)->cf_s_vec());
-        retval*=2;
+        retval.mult_by_int(2);
       }
 /// Jacobi-Anger development of a term.
 /**

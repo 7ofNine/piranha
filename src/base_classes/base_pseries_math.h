@@ -150,8 +150,8 @@ namespace piranha
         <1>().s_trig()->s_flavour()=true;
       if(!t1.g_flavour())
       {
-        *term_pair.template get
-          <1>().s_cf()*=-1;
+        term_pair.template get
+          <1>().s_cf()->invert_sign();
       }
     }
     else
@@ -161,8 +161,8 @@ namespace piranha
         <1>().s_trig()->s_flavour()=false;
       if(t1.g_flavour())
       {
-        *term_pair.template get
-            <0>().s_cf()*=-1;
+        term_pair.template get
+            <0>().s_cf()->invert_sign();
       }
     }
   }
@@ -269,7 +269,7 @@ namespace piranha
     for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      *tmp_term.s_cf()*=c;
+      tmp_term.s_cf()->mult_by_generic(c);
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);
@@ -305,7 +305,7 @@ namespace piranha
     for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      *tmp_term.s_cf()/=x;
+      tmp_term.s_cf()->divide_by_generic(x);
       it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
     }
     swap(tmp_ps);

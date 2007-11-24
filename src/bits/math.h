@@ -146,7 +146,7 @@ namespace piranha
         return x.g_norm();
       }
 /// Condon-Shortley phase.
-      static short int cs_phase(const long int &n)
+      static int cs_phase(const long int &n)
       {
         if (is_odd(n))
         {
