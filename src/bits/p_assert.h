@@ -21,14 +21,16 @@
 #ifndef PIRANHA_P_ASSERT_H
 #define PIRANHA_P_ASSERT_H
 
-#if defined _ENABLE_ASSERTS
-
-#define p_assert(result) \
+#define hard_assert(result) \
 if ((result)==false) \
 { \
   std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
   exit(1); \
 }
+
+#if defined _ENABLE_ASSERTS
+
+#define p_assert(result) hard_assert(result)
 
 #define action_assert(action) \
 if ((action)==false) \
@@ -43,5 +45,5 @@ if ((action)==false) \
 
 #define action_assert(action,...) action
 
-#endif
+#endif // _ENABLE_ASSERTS
 #endif
