@@ -34,11 +34,38 @@ namespace piranha
     class pseries_coefficient_concept
   {
     public:
+// Ctors and dtor.
 /// Default constructor.
       explicit pseries_coefficient_concept()
+      {}
+/// Constructor from double.
+      explicit pseries_coefficient_concept(const double &)
       {
         hard_assert(false);
       }
+/// Constructor from integer.
+      explicit pseries_coefficient_concept(int)
+      {
+        hard_assert(false);
+      }
+/// Constructor from string.
+      explicit pseries_coefficient_concept(const std::string &)
+      {
+        hard_assert(false);
+      }
+/// Constructor from symbol.
+      explicit pseries_coefficient_concept(const psymbol &)
+      {
+        hard_assert(false);
+      }
+/// Copy constructor.
+      pseries_coefficient_concept(const Model &)
+      {
+        hard_assert(false);
+      }
+/// Destructor.
+      ~pseries_coefficient_concept()
+      {}
 /// Calculate norm.
       double norm(const vector_psym_p &) const
       {
