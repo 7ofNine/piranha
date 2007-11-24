@@ -46,6 +46,11 @@ namespace piranha
       typedef double_cf self;
 /// Alias for the parent class.
       typedef numerical_container<double,double_cf> ancestor;
+// This is necessary because some moethods are present in concept _and_ in numerical container.
+// We avoid the dreaded diamond problem by explicitly stating which functions to use.
+      using ancestor::swap;
+      using ancestor::print_plain;
+      using ancestor::print_latex;
 // Start INTERFACE definition for the real version.
 //-------------------------------------------------------
 /// Evaluation result (double).
@@ -84,7 +89,7 @@ namespace piranha
 /**
  * Evaluation for this class always returns the same value.
  */
-      double t_eval(const double &, const vector_psym_p &) const
+      eval_type t_eval(const double &, const vector_psym_p &) const
       {
         return value_;
       }

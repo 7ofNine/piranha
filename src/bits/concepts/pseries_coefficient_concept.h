@@ -22,6 +22,8 @@
 #define PIRANHA_PSERIES_COEFFICIENT_CONCEPT_H
 
 #include <boost/static_assert.hpp>
+#include <iostream>
+
 #include "../p_assert.h"
 #include "../psymbol.h"
 
@@ -30,6 +32,9 @@
 namespace piranha
 {
 /// Concept class for coefficients of Poisson series.
+/**
+ * Additionally, an "eval_type" typedef is needed to express to evaluation type.
+ */
   template <class Model>
     class pseries_coefficient_concept
   {
@@ -84,6 +89,21 @@ namespace piranha
       {
         __MODEL_SIZE_STATIC_ASSERTION;
         return Model();
+      }
+/// Print in plain format.
+      void print_plain(std::ostream &, const vector_psym_p &) const
+      {
+        __MODEL_SIZE_STATIC_ASSERTION;
+      }
+/// Print in latex format.
+      void print_latex(std::ostream &, const vector_psym_p &) const
+      {
+        __MODEL_SIZE_STATIC_ASSERTION;
+      }
+/// Swap.
+      void swap(Model &)
+      {
+        __MODEL_SIZE_STATIC_ASSERTION;
       }
   };
 }
