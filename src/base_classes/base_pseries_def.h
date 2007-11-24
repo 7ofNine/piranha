@@ -27,6 +27,7 @@
 #include "base_pseries_hooks.h"
 #include "../bits/phase_list.h"
 #include "../bits/psymbol.h"
+#include "../bits/type_traits/eval_type.h"
 
 namespace piranha
 {
@@ -65,7 +66,7 @@ namespace piranha
 /**
  * @see base_pseries::t_eval.
  */
-      typedef typename cf_type::eval_type eval_type;
+      typedef typename eval_type<cf_type>::type eval_type;
       typedef typename boost::multi_index_container < term_type,
         typename index_type::type, allocator_type> series_set_type;
 /// Alias for the sorted index.

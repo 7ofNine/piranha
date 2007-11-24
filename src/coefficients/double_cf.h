@@ -27,6 +27,7 @@
 #include "../bits/math.h"                                 // besselJ.
 #include "../base_classes/numerical_container.h"
 #include "../bits/concepts/pseries_coefficient_concept.h"
+#include "../bits/type_traits/eval_type.h"
 
 namespace piranha
 {
@@ -46,6 +47,7 @@ namespace piranha
       typedef double_cf self;
 /// Alias for the parent class.
       typedef numerical_container<double,double_cf> ancestor;
+      typedef eval_type<self>::type eval_type;
 // This is necessary because some moethods are present in concept _and_ in numerical container.
 // We avoid the dreaded diamond problem by explicitly stating which functions to use.
       using ancestor::swap;
@@ -53,8 +55,6 @@ namespace piranha
       using ancestor::print_latex;
 // Start INTERFACE definition for the real version.
 //-------------------------------------------------------
-/// Evaluation result (double).
-      typedef double eval_type;
 // Ctors and dtor.
 /// Empty constructor.
       explicit double_cf():ancestor::numerical_container()
@@ -252,10 +252,10 @@ namespace std
       typedef complex self;
       typedef piranha::double_cf double_type;
       typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef piranha::eval_type<self>::type eval_type;
 // Start INTERFACE definition for the complex specialization. FIXME: is this different from
 // the above???
 //-------------------------------------------------------
-      typedef piranha::complex_double eval_type;
 // Ctors and dtor.
       explicit complex():ancestor::numerical_container()
         {}

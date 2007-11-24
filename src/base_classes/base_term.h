@@ -23,6 +23,7 @@
 
 #include "../bits/light_term.h"
 #include "../bits/trig_evaluator.h"
+#include "../bits/type_traits/eval_type.h"
 
 namespace piranha
 {
@@ -41,7 +42,7 @@ namespace piranha
 /// Alias for trigonometric type.
       typedef Trig trig_type;
 /// Alias for evaluation type.
-      typedef typename cf_type::eval_type eval_type;
+      typedef typename eval_type<cf_type>::type eval_type;
 // Getters
 /// Get flavour.
       bool &s_flavour()

@@ -32,9 +32,6 @@
 namespace piranha
 {
 /// Concept class for coefficients of Poisson series.
-/**
- * Additionally, an "eval_type" typedef is needed to express to evaluation type.
- */
   template <class Model>
     class pseries_coefficient_concept
   {

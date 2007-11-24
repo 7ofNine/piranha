@@ -54,6 +54,7 @@ namespace piranha
 /// Alias for the container type.
       typedef std::valarray<uint16> container_type;
 /// Evaluation result.
+// FIXME: deprecated.
       typedef typename numerical_type::eval_type eval_type;
 /// Functor to update monomial's coefficients.
       struct update_cfs

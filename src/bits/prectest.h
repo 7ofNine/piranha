@@ -30,6 +30,7 @@
 #include "phase_list.h"                           // tc_insert_phase.
 #include "stream_manager.h"                       // Gnuplot save.
 #include "utils.h"                                // Check filename dir.
+#include "type_traits/eval_type.h"
 
 namespace piranha
 {
@@ -160,8 +161,9 @@ namespace piranha
     class base_tc
   {
     public:
+      typedef typename T::ancestor::cf_type cf_type;
 /// Alias for evaluation type.
-      typedef typename T::eval_type eval_type;
+      typedef typename eval_type<cf_type>::type eval_type;
 /// Get number of time comparisons performed.
       size_t size() const
       {

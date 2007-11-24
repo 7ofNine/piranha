@@ -57,6 +57,7 @@ namespace piranha
 // Start INTERFACE definition.
 //-------------------------------------------------------
 /// Alias for the evaluation type.
+// FIXME: deprecated.
       typedef typename m_type::eval_type eval_type;
 // Ctors.
 /// Default constructor.
