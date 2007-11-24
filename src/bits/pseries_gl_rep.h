@@ -180,6 +180,8 @@ namespace piranha
               limits2[j].second = tmp;
           }
         }
+// TODO: here use mpz_class instead: this way we can know almost for free if the multipliers' ranges are ok.
+// Downcast to hardware int for actual usage.
         std::valarray<mult_type> tmp_vec(4);
         for (trig_size_t j=0;j<twidth;++j)
         {
