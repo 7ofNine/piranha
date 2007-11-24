@@ -46,7 +46,7 @@ namespace piranha
         const int cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
           trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
 // If "name" is not a symbol of the series, return empty series.
-        if (cf_s_index<0 && trig_s_index<0)
+        if (cf_s_index<0 and trig_s_index<0)
         {
           std::cout << "No psymbol named '" << name << "', returning empty series." << std::endl;
           return retval;
