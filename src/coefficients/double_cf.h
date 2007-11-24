@@ -33,9 +33,9 @@ namespace piranha
 /// Double-precision numerical coefficient.
 /**
  * This class can be used as coefficient in Poisson series. It encapsulate a double precision
- * numerical value and provides the meand to access it.
+ * numerical value and provides the means to access it.
  *
- * A set of operators are provided to enable interoperability with basic numerical data types.
+ * A set of operators is provided to enable interoperability with basic numerical data types.
  */
   class double_cf :
     public pseries_coefficient_concept<double_cf>,
