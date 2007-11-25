@@ -341,8 +341,8 @@ namespace piranha
     {
       return g_s_index().end();
     }
-    p_assert(term.g_cf()->compatible(cf_width()));
-    p_assert(term.g_trig()->compatible(trig_width()));
+    p_assert(term.g_cf()->is_compatible(cf_width()));
+    p_assert(term.g_trig()->is_compatible(trig_width()));
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
     it_h_index it(find_term(term));
@@ -472,7 +472,7 @@ namespace piranha
       std::cout << "Trying to merge with self, returning true." << std::endl;
       return true;
     }
-    if (!args_compatible(ps2))
+    if (!is_compatible(ps2))
     {
       std::cout << "The base_pseries are not args_compatible." << std::endl;
       if (args_different(ps2))

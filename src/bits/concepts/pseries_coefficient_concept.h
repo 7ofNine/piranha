@@ -90,7 +90,7 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return bool();
       }
-      bool compatible(const size_t &) const
+      bool is_compatible(const size_t &) const
       {
         __STATIC_ASSERTION_FAILURE;
         return bool();

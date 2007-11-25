@@ -124,7 +124,7 @@ namespace piranha
       bool is_zero() const;
       bool smaller(const size_t &) const;
       bool larger(const size_t &) const;
-      bool compatible(const size_t &) const;
+      bool is_compatible(const size_t &) const;
       size_t data_footprint() const;
       bool checkup(const size_t &) const;
       bool operator==(const trig_sparse_array &) const;
@@ -484,7 +484,7 @@ namespace piranha
     return false;
   }
 
-  inline bool trig_sparse_array::compatible(const size_t &) const
+  inline bool trig_sparse_array::is_compatible(const size_t &) const
   {
     return true;
   }

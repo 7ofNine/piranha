@@ -289,7 +289,7 @@ namespace piranha
       {
         return (static_cast<const Derived *>(this)->g_width() > n);
       }
-      bool compatible(const size_t &n) const
+      bool is_compatible(const size_t &n) const
       {
         return (static_cast<const Derived *>(this)->g_width() == n);
       }

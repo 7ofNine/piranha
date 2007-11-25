@@ -518,7 +518,7 @@ namespace piranha
       template <class Derived2>
         bool args_different(const Derived2 &) const;
       template <class Derived2>
-        bool args_compatible(const Derived2 &) const;
+        bool is_compatible(const Derived2 &) const;
     private:
 /// Functor to update the coefficient.
 // TODO: use swap here?

@@ -125,7 +125,7 @@ namespace piranha
         return false;
       }
 /// Check whether contained value is size compatible.
-      bool compatible(const size_t &) const
+      bool is_compatible(const size_t &) const
       {
         return true;
       }

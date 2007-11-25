@@ -141,7 +141,7 @@ namespace piranha
         return (width()<w);
       }
 /// Check whether base_polynomial is compatible with size w.
-      bool compatible(const size_t &w) const
+      bool is_compatible(const size_t &w) const
       {
         return (width()==w);
       }

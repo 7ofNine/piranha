@@ -53,7 +53,7 @@ namespace piranha
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
-      using ancestor::compatible;
+      using ancestor::is_compatible;
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::add_self;
@@ -209,7 +209,7 @@ namespace std
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
-      using ancestor::compatible;
+      using ancestor::is_compatible;
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::add_self;
