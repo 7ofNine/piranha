@@ -55,6 +55,15 @@ namespace piranha
       using ancestor::print_latex;
       using ancestor::compatible;
       using ancestor::checkup;
+      using ancestor::invert_sign;
+      using ancestor::add_self;
+      using ancestor::subtract_self;
+      using ancestor::mult_by_int;
+      using ancestor::mult_by_double;
+      using ancestor::mult_by_generic;
+      using ancestor::mult_by_self;
+      using ancestor::divide_by_int;
+      using ancestor::divide_by_generic;
 // Start INTERFACE definition for the real version.
 //-------------------------------------------------------
 // Ctors and dtor.
@@ -118,55 +127,10 @@ namespace piranha
       {
         return self(std::pow(value_,y));
       }
-      self &invert_sign()
-      {
-        value_*=-1;
-        return *this;
-      }
 // Needed operators.
       self &operator=(const self &val2)
       {
         ancestor::value_=val2.value_;
-        return *this;
-      }
-      self &add_self(const self &val2)
-      {
-        value_+=val2.value_;
-        return *this;
-      }
-      self &subtract_self(const self &val2)
-      {
-        value_-=val2.value_;
-        return *this;
-      }
-      self &mult_by_int(int n)
-      {
-        return mult_by_generic(n);
-      }
-      self &mult_by_double(const double &x)
-      {
-        return mult_by_generic(x);
-      }
-      template <class T>
-        self &mult_by_generic(const T &x)
-      {
-        value_*=x;
-        return *this;
-      }
-      template <class T, class DerivedPs>
-        self &mult_by_self(const T &x, const DerivedPs &)
-      {
-        value_*=x.value();
-        return *this;
-      }
-      self &divide_by_int(int n)
-      {
-        return divide_by_generic(n);
-      }
-      template <class T>
-        self &divide_by_generic(const T &x)
-      {
-        value_/=x;
         return *this;
       }
 // End INTERFACE definition.
@@ -247,6 +211,15 @@ namespace std
       using ancestor::print_latex;
       using ancestor::compatible;
       using ancestor::checkup;
+      using ancestor::invert_sign;
+      using ancestor::add_self;
+      using ancestor::subtract_self;
+      using ancestor::mult_by_int;
+      using ancestor::mult_by_double;
+      using ancestor::mult_by_generic;
+      using ancestor::mult_by_self;
+      using ancestor::divide_by_int;
+      using ancestor::divide_by_generic;
     public:
       typedef complex self;
       typedef piranha::double_cf double_type;
@@ -318,39 +291,6 @@ namespace std
       self &operator=(const double_type &r2)
       {
         ancestor::value_=r2.value();
-        return *this;
-      }
-      self &add_self(const self &val2)
-      {
-        value_+=val2.value_;
-        return *this;
-      }
-      self &subtract_self(const self &val2)
-      {
-        value_-=val2.value_;
-        return *this;
-      }
-      self &mult_by_int(int n)
-      {
-        return mult_by_generic(n);
-      }
-      self &mult_by_double(const double &x)
-      {
-        return mult_by_generic(x);
-      }
-      template <class T, class DerivedPs>
-        self &mult_by_self(const T &x, const DerivedPs &)
-      {
-        value_*=x.value();
-        return *this;
-      }
-      self &divide_by_int(int n)
-      {
-        return divide_by_generic(n);
-      }
-      self &invert_sign()
-      {
-        value_*=-1;
         return *this;
       }
 // End INTERFACE definition.

@@ -33,6 +33,7 @@
 
 namespace piranha
 {
+// FIXME: deal with operator=() !!.
 /// Concept class for coefficients of Poisson series.
   template <class Model>
     class pseries_coefficient_concept
@@ -124,6 +125,11 @@ namespace piranha
         return *static_cast<Model *>(this);
       }
 // Math ops.
+      Model &invert_sign()
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
       Model &add_self(const Model &val2)
       {
         __STATIC_ASSERTION_FAILURE;

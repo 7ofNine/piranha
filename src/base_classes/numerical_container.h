@@ -138,9 +138,54 @@ namespace piranha
       {
         retval=Derived(0);
       }
+// Maths.
+      Derived &invert_sign()
+      {
+        value_*=-1;
+        return *static_cast<Derived *>(this);
+      }
+      Derived &add_self(const Derived &val2)
+      {
+        value_+=val2.value();
+        return *static_cast<Derived *>(this);
+      }
+      Derived &subtract_self(const Derived &val2)
+      {
+        value_-=val2.value();
+        return *static_cast<Derived *>(this);
+      }
+      self &mult_by_int(int n)
+      {
+        return mult_by_generic(n);
+      }
+      self &mult_by_double(const double &x)
+      {
+        return mult_by_generic(x);
+      }
+      template <class U>
+        self &mult_by_generic(const U &x)
+      {
+        value_*=x;
+        return *static_cast<Derived *>(this);
+      }
+      template <class U, class DerivedPs>
+        self &mult_by_self(const U &x, const DerivedPs &)
+      {
+        value_*=x.value();
+        return *static_cast<Derived *>(this);
+      }
+      self &divide_by_int(int n)
+      {
+        return divide_by_generic(n);
+      }
+      template <class U>
+        self &divide_by_generic(const U &x)
+      {
+        value_/=x;
+        return *static_cast<Derived *>(this);
+      }
     protected:
       T   value_;
-  }
-  ;
+  };
 }
 #endif
