@@ -194,9 +194,10 @@ namespace std
  */
   template <>
     template <class RealModel>
-    class complex<piranha::pseries_coefficient_concept<RealModel> >:
+    struct complex<piranha::pseries_coefficient_concept<RealModel> >:
     public piranha::pseries_coefficient_concept<complex<RealModel> >
   {
+    private:
       typedef complex<RealModel> Model;
       typedef typename piranha::eval_type<complex<Model> >::type eval_type;
     public:

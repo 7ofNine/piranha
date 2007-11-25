@@ -41,11 +41,11 @@ namespace piranha
     public pseries_coefficient_concept<double_cf>,
     public numerical_container<double,double_cf>
   {
-    public:
 /// Alias for self.
       typedef double_cf self;
 /// Alias for the parent class.
       typedef numerical_container<double,double_cf> ancestor;
+    public:
 // This is necessary because some moethods are present in concept _and_ in numerical container.
 // We avoid the dreaded diamond problem by explicitly stating which functions to use.
       using ancestor::swap;
@@ -196,7 +196,12 @@ namespace std
     public complex<piranha::pseries_coefficient_concept<piranha::double_cf> >,
     public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
   {
+    private:
       typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef complex self;
+      typedef piranha::double_cf double_type;
+      typedef double_type real_self;
+    public:
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
@@ -212,10 +217,6 @@ namespace std
       using ancestor::mult_by_self;
       using ancestor::divide_by_int;
       using ancestor::divide_by_generic;
-    public:
-      typedef complex self;
-      typedef piranha::double_cf double_type;
-      typedef double_type real_self;
 // Start INTERFACE definition for the complex specialization. FIXME: is this different from
 // the above???
 //-------------------------------------------------------
