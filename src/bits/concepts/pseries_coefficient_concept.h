@@ -134,13 +134,18 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+// TODO: use proper doxygen lists in documentation below.
 /// Multiplication with self type.
 /**
- * Supports additional templated argument because it may be needed to operate a truncation. The generic template
+ * Supports additional templated arguments because:
+ *
+ * - we want interoperability complex <--> real;
+ *
+ * - it may be needed to operate a truncation: the second generic template
  * parameter provides a hook from where to fetch information about the truncation method.
  */
-      template <class T>
-        Model &mult_by_self(const Model &, const T &)
+      template <class T, class U>
+        Model &mult_by_self(const T &, const U &)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
@@ -166,11 +171,6 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-      Model &divide_by_self(const Model &)
-      {
-        __STATIC_ASSERTION_FAILURE;
-        return *static_cast<Model *>(this);
-      }
       template <class T>
         Model &divide_by_generic(const T &x)
       {
@@ -191,9 +191,8 @@ namespace std
     class complex<piranha::pseries_coefficient_concept<RealModel> >:
     public piranha::pseries_coefficient_concept<complex<RealModel> >
   {
-      typedef RealModel real_type;
-      typedef complex<real_type> complex_type;
-      typedef typename piranha::eval_type<complex<real_type> >::type eval_type;
+      typedef complex<RealModel> Model;
+      typedef typename piranha::eval_type<complex<Model> >::type eval_type;
     public:
 // Ctors and dtor.
 /// Default constructor.
@@ -220,7 +219,7 @@ namespace std
         hard_assert(false);
       }
 /// Copy constructor.
-      complex(const complex_type &)
+      complex(const Model &)
       {
         hard_assert(false);
       }

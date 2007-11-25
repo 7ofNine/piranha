@@ -153,10 +153,11 @@ namespace piranha
         value_*=x;
         return *this;
       }
-      template <class DerivedPs>
-        void mult_by_self(const self &x, const DerivedPs &)
+      template <class T, class DerivedPs>
+        self &mult_by_self(const T &x, const DerivedPs &)
       {
-        value_*=x.value_;
+        value_*=x.value();
+        return *this;
       }
       self &divide_by_int(int n)
       {
@@ -337,16 +338,11 @@ namespace std
       {
         return mult_by_generic(x);
       }
-      template <class DerivedPs>
-        self &mult_by_self(const self &x, const DerivedPs &)
-      {
-        value_*=x.value_;
-        return *this;
-      }
-      template <class DerivedPs>
-        void mult_by_self(const real_self &x, const DerivedPs &)
+      template <class T, class DerivedPs>
+        self &mult_by_self(const T &x, const DerivedPs &)
       {
         value_*=x.value();
+        return *this;
       }
       self &divide_by_int(int n)
       {
