@@ -492,11 +492,8 @@ namespace piranha
         void merge_with(const Derived2 &, bool sign = true);
       template <class T>
         void generic_merge(const T &);
-      template <class T>
-        void generic_multiplication(const T &);
-      template <class T>
-        void generic_division(const T &);
-      void mult_by_int(int);
+      Derived &mult_by_int(int);
+      Derived &mult_by_double(const double &);
       template <class Derived2>
         bool series_multiplication_preliminaries(const Derived2 &, Derived &);
       template <class Derived2>
@@ -538,6 +535,11 @@ namespace piranha
 // NOTICE: evaluate the impact of using const & here, esp. when using gmp
         cf_type *new_cf_;
       };
+    private:
+      template <class T>
+        void generic_multiplication(const T &);
+      template <class T>
+        void generic_division(const T &);
 // Data members.
     protected:
       vector_int16    lin_args_;

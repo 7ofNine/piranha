@@ -53,6 +53,8 @@ namespace piranha
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
+      using ancestor::compatible;
+      using ancestor::checkup;
 // Start INTERFACE definition for the real version.
 //-------------------------------------------------------
 // Ctors and dtor.
@@ -137,12 +139,6 @@ namespace piranha
         value_-=val2.value_;
         return *this;
       }
-      template <class T>
-        self &mult_by_generic(const T &x)
-      {
-        value_*=x;
-        return *this;
-      }
       self &mult_by_int(int n)
       {
         return mult_by_generic(n);
@@ -152,14 +148,25 @@ namespace piranha
         return mult_by_generic(x);
       }
       template <class T>
-        self &divide_by_generic(const T &x)
+        self &mult_by_generic(const T &x)
       {
-        value_/=x;
+        value_*=x;
         return *this;
+      }
+      template <class DerivedPs>
+        void mult_by_self(const self &x, const DerivedPs &)
+      {
+        value_*=x.value_;
       }
       self &divide_by_int(int n)
       {
         return divide_by_generic(n);
+      }
+      template <class T>
+        self &divide_by_generic(const T &x)
+      {
+        value_/=x;
+        return *this;
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
@@ -229,13 +236,20 @@ namespace piranha
 namespace std
 {
   template <>
-    struct complex<piranha::double_cf> :
-  public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
+    struct complex<piranha::double_cf>:
+    public complex<piranha::pseries_coefficient_concept<piranha::double_cf> >,
+    public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
   {
+      typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      using ancestor::swap;
+      using ancestor::print_plain;
+      using ancestor::print_latex;
+      using ancestor::compatible;
+      using ancestor::checkup;
     public:
       typedef complex self;
       typedef piranha::double_cf double_type;
-      typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef double_type real_self;
       typedef piranha::eval_type<self>::type eval_type;
 // Start INTERFACE definition for the complex specialization. FIXME: is this different from
 // the above???
@@ -289,11 +303,6 @@ namespace std
       {
         value_=piranha::complex_double(0,i.value());
       }
-// Evaluation.
-      piranha::complex_double t_eval(const double &, const piranha::vector_psym_p &) const
-      {
-        return value_;
-      }
 // Probing.
       bool is_zero(const piranha::vector_psym_p &) const
       {
@@ -320,12 +329,6 @@ namespace std
         value_-=val2.value_;
         return *this;
       }
-      template <class T>
-        self &mult_by_generic(const T &x)
-      {
-        value_*=x;
-        return *this;
-      }
       self &mult_by_int(int n)
       {
         return mult_by_generic(n);
@@ -334,11 +337,16 @@ namespace std
       {
         return mult_by_generic(x);
       }
-      template <class T>
-        self &divide_by_generic(const T &x)
+      template <class DerivedPs>
+        self &mult_by_self(const self &x, const DerivedPs &)
       {
-        value_/=x;
+        value_*=x.value_;
         return *this;
+      }
+      template <class DerivedPs>
+        void mult_by_self(const real_self &x, const DerivedPs &)
+      {
+        value_*=x.value();
       }
       self &divide_by_int(int n)
       {
@@ -384,6 +392,18 @@ namespace std
       bool is_positive() const
       {
         return (value_.real()>0 && is_real());
+      }
+      template <class T>
+        self &mult_by_generic(const T &x)
+      {
+        value_*=x;
+        return *this;
+      }
+      template <class T>
+        self &divide_by_generic(const T &x)
+      {
+        value_/=x;
+        return *this;
       }
 // ancestor::value() is part of the interface too.
 //-------------------------------------------------------

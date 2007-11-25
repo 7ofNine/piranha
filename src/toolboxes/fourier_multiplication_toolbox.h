@@ -57,7 +57,7 @@ namespace piranha
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
           tmp_term=t;
-          tmp_term.s_cf()->mult_by_self(cf);
+          tmp_term.s_cf()->mult_by_self(cf,*derived_cast);
           it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
         }
         derived_cast->swap(tmp_ps);
@@ -207,11 +207,11 @@ namespace piranha
       }
     private:
       template <class T,class U, class V>
-        static void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair)
+        void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair) const
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         cf_type new_c=*t1.g_cf();
-        new_c.mult_by_self(*t2.g_cf());
+        new_c.mult_by_self(*t2.g_cf(),*static_cast<DerivedPs const *>(this));
         new_c.divide_by_int(2);
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
@@ -254,7 +254,7 @@ namespace piranha
               break;
             }
             tmp_cf = cs1[i].cf;
-            tmp_cf.mult_by_self(cs2[j].cf);
+            tmp_cf.mult_by_self(cs2[j].cf,*derived_cast);
             tmp_cf.divide_by_int(2);
             const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
               tmp_index_minus = cs1[i].code - cs2[j].code;
@@ -370,7 +370,7 @@ namespace piranha
             tmp_term1.code-=cs2[j].code;
             tmp_term2.code+=cs2[j].code;
 // Now the coefficients, all with positive signs for now.
-            tmp_term1.cf.mult_by_self(cs2[j].cf);
+            tmp_term1.cf.mult_by_self(cs2[j].cf,*derived_cast);
             tmp_term1.cf.divide_by_int(2);
             tmp_term2.cf=tmp_term1.cf;
 // Now fix flavours and coefficient signs.

@@ -31,8 +31,8 @@ namespace piranha
 {
 /// Simple container class.
 /**
- * This class can be used as a base class for coefficients that consist of a simple
- * numerical entity (float, long double, GMP classes, etc.).
+ * This class can be used as a base class for coefficients that consist of a
+ * numerical entity (double, GMP classes, etc.).
  */
   template <class T, class Derived>
     class numerical_container
@@ -89,9 +89,10 @@ namespace piranha
         out_stream << "$" << value_ << "$";
       }
 // Manipulation
-      void swap(Derived &dc)
+      Derived &swap(Derived &dc)
       {
         std::swap(value_,dc.value_);
+        return *static_cast<Derived *>(this);
       }
 /// Prepend arguments.
 // TODO: place asserts here, to check we never want to resize to > 0.
@@ -136,12 +137,6 @@ namespace piranha
       void partial(const size_t &, Derived &retval) const
       {
         retval=Derived(0);
-      }
-/// Mult by self.
-      template <class U>
-        void mult_by_self(const U &x)
-      {
-        value_*=x.value();
       }
     protected:
       T   value_;

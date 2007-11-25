@@ -315,9 +315,8 @@ namespace piranha
 /**
  * This is specialized because we have to take care of lin_args.
  */
-/// Generic division.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_int(int n)
+template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_int(int n)
   {
     const vector_int16 old_lin_args=lin_args();
     size_t j;
@@ -334,6 +333,15 @@ namespace piranha
     {
       lin_args()[j]=old_lin_args[j]*n;
     }
+    return *static_cast<Derived *>(this);
+  }
+
+/// Multiplication by a double.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_double(const double &x)
+  {
+    generic_multiplication(x);
+    return *static_cast<Derived *>(this);
   }
 }
 #endif

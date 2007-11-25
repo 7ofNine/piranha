@@ -88,7 +88,7 @@ namespace piranha
       }
       Derived &operator*=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_multiplication(x);
+        static_cast<Derived *>(this)->mult_by_double(x);
         return *static_cast<Derived *>(this);
       }
       Derived operator*(int n) const
@@ -193,7 +193,7 @@ namespace piranha
       }
       Derived &operator*=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_multiplication(x);
+        static_cast<Derived *>(this)->mult_by_double(x);
         return *static_cast<Derived *>(this);
       }
       Derived operator*(int n) const
