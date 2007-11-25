@@ -26,6 +26,7 @@
 
 #include "../bits/psymbol.h"
 #include "../bits/utils.h"                                // Lexical converter.
+#include "../bits/type_traits/eval_type.h"
 
 namespace piranha
 {
@@ -37,6 +38,7 @@ namespace piranha
   template <class T, class Derived>
     class numerical_container
   {
+      typedef typename eval_type<Derived>::type eval_type;
     public:
 /// Alias for self.
       typedef numerical_container self;
@@ -128,6 +130,14 @@ namespace piranha
       bool is_compatible(const size_t &) const
       {
         return true;
+      }
+/// Evaluation.
+/**
+ * Evaluation for this class always returns the same value.
+ */
+      const eval_type &t_eval(const double &, const vector_psym_p &) const
+      {
+        return value_;
       }
 /// Partial derivative.
 /**
