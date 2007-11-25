@@ -43,7 +43,7 @@ namespace piranha
     public numerical_container<double,double_cf>
   {
     public:
-/// Alias for itself.
+/// Alias for self.
       typedef double_cf self;
 /// Alias for the parent class.
       typedef numerical_container<double,double_cf> ancestor;
@@ -328,18 +328,6 @@ namespace std
       bool is_positive() const
       {
         return (value_.real()>0 && is_real());
-      }
-      template <class T>
-        self &mult_by_generic(const T &x)
-      {
-        value_*=x;
-        return *this;
-      }
-      template <class T>
-        self &divide_by_generic(const T &x)
-      {
-        value_/=x;
-        return *this;
       }
 // ancestor::value() is part of the interface too.
 //-------------------------------------------------------
