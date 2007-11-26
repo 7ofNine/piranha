@@ -239,6 +239,7 @@ namespace std
       }
 // End implementation of basic pseries coefficient interface.
 //------------
+// TODO: maybe the following 2 ctors can be placed inside basic interface, they are simple to implement.
 // Start implementation of complex basic pseries coefficient interface.
 //------------
 /// Constructor from real type.

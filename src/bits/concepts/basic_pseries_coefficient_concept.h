@@ -68,6 +68,12 @@ namespace piranha
 /// Destructor.
       ~basic_pseries_coefficient_concept()
       {}
+/// Assignment operator.
+      Model &operator=(const Model &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
 /// Calculate norm.
       double norm(const vector_psym_p &) const
       {
@@ -226,6 +232,18 @@ namespace piranha
 /// Destructor.
       ~complex_basic_pseries_coefficient_concept()
       {}
+/// Assignment operator.
+      Model &operator=(const Model &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+/// Assignment to real type.
+      Model &operator=(const RealModel &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
   };
 }
 
