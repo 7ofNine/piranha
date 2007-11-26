@@ -26,7 +26,7 @@
 #include "../bits/common_typedefs.h"
 #include "../bits/math.h"                                 // besselJ.
 #include "../base_classes/numerical_container.h"
-#include "../bits/concepts/pseries_coefficient_concept.h"
+#include "../bits/concepts/basic_pseries_coefficient_concept.h"
 
 namespace piranha
 {
@@ -38,7 +38,7 @@ namespace piranha
  * A set of operators is provided to enable interoperability with basic numerical data types.
  */
   class double_cf :
-    public pseries_coefficient_concept<double_cf>,
+    public basic_pseries_coefficient_concept<double_cf>,
     public numerical_container<double,double_cf>
   {
 /// Alias for self.
@@ -63,8 +63,8 @@ namespace piranha
       using ancestor::mult_by_self;
       using ancestor::divide_by_int;
       using ancestor::divide_by_generic;
-// Start INTERFACE definition for the real version.
-//-------------------------------------------------------
+// Start implementation of basic pseries coefficient interface.
+//------------
 // Ctors and dtor.
 /// Empty constructor.
       explicit double_cf():ancestor::numerical_container()
@@ -72,21 +72,11 @@ namespace piranha
 /// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::numerical_container(s)
         {}
-/// Constructor from double.
-       explicit double_cf(const double &val):ancestor::numerical_container(val)
-         {}
-/// Constructor from integer.
-       explicit double_cf(int val):ancestor::numerical_container(val)
-         {}
 /// Constructor from symbol.
       explicit double_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
-/// Generic constructor.
-      template <class T>
-        explicit double_cf(const T &x):ancestor::numerical_container(x)
-      {}
 /// Copy constructor.
       double_cf(const self &dc):ancestor::numerical_container(dc)
         {}
@@ -109,17 +99,6 @@ namespace piranha
       {
         return (abs()<settings_manager::numerical_zero());
       }
-// Maths
-/// Bessel function of the first kind.
-/**
- * Uses C standard library call.
- */
-      self besselJ(int n, const vector_psym_p &) const
-      {
-        self retval;
-        retval.value_=math::besselJ(n,value_);
-        return retval;
-      }
       self pow(const double &y) const
       {
         self retval;
@@ -132,13 +111,31 @@ namespace piranha
         ancestor::value_=val2.value_;
         return *this;
       }
-// End INTERFACE definition.
-//-------------------------------------------------------
-// Interface for monomial.
+// End implementation of basic pseries coefficient interface.
+//------------
+// Start implementation of trigonometric pseries coefficient interface.
+//------------
+/// Constructor from integer.
+       explicit double_cf(int val):ancestor::numerical_container(val)
+         {}
       double abs() const
       {
         return std::abs(value_);
       }
+// Maths
+/// Bessel function of the first kind.
+/**
+ * Uses C standard library call.
+ */
+      self besselJ(int n, const vector_psym_p &) const
+      {
+        self retval;
+        retval.value_=math::besselJ(n,value_);
+        return retval;
+      }
+// End implementation of trigonometric pseries coefficient interface.
+//------------
+// Interface for monomial.
 /// Test whether two double_cf are equal or opposite in sign.
       bool equal_or_opposite(const self &val2) const
       {
@@ -207,7 +204,7 @@ namespace std
 {
   template <>
     struct complex<piranha::double_cf>:
-    public piranha::complex_pseries_coefficient_concept<complex<piranha::double_cf> >,
+    public piranha::complex_basic_pseries_coefficient_concept<piranha::double_cf>,
     public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
   {
     private:
@@ -230,47 +227,15 @@ namespace std
       using ancestor::mult_by_self;
       using ancestor::divide_by_int;
       using ancestor::divide_by_generic;
-// Start INTERFACE definition for the complex specialization. FIXME: is this different from
-// the above???
-//-------------------------------------------------------
+// Start implementation of basic pseries coefficient interface.
+//------------
 // Ctors and dtor.
       explicit complex():ancestor::numerical_container()
       {}
       explicit complex(const std::string &s):ancestor::numerical_container(s)
       {}
-//       explicit complex(const value_type &r, const value_type &i):
-//       ancestor::numerical_container(piranha::complex_double(r.g_value(),i.g_value()))
-//         {}
-//       explicit complex(const value_type &r):ancestor::numerical_container(r)
-//       {}
-      explicit complex(const piranha::complex_double &c):ancestor::numerical_container(c)
+      explicit complex(const piranha::psymbol &):ancestor::numerical_container()
       {}
-      explicit complex(int n):ancestor::numerical_container(piranha::complex_double((double)n,0.))
-      {}
-//       explicit complex(int n1, int n2):ancestor::numerical_container(piranha::complex_double(n1,n2))
-//       {}
-      explicit complex(const double &x):ancestor::numerical_container(x)
-      {}
-/// Constructor from real type.
-      explicit complex(const value_type &r)
-      {
-        ancestor::s_value().real()=r.g_value();
-        ancestor::s_value().imag()=0;
-      }
-/// Constructor from real and imaginary parts.
-      explicit complex(const value_type &r, const value_type &i)
-      {
-        ancestor::s_value().real()=r.g_value();
-        ancestor::s_value().imag()=i.g_value();
-      }
-/// Generic constructor.
-      template <class T>
-        explicit complex(const T &x):ancestor::numerical_container(x)
-      {}
-/*      explicit complex(const double &x1, const double x2):
-      ancestor::numerical_container(piranha::complex_double(x1,x2))
-      {}*/
-// FIXME: add copy ctor, assignment, etc.
 /// Copy constructor.
       complex(const complex &c):ancestor::numerical_container(c)
       {}
@@ -320,9 +285,27 @@ namespace std
         ancestor::value_=r2.g_value();
         return *this;
       }
-// End INTERFACE definition.
-//-------------------------------------------------------
-// Interface for monomial.
+// End implementation of basic pseries coefficient interface.
+//------------
+// Start implementation of complex basic pseries coefficient interface.
+//------------
+/// Constructor from real type.
+      explicit complex(const value_type &r):ancestor::numerical_container()
+      {
+        ancestor::s_value().real()=r.g_value();
+      }
+// End implementation of complex basic pseries coefficient interface.
+//------------
+// Start implementation of trigonometric pseries coefficient interface.
+//------------
+/// Constructor from real and imaginary parts.
+       explicit complex(const value_type &r, const value_type &i):ancestor::numerical_container()
+       {
+         ancestor::s_value().real()=r.g_value();
+         ancestor::s_value().imag()=i.g_value();
+       }
+// End implementation of trigonometric pseries coefficient interface.
+//------------
 /// Absolute value.
       double abs() const
       {
