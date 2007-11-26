@@ -135,54 +135,6 @@ namespace piranha
       }
 // End implementation of trigonometric pseries coefficient interface.
 //------------
-// Interface for monomial.
-/// Test whether two double_cf are equal or opposite in sign.
-      bool equal_or_opposite(const self &val2) const
-      {
-        return (std::abs(abs()-val2.abs())<settings_manager::numerical_zero());
-      }
-/// Test whether two double_cf have the same sign.
-      bool same_sign(const self &val2) const
-      {
-        return ((value_>0)==(val2.g_value()>0));
-      }
-/// Test whether value is unity.
-      bool is_unity() const
-      {
-        return (std::abs(abs()-1)<settings_manager::numerical_zero());
-      }
-/// Test whether value is negative.
-      bool is_negative() const
-      {
-        return (value_<0);
-      }
-/// Test whether value is positive.
-      bool is_positive() const
-      {
-        return (value_>0);
-      }
-/// Calculate norm (absolute value).
-      double norm() const
-      {
-        return abs();
-      }
-      self inv() const
-      {
-        if (std::abs(value_)<settings_manager::numerical_zero())
-        {
-          std::cout << "Error: division by zero." << std::endl;
-          std::abort();
-        }
-        self retval;
-        retval.value_=1./value_;
-        return retval;
-      }
-      bool operator<(const double &x) const
-      {
-        return (value_<x);
-      }
-// ancestor::value() is part of the interface too.
-//-------------------------------------------------------
   };
 
   inline std::istream &operator>>(std::istream &is, double_cf &dc)
@@ -306,48 +258,12 @@ namespace std
        }
 // End implementation of trigonometric pseries coefficient interface.
 //------------
-/// Absolute value.
-      double abs() const
-      {
-        return std::abs(value_);
-      }
-/// Test whether two complex double_cf are equal or opposite in sign.
-      bool equal_or_opposite(const self &val2) const
-      {
-        return (std::abs(value_+val2.g_value())<piranha::settings_manager::numerical_zero() ||
-          std::abs(value_-val2.g_value())<piranha::settings_manager::numerical_zero());
-      }
-/// Test whether two complex double_cf are in the same quadrant of the complex plane.
-      bool same_sign(const self &val2) const
-      {
-        return ((value_.real()>=0 && val2.g_value().real()>=0) || (value_.real()<0 && val2.g_value().real()<0)) &&
-          ((value_.imag()>=0 && val2.g_value().imag()>=0) || (value_.imag()<0 && val2.g_value().imag()<0));
-      }
-/// Test whether value is real unity.
-      bool is_unity() const
-      {
-        return (is_real() &&
-          std::abs(std::abs(value_.real())-1)<piranha::settings_manager::numerical_zero());
-      }
-/// Test whether value is negative.
-      bool is_negative() const
-      {
-        return (value_.real()<0 && is_real());
-      }
-/// Test whether value is positive.
-      bool is_positive() const
-      {
-        return (value_.real()>0 && is_real());
-      }
-// ancestor::value() is part of the interface too.
-//-------------------------------------------------------
-    private:
-      bool is_real() const
-      {
-        return (std::abs(value_.imag())<piranha::settings_manager::numerical_zero());
-      }
-  }
-  ;
+      private:
+        double abs() const
+        {
+          return std::abs(ancestor::value_);
+        }
+  };
 
 // Overloads for I/O operators.
   inline istream &operator>>(istream &is, complex<piranha::double_cf> &dc)
