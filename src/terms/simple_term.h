@@ -43,7 +43,6 @@ namespace piranha
       explicit simple_term():
       private_cf_(),private_trig_()
         {}
-// TODO: replace bool with enum.
 /// Constructor from coefficient and flavour.
       explicit simple_term(const cf_type &c):
       private_cf_(c),private_trig_()

@@ -147,13 +147,15 @@ namespace piranha
  */
       complex_ps complexp_linargs() const
       {
+        typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        complex_term_type term1(complex_cf_type(1)), term2(complex_cf_type(0,1));
+        complex_term_type term1(complex_cf_type(1));
+        complex_term_type term2(complex_cf_type(cf_type(0),cf_type(1)));
         term2.s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());

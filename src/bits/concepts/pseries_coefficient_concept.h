@@ -46,27 +46,33 @@ namespace piranha
 /// Constructor from string.
       explicit pseries_coefficient_concept(const std::string &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from double.
       explicit pseries_coefficient_concept(const double &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from integer.
       explicit pseries_coefficient_concept(int)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from symbol.
       explicit pseries_coefficient_concept(const psymbol &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Generic constructor.
+      template <class T>
+        explicit pseries_coefficient_concept(const T &)
+      {
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Copy constructor.
       pseries_coefficient_concept(const Model &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Destructor.
       ~pseries_coefficient_concept()
@@ -184,54 +190,58 @@ namespace piranha
         return *static_cast<Model *>(this);
       }
   };
-}
 
-namespace std
-{
 /// Concept class for complex coefficients of Poisson series.
-/**
- * Partial template specialization of standard complex class.
- */
-  template <>
-    template <class RealModel>
-    struct complex<piranha::pseries_coefficient_concept<RealModel> >:
-    public piranha::pseries_coefficient_concept<complex<RealModel> >
+  template <class Model>
+    struct complex_pseries_coefficient_concept:
+    public pseries_coefficient_concept<Model>
   {
     private:
-      typedef complex<RealModel> Model;
-      typedef typename piranha::eval_type<complex<Model> >::type eval_type;
+      typedef typename eval_type<Model>::type eval_type;
     public:
 // Ctors and dtor.
 /// Default constructor.
-      explicit complex()
+      explicit complex_pseries_coefficient_concept()
       {}
 /// Constructor from string.
-      explicit complex(const std::string &)
+      explicit complex_pseries_coefficient_concept(const std::string &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from double.
-      explicit complex(const double &)
+      explicit complex_pseries_coefficient_concept(const double &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from integer.
-      explicit complex(int)
+      explicit complex_pseries_coefficient_concept(int)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from symbol.
-      explicit complex(const piranha::psymbol &)
+      explicit complex_pseries_coefficient_concept(const psymbol &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from real and imaginary parts.
+      template <class RealModel>
+        explicit complex_pseries_coefficient_concept(const RealModel &, const RealModel &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Generic constructor, including constructor from real type.
+      template <class U>
+        explicit complex_pseries_coefficient_concept(const U &x)
+      {
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Copy constructor.
-      complex(const Model &)
+      complex_pseries_coefficient_concept(const Model &)
       {
-        hard_assert(false);
+        __STATIC_ASSERTION_FAILURE;
       }
 /// Destructor.
-      ~complex()
+      ~complex_pseries_coefficient_concept()
       {}
   };
 }

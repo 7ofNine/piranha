@@ -69,20 +69,24 @@ namespace piranha
 /// Empty constructor.
       explicit double_cf():ancestor::numerical_container()
         {}
-/// Constructor from double.
-      explicit double_cf(const double &val):ancestor::numerical_container(val)
-        {}
-/// Constructor from integer.
-      explicit double_cf(int val):ancestor::numerical_container(val)
-        {}
 /// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::numerical_container(s)
         {}
+/// Constructor from double.
+       explicit double_cf(const double &val):ancestor::numerical_container(val)
+         {}
+/// Constructor from integer.
+       explicit double_cf(int val):ancestor::numerical_container(val)
+         {}
 /// Constructor from symbol.
       explicit double_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
+/// Generic constructor.
+      template <class T>
+        explicit double_cf(const T &x):ancestor::numerical_container(x)
+      {}
 /// Copy constructor.
       double_cf(const self &dc):ancestor::numerical_container(dc)
         {}
@@ -112,11 +116,15 @@ namespace piranha
  */
       self besselJ(int n, const vector_psym_p &) const
       {
-        return self(math::besselJ(n,value_));
+        self retval;
+        retval.value_=math::besselJ(n,value_);
+        return retval;
       }
       self pow(const double &y) const
       {
-        return self(std::pow(value_,y));
+        self retval;
+        retval.value_=std::pow(value_,y);
+        return retval;
       }
 // Needed operators.
       self &operator=(const self &val2)
@@ -139,7 +147,7 @@ namespace piranha
 /// Test whether two double_cf have the same sign.
       bool same_sign(const self &val2) const
       {
-        return ((value_>0)==(val2.value()>0));
+        return ((value_>0)==(val2.g_value()>0));
       }
 /// Test whether value is unity.
       bool is_unity() const
@@ -163,7 +171,14 @@ namespace piranha
       }
       self inv() const
       {
-        return self(1./value_);
+        if (std::abs(value_)<settings_manager::numerical_zero())
+        {
+          std::cout << "Error: division by zero." << std::endl;
+          std::abort();
+        }
+        self retval;
+        retval.value_=1./value_;
+        return retval;
       }
       bool operator<(const double &x) const
       {
@@ -177,30 +192,28 @@ namespace piranha
   {
     std::string tmp;
     getline(is,tmp);
-    dc.value()=utils::lexical_converter<double>(tmp);
+    dc.s_value()=utils::lexical_converter<double>(tmp);
     return is;
   }
 
   inline std::ostream &operator<<(std::ostream &os, const double_cf &dc)
   {
-    os << dc.value();
+    os << dc.g_value();
     return os;
   }
 }
-
 
 namespace std
 {
   template <>
     struct complex<piranha::double_cf>:
-    public complex<piranha::pseries_coefficient_concept<piranha::double_cf> >,
+    public piranha::complex_pseries_coefficient_concept<complex<piranha::double_cf> >,
     public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
   {
     private:
       typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
       typedef complex self;
-      typedef piranha::double_cf double_type;
-      typedef double_type real_self;
+      typedef piranha::double_cf value_type;
     public:
       using ancestor::swap;
       using ancestor::print_plain;
@@ -222,52 +235,74 @@ namespace std
 //-------------------------------------------------------
 // Ctors and dtor.
       explicit complex():ancestor::numerical_container()
-        {}
+      {}
       explicit complex(const std::string &s):ancestor::numerical_container(s)
-        {}
-      explicit complex(const double_type &r, const double_type &i):
-      ancestor::numerical_container(piranha::complex_double(r.value(),i.value()))
-        {}
-      explicit complex(const double_type &r):
-      ancestor::numerical_container(piranha::complex_double(r.value(),0.))
-        {}
+      {}
+//       explicit complex(const value_type &r, const value_type &i):
+//       ancestor::numerical_container(piranha::complex_double(r.g_value(),i.g_value()))
+//         {}
+//       explicit complex(const value_type &r):ancestor::numerical_container(r)
+//       {}
       explicit complex(const piranha::complex_double &c):ancestor::numerical_container(c)
-        {}
-      explicit complex(int n):ancestor::numerical_container(piranha::complex_double(n,0.))
-        {}
-      explicit complex(int n1, int n2):ancestor::numerical_container(piranha::complex_double(n1,n2))
-        {}
-      explicit complex(const double &x):
-      ancestor::numerical_container(piranha::complex_double(x,0.))
-        {}
-      explicit complex(const double &x1, const double x2):
+      {}
+      explicit complex(int n):ancestor::numerical_container(piranha::complex_double((double)n,0.))
+      {}
+//       explicit complex(int n1, int n2):ancestor::numerical_container(piranha::complex_double(n1,n2))
+//       {}
+      explicit complex(const double &x):ancestor::numerical_container(x)
+      {}
+/// Constructor from real type.
+      explicit complex(const value_type &r)
+      {
+        ancestor::s_value().real()=r.g_value();
+        ancestor::s_value().imag()=0;
+      }
+/// Constructor from real and imaginary parts.
+      explicit complex(const value_type &r, const value_type &i)
+      {
+        ancestor::s_value().real()=r.g_value();
+        ancestor::s_value().imag()=i.g_value();
+      }
+/// Generic constructor.
+      template <class T>
+        explicit complex(const T &x):ancestor::numerical_container(x)
+      {}
+/*      explicit complex(const double &x1, const double x2):
       ancestor::numerical_container(piranha::complex_double(x1,x2))
-        {}
+      {}*/
+// FIXME: add copy ctor, assignment, etc.
+/// Copy constructor.
+      complex(const complex &c):ancestor::numerical_container(c)
+      {}
       ~complex()
-        {}
+      {}
 // Getters.
       double norm(const piranha::vector_psym_p &) const
       {
         return abs();
       }
-      double_type real() const
+      value_type real() const
       {
-        return double_type(value_.real());
+        value_type retval;
+        retval.s_value()=value_.real();
+        return retval;
       }
-      double_type imag() const
+      value_type imag() const
       {
-        return double_type(value_.imag());
+        value_type retval;
+        retval.s_value()=value_.imag();
+        return retval;
       }
 // Setters.
 /// Set value_ to be a real only value.
-      void set_real(const double_type &r)
+      void set_real(const value_type &r)
       {
-        value_=r.value();
+        value_=r.g_value();
       }
 /// Set value_ to be an imag only value.
-      void set_imag(const double_type &i)
+      void set_imag(const value_type &i)
       {
-        value_=piranha::complex_double(0,i.value());
+        value_=piranha::complex_double(0,i.g_value());
       }
 // Probing.
       bool is_zero(const piranha::vector_psym_p &) const
@@ -280,9 +315,9 @@ namespace std
         ancestor::value_=val2.value_;
         return *this;
       }
-      self &operator=(const double_type &r2)
+      self &operator=(const value_type &r2)
       {
-        ancestor::value_=r2.value();
+        ancestor::value_=r2.g_value();
         return *this;
       }
 // End INTERFACE definition.
@@ -296,14 +331,14 @@ namespace std
 /// Test whether two complex double_cf are equal or opposite in sign.
       bool equal_or_opposite(const self &val2) const
       {
-        return (std::abs(value_+val2.value())<piranha::settings_manager::numerical_zero() ||
-          std::abs(value_-val2.value())<piranha::settings_manager::numerical_zero());
+        return (std::abs(value_+val2.g_value())<piranha::settings_manager::numerical_zero() ||
+          std::abs(value_-val2.g_value())<piranha::settings_manager::numerical_zero());
       }
 /// Test whether two complex double_cf are in the same quadrant of the complex plane.
       bool same_sign(const self &val2) const
       {
-        return ((value_.real()>=0 && val2.value().real()>=0) || (value_.real()<0 && val2.value().real()<0)) &&
-          ((value_.imag()>=0 && val2.value().imag()>=0) || (value_.imag()<0 && val2.value().imag()<0));
+        return ((value_.real()>=0 && val2.g_value().real()>=0) || (value_.real()<0 && val2.g_value().real()<0)) &&
+          ((value_.imag()>=0 && val2.g_value().imag()>=0) || (value_.imag()<0 && val2.g_value().imag()<0));
       }
 /// Test whether value is real unity.
       bool is_unity() const
@@ -336,13 +371,13 @@ namespace std
   {
     string tmp;
     getline(is,tmp);
-    dc.value()=piranha::utils::lexical_converter<piranha::complex_double>(tmp);
+    dc.s_value()=piranha::utils::lexical_converter<piranha::complex_double>(tmp);
     return is;
   }
 
   inline ostream &operator<<(ostream &os, const complex<piranha::double_cf> &dc)
   {
-    os << dc.value();
+    os << dc.g_value();
     return os;
   }
 }

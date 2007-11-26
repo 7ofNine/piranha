@@ -21,6 +21,7 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_H
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
+#include <complex>
 #include <iostream>
 #include <string>
 
@@ -30,7 +31,7 @@
 
 namespace piranha
 {
-/// Simple container class.
+/// Numerical container class.
 /**
  * This class can be used as a base class for coefficients that consist of a
  * numerical entity (double, GMP classes, etc.).
@@ -38,33 +39,41 @@ namespace piranha
   template <class T, class Derived>
     class numerical_container
   {
+/// Alias for evaluation type.
       typedef typename eval_type<Derived>::type eval_type;
-    public:
 /// Alias for self.
       typedef numerical_container self;
-// Start INTERFACE definition.
-//-------------------------------------------------------
+    public:
+// Start interface implementation.
 // Ctors.
 /// Default constructor.
       explicit numerical_container():value_(0)
-        {}
-/// Constructor from T value.
-      explicit numerical_container(const T &val):value_(val)
-        {}
-/// Copy constructor.
-      explicit numerical_container(const self &sc):value_(sc.value_)
-        {}
+      {}
 /// Constructor from string.
-      explicit numerical_container(const std::string &s)
-      {
-        value_=utils::lexical_converter<T>(s);
-      }
+      explicit numerical_container(const std::string &s):value_(utils::lexical_converter<T>(s))
+      {}
+/// Constructor from double.
+      explicit numerical_container(const double &x):value_(x)
+      {}
+/// Constructor from int.
+      explicit numerical_container(int n):value_(n)
+      {}
+/// Constructor from piranha::psymbol.
+      explicit numerical_container(const psymbol &):value_(0)
+      {}
+/// Generic constructor.
+      template <class U>
+        explicit numerical_container(const U &x):value_(x)
+      {}
+/// Copy constructor.
+      explicit numerical_container(const Derived &sc):value_(sc.value_)
+      {}
 /// Destructor.
       ~numerical_container()
-        {}
+      {}
 // Getters.
 /// Get value.
-      const T &value() const
+      const T &g_value() const
       {
         return value_;
       }
@@ -75,7 +84,7 @@ namespace piranha
       }
 // Setters
 /// Set value.
-      T &value()
+      T &s_value()
       {
         return value_;
       }
@@ -156,12 +165,12 @@ namespace piranha
       }
       Derived &add_self(const Derived &val2)
       {
-        value_+=val2.value();
+        value_+=val2.g_value();
         return *static_cast<Derived *>(this);
       }
       Derived &subtract_self(const Derived &val2)
       {
-        value_-=val2.value();
+        value_-=val2.g_value();
         return *static_cast<Derived *>(this);
       }
       self &mult_by_int(int n)
@@ -181,7 +190,7 @@ namespace piranha
       template <class U, class DerivedPs>
         self &mult_by_self(const U &x, const DerivedPs &)
       {
-        value_*=x.value();
+        value_*=x.g_value();
         return *static_cast<Derived *>(this);
       }
       self &divide_by_int(int n)
@@ -198,4 +207,5 @@ namespace piranha
       T   value_;
   };
 }
+
 #endif
