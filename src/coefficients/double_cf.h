@@ -114,6 +114,9 @@ namespace piranha
 // End implementation of basic pseries coefficient interface.
 //------------
 // Start implementation of trigonometric pseries coefficient interface.
+// Used in:
+// - trigonometric toolbox,
+// - Wigner (through the complex ctor).
 //------------
 /// Constructor from integer.
        explicit double_cf(int val):ancestor::numerical_container(val)
@@ -257,6 +260,15 @@ namespace std
          ancestor::s_value().real()=r.g_value();
          ancestor::s_value().imag()=i.g_value();
        }
+// This one is used in Wigner. It must be like this because Wigner has no notion of cf_types and the like, and hence
+// it will require explicit building from integers (we can't use the above).
+// TODO: share with above through complex toolbox.
+/// Constructor from pair of ints.
+       explicit complex(int r, int i):ancestor::numerical_container()
+       {
+         ancestor::s_value().real()=r;
+         ancestor::s_value().imag()=i;
+        }
 // End implementation of trigonometric pseries coefficient interface.
 //------------
       private:

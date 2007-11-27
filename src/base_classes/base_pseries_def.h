@@ -449,7 +449,8 @@ namespace piranha
       template <class T>
         void generic_builder(const T &x)
       {
-        term_type term(x);
+        term_type term = term_type();
+        *(term.s_cf()) = cf_type(x);
         insert(term);
       }
 // Low level I/O.

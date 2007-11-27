@@ -96,7 +96,7 @@ namespace std
     public piranha::fourier_multiplication_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >
   {
     public:
-/// Alias for the ancestor.
+/// Alias for ancestor.
       typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
         Allocator> ancestor;
 /// Alias for term type.
@@ -124,19 +124,16 @@ namespace std
 /// Constructor from coefficient.
       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
         {}
-/// Constructor from pair of real coefficients.
-/*explicit complex(const real_cf_type &a, const real_cf_type &b):
-  ancestor::base_pseries(cf_type(a,b))
-  {}*/
 /// Constructor from complex.
       explicit complex(const piranha::complex_double &c)
       {
         ancestor::generic_builder(c);
       }
-/// Constructor from pair of doubles.
-      explicit complex(const double &a, const double &b)
+// This is used frequently in special functions (build from (1,0),...).
+/// Constructor from pair of integers.
+      explicit complex(int r, int i)
       {
-        ancestor::generic_builder(piranha::complex_double(a,b));
+        ancestor::generic_builder(cf_type(real_cf_type(r),real_cf_type(i)));
       }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.

@@ -562,28 +562,28 @@ namespace piranha
         return retval;
       }
 /// Quadratic phase of integer n.
-      static std::complex<double> quad_phase(int n)
+      static std::complex<int> quad_phase(int n)
       {
         if (is_odd(n))
         {
           if (is_odd((n-1)<<1))
           {
-            return std::complex<double>(0.,-1.);
+            return std::complex<int>(0,-1);
           }
           else
           {
-            return std::complex<double>(0.,1.);
+            return std::complex<int>(0,1);
           }
         }
         else
         {
           if (is_odd(n<<1))
           {
-            return std::complex<double>(-1.);
+            return std::complex<int>(-1);
           }
           else
           {
-            return std::complex<double>(1.);
+            return std::complex<int>(1);
           }
         }
       }
@@ -595,7 +595,7 @@ namespace piranha
       {
         T dnkm_tmp(dnkm<T>(n,k,m,complexhalfbeta));
         return complexp(alpha*(-k)-gamma*(m))*(
-          std::complex<T>(quad_phase(k-m))*=dnkm_tmp);
+          std::complex<T>(quad_phase(k-m).real(),quad_phase(k-m).imag())*=dnkm_tmp);
       }
 /// Wigner rotation theorem.
 /**
@@ -609,7 +609,7 @@ namespace piranha
 // NOTE: what does it give to multiply by .5 a series with non-zero linargs?
         std::complex<T> complexhalfbeta=complexp(beta*.5);
         std::vector<std::complex<T> > Ynm_vec=Ynm_vector(n,theta,phi);
-        std::complex<T> retval(0.,0.);
+        std::complex<T> retval(0,0);
         std::complex<T> tmp;
         for (int k=-n;k<=n;++k)
         {

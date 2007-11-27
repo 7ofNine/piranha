@@ -55,10 +55,10 @@ namespace piranha
 /**
  * Build constructing coefficient from variable x, of type T.
  */
-      template <class T>
-        explicit simple_term(const T &x):
-     private_cf_(cf_type(x)),private_trig_()
-        {}
+//       template <class T>
+//         explicit simple_term(const T &x):
+//      private_cf_(cf_type(x)),private_trig_()
+//         {}
 /// Copy ctor.
       simple_term(const simple_term &term):
       private_cf_(*term.g_cf()),private_trig_(*term.g_trig())
