@@ -64,7 +64,7 @@ namespace piranha
         lambda4_=Ps("tass_lambda4.csv");
         lambda6_=Ps("tass_lambda6.csv");
         p6_=Ps("tass_p6.csv");
-        z6_=PsC("tass_z6_real.csv","tass_z6_imag.csv");
+        z6_=PsC(Ps("tass_z6_real.csv"),Ps("tass_z6_imag.csv"));
 //zeta6_=PsC(tass_zeta6); FIXME -> series is not available in electronic format yet.
         dlambda1_=Ps("tass_dlambda1.csv");
         dlambda2_=Ps("tass_dlambda2.csv");
