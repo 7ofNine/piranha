@@ -100,7 +100,7 @@ namespace piranha
  * Constructs a null series: empty with zero arguments.
  */
       base_pseries():__base_pseries_init_list
-        {}
+      {}
 /// Constructor from int.
       base_pseries(int n):__base_pseries_init_list
       {
@@ -170,7 +170,7 @@ namespace piranha
 #undef __base_pseries_init_list
 /// Destructor.
       ~base_pseries()
-        {}
+      {}
 /// Copy.
       Derived copy() const
       {
