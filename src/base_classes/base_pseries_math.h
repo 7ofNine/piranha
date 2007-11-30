@@ -66,13 +66,11 @@ namespace piranha
     return *static_cast<Derived *>(this);
   }
 
-// FIXME: make sign template parameter.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Derived2>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::alg_sum_lin_args(const Derived2 &ps2,
-    bool sign)
+    template <class Derived2, bool Sign>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::alg_sum_lin_args(const Derived2 &ps2)
   {
-    if (sign)
+    if (Sign)
     {
       math::vec_add(lin_args_,ps2.lin_args(),lin_args_);
     }
@@ -112,7 +110,7 @@ namespace piranha
       return *static_cast<Derived *>(this);
     }
 // Sum/sub lin_args
-    alg_sum_lin_args(ps2,Sign);
+    alg_sum_lin_args<Derived2,Sign>(ps2);
 // Use hint, since as we add terms we have an idea of where they are going to be placed
     it_s_index it_hint=g_s_index().end();
 // NOTE: At this point this' size is greater or equal to ps2'
