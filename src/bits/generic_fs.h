@@ -65,15 +65,11 @@ namespace piranha
       explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename)
       {}
 /// Constructor from int.
-      explicit generic_fs(int n)
-      {
-        ancestor::generic_builder(n);
-      }
+      explicit generic_fs(int n):ancestor::base_pseries(n)
+      {}
 /// Constructor from double.
-      explicit generic_fs(const double &x)
-      {
-        ancestor::generic_builder(x);
-      }
+      explicit generic_fs(const double &x):ancestor::base_pseries(x)
+      {}
 /// Constructor from psymbol.
       explicit generic_fs(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
       {}

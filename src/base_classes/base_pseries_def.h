@@ -101,6 +101,16 @@ namespace piranha
  */
       base_pseries():__base_pseries_init_list
         {}
+/// Constructor from int.
+      base_pseries(int n):__base_pseries_init_list
+      {
+        generic_builder(n);
+      }
+/// Constructor from double.
+      base_pseries(const double &x):__base_pseries_init_list
+      {
+        generic_builder(x);
+      }
 /// Copy constructor.
 /**
  * Constructs a series from another one.
@@ -437,14 +447,6 @@ namespace piranha
       bool checkup() const;
       bool is_cf() const;
     protected:
-/// Generic builder.
-      template <class T>
-        void generic_builder(const T &x)
-      {
-        term_type term = term_type();
-        *(term.s_cf()) = cf_type(x);
-        insert(term);
-      }
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string&);
@@ -462,6 +464,10 @@ namespace piranha
       void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
+      it_h_index find_term(const term_type &t) const
+      {
+        return g_h_index().find(*t.g_trig());
+      }
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
       void term_update(const it_h_index &, cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
@@ -473,6 +479,8 @@ namespace piranha
 // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
 // Low level maths.
+      template <class Derived2>
+        Derived &assign_to(const Derived2 &);
       template <class Derived2, bool Sign>
         void alg_sum_lin_args(const Derived2 &);
       template <class Derived2, bool Sign>
@@ -484,16 +492,9 @@ namespace piranha
       template <class T>
         Derived &divide_by_generic(const T &);
     public:
-// TODO: check this: why in public?
-      it_h_index find_term(const term_type &t) const
-      {
-        return g_h_index().find(*t.g_trig());
-      }
 // Mathematics.
 // Assignment.
       Derived &assign_to(const Derived &);
-      template <class Derived2>
-        Derived &assign_to(const Derived2 &);
 // Addition.
       template <class Derived2>
         Derived &add(const Derived2 &ps2)
@@ -529,6 +530,14 @@ namespace piranha
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         LightTermPair &, cf_type &);
     private:
+/// Generic builder.
+      template <class T>
+        void generic_builder(const T &x)
+      {
+        term_type term = term_type();
+        *(term.s_cf()) = cf_type(x);
+        insert(term);
+      }
 /// Name comparison functor for psymbol pointers.
 /**
  * Used in merging of arguments.
