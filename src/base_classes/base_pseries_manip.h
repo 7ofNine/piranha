@@ -46,7 +46,7 @@ namespace piranha
 // Store coefficient for later.
     cf_type tmp_c=*src.g_cf();
 // Insert first term.
-    tmp_term.s_cf()->mult_by_double(std::cos(phase));
+    tmp_term.s_cf()->mult_by(std::cos(phase));
     retps.insert(tmp_term);
 // Second term: change flavour and sign.
     switch (src.g_flavour())
@@ -54,12 +54,12 @@ namespace piranha
       case true:
         tmp_term.s_flavour()=false;
         *tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()->mult_by_double(-std::sin(phase));
+        tmp_term.s_cf()->mult_by(-std::sin(phase));
         break;
       case false:
         tmp_term.s_flavour()=true;
         *tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()->mult_by_double(std::sin(phase));
+        tmp_term.s_cf()->mult_by(std::sin(phase));
     }
     retps.insert(tmp_term);
   }
@@ -349,24 +349,24 @@ namespace piranha
     if (it==g_h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,
-// so it can be used in additions and multiplications
+// so it can be used in additions and multiplications.
       ret_it=term_insert_new(term,sign,it_hint);
       stats::insert();
     }
     else
     {
-// The term is in the set, hence an existing term will be modified
-// Add or subtract according to request
+// The term is in the set, hence an existing term will be modified.
+// Add or subtract according to request.
       cf_type new_c;
       if (sign)
       {
         new_c=*it->g_cf();
-        new_c.add_self(*term.g_cf());
+        new_c.add(*term.g_cf());
       }
       else
       {
         new_c=*it->g_cf();
-        new_c.subtract_self(*term.g_cf());
+        new_c.subtract(*term.g_cf());
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_zero(cf_s_vec_))

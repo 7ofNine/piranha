@@ -29,18 +29,15 @@ namespace piranha
     public:
       Derived &operator=(const Derived &p)
       {
-        static_cast<Derived *>(this)->basic_assignment(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->assign_to(p);
       }
       Derived &operator+=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_merge(x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add_generic(x);
       }
       Derived &operator+=(const Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add(p);
       }
       Derived operator+(const double &x) const
       {
@@ -56,13 +53,11 @@ namespace piranha
       }
       Derived &operator-=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_merge(-x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add_generic(-x);
       }
       Derived &operator-=(const Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p,false);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->subtract(p);
       }
       Derived operator-(const double &x) const
       {
@@ -78,18 +73,15 @@ namespace piranha
       }
       Derived &operator*=(int n)
       {
-        static_cast<Derived *>(this)->mult_by_int(n);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->mult_by(n);
       }
       Derived &operator*=(const Derived &p)
       {
-        static_cast<Derived *>(this)->series_multiplication(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->mult_by_self(p);
       }
       Derived &operator*=(const double &x)
       {
-        static_cast<Derived *>(this)->mult_by_double(x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->mult_by(x);
       }
       Derived operator*(int n) const
       {
@@ -105,13 +97,11 @@ namespace piranha
       }
       Derived &operator/=(int n)
       {
-        static_cast<Derived *>(this)->generic_division(n);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->divide_by(n);
       }
       Derived &operator/=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_division(x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->divide_by(x);
       }
       Derived operator/(const double &x) const
       {
@@ -134,18 +124,15 @@ namespace piranha
       typedef std::complex<real_Derived> Derived;
       Derived &operator=(const Derived &p)
       {
-        static_cast<Derived *>(this)->basic_assignment(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->assign_to(p);
       }
       Derived &operator+=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_merge(x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add_generic(x);
       }
       Derived &operator+=(const Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add(p);
       }
       Derived operator+(const double &x) const
       {
@@ -161,13 +148,11 @@ namespace piranha
       }
       Derived &operator-=(const double &x)
       {
-        static_cast<Derived *>(this)->generic_merge(-x);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add_generic(-x);
       }
       Derived &operator-=(const Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p,false);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->subtract(p);
       }
       Derived operator-(const double &x) const
       {
@@ -188,8 +173,7 @@ namespace piranha
       }
       Derived &operator*=(const Derived &p)
       {
-        static_cast<Derived *>(this)->series_multiplication(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->mult_by_self(p);
       }
       Derived &operator*=(const double &x)
       {
@@ -230,10 +214,13 @@ namespace piranha
         return retval;
       }
 // Complex specifics.
+      Derived &operator=(const real_Derived &p)
+      {
+        return static_cast<Derived *>(this)->assign_to(p);
+      }
       Derived &operator+=(const real_Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add(p);
       }
       Derived operator+(const real_Derived &p) const
       {
@@ -243,8 +230,7 @@ namespace piranha
       }
       Derived &operator-=(const real_Derived &p)
       {
-        static_cast<Derived *>(this)->merge_with(p,false);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->add(p,false);
       }
       Derived operator-(const real_Derived &p) const
       {
@@ -254,8 +240,7 @@ namespace piranha
       }
       Derived &operator*=(const real_Derived &p)
       {
-        static_cast<Derived *>(this)->series_multiplication(p);
-        return *static_cast<Derived *>(this);
+        return static_cast<Derived *>(this)->mult_by_self(p);
       }
       Derived operator*(const real_Derived &p) const
       {

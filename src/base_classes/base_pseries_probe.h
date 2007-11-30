@@ -159,10 +159,7 @@ namespace piranha
     return set_res.empty();
   }
 
-/// Calculate norm.
-/**
- * Calculate norm instead of getting it from the value stored internally. Used for debugging.
- */
+/// Calculate and return norm.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline double base_pseries<__PIRANHA_BASE_PS_TP>::g_norm() const
   {

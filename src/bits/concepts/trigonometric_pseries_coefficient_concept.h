@@ -30,11 +30,7 @@ namespace piranha
   template <class Model>
     class real_trigonometric_pseries_coefficient_concept
   {
-/// Constructor from integer.
-      explicit real_trigonometric_pseries_coefficient_concept(int)
-      {
-        __STATIC_ASSERTION_FAILURE;
-      }
+
   };
 }
 

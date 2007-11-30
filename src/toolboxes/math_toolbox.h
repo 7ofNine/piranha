@@ -82,14 +82,14 @@ namespace piranha
         const double error=.1*std::pow(derived_cast->g_norm(),power)*
           derived_cast->get_truncation();
         const unsigned int limit_index=pow_limit(error,power);
-        Derived retval, x(*derived_cast), tmp(1.);
+        Derived retval, x(*derived_cast), tmp(1);
         x.term_erase(x.g_s_index().begin());
         for (unsigned int i=0;i<=limit_index;++i)
         {
           {
             Derived tmp2(tmp);
-            tmp2*=math::choose(power,i);
-            tmp2*=Derived(a->pow(power-i),tmp2);
+            tmp2.mult_by(math::choose(power,i));
+            tmp2.mult_by_self(Derived(a->pow(power-i),*derived_cast));
             retval+=tmp2;
           }
           tmp*=x;

@@ -97,7 +97,7 @@ namespace piranha
 #define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
 /// Default constructor.
 /**
- * Constructs an empty series.
+ * Constructs a null series: empty with zero arguments.
  */
       base_pseries():__base_pseries_init_list
         {}
@@ -126,14 +126,10 @@ namespace piranha
  */
       explicit base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
       {
-        if (!merge_args(model))
-        {
-          std::cout << "Warning: incompatbile arguments in ctor from cf_type." << std::endl;
-          return;
-        }
+        hard_assert(merge_args(model));
         if (c.larger(cf_width()))
         {
-          std::cout << "Warning: too many arguments in ctor from coefficient." << std::endl;
+          std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
           return;
         }
         generic_builder(c);
@@ -141,17 +137,18 @@ namespace piranha
 /// Constructor from piranha::psymbol.
       explicit base_pseries(const psymbol &psym, psymbol::type ptype):__base_pseries_init_list
       {
-        if (ptype==psymbol::cf)
+// TODO: replace with switch statement.
+        if (ptype == psymbol::cf)
         {
-    // When building to cf create a coefficient from the symvol.
+// When building to cf create a coefficient from the symvol.
           append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
           cf_type c(psym);
           term_type term(c);
           insert(term);
         }
-        else if (ptype==psymbol::trig)
+        else if (ptype == psymbol::trig)
         {
-    // When building to trig assign argument in lin_args.
+// When building to trig assign argument in lin_args.
           append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
           lin_args_[0]=1;
         }
@@ -376,10 +373,10 @@ namespace piranha
             print_latex(out_stream,limit);
         }
       }
-/// Print to screen the first "limit" terms, including series' header.
-      void put(int limit) const
+/// Print to screen the first n terms, including series' header.
+      void put(int n) const
       {
-        print(std::cout, limit);
+        print(std::cout,n);
       }
       void put() const
       {
@@ -439,11 +436,6 @@ namespace piranha
         const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
-// NOTICE: temporarily here.
-      template <class Derived2>
-        void series_multiplication(const Derived2 &);
-      template <class Derived2>
-        void generic_series_assignment(const Derived2 &);
     protected:
 /// Generic builder.
       template <class T>
@@ -481,24 +473,54 @@ namespace piranha
 // Low level probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
 // Low level maths.
-      void basic_assignment(const base_pseries &);
       template <class Derived2>
         void alg_sum_lin_args(const Derived2 &, bool);
+      template <class Derived2, bool Sign>
+        Derived &merge_with_series(const Derived2 &);
+      template <class T>
+        Derived &add_generic(const T &);
+      template <class T>
+        Derived &mult_by_generic(const T &);
+      template <class T>
+        Derived &divide_by_generic(const T &);
     public:
+// TODO: check this: why in public?
       it_h_index find_term(const term_type &t) const
       {
         return g_h_index().find(*t.g_trig());
       }
+// Mathematics.
+// Assignment.
+      Derived &assign_to(const Derived &);
       template <class Derived2>
-        void merge_with(const Derived2 &, bool sign = true);
-      template <class T>
-        void generic_merge(const T &);
-      Derived &mult_by_int(int);
-      Derived &mult_by_double(const double &);
-      template <class T>
-        void generic_multiplication(const T &);
-      template <class T>
-        void generic_division(const T &);
+        Derived &assign_to(const Derived2 &);
+// Addition.
+      template <class Derived2>
+        Derived &add(const Derived2 &ps2)
+      {
+        return merge_with_series<Derived2,true>(ps2);
+      }
+      template <class Derived2>
+        Derived &subtract(const Derived2 &ps2)
+      {
+        return merge_with_series<Derived2,false>(ps2);
+      }
+// Multiplication.
+      Derived &mult_by(int);
+      Derived &mult_by(const double &x)
+      {
+        return mult_by_generic(x);
+      }
+      template <class Derived2>
+        Derived &mult_by_self(const Derived2 &);
+      Derived &divide_by(int n)
+      {
+        return divide_by_generic(n);
+      }
+      Derived &divide_by(const double &x)
+      {
+        return divide_by_generic(x);
+      }
       template <class Derived2>
         bool series_multiplication_preliminaries(const Derived2 &, Derived &);
       template <class Derived2>

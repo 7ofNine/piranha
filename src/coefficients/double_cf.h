@@ -55,34 +55,37 @@ namespace piranha
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::t_eval;
-      using ancestor::add_self;
-      using ancestor::subtract_self;
-      using ancestor::mult_by_int;
-      using ancestor::mult_by_double;
-      using ancestor::mult_by_generic;
+      using ancestor::add;
+      using ancestor::subtract;
+      using ancestor::mult_by;
       using ancestor::mult_by_self;
-      using ancestor::divide_by_int;
-      using ancestor::divide_by_generic;
+      using ancestor::divide_by;
 // Start implementation of basic pseries coefficient interface.
 //------------
 // Ctors and dtor.
 /// Empty constructor.
       explicit double_cf():ancestor::numerical_container()
-        {}
+      {}
 /// Constructor from string.
       explicit double_cf(const std::string &s):ancestor::numerical_container(s)
-        {}
+      {}
 /// Constructor from symbol.
       explicit double_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
+/// Constructor from integer.
+      explicit double_cf(int val):ancestor::numerical_container(val)
+      {}
+/// Constructor from double.
+      explicit double_cf(const double &val):ancestor::numerical_container(val)
+      {}
 /// Copy constructor.
       double_cf(const self &dc):ancestor::numerical_container(dc)
-        {}
+      {}
 /// Destructor.
       ~double_cf()
-        {}
+      {}
 // Getters
 /// Calculate norm (absolute value).
       double norm(const vector_psym_p &) const
@@ -102,13 +105,13 @@ namespace piranha
       self pow(const double &y) const
       {
         self retval;
-        retval.value_=std::pow(value_,y);
+        retval.s_value()=std::pow(g_value(),y);
         return retval;
       }
 // Needed operators.
       self &operator=(const self &val2)
       {
-        ancestor::value_=val2.value_;
+        s_value()=val2.g_value();
         return *this;
       }
 // End implementation of basic pseries coefficient interface.
@@ -116,15 +119,7 @@ namespace piranha
 // Start implementation of trigonometric pseries coefficient interface.
 // Used in:
 // - trigonometric toolbox,
-// - Wigner (through the complex ctor).
 //------------
-/// Constructor from integer.
-       explicit double_cf(int val):ancestor::numerical_container(val)
-         {}
-      double abs() const
-      {
-        return std::abs(value_);
-      }
 // Maths
 /// Bessel function of the first kind.
 /**
@@ -133,7 +128,7 @@ namespace piranha
       self besselJ(int n, const vector_psym_p &) const
       {
         self retval;
-        retval.value_=math::besselJ(n,value_);
+        retval.s_value()=math::besselJ(n,g_value());
         return retval;
       }
 // End implementation of trigonometric pseries coefficient interface.
@@ -174,14 +169,11 @@ namespace std
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::t_eval;
-      using ancestor::add_self;
-      using ancestor::subtract_self;
-      using ancestor::mult_by_int;
-      using ancestor::mult_by_double;
-      using ancestor::mult_by_generic;
+      using ancestor::add;
+      using ancestor::subtract;
+      using ancestor::mult_by;
       using ancestor::mult_by_self;
-      using ancestor::divide_by_int;
-      using ancestor::divide_by_generic;
+      using ancestor::divide_by;
 // Start implementation of basic pseries coefficient interface.
 //------------
 // Ctors and dtor.
@@ -191,6 +183,34 @@ namespace std
       {}
       explicit complex(const piranha::psymbol &):ancestor::numerical_container()
       {}
+      explicit complex(int n):ancestor::numerical_container(n)
+      {}
+      explicit complex(const double &x):ancestor::numerical_container(x)
+      {}
+// TODO: put those ctors in toolbox and use from there.
+/// Constructor from pair of ints.
+      explicit complex(int r, int i):ancestor::numerical_container()
+      {
+        s_value().real()=r;
+        s_value().imag()=i;
+      }
+/// Constructor from pair of doubles.
+      explicit complex(const double &r, const double &i):ancestor::numerical_container()
+      {
+        s_value().real()=r;
+        s_value().imag()=i;
+      }
+/// Constructor from real type.
+      explicit complex(const value_type &r):ancestor::numerical_container()
+      {
+        s_value().real()=r.g_value();
+      }
+/// Constructor from real and imaginary parts.
+      explicit complex(const value_type &r, const value_type &i):ancestor::numerical_container()
+      {
+        s_value().real()=r.g_value();
+        s_value().imag()=i.g_value();
+      }
 /// Copy constructor.
       complex(const complex &c):ancestor::numerical_container(c)
       {}
@@ -204,78 +224,61 @@ namespace std
       value_type real() const
       {
         value_type retval;
-        retval.s_value()=value_.real();
+        retval.s_value()=g_value().real();
         return retval;
       }
       value_type imag() const
       {
         value_type retval;
-        retval.s_value()=value_.imag();
+        retval.s_value()=g_value().imag();
         return retval;
       }
 // Setters.
 /// Set value_ to be a real only value.
       void set_real(const value_type &r)
       {
-        value_=r.g_value();
+        s_value()=r.g_value();
       }
 /// Set value_ to be an imag only value.
       void set_imag(const value_type &i)
       {
-        value_=piranha::complex_double(0,i.g_value());
+        s_value()=piranha::complex_double(0,i.g_value());
       }
 // Probing.
       bool is_zero(const piranha::vector_psym_p &) const
       {
         return (abs()<piranha::settings_manager::numerical_zero());
       }
+// Maths.
+      template <class DerivedPs>
+        self &mult_by_self(const value_type &x, const DerivedPs &)
+      {
+        s_value()*=x.g_value();
+        return *this;
+      }
+      self &mult_by(const std::complex<int> &c)
+      {
+        s_value()*=c;
+        return *this;
+      }
+      self &mult_by(const std::complex<double> &c)
+      {
+        s_value()*=c;
+        return *this;
+      }
 // Operators.
       self &operator=(const self &val2)
       {
-        ancestor::value_=val2.value_;
+        s_value()=val2.g_value();
         return *this;
       }
       self &operator=(const value_type &r2)
       {
-        ancestor::value_=r2.g_value();
+        s_value()=r2.g_value();
         return *this;
-      }
-// End implementation of basic pseries coefficient interface.
-//------------
-// TODO: maybe the following 2 ctors can be placed inside basic interface, they are simple to implement.
-// Start implementation of complex basic pseries coefficient interface.
-//------------
-/// Constructor from real type.
-      explicit complex(const value_type &r):ancestor::numerical_container()
-      {
-        ancestor::s_value().real()=r.g_value();
       }
 // End implementation of complex basic pseries coefficient interface.
 //------------
-// Start implementation of trigonometric pseries coefficient interface.
-//------------
-/// Constructor from real and imaginary parts.
-       explicit complex(const value_type &r, const value_type &i):ancestor::numerical_container()
-       {
-         ancestor::s_value().real()=r.g_value();
-         ancestor::s_value().imag()=i.g_value();
-       }
-// This one is used in Wigner. It must be like this because Wigner has no notion of cf_types and the like, and hence
-// it will require explicit building from integers (we can't use the above).
-// TODO: share with above through complex toolbox.
-/// Constructor from pair of ints.
-       explicit complex(int r, int i):ancestor::numerical_container()
-       {
-         ancestor::s_value().real()=r;
-         ancestor::s_value().imag()=i;
-        }
-// End implementation of trigonometric pseries coefficient interface.
-//------------
-      private:
-        double abs() const
-        {
-          return std::abs(ancestor::value_);
-        }
   };
 
 // Overloads for I/O operators.

@@ -47,6 +47,7 @@ namespace piranha
     public differential_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
     public fourier_multiplication_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >
   {
+      template <class Derived> friend class real_operators_toolbox;
     public:
 /// Alias for parent class.
       typedef piranha::base_pseries<Cf, Trig, Term, I, generic_fs<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
@@ -58,13 +59,11 @@ namespace piranha
       typedef generic_fs<Cf,Trig,Term,I,Allocator> self;
 // Ctors.
       generic_fs():ancestor::base_pseries()
-        {}
+      {}
       generic_fs(const generic_fs &p):ancestor::base_pseries(p)
-        {}
+      {}
       explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename)
-        {}
-      explicit generic_fs(const cf_type &c, const generic_fs &model):ancestor::base_pseries(c,model)
-        {}
+      {}
 /// Constructor from int.
       explicit generic_fs(int n)
       {
@@ -77,7 +76,10 @@ namespace piranha
       }
 /// Constructor from psymbol.
       explicit generic_fs(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
-        {}
+      {}
+/// Constructor from coefficient and model.
+      explicit generic_fs(const cf_type &c, const generic_fs &model):ancestor::base_pseries(c,model)
+      {}
   };
 }
 
@@ -85,6 +87,7 @@ namespace piranha
 namespace std
 {
 // COMPLEX COUNTERPART
+// TODO: replace real_type with value_type, as per STL.
 /// Complex specialization for Fourier series derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
@@ -95,6 +98,7 @@ namespace std
     public piranha::differential_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >,
     public piranha::fourier_multiplication_toolbox<complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > >
   {
+      template <class Derived> friend class real_operators_toolbox;
     public:
 /// Alias for ancestor.
       typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
@@ -122,19 +126,19 @@ namespace std
       explicit complex(const std::string &filename):ancestor::base_pseries(filename)
         {}
 /// Constructor from coefficient.
-      explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
-        {}
+//       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
+//         {}
 /// Constructor from complex.
-      explicit complex(const piranha::complex_double &c)
-      {
-        ancestor::generic_builder(c);
-      }
+//       explicit complex(const piranha::complex_double &c)
+//       {
+//         ancestor::generic_builder(c);
+//       }
 // This is used frequently in special functions (build from (1,0),...).
 /// Constructor from pair of integers.
-      explicit complex(int r, int i)
-      {
-        ancestor::generic_builder(cf_type(real_cf_type(r),real_cf_type(i)));
-      }
+//       explicit complex(int r, int i)
+//       {
+//         ancestor::generic_builder(cf_type(real_cf_type(r),real_cf_type(i)));
+//       }
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
@@ -153,15 +157,10 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-      explicit complex(const real_type &p, const real_type &q)
-      {
-        build_from_components(p,q);
-      }
-/// Constructor from real and imaginary series from filenames.
-      explicit complex(const std::string &file1, const std::string &file2)
-      {
-        build_from_components(real_type(file1),real_type(file2));
-      }
+       explicit complex(const real_type &p, const real_type &q)
+       {
+         build_from_components(p,q);
+       }
   };
 }
 #endif

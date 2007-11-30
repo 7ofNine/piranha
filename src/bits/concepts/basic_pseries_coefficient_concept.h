@@ -42,6 +42,7 @@ namespace piranha
     public:
 // Ctors and dtor.
 /// Default constructor.
+// Cannot use static assert here since it will be always called.
       explicit basic_pseries_coefficient_concept()
       {}
 /// Constructor from string.
@@ -54,9 +55,13 @@ namespace piranha
       {
         __STATIC_ASSERTION_FAILURE;
       }
-/// Generic constructor.
-      template <class T>
-        explicit basic_pseries_coefficient_concept(const T &)
+/// Constructor from int.
+      explicit basic_pseries_coefficient_concept(int)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from double.
+      explicit basic_pseries_coefficient_concept(const double &)
       {
         __STATIC_ASSERTION_FAILURE;
       }
@@ -133,12 +138,12 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-      Model &add_self(const Model &val2)
+      Model &add(const Model &val2)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-      Model &subtract_self(const Model &val2)
+      Model &subtract(const Model &val2)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
@@ -146,42 +151,31 @@ namespace piranha
 // TODO: use proper doxygen lists in documentation below.
 /// Multiplication with self type.
 /**
- * Supports additional templated arguments because:
- *
- * - we want interoperability complex <--> real;
- *
- * - it may be needed to operate a truncation: the second generic template
+ * Supports additional templated argument because it may be needed to operate a truncation: the generic template
  * parameter provides a hook from where to fetch information about the truncation method.
  */
-      template <class T, class U>
-        Model &mult_by_self(const T &, const U &)
-      {
-        __STATIC_ASSERTION_FAILURE;
-        return *static_cast<Model *>(this);
-      }
-      Model &mult_by_int(int n)
-      {
-        __STATIC_ASSERTION_FAILURE;
-        return *static_cast<Model *>(this);
-      }
-      Model &mult_by_double(const double &x)
-      {
-        __STATIC_ASSERTION_FAILURE;
-        return *static_cast<Model *>(this);
-      }
       template <class T>
-        Model &mult_by_generic(const T &x)
+        Model &mult_by_self(const Model &, const T &)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-      Model &divide_by_int(int n)
+      Model &mult_by(int)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-      template <class T>
-        Model &divide_by_generic(const T &x)
+      Model &mult_by(const double &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+      Model &divide_by(int)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+      Model &divide_by(const double &)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
@@ -214,13 +208,33 @@ namespace piranha
       {
         __STATIC_ASSERTION_FAILURE;
       }
-/// Constructor from real and imaginary parts.
-      explicit complex_basic_pseries_coefficient_concept(const RealModel &, const RealModel &)
+/// Constructor from int.
+      explicit complex_basic_pseries_coefficient_concept(int)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from double.
+      explicit complex_basic_pseries_coefficient_concept(const double &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from real and imaginary integer parts.
+      explicit complex_basic_pseries_coefficient_concept(int, int)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from real and imaginary double parts.
+      explicit complex_basic_pseries_coefficient_concept(const double &, const double &)
       {
         __STATIC_ASSERTION_FAILURE;
       }
 /// Constructor from real type.
       explicit complex_basic_pseries_coefficient_concept(const RealModel &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from real and imaginary parts.
+      explicit complex_basic_pseries_coefficient_concept(const RealModel &, const RealModel &)
       {
         __STATIC_ASSERTION_FAILURE;
       }
@@ -240,6 +254,25 @@ namespace piranha
       }
 /// Assignment to real type.
       Model &operator=(const RealModel &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+/// Multiply by complex int.
+      Model &mult_by(const std::complex<int> &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+/// Multiply by complex double.
+      Model &mult_by(const std::complex<double> &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+/// Multiply by real type.
+      template <class T>
+        Model &mult_by_self(const RealModel &, const T &)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);

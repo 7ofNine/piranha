@@ -180,7 +180,7 @@ namespace piranha
               }
               else
               {
-                hm_p_it->cf.add_self(*c0);
+                hm_p_it->cf.add(*c0);
               }
               hm_p_it=hm.find(*term1);
               if (hm_p_it == hm.end())
@@ -189,7 +189,7 @@ namespace piranha
               }
               else
               {
-                hm_p_it->cf.add_self(*c1);
+                hm_p_it->cf.add(*c1);
               }
               ++n;
             }
@@ -212,7 +212,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         cf_type new_c=*t1.g_cf();
         new_c.mult_by_self(*t2.g_cf(),*static_cast<DerivedPs const *>(this));
-        new_c.divide_by_int(2);
+        new_c.divide_by(2);
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
       template <class Glr, class Retval, class DerivedPs2>
@@ -255,23 +255,23 @@ namespace piranha
             }
             tmp_cf = cs1[i].cf;
             tmp_cf.mult_by_self(cs2[j].cf,*derived_cast);
-            tmp_cf.divide_by_int(2);
+            tmp_cf.divide_by(2);
             const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
               tmp_index_minus = cs1[i].code - cs2[j].code;
             if (cs1[i].flavour == cs2[j].flavour)
             {
               if (cs1[i].flavour)
               {
-                s_point_cos[tmp_index_minus].first.add_self(tmp_cf);
+                s_point_cos[tmp_index_minus].first.add(tmp_cf);
                 s_point_cos[tmp_index_minus].second = true;
-                s_point_cos[tmp_index_plus].first.add_self(tmp_cf);
+                s_point_cos[tmp_index_plus].first.add(tmp_cf);
                 s_point_cos[tmp_index_plus].second = true;
               }
               else
               {
-                s_point_cos[tmp_index_minus].first.add_self(tmp_cf);
+                s_point_cos[tmp_index_minus].first.add(tmp_cf);
                 s_point_cos[tmp_index_minus].second = true;
-                s_point_cos[tmp_index_plus].first.subtract_self(tmp_cf);
+                s_point_cos[tmp_index_plus].first.subtract(tmp_cf);
                 s_point_cos[tmp_index_plus].second = true;
               }
             }
@@ -279,16 +279,16 @@ namespace piranha
             {
               if (cs1[i].flavour)
               {
-                s_point_sin[tmp_index_minus].first.subtract_self(tmp_cf);
+                s_point_sin[tmp_index_minus].first.subtract(tmp_cf);
                 s_point_sin[tmp_index_minus].second = true;
-                s_point_sin[tmp_index_plus].first.add_self(tmp_cf);
+                s_point_sin[tmp_index_plus].first.add(tmp_cf);
                 s_point_sin[tmp_index_plus].second = true;
               }
               else
               {
-                s_point_sin[tmp_index_minus].first.add_self(tmp_cf);
+                s_point_sin[tmp_index_minus].first.add(tmp_cf);
                 s_point_sin[tmp_index_minus].second = true;
-                s_point_sin[tmp_index_plus].first.add_self(tmp_cf);
+                s_point_sin[tmp_index_plus].first.add(tmp_cf);
                 s_point_sin[tmp_index_plus].second = true;
               }
             }
@@ -371,7 +371,7 @@ namespace piranha
             tmp_term2.code+=cs2[j].code;
 // Now the coefficients, all with positive signs for now.
             tmp_term1.cf.mult_by_self(cs2[j].cf,*derived_cast);
-            tmp_term1.cf.divide_by_int(2);
+            tmp_term1.cf.divide_by(2);
             tmp_term2.cf=tmp_term1.cf;
 // Now fix flavours and coefficient signs.
             if (cs1[i].flavour == cs2[j].flavour)
@@ -388,7 +388,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add_self(tmp_term1.cf);
+                cchm_p_it->cf.add(tmp_term1.cf);
               }
               cchm_p_it = cchm_cos.find(tmp_term2);
               if (cchm_p_it == cchm_cos.end())
@@ -397,7 +397,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add_self(tmp_term2.cf);
+                cchm_p_it->cf.add(tmp_term2.cf);
               }
             }
             else
@@ -414,7 +414,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add_self(tmp_term1.cf);
+                cchm_p_it->cf.add(tmp_term1.cf);
               }
               cchm_p_it = cchm_sin.find(tmp_term2);
               if (cchm_p_it == cchm_sin.end())
@@ -423,7 +423,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add_self(tmp_term2.cf);
+                cchm_p_it->cf.add(tmp_term2.cf);
               }
             }
             ++n;
