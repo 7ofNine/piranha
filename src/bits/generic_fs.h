@@ -84,8 +84,6 @@ namespace piranha
 
 namespace std
 {
-// COMPLEX COUNTERPART
-// TODO: replace value_type with value_type, as per STL.
 /// Complex specialization for Fourier series derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
@@ -140,6 +138,7 @@ namespace std
 /// Constructor from real series.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
+// TODO: use hinted insertion.
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
       explicit complex(const value_type &p)
       {
