@@ -85,7 +85,7 @@ namespace piranha
 namespace std
 {
 // COMPLEX COUNTERPART
-// TODO: replace real_type with value_type, as per STL.
+// TODO: replace value_type with value_type, as per STL.
 /// Complex specialization for Fourier series derived class.
   template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
@@ -108,7 +108,7 @@ namespace std
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for real counterpart.
-      typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> real_type;
+      typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> value_type;
 /// Alias for real coefficient.
       typedef Cf real_cf_type;
 /// Alias for self.
@@ -141,11 +141,11 @@ namespace std
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const real_type &p)
+      explicit complex(const value_type &p)
       {
         action_assert(ancestor::merge_args(p));
         term_type term;
-        typename real_type::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
+        typename value_type::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
         for (;it!=it_f;++it)
         {
           *term.s_cf()=cf_type(*it->g_cf());
@@ -155,7 +155,7 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
-       explicit complex(const real_type &p, const real_type &q)
+       explicit complex(const value_type &p, const value_type &q)
        {
          build_from_components(p,q);
        }
