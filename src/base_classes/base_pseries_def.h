@@ -193,11 +193,7 @@ namespace piranha
       {
         return cf_s_vec_.size();
       }
-/// Return reference to the vector of linear arguments.
-      vector_int16 &lin_args()
-      {
-        return lin_args_;
-      }
+/// Return const reference to the vector of linear arguments.
       const vector_int16 &lin_args() const
       {
         return lin_args_;
@@ -447,6 +443,11 @@ namespace piranha
       bool checkup() const;
       bool is_cf() const;
     protected:
+/// Return reference to the vector of linear arguments.
+      vector_int16 &lin_args()
+      {
+        return lin_args_;
+      }
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string&);
@@ -555,7 +556,6 @@ namespace piranha
         bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool is_compatible(const Derived2 &) const;
-    private:
 /// Functor to update the coefficient.
 // TODO: use swap here?
       struct modifier_update_cf
