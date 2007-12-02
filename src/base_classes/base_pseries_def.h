@@ -491,6 +491,13 @@ namespace piranha
         Derived &mult_by_generic(const T &);
       template <class T>
         Derived &divide_by_generic(const T &);
+      template <class Derived2>
+        bool series_multiplication_preliminaries(const Derived2 &, Derived &);
+      template <class Derived2>
+        bool series_multiplication_optimize_for_cf(const Derived2 &);
+      template <class Cf2, class LightTermPair>
+        static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
+        LightTermPair &, cf_type &);
     public:
 // Mathematics.
 // Assignment.
@@ -522,13 +529,6 @@ namespace piranha
       {
         return divide_by_generic(x);
       }
-      template <class Derived2>
-        bool series_multiplication_preliminaries(const Derived2 &, Derived &);
-      template <class Derived2>
-        bool series_multiplication_optimize_for_cf(const Derived2 &);
-      template <class Cf2, class LightTermPair>
-        static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
-        LightTermPair &, cf_type &);
     private:
 /// Generic builder.
       template <class T>
