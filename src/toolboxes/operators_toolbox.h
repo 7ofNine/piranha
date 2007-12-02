@@ -29,7 +29,7 @@ namespace piranha
     public:
       Derived &operator=(const Derived &p)
       {
-        return static_cast<Derived *>(this)->assign_to(p);
+        return static_cast<Derived *>(this)->assign(p);
       }
       Derived &operator+=(const double &x)
       {
@@ -124,7 +124,7 @@ namespace piranha
       typedef std::complex<real_Derived> Derived;
       Derived &operator=(const Derived &p)
       {
-        return static_cast<Derived *>(this)->assign_to(p);
+        return static_cast<Derived *>(this)->assign(p);
       }
       Derived &operator+=(const double &x)
       {
@@ -216,7 +216,7 @@ namespace piranha
 // Complex specifics.
       Derived &operator=(const real_Derived &p)
       {
-        return static_cast<Derived *>(this)->assign_to(p);
+        return static_cast<Derived *>(this)->assign(p);
       }
       Derived &operator+=(const real_Derived &p)
       {
