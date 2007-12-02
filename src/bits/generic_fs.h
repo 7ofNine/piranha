@@ -60,11 +60,13 @@ namespace piranha
       typedef typename ancestor::term_type term_type;
 /// Alias for self.
       typedef generic_fs<Cf,Trig,Term,I,Allocator> self;
-// Ctors.
+/// Empty constructor.
       generic_fs():ancestor::base_pseries()
       {}
+/// Copy constructor.
       generic_fs(const generic_fs &p):ancestor::base_pseries(p)
       {}
+/// Constructor from file.
       explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename)
       {}
 /// Constructor from int.
