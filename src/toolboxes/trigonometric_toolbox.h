@@ -33,6 +33,7 @@ namespace piranha
       {
         typedef std::complex<real_DerivedPs> complex_ps;
         typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        typedef typename DerivedPs::ancestor::term_type term_type;
         DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
         if (sym_index>=derived_cast->trig_width())
         {
@@ -67,17 +68,19 @@ namespace piranha
             action_assert(tmp1.merge_args(*derived_cast));
             tmp1.insert(*it);
             action_assert(tmp2.merge_args(*derived_cast));
-            tmp2.insert(*it);
+            term_type tmp_term = *it;
             switch (it->g_flavour())
             {
               case true:
 // Change tmp2's flavour.
-                tmp2.set_flavour(false);
+                tmp_term.s_trig()->s_flavour()=false;
+                tmp2.insert(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval-=(tmp2*=sinp);
                 break;
               case false:
-                tmp2.set_flavour(true);
+                tmp_term.s_trig()->s_flavour()=true;
+                tmp2.insert(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval+=(tmp2*=sinp);
             }

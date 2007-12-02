@@ -232,25 +232,6 @@ namespace piranha
     swap(retval);
   }
 
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::set_flavour(bool flavour)
-  {
-    Derived retval;
-    retval.lin_args_=lin_args_;
-    retval.cf_s_vec_=cf_s_vec_;
-    retval.trig_s_vec_=trig_s_vec_;
-// Insert terms from this into retval.
-    const it_h_index it_f=g_h_index().end();
-    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
-    {
-      term_type tmp_term=(*it);
-      tmp_term.s_flavour()=flavour;
-// NOTICE: use hinted insertion here?
-      retval.insert(tmp_term);
-    }
-    swap(retval);
-  }
-
 /// Swap the content of with another series.
 /**
  * All data members get swapped. This is an O(1) time operation.

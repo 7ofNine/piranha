@@ -343,7 +343,6 @@ namespace piranha
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         bool merge_args(const Derived2 &);
-      void set_flavour(bool);
 /// Add coefficient argument.
 /**
  * @param[in] psym, piranha::psymbol to be added.
