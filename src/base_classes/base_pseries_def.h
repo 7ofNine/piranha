@@ -481,7 +481,7 @@ namespace piranha
       it_s_index sdp_cutoff(const double &, const double &) const;
 // Low level maths.
       template <class Derived2>
-        Derived &assign(const Derived2 &);
+        Derived &assign_series(const Derived2 &);
       template <class Derived2, bool Sign>
         void alg_sum_lin_args(const Derived2 &);
       template <class Derived2, bool Sign>

@@ -44,7 +44,7 @@ namespace piranha
 /// Assignment from series with different coefficient.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign(const Derived2 &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign_series(const Derived2 &ps2)
   {
     if ((void *)this==(void *)&ps2)
     {
@@ -220,7 +220,7 @@ namespace piranha
     else if (is_cf())
     {
       cf_type tmp(*g_s_index().begin()->g_cf());
-      assign(ps2);
+      assign_series(ps2);
       static_cast<Derived *>(this)->cf_multiplication(tmp);
       std::cout << "Cf2\n";
       return true;

@@ -117,6 +117,8 @@ namespace piranha
       }
   };
 
+
+// Requires: complex toolbox.
   template <class real_Derived>
     class complex_operators_toolbox
   {
