@@ -27,7 +27,7 @@
 #include "base_pseries_hooks.h"
 #include "../bits/phase_list.h"
 #include "../bits/psymbol.h"
-#include "../bits/type_traits/eval_type.h"
+#include "../bits/type_traits/eval_type.h"  // For eval_type.
 
 namespace piranha
 {

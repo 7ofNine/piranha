@@ -156,6 +156,8 @@ namespace std
         }
       }
 /// Constructor from real and imaginary series.
+// TODO: here and elsewhere, we could use a ctor in complex_toolbox instead of using builder:
+// explicit complex(const value_type &p, const value_type &q):complex_toolbox(p,q) {}
        explicit complex(const value_type &p, const value_type &q)
        {
          build_from_components(p,q);
