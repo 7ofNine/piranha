@@ -92,83 +92,15 @@ namespace piranha
       typedef it_s_index iterator;
       typedef it_s_index const_iterator;
 // Ctors
-#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
-/// Default constructor.
-/**
- * Constructs a null series: empty with zero arguments.
- */
-      base_pseries():__base_pseries_init_list
-      {}
-/// Constructor from int.
-      base_pseries(int n):__base_pseries_init_list
-      {
-        generic_builder(n);
-      }
-/// Constructor from double.
-      base_pseries(const double &x):__base_pseries_init_list
-      {
-        generic_builder(x);
-      }
-/// Copy constructor.
-/**
- * Constructs a series from another one.
- */
-      base_pseries(const Derived &ps):lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),
-        trig_s_vec_(ps.trig_s_vec_),private_series_set_(*ps.g_series_set())
-      {
-        std::cout << "Copy ctor" << std::endl;
-      }
-/// Constructor from filename.
-/**
- * Read a series from file.
- */
-      explicit base_pseries(const std::string &fn):__base_pseries_init_list
-      {
-        load_from(fn);
-      }
-/// Constructor from coefficient.
-/**
- * Constructs a series consisting of a single cosine term with zero trigonometric arguments,
- * provided coefficient and same set of arguments as model.
- * @see base_pseries::cf_type.
- */
-      explicit base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
-      {
-        hard_assert(merge_args(model));
-        if (c.larger(cf_width()))
-        {
-          std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
-          return;
-        }
-        generic_builder(c);
-      }
-/// Constructor from piranha::psymbol.
-      explicit base_pseries(const psymbol &psym, psymbol::type ptype):__base_pseries_init_list
-      {
-// TODO: replace with switch statement.
-        if (ptype == psymbol::cf)
-        {
-// When building to cf create a coefficient from the symvol.
-          append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-          cf_type c(psym);
-          term_type term(c);
-          insert(term);
-        }
-        else if (ptype == psymbol::trig)
-        {
-// When building to trig assign argument in lin_args.
-          append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-          lin_args_[0]=1;
-        }
-        else
-        {
-          p_assert(false);
-        }
-      }
-#undef __base_pseries_init_list
+      explicit base_pseries();
+      explicit base_pseries(int);
+      explicit base_pseries(const double &);
+      base_pseries(const Derived &);
+      explicit base_pseries(const std::string &);
+      explicit base_pseries(const cf_type &, const Derived &);
+      explicit base_pseries(const psymbol &, psymbol::type);
 /// Destructor.
-      ~base_pseries()
-      {}
+      ~base_pseries();
 /// Copy.
       Derived copy() const
       {
