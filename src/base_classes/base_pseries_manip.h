@@ -232,6 +232,26 @@ namespace piranha
     swap(retval);
   }
 
+/// Add coefficient argument.
+/**
+ * @param[in] psym, piranha::psymbol to be added.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::add_cf_arg(const psymbol &psym)
+  {
+    append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+  }
+
+/// Add trigonometric argument.
+/**
+ * @param[in] psym, piranha::psymbol to be added.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::add_trig_arg(const psymbol &psym)
+  {
+    append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+  }
+
 /// Swap the content of with another series.
 /**
  * All data members get swapped. This is an O(1) time operation.
