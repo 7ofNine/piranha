@@ -23,6 +23,9 @@
 
 namespace piranha
 {
+// GETTERS
+// ===============================
+
 /// Return series length.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::length() const
@@ -164,6 +167,53 @@ namespace piranha
   {
     return g_s_index().end();
   }
-}
 
+// SETTERS
+// ===============================
+
+/// Return mutable reference to the vector of linear arguments.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline vector_int16 &base_pseries<__PIRANHA_BASE_PS_TP>::lin_args()
+  {
+    return lin_args_;
+  }
+
+/// Return mutable reference to the vector of coefficient symbols.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::cf_s_vec()
+  {
+    return cf_s_vec_;
+  }
+
+/// Return mutable reference to the vector of trigonometric symbols.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::trig_s_vec()
+  {
+    return trig_s_vec_;
+  }
+
+/// Return mutable reference to the set of terms.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::series_set_type *
+    base_pseries<__PIRANHA_BASE_PS_TP>::s_series_set()
+  {
+    return &private_series_set_;
+  }
+
+/// Return mutable reference to the sorted index.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::sorted_index &
+    base_pseries<__PIRANHA_BASE_PS_TP>::s_s_index()
+  {
+    return s_series_set()->template get<0>();
+  }
+
+/// Return mutable reference to the hashed index.
+ template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::hashed_index &
+    base_pseries<__PIRANHA_BASE_PS_TP>::s_h_index()
+  {
+    return s_series_set()->template get<1>();
+  }
+}
 #endif

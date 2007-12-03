@@ -246,38 +246,13 @@ namespace piranha
       bool checkup() const;
       bool is_cf() const;
     protected:
-/// Return reference to the vector of linear arguments.
-      vector_int16 &lin_args()
-      {
-        return lin_args_;
-      }
-/// Return reference to the vector of coefficient symbols.
-      vector_psym_p &cf_s_vec()
-      {
-        return cf_s_vec_;
-      }
-/// Return a reference to the vector of trigonometric symbols.
-      vector_psym_p &trig_s_vec()
-      {
-        return trig_s_vec_;
-      }
-/// Return a reference to the set of terms.
-      series_set_type *s_series_set()
-      {
-        return &private_series_set_;
-      }
-/// Return a mutable reference to the sorted index.
-      sorted_index &s_s_index()
-      {
-        return s_series_set()->template get
-          <0>();
-      }
-/// Return a mutable reference to the hashed index.
-      hashed_index &s_h_index()
-      {
-        return s_series_set()->template get
-          <1>();
-      }
+// Setters.
+      vector_int16 &lin_args();
+      vector_psym_p &cf_s_vec();
+      vector_psym_p &trig_s_vec();
+      series_set_type *s_series_set();
+      sorted_index &s_s_index();
+      hashed_index &s_h_index();
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string&);
