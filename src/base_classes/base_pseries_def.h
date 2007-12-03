@@ -67,15 +67,16 @@ namespace piranha
  * @see base_pseries::t_eval.
  */
       typedef typename eval_type<cf_type>::type eval_type;
+/// Alias for terms set type.
       typedef typename boost::multi_index_container <term_type,typename index_type::type,allocator_type>
         series_set_type;
-/// Alias for the sorted index.
+/// Alias for sorted index.
       typedef typename series_set_type::template nth_index<0>::type sorted_index;
 /// Alias for the iterator on sorted index.
       typedef typename sorted_index::const_iterator it_s_index;
 /// Alias for the reversed iterator on sorted index.
       typedef typename sorted_index::const_reverse_iterator r_it_s_index;
-/// Alias for the hashed index.
+/// Alias for hashed index.
       typedef typename series_set_type::template nth_index<1>::type hashed_index;
 /// Alias for the iterator on hashed index.
       typedef typename hashed_index::const_iterator it_h_index;
