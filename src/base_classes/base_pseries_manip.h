@@ -27,6 +27,14 @@
 
 namespace piranha
 {
+/// Find term.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_h_index
+    base_pseries<__PIRANHA_BASE_PS_TP>::find_term(const term_type &t) const
+  {
+    return g_h_index().find(*t.g_trig());
+  }
+
 /// Add phase to a term and insert the resulting terms in an external series.
 /**
  * A source term is added a phase, thus generating two terms without phases by trigonometric

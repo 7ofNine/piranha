@@ -171,10 +171,6 @@ namespace piranha
       void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
-      it_h_index find_term(const term_type &t) const
-      {
-        return g_h_index().find(*t.g_trig());
-      }
       it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
       void term_update(const it_h_index &, cf_type &);
       it_s_index ll_insert(const term_type &, bool, const it_s_index *);
@@ -240,13 +236,16 @@ namespace piranha
         return divide_by_generic(x);
       }
     private:
+// Private ctors.
       template <class T>
         void generic_builder(const T &);
+// Private probing.
       template <class Derived2>
         bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool is_compatible(const Derived2 &) const;
 // Private manipulation.
+      it_h_index find_term(const term_type &) const;
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);
