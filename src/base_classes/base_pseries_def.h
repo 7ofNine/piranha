@@ -234,7 +234,7 @@ namespace piranha
       }
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
-      void swap(Derived &);
+      Derived &swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
       void crop(const it_s_index &);

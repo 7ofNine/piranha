@@ -93,7 +93,7 @@ namespace piranha
       void increase_size(const size_t &);
       void append_args(const size_t &);
       void prepend_args(const size_t &);
-      void swap(Derived &);
+      Derived &swap(Derived &);
       void clear()
       {
         set_.clear();

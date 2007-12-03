@@ -237,7 +237,7 @@ namespace piranha
  * All data members get swapped. This is an O(1) time operation.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::swap(Derived &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::swap(Derived &ps2)
   {
 // Swap sets' contents
     s_series_set()->swap(*ps2.s_series_set());
@@ -246,6 +246,7 @@ namespace piranha
     trig_s_vec_.swap(ps2.trig_s_vec_);
     lin_args_.swap(ps2.lin_args_);
     static_cast<Derived *>(this)->swap_hook(ps2);
+    return *static_cast<Derived *>(this);
   }
 
 // Insert a term into the series
