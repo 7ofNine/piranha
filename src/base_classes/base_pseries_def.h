@@ -126,12 +126,6 @@ namespace piranha
       Derived &swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
-      void crop(const it_s_index &);
-      void spectral_cutoff(const double &, const double &);
-      template <class Derived2>
-        bool merge_args(const Derived2 &);
-      void add_cf_arg(const psymbol &);
-      void add_trig_arg(const psymbol &);
 // I/O
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
@@ -222,6 +216,12 @@ namespace piranha
       sorted_index &s_s_index();
       hashed_index &s_h_index();
 // Low level manipulation.
+      void crop(const it_s_index &);
+      void spectral_cutoff(const double &, const double &);
+      template <class Derived2>
+        bool merge_args(const Derived2 &);
+      void add_cf_arg(const psymbol &);
+      void add_trig_arg(const psymbol &);
       it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
       it_s_index insert_no_sign_check(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
       template <class Cf2>
