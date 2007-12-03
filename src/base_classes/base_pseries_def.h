@@ -135,15 +135,12 @@ namespace piranha
       void save_to(const std::string &) const;
       void put_phases_freqs(int limit) const;
       void put_phases_freqs() const;
-// Probing.
+// Public probing.
       bool is_empty() const;
-      double trig_density() const;
       size_t footprint() const;
       double g_norm() const;
-      it_s_index discontinuity() const;
       eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;
-      size_t trig_index(const std::string &) const;
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
@@ -186,9 +183,12 @@ namespace piranha
         bool, const it_s_index *);
       template <bool CheckTrigSign>
         it_s_index insert_(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
-// Low level probing.
+// Protected probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
-// Low level maths.
+      it_s_index discontinuity() const;
+      size_t trig_index(const std::string &) const;
+      double trig_density() const;
+// Protected maths.
       template <class Derived2>
         Derived &assign_series(const Derived2 &);
       template <class Derived2, bool Sign>
