@@ -58,9 +58,13 @@ namespace piranha
       typedef Trig trig_type;
 /// Alias for term type.
       typedef Term<cf_type,trig_type> term_type;
+/// Alias for index type.
       typedef I<cf_type,trig_type,Term> index_type;
+/// Alias for derived series.
       typedef Derived derived_type;
+/// Alias for allocator type.
       typedef Allocator allocator_type;
+/// Alias for allocator rebinding to term_type.
       typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
 /// Alias for the evaluation type.
 /**
