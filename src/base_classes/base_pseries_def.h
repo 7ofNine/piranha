@@ -126,7 +126,6 @@ namespace piranha
       void cumulative_crop(const double &);
       void crop(const double &);
       void crop(const it_s_index &);
-      void insert_phases(const phase_list &);
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         bool merge_args(const Derived2 &);
@@ -224,8 +223,7 @@ namespace piranha
       eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;
       size_t trig_index(const std::string &) const;
-      eval_type mean(const double &, const double &,
-        const size_t &n = 1000) const;
+      eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
     protected:
@@ -330,6 +328,7 @@ namespace piranha
 // Manipulation.
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
+      void insert_phases(const phase_list &);
 // Low-level I/O.
       void print_terms_plain(std::ostream &, int ) const;
       void print_terms_latex(std::ostream &, int ) const;
