@@ -377,12 +377,10 @@ namespace piranha
         cf_type *new_cf_;
       };
 // Data members.
-    protected:
       vector_int16    lin_args_;
       vector_psym_p   cf_s_vec_;
       vector_psym_p   trig_s_vec_;
       series_set_type private_series_set_;
-    private:
       static term_allocator_type term_allocator;
   };
 
