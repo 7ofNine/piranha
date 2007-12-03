@@ -334,19 +334,6 @@ namespace piranha
         *(term.s_cf()) = cf_type(x);
         insert(term);
       }
-/// Name comparison functor for psymbol pointers.
-/**
- * Used in merging of arguments.
- */
-      struct psym_p_cmp
-      {
-        psym_p_cmp()
-          {}
-        bool operator()(psym_p p1, psym_p p2) const
-        {
-          return (p1->name()<p2->name());
-        }
-      };
       template <class Derived2>
         bool args_different(const Derived2 &) const;
       template <class Derived2>
@@ -361,14 +348,21 @@ namespace piranha
       void read_trig_arg(std::ifstream &);
       void read_lin_args(std::ifstream &);
       void read_terms(std::ifstream &, const std::string &);
+// Functors.
+//Name comparison functor for psymbol pointers. Used in merging of arguments.
+      struct psym_p_cmp
+      {
+        psym_p_cmp() {}
+        bool operator()(psym_p p1, psym_p p2) const
+        {
+          return (p1->name()<p2->name());
+        }
+      };
 /// Functor to update the coefficient.
-// TODO: use swap here?
       struct modifier_update_cf
       {
-        modifier_update_cf(cf_type &new_cf):new_cf_(&new_cf)
-          {}
-        ~modifier_update_cf()
-          {}
+        modifier_update_cf(cf_type &new_cf):new_cf_(&new_cf) {}
+        ~modifier_update_cf() {}
         void operator()(term_type &term)
         {
           term.s_cf()->swap(*new_cf_);
