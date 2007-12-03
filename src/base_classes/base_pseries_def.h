@@ -123,19 +123,9 @@ namespace piranha
       {
         return lin_args_;
       }
-/// Return reference to the vector of coefficient symbols.
-      vector_psym_p &cf_s_vec()
-      {
-        return cf_s_vec_;
-      }
       const vector_psym_p &cf_s_vec() const
       {
         return cf_s_vec_;
-      }
-/// Return a reference to the vector of trigonometric symbols.
-      vector_psym_p &trig_s_vec()
-      {
-        return trig_s_vec_;
       }
       const vector_psym_p &trig_s_vec() const
       {
@@ -143,11 +133,6 @@ namespace piranha
       }
 /// Return a const reference to the set of terms.
       const series_set_type *g_series_set() const
-      {
-        return &private_series_set_;
-      }
-/// Return a reference to the set of terms.
-      series_set_type *s_series_set()
       {
         return &private_series_set_;
       }
@@ -371,6 +356,21 @@ namespace piranha
       vector_int16 &lin_args()
       {
         return lin_args_;
+      }
+/// Return reference to the vector of coefficient symbols.
+      vector_psym_p &cf_s_vec()
+      {
+        return cf_s_vec_;
+      }
+/// Return a reference to the vector of trigonometric symbols.
+      vector_psym_p &trig_s_vec()
+      {
+        return trig_s_vec_;
+      }
+/// Return a reference to the set of terms.
+      series_set_type *s_series_set()
+      {
+        return &private_series_set_;
       }
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
