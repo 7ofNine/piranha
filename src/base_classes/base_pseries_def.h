@@ -99,13 +99,8 @@ namespace piranha
       explicit base_pseries(const std::string &);
       explicit base_pseries(const cf_type &, const Derived &);
       explicit base_pseries(const psymbol &, psymbol::type);
-/// Destructor.
       ~base_pseries();
-/// Copy.
-      Derived copy() const
-      {
-        return Derived(*static_cast<Derived const *>(this));
-      }
+      Derived copy() const;
 // Getters
 /// Return series length.
       size_t length() const

@@ -109,6 +109,16 @@ namespace piranha
 /// Destructor.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::~base_pseries() {}
+
+/// Copy.
+/**
+ * Returns a copy of this.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived base_pseries<__PIRANHA_BASE_PS_TP>::copy() const
+  {
+    return Derived(*static_cast<Derived const *>(this));
+  }
 #undef __base_pseries_init_list
 }
 
