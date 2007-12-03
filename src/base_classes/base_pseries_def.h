@@ -184,17 +184,6 @@ namespace piranha
         }
         return retval;
       }
-// Setters for indices.
-      sorted_index &s_s_index()
-      {
-        return s_series_set()->template get
-          <0>();
-      }
-      hashed_index &s_h_index()
-      {
-        return s_series_set()->template get
-          <1>();
-      }
 /// Return a numerical value corresponding to the memory address of the series.
       size_t address() const
       {
@@ -371,6 +360,18 @@ namespace piranha
       series_set_type *s_series_set()
       {
         return &private_series_set_;
+      }
+/// Return a mutable reference to the sorted index.
+      sorted_index &s_s_index()
+      {
+        return s_series_set()->template get
+          <0>();
+      }
+/// Return a mutable reference to the hashed index.
+      hashed_index &s_h_index()
+      {
+        return s_series_set()->template get
+          <1>();
       }
 // Low level I/O.
       void read_data_from_file(std::ifstream &, const std::string &);
