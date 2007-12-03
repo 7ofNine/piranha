@@ -237,26 +237,12 @@ namespace piranha
       sorted_index &s_s_index();
       hashed_index &s_h_index();
 // Low level manipulation.
-      it_s_index insert(const term_type &term, bool sign = true, const it_s_index *it_hint = 0)
-      {
-        return insert_<true>(term,sign,it_hint);
-      }
-      it_s_index insert_no_sign_check(const term_type &term, bool sign = true, const it_s_index *it_hint = 0)
-      {
-        return insert_<false>(term,sign,it_hint);
-      }
+      it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
+      it_s_index insert_no_sign_check(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
       template <class Cf2>
-        it_s_index insert(const Term<Cf2, trig_type> &term,
-        bool sign = true, const it_s_index *it_hint = 0)
-      {
-        return insert_<true>(term_type(term),sign,it_hint);
-      }
+        it_s_index insert(const Term<Cf2, trig_type> &, bool sign = true, const it_s_index *it_hint = 0);
       template <class Cf2>
-        it_s_index insert_no_sign_check(const Term<Cf2, trig_type> &term,
-        bool sign = true, const it_s_index *it_hint = 0)
-      {
-        return insert_<false>(term_type(term),sign,it_hint);
-      }
+        it_s_index insert_no_sign_check(const Term<Cf2, trig_type> &, bool sign = true, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;

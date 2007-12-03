@@ -587,5 +587,38 @@ namespace piranha
   {
     crop(sdp_cutoff(achieved_tdp,desired_sdp));
   }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
+    base_pseries<__PIRANHA_BASE_PS_TP>::insert(const term_type &term, bool sign, const it_s_index *it_hint)
+  {
+    return insert_<true>(term,sign,it_hint);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
+    base_pseries<__PIRANHA_BASE_PS_TP>::insert_no_sign_check(const term_type &term, bool sign,
+    const it_s_index *it_hint)
+  {
+    return insert_<false>(term,sign,it_hint);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Cf2>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
+    base_pseries<__PIRANHA_BASE_PS_TP>::insert(const Term<Cf2, trig_type> &term,
+    bool sign, const it_s_index *it_hint)
+  {
+    return insert_<true>(term_type(term),sign,it_hint);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Cf2>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
+    base_pseries<__PIRANHA_BASE_PS_TP>::insert_no_sign_check(const Term<Cf2, trig_type> &term,
+    bool sign, const it_s_index *it_hint)
+  {
+    return insert_<false>(term_type(term),sign,it_hint);
+  }
 }
 #endif
