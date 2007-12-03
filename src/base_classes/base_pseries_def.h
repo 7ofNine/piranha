@@ -253,16 +253,6 @@ namespace piranha
       series_set_type *s_series_set();
       sorted_index &s_s_index();
       hashed_index &s_h_index();
-// Low level I/O.
-      void read_data_from_file(std::ifstream &, const std::string &);
-      void load_from(const std::string&);
-      void identify_sections(std::ifstream &, const std::string &);
-      void read_cf_arg(std::ifstream &);
-      void read_trig_arg(std::ifstream &);
-      void read_lin_args(std::ifstream &);
-      void read_terms(std::ifstream &, const std::string &);
-      void print_terms_plain(std::ostream &, int ) const;
-      void print_terms_latex(std::ostream &, int ) const;
 // Low level manipulation.
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
@@ -361,6 +351,16 @@ namespace piranha
         bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool is_compatible(const Derived2 &) const;
+// Low-level I/O.
+      void print_terms_plain(std::ostream &, int ) const;
+      void print_terms_latex(std::ostream &, int ) const;
+      void read_data_from_file(std::ifstream &, const std::string &);
+      void load_from(const std::string&);
+      void identify_sections(std::ifstream &, const std::string &);
+      void read_cf_arg(std::ifstream &);
+      void read_trig_arg(std::ifstream &);
+      void read_lin_args(std::ifstream &);
+      void read_terms(std::ifstream &, const std::string &);
 /// Functor to update the coefficient.
 // TODO: use swap here?
       struct modifier_update_cf
