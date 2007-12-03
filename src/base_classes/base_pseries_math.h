@@ -255,7 +255,7 @@ namespace piranha
     template <class T>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_generic(const T &c)
   {
-    if (empty())
+    if (is_empty())
     {
       return *static_cast<Derived *>(this);
     }
@@ -315,7 +315,7 @@ namespace piranha
       std::abort();
       return;
     }
-    if (empty())
+    if (is_empty())
     {
       return;
     }

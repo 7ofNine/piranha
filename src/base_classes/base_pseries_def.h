@@ -136,7 +136,7 @@ namespace piranha
       void put_phases_freqs(int limit) const;
       void put_phases_freqs() const;
 // Probing.
-      bool empty() const;
+      bool is_empty() const;
       double trig_density() const;
       size_t footprint() const;
       double g_norm() const;

@@ -328,7 +328,7 @@ namespace piranha
 
 /// Check whether a series is empty or not.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::empty() const
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_empty() const
   {
     return g_series_set()->empty();
   }
@@ -342,10 +342,6 @@ namespace piranha
   {
     const iterator it_f=end();
     double retval=0;
-    if (empty())
-    {
-      return retval;
-    }
     size_t count=0;
     for (iterator it=begin();it!=it_f;++it)
     {

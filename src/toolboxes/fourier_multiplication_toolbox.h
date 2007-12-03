@@ -46,7 +46,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs::ancestor::it_s_index it_s_index;
         DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
-        if (derived_cast->empty())
+        if (derived_cast->is_empty())
         {
           return;
         }
