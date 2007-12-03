@@ -23,6 +23,7 @@
 
 namespace piranha
 {
+/// Initializer list for base_pseries constructors.
 #define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
 /// Default constructor.
 /**
