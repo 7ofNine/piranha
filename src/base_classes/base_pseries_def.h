@@ -313,14 +313,8 @@ namespace piranha
         return divide_by_generic(x);
       }
     private:
-/// Generic builder.
       template <class T>
-        void generic_builder(const T &x)
-      {
-        term_type term = term_type();
-        *(term.s_cf()) = cf_type(x);
-        insert(term);
-      }
+        void generic_builder(const T &);
       template <class Derived2>
         bool args_different(const Derived2 &) const;
       template <class Derived2>

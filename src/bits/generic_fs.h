@@ -38,7 +38,8 @@ namespace piranha
  * This derived class provides support for complex arithmetic and for trigonometric operations on
  * Fourier series. Multiplication is norm-truncated.
  */
-  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
+  template <class Cf, class Trig, template <class,class> class Term,
+    template <class,class, template <class, class> class > class I, class Allocator=std::allocator<char> >
     class generic_fs:
     public base_pseries<Cf,Trig,Term,I,generic_fs<Cf,Trig,Term,I,Allocator>,Allocator>,
     public real_operators_toolbox<generic_fs<Cf,Trig,Term,I,Allocator> >,
@@ -89,7 +90,8 @@ namespace piranha
 namespace std
 {
 /// Complex specialization for Fourier series derived class.
-  template <class Cf, class Trig, template <class,class> class Term, template <class,class, template <class, class> class > class I, class Allocator>
+  template <class Cf, class Trig, template <class,class> class Term,
+    template <class,class, template <class, class> class > class I, class Allocator>
     struct complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >:
     public piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,Allocator>,
     public piranha::complex_operators_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
@@ -163,10 +165,10 @@ namespace std
 /// Constructor from real and imaginary series.
 // TODO: here and elsewhere, we could use a ctor in complex_toolbox instead of using builder:
 // explicit complex(const value_type &p, const value_type &q):complex_toolbox(p,q) {}
-       explicit complex(const value_type &p, const value_type &q)
-       {
-         build_from_components(p,q);
-       }
+      explicit complex(const value_type &p, const value_type &q)
+      {
+        build_from_components(p,q);
+      }
   };
 }
 #endif

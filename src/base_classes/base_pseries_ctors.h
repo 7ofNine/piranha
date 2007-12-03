@@ -25,6 +25,7 @@ namespace piranha
 {
 /// Initializer list for base_pseries constructors.
 #define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
+
 /// Default constructor.
 /**
  * Constructs a null series: empty with zero arguments.
@@ -111,6 +112,8 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::~base_pseries() {}
 
+#undef __base_pseries_init_list
+
 /// Copy.
 /**
  * Returns a copy of this.
@@ -120,7 +123,16 @@ namespace piranha
   {
     return Derived(*static_cast<Derived const *>(this));
   }
-#undef __base_pseries_init_list
+
+/// Generic builder.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class T>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_builder(const T &x)
+  {
+    term_type term = term_type();
+    *(term.s_cf()) = cf_type(x);
+    insert(term);
+  }
 }
 
 #endif
