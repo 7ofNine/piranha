@@ -403,6 +403,27 @@ namespace piranha
     put(-1);
   }
 
+/// Print to screen the first n terms, without series' header.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_terms(int n) const
+  {
+    switch (stream_manager::format())
+    {
+      case stream_manager::plain:
+        print_terms_plain(std::cout,n);
+        break;
+      case stream_manager::latex:
+        print_terms_latex(std::cout,n);
+    }
+  }
+
+/// Put all terms, without series' header.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_terms() const
+  {
+    put_terms(-1);
+  }
+
 /// Save series to file.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::save_to(const std::string &filename) const
@@ -418,19 +439,19 @@ namespace piranha
     outf.close();
   }
 
-/// Print to screen frequencies and phases.
+/// Print to screen first n frequencies and phases.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_phases_freqs(int limit) const
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_phases_freqs(int n) const
   {
     stream_manager::setup_print(std::cout);
     size_t i=0, lim;
-    if (limit==0)
+    if (n == 0)
     {
       lim=length();
     }
     else
     {
-      lim=limit;
+      lim=n;
     }
     for (iterator it=begin();it!=end();++it)
     {
@@ -443,6 +464,13 @@ namespace piranha
         break;
       }
     }
+  }
+
+/// Print to screen all frequencies and phases.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_phases_freqs() const
+  {
+    put_phases_freqs(-1);
   }
 }
 #endif

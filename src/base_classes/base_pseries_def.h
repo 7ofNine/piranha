@@ -97,7 +97,7 @@ namespace piranha
       typedef it_s_index iterator;
 /// Const counterpart of base_pseries::iterator.
       typedef it_s_index const_iterator;
-// Ctors
+// Ctors.
       explicit base_pseries();
       explicit base_pseries(int);
       explicit base_pseries(const double &);
@@ -107,7 +107,7 @@ namespace piranha
       explicit base_pseries(const psymbol &, psymbol::type);
       ~base_pseries();
       Derived copy() const;
-// Getters
+// Getters.
       size_t length() const;
       size_t trig_width() const;
       size_t cf_width() const;
@@ -122,57 +122,22 @@ namespace piranha
       size_t address() const;
       it_s_index begin() const;
       it_s_index end() const;
-// Basic manipulation
+// Public manipulation.
       Derived &swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
+// Public I/O.
       void print(std::ostream &, int limit=-1) const;
       void put(int) const;
       void put() const;
-/// Print to screen the first "limit" terms, without series' header.
-      void put_terms(int limit) const
-      {
-        switch (stream_manager::format())
-        {
-          case stream_manager::plain:
-            print_terms_plain(std::cout,limit);
-            break;
-          case stream_manager::latex:
-            print_terms_latex(std::cout,limit);
-        }
-      }
-      void put_terms() const
-      {
-        put_terms(-1);
-      }
+      void put_terms(int) const;
+      void put_terms() const;
       void save_to(const std::string &) const;
       void put_phases_freqs(int limit) const;
-      void put_phases_freqs() const
-      {
-        put_phases_freqs(-1);
-      }
+      void put_phases_freqs() const;
 // Probing.
-/// Check whether a series is empty or not.
-      bool empty() const
-      {
-        return g_series_set()->empty();
-      }
-      double trig_density() const
-      {
-        const iterator it_f=end();
-        double retval=0;
-        if (empty())
-        {
-          return retval;
-        }
-        size_t count=0;
-        for (iterator it=begin();it!=it_f;++it)
-        {
-          retval+=it->g_trig()->density(*this);
-          ++count;
-        }
-        return (retval/count);
-      }
+      bool empty() const;
+      double trig_density() const;
       size_t footprint() const;
       double g_norm() const;
       it_s_index discontinuity() const;
@@ -190,7 +155,7 @@ namespace piranha
       series_set_type *s_series_set();
       sorted_index &s_s_index();
       hashed_index &s_h_index();
-// Low level manipulation.
+// Protected manipulation.
       void crop(const it_s_index &);
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
@@ -244,7 +209,7 @@ namespace piranha
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         LightTermPair &, cf_type &);
     public:
-// Mathematics.
+// Public mathematics.
 // Assignment.
       Derived &assign(const Derived &);
 // Addition.
@@ -281,11 +246,11 @@ namespace piranha
         bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool is_compatible(const Derived2 &) const;
-// Manipulation.
+// Private manipulation.
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);
-// Low-level I/O.
+// Private I/O.
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_terms_plain(std::ostream &, int ) const;
@@ -307,7 +272,7 @@ namespace piranha
           return (p1->name()<p2->name());
         }
       };
-/// Functor to update the coefficient.
+// Functor to update the coefficient.
       struct modifier_update_cf
       {
         modifier_update_cf(cf_type &new_cf):new_cf_(&new_cf) {}
