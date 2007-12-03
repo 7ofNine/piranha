@@ -371,6 +371,38 @@ namespace piranha
     out_stream << "\\end{xtabular}" << std::endl;
   }
 
+/// Print series to stream.
+/**
+ * Print first "limit" terms. If limit is negative, print all terms. The output format is read
+ * from the piranha::stream_manager class.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::print(std::ostream &out_stream, int limit) const
+  {
+    switch (stream_manager::format())
+    {
+      case stream_manager::plain:
+        print_plain(out_stream,limit);
+        break;
+      case stream_manager::latex:
+        print_latex(out_stream,limit);
+    }
+  }
+
+/// Print to screen the first n terms, including series' header.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put(int n) const
+  {
+    print(std::cout,n);
+  }
+
+/// Put all terms, including series' header.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::put() const
+  {
+    put(-1);
+  }
+
 /// Save series to file.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::save_to(const std::string &filename) const

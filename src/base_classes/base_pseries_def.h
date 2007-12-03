@@ -126,34 +126,9 @@ namespace piranha
       Derived &swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
-// I/O
-      void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
-      void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
-/// Print series to std::ostream.
-/**
- * Print first "limit" terms. If limit is negative, print all terms. The output format is read
- * from the piranha::stream_manager class.
- */
-      void print(std::ostream &out_stream, int limit=-1) const
-      {
-        switch (stream_manager::format())
-        {
-          case stream_manager::plain:
-            print_plain(out_stream,limit);
-            break;
-          case stream_manager::latex:
-            print_latex(out_stream,limit);
-        }
-      }
-/// Print to screen the first n terms, including series' header.
-      void put(int n) const
-      {
-        print(std::cout,n);
-      }
-      void put() const
-      {
-        put(-1);
-      }
+      void print(std::ostream &, int limit=-1) const;
+      void put(int) const;
+      void put() const;
 /// Print to screen the first "limit" terms, without series' header.
       void put_terms(int limit) const
       {
@@ -311,6 +286,8 @@ namespace piranha
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);
 // Low-level I/O.
+      void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
+      void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_terms_plain(std::ostream &, int ) const;
       void print_terms_latex(std::ostream &, int ) const;
       void read_data_from_file(std::ifstream &, const std::string &);
