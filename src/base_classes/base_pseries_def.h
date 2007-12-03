@@ -102,115 +102,20 @@ namespace piranha
       ~base_pseries();
       Derived copy() const;
 // Getters
-/// Return series length.
-      size_t length() const
-      {
-        return g_series_set()->size();
-      }
-/// Return trigonometric width.
-      size_t trig_width() const
-      {
-//p_assert(trig_s_vec_.size()==lin_args_.size());
-        return trig_s_vec_.size();
-      }
-/// Return coefficient width.
-      size_t cf_width() const
-      {
-        return cf_s_vec_.size();
-      }
-/// Return const reference to the vector of linear arguments.
-      const vector_int16 &lin_args() const
-      {
-        return lin_args_;
-      }
-      const vector_psym_p &cf_s_vec() const
-      {
-        return cf_s_vec_;
-      }
-      const vector_psym_p &trig_s_vec() const
-      {
-        return trig_s_vec_;
-      }
-/// Return a const reference to the set of terms.
-      const series_set_type *g_series_set() const
-      {
-        return &private_series_set_;
-      }
-/// Return a const reference to the sorted index.
-/**
- * @see base_pseries::sorted_index.
- */
-      const sorted_index &g_s_index() const
-      {
-        return g_series_set()->template get
-          <0>();
-      }
-/// Return a const reference to the hashed index.
-/**
- * @see base_pseries::hashed_index.
- */
-      const hashed_index &g_h_index() const
-      {
-        return g_series_set()->template get
-          <1>();
-      }
-/// Return index of coefficient argument "name".
-      int cf_arg_index(const std::string &name) const
-      {
-        int retval=-1;
-        const size_t w=cf_width();
-        for (size_t i=0;i<w;++i)
-        {
-          if (cf_s_vec_[i]->name()==name)
-          {
-            retval=(int)i;
-            break;
-          }
-        }
-        return retval;
-      }
-/// Return index of trigonometric argument "name".
-      int trig_arg_index(const std::string &name) const
-      {
-        int retval=-1;
-        const size_t w=trig_width();
-        for (size_t i=0;i<w;++i)
-        {
-          if (trig_s_vec_[i]->name()==name)
-          {
-            retval=(int)i;
-            break;
-          }
-        }
-        return retval;
-      }
-/// Return a numerical value corresponding to the memory address of the series.
-      size_t address() const
-      {
-        return (size_t)(void *)this;
-      }
-/// Begin of series.
-/**
- * Returns an iterator pointing to the first term of the series. This allows to mimic the behaviour
- * of an STL container.
- * @see base_pseries::end().
- * @see base_pseries::iterator.
- */
-      it_s_index begin() const
-      {
-        return g_s_index().begin();
-      }
-/// End of series.
-/**
- * Returns an iterator pointing to the last term of the series. This allows to mimic the behaviour
- * of an STL container.
- * @see base_pseries::begin().
- * @see base_pseries::iterator.
- */
-      it_s_index end() const
-      {
-        return g_s_index().end();
-      }
+      size_t length() const;
+      size_t trig_width() const;
+      size_t cf_width() const;
+      const vector_int16 &lin_args() const;
+      const vector_psym_p &cf_s_vec() const;
+      const vector_psym_p &trig_s_vec() const;
+      const series_set_type *g_series_set() const;
+      const sorted_index &g_s_index() const;
+      const hashed_index &g_h_index() const;
+      int cf_arg_index(const std::string &) const;
+      int trig_arg_index(const std::string &) const;
+      size_t address() const;
+      it_s_index begin() const;
+      it_s_index end() const;
 // Basic manipulation
       it_s_index insert(const term_type &term, bool sign = true, const it_s_index *it_hint = 0)
       {

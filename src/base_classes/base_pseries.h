@@ -23,6 +23,7 @@
 
 #include "base_pseries_def.h"
 #include "base_pseries_ctors.h"
+#include "base_pseries_getters_and_setters.h"
 #include "base_pseries_io.h"
 #include "base_pseries_manip.h"
 #include "base_pseries_math.h"
