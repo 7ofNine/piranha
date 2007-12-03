@@ -245,8 +245,6 @@ namespace piranha
         it_s_index insert_no_sign_check(const Term<Cf2, trig_type> &, bool sign = true, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
-      void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
-      void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void append_cf_args(const vector_psym_p &);
       void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
@@ -329,6 +327,9 @@ namespace piranha
         bool args_different(const Derived2 &) const;
       template <class Derived2>
         bool is_compatible(const Derived2 &) const;
+// Manipulation.
+      void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
+      void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
 // Low-level I/O.
       void print_terms_plain(std::ostream &, int ) const;
       void print_terms_latex(std::ostream &, int ) const;
