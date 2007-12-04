@@ -47,26 +47,19 @@ namespace piranha
 // Start interface implementation.
 // Ctors.
 /// Default constructor.
-      explicit numerical_container():value_(0)
-      {}
+      explicit numerical_container():value_(0) {}
 /// Constructor from string.
-      explicit numerical_container(const std::string &s):value_(utils::lexical_converter<T>(s))
-      {}
+      explicit numerical_container(const std::string &s):value_(utils::lexical_converter<T>(s)) {}
 /// Constructor from piranha::psymbol.
-      explicit numerical_container(const psymbol &):value_(0)
-      {}
+      explicit numerical_container(const psymbol &):value_(0) {}
 /// Constructor from int.
-      explicit numerical_container(int n):value_(n)
-      {}
+      explicit numerical_container(int n):value_(n) {}
 /// Constructor from double.
-      explicit numerical_container(const double &x):value_(x)
-      {}
+      explicit numerical_container(const double &x):value_(x) {}
 /// Copy constructor.
-      explicit numerical_container(const Derived &sc):value_(sc.value_)
-      {}
+      explicit numerical_container(const Derived &sc):value_(sc.value_) {}
 /// Destructor.
-      ~numerical_container()
-      {}
+      ~numerical_container() {}
 // Getters.
 /// Get value.
       const T &g_value() const
