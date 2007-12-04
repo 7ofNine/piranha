@@ -210,32 +210,17 @@ namespace piranha
       Derived &assign(const Derived &);
 // Addition.
       template <class Derived2>
-        Derived &add(const Derived2 &ps2)
-      {
-        return merge_with_series<Derived2,true>(ps2);
-      }
+        Derived &add(const Derived2 &);
       template <class Derived2>
-        Derived &subtract(const Derived2 &ps2)
-      {
-        return merge_with_series<Derived2,false>(ps2);
-      }
+        Derived &subtract(const Derived2 &);
 // Multiplication.
       Derived &mult_by(int);
-      Derived &mult_by(const double &x)
-      {
-        return mult_by_generic(x);
-      }
+      Derived &mult_by(const double &);
       template <class Derived2>
         Derived &mult_by_self(const Derived2 &);
 // Division.
-      Derived &divide_by(int n)
-      {
-        return divide_by_generic(n);
-      }
-      Derived &divide_by(const double &x)
-      {
-        return divide_by_generic(x);
-      }
+      Derived &divide_by(int);
+      Derived &divide_by(const double &);
     private:
 // Private ctors.
       template <class T>

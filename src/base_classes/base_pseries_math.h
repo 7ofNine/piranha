@@ -340,5 +340,38 @@ namespace piranha
     swap(tmp_ps);
     return *static_cast<Derived *>(this);
   }
+
+// Addition.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Derived2>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add(const Derived2 &ps2)
+  {
+    return merge_with_series<Derived2,true>(ps2);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Derived2>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract(const Derived2 &ps2)
+  {
+    return merge_with_series<Derived2,false>(ps2);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by(const double &x)
+  {
+    return mult_by_generic(x);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::divide_by(int n)
+  {
+    return divide_by_generic(n);
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::divide_by(const double &x)
+  {
+    return divide_by_generic(x);
+  }
 }
 #endif
