@@ -114,7 +114,7 @@ namespace std
       typedef complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > self;
 // TODO: this is shared with above, find a way to share.
 /// Default constructor.
-      complex():ancestor::base_pseries() {}
+      explicit complex():ancestor::base_pseries() {}
 /// Copy constructor.
       complex(const complex &p):ancestor::base_pseries(p) {}
 /// Constructor from filename.
