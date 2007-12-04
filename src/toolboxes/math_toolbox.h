@@ -89,7 +89,7 @@ namespace piranha
           {
             Derived tmp2(tmp);
             tmp2.mult_by(math::choose(power,i));
-            tmp2.mult_by_self(Derived(a->pow(power-i),*derived_cast));
+            tmp2.mult_by(Derived(a->pow(power-i),*derived_cast));
             retval+=tmp2;
           }
           tmp*=x;

@@ -234,7 +234,7 @@ namespace piranha
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_self(const Derived2 &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by(const Derived2 &ps2)
   {
     Derived *derived_cast=static_cast<Derived *>(this);
     Derived retval;

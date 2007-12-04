@@ -156,7 +156,7 @@ namespace piranha
       Derived &mult_by(int);
       Derived &mult_by(const double &);
       template <class Derived2>
-        Derived &mult_by_self(const Derived2 &);
+        Derived &mult_by(const Derived2 &);
 // Division.
       Derived &divide_by(int);
       Derived &divide_by(const double &);
