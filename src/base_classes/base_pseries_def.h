@@ -144,6 +144,22 @@ namespace piranha
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
+// Public mathematics.
+// Assignment.
+      Derived &assign(const Derived &);
+// Addition.
+      template <class Derived2>
+        Derived &add(const Derived2 &);
+      template <class Derived2>
+        Derived &subtract(const Derived2 &);
+// Multiplication.
+      Derived &mult_by(int);
+      Derived &mult_by(const double &);
+      template <class Derived2>
+        Derived &mult_by_self(const Derived2 &);
+// Division.
+      Derived &divide_by(int);
+      Derived &divide_by(const double &);
     protected:
 // Setters.
       vector_int16 &lin_args();
@@ -204,23 +220,6 @@ namespace piranha
       template <class Cf2, class LightTermPair>
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         LightTermPair &, cf_type &);
-    public:
-// Public mathematics.
-// Assignment.
-      Derived &assign(const Derived &);
-// Addition.
-      template <class Derived2>
-        Derived &add(const Derived2 &);
-      template <class Derived2>
-        Derived &subtract(const Derived2 &);
-// Multiplication.
-      Derived &mult_by(int);
-      Derived &mult_by(const double &);
-      template <class Derived2>
-        Derived &mult_by_self(const Derived2 &);
-// Division.
-      Derived &divide_by(int);
-      Derived &divide_by(const double &);
     private:
 // Private ctors.
       template <class T>
