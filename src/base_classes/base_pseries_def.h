@@ -175,26 +175,16 @@ namespace piranha
         bool merge_args(const Derived2 &);
       void add_cf_arg(const psymbol &);
       void add_trig_arg(const psymbol &);
-      it_s_index insert(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
-      it_s_index insert_no_sign_check(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
+      template <class Cf2, bool, bool>
+        it_s_index insert(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       template <class Cf2>
-        it_s_index insert(const Term<Cf2, trig_type> &, bool sign = true, const it_s_index *it_hint = 0);
-      template <class Cf2>
-        it_s_index insert_no_sign_check(const Term<Cf2, trig_type> &, bool sign = true, const it_s_index *it_hint = 0);
+        it_s_index insert(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
       void append_cf_args(const vector_psym_p &);
       void append_trig_args(const vector_psym_p &);
       void prepend_cf_args(const vector_psym_p &);
       void prepend_trig_args(const vector_psym_p &);
-      it_s_index term_insert_new(const term_type &, bool, const it_s_index *it_hint);
-      void term_update(const it_h_index &, cf_type &);
-      it_s_index ll_insert(const term_type &, bool, const it_s_index *);
-      template <class Cf2>
-        it_s_index ll_insert(const Term<Cf2, trig_type> &,
-        bool, const it_s_index *);
-      template <bool CheckTrigSign>
-        it_s_index insert_(const term_type &, bool sign = true, const it_s_index *it_hint = 0);
 // Protected probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
       it_s_index discontinuity() const;
@@ -203,9 +193,9 @@ namespace piranha
 // Protected maths.
       template <class Derived2>
         Derived &assign_series(const Derived2 &);
-      template <class Derived2, bool Sign>
+      template <class Derived2, bool>
         void alg_sum_lin_args(const Derived2 &);
-      template <class Derived2, bool Sign>
+      template <class Derived2, bool>
         Derived &merge_with_series(const Derived2 &);
       template <class T>
         Derived &add_generic(const T &);
@@ -231,16 +221,21 @@ namespace piranha
         bool is_compatible(const Derived2 &) const;
 // Private manipulation.
       it_h_index find_term(const term_type &) const;
+      template <bool>
+        it_s_index term_insert_new(const term_type &, const it_s_index *it_hint);
+      void term_update(const it_h_index &, cf_type &);
+      template <bool>
+        it_s_index ll_insert(const term_type &, const it_s_index *);
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);
 // Private I/O.
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;
-      void print_terms_plain(std::ostream &, int ) const;
-      void print_terms_latex(std::ostream &, int ) const;
+      void print_terms_plain(std::ostream &, int) const;
+      void print_terms_latex(std::ostream &, int) const;
       void read_data_from_file(std::ifstream &, const std::string &);
-      void load_from(const std::string&);
+      void load_from(const std::string &);
       void identify_sections(std::ifstream &, const std::string &);
       void read_cf_arg(std::ifstream &);
       void read_trig_arg(std::ifstream &);

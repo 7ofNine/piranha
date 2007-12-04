@@ -58,7 +58,7 @@ namespace piranha
         {
           tmp_term=t;
           tmp_term.s_cf()->mult_by_self(cf,*derived_cast);
-          it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+          it_hint=tmp_ps.insert(tmp_term,&it_hint);
         }
         derived_cast->swap(tmp_ps);
       }
@@ -198,7 +198,7 @@ namespace piranha
           for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
           {
 // TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-            retval.insert_no_sign_check(term_type(hm_it->cf,hm_it->trig));
+            retval.template insert<cf_type,false,true>(term_type(hm_it->cf,hm_it->trig));
           }
 //retval.cumulative_crop(Delta);
         }

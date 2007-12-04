@@ -103,7 +103,7 @@ namespace piranha
           *term.s_cf()=get_cf_comp(*it->g_cf(),cmp);
           *term.s_trig()=*it->g_trig();
           term.s_flavour()=it->g_flavour();
-          it_hint=retval.insert(term,true,&it_hint);
+          it_hint=retval.insert(term,&it_hint);
         }
         return retval;
       }

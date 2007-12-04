@@ -277,12 +277,13 @@ namespace piranha
     return *static_cast<Derived *>(this);
   }
 
-// Insert a term into the series
 
+// Insert a new term into the series
   template <__PIRANHA_BASE_PS_TP_DECL>
+    template <bool Sign>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_insert_new(const term_type &term, bool sign, const
-    it_s_index *it_hint)
+    base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_insert_new(const term_type &term,
+    const it_s_index *it_hint)
   {
     arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
     it_s_index it_new;
@@ -300,7 +301,7 @@ namespace piranha
       it_new=s_s_index().insert(*it_hint,term);
       p_assert(it_new!=end());
     }
-    if (sign==false)
+    if (!Sign)
     {
 // This is an O(1) operation, since the order in the set is not changed
 // There is a re-hash involved, it still should be cheaper than
@@ -342,8 +343,9 @@ namespace piranha
 // INSERT FUNCTIONS //
 // **************** //
   template <__PIRANHA_BASE_PS_TP_DECL>
+    template <bool Sign>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::ll_insert(
-    const term_type &term, bool sign, const it_s_index *it_hint)
+    const term_type &term, const it_s_index *it_hint)
   {
 // We must check for ignorability here, before assertions, since at this point cf_width could be zero
 // for polynomials, and thus assertion would wrongly fail.
@@ -356,11 +358,11 @@ namespace piranha
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
     it_h_index it(find_term(term));
-    if (it==g_h_index().end())
+    if (it == g_h_index().end())
     {
 // The term is NOT a duplicate, insert in the set. Record where we inserted,
 // so it can be used in additions and multiplications.
-      ret_it=term_insert_new(term,sign,it_hint);
+      ret_it=term_insert_new<Sign>(term,it_hint);
       stats::insert();
     }
     else
@@ -368,7 +370,7 @@ namespace piranha
 // The term is in the set, hence an existing term will be modified.
 // Add or subtract according to request.
       cf_type new_c;
-      if (sign)
+      if (Sign)
       {
         new_c=*it->g_cf();
         new_c.add(*term.g_cf());
@@ -395,15 +397,19 @@ namespace piranha
     return ret_it;
   }
 
-// TODO: check that this method is really used only when doing +=/-= from complex to real.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::ll_insert(
-    const Term<Cf2,trig_type> &term, bool sign, const it_s_index *it_hint)
+  template <template <class, class> class Term, class Cf2, class Cf1, class Trig>
+    struct transform_term
   {
-//BOOST_STATIC_ASSERT(sizeof(U)==0);
-    return ll_insert(term_type(term),sign,it_hint);
-  }
+    explicit transform_term(const Term<Cf2,Trig> &term):result(*term.g_cf(),*term.g_trig()) {}
+    Term<Cf1,Trig>      result;
+  };
+
+  template <template <class, class> class Term, class Cf, class Trig>
+    struct transform_term<Term,Cf,Cf,Trig>
+  {
+    explicit transform_term(const Term<Cf,Trig> &term):result(term) {}
+    const Term<Cf,Trig> &result;
+  };
 
 /// Main insert function.
 /**
@@ -417,32 +423,33 @@ namespace piranha
  * This function performs some checks and then calls base_pseries::ll_insert.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <bool CheckTrigSign>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_(
-    const term_type &term, bool sign, const it_s_index *it_hint)
+    template <class Cf2, bool CheckTrigSign, bool Sign>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
+    const Term<Cf2, trig_type> &term_, const it_s_index *it_hint)
   {
+    transform_term<Term,Cf2,cf_type,trig_type> term(term_);
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
-    p_assert(!term.g_cf()->larger(cw));
-    p_assert(!term.g_trig()->larger(tw));
+    p_assert(!term.result.g_cf()->larger(cw));
+    p_assert(!term.result.g_trig()->larger(tw));
     term_type *new_term(0);
-    const bool need_resize=(term.g_cf()->smaller(cw) || term.g_trig()->smaller(tw));
+    const bool need_resize=(term.result.g_cf()->smaller(cw) or term.result.g_trig()->smaller(tw));
     if (unlikely(need_resize))
     {
       new_term=term_allocator.allocate(1);
-      term_allocator.construct(new_term,term);
+      term_allocator.construct(new_term,term.result);
       new_term->s_cf()->increase_size(cw);
       new_term->s_trig()->increase_size(tw);
     }
     if (CheckTrigSign)
     {
-      if (term.g_trig()->sign() < 0)
+      if (term.result.g_trig()->sign() < 0)
       {
         if (new_term == 0)
         {
           new_term=term_allocator.allocate(1);
-          term_allocator.construct(new_term,term);
+          term_allocator.construct(new_term,term.result);
         }
         new_term->invert_trig_args();
       }
@@ -450,19 +457,27 @@ namespace piranha
     const term_type *insert_term;
     if (new_term == 0)
     {
-      insert_term=&term;
+      insert_term=&term.result;
     }
     else
     {
       insert_term=new_term;
     }
-    it_s_index ret_it=ll_insert(*insert_term,sign,it_hint);
+    it_s_index ret_it=ll_insert<Sign>(*insert_term,it_hint);
     if (new_term != 0)
     {
       term_allocator.destroy(new_term);
       term_allocator.deallocate(new_term,1);
     }
     return ret_it;
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Cf2>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
+    const Term<Cf2, trig_type> &term, const it_s_index *it_hint)
+  {
+    return insert<Cf2,true,true>(term);
   }
 
 // --------------
@@ -614,39 +629,6 @@ namespace piranha
     const double &desired_sdp)
   {
     crop(sdp_cutoff(achieved_tdp,desired_sdp));
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<__PIRANHA_BASE_PS_TP>::insert(const term_type &term, bool sign, const it_s_index *it_hint)
-  {
-    return insert_<true>(term,sign,it_hint);
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<__PIRANHA_BASE_PS_TP>::insert_no_sign_check(const term_type &term, bool sign,
-    const it_s_index *it_hint)
-  {
-    return insert_<false>(term,sign,it_hint);
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<__PIRANHA_BASE_PS_TP>::insert(const Term<Cf2, trig_type> &term,
-    bool sign, const it_s_index *it_hint)
-  {
-    return insert_<true>(term_type(term),sign,it_hint);
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<__PIRANHA_BASE_PS_TP>::insert_no_sign_check(const Term<Cf2, trig_type> &term,
-    bool sign, const it_s_index *it_hint)
-  {
-    return insert_<false>(term_type(term),sign,it_hint);
   }
 }
 #endif
