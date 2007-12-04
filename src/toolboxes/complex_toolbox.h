@@ -26,6 +26,26 @@ namespace piranha
   template <class real_Derived>
     class complex_toolbox
   {
+    public:
+      explicit complex_toolbox() {}
+// Complex specific constructors.
+      explicit complex_toolbox(const std::complex<int> &n)
+      {
+        static_cast<Derived *>(this)->generic_builder(n);
+      }
+      explicit complex_toolbox(const std::complex<double> &x)
+      {
+        static_cast<Derived *>(this)->generic_builder(x);
+      }
+      explicit complex_toolbox(int r, int i)
+      {
+        static_cast<Derived *>(this)->generic_builder(std::complex<int>(r,i));
+      }
+      explicit complex_toolbox(const double &r, const double &i)
+      {
+        static_cast<Derived *>(this)->generic_builder(std::complex<double>(r,i));
+      }
+      ~complex_toolbox() {}
     protected:
 // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
 // parses this part it does not know enough about Derived yet. They are ok in the body of
@@ -41,29 +61,24 @@ namespace piranha
         Imag,
       };
 // Build series from two components.
-      void build_from_components(const real_Derived &p,
-        const real_Derived &q)
+      void build_from_components(const real_Derived &p, const real_Derived &q)
       {
         action_assert(static_cast<Derived *>(this)->merge_args(p));
-        if (!static_cast<Derived *>
-          (this)->merge_args(q))
+        if (!static_cast<Derived *>(this)->merge_args(q))
         {
           std::cout << "WARNING: constructing empty complex series because real and complex "
             "series passed to ctor are not argument compatible."<< std::endl;
           return;
         }
         typedef typename Derived::ancestor::term_type term_type;
-// FIXME: hinted insertion here.
+// TODO: hinted insertion here.
 // Insert p (real_ part).
         {
           term_type term;
-          real_it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
-          for (;
-            it!=it_f;
-            ++it)
+          const real_it_s_index it_f=p.g_s_index().end();
+          for (real_it_s_index it=p.g_s_index().begin();it!=it_f;++it)
           {
-            *term.s_cf()
-              =cf_type(*it->g_cf(),real_cf_type(0));
+            *term.s_cf()=cf_type(*it->g_cf(),real_cf_type(0));
             *term.s_trig()=*it->g_trig();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -72,13 +87,10 @@ namespace piranha
 // Insert q (imaginary part).
         {
           term_type term;
-          real_it_s_index it=q.g_s_index().begin(), it_f=q.g_s_index().end();
-          for (;
-            it!=it_f;
-            ++it)
+          const real_it_s_index it_f=q.g_s_index().end();
+          for (real_it_s_index it=q.g_s_index().begin();it!=it_f;++it)
           {
-            *term.s_cf()
-              =cf_type(real_cf_type(0),*it->g_cf());
+            *term.s_cf()=cf_type(real_cf_type(0),*it->g_cf());
             *term.s_trig()=*it->g_trig();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -94,11 +106,7 @@ namespace piranha
         const it_s_index it_f=static_cast<Derived const *>(this)->g_s_index().end();
         real_it_s_index it_hint=retval.g_s_index().end();
         real_term_type term(real_cf_type(0));
-        for (it_s_index it=static_cast<Derived const *>
-          (this)->
-          g_s_index().begin();
-          it!=it_f;
-          ++it)
+        for (it_s_index it=static_cast<Derived const *>(this)->g_s_index().begin();it!=it_f;++it)
         {
           *term.s_cf()=get_cf_comp(*it->g_cf(),cmp);
           *term.s_trig()=*it->g_trig();
@@ -107,6 +115,7 @@ namespace piranha
         }
         return retval;
       }
+    private:
 // Extract component from complex pseries
       real_cf_type get_cf_comp(const cf_type &cf,component cmp) const
       {
@@ -114,11 +123,9 @@ namespace piranha
         {
           case Real:
             return cf.real();
-          case Imag:
+          default:
             return cf.imag();
         }
-        std::cout << "WTF? enum is botched!" << std::endl;
-        std::exit(1);
       }
     public:
 /// Get real part.
@@ -132,6 +139,7 @@ namespace piranha
         return get_comp(Imag);
       }
 /// Absolute value.
+// TODO:place this into pow toolbox, complex counterpart?
       real_Derived abs() const
       {
         return (real()*real()+imag()*imag()).pow(.5);
