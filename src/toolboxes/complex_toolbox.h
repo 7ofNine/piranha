@@ -97,7 +97,8 @@ namespace piranha
           }
         }
       }
-      real_Derived get_comp(component cmp) const
+      template <component Cmp>
+        real_Derived get_comp() const
       {
         typedef typename Derived::ancestor::it_s_index it_s_index;
         real_Derived retval;
@@ -108,7 +109,7 @@ namespace piranha
         real_term_type term(real_cf_type(0));
         for (it_s_index it=static_cast<Derived const *>(this)->g_s_index().begin();it!=it_f;++it)
         {
-          *term.s_cf()=get_cf_comp(*it->g_cf(),cmp);
+          *term.s_cf()=get_cf_comp<Cmp>(*it->g_cf());
           *term.s_trig()=*it->g_trig();
           term.s_flavour()=it->g_flavour();
           it_hint=retval.insert(term,&it_hint);
@@ -117,9 +118,10 @@ namespace piranha
       }
     private:
 // Extract component from complex pseries
-      real_cf_type get_cf_comp(const cf_type &cf,component cmp) const
+      template <component Cmp>
+        real_cf_type get_cf_comp(const cf_type &cf) const
       {
-        switch (cmp)
+        switch (Cmp)
         {
           case Real:
             return cf.real();
@@ -131,12 +133,12 @@ namespace piranha
 /// Get real part.
       real_Derived real() const
       {
-        return get_comp(Real);
+        return get_comp<Real>();
       }
 /// Get imaginary part.
       real_Derived imag() const
       {
-        return get_comp(Imag);
+        return get_comp<Imag>();
       }
 /// Absolute value.
 // TODO:place this into pow toolbox, complex counterpart?
