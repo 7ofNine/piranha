@@ -251,9 +251,10 @@ namespace piranha
       struct psym_p_cmp
       {
         psym_p_cmp() {}
+        ~psym_p_cmp() {}
         bool operator()(psym_p p1, psym_p p2) const
         {
-          return (p1->name()<p2->name());
+          return (p1->name() < p2->name());
         }
       };
 // Functor to update the coefficient.
