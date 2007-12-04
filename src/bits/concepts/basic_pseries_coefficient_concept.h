@@ -43,8 +43,7 @@ namespace piranha
 // Ctors and dtor.
 /// Default constructor.
 // Cannot use static assert here since it will be always called.
-      explicit basic_pseries_coefficient_concept()
-      {}
+      explicit basic_pseries_coefficient_concept() {}
 /// Constructor from string.
       explicit basic_pseries_coefficient_concept(const std::string &)
       {
@@ -196,8 +195,7 @@ namespace piranha
     public:
 // Ctors and dtor.
 /// Default constructor.
-      explicit complex_basic_pseries_coefficient_concept()
-      {}
+      explicit complex_basic_pseries_coefficient_concept() {}
 /// Constructor from string.
       explicit complex_basic_pseries_coefficient_concept(const std::string &)
       {
