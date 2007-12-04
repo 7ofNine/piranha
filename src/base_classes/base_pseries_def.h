@@ -227,6 +227,7 @@ namespace piranha
       }
       template <class Derived2>
         Derived &mult_by_self(const Derived2 &);
+// Division.
       Derived &divide_by(int n)
       {
         return divide_by_generic(n);
