@@ -112,13 +112,21 @@ namespace std
       typedef Cf real_cf_type;
 /// Alias for self.
       typedef complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > self;
-// TODO: this is shared with above, find a way to share.
+// Base ctors.
 /// Default constructor.
       explicit complex():ancestor::base_pseries() {}
 /// Copy constructor.
       complex(const complex &p):ancestor::base_pseries(p) {}
 /// Constructor from filename.
       explicit complex(const std::string &filename):ancestor::base_pseries(filename) {}
+/// Constructor from int.
+      explicit complex(int n):ancestor::base_pseries(n) {}
+/// Constructor from double.
+      explicit complex(const double &x):ancestor::base_pseries(x) {}
+/// Constructor from psymbol.
+      explicit complex(const piranha::psymbol &psym, piranha::psymbol::type ptype):ancestor::base_pseries(psym,ptype) {}
+/// Constructor from coefficient and model.
+      explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model) {}
 /// Constructor from coefficient.
 //       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
 //         {}
