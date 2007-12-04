@@ -216,8 +216,18 @@ namespace piranha
       {
         __STATIC_ASSERTION_FAILURE;
       }
+/// Constructor from complex integer.
+      explicit complex_basic_pseries_coefficient_concept(const std::complex<int> &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
 /// Constructor from real and imaginary integer parts.
       explicit complex_basic_pseries_coefficient_concept(int, int)
+      {
+        __STATIC_ASSERTION_FAILURE;
+      }
+/// Constructor from complex double.
+      explicit complex_basic_pseries_coefficient_concept(const std::complex<double> &)
       {
         __STATIC_ASSERTION_FAILURE;
       }
