@@ -21,12 +21,11 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_H
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
-#include <complex>
 #include <iostream>
 #include <string>
 
 #include "../bits/psymbol.h"
-#include "../bits/utils.h"                                // Lexical converter.
+#include "../bits/utils.h" // Lexical converter.
 #include "../bits/type_traits/eval_type.h"
 
 namespace piranha
