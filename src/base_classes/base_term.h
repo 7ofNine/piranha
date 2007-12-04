@@ -44,11 +44,12 @@ namespace piranha
 /// Alias for evaluation type.
       typedef typename eval_type<cf_type>::type eval_type;
 // Getters
-/// Get flavour.
+/// Flavour getter.
       bool &s_flavour()
       {
         return static_cast<Derived *>(this)->s_trig()->s_flavour();
       }
+/// Flavour setter.
       const bool &g_flavour() const
       {
         return static_cast<Derived const *>(this)->g_trig()->g_flavour();
