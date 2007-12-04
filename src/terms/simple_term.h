@@ -48,7 +48,11 @@ namespace piranha
       private_cf_(c),private_trig_()
         {}
 /// Constructor from coefficient and trigonometric part.
-      explicit simple_term(const cf_type &c, const trig_type &t):
+/**
+ * Coefficient type can be other than Cf.
+ */
+      template <class Cf2>
+      explicit simple_term(const Cf2 &c, const trig_type &t):
         private_cf_(c),private_trig_(t)
       {}
 /// Generic builder.
