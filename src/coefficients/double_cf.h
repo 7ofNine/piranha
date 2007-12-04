@@ -64,28 +64,22 @@ namespace piranha
 //------------
 // Ctors and dtor.
 /// Empty constructor.
-      explicit double_cf():ancestor::numerical_container()
-      {}
+      explicit double_cf():ancestor::numerical_container() {}
 /// Constructor from string.
-      explicit double_cf(const std::string &s):ancestor::numerical_container(s)
-      {}
+      explicit double_cf(const std::string &s):ancestor::numerical_container(s) {}
 /// Constructor from symbol.
       explicit double_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
 /// Constructor from integer.
-      explicit double_cf(int val):ancestor::numerical_container(val)
-      {}
+      explicit double_cf(int val):ancestor::numerical_container(val) {}
 /// Constructor from double.
-      explicit double_cf(const double &val):ancestor::numerical_container(val)
-      {}
+      explicit double_cf(const double &val):ancestor::numerical_container(val) {}
 /// Copy constructor.
-      double_cf(const self &dc):ancestor::numerical_container(dc)
-      {}
+      double_cf(const self &dc):ancestor::numerical_container(dc) {}
 /// Destructor.
-      ~double_cf()
-      {}
+      ~double_cf() {}
 // Getters
 /// Calculate norm (absolute value).
       double norm(const vector_psym_p &) const
@@ -177,16 +171,11 @@ namespace std
 // Start implementation of basic pseries coefficient interface.
 //------------
 // Ctors and dtor.
-      explicit complex():ancestor::numerical_container()
-      {}
-      explicit complex(const std::string &s):ancestor::numerical_container(s)
-      {}
-      explicit complex(const piranha::psymbol &):ancestor::numerical_container()
-      {}
-      explicit complex(int n):ancestor::numerical_container(n)
-      {}
-      explicit complex(const double &x):ancestor::numerical_container(x)
-      {}
+      explicit complex():ancestor::numerical_container() {}
+      explicit complex(const std::string &s):ancestor::numerical_container(s) {}
+      explicit complex(const piranha::psymbol &):ancestor::numerical_container() {}
+      explicit complex(int n):ancestor::numerical_container(n) {}
+      explicit complex(const double &x):ancestor::numerical_container(x) {}
 // TODO: put those ctors in toolbox and use from there.
 /// Constructor from pair of ints.
       explicit complex(int r, int i):ancestor::numerical_container()
@@ -194,11 +183,21 @@ namespace std
         s_value().real()=r;
         s_value().imag()=i;
       }
+/// Constructor from complex integer.
+      explicit complex(const std::complex<int> &c):ancestor::numerical_container()
+      {
+        s_value()=c;
+      }
 /// Constructor from pair of doubles.
       explicit complex(const double &r, const double &i):ancestor::numerical_container()
       {
         s_value().real()=r;
         s_value().imag()=i;
+      }
+/// Constructor from complex double.
+      explicit complex(const std::complex<double> &c):ancestor::numerical_container()
+      {
+        s_value()=c;
       }
 /// Constructor from real type.
       explicit complex(const value_type &r):ancestor::numerical_container()
