@@ -44,9 +44,7 @@ namespace piranha
  *
  * This class should not be used directly, it should be inherited by a more specialized class.
  */
-  template <class Cf, class Trig, template <class, class> class Term,
-    template <class, class, template <class, class> class> class I, class Derived,
-    class Allocator = std::allocator<char> >
+  template <__PIRANHA_BASE_PS_TP_DECL = std::allocator<char> >
     class base_pseries:base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >
   {
     public:

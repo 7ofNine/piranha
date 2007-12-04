@@ -86,7 +86,6 @@ namespace piranha
   };
 }
 
-
 namespace std
 {
 /// Complex specialization for Fourier series derived class.
