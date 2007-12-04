@@ -99,14 +99,11 @@ namespace piranha
 // TODO: how does this interact with appending arguments from series?
 // The problem here is how to handle resize request. Maybe coefficient
 // and trigs should have a trait that tells whether they are resizable or not?
-      void append_args(const size_t &)
-        {}
+      void append_args(const size_t &) {}
 /// Append arguments.
-      void prepend_args(const size_t &)
-        {}
+      void prepend_args(const size_t &) {}
 /// Resize.
-      void increase_size(const size_t &)
-        {}
+      void increase_size(const size_t &) {}
 // Probing.
 /// Diagnostic checkup.
       bool checkup(const size_t &) const

@@ -211,10 +211,8 @@ namespace std
         s_value().imag()=i.g_value();
       }
 /// Copy constructor.
-      complex(const complex &c):ancestor::numerical_container(c)
-      {}
-      ~complex()
-      {}
+      complex(const complex &c):ancestor::numerical_container(c) {}
+      ~complex() {}
 // Getters.
       double norm(const piranha::vector_psym_p &) const
       {
