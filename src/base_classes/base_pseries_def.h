@@ -159,6 +159,9 @@ namespace piranha
       Derived &divide_by(int);
       Derived &divide_by(const double &);
     protected:
+// Protected ctors.
+      template <class T>
+        void generic_builder(const T &);
 // Setters.
       vector_int16 &lin_args();
       vector_psym_p &cf_s_vec();
@@ -209,9 +212,6 @@ namespace piranha
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         LightTermPair &, cf_type &);
     private:
-// Private ctors.
-      template <class T>
-        void generic_builder(const T &);
 // Private probing.
       template <class Derived2>
         bool args_different(const Derived2 &) const;
