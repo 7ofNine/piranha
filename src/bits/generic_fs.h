@@ -63,26 +63,19 @@ namespace piranha
 /// Alias for self.
       typedef generic_fs<Cf,Trig,Term,I,Allocator> self;
 /// Empty constructor.
-      generic_fs():ancestor::base_pseries()
-      {}
+      generic_fs():ancestor::base_pseries() {}
 /// Copy constructor.
-      generic_fs(const generic_fs &p):ancestor::base_pseries(p)
-      {}
+      generic_fs(const generic_fs &p):ancestor::base_pseries(p) {}
 /// Constructor from file.
-      explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename)
-      {}
+      explicit generic_fs(const std::string &filename):ancestor::base_pseries(filename) {}
 /// Constructor from int.
-      explicit generic_fs(int n):ancestor::base_pseries(n)
-      {}
+      explicit generic_fs(int n):ancestor::base_pseries(n) {}
 /// Constructor from double.
-      explicit generic_fs(const double &x):ancestor::base_pseries(x)
-      {}
+      explicit generic_fs(const double &x):ancestor::base_pseries(x) {}
 /// Constructor from psymbol.
-      explicit generic_fs(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype)
-      {}
+      explicit generic_fs(const psymbol &psym, psymbol::type ptype):ancestor::base_pseries(psym,ptype) {}
 /// Constructor from coefficient and model.
-      explicit generic_fs(const cf_type &c, const generic_fs &model):ancestor::base_pseries(c,model)
-      {}
+      explicit generic_fs(const cf_type &c, const generic_fs &model):ancestor::base_pseries(c,model) {}
   };
 }
 
