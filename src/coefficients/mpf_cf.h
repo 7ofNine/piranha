@@ -88,6 +88,15 @@ namespace piranha
       {
         return assign_self(val2);
       }
+// Overload norm and evaluation.
+      double norm(const vector_psym_p &) const
+      {
+        return std::abs(g_value().get_d());
+      }
+      double t_eval(const double &, const vector_psym_p &) const
+      {
+        return g_value().get_d();
+      }
 // End implementation of basic pseries coefficient interface.
 //------------
 // Start implementation of trigonometric pseries coefficient interface.
@@ -95,29 +104,21 @@ namespace piranha
 // - trigonometric toolbox,
 //------------
 // TODO: Move into own toolbox and concept.
-/// Bessel function of the first kind.
-/**
- * Uses C standard library call.
- */
-//       self besselJ(int n, const vector_psym_p &) const
-//       {
-//         self retval;
-//         retval.s_value()=math::besselJ(n,g_value());
-//         return retval;
-//       }
+      self besselJ(int n, const vector_psym_p &) const
+      {
+        self retval;
+        retval.s_value()=math::besselJ(n,g_value().get_d());
+        return retval;
+      }
 // End implementation of trigonometric pseries coefficient interface.
 //------------
 // Start implementation of power-enabled pseries coefficient interface.
 // TODO: Move into own toolbox and concept.
-//       self pow(const double &y) const
-//       {
-//         self retval;
-//         retval.s_value()=std::pow(g_value(),y);
-//         return retval;
-//       }
-      double norm(const vector_psym_p &) const
+      self pow(const double &y) const
       {
-        return std::abs(g_value().get_d());
+        self retval;
+        retval.s_value()=std::pow(g_value().get_d(),y);
+        return retval;
       }
   };
 }
@@ -143,7 +144,6 @@ namespace std
       using ancestor::is_compatible;
       using ancestor::checkup;
       using ancestor::invert_sign;
-      using ancestor::t_eval;
       using ancestor::is_zero;
       using ancestor::add;
       using ancestor::subtract;
@@ -183,6 +183,11 @@ namespace std
       {
 // NOTICE: the success of this probably depends upon std::complex implementation...
         return std::abs(g_value()).get_d();
+      }
+// Overload evaluation.
+      std::complex<double> t_eval(const double &, const piranha::vector_psym_p &) const
+      {
+        return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
       }
 // End implementation of complex basic pseries coefficient interface.
 //------------
