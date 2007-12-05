@@ -112,7 +112,7 @@ namespace piranha
 /// Calculate norm (absolute value).
       double norm(const vector_psym_p &) const
       {
-        return abs();
+        return absolute();
       }
 /// Is value zero?
 /**
@@ -121,7 +121,7 @@ namespace piranha
  */
       bool is_zero(const vector_psym_p &v) const
       {
-        return (norm(v) < settings_manager::numerical_zero());
+        return (static_cast<Derived const *>(this)->norm(v) < settings_manager::numerical_zero());
       }
 /// Check whether contained value is larger than size.
 // TODO: maybe here we should check against 0 size?
@@ -192,7 +192,7 @@ namespace piranha
         return divide_by_generic(x);
       }
     protected:
-      double abs() const
+      double absolute() const
       {
         return std::abs(value_);
       }
