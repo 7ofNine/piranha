@@ -115,20 +115,6 @@ namespace piranha
         return retval;
       }
   };
-
-  inline std::istream &operator>>(std::istream &is, double_cf &dc)
-  {
-    std::string tmp;
-    getline(is,tmp);
-    dc.s_value()=utils::lexical_converter<double>(tmp);
-    return is;
-  }
-
-  inline std::ostream &operator<<(std::ostream &os, const double_cf &dc)
-  {
-    os << dc.g_value();
-    return os;
-  }
 }
 
 namespace std
@@ -136,13 +122,16 @@ namespace std
   template <>
     struct complex<piranha::double_cf>:
     public piranha::complex_basic_pseries_coefficient_concept<piranha::double_cf>,
-    public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >
+    public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >,
+    public piranha::numerical_container_complex_toolbox<piranha::double_cf>
   {
     private:
       typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
       typedef complex self;
-      typedef piranha::double_cf value_type;
+      friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
     public:
+      typedef piranha::double_cf value_type;
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
@@ -156,89 +145,28 @@ namespace std
       using ancestor::subtract;
       using ancestor::mult_by;
       using ancestor::mult_by_self;
+      using complex_toolbox::mult_by_self;
       using ancestor::divide_by;
 // Start implementation of basic pseries coefficient interface.
 //------------
-// Ctors and dtor.
+// Basic ctors and dtor.
       explicit complex():ancestor::numerical_container() {}
       explicit complex(const std::string &s):ancestor::numerical_container(s) {}
       explicit complex(const piranha::psymbol &):ancestor::numerical_container() {}
       explicit complex(int n):ancestor::numerical_container(n) {}
       explicit complex(const double &x):ancestor::numerical_container(x) {}
-// TODO: put those ctors in toolbox and use from there.
-/// Constructor from pair of ints.
-      explicit complex(int r, int i):ancestor::numerical_container()
-      {
-        s_value().real()=r;
-        s_value().imag()=i;
-      }
-/// Constructor from complex integer.
-      explicit complex(const std::complex<int> &c):ancestor::numerical_container()
-      {
-        s_value()=c;
-      }
-/// Constructor from pair of doubles.
-      explicit complex(const double &r, const double &i):ancestor::numerical_container()
-      {
-        s_value().real()=r;
-        s_value().imag()=i;
-      }
-/// Constructor from complex double.
-      explicit complex(const std::complex<double> &c):ancestor::numerical_container()
-      {
-        s_value()=c;
-      }
-/// Constructor from real type.
-      explicit complex(const value_type &r):ancestor::numerical_container()
-      {
-        s_value().real()=r.g_value();
-      }
-/// Constructor from real and imaginary parts.
-      explicit complex(const value_type &r, const value_type &i):ancestor::numerical_container()
-      {
-        s_value().real()=r.g_value();
-        s_value().imag()=i.g_value();
-      }
-/// Copy constructor.
       complex(const complex &c):ancestor::numerical_container(c) {}
       ~complex() {}
-      value_type real() const
-      {
-        value_type retval;
-        retval.s_value()=g_value().real();
-        return retval;
-      }
-      value_type imag() const
-      {
-        value_type retval;
-        retval.s_value()=g_value().imag();
-        return retval;
-      }
-// Setters.
-/// Set value_ to be a real only value.
-      void set_real(const value_type &r)
-      {
-        s_value()=r.g_value();
-      }
-/// Set value_ to be an imag only value.
-      void set_imag(const value_type &i)
-      {
-        s_value()=piranha::complex_double(0,i.g_value());
-      }
-// Maths.
-      template <class DerivedPs>
-        self &mult_by_self(const value_type &x, const DerivedPs &)
-      {
-        return mult_by_generic(x.g_value());
-      }
-      self &mult_by(const std::complex<int> &c)
-      {
-        return mult_by_generic(c);
-      }
-      self &mult_by(const std::complex<double> &c)
-      {
-        return mult_by_generic(c);
-      }
+// Complex specific contructors.
+// TODO: put those ctors in toolbox and use from there.
+      explicit complex(int r, int i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
+      explicit complex(const std::complex<int> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
+      explicit complex(const double &r, const double &i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
+      explicit complex(const std::complex<double> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
+      explicit complex(const value_type &r):complex_toolbox::numerical_container_complex_toolbox(r) {}
+/// Constructor from real and imaginary parts.
+      explicit complex(const value_type &r, const value_type &i):
+        complex_toolbox::numerical_container_complex_toolbox(r,i) {}
 // Operators.
       self &operator=(const self &val2)
       {
@@ -251,20 +179,5 @@ namespace std
 // End implementation of complex basic pseries coefficient interface.
 //------------
   };
-
-// Overloads for I/O operators.
-  inline istream &operator>>(istream &is, complex<piranha::double_cf> &dc)
-  {
-    string tmp;
-    getline(is,tmp);
-    dc.s_value()=piranha::utils::lexical_converter<piranha::complex_double>(tmp);
-    return is;
-  }
-
-  inline ostream &operator<<(ostream &os, const complex<piranha::double_cf> &dc)
-  {
-    os << dc.g_value();
-    return os;
-  }
 }
 #endif

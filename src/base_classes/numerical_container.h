@@ -229,6 +229,100 @@ namespace piranha
     private:
       T   value_;
   };
+
+/// Toolbox for complex-specific methods of piranha::numerical_container.
+  template <class realDerived>
+    class numerical_container_complex_toolbox
+  {
+      typedef std::complex<realDerived> Derived;
+      typedef realDerived value_type;
+    public:
+      numerical_container_complex_toolbox() {}
+      explicit numerical_container_complex_toolbox(int r, int i)
+      {
+        static_cast<Derived *>(this)->s_value().real()=r;
+        static_cast<Derived *>(this)->s_value().imag()=i;
+      }
+      explicit numerical_container_complex_toolbox(const std::complex<int> &c)
+      {
+        static_cast<Derived *>(this)->s_value()=c;
+      }
+      explicit numerical_container_complex_toolbox(const double &r, const double &i)
+      {
+        static_cast<Derived *>(this)->s_value().real()=r;
+        static_cast<Derived *>(this)->s_value().imag()=i;
+      }
+      explicit numerical_container_complex_toolbox(const std::complex<double> &c)
+      {
+        static_cast<Derived *>(this)->s_value()=c;
+      }
+      explicit numerical_container_complex_toolbox(const value_type &r)
+      {
+        static_cast<Derived *>(this)->s_value().real()=r.g_value();
+      }
+      explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i)
+      {
+        static_cast<Derived *>(this)->s_value().real()=r.g_value();
+        static_cast<Derived *>(this)->s_value().imag()=i.g_value();
+      }
+// Getters and setters.
+      value_type real() const
+      {
+        value_type retval;
+        retval.s_value()=static_cast<Derived const *>(this)->g_value().real();
+        return retval;
+      }
+      value_type imag() const
+      {
+        value_type retval;
+        retval.s_value()=static_cast<Derived const *>(this)->g_value().imag();
+        return retval;
+      }
+      void set_real(const value_type &r)
+      {
+        static_cast<Derived *>(this)->s_value()=r.g_value();
+      }
+      void set_imag(const value_type &i)
+      {
+        static_cast<Derived *>(this)->s_value().real()=0;
+        static_cast<Derived *>(this)->s_value().imag()=i.g_value();
+      }
+// Maths.
+// Mult by value_type.
+      template <class DerivedPs>
+        Derived &mult_by_self(const value_type &x, const DerivedPs &)
+      {
+        return static_cast<Derived *>(this)->mult_by_generic(x.g_value());
+      }
+      Derived &mult_by(const std::complex<int> &c)
+      {
+        return static_cast<Derived *>(this)->mult_by_generic(c);
+      }
+      Derived &mult_by(const std::complex<double> &c)
+      {
+        return static_cast<Derived *>(this)->mult_by_generic(c);
+      }
+  };
+}
+
+namespace std
+{
+// Overloads for I/O operators.
+  template <class T, class Derived>
+    inline istream &operator>>(istream &is, piranha::numerical_container<T,Derived> &nc)
+  {
+    string tmp;
+    getline(is,tmp);
+    nc.s_value()=piranha::utils::lexical_converter<T>(tmp);
+    return is;
+  }
+
+  template <class T, class Derived>
+    inline ostream &operator<<(ostream &os, const piranha::numerical_container<T,Derived> &nc)
+  {
+    os << nc.g_value();
+    return os;
+  }
 }
 
 #endif

@@ -211,7 +211,7 @@ namespace piranha
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         cf_type new_c=*t1.g_cf();
-        new_c.mult_by_self(*t2.g_cf(),*static_cast<DerivedPs const *>(this));
+        new_c.template mult_by_self(*t2.g_cf(),*static_cast<DerivedPs const *>(this));
         new_c.divide_by(2);
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
