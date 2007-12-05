@@ -37,7 +37,7 @@ namespace piranha
  *
  * A set of operators is provided to enable interoperability with basic numerical data types.
  */
-  class double_cf :
+  class double_cf:
     public basic_pseries_coefficient_concept<double_cf>,
     public numerical_container<double,double_cf>
   {
@@ -158,13 +158,11 @@ namespace std
       complex(const complex &c):ancestor::numerical_container(c) {}
       ~complex() {}
 // Complex specific contructors.
-// TODO: put those ctors in toolbox and use from there.
       explicit complex(int r, int i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
       explicit complex(const std::complex<int> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
       explicit complex(const double &r, const double &i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
       explicit complex(const std::complex<double> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
       explicit complex(const value_type &r):complex_toolbox::numerical_container_complex_toolbox(r) {}
-/// Constructor from real and imaginary parts.
       explicit complex(const value_type &r, const value_type &i):
         complex_toolbox::numerical_container_complex_toolbox(r,i) {}
 // Operators.
