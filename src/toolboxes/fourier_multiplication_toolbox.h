@@ -232,9 +232,14 @@ namespace piranha
         const cs_type2 &cs2 = glr.g2();
         cf_bool *code_vector_cos = buffer::head<cf_bool>(),
         *code_vector_sin = code_vector_cos + h_card;
-// Reset memory area.
-        memset(code_vector_cos,0,sizeof(cf_bool)*h_card);
-        memset(code_vector_sin,0,sizeof(cf_bool)*h_card);
+// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
+// we are sure it will be initialized properly. We want to make sure the coefficients are initialized
+// to zero in order to accumulate Poisson terms during multiplication.
+        for (size_t i=0;i<(size_t)(h_card<<1);++i)
+        {
+          ::new(&((code_vector_cos+i)->first)) cf_type(0);
+          (code_vector_cos+i)->second = false;
+        }
         cf_bool *s_point_cos = code_vector_cos - h_min,
           *s_point_sin = code_vector_sin - h_min;
         cf_type tmp_cf;
@@ -320,6 +325,11 @@ namespace piranha
             tmp_term.s_trig()->s_flavour()=false;
             retval.insert(tmp_term);
           }
+        }
+// Clean up the buffer by calling the coefficient destructors.
+        for (size_t i=0;i<(size_t)(h_card<<1);++i)
+        {
+          (code_vector_cos+i)->first.~cf_type();
         }
       }
       template <class Glr, class Retval, class DerivedPs2>
