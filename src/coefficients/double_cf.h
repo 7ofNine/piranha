@@ -92,8 +92,7 @@ namespace piranha
 // Needed operators.
       self &operator=(const self &val2)
       {
-        s_value()=val2.g_value();
-        return *this;
+        return assign_self(val2);
       }
 // End implementation of basic pseries coefficient interface.
 //------------
@@ -242,13 +241,11 @@ namespace std
 // Operators.
       self &operator=(const self &val2)
       {
-        s_value()=val2.g_value();
-        return *this;
+        return assign_self(val2);
       }
       self &operator=(const value_type &r2)
       {
-        s_value()=r2.g_value();
-        return *this;
+        return assign_self(r2);
       }
 // End implementation of complex basic pseries coefficient interface.
 //------------

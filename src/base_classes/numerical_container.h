@@ -197,6 +197,12 @@ namespace piranha
         return std::abs(value_);
       }
       template <class U>
+      Derived &assign_self(const U &x)
+      {
+        value_=x.g_value();
+        return *static_cast<Derived *>(this);
+      }
+      template <class U>
         Derived &add_generic(const U &x)
       {
         value_+=x;
