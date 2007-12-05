@@ -18,23 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#ifndef PIRANHA_MPFS_H
+#define PIRANHA_MPFS_H
 
-// Include all piranha manipulators.
-#include "manipulators/ffs.h"
-#include "manipulators/ffsc.h"
-#include "manipulators/cfs.h"
-#include "manipulators/cfsc.h"
-#include "manipulators/fs.h"
-#include "manipulators/fsc.h"
-#include "manipulators/mpfs.h"
+#include "../coefficients/mpf_cf.h"
+#include "../bits/norm_index.h"
+#include "../bits/generic_fs.h"
+#include "../terms/simple_term.h"
+#include "../trigonometric_parts/trig_array.h"
 
-// Include ipoly for now.
-// TODO: remove it later.
-#include "bits/ipoly.h"
-
-// Include TASS.
-#include "tass17/tass17.h"
-
+namespace piranha
+{
+  typedef generic_fs<mpf_cf,trig_array<16>,simple_term,norm_index> mpfs;
+}
 #endif

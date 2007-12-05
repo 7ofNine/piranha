@@ -192,10 +192,6 @@ namespace piranha
         return divide_by_generic(x);
       }
     protected:
-      double absolute() const
-      {
-        return std::abs(value_);
-      }
       template <class U>
       Derived &assign_self(const U &x)
       {
@@ -227,6 +223,12 @@ namespace piranha
         return *static_cast<Derived *>(this);
       }
     private:
+      double absolute() const
+      {
+        return std::abs(value_);
+      }
+    private:
+// Data member.
       T   value_;
   };
 
