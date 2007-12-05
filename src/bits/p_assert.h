@@ -21,8 +21,10 @@
 #ifndef PIRANHA_P_ASSERT_H
 #define PIRANHA_P_ASSERT_H
 
+#include "config.h"
+
 #define hard_assert(result) \
-if ((result)==false) \
+if (unlikely((result)==false)) \
 { \
   std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
   exit(1); \
@@ -33,7 +35,7 @@ if ((result)==false) \
 #define p_assert(result) hard_assert(result)
 
 #define action_assert(action) \
-if ((action)==false) \
+if (unlikely((action)==false)) \
 { \
   std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
   exit(1); \
