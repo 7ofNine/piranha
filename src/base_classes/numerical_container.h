@@ -109,6 +109,11 @@ namespace piranha
       {
         return true;
       }
+/// Calculate norm (absolute value).
+      double norm(const vector_psym_p &) const
+      {
+        return abs();
+      }
 /// Check whether contained value is larger than size.
 // TODO: maybe here we should check against 0 size?
       bool larger(const size_t &) const

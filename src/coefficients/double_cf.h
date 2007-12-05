@@ -55,6 +55,7 @@ namespace piranha
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::t_eval;
+      using ancestor::norm;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -80,12 +81,6 @@ namespace piranha
       double_cf(const self &dc):ancestor::numerical_container(dc) {}
 /// Destructor.
       ~double_cf() {}
-// Getters
-/// Calculate norm (absolute value).
-      double norm(const vector_psym_p &) const
-      {
-        return abs();
-      }
 // Probing
 /// Is value zero?
 /**
@@ -163,6 +158,7 @@ namespace std
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::t_eval;
+      using ancestor::norm;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -213,11 +209,6 @@ namespace std
 /// Copy constructor.
       complex(const complex &c):ancestor::numerical_container(c) {}
       ~complex() {}
-// Getters.
-      double norm(const piranha::vector_psym_p &) const
-      {
-        return abs();
-      }
       value_type real() const
       {
         value_type retval;
