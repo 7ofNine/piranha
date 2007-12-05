@@ -114,6 +114,15 @@ namespace piranha
       {
         return abs();
       }
+/// Is value zero?
+/**
+ * If value is less than settings_manager::numerical_zero() in absolute value it is considered
+ * to be zero.
+ */
+      bool is_zero(const vector_psym_p &v) const
+      {
+        return (norm(v) < settings_manager::numerical_zero());
+      }
 /// Check whether contained value is larger than size.
 // TODO: maybe here we should check against 0 size?
       bool larger(const size_t &) const

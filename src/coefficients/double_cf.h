@@ -56,6 +56,7 @@ namespace piranha
       using ancestor::invert_sign;
       using ancestor::t_eval;
       using ancestor::norm;
+      using ancestor::is_zero;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -81,16 +82,7 @@ namespace piranha
       double_cf(const self &dc):ancestor::numerical_container(dc) {}
 /// Destructor.
       ~double_cf() {}
-// Probing
-/// Is value zero?
-/**
- * If value is less than settings_manager::numerical_zero() in absolute value it is considered
- * to be zero.
- */
-      bool is_zero(const vector_psym_p &) const
-      {
-        return (abs()<settings_manager::numerical_zero());
-      }
+// TODO: Move into own toolbox and concept?
       self pow(const double &y) const
       {
         self retval;
@@ -159,6 +151,7 @@ namespace std
       using ancestor::invert_sign;
       using ancestor::t_eval;
       using ancestor::norm;
+      using ancestor::is_zero;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -231,11 +224,6 @@ namespace std
       void set_imag(const value_type &i)
       {
         s_value()=piranha::complex_double(0,i.g_value());
-      }
-// Probing.
-      bool is_zero(const piranha::vector_psym_p &) const
-      {
-        return (abs()<piranha::settings_manager::numerical_zero());
       }
 // Maths.
       template <class DerivedPs>
