@@ -150,33 +150,30 @@ namespace piranha
       }
       Derived &add(const Derived &val2)
       {
-        value_+=val2.g_value();
-        return *static_cast<Derived *>(this);
+        return add_generic(val2.g_value());
       }
       Derived &subtract(const Derived &val2)
       {
-        value_-=val2.g_value();
-        return *static_cast<Derived *>(this);
+        return subtract_generic(val2.g_value());
       }
-      self &mult_by(int n)
+      Derived &mult_by(int n)
       {
         return mult_by_generic(n);
       }
-      self &mult_by(const double &x)
+      Derived &mult_by(const double &x)
       {
         return mult_by_generic(x);
       }
       template <class DerivedPs>
-        self &mult_by_self(const self &x, const DerivedPs &)
+        Derived &mult_by_self(const self &x, const DerivedPs &)
       {
-        value_*=x.g_value();
-        return *static_cast<Derived *>(this);
+        return mult_by_generic(x.g_value());
       }
-      self &divide_by(int n)
+      Derived &divide_by(int n)
       {
         return divide_by_generic(n);
       }
-      self &divide_by(const double &x)
+      Derived &divide_by(const double &x)
       {
         return divide_by_generic(x);
       }
@@ -185,15 +182,26 @@ namespace piranha
       {
         return std::abs(value_);
       }
-    private:
       template <class U>
-        self &mult_by_generic(const U &x)
+        Derived &add_generic(const U &x)
+      {
+        value_+=x;
+        return *static_cast<Derived *>(this);
+      }
+      template <class U>
+        Derived &subtract_generic(const U &x)
+      {
+        value_-=x;
+        return *static_cast<Derived *>(this);
+      }
+      template <class U>
+        Derived &mult_by_generic(const U &x)
       {
         value_*=x;
         return *static_cast<Derived *>(this);
       }
       template <class U>
-        self &divide_by_generic(const U &x)
+        Derived &divide_by_generic(const U &x)
       {
         value_/=x;
         return *static_cast<Derived *>(this);

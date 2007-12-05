@@ -250,18 +250,15 @@ namespace std
       template <class DerivedPs>
         self &mult_by_self(const value_type &x, const DerivedPs &)
       {
-        s_value()*=x.g_value();
-        return *this;
+        return mult_by_generic(x.g_value());
       }
       self &mult_by(const std::complex<int> &c)
       {
-        s_value()*=c;
-        return *this;
+        return mult_by_generic(c);
       }
       self &mult_by(const std::complex<double> &c)
       {
-        s_value()*=c;
-        return *this;
+        return mult_by_generic(c);
       }
 // Operators.
       self &operator=(const self &val2)
