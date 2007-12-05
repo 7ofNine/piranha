@@ -82,13 +82,6 @@ namespace piranha
       double_cf(const self &dc):ancestor::numerical_container(dc) {}
 /// Destructor.
       ~double_cf() {}
-// TODO: Move into own toolbox and concept?
-      self pow(const double &y) const
-      {
-        self retval;
-        retval.s_value()=std::pow(g_value(),y);
-        return retval;
-      }
 // Needed operators.
       self &operator=(const self &val2)
       {
@@ -100,7 +93,7 @@ namespace piranha
 // Used in:
 // - trigonometric toolbox,
 //------------
-// Maths
+// TODO: Move into own toolbox and concept.
 /// Bessel function of the first kind.
 /**
  * Uses C standard library call.
@@ -113,6 +106,14 @@ namespace piranha
       }
 // End implementation of trigonometric pseries coefficient interface.
 //------------
+// Start implementation of power-enabled pseries coefficient interface.
+// TODO: Move into own toolbox and concept.
+      self pow(const double &y) const
+      {
+        self retval;
+        retval.s_value()=std::pow(g_value(),y);
+        return retval;
+      }
   };
 
   inline std::istream &operator>>(std::istream &is, double_cf &dc)
