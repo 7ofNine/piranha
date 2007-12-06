@@ -48,7 +48,7 @@ namespace piranha
       typedef typename Ps2::ancestor::cf_type cf_type2;
 /// Coded term structure.
       template <class T>
-        struct coded_term_type
+        struct coded_term
       {
         mutable T     cf;
         max_fast_int  code;
@@ -56,20 +56,20 @@ namespace piranha
       };
 /// Compact coded term structure.
 /**
- * With respect to coded_term_type it does not contain flavour because this will be used in series multiplication when we
+ * With respect to coded_term it does not contain flavour because this will be used in series multiplication when we
  * will have two different containers for sines and cosines.
  */
       template <class T>
-        struct compact_coded_term_type
+        struct compact_coded_term
       {
         mutable T     cf;
         max_fast_int  code;
       };
     public:
-      typedef coded_term_type<cf_type1> ct_type1;
-      typedef coded_term_type<cf_type2> ct_type2;
-      typedef compact_coded_term_type<cf_type1> cct_type1;
-      typedef compact_coded_term_type<cf_type2> cct_type2;
+      typedef coded_term<cf_type1> ct_type1;
+      typedef coded_term<cf_type2> ct_type2;
+      typedef compact_coded_term<cf_type1> cct_type1;
+      typedef compact_coded_term<cf_type2> cct_type2;
       typedef std::valarray<ct_type1> coded_series_type1;
       typedef std::valarray<ct_type2> coded_series_type2;
       struct cct_hasher
