@@ -57,6 +57,9 @@ namespace piranha
       using ancestor::t_eval;
       using ancestor::norm;
       using ancestor::is_zero;
+      using ancestor::increase_size;
+      using ancestor::append_args;
+      using ancestor::prepend_args;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -141,6 +144,9 @@ namespace std
       using ancestor::t_eval;
       using ancestor::norm;
       using ancestor::is_zero;
+      using ancestor::increase_size;
+      using ancestor::append_args;
+      using ancestor::prepend_args;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;

@@ -43,7 +43,8 @@ namespace piranha
 /// Alias for self.
       typedef numerical_container self;
     public:
-// Start interface implementation.
+// Start implementation of basic pseries coefficient interface.
+//------------
 // Ctors.
 /// Default constructor.
       explicit numerical_container():value_(0) {}
@@ -59,23 +60,6 @@ namespace piranha
       explicit numerical_container(const Derived &sc):value_(sc.value_) {}
 /// Destructor.
       ~numerical_container() {}
-// Getters.
-/// Get value.
-      const T &g_value() const
-      {
-        return value_;
-      }
-/// Get actual width.
-      size_t actual_width() const
-      {
-        return 0;
-      }
-// Setters
-/// Set value.
-      T &s_value()
-      {
-        return value_;
-      }
 // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
       {
@@ -93,15 +77,12 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-/// Prepend arguments.
 // TODO: place asserts here, to check we never want to resize to > 0.
 // TODO: how does this interact with appending arguments from series?
 // The problem here is how to handle resize request. Maybe coefficient
 // and trigs should have a trait that tells whether they are resizable or not?
       void append_args(const size_t &) {}
-/// Append arguments.
       void prepend_args(const size_t &) {}
-/// Resize.
       void increase_size(const size_t &) {}
 // Probing.
 /// Diagnostic checkup.
@@ -190,6 +171,22 @@ namespace piranha
       Derived &divide_by(const double &x)
       {
         return divide_by_generic(x);
+      }
+// END interface fullfillment.
+/// Get actual width.
+      size_t actual_width() const
+      {
+        return 0;
+      }
+/// Get value.
+      const T &g_value() const
+      {
+        return value_;
+      }
+/// Set value.
+      T &s_value()
+      {
+        return value_;
       }
     protected:
       template <class U>

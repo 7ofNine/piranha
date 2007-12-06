@@ -70,8 +70,7 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
       }
 /// Destructor.
-      ~basic_pseries_coefficient_concept()
-      {}
+      ~basic_pseries_coefficient_concept() {}
 /// Assignment operator.
       Model &operator=(const Model &)
       {
@@ -131,6 +130,24 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Prepend n arguments.
+      void append_args(const size_t &n)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)n;
+      }
+/// Append n arguments.
+      void prepend_args(const size_t &n)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)n;
+      }
+/// Resize to n arguments.
+      void increase_size(const size_t &n)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)n;
+      }
 // Math ops.
       Model &invert_sign()
       {
@@ -147,7 +164,6 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-// TODO: use proper doxygen lists in documentation below.
 /// Multiplication with self type.
 /**
  * Supports additional templated argument because it may be needed to operate a truncation: the generic template
@@ -182,9 +198,6 @@ namespace piranha
   };
 
 /// Concept class for basic complex coefficients of Poisson series.
-/**
- * Inherits piranha::basic_pseries_coefficient_concept.
- */
   template <class RealModel>
     struct complex_basic_pseries_coefficient_concept:
     public basic_pseries_coefficient_concept<std::complex<RealModel> >
@@ -252,8 +265,7 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
       }
 /// Destructor.
-      ~complex_basic_pseries_coefficient_concept()
-      {}
+      ~complex_basic_pseries_coefficient_concept() {}
 /// Assignment operator.
       Model &operator=(const Model &)
       {
