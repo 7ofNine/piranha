@@ -31,6 +31,48 @@
 
 namespace piranha
 {
+// Coded term structure.
+  template <class T>
+    class coded_term
+  {
+    public:
+      mutable T     cf;
+      max_fast_int  code;
+      bool          flavour;
+  };
+
+// Compact coded term structure.
+// With respect to coded_term it does not contain flavour because this will be used in series multiplication when we
+// will have two different containers for sines and cosines.
+  template <class T>
+    struct compact_coded_term
+  {
+      typedef compact_coded_term<T> self;
+    public:
+      struct hasher
+      {
+        size_t operator()(const self &cct) const
+        {
+          return max_fast_int_hash(cct.code);
+        }
+      };
+      struct equal_to
+      {
+        bool operator()(const self &cct1, const self &cct2) const
+        {
+          return (cct1.code == cct2.code);
+        }
+      };
+      mutable T     cf;
+      max_fast_int  code;
+    private:
+      static const boost::hash<max_fast_int>  max_fast_int_hash;
+  };
+
+
+  template <class T>
+    const boost::hash<max_fast_int> compact_coded_term<T>::max_fast_int_hash = boost::hash<max_fast_int>();
+
 /// Generalized lexicographic representation for two pseries.
 /**
  * To be used in pseries multiplication.
@@ -45,25 +87,6 @@ namespace piranha
       typedef typename Ps2::ancestor::const_iterator iterator2;
       typedef typename Ps1::ancestor::cf_type cf_type1;
       typedef typename Ps2::ancestor::cf_type cf_type2;
-/// Coded term structure.
-      template <class T>
-        struct coded_term
-      {
-        mutable T     cf;
-        max_fast_int  code;
-        bool          flavour;
-      };
-/// Compact coded term structure.
-/**
- * With respect to coded_term it does not contain flavour because this will be used in series multiplication when we
- * will have two different containers for sines and cosines.
- */
-      template <class T>
-        struct compact_coded_term
-      {
-        mutable T     cf;
-        max_fast_int  code;
-      };
     public:
       typedef coded_term<cf_type1> ct_type1;
       typedef coded_term<cf_type2> ct_type2;
@@ -71,20 +94,6 @@ namespace piranha
       typedef compact_coded_term<cf_type2> cct_type2;
       typedef std::valarray<ct_type1> coded_series_type1;
       typedef std::valarray<ct_type2> coded_series_type2;
-      struct cct_hasher
-      {
-        size_t operator()(const cct_type1 &cct) const
-        {
-          return max_fast_int_hash(cct.code);
-        }
-      };
-      struct cct_equal_to
-      {
-        bool operator()(const cct_type1 &cct1, const cct_type1 &cct2) const
-        {
-          return (cct1.code == cct2.code);
-        }
-      };
       pseries_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
@@ -280,11 +289,7 @@ namespace piranha
       coded_series_type2                      cs2;
       max_fast_int                            h_min;
       max_fast_int                            h_max;
-      static const boost::hash<max_fast_int>  max_fast_int_hash;
   };
-
-  template <class Ps1, class Ps2>
-    const boost::hash<max_fast_int> pseries_gl_rep<Ps1,Ps2>::max_fast_int_hash = boost::hash<max_fast_int>();
 }
 
 #endif
