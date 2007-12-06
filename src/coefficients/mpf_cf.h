@@ -53,11 +53,13 @@ namespace piranha
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
-      using ancestor::is_compatible;
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::t_eval;
       using ancestor::is_zero;
+      using ancestor::larger;
+      using ancestor::smaller;
+      using ancestor::is_compatible;
       using ancestor::increase_size;
       using ancestor::append_args;
       using ancestor::prepend_args;
@@ -144,10 +146,12 @@ namespace std
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
-      using ancestor::is_compatible;
       using ancestor::checkup;
       using ancestor::invert_sign;
       using ancestor::is_zero;
+      using ancestor::larger;
+      using ancestor::smaller;
+      using ancestor::is_compatible;
       using ancestor::increase_size;
       using ancestor::append_args;
       using ancestor::prepend_args;

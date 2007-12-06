@@ -78,6 +78,7 @@ namespace piranha
         return *static_cast<Model *>(this);
       }
 /// Calculate norm.
+// TODO: how is this defined for, e.g., polynomials? Abs of evaluation at t=0?
       double norm(const vector_psym_p &) const
       {
         __STATIC_ASSERTION_FAILURE;
@@ -96,9 +97,28 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return bool();
       }
-      bool is_compatible(const size_t &) const
+/// Check whether coefficient width is larger than s.
+      bool larger(const size_t &w) const
       {
         __STATIC_ASSERTION_FAILURE;
+        (void)w;
+        return bool();
+      }
+/// Check whether coefficient width is smaller than s.
+      bool smaller(const size_t &w) const
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)w;
+        return bool();
+      }
+/// Is coefficient compatible with width w?
+/**
+ * Returns false if a resize is needed to have width w, true otherwise.
+ */
+      bool is_compatible(const size_t &w) const
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)w;
         return bool();
       }
 /// Evaluation.
@@ -148,17 +168,19 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         (void)n;
       }
-// Math ops.
+/// Invert sign.
       Model &invert_sign()
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Add self.
       Model &add(const Model &val2)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Subtract self.
       Model &subtract(const Model &val2)
       {
         __STATIC_ASSERTION_FAILURE;
@@ -175,21 +197,25 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Multiply by int.
       Model &mult_by(int)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Multiply by double.
       Model &mult_by(const double &)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Divide by int.
       Model &divide_by(int)
       {
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Divide by double.
       Model &divide_by(const double &)
       {
         __STATIC_ASSERTION_FAILURE;

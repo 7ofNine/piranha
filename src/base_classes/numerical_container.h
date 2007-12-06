@@ -85,21 +85,16 @@ namespace piranha
       void prepend_args(const size_t &) {}
       void increase_size(const size_t &) {}
 // Probing.
-/// Diagnostic checkup.
       bool checkup(const size_t &) const
       {
         return true;
       }
-/// Calculate norm (absolute value).
       double norm(const vector_psym_p &) const
       {
         return absolute();
       }
-/// Is value zero?
-/**
- * If value is less than settings_manager::numerical_zero() in absolute value it is considered
- * to be zero.
- */
+// If value is less than settings_manager::numerical_zero() in absolute value it is considered
+// to be zero.
       bool is_zero(const vector_psym_p &v) const
       {
         return (static_cast<Derived const *>(this)->norm(v) < settings_manager::numerical_zero());
