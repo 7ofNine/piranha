@@ -35,8 +35,13 @@ namespace piranha
   template <class T>
     class coded_term
   {
+    private:
+      mutable T     cf_;
     public:
-      mutable T     cf;
+      T &cf() const
+      {
+        return cf_;
+      }
       max_fast_int  code;
       bool          flavour;
   };
@@ -63,10 +68,15 @@ namespace piranha
           return (cct1.code == cct2.code);
         }
       };
-      mutable T     cf;
+    public:
+      T &cf() const
+      {
+        return cf_;
+      }
       max_fast_int  code;
     private:
-      static const boost::hash<max_fast_int>  max_fast_int_hash;
+      mutable T     cf_;
+      static const  boost::hash<max_fast_int>  max_fast_int_hash;
   };
 
 
@@ -255,14 +265,14 @@ namespace piranha
         size_t i;
         for (i=0;i<l1;++i)
         {
-          cs1[i].cf=*it1->g_cf();
+          cs1[i].cf()=*it1->g_cf();
           code_multiindex(*it1->g_trig(),cs1[i].code);
           cs1[i].flavour=it1->g_flavour();
           ++it1;
         }
         for (i=0;i<l2;++i)
         {
-          cs2[i].cf=*it2->g_cf();
+          cs2[i].cf()=*it2->g_cf();
           code_multiindex(*it2->g_trig(),cs2[i].code);
           cs2[i].flavour=it2->g_flavour();
           ++it2;

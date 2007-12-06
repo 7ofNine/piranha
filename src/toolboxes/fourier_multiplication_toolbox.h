@@ -247,19 +247,19 @@ namespace piranha
         double norm1;
         for (i=0;i<l1;++i)
         {
-          norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+          norm1=cs1[i].cf().norm(derived_cast->cf_s_vec());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
           for (j=0;j<l2;++j)
           {
-            if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*cs2[j].cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }
-            tmp_cf = cs1[i].cf;
-            tmp_cf.mult_by_self(cs2[j].cf,*derived_cast);
+            tmp_cf = cs1[i].cf();
+            tmp_cf.mult_by_self(cs2[j].cf(),*derived_cast);
             tmp_cf.divide_by(2);
             const max_fast_int tmp_index_plus = cs1[i].code + cs2[j].code,
               tmp_index_minus = cs1[i].code - cs2[j].code;
@@ -361,34 +361,34 @@ namespace piranha
         size_t i, j;
         for (i=0;i<l1;++i)
         {
-          norm1=cs1[i].cf.norm(derived_cast->cf_s_vec());
+          norm1=cs1[i].cf().norm(derived_cast->cf_s_vec());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
           for (j=0;j<l2;++j)
           {
-            if ((norm1*cs2[j].cf.norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*cs2[j].cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
             {
               break;
             }
-            tmp_term1.cf = cs1[i].cf;
-            tmp_term2.cf = cs1[i].cf;
+            tmp_term1.cf() = cs1[i].cf();
+            tmp_term2.cf() = cs1[i].cf();
             tmp_term1.code = cs1[i].code;
             tmp_term2.code = cs1[i].code;
 // For now calculate a+b and a-b.
             tmp_term1.code-=cs2[j].code;
             tmp_term2.code+=cs2[j].code;
 // Now the coefficients, all with positive signs for now.
-            tmp_term1.cf.mult_by_self(cs2[j].cf,*derived_cast);
-            tmp_term1.cf.divide_by(2);
-            tmp_term2.cf=tmp_term1.cf;
+            tmp_term1.cf().mult_by_self(cs2[j].cf(),*derived_cast);
+            tmp_term1.cf().divide_by(2);
+            tmp_term2.cf()=tmp_term1.cf();
 // Now fix flavours and coefficient signs.
             if (cs1[i].flavour == cs2[j].flavour)
             {
               if (!(cs1[i].flavour))
               {
-                tmp_term2.cf.invert_sign();
+                tmp_term2.cf().invert_sign();
               }
 // Insert into cosine container.
               cchm_p_it = cchm_cos.find(tmp_term1);
@@ -398,7 +398,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add(tmp_term1.cf);
+                cchm_p_it->cf().add(tmp_term1.cf());
               }
               cchm_p_it = cchm_cos.find(tmp_term2);
               if (cchm_p_it == cchm_cos.end())
@@ -407,14 +407,14 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add(tmp_term2.cf);
+                cchm_p_it->cf().add(tmp_term2.cf());
               }
             }
             else
             {
               if (cs1[i].flavour)
               {
-                tmp_term1.cf.invert_sign();
+                tmp_term1.cf().invert_sign();
               }
 // Insert into sine container.
               cchm_p_it = cchm_sin.find(tmp_term1);
@@ -424,7 +424,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add(tmp_term1.cf);
+                cchm_p_it->cf().add(tmp_term1.cf());
               }
               cchm_p_it = cchm_sin.find(tmp_term2);
               if (cchm_p_it == cchm_sin.end())
@@ -433,7 +433,7 @@ namespace piranha
               }
               else
               {
-                cchm_p_it->cf.add(tmp_term2.cf);
+                cchm_p_it->cf().add(tmp_term2.cf());
               }
             }
             ++n;
@@ -447,7 +447,7 @@ namespace piranha
           const ccm_hash_iterator cchm_it_f=cchm_cos.end();
           for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
           {
-            *tmp_term.s_cf() = cchm_it->cf;
+            *tmp_term.s_cf() = cchm_it->cf();
             glr.decode_multiindex(cchm_it->code,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=true;
@@ -458,7 +458,7 @@ namespace piranha
           const ccm_hash_iterator cchm_it_f=cchm_sin.end();
           for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
           {
-            *tmp_term.s_cf() = cchm_it->cf;
+            *tmp_term.s_cf() = cchm_it->cf();
             glr.decode_multiindex(cchm_it->code,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=false;
