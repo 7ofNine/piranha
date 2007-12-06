@@ -323,6 +323,30 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Get copy of real part.
+      RealModel real() const
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return RealModel();
+      }
+/// Get copy of imaginary part.
+      RealModel imag() const
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return RealModel();
+      }
+/// Set real part to r.
+      void set_real(const RealModel &r)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)r;
+      }
+/// Set imaginary part to i.
+      void set_imag(const RealModel &i)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        (void)i;
+      }
   };
 }
 

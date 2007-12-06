@@ -46,19 +46,12 @@ namespace piranha
 // Start implementation of basic pseries coefficient interface.
 //------------
 // Ctors.
-/// Default constructor.
       explicit numerical_container():value_(0) {}
-/// Constructor from string.
       explicit numerical_container(const std::string &s):value_(utils::lexical_converter<T>(s)) {}
-/// Constructor from piranha::psymbol.
       explicit numerical_container(const psymbol &):value_(0) {}
-/// Constructor from int.
       explicit numerical_container(int n):value_(n) {}
-/// Constructor from double.
       explicit numerical_container(const double &x):value_(x) {}
-/// Copy constructor.
       explicit numerical_container(const Derived &sc):value_(sc.value_) {}
-/// Destructor.
       ~numerical_container() {}
 // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
@@ -99,38 +92,22 @@ namespace piranha
       {
         return (static_cast<Derived const *>(this)->norm(v) < settings_manager::numerical_zero());
       }
-/// Check whether contained value is larger than size.
 // TODO: maybe here we should check against 0 size?
       bool larger(const size_t &) const
       {
         return false;
       }
-/// Check whether contained value is smaller than size.
       bool smaller(const size_t &) const
       {
         return false;
       }
-/// Check whether contained value is size compatible.
       bool is_compatible(const size_t &) const
       {
         return true;
       }
-/// Evaluation.
-/**
- * Evaluation for this class always returns the same value.
- */
       const eval_type &t_eval(const double &, const vector_psym_p &) const
       {
         return value_;
-      }
-/// Partial derivative.
-/**
- * Always returns 0, since this is a purely numerical quantity.
- * @param[out] retval, Derived return value.
- */
-      void partial(const size_t &, Derived &retval) const
-      {
-        retval=Derived(0);
       }
 // Maths.
       Derived &invert_sign()
@@ -167,7 +144,13 @@ namespace piranha
       {
         return divide_by_generic(x);
       }
-// END interface fullfillment.
+// End implementation of basic pseries coefficient interface.
+//------------
+// TODO: move into own toolbox.
+      void partial(const size_t &, Derived &retval) const
+      {
+        retval=Derived(0);
+      }
 /// Get actual width.
       size_t actual_width() const
       {
@@ -231,6 +214,9 @@ namespace piranha
       typedef std::complex<realDerived> Derived;
       typedef realDerived value_type;
     public:
+// Start implementation of complex basic pseries coefficient interface.
+//------------
+// Ctors.
       numerical_container_complex_toolbox() {}
       explicit numerical_container_complex_toolbox(int r, int i)
       {
@@ -282,7 +268,6 @@ namespace piranha
         static_cast<Derived *>(this)->s_value().imag()=i.g_value();
       }
 // Maths.
-// Mult by value_type.
       template <class DerivedPs>
         Derived &mult_by_self(const value_type &x, const DerivedPs &)
       {
@@ -296,6 +281,8 @@ namespace piranha
       {
         return static_cast<Derived *>(this)->mult_by_generic(c);
       }
+// End implementation of complex basic pseries coefficient interface.
+//------------
   };
 }
 
