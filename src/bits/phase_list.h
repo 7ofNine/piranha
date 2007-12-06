@@ -134,7 +134,7 @@ namespace piranha
       std::string temp;
       double tmp_phase;
       bool op_read=false;
-      while (utils::get_valid_string(inf,temp)==0)
+      while (utils::get_valid_string(inf,temp))
       {
         try
         {

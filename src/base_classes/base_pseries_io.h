@@ -33,7 +33,7 @@ namespace piranha
     std::string temp, temp_name;
     vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
-    while (utils::get_valid_string(inf,temp)==0)
+    while (utils::get_valid_string(inf,temp))
     {
       if (temp[0]=='[')
       {
@@ -73,7 +73,7 @@ namespace piranha
     std::string temp, temp_name;
     vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
-    while (utils::get_valid_string(inf,temp)==0)
+    while (utils::get_valid_string(inf,temp))
     {
       if (temp[0]=='[')
       {
@@ -113,7 +113,7 @@ namespace piranha
     std::string temp;
     deque_string split_v;
     std::streampos cur_pos=inf.tellg();
-    while (utils::get_valid_string(inf,temp)==0)
+    while (utils::get_valid_string(inf,temp))
     {
       if (temp[0]=='[')
       {
@@ -150,7 +150,7 @@ namespace piranha
     deque_string split_v;
     std::string temp;
     it_s_index it_hint=end();
-    while (utils::get_valid_string(inf,temp)==0)
+    while (utils::get_valid_string(inf,temp))
     {
       boost::split(split_v,temp,boost::is_any_of(stream_manager::data_separator()));
       if (split_v.size()<2)
@@ -207,7 +207,7 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::identify_sections(std::ifstream &inf,const std::string &filename)
   {
     std::string temp;
-    while (utils::get_valid_string(inf,temp)==0)
+    while (utils::get_valid_string(inf,temp))
     {
       if (temp[0]=='[')
       {

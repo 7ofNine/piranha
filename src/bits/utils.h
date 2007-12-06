@@ -65,19 +65,19 @@ namespace piranha
  * @param[in] inf input stream.
  * @param[out] str std::string which will contain output string.
  */
-      static int get_valid_string(std::ifstream &inf, std::string &str)
+      static bool get_valid_string(std::ifstream &inf, std::string &str)
       {
         do
         {
           if (inf.eof())
           {
-            return 1;
+            return false;
           }
           getline(inf,str,'\n');
           boost::trim(str);
         }
-        while (is_invalid_string(str));
-        return 0;
+        while (!is_valid(str));
+        return true;
       }
 /// Open a file searching also in the 'theories of motion' directory.
 /**
@@ -156,19 +156,18 @@ namespace piranha
           ++i;
         }
       }
-      private:
-/// Check whether a string is empty or commented.
-      static bool is_invalid_string(std::string &str)
+    private:
+/// Check whether a string is valid.
+/**
+ * Invalid strings are empty or commented.
+ */
+      static bool is_valid(const std::string &str)
       {
-        if (str.empty())
+        if (str.empty() or str[0]=='#')
         {
-          return true;
+          return false;
         }
-        if (str[0]=='#')
-        {
-          return true;
-        }
-        return false;
+        return true;
       }
   };
 }
