@@ -70,13 +70,21 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-// TODO: place asserts here, to check we never want to resize to > 0.
 // TODO: how does this interact with appending arguments from series?
 // The problem here is how to handle resize request. Maybe coefficient
 // and trigs should have a trait that tells whether they are resizable or not?
-      void append_args(const size_t &) {}
-      void prepend_args(const size_t &) {}
-      void increase_size(const size_t &) {}
+      void append_args(const size_t &n)
+      {
+        p_assert(n==0);
+      }
+      void prepend_args(const size_t &n)
+      {
+        p_assert(n==0);
+      }
+      void increase_size(const size_t &n)
+      {
+        p_assert(n==0);
+      }
 // Probing.
       bool checkup(const size_t &) const
       {
@@ -93,16 +101,19 @@ namespace piranha
         return (static_cast<Derived const *>(this)->norm(v) < settings_manager::numerical_zero());
       }
 // TODO: maybe here we should check against 0 size?
-      bool larger(const size_t &) const
+      bool larger(const size_t &s) const
       {
+        p_assert(s==0);
         return false;
       }
-      bool smaller(const size_t &) const
+      bool smaller(const size_t &s) const
       {
+        p_assert(s==0);
         return false;
       }
-      bool is_compatible(const size_t &) const
+      bool is_compatible(const size_t &s) const
       {
+        p_assert(s==0);
         return true;
       }
       const eval_type &t_eval(const double &, const vector_psym_p &) const
