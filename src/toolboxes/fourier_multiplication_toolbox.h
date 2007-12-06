@@ -34,7 +34,7 @@ namespace piranha
 {
 /// Multiplication toolbox for Fourier series.
 /**
- * Series multiplication used a norm-based truncation strategy.
+ * Series multiplication uses a norm-based truncation strategy.
  */
   template <class DerivedPs>
     class fourier_multiplication_toolbox:public norm_truncation
