@@ -23,8 +23,7 @@
 
 #include <algorithm> // For sorting of vectors.
 #include <boost/integer_traits.hpp>
-// We need gmp to do arithmetics on ranges.
-#include <gmp.h>
+#include <gmp.h> // We need gmp to do arithmetics on ranges.
 #include <gmpxx.h>
 #include <iostream>
 
@@ -89,6 +88,7 @@ namespace piranha
       pseries_gl_rep(const Ps1 &a, const Ps2 &b):p1(a),p2(b),
         twidth(a.trig_width()),e_minmax(twidth),viable(false),coding_vector(twidth+1)
       {
+        p_assert(b.trig_width() == twidth);
         find_minmax();
         check_viable();
 // If representation is viable, let's code the series.
@@ -141,7 +141,7 @@ namespace piranha
 // Make this private to make sure we do not call default ctor.
       pseries_gl_rep()
       {}
-/// Find minimum and maximum values for multipliers after multiplication.
+// Find minimum and maximum values for multipliers after series multiplication.
       void find_minmax()
       {
         e_minmax_type limits1(twidth), limits2(twidth);
