@@ -116,9 +116,9 @@ namespace piranha
           code_series();
         }
       }
-/// Is this representation useful?
+/// Is this representation viable?
 /**
- * It is useful when code range stays inside the range of piranha::max_fast_int.
+ * It is viable when code range stays inside the range of piranha::max_fast_int.
  */
       const bool &is_viable() const
       {
@@ -158,8 +158,7 @@ namespace piranha
       }
     private:
 // Make this private to make sure we do not call default ctor.
-      pseries_gl_rep()
-      {}
+      pseries_gl_rep() {}
 // Find minimum and maximum values for multipliers after series multiplication.
       void find_minmax()
       {
