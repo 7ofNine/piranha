@@ -31,7 +31,7 @@
 
 namespace piranha
 {
-// Coded term structure.
+// Coded term class.
   template <class T>
     class coded_term
   {
@@ -46,7 +46,7 @@ namespace piranha
       bool          flavour;
   };
 
-// Compact coded term structure.
+// Compact coded term class.
 // With respect to coded_term it does not contain flavour because this will be used in series multiplication when we
 // will have two different containers for sines and cosines.
   template <class T>
