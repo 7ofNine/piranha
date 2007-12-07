@@ -26,8 +26,7 @@
 namespace piranha
 {
   template <class T>
-    struct is_resizable:public false_type
-  {};
+    struct is_resizable:public false_type {};
 }
 
 #endif
