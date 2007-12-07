@@ -27,8 +27,6 @@
 #include "../bits/common_typedefs.h"
 #include "../bits/p_assert.h"
 #include "../bits/psymbol.h"
-#include "../bits/type_traits/is_resizable.h"
-#include "../bits/type_traits/true_type.h"
 #include "../bits/utils.h"                                // lexical_converter.
 
 namespace piranha
@@ -675,9 +673,5 @@ namespace piranha
   {
     return tm.hasher();
   }
-
-/// Resizable type-traits specialization for piranha::trig_sparse_array.
-  template <>
-    struct is_resizable<trig_sparse_array>:public true_type {};
 }
 #endif                                            // PIRANHA_trig_sparse_array_H

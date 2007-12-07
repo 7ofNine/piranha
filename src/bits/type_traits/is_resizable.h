@@ -21,12 +21,12 @@
 #ifndef PIRANHA_IS_RESIZABLE
 #define PIRANHA_IS_RESIZABLE
 
-#include "false_type.h"
+#include "true_type.h"
 
 namespace piranha
 {
   template <class T>
-    struct is_resizable:public false_type {};
+    struct is_resizable:public true_type {};
 }
 
 #endif

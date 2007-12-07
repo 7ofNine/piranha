@@ -29,6 +29,8 @@
 #include "../bits/base_classes/base_trig_array.h"
 #include "../bits/common_typedefs.h"
 #include "../bits/packed_int_array.h"
+#include "../bits/type_traits/is_resizable.h"
+#include "../bits/type_traits/false_type.h"
 #include "../bits/utils.h"
 
 namespace piranha
@@ -226,6 +228,11 @@ namespace piranha
 
   template <int Dim, int Bits>
     const trig_size_t trig_fixed_array<Dim,Bits>::dimension;
+
+/// Resizable type-traits specialization for piranha::trig_fixed_array.
+  template <>
+    template <int Dim, int Bits>
+    struct is_resizable<trig_fixed_array<Dim,Bits> >:public false_type {};
 }
 
 #endif
