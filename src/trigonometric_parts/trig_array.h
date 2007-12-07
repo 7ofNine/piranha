@@ -216,7 +216,6 @@ namespace piranha
 /// Resizable type-traits specialization for piranha::trig_array.
   template <>
     template <int Bits>
-    struct is_resizable<trig_array<Bits> >:public true_type
-  {};
+    struct is_resizable<trig_array<Bits> >:public true_type {};
 }
 #endif

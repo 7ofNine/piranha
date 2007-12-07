@@ -680,7 +680,6 @@ namespace piranha
 
 /// Resizable type-traits specialization for piranha::trig_sparse_array.
   template <>
-    struct is_resizable<trig_sparse_array>:public true_type
-  {};
+    struct is_resizable<trig_sparse_array>:public true_type {};
 }
 #endif                                            // PIRANHA_trig_sparse_array_H
