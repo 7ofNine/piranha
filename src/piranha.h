@@ -21,6 +21,9 @@
 #ifndef PIRANHA_PIRANHA_H
 #define PIRANHA_PIRANHA_H
 
+/// Piranha top-level namespace.
+namespace piranha {}
+
 // Include all piranha manipulators.
 #include "manipulators/ffs.h"
 #include "manipulators/ffsc.h"

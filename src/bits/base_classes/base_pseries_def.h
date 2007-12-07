@@ -21,6 +21,12 @@
 #ifndef PIRANHA_BASE_PSERIES_DEF_H
 #define PIRANHA_BASE_PSERIES_DEF_H
 
+/** @file base_pseries_def.h
+    \brief Definition of base Poisson series class.
+
+    Longer description here.
+*/
+
 #include <boost/multi_index_container.hpp>
 #include <boost/tuple/tuple.hpp>
 
