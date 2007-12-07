@@ -46,14 +46,12 @@ namespace piranha
       typedef int16 value_type;
 // Ctors.
 /// Default ctor.
-      trig_sparse_array():private_flavour_(true)
-        {}
+      trig_sparse_array():private_flavour_(true) {}
 /// Copy ctor.
-      trig_sparse_array(const trig_sparse_array &ts):private_flavour_(ts.g_flavour()),private_container_(ts.private_container_)
-        {}
+      trig_sparse_array(const trig_sparse_array &ts):
+        private_flavour_(ts.g_flavour()),private_container_(ts.private_container_) {}
       trig_sparse_array(const deque_string &);
-      ~trig_sparse_array()
-        {}
+      ~trig_sparse_array() {}
 // Getters.
       bool &s_flavour()
       {

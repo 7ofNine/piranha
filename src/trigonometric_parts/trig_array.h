@@ -43,11 +43,9 @@ namespace piranha
 //-------------------------------------------------------
 // Ctors.
 /// Default ctor.
-      trig_array():ancestor::base_trig_array()
-        {}
+      trig_array():ancestor::base_trig_array() {}
 /// Copy ctor.
-      trig_array(const trig_array &t):ancestor::base_trig_array(t),private_container_(t.private_container_)
-        {}
+      trig_array(const trig_array &t):ancestor::base_trig_array(t),private_container_(t.private_container_) {}
 /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::base_trig_array()
       {
@@ -72,8 +70,7 @@ namespace piranha
           ancestor::s_flavour()=false;
         }
       }
-      ~trig_array()
-        {}
+      ~trig_array() {}
 // Manip.
       void prepend_args(const size_t &n)
       {
