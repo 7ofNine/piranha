@@ -415,9 +415,8 @@ namespace piranha
 /**
  * This function is used to insert terms into a series. It requires that the arguments
  * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
- * ones.
- * Otherwise an assertion fails and the program aborts. base_pseries::merge_args,
- * base_pseries::append_cf_args and base_pseries::append_trig_args can be used to add the needed arguments
+ * ones, otherwise an assertion fails and the program aborts. base_pseries::merge_args,
+ * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
  * to the series.
  *
  * This function performs some checks and then calls base_pseries::ll_insert.
