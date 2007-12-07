@@ -25,9 +25,9 @@
 #include <boost/tuple/tuple.hpp>
 
 #include "base_pseries_hooks.h"
-#include "../bits/phase_list.h"
-#include "../bits/psymbol.h"
-#include "../bits/type_traits/eval_type.h"  // For eval_type.
+#include "../phase_list.h"
+#include "../psymbol.h"
+#include "../type_traits/eval_type.h"  // For eval_type.
 
 namespace piranha
 {

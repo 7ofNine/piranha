@@ -23,13 +23,13 @@
 
 #include <complex>
 
-#include "../base_classes/base_pseries.h"
-#include "../toolboxes/operators_toolbox.h"
-#include "../toolboxes/fourier_multiplication_toolbox.h"
-#include "../toolboxes/math_toolbox.h"
-#include "../toolboxes/complex_toolbox.h"
-#include "../toolboxes/differential_toolbox.h"
-#include "../toolboxes/trigonometric_toolbox.h"
+#include "base_classes/base_pseries.h"
+#include "toolboxes/operators_toolbox.h"
+#include "toolboxes/fourier_multiplication_toolbox.h"
+#include "toolboxes/math_toolbox.h"
+#include "toolboxes/complex_toolbox.h"
+#include "toolboxes/differential_toolbox.h"
+#include "toolboxes/trigonometric_toolbox.h"
 
 namespace piranha
 {

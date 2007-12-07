@@ -29,11 +29,11 @@
 #include <limits>
 #include <valarray>
 
-#include "../bits/common_typedefs.h"
-#include "../bits/imonomial.h"
-#include "../bits/integral_npow_cache.h"
-#include "../bits/p_assert.h"
-#include "../bits/utils.h"
+#include "../common_typedefs.h"
+#include "../imonomial.h"
+#include "../integral_npow_cache.h"
+#include "../p_assert.h"
+#include "../utils.h"
 
 namespace piranha
 {

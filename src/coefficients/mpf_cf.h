@@ -27,7 +27,7 @@
 
 #include "../bits/common_typedefs.h"
 #include "../bits/math.h"                                 // besselJ.
-#include "../base_classes/numerical_container.h"
+#include "../bits/base_classes/numerical_container.h"
 #include "../bits/concepts/basic_pseries_coefficient_concept.h"
 
 namespace piranha

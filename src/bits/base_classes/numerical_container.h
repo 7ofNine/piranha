@@ -24,9 +24,9 @@
 #include <iostream>
 #include <string>
 
-#include "../bits/psymbol.h"
-#include "../bits/utils.h" // Lexical converter.
-#include "../bits/type_traits/eval_type.h"
+#include "../psymbol.h"
+#include "../utils.h" // Lexical converter.
+#include "../type_traits/eval_type.h"
 
 namespace piranha
 {

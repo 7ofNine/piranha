@@ -21,8 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_IO_H
 #define PIRANHA_BASE_PSERIES_IO_H
 
-#include "../bits/math.h"                                 // math::min.
-#include "../bits/utils.h"                                // str_to_vector_double.
+#include "../math.h"                                 // math::min.
+#include "../utils.h"                                // str_to_vector_double.
 
 namespace piranha
 {

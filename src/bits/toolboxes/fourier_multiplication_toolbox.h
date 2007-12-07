@@ -24,11 +24,11 @@
 #include <boost/foreach.hpp>
 #include <cstring> // For memset.
 
-#include "../bits/buffer.h"
-#include "../bits/config.h" // For selection of temporary hash container for multiplication.
-#include "../bits/light_term.h"
-#include "../bits/norm_truncation.h"
-#include "../bits/pseries_gl_rep.h"
+#include "../buffer.h"
+#include "../config.h" // For selection of temporary hash container for multiplication.
+#include "../light_term.h"
+#include "../norm_truncation.h"
+#include "../pseries_gl_rep.h"
 
 namespace piranha
 {

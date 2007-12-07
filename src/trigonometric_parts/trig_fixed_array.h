@@ -26,7 +26,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "../base_classes/base_trig_array.h"
+#include "../bits/base_classes/base_trig_array.h"
 #include "../bits/common_typedefs.h"
 #include "../bits/packed_int_array.h"
 #include "../bits/utils.h"

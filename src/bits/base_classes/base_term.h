@@ -21,9 +21,9 @@
 #ifndef PIRANHA_BASE_TERM_H
 #define PIRANHA_BASE_TERM_H
 
-#include "../bits/light_term.h"
-#include "../bits/trig_evaluator.h"
-#include "../bits/type_traits/eval_type.h"
+#include "../light_term.h"
+#include "../trig_evaluator.h"
+#include "../type_traits/eval_type.h"
 
 namespace piranha
 {

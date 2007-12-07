@@ -21,7 +21,7 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
-#include "../base_classes/base_trig_array.h"
+#include "../bits/base_classes/base_trig_array.h"
 #include "../bits/type_traits/is_resizable.h"
 #include "../bits/type_traits/true_type.h"
 
