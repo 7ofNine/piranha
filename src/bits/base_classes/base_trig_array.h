@@ -42,13 +42,10 @@ namespace piranha
       typedef typename boost::int_t<Bits>::fast value_type;
 // Ctors.
 /// Default ctor.
-      base_trig_array():private_flavour_(true)
-        {}
+      base_trig_array():private_flavour_(true) {}
 /// Copy ctor.
-      base_trig_array(const base_trig_array &t):private_flavour_(t.g_flavour())
-        {}
-      ~base_trig_array()
-        {}
+      base_trig_array(const base_trig_array &t):private_flavour_(t.g_flavour()) {}
+      ~base_trig_array() {}
 // Getters.
       value_type at(const trig_size_t &n) const
       {
