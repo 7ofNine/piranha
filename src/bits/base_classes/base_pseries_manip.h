@@ -411,7 +411,7 @@ namespace piranha
     const Term<Cf,Trig> &result;
   };
 
-/// Main insert function.
+/// Main insertion function.
 /**
  * This function is used to insert terms into a series. It requires that the arguments
  * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
