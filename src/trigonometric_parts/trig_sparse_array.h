@@ -34,6 +34,8 @@ namespace piranha
 /// Sparse array trigonometric class.
   class trig_sparse_array
   {
+// TODO: try to replace this with struct containing int16[2], in order to employ packing techniques for
+// hashing and equality testing.
       typedef std::pair<trig_size_t,int16> pair;
       typedef std::vector<pair> container_type;
       typedef container_type::iterator iterator;
