@@ -70,13 +70,6 @@ namespace piranha
       {
         return Derived(real(),imag()*=-1);
       }
-// TODO: drop this one?
-/// Make complex conjugate.
-      void make_conj()
-      {
-        Derived tmp(real(),imag()*=-1);
-        static_cast<Derived *>(this)->swap(tmp);
-      }
 /// Add complex int.
       Derived &complex_add(const std::complex<int> &n)
       {
