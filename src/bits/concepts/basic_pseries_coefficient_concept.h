@@ -316,6 +316,18 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
+/// Divide by complex int.
+      Model &divide_by(const std::complex<int> &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
+/// Divide by complex double.
+      Model &divide_by(const std::complex<double> &)
+      {
+        __STATIC_ASSERTION_FAILURE;
+        return *static_cast<Model *>(this);
+      }
 /// Multiply by real type.
       template <class T>
         Model &mult_by_self(const RealModel &, const T &)

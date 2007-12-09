@@ -292,6 +292,14 @@ namespace piranha
       {
         return static_cast<Derived *>(this)->mult_by_generic(c);
       }
+      Derived &divide_by(const std::complex<int> &c)
+      {
+        return static_cast<Derived *>(this)->divide_by_generic(c);
+      }
+      Derived &divide_by(const std::complex<double> &c)
+      {
+        return static_cast<Derived *>(this)->divide_by_generic(c);
+      }
 // End implementation of complex basic pseries coefficient interface.
 //------------
   };
