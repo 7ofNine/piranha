@@ -358,21 +358,22 @@ namespace piranha
     template <class T>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::divide_by_generic(const T &x)
   {
-    if (x==0)
+// NOTICE: can this check be improved?
+    if (std::abs(x) == 0)
     {
-      std::cout << "ERROR: division by zero in /=, returning self." << std::endl;
+      std::cout << "ERROR: division by zero in divide_by_generic, returning self." << std::endl;
       std::abort();
-      return;
+      return *static_cast<Derived *>(this);
     }
     if (is_empty())
     {
-      return;
+      return *static_cast<Derived *>(this);
     }
     if (!math::is_zero_vec(lin_args()))
     {
 // NOTICE: maybe here we could deal with exact int/int divisions. Not really important
 // ATM though.
-      std::cout << "Non-zero linargs in /= int!" << std::endl;
+      std::cout << "Non-zero linargs in divide_by_generic!" << std::endl;
       std::exit(1);
     }
     Derived tmp_ps;
@@ -384,7 +385,7 @@ namespace piranha
     {
       tmp_term=*it;
       tmp_term.s_cf()->divide_by(x);
-      it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
+      it_hint=tmp_ps.insert<cf_type,false,true>(tmp_term,&it_hint);
     }
     swap(tmp_ps);
     return *static_cast<Derived *>(this);
