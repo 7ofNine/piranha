@@ -154,9 +154,9 @@ namespace piranha
 // Addition and subtraction.
       Derived &add(int);
       Derived &add(const double &);
+      Derived &add(const Derived &);
       Derived &subtract(int);
       Derived &subtract(const double &);
-      Derived &add(const Derived &);
       Derived &subtract(const Derived &);
 // Multiplication.
       Derived &mult_by(int);

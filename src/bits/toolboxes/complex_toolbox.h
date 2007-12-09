@@ -77,11 +77,31 @@ namespace piranha
         Derived tmp(real(),imag()*=-1);
         static_cast<Derived *>(this)->swap(tmp);
       }
+/// Add complex int.
+      Derived &complex_add(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->add_generic(n);
+      }
+/// Add complex double.
+      Derived &complex_add(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->add_generic(x);
+      }
 /// Add real counterpart.
 // We must call it with another name to avoid MI problems of name clashing.
       Derived &complex_add(const real_Derived &r)
       {
         return static_cast<Derived *>(this)->add_series(r);
+      }
+/// Multiply by complex int.
+      Derived &complex_mult_by(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->mult_by_generic(n);
+      }
+/// Multiply by complex double.
+      Derived &complex_mult_by(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->mult_by_generic(x);
       }
 /// Multiply by real counterpart.
       Derived &complex_mult_by(const real_Derived &r)
