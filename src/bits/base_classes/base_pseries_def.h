@@ -151,11 +151,13 @@ namespace piranha
 // Public mathematics.
 // Assignment.
       Derived &assign(const Derived &);
-// Addition.
-      template <class Derived2>
-        Derived &add(const Derived2 &);
-      template <class Derived2>
-        Derived &subtract(const Derived2 &);
+// Addition and subtraction.
+      Derived &add(int);
+      Derived &add(const double &);
+      Derived &subtract(int);
+      Derived &subtract(const double &);
+      Derived &add(const Derived &);
+      Derived &subtract(const Derived &);
 // Multiplication.
       Derived &mult_by(int);
       Derived &mult_by(const double &);
@@ -200,12 +202,14 @@ namespace piranha
 // Protected maths.
       template <class Derived2>
         Derived &assign_series(const Derived2 &);
-      template <class Derived2, bool>
-        void alg_sum_lin_args(const Derived2 &);
-      template <class Derived2, bool>
-        Derived &merge_with_series(const Derived2 &);
+      template <class Derived2>
+        Derived &add_series(const Derived2 &);
+      template <class Derived2>
+        Derived &subtract_series(const Derived2 &);
       template <class T>
         Derived &add_generic(const T &);
+      template <class T>
+        Derived &subtract_generic(const T &);
       template <class T>
         Derived &mult_by_generic(const T &);
       template <class T>
@@ -233,6 +237,11 @@ namespace piranha
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);
+// Private maths.
+      template <class Derived2, bool>
+        void alg_sum_lin_args(const Derived2 &);
+      template <class Derived2, bool>
+        Derived &merge_with_series(const Derived2 &);
 // Private I/O.
       void print_plain(std::ostream &out_stream = std::cout, int limit = -1) const;
       void print_latex(std::ostream &out_stream = std::cout, int limit = -1) const;

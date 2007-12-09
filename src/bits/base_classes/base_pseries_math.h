@@ -122,15 +122,29 @@ namespace piranha
     return *static_cast<Derived *>(this);
   }
 
-// Merge with a generic entity - NOT with another series
+/// Add generic entity.
+/**
+ * Creates series from entity, then adds it.
+ */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class T>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add_generic(const T &x)
   {
-// Build a series from x
+// FIXME: replace this ctor (as well as below) with direct ctor from x?
     Derived tmp=Derived(cf_type(x),*static_cast<Derived *>(this));
-// Merge with this
     return add(tmp);
+  }
+
+/// Subtract generic entity.
+/**
+ * Creates series from entity, then subtracts it.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class T>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract_generic(const T &x)
+  {
+    Derived tmp=Derived(cf_type(x),*static_cast<Derived *>(this));
+    return subtract(tmp);
   }
 
   template <__PIRANHA_BASE_PS_TP_DECL>
@@ -341,19 +355,62 @@ namespace piranha
     return *static_cast<Derived *>(this);
   }
 
-// Addition.
+/// Generic series addition.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add(const Derived2 &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add_series(const Derived2 &ps2)
   {
     return merge_with_series<Derived2,true>(ps2);
   }
 
+/// Generic series subtraction.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract(const Derived2 &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract_series(const Derived2 &ps2)
   {
     return merge_with_series<Derived2,false>(ps2);
+  }
+
+/// Add self.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add(const Derived &ps2)
+  {
+    return add_series(ps2);
+  }
+
+/// Add int.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add(int n)
+  {
+    return add_generic(n);
+  }
+
+/// Add double.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::add(const double &x)
+  {
+    return add_generic(x);
+  }
+
+/// Subtract int.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract(int n)
+  {
+    return subtract_generic(n);
+  }
+
+/// Subtract double.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract(const double &x)
+  {
+    return subtract_generic(x);
+  }
+
+/// Subtract self.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::subtract(const Derived &ps2)
+  {
+    return subtract_series(ps2);
   }
 
   template <__PIRANHA_BASE_PS_TP_DECL>

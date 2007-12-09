@@ -31,13 +31,23 @@ namespace piranha
       {
         return static_cast<Derived *>(this)->assign(p);
       }
+      Derived &operator+=(int n)
+      {
+        return static_cast<Derived *>(this)->add(n);
+      }
       Derived &operator+=(const double &x)
       {
-        return static_cast<Derived *>(this)->add_generic(x);
+        return static_cast<Derived *>(this)->add(x);
       }
       Derived &operator+=(const Derived &p)
       {
         return static_cast<Derived *>(this)->add(p);
+      }
+      Derived operator+(int n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval+=n;
+        return retval;
       }
       Derived operator+(const double &x) const
       {
@@ -117,13 +127,12 @@ namespace piranha
       }
   };
 
-
 // Requires: complex toolbox.
   template <class real_Derived>
     class complex_operators_toolbox
   {
-    public:
       typedef std::complex<real_Derived> Derived;
+    public:
       Derived &operator=(const Derived &p)
       {
         return static_cast<Derived *>(this)->assign(p);
@@ -222,7 +231,7 @@ namespace piranha
       }
       Derived &operator+=(const real_Derived &p)
       {
-        return static_cast<Derived *>(this)->add(p);
+        return static_cast<Derived *>(this)->complex_add(p);
       }
       Derived operator+(const real_Derived &p) const
       {

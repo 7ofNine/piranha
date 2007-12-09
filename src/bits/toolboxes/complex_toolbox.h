@@ -23,9 +23,12 @@
 
 namespace piranha
 {
+/// Complex toolbox.
   template <class real_Derived>
     class complex_toolbox
   {
+/// Alias for complex type.
+      typedef std::complex<real_Derived> Derived;
     public:
       explicit complex_toolbox() {}
 // Complex specific constructors.
@@ -46,11 +49,44 @@ namespace piranha
         static_cast<Derived *>(this)->generic_builder(std::complex<double>(r,i));
       }
       ~complex_toolbox() {}
+/// Get real part.
+      real_Derived real() const
+      {
+        return get_comp<Real>();
+      }
+/// Get imaginary part.
+      real_Derived imag() const
+      {
+        return get_comp<Imag>();
+      }
+/// Absolute value.
+// TODO:place this into pow toolbox, complex counterpart?
+      real_Derived abs() const
+      {
+        return (real()*real()+imag()*imag()).pow(.5);
+      }
+/// Complex conjugate.
+      Derived conj() const
+      {
+        return Derived(real(),imag()*=-1);
+      }
+// TODO: drop this one?
+/// Make complex conjugate.
+      void make_conj()
+      {
+        Derived tmp(real(),imag()*=-1);
+        static_cast<Derived *>(this)->swap(tmp);
+      }
+/// Add real counterpart.
+// We must call it with another name to avoid MI problems of name clashing.
+      Derived &complex_add(const real_Derived &r)
+      {
+        return static_cast<Derived *>(this)->add_series(r);
+      }
     protected:
 // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
 // parses this part it does not know enough about Derived yet. They are ok in the body of
 // the methods tough, because instantiation happens later.
-      typedef std::complex<real_Derived> Derived;
       typedef typename real_Derived::ancestor::cf_type real_cf_type;
       typedef std::complex<real_cf_type> cf_type;
       typedef typename real_Derived::ancestor::it_s_index real_it_s_index;
@@ -128,34 +164,6 @@ namespace piranha
           default:
             return cf.imag();
         }
-      }
-    public:
-/// Get real part.
-      real_Derived real() const
-      {
-        return get_comp<Real>();
-      }
-/// Get imaginary part.
-      real_Derived imag() const
-      {
-        return get_comp<Imag>();
-      }
-/// Absolute value.
-// TODO:place this into pow toolbox, complex counterpart?
-      real_Derived abs() const
-      {
-        return (real()*real()+imag()*imag()).pow(.5);
-      }
-/// Complex conjugate.
-      Derived conj() const
-      {
-        return Derived(real(),imag()*=-1);
-      }
-/// Make complex conjugate.
-      void make_conj()
-      {
-        Derived tmp(real(),imag()*=-1);
-        static_cast<Derived *>(this)->swap(tmp);
       }
   };
 }
