@@ -42,4 +42,6 @@
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 
+#define _PIRANHA_DISPLAY_PROGRESS (true)
+
 #endif
