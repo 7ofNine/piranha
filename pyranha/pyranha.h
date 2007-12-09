@@ -49,7 +49,6 @@ class_<sc<T> > sc_instatiation(const std::string &name)
   return retval;
 }
 
-
 /// Instantiation of common functions for time comparison.
 // Here T is the tc of operation<series_type>.
 template <class T>
@@ -65,14 +64,11 @@ void tc_common_instantiation(class_<T> &time_c)
   time_c.def("size",&T::size);
 }
 
-
 /// Template for the instantiation of a ps. It will expose methods common to real and complex
 // ps, the specializations take place below.
 template <class T>
 class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
 {
-// FIXME: we need to define all the operations on ints, double, rationals (?) etc etc.
-// FIXME: ... as well as the ctors.
 // This is a trick to help resolve overloaded methods inside classes.
   typedef void (T::*crop_it)(const typename T::it_s_index &);
   typedef void (T::*crop_real)(const double &);
@@ -88,8 +84,8 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   class_<T> inst(name.c_str(),description.c_str());
   inst.def(init<const T &>());
   inst.def(init<const std::string &>());
-  inst.def(init<const double &>());
   inst.def(init<int>());
+  inst.def(init<const double &>());
   inst.def("__copy__", &T::copy);
   inst.def("__iter__", iterator<T,return_internal_reference<> >());
   inst.def("__len__", &T::length);
@@ -103,46 +99,50 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("put_terms", put_terms_n(&T::put_terms));
   inst.def("put_phases_freqs", put_phases_freqs_noargs(&T::put_phases_freqs));
   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
-  inst.def("trig_density", &T::trig_density);
   inst.def("length", &T::length);
+  inst.def("cf_width", &T::cf_width);
   inst.def("trig_width", &T::trig_width);
+  inst.def("is_empty", &T::is_empty);
   inst.def("g_norm", &T::g_norm);
   inst.def("footprint", &T::footprint);
   inst.def("checkup", &T::checkup);
-  inst.def("discontinuity", &T::discontinuity);
   inst.def("crop", crop_real(&T::crop));
-  inst.def("crop", crop_it(&T::crop));
-  inst.def("spectral_cutoff", &T::spectral_cutoff);
-  inst.def("cumulative_crop", &T::cumulative_crop);
-  inst.def("insert_phases", &T::insert_phases);
-  inst.def("add_cf_arg", &T::add_cf_arg);
-  inst.def("add_trig_arg", &T::add_trig_arg);
   inst.def("t_eval", &T::t_eval);
   inst.def("t_eval_brute", &T::t_eval_brute);
   inst.def("mean", mean_def(&T::mean));
   inst.def("mean", mean_n(&T::mean));
   inst.def("swap", &T::swap);
-  inst.def(self+=self);
-  inst.def(self+self);
-  inst.def(self+=double());
-  inst.def(self+double());
-  inst.def(self-=self);
-  inst.def(self-self);
-  inst.def(self-=double());
-  inst.def(self-double());
-  inst.def(self*=self);
-  inst.def(self*self);
 // NOTICE: the order seems important here, if we place *=int before *=double we
 // will get just *=double in Python. Go figure...
-  inst.def(self*=double());
-  inst.def(self*double());
+// Assignments.
+//   inst.def(self=int());
+//   inst.def(self=double());
+//   inst.def(self=self);
+// Addition and subtraction.
+  inst.def(self+=int());
+  inst.def(self+=double());
+  inst.def(self+=self);
+  inst.def(self+int());
+  inst.def(self+double());
+  inst.def(self+self);
+  inst.def(self-=int());
+  inst.def(self-=double());
+  inst.def(self-=self);
+  inst.def(self-int());
+  inst.def(self-double());
+  inst.def(self-self);
+// Multiplication.
   inst.def(self*=int());
+  inst.def(self*=double());
+  inst.def(self*=self);
   inst.def(self*int());
-  inst.def(self/=double());
-  inst.def(self/double());
+  inst.def(self*double());
+  inst.def(self*self);
+// Division.
   inst.def(self/=int());
+  inst.def(self/=double());
   inst.def(self/int());
-
+  inst.def(self/double());
 // Instantiate spectral comparison.
   sc_instatiation<T>(name);
 // Instantiate common time comparisons.
@@ -155,7 +155,6 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   class_<tc_insert_phases<T> > tc_insert_phases_inst("tc_insert_phases",
     init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
   tc_common_instantiation(tc_insert_phases_inst);
-
   return inst;
 }
 
@@ -184,8 +183,6 @@ void ps_instantiate_real_specifics(class_<T> &real)
   real.def("cosine", &real_ps::cosine);
   real.def("sine", &real_ps::sine);
   real.def("pow", &real_ps::pow);
-  real.def("add_ps_to_arg", real_add_ps_to_arg_index(&real_ps::add_ps_to_arg));
-  real.def("add_ps_to_arg", real_add_ps_to_arg_string(&real_ps::add_ps_to_arg));
 // External functions.
 //   def("kep_cosE",&astro::kep_cosE<real_ps>,"Solve Kepler's equation for cosE.");
 // // NOTE: which functions does it make sense to keep here?
@@ -219,30 +216,54 @@ void ps_instantiate_real_specifics(class_<T> &real)
   tc_common_instantiation(tc_add_ps_to_arg_inst);
 }
 
-// TODO: separate conj into power function instantiation, and use type traits or overloading or specialization to
-// establish if we need to provide conj too (since we don't need it for reals)?
+// TODO: separate abs into power function instantiation, and use type traits or overloading or specialization to
+// establish if we need to provide abs too (since we don't need it for reals)?
 template <class T>
 void ps_instantiate_complex_specifics(class_<T> &complex_inst)
 {
   typedef T complex_type;
-  typedef typename complex_type::real_type real_type;
-  complex_inst.def(init<const complex_double &>());
+  typedef typename complex_type::value_type value_type;
+// Additional ctor(s) for complex series
+  complex_inst.def(init<int,int>());
+  complex_inst.def(init<const std::complex<int> &>());
+  complex_inst.def(init<const double &,const double &>());
+  complex_inst.def(init<const std::complex<double> &>());
+  complex_inst.def(init<value_type>());
+  complex_inst.def(init<value_type,value_type>());
   complex_inst.def("real", &complex_type::real);
   complex_inst.def("imag", &complex_type::imag);
-  complex_inst.def("abs", &complex_type::abs);
+// TODO: this must be moved into own toolbox.
+//  complex_inst.def("abs", &complex_type::abs);
   complex_inst.def("conj", &complex_type::conj);
-  complex_inst.def("make_conj", &complex_type::make_conj);
-  complex_inst.def(self+=real_type());
-  complex_inst.def(self+real_type());
-  complex_inst.def(self-=real_type());
-  complex_inst.def(self-real_type());
-  complex_inst.def(self*=real_type());
-  complex_inst.def(self*real_type());
-// Additional ctor(s) for complex series
-  complex_inst.def(init<real_type>());
-  complex_inst.def(init<real_type,real_type>());
-// FIXME: this needs to be fixed.
-  //complex.def(init<typename real_ps::cf_type,typename real_ps::cf_type>());
+// Assignment.
+//   complex_inst.def(self=std::complex<int>());
+//   complex_inst.def(self=std::complex<double>());
+//   complex_inst.def(self=value_type());
+// Addition and subtraction.
+  complex_inst.def(self+=std::complex<int>());
+  complex_inst.def(self+=std::complex<double>());
+  complex_inst.def(self+=value_type());
+  complex_inst.def(self+std::complex<int>());
+  complex_inst.def(self+std::complex<double>());
+  complex_inst.def(self+value_type());
+  complex_inst.def(self-=std::complex<int>());
+  complex_inst.def(self-=std::complex<double>());
+  complex_inst.def(self-=value_type());
+  complex_inst.def(self-std::complex<int>());
+  complex_inst.def(self-std::complex<double>());
+  complex_inst.def(self-value_type());
+// Multiplication.
+  complex_inst.def(self*=std::complex<int>());
+  complex_inst.def(self*=std::complex<double>());
+  complex_inst.def(self*=value_type());
+  complex_inst.def(self*std::complex<int>());
+  complex_inst.def(self*std::complex<double>());
+  complex_inst.def(self*value_type());
+// Division.
+  complex_inst.def(self/=std::complex<int>());
+  complex_inst.def(self/=std::complex<double>());
+  complex_inst.def(self/std::complex<int>());
+  complex_inst.def(self/std::complex<double>());
 }
 
 template <class T>
@@ -278,9 +299,7 @@ void instantiate_tass17()
     .def("eiM", &tass17<T>::eiM,"Calculate complex exponential of mean mean motion M.")
     .staticmethod("eiM")
     .def("vienne_r", &tass17<T>::vienne_r,"Calculate radius using Vienne's FORTRAN routine.")
-    .staticmethod("vienne_r")
-    ;
-
+    .staticmethod("vienne_r");
   class_ <tc_vienne_r6<T> >
     ((std::string("tc_vienne_r6")).c_str(),
     init<typename tc_vienne_r6<T>::b_type,double,double,size_t>())
@@ -293,8 +312,7 @@ void instantiate_tass17()
     return_value_policy<copy_const_reference>())
     .def("error",&tc_vienne_r6<T>::error)
     .def("gnuplot_save",&tc_vienne_r6<T>::gnuplot_save)
-    .def("size",&tc_vienne_r6<T>::size)
-    ;
+    .def("size",&tc_vienne_r6<T>::size);
 }
 
 #endif
