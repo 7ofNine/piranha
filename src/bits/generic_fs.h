@@ -53,6 +53,7 @@ namespace piranha
       template <class Derived> friend class base_trigonometric_toolbox;
       template <class Derived> friend class fourier_multiplication_toolbox;
       template <class Derived> friend class math_toolbox;
+      template <class Derived> friend class differential_toolbox;
     public:
 /// Alias for parent class.
       typedef piranha::base_pseries<Cf, Trig, Term, I, generic_fs<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
@@ -96,6 +97,7 @@ namespace std
       template <class Derived> friend class piranha::base_trigonometric_toolbox;
       template <class Derived> friend class piranha::trigonometric_toolbox;
       template <class Derived> friend class piranha::complex_toolbox;
+      template <class Derived> friend class differential_toolbox;
     public:
 /// Alias for ancestor.
       typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
