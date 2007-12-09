@@ -156,6 +156,8 @@ namespace std
       using ancestor::mult_by;
       using ancestor::mult_by_self;
       using ancestor::divide_by;
+      using complex_toolbox::mult_by;
+      using complex_toolbox::divide_by;
       using complex_toolbox::mult_by_self;
       using complex_toolbox::real;
       using complex_toolbox::imag;
