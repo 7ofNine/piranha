@@ -83,6 +83,11 @@ namespace piranha
       {
         return static_cast<Derived *>(this)->add_series(r);
       }
+/// Multiply by real counterpart.
+      Derived &complex_mult_by(const real_Derived &r)
+      {
+        return static_cast<Derived *>(this)->mult_by_series(r);
+      }
     protected:
 // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
 // parses this part it does not know enough about Derived yet. They are ok in the body of

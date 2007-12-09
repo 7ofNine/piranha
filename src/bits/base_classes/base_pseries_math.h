@@ -242,13 +242,13 @@ namespace piranha
     return false;
   }
 
-/// Series multiplication.
+/// Multiplication by a generic series.
 /**
  * Requires some methods to be implemented in derived classes.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by(const Derived2 &ps2)
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_series(const Derived2 &ps2)
   {
     Derived *derived_cast=static_cast<Derived *>(this);
     Derived retval;
@@ -316,6 +316,13 @@ namespace piranha
       lin_args()[j]=old_lin_args[j]*n;
     }
     return *static_cast<Derived *>(this);
+  }
+
+/// Mult by self.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by(const Derived &ps2)
+  {
+    return mult_by_series(ps2);
   }
 
 /// Generic division.

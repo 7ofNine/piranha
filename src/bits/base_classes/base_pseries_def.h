@@ -161,8 +161,7 @@ namespace piranha
 // Multiplication.
       Derived &mult_by(int);
       Derived &mult_by(const double &);
-      template <class Derived2>
-        Derived &mult_by(const Derived2 &);
+      Derived &mult_by(const Derived &);
 // Division.
       Derived &divide_by(int);
       Derived &divide_by(const double &);
@@ -212,6 +211,8 @@ namespace piranha
         Derived &subtract_generic(const T &);
       template <class T>
         Derived &mult_by_generic(const T &);
+      template <class Derived2>
+        Derived &mult_by_series(const Derived2 &);
       template <class T>
         Derived &divide_by_generic(const T &);
       template <class Derived2>
