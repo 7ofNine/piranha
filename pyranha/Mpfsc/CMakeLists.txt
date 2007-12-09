@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Mpfsc SHARED Mpfsc.cpp)
+PYTHONCMOD(_Mpfsc)

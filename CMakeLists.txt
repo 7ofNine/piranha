@@ -16,6 +16,7 @@ INCLUDE_DIRECTORIES("external_headers")
 # Build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_FS "Enable Fourier series in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_MPFS "Enable multiple precision Fourier series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_CFS "Enable compacted Fourier series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." OFF)

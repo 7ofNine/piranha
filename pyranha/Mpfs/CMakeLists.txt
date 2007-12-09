@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Mpfs SHARED Mpfs.cpp)
+PYTHONCMOD(_Mpfs)
