@@ -27,6 +27,14 @@ namespace piranha
 {\
   return static_cast<Derived *>(this)->assign(p);\
 }\
+Derived &operator=(int n)\
+{\
+  return static_cast<Derived *>(this)->assign(n);\
+}\
+Derived &operator=(const double &x)\
+{\
+  return static_cast<Derived *>(this)->assign(x);\
+}\
 Derived &operator+=(int n)\
 {\
   return static_cast<Derived *>(this)->add(n);\
@@ -153,13 +161,41 @@ Derived operator/(const double &x) const\
     public:
       __PIRANHA_BASE_OPERATORS;
 // Complex specifics.
+      Derived &operator=(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->complex_assign(n);
+      }
+      Derived &operator=(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->complex_assign(x);
+      }
       Derived &operator=(const real_Derived &p)
       {
-        return static_cast<Derived *>(this)->assign(p);
+        return static_cast<Derived *>(this)->complex_assign(p);
+      }
+      Derived &operator+=(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->complex_add(n);
+      }
+      Derived &operator+=(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->complex_add(x);
       }
       Derived &operator+=(const real_Derived &p)
       {
         return static_cast<Derived *>(this)->complex_add(p);
+      }
+      Derived operator+(const std::complex<int> &n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval+=n;
+        return retval;
+      }
+      Derived operator+(const std::complex<double> &x) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval+=x;
+        return retval;
       }
       Derived operator+(const real_Derived &p) const
       {
@@ -167,9 +203,29 @@ Derived operator/(const double &x) const\
         retval+=p;
         return retval;
       }
+      Derived &operator-=(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->complex_subtract(n);
+      }
+      Derived &operator-=(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->complex_subtract(x);
+      }
       Derived &operator-=(const real_Derived &p)
       {
-        return static_cast<Derived *>(this)->add(p,false);
+        return static_cast<Derived *>(this)->complex_subtract(p);
+      }
+      Derived operator-(const std::complex<int> &n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval-=n;
+        return retval;
+      }
+      Derived operator-(const std::complex<double> &x) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval-=x;
+        return retval;
       }
       Derived operator-(const real_Derived &p) const
       {
@@ -177,14 +233,54 @@ Derived operator/(const double &x) const\
         retval-=p;
         return retval;
       }
+      Derived &operator*=(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->complex_mult_by(n);
+      }
+      Derived &operator*=(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->complex_mult_by(x);
+      }
       Derived &operator*=(const real_Derived &p)
       {
         return static_cast<Derived *>(this)->complex_mult_by(p);
+      }
+      Derived operator*(const std::complex<int> &n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval*=n;
+        return retval;
+      }
+      Derived operator*(const std::complex<double> &x) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval*=x;
+        return retval;
       }
       Derived operator*(const real_Derived &p) const
       {
         Derived retval(*static_cast<Derived const *>(this));
         retval*=p;
+        return retval;
+      }
+      Derived &operator/=(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->complex_divide_by(n);
+      }
+      Derived &operator/=(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->complex_divide_by(x);
+      }
+      Derived operator/(const std::complex<int> &n) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval/=n;
+        return retval;
+      }
+      Derived operator/(const std::complex<double> &x) const
+      {
+        Derived retval(*static_cast<Derived const *>(this));
+        retval/=x;
         return retval;
       }
   };

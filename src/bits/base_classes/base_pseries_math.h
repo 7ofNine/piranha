@@ -23,7 +23,7 @@
 
 namespace piranha
 {
-/// Basic assignment.
+/// Assign self.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign(const
     Derived &ps2)
@@ -41,7 +41,7 @@ namespace piranha
     return *static_cast<Derived *>(this);
   }
 
-/// Assignment from series with different coefficient.
+/// Assignment from different series.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign_series(const Derived2 &ps2)
@@ -64,6 +64,34 @@ namespace piranha
     static_cast<Derived *>(this)->assignment_hook(ps2);
     std::cout << "Generic assignment operator!" << std::endl;
     return *static_cast<Derived *>(this);
+  }
+
+/// Assignment from generic type.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class T>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign_generic(const T &x)
+  {
+    s_series_set()->clear();
+    cf_s_vec_.clear();
+    trig_s_vec_.clear();
+    lin_args_.clear();
+    insert(term_type(cf_type(x),trig_type()));
+    std::cout << "Generic assignment operator!" << std::endl;
+    return *static_cast<Derived *>(this);
+  }
+
+/// Assign int.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign(int n)
+  {
+    return assign_generic(n);
+  }
+
+/// Assign double.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign(const double &x)
+  {
+    return assign_generic(x);
   }
 
   template <__PIRANHA_BASE_PS_TP_DECL>

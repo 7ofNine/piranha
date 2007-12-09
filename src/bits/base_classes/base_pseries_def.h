@@ -150,6 +150,8 @@ namespace piranha
       bool is_cf() const;
 // Public mathematics.
 // Assignment.
+      Derived &assign(int);
+      Derived &assign(const double &);
       Derived &assign(const Derived &);
 // Addition and subtraction.
       Derived &add(int);
@@ -199,6 +201,8 @@ namespace piranha
       size_t trig_index(const std::string &) const;
       double trig_density() const;
 // Protected maths.
+      template <class T>
+        Derived &assign_generic(const T &);
       template <class Derived2>
         Derived &assign_series(const Derived2 &);
       template <class Derived2>

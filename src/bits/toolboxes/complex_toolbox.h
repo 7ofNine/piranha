@@ -71,6 +71,21 @@ namespace piranha
         return Derived(real(),imag()*=-1);
       }
 // Maths interoperability with complex pods and real counterpart.
+/// Assign complex int.
+      Derived &complex_assign(const std::complex<int> &n)
+      {
+        return static_cast<Derived *>(this)->assign_generic(n);
+      }
+/// Assign complex double.
+      Derived &complex_assign(const std::complex<double> &x)
+      {
+        return static_cast<Derived *>(this)->assign_generic(x);
+      }
+/// Assign real counterpart.
+      Derived &complex_assign(const real_Derived &r)
+      {
+        return static_cast<Derived *>(this)->assign_series(r);
+      }
 /// Add complex int.
       Derived &complex_add(const std::complex<int> &n)
       {
