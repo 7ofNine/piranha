@@ -22,12 +22,12 @@
 #define FOURIER_MULTIPLICATION_TOOLBOX_H
 
 #include <boost/foreach.hpp>
-#include <cstring> // For memset.
 
 #include "../buffer.h"
-#include "../config.h" // For selection of temporary hash container for multiplication.
+#include "../config.h" // For selection of temporary hash container for multiplication and display progress..
 #include "../light_term.h"
 #include "../norm_truncation.h"
+#include "../progress_display.h"
 #include "../pseries_gl_rep.h"
 
 namespace piranha
@@ -90,11 +90,12 @@ namespace piranha
           Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
         double norm1;
-        size_t i, j, n=0;
+        size_t i, j;
 // ps2.begin() is legal because we checked for ps2's size.
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
+        progress_display<_PIRANHA_DISPLAY_PROGRESS> pd(l1*l2);
         if (glr.is_viable())
         {
           const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();
@@ -116,12 +117,12 @@ namespace piranha
 #undef _MAX_LOAD_FACTOR
           {
             std::cout << "Can do vector coded arithmetics." << '\n';
-            coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2,n);
+            coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2,pd);
           }
           else
           {
              std::cout << "Can do hash coded arithmetics." << '\n';
-            coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2,n);
+            coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2,pd);
           }
         }
         else
@@ -192,7 +193,7 @@ namespace piranha
               {
                 hm_p_it->cf.add(*c1);
               }
-              ++n;
+              ++pd;
             }
           }
           const m_hash_iterator hm_it_f=hm.end();
@@ -203,7 +204,7 @@ namespace piranha
           }
 //retval.cumulative_crop(Delta);
         }
-        std::cout << "w/o trunc=" << l1*l2 << "\tw/ trunc=" << n << std::endl;
+        std::cout << "w/o trunc=" << l1*l2 << "\tw/ trunc=" << pd.count() << std::endl;
         std::cout << "Out length=" << retval.length() << std::endl;
       }
     private:
@@ -216,10 +217,11 @@ namespace piranha
         new_c.divide_by(2);
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
-      template <class Glr, class Retval, class DerivedPs2>
+      template <class Glr, class Retval, class DerivedPs2, bool DisplayProgress>
         void coded_vector_mult(const max_fast_int &h_card, const max_fast_int &h_min, const max_fast_int &h_max,
         const double &norm2_i, const double &Delta_threshold, const Glr &glr,
-        Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2, size_t &n) const
+        Retval &retval, const size_t &l1, const size_t &l2, const DerivedPs2 &ps2,
+        progress_display<DisplayProgress> &pd) const
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
@@ -298,7 +300,7 @@ namespace piranha
                 s_point_sin[tmp_index_plus].second = true;
               }
             }
-            ++n;
+            ++pd;
           }
         }
         term_type tmp_term;
@@ -333,10 +335,10 @@ namespace piranha
           (code_vector_cos+i)->first.~cf_type();
         }
       }
-      template <class Glr, class Retval, class DerivedPs2>
+      template <class Glr, class Retval, class DerivedPs2, bool DisplayProgress>
         void coded_hash_mult(const Glr &glr, const size_t &l1, const size_t &l2,
         Retval &retval, const double &norm2_i, const double &Delta_threshold,
-        const DerivedPs2 &ps2, size_t &n) const
+        const DerivedPs2 &ps2, progress_display<DisplayProgress> &pd) const
       {
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
@@ -437,7 +439,7 @@ namespace piranha
                 cchm_p_it->cf().add(tmp_term2.cf());
               }
             }
-            ++n;
+            ++pd;
           }
         }
         term_type tmp_term;
