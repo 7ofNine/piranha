@@ -127,7 +127,7 @@ namespace piranha
       it_s_index begin() const;
       it_s_index end() const;
 // Public manipulation.
-      Derived &swap(Derived &);
+      void swap(Derived &);
       void cumulative_crop(const double &);
       void crop(const double &);
 // Public I/O.
@@ -148,6 +148,8 @@ namespace piranha
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
+// TODO: think about this one.
+      size_t trig_index(const std::string &) const;
 // Public mathematics.
 // Assignment.
       Derived &assign(int);
@@ -198,7 +200,6 @@ namespace piranha
 // Protected probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
       it_s_index discontinuity() const;
-      size_t trig_index(const std::string &) const;
       double trig_density() const;
 // Protected maths.
       template <class T>
