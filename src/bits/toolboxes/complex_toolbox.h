@@ -149,11 +149,27 @@ namespace piranha
       typedef std::complex<real_cf_type> cf_type;
       typedef typename real_Derived::ancestor::it_s_index real_it_s_index;
       typedef typename real_Derived::ancestor::term_type real_term_type;
+// TODO: what's with the extra comma at the end?
       enum component
       {
         Real,
         Imag,
       };
+      template <component Cmp>
+        void insert_component(const real_Derived &comp)
+      {
+        typedef typename Derived::ancestor::term_type term_type;
+        term_type term;
+        const real_it_s_index it_f=comp.g_s_index().end();
+// TODO: hinted insertion here.
+        for (real_it_s_index it=comp.g_s_index().begin();it!=it_f;++it)
+        {
+          *term.s_cf()=build_cf_from_comp<Cmp>(*it->g_cf());
+          *term.s_trig()=*it->g_trig();
+          term.s_flavour()=it->g_flavour();
+          static_cast<Derived *>(this)->insert(term);
+        }
+      }
 // Build series from real and imaginary components.
       void build_from_components(const real_Derived &p, const real_Derived &q)
       {
@@ -164,32 +180,8 @@ namespace piranha
             "series passed to ctor are not argument compatible."<< std::endl;
           return;
         }
-        typedef typename Derived::ancestor::term_type term_type;
-// TODO: hinted insertion here.
-// Insert p (real_ part).
-        {
-          term_type term;
-          const real_it_s_index it_f=p.g_s_index().end();
-          for (real_it_s_index it=p.g_s_index().begin();it!=it_f;++it)
-          {
-            *term.s_cf()=build_cf_from_comp<Real>(*it->g_cf());
-            *term.s_trig()=*it->g_trig();
-            term.s_flavour()=it->g_flavour();
-            static_cast<Derived *>(this)->insert(term);
-          }
-        }
-// Insert q (imaginary part).
-        {
-          term_type term;
-          const real_it_s_index it_f=q.g_s_index().end();
-          for (real_it_s_index it=q.g_s_index().begin();it!=it_f;++it)
-          {
-            *term.s_cf()=build_cf_from_comp<Imag>(*it->g_cf());
-            *term.s_trig()=*it->g_trig();
-            term.s_flavour()=it->g_flavour();
-            static_cast<Derived *>(this)->insert(term);
-          }
-        }
+        insert_component<Real>(p);
+        insert_component<Imag>(q);
       }
       template <component Cmp>
         real_Derived get_comp() const
