@@ -122,8 +122,7 @@ namespace piranha
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (trig_size_t i=0;i<w;++i)
         {
-          static_cast<const Derived *>(this)->s_container()[i]=
-          -static_cast<const Derived *>(this)->g_container()[i];
+          static_cast<const Derived *>(this)->s_container()[i]*=-1;
         }
       }
 /// Assign vector of multipliers.
