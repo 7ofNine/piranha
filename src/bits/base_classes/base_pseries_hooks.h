@@ -34,23 +34,18 @@ namespace piranha
  * Templatized this way because we want to be able to assign real series to complex ones.
  */
       template <class Derived2>
-        void assignment_hook(const Derived2 &)
-        {}
+        void assignment_hook(const Derived2 &) {}
 /// Default implementation of swap hook.
-      void swap_hook(Derived &)
-        {}
+      void swap_hook(Derived &) {}
 /// Default implementation of the hook for post-insertion of a new term.
       template <class Term>
-        void new_term_post_insertion_hook(const Term &)
-        {}
+        void new_term_post_insertion_hook(const Term &) {}
 /// Default implementation of the hook for post-erase of a term.
       template <class Term>
-        void term_pre_erase_hook(const Term &)
-        {}
+        void term_pre_erase_hook(const Term &) {}
 /// Default implementation of the hook for pre-update of a term.
       template <class Term, class Cf>
-        void term_pre_update_hook(const Term &, const Cf &)
-        {}
+        void term_pre_update_hook(const Term &, const Cf &) {}
   };
 }
 #endif
