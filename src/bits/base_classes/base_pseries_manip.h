@@ -25,6 +25,8 @@
 #include "../config.h"       // For (un)likely().
 #include "../stats.h"
 
+#include "base_pseries_ta_macros.h"
+
 namespace piranha
 {
 /// Find term.

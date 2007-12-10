@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_MATH_H
 #define PIRANHA_BASE_PSERIES_MATH_H
 
+#include "base_pseries_ta_macros.h"
+
 namespace piranha
 {
 /// Assign self.

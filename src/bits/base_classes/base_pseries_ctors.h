@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_CTORS_H
 #define PIRANHA_BASE_PSERIES_CTORS_H
 
+#include "base_pseries_ta_macros.h"
+
 namespace piranha
 {
 /// Initializer list for base_pseries constructors.

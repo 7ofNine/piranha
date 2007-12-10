@@ -31,18 +31,13 @@
 #include <boost/tuple/tuple.hpp>
 
 #include "base_pseries_hooks.h"
+#include "base_pseries_ta_macros.h"
 #include "../phase_list.h"
 #include "../psymbol.h"
 #include "../type_traits/eval_type.h"  // For eval_type.
 
 namespace piranha
 {
-/// Template parameters for piranha::base_pseries.
-#define __PIRANHA_BASE_PS_TP Cf,Trig,Term,I,Derived,Allocator
-/// Template parameters for piranha::base_pseries (declaration form).
-#define __PIRANHA_BASE_PS_TP_DECL class Cf, class Trig, template <class, class> class Term, template <class, class, \
-  template <class, class> class> class I, class Derived, class Allocator
-
 /// Base series class.
 /**
  * Base class for the representation of Poisson series. It provides the methods for basic manipulation

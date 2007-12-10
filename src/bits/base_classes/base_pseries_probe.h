@@ -26,6 +26,7 @@
 #include <set>
 
 #include "../trig_evaluator.h"
+#include "base_pseries_ta_macros.h"
 
 namespace piranha
 {
