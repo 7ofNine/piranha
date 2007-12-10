@@ -123,17 +123,17 @@ namespace std
       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model) {}
 // Complex specific ctors.
 /// Constructor from complex integer.
-      explicit complex(const complex<int> &n):complex_toolbox(n) {}
+      explicit complex(const complex<int> &n):ancestor::base_pseries(),complex_toolbox(n) {}
 /// Constructor from real and imaginary integers.
-      explicit complex(int r, int i):complex_toolbox(r,i) {}
+      explicit complex(int r, int i):ancestor::base_pseries(),complex_toolbox(r,i) {}
 /// Constructor from complex double.
-      explicit complex(const complex<double> &x):complex_toolbox(x) {}
+      explicit complex(const complex<double> &x):ancestor::base_pseries(),complex_toolbox(x) {}
 /// Constructor from real and imaginary doubles.
-      explicit complex(const double &r, const double &i):complex_toolbox(r,i) {}
+      explicit complex(const double &r, const double &i):ancestor::base_pseries(),complex_toolbox(r,i) {}
 /// Constructor from value_type.
-      explicit complex(const value_type &p):complex_toolbox(p) {}
+      explicit complex(const value_type &p):ancestor::base_pseries(),complex_toolbox(p) {}
 /// Constructor from real and imaginary series.
-      explicit complex(const value_type &p, const value_type &q):complex_toolbox(p,q) {}
+      explicit complex(const value_type &p, const value_type &q):ancestor::base_pseries(),complex_toolbox(p,q) {}
   };
 }
 #endif
