@@ -22,6 +22,9 @@
 #define PIRANHA_PROGRESS_DISPLAY_H
 
 #include <boost/progress.hpp>
+#include <boost/scoped_ptr.hpp>
+
+#include "config.h" // For _PIRANHA_DISPLAY_PROGRESS_MAX_N.
 
 namespace piranha
 {
@@ -29,17 +32,39 @@ namespace piranha
     class progress_display
   {
     public:
-      progress_display(const size_t &n):pd(n) {}
+      progress_display(const size_t &n):active(n>_PIRANHA_DISPLAY_PROGRESS_MAX_N),pd(0)
+      {
+        switch (active)
+        {
+          case true:
+            pd.reset(new boost::progress_display(n));
+          case false:
+            ;
+        }
+      }
       void operator++()
       {
-        ++pd;
+        switch (active)
+        {
+          case true:
+            ++(*pd);
+          case false:
+            ;
+        }
       }
       unsigned long int count() const
       {
-        return pd.count();
+        switch (active)
+        {
+          case true:
+            return pd->count();
+          default:
+            return 0;
+        }
       }
     private:
-      boost::progress_display pd;
+      const bool                                  active;
+      boost::scoped_ptr<boost::progress_display>  pd;
   };
 
   template <>
