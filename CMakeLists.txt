@@ -27,12 +27,18 @@ OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-th
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 OPTION(ENABLE_HOARD "Use the Hoard memory allocator - EXPERIMENTAL." OFF)
 OPTION(ENABLE_SSE2 "Enable series type using SSE2 instructions (requires a SSE2-enabled CPU) - EXPERIMENTAL." OFF)
+OPTION(ENABLE_DISPLAY_PROGRESS "Enable progress display during long operations." ON)
+mark_as_advanced(ENABLE_DISPLAY_PROGRESS)
 
 SET(MANDATORY_LIBRARIES "")
 SET(PIRANHA_DEFINITIONS "")
 
 CHECK_TYPE_SIZE("void *" POINTER_SIZE)
 MESSAGE(STATUS "Pointer size is " ${POINTER_SIZE})
+
+IF(NOT ENABLE_DISPLAY_PROGRESS)
+  SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_DISPLAY_PROGRESS=false)
+ENDIF(NOT ENABLE_DISPLAY_PROGRESS)
 
 IF(${POINTER_SIZE} EQUAL 8)
   MESSAGE(STATUS "64bit platform detected")

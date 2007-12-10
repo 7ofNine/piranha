@@ -37,6 +37,8 @@
 #define unlikely(exp) __builtin_expect(exp,0)
 
 #define _PIRANHA_DISPLAY_PROGRESS_MAX_N (500000)
+#ifndef _PIRANHA_DISPLAY_PROGRESS
 #define _PIRANHA_DISPLAY_PROGRESS (true)
+#endif
 
 #endif
