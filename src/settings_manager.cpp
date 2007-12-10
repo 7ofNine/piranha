@@ -38,6 +38,7 @@ namespace piranha
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::version_ = __piranha_version;
+  bool settings_manager::enable_progress_display_ = true;
   settings_manager::greeter settings_manager::grt_;
 
   settings_manager::greeter::greeter()

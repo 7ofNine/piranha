@@ -113,6 +113,10 @@ BOOST_PYTHON_MODULE(_Core)
     "Set search path for theories of motion's data files.");
   class_setm.def("version", &settings_manager::version,
     "Get Piranha's version.", return_value_policy<copy_const_reference>());
+  class_setm.def("display_progress", &settings_manager::display_progress,
+    "Display progress bar?");
+  class_setm.def("set_display_progress", &settings_manager::set_display_progress,
+    "Set to true to enable the display of progress bar.");
   class_setm.staticmethod("load_factor");
   class_setm.staticmethod("set_load_factor");
   class_setm.staticmethod("numerical_zero");
@@ -120,6 +124,8 @@ BOOST_PYTHON_MODULE(_Core)
   class_setm.staticmethod("default_theories_path");
   class_setm.staticmethod("set_theories_path");
   class_setm.staticmethod("version");
+  class_setm.staticmethod("display_progress");
+  class_setm.staticmethod("set_display_progress");
 
 // Stream manager.
   enum_<stream_manager::out_format>("out_format")

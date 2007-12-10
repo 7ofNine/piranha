@@ -80,10 +80,17 @@ namespace piranha
         hash_max_load_factor_ = value;
       }
       static void set_theories_path(const std::string &);
+      static bool display_progress()
+      {
+        return enable_progress_display_;
+      }
+      static void set_display_progress(bool flag)
+      {
+        enable_progress_display_=flag;
+      }
     private:
 /// Private ctor.
-      settings_manager()
-        {}
+      settings_manager() {}
 /// Greeter class.
 /**
  * Greeter class is constructed at piranha invocation and sets default parameters.
@@ -111,6 +118,7 @@ namespace piranha
       static std::string              theories_path_;
       static const std::string        default_theories_path_;
       static const std::string        version_;
+      static bool                     enable_progress_display_;
       static greeter                  grt_;
   };
 }
