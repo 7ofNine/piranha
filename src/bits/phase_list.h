@@ -21,7 +21,8 @@
 #ifndef PIRANHA_PHASE_LIST_H
 #define PIRANHA_PHASE_LIST_H
 
-#include <boost/algorithm/string.hpp>             // to_lower FIXME: why is it used here?? Check those file open routines, uniform them.
+#include <boost/algorithm/string.hpp>             // to_lower FIXME: why is it used here??
+                                                  // Check those file open routines, uniform them.
 
 #include "common_typedefs.h"                      // vector_double.
 #include "utils.h"                                // open_file.
@@ -61,9 +62,7 @@ namespace piranha
       };
       typedef vector_double::const_iterator const_iterator;
       typedef vector_double::const_reverse_iterator const_reverse_iterator;
-      phase_list():operation_(add
-        )
-        {}
+      phase_list():operation_(add) {}
       phase_list(const std::string &);
 /// Assignment operator.
       phase_list &operator=(const phase_list &pl)
@@ -123,8 +122,7 @@ namespace piranha
  * If no such string is found the default is to add phases.
  * @param[in] fn std::string representing filename.
  */
-  inline phase_list::phase_list(const std::string &fn):operation_(add
-    )
+  inline phase_list::phase_list(const std::string &fn):operation_(add)
   {
     std::ifstream inf;
     utils::open_file(fn,inf);

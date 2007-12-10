@@ -96,7 +96,7 @@ namespace piranha
     private:
 #ifdef _PIRANHA_SSE2
       template <int Bits_> friend class pia_helper;
-      static const uint8  m128n = (uint8)((Dim*Bits)/128+1);
+      static const uint8 m128n = (uint8)((Dim*Bits)/128+1);
 #endif
       union container_type
       {
