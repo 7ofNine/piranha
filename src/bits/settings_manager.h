@@ -22,6 +22,8 @@
 #define PIRANHA_SETTINGS_MANAGER_H
 
 #include <iostream>
+#include <gmp.h>
+#include <gmpxx.h>
 #include <string>
 
 #include "common_typedefs.h"
@@ -92,6 +94,19 @@ namespace piranha
           std::cout << "Progress bar has not been built." << std::endl;
         }
         enable_progress_display_=flag;
+      }
+      static unsigned long int mp_default_prec()
+      {
+        return mpf_get_default_prec();
+      }
+      static void set_mp_default_prec(int n)
+      {
+        if (n <= 0)
+        {
+          std::cout << "Please insert a strictly positive value." << std::endl;
+          return;
+        }
+        mpf_set_default_prec(n);
       }
     private:
 /// Private ctor.

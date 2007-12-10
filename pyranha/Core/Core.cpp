@@ -117,6 +117,10 @@ BOOST_PYTHON_MODULE(_Core)
     "Display progress bar?");
   class_setm.def("set_display_progress", &settings_manager::set_display_progress,
     "Set to true to enable the display of progress bar.");
+  class_setm.def("mp_default_prec", &settings_manager::mp_default_prec,
+    "Get least default precision of mp floating point in bits.");
+  class_setm.def("set_mp_default_prec", &settings_manager::set_mp_default_prec,
+    "Set least default precision of mp floating point in bits.");
   class_setm.staticmethod("load_factor");
   class_setm.staticmethod("set_load_factor");
   class_setm.staticmethod("numerical_zero");
@@ -126,6 +130,8 @@ BOOST_PYTHON_MODULE(_Core)
   class_setm.staticmethod("version");
   class_setm.staticmethod("display_progress");
   class_setm.staticmethod("set_display_progress");
+  class_setm.staticmethod("mp_default_prec");
+  class_setm.staticmethod("set_mp_default_prec");
 
 // Stream manager.
   enum_<stream_manager::out_format>("out_format")
