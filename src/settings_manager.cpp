@@ -21,6 +21,7 @@
 #include <boost/integer_traits.hpp>
 
 #include "bits/common_typedefs.h"
+#include "bits/memory.h"
 #include "bits/settings_manager.h"
 #include "bits/stream_manager.h"
 #include "bits/version.h"
@@ -39,9 +40,9 @@ namespace piranha
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::version_ = __piranha_version;
   bool settings_manager::enable_progress_display_ = true;
-  settings_manager::greeter settings_manager::grt_;
+  settings_manager::startup settings_manager::startup_;
 
-  settings_manager::greeter::greeter()
+  settings_manager::startup::startup()
   {
 // Startup report.
     std::cout << "This is Piranha version " << version() << std::endl;
@@ -55,6 +56,8 @@ namespace piranha
     std::cout << "_______________________________" << std::endl << std::endl;
 // Setup cout.
     stream_manager::setup_print(std::cout);
+// Custom allocators for gmp.
+    mp_set_memory_functions(mp_alloc,mp_realloc,mp_free);
   }
 
 /// Set path to theories of motion.

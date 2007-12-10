@@ -111,35 +111,36 @@ namespace piranha
     private:
 /// Private ctor.
       settings_manager() {}
-/// Greeter class.
+/// Startup class.
 /**
- * Greeter class is constructed at piranha invocation and sets default parameters.
+ * Startup class is constructed at piranha invocation and sets default parameters.
  */
-      class greeter
+      class startup
       {
         public:
-          greeter();
+          startup();
       };
 /// Load factor for hashed containers.
-      static double                   hash_max_load_factor_;
+      static double                         hash_max_load_factor_;
 /// Numerical zero.
-      static double                   numerical_zero_;
+      static double                         numerical_zero_;
 /// Minimum fast unsigned integer.
-      static const max_fast_uint      min_u_;
+      static const max_fast_uint            min_u_;
 /// Maximum fast unsigned integer.
-      static const max_fast_uint      max_u_;
+      static const max_fast_uint            max_u_;
 /// Minimum fast integer.
-      static const max_fast_int       min_i_;
+      static const max_fast_int             min_i_;
 /// Maximum fast integer.
-      static const max_fast_int       max_i_;
+      static const max_fast_int             max_i_;
 /// Jacobi Anger expansion limit.
-      static const unsigned int       jacang_limit_;
+      static const unsigned int             jacang_limit_;
 /// Path to theories of motion.
-      static std::string              theories_path_;
-      static const std::string        default_theories_path_;
-      static const std::string        version_;
-      static bool                     enable_progress_display_;
-      static greeter                  grt_;
+      static std::string                    theories_path_;
+      static const std::string              default_theories_path_;
+      static const std::string              version_;
+      static bool                           enable_progress_display_;
+      static startup                        startup_;
   };
 }
+
 #endif
