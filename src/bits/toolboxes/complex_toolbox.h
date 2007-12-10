@@ -154,7 +154,7 @@ namespace piranha
         Real,
         Imag,
       };
-// Build series from two components.
+// Build series from real and imaginary components.
       void build_from_components(const real_Derived &p, const real_Derived &q)
       {
         action_assert(static_cast<Derived *>(this)->merge_args(p));
@@ -172,7 +172,7 @@ namespace piranha
           const real_it_s_index it_f=p.g_s_index().end();
           for (real_it_s_index it=p.g_s_index().begin();it!=it_f;++it)
           {
-            *term.s_cf()=cf_type(*it->g_cf(),real_cf_type(0));
+            *term.s_cf()=build_cf_from_comp<Real>(*it->g_cf());
             *term.s_trig()=*it->g_trig();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -184,7 +184,7 @@ namespace piranha
           const real_it_s_index it_f=q.g_s_index().end();
           for (real_it_s_index it=q.g_s_index().begin();it!=it_f;++it)
           {
-            *term.s_cf()=cf_type(real_cf_type(0),*it->g_cf());
+            *term.s_cf()=build_cf_from_comp<Imag>(*it->g_cf());
             *term.s_trig()=*it->g_trig();
             term.s_flavour()=it->g_flavour();
             static_cast<Derived *>(this)->insert(term);
@@ -221,6 +221,17 @@ namespace piranha
             return cf.real();
           default:
             return cf.imag();
+        }
+      }
+      template <component Cmp>
+        cf_type build_cf_from_comp(const real_cf_type &cf) const
+      {
+        switch (Cmp)
+        {
+          case Real:
+            return cf_type(cf,real_cf_type(0));
+          default:
+            return cf_type(real_cf_type(0),cf);
         }
       }
   };
