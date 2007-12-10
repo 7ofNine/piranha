@@ -117,23 +117,23 @@ namespace piranha
 #define _MAX_LOAD_FACTOR (1.)
           if (load_factor < _MAX_LOAD_FACTOR)
           {
-            std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
+            //std::cout << "Load factor is too small, will avoid coded vector arithmetics." << std::endl;
           }
           if ((size_t)(h_card<<1) <= buffer::n_elements<cf_bool>() and load_factor >= _MAX_LOAD_FACTOR)
 #undef _MAX_LOAD_FACTOR
           {
-            std::cout << "Can do vector coded arithmetics." << '\n';
+            //std::cout << "Can do vector coded arithmetics." << '\n';
             coded_vector_mult(h_card,h_min,h_max,norm2_i,Delta_threshold,glr,retval,l1,l2,ps2,pd);
           }
           else
           {
-             std::cout << "Can do hash coded arithmetics." << '\n';
+            //std::cout << "Can do hash coded arithmetics." << '\n';
             coded_hash_mult(glr,l1,l2,retval,norm2_i,Delta_threshold,ps2,pd);
           }
         }
         else
         {
-          std::cout << "Will perform plain multiplication." << '\n';
+          //std::cout << "Will perform plain multiplication." << '\n';
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.
           light_term_type tmp1, tmp2;
