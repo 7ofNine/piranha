@@ -21,12 +21,14 @@
 #ifndef PIRANHA_STATS_H
 #define PIRANHA_STATS_H
 
+#include "base_classes/base_pseries_def.h"
+
 namespace piranha
 {
 /// Piranha-specific statistics class.
   class stats
   {
-    template <class Cf, class Trig, template <class, class> class Term, template <class, class, template <class, class> class> class I, class Derived, class Allocator>
+    template <__PIRANHA_BASE_PS_TP_DECL>
       friend class base_pseries;
     public:
       static double pack_ratio();
