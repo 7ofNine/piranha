@@ -162,7 +162,7 @@ namespace piranha
       enum component
       {
         Real,
-        Imag,
+        Imag
       };
       template <component Cmp>
         void insert_component(const real_Derived &comp)
@@ -220,7 +220,7 @@ namespace piranha
         {
           case Real:
             return cf.real();
-          default:
+          case Imag:
             return cf.imag();
         }
       }
@@ -231,7 +231,7 @@ namespace piranha
         {
           case Real:
             return cf_type(cf,real_cf_type(0));
-          default:
+          case Imag:
             return cf_type(real_cf_type(0),cf);
         }
       }
