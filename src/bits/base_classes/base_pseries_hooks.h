@@ -23,6 +23,7 @@
 
 namespace piranha
 {
+/// Hooks for piranha::base_pseries.
   template <class Derived>
     class base_pseries_hooks
   {
