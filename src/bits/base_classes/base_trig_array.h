@@ -37,7 +37,7 @@ namespace piranha
   template <int Bits, class Derived>
     class base_trig_array
   {
-    BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
+      BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
     public:
       typedef typename boost::int_t<Bits>::fast value_type;
 // Ctors.
