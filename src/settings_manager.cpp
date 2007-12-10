@@ -53,6 +53,7 @@ namespace piranha
     std::cout << "Theories of motion directory\t=\t" << theories_path() << std::endl;
     std::cout << "Piranha is ready." << std::endl;
     std::cout << "_______________________________" << std::endl << std::endl;
+// Setup cout.
     stream_manager::setup_print(std::cout);
   }
 
