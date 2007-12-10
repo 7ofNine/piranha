@@ -618,10 +618,9 @@ namespace piranha
           {
             switch (pl_->operation())
             {
-              case phase_list::add
-                :
-              tmp_phase=*it2;
-              break;
+              case phase_list::add:
+                tmp_phase=*it2;
+                break;
               default:
                 tmp_phase=*it2-it->g_trig()->phase(a_->trig_s_vec());
             }

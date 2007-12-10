@@ -108,10 +108,9 @@ namespace piranha
       {
         switch (pl.operation())
         {
-          case phase_list::add
-            :
-          add_phase_to_term(*it2,it1,tmp_term,tmp_ps);
-          break;
+          case phase_list::add:
+            add_phase_to_term(*it2,it1,tmp_term,tmp_ps);
+            break;
           default:
             add_phase_to_term(*it2-it1->g_trig()->phase(trig_s_vec_),it1,tmp_term,tmp_ps);
         }

@@ -190,10 +190,9 @@ namespace piranha
         term_type tmp_term;
         switch (pl.operation())
         {
-          case phase_list::add
-            :
-          add_phase_to_term(*it_pl,new_term,tmp_term,*this);
-          break;
+          case phase_list::add:
+            add_phase_to_term(*it_pl,new_term,tmp_term,*this);
+            break;
           default:
             add_phase_to_term(*it_pl-new_term.g_trig()->phase(trig_s_vec_),new_term,tmp_term,*this);
         }
