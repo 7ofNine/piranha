@@ -33,12 +33,6 @@
 #error "Minimum required GCC version is 3.4"
 #endif
 
-#if GCC_VERSION < 402000
-#include "hash_set_hm.h"
-#else
-#include "unordered_set_hm.h"
-#endif
-
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 

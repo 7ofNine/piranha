@@ -30,6 +30,12 @@
 #include "../progress_display.h"
 #include "../pseries_gl_rep.h"
 
+#if GCC_VERSION < 402000
+#include "../hash_set_hm.h"
+#else
+#include "../unordered_set_hm.h"
+#endif
+
 namespace piranha
 {
 /// Multiplication toolbox for Fourier series.

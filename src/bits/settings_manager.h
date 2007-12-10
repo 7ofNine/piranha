@@ -25,6 +25,7 @@
 #include <string>
 
 #include "common_typedefs.h"
+#include "config.h" // For _PIRANHA_DISPLAY_PROGRESS.
 
 namespace piranha
 {
@@ -86,6 +87,10 @@ namespace piranha
       }
       static void set_display_progress(bool flag)
       {
+        if (!(_PIRANHA_DISPLAY_PROGRESS))
+        {
+          std::cout << "Progress bar has not been built." << std::endl;
+        }
         enable_progress_display_=flag;
       }
     private:
