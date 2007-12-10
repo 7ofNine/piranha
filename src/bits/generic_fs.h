@@ -59,10 +59,6 @@ namespace piranha
       typedef piranha::base_pseries<Cf, Trig, Term, I, generic_fs<Cf,Trig,Term,I,Allocator>,Allocator> ancestor;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
-/// Alias for term type.
-      typedef typename ancestor::term_type term_type;
-/// Alias for self.
-      typedef generic_fs<Cf,Trig,Term,I,Allocator> self;
 /// Empty constructor.
       generic_fs():ancestor::base_pseries() {}
 /// Copy constructor.
@@ -102,18 +98,12 @@ namespace std
 /// Alias for ancestor.
       typedef piranha::base_pseries<complex<Cf>,Trig,Term,I,complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> >,
         Allocator> ancestor;
-/// Alias for term type.
-      typedef typename ancestor::term_type term_type;
-/// Alias for the iterator to sorted index.
-      typedef typename ancestor::it_s_index it_s_index;
 /// Alias for coefficient type.
       typedef typename ancestor::cf_type cf_type;
 /// Alias for real counterpart.
       typedef piranha::generic_fs<Cf,Trig,Term,I,Allocator> value_type;
 /// Alias for real coefficient.
       typedef Cf real_cf_type;
-/// Alias for self.
-      typedef complex<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > self;
 /// Alias for complex toolbox.
       typedef piranha::complex_toolbox<piranha::generic_fs<Cf,Trig,Term,I,Allocator> > complex_toolbox;
 // Base ctors.
@@ -141,30 +131,9 @@ namespace std
 /// Constructor from real and imaginary doubles.
       explicit complex(const double &r, const double &i):complex_toolbox(r,i) {}
 /// Constructor from value_type.
-// FIXME: here and below we are discarding lin_args.
-// TODO: can we re-use some function from complex_toolbox to achieve this result?
-// TODO: use hinted insertion.
-// If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
-      explicit complex(const value_type &p)
-      {
-        action_assert(ancestor::merge_args(p));
-        term_type term;
-        typename value_type::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
-        for (;it!=it_f;++it)
-        {
-          *term.s_cf()=cf_type(*it->g_cf());
-          *term.s_trig()=*it->g_trig();
-          term.s_flavour()=it->g_flavour();
-          ancestor::insert(term);
-        }
-      }
+      explicit complex(const value_type &p):complex_toolbox(p) {}
 /// Constructor from real and imaginary series.
-// TODO: here and elsewhere, we could use a ctor in complex_toolbox instead of using builder:
-// explicit complex(const value_type &p, const value_type &q):complex_toolbox(p,q) {}
-      explicit complex(const value_type &p, const value_type &q)
-      {
-        build_from_components(p,q);
-      }
+      explicit complex(const value_type &p, const value_type &q):complex_toolbox(p,q) {}
   };
 }
 #endif

@@ -48,6 +48,15 @@ namespace piranha
       {
         static_cast<Derived *>(this)->generic_builder(std::complex<double>(r,i));
       }
+      explicit complex_toolbox(const real_Derived &r)
+      {
+        action_assert(static_cast<Derived *>(this)->merge_args(r));
+        insert_component<Real>(r);
+      }
+      explicit complex_toolbox(const real_Derived &r, const real_Derived &i)
+      {
+        build_from_components(r,i);
+      }
       ~complex_toolbox() {}
 /// Get real part.
       real_Derived real() const
