@@ -140,21 +140,7 @@ namespace std
       explicit complex(const complex<double> &x):complex_toolbox(x) {}
 /// Constructor from real and imaginary doubles.
       explicit complex(const double &r, const double &i):complex_toolbox(r,i) {}
-/// Constructor from coefficient.
-//       explicit complex(const cf_type &c, const complex &model):ancestor::base_pseries(c,model)
-//         {}
-/// Constructor from complex.
-//       explicit complex(const piranha::complex_double &c)
-//       {
-//         ancestor::generic_builder(c);
-//       }
-// This is used frequently in special functions (build from (1,0),...).
-/// Constructor from pair of integers.
-//       explicit complex(int r, int i)
-//       {
-//         ancestor::generic_builder(cf_type(real_cf_type(r),real_cf_type(i)));
-//       }
-/// Constructor from real series.
+/// Constructor from value_type.
 // FIXME: here and below we are discarding lin_args.
 // TODO: can we re-use some function from complex_toolbox to achieve this result?
 // TODO: use hinted insertion.
