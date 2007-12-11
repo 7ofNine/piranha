@@ -46,7 +46,7 @@ namespace piranha
  * Coefficient type can be other than Cf.
  */
       template <class Cf2>
-      explicit simple_term(const Cf2 &c, const trig_type &t):private_cf_(c),private_trig_(t) {}
+        explicit simple_term(const Cf2 &c, const trig_type &t):private_cf_(c),private_trig_(t) {}
 /// Copy ctor.
       simple_term(const simple_term &term):private_cf_(*term.g_cf()),private_trig_(*term.g_trig()) {}
 /// Copy constructor from term with different coefficient type.
