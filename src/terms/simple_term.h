@@ -33,28 +33,20 @@ namespace piranha
     class simple_term:public base_term<Cf,Trig,simple_term<Cf,Trig> >
   {
     public:
-/// Alias for self.
-      typedef simple_term self;
 /// Alias for coefficient type.
       typedef Cf cf_type;
 /// Alias for trigonometric type.
       typedef Trig trig_type;
 /// Default constructor.
-      explicit simple_term():
-      private_cf_(),private_trig_()
-        {}
+      explicit simple_term():private_cf_(),private_trig_() {}
 /// Constructor from coefficient and flavour.
-      explicit simple_term(const cf_type &c):
-      private_cf_(c),private_trig_()
-        {}
+      explicit simple_term(const cf_type &c):private_cf_(c),private_trig_() {}
 /// Constructor from coefficient and trigonometric part.
 /**
  * Coefficient type can be other than Cf.
  */
       template <class Cf2>
-      explicit simple_term(const Cf2 &c, const trig_type &t):
-        private_cf_(c),private_trig_(t)
-      {}
+      explicit simple_term(const Cf2 &c, const trig_type &t):private_cf_(c),private_trig_(t) {}
 /// Generic builder.
 /**
  * Build constructing coefficient from variable x, of type T.
@@ -64,14 +56,11 @@ namespace piranha
 //      private_cf_(cf_type(x)),private_trig_()
 //         {}
 /// Copy ctor.
-      simple_term(const simple_term &term):
-      private_cf_(*term.g_cf()),private_trig_(*term.g_trig())
-      {}
+      simple_term(const simple_term &term):private_cf_(*term.g_cf()),private_trig_(*term.g_trig()) {}
 /// Copy constructor from term with different coefficient type.
       template <class Cf2>
         explicit simple_term(const simple_term<Cf2,trig_type> &term):
-      private_cf_(*term.g_cf()),private_trig_(*term.g_trig())
-      {}
+        private_cf_(*term.g_cf()),private_trig_(*term.g_trig()) {}
 // Getters
 /// Get coefficient reference.
       cf_type *s_cf()
@@ -106,7 +95,7 @@ namespace piranha
       }
       size_t footprint() const
       {
-        return (sizeof(self)+g_trig()->data_footprint());
+        return (sizeof(simple_term)+g_trig()->data_footprint());
       }
 /// Assignment operator.
       simple_term &operator=(const simple_term &t2)

@@ -35,8 +35,6 @@ namespace piranha
     class base_term
   {
     public:
-/// Alias for self.
-      typedef base_term self;
 /// Alias for coefficient type.
       typedef Cf cf_type;
 /// Alias for trigonometric type.
