@@ -95,7 +95,7 @@ namespace piranha
 // When building to cf create a coefficient from the symvol.
       append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
       cf_type c(psym);
-      term_type term(c);
+      term_type term(c,trig_type());
       insert(term);
     }
     else if (ptype == psymbol::trig)

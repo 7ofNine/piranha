@@ -39,17 +39,16 @@ namespace piranha
       typedef Trig trig_type;
 /// Default constructor.
       explicit simple_term():private_cf_(),private_trig_() {}
-/// Constructor from coefficient and flavour.
-      explicit simple_term(const cf_type &c):private_cf_(c),private_trig_() {}
-/// Constructor from coefficient and trigonometric part.
+/// Constructor from generic coefficient and fixed trigonometric part.
 /**
- * Coefficient type can be other than Cf.
+ * Constructs from generic coefficient type.
  */
       template <class Cf2>
         explicit simple_term(const Cf2 &c, const trig_type &t):private_cf_(c),private_trig_(t) {}
-/// Copy ctor.
-      simple_term(const simple_term &term):private_cf_(*term.g_cf()),private_trig_(*term.g_trig()) {}
-/// Copy constructor from term with different coefficient type.
+/// Generic copy constructor.
+/**
+ * Constructs from piranha::simple_term with generic coefficient type.
+ */
       template <class Cf2>
         explicit simple_term(const simple_term<Cf2,trig_type> &term):
         private_cf_(*term.g_cf()),private_trig_(*term.g_trig()) {}

@@ -114,12 +114,13 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type real_cf_type;
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+        typedef typename complex_ps::ancestor::trig_type trig_type;
         typedef typename DerivedPs::ancestor::r_it_s_index real_r_it_s_index;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        retval.insert(complex_term_type(complex_cf_type(real_cf_type(1),real_cf_type(0))));
+        retval.insert(complex_term_type(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type()));
         real_r_it_s_index it=derived_cast->g_series_set()->rbegin();
         for (;it!=derived_cast->g_series_set()->rend();++it)
         {
@@ -154,12 +155,13 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type real_cf_type;
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+        typedef typename complex_ps::ancestor::trig_type trig_type;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        complex_term_type term1(complex_cf_type(real_cf_type(1),real_cf_type(0)));
-        complex_term_type term2(complex_cf_type(real_cf_type(0),real_cf_type(1)));
+        complex_term_type term1(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type());
+        complex_term_type term2(complex_cf_type(real_cf_type(0),real_cf_type(1)),trig_type());
         term2.s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());
