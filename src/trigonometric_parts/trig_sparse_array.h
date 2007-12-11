@@ -116,10 +116,11 @@ namespace piranha
       double phase(const vector_psym_p &) const;
       double t_eval(const double &, const vector_psym_p &) const;
       template <class TrigEvaluator>
-        complex_double t_eval(TrigEvaluator &) const;
+        double t_eval(TrigEvaluator &) const;
       short int sign() const;
       size_t hasher() const;
       bool is_zero() const;
+      bool is_ignorable() const;
       bool smaller(const size_t &) const;
       bool larger(const size_t &) const;
       bool is_compatible(const size_t &) const;
@@ -303,6 +304,14 @@ namespace piranha
     {
       out_stream << at(i) << stream_manager::data_separator();
     }
+    switch (g_flavour())
+    {
+      case true:
+        out_stream << "c";
+        break;
+      case false:
+        out_stream << "s";
+    }
   }
 
   inline void trig_sparse_array::print_latex(std::ostream &out_stream, const vector_psym_p &tv) const
@@ -320,9 +329,8 @@ namespace piranha
       {
         tmp.append("-");
       }
-      else if (it->second==1)
-        {}
-        else
+      else if (it->second==1) {}
+      else
       {
         tmp.append(boost::lexical_cast<std::string>(it->second));
       }
@@ -386,11 +394,17 @@ namespace piranha
     {
       retval+=it->second*v[it->first]->t_eval(t);
     }
-    return retval;
+    switch (g_flavour())
+    {
+      case true:
+        return std::cos(retval);
+      default:
+        return std::sin(retval);
+    }
   }
 
   template <class TrigEvaluator>
-    inline complex_double trig_sparse_array::t_eval(TrigEvaluator &te) const
+    inline double trig_sparse_array::t_eval(TrigEvaluator &te) const
   {
     complex_double retval(1.);
     const const_iterator it_f=end();
@@ -398,7 +412,13 @@ namespace piranha
     {
       retval*=te.request_complexp(it->first,it->second);
     }
-    return retval;
+    switch (g_flavour())
+    {
+      case true:
+        return retval.real();
+      default:
+        return retval.imag();
+    }
   }
 
   inline short int trig_sparse_array::sign() const
@@ -470,6 +490,11 @@ namespace piranha
   inline bool trig_sparse_array::is_zero() const
   {
     return empty();
+  }
+
+  inline bool trig_sparse_array::is_ignorable() const
+  {
+    return (is_zero() and !g_flavour());
   }
 
   inline bool trig_sparse_array::smaller(const size_t &) const

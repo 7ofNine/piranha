@@ -80,6 +80,14 @@ namespace piranha
 // We cast to max_fast_int, which should be the largest type admitted for multipliers.
           out_stream << (max_fast_int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
+        switch (g_flavour())
+        {
+          case true:
+            out_stream << "c";
+            break;
+          case false:
+            out_stream << "s";
+        }
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
@@ -212,18 +220,25 @@ namespace piranha
             retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->t_eval(t);
           }
         }
-        return retval;
+        switch (g_flavour())
+        {
+          case true:
+            return std::cos(retval);
+          default:
+            return std::sin(retval);
+        }
       }
 /// Time evaluation of complex exponential of the arguments.
 /**
- * Returns the complex exponential of the linear combination of arguments at time t.
- * Uses a TrigEvaluator objet which contains a cache of the complex exponentials of arguments.
+ * Returns the real or imaginary part (depending on flavour) of the complex exponential of the
+ * linear combination of arguments at time t.
+ * Uses a piranha::trig_evaluator object which contains a cache of the complex exponentials of arguments.
  * @param[in] te piranha::trig_evaluator containing a cache of complex exponentials of arguments.
  */
       template <class TrigEvaluator>
-        complex_double t_eval(TrigEvaluator &te) const
+        double t_eval(TrigEvaluator &te) const
       {
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
+        const trig_size_t w = static_cast<const Derived *>(this)->g_width();
         p_assert(te.width() == w);
         complex_double retval(1.);
         for (trig_size_t i=0;i<w;++i)
@@ -233,7 +248,13 @@ namespace piranha
             retval*=te.request_complexp(i,static_cast<const Derived *>(this)->g_container()[i]);
           }
         }
-        return retval;
+        switch (g_flavour())
+        {
+          case true:
+            return retval.real();
+          default:
+            return retval.imag();
+        }
       }
 /// Sign.
 /**
@@ -265,6 +286,7 @@ namespace piranha
         }
         return seed;
       }
+// All multipliers are zero.
       bool is_zero() const
       {
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
@@ -276,6 +298,11 @@ namespace piranha
           }
         }
         return true;
+      }
+// All multipliers are zero and flavour is sine.
+      bool is_ignorable() const
+      {
+        return (is_zero() and !g_flavour());
       }
       bool smaller(const size_t &n) const
       {

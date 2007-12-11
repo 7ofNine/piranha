@@ -87,13 +87,7 @@ namespace piranha
         {
           return true;
         }
-// TODO: move this into trig_args, once we move flavour there.
-// Second check: if sine, check that there is at least 1 non-zero trig arg. Otherwise ignore.
-        if (g_flavour()==false)
-        {
-          return static_cast<Derived const *>(this)->g_trig()->is_zero();
-        }
-        return false;
+        return static_cast<Derived const *>(this)->g_trig()->is_ignorable();
       }
 // Manipulation.
       void invert_trig_args()
@@ -113,14 +107,6 @@ namespace piranha
         static_cast<Derived const *>(this)->g_cf()->print_plain(out_stream,cv);
         out_stream << stream_manager::data_separator();
         static_cast<Derived const *>(this)->g_trig()->print_plain(out_stream,tv);
-        switch (g_flavour())
-        {
-          case true:
-            out_stream << "c";
-            break;
-          case false:
-            out_stream << "s";
-        }
       }
 /// Print in latex format.
       void print_latex(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
@@ -173,15 +159,7 @@ namespace piranha
       eval_type t_eval(const double &t, const vector_psym_p &vc, const vector_psym_p &vt) const
       {
         eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(t,vc);
-// TODO: move this into trig_args, once we move flavour there.
-        switch (g_flavour())
-        {
-          case true:
-            retval*=std::cos(static_cast<Derived const *>(this)->g_trig()->t_eval(t,vt));
-            break;
-          case false:
-            retval*=std::sin(static_cast<Derived const *>(this)->g_trig()->t_eval(t,vt));
-        }
+        retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(t,vt);
         return retval;
       }
 /// Smarter numerical evaluation
@@ -194,15 +172,7 @@ namespace piranha
         eval_type t_eval(TrigEvaluator &te) const
       {
         eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(te.value(),te.ps()->cf_s_vec());
-// TODO: move this into trig_args, once we move flavour there.
-        switch (g_flavour())
-        {
-          case true:
-            retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te).real();
-            break;
-          case false:
-            retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te).imag();
-        }
+        retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te);
         return retval;
       }
   };
