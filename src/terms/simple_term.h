@@ -92,7 +92,7 @@ namespace piranha
 /// Assignment operator.
       simple_term &operator=(const simple_term &t2)
       {
-        if (this==&t2)
+        if (this == &t2)
         {
           return *this;
         }
