@@ -92,24 +92,32 @@ namespace piranha
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
         stream_manager::setup_print(out_stream);
+        switch (g_flavour())
+        {
+          case true:
+            out_stream << "c&";
+            break;
+          case false:
+            out_stream << "s&";
+        }
         bool first_one=true;
         std::string tmp("$");
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (trig_size_t i=0;i<w;++i)
         {
-          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
+          if (static_cast<const Derived *>(this)->g_container()[i] != 0)
           {
-            if (static_cast<const Derived *>(this)->g_container()[i]>0 && !first_one)
+            if (static_cast<const Derived *>(this)->g_container()[i] > 0 and !first_one)
             {
               tmp.append("+");
             }
-            if (static_cast<const Derived *>(this)->g_container()[i]==-1)
+            if (static_cast<const Derived *>(this)->g_container()[i] == -1)
             {
               tmp.append("-");
             }
-            else if (static_cast<const Derived *>(this)->g_container()[i]==1)
-              {}
-              else
+            else if (static_cast<const Derived *>(this)->g_container()[i] == 1)
+            {}
+            else
             {
               tmp.append(boost::lexical_cast<std::string>((max_fast_int)static_cast<const Derived *>(this)->g_container()[i]));
             }
@@ -119,7 +127,7 @@ namespace piranha
         }
         tmp.append("$");
 // If we did not write anything erase math markers.
-        if (tmp=="$$")
+        if (tmp == "$$")
         {
           tmp.clear();
         }

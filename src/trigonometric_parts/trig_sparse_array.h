@@ -317,19 +317,27 @@ namespace piranha
   inline void trig_sparse_array::print_latex(std::ostream &out_stream, const vector_psym_p &tv) const
   {
     stream_manager::setup_print(out_stream);
+    switch (g_flavour())
+    {
+      case true:
+        out_stream << "c&";
+        break;
+      case false:
+        out_stream << "s&";
+    }
     std::string tmp("$");
     const const_iterator it_f=end(), it_b=begin();
     for (const_iterator it=it_b;it!=it_f;++it)
     {
-      if (it->second>0 && it!=it_b)
+      if (it->second > 0 and it != it_b)
       {
         tmp.append("+");
       }
-      if (it->second==-1)
+      if (it->second == -1)
       {
         tmp.append("-");
       }
-      else if (it->second==1) {}
+      else if (it->second == 1) {}
       else
       {
         tmp.append(boost::lexical_cast<std::string>(it->second));
@@ -339,7 +347,7 @@ namespace piranha
     }
     tmp.append("$");
 // If we did not write anything erase math markers.
-    if (tmp=="$$")
+    if (tmp == "$$")
     {
       tmp.clear();
     }

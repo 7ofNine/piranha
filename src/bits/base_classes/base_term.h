@@ -115,14 +115,6 @@ namespace piranha
         out_stream << "&";
         out_stream << "$" << static_cast<Derived const *>(this)->g_trig()->phase(tv) <<
           "$" << "&" << "$" << static_cast<Derived const *>(this)->g_trig()->freq(tv) << "$" << "&";
-        switch (g_flavour())
-        {
-          case true:
-            out_stream << "c&";
-            break;
-          case false:
-            out_stream << "s&";
-        }
         static_cast<Derived const *>(this)->g_trig()->print_latex(out_stream,tv);
       }
 /// Print to stream.
