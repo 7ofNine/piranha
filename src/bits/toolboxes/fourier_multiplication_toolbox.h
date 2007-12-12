@@ -64,7 +64,7 @@ namespace piranha
         {
           tmp_term=t;
           tmp_term.s_cf()->mult_by_self(cf,*derived_cast);
-          it_hint=tmp_ps.insert(tmp_term,&it_hint);
+          it_hint=tmp_ps.insert_check_positive(tmp_term,&it_hint);
         }
         derived_cast->swap(tmp_ps);
       }
@@ -321,7 +321,7 @@ namespace piranha
             glr.decode_multiindex(k,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=true;
-            retval.insert(tmp_term);
+            retval.insert_check_positive(tmp_term);
           }
         }
         for (k=h_min;k<=h_max;++k)
@@ -332,7 +332,7 @@ namespace piranha
             glr.decode_multiindex(k,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=false;
-            retval.insert(tmp_term);
+            retval.insert_check_positive(tmp_term);
           }
         }
 // Clean up the buffer by calling the coefficient destructors.
@@ -460,7 +460,7 @@ namespace piranha
             glr.decode_multiindex(cchm_it->code,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=true;
-            retval.insert(tmp_term);
+            retval.insert_check_positive(tmp_term);
           }
         }
         {
@@ -471,7 +471,7 @@ namespace piranha
             glr.decode_multiindex(cchm_it->code,tmp_array);
             tmp_term.s_trig()->assign_mult_vector(tmp_array);
             tmp_term.s_trig()->s_flavour()=false;
-            retval.insert(tmp_term);
+            retval.insert_check_positive(tmp_term);
           }
         }
       }

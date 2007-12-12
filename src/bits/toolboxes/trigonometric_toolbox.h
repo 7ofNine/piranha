@@ -58,7 +58,7 @@ namespace piranha
 // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {
-            retval.insert(*it);
+            retval.insert_check_positive(*it);
           }
           else
           {
@@ -66,7 +66,7 @@ namespace piranha
             real_DerivedPs cosp=psc.real(), sinp=psc.imag();
             DerivedPs tmp1, tmp2;
             action_assert(tmp1.merge_args(*derived_cast));
-            tmp1.insert(*it);
+            tmp1.insert_check_positive(*it);
             action_assert(tmp2.merge_args(*derived_cast));
             term_type tmp_term = *it;
             switch (it->g_flavour())
@@ -74,13 +74,13 @@ namespace piranha
               case true:
 // Change tmp2's flavour.
                 tmp_term.s_trig()->s_flavour()=false;
-                tmp2.insert(tmp_term);
+                tmp2.insert_check_positive(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval-=(tmp2*=sinp);
                 break;
               case false:
                 tmp_term.s_trig()->s_flavour()=true;
-                tmp2.insert(tmp_term);
+                tmp2.insert_check_positive(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval+=(tmp2*=sinp);
             }
@@ -120,7 +120,7 @@ namespace piranha
         complex_ps retval;
         action_assert(retval.merge_args(*derived_cast));
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        retval.insert(complex_term_type(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type()));
+        retval.insert_check_positive(complex_term_type(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type()));
         real_r_it_s_index it=derived_cast->g_series_set()->rbegin();
         for (;it!=derived_cast->g_series_set()->rend();++it)
         {
@@ -167,8 +167,8 @@ namespace piranha
         term2.s_trig()->increase_size(retval.trig_width());
         term1.s_trig()->assign_mult_vector(derived_cast->lin_args());
         term2.s_trig()->assign_mult_vector(derived_cast->lin_args());
-        retval.insert(term1);
-        retval.insert(term2);
+        retval.insert_check_positive(term1);
+        retval.insert_check_positive(term2);
         return retval;
       }
       template <class real_cf_type>
@@ -228,13 +228,13 @@ namespace piranha
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
             term1.s_flavour()=true;
-            retval.insert(term1);
+            retval.insert_check_positive(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
             term1.s_flavour()=true;
-            retval.insert(term2);
+            retval.insert_check_positive(term2);
           }
         }
         else
@@ -246,13 +246,13 @@ namespace piranha
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
             term1.s_flavour()=true;
-            retval.insert(term1);
+            retval.insert_check_positive(term1);
             jacsinImcf(i,_cf,tmp);
             term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
             term2.s_flavour()=false;
-            retval.insert(term2);
+            retval.insert_check_positive(term2);
           }
         }
         return retval;

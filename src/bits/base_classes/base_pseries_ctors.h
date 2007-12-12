@@ -96,7 +96,7 @@ namespace piranha
       append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
       cf_type c(psym);
       term_type term(c,trig_type());
-      insert(term);
+      insert_check_positive(term);
     }
     else if (ptype == psymbol::trig)
     {
@@ -133,7 +133,7 @@ namespace piranha
   {
     term_type term = term_type();
     *(term.s_cf()) = cf_type(x);
-    insert(term);
+    insert_check_positive(term);
   }
 }
 

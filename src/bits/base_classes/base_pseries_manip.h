@@ -57,7 +57,7 @@ namespace piranha
     cf_type tmp_c=*src.g_cf();
 // Insert first term.
     tmp_term.s_cf()->mult_by(std::cos(phase));
-    retps.insert(tmp_term);
+    retps.insert_check_positive(tmp_term);
 // Second term: change flavour and sign.
     switch (src.g_flavour())
     {
@@ -71,7 +71,7 @@ namespace piranha
         *tmp_term.s_cf()=tmp_c;
         tmp_term.s_cf()->mult_by(std::sin(phase));
     }
-    retps.insert(tmp_term);
+    retps.insert_check_positive(tmp_term);
   }
 
 /// Add phase to a term and insert the resulting terms in an external series.
@@ -151,7 +151,7 @@ namespace piranha
       term_type tmp_term=(*it);
       tmp_term.s_cf()->prepend_args(n);
 // NOTICE: use hinted insertion here?
-      retval.insert(tmp_term);
+      retval.insert_check_positive(tmp_term);
     }
     swap(retval);
   }
@@ -179,7 +179,7 @@ namespace piranha
       term_type tmp_term=(*it);
       tmp_term.s_cf()->append_args(n);
 // NOTICE: use hinted insertion here?
-      retval.insert(tmp_term);
+      retval.insert_check_positive(tmp_term);
     }
     swap(retval);
   }
@@ -208,7 +208,7 @@ namespace piranha
       term_type tmp_term=(*it);
       tmp_term.s_trig()->prepend_args(n);
 // NOTICE: use hinted insertion here?
-      retval.insert(tmp_term);
+      retval.insert_check_positive(tmp_term);
     }
     swap(retval);
   }
@@ -236,7 +236,7 @@ namespace piranha
       term_type tmp_term=(*it);
       tmp_term.s_trig()->append_args(n);
 // NOTICE: use hinted insertion here?
-      retval.insert(tmp_term);
+      retval.insert_check_positive(tmp_term);
     }
     swap(retval);
   }
@@ -473,7 +473,7 @@ namespace piranha
 
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_check_positive(
     const Term<Cf2, trig_type> &term, const it_s_index *it_hint)
   {
     return insert<Cf2,true,true>(term);
