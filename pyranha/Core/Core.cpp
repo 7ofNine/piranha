@@ -101,16 +101,12 @@ BOOST_PYTHON_MODULE(_Core)
   class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
     "Get value of maximum load factor for hashed containers.");
-  class_setm.def("set_load_factor", &settings_manager::set_load_factor,
-    "Set value of maximum load factor for hashed containers.");
   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
     "Get value of numerical zero.");
   class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
     "Get search path for theories of motion's data files.");
   class_setm.def("default_theories_path", &settings_manager::default_theories_path,return_value_policy<copy_const_reference>(),
     "Get default search path for theories of motion's data files.");
-  class_setm.def("set_theories_path", &settings_manager::set_theories_path,
-    "Set search path for theories of motion's data files.");
   class_setm.def("version", &settings_manager::version,
     "Get Piranha's version.", return_value_policy<copy_const_reference>());
   class_setm.def("display_progress", &settings_manager::display_progress,
@@ -121,6 +117,10 @@ BOOST_PYTHON_MODULE(_Core)
     "Get least default precision of mp floating point in bits.");
   class_setm.def("set_mp_default_prec", &settings_manager::set_mp_default_prec,
     "Set least default precision of mp floating point in bits.");
+  class_setm.def("set_load_factor", &settings_manager::set_load_factor,
+    "Set value of maximum load factor for hashed containers.");
+  class_setm.def("set_theories_path", &settings_manager::set_theories_path,
+    "Set search path for theories of motion's data files.");
   class_setm.staticmethod("load_factor");
   class_setm.staticmethod("set_load_factor");
   class_setm.staticmethod("numerical_zero");
