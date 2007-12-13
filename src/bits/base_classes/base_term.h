@@ -41,17 +41,6 @@ namespace piranha
       typedef Trig trig_type;
 /// Alias for evaluation type.
       typedef typename eval_type<cf_type>::type eval_type;
-// Getters
-/// Flavour getter.
-      bool &s_flavour()
-      {
-        return static_cast<Derived *>(this)->s_trig()->s_flavour();
-      }
-/// Flavour setter.
-      const bool &g_flavour() const
-      {
-        return static_cast<Derived const *>(this)->g_trig()->g_flavour();
-      }
 /// Diagnose problems.
 /**
  * Run a check on the coefficient and on the trigonometric part. The exact nature of the check
