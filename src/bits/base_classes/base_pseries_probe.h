@@ -320,7 +320,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_cf() const
   {
-    if (length()==1 && g_s_index().begin()->g_flavour() && g_s_index().begin()->g_trig()->is_zero())
+    if (length()==1 && g_s_index().begin()->g_trig()->g_flavour() && g_s_index().begin()->g_trig()->is_zero())
     {
       return true;
     }

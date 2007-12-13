@@ -189,12 +189,12 @@ namespace piranha
     *term_pair.template get
       <0>().s_cf()=*term_pair.template get
       <1>().s_cf()=new_c;
-    if (t1.g_flavour()==t2.g_flavour())
+    if (t1.g_trig()->g_flavour()==t2.g_trig()->g_flavour())
     {
       term_pair.template get
         <0>().s_trig()->s_flavour()=term_pair.template get
         <1>().s_trig()->s_flavour()=true;
-      if(!t1.g_flavour())
+      if(!t1.g_trig()->g_flavour())
       {
         term_pair.template get
           <1>().s_cf()->invert_sign();
@@ -205,7 +205,7 @@ namespace piranha
       term_pair.template get
         <0>().s_trig()->s_flavour()=term_pair.template get
         <1>().s_trig()->s_flavour()=false;
-      if(t1.g_flavour())
+      if(t1.g_trig()->g_flavour())
       {
         term_pair.template get
             <0>().s_cf()->invert_sign();

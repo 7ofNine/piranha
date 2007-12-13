@@ -563,7 +563,7 @@ namespace piranha
           }
           tmp=it->g_trig()->t_eval(t,orig_->trig_s_vec());
           c_eval=it->g_cf()->t_eval(t,orig_->cf_s_vec());
-          switch (it->g_flavour())
+          switch (it->g_trig()->g_flavour())
           {
             case true:
               retval+=c_eval*std::cos(tmp)*std::cos(multiplier*a_->t_eval(t))-
@@ -626,7 +626,7 @@ namespace piranha
             }
             tmp=it->g_trig()->t_eval(t,a_->trig_s_vec());
             c_eval=it->g_cf()->t_eval(t,a_->cf_s_vec());
-            switch (it->g_flavour())
+            switch (it->g_trig()->g_flavour())
             {
               case true:
                 retval+=c_eval*std::cos(tmp)*std::cos(tmp_phase)-

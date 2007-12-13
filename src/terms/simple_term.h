@@ -62,15 +62,6 @@ namespace piranha
       {
         return &private_cf_;
       }
-/// Get flavour.
-      bool &s_flavour()
-      {
-        return s_trig()->s_flavour();
-      }
-      const bool &g_flavour() const
-      {
-        return g_trig()->g_flavour();
-      }
 /// Get reference to trigonometric part.
       trig_type *s_trig()
       {

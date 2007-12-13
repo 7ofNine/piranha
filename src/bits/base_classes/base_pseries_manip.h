@@ -59,15 +59,15 @@ namespace piranha
     tmp_term.s_cf()->mult_by(std::cos(phase));
     retps.insert_check_positive(tmp_term);
 // Second term: change flavour and sign.
-    switch (src.g_flavour())
+    switch (src.g_trig()->g_flavour())
     {
       case true:
-        tmp_term.s_flavour()=false;
+        tmp_term.s_trig()->s_flavour()=false;
         *tmp_term.s_cf()=tmp_c;
         tmp_term.s_cf()->mult_by(-std::sin(phase));
         break;
       case false:
-        tmp_term.s_flavour()=true;
+        tmp_term.s_trig()->s_flavour()=true;
         *tmp_term.s_cf()=tmp_c;
         tmp_term.s_cf()->mult_by(std::sin(phase));
     }

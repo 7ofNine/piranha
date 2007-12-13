@@ -69,7 +69,7 @@ namespace piranha
             tmp1.insert_check_positive(*it);
             action_assert(tmp2.merge_args(*derived_cast));
             term_type tmp_term = *it;
-            switch (it->g_flavour())
+            switch (it->g_trig()->g_flavour())
             {
               case true:
 // Change tmp2's flavour.
@@ -162,7 +162,7 @@ namespace piranha
         p_assert(retval.trig_width()==derived_cast->trig_width());
         complex_term_type term1(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type());
         complex_term_type term2(complex_cf_type(real_cf_type(0),real_cf_type(1)),trig_type());
-        term2.s_flavour()=false;
+        term2.s_trig()->s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());
         term1.s_trig()->assign_mult_vector(derived_cast->lin_args());
@@ -219,7 +219,7 @@ namespace piranha
         p_assert(retval.trig_width()==static_cast<DerivedPs const *>(this)->trig_width());
         real_cf_type _cf=*it->g_cf(), tmp;
         complex_term_type term1, term2;
-        if (it->g_flavour())
+        if (it->g_trig()->g_flavour())
         {
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
@@ -227,13 +227,13 @@ namespace piranha
             term1.s_cf()->set_real(tmp);
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
-            term1.s_flavour()=true;
+            term1.s_trig()->s_flavour()=true;
             retval.insert_check_positive(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
-            term1.s_flavour()=true;
+            term1.s_trig()->s_flavour()=true;
             retval.insert_check_positive(term2);
           }
         }
@@ -245,13 +245,13 @@ namespace piranha
             term1.s_cf()->set_real(tmp);
             *term1.s_trig()=*it->g_trig();
             *term1.s_trig()*=(i<<1);
-            term1.s_flavour()=true;
+            term1.s_trig()->s_flavour()=true;
             retval.insert_check_positive(term1);
             jacsinImcf(i,_cf,tmp);
             term2.s_cf()->set_imag(tmp);
             *term2.s_trig()=*it->g_trig();
             *term2.s_trig()*=((i<<1)+1);
-            term2.s_flavour()=false;
+            term2.s_trig()->s_flavour()=false;
             retval.insert_check_positive(term2);
           }
         }

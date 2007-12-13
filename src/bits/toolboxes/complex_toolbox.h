@@ -175,7 +175,7 @@ namespace piranha
         {
           *term.s_cf()=build_cf_from_comp<Cmp>(*it->g_cf());
           *term.s_trig()=*it->g_trig();
-          term.s_flavour()=it->g_flavour();
+          term.s_trig()->s_flavour()=it->g_trig()->g_flavour();
           static_cast<Derived *>(this)->insert_check_positive(term);
         }
       }
@@ -207,7 +207,7 @@ namespace piranha
         {
           *term.s_cf()=get_cf_comp<Cmp>(*it->g_cf());
           *term.s_trig()=*it->g_trig();
-          term.s_flavour()=it->g_flavour();
+          term.s_trig()->s_flavour()=it->g_trig()->g_flavour();
           it_hint=retval.insert_check_positive(term,&it_hint);
         }
         return retval;
