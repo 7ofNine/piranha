@@ -308,7 +308,8 @@ namespace piranha
         return true;
       }
 // All multipliers are zero and flavour is sine.
-      bool is_ignorable() const
+      template <class Series>
+        bool is_ignorable(const Series &) const
       {
         return (is_zero() and !g_flavour());
       }

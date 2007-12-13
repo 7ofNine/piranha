@@ -41,40 +41,34 @@ namespace piranha
       typedef Trig trig_type;
 /// Alias for evaluation type.
       typedef typename eval_type<cf_type>::type eval_type;
-/// Diagnose problems.
+/// Run diagnostic test.
 /**
- * Run a check on the coefficient and on the trigonometric part. The exact nature of the check
- * depends on the template parameters.
+ * Run a check on the elements of the term. The exact nature of the check
+ * depends on the Series template parameter. Returns true if none of the elements exhibits issues,
+ * otherwise returns false.
+ *
+ * @param[in] s series used to retrieve checkup criterions from.
  */
-// TODO: templatize this and pass series as arguments.
-      bool checkup(const size_t &cw, const size_t &tw) const
+      template <class Series>
+        bool checkup(const Series &s) const
       {
-        if (!static_cast<Derived const *>(this)->g_cf()->checkup(cw))
-        {
-          std::cout << "Coefficient failed checkup." << std::endl;
-          return false;
-        }
-        if (!static_cast<Derived const *>(this)->g_trig()->checkup(tw))
-        {
-          std::cout << "Trigonometric part failed checkup." << std::endl;
-          return false;
-        }
-        return true;
+        return (static_cast<Derived const *>(this)->g_cf()->checkup(s) and
+          static_cast<Derived const *>(this)->g_trig()->checkup(s));
       }
 /// See if a term can be ignored when inserting it into a series.
 /**
- * @param[in] v vector of piranha::psymbol objects for the coefficient.
+ * Returns true if at least one of the elements of the term is ignorable.
+ *
+ * @param[in] s series used to retrieve ignorability criterions from.
  */
-      bool is_ignorable(const vector_psym_p &v) const
+      template <class Series>
+        bool is_ignorable(const Series &s) const
       {
 // First check: numerical coefficient
 // NOTE: store and use norm here?
 // NOTE: the norm should go in the coefficient manipulator...
-        if (static_cast<Derived const *>(this)->g_cf()->is_zero(v))
-        {
-          return true;
-        }
-        return static_cast<Derived const *>(this)->g_trig()->is_ignorable();
+        return (static_cast<Derived const *>(this)->g_cf()->is_ignorable(s) or
+          static_cast<Derived const *>(this)->g_trig()->is_ignorable(s));
       }
 // Manipulation.
       void invert_trig_args()

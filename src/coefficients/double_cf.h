@@ -55,7 +55,7 @@ namespace piranha
       using ancestor::invert_sign;
       using ancestor::t_eval;
       using ancestor::norm;
-      using ancestor::is_zero;
+      using ancestor::is_ignorable;
       using ancestor::larger;
       using ancestor::smaller;
       using ancestor::is_compatible;
@@ -144,7 +144,7 @@ namespace std
       using ancestor::invert_sign;
       using ancestor::t_eval;
       using ancestor::norm;
-      using ancestor::is_zero;
+      using ancestor::is_ignorable;
       using ancestor::larger;
       using ancestor::smaller;
       using ancestor::is_compatible;

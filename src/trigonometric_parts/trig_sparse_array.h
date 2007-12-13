@@ -120,12 +120,14 @@ namespace piranha
       short int sign() const;
       size_t hasher() const;
       bool is_zero() const;
-      bool is_ignorable() const;
+      template <class Series>
+        bool is_ignorable(const Series &) const;
       bool smaller(const size_t &) const;
       bool larger(const size_t &) const;
       bool is_compatible(const size_t &) const;
       size_t data_footprint() const;
-      bool checkup(const size_t &) const;
+      template <class Series>
+        bool checkup(const Series &) const;
       bool operator==(const trig_sparse_array &) const;
       bool operator<(const trig_sparse_array &) const;
 // Math.
@@ -500,7 +502,8 @@ namespace piranha
     return empty();
   }
 
-  inline bool trig_sparse_array::is_ignorable() const
+  template <class Series>
+    inline bool trig_sparse_array::is_ignorable(const Series &) const
   {
     return (is_zero() and !g_flavour());
   }
@@ -525,20 +528,21 @@ namespace piranha
     return (sizeof(pair)*private_container_.size());
   }
 
-  inline bool trig_sparse_array::checkup(const size_t &w) const
+  template <class Series>
+    inline bool trig_sparse_array::checkup(const Series &s) const
   {
     const const_iterator it_f=end();
 // Let's check there are not zero elements.
     for (const_iterator it=begin();it!=it_f;++it)
     {
-      if (it->second==0)
+      if (it->second == 0)
       {
         std::cout << "Zero element in trig_sparse_array." << std::endl;
         return false;
       }
     }
 // Now check that we do not have elements in excess.
-    if (actual_width()>w)
+    if (actual_width() > s.trig_width())
     {
       std::cout << "Too many elements in trig_sparse_array for given size." << std::endl;
       return false;

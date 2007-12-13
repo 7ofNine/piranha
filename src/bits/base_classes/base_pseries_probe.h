@@ -301,10 +301,9 @@ namespace piranha
     inline bool base_pseries<__PIRANHA_BASE_PS_TP>::checkup() const
   {
     it_s_index it_f=g_s_index().end();
-    const size_t cw=cf_width(), tw=trig_width();
     for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
-      if (!it->checkup(cw,tw))
+      if (!it->checkup(*this))
       {
         return false;
       }

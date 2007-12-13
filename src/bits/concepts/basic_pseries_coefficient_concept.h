@@ -84,15 +84,17 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return double();
       }
-/// Is coefficient zero?
-      bool is_zero(const vector_psym_p &) const
+/// Is coefficient ignorable?
+      template <class Series>
+        bool is_ignorable(const Series &) const
       {
         __STATIC_ASSERTION_FAILURE;
         return bool();
       }
 /// Diagnostic checkup.
-// TODO: this should become a templated method.
-      bool checkup(const size_t &) const
+// TODO: document why, here and above, we template this way.
+      template <class Series>
+        bool checkup(const Series &) const
       {
         __STATIC_ASSERTION_FAILURE;
         return bool();

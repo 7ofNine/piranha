@@ -110,9 +110,10 @@ namespace piranha
       {
         return (g_width()*sizeof(value_type));
       }
-      bool checkup(const size_t &w) const
+      template <class Series>
+        bool checkup(const Series &s) const
       {
-        if (w != g_width())
+        if (s.trig_width() != g_width())
         {
           std::cout << "Size mismatch in trig_array." << std::endl;
           return false;

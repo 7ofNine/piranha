@@ -349,7 +349,7 @@ namespace piranha
   {
 // We must check for ignorability here, before assertions, since at this point cf_width could be zero
 // for polynomials, and thus assertion would wrongly fail.
-    if (term.is_ignorable(cf_s_vec_))
+    if (term.is_ignorable(*this))
     {
       return g_s_index().end();
     }
@@ -381,7 +381,7 @@ namespace piranha
         new_c.subtract(*term.g_cf());
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
-      if (new_c.is_zero(cf_s_vec_))
+      if (new_c.is_ignorable(*this))
       {
         term_erase(it);
       }
