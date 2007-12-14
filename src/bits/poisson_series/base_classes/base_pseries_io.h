@@ -21,8 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_IO_H
 #define PIRANHA_BASE_PSERIES_IO_H
 
-#include "../math.h"                                 // math::min.
-#include "../utils.h"                                // str_to_vector_double.
+#include "../../math.h" // math::min.
+#include "../../utils.h" // str_to_vector_double.
 
 #include "base_pseries_ta_macros.h"
 

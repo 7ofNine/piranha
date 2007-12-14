@@ -26,12 +26,12 @@
 #include <cstring>
 #include <iostream>
 
-#include "../bits/base_classes/base_trig_array.h"
-#include "../bits/common_typedefs.h"
-#include "../bits/packed_int_array.h"
-#include "../bits/type_traits/is_resizable.h"
-#include "../bits/type_traits/false_type.h"
-#include "../bits/utils.h"
+#include "../base_classes/base_trig_array.h"
+#include "../../common_typedefs.h"
+#include "../../packed_int_array.h"
+#include "../../type_traits/is_resizable.h"
+#include "../../type_traits/false_type.h"
+#include "../../utils.h"
 
 namespace piranha
 {

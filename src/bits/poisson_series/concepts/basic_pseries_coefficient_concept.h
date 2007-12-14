@@ -24,8 +24,8 @@
 #include <boost/static_assert.hpp>
 #include <string>
 
-#include "../psymbol.h"
-#include "../type_traits/eval_type.h"
+#include "../../psymbol.h"
+#include "../../type_traits/eval_type.h"
 
 #define __STATIC_ASSERTION_FAILURE BOOST_STATIC_ASSERT(sizeof(Model) == 0)
 

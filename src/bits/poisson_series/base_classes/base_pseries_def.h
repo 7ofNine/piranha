@@ -33,8 +33,8 @@
 #include "base_pseries_hooks.h"
 #include "base_pseries_ta_macros.h"
 #include "../phase_list.h"
-#include "../psymbol.h"
-#include "../type_traits/eval_type.h"  // For eval_type.
+#include "../../psymbol.h"
+#include "../../type_traits/eval_type.h"  // For eval_type.
 
 namespace piranha
 {

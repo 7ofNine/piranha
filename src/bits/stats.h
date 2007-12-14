@@ -21,7 +21,7 @@
 #ifndef PIRANHA_STATS_H
 #define PIRANHA_STATS_H
 
-#include "base_classes/base_pseries_def.h"
+#include "poisson_series/base_classes/base_pseries_def.h"
 
 namespace piranha
 {

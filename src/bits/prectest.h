@@ -25,11 +25,12 @@
 #include <iostream>
 #include <valarray>
 
-#include "common_typedefs.h"                      // tc_add_ps_to_arg.
+#include "common_typedefs.h" // tc_add_ps_to_arg.
 #include "math.h"
-#include "phase_list.h"                           // tc_insert_phase.
-#include "stream_manager.h"                       // Gnuplot save.
-#include "utils.h"                                // Check filename dir.
+// TODO: once we move prectests in poisson series/, polynomial/, etc move this header there.
+#include "poisson_series/phase_list.h" // tc_insert_phase.
+#include "stream_manager.h" // Gnuplot save.
+#include "utils.h" // Check filename dir.
 #include "type_traits/eval_type.h"
 
 namespace piranha

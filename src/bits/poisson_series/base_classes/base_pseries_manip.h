@@ -21,9 +21,9 @@
 #ifndef PIRANHA_BASE_PSERIES_MANIP_H
 #define PIRANHA_BASE_PSERIES_MANIP_H
 
-#include "../arg_manager.h"
-#include "../config.h"       // For (un)likely().
-#include "../stats.h"
+#include "../../arg_manager.h"
+#include "../../config.h"       // For (un)likely().
+#include "../../stats.h"
 
 #include "base_pseries_ta_macros.h"
 

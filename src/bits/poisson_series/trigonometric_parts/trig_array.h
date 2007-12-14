@@ -21,7 +21,7 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
-#include "../bits/base_classes/base_trig_array.h"
+#include "../base_classes/base_trig_array.h"
 
 namespace piranha
 {

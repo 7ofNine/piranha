@@ -25,10 +25,10 @@
 #include <gmp.h>
 #include <gmpxx.h>
 
-#include "../bits/common_typedefs.h"
-#include "../bits/math.h"                                 // besselJ.
-#include "../bits/base_classes/numerical_container.h"
-#include "../bits/concepts/basic_pseries_coefficient_concept.h"
+#include "../../common_typedefs.h"
+#include "../../math.h" // besselJ.
+#include "../base_classes/numerical_container.h"
+#include "../concepts/basic_pseries_coefficient_concept.h"
 
 namespace piranha
 {

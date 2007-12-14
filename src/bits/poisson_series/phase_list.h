@@ -24,8 +24,8 @@
 #include <boost/algorithm/string.hpp>             // to_lower FIXME: why is it used here??
                                                   // Check those file open routines, uniform them.
 
-#include "common_typedefs.h"                      // vector_double.
-#include "utils.h"                                // open_file.
+#include "../common_typedefs.h"                      // vector_double.
+#include "../utils.h"                                // open_file.
 
 namespace piranha
 {

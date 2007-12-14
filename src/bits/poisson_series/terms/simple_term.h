@@ -21,7 +21,7 @@
 #ifndef PIRANHA_SIMPLE_TERM_H
 #define PIRANHA_SIMPLE_TERM_H
 
-#include "../bits/base_classes/base_term.h"
+#include "../base_classes/base_term.h"
 
 namespace piranha
 {

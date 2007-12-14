@@ -24,9 +24,9 @@
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
 
-#include "../common_typedefs.h"    // For t_eval and max_fast_int.
-#include "../psymbol.h"
-#include "../trig_evaluator.h"
+#include "../../common_typedefs.h" // For t_eval and max_fast_int.
+#include "../../psymbol.h"
+#include "../../trig_evaluator.h"
 
 namespace piranha
 {

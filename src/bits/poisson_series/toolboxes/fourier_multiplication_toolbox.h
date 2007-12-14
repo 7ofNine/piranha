@@ -23,17 +23,17 @@
 
 #include <boost/foreach.hpp>
 
-#include "../buffer.h"
-#include "../config.h" // For selection of temporary hash container for multiplication and display progress..
-#include "../light_term.h"
-#include "../norm_truncation.h"
-#include "../progress_display.h"
+#include "../../buffer.h"
+#include "../../config.h" // For selection of temporary hash container for multiplication and display progress..
+#include "../terms/light_term.h"
+#include "norm_truncation.h"
+#include "../../progress_display.h"
 #include "../pseries_gl_rep.h"
 
 #if GCC_VERSION < 402000
-#include "../hash_set_hm.h"
+#include "../../hash_set_hm.h"
 #else
-#include "../unordered_set_hm.h"
+#include "../../unordered_set_hm.h"
 #endif
 
 namespace piranha

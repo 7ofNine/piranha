@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "bits/norm_truncation.h"
+#include "bits/poisson_series/toolboxes/norm_truncation.h"
 
 namespace piranha
 {

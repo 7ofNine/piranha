@@ -27,7 +27,7 @@
 #include <gmpxx.h>
 #include <iostream>
 
-#include "common_typedefs.h" // For max_fast_int.
+#include "../common_typedefs.h" // For max_fast_int.
 
 namespace piranha
 {
