@@ -38,7 +38,7 @@ using namespace piranha;
 
 /// Instantiation of spectral comparison.
 template <class T>
-class_<sc<T> > sc_instatiation(const std::string &name)
+class_<sc<T> > sc_instatiation()
 {
   class_<sc<T> > retval("sc",init<T,T,bool>());
   retval.def(init<T,T>());
@@ -65,7 +65,7 @@ void tc_common_instantiation(class_<T> &time_c)
 }
 
 /// Template for the instantiation of a ps. It will expose methods common to real and complex
-// ps, the specializations take place below.
+/// ps, the specializations take place below.
 template <class T>
 class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
 {
@@ -144,7 +144,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def(self/int());
   inst.def(self/double());
 // Instantiate spectral comparison.
-  sc_instatiation<T>(name);
+  sc_instatiation<T>();
 // Instantiate common time comparisons.
   class_<tc_equal<T> > tc_equal_inst("tc_equal",
     init<typename tc_equal<T>::b_type,double,double,size_t,T>());
