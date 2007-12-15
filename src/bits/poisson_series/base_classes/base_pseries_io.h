@@ -331,12 +331,12 @@ namespace piranha
   {
     stream_manager::setup_print(out_stream);
     size_t j;
-    for (j=0;j < arguments().template get<0>();++j)
+    for (j=0;j < arguments().template get<0>().size();++j)
     {
       out_stream << "[cf_arg]" << std::endl;
       arguments().template get<0>()[j]->print(out_stream);
     }
-    for (j=0;j<arguments().template get<1>().size();++j)
+    for (j=0;j < arguments().template get<1>().size();++j)
     {
       out_stream << "[trig_arg]" << std::endl;
       arguments().template get<1>()[j]->print(out_stream);
