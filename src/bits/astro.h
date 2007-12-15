@@ -87,7 +87,7 @@ namespace piranha
         return (r*std::sin(lon)*std::sin(col));
       }
 /// Transform spherical coordinates into z-coordinate.
-      static double sph_to_z(const double &r, const double &col, const double &lon)
+      static double sph_to_z(const double &r, const double &col, const double &)
       {
         return (r*std::cos(col));
       }
