@@ -68,26 +68,11 @@ namespace piranha
         }
         derived_cast->swap(tmp_ps);
       }
+// TODO: this will become an override for base_pseries::multiply_terms, once it is in place.
       template <class DerivedPs2>
         void multiply_terms(const DerivedPs2 &ps2, DerivedPs &retval) const
       {
-// TODO: use typedeffed "const_iterator" here instead.
-// DerivedPs typedefs.
-        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
-        typedef typename DerivedPs::ancestor::term_type term_type;
-        typedef typename DerivedPs2::ancestor::it_s_index it_s_index2;
-        typedef typename DerivedPs2::ancestor::term_type term_type2;
         typedef typename DerivedPs::ancestor::cf_type cf_type;
-        typedef typename DerivedPs::ancestor::trig_type trig_type;
-        typedef typename DerivedPs::ancestor::allocator_type allocator_type;
-// Light_term typedefs.
-        typedef light_term<cf_type,trig_type> light_term_type;
-        typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
-// Mult_hash typedefs.
-        typedef mult_hash<light_term_type,typename light_term_type::hasher,
-          std::equal_to<light_term_type>,allocator_type,true> m_hash;
-        typedef typename m_hash::iterator m_hash_iterator;
-        typedef typename m_hash::point_iterator m_hash_point_iterator;
 // Pseries_gl_rep typedefs.
         typedef pseries_gl_rep<DerivedPs,DerivedPs2> glr_type;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
@@ -95,8 +80,6 @@ namespace piranha
         const double Delta=derived_cast->g_norm()*ps2.g_norm()*get_truncation(),
           Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
-        double norm1;
-        size_t i, j;
 // ps2.begin() is legal because we checked for ps2's size.
         const double norm2_i=ps2.begin()->g_cf()->norm(ps2.arguments().template get<0>());
 // Build the generalized lexicographic representation.
@@ -133,82 +116,7 @@ namespace piranha
         }
         else
         {
-          //std::cout << "Will perform plain multiplication." << '\n';
-// NOTE: at this point retval's width() is greater or equal to _both_ this
-// and ps2. It's the max width indeed.
-          light_term_type tmp1, tmp2;
-          tmp1.s_trig()->increase_size(retval.trig_width());
-          tmp2.s_trig()->increase_size(retval.trig_width());
-          light_term_pair term_pair(tmp1,tmp2);
-// Cache all pointers to the terms of this and ps2 in vectors.
-          std::valarray<term_type const *> v_p1;
-          std::valarray<term_type2 const *> v_p2;
-          utils::array_pointer(*derived_cast,v_p1);
-          utils::array_pointer(ps2,v_p2);
-          p_assert(v_p1.size() == derived_cast->length());
-          p_assert(v_p2.size() == ps2.length());
-// Prepare the structure for multiplication.
-          m_hash hm((derived_cast->length()*ps2.length())/100);
-          m_hash_point_iterator hm_p_it;
-// Cache some pointers.
-          trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
-          cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
-          light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
-          for (i=0;i<l1;++i)
-          {
-            norm1=v_p1[i]->g_cf()->norm(derived_cast->arguments().template get<0>());
-            if ((norm1*norm2_i)/2<Delta_threshold)
-            {
-              break;
-            }
-            for (j=0;j<l2;++j)
-            {
-// We are going to calculate a term's norm twice... We need to profile
-// this at a later stage and see if it is worth to store the norm inside
-// the term.
-              if ((norm1*v_p2[j]->g_cf()->norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
-              {
-                break;
-              }
-              term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
-// Before insertion we change the sign of trigonometric parts if necessary.
-// This way we won't do a copy inside the insertion function.
-              if (t0->sign()<0)
-              {
-                term0->invert_trig_args();
-              }
-              if (t1->sign()<0)
-              {
-                term1->invert_trig_args();
-              }
-              hm_p_it=hm.find(*term0);
-              if (hm_p_it == hm.end())
-              {
-                hm.insert(*term0);
-              }
-              else
-              {
-                hm_p_it->cf.add(*c0);
-              }
-              hm_p_it=hm.find(*term1);
-              if (hm_p_it == hm.end())
-              {
-                hm.insert(*term1);
-              }
-              else
-              {
-                hm_p_it->cf.add(*c1);
-              }
-              ++pd;
-            }
-          }
-          const m_hash_iterator hm_it_f=hm.end();
-          for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
-          {
-// TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-            retval.template insert<cf_type,false,true>(term_type(hm_it->cf,hm_it->trig));
-          }
-//retval.cumulative_crop(Delta);
+          plain_mult(l1,l2,retval,norm2_i,Delta_threshold,ps2,pd);
         }
         std::cout << "w/o trunc=" << l1*l2 << "\tw/ trunc=" << pd.count() << std::endl;
         std::cout << "Out length=" << retval.length() << std::endl;
@@ -474,6 +382,108 @@ namespace piranha
             retval.insert_check_positive(tmp_term);
           }
         }
+      }
+      template <class Retval, class DerivedPs2, bool DisplayProgress>
+        void plain_mult(const size_t &l1, const size_t &l2,
+        Retval &retval, const double &norm2_i, const double &Delta_threshold,
+        const DerivedPs2 &ps2, progress_display<DisplayProgress> &pd) const
+      {
+// TODO: use typedeffed "const_iterator" here instead?
+// DerivedPs typedefs.
+        typedef typename DerivedPs::ancestor::cf_type cf_type;
+        typedef typename DerivedPs::ancestor::trig_type trig_type;
+        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef typename DerivedPs2::ancestor::it_s_index it_s_index2;
+        typedef typename DerivedPs2::ancestor::term_type term_type2;
+        typedef typename DerivedPs::ancestor::allocator_type allocator_type;
+// Light_term typedefs.
+        typedef light_term<cf_type,trig_type> light_term_type;
+        typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
+// Mult_hash typedefs.
+        typedef mult_hash<light_term_type,typename light_term_type::hasher,
+          std::equal_to<light_term_type>,allocator_type,true> m_hash;
+        typedef typename m_hash::iterator m_hash_iterator;
+        typedef typename m_hash::point_iterator m_hash_point_iterator;
+        //std::cout << "Will perform plain multiplication." << '\n';
+        const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
+        size_t i, j;
+        double norm1;
+// NOTE: at this point retval's width() is greater or equal to _both_ this
+// and ps2. It's the max width indeed.
+        light_term_type tmp1, tmp2;
+        tmp1.s_trig()->increase_size(retval.trig_width());
+        tmp2.s_trig()->increase_size(retval.trig_width());
+        light_term_pair term_pair(tmp1,tmp2);
+// Cache all pointers to the terms of this and ps2 in vectors.
+        std::valarray<term_type const *> v_p1;
+        std::valarray<term_type2 const *> v_p2;
+        utils::array_pointer(*derived_cast,v_p1);
+        utils::array_pointer(ps2,v_p2);
+        p_assert(v_p1.size() == derived_cast->length());
+        p_assert(v_p2.size() == ps2.length());
+// Prepare the structure for multiplication.
+        m_hash hm((l1*l2)/100);
+        m_hash_point_iterator hm_p_it;
+// Cache some pointers.
+        trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
+        cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
+        light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
+        for (i=0;i<l1;++i)
+        {
+          norm1=v_p1[i]->g_cf()->norm(derived_cast->arguments().template get<0>());
+          if ((norm1*norm2_i)/2<Delta_threshold)
+          {
+            break;
+          }
+          for (j=0;j<l2;++j)
+          {
+// We are going to calculate a term's norm twice... We need to profile
+// this at a later stage and see if it is worth to store the norm inside
+// the term.
+            if ((norm1*v_p2[j]->g_cf()->norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
+            {
+              break;
+            }
+            term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
+// Before insertion we change the sign of trigonometric parts if necessary.
+// This way we won't do a copy inside the insertion function.
+            if (t0->sign()<0)
+            {
+              term0->invert_trig_args();
+            }
+            if (t1->sign()<0)
+            {
+              term1->invert_trig_args();
+            }
+            hm_p_it=hm.find(*term0);
+            if (hm_p_it == hm.end())
+            {
+              hm.insert(*term0);
+            }
+            else
+            {
+              hm_p_it->cf.add(*c0);
+            }
+            hm_p_it=hm.find(*term1);
+            if (hm_p_it == hm.end())
+            {
+              hm.insert(*term1);
+            }
+            else
+            {
+              hm_p_it->cf.add(*c1);
+            }
+            ++pd;
+          }
+        }
+        const m_hash_iterator hm_it_f=hm.end();
+        for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
+        {
+// TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
+          retval.template insert<cf_type,false,true>(term_type(hm_it->cf,hm_it->trig));
+        }
+//retval.cumulative_crop(Delta);
       }
   };
 }
