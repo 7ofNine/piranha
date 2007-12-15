@@ -22,6 +22,7 @@
 #define PIRANHA_PSERIES_GL_REP_H
 
 #include <algorithm> // For sorting of vectors.
+#include <boost/array.hpp>
 #include <boost/integer_traits.hpp>
 #include <gmp.h> // We need gmp to do arithmetics on ranges.
 #include <gmpxx.h>
@@ -200,16 +201,20 @@ namespace piranha
         }
 // TODO: here use mpz_class instead: this way we can know almost for free if the multipliers' ranges are ok.
 // Downcast to hardware int for actual usage.
-        std::valarray<mult_type> tmp_vec(4);
+        boost::array<mult_type,8> tmp_vec;
         for (trig_size_t j=0;j<twidth;++j)
         {
           tmp_vec[0]=limits1[j].second+limits2[j].second;
           tmp_vec[1]=limits1[j].first+limits2[j].first;
           tmp_vec[2]=limits1[j].second-limits2[j].first;
           tmp_vec[3]=limits1[j].first-limits2[j].second;
-          std::sort(&tmp_vec[0], &tmp_vec[0] + 4);
+          tmp_vec[4]=limits1[j].first;
+          tmp_vec[5]=limits2[j].first;
+          tmp_vec[6]=limits1[j].second;
+          tmp_vec[7]=limits2[j].second;
+          std::sort(&tmp_vec[0], &tmp_vec[0] + 8);
           e_minmax[j].first=tmp_vec[0];
-          e_minmax[j].second=tmp_vec[3];
+          e_minmax[j].second=tmp_vec[7];
         }
 //         for (trig_size_t j=0;j<twidth;++j)
 //         {
