@@ -18,14 +18,14 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NORM_TRUNCATION_H
-#define PIRANHA_NORM_TRUNCATION_H
+#ifndef PIRANHA_NORM_TRUNCATION_TOOLBOX_H
+#define PIRANHA_NORM_TRUNCATION_TOOLBOX_H
 
 #include <iostream>
 
 namespace piranha
 {
-  class norm_truncation
+  class norm_truncation_toolbox
   {
     public:
       static void set_truncation(const double &x)

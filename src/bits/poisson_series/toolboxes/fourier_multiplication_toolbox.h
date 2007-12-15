@@ -26,7 +26,7 @@
 #include "../../buffer.h"
 #include "../../config.h" // For selection of temporary hash container for multiplication and display progress..
 #include "../terms/light_term.h"
-#include "norm_truncation.h"
+#include "norm_truncation_toolbox.h"
 #include "../../progress_display.h"
 #include "../pseries_gl_rep.h"
 
@@ -43,7 +43,7 @@ namespace piranha
  * Series multiplication uses a norm-based truncation strategy.
  */
   template <class DerivedPs>
-    class fourier_multiplication_toolbox:public norm_truncation
+    class fourier_multiplication_toolbox:public norm_truncation_toolbox
   {
     public:
       template <class Cf>

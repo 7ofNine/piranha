@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "bits/poisson_series/toolboxes/norm_truncation.h"
+#include "bits/poisson_series/toolboxes/norm_truncation_toolbox.h"
 
 namespace piranha
 {
 // Initialization of static default truncation level.
-  double norm_truncation::trunc_level = 1E-6;
+  double norm_truncation_toolbox::trunc_level = 1E-6;
 }
