@@ -196,7 +196,7 @@ namespace piranha
             add_phase_to_term(*it_pl,new_term,tmp_term,*this);
             break;
           default:
-            add_phase_to_term(*it_pl-new_term.g_trig()->phase(trig_s_vec_),new_term,tmp_term,*this);
+            add_phase_to_term(*it_pl-new_term.g_trig()->phase(arguments().template get<1>()),new_term,tmp_term,*this);
         }
         ++it_pl;
       }
@@ -286,7 +286,7 @@ namespace piranha
       {
         break;
       }
-      it->print_plain(out_stream,cf_s_vec_,trig_s_vec_);
+      it->print_plain(out_stream,arguments().template get<0>(),arguments().template get<1>());
       out_stream << std::endl;
       ++j;
     }
@@ -316,7 +316,7 @@ namespace piranha
 // Increase i now, so we print correct term number (as opposed to term index).
       ++i;
       out_stream << i << "&";
-      it->print_latex(out_stream,cf_s_vec_,trig_s_vec_);
+      it->print_latex(out_stream,arguments().template get<0>(),arguments().template get<1>());
       out_stream << "\\\\" << std::endl;
     }
   }
@@ -331,15 +331,15 @@ namespace piranha
   {
     stream_manager::setup_print(out_stream);
     size_t j;
-    for (j=0;j<cf_s_vec_.size();++j)
+    for (j=0;j < arguments().template get<0>();++j)
     {
       out_stream << "[cf_arg]" << std::endl;
-      cf_s_vec_[j]->print(out_stream);
+      arguments().template get<0>()[j]->print(out_stream);
     }
-    for (j=0;j<trig_s_vec_.size();++j)
+    for (j=0;j<arguments().template get<1>().size();++j)
     {
       out_stream << "[trig_arg]" << std::endl;
-      trig_s_vec_[j]->print(out_stream);
+      arguments().template get<1>()[j]->print(out_stream);
     }
     out_stream << "[lin_args]" << std::endl;
     for (j=0;j<lin_args_.size();++j)
@@ -456,9 +456,9 @@ namespace piranha
     }
     for (iterator it=begin();it!=end();++it)
     {
-      it->g_cf()->print_plain(std::cout,cf_s_vec_);
-      std::cout << stream_manager::data_separator() << it->g_trig()->phase(trig_s_vec_) <<
-        stream_manager::data_separator() << it->g_trig()->freq(trig_s_vec_) << std::endl;
+      it->g_cf()->print_plain(std::cout,arguments().template get<0>());
+      std::cout << stream_manager::data_separator() << it->g_trig()->phase(arguments().template get<1>()) <<
+        stream_manager::data_separator() << it->g_trig()->freq(arguments().template get<1>()) << std::endl;
       ++i;
       if (i==lim)
       {

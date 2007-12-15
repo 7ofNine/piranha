@@ -98,7 +98,7 @@ namespace piranha
         double norm1;
         size_t i, j;
 // ps2.begin() is legal because we checked for ps2's size.
-        const double norm2_i=ps2.begin()->g_cf()->norm(ps2.cf_s_vec());
+        const double norm2_i=ps2.begin()->g_cf()->norm(ps2.arguments().template get<0>());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
         progress_display<_PIRANHA_DISPLAY_PROGRESS> pd(l1*l2);
@@ -156,7 +156,7 @@ namespace piranha
           light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
           for (i=0;i<l1;++i)
           {
-            norm1=v_p1[i]->g_cf()->norm(derived_cast->cf_s_vec());
+            norm1=v_p1[i]->g_cf()->norm(derived_cast->arguments().template get<0>());
             if ((norm1*norm2_i)/2<Delta_threshold)
             {
               break;
@@ -166,7 +166,7 @@ namespace piranha
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-              if ((norm1*v_p2[j]->g_cf()->norm(ps2.cf_s_vec()))/2<Delta_threshold)
+              if ((norm1*v_p2[j]->g_cf()->norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
               {
                 break;
               }
@@ -256,14 +256,14 @@ namespace piranha
         double norm1;
         for (i=0;i<l1;++i)
         {
-          norm1=cs1[i].cf().norm(derived_cast->cf_s_vec());
+          norm1=cs1[i].cf().norm(derived_cast->arguments().template get<0>());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
           for (j=0;j<l2;++j)
           {
-            if ((norm1*cs2[j].cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*cs2[j].cf().norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
             {
               break;
             }
@@ -370,14 +370,14 @@ namespace piranha
         size_t i, j;
         for (i=0;i<l1;++i)
         {
-          norm1=cs1[i].cf().norm(derived_cast->cf_s_vec());
+          norm1=cs1[i].cf().norm(derived_cast->arguments().template get<0>());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
           }
           for (j=0;j<l2;++j)
           {
-            if ((norm1*cs2[j].cf().norm(ps2.cf_s_vec()))/2<Delta_threshold)
+            if ((norm1*cs2[j].cf().norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
             {
               break;
             }

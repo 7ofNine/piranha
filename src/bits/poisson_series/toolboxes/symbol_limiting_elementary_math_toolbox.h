@@ -49,7 +49,7 @@ namespace piranha
         tmp_ps.merge_args(*derived_cast);
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.g_s_index().end();
-        index_limit limits(derived_cast->cf_s_vec());
+        index_limit limits(derived_cast->arguments().template get<0>());
         const bool limit_exists=(limits.size()>0);
         const uint16 limit_min_expo=limits.g_min_expo(), min_expo_cf=cf.g_min_expo();
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
@@ -83,7 +83,7 @@ namespace piranha
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
         it_s_index2 it2;
         it_s_index it1, it_hint=retval.g_s_index().end();
-        index_limit limits(derived_cast->cf_s_vec());
+        index_limit limits(derived_cast->arguments().template get<0>());
         uint16 min_expo1;
         const bool limit_exists=(limits.size()>0);
         const uint16 limit_min_expo=limits.g_min_expo();

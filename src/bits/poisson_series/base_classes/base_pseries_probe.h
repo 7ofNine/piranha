@@ -47,12 +47,12 @@ namespace piranha
     const r_it_s_index it_f=g_s_index().rend();
     for (r_it_s_index it=g_s_index().rbegin();it!=it_f;++it)
     {
-      retval+=it->t_eval(value,cf_s_vec_,trig_s_vec_);
+      retval+=it->t_eval(value,arguments().template get<0>(),arguments().template get<1>());
     }
 // Linear arguments
     for (size_t j=0;j<w;++j)
     {
-      retval+=lin_args()[j]*trig_s_vec_[j]->t_eval(value);
+      retval+=lin_args()[j]*arguments().template get<1>()[j]->t_eval(value);
     }
     return retval;
   };
@@ -79,7 +79,7 @@ namespace piranha
     const size_t w=trig_width();
     for (size_t j=0;j<w;++j)
     {
-      retval+=lin_args()[j]*trig_s_vec_[j]->t_eval(value);
+      retval+=lin_args()[j]*arguments().template get<1>()[j]->t_eval(value);
     }
     return retval;
   };
@@ -96,9 +96,9 @@ namespace piranha
     inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_compatible(const Derived2 &ps2) const
   {
     size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
-    for (j=0;j<minwidth;++j)
+    for (j=0;j < minwidth;++j)
     {
-      if (!(cf_s_vec_[j]==ps2.cf_s_vec()[j]))
+      if (!(arguments().template get<0>()[j] == ps2.arguments().template get<0>()[j]))
       {
         return false;
       }
@@ -106,7 +106,7 @@ namespace piranha
     minwidth=math::min(trig_width(),ps2.trig_width());
     for (j=0;j<minwidth;++j)
     {
-      if (!(trig_s_vec_[j]==ps2.trig_s_vec()[j]))
+      if (!(arguments().template get<1>()[j]==ps2.arguments().template get<1>()[j]))
       {
         return false;
       }
@@ -124,7 +124,7 @@ namespace piranha
     template <class Derived2>
     bool base_pseries<__PIRANHA_BASE_PS_TP>::args_different(const Derived2 &ps2) const
   {
-// Even if there may be duplicate arguments in cf/trig_s_vec_, we don't want to use multiset:
+// Even if there may be duplicate arguments in arguments, we don't want to use multiset:
 // we are only interested in the presence or not of that argument. If there are duplicate arguments
 // the insertion functions below will simply fail silently.
     typedef std::set
@@ -135,22 +135,22 @@ namespace piranha
     w=cf_width();
     for (j=0;j<w;++j)
     {
-      set1.insert(cf_s_vec_[j]);
+      set1.insert(arguments().template get<0>()[j]);
     }
     w=trig_width();
     for (j=0;j<w;++j)
     {
-      set1.insert(trig_s_vec_[j]);
+      set1.insert(arguments().template get<1>()[j]);
     }
     w=ps2.cf_width();
     for (j=0;j<w;++j)
     {
-      set2.insert(ps2.cf_s_vec()[j]);
+      set2.insert(ps2.arguments().template get<0>()[j]);
     }
     w=ps2.trig_width();
     for (j=0;j<w;++j)
     {
-      set2.insert(ps2.trig_s_vec()[j]);
+      set2.insert(ps2.arguments().template get<1>()[j]);
     }
 // Compute intersection of the two sets of psymbol pointers.
     std::set_intersection(set1.begin(),set1.end(),
@@ -168,7 +168,7 @@ namespace piranha
     const it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
-      retval+=it->g_cf()->norm(cf_s_vec_);
+      retval+=it->g_cf()->norm(arguments().template get<0>());
     }
     return retval;
   }
@@ -188,7 +188,8 @@ namespace piranha
     size_t index=0;
     for (it=g_s_index().begin();it!=it_f;++it)
     {
-      rel_delta=(it->g_cf()->norm(cf_s_vec_)-boost::next(it)->g_cf()->norm(cf_s_vec_))/it->g_cf()->norm(cf_s_vec_);
+      rel_delta=(it->g_cf()->norm(arguments().template get<0>())-boost::next(it)->g_cf()->norm(arguments().template get<0>()))/
+        it->g_cf()->norm(arguments().template get<0>());
       if (rel_delta>candidate)
       {
         std::cout << "Found discontinuity candidate at index position: " <<
@@ -228,7 +229,7 @@ namespace piranha
     it_s_index it;
     for (it=g_s_index().begin();it!=g_s_index().end();++it)
     {
-      if (it->g_cf()->norm(cf_s_vec_)*desired_sdp < ste)
+      if (it->g_cf()->norm(arguments().template get<0>())*desired_sdp < ste)
       {
         break;
       }
@@ -243,7 +244,7 @@ namespace piranha
     size_t i;
     for (i=0;i<trig_width();++i)
     {
-      if (trig_s_vec_[i]->name()==name)
+      if (arguments().template get<1>()[i]->name()==name)
       {
         break;
       }

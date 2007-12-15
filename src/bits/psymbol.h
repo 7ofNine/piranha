@@ -53,10 +53,7 @@ namespace piranha
  * \alpha + \beta t + \gamma t^2,
  * \f]
  * where \f$ t \f$ is time.
- * @see piranha::base_pseries::cf_s_vec_, the vector of symbols embedded in a Poisson series representing
- * its trigonometric arguments.
- * @see piranha::base_pseries::trig_s_vec_, the vector of symbols embedded in a Poisson series representing
- * its trigonometric arguments.
+ * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
  */
       class psymbol
       {

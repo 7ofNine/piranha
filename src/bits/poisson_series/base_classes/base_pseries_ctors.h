@@ -26,7 +26,7 @@
 namespace piranha
 {
 /// Initializer list for base_pseries constructors.
-#define __base_pseries_init_list lin_args_(),cf_s_vec_(),trig_s_vec_(),private_series_set_()
+#define __base_pseries_init_list lin_args_(),m_arguments(),private_series_set_()
 
 /// Default constructor.
 /**
@@ -51,8 +51,8 @@ namespace piranha
 
 /// Copy constructor.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const Derived &ps):lin_args_(ps.lin_args_),cf_s_vec_(ps.cf_s_vec_),
-    trig_s_vec_(ps.trig_s_vec_),private_series_set_(*ps.g_series_set())
+    inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const Derived &ps):lin_args_(ps.lin_args_),
+    m_arguments(ps.m_arguments),private_series_set_(*ps.g_series_set())
   {
     std::cout << "Copy ctor" << std::endl;
   }

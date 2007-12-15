@@ -39,15 +39,15 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::trig_width() const
   {
-//p_assert(trig_s_vec_.size()==lin_args_.size());
-    return trig_s_vec_.size();
+//p_assert(arguments().template get<1>().size()==lin_args_.size());
+    return arguments().template get<1>().size();
   }
 
 /// Return coefficient width.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::cf_width() const
   {
-    return cf_s_vec_.size();
+    return arguments().template get<0>().size();
   }
 
 /// Return const reference to the vector of linear arguments.
@@ -57,18 +57,12 @@ namespace piranha
     return lin_args_;
   }
 
-/// Return const reference to the vector of coefficient symbols.
+/// Return const reference to the tuple of arguments vectors.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline const vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::cf_s_vec() const
+    inline const typename base_pseries<__PIRANHA_BASE_PS_TP>::arguments_tuple_type &
+    base_pseries<__PIRANHA_BASE_PS_TP>::arguments() const
   {
-    return cf_s_vec_;
-  }
-
-/// Return const reference to the vector of trigonometric symbols.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline const vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::trig_s_vec() const
-  {
-    return trig_s_vec_;
+    return m_arguments;
   }
 
 /// Return const reference to the set of terms.
@@ -109,7 +103,7 @@ namespace piranha
     const size_t w=cf_width();
     for (size_t i=0;i<w;++i)
     {
-      if (cf_s_vec_[i]->name()==name)
+      if (arguments().template get<0>()[i]->name()==name)
       {
         retval=(int)i;
         break;
@@ -126,7 +120,7 @@ namespace piranha
     const size_t w=trig_width();
     for (size_t i=0;i<w;++i)
     {
-      if (trig_s_vec_[i]->name()==name)
+      if (arguments().template get<1>()[i]->name()==name)
       {
         retval=(int)i;
         break;
@@ -180,18 +174,12 @@ namespace piranha
     return lin_args_;
   }
 
-/// Return mutable reference to the vector of coefficient symbols.
- template <__PIRANHA_BASE_PS_TP_DECL>
-    inline vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::cf_s_vec()
+/// Return mutable reference to the tuple of arguments vectors.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::arguments_tuple_type &
+    base_pseries<__PIRANHA_BASE_PS_TP>::arguments()
   {
-    return cf_s_vec_;
-  }
-
-/// Return mutable reference to the vector of trigonometric symbols.
- template <__PIRANHA_BASE_PS_TP_DECL>
-    inline vector_psym_p &base_pseries<__PIRANHA_BASE_PS_TP>::trig_s_vec()
-  {
-    return trig_s_vec_;
+    return m_arguments;
   }
 
 /// Return mutable reference to the set of terms.

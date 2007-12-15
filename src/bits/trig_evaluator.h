@@ -42,7 +42,7 @@ namespace piranha
 // Initialize powers 1 and -1 for all trigonometric arguments.
         for (size_t i=0;i<private_width_;++i)
         {
-          private_container_[i].first.push_back(std::polar(1.,private_ps_->trig_s_vec()[i]->t_eval(t)));
+          private_container_[i].first.push_back(std::polar(1.,private_ps_->arguments().template get<1>()[i]->t_eval(t)));
           private_container_[i].second.push_back(complex_double(1.)/
             private_container_[i].first[0]);
         }

@@ -65,6 +65,8 @@ namespace piranha
       typedef Allocator allocator_type;
 /// Alias for allocator rebinding to term_type.
       typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
+/// Alias for the tuple of arguments vectors.
+      typedef boost::tuple<vector_psym_p,vector_psym_p> arguments_tuple_type;
 /// Alias for the evaluation type.
 /**
  * @see base_pseries::t_eval.
@@ -111,8 +113,7 @@ namespace piranha
       size_t trig_width() const;
       size_t cf_width() const;
       const vector_int16 &lin_args() const;
-      const vector_psym_p &cf_s_vec() const;
-      const vector_psym_p &trig_s_vec() const;
+      const arguments_tuple_type &arguments() const;
       const series_set_type *g_series_set() const;
       const sorted_index &g_s_index() const;
       const hashed_index &g_h_index() const;
@@ -170,8 +171,7 @@ namespace piranha
         void generic_builder(const T &);
 // Setters.
       vector_int16 &lin_args();
-      vector_psym_p &cf_s_vec();
-      vector_psym_p &trig_s_vec();
+      arguments_tuple_type &arguments();
       series_set_type *s_series_set();
       sorted_index &s_s_index();
       hashed_index &s_h_index();
@@ -275,15 +275,13 @@ namespace piranha
         {
           term.s_cf()->swap(*new_cf_);
         }
-// NOTICE: evaluate the impact of using const & here, esp. when using gmp
         cf_type *new_cf_;
       };
 // Data members.
-      vector_int16    lin_args_;
-      vector_psym_p   cf_s_vec_;
-      vector_psym_p   trig_s_vec_;
-      series_set_type private_series_set_;
-      static term_allocator_type term_allocator;
+      vector_int16                              lin_args_;
+      arguments_tuple_type                      m_arguments;
+      series_set_type                           private_series_set_;
+      static term_allocator_type                term_allocator;
   };
 
   template <__PIRANHA_BASE_PS_TP_DECL>

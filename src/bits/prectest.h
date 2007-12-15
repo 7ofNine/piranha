@@ -102,11 +102,11 @@ namespace piranha
       {
         if (relative)
         {
-          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf()->norm(ps2.cf_s_vec())/it->g_cf()->norm(ps1.cf_s_vec())));
+          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf()->norm(ps2.arguments().template get<0>())/it->g_cf()->norm(ps1.arguments().template get<0>())));
         }
         else
         {
-          diffs_[i]=std::abs(it_h->g_cf()->norm(ps2.cf_s_vec())-it->g_cf()->norm(ps1.cf_s_vec()));
+          diffs_[i]=std::abs(it_h->g_cf()->norm(ps2.arguments().template get<0>())-it->g_cf()->norm(ps1.arguments().template get<0>()));
         }
         if (diffs_[i]>max_diff)
         {
@@ -562,8 +562,8 @@ namespace piranha
           {
             multiplier=0;
           }
-          tmp=it->g_trig()->t_eval(t,orig_->trig_s_vec());
-          c_eval=it->g_cf()->t_eval(t,orig_->cf_s_vec());
+          tmp=it->g_trig()->t_eval(t,orig_->arguments().template get<1>());
+          c_eval=it->g_cf()->t_eval(t,orig_->arguments().template get<0>());
           switch (it->g_trig()->g_flavour())
           {
             case true:
@@ -578,7 +578,7 @@ namespace piranha
 // Linear arguments
         for (size_t j=0;j<w;++j)
         {
-          retval+=orig_->lin_args()[j]*orig_->trig_s_vec()[j]->t_eval(t);
+          retval+=orig_->lin_args()[j]*orig_->arguments().template get<1>()[j]->t_eval(t);
         }
         return retval;
       }
@@ -623,10 +623,10 @@ namespace piranha
                 tmp_phase=*it2;
                 break;
               default:
-                tmp_phase=*it2-it->g_trig()->phase(a_->trig_s_vec());
+                tmp_phase=*it2-it->g_trig()->phase(a_->arguments().template get<1>());
             }
-            tmp=it->g_trig()->t_eval(t,a_->trig_s_vec());
-            c_eval=it->g_cf()->t_eval(t,a_->cf_s_vec());
+            tmp=it->g_trig()->t_eval(t,a_->arguments().template get<1>());
+            c_eval=it->g_cf()->t_eval(t,a_->arguments().template get<0>());
             switch (it->g_trig()->g_flavour())
             {
               case true:
@@ -641,13 +641,13 @@ namespace piranha
           }
           else
           {
-            retval+=it->t_eval(t,a_->cf_s_vec(),a_->trig_s_vec());
+            retval+=it->t_eval(t,a_->arguments().template get<0>(),a_->arguments().template get<1>());
           }
         }
 // Linear arguments.
         for (size_t j=0;j<w;++j)
         {
-          retval+=a_->lin_args()[j]*a_->trig_s_vec()[j]->t_eval(t);
+          retval+=a_->lin_args()[j]*a_->arguments().template get<1>()[j]->t_eval(t);
         }
         return retval;
       }

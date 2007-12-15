@@ -114,7 +114,7 @@ namespace piranha
             add_phase_to_term(*it2,it1,tmp_term,tmp_ps);
             break;
           default:
-            add_phase_to_term(*it2-it1->g_trig()->phase(trig_s_vec_),it1,tmp_term,tmp_ps);
+            add_phase_to_term(*it2-it1->g_trig()->phase(arguments().template get<1>()),it1,tmp_term,tmp_ps);
         }
         ++it2;
       }
@@ -132,17 +132,17 @@ namespace piranha
 /**
  * Prepend a vector of argument pointers to the current vector of coefficient arguments.
  * @param[in] v vector_psym_p to be prepended.
- * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
+ * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::prepend_cf_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
-    retval.cf_s_vec_=cf_s_vec_;
-    retval.trig_s_vec_=trig_s_vec_;
+    retval.arguments().template get<0>()=arguments().template get<0>();
+    retval.arguments().template get<1>()=arguments().template get<1>();
 // Prepend psymbols from v.
-    retval.cf_s_vec_.insert(retval.cf_s_vec_.begin(),v.begin(),v.end());
+    retval.arguments().template get<0>().insert(retval.arguments().template get<0>().begin(),v.begin(),v.end());
     const it_h_index it_f=g_h_index().end();
     const size_t n=v.size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
@@ -160,17 +160,17 @@ namespace piranha
 /**
  * The arguments will be appended at the end of the coefficient argument vector.
  * @param[in] v vector_psym_p to be appended.
- * @see base_pseries::cf_s_vec_ vector of coefficient arguments for a series.
+ * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
-    retval.cf_s_vec_=cf_s_vec_;
-    retval.trig_s_vec_=trig_s_vec_;
+    retval.arguments().template get<0>()=arguments().template get<0>();
+    retval.arguments().template get<1>()=arguments().template get<1>();
 // Append psymbols from v.
-    retval.cf_s_vec_.insert(retval.cf_s_vec_.end(),v.begin(),v.end());
+    retval.arguments().template get<0>().insert(retval.arguments().template get<0>().end(),v.begin(),v.end());
     const it_h_index it_f=g_h_index().end();
     const size_t n=v.size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
@@ -188,18 +188,18 @@ namespace piranha
 /**
  * Prepend a vector of argument pointers to the current vector of trigonometric arguments.
  * @param[in] v vector_psym_p to be prepended.
- * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
+ * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::prepend_trig_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
-    retval.cf_s_vec_=cf_s_vec_;
-    retval.trig_s_vec_=trig_s_vec_;
+    retval.arguments().template get<0>()=arguments().template get<0>();
+    retval.arguments().template get<1>()=arguments().template get<1>();
     const size_t n=v.size();
 // Prepend psymbols from v.
-    retval.trig_s_vec_.insert(retval.trig_s_vec_.begin(),v.begin(),v.end());
+    retval.arguments().template get<1>().insert(retval.arguments().template get<1>().begin(),v.begin(),v.end());
     retval.lin_args_.insert(retval.lin_args_.begin(),n,0);
     const it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
@@ -217,18 +217,18 @@ namespace piranha
 /**
  * The argument will be appended at the end of the trigonometric argument vector.
  * @param[in] v vector_psym_p to be appended.
- * @see base_pseries::trig_s_vec_ vector of trigonometric arguments for a series.
+ * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
-    retval.cf_s_vec_=cf_s_vec_;
-    retval.trig_s_vec_=trig_s_vec_;
+    retval.arguments().template get<0>()=arguments().template get<0>();
+    retval.arguments().template get<1>()=arguments().template get<1>();
     const size_t n=v.size();
 // Append psymbols from v.
-    retval.trig_s_vec_.insert(retval.trig_s_vec_.end(),v.begin(),v.end());
+    retval.arguments().template get<1>().insert(retval.arguments().template get<1>().end(),v.begin(),v.end());
     retval.lin_args_.insert(retval.lin_args_.end(),n,0);
     const it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
@@ -271,8 +271,8 @@ namespace piranha
 // Swap sets' contents
     s_series_set()->swap(*ps2.s_series_set());
 // Swap other members
-    cf_s_vec_.swap(ps2.cf_s_vec_);
-    trig_s_vec_.swap(ps2.trig_s_vec_);
+    arguments().template get<0>().swap(ps2.arguments().template get<0>());
+    arguments().template get<1>().swap(ps2.arguments().template get<1>());
     lin_args_.swap(ps2.lin_args_);
     static_cast<Derived *>(this)->swap_hook(ps2);
   }
@@ -285,7 +285,7 @@ namespace piranha
     base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_insert_new(const term_type &term,
     const it_s_index *it_hint)
   {
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
+    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
     it_s_index it_new;
     if (it_hint==0)
     {
@@ -317,7 +317,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_erase(const it_h_index &it)
   {
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
+    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
     static_cast<Derived *>(this)->term_pre_erase_hook(*it);
     s_h_index().erase(it);
   }
@@ -325,7 +325,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_erase(const it_s_index &it)
   {
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
+    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
     static_cast<Derived *>(this)->term_pre_erase_hook(*it);
     s_s_index().erase(it);
   }
@@ -333,7 +333,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_update(const it_h_index &it, cf_type &new_c)
   {
-    arg_manager::arg_assigner aa(&cf_s_vec_,&trig_s_vec_);
+    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
     static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
 // Update the existing term
     action_assert(s_h_index().modify(it,modifier_update_cf(new_c)));
@@ -502,8 +502,8 @@ namespace piranha
       if (args_different(ps2))
       {
         std::cout << "But they are args_different. Lolrus!" << std::endl;
-        prepend_cf_args(ps2.cf_s_vec());
-        prepend_trig_args(ps2.trig_s_vec());
+        prepend_cf_args(ps2.arguments().template get<0>());
+        prepend_trig_args(ps2.arguments().template get<1>());
         return true;
       }
       else
@@ -515,13 +515,13 @@ namespace piranha
     size_t w1=cf_width(), w2=ps2.cf_width();
     if (w2>w1)
     {
-      append_cf_args(vector_psym_p(ps2.cf_s_vec().begin()+w1,ps2.cf_s_vec().end()));
+      append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
     }
     w1=trig_width();
     w2=ps2.trig_width();
     if (w2>w1)
     {
-      append_trig_args(vector_psym_p(ps2.trig_s_vec().begin()+w1,ps2.trig_s_vec().end()));
+      append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
     }
     return true;
   }
@@ -535,7 +535,7 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::cumulative_crop(const double &delta)
   {
 // Won't crop a nil series
-    if (length()==0)
+    if (length() == 0)
     {
       return;
     }
@@ -543,12 +543,12 @@ namespace piranha
     it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
-      part_norm+=it->g_cf()->norm(cf_s_vec_);
-      if (part_norm>=delta)
+      part_norm+=it->g_cf()->norm(arguments().template get<0>());
+      if (part_norm >= delta)
       {
         break;
       }
-      if (it==g_s_index().begin())
+      if (it == g_s_index().begin())
       {
         term_erase(it);
         break;
@@ -566,18 +566,19 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::crop(const double &delta)
   {
 // Won't crop a nil series
-    if (length()==0)
+// TODO: replace with empty()?
+    if (length() == 0)
     {
       return;
     }
     it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
-      if (it->g_cf()->norm(cf_s_vec_)>=delta)
+      if (it->g_cf()->norm(arguments().template get<0>()) >= delta)
       {
         break;
       }
-      if (it==g_s_index().begin())
+      if (it == g_s_index().begin())
       {
         term_erase(it);
         break;

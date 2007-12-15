@@ -143,7 +143,7 @@ namespace piranha
       template <class TrigEvaluator>
         eval_type t_eval(TrigEvaluator &te) const
       {
-        eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(te.value(),te.ps()->cf_s_vec());
+        eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(te.value(),te.ps()->arguments().template get<0>());
         retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(te);
         return retval;
       }
