@@ -476,7 +476,7 @@ namespace piranha
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_check_positive(
     const Term<Cf2, trig_type> &term, const it_s_index *it_hint)
   {
-    return insert<Cf2,true,true>(term);
+    return insert<Cf2,true,true>(term,it_hint);
   }
 
 // --------------
