@@ -472,8 +472,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  =  "./src/bits/" "./src/coefficients/" "./src/tass17/" \
-                          "./src/manipulators/" "./src/terms/" "./src/trigonometric_parts/" \
+INPUT                  =  "./src/bits/" "./src/tass17/" "./src/manipulators/" \
                           "./src/piranha.h" \
                           "./src/settings_manager.cpp" \
                           "./src/stats.cpp" \
