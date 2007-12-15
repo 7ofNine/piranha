@@ -22,11 +22,11 @@
 #define PIRANHA_PSERIES_GL_REP_H
 
 #include <algorithm> // For sorting of vectors.
-#include <boost/array.hpp>
 #include <boost/integer_traits.hpp>
 #include <gmp.h> // We need gmp to do arithmetics on ranges.
 #include <gmpxx.h>
 #include <iostream>
+#include <valarray>
 
 #include "../common_typedefs.h" // For max_fast_int.
 
@@ -199,22 +199,27 @@ namespace piranha
               limits2[j].second = tmp;
           }
         }
-// TODO: here use mpz_class instead: this way we can know almost for free if the multipliers' ranges are ok.
-// Downcast to hardware int for actual usage.
-        boost::array<mult_type,8> tmp_vec;
+        std::valarray<mpz_class> tmp_vec(8);
         for (trig_size_t j=0;j<twidth;++j)
         {
-          tmp_vec[0]=limits1[j].second+limits2[j].second;
-          tmp_vec[1]=limits1[j].first+limits2[j].first;
-          tmp_vec[2]=limits1[j].second-limits2[j].first;
-          tmp_vec[3]=limits1[j].first-limits2[j].second;
-          tmp_vec[4]=limits1[j].first;
-          tmp_vec[5]=limits2[j].first;
-          tmp_vec[6]=limits1[j].second;
-          tmp_vec[7]=limits2[j].second;
+          tmp_vec[0]=mpz_class(limits1[j].second)+mpz_class(limits2[j].second);
+          tmp_vec[1]=mpz_class(limits1[j].first)+mpz_class(limits2[j].first);
+          tmp_vec[2]=mpz_class(limits1[j].second)-mpz_class(limits2[j].first);
+          tmp_vec[3]=mpz_class(limits1[j].first)-mpz_class(limits2[j].second);
+          tmp_vec[4]=mpz_class(limits1[j].first);
+          tmp_vec[5]=mpz_class(limits2[j].first);
+          tmp_vec[6]=mpz_class(limits1[j].second);
+          tmp_vec[7]=mpz_class(limits2[j].second);
           std::sort(&tmp_vec[0], &tmp_vec[0] + 8);
-          e_minmax[j].first=tmp_vec[0];
-          e_minmax[j].second=tmp_vec[7];
+          if (tmp_vec[0] < traits::min() or tmp_vec[0] > traits::max() or
+            tmp_vec[7] < traits::min() or tmp_vec[7] > traits::max())
+          {
+            std::cout << "Alert: range of trigonometric multipliers exceeded, calculation errors are likely." << std::endl;
+// TODO: don't abort once we have proper logging, flag this as a results-altering issue.
+            std::abort();
+          }
+          e_minmax[j].first=tmp_vec[0].get_si();
+          e_minmax[j].second=tmp_vec[7].get_si();
         }
 //         for (trig_size_t j=0;j<twidth;++j)
 //         {
