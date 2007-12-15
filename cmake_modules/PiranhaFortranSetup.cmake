@@ -9,6 +9,13 @@ MACRO(PIRANHA_FORTRAN_SETUP)
   # compilers can be added.
   STRING(REGEX MATCH "(gfortran|g77|f77?)" FORTRAN_COMPILER_TYPE ${CMAKE_Fortran_COMPILER})
   IF(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
+    # This seems a bit of a hack, but we cannot use find_library because libgfortran, if existing,
+    # is not in standard paths.
+    CHECK_CXX_COMPILER_FLAG(-lgfortran __LIBGFORTRAN_FLAG)
+    IF(__LIBGFORTRAN_FLAG)
+      MESSAGE(STATUS "libgfortran was detected, will link against it.")
+      SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} gfortran)
+    ENDIF(__LIBGFORTRAN_FLAG)
     SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2 -Wall -ffixed-line-length-132")
   ELSE(${FORTRAN_COMPILER_TYPE} MATCHES "gfortran")
     IF(${FORTRAN_COMPILER_TYPE} MATCHES "g77")
