@@ -64,13 +64,12 @@ namespace piranha
       template <class Series>
         bool is_ignorable(const Series &s) const
       {
-// First check: numerical coefficient
 // NOTE: store and use norm here?
 // NOTE: the norm should go in the coefficient manipulator...
         return (static_cast<Derived const *>(this)->g_cf()->is_ignorable(s) or
           static_cast<Derived const *>(this)->g_trig()->is_ignorable(s));
       }
-// Manipulation.
+/// Invert the sign of trigonometric multipliers.
       void invert_trig_args()
       {
         static_cast<Derived *>(this)->s_trig()->invert_sign();
@@ -102,7 +101,7 @@ namespace piranha
       }
 /// Print to stream.
 /**
- * Print format (i.e., plain or latex) is set in piranha::stream_manager.
+ * Print format is set in piranha::stream_manager.
  */
       void print(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
