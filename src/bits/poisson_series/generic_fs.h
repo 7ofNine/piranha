@@ -110,7 +110,7 @@ namespace std
 /// Default constructor.
       explicit complex():ancestor::base_pseries() {}
 /// Copy constructor.
-      complex(const complex &p):ancestor::base_pseries(p) {}
+      complex(const complex &p):ancestor::base_pseries(p),complex_toolbox::complex_toolbox(p) {}
 /// Constructor from filename.
       explicit complex(const std::string &filename):ancestor::base_pseries(filename) {}
 /// Constructor from int.

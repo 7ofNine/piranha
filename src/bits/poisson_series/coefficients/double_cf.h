@@ -45,6 +45,8 @@ namespace piranha
       typedef double_cf self;
 /// Alias for the parent class.
       typedef numerical_container<double,double_cf> ancestor;
+/// Alias for concept.
+      typedef basic_pseries_coefficient_concept<double_cf> concept;
     public:
 // This is necessary because some moethods are present in concept _and_ in numerical container.
 // We avoid the dreaded diamond problem by explicitly stating which functions to use.
@@ -84,7 +86,7 @@ namespace piranha
 /// Constructor from double.
       explicit double_cf(const double &val):ancestor::numerical_container(val) {}
 /// Copy constructor.
-      double_cf(const self &dc):ancestor::numerical_container(dc) {}
+      double_cf(const self &dc):concept::basic_pseries_coefficient_concept(dc),ancestor::numerical_container(dc) {}
 /// Destructor.
       ~double_cf() {}
 // Needed operators.
@@ -134,6 +136,7 @@ namespace std
       typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
       typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
       typedef complex self;
+      typedef piranha::complex_basic_pseries_coefficient_concept<piranha::double_cf> concept;
       friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
     public:
       typedef piranha::double_cf value_type;
@@ -171,7 +174,8 @@ namespace std
       explicit complex(const piranha::psymbol &):ancestor::numerical_container() {}
       explicit complex(int n):ancestor::numerical_container(n) {}
       explicit complex(const double &x):ancestor::numerical_container(x) {}
-      complex(const complex &c):ancestor::numerical_container(c) {}
+      complex(const complex &c):concept::complex_basic_pseries_coefficient_concept(c),
+        ancestor::numerical_container(c),complex_toolbox::numerical_container_complex_toolbox(c) {}
       ~complex() {}
 // Complex specific contructors.
       explicit complex(int r, int i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}

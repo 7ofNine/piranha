@@ -65,10 +65,7 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
       }
 /// Copy constructor.
-      basic_pseries_coefficient_concept(const Model &)
-      {
-        __STATIC_ASSERTION_FAILURE;
-      }
+      basic_pseries_coefficient_concept(const Model &) {}
 /// Destructor.
       ~basic_pseries_coefficient_concept() {}
 /// Assignment operator.
@@ -288,10 +285,7 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
       }
 /// Copy constructor.
-      complex_basic_pseries_coefficient_concept(const Model &)
-      {
-        __STATIC_ASSERTION_FAILURE;
-      }
+      complex_basic_pseries_coefficient_concept(const Model &) {}
 /// Destructor.
       ~complex_basic_pseries_coefficient_concept() {}
 /// Assignment operator.
