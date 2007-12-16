@@ -57,6 +57,22 @@ namespace piranha
     return lin_args_;
   }
 
+/// Return const reference to the vector of coefficient arguments.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline const vector_psym_p &
+    base_pseries<__PIRANHA_BASE_PS_TP>::cf_args() const
+  {
+    return m_arguments.template get<0>();
+  }
+
+/// Return const reference to the vector of trigonometric arguments.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline const vector_psym_p &
+    base_pseries<__PIRANHA_BASE_PS_TP>::trig_args() const
+  {
+    return m_arguments.template get<1>();
+  }
+
 /// Return const reference to the tuple of arguments vectors.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline const typename base_pseries<__PIRANHA_BASE_PS_TP>::arguments_tuple_type &

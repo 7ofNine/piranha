@@ -47,12 +47,12 @@ namespace piranha
     const r_it_s_index it_f=g_s_index().rend();
     for (r_it_s_index it=g_s_index().rbegin();it!=it_f;++it)
     {
-      retval+=it->t_eval(value,arguments().template get<0>(),arguments().template get<1>());
+      retval+=it->t_eval(value,*this);
     }
 // Linear arguments
     for (size_t j=0;j<w;++j)
     {
-      retval+=lin_args()[j]*arguments().template get<1>()[j]->t_eval(value);
+      retval+=lin_args()[j]*trig_args()[j]->t_eval(value);
     }
     return retval;
   };

@@ -114,7 +114,8 @@ namespace piranha
       }
       double freq(const vector_psym_p &) const;
       double phase(const vector_psym_p &) const;
-      double t_eval(const double &, const vector_psym_p &) const;
+      template <class Series>
+        double t_eval(const double &, const Series &) const;
       template <class TrigEvaluator>
         double t_eval(TrigEvaluator &) const;
       short int sign() const;
@@ -396,13 +397,14 @@ namespace piranha
     return retval;
   }
 
-  inline double trig_sparse_array::t_eval(const double &t, const vector_psym_p &v) const
+  template <class Series>
+    inline double trig_sparse_array::t_eval(const double &t, const Series &s) const
   {
     double retval=0.;
     const const_iterator it_f=end();
     for (const_iterator it=begin();it!=it_f;++it)
     {
-      retval+=it->second*v[it->first]->t_eval(t);
+      retval+=it->second*s.trig_args()[it->first]->t_eval(t);
     }
     switch (g_flavour())
     {

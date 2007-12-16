@@ -57,7 +57,6 @@ namespace piranha
       using ancestor::print_latex;
       using ancestor::checkup;
       using ancestor::invert_sign;
-      using ancestor::t_eval;
       using ancestor::is_ignorable;
       using ancestor::larger;
       using ancestor::smaller;
@@ -95,12 +94,13 @@ namespace piranha
       {
         return assign_self(val2);
       }
-// Overload norm and evaluation.
+// Override norm and evaluation.
       double norm(const vector_psym_p &) const
       {
         return std::abs(g_value().get_d());
       }
-      double t_eval(const double &, const vector_psym_p &) const
+      template <class Series>
+        double t_eval(const double &, const Series &) const
       {
         return g_value().get_d();
       }
@@ -204,8 +204,9 @@ namespace std
 // NOTICE: the success of this probably depends upon std::complex implementation...
         return std::abs(g_value()).get_d();
       }
-// Overload evaluation.
-      std::complex<double> t_eval(const double &, const piranha::vector_psym_p &) const
+// Override evaluation.
+      template <class Series>
+        std::complex<double> t_eval(const double &, const Series &) const
       {
         return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
       }

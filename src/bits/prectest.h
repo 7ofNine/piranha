@@ -562,8 +562,8 @@ namespace piranha
           {
             multiplier=0;
           }
-          tmp=it->g_trig()->t_eval(t,orig_->arguments().template get<1>());
-          c_eval=it->g_cf()->t_eval(t,orig_->arguments().template get<0>());
+          tmp=it->g_trig()->t_eval(t,*orig_);
+          c_eval=it->g_cf()->t_eval(t,*orig_);
           switch (it->g_trig()->g_flavour())
           {
             case true:
@@ -625,8 +625,8 @@ namespace piranha
               default:
                 tmp_phase=*it2-it->g_trig()->phase(a_->arguments().template get<1>());
             }
-            tmp=it->g_trig()->t_eval(t,a_->arguments().template get<1>());
-            c_eval=it->g_cf()->t_eval(t,a_->arguments().template get<0>());
+            tmp=it->g_trig()->t_eval(t,*a_);
+            c_eval=it->g_cf()->t_eval(t,*a_);
             switch (it->g_trig()->g_flavour())
             {
               case true:
@@ -641,7 +641,7 @@ namespace piranha
           }
           else
           {
-            retval+=it->t_eval(t,a_->arguments().template get<0>(),a_->arguments().template get<1>());
+            retval+=it->t_eval(t,*a_);
           }
         }
 // Linear arguments.

@@ -125,13 +125,13 @@ namespace piranha
  * the arguments. The evaluation is "dumb", in the sense that it happens term by term without caching and reusing
  * any previous calculation. Slow but reliable, hence useful for debugging purposes.
  * @param[in] t time of evaluation.
- * @param[in] vc vector of piranha::psymbol objects for the coefficient.
- * @param[in] vt vector of piranha::psymbol objects for the trigonometric part.
+ * @param[in] s series the term belongs to.
  */
-      eval_type t_eval(const double &t, const vector_psym_p &vc, const vector_psym_p &vt) const
+      template <class Series>
+        eval_type t_eval(const double &t, const Series &s) const
       {
-        eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(t,vc);
-        retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(t,vt);
+        eval_type retval=static_cast<Derived const *>(this)->g_cf()->t_eval(t,s);
+        retval*=static_cast<Derived const *>(this)->g_trig()->t_eval(t,s);
         return retval;
       }
 /// Smarter numerical evaluation

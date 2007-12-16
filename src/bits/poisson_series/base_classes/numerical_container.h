@@ -118,7 +118,8 @@ namespace piranha
         p_assert(s==0);
         return true;
       }
-      const eval_type &t_eval(const double &, const vector_psym_p &) const
+      template <class Series>
+        const eval_type &t_eval(const double &, const Series &) const
       {
         return value_;
       }
