@@ -85,8 +85,7 @@ namespace piranha
           }
         }
       }
-      void append_args(const size_t &)
-        {}
+      void append_args(const size_t &) {}
       void prepend_args(const size_t &n)
       {
         const iterator it_f=end();
@@ -96,20 +95,18 @@ namespace piranha
           it->first+=(trig_size_t)n;
         }
       }
-      void increase_size(const size_t &)
-        {}
+      void increase_size(const size_t &) {}
       void invert_sign();
 // Probing.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
       {
-        if (p.trig_width() == 0)
+        switch (p.trig_width())
         {
-          return 0;
-        }
-        else
-        {
-          return ((double)private_container_.size())/p.trig_width();
+          case 0:
+            return 0;
+          default:
+            return ((double)private_container_.size())/p.trig_width();
         }
       }
       double freq(const vector_psym_p &) const;
