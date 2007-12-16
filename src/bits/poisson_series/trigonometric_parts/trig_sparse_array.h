@@ -72,7 +72,7 @@ namespace piranha
  * Argument type T must support random access through operator[].
  */
       template <class T>
-        void assign_mult_vector(const T &v)
+        void assign_int_vector(const T &v)
       {
         private_container_.resize(0);
         p_assert(empty());

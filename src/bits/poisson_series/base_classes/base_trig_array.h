@@ -143,7 +143,7 @@ namespace piranha
       }
 /// Assign vector of multipliers.
       template <class T>
-        void assign_mult_vector(const T &v)
+        void assign_int_vector(const T &v)
       {
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         p_assert(v.size() == w);

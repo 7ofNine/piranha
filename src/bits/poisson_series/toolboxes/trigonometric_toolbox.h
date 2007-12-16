@@ -165,8 +165,8 @@ namespace piranha
         term2.s_trig()->s_flavour()=false;
         term1.s_trig()->increase_size(retval.trig_width());
         term2.s_trig()->increase_size(retval.trig_width());
-        term1.s_trig()->assign_mult_vector(derived_cast->lin_args());
-        term2.s_trig()->assign_mult_vector(derived_cast->lin_args());
+        term1.s_trig()->assign_int_vector(derived_cast->lin_args());
+        term2.s_trig()->assign_int_vector(derived_cast->lin_args());
         retval.insert_check_positive(term1);
         retval.insert_check_positive(term2);
         return retval;
