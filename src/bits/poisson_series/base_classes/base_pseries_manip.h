@@ -496,7 +496,7 @@ namespace piranha
       std::cout << "Trying to merge with self, returning true." << std::endl;
       return true;
     }
-    if (!is_compatible(ps2))
+    if (!is_args_compatible(ps2))
     {
       std::cout << "The base_pseries are not args_compatible." << std::endl;
       if (args_different(ps2))

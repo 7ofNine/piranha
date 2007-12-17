@@ -93,7 +93,7 @@ namespace piranha
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_compatible(const Derived2 &ps2) const
+    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_args_compatible(const Derived2 &ps2) const
   {
     size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
     for (j=0;j < minwidth;++j)

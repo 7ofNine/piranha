@@ -229,7 +229,7 @@ namespace piranha
       template <class Derived2>
         bool args_different(const Derived2 &) const;
       template <class Derived2>
-        bool is_compatible(const Derived2 &) const;
+        bool is_args_compatible(const Derived2 &) const;
 // Private manipulation.
       it_h_index find_term(const term_type &) const;
       template <bool>
