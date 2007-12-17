@@ -85,7 +85,6 @@ namespace piranha
           }
         }
       }
-      void append_args(const size_t &) {}
       void prepend_args(const size_t &n)
       {
         const iterator it_f=end();
@@ -120,8 +119,8 @@ namespace piranha
       bool is_zero() const;
       template <class Series>
         bool is_ignorable(const Series &) const;
-      bool smaller(const size_t &) const;
-      bool larger(const size_t &) const;
+      bool needs_padding(const size_t &) const;
+      bool overflows(const size_t &) const;
       bool is_compatible(const size_t &) const;
       size_t data_footprint() const;
       template <class Series>
@@ -507,12 +506,12 @@ namespace piranha
     return (is_zero() and !g_flavour());
   }
 
-  inline bool trig_sparse_array::smaller(const size_t &) const
+  inline bool trig_sparse_array::needs_padding(const size_t &) const
   {
     return false;
   }
 
-  inline bool trig_sparse_array::larger(const size_t &) const
+  inline bool trig_sparse_array::overflows(const size_t &) const
   {
     return false;
   }

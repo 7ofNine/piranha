@@ -96,15 +96,15 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return bool();
       }
-/// Check whether coefficient width is larger than s.
-      bool larger(const size_t &w) const
+/// Check whether number of arguments of coefficient is greater than w.
+      bool overflows(const size_t &w) const
       {
         __STATIC_ASSERTION_FAILURE;
         (void)w;
         return bool();
       }
-/// Check whether coefficient width is smaller than s.
-      bool smaller(const size_t &w) const
+/// Check whether coefficient needs padding to be inserted in series with coefficient width w.
+      bool needs_padding(const size_t &w) const
       {
         __STATIC_ASSERTION_FAILURE;
         (void)w;
@@ -150,12 +150,6 @@ namespace piranha
         return *static_cast<Model *>(this);
       }
 /// Prepend n arguments.
-      void append_args(const size_t &n)
-      {
-        __STATIC_ASSERTION_FAILURE;
-        (void)n;
-      }
-/// Append n arguments.
       void prepend_args(const size_t &n)
       {
         __STATIC_ASSERTION_FAILURE;

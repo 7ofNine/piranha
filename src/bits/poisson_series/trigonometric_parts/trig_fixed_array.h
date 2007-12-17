@@ -127,10 +127,6 @@ namespace piranha
       {
         p_assert(false);
       }
-      void append_args(const size_t &)
-      {
-        p_assert(false);
-      }
       void increase_size(const size_t &w)
       {
         p_assert(w == g_width());

@@ -314,11 +314,11 @@ namespace piranha
       {
         return (is_zero() and !g_flavour());
       }
-      bool smaller(const size_t &n) const
+      bool needs_padding(const size_t &n) const
       {
         return (static_cast<const Derived *>(this)->g_width() < n);
       }
-      bool larger(const size_t &n) const
+      bool overflows(const size_t &n) const
       {
         return (static_cast<const Derived *>(this)->g_width() > n);
       }

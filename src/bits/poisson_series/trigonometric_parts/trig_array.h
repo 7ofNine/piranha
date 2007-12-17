@@ -83,10 +83,6 @@ namespace piranha
           }
         }
       }
-      void append_args(const size_t &n)
-      {
-        increase_size(g_width()+n);
-      }
       void increase_size(const size_t &n)
       {
         p_assert(n >= g_width());

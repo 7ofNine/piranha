@@ -70,13 +70,6 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-// TODO: how does this interact with appending arguments from series?
-// The problem here is how to handle resize request. Maybe coefficient
-// and trigs should have a trait that tells whether they are resizable or not?
-      void append_args(const size_t &n)
-      {
-        p_assert(n==0);
-      }
       void prepend_args(const size_t &n)
       {
         p_assert(n==0);
@@ -103,12 +96,12 @@ namespace piranha
         return (static_cast<Derived const *>(this)->norm(s.arguments().template get<0>()) < settings_manager::numerical_zero());
       }
 // TODO: maybe here we should check against 0 size?
-      bool larger(const size_t &s) const
+      bool overflows(const size_t &s) const
       {
         p_assert(s==0);
         return false;
       }
-      bool smaller(const size_t &s) const
+      bool needs_padding(const size_t &s) const
       {
         p_assert(s==0);
         return false;

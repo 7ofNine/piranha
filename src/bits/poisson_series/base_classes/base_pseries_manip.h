@@ -172,12 +172,12 @@ namespace piranha
 // Append psymbols from v.
     retval.arguments().template get<0>().insert(retval.arguments().template get<0>().end(),v.begin(),v.end());
     const it_h_index it_f=g_h_index().end();
-    const size_t n=v.size();
+    const size_t new_size=retval.arguments().template get<0>().size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.s_cf()->append_args(n);
+      tmp_term.s_cf()->increase_size(new_size);
 // NOTICE: use hinted insertion here?
       retval.insert_check_positive(tmp_term);
     }
@@ -226,15 +226,15 @@ namespace piranha
     retval.lin_args_=lin_args_;
     retval.arguments().template get<0>()=arguments().template get<0>();
     retval.arguments().template get<1>()=arguments().template get<1>();
-    const size_t n=v.size();
 // Append psymbols from v.
     retval.arguments().template get<1>().insert(retval.arguments().template get<1>().end(),v.begin(),v.end());
-    retval.lin_args_.insert(retval.lin_args_.end(),n,0);
+    const size_t new_size=retval.arguments().template get<1>().size();
+    retval.lin_args_.insert(retval.lin_args_.end(),v.size(),0);
     const it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
       term_type tmp_term=(*it);
-      tmp_term.s_trig()->append_args(n);
+      tmp_term.s_trig()->increase_size(new_size);
 // NOTICE: use hinted insertion here?
       retval.insert_check_positive(tmp_term);
     }
@@ -430,11 +430,11 @@ namespace piranha
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by addition and multiplication routines.
-    p_assert(!term.result.g_cf()->larger(cw));
-    p_assert(!term.result.g_trig()->larger(tw));
+    p_assert(!term.result.g_cf()->overflows(cw));
+    p_assert(!term.result.g_trig()->overflows(tw));
     term_type *new_term(0);
-    const bool need_resize=(term.result.g_cf()->smaller(cw) or term.result.g_trig()->smaller(tw));
-    if (unlikely(need_resize))
+    const bool padding_needed=(term.result.g_cf()->needs_padding(cw) or term.result.g_trig()->needs_padding(tw));
+    if (unlikely(padding_needed))
     {
       new_term=term_allocator.allocate(1);
       term_allocator.construct(new_term,term.result);

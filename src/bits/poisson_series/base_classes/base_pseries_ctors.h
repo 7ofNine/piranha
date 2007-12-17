@@ -77,11 +77,6 @@ namespace piranha
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
   {
     hard_assert(merge_args(model));
-    if (c.larger(cf_width()))
-    {
-      std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
-      return;
-    }
     generic_builder(c);
   }
 
@@ -131,8 +126,12 @@ namespace piranha
     template <class T>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_builder(const T &x)
   {
-    term_type term = term_type();
-    *(term.s_cf()) = cf_type(x);
+    term_type term = term_type(cf_type(x),trig_type());
+    if (term.s_cf()->overflows(cf_width()))
+    {
+      std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
+      return;
+    }
     insert_check_positive(term);
   }
 }
