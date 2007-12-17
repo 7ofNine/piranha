@@ -132,13 +132,7 @@ namespace piranha
       }
       return *static_cast<Derived *>(this);
     }
-// Check that args are compatible
-    if (!merge_args(ps2))
-    {
-      std::cout << "trig_args are not compatible, returning self." << std::endl;
-      std::exit(1);
-      return *static_cast<Derived *>(this);
-    }
+    merge_args(ps2);
 // Sum/sub lin_args
     alg_sum_lin_args<Derived2,Sign>(ps2);
 // Use hint, since as we add terms we have an idea of where they are going to be placed
@@ -228,19 +222,14 @@ namespace piranha
       std::cout << "Zero stuff." << std::endl;
       return false;
     }
-    if (!math::is_zero_vec(lin_args())||!math::is_zero_vec(ps2.lin_args()))
+    if (!math::is_zero_vec(lin_args()) or !math::is_zero_vec(ps2.lin_args()))
     {
       std::cout << "Non-zero linargs in multiplication." << std::endl;
       std::exit(1);
       return false;
     }
-    if (!merge_args(ps2))
-    {
-      std::cout << "Args are not compatible during multiplication, returning null series." << std::endl;
-      std::exit(1);
-      return false;
-    }
-    action_assert(retval.merge_args(*static_cast<Derived *>(this)));
+    merge_args(ps2);
+    retval.merge_args(*static_cast<Derived *>(this));
     return true;
   }
 

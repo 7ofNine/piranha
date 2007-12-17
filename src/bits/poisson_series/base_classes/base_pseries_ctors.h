@@ -76,7 +76,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
   {
-    hard_assert(merge_args(model));
+    merge_args(model);
     generic_builder(c);
   }
 

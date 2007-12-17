@@ -50,7 +50,7 @@ namespace piranha
       }
       explicit complex_toolbox(const real_Derived &r)
       {
-        action_assert(static_cast<Derived *>(this)->merge_args(r));
+        static_cast<Derived *>(this)->merge_args(r);
         insert_component<Real>(r);
       }
       explicit complex_toolbox(const real_Derived &r, const real_Derived &i)
@@ -182,13 +182,8 @@ namespace piranha
 // Build series from real and imaginary components.
       void build_from_components(const real_Derived &p, const real_Derived &q)
       {
-        action_assert(static_cast<Derived *>(this)->merge_args(p));
-        if (!static_cast<Derived *>(this)->merge_args(q))
-        {
-          std::cout << "WARNING: constructing empty complex series because real and complex "
-            "series passed to ctor are not argument compatible."<< std::endl;
-          return;
-        }
+        static_cast<Derived *>(this)->merge_args(p);
+        static_cast<Derived *>(this)->merge_args(q);
         insert_component<Real>(p);
         insert_component<Imag>(q);
       }

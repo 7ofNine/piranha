@@ -81,7 +81,7 @@ namespace std
 // If so, ditch the term_type typedef which is used just here. Also the iterator typedef..
       explicit complex(const real_ps &p)
       {
-        action_assert(ancestor::merge_args(p));
+        ancestor::merge_args(p);
         term_type term;
         typename real_ps::it_s_index it=p.g_s_index().begin(), it_f=p.g_s_index().end();
         for (;it!=it_f;++it)

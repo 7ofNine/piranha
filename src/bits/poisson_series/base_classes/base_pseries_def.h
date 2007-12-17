@@ -181,7 +181,7 @@ namespace piranha
       void crop(const it_s_index &);
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
-        bool merge_args(const Derived2 &);
+        void merge_args(const Derived2 &);
       void add_cf_arg(const psymbol &);
       void add_trig_arg(const psymbol &);
       template <class Cf2, bool, bool>
@@ -231,6 +231,8 @@ namespace piranha
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
 // Private manipulation.
+      template <class Derived2>
+        void merge_incompatible_args(const Derived2 &);
       it_h_index find_term(const term_type &) const;
       template <bool>
         it_s_index term_insert_new(const term_type &, const it_s_index *it_hint);
@@ -258,16 +260,6 @@ namespace piranha
       void read_lin_args(std::ifstream &);
       void read_terms(std::ifstream &, const std::string &);
 // Functors.
-//Name comparison functor for psymbol pointers. Used in merging of arguments.
-      struct psym_p_cmp
-      {
-        psym_p_cmp() {}
-        ~psym_p_cmp() {}
-        bool operator()(psym_p p1, psym_p p2) const
-        {
-          return (p1->name() < p2->name());
-        }
-      };
 // Functor to update the coefficient.
       struct modifier_update_cf
       {

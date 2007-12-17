@@ -101,7 +101,7 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::insert_phases(const phase_list &pl)
   {
     Derived tmp_ps;
-    action_assert(tmp_ps.merge_args(*this));
+    tmp_ps.merge_args(*this);
     phase_list::const_iterator it2=pl.begin();
     term_type tmp_term;
     for (iterator it1=begin();it1!=end();++it1)
@@ -482,48 +482,68 @@ namespace piranha
 // --------------
 
 /// Merge arguments.
-/** Merge arguments with those of ps2. If the operation succeeds the size of *this will
+/** Merge arguments with those of ps2. After the operation the size of *this will
  * be equal or greater than ps2's. We need the template U because we want to be able to merge
  * symbols also with complex counterparts.
  * @param[in] ps2 piranha::base_pseries arguments are to be merged with.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline bool base_pseries<__PIRANHA_BASE_PS_TP>::merge_args(const Derived2 &ps2)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_args(const Derived2 &ps2)
   {
     if ((void *)this == (void *)&ps2)
     {
-      std::cout << "Trying to merge with self, returning true." << std::endl;
-      return true;
+      std::cout << "Trying to merge with self, returning." << std::endl;
+      return;
     }
-    if (!is_args_compatible(ps2))
+    if (is_args_compatible(ps2))
     {
-      std::cout << "The base_pseries are not args_compatible." << std::endl;
-      if (args_different(ps2))
+      size_t w1=cf_width(), w2=ps2.cf_width();
+      if (w2 > w1)
       {
-        std::cout << "But they are args_different. Lolrus!" << std::endl;
-        prepend_cf_args(ps2.arguments().template get<0>());
-        prepend_trig_args(ps2.arguments().template get<1>());
-        return true;
+        append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
       }
-      else
+      w1=trig_width();
+      w2=ps2.trig_width();
+      if (w2 > w1)
       {
-        std::exit(1);
-        return false;
+        append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
       }
     }
-    size_t w1=cf_width(), w2=ps2.cf_width();
-    if (w2 > w1)
+    else
     {
-      append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
+      merge_incompatible_args(ps2);
     }
-    w1=trig_width();
-    w2=ps2.trig_width();
-    if (w2 > w1)
+  }
+
+/// Merge argument sets which are known to be incompatible.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <class Derived2>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_incompatible_args(const Derived2 &ps2)
+  {
+    if ((void *)this == (void *)&ps2)
     {
-      append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
+      std::cout << "Trying to merge with self, returning." << std::endl;
+      return;
     }
-    return true;
+    if (is_args_compatible(ps2))
+    {
+      size_t w1=cf_width(), w2=ps2.cf_width();
+      if (w2 > w1)
+      {
+        append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
+      }
+      w1=trig_width();
+      w2=ps2.trig_width();
+      if (w2 > w1)
+      {
+        append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
+      }
+    }
+    else
+    {
+      merge_incompatible_args(ps2);
+    }
   }
 
 /// Cumulative crop.
