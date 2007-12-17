@@ -21,6 +21,10 @@
 #ifndef PIRANHA_BASE_MONOMIAL_H
 #define PIRANHA_BASE_MONOMIAL_H
 
+#include <boost/array.hpp> // For ctor from psymbol.
+
+#include "../../psymbol.h"
+
 namespace piranha
 {
 /// Template parameters for piranha::base_monomial.
@@ -45,6 +49,7 @@ namespace piranha
 /// Ctor from same or different coefficient and same exponents.
       template <class Cf2>
         explicit base_monomial(const Cf2 &cf, const expos_type &e):m_cf(cf),m_expos(e) {}
+      explicit base_monomial(const psymbol &);
 /// Dtor.
       ~base_monomial() {}
 // Getters and setters.
@@ -61,6 +66,14 @@ namespace piranha
       Cf    m_cf;
       Expo  m_expos;
   };
+
+/// Constructor from psymbol.
+  template <__BASE_MONOMIAL_TP_DECL>
+    base_monomial<__BASE_MONOMIAL_TP>::base_monomial(const psymbol &p):m_cf(1),m_expos()
+  {
+    boost::array<int,1> a = { 1 };
+    m_expos.assign_int_vector(a);
+  }
 
 #undef __BASE_MONOMIAL_TP
 #undef __BASE_MONOMIAL_TP_DECL
