@@ -521,29 +521,7 @@ namespace piranha
     template <class Derived2>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_incompatible_args(const Derived2 &ps2)
   {
-    if ((void *)this == (void *)&ps2)
-    {
-      std::cout << "Trying to merge with self, returning." << std::endl;
-      return;
-    }
-    if (is_args_compatible(ps2))
-    {
-      size_t w1=cf_width(), w2=ps2.cf_width();
-      if (w2 > w1)
-      {
-        append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
-      }
-      w1=trig_width();
-      w2=ps2.trig_width();
-      if (w2 > w1)
-      {
-        append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
-      }
-    }
-    else
-    {
-      merge_incompatible_args(ps2);
-    }
+
   }
 
 /// Cumulative crop.
