@@ -141,7 +141,7 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
   {
     Derived retval;
-    retval.lin_args_=lin_args_;
+    retval.lin_args()=lin_args();
     retval.arguments()=arguments();
 // Append psymbols from v.
     retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());

@@ -84,7 +84,6 @@ namespace piranha
     }
   }
 
-
 /// Read coefficient argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_cf_arg(std::ifstream &inf)
