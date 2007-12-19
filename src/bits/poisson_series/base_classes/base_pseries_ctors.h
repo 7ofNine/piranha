@@ -84,24 +84,27 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const psymbol &psym, psymbol::type ptype):__base_pseries_init_list
   {
-// TODO: replace with switch statement.
-    if (ptype == psymbol::cf)
+    switch (ptype)
     {
+      case (psymbol::cf):
+        {
 // When building to cf create a coefficient from the symvol.
-      append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-      cf_type c(psym);
-      term_type term(c,trig_type());
-      insert_check_positive(term);
-    }
-    else if (ptype == psymbol::trig)
-    {
+          append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+          cf_type c(psym);
+          term_type term(c,trig_type());
+          insert_check_positive(term);
+        }
+        break;
+      case (psymbol::trig):
+        {
 // When building to trig assign argument in lin_args.
-      append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-      lin_args_[0]=1;
-    }
-    else
-    {
-      p_assert(false);
+          append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
+          lin_args_[0]=1;
+        }
+        break;
+      default:
+        p_assert(false);
+        ;
     }
   }
 
