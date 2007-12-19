@@ -201,22 +201,22 @@ namespace piranha
     std::string temp;
     while (utils::get_valid_string(inf,temp))
     {
-      if (temp[0]=='[')
+      if (temp[0] == '[')
       {
         std::cout << "New section found: " << temp << std::endl;
-        if (temp=="[cf_arg]")
+        if (temp == "[cf_arg]")
         {
           read_cf_arg(inf);
         }
-        else if (temp=="[trig_arg]")
+        else if (temp == "[trig_arg]")
         {
           read_trig_arg(inf);
         }
-        else if (temp=="[data]")
+        else if (temp == "[data]")
         {
           read_terms(inf,filename);
         }
-        else if (temp=="[lin_args]")
+        else if (temp == "[lin_args]")
         {
           read_lin_args(inf);
         }
