@@ -145,11 +145,7 @@ namespace piranha
     retval.arguments()=arguments();
 // Append psymbols from v.
     retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());
-// If we are dealing with trig, we must take care of lin_args too.
-    if (Type == psymbol::trig)
-    {
-      retval.lin_args().insert(retval.lin_args().end(),v.size(),0);
-    }
+// NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
     const it_h_index it_f=g_h_index().end();
     const size_t new_size=retval.arguments().template get<Type>().size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
@@ -187,12 +183,14 @@ namespace piranha
 
 /// Append trigonometric arguments.
 /**
- * Calls base_pseries::append_args with Type = psymbol::trig.
+ * Calls base_pseries::append_args with Type = psymbol::trig and deals with lin_args_ too.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
   {
     append_args<psymbol::trig>(v);
+// If we are dealing with trig, we must take care of lin_args too.
+    lin_args().insert(lin_args().end(),v.size(),0);
   }
 
 /// Add coefficient argument.
