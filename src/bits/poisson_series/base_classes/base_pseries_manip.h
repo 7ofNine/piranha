@@ -137,32 +137,32 @@ namespace piranha
  * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <int N>
+    template <psymbol::type Type>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
     retval.arguments()=arguments();
 // Append psymbols from v.
-    retval.arguments().template get<N>().insert(retval.arguments().template get<N>().end(),v.begin(),v.end());
+    retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());
 // If we are dealing with trig, we must take care of lin_args too.
-    if (N == 1)
+    if (Type == psymbol::trig)
     {
       retval.lin_args().insert(retval.lin_args().end(),v.size(),0);
     }
     const it_h_index it_f=g_h_index().end();
-    const size_t new_size=retval.arguments().template get<N>().size();
+    const size_t new_size=retval.arguments().template get<Type>().size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      switch (N)
+      switch (Type)
       {
 // TODO: This would be the ideal place to use tuples inside terms...
-        case 0:
+        case (psymbol::cf):
           tmp_term.s_cf()->increase_size(new_size);
           break;
-        case 1:
+        case (psymbol::trig):
           tmp_term.s_trig()->increase_size(new_size);
           break;
         default:
@@ -177,22 +177,22 @@ namespace piranha
 
 /// Append coefficient arguments.
 /**
- * Calls base_pseries::append_args with N = 0.
+ * Calls base_pseries::append_args with Type = psymbol::cf.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_args(const vector_psym_p &v)
   {
-    append_args<0>(v);
+    append_args<psymbol::cf>(v);
   }
 
 /// Append trigonometric arguments.
 /**
- * Calls base_pseries::append_args with N = 1.
+ * Calls base_pseries::append_args with Type = psymbol::trig.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
   {
-    append_args<1>(v);
+    append_args<psymbol::trig>(v);
   }
 
 /// Add coefficient argument.

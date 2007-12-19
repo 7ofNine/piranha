@@ -31,17 +31,17 @@ namespace piranha
 {
 /// Read argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <int N>
+    template <psymbol::type Type>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_arg(std::ifstream &inf)
   {
-    BOOST_STATIC_ASSERT(N == 0 or N == 1);
+    BOOST_STATIC_ASSERT(Type == psymbol::cf or Type == psymbol::trig);
     std::string description;
-    switch (N)
+    switch (Type)
     {
-      case 0:
+      case (psymbol::cf):
         description = "cf_arg";
         break;
-      case 1:
+      case (psymbol::trig):
         description = "trig_arg";
         break;
       default:
@@ -57,7 +57,7 @@ namespace piranha
       {
         std::cout << "Finished parsing " << description << "." << std::endl;
         inf.seekg(cur_pos);
-        append_args<N>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
+        append_args<Type>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
         return;
       }
       deque_string split_v;
@@ -89,14 +89,14 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_cf_arg(std::ifstream &inf)
   {
-    read_arg<0>(inf);
+    read_arg<psymbol::cf>(inf);
   }
 
 /// Read trigonometric argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_trig_arg(std::ifstream &inf)
   {
-    read_arg<1>(inf);
+    read_arg<psymbol::trig>(inf);
   }
 
 // Read linear arguments

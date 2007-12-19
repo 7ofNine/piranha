@@ -229,7 +229,7 @@ namespace piranha
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
 // Private manipulation.
-      template <int N>
+      template <psymbol::type>
         void append_args(const vector_psym_p &);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
@@ -255,7 +255,7 @@ namespace piranha
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string &);
       void identify_sections(std::ifstream &, const std::string &);
-      template <int N>
+      template <psymbol::type>
         void read_arg(std::ifstream &);
       void read_cf_arg(std::ifstream &);
       void read_trig_arg(std::ifstream &);
