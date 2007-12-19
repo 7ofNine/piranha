@@ -65,8 +65,8 @@ namespace piranha
  */
           enum type
           {
-            cf,
-            trig,
+            cf = 0,
+            trig = 1,
           };
 // Ctors
           psymbol();
@@ -126,8 +126,7 @@ namespace piranha
             build_from_array(tmp);
           }
 /// Copy constructor.
-          psymbol(const psymbol &psym):name_(psym.name_),poly_eval_(psym.poly_eval_)
-            {}
+          psymbol(const psymbol &psym):name_(psym.name_),poly_eval_(psym.poly_eval_) {}
 /// Copy function used in python bindings.
           psymbol copy() const
           {
