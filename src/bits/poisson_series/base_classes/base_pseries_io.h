@@ -126,7 +126,7 @@ namespace piranha
       size_t min_w=math::min(trig_width(),split_v.size());
       for (size_t j=0;j<min_w;++j)
       {
-        lin_args_[j]=utils::lexical_converter<int>(split_v[j]);
+        lin_args()[j]=utils::lexical_converter<int>(split_v[j]);
       }
       cur_pos=inf.tellg();
     }
