@@ -88,7 +88,7 @@ namespace piranha
     {
       case (psymbol::cf):
         {
-// When building to cf create a coefficient from the symvol.
+// When building as cf create a coefficient from the symbol.
           append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
           cf_type c(psym);
           term_type term(c,trig_type());
@@ -97,7 +97,7 @@ namespace piranha
         break;
       case (psymbol::trig):
         {
-// When building to trig assign argument in lin_args.
+// When building as trig assign argument in lin_args.
           append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
           lin_args_[0]=1;
         }
