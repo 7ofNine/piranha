@@ -127,6 +127,8 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return double();
       }
+/// Max size.
+      static const size_t max_size = 0;
 /// Bessel function of the first kind of order n.
 // TODO: move into separate concept.
       Model besselJ(int n, const vector_psym_p &) const

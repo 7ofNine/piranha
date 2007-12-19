@@ -103,6 +103,7 @@ namespace piranha
       {
         return g_value().get_d();
       }
+      static const size_t max_size = ancestor::max_size;
 // End implementation of basic pseries coefficient interface.
 //------------
 // Start implementation of trigonometric pseries coefficient interface.
@@ -208,6 +209,7 @@ namespace std
       {
         return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
       }
+      static const size_t max_size = ancestor::max_size;
 // End implementation of complex basic pseries coefficient interface.
 //------------
   };

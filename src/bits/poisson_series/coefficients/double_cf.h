@@ -93,6 +93,8 @@ namespace piranha
       {
         return assign_self(val2);
       }
+// Override max_size from ancestor.
+      static const size_t max_size = ancestor::max_size;
 // End implementation of basic pseries coefficient interface.
 //------------
 // Start implementation of trigonometric pseries coefficient interface.
@@ -192,6 +194,7 @@ namespace std
       {
         return assign_self(r2);
       }
+      static const size_t max_size = ancestor::max_size;
 // End implementation of complex basic pseries coefficient interface.
 //------------
   };
