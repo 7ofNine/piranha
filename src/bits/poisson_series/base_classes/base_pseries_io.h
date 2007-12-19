@@ -21,91 +21,82 @@
 #ifndef PIRANHA_BASE_PSERIES_IO_H
 #define PIRANHA_BASE_PSERIES_IO_H
 
+#include <boost/static_assert.hpp>
+
 #include "../../math.h" // math::min.
 #include "../../utils.h" // str_to_vector_double.
-
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
 {
-/// Read coefficient argument.
+/// Read argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_cf_arg(std::ifstream &inf)
+    template <int N>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_arg(std::ifstream &inf)
   {
+    BOOST_STATIC_ASSERT(N == 0 or N == 1);
+    std::string description;
+    switch (N)
+    {
+      case 0:
+        description = "cf_arg";
+        break;
+      case 1:
+        description = "trig_arg";
+        break;
+      default:
+        p_assert(false);
+        ;
+    }
     std::string temp, temp_name;
     vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
     while (utils::get_valid_string(inf,temp))
     {
-      if (temp[0]=='[')
+      if (temp[0] == '[')
       {
-        std::cout << "Finished parsing cf_arg." << std::endl;
+        std::cout << "Finished parsing " << description << "." << std::endl;
         inf.seekg(cur_pos);
-        append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
+        append_args<N>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
         return;
       }
       deque_string split_v;
       boost::split(split_v,temp,boost::is_any_of("="));
-      if (split_v.size()!=2)
+      if (split_v.size() != 2)
       {
-        std::cout << "Invalid line in cf_arg section." << std::endl;
+        std::cout << "Invalid line in "<< description << " section." << std::endl;
       }
-      else if (split_v[0]=="name")
+      else if (split_v[0] == "name")
       {
         std::cout << "name=" << split_v[1] << std::endl;
         temp_name=split_v[1];
       }
-      else if (split_v[0]=="poly_eval")
+      else if (split_v[0] == "poly_eval")
       {
         std::cout << "poly_eval=" << split_v[1] << std::endl;
         temp_vdouble=utils::str_to_vector_double(split_v[1]);
       }
       else
       {
-        std::cout << "Unknown field in cf_arg section." << std::endl;
+        std::cout << "Unknown field in " << description << " section." << std::endl;
       }
       cur_pos=inf.tellg();
     }
+  }
+
+
+/// Read coefficient argument.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_cf_arg(std::ifstream &inf)
+  {
+    read_arg<0>(inf);
   }
 
 /// Read trigonometric argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_trig_arg(std::ifstream &inf)
   {
-    std::string temp, temp_name;
-    vector_double temp_vdouble;
-    std::streampos cur_pos=inf.tellg();
-    while (utils::get_valid_string(inf,temp))
-    {
-      if (temp[0]=='[')
-      {
-        std::cout << "Finished parsing trig_arg." << std::endl;
-        inf.seekg(cur_pos);
-        append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
-        return;
-      }
-      deque_string split_v;
-      boost::split(split_v,temp,boost::is_any_of("="));
-      if (split_v.size()!=2)
-      {
-        std::cout << "Invalid line in trig_arg section." << std::endl;
-      }
-      else if (split_v[0]=="name")
-      {
-        std::cout << "name=" << split_v[1] << std::endl;
-        temp_name=split_v[1];
-      }
-      else if (split_v[0]=="poly_eval")
-      {
-        std::cout << "poly_eval=" << split_v[1] << std::endl;
-        temp_vdouble=utils::str_to_vector_double(split_v[1]);
-      }
-      else
-      {
-        std::cout << "Unknown field in trig_arg section." << std::endl;
-      }
-      cur_pos=inf.tellg();
-    }
+    read_arg<1>(inf);
   }
 
 // Read linear arguments

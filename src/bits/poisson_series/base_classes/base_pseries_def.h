@@ -227,10 +227,10 @@ namespace piranha
     private:
 // Private probing.
       template <class Derived2>
-        bool args_different(const Derived2 &) const;
-      template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
 // Private manipulation.
+      template <int N>
+        void append_args(const vector_psym_p &);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
       it_h_index find_term(const term_type &) const;
@@ -255,6 +255,8 @@ namespace piranha
       void read_data_from_file(std::ifstream &, const std::string &);
       void load_from(const std::string &);
       void identify_sections(std::ifstream &, const std::string &);
+      template <int N>
+        void read_arg(std::ifstream &);
       void read_cf_arg(std::ifstream &);
       void read_trig_arg(std::ifstream &);
       void read_lin_args(std::ifstream &);

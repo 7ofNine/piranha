@@ -129,60 +129,70 @@ namespace piranha
     swap(tmp_ps);
   }
 
-/// Append coefficient arguments.
+/// Append arguments.
 /**
- * The arguments will be appended at the end of the coefficient argument vector.
+ * The arguments will be appended at the end of the corresponding argument vector.
+ * @param[in] N arguments type.
  * @param[in] v vector_psym_p to be appended.
  * @see base_pseries::m_arguments tuple of arguments.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_args(const vector_psym_p &v)
+    template <int N>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
   {
     Derived retval;
     retval.lin_args_=lin_args_;
-    retval.arguments().template get<0>()=arguments().template get<0>();
-    retval.arguments().template get<1>()=arguments().template get<1>();
+    retval.arguments()=arguments();
 // Append psymbols from v.
-    retval.arguments().template get<0>().insert(retval.arguments().template get<0>().end(),v.begin(),v.end());
+    retval.arguments().template get<N>().insert(retval.arguments().template get<N>().end(),v.begin(),v.end());
+// If we are dealing with trig, we must take care of lin_args too.
+    if (N == 1)
+    {
+      retval.lin_args().insert(retval.lin_args().end(),v.size(),0);
+    }
     const it_h_index it_f=g_h_index().end();
-    const size_t new_size=retval.arguments().template get<0>().size();
+    const size_t new_size=retval.arguments().template get<N>().size();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
-      tmp_term.s_cf()->increase_size(new_size);
+      switch (N)
+      {
+// TODO: This would be the ideal place to use tuples inside terms...
+        case 0:
+          tmp_term.s_cf()->increase_size(new_size);
+          break;
+        case 1:
+          tmp_term.s_trig()->increase_size(new_size);
+          break;
+        default:
+          p_assert(false);
+          ;
+      }
 // NOTICE: use hinted insertion here?
       retval.insert_check_positive(tmp_term);
     }
     swap(retval);
   }
 
+/// Append coefficient arguments.
+/**
+ * Calls base_pseries::append_args with N = 0.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_args(const vector_psym_p &v)
+  {
+    append_args<0>(v);
+  }
+
 /// Append trigonometric arguments.
 /**
- * The argument will be appended at the end of the trigonometric argument vector.
- * @param[in] v vector_psym_p to be appended.
- * @see base_pseries::m_arguments tuple of arguments.
+ * Calls base_pseries::append_args with N = 1.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
   {
-    Derived retval;
-    retval.lin_args_=lin_args_;
-    retval.arguments().template get<0>()=arguments().template get<0>();
-    retval.arguments().template get<1>()=arguments().template get<1>();
-// Append psymbols from v.
-    retval.arguments().template get<1>().insert(retval.arguments().template get<1>().end(),v.begin(),v.end());
-    const size_t new_size=retval.arguments().template get<1>().size();
-    retval.lin_args_.insert(retval.lin_args_.end(),v.size(),0);
-    const it_h_index it_f=g_h_index().end();
-    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
-    {
-      term_type tmp_term=(*it);
-      tmp_term.s_trig()->increase_size(new_size);
-// NOTICE: use hinted insertion here?
-      retval.insert_check_positive(tmp_term);
-    }
-    swap(retval);
+    append_args<1>(v);
   }
 
 /// Add coefficient argument.
