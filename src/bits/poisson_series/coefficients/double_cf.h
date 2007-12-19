@@ -62,7 +62,7 @@ namespace piranha
       using ancestor::needs_padding;
       using ancestor::is_compatible;
       using ancestor::increase_size;
-      using ancestor::prepend_args;
+      using ancestor::apply_layout;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;
@@ -151,7 +151,7 @@ namespace std
       using ancestor::needs_padding;
       using ancestor::is_compatible;
       using ancestor::increase_size;
-      using ancestor::prepend_args;
+      using ancestor::apply_layout;
       using ancestor::add;
       using ancestor::subtract;
       using ancestor::mult_by;

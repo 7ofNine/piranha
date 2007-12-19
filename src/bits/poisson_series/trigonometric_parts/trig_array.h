@@ -69,20 +69,6 @@ namespace piranha
         }
       }
       ~trig_array() {}
-// Manip.
-      void prepend_args(const size_t &n)
-      {
-        if (n>0)
-        {
-          container_type old_private_container_(private_container_);
-          const trig_size_t old_w=old_private_container_.size();
-          private_container_.resize(old_w+n);
-          for (trig_size_t i=0;i<old_w;++i)
-          {
-            private_container_[i+n]=old_private_container_[i];
-          }
-        }
-      }
       void increase_size(const size_t &n)
       {
         p_assert(n >= g_width());

@@ -24,7 +24,7 @@
 #include <boost/functional/hash/hash.hpp>
 #include <vector>
 
-#include "../../common_typedefs.h"
+#include "../../common_typedefs.h" // For layout_type.
 #include "../../p_assert.h"
 #include "../../psymbol.h"
 #include "../../utils.h" // lexical_converter.
@@ -85,16 +85,8 @@ namespace piranha
           }
         }
       }
-      void prepend_args(const size_t &n)
-      {
-        const iterator it_f=end();
-        for (iterator it=begin();it!=it_f;++it)
-        {
-// Prepending arguments implies an increase in the index number of each element.
-          it->first+=(trig_size_t)n;
-        }
-      }
       void increase_size(const size_t &) {}
+      void apply_layout(const layout_type &);
       void invert_sign();
 // Probing.
       template <class DerivedPs>
@@ -359,6 +351,24 @@ namespace piranha
     for (iterator it=begin();it!=it_f;++it)
     {
       it->second=-it->second;
+    }
+  }
+
+  inline void trig_sparse_array::apply_layout(const layout_type &l)
+  {
+    trig_sparse_array old(*this);
+    private_container_.resize(0);
+    const size_t l_size = l.size();
+    for (size_t i=0;i < l_size;++i)
+    {
+      if (l[i].first)
+      {
+        int16 tmp = old.at(l[i].second);
+        if (tmp != 0)
+        {
+          private_container_.push_back(pair(i,tmp));
+        }
+      }
     }
   }
 

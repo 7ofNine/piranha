@@ -25,6 +25,7 @@
 #include <iterator>
 #include <set>
 
+#include "../../config.h" // For (un)likely.
 #include "../../trig_evaluator.h"
 #include "base_pseries_ta_macros.h"
 
@@ -87,28 +88,41 @@ namespace piranha
 /// Compatibility check for arguments.
 /**
  * Test whether series' arguments are compatible with those from ps2. Compatibility
- * means that the first n arguments are equal, where n is the number of arguments of the series with
- * fewer arguments.
+ * means that coefficient and trigonometric widths are equal to or greater than ps2's, and
+ * that arguments have the same positions in arguments vector as in ps2's.
  * @param[in] ps2 piranha::base_pseries compatibility is tested against.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
     inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_args_compatible(const Derived2 &ps2) const
   {
-    size_t minwidth=math::min(cf_width(),ps2.cf_width()), j;
-    for (j=0;j < minwidth;++j)
     {
-      if (!(arguments().template get<0>()[j] == ps2.arguments().template get<0>()[j]))
+      const size_t w=ps2.cf_width();
+// Ps2's must be mininum width.
+      if (unlikely(w > cf_width()))
       {
         return false;
       }
+      for (size_t j=0;j < w;++j)
+      {
+        if (unlikely(arguments().template get<0>()[j] != ps2.arguments().template get<0>()[j]))
+        {
+          return false;
+        }
+      }
     }
-    minwidth=math::min(trig_width(),ps2.trig_width());
-    for (j=0;j<minwidth;++j)
     {
-      if (!(arguments().template get<1>()[j]==ps2.arguments().template get<1>()[j]))
+      const size_t w=ps2.trig_width();
+      if (unlikely(w > trig_width()))
       {
         return false;
+      }
+      for (size_t j=0;j < w;++j)
+      {
+        if (unlikely(arguments().template get<1>()[j] != ps2.arguments().template get<1>()[j]))
+        {
+          return false;
+        }
       }
     }
     return true;

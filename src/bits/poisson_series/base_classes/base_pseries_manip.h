@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_PSERIES_MANIP_H
 
 #include "../../arg_manager.h"
+#include "../../common_typedefs.h" // For layout.
 #include "../../config.h"       // For (un)likely().
 #include "../../stats.h"
 
@@ -128,34 +129,6 @@ namespace piranha
     swap(tmp_ps);
   }
 
-/// Prepend coefficient arguments.
-/**
- * Prepend a vector of argument pointers to the current vector of coefficient arguments.
- * @param[in] v vector_psym_p to be prepended.
- * @see base_pseries::m_arguments tuple of arguments.
- */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::prepend_cf_args(const vector_psym_p &v)
-  {
-    Derived retval;
-    retval.lin_args_=lin_args_;
-    retval.arguments().template get<0>()=arguments().template get<0>();
-    retval.arguments().template get<1>()=arguments().template get<1>();
-// Prepend psymbols from v.
-    retval.arguments().template get<0>().insert(retval.arguments().template get<0>().begin(),v.begin(),v.end());
-    const it_h_index it_f=g_h_index().end();
-    const size_t n=v.size();
-    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
-    {
-// NOTICE: find a way to avoid resizes here?
-      term_type tmp_term=(*it);
-      tmp_term.s_cf()->prepend_args(n);
-// NOTICE: use hinted insertion here?
-      retval.insert_check_positive(tmp_term);
-    }
-    swap(retval);
-  }
-
 /// Append coefficient arguments.
 /**
  * The arguments will be appended at the end of the coefficient argument vector.
@@ -178,35 +151,6 @@ namespace piranha
 // NOTICE: find a way to avoid resizes here?
       term_type tmp_term=(*it);
       tmp_term.s_cf()->increase_size(new_size);
-// NOTICE: use hinted insertion here?
-      retval.insert_check_positive(tmp_term);
-    }
-    swap(retval);
-  }
-
-/// Prepend trigonometric arguments.
-/**
- * Prepend a vector of argument pointers to the current vector of trigonometric arguments.
- * @param[in] v vector_psym_p to be prepended.
- * @see base_pseries::m_arguments tuple of arguments.
- */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::prepend_trig_args(const vector_psym_p &v)
-  {
-    Derived retval;
-    retval.lin_args_=lin_args_;
-    retval.arguments().template get<0>()=arguments().template get<0>();
-    retval.arguments().template get<1>()=arguments().template get<1>();
-    const size_t n=v.size();
-// Prepend psymbols from v.
-    retval.arguments().template get<1>().insert(retval.arguments().template get<1>().begin(),v.begin(),v.end());
-    retval.lin_args_.insert(retval.lin_args_.begin(),n,0);
-    const it_h_index it_f=g_h_index().end();
-    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
-    {
-// NOTICE: find a way to avoid resizes here?
-      term_type tmp_term=(*it);
-      tmp_term.s_trig()->prepend_args(n);
 // NOTICE: use hinted insertion here?
       retval.insert_check_positive(tmp_term);
     }
@@ -496,21 +440,7 @@ namespace piranha
       std::cout << "Trying to merge with self, returning." << std::endl;
       return;
     }
-    if (is_args_compatible(ps2))
-    {
-      size_t w1=cf_width(), w2=ps2.cf_width();
-      if (w2 > w1)
-      {
-        append_cf_args(vector_psym_p(ps2.arguments().template get<0>().begin()+w1,ps2.arguments().template get<0>().end()));
-      }
-      w1=trig_width();
-      w2=ps2.trig_width();
-      if (w2 > w1)
-      {
-        append_trig_args(vector_psym_p(ps2.arguments().template get<1>().begin()+w1,ps2.arguments().template get<1>().end()));
-      }
-    }
-    else
+    if (unlikely(!is_args_compatible(ps2)))
     {
       merge_incompatible_args(ps2);
     }
@@ -519,9 +449,33 @@ namespace piranha
 /// Merge argument sets which are known to be incompatible.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_incompatible_args(const Derived2 &ps2)
+    void base_pseries<__PIRANHA_BASE_PS_TP>::merge_incompatible_args(const Derived2 &ps2)
   {
-
+    Derived retval;
+// Assign old arguments and lin_args.
+    retval.arguments()=arguments();
+    retval.lin_args()=lin_args();
+// Get new layouts.
+    layout_type l_cf = utils::get_layout(cf_args(),ps2.cf_args());
+    layout_type l_trig = utils::get_layout(trig_args(),ps2.trig_args());
+// Apply layouts to arguments.
+    utils::apply_layout(l_cf,retval.cf_args(),ps2.cf_args());
+    utils::apply_layout(l_trig,retval.trig_args(),ps2.trig_args());
+// Apply layouts to all terms.
+    const iterator it_f = end();
+    term_type tmp;
+    for (iterator it=begin();it != it_f;++it)
+    {
+// TODO: use hinting.
+      tmp = *it;
+      tmp.s_cf()->apply_layout(l_cf);
+      tmp.s_trig()->apply_layout(l_trig);
+      retval.insert_check_positive(tmp);
+    }
+// Take care of lin_args.
+    utils::apply_layout(l_trig,retval.lin_args());
+// Swap content.
+    swap(retval);
   }
 
 /// Cumulative crop.

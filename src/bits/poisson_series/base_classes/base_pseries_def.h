@@ -173,6 +173,8 @@ namespace piranha
         void generic_builder(const T &);
 // Setters.
       vector_int16 &lin_args();
+      vector_psym_p &cf_args();
+      vector_psym_p &trig_args();
       arguments_tuple_type &arguments();
       series_set_type *s_series_set();
       sorted_index &s_s_index();
@@ -192,8 +194,6 @@ namespace piranha
       void term_erase(const it_s_index &);
       void append_cf_args(const vector_psym_p &);
       void append_trig_args(const vector_psym_p &);
-      void prepend_cf_args(const vector_psym_p &);
-      void prepend_trig_args(const vector_psym_p &);
 // Protected probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
       it_s_index discontinuity() const;

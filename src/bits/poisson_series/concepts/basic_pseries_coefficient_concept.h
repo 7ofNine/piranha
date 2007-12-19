@@ -24,6 +24,7 @@
 #include <boost/static_assert.hpp>
 #include <string>
 
+#include "../../common_typedefs.h" // For layout_type.
 #include "../../psymbol.h"
 #include "../../type_traits/eval_type.h"
 
@@ -149,11 +150,10 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return *static_cast<Model *>(this);
       }
-/// Prepend n arguments.
-      void prepend_args(const size_t &n)
+/// Apply layout.
+      void apply_layout(const layout_type &)
       {
         __STATIC_ASSERTION_FAILURE;
-        (void)n;
       }
 /// Resize to n arguments.
       void increase_size(const size_t &n)

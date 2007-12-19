@@ -190,6 +190,22 @@ namespace piranha
     return lin_args_;
   }
 
+/// Return mutable reference to the vector of coefficient arguments.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline vector_psym_p &
+    base_pseries<__PIRANHA_BASE_PS_TP>::cf_args()
+  {
+    return m_arguments.template get<0>();
+  }
+
+/// Return mutabl reference to the vector of trigonometric arguments.
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline vector_psym_p &
+    base_pseries<__PIRANHA_BASE_PS_TP>::trig_args()
+  {
+    return m_arguments.template get<1>();
+  }
+
 /// Return mutable reference to the tuple of arguments vectors.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::arguments_tuple_type &

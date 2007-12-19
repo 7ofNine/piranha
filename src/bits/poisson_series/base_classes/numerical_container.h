@@ -70,13 +70,14 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-      void prepend_args(const size_t &n)
-      {
-        p_assert(n==0);
-      }
       void increase_size(const size_t &n)
       {
         p_assert(n==0);
+      }
+      void apply_layout(const layout_type &l)
+      {
+        p_assert(l.size() == 0);
+        (void)l;
       }
 // Probing.
       template <class Series>

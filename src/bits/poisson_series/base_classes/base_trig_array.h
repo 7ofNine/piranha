@@ -24,9 +24,10 @@
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
 
-#include "../../common_typedefs.h" // For t_eval and max_fast_int.
+#include "../../common_typedefs.h" // For t_eval, max_fast_int and layout.
 #include "../../psymbol.h"
 #include "../../trig_evaluator.h"
+#include "../../utils.h" // For apply_layout.
 
 namespace piranha
 {
@@ -151,6 +152,10 @@ namespace piranha
         {
           static_cast<const Derived *>(this)->s_container()[i]=v[i];
         }
+      }
+      void apply_layout(const layout_type &l)
+      {
+        utils::apply_layout(l,*static_cast<const Derived *>(this));
       }
       template <class DerivedPs>
         double density(const DerivedPs &p) const
@@ -326,6 +331,12 @@ namespace piranha
       {
         return (static_cast<const Derived *>(this)->g_width() == n);
       }
+// NOTICE: this goes out of the interface, it is there in order to be able to use utils::apply_layout and friends.
+// TODO: remove them from here once we rework all int arrays to have a vector-like interface.
+      value_type &operator[](const size_t &n) {return static_cast<const Derived *>(this)->s_container()[n];}
+      const value_type &operator[](const size_t &n) const {return static_cast<const Derived *>(this)->g_container()[n];}
+      size_t size() const {return static_cast<const Derived *>(this)->g_width();}
+      void resize(const size_t &n) {return static_cast<const Derived *>(this)->increase_size(n);}
     protected:
       void assignment_operator(const Derived &t2)
       {

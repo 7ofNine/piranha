@@ -68,6 +68,10 @@ namespace piranha
   typedef std::deque<std::string> deque_string;
 /// Alias for degree type.
   typedef int degree_type;
+// Layout element, to be used in series merging.
+  typedef std::pair<bool,size_t> layout_element;
+// Layout type, to be used in series merging.
+  typedef std::vector<layout_element> layout_type;
 }
 
 #endif
