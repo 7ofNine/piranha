@@ -127,23 +127,31 @@ namespace piranha
       {
         Derived tmp_ps;
         tmp_ps.merge_args(*this);
-        tmp_ps.lin_args_=lin_args();
+        tmp_ps.lin_args()=lin_args();
         swap(tmp_ps);
       }
       return *static_cast<Derived *>(this);
     }
-    merge_args(ps2);
-// Sum/sub lin_args
-    alg_sum_lin_args<Derived2,Sign>(ps2);
-// Use hint, since as we add terms we have an idea of where they are going to be placed
-    it_s_index it_hint=g_s_index().end();
-// NOTE: At this point this' size is greater or equal to ps2'
-    for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
-      it!=ps2.g_h_index().end();++it)
+    try
     {
-      it_hint=insert<typename Derived2::ancestor::cf_type,true,Sign>(*it,&it_hint);
+      merge_args(ps2);
+// Sum/sub lin_args
+      alg_sum_lin_args<Derived2,Sign>(ps2);
+// Use hint, since as we add terms we have an idea of where they are going to be placed
+      it_s_index it_hint=g_s_index().end();
+// NOTE: At this point this' size is greater or equal to ps2'
+      for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
+        it!=ps2.g_h_index().end();++it)
+      {
+        it_hint=insert<typename Derived2::ancestor::cf_type,true,Sign>(*it,&it_hint);
+      }
+      return *static_cast<Derived *>(this);
     }
-    return *static_cast<Derived *>(this);
+    catch (exceptions::add_arguments &e)
+    {
+      std::cout << "Exception caught, returning self in generic merge series." << std::endl;
+      return *static_cast<Derived *>(this);
+    }
   }
 
 /// Add generic entity.
@@ -228,7 +236,12 @@ namespace piranha
       std::exit(1);
       return false;
     }
-    merge_args(ps2);
+    try {merge_args(ps2);}
+    catch (exceptions::add_arguments &e)
+    {
+      std::cout << "Unable to merge arguments in series_multiplication_preliminaries." << std::endl;
+      return false;
+    }
     retval.merge_args(*static_cast<Derived *>(this));
     return true;
   }
@@ -263,7 +276,7 @@ namespace piranha
 
 /// Multiplication by a generic series.
 /**
- * Requires some methods to be implemented in derived classes.
+ * Requires some methods to be implemented in the derived classes.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Derived2>
@@ -288,6 +301,7 @@ namespace piranha
     template <class T>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::mult_by_generic(const T &c)
   {
+// TODO: maybe this can be share with generic_division with the help of functors?
     if (is_empty())
     {
       return *static_cast<Derived *>(this);

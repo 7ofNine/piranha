@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_PSERIES_CTORS_H
 #define PIRANHA_BASE_PSERIES_CTORS_H
 
+#include "../../p_exceptions.h"
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -76,8 +77,15 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
   {
-    merge_args(model);
-    generic_builder(c);
+    try
+    {
+      merge_args(model);
+      generic_builder(c);
+    }
+    catch (exceptions::add_arguments &e)
+    {
+      std::cout << "Too many coefficient arguments in ctor from coefficient, building empty series." << std::endl;
+    }
   }
 
 /// Constructor from piranha::psymbol.

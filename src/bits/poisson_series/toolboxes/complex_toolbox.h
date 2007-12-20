@@ -182,8 +182,16 @@ namespace piranha
 // Build series from real and imaginary components.
       void build_from_components(const real_Derived &p, const real_Derived &q)
       {
+// This one should always succeed.
         static_cast<Derived *>(this)->merge_args(p);
-        static_cast<Derived *>(this)->merge_args(q);
+        try {static_cast<Derived *>(this)->merge_args(q);}
+        catch (exceptions::add_arguments &e)
+        {
+          std::cout << "Unable to merge args in complex ctor from components, returning null series." << std::endl;
+          Derived retval;
+          static_cast<Derived *>(this)->swap(retval);
+          return;
+        }
         insert_component<Real>(p);
         insert_component<Imag>(q);
       }

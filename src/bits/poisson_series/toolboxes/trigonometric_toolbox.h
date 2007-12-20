@@ -35,7 +35,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::it_s_index it_s_index;
         typedef typename DerivedPs::ancestor::term_type term_type;
         DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
-        if (sym_index>=derived_cast->trig_width())
+        if (sym_index >= derived_cast->trig_width())
         {
           std::cout << "Invalid index in 'basic_add_ps_to_arg', returning same series." << std::endl;
           return;
@@ -45,8 +45,13 @@ namespace piranha
         retval.merge_args(*derived_cast);
 // Import also linear arguments.
         retval.lin_args()=derived_cast->lin_args();
-// Merge with other series. If we don't succeed just return *this.
-        retval.merge_args(p);
+// Merge with other series. If we don't succeed return unmodified this.
+        try {retval.merge_args(p);}
+        catch (exceptions::add_arguments &e)
+        {
+          std::cout << "Unable to merge args in add_ps_to_arg, returning unmodified series." << std::endl;
+          return;
+        }
         int16 tmp_mult;
         const it_s_index it_f=derived_cast->end();
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
