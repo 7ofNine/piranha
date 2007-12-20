@@ -40,7 +40,7 @@ namespace piranha
  * A set of operators is provided to enable interoperability with basic numerical data types.
  */
   class mpf_cf:
-    public basic_pseries_coefficient_concept<mpf_cf>,
+    public concepts::basic_pseries_coefficient_concept<mpf_cf>,
     public numerical_container<mpf_class,mpf_cf>
   {
 /// Alias for self.
@@ -48,7 +48,7 @@ namespace piranha
 /// Alias for the parent class.
       typedef numerical_container<mpf_class,mpf_cf> ancestor;
 /// Alias for concept.
-      typedef basic_pseries_coefficient_concept<mpf_cf> concept;
+      typedef concepts::basic_pseries_coefficient_concept<mpf_cf> concept;
     public:
 // This is necessary because some moethods are present in concept _and_ in numerical container.
 // We avoid the dreaded diamond problem by explicitly stating which functions to use.
@@ -133,7 +133,7 @@ namespace std
 {
   template <>
     struct complex<piranha::mpf_cf>:
-    public piranha::complex_basic_pseries_coefficient_concept<piranha::mpf_cf>,
+    public piranha::concepts::complex_basic_pseries_coefficient_concept<piranha::mpf_cf>,
     public piranha::numerical_container<complex<mpf_class>,complex<piranha::mpf_cf> >,
     public piranha::numerical_container_complex_toolbox<piranha::mpf_cf>
   {
@@ -141,7 +141,7 @@ namespace std
       typedef piranha::numerical_container<complex<mpf_class>,complex<piranha::mpf_cf> > ancestor;
       typedef piranha::numerical_container_complex_toolbox<piranha::mpf_cf> complex_toolbox;
       typedef complex self;
-      typedef piranha::complex_basic_pseries_coefficient_concept<piranha::mpf_cf> concept;
+      typedef piranha::concepts::complex_basic_pseries_coefficient_concept<piranha::mpf_cf> concept;
       friend class piranha::numerical_container_complex_toolbox<piranha::mpf_cf>;
     public:
       typedef piranha::mpf_cf value_type;

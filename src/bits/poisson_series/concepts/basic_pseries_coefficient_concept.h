@@ -32,6 +32,9 @@
 
 namespace piranha
 {
+/// Namespace for concepts.
+namespace concepts
+{
 /// Concept class for basic coefficients of Poisson series.
 /**
  * This concept defines a Poisson series coefficient which enables basic operations on
@@ -347,6 +350,7 @@ namespace piranha
         (void)i;
       }
   };
+}
 }
 
 #undef __STATIC_ASSERTION_FAILURE
