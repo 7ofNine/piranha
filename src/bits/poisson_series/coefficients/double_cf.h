@@ -58,9 +58,8 @@ namespace piranha
       using ancestor::t_eval;
       using ancestor::norm;
       using ancestor::is_ignorable;
-      using ancestor::overflows;
+      using ancestor::is_insertable;
       using ancestor::needs_padding;
-      using ancestor::is_compatible;
       using ancestor::increase_size;
       using ancestor::apply_layout;
       using ancestor::add;
@@ -149,9 +148,8 @@ namespace std
       using ancestor::t_eval;
       using ancestor::norm;
       using ancestor::is_ignorable;
-      using ancestor::overflows;
+      using ancestor::is_insertable;
       using ancestor::needs_padding;
-      using ancestor::is_compatible;
       using ancestor::increase_size;
       using ancestor::apply_layout;
       using ancestor::add;

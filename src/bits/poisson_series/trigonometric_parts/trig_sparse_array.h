@@ -63,7 +63,6 @@ namespace piranha
         return private_flavour_;
       }
       int16 at(trig_size_t) const;
-      size_t actual_width() const;
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
@@ -113,8 +112,7 @@ namespace piranha
       template <class Series>
         bool is_ignorable(const Series &) const;
       bool needs_padding(const size_t &) const;
-      bool overflows(const size_t &) const;
-      bool is_compatible(const size_t &) const;
+      bool is_insertable(const size_t &) const;
       size_t data_footprint() const;
       template <class Series>
         bool checkup(const Series &) const;
@@ -168,6 +166,7 @@ namespace piranha
         return private_container_.empty();
       }
       const_iterator find(trig_size_t) const;
+      size_t actual_width() const;
       template <class Modifier>
         trig_sparse_array &algebraic_sum(const trig_sparse_array &t2);
 // Functors used in generic algebraic addition routine.
@@ -523,14 +522,9 @@ namespace piranha
     return false;
   }
 
-  inline bool trig_sparse_array::overflows(const size_t &) const
+  inline bool trig_sparse_array::is_insertable(const size_t &n) const
   {
-    return false;
-  }
-
-  inline bool trig_sparse_array::is_compatible(const size_t &) const
-  {
-    return true;
+    return (actual_width() <= n);
   }
 
   inline size_t trig_sparse_array::data_footprint() const

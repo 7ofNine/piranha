@@ -97,20 +97,16 @@ namespace piranha
       {
         return (static_cast<Derived const *>(this)->norm(s.arguments().template get<0>()) < settings_manager::numerical_zero());
       }
-      bool overflows(const size_t &s) const
+      bool is_insertable(const size_t &s) const
       {
-        p_assert(s==0);
-        return false;
+        return (s == 0);
       }
       bool needs_padding(const size_t &s) const
       {
-        p_assert(s==0);
+        p_assert(s == 0);
+// Disable compiler warning when asserts are disabled.
+        (void)s;
         return false;
-      }
-      bool is_compatible(const size_t &s) const
-      {
-        p_assert(s==0);
-        return true;
       }
       template <class Series>
         const eval_type &t_eval(const double &, const Series &) const
@@ -158,11 +154,6 @@ namespace piranha
       void partial(const size_t &, Derived &retval) const
       {
         retval=Derived(0);
-      }
-/// Get actual width.
-      size_t actual_width() const
-      {
-        return 0;
       }
 /// Get value.
       const T &g_value() const

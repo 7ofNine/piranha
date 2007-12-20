@@ -308,8 +308,8 @@ namespace piranha
     {
       return g_s_index().end();
     }
-    p_assert(term.g_cf()->is_compatible(cf_width()));
-    p_assert(term.g_trig()->is_compatible(trig_width()));
+    p_assert(term.g_cf()->is_insertable(cf_width()) and !term.g_cf()->needs_padding(cf_width()));
+    p_assert(term.g_trig()->is_insertable(trig_width()) and !term.g_trig()->needs_padding(trig_width()));
     p_assert(term.g_trig()->sign()>0);
     it_s_index ret_it;
     it_h_index it(find_term(term));
@@ -384,9 +384,9 @@ namespace piranha
     transform_term<Term,Cf2,cf_type,trig_type> term(term_);
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
-// by addition and multiplication routines.
-    p_assert(!term.result.g_cf()->overflows(cw));
-    p_assert(!term.result.g_trig()->overflows(tw));
+// by external routines (merge_args, and input from file).
+    p_assert(term.result.g_cf()->is_insertable(cw));
+    p_assert(term.result.g_trig()->is_insertable(tw));
     term_type *new_term(0);
     const bool padding_needed=(term.result.g_cf()->needs_padding(cw) or term.result.g_trig()->needs_padding(tw));
     if (unlikely(padding_needed))

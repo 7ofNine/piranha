@@ -59,10 +59,6 @@ namespace piranha
         }
         return static_cast<const Derived *>(this)->g_container()[n];
       }
-      size_t actual_width() const
-      {
-        return static_cast<const Derived *>(this)->g_width();
-      }
       bool &s_flavour()
       {
         return private_flavour_;
@@ -72,10 +68,13 @@ namespace piranha
         return private_flavour_;
       }
 // I/O.
-      void print_plain(std::ostream &out_stream, const vector_psym_p &) const
+      void print_plain(std::ostream &out_stream, const vector_psym_p &v) const
       {
+        const trig_size_t w=v.size();
+// We assert like this because we want to make sure we don't go out of boundaries,
+// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
+        p_assert(w <= static_cast<const Derived *>(this)->g_width())
         stream_manager::setup_print(out_stream);
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (trig_size_t i=0;i<w;++i)
         {
 // We cast to max_fast_int, which should be the largest type admitted for multipliers.
@@ -92,6 +91,8 @@ namespace piranha
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
+        const trig_size_t w=v.size();
+        p_assert(w <= static_cast<const Derived *>(this)->g_width())
         stream_manager::setup_print(out_stream);
         switch (g_flavour())
         {
@@ -103,7 +104,6 @@ namespace piranha
         }
         bool first_one=true;
         std::string tmp("$");
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i] != 0)
@@ -181,8 +181,8 @@ namespace piranha
  */
       double freq(const vector_psym_p &v) const
       {
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        p_assert(v.size() == w);
+        const size_t w=v.size();
+        p_assert(w <= static_cast<const Derived *>(this)->g_width());
         double retval=0.;
         for (trig_size_t i=0;i<w;++i)
         {
@@ -202,8 +202,8 @@ namespace piranha
  */
       double phase(const vector_psym_p &v) const
       {
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        p_assert(v.size()==w);
+        const size_t w=v.size();
+        p_assert(w <= static_cast<const Derived *>(this)->g_width());
         double retval=0.;
         for (trig_size_t i=0;i<w;++i)
         {
@@ -224,8 +224,8 @@ namespace piranha
       template <class Series>
         double t_eval(const double &t, const Series &s) const
       {
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        p_assert(s.trig_args().size()==w);
+        const size_t w=s.trig_width();
+        p_assert(w <= static_cast<const Derived *>(this)->g_width());
         double retval=0.;
         for (trig_size_t i=0;i<w;++i)
         {
@@ -252,8 +252,8 @@ namespace piranha
       template <class TrigEvaluator>
         double t_eval(TrigEvaluator &te) const
       {
-        const trig_size_t w = static_cast<const Derived *>(this)->g_width();
-        p_assert(te.width() == w);
+        const size_t w=te.width();
+        p_assert(w <= static_cast<const Derived *>(this)->g_width());
         complex_double retval(1.);
         for (trig_size_t i=0;i<w;++i)
         {
@@ -318,18 +318,6 @@ namespace piranha
         bool is_ignorable(const Series &) const
       {
         return (is_zero() and !g_flavour());
-      }
-      bool needs_padding(const size_t &n) const
-      {
-        return (static_cast<const Derived *>(this)->g_width() < n);
-      }
-      bool overflows(const size_t &n) const
-      {
-        return (static_cast<const Derived *>(this)->g_width() > n);
-      }
-      bool is_compatible(const size_t &n) const
-      {
-        return (static_cast<const Derived *>(this)->g_width() == n);
       }
 // NOTICE: this goes out of the interface, it is there in order to be able to use utils::apply_layout and friends.
 // TODO: remove them from here once we rework all int arrays to have a vector-like interface.

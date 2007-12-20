@@ -153,23 +153,20 @@ namespace piranha
       term_type new_term;
 // Read cf.
       cf_type cf(split_v[0]);
-      while (cf_width()<cf.actual_width())
+      if (!cf.is_insertable(cf_width()))
       {
-        std::cout << "Warning: cf width is larger than expected, assigning 'null' to extra cf args."
-          << std::endl;
-        append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
+        std::cout << "Warning: cf width is larger than expected, ignoring term." << std::endl;
+        continue;
       }
       *new_term.s_cf()=cf;
 // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
 // Read trigonometric part.
       trig_type trig(split_v);
-// TODO: see if it is possible to group the addition of symbols instead of doing it once at a time.
-      while (trig_width()<trig.actual_width())
+      if (!trig.is_insertable(trig_width()))
       {
-        std::cout << "Warning: trig width is larger than expected, assigning 'null' to extra trig args."
-          << std::endl;
-        append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psymbol())));
+        std::cout << "Warning: trig width is larger than expected, ignoring term." << std::endl;
+        continue;
       }
       *new_term.s_trig()=trig;
 // Deal with phases.

@@ -140,6 +140,17 @@ namespace piranha
       {
         return true;
       }
+      bool needs_padding(const size_t &n) const
+      {
+        p_assert(n <= g_width());
+// Disable compiler warning when asserts are disabled.
+        (void)n;
+        return false;
+      }
+      bool is_insertable(const size_t &n) const
+      {
+        return (g_width() >= n);
+      }
 // FIXME: make it unique with dimension.
       static const size_t max_size = Dim;
       bool operator==(const trig_fixed_array &t2) const

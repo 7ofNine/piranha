@@ -97,8 +97,13 @@ namespace piranha
         __STATIC_ASSERTION_FAILURE;
         return bool();
       }
-/// Check whether number of arguments of coefficient is greater than w.
-      bool overflows(const size_t &w) const
+/// Is coefficient insertable?
+/**
+ * Checks whether a term containing the coefficient can be inserted in a series with coefficient width equal
+ * to w.
+ * @param[in] w size_t coefficient width against which insertability is checked.
+ */
+      bool is_insertable(const size_t &w) const
       {
         __STATIC_ASSERTION_FAILURE;
         (void)w;
@@ -106,16 +111,6 @@ namespace piranha
       }
 /// Check whether coefficient needs padding to be inserted in series with coefficient width w.
       bool needs_padding(const size_t &w) const
-      {
-        __STATIC_ASSERTION_FAILURE;
-        (void)w;
-        return bool();
-      }
-/// Is coefficient compatible with width w?
-/**
- * Returns false if a resize is needed to have width w, true otherwise.
- */
-      bool is_compatible(const size_t &w) const
       {
         __STATIC_ASSERTION_FAILURE;
         (void)w;
