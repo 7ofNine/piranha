@@ -469,13 +469,13 @@ namespace piranha
 // Get new layouts.
     layout_type l_cf = utils::get_layout(cf_args(),ps2.cf_args());
     layout_type l_trig = utils::get_layout(trig_args(),ps2.trig_args());
+    if (l_cf.size() > cf_type::max_size or l_trig.size() > trig_type::max_size)
+    {
+      throw exceptions::add_arguments("Cannot apply layout, max arguments size reached.");
+    }
 // Apply layouts to arguments.
     utils::apply_layout(l_cf,retval.cf_args(),ps2.cf_args());
     utils::apply_layout(l_trig,retval.trig_args(),ps2.trig_args());
-    if (l_cf.size() > cf_type::max_size or l_trig.size() > trig_type::max_size)
-    {
-      throw exceptions::add_arguments("Cannot apply layout, max_size reached.");
-    }
 // Apply layouts to all terms.
     const iterator it_f = end();
     term_type tmp;
