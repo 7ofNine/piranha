@@ -23,7 +23,7 @@
 
 #include "../../arg_manager.h"
 #include "../../common_typedefs.h" // For layout.
-#include "../../config.h"       // For (un)likely().
+#include "../../config.h" // For (un)likely().
 #include "../../stats.h"
 #include "../../p_exceptions.h"
 #include "base_pseries_ta_macros.h"
