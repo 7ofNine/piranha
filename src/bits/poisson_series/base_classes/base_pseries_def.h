@@ -184,8 +184,6 @@ namespace piranha
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         void merge_args(const Derived2 &);
-      void add_cf_arg(const psymbol &);
-      void add_trig_arg(const psymbol &);
       template <class Cf2, bool, bool>
         it_s_index insert(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       template <class Cf2>

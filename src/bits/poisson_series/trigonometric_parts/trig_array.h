@@ -21,6 +21,8 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
+#include <boost/integer_traits.hpp>
+
 #include "../base_classes/base_trig_array.h"
 
 namespace piranha
@@ -102,6 +104,7 @@ namespace piranha
         }
         return true;
       }
+      static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_array &t2) const
       {
         return ancestor::equality_test(t2);

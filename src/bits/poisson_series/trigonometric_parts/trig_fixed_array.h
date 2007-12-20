@@ -99,24 +99,18 @@ namespace piranha
         }
         const trig_size_t d=g_width();
 // Now w >= 1.
-        if ((w-1) != d)
-        {
-          std::cout << "Warning: wrong size for trig_fixed_array in ctor from string." << std::endl;
-// TODO: Here we continue really, just remains as debug.
-          std::abort();
-        }
         trig_size_t i;
-        for (i=0;i<boost::minmax(d,(trig_size_t)(w-1)).get<0>();++i)
+        for (i=0;i < boost::minmax(d,(trig_size_t)(w-1)).get<0>();++i)
         {
 // TODO: lexical conversion from int: store in temp and check for boundaries.
           private_container_[i]=utils::lexical_converter<int>(sd[i]);
         }
-        for (;i<d;++i)
+        for (;i < d;++i)
         {
           private_container_[i]=0;
         }
 // Take care of flavour.
-        if (*sd.back().c_str()=='s')
+        if (*sd.back().c_str() == 's')
         {
           ancestor::s_flavour()=false;
         }
@@ -146,6 +140,8 @@ namespace piranha
       {
         return true;
       }
+// FIXME: make it unique with dimension.
+      static const size_t max_size = Dim;
       bool operator==(const trig_fixed_array &t2) const
       {
         if (ancestor::g_flavour() != t2.g_flavour())

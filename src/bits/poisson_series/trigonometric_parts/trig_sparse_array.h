@@ -22,6 +22,7 @@
 #define PIRANHA_TRIG_SPARSE_ARRAY_H
 
 #include <boost/functional/hash/hash.hpp>
+#include <boost/integer_traits.hpp>
 #include <vector>
 
 #include "../../common_typedefs.h" // For layout_type.
@@ -117,6 +118,7 @@ namespace piranha
       size_t data_footprint() const;
       template <class Series>
         bool checkup(const Series &) const;
+      static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_sparse_array &) const;
       bool operator<(const trig_sparse_array &) const;
 // Math.

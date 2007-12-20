@@ -89,6 +89,7 @@ namespace piranha
       {
         return absolute();
       }
+      static const size_t max_size = 0;
 // If value is less than settings_manager::numerical_zero() in absolute value it is considered
 // to be zero.
       template <class Series>
@@ -96,7 +97,6 @@ namespace piranha
       {
         return (static_cast<Derived const *>(this)->norm(s.arguments().template get<0>()) < settings_manager::numerical_zero());
       }
-// TODO: maybe here we should check against 0 size?
       bool overflows(const size_t &s) const
       {
         p_assert(s==0);
@@ -212,7 +212,7 @@ namespace piranha
       }
     private:
 // Data member.
-      T   value_;
+      T value_;
   };
 
 /// Toolbox for complex-specific methods of piranha::numerical_container.

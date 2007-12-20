@@ -25,7 +25,7 @@
 #include "../../common_typedefs.h" // For layout.
 #include "../../config.h"       // For (un)likely().
 #include "../../stats.h"
-
+#include "../../p_exceptions.h"
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -138,37 +138,62 @@ namespace piranha
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <psymbol::type Type>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
+    void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
   {
-    Derived retval;
-    retval.lin_args()=lin_args();
-    retval.arguments()=arguments();
-// Append psymbols from v.
-    retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());
-// NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
-    const it_h_index it_f=g_h_index().end();
-    const size_t new_size=retval.arguments().template get<Type>().size();
-    for (it_h_index it=g_h_index().begin();it!=it_f;++it)
+    try
     {
-// NOTICE: find a way to avoid resizes here?
-      term_type tmp_term=(*it);
+      Derived retval;
+      retval.lin_args()=lin_args();
+      retval.arguments()=arguments();
+// Append psymbols from v.
       switch (Type)
       {
-// TODO: This would be the ideal place to use tuples inside terms...
+// TODO: use tuple in terms here too: term_type::limits.get<Type>().max_size or similar.
         case (psymbol::cf):
-          tmp_term.s_cf()->increase_size(new_size);
+          if (cf_type::max_size < v.size() + retval.arguments().template get<psymbol::cf>().size())
+          {
+            throw exceptions::add_arguments("Cannot append further cf_args, max_size reached.");
+          }
           break;
         case (psymbol::trig):
-          tmp_term.s_trig()->increase_size(new_size);
+          if (trig_type::max_size < v.size() + retval.arguments().template get<psymbol::trig>().size())
+          {
+            throw exceptions::add_arguments("Cannot append further trig_args, max_size reached.");
+          }
+// If we are dealing with trig, we must take care of lin_args too.
+          retval.lin_args().insert(retval.lin_args().end(),v.size(),0);
           break;
         default:
           p_assert(false);
           ;
       }
+      retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());
+// NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
+      const it_h_index it_f=g_h_index().end();
+      const size_t new_size=retval.arguments().template get<Type>().size();
+      for (it_h_index it=g_h_index().begin();it!=it_f;++it)
+      {
+// NOTICE: find a way to avoid resizes here?
+        term_type tmp_term=(*it);
+        switch (Type)
+        {
+// TODO: This would be the ideal place to use tuples inside terms...
+          case (psymbol::cf):
+            tmp_term.s_cf()->increase_size(new_size);
+            break;
+          case (psymbol::trig):
+            tmp_term.s_trig()->increase_size(new_size);
+            break;
+          default:
+            p_assert(false);
+            ;
+        }
 // NOTICE: use hinted insertion here?
-      retval.insert_check_positive(tmp_term);
+        retval.insert_check_positive(tmp_term);
+      }
+      swap(retval);
     }
-    swap(retval);
+    catch (exceptions::add_arguments &e) {}
   }
 
 /// Append coefficient arguments.
@@ -183,34 +208,12 @@ namespace piranha
 
 /// Append trigonometric arguments.
 /**
- * Calls base_pseries::append_args with Type = psymbol::trig and deals with lin_args_ too.
+ * Calls base_pseries::append_args with Type = psymbol::trig.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
   {
     append_args<psymbol::trig>(v);
-// If we are dealing with trig, we must take care of lin_args too.
-    lin_args().insert(lin_args().end(),v.size(),0);
-  }
-
-/// Add coefficient argument.
-/**
- * @param[in] psym, piranha::psymbol to be added.
- */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::add_cf_arg(const psymbol &psym)
-  {
-    append_cf_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
-  }
-
-/// Add trigonometric argument.
-/**
- * @param[in] psym, piranha::psymbol to be added.
- */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::add_trig_arg(const psymbol &psym)
-  {
-    append_trig_args(vector_psym_p(1,psymbol_manager::get_pointer(psym)));
   }
 
 /// Swap the content of with another series.
@@ -469,6 +472,10 @@ namespace piranha
 // Apply layouts to arguments.
     utils::apply_layout(l_cf,retval.cf_args(),ps2.cf_args());
     utils::apply_layout(l_trig,retval.trig_args(),ps2.trig_args());
+    if (l_cf.size() > cf_type::max_size or l_trig.size() > trig_type::max_size)
+    {
+      throw exceptions::add_arguments("Cannot apply layout, max_size reached.");
+    }
 // Apply layouts to all terms.
     const iterator it_f = end();
     term_type tmp;
