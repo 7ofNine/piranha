@@ -70,7 +70,7 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-      void increase_size(const size_t &n)
+      void pad_right(const size_t &n)
       {
         p_assert(n==0);
       }

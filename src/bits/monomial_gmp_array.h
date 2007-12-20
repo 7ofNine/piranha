@@ -199,7 +199,7 @@ namespace piranha
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
 // Manip.
-      void increase_size(const size_t &);
+      void pad_right(const size_t &);
       void prepend_args(const size_t &);
 // Evaluation.
       eval_type t_eval(const double &, const vector_psym_p &) const;
@@ -257,7 +257,7 @@ namespace piranha
       {
         const size_t w=width();
         p_assert(n<w);
-        retval.increase_size(w);
+        retval.pad_right(w);
         p_assert(w==retval.width());
         const uint16 exponent=g_container()[n];
         retval.private_min_expo_=private_min_expo_;
@@ -535,7 +535,7 @@ namespace piranha
     if ((void *)&m2!=(void *)this)
     {
 // First we must resize, before assigning: valarray does not do it automatically.
-      increase_size(m2.width());
+      pad_right(m2.width());
       private_container_=m2.g_container();
       private_numerical_cf_=m2.g_numerical_cf();
       private_rational_cf_=m2.g_rational_cf();
@@ -610,7 +610,7 @@ namespace piranha
 
 /// Increrase size so that final size is new_w.
   template <class T>
-    inline void monomial_gmp_array<T>::increase_size(const size_t &new_w)
+    inline void monomial_gmp_array<T>::pad_right(const size_t &new_w)
   {
     p_assert(new_w>=width());
     if (new_w>width())
@@ -681,7 +681,7 @@ namespace piranha
     out_m.private_rational_cf_=g_rational_cf();
     out_m.private_rational_cf_*=m2.g_rational_cf();
     const size_t w1=width(), w2=m2.width();
-    out_m.increase_size(w1);
+    out_m.pad_right(w1);
     size_t i;
     for (i=0;i<w2;++i)
     {

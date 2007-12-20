@@ -90,7 +90,7 @@ namespace piranha
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
 // Manipulation.
-      void increase_size(const size_t &);
+      void pad_right(const size_t &);
       void append_args(const size_t &);
       void prepend_args(const size_t &);
       Derived &swap(Derived &);
@@ -332,7 +332,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
       m_type tmp_m(split_v[i]);
       if (tmp_m.larger(width()) && !empty())
       {
-        increase_size(tmp_m.width());
+        pad_right(tmp_m.width());
       }
       insert(tmp_m);
     }
@@ -376,7 +376,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
 
 /// Increase size.
   template <class T, class Derived>
-    inline void base_polynomial<T,Derived>::increase_size(const size_t &w)
+    inline void base_polynomial<T,Derived>::pad_right(const size_t &w)
   {
     p_assert(w>=width());
     Derived retval;
@@ -384,7 +384,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     for (iterator it=e_index().begin();it!=it_f;++it)
     {
       m_type tmp_m(*it);
-      tmp_m.increase_size(w);
+      tmp_m.pad_right(w);
       retval.insert(tmp_m);
     }
     swap(retval);
@@ -394,7 +394,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::append_args(const size_t &n)
   {
-    increase_size(width()+n);
+    pad_right(width()+n);
   }
 
 /// Prepend arguments.
@@ -433,7 +433,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     {
 // FIXME: use proper allocator.
       new_m = new m_type(m);
-      new_m->increase_size(w);
+      new_m->pad_right(w);
     }
     p_assert(!(m.larger(w) && !empty()));
     const m_type *insert_m;

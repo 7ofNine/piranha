@@ -152,8 +152,8 @@ namespace piranha
       {
         __STATIC_ASSERTION_FAILURE;
       }
-/// Resize to n arguments.
-      void increase_size(const size_t &n)
+/// Append n arguments and initialise their values to 0.
+      void pad_right(const size_t &n)
       {
         __STATIC_ASSERTION_FAILURE;
         (void)n;

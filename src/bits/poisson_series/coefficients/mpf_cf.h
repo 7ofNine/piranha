@@ -60,7 +60,7 @@ namespace piranha
       using ancestor::is_ignorable;
       using ancestor::is_insertable;
       using ancestor::needs_padding;
-      using ancestor::increase_size;
+      using ancestor::pad_right;
       using ancestor::apply_layout;
       using ancestor::add;
       using ancestor::subtract;
@@ -153,7 +153,7 @@ namespace std
       using ancestor::is_ignorable;
       using ancestor::is_insertable;
       using ancestor::needs_padding;
-      using ancestor::increase_size;
+      using ancestor::pad_right;
       using ancestor::apply_layout;
       using ancestor::add;
       using ancestor::subtract;

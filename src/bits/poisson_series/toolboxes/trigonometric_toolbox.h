@@ -160,8 +160,8 @@ namespace piranha
         complex_term_type term1(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type());
         complex_term_type term2(complex_cf_type(real_cf_type(0),real_cf_type(1)),trig_type());
         term2.s_trig()->s_flavour()=false;
-        term1.s_trig()->increase_size(retval.trig_width());
-        term2.s_trig()->increase_size(retval.trig_width());
+        term1.s_trig()->pad_right(retval.trig_width());
+        term2.s_trig()->pad_right(retval.trig_width());
         term1.s_trig()->assign_int_vector(derived_cast->lin_args());
         term2.s_trig()->assign_int_vector(derived_cast->lin_args());
         retval.insert_check_positive(term1);

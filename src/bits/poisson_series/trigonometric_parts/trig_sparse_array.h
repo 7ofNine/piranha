@@ -85,7 +85,7 @@ namespace piranha
           }
         }
       }
-      void increase_size(const size_t &) {}
+      void pad_right(const size_t &) {}
       void apply_layout(const layout_type &);
       void invert_sign();
 // Probing.

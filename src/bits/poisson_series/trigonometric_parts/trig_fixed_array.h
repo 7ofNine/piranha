@@ -116,7 +116,7 @@ namespace piranha
         }
       }
       ~trig_fixed_array() {}
-      void increase_size(const size_t &w)
+      void pad_right(const size_t &w)
       {
         p_assert(w == g_width());
       }

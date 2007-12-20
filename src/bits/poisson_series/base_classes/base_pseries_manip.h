@@ -179,10 +179,10 @@ namespace piranha
         {
 // TODO: This would be the ideal place to use tuples inside terms...
           case (psymbol::cf):
-            tmp_term.s_cf()->increase_size(new_size);
+            tmp_term.s_cf()->pad_right(new_size);
             break;
           case (psymbol::trig):
-            tmp_term.s_trig()->increase_size(new_size);
+            tmp_term.s_trig()->pad_right(new_size);
             break;
           default:
             p_assert(false);
@@ -393,8 +393,8 @@ namespace piranha
     {
       new_term=term_allocator.allocate(1);
       term_allocator.construct(new_term,term.result);
-      new_term->s_cf()->increase_size(cw);
-      new_term->s_trig()->increase_size(tw);
+      new_term->s_cf()->pad_right(cw);
+      new_term->s_trig()->pad_right(tw);
     }
     if (CheckTrigSign)
     {

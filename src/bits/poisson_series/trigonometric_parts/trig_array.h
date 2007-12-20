@@ -71,7 +71,7 @@ namespace piranha
         }
       }
       ~trig_array() {}
-      void increase_size(const size_t &n)
+      void pad_right(const size_t &n)
       {
         p_assert(n >= g_width());
         if (n > g_width())
@@ -195,7 +195,7 @@ namespace piranha
  */
       void assignment(const trig_array &t2)
       {
-        increase_size(t2.g_width());
+        pad_right(t2.g_width());
         private_container_=t2.private_container_;
       }
 // Data members.

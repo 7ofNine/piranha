@@ -324,7 +324,7 @@ namespace piranha
       value_type &operator[](const size_t &n) {return static_cast<const Derived *>(this)->s_container()[n];}
       const value_type &operator[](const size_t &n) const {return static_cast<const Derived *>(this)->g_container()[n];}
       size_t size() const {return static_cast<const Derived *>(this)->g_width();}
-      void resize(const size_t &n) {return static_cast<const Derived *>(this)->increase_size(n);}
+      void resize(const size_t &n) {return static_cast<const Derived *>(this)->pad_right(n);}
     protected:
       void assignment_operator(const Derived &t2)
       {
