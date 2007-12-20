@@ -24,7 +24,7 @@ typedef piranha::ipoly<long long int,size_t,unsigned short int> poly_type;
 typedef poly_type::const_iterator const_iterator;
 
 // Compute q*(q+1), where q=(1+x+y+z)^20. Do it 10 times.
-int main(int argc, char **argv)
+int main()
 {
   for (size_t i=0;i<10;++i)
   {

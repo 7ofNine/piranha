@@ -47,7 +47,7 @@ inline double eval_poly(const poly_type &p)
 }
 
 // Compute s*(s+1), where s=(1+x+y+t+u)^14. Do it 10 times.
-int main(int argc, char **argv)
+int main()
 {
   for (size_t i=0;i<10;++i)
   {
