@@ -41,25 +41,22 @@ namespace piranha
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::it_h_index it_h_index;
         typedef typename Derived::ancestor::term_type term_type;
-        Derived retval=Derived();
+        Derived retval;
         retval.merge_args(*static_cast<Derived const *>(this));
         const int cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
           trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
 // If "name" is not a symbol of the series, return empty series.
-        if (cf_s_index<0 and trig_s_index<0)
+        if (cf_s_index < 0 and trig_s_index < 0)
         {
           std::cout << "No psymbol named '" << name << "', returning empty series." << std::endl;
           return retval;
         }
         const it_h_index it_f=static_cast<Derived const *>(this)->g_h_index().end();
         term_type tmp_term;
-        for (it_h_index it=static_cast<Derived const *>(this)->
-          g_h_index().begin();
-          it!=it_f;
-          ++it)
+        for (it_h_index it=static_cast<Derived const *>(this)->g_h_index().begin();it!=it_f;++it)
         {
 // First part of the derivation of the product coefficient * trigonometric_part.
-          if (cf_s_index>=0)
+          if (cf_s_index >= 0)
           {
             it->g_cf()->partial(cf_s_index,*tmp_term.s_cf());
             *tmp_term.s_trig()=*it->g_trig();
@@ -69,7 +66,7 @@ namespace piranha
 // Second part of the derivation.
 // NOTICE: this may be placed somewhere inside trig classes, but probably to do this
 // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
-          if (trig_s_index>=0)
+          if (trig_s_index >= 0)
           {
             *tmp_term.s_cf()=*it->g_cf();
             switch (it->g_trig()->g_flavour())
@@ -84,7 +81,7 @@ namespace piranha
             }
 // Perform this check since if we already assigned trig_args above we don't need to
 // do it again now.
-            if (cf_s_index<0)
+            if (cf_s_index < 0)
             {
               *tmp_term.s_trig()=*it->g_trig();
             }
