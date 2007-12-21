@@ -485,6 +485,8 @@ namespace piranha
       tmp = *it;
       tmp.s_cf()->apply_layout(l_cf);
       tmp.s_trig()->apply_layout(l_trig);
+// Use safe insert because when reorganizing the args layout maybe a negative multiplier
+// may have been placed in the first position.
       retval.insert_check_positive(tmp);
     }
 // Take care of lin_args.
@@ -493,6 +495,7 @@ namespace piranha
     swap(retval);
   }
 
+// TODO: move this into fourier toolbox?
 /// Cumulative crop.
 /**
  * Crop the series from the bottom so that the sum of the norms of the cropped terms is not
