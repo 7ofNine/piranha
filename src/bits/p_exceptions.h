@@ -36,7 +36,11 @@ namespace exceptions
   class add_arguments
   {
     public:
-      add_arguments(const std::string &s) {std::cout << s << std::endl;}
+      add_arguments(const std::string &s)
+      {
+        std::cout << "Exception thrown." << std::endl;
+        std::cout << s << std::endl;
+      }
   };
 }
 }
