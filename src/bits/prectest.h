@@ -93,7 +93,7 @@ namespace piranha
     double max_diff=0.;
     for (typename T::it_s_index it=ps1.g_s_index().begin();it!=it_f;++it)
     {
-      it_h=ps2.g_h_index().find(*it->g_trig());
+      it_h=ps2.g_h_index().find(it->trig());
       if (it_h==ps2.g_h_index().end())
       {
         diffs_[i]=-.1;
@@ -102,11 +102,12 @@ namespace piranha
       {
         if (relative)
         {
-          diffs_[i]=std::abs(1.-std::abs(it_h->g_cf()->norm(ps2.arguments().template get<0>())/it->g_cf()->norm(ps1.arguments().template get<0>())));
+          diffs_[i]=std::abs(1.-std::abs(it_h->cf().norm(ps2.arguments().template get<0>())/
+            it->cf().norm(ps1.arguments().template get<0>())));
         }
         else
         {
-          diffs_[i]=std::abs(it_h->g_cf()->norm(ps2.arguments().template get<0>())-it->g_cf()->norm(ps1.arguments().template get<0>()));
+          diffs_[i]=std::abs(it_h->cf().norm(ps2.arguments().template get<0>())-it->cf().norm(ps1.arguments().template get<0>()));
         }
         if (diffs_[i]>max_diff)
         {
@@ -556,15 +557,15 @@ namespace piranha
 // Check that we are not going outside the boundaries.
           if (sym_index_ < orig_->trig_width())
           {
-            multiplier=it->g_trig()->at(sym_index_);
+            multiplier=it->trig().at(sym_index_);
           }
           else
           {
             multiplier=0;
           }
-          tmp=it->g_trig()->t_eval(t,orig_->trig_args());
-          c_eval=it->g_cf()->t_eval(t,orig_->cf_args());
-          switch (it->g_trig()->g_flavour())
+          tmp=it->trig().t_eval(t,orig_->trig_args());
+          c_eval=it->cf().t_eval(t,orig_->cf_args());
+          switch (it->trig().g_flavour())
           {
             case true:
               retval+=c_eval*std::cos(tmp)*std::cos(multiplier*a_->t_eval(t))-
@@ -623,11 +624,11 @@ namespace piranha
                 tmp_phase=*it2;
                 break;
               default:
-                tmp_phase=*it2-it->g_trig()->phase(a_->arguments().template get<1>());
+                tmp_phase=*it2-it->trig().phase(a_->arguments().template get<1>());
             }
-            tmp=it->g_trig()->t_eval(t,a_->trig_args());
-            c_eval=it->g_cf()->t_eval(t,a_->cf_args());
-            switch (it->g_trig()->g_flavour())
+            tmp=it->trig().t_eval(t,a_->trig_args());
+            c_eval=it->cf().t_eval(t,a_->cf_args());
+            switch (it->trig().g_flavour())
             {
               case true:
                 retval+=c_eval*std::cos(tmp)*std::cos(tmp_phase)-

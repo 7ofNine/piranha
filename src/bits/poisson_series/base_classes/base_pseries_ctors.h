@@ -138,7 +138,7 @@ namespace piranha
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_builder(const T &x)
   {
     term_type term = term_type(cf_type(x),trig_type());
-    if (!term.s_cf()->is_insertable(cf_width()))
+    if (!term.cf().is_insertable(cf_width()))
     {
       std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
       return;

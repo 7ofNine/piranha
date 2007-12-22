@@ -267,7 +267,7 @@ namespace piranha
         ~modifier_update_cf() {}
         void operator()(term_type &term)
         {
-          term.s_cf()->swap(*new_cf_);
+          term.cf().swap(*new_cf_);
         }
         cf_type *new_cf_;
       };

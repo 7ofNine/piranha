@@ -54,13 +54,13 @@ namespace piranha
         const uint16 limit_min_expo=limits.g_min_expo(), min_expo_cf=cf.g_min_expo();
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
-          if (limit_exists && min_expo_cf+t.g_cf()->g_min_expo() > limit_min_expo)
+          if (limit_exists && min_expo_cf+t.cf().g_min_expo() > limit_min_expo)
           {
             std::cout << "Cf shortcut\n";
             break;
           }
           tmp_term=t;
-          tmp_term.s_cf()->mult_by_self(cf,limits);
+          tmp_term.cf().mult_by_self(cf,limits);
           it_hint=tmp_ps.insert(tmp_term,true,&it_hint);
         }
         derived_cast->swap(tmp_ps);
@@ -76,8 +76,8 @@ namespace piranha
 // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
         term_type tmp1, tmp2;
-        tmp1.s_trig()->pad_right(retval.trig_width());
-        tmp2.s_trig()->pad_right(retval.trig_width());
+        tmp1.trig().pad_right(retval.trig_width());
+        tmp2.trig().pad_right(retval.trig_width());
         boost::tuple<term_type &, term_type &> term_pair(tmp1,tmp2);
         const it_s_index it1_f=derived_cast->g_s_index().end();
         const it_s_index2 it2_i=ps2.g_s_index().begin(), it2_f=ps2.g_s_index().end();
@@ -90,16 +90,16 @@ namespace piranha
         for (it1=derived_cast->g_s_index().begin();it1!=it1_f;++it1)
         {
           it2=it2_i;
-          min_expo1=it1->g_cf()->g_min_expo();
+          min_expo1=it1->cf().g_min_expo();
 // TODO: consider optimization of removing 'limit_exists' check.
-          if (limit_exists && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
+          if (limit_exists && min_expo1+it2->cf().g_min_expo() > limit_min_expo)
           {
             std::cout << "External shortcut1\n";
             break;
           }
           for (;it2!=it2_f;++it2)
           {
-            if (limit_exists && min_expo1+it2->g_cf()->g_min_expo() > limit_min_expo)
+            if (limit_exists && min_expo1+it2->cf().g_min_expo() > limit_min_expo)
             {
               std::cout << "External shortcut2\n";
               break;
@@ -109,12 +109,12 @@ namespace piranha
 // This way we won't do a copy inside insertion function.
 // TODO: cache pointers to trigs?
             if (term_pair.template get
-              <0>().g_trig()->sign()<0)
+              <0>().trig().sign()<0)
             {
               term_pair.template get<0>().invert_trig_args();
             }
             if (term_pair.template get
-              <1>().g_trig()->sign()<0)
+              <1>().trig().sign()<0)
             {
               term_pair.template get<1>().invert_trig_args();
             }

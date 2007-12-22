@@ -136,7 +136,7 @@ namespace piranha
     const it_h_index it_f=g_h_index().end();
     for (it_h_index it=g_h_index().begin();it!=it_f;++it)
     {
-      retval+=it->g_cf()->norm(arguments().template get<0>());
+      retval+=it->cf().norm(arguments().template get<0>());
     }
     return retval;
   }
@@ -156,8 +156,8 @@ namespace piranha
     size_t index=0;
     for (it=g_s_index().begin();it!=it_f;++it)
     {
-      rel_delta=(it->g_cf()->norm(arguments().template get<0>())-boost::next(it)->g_cf()->norm(arguments().template get<0>()))/
-        it->g_cf()->norm(arguments().template get<0>());
+      rel_delta=(it->cf().norm(arguments().template get<0>())-boost::next(it)->cf().norm(arguments().template get<0>()))/
+        it->cf().norm(arguments().template get<0>());
       if (rel_delta>candidate)
       {
         std::cout << "Found discontinuity candidate at index position: " <<
@@ -197,7 +197,7 @@ namespace piranha
     it_s_index it;
     for (it=g_s_index().begin();it!=g_s_index().end();++it)
     {
-      if (it->g_cf()->norm(arguments().template get<0>())*desired_sdp < ste)
+      if (it->cf().norm(arguments().template get<0>())*desired_sdp < ste)
       {
         break;
       }
@@ -288,7 +288,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline bool base_pseries<__PIRANHA_BASE_PS_TP>::is_cf() const
   {
-    if (length()==1 && g_s_index().begin()->g_trig()->g_flavour() && g_s_index().begin()->g_trig()->is_zero())
+    if (length()==1 && g_s_index().begin()->trig().g_flavour() && g_s_index().begin()->trig().is_zero())
     {
       return true;
     }
@@ -314,7 +314,7 @@ namespace piranha
     size_t count=0;
     for (iterator it=begin();it!=it_f;++it)
     {
-      retval+=it->g_trig()->density(*this);
+      retval+=it->trig().density(*this);
       ++count;
     }
     return (retval/count);

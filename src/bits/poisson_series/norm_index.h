@@ -42,7 +42,7 @@ namespace piranha
     double operator()(const Term &t) const
     {
       p_assert(arg_manager::assigned());
-      return t.g_cf()->norm(*arg_manager::cf_args());
+      return t.cf().norm(*arg_manager::cf_args());
     }
   };
 
@@ -62,7 +62,7 @@ namespace piranha
       Term<Cf, Trig>,
       norm_extractor<Term<Cf, Trig> >,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig_ref >
+      &Term<Cf, Trig>::trig >
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
@@ -71,7 +71,7 @@ namespace piranha
       >,
       boost::multi_index::hashed_unique <
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::g_trig_ref >
+      &Term<Cf, Trig>::trig >
       >
       > type;
   };

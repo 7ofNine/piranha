@@ -11,54 +11,52 @@ namespace piranha
       {
         size_t operator()(const light_term &t) const
         {
-          return t.trig.hasher();
+          return t.m_trig.hasher();
         }
       };
 /// Default ctor.
 /**
  * Won't initialize anything.
  */
-      light_term()
-        {}
-      ~light_term()
-        {}
+      light_term() {}
+      ~light_term() {}
 // Manipulation.
       void invert_trig_args()
       {
-        trig.invert_sign();
-        if (!trig.g_flavour())
+        m_trig.invert_sign();
+        if (!m_trig.g_flavour())
         {
-          cf.invert_sign();
+          m_cf.invert_sign();
         }
       }
       bool operator==(const light_term &t) const
       {
-        return (trig == t.trig);
+        return (m_trig == t.m_trig);
       }
 // Getters and setters.
-      const Cf *g_cf() const
+      const Cf &cf() const
       {
-        return &cf;
+        return m_cf;
       }
-      const Trig *g_trig() const
+      const Trig &trig() const
       {
-        return &trig;
+        return m_trig;
       }
-      Cf *s_cf()
+      Cf &cf()
       {
-        return &cf;
+        return m_cf;
       }
-      Trig *s_trig()
+      Trig &trig()
       {
-        return &trig;
+        return m_trig;
       }
       size_t hasher() const
       {
         return trig.hasher();
       }
 // Data members.
-      mutable Cf    cf;
-      mutable Trig  trig;
+      mutable Cf    m_cf;
+      mutable Trig  m_trig;
     };
 }
 

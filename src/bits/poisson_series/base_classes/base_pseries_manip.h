@@ -35,7 +35,7 @@ namespace piranha
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_h_index
     base_pseries<__PIRANHA_BASE_PS_TP>::find_term(const term_type &t) const
   {
-    return g_h_index().find(*t.g_trig());
+    return g_h_index().find(t.trig());
   }
 
 /// Add phase to a term and insert the resulting terms in an external series.
@@ -55,22 +55,22 @@ namespace piranha
   {
     tmp_term=src;
 // Store coefficient for later.
-    cf_type tmp_c=*src.g_cf();
+    cf_type tmp_c=src.cf();
 // Insert first term.
-    tmp_term.s_cf()->mult_by(std::cos(phase));
+    tmp_term.cf().mult_by(std::cos(phase));
     retps.insert_check_positive(tmp_term);
 // Second term: change flavour and sign.
-    switch (src.g_trig()->g_flavour())
+    switch (src.trig().g_flavour())
     {
       case true:
-        tmp_term.s_trig()->s_flavour()=false;
-        *tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()->mult_by(-std::sin(phase));
+        tmp_term.trig().s_flavour()=false;
+        tmp_term.cf()=tmp_c;
+        tmp_term.cf().mult_by(-std::sin(phase));
         break;
       case false:
-        tmp_term.s_trig()->s_flavour()=true;
-        *tmp_term.s_cf()=tmp_c;
-        tmp_term.s_cf()->mult_by(std::sin(phase));
+        tmp_term.trig().s_flavour()=true;
+        tmp_term.cf()=tmp_c;
+        tmp_term.cf().mult_by(std::sin(phase));
     }
     retps.insert_check_positive(tmp_term);
   }
@@ -115,7 +115,7 @@ namespace piranha
             add_phase_to_term(*it2,it1,tmp_term,tmp_ps);
             break;
           default:
-            add_phase_to_term(*it2-it1->g_trig()->phase(arguments().template get<1>()),it1,tmp_term,tmp_ps);
+            add_phase_to_term(*it2-it1->trig().phase(arguments().template get<1>()),it1,tmp_term,tmp_ps);
         }
         ++it2;
       }
@@ -179,10 +179,10 @@ namespace piranha
         {
 // TODO: This would be the ideal place to use tuples inside terms...
           case (psymbol::cf):
-            tmp_term.s_cf()->pad_right(new_size);
+            tmp_term.cf().pad_right(new_size);
             break;
           case (psymbol::trig):
-            tmp_term.s_trig()->pad_right(new_size);
+            tmp_term.trig().pad_right(new_size);
             break;
           default:
             p_assert(false);
@@ -261,7 +261,7 @@ namespace piranha
 // This is an O(1) operation, since the order in the set is not changed
 // There is a re-hash involved, it still should be cheaper than
 // creating a new term though.
-      cf_type new_c=*it_new->g_cf();
+      cf_type new_c=it_new->cf();
       new_c.invert_sign();
       action_assert(s_s_index().modify(it_new,modifier_update_cf(new_c)));
     }
@@ -308,9 +308,9 @@ namespace piranha
     {
       return g_s_index().end();
     }
-    p_assert(term.g_cf()->is_insertable(cf_width()) and !term.g_cf()->needs_padding(cf_width()));
-    p_assert(term.g_trig()->is_insertable(trig_width()) and !term.g_trig()->needs_padding(trig_width()));
-    p_assert(term.g_trig()->sign()>0);
+    p_assert(term.cf().is_insertable(cf_width()) and !term.cf().needs_padding(cf_width()));
+    p_assert(term.trig().is_insertable(trig_width()) and !term.trig().needs_padding(trig_width()));
+    p_assert(term.trig().sign()>0);
     it_s_index ret_it;
     it_h_index it(find_term(term));
     if (it == g_h_index().end())
@@ -327,13 +327,13 @@ namespace piranha
       cf_type new_c;
       if (Sign)
       {
-        new_c=*it->g_cf();
-        new_c.add(*term.g_cf());
+        new_c=it->cf();
+        new_c.add(term.cf());
       }
       else
       {
-        new_c=*it->g_cf();
-        new_c.subtract(*term.g_cf());
+        new_c=it->cf();
+        new_c.subtract(term.cf());
       }
 // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_ignorable(*this))
@@ -355,7 +355,7 @@ namespace piranha
   template <template <class, class> class Term, class Cf2, class Cf1, class Trig>
     struct transform_term
   {
-    explicit transform_term(const Term<Cf2,Trig> &term):result(*term.g_cf(),*term.g_trig()) {}
+    explicit transform_term(const Term<Cf2,Trig> &term):result(term.cf(),term.trig()) {}
     Term<Cf1,Trig>      result;
   };
 
@@ -385,20 +385,20 @@ namespace piranha
     const size_t cw=cf_width(), tw=trig_width();
 // It should not happen because resizing in this case should already be managed
 // by external routines (merge_args, and input from file).
-    p_assert(term.result.g_cf()->is_insertable(cw));
-    p_assert(term.result.g_trig()->is_insertable(tw));
+    p_assert(term.result.cf().is_insertable(cw));
+    p_assert(term.result.trig().is_insertable(tw));
     term_type *new_term(0);
-    const bool padding_needed=(term.result.g_cf()->needs_padding(cw) or term.result.g_trig()->needs_padding(tw));
+    const bool padding_needed=(term.result.cf().needs_padding(cw) or term.result.trig().needs_padding(tw));
     if (unlikely(padding_needed))
     {
       new_term=term_allocator.allocate(1);
       term_allocator.construct(new_term,term.result);
-      new_term->s_cf()->pad_right(cw);
-      new_term->s_trig()->pad_right(tw);
+      new_term->cf().pad_right(cw);
+      new_term->trig().pad_right(tw);
     }
     if (CheckTrigSign)
     {
-      if (term.result.g_trig()->sign() < 0)
+      if (term.result.trig().sign() < 0)
       {
         if (new_term == 0)
         {
@@ -483,8 +483,8 @@ namespace piranha
     {
 // TODO: use hinting.
       tmp = *it;
-      tmp.s_cf()->apply_layout(l_cf);
-      tmp.s_trig()->apply_layout(l_trig);
+      tmp.cf().apply_layout(l_cf);
+      tmp.trig().apply_layout(l_trig);
 // Use safe insert because when reorganizing the args layout maybe a negative multiplier
 // may have been placed in the first position.
       retval.insert_check_positive(tmp);
@@ -513,7 +513,7 @@ namespace piranha
     it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
-      part_norm+=it->g_cf()->norm(arguments().template get<0>());
+      part_norm+=it->cf().norm(arguments().template get<0>());
       if (part_norm >= delta)
       {
         break;
@@ -544,7 +544,7 @@ namespace piranha
     it_s_index it=boost::prior(g_s_index().end());
     while (1)
     {
-      if (it->g_cf()->norm(arguments().template get<0>()) >= delta)
+      if (it->cf().norm(arguments().template get<0>()) >= delta)
       {
         break;
       }

@@ -54,27 +54,22 @@ namespace piranha
         explicit simple_term(const simple_term<Cf2,trig_type> &term):ancestor(term) {}
 // Getters
 /// Get mutable coefficient reference.
-      cf_type *s_cf()
+      cf_type &cf()
       {
-        return &(ancestor::elements.template get<0>());
+        return ancestor::elements.template get<0>();
       }
 /// Get const reference to coefficient.
-      const cf_type *g_cf() const
+      const cf_type &cf() const
       {
-        return &(ancestor::elements.template get<0>());
+        return ancestor::elements.template get<0>();
       }
 /// Get mutable reference to trigonometric part.
-      trig_type *s_trig()
+      trig_type &trig()
       {
-        return &(ancestor::elements.template get<1>());
+        return ancestor::elements.template get<1>();
       }
 /// Get const reference to trigonometric part.
-      const trig_type *g_trig() const
-      {
-        return &(ancestor::elements.template get<1>());
-      }
-/// Get const reference to trigonometric part.
-      const trig_type &g_trig_ref() const
+      const trig_type &trig() const
       {
         return ancestor::elements.template get<1>();
       }
@@ -95,10 +90,10 @@ namespace piranha
 /// Invert the sign of trigonometric multipliers.
       void invert_trig_args()
       {
-        s_trig()->invert_sign();
-        if (!(g_trig()->g_flavour()))
+        trig().invert_sign();
+        if (!(trig().g_flavour()))
         {
-          s_cf()->invert_sign();
+          cf().invert_sign();
         }
       }
 // I/O.
@@ -107,20 +102,20 @@ namespace piranha
       {
 // Setup formatting.
         stream_manager::setup_print(out_stream);
-        g_cf()->print_plain(out_stream,cv);
+        cf().print_plain(out_stream,cv);
         out_stream << stream_manager::data_separator();
-        g_trig()->print_plain(out_stream,tv);
+        trig().print_plain(out_stream,tv);
       }
 /// Print in latex format.
       void print_latex(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
 // Setup formatting
         stream_manager::setup_print(out_stream);
-        g_cf()->print_latex(out_stream,cv);
+        cf().print_latex(out_stream,cv);
         out_stream << "&";
-        out_stream << "$" << g_trig()->phase(tv) <<
-          "$" << "&" << "$" << g_trig()->freq(tv) << "$" << "&";
-        g_trig()->print_latex(out_stream,tv);
+        out_stream << "$" << trig().phase(tv) <<
+          "$" << "&" << "$" << trig().freq(tv) << "$" << "&";
+        trig().print_latex(out_stream,tv);
       }
 /// Print to stream.
 /**
@@ -151,8 +146,8 @@ namespace piranha
       template <class TrigEvaluator>
         eval_type t_eval(TrigEvaluator &te) const
       {
-        eval_type retval=g_cf()->t_eval(te.value(),te.ps()->arguments().template get<0>());
-        retval*=g_trig()->t_eval(te);
+        eval_type retval=cf().t_eval(te.value(),te.ps()->arguments().template get<0>());
+        retval*=trig().t_eval(te);
         return retval;
       }
   };

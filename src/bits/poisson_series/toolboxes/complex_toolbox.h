@@ -173,9 +173,9 @@ namespace piranha
 // TODO: hinted insertion here.
         for (real_it_s_index it=comp.g_s_index().begin();it!=it_f;++it)
         {
-          *term.s_cf()=build_cf_from_comp<Cmp>(*it->g_cf());
-          *term.s_trig()=*it->g_trig();
-          term.s_trig()->s_flavour()=it->g_trig()->g_flavour();
+          term.cf()=build_cf_from_comp<Cmp>(it->cf());
+          term.trig()=it->trig();
+          term.trig().s_flavour()=it->trig().g_flavour();
           static_cast<Derived *>(this)->insert_check_positive(term);
         }
       }
@@ -208,9 +208,9 @@ namespace piranha
         real_term_type term(real_cf_type(0),trig_type());
         for (it_s_index it=static_cast<Derived const *>(this)->g_s_index().begin();it!=it_f;++it)
         {
-          *term.s_cf()=get_cf_comp<Cmp>(*it->g_cf());
-          *term.s_trig()=*it->g_trig();
-          term.s_trig()->s_flavour()=it->g_trig()->g_flavour();
+          term.cf()=get_cf_comp<Cmp>(it->cf());
+          term.trig()=it->trig();
+          term.trig().s_flavour()=it->trig().g_flavour();
           it_hint=retval.insert_check_positive(term,&it_hint);
         }
         return retval;

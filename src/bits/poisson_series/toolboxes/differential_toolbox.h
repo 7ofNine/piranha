@@ -58,9 +58,9 @@ namespace piranha
 // First part of the derivation of the product coefficient * trigonometric_part.
           if (cf_s_index >= 0)
           {
-            it->g_cf()->partial(cf_s_index,*tmp_term.s_cf());
-            *tmp_term.s_trig()=*it->g_trig();
-            tmp_term.s_trig()->s_flavour()=it->g_trig()->g_flavour();
+            it->cf().partial(cf_s_index,tmp_term.cf());
+            tmp_term.trig()=it->trig();
+            tmp_term.trig().s_flavour()=it->trig().g_flavour();
             retval.insert_check_positive(tmp_term);
           }
 // Second part of the derivation.
@@ -68,22 +68,22 @@ namespace piranha
 // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
           if (trig_s_index >= 0)
           {
-            *tmp_term.s_cf()=*it->g_cf();
-            switch (it->g_trig()->g_flavour())
+            tmp_term.cf()=it->cf();
+            switch (it->trig().g_flavour())
             {
               case true:
-                tmp_term.s_cf()->mult_by(-it->g_trig()->at(trig_s_index));
-                tmp_term.s_trig()->s_flavour()=false;
+                tmp_term.cf().mult_by(-it->trig().at(trig_s_index));
+                tmp_term.trig().s_flavour()=false;
                 break;
               case false:
-                tmp_term.s_cf()->mult_by(it->g_trig()->at(trig_s_index));
-                tmp_term.s_trig()->s_flavour()=true;
+                tmp_term.cf().mult_by(it->trig().at(trig_s_index));
+                tmp_term.trig().s_flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to
 // do it again now.
             if (cf_s_index < 0)
             {
-              *tmp_term.s_trig()=*it->g_trig();
+              tmp_term.trig()=it->trig();
             }
             retval.insert_check_positive(tmp_term);
           }

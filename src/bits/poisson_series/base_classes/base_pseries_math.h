@@ -185,32 +185,32 @@ namespace piranha
     const term_type &t1, const Term<Cf2,trig_type> &t2, LightTermPair &term_pair,
     cf_type &new_c)
   {
-    t1.g_trig()->trigmult(*t2.g_trig(),*term_pair.template get
-      <0>().s_trig(),
-      *term_pair.template get<1>().s_trig());
-    *term_pair.template get
-      <0>().s_cf()=*term_pair.template get
-      <1>().s_cf()=new_c;
-    if (t1.g_trig()->g_flavour()==t2.g_trig()->g_flavour())
+    t1.trig().trigmult(t2.trig(),term_pair.template get
+      <0>().trig(),
+      term_pair.template get<1>().trig());
+    term_pair.template get
+      <0>().cf()=term_pair.template get
+      <1>().cf()=new_c;
+    if (t1.trig().g_flavour() == t2.trig().g_flavour())
     {
       term_pair.template get
-        <0>().s_trig()->s_flavour()=term_pair.template get
-        <1>().s_trig()->s_flavour()=true;
-      if(!t1.g_trig()->g_flavour())
+        <0>().trig().s_flavour()=term_pair.template get
+        <1>().trig().s_flavour()=true;
+      if(!t1.trig().g_flavour())
       {
         term_pair.template get
-          <1>().s_cf()->invert_sign();
+          <1>().cf().invert_sign();
       }
     }
     else
     {
       term_pair.template get
-        <0>().s_trig()->s_flavour()=term_pair.template get
-        <1>().s_trig()->s_flavour()=false;
-      if(t1.g_trig()->g_flavour())
+        <0>().trig().s_flavour()=term_pair.template get
+        <1>().trig().s_flavour()=false;
+      if(t1.trig().g_flavour())
       {
         term_pair.template get
-            <0>().s_cf()->invert_sign();
+            <0>().cf().invert_sign();
       }
     }
   }
@@ -260,12 +260,12 @@ namespace piranha
     if (ps2.is_cf())
     {
       std::cout << "Cf1\n";
-      static_cast<Derived *>(this)->cf_multiplication(*ps2.g_s_index().begin()->g_cf());
+      static_cast<Derived *>(this)->cf_multiplication(ps2.g_s_index().begin()->cf());
       return true;
     }
     else if (is_cf())
     {
-      cf_type tmp(*g_s_index().begin()->g_cf());
+      cf_type tmp(g_s_index().begin()->cf());
       assign_series(ps2);
       static_cast<Derived *>(this)->cf_multiplication(tmp);
       std::cout << "Cf2\n";
@@ -319,7 +319,7 @@ namespace piranha
     for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      tmp_term.s_cf()->mult_by(c);
+      tmp_term.cf().mult_by(c);
       it_hint=tmp_ps.insert_check_positive(tmp_term,&it_hint);
     }
     swap(tmp_ps);
@@ -389,7 +389,7 @@ namespace piranha
     for (it_s_index it=g_s_index().begin();it!=it_f;++it)
     {
       tmp_term=*it;
-      tmp_term.s_cf()->divide_by(x);
+      tmp_term.cf().divide_by(x);
       it_hint=tmp_ps.insert<cf_type,false,true>(tmp_term,&it_hint);
     }
     swap(tmp_ps);

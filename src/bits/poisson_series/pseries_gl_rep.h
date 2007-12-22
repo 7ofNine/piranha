@@ -173,15 +173,15 @@ namespace piranha
         p_assert(p1.length() >= 1 && p2.length() >= 1);
         for (trig_size_t i=0;i<twidth;++i)
         {
-          limits1[i].first=limits1[i].second=it1->g_trig()->at(i);
-          limits2[i].first=limits2[i].second=it2->g_trig()->at(i);
+          limits1[i].first=limits1[i].second=it1->trig().at(i);
+          limits2[i].first=limits2[i].second=it2->trig().at(i);
         }
         mult_type tmp;
         for (;it1!=it1_f;++it1)
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = it1->g_trig()->at(j);
+            tmp = it1->trig().at(j);
             if (tmp < limits1[j].first)
               limits1[j].first = tmp;
             if (tmp > limits1[j].second)
@@ -192,7 +192,7 @@ namespace piranha
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = it2->g_trig()->at(j);
+            tmp = it2->trig().at(j);
             if (tmp < limits2[j].first)
               limits2[j].first = tmp;
             if (tmp > limits2[j].second)
@@ -274,16 +274,16 @@ namespace piranha
         size_t i;
         for (i=0;i<l1;++i)
         {
-          cs1[i].cf()=*it1->g_cf();
-          code_multiindex(*it1->g_trig(),cs1[i].code);
-          cs1[i].flavour=it1->g_trig()->g_flavour();
+          cs1[i].cf()=it1->cf();
+          code_multiindex(it1->trig(),cs1[i].code);
+          cs1[i].flavour=it1->trig().g_flavour();
           ++it1;
         }
         for (i=0;i<l2;++i)
         {
-          cs2[i].cf()=*it2->g_cf();
-          code_multiindex(*it2->g_trig(),cs2[i].code);
-          cs2[i].flavour=it2->g_trig()->g_flavour();
+          cs2[i].cf()=it2->cf();
+          code_multiindex(it2->trig(),cs2[i].code);
+          cs2[i].flavour=it2->trig().g_flavour();
           ++it2;
         }
       }

@@ -158,7 +158,7 @@ namespace piranha
         std::cout << "Warning: cf width is larger than expected, ignoring term." << std::endl;
         continue;
       }
-      *new_term.s_cf()=cf;
+      new_term.cf()=cf;
 // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
 // Read trigonometric part.
@@ -168,7 +168,7 @@ namespace piranha
         std::cout << "Warning: trig width is larger than expected, ignoring term." << std::endl;
         continue;
       }
-      *new_term.s_trig()=trig;
+      new_term.trig()=trig;
 // Deal with phases.
       if (it_pl==pl.end())
       {
@@ -183,7 +183,7 @@ namespace piranha
             add_phase_to_term(*it_pl,new_term,tmp_term,*this);
             break;
           default:
-            add_phase_to_term(*it_pl-new_term.g_trig()->phase(arguments().template get<1>()),new_term,tmp_term,*this);
+            add_phase_to_term(*it_pl-new_term.trig().phase(arguments().template get<1>()),new_term,tmp_term,*this);
         }
         ++it_pl;
       }
@@ -443,9 +443,9 @@ namespace piranha
     }
     for (iterator it=begin();it!=end();++it)
     {
-      it->g_cf()->print_plain(std::cout,arguments().template get<0>());
-      std::cout << stream_manager::data_separator() << it->g_trig()->phase(arguments().template get<1>()) <<
-        stream_manager::data_separator() << it->g_trig()->freq(arguments().template get<1>()) << std::endl;
+      it->cf().print_plain(std::cout,arguments().template get<0>());
+      std::cout << stream_manager::data_separator() << it->trig().phase(arguments().template get<1>()) <<
+        stream_manager::data_separator() << it->trig().freq(arguments().template get<1>()) << std::endl;
       ++i;
       if (i==lim)
       {

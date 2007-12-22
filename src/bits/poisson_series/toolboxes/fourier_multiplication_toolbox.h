@@ -63,7 +63,7 @@ namespace piranha
         BOOST_FOREACH(term_type t,derived_cast->g_s_index())
         {
           tmp_term=t;
-          tmp_term.s_cf()->mult_by_self(cf,*derived_cast);
+          tmp_term.cf().mult_by_self(cf,*derived_cast);
           it_hint=tmp_ps.insert_check_positive(tmp_term,&it_hint);
         }
         derived_cast->swap(tmp_ps);
@@ -81,7 +81,7 @@ namespace piranha
           Delta_threshold=Delta/(2*l1*l2);
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width()) == retval.trig_width());
 // ps2.begin() is legal because we checked for ps2's size.
-        const double norm2_i=ps2.begin()->g_cf()->norm(ps2.arguments().template get<0>());
+        const double norm2_i=ps2.begin()->cf().norm(ps2.arguments().template get<0>());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
         progress_display<_PIRANHA_DISPLAY_PROGRESS> pd(l1*l2);
@@ -126,8 +126,8 @@ namespace piranha
         void term_by_term_multiplication(const T &t1, const U &t2, V &term_pair) const
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
-        cf_type new_c=*t1.g_cf();
-        new_c.template mult_by_self(*t2.g_cf(),*static_cast<DerivedPs const *>(this));
+        cf_type new_c=t1.cf();
+        new_c.template mult_by_self(t2.cf(),*static_cast<DerivedPs const *>(this));
         new_c.divide_by(2);
         DerivedPs::term_by_term_multiplication_trig(t1,t2,term_pair,new_c);
       }
@@ -218,17 +218,17 @@ namespace piranha
           }
         }
         term_type tmp_term;
-        tmp_term.s_trig()->pad_right(derived_cast->trig_width());
+        tmp_term.trig().pad_right(derived_cast->trig_width());
         std::valarray<mult_type> tmp_array(derived_cast->trig_width());
         max_fast_int k;
         for (k=h_min;k<=h_max;++k)
         {
           if (unlikely(s_point_cos[k].second))
           {
-            *tmp_term.s_cf() = s_point_cos[k].first;
+            tmp_term.cf() = s_point_cos[k].first;
             glr.decode_multiindex(k,tmp_array);
-            tmp_term.s_trig()->assign_int_vector(tmp_array);
-            tmp_term.s_trig()->s_flavour()=true;
+            tmp_term.trig().assign_int_vector(tmp_array);
+            tmp_term.trig().s_flavour()=true;
             retval.insert_check_positive(tmp_term);
           }
         }
@@ -236,10 +236,10 @@ namespace piranha
         {
           if (unlikely(s_point_sin[k].second))
           {
-            *tmp_term.s_cf() = s_point_sin[k].first;
+            tmp_term.cf() = s_point_sin[k].first;
             glr.decode_multiindex(k,tmp_array);
-            tmp_term.s_trig()->assign_int_vector(tmp_array);
-            tmp_term.s_trig()->s_flavour()=false;
+            tmp_term.trig().assign_int_vector(tmp_array);
+            tmp_term.trig().s_flavour()=false;
             retval.insert_check_positive(tmp_term);
           }
         }
@@ -357,17 +357,17 @@ namespace piranha
           }
         }
         term_type tmp_term;
-        tmp_term.s_trig()->pad_right(derived_cast->trig_width());
+        tmp_term.trig().pad_right(derived_cast->trig_width());
         std::valarray<mult_type> tmp_array(derived_cast->trig_width());
         ccm_hash_iterator cchm_it;
         {
           const ccm_hash_iterator cchm_it_f=cchm_cos.end();
           for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
           {
-            *tmp_term.s_cf() = cchm_it->cf();
+            tmp_term.cf() = cchm_it->cf();
             glr.decode_multiindex(cchm_it->code,tmp_array);
-            tmp_term.s_trig()->assign_int_vector(tmp_array);
-            tmp_term.s_trig()->s_flavour()=true;
+            tmp_term.trig().assign_int_vector(tmp_array);
+            tmp_term.trig().s_flavour()=true;
             retval.insert_check_positive(tmp_term);
           }
         }
@@ -375,10 +375,10 @@ namespace piranha
           const ccm_hash_iterator cchm_it_f=cchm_sin.end();
           for (cchm_it=cchm_sin.begin();cchm_it!=cchm_it_f;++cchm_it)
           {
-            *tmp_term.s_cf() = cchm_it->cf();
+            tmp_term.cf() = cchm_it->cf();
             glr.decode_multiindex(cchm_it->code,tmp_array);
-            tmp_term.s_trig()->assign_int_vector(tmp_array);
-            tmp_term.s_trig()->s_flavour()=false;
+            tmp_term.trig().assign_int_vector(tmp_array);
+            tmp_term.trig().s_flavour()=false;
             retval.insert_check_positive(tmp_term);
           }
         }
@@ -412,8 +412,8 @@ namespace piranha
 // NOTE: at this point retval's width() is greater or equal to _both_ this
 // and ps2. It's the max width indeed.
         light_term_type tmp1, tmp2;
-        tmp1.s_trig()->pad_right(retval.trig_width());
-        tmp2.s_trig()->pad_right(retval.trig_width());
+        tmp1.trig().pad_right(retval.trig_width());
+        tmp2.trig().pad_right(retval.trig_width());
         light_term_pair term_pair(tmp1,tmp2);
 // Cache all pointers to the terms of this and ps2 in vectors.
         std::valarray<term_type const *> v_p1;
@@ -426,12 +426,12 @@ namespace piranha
         m_hash hm((l1*l2)/100);
         m_hash_point_iterator hm_p_it;
 // Cache some pointers.
-        trig_type const *t0=term_pair.template get<0>().g_trig(), *t1=term_pair.template get<1>().g_trig();
-        cf_type const *c0=term_pair.template get<0>().g_cf(), *c1=term_pair.template get<1>().g_cf();
-        light_term_type *term0=&(term_pair.template get<0>()), *term1=&(term_pair.template get<1>());
+        trig_type const &t0=term_pair.template get<0>().trig(), &t1=term_pair.template get<1>().trig();
+        cf_type const &c0=term_pair.template get<0>().cf(), &c1=term_pair.template get<1>().cf();
+        light_term_type &term0=term_pair.template get<0>(), &term1=term_pair.template get<1>();
         for (i=0;i<l1;++i)
         {
-          norm1=v_p1[i]->g_cf()->norm(derived_cast->arguments().template get<0>());
+          norm1=v_p1[i]->cf().norm(derived_cast->arguments().template get<0>());
           if ((norm1*norm2_i)/2<Delta_threshold)
           {
             break;
@@ -441,38 +441,38 @@ namespace piranha
 // We are going to calculate a term's norm twice... We need to profile
 // this at a later stage and see if it is worth to store the norm inside
 // the term.
-            if ((norm1*v_p2[j]->g_cf()->norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
+            if ((norm1*v_p2[j]->cf().norm(ps2.arguments().template get<0>()))/2<Delta_threshold)
             {
               break;
             }
             term_by_term_multiplication(*v_p1[i],*v_p2[j],term_pair);
 // Before insertion we change the sign of trigonometric parts if necessary.
 // This way we won't do a copy inside the insertion function.
-            if (t0->sign()<0)
+            if (t0.sign() < 0)
             {
-              term0->invert_trig_args();
+              term0.invert_trig_args();
             }
-            if (t1->sign()<0)
+            if (t1.sign() < 0)
             {
-              term1->invert_trig_args();
+              term1.invert_trig_args();
             }
-            hm_p_it=hm.find(*term0);
+            hm_p_it=hm.find(term0);
             if (hm_p_it == hm.end())
             {
-              hm.insert(*term0);
+              hm.insert(term0);
             }
             else
             {
-              hm_p_it->cf.add(*c0);
+              hm_p_it->m_cf.add(c0);
             }
-            hm_p_it=hm.find(*term1);
+            hm_p_it=hm.find(term1);
             if (hm_p_it == hm.end())
             {
-              hm.insert(*term1);
+              hm.insert(term1);
             }
             else
             {
-              hm_p_it->cf.add(*c1);
+              hm_p_it->m_cf.add(c1);
             }
             ++pd;
           }
@@ -481,7 +481,7 @@ namespace piranha
         for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
         {
 // TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-          retval.template insert<cf_type,false,true>(term_type(hm_it->cf,hm_it->trig));
+          retval.template insert<cf_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig));
         }
 //retval.cumulative_crop(Delta);
       }
