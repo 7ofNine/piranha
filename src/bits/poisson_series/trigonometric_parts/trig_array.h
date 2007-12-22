@@ -110,7 +110,7 @@ namespace piranha
       }
       bool is_insertable(const size_t &n) const
       {
-        return (g_width() < n);
+        return (g_width() <= n);
       }
 
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
