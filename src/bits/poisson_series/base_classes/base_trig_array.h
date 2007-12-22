@@ -221,17 +221,16 @@ namespace piranha
  * @param[in] t double time of the evaluation.
  * @param[in] v vector of piranha::psymbol pointers.
  */
-      template <class Series>
-        double t_eval(const double &t, const Series &s) const
+      double t_eval(const double &t, const vector_psym_p &v) const
       {
-        const size_t w=s.trig_width();
+        const size_t w=v.size();
         p_assert(w <= static_cast<const Derived *>(this)->g_width());
         double retval=0.;
         for (trig_size_t i=0;i<w;++i)
         {
           if (static_cast<const Derived *>(this)->g_container()[i]!=0)
           {
-            retval+=static_cast<const Derived *>(this)->g_container()[i]*s.trig_args()[i]->t_eval(t);
+            retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->t_eval(t);
           }
         }
         switch (g_flavour())

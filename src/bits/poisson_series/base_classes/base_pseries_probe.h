@@ -48,7 +48,7 @@ namespace piranha
     const r_it_s_index it_f=g_s_index().rend();
     for (r_it_s_index it=g_s_index().rbegin();it!=it_f;++it)
     {
-      retval+=it->t_eval(value,*this);
+      retval+=it->t_eval_brute(value,arguments());
     }
 // Linear arguments
     for (size_t j=0;j<w;++j)

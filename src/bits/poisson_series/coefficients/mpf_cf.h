@@ -27,6 +27,7 @@
 
 #include "../../common_typedefs.h"
 #include "../../math.h" // besselJ.
+#include "../../psymbol.h"
 #include "../base_classes/numerical_container.h"
 #include "../concepts/basic_pseries_coefficient_concept.h"
 
@@ -97,8 +98,7 @@ namespace piranha
       {
         return std::abs(g_value().get_d());
       }
-      template <class Series>
-        double t_eval(const double &, const Series &) const
+      double t_eval(const double &, const vector_psym_p &) const
       {
         return g_value().get_d();
       }
@@ -202,8 +202,7 @@ namespace std
         return std::abs(g_value()).get_d();
       }
 // Override evaluation.
-      template <class Series>
-        std::complex<double> t_eval(const double &, const Series &) const
+      std::complex<double> t_eval(const double &, const piranha::vector_psym_p &) const
       {
         return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
       }

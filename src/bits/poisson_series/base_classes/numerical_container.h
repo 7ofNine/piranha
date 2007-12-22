@@ -108,8 +108,7 @@ namespace piranha
         (void)s;
         return false;
       }
-      template <class Series>
-        const eval_type &t_eval(const double &, const Series &) const
+      const eval_type &t_eval(const double &, const vector_psym_p &) const
       {
         return value_;
       }
