@@ -147,6 +147,11 @@ namespace piranha
       retval.lin_args()=lin_args();
       retval.arguments()=arguments();
       const std::string description(psymbol_descr<N>());
+      if (arg_index<N>(p->name()).first)
+      {
+        std::cout << description << " already present in series, I won't add it." << std::endl;
+        return;
+      }
 // Append psymbol.
 // NOTICE: maybe we can place this exception throwing also in pad_right() methods?
       if (element_type::max_size < retval.arguments().template get<N>().size()+1)
@@ -155,6 +160,7 @@ namespace piranha
           description+", max_size reached.");
       }
       retval.arguments().template get<N>().push_back(p);
+// Deal with lin_args if argument is trigonometric.
       if (N == psymbol::trig)
       {
         retval.lin_args().push_back(0);
