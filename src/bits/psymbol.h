@@ -258,22 +258,9 @@ namespace piranha
           }
         }
       }
-/// Static constructor.
-/**
- * When instantiatied (in psymbol.cpp), this class registers the "null" and "t" (time) symbols.
- */
-      class static_ctor
-      {
-        public:
-          static_ctor()
-          {
-            psymbol("t",0,1);
-          }
-      };
 // Data members.
     private:
       static set_type             p_set_;
-      static const static_ctor    ctor_;
   };
 
 /// Constructor from std::string.
