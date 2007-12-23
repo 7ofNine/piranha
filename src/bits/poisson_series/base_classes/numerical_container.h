@@ -73,6 +73,7 @@ namespace piranha
       void pad_right(const size_t &n)
       {
         p_assert(n==0);
+        (void)n;
       }
       void apply_layout(const layout_type &l)
       {

@@ -119,6 +119,7 @@ namespace piranha
       void pad_right(const size_t &w)
       {
         p_assert(w == g_width());
+        (void)w;
       }
 // TODO: check if it is better this or the base version.
       /*void invert_sign()
