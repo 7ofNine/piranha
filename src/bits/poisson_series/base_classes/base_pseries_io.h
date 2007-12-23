@@ -34,20 +34,7 @@ namespace piranha
     template <psymbol::type Type>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_arg(std::ifstream &inf)
   {
-    BOOST_STATIC_ASSERT(Type == psymbol::cf or Type == psymbol::trig);
-    std::string description;
-    switch (Type)
-    {
-      case (psymbol::cf):
-        description = "cf_arg";
-        break;
-      case (psymbol::trig):
-        description = "trig_arg";
-        break;
-      default:
-        p_assert(false);
-        ;
-    }
+    const std::string description(psymbol_descr<Type>());
     std::string temp, temp_name;
     vector_double temp_vdouble;
     std::streampos cur_pos=inf.tellg();
@@ -57,7 +44,7 @@ namespace piranha
       {
         std::cout << "Finished parsing " << description << "." << std::endl;
         inf.seekg(cur_pos);
-        append_args<Type>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble)).second));
+        append_arg<Type>(psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble)).second);
         return;
       }
       deque_string split_v;

@@ -190,8 +190,8 @@ namespace piranha
         it_s_index insert_check_positive(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
-      void append_cf_args(const vector_psym_p &);
-      void append_trig_args(const vector_psym_p &);
+      void append_cf_arg(const psym_p);
+      void append_trig_arg(const psym_p);
 // Protected probing.
       it_s_index sdp_cutoff(const double &, const double &) const;
       it_s_index discontinuity() const;
@@ -226,9 +226,11 @@ namespace piranha
 // Private probing.
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
+      template <int>
+        static std::string psymbol_descr();
 // Private manipulation.
-      template <psymbol::type>
-        void append_args(const vector_psym_p &);
+      template <int>
+        void append_arg(const psym_p);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
       it_h_index find_term(const term_type &) const;

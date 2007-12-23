@@ -319,5 +319,26 @@ namespace piranha
     }
     return (retval/count);
   }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <int N>
+    inline std::string base_pseries<__PIRANHA_BASE_PS_TP>::psymbol_descr()
+  {
+    BOOST_STATIC_ASSERT(N == psymbol::cf or N == psymbol::trig);
+    std::string description;
+    switch (N)
+    {
+      case (psymbol::cf):
+        description = "cf_arg";
+        break;
+      case (psymbol::trig):
+        description = "trig_arg";
+        break;
+      default:
+        p_assert(false);
+        ;
+    }
+    return description;
+  }
 }
 #endif

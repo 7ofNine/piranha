@@ -129,65 +129,40 @@ namespace piranha
     swap(tmp_ps);
   }
 
-/// Append arguments.
+/// Append argument.
 /**
- * The arguments will be appended at the end of the corresponding argument vector.
+ * The argument will be appended at the end of the corresponding argument vector.
  * @param[in] N arguments type.
- * @param[in] v vector_psym_p to be appended.
- * @see base_pseries::m_arguments tuple of arguments.
+ * @param[in] p pirahna::psym_p to be appended.
+ * @see base_pseries::m_arguments tuple of arguments vectors.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <psymbol::type Type>
-    void base_pseries<__PIRANHA_BASE_PS_TP>::append_args(const vector_psym_p &v)
+    template <int N>
+    void base_pseries<__PIRANHA_BASE_PS_TP>::append_arg(const psym_p p)
   {
+    typedef typename boost::tuples::element<N,typename term_type::tuple_type>::type element_type;
     try
     {
       Derived retval;
       retval.lin_args()=lin_args();
       retval.arguments()=arguments();
-// Append psymbols from v.
-      switch (Type)
+      const std::string description(psymbol_descr<N>());
+// Append psymbol.
+// NOTICE: maybe we can place this exception throwing also in pad_right() methods?
+      if (element_type::max_size < retval.arguments().template get<N>().size()+1)
       {
-// TODO: use tuple in terms here too: term_type::limits.get<Type>().max_size or similar.
-        case (psymbol::cf):
-          if (cf_type::max_size < v.size() + retval.arguments().template get<psymbol::cf>().size())
-          {
-            throw exceptions::add_arguments("Cannot append further cf_args, max_size reached.");
-          }
-          break;
-        case (psymbol::trig):
-          if (trig_type::max_size < v.size() + retval.arguments().template get<psymbol::trig>().size())
-          {
-            throw exceptions::add_arguments("Cannot append further trig_args, max_size reached.");
-          }
-// If we are dealing with trig, we must take care of lin_args too.
-          retval.lin_args().insert(retval.lin_args().end(),v.size(),0);
-          break;
-        default:
-          p_assert(false);
-          ;
+        throw exceptions::add_arguments(std::string("Cannot append further ")+
+          description+", max_size reached.");
       }
-      retval.arguments().template get<Type>().insert(retval.arguments().template get<Type>().end(),v.begin(),v.end());
+      retval.arguments().template get<N>().push_back(p);
 // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
       const it_h_index it_f=g_h_index().end();
-      const size_t new_size=retval.arguments().template get<Type>().size();
+      const size_t new_size=retval.arguments().template get<N>().size();
       for (it_h_index it=g_h_index().begin();it!=it_f;++it)
       {
 // NOTICE: find a way to avoid resizes here?
         term_type tmp_term=(*it);
-        switch (Type)
-        {
-// TODO: This would be the ideal place to use tuples inside terms...
-          case (psymbol::cf):
-            tmp_term.cf().pad_right(new_size);
-            break;
-          case (psymbol::trig):
-            tmp_term.trig().pad_right(new_size);
-            break;
-          default:
-            p_assert(false);
-            ;
-        }
+        tmp_term.elements.template get<N>().pad_right(new_size);
 // NOTICE: use hinted insertion here?
         retval.insert_check_positive(tmp_term);
       }
@@ -201,9 +176,9 @@ namespace piranha
  * Calls base_pseries::append_args with Type = psymbol::cf.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_args(const vector_psym_p &v)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_cf_arg(const psym_p p)
   {
-    append_args<psymbol::cf>(v);
+    append_arg<psymbol::cf>(p);
   }
 
 /// Append trigonometric arguments.
@@ -211,9 +186,9 @@ namespace piranha
  * Calls base_pseries::append_args with Type = psymbol::trig.
  */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_args(const vector_psym_p &v)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_trig_arg(const psym_p p)
   {
-    append_args<psymbol::trig>(v);
+    append_arg<psymbol::trig>(p);
   }
 
 /// Swap the content of with another series.
