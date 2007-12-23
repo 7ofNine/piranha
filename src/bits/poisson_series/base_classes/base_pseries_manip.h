@@ -446,6 +446,7 @@ namespace piranha
     retval.arguments()=arguments();
     retval.lin_args()=lin_args();
 // Get new layouts.
+// TODO: layout tuples here for more genericity.
     layout_type l_cf = utils::get_layout(cf_args(),ps2.cf_args());
     layout_type l_trig = utils::get_layout(trig_args(),ps2.trig_args());
     if (l_cf.size() > cf_type::max_size or l_trig.size() > trig_type::max_size)
