@@ -69,12 +69,7 @@ namespace piranha
             trig = 1,
           };
 // Ctors
-/// Default constructor.
-/**
- * Assigns 'null' as name of the symbol.
- */
-          psymbol():name_(null_name_) {psymbol_manager::reg(*this);}
-          psymbol(const std::string &, const vector_double &);
+//          psymbol(const std::string &, const vector_double &);
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
           {
@@ -152,10 +147,10 @@ namespace piranha
           double phase() const {return get_poly_eval_elem(0);}
 /// Get symbol's frequency.
           double freq() const {return get_poly_eval_elem(1);}
-/// Get null name for symbols.
-          static const std::string &null_name() {return null_name_;}
           std::string powers_string() const {return utils::vector_double_to_str(poly_eval_);}
         private:
+// Default constructor. Privatized because it mustn't be called.
+          psymbol() {p_assert(false);}
 // Helper for getting poly evals.
           double get_poly_eval_elem(const size_t &n) const
           {
@@ -173,7 +168,6 @@ namespace piranha
         private:
           std::string                 name_;
           vector_double               poly_eval_;
-          static const std::string    null_name_;
       };
 /// Functor used in psymbol comparison in set.
       struct ltpsymbol
@@ -276,20 +270,19 @@ namespace piranha
 /// Constructor from std::string.
 /**
  * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
- * it assigns the null symbol.
+ * build it with zero poly_eval.
  */
-  inline psymbol_manager::psymbol::psymbol(const std::string &str):name_(null_name_)
+  inline psymbol_manager::psymbol::psymbol(const std::string &str):name_(str),poly_eval_()
   {
     psym_p p=psymbol_manager::get_pointer(str);
-    if (p!=psymbol_manager::end())
+    if (p == psymbol_manager::end())
     {
-      name_=p->name();
-      poly_eval_=p->poly_eval();
+      psymbol_manager::reg(*this);
     }
     else
     {
-      std::cout << "Symbol '" << str << "' not found, building null symbol." << std::endl;
-      psymbol_manager::reg(*this);
+      name_=p->name();
+      poly_eval_=p->poly_eval();
     }
   }
 
@@ -299,11 +292,11 @@ namespace piranha
  * @param[in] str symbol's name.
  * @param[in] pol symbol's polynomial evaluation vector.
  */
-  inline psymbol_manager::psymbol::psymbol(const std::string &str, const vector_double &pol):
-  name_(str),poly_eval_(pol)
-  {
-    psymbol_manager::reg(*this);
-  }
+//   inline psymbol_manager::psymbol::psymbol(const std::string &str, const vector_double &pol):
+//   name_(str),poly_eval_(pol)
+//   {
+//     psymbol_manager::reg(*this);
+//   }
 
 // Helper for ctor from boost::array.
   template <class T>
