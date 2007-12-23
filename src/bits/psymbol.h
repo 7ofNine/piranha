@@ -133,47 +133,24 @@ namespace piranha
             return psymbol(*this);
           }
           bool operator==(const psymbol &) const;
-          bool operator!=(const psymbol &psym) const
-          {
-            return !(*this==psym);
-          }
+          bool operator!=(const psymbol &psym) const {return !(*this == psym);}
           void print(std::ostream& out_stream=std::cout) const;
 /// Print to screen.
-          void put() const
-          {
-            print(std::cout);
-          }
+          void put() const {print(std::cout);}
           double t_eval(const double &) const;
 // Getters
 /// Get symbol's name.
-          const std::string &name() const
-          {
-            return name_;
-          }
+          const std::string &name() const {return name_;}
 /// Get polynomial evaluation vector.
-          const vector_double &poly_eval() const
-          {
-            return poly_eval_;
-          }
+          const vector_double &poly_eval() const {return poly_eval_;}
+// TODO: replace with templated int?
 /// Get symbol's phase.
-          double phase() const
-          {
-            return get_poly_eval_elem(0);
-          }
+          double phase() const {return get_poly_eval_elem(0);}
 /// Get symbol's frequency.
-          double freq() const
-          {
-            return get_poly_eval_elem(1);
-          }
+          double freq() const {return get_poly_eval_elem(1);}
 /// Get null name for symbols.
-          static const std::string &null_name()
-          {
-            return null_name_;
-          }
-          std::string powers_string() const
-          {
-            return utils::vector_double_to_str(poly_eval_);
-          }
+          static const std::string &null_name() {return null_name_;}
+          std::string powers_string() const {return utils::vector_double_to_str(poly_eval_);}
         private:
 // Helper for getting poly evals.
           double get_poly_eval_elem(const size_t &n) const
@@ -211,18 +188,9 @@ namespace piranha
       typedef set_type::const_iterator iterator;
 /// Alias for iterator.
       typedef iterator psym_p;
-      static iterator begin()
-      {
-        return p_set_.begin();
-      }
-      static iterator end()
-      {
-        return p_set_.end();
-      }
-      static size_t length()
-      {
-        return p_set_.size();
-      }
+      static iterator begin() {return p_set_.begin();}
+      static iterator end() {return p_set_.end();}
+      static size_t length() {return p_set_.size();}
 /// Print to stream.
       static void print(std::ostream &stream=std::cout)
       {
@@ -235,10 +203,7 @@ namespace piranha
         }
       }
 /// Print to screen.
-      static void put()
-      {
-        print();
-      }
+      static void put() {print();}
       static iterator get_pointer(const psymbol &psym)
       {
         iterator retval=get_pointer(psym.name());
