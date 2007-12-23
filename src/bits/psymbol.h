@@ -139,7 +139,6 @@ namespace piranha
             return psymbol(*this);
           }
           bool operator==(const psymbol &) const;
-          bool operator!=(const psymbol &psym) const {return !(*this == psym);}
           void print(std::ostream& out_stream=std::cout) const;
 /// Print to screen.
           void put() const {print(std::cout);}
@@ -246,8 +245,9 @@ namespace piranha
         else
         {
 // Symbol name is already registered, check that it is really the same symbol.
-          if (psym != *it)
+          if (!(psym == *it))
           {
+// TODO: overwrite here instead of using old.
             std::cout << "Warning: you tried to add a psymbol with the same name of another one "
               << "but with different properties. The original one will be used." << std::endl;
             psym.print();
@@ -303,7 +303,7 @@ namespace piranha
     for (unsigned int j=0;j<poly_eval_.size();++j)
     {
       out_stream << poly_eval_[j];
-      if (j!=poly_eval_.size()-1)
+      if (j != poly_eval_.size()-1)
       {
         out_stream << stream_manager::data_separator();
       }
@@ -314,12 +314,12 @@ namespace piranha
 /// Test for equality.
   inline bool psymbol_manager::psymbol::operator==(const psymbol &psym2) const
   {
-    if (name_!=psym2.name_)
+    if (name_ != psym2.name_)
     {
       std::cout << "Different name!" << std::endl;
       return false;
     }
-    else if (poly_eval_!=psym2.poly_eval_)
+    else if (poly_eval_ != psym2.poly_eval_)
     {
       std::cout << "Different poly_eval!" << std::endl;
       return false;
