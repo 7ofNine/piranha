@@ -155,6 +155,10 @@ namespace piranha
           description+", max_size reached.");
       }
       retval.arguments().template get<N>().push_back(p);
+      if (N == psymbol::trig)
+      {
+        retval.lin_args().push_back(0);
+      }
 // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
       const it_h_index it_f=g_h_index().end();
       const size_t new_size=retval.arguments().template get<N>().size();
