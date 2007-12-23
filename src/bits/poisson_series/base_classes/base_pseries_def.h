@@ -119,8 +119,8 @@ namespace piranha
       const series_set_type *g_series_set() const;
       const sorted_index &g_s_index() const;
       const hashed_index &g_h_index() const;
-      int cf_arg_index(const std::string &) const;
-      int trig_arg_index(const std::string &) const;
+      std::pair<bool,size_t> cf_arg_index(const std::string &) const;
+      std::pair<bool,size_t> trig_arg_index(const std::string &) const;
       size_t address() const;
       it_s_index begin() const;
       it_s_index end() const;
@@ -221,6 +221,9 @@ namespace piranha
         static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
         LightTermPair &, cf_type &);
     private:
+// Private getters.
+      template <int>
+        std::pair<bool,size_t> arg_index(const std::string &) const;
 // Private probing.
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;

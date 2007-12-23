@@ -100,7 +100,15 @@ namespace piranha
       template <class real_DerivedPs>
         void add_ps_to_arg(const std::string &name, const real_DerivedPs &p)
       {
-        add_ps_to_arg(static_cast<DerivedPs *>(this)->trig_arg_index(name),p);
+        std::pair<bool,size_t> index = static_cast<DerivedPs const *>(this)->trig_arg_index(name);
+        switch (index.first)
+        {
+          case true:
+            add_ps_to_arg(index.second,p);
+            break;
+          case false:
+            std::cout << "Trig arg " << name << " was not found, won't add_ps_to_args." << std::endl;
+        }
       }
   };
 

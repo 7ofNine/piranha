@@ -111,38 +111,42 @@ namespace piranha
     return g_series_set()->template get<1>();
   }
 
-/// Return index of coefficient argument "name".
+/// Return index of argument "name".
+/**
+ * N is the index of arguments vector in the arguments vectors tuple. Return value is a
+ * std::pair<bool,size_t> in which the first element reports if the argument was found or not,
+ * while the second elemnt reports the index of the element.
+ */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline int base_pseries<__PIRANHA_BASE_PS_TP>::cf_arg_index(const std::string &name) const
+    template <int N>
+    std::pair<bool,size_t> base_pseries<__PIRANHA_BASE_PS_TP>::arg_index(const std::string &name) const
   {
-    int retval=-1;
-    const size_t w=cf_width();
+    std::pair<bool,size_t> retval(false,0);
+    const size_t w=arguments().template get<N>().size();
     for (size_t i=0;i<w;++i)
     {
-      if (arguments().template get<0>()[i]->name()==name)
+      if (arguments().template get<N>()[i]->name() == name)
       {
-        retval=(int)i;
+        retval.first = true;
+        retval.second =i;
         break;
       }
     }
     return retval;
   }
 
+/// Return index of coefficient argument "name".
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline std::pair<bool,size_t> base_pseries<__PIRANHA_BASE_PS_TP>::cf_arg_index(const std::string &name) const
+  {
+    return arg_index<0>(name);
+  }
+
 /// Return index of trigonometric argument "name".
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline int base_pseries<__PIRANHA_BASE_PS_TP>::trig_arg_index(const std::string &name) const
+    inline std::pair<bool,size_t> base_pseries<__PIRANHA_BASE_PS_TP>::trig_arg_index(const std::string &name) const
   {
-    int retval=-1;
-    const size_t w=trig_width();
-    for (size_t i=0;i<w;++i)
-    {
-      if (arguments().template get<1>()[i]->name()==name)
-      {
-        retval=(int)i;
-        break;
-      }
-    }
-    return retval;
+    return arg_index<1>(name);
   }
 
 /// Return a numerical value corresponding to the memory address of the series.

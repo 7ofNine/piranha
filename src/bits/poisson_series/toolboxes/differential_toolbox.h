@@ -43,12 +43,12 @@ namespace piranha
         typedef typename Derived::ancestor::term_type term_type;
         Derived retval;
         retval.merge_args(*static_cast<Derived const *>(this));
-        const int cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
+        const std::pair<bool,size_t> cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
           trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
 // If "name" is not a symbol of the series, return empty series.
-        if (cf_s_index < 0 and trig_s_index < 0)
+        if (!cf_s_index.first and !trig_s_index.first)
         {
-          std::cout << "No psymbol named '" << name << "', returning empty series." << std::endl;
+          std::cout << "No psymbol named '" << name << "', returning empty series in partial derivation." << std::endl;
           return retval;
         }
         const it_h_index it_f=static_cast<Derived const *>(this)->g_h_index().end();
@@ -56,9 +56,9 @@ namespace piranha
         for (it_h_index it=static_cast<Derived const *>(this)->g_h_index().begin();it!=it_f;++it)
         {
 // First part of the derivation of the product coefficient * trigonometric_part.
-          if (cf_s_index >= 0)
+          if (cf_s_index.first)
           {
-            it->cf().partial(cf_s_index,tmp_term.cf());
+            it->cf().partial(cf_s_index.second,tmp_term.cf());
             tmp_term.trig()=it->trig();
             tmp_term.trig().flavour()=it->trig().flavour();
             retval.insert_check_positive(tmp_term);
@@ -66,22 +66,22 @@ namespace piranha
 // Second part of the derivation.
 // NOTICE: this may be placed somewhere inside trig classes, but probably to do this
 // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
-          if (trig_s_index >= 0)
+          if (trig_s_index.first)
           {
             tmp_term.cf()=it->cf();
             switch (it->trig().flavour())
             {
               case true:
-                tmp_term.cf().mult_by(-it->trig().at(trig_s_index));
+                tmp_term.cf().mult_by(-it->trig().at(trig_s_index.second));
                 tmp_term.trig().flavour()=false;
                 break;
               case false:
-                tmp_term.cf().mult_by(it->trig().at(trig_s_index));
+                tmp_term.cf().mult_by(it->trig().at(trig_s_index.second));
                 tmp_term.trig().flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to
 // do it again now.
-            if (cf_s_index < 0)
+            if (!cf_s_index.first)
             {
               tmp_term.trig()=it->trig();
             }

@@ -534,14 +534,21 @@ namespace piranha
       tc_add_ps_to_arg(const T &b, const double &t1, const double &t2,
         const size_t &ntot, std::string name, const T &a, const T &orig):a_(&a),orig_(&orig)
       {
-        size_t idx=orig_->trig_arg_index(name);
-        sym_index_=idx;
-        base_tc<T>::init(t1,t2,ntot,b);
+        std::pair<bool,size_t> index=orig_->trig_arg_index(name);
+        switch (index.first)
+        {
+          case true:
+            sym_index_=index.second;
+            base_tc<T>::init(t1,t2,ntot,b);
+            break;
+          case false:
+            std::cout << "Trig arg " << name << " was not found, won't tc_add_ps_to_args." << std::endl;
+        }
       }
     private:
       const T     *a_;
       const T     *orig_;
-      trig_size_t sym_index_;
+      size_t      sym_index_;
       virtual eval_type eval_hs_computed(const double &t) const
       {
         typedef typename T::r_it_s_index r_it_s_index;
