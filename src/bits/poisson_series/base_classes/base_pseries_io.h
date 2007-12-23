@@ -57,7 +57,7 @@ namespace piranha
       {
         std::cout << "Finished parsing " << description << "." << std::endl;
         inf.seekg(cur_pos);
-        append_args<Type>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble))));
+        append_args<Type>(vector_psym_p(1,psymbol_manager::get_pointer(psymbol(temp_name,temp_vdouble)).second));
         return;
       }
       deque_string split_v;

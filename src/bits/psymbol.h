@@ -192,9 +192,6 @@ namespace piranha
       typedef set_type::const_iterator iterator;
 /// Alias for iterator.
       typedef iterator psym_p;
-      static iterator begin() {return p_set_.begin();}
-      static iterator end() {return p_set_.end();}
-      static size_t length() {return p_set_.size();}
 /// Print to stream.
       static void print(std::ostream &stream=std::cout)
       {
@@ -208,26 +205,31 @@ namespace piranha
       }
 /// Print to screen.
       static void put() {print();}
-      static iterator get_pointer(const psymbol &psym)
+      static std::pair<bool,iterator> get_pointer(const psymbol &psym)
       {
-        iterator retval=get_pointer(psym.name());
-        p_assert(retval!=p_set_.end());
+        std::pair<bool,iterator> retval=get_pointer(psym.name());
+        p_assert(retval.first);
         return retval;
       }
 // NOTICE: this is an O(n) operation, maybe it can be sped up.
-      static iterator get_pointer(const std::string &name)
+      static std::pair<bool,iterator> get_pointer(const std::string &name)
       {
-        iterator retval=end();
-        for (iterator it=begin();it!=retval;++it)
+        std::pair<bool,iterator> retval(false,end());
+        for (iterator it=begin();it!=retval.second;++it)
         {
-          if (it->name()==name)
+          if (it->name() == name)
           {
-            retval=it;
+            retval.first=true;
+            retval.second=it;
             break;
           }
         }
         return retval;
       }
+// Function to iterate over the manager. To be used in pyranha.
+      static iterator begin() {return p_set_.begin();}
+      static iterator end() {return p_set_.end();}
+      static size_t length() {return p_set_.size();}
     private:
 /// Register a symbol.
 /**
@@ -270,15 +272,15 @@ namespace piranha
  */
   inline psymbol_manager::psymbol::psymbol(const std::string &str):name_(str),poly_eval_()
   {
-    psym_p p=psymbol_manager::get_pointer(str);
-    if (p == psymbol_manager::end())
+    std::pair<bool,psym_p> res=psymbol_manager::get_pointer(str);
+    if (!(res.first))
     {
       psymbol_manager::reg(*this);
     }
     else
     {
-      name_=p->name();
-      poly_eval_=p->poly_eval();
+      name_=res.second->name();
+      poly_eval_=res.second->poly_eval();
     }
   }
 

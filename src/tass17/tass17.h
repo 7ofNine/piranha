@@ -86,12 +86,13 @@ namespace piranha
         }
       static Ps r6()
       {
-        psym_p p=psymbol_manager::get_pointer("\\lambda_{o6}");
-        if (p==psymbol_manager::end())
+        std::pair<bool,psym_p> res=psymbol_manager::get_pointer("\\lambda_{o6}");
+        if (!(res.first))
         {
           std::cout << "ERROR: no symbol named \\lambda_{o6} found, returning default series." << std::endl;
           return Ps();
         }
+        const psym_p p=res.second;
         const double N=p->freq();
         Ps e6=e(z6());
         PsC complexp_M=eiM(lambda6(),z6(),e6);
