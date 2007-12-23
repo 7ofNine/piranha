@@ -146,8 +146,6 @@ namespace piranha
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
-// TODO: think about this one.
-      size_t trig_index(const std::string &) const;
 // Public mathematics.
 // Assignment.
       Derived &assign(int);

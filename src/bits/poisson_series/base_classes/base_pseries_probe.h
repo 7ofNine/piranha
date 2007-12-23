@@ -205,25 +205,6 @@ namespace piranha
     return it;
   }
 
-/// Find index of argument by its name.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::trig_index(const std::string &name) const
-  {
-    size_t i;
-    for (i=0;i<trig_width();++i)
-    {
-      if (arguments().template get<1>()[i]->name()==name)
-      {
-        break;
-      }
-    }
-    if (i==trig_width()+1)
-    {
-      std::cout << "Error: no symbol with that name" << std::endl;
-    }
-    return i;
-  }
-
 /// Find the mean value of a series' evaluation over a timespan.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::eval_type base_pseries<__PIRANHA_BASE_PS_TP>::mean(
