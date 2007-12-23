@@ -69,7 +69,11 @@ namespace piranha
             trig = 1,
           };
 // Ctors
-          psymbol();
+/// Default constructor.
+/**
+ * Assigns 'null' as name of the symbol.
+ */
+          psymbol():name_(null_name_) {psymbol_manager::reg(*this);}
           psymbol(const std::string &, const vector_double &);
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
@@ -268,15 +272,6 @@ namespace piranha
       static set_type             p_set_;
       static const static_ctor    ctor_;
   };
-
-/// Default constructor.
-/**
- * Assigns 'null' as name of the symbol.
- */
-  inline psymbol_manager::psymbol::psymbol():name_(null_name_)
-  {
-    psymbol_manager::reg(*this);
-  }
 
 /// Constructor from std::string.
 /**
