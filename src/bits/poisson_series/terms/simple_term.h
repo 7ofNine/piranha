@@ -91,7 +91,7 @@ namespace piranha
       void invert_trig_args()
       {
         trig().invert_sign();
-        if (!(trig().g_flavour()))
+        if (!(trig().flavour()))
         {
           cf().invert_sign();
         }

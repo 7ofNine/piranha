@@ -276,14 +276,14 @@ namespace piranha
         {
           cs1[i].cf()=it1->cf();
           code_multiindex(it1->trig(),cs1[i].code);
-          cs1[i].flavour=it1->trig().g_flavour();
+          cs1[i].flavour=it1->trig().flavour();
           ++it1;
         }
         for (i=0;i<l2;++i)
         {
           cs2[i].cf()=it2->cf();
           code_multiindex(it2->trig(),cs2[i].code);
-          cs2[i].flavour=it2->trig().g_flavour();
+          cs2[i].flavour=it2->trig().flavour();
           ++it2;
         }
       }

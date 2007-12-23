@@ -67,7 +67,7 @@ namespace piranha
 // Take care of flavour.
         if (*sd.back().c_str()=='s')
         {
-          ancestor::s_flavour()=false;
+          ancestor::flavour()=false;
         }
       }
       ~trig_array() {}

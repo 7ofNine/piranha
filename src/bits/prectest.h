@@ -565,7 +565,7 @@ namespace piranha
           }
           tmp=it->trig().t_eval(t,orig_->trig_args());
           c_eval=it->cf().t_eval(t,orig_->cf_args());
-          switch (it->trig().g_flavour())
+          switch (it->trig().flavour())
           {
             case true:
               retval+=c_eval*std::cos(tmp)*std::cos(multiplier*a_->t_eval(t))-
@@ -628,7 +628,7 @@ namespace piranha
             }
             tmp=it->trig().t_eval(t,a_->trig_args());
             c_eval=it->cf().t_eval(t,a_->cf_args());
-            switch (it->trig().g_flavour())
+            switch (it->trig().flavour())
             {
               case true:
                 retval+=c_eval*std::cos(tmp)*std::cos(tmp_phase)-

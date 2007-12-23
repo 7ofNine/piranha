@@ -112,7 +112,7 @@ namespace piranha
 // Take care of flavour.
         if (*sd.back().c_str() == 's')
         {
-          ancestor::s_flavour()=false;
+          ancestor::flavour()=false;
         }
       }
       ~trig_fixed_array() {}
@@ -155,7 +155,7 @@ namespace piranha
       static const size_t max_size = Dim;
       bool operator==(const trig_fixed_array &t2) const
       {
-        if (ancestor::g_flavour() != t2.g_flavour())
+        if (ancestor::flavour() != t2.flavour())
         {
           return false;
         }
@@ -167,7 +167,7 @@ namespace piranha
       }
       size_t hasher() const
       {
-        size_t seed=ancestor::g_flavour();
+        size_t seed=ancestor::flavour();
         private_container_.hasher(seed);
         return seed;
       }

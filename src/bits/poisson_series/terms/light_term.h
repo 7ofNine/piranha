@@ -24,7 +24,7 @@ namespace piranha
       void invert_trig_args()
       {
         m_trig.invert_sign();
-        if (!m_trig.g_flavour())
+        if (!m_trig.flavour())
         {
           m_cf.invert_sign();
         }

@@ -57,7 +57,7 @@ namespace piranha
           }
           return Derived();
         }
-        if (!(derived_cast->g_s_index().begin()->trig().g_flavour()) or
+        if (!(derived_cast->g_s_index().begin()->trig().flavour()) or
             !(derived_cast->g_s_index().begin()->trig().is_zero()))
         {
           std::cout << "ERROR! series' top term is not suitable for real power." << std::endl;

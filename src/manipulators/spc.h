@@ -88,7 +88,7 @@ namespace std
         {
           term.cf()=cf_type(it->cf());
           term.trig()=it->trig();
-          term.s_flavour()=it->g_flavour();
+          term.flavour()=it->flavour();
           ancestor::insert(term);
         }
       }

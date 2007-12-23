@@ -60,7 +60,7 @@ namespace piranha
           {
             it->cf().partial(cf_s_index,tmp_term.cf());
             tmp_term.trig()=it->trig();
-            tmp_term.trig().s_flavour()=it->trig().g_flavour();
+            tmp_term.trig().flavour()=it->trig().flavour();
             retval.insert_check_positive(tmp_term);
           }
 // Second part of the derivation.
@@ -69,15 +69,15 @@ namespace piranha
           if (trig_s_index >= 0)
           {
             tmp_term.cf()=it->cf();
-            switch (it->trig().g_flavour())
+            switch (it->trig().flavour())
             {
               case true:
                 tmp_term.cf().mult_by(-it->trig().at(trig_s_index));
-                tmp_term.trig().s_flavour()=false;
+                tmp_term.trig().flavour()=false;
                 break;
               case false:
                 tmp_term.cf().mult_by(it->trig().at(trig_s_index));
-                tmp_term.trig().s_flavour()=true;
+                tmp_term.trig().flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to
 // do it again now.

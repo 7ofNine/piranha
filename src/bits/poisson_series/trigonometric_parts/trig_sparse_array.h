@@ -50,15 +50,15 @@ namespace piranha
       trig_sparse_array():private_flavour_(true) {}
 /// Copy ctor.
       trig_sparse_array(const trig_sparse_array &ts):
-        private_flavour_(ts.g_flavour()),private_container_(ts.private_container_) {}
+        private_flavour_(ts.flavour()),private_container_(ts.private_container_) {}
       trig_sparse_array(const deque_string &);
       ~trig_sparse_array() {}
 // Getters.
-      bool &s_flavour()
+      bool &flavour()
       {
         return private_flavour_;
       }
-      const bool &g_flavour() const
+      const bool &flavour() const
       {
         return private_flavour_;
       }
@@ -124,7 +124,7 @@ namespace piranha
       {
         if (&ts2!=this)
         {
-          s_flavour()=ts2.g_flavour();
+          flavour()=ts2.flavour();
           private_container_=ts2.private_container_;
         }
         return *this;
@@ -234,7 +234,7 @@ namespace piranha
 // Take care of flavour.
     if (*sd.back().c_str()=='s')
     {
-      s_flavour()=false;
+      flavour()=false;
     }
   }
 
@@ -295,7 +295,7 @@ namespace piranha
     {
       out_stream << at(i) << stream_manager::data_separator();
     }
-    switch (g_flavour())
+    switch (flavour())
     {
       case true:
         out_stream << "c";
@@ -308,7 +308,7 @@ namespace piranha
   inline void trig_sparse_array::print_latex(std::ostream &out_stream, const vector_psym_p &tv) const
   {
     stream_manager::setup_print(out_stream);
-    switch (g_flavour())
+    switch (flavour())
     {
       case true:
         out_stream << "c&";
@@ -411,7 +411,7 @@ namespace piranha
     {
       retval+=it->second*v[it->first]->t_eval(t);
     }
-    switch (g_flavour())
+    switch (flavour())
     {
       case true:
         return std::cos(retval);
@@ -429,7 +429,7 @@ namespace piranha
     {
       retval*=te.request_complexp(it->first,it->second);
     }
-    switch (g_flavour())
+    switch (flavour())
     {
       case true:
         return retval.real();
@@ -450,11 +450,11 @@ namespace piranha
 
   inline bool trig_sparse_array::operator<(const trig_sparse_array &l2) const
   {
-    if (g_flavour() < l2.g_flavour())
+    if (flavour() < l2.flavour())
     {
       return true;
     }
-    else if (g_flavour() > l2.g_flavour())
+    else if (flavour() > l2.flavour())
     {
       return false;
     }
@@ -494,7 +494,7 @@ namespace piranha
 
   inline size_t trig_sparse_array::hasher() const
   {
-    size_t seed=g_flavour();
+    size_t seed=flavour();
     const const_iterator it_f=end();
     for (const_iterator it=begin();it!=it_f;++it)
     {
@@ -512,7 +512,7 @@ namespace piranha
   template <class Series>
     inline bool trig_sparse_array::is_ignorable(const Series &) const
   {
-    return (is_zero() and !g_flavour());
+    return (is_zero() and !flavour());
   }
 
   inline bool trig_sparse_array::needs_padding(const size_t &) const
@@ -554,7 +554,7 @@ namespace piranha
 
   inline bool trig_sparse_array::operator==(const trig_sparse_array &l2) const
   {
-    if (g_flavour() != l2.g_flavour())
+    if (flavour() != l2.flavour())
     {
       return false;
     }

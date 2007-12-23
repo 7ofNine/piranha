@@ -71,17 +71,17 @@ namespace piranha
             tmp1.insert_check_positive(*it);
             tmp2.merge_args(*derived_cast);
             term_type tmp_term = *it;
-            switch (it->trig().g_flavour())
+            switch (it->trig().flavour())
             {
               case true:
 // Change tmp2's flavour.
-                tmp_term.trig().s_flavour()=false;
+                tmp_term.trig().flavour()=false;
                 tmp2.insert_check_positive(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval-=(tmp2*=sinp);
                 break;
               case false:
-                tmp_term.trig().s_flavour()=true;
+                tmp_term.trig().flavour()=true;
                 tmp2.insert_check_positive(tmp_term);
                 retval+=(tmp1*=cosp);
                 retval+=(tmp2*=sinp);
@@ -164,7 +164,7 @@ namespace piranha
         p_assert(retval.trig_width()==derived_cast->trig_width());
         complex_term_type term1(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type());
         complex_term_type term2(complex_cf_type(real_cf_type(0),real_cf_type(1)),trig_type());
-        term2.trig().s_flavour()=false;
+        term2.trig().flavour()=false;
         term1.trig().pad_right(retval.trig_width());
         term2.trig().pad_right(retval.trig_width());
         term1.trig().assign_int_vector(derived_cast->lin_args());
@@ -221,7 +221,7 @@ namespace piranha
         p_assert(retval.trig_width()==static_cast<DerivedPs const *>(this)->trig_width());
         real_cf_type _cf=it->cf(), tmp;
         complex_term_type term1, term2;
-        if (it->trig().g_flavour())
+        if (it->trig().flavour())
         {
           for (i=0;i<settings_manager::jacang_lim();++i)
           {
@@ -229,13 +229,13 @@ namespace piranha
             term1.cf().set_real(tmp);
             term1.trig()=it->trig();
             term1.trig()*=(i<<1);
-            term1.trig().s_flavour()=true;
+            term1.trig().flavour()=true;
             retval.insert_check_positive(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
             term2.trig()*=((i<<1)+1);
-            term1.trig().s_flavour()=true;
+            term1.trig().flavour()=true;
             retval.insert_check_positive(term2);
           }
         }
@@ -247,13 +247,13 @@ namespace piranha
             term1.cf().set_real(tmp);
             term1.trig()=it->trig();
             term1.trig()*=(i<<1);
-            term1.trig().s_flavour()=true;
+            term1.trig().flavour()=true;
             retval.insert_check_positive(term1);
             jacsinImcf(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
             term2.trig()*=((i<<1)+1);
-            term2.trig().s_flavour()=false;
+            term2.trig().flavour()=false;
             retval.insert_check_positive(term2);
           }
         }

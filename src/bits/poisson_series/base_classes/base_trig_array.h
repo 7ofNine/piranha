@@ -45,7 +45,7 @@ namespace piranha
 /// Default ctor.
       base_trig_array():private_flavour_(true) {}
 /// Copy ctor.
-      base_trig_array(const base_trig_array &t):private_flavour_(t.g_flavour()) {}
+      base_trig_array(const base_trig_array &t):private_flavour_(t.flavour()) {}
       ~base_trig_array() {}
 // Getters.
       value_type at(const trig_size_t &n) const
@@ -59,11 +59,11 @@ namespace piranha
         }
         return static_cast<const Derived *>(this)->g_container()[n];
       }
-      bool &s_flavour()
+      bool &flavour()
       {
         return private_flavour_;
       }
-      const bool &g_flavour() const
+      const bool &flavour() const
       {
         return private_flavour_;
       }
@@ -80,7 +80,7 @@ namespace piranha
 // We cast to max_fast_int, which should be the largest type admitted for multipliers.
           out_stream << (max_fast_int)static_cast<const Derived *>(this)->g_container()[i] << stream_manager::data_separator();
         }
-        switch (g_flavour())
+        switch (flavour())
         {
           case true:
             out_stream << "c";
@@ -94,7 +94,7 @@ namespace piranha
         const trig_size_t w=v.size();
         p_assert(w <= static_cast<const Derived *>(this)->g_width())
         stream_manager::setup_print(out_stream);
-        switch (g_flavour())
+        switch (flavour())
         {
           case true:
             out_stream << "c&";
@@ -233,7 +233,7 @@ namespace piranha
             retval+=static_cast<const Derived *>(this)->g_container()[i]*v[i]->t_eval(t);
           }
         }
-        switch (g_flavour())
+        switch (flavour())
         {
           case true:
             return std::cos(retval);
@@ -261,7 +261,7 @@ namespace piranha
             retval*=te.request_complexp(i,static_cast<const Derived *>(this)->g_container()[i]);
           }
         }
-        switch (g_flavour())
+        switch (flavour())
         {
           case true:
             return retval.real();
@@ -291,7 +291,7 @@ namespace piranha
       }
       size_t hasher() const
       {
-        size_t seed=g_flavour();
+        size_t seed=flavour();
         const trig_size_t w=static_cast<const Derived *>(this)->g_width();
         for (size_t i=0;i<w;++i)
         {
@@ -316,7 +316,7 @@ namespace piranha
       template <class Series>
         bool is_ignorable(const Series &) const
       {
-        return (is_zero() and !g_flavour());
+        return (is_zero() and !flavour());
       }
 // NOTICE: this goes out of the interface, it is there in order to be able to use utils::apply_layout and friends.
 // TODO: remove them from here once we rework all int arrays to have a vector-like interface.
@@ -336,7 +336,7 @@ namespace piranha
       bool equality_test(const Derived &t2) const
       {
         p_assert(static_cast<const Derived *>(this)->g_width() == t2.g_width());
-        if (g_flavour() != t2.g_flavour())
+        if (flavour() != t2.flavour())
         {
           return false;
         }
@@ -353,11 +353,11 @@ namespace piranha
 /// Less than.
       bool less_than(const Derived &t2) const
       {
-        if (g_flavour() < t2.g_flavour())
+        if (flavour() < t2.flavour())
         {
           return true;
         }
-        else if (g_flavour() > t2.g_flavour())
+        else if (flavour() > t2.flavour())
         {
           return false;
         }
