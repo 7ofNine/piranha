@@ -69,7 +69,14 @@ namespace piranha
             trig = 1,
           };
 // Ctors
-          psymbol(const std::string &, const vector_double &);
+/// Constructor from std::string and vector_double.
+/**
+ * Assigns both psymbol_manager::psymbol::name_ and psymbol_manager::psymbol::poly_eval_.
+ * @param[in] str symbol's name.
+ * @param[in] pol symbol's polynomial evaluation vector.
+ */
+          psymbol(const std::string &str, const vector_double &pol):name_(str),poly_eval_(pol)
+            {psymbol_manager::reg(*this);}
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
           {
@@ -224,10 +231,13 @@ namespace piranha
       }
     private:
 /// Register a symbol.
+/**
+ * Searches for symbol: if it is not found, inserts new, otherwise will override its properties.
+ */
       static void reg(const psymbol &psym)
       {
         const iterator it=p_set_.find(psym);
-        if (it==p_set_.end())
+        if (it == p_set_.end())
         {
 // Symbol is not already present, add it.
           std::pair<iterator,bool> result=p_set_.insert(psym);
@@ -236,7 +246,7 @@ namespace piranha
         else
         {
 // Symbol name is already registered, check that it is really the same symbol.
-          if (psym!=*it)
+          if (psym != *it)
           {
             std::cout << "Warning: you tried to add a psymbol with the same name of another one "
               << "but with different properties. The original one will be used." << std::endl;
@@ -269,7 +279,7 @@ namespace piranha
 /// Constructor from std::string.
 /**
  * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
- * build it with zero poly_eval.
+ * psymbol with zero poly_eval is built.
  */
   inline psymbol_manager::psymbol::psymbol(const std::string &str):name_(str),poly_eval_()
   {
@@ -283,18 +293,6 @@ namespace piranha
       name_=p->name();
       poly_eval_=p->poly_eval();
     }
-  }
-
-/// Constructor from std::string and vector_double.
-/**
- * Assigns both psymbol_manager::psymbol::name_ and psymbol_manager::psymbol::poly_eval_.
- * @param[in] str symbol's name.
- * @param[in] pol symbol's polynomial evaluation vector.
- */
-  inline psymbol_manager::psymbol::psymbol(const std::string &str, const vector_double &pol):
-    name_(str),poly_eval_(pol)
-  {
-    psymbol_manager::reg(*this);
   }
 
 // Helper for ctor from boost::array.
