@@ -69,7 +69,7 @@ namespace piranha
             trig = 1,
           };
 // Ctors
-//          psymbol(const std::string &, const vector_double &);
+          psymbol(const std::string &, const vector_double &);
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):name_(s),poly_eval_((size_t)1)
           {
@@ -257,7 +257,6 @@ namespace piranha
         public:
           static_ctor()
           {
-            psymbol();
             psymbol("t",0,1);
           }
       };
@@ -292,11 +291,11 @@ namespace piranha
  * @param[in] str symbol's name.
  * @param[in] pol symbol's polynomial evaluation vector.
  */
-//   inline psymbol_manager::psymbol::psymbol(const std::string &str, const vector_double &pol):
-//   name_(str),poly_eval_(pol)
-//   {
-//     psymbol_manager::reg(*this);
-//   }
+  inline psymbol_manager::psymbol::psymbol(const std::string &str, const vector_double &pol):
+    name_(str),poly_eval_(pol)
+  {
+    psymbol_manager::reg(*this);
+  }
 
 // Helper for ctor from boost::array.
   template <class T>

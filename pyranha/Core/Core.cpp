@@ -192,8 +192,7 @@ BOOST_PYTHON_MODULE(_Core)
   class_<phase_list>("phase_list","List of phases.",init<std::string>());
 
 // Psymbols.
-  class_<psymbol>("psymbol","Symbol class.")
-    .def(init<const std::string &>())
+  class_<psymbol>("psymbol","Symbol class.",init<const std::string &>())
     .def(init<const std::string &, const double &>())
     .def(init<const std::string &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &>())
