@@ -24,6 +24,7 @@
 #include <boost/integer_traits.hpp>
 
 #include "../base_classes/base_trig_array.h"
+#include "../../base_classes/int_array.h"
 
 namespace piranha
 {
@@ -32,12 +33,10 @@ namespace piranha
     class trig_array: public base_trig_array<Bits,trig_array<Bits> >
   {
       typedef base_trig_array<Bits,trig_array> ancestor;
+      typedef int_array<Bits,true> container_type;
+      friend class base_trig_array<Bits,trig_array>;
     public:
       typedef typename ancestor::value_type value_type;
-    private:
-      typedef std::valarray<value_type> container_type;
-      template <int Bits_, class Derived>
-        friend class base_trig_array;
     public:
 // Start INTERFACE definition.
 //-------------------------------------------------------
@@ -52,7 +51,7 @@ namespace piranha
 // TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
 // TODO: do it everywhere!
         const trig_size_t w=sd.size();
-        if (w==0)
+        if (w == 0)
         {
           std::cout << "Warning: constructing empty trig_array." << std::endl;
           std::abort();
@@ -60,12 +59,12 @@ namespace piranha
         }
 // Now we know  w >= 1.
         private_container_.resize(w-1);
-        for (trig_size_t i=0;i<w-1;++i)
+        for (trig_size_t i=0;i < w-1;++i)
         {
           private_container_[i]=utils::lexical_converter<value_type>(sd[i]);
         }
 // Take care of flavour.
-        if (*sd.back().c_str()=='s')
+        if (*sd.back().c_str() == 's')
         {
           ancestor::flavour()=false;
         }
@@ -73,17 +72,8 @@ namespace piranha
       ~trig_array() {}
       void pad_right(const size_t &n)
       {
-        p_assert(n >= g_width());
-        if (n > g_width())
-        {
-          container_type old_private_container_(private_container_);
-          private_container_.resize(n);
-          const trig_size_t old_w=old_private_container_.size();
-          for (trig_size_t i=0;i<old_w;++i)
-          {
-            private_container_[i]=old_private_container_[i];
-          }
-        }
+        p_assert(n >= private_container_.size());
+        private_container_.resize(n);
       }
 // Probing.
 /// Data footprint.
@@ -112,15 +102,21 @@ namespace piranha
       {
         return (g_width() <= n);
       }
-
+// FIXME: introduce size_type from int_array here.
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_array &t2) const
       {
-        return ancestor::equality_test(t2);
+        return (ancestor::flavour() == t2.flavour() and private_container_ == t2.private_container_);
       }
       bool operator<(const trig_array &t2) const
       {
         return ancestor::less_than(t2);
+      }
+      size_t hasher() const
+      {
+        size_t retval(private_container_.hasher());
+        boost::hash_combine(retval,ancestor::flavour());
+        return retval;
       }
 // Math.
 /// Multiplication.
@@ -161,11 +157,6 @@ namespace piranha
           ret2.private_container_[i]=private_container_[i];
         }
       }
-      trig_array &operator=(const trig_array &t2)
-      {
-        ancestor::assignment_operator(t2);
-        return *this;
-      }
       trig_array &operator*=(const int &n)
       {
         ancestor::mult_by_int(n);
@@ -185,18 +176,6 @@ namespace piranha
       value_type *s_container()
       {
         return &(private_container_[0]);
-      }
-/// Assignment.
-/**
- * After the assignment the data members of the two classes must be equal, both from a mathematical
- * point of view and with respect to the computer representation. Assignment to a larger trig_array
- * is allowed, assignment to smaller results in assertion failure.
- * @param[in] t2 right-hand side piranha::trig_array.
- */
-      void assignment(const trig_array &t2)
-      {
-        pad_right(t2.g_width());
-        private_container_=t2.private_container_;
       }
 // Data members.
     private:

@@ -154,6 +154,7 @@ namespace piranha
       }
 // FIXME: make it unique with dimension.
       static const size_t max_size = Dim;
+// FIXME: simplify this if: return (1 and 2).
       bool operator==(const trig_fixed_array &t2) const
       {
         if (ancestor::flavour() != t2.flavour())

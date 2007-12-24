@@ -289,16 +289,6 @@ namespace piranha
         }
         return 1;
       }
-      size_t hasher() const
-      {
-        size_t seed=flavour();
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        for (size_t i=0;i<w;++i)
-        {
-          boost::hash_combine(seed,static_cast<const Derived *>(this)->g_container()[i]);
-        }
-        return seed;
-      }
 // All multipliers are zero.
       bool is_zero() const
       {
@@ -325,31 +315,6 @@ namespace piranha
       size_t size() const {return static_cast<const Derived *>(this)->g_width();}
       void resize(const size_t &n) {return static_cast<const Derived *>(this)->pad_right(n);}
     protected:
-      void assignment_operator(const Derived &t2)
-      {
-        if (static_cast<const Derived *>(this) != &t2)
-        {
-          private_flavour_=t2.private_flavour_;
-          static_cast<const Derived *>(this)->assignment(t2);
-        }
-      }
-      bool equality_test(const Derived &t2) const
-      {
-        p_assert(static_cast<const Derived *>(this)->g_width() == t2.g_width());
-        if (flavour() != t2.flavour())
-        {
-          return false;
-        }
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        for (trig_size_t i=0;i<w;++i)
-        {
-          if (static_cast<const Derived *>(this)->g_container()[i] != t2.g_container()[i])
-          {
-            return false;
-          }
-        }
-        return true;
-      }
 /// Less than.
       bool less_than(const Derived &t2) const
       {
