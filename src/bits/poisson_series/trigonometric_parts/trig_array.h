@@ -80,10 +80,7 @@ namespace piranha
 /**
  * Returns the memory occupied by the data members.
  */
-      size_t data_footprint() const
-      {
-        return (g_width()*sizeof(value_type));
-      }
+      size_t data_footprint() const {return (g_width()*sizeof(value_type));}
       template <class Series>
         bool checkup(const Series &s) const
       {
@@ -94,24 +91,15 @@ namespace piranha
         }
         return true;
       }
-      bool needs_padding(const size_t &n) const
-      {
-        return (g_width() < n);
-      }
-      bool is_insertable(const size_t &n) const
-      {
-        return (g_width() <= n);
-      }
+      bool needs_padding(const size_t &n) const {return (g_width() < n);}
+      bool is_insertable(const size_t &n) const {return (g_width() <= n);}
 // FIXME: introduce size_type from int_array here.
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_array &t2) const
       {
         return (ancestor::flavour() == t2.flavour() and m_container == t2.m_container);
       }
-      bool operator<(const trig_array &t2) const
-      {
-        return ancestor::less_than(t2);
-      }
+      bool operator<(const trig_array &t2) const {return ancestor::less_than(t2);}
       size_t hasher() const
       {
         size_t retval(m_container.hasher());
@@ -166,18 +154,9 @@ namespace piranha
 // End INTERFACE definition.
 //-------------------------------------------------------
     private:
-      trig_size_t g_width() const
-      {
-        return m_container.size();
-      }
-      const value_type *g_container() const
-      {
-        return &(m_container[0]);
-      }
-      value_type *s_container()
-      {
-        return &(m_container[0]);
-      }
+      trig_size_t g_width() const {return m_container.size();}
+      const value_type *g_container() const {return &(m_container[0]);}
+      value_type *s_container() {return &(m_container[0]);}
 // Data members.
     private:
       container_type        m_container;
