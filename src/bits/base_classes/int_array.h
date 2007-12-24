@@ -82,7 +82,7 @@ namespace piranha
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
     public:
-/// Cast argument to int_array::max_fast_type pointer.
+// Cast argument to int_array::max_fast_type pointer.
 #define max_cast(arg) ((max_fast_type *)(arg))
 /// Default ctor.
 /**
