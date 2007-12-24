@@ -69,14 +69,16 @@ namespace piranha
 
 /// Dynamically-sized integer array.
 /**
- * Parametrized to an integer sized Bits, which can be Signed or not.
+ * Parametrized to an integer sized Bits, which can be Signed or not. Contains also
+ * a flavour boolean flag, which does not add further weight and can be used in trigonometric parts
+ * of Poisson series.
  */
   template <int Bits, bool Signed, class Allocator = std::allocator<char> >
     class int_array
   {
       typedef typename integer_type_chooser<Bits,Signed>::type value_type;
       typedef typename integer_type_chooser<Bits,Signed>::max_fast_type max_fast_type;
-      typedef uint16 size_type;
+      typedef uint8 size_type;
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
     public:
@@ -86,9 +88,10 @@ namespace piranha
 /**
  * Constructs empty array.
  */
-      int_array():m_size(0),m_pack_size(0),m_ptr(allocator.allocate(0)) {}
+      int_array():m_flavour(true),m_size(0),m_pack_size(0),m_ptr(allocator.allocate(0)) {}
 /// Copy ctor.
-      int_array(const int_array &v):m_size(v.m_size),m_pack_size(v.m_pack_size),m_ptr(allocator.allocate(m_size))
+      int_array(const int_array &v):m_flavour(v.m_flavour),m_size(v.m_size),m_pack_size(v.m_pack_size),
+        m_ptr(allocator.allocate(m_size))
       {
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
       }
@@ -96,7 +99,8 @@ namespace piranha
 /**
  * Initialises to 0 all the elements.
  */
-      int_array(const size_type &s):m_size(s),m_pack_size(s >> pack_shift),m_ptr(allocator.allocate(m_size))
+      int_array(const size_type &s):m_flavour(true),m_size(s),m_pack_size(s >> pack_shift),
+        m_ptr(allocator.allocate(m_size))
       {
         size_type i;
         for (i=0;i < m_pack_size;++i)
@@ -110,9 +114,21 @@ namespace piranha
       }
 /// Dtor.
       ~int_array() {allocator.deallocate(m_ptr,m_size);}
+/// Array-like operator[], const version.
       const value_type &operator[](const size_t &n) const {return m_ptr[n];}
+/// Array-like operator[], mutable version.
       value_type &operator[](const size_t &n) {return m_ptr[n];}
+/// Return const reference to flavour.
+      const bool &flavour() const {return m_flavour;}
+/// Return mutable reference to flavour.
+      bool &flavour() {return m_flavour;}
+/// Return container size.
       size_t size() const {return m_size;}
+// TODO: should we pass size_t here, and test against size_type and throw in case of out-of-range request?
+/// Resize the container.
+/**
+ * The existing elements are copied over.
+ */
       void resize(const size_type &new_size)
       {
         value_type *new_ptr = alloc_if_size_differs(new_size);
@@ -141,6 +157,7 @@ namespace piranha
         if (new_ptr != m_ptr)
         {
           allocator.deallocate(m_ptr,m_size);
+          m_flavour = v.m_flavour;
           m_ptr = new_ptr;
           m_size = v.m_size;
           m_pack_size = v.m_pack_size;
@@ -149,6 +166,9 @@ namespace piranha
         return *this;
       }
 /// Hash value.
+/**
+ * Hashes only the integer elements of the array, not the flavour.
+ */
       size_t hasher() const
       {
         size_t retval=0;
@@ -164,6 +184,9 @@ namespace piranha
         return retval;
       }
 /// Equality test.
+/**
+ * Tests only the integer elements of the array, not the flavour.
+ */
       bool operator==(const int_array &v) const
       {
         switch (m_size == v.size())
@@ -193,6 +216,9 @@ namespace piranha
         }
       }
 /// Test for zero elements.
+/**
+ * Returns true if all integer elements are zero, false otherwise.
+ */
       bool is_zero() const
       {
         size_t i;
@@ -239,6 +265,8 @@ namespace piranha
       }
     private:
 // Data members.
+/// Flavour.
+      bool                    m_flavour;
 /// Size of the array.
 /**
  * Equal to the number of elements contained by the array.
