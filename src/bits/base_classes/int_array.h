@@ -57,6 +57,7 @@ namespace piranha
     struct lg
   {
     BOOST_STATIC_ASSERT(N > 0 and (N % 2) == 0);
+/// Value of the base-2 logarithm of N.
     static const size_t value = lg<(N >> 1),Cur+1>::value;
   };
 
