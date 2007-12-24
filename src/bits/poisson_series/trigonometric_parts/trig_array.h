@@ -44,7 +44,7 @@ namespace piranha
 /// Default ctor.
       trig_array():ancestor::base_trig_array() {}
 /// Copy ctor.
-      trig_array(const trig_array &t):ancestor::base_trig_array(t),private_container_(t.private_container_) {}
+      trig_array(const trig_array &t):ancestor::base_trig_array(t),m_container(t.m_container) {}
 /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::base_trig_array()
       {
@@ -58,10 +58,10 @@ namespace piranha
           return;
         }
 // Now we know  w >= 1.
-        private_container_.resize(w-1);
+        m_container.resize(w-1);
         for (trig_size_t i=0;i < w-1;++i)
         {
-          private_container_[i]=utils::lexical_converter<value_type>(sd[i]);
+          m_container[i]=utils::lexical_converter<value_type>(sd[i]);
         }
 // Take care of flavour.
         if (*sd.back().c_str() == 's')
@@ -72,8 +72,8 @@ namespace piranha
       ~trig_array() {}
       void pad_right(const size_t &n)
       {
-        p_assert(n >= private_container_.size());
-        private_container_.resize(n);
+        p_assert(n >= m_container.size());
+        m_container.resize(n);
       }
 // Probing.
 /// Data footprint.
@@ -106,7 +106,7 @@ namespace piranha
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_array &t2) const
       {
-        return (ancestor::flavour() == t2.flavour() and private_container_ == t2.private_container_);
+        return (ancestor::flavour() == t2.flavour() and m_container == t2.m_container);
       }
       bool operator<(const trig_array &t2) const
       {
@@ -114,11 +114,11 @@ namespace piranha
       }
       size_t hasher() const
       {
-        size_t retval(private_container_.hasher());
+        size_t retval(m_container.hasher());
         boost::hash_combine(retval,ancestor::flavour());
         return retval;
       }
-      bool is_zero() const {return private_container_.is_zero();}
+      bool is_zero() const {return m_container.is_zero();}
 // Math.
 /// Multiplication.
 /**
@@ -149,13 +149,13 @@ namespace piranha
         trig_size_t i;
         for (i=0;i<min_w;++i)
         {
-          ret1.private_container_[i]=private_container_[i]-t2.private_container_[i];
-          ret2.private_container_[i]=private_container_[i]+t2.private_container_[i];
+          ret1.m_container[i]=m_container[i]-t2.m_container[i];
+          ret2.m_container[i]=m_container[i]+t2.m_container[i];
         }
         for (;i<max_w;++i)
         {
-          ret1.private_container_[i]=private_container_[i];
-          ret2.private_container_[i]=private_container_[i];
+          ret1.m_container[i]=m_container[i];
+          ret2.m_container[i]=m_container[i];
         }
       }
       trig_array &operator*=(const int &n)
@@ -168,19 +168,19 @@ namespace piranha
     private:
       trig_size_t g_width() const
       {
-        return private_container_.size();
+        return m_container.size();
       }
       const value_type *g_container() const
       {
-        return &(private_container_[0]);
+        return &(m_container[0]);
       }
       value_type *s_container()
       {
-        return &(private_container_[0]);
+        return &(m_container[0]);
       }
 // Data members.
     private:
-      container_type        private_container_;
+      container_type        m_container;
   };
 }
 #endif
