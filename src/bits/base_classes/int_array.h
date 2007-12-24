@@ -114,12 +114,12 @@ namespace piranha
       size_t size() const {return m_size;}
       void resize(const size_type &new_size)
       {
-        if (m_size == new_size)
+        value_type *new_ptr = alloc_if_size_differs(new_size);
+        if (new_ptr == m_ptr)
         {
           return;
         }
         const size_type new_pack_size = (new_size >> pack_shift);
-        value_type *new_ptr = allocator.allocate(new_size);
 // Copy to the minimum of the new sizes.
         packed_copy(new_ptr,m_ptr,std::min(m_size,new_size),std::min(m_pack_size,new_pack_size));
 // Zero the remaining elements, if any.
@@ -132,6 +132,20 @@ namespace piranha
         m_ptr = new_ptr;
         m_size = new_size;
         m_pack_size = new_pack_size;
+      }
+/// Assignment operator.
+      int_array &operator=(const int_array &v)
+      {
+        value_type *new_ptr = alloc_if_size_differs(v.m_size);
+        if (new_ptr != m_ptr)
+        {
+          allocator.deallocate(m_ptr,m_size);
+          m_ptr = new_ptr;
+          m_size = v.m_size;
+          m_pack_size = v.m_pack_size;
+        }
+        packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
+        return *this;
       }
 /// Hash value.
       size_t hasher() const
@@ -197,6 +211,17 @@ namespace piranha
         for(i = i << pack_shift;i < size;++i)
         {
           new_ptr[i]=old_ptr[i];
+        }
+      }
+// Allocate if new_size is different from current size.
+      value_type *alloc_if_size_differs(const size_type &new_size)
+      {
+        switch (m_size == new_size)
+        {
+          case true:
+            return m_ptr;
+          default:
+            return allocator.allocate(new_size);
         }
       }
     private:
