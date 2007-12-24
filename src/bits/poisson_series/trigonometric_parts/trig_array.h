@@ -30,6 +30,9 @@ namespace piranha
 {
   template <int Bits>
 /// Trigonometric array, dynamically sized version.
+/**
+ * It wraps a piranha::int_array with signed integer sized Bits.
+ */
     class trig_array: public base_trig_array<Bits,trig_array<Bits> >
   {
       typedef base_trig_array<Bits,trig_array> ancestor;
