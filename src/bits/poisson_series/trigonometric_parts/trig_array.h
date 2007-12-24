@@ -118,6 +118,7 @@ namespace piranha
         boost::hash_combine(retval,ancestor::flavour());
         return retval;
       }
+      bool is_zero() const {return private_container_.is_zero();}
 // Math.
 /// Multiplication.
 /**

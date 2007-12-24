@@ -173,6 +173,20 @@ namespace piranha
         private_container_.hasher(seed);
         return seed;
       }
+// All multipliers are zero.
+//TODO: use packing here and place this method in packed int array.
+      bool is_zero() const
+      {
+        const trig_size_t w=g_width();
+        for (trig_size_t i=0;i<w;++i)
+        {
+          if (g_container()[i]!=0)
+          {
+            return false;
+          }
+        }
+        return true;
+      }
 // Math.
 /// Multiplication.
 /**

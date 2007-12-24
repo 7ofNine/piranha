@@ -162,6 +162,7 @@ namespace piranha
         }
         return retval;
       }
+/// Equality test.
       bool operator==(const int_array &v) const
       {
         switch (m_size == v.size())
@@ -190,14 +191,25 @@ namespace piranha
             return false;
         }
       }
-// FIXME: temporary.
-      void put() const
+/// Test for zero elements.
+      bool is_zero() const
       {
-        for (size_type i=0;i<m_size;++i)
+        size_t i;
+        for (i=0;i < m_pack_size;++i)
         {
-          std::cout << m_ptr[i] << ' ';
+          if (max_cast(m_ptr)[i] != 0)
+          {
+            return false;
+          }
         }
-        std::cout << std::endl;
+        for(i = i << pack_shift;i < m_size;++i)
+        {
+          if (m_ptr[i] != 0)
+          {
+            return false;
+          }
+        }
+        return true;
       }
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,

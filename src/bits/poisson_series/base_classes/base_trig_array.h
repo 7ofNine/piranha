@@ -289,24 +289,11 @@ namespace piranha
         }
         return 1;
       }
-// All multipliers are zero.
-      bool is_zero() const
-      {
-        const trig_size_t w=static_cast<const Derived *>(this)->g_width();
-        for (trig_size_t i=0;i<w;++i)
-        {
-          if (static_cast<const Derived *>(this)->g_container()[i]!=0)
-          {
-            return false;
-          }
-        }
-        return true;
-      }
 // All multipliers are zero and flavour is sine.
       template <class Series>
         bool is_ignorable(const Series &) const
       {
-        return (is_zero() and !flavour());
+        return (static_cast<const Derived *>(this)->is_zero() and !flavour());
       }
 // NOTICE: this goes out of the interface, it is there in order to be able to use utils::apply_layout and friends.
 // TODO: remove them from here once we rework all int arrays to have a vector-like interface.
