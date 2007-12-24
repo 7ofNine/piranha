@@ -22,6 +22,7 @@
 #define PIRANHA_INT_ARRAY_H
 
 #include <boost/integer.hpp>
+#include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -81,6 +82,7 @@ namespace piranha
       typedef uint8 size_type;
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
+      BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
     public:
 // Cast argument to int_array::max_fast_type pointer.
 #define max_cast(arg) ((max_fast_type *)(arg))
@@ -238,6 +240,7 @@ namespace piranha
         }
         return true;
       }
+      static const size_t max_size = boost::integer_traits<size_type>::max;
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,
         const size_type &pack_size)
