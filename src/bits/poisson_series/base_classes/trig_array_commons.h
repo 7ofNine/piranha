@@ -285,46 +285,6 @@ namespace piranha
           (*derived_cast)[i]*=n;
         }
       }
-// Math.
-/// Multiplication.
-/**
- * Multiplication of two trigonometric functions using Werner's formulas, i.e.
- * \f[
- * C\cos\alpha\cdot\cos\beta=
- * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
- * \f]
- * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
- * and in the second one always goes \f$ \alpha + \beta \f$ one.
- * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
- * that return values are empty).
- * @param[in] t2 factor.
- * @param[out] ret1 first return value.
- * @param[out] ret2 second return value.
- */
-      void trigmult(const Derived &t2, Derived &ret1, Derived &ret2) const
-// NOTE: we are not using here a general version of vector addition/subtraction
-// because this way we can do two operations (+ and -) every cycle. This is a performance
-// critical part, so the optimization should be worth the hassle.
-      {
-        typedef typename Derived::size_type size_type;
-        const size_type max_w=derived_cast->size(), min_w=t2.size();
-// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
-// already adjusted my merge_args in multiplication routines.
-        p_assert(max_w >= min_w);
-        p_assert(ret1.size() == max_w);
-        p_assert(ret2.size() == max_w);
-        size_type i;
-        for (i=0;i<min_w;++i)
-        {
-          ret1[i]=(*derived_cast)[i]-t2[i];
-          ret2[i]=(*derived_cast)[i]+t2[i];
-        }
-        for (;i<max_w;++i)
-        {
-          ret1[i]=(*derived_cast)[i];
-          ret2[i]=(*derived_cast)[i];
-        }
-      }
     protected:
       trig_array_commons() {}
       trig_array_commons(const deque_string &sd)
