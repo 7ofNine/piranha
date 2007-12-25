@@ -210,6 +210,9 @@ namespace piranha
 
 // Static inits.
   template <int Dim, int Bits>
+    const size_t packed_int_array<Dim,Bits>::max_size;
+
+  template <int Dim, int Bits>
     const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::size64;
 
   template <int Dim, int Bits>
