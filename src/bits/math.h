@@ -358,7 +358,8 @@ namespace piranha
           case 0:
             return res.val;
           case GSL_EUNDRFLW:
-            return 0;
+// Underflow is ok, we just return 0.
+            return 0.;
           default:
             std::cout << "There were some problems calculating BesselJ." << std::endl;
             std::cout << status << std::endl;
@@ -366,13 +367,14 @@ namespace piranha
         }
 #else
         double retval=jn(n,x);
-// Check needed apparently under MinGW/GCC.
-        if (__ISNAN(retval))
+// Try to detect underflow.
+        switch (__ISNAN(retval))
         {
-          std::cout << "I don't believe it!\n";
-          retval=0.;
+          case true:
+            return 0.;
+          default:
+            return retval;
         }
-        return retval;
 #endif
       }
 /// Legendre function of the first kind - Pnm(cos(theta)).
