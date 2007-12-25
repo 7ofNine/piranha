@@ -22,11 +22,10 @@
 #define PIRANHA_TRIG_FIXED_ARRAY_H
 
 #include <boost/algorithm/minmax.hpp>
-#include <boost/functional/hash.hpp>
 #include <cstring>
 #include <iostream>
 
-#include "../base_classes/base_trig_array.h"
+#include "../base_classes/trig_array_commons.h"
 #include "../../common_typedefs.h"
 #include "../../packed_int_array.h"
 #include "../../type_traits/is_resizable.h"
@@ -73,52 +72,25 @@ namespace piranha
 
 /// Trigonometric array, fixed size version.
   template <int Dim, int Bits>
-    class trig_fixed_array: public base_trig_array<Bits,trig_fixed_array<Dim,Bits> >
+    class trig_fixed_array: public packed_int_array<Dim,Bits>,
+      public trig_array_commons<trig_fixed_array<Dim,Bits> >
   {
-      typedef base_trig_array<Bits,trig_fixed_array<Dim,Bits> > ancestor;
-      template <int Bits_, class Derived>
-        friend class base_trig_array;
+      typedef packed_int_array<Dim,Bits> ancestor;
+      typedef trig_array_commons<trig_fixed_array<Dim,Bits> > trig_commons;
     public:
-      typedef packed_int_array<Dim,Bits> container_type;
       typedef typename ancestor::value_type value_type;
+      typedef typename ancestor::size_type size_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default ctor.
-      trig_fixed_array():ancestor::base_trig_array() {}
+      trig_fixed_array():ancestor::packed_int_array() {}
 /// Ctor from piranha::deque_string.
-      trig_fixed_array(const deque_string &sd):ancestor::base_trig_array()
-      {
-// TODO: check for integer limits when building.
-        const size_t w=sd.size();
-        if (w == 0)
-        {
-          std::cout << "Warning: not enough elements to construct trig_fixed_array." << std::endl;
-          std::abort();
-          return;
-        }
-        const trig_size_t d=g_width();
-// Now w >= 1.
-        trig_size_t i;
-        for (i=0;i < boost::minmax(d,(trig_size_t)(w-1)).get<0>();++i)
-        {
-// TODO: lexical conversion from int: store in temp and check for boundaries.
-          private_container_[i]=utils::lexical_converter<int>(sd[i]);
-        }
-        for (;i < d;++i)
-        {
-          private_container_[i]=0;
-        }
-// Take care of flavour.
-        if (*sd.back().c_str() == 's')
-        {
-          ancestor::flavour()=false;
-        }
-      }
-      ~trig_fixed_array() {}
+      trig_fixed_array(const deque_string &sd):ancestor::packed_int_array(),trig_commons::trig_array_commons(sd) {}
+      static const size_t &size() {return ancestor::max_size;}
       void pad_right(const size_t &w)
       {
-        p_assert(w == g_width());
+        p_assert(w == Dim);
         (void)w;
       }
 // TODO: check if it is better this or the base version.
@@ -135,52 +107,29 @@ namespace piranha
       {
         return sizeof(trig_fixed_array);
       }
-// FIXME: do a real check here, cf_width in series could be different than 0.
       template <class Series>
-        bool checkup(const Series &) const
+        bool checkup(const Series &s) const
       {
-        return true;
+        return s.cf_width() <= Dim;
       }
       bool needs_padding(const size_t &n) const
       {
-        p_assert(n <= g_width());
+        p_assert(n <= Dim);
 // Disable compiler warning when asserts are disabled.
         (void)n;
         return false;
       }
       bool is_insertable(const size_t &n) const
       {
-        return (g_width() >= n);
-      }
-// FIXME: make it unique with dimension.
-      static const size_t max_size = Dim;
-// FIXME: simplify this if: return (1 and 2).
-      bool operator==(const trig_fixed_array &t2) const
-      {
-        if (ancestor::flavour() != t2.flavour())
-        {
-          return false;
-        }
-        return (private_container_ == t2.private_container_);
-      }
-      bool operator<(const trig_fixed_array &t2) const
-      {
-        return ancestor::less_than(t2);
-      }
-      size_t hasher() const
-      {
-        size_t seed=ancestor::flavour();
-        private_container_.hasher(seed);
-        return seed;
+        return (Dim >= n);
       }
 // All multipliers are zero.
 //TODO: use packing here and place this method in packed int array.
       bool is_zero() const
       {
-        const trig_size_t w=g_width();
-        for (trig_size_t i=0;i<w;++i)
+        for (size_type i=0;i<Dim;++i)
         {
-          if (g_container()[i]!=0)
+          if ((*this)[i]!=0)
           {
             return false;
           }
@@ -206,41 +155,14 @@ namespace piranha
       void trigmult(const trig_fixed_array &t2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
       {
 #ifdef _PIRANHA_SSE2
-        container_type::trigmult(private_container_,t2.private_container_,
-          ret1.private_container_,ret2.private_container_);
+        ancestor::trigmult(*this,t2,ret1,ret2);
 #else
-        tfa_unrollers<dimension>::mult(&private_container_[0]+dimension,&t2.private_container_[0]+dimension,
-          &ret1.private_container_[0]+dimension,&ret2.private_container_[0]+dimension);
+        tfa_unrollers<Dim>::mult(&(*this)[0]+Dim,&t2[0]+Dim,&ret1[0]+Dim,&ret2[0]+Dim);
 #endif
-      }
-      trig_fixed_array &operator*=(const int &n)
-      {
-        ancestor::mult_by_int(n);
-        return *this;
       }
 // End INTERFACE definition.
 //-------------------------------------------------------
-    private:
-      static const trig_size_t &g_width()
-      {
-        return dimension;
-      }
-      const value_type *g_container() const
-      {
-        return &private_container_[0];
-      }
-      value_type *s_container()
-      {
-        return &private_container_[0];
-      }
-// Data members.
-    private:
-      container_type            private_container_;
-      static const trig_size_t  dimension = (trig_size_t)(Dim);
   };
-
-  template <int Dim, int Bits>
-    const trig_size_t trig_fixed_array<Dim,Bits>::dimension;
 
 /// Resizable type-traits specialization for piranha::trig_fixed_array.
   template <>

@@ -59,8 +59,8 @@ namespace piranha
     template <class T>
       static void trigmult(const T &t1, const T &t2, T &ret1, T &ret2)
     {
-      const uint8 w = T::m128n;
-      for (uint8 i=0;i<w;++i)
+      typedef typename T::size_type size_type;
+      for (size_type i=0;i< T::m128n;++i)
       {
         ret1.private_container_.m[i]=_mm_sub_epi16(t1.private_container_.m[i],t2.private_container_.m[i]);
         ret2.private_container_.m[i]=_mm_add_epi16(t1.private_container_.m[i],t2.private_container_.m[i]);
@@ -76,8 +76,8 @@ namespace piranha
     template <class T>
       static void trigmult(const T &t1, const T &t2, T &ret1, T &ret2)
     {
-      const uint8 w = T::m128n;
-      for (uint8 i=0;i<w;++i)
+      typedef typename T::size_type size_type;
+      for (size_type i=0;i < T::m128n;++i)
       {
         ret1.private_container_.m[i]=_mm_sub_epi8(t1.private_container_.m[i],t2.private_container_.m[i]);
         ret2.private_container_.m[i]=_mm_add_epi8(t1.private_container_.m[i],t2.private_container_.m[i]);
@@ -93,10 +93,11 @@ namespace piranha
       BOOST_STATIC_ASSERT(Dim > 0 and Dim < 100);
     public:
       typedef typename boost::int_t<Bits>::fast value_type;
+      typedef uint8 size_type;
     private:
 #ifdef _PIRANHA_SSE2
       template <int Bits_> friend class pia_helper;
-      static const uint8 m128n = (uint8)((Dim*Bits)/128+1);
+      static const size_type m128n = (size_type)((Dim*Bits)/128+1);
 #endif
       union container_type
       {
@@ -107,44 +108,42 @@ namespace piranha
 #endif
       };
     public:
-      packed_int_array()
-        {
-          for (uint8 i=0;i<Dim;++i)
-          {
-            private_container_.v[i]=0;
-          }
-        }
-      void hasher(size_t &seed) const
+      packed_int_array():m_flavour(true)
       {
-        uint8 i;
+        for (size_type i=0;i<Dim;++i)
+        {
+          private_container_.v[i]=0;
+        }
+      }
+      size_t hasher() const
+      {
+        size_t retval=0;
+        size_type i;
 #ifdef _PIRANHA_64BIT
         for (i=0;i<size64;++i)
         {
-//std::cout << "Entered 64\n";
-          boost::hash_combine(seed,*((const int64 *)(const void *)(private_container_.v)+i));
+          boost::hash_combine(retval,*((const int64 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size64<<1);i<size32;++i)
 #else
         for (i=0;i<size32;++i)
 #endif
         {
-//std::cout << "Entered 32\n";
-          boost::hash_combine(seed,*((const int32 *)(const void *)(private_container_.v)+i));
+          boost::hash_combine(retval,*((const int32 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size32<<1);i<size16;++i)
         {
-//std::cout << "Entered 16\n";
-          boost::hash_combine(seed,*((const int16 *)(const void *)(private_container_.v)+i));
+          boost::hash_combine(retval,*((const int16 *)(const void *)(private_container_.v)+i));
         }
         for (i=(size16<<1);i<size8;++i)
         {
-//std::cout << "Entered 8\n";
-          boost::hash_combine(seed,*((const int8 *)(const void *)(private_container_.v)+i));
+          boost::hash_combine(retval,*((const int8 *)(const void *)(private_container_.v)+i));
         }
+        return retval;
       }
-      bool operator==(const packed_int_array &p) const
+      bool equal_to(const packed_int_array &p) const
       {
-        uint8 i;
+        size_type i;
 #ifdef _PIRANHA_64BIT
         for (i=0;i<size64;++i)
         {
@@ -183,13 +182,15 @@ namespace piranha
         }
         return true;
       }
-      const value_type &operator[](uint8 n) const
+      const value_type &operator[](size_type n) const {return private_container_.v[n];}
+      value_type &operator[](size_type n) {return private_container_.v[n];}
+      const bool &flavour() const {return m_flavour;}
+      bool &flavour() {return m_flavour;}
+      static const size_t max_size = Dim;
+      void resize(const size_t &n)
       {
-        return private_container_.v[n];
-      }
-      value_type &operator[](uint8 n)
-      {
-        return private_container_.v[n];
+        p_assert(n <= Dim);
+        (void)n;
       }
 #ifdef _PIRANHA_SSE2
       static void trigmult(const packed_int_array &t1, const packed_int_array &t2,
@@ -199,29 +200,30 @@ namespace piranha
       }
 #endif
     private:
-      container_type      private_container_;
-      static const uint8  size64 = (uint8)((Dim*Bits)/64);
-      static const uint8  size32 = (uint8)((Dim*Bits)/32);
-      static const uint8  size16 = (uint8)((Dim*Bits)/16);
-      static const uint8  size8 = (uint8)((Dim*Bits)/8);
+      bool                    m_flavour;
+      container_type          private_container_;
+      static const size_type  size64 = (uint8)((Dim*Bits)/64);
+      static const size_type  size32 = (uint8)((Dim*Bits)/32);
+      static const size_type  size16 = (uint8)((Dim*Bits)/16);
+      static const size_type  size8 = (uint8)((Dim*Bits)/8);
   };
 
 // Static inits.
   template <int Dim, int Bits>
-    const uint8 packed_int_array<Dim,Bits>::size64;
+    const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::size64;
 
   template <int Dim, int Bits>
-    const uint8 packed_int_array<Dim,Bits>::size32;
+    const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::size32;
 
   template <int Dim, int Bits>
-    const uint8 packed_int_array<Dim,Bits>::size16;
+    const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::size16;
 
   template <int Dim, int Bits>
-    const uint8 packed_int_array<Dim,Bits>::size8;
+    const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::size8;
 
 #ifdef _PIRANHA_SSE2
   template <int Dim, int Bits>
-    const uint8 packed_int_array<Dim,Bits>::m128n;
+    const typename packed_int_array<Dim,Bits>::size_type packed_int_array<Dim,Bits>::m128n;
 #endif
 }
 

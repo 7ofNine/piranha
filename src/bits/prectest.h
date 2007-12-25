@@ -564,7 +564,7 @@ namespace piranha
 // Check that we are not going outside the boundaries.
           if (sym_index_ < orig_->trig_width())
           {
-            multiplier=it->trig().at(sym_index_);
+            multiplier=it->trig()[sym_index_];
           }
           else
           {

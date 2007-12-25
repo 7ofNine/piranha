@@ -173,15 +173,15 @@ namespace piranha
         p_assert(p1.length() >= 1 && p2.length() >= 1);
         for (trig_size_t i=0;i<twidth;++i)
         {
-          limits1[i].first=limits1[i].second=it1->trig().at(i);
-          limits2[i].first=limits2[i].second=it2->trig().at(i);
+          limits1[i].first=limits1[i].second=it1->trig()[i];
+          limits2[i].first=limits2[i].second=it2->trig()[i];
         }
         mult_type tmp;
         for (;it1!=it1_f;++it1)
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = it1->trig().at(j);
+            tmp = it1->trig()[j];
             if (tmp < limits1[j].first)
               limits1[j].first = tmp;
             if (tmp > limits1[j].second)
@@ -192,7 +192,7 @@ namespace piranha
         {
           for (trig_size_t j=0;j<twidth;++j)
           {
-            tmp = it2->trig().at(j);
+            tmp = it2->trig()[j];
             if (tmp < limits2[j].first)
               limits2[j].first = tmp;
             if (tmp > limits2[j].second)
@@ -294,7 +294,7 @@ namespace piranha
         n=0;
         for (trig_size_t i=0;i<twidth;++i)
         {
-          n+=(coding_vector[i]*m.at(i));
+          n+=(coding_vector[i]*m[i]);
         }
       }
     private:

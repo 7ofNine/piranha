@@ -77,13 +77,13 @@ namespace piranha
   template <int Bits, bool Signed, class Allocator = std::allocator<char> >
     class int_array
   {
+    public:
       typedef typename integer_type_chooser<Bits,Signed>::type value_type;
       typedef typename integer_type_chooser<Bits,Signed>::max_fast_type max_fast_type;
       typedef uint8 size_type;
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
       BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
-    public:
 // Cast argument to int_array::max_fast_type pointer.
 #define max_cast(arg) ((max_fast_type *)(arg))
 /// Default ctor.
@@ -189,7 +189,7 @@ namespace piranha
 /**
  * Tests only the integer elements of the array, not the flavour.
  */
-      bool operator==(const int_array &v) const
+      bool equal_to(const int_array &v) const
       {
         switch (m_size == v.size())
         {
@@ -240,7 +240,7 @@ namespace piranha
         }
         return true;
       }
-      static const size_t max_size = boost::integer_traits<size_type>::max;
+      static const size_t max_size = boost::integer_traits<size_type>::const_max;
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,
         const size_type &pack_size)

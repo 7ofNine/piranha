@@ -22,147 +22,64 @@
 #define PIRANHA_TRIG_ARRAY_H
 
 #include <boost/integer_traits.hpp>
+#include <memory>
 
-#include "../base_classes/base_trig_array.h"
+#include "../base_classes/trig_array_commons.h"
 #include "../../base_classes/int_array.h"
 
 namespace piranha
 {
-  template <int Bits>
+  template <int Bits, class Allocator = std::allocator<char> >
 /// Trigonometric array, dynamically sized version.
 /**
- * It wraps a piranha::int_array with signed integer sized Bits.
+ * It wraps a piranha::int_array with signed integer sized Bits, and adds the
+ * capabilities needed for trigonometric manipulation.
  */
-    class trig_array: public base_trig_array<Bits,trig_array<Bits> >
+    class trig_array: public int_array<Bits,true,Allocator>,
+      public trig_array_commons<trig_array<Bits> >
   {
-      typedef base_trig_array<Bits,trig_array> ancestor;
-      typedef int_array<Bits,true> container_type;
-      friend class base_trig_array<Bits,trig_array>;
+      typedef trig_array_commons<trig_array> trig_commons;
+      typedef int_array<Bits,true,Allocator> ancestor;
     public:
       typedef typename ancestor::value_type value_type;
-    public:
+      typedef typename ancestor::size_type size_type;
 // Start INTERFACE definition.
 //-------------------------------------------------------
 // Ctors.
 /// Default ctor.
-      trig_array():ancestor::base_trig_array() {}
-/// Copy ctor.
-      trig_array(const trig_array &t):ancestor::base_trig_array(t),m_container(t.m_container) {}
+      trig_array():ancestor::int_array() {}
 /// Ctor from piranha::deque_string.
-      trig_array(const deque_string &sd):ancestor::base_trig_array()
-      {
-// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
-// TODO: do it everywhere!
-        const trig_size_t w=sd.size();
-        if (w == 0)
-        {
-          std::cout << "Warning: constructing empty trig_array." << std::endl;
-          std::abort();
-          return;
-        }
-// Now we know  w >= 1.
-        m_container.resize(w-1);
-        for (trig_size_t i=0;i < w-1;++i)
-        {
-          m_container[i]=utils::lexical_converter<value_type>(sd[i]);
-        }
-// Take care of flavour.
-        if (*sd.back().c_str() == 's')
-        {
-          ancestor::flavour()=false;
-        }
-      }
-      ~trig_array() {}
+      trig_array(const deque_string &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
+/// Pad right.
       void pad_right(const size_t &n)
       {
-        p_assert(n >= m_container.size());
-        m_container.resize(n);
+        p_assert(n >= ancestor::size());
+        ancestor::resize(n);
       }
 // Probing.
 /// Data footprint.
 /**
  * Returns the memory occupied by the data members.
  */
-      size_t data_footprint() const {return (g_width()*sizeof(value_type));}
+      size_t data_footprint() const {return (ancestor::size()*sizeof(value_type));}
       template <class Series>
         bool checkup(const Series &s) const
       {
-        if (s.trig_width() != g_width())
+        switch (s.trig_width() != ancestor::size())
         {
-          std::cout << "Size mismatch in trig_array." << std::endl;
-          return false;
-        }
-        return true;
-      }
-      bool needs_padding(const size_t &n) const {return (g_width() < n);}
-      bool is_insertable(const size_t &n) const {return (g_width() <= n);}
-// FIXME: introduce size_type from int_array here.
-      static const size_t max_size = boost::integer_traits<size_t>::const_max;
-      bool operator==(const trig_array &t2) const
-      {
-        return (ancestor::flavour() == t2.flavour() and m_container == t2.m_container);
-      }
-      bool operator<(const trig_array &t2) const {return ancestor::less_than(t2);}
-      size_t hasher() const
-      {
-        size_t retval(m_container.hasher());
-        boost::hash_combine(retval,ancestor::flavour());
-        return retval;
-      }
-      bool is_zero() const {return m_container.is_zero();}
-// Math.
-/// Multiplication.
-/**
- * Multiplication of two trigonometric functions using Werner's formulas, i.e.
- * \f[
- * C\cos\alpha\cdot\cos\beta=
- * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
- * \f]
- * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
- * and in the second one always goes \f$ \alpha + \beta \f$ one.
- * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
- * that return values are empty).
- * @param[in] t2 factor.
- * @param[out] ret1 first return value.
- * @param[out] ret2 second return value.
- */
-      void trigmult(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
-// NOTE: we are not using here a general version of vector addition/subtraction
-// because this way we can do two operations (+ and -) every cycle. This is a performance
-// critical part, so the optimization should be worth the hassle.
-      {
-        const trig_size_t max_w=g_width(), min_w=t2.g_width();
-// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
-// already adjusted my merge_args in multiplication routines.
-        p_assert(max_w >= min_w);
-        p_assert(ret1.g_width() == max_w);
-        p_assert(ret2.g_width() == max_w);
-        trig_size_t i;
-        for (i=0;i<min_w;++i)
-        {
-          ret1.m_container[i]=m_container[i]-t2.m_container[i];
-          ret2.m_container[i]=m_container[i]+t2.m_container[i];
-        }
-        for (;i<max_w;++i)
-        {
-          ret1.m_container[i]=m_container[i];
-          ret2.m_container[i]=m_container[i];
+          case true:
+            std::cout << "Size mismatch in trig_array." << std::endl;
+            return false;
+          default:
+            return true;
         }
       }
-      trig_array &operator*=(const int &n)
-      {
-        ancestor::mult_by_int(n);
-        return *this;
-      }
+/// Does trig_array needs padding to be inserted in series with trig_width equal to n?
+      bool needs_padding(const size_t &n) const {return (ancestor::size() < n);}
+/// Does is trig_array insertable in series with trig_width equal to n?
+      bool is_insertable(const size_t &n) const {return (ancestor::size() <= n);}
 // End INTERFACE definition.
 //-------------------------------------------------------
-    private:
-      trig_size_t g_width() const {return m_container.size();}
-      const value_type *g_container() const {return &(m_container[0]);}
-      value_type *s_container() {return &(m_container[0]);}
-// Data members.
-    private:
-      container_type        m_container;
   };
 }
 #endif

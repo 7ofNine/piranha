@@ -56,7 +56,7 @@ namespace piranha
         const it_s_index it_f=derived_cast->end();
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {
-          tmp_mult=it->trig().at(sym_index);
+          tmp_mult=it->trig()[sym_index];
 // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {
@@ -236,13 +236,13 @@ namespace piranha
             jaccosRecf<real_cf_type>(i,_cf,tmp);
             term1.cf().set_real(tmp);
             term1.trig()=it->trig();
-            term1.trig()*=(i<<1);
+            term1.trig().mult_by_int(i<<1);
             term1.trig().flavour()=true;
             retval.insert_check_positive(term1);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
-            term2.trig()*=((i<<1)+1);
+            term2.trig().mult_by_int((i<<1)+1);
             term1.trig().flavour()=true;
             retval.insert_check_positive(term2);
           }
@@ -254,13 +254,13 @@ namespace piranha
             jacsinRecf(i,_cf,tmp);
             term1.cf().set_real(tmp);
             term1.trig()=it->trig();
-            term1.trig()*=(i<<1);
+            term1.trig().mult_by_int(i<<1);
             term1.trig().flavour()=true;
             retval.insert_check_positive(term1);
             jacsinImcf(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
-            term2.trig()*=((i<<1)+1);
+            term2.trig().mult_by_int(((i<<1)+1));
             term2.trig().flavour()=false;
             retval.insert_check_positive(term2);
           }

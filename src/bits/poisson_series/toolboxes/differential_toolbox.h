@@ -72,11 +72,11 @@ namespace piranha
             switch (it->trig().flavour())
             {
               case true:
-                tmp_term.cf().mult_by(-it->trig().at(trig_s_index.second));
+                tmp_term.cf().mult_by(-it->trig()[trig_s_index.second]);
                 tmp_term.trig().flavour()=false;
                 break;
               case false:
-                tmp_term.cf().mult_by(it->trig().at(trig_s_index.second));
+                tmp_term.cf().mult_by(it->trig()[trig_s_index.second]);
                 tmp_term.trig().flavour()=true;
             }
 // Perform this check since if we already assigned trig_args above we don't need to

@@ -62,7 +62,7 @@ namespace piranha
       {
         return private_flavour_;
       }
-      int16 at(trig_size_t) const;
+      int16 operator[](const trig_size_t &) const;
 // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
@@ -129,7 +129,7 @@ namespace piranha
         }
         return *this;
       }
-      trig_sparse_array &operator*=(const int &);
+      void mult_by_int(const int &);
 // End INTERFACE definition.
 //-------------------------------------------------------
       trig_sparse_array &operator+=(const trig_sparse_array &);
@@ -260,7 +260,7 @@ namespace piranha
   }
 
 // Getters implementations.
-  inline int16 trig_sparse_array::at(trig_size_t n) const
+  inline int16 trig_sparse_array::operator[](const trig_size_t &n) const
   {
     const const_iterator it=find(n);
     if (it == end())
@@ -293,7 +293,7 @@ namespace piranha
     const_iterator it=begin();
     for (trig_size_t i=0;i<tv.size();++i)
     {
-      out_stream << at(i) << stream_manager::data_separator();
+      out_stream << (*this)[i] << stream_manager::data_separator();
     }
     switch (flavour())
     {
@@ -363,7 +363,7 @@ namespace piranha
     {
       if (l[i].first)
       {
-        int16 tmp = old.at(l[i].second);
+        int16 tmp = old[l[i].second];
         if (tmp != 0)
         {
           private_container_.push_back(pair(i,tmp));
@@ -561,7 +561,7 @@ namespace piranha
     return (private_container_ == l2.private_container_);
   }
 
-  inline trig_sparse_array &trig_sparse_array::operator*=(const int &n)
+  inline void trig_sparse_array::mult_by_int(const int &n)
   {
     if (n==0)
     {
@@ -575,7 +575,6 @@ namespace piranha
         it->second*=n;
       }
     }
-    return *this;
   }
 
   template <class Modifier>
