@@ -35,7 +35,7 @@ namespace piranha
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_h_index
     base_pseries<__PIRANHA_BASE_PS_TP>::find_term(const term_type &t) const
   {
-    return g_h_index().find(t.trig());
+    return g_h_index().find(t);
   }
 
 /// Add phase to a term and insert the resulting terms in an external series.

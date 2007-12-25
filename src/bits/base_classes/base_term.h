@@ -97,6 +97,17 @@ namespace piranha
       {
         return term_helper_ignorability<last_index>::run(*this,s);
       }
+/// Return const reference to the last element.
+      const typename boost::tuples::element<boost::tuples::length<tuple_type>::value-1,tuple_type>::type &
+        last_element() const
+      {
+        return elements.template get<last_index>();
+      }
+/// Equality test.
+/**
+ * By default equality is defined by the equality of the last elements of the term.
+ */
+      bool operator==(const base_term &t) const {return last_element() == t.last_element();}
 // Data members.
 /// Elements of the term.
       tuple_type          elements;
@@ -105,6 +116,16 @@ namespace piranha
 /// Last index of tuple.
       static const size_t last_index = size-1;
   };
+
+/// Overload of hash_value function for piranha::base_term.
+/**
+ * By default the last elements' hash_value() method is used to calculate the term's hash value.
+ */
+  template <class T0,class T1,class T2,class T3,class T4,class T5,class T6>
+    inline size_t hash_value(const base_term<T0,T1,T2,T3,T4,T5,T6> &t)
+  {
+    return t.last_element().hash_value();
+  }
 }
 
 #endif

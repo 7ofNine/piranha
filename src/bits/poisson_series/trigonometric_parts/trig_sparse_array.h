@@ -106,7 +106,7 @@ namespace piranha
       template <class TrigEvaluator>
         double t_eval(TrigEvaluator &) const;
       short int sign() const;
-      size_t hasher() const;
+      size_t hash_value() const;
       bool is_zero() const;
       template <class Series>
         bool is_ignorable(const Series &) const;
@@ -492,7 +492,7 @@ namespace piranha
     return false;
   }
 
-  inline size_t trig_sparse_array::hasher() const
+  inline size_t trig_sparse_array::hash_value() const
   {
     size_t seed=flavour();
     const const_iterator it_f=end();
@@ -699,19 +699,6 @@ namespace piranha
     ret1-=l2;
     ret2=*this;
     ret2+=l2;
-  }
-
-// NOTE: maybe we can place this struct inside trig_sparse_array and require that all trig_args provide
-// it, as an interface request? But then all classes that are expected to use the hasher should then
-// multi-inherit from a base hasher class? Otherwise how can we overload hash-value? Mh, maybe we
-// can specificy the hasher in multiindex containers. Investigate.
-/// Overload of hash_value function for piranha::trig_sparse_array.
-/**
- * To be used in piranha::base_pseries for the hashed index.
- */
-  inline size_t hash_value(const trig_sparse_array &tm)
-  {
-    return tm.hasher();
   }
 }
 #endif                                            // PIRANHA_trig_sparse_array_H

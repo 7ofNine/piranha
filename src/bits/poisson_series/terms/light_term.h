@@ -11,7 +11,7 @@ namespace piranha
       {
         size_t operator()(const light_term &t) const
         {
-          return t.m_trig.hasher();
+          return t.m_trig.hash_value();
         }
       };
 /// Default ctor.
@@ -52,7 +52,7 @@ namespace piranha
       }
       size_t hasher() const
       {
-        return trig.hasher();
+        return trig.hash_value();
       }
 // Data members.
       mutable Cf    m_cf;

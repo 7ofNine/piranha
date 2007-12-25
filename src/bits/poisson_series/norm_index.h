@@ -69,10 +69,7 @@ namespace piranha
       std::less<Trig>
       >
       >,
-      boost::multi_index::hashed_unique <
-      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::trig >
-      >
+      boost::multi_index::hashed_unique<boost::multi_index::identity<Term<Cf, Trig> > >
       > type;
   };
 }

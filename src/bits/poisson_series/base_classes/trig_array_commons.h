@@ -336,16 +336,6 @@ namespace piranha
       }
 #undef derived_cast
   };
-
-/// Overload of hash_value function for piranha::trig_array_commons.
-/**
- * To be used in piranha::base_pseries for the hashed index.
- */
-  template <class Derived>
-    inline size_t hash_value(const trig_array_commons<Derived> &t)
-  {
-    return static_cast<const Derived *>(&t)->hash_value();
-  }
 }
 
 #endif
