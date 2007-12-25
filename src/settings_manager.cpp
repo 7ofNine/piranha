@@ -21,6 +21,7 @@
 #include <boost/integer_traits.hpp>
 
 #include "bits/common_typedefs.h"
+#include "bits/config.h" // For GSL functions.
 #include "bits/memory.h"
 #include "bits/settings_manager.h"
 #include "bits/stream_manager.h"
@@ -33,8 +34,8 @@ namespace piranha
   double settings_manager::numerical_zero_ = 1E-80;
   const max_fast_uint settings_manager::min_u_=boost::integer_traits<max_fast_uint>::min();
   const max_fast_uint settings_manager::max_u_=boost::integer_traits<max_fast_uint>::max();
-  const max_fast_int  settings_manager::min_i_=boost::integer_traits<max_fast_int>::min();
-  const max_fast_int  settings_manager::max_i_=boost::integer_traits<max_fast_int>::max();
+  const max_fast_int settings_manager::min_i_=boost::integer_traits<max_fast_int>::min();
+  const max_fast_int settings_manager::max_i_=boost::integer_traits<max_fast_int>::max();
   const unsigned int settings_manager::jacang_limit_ = 20;
   std::string settings_manager::theories_path_ = _PIRANHA_THEORIES_DIR;
   const std::string settings_manager::default_theories_path_ = _PIRANHA_THEORIES_DIR;
@@ -58,6 +59,10 @@ namespace piranha
     stream_manager::setup_print(std::cout);
 // Custom allocators for gmp.
     mp_set_memory_functions(mp_alloc,mp_realloc,mp_free);
+#ifdef _PIRANHA_GSL
+// Turn off gsl error handler.
+    gsl_set_error_handler_off();
+#endif
   }
 
 /// Set path to theories of motion.

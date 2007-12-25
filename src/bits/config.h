@@ -41,4 +41,10 @@
 #define _PIRANHA_DISPLAY_PROGRESS (true)
 #endif
 
+#ifdef _PIRANHA_GSL
+#include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_sf_result.h>
+#include <gsl/gsl_errno.h>
+#endif
+
 #endif

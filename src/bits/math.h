@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 
+#include "config.h" // For GSL-related includes.
 #include "p_assert.h"
 #include "platform_switches.h"                    // For NAN detection.
 #include "settings_manager.h"
@@ -349,6 +350,21 @@ namespace piranha
 /// Bessel function of the first kind (C standard library implementation).
       static double besselJ(int n, const double &x)
       {
+#ifdef _PIRANHA_GSL
+        gsl_sf_result res;
+        int status = gsl_sf_bessel_Jn_e(n,x,&res);
+        switch (status)
+        {
+          case 0:
+            return res.val;
+          case GSL_EUNDRFLW:
+            return 0;
+          default:
+            std::cout << "There were some problems calculating BesselJ." << std::endl;
+            std::cout << status << std::endl;
+            std::abort();
+        }
+#else
         double retval=jn(n,x);
 // Check needed apparently under MinGW/GCC.
         if (__ISNAN(retval))
@@ -357,6 +373,7 @@ namespace piranha
           retval=0.;
         }
         return retval;
+#endif
       }
 /// Legendre function of the first kind - Pnm(cos(theta)).
 /**
