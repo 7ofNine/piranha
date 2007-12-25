@@ -3,6 +3,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 INCLUDE(${CMAKE_ROOT}/Modules/CMakeDependentOption.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/FindPythonLibs.cmake)
 INCLUDE(FindGMP)
+INCLUDE(FindGSL)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaFortranSetup)
 INCLUDE(PiranhaPythonSetup)
@@ -20,6 +21,7 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_MPFS "Enable multiple precision Fourier ser
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_CFS "Enable compacted Fourier series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_SP "Build sp series in Pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." OFF)
+OPTION(ENABLE_GSL_INTEGRATION "Enable integration with the GNU Scientific Library." OFF)
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
@@ -68,6 +70,17 @@ ENDIF(WIN32)
 # Find GMP.
 FIND_PACKAGE(GMP REQUIRED)
 SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
+
+# Find GSL.
+IF(ENABLE_GSL_INTEGRATION)
+  FIND_PACKAGE(GSL)
+  IF(NOT GSL_FOUND)
+    MESSAGE(FATAL_ERROR "GSL integration was requested, but GSL libraries or include dir could not be located.")
+  ENDIF(NOT GSL_FOUND)
+  MESSAGE(STATUS "Enabling GSL integration.")
+  SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES})
+  SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -DHAVE_INLINE -D_PIRANHA_GSL)
+ENDIF(ENABLE_GSL_INTEGRATION)
 
 # SSE2
 IF(ENABLE_SSE2)
