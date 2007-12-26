@@ -152,6 +152,12 @@ namespace piranha
         m_size = new_size;
         m_pack_size = new_pack_size;
       }
+/// Pad right.
+      void pad_right(const size_t &n)
+      {
+        hard_assert(n >= m_size);
+        resize(n);
+      }
 /// Assignment operator.
       int_array &operator=(const int_array &v)
       {

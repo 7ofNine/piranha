@@ -50,12 +50,6 @@ namespace piranha
       trig_array():ancestor::int_array() {}
 /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
-/// Pad right.
-      void pad_right(const size_t &n)
-      {
-        p_assert(n >= ancestor::size());
-        ancestor::resize(n);
-      }
 // Probing.
 /// Data footprint.
 /**

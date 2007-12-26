@@ -187,9 +187,19 @@ namespace piranha
       const bool &flavour() const {return m_flavour;}
       bool &flavour() {return m_flavour;}
       static const size_t max_size = Dim;
+/// Resize.
+/**
+ * Resizing is allowed as long as a size greater than Dim is requested.
+ */
       void resize(const size_t &n)
       {
-        p_assert(n <= Dim);
+        hard_assert(n <= Dim);
+        (void)n;
+      }
+/// Pad right.
+      void pad_right(const size_t &n)
+      {
+        p_assert(n == Dim);
         (void)n;
       }
 #ifdef _PIRANHA_SSE2

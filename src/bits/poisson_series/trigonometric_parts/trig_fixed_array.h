@@ -88,11 +88,6 @@ namespace piranha
 /// Ctor from piranha::deque_string.
       trig_fixed_array(const deque_string &sd):ancestor::packed_int_array(),trig_commons::trig_array_commons(sd) {}
       static const size_t &size() {return ancestor::max_size;}
-      void pad_right(const size_t &w)
-      {
-        p_assert(w == Dim);
-        (void)w;
-      }
 // TODO: check if it is better this or the base version.
       /*void invert_sign()
       {
