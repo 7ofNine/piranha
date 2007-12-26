@@ -213,7 +213,7 @@ namespace piranha
 // Swap other members
     arguments().template get<0>().swap(ps2.arguments().template get<0>());
     arguments().template get<1>().swap(ps2.arguments().template get<1>());
-    lin_args_.swap(ps2.lin_args_);
+    lin_args().swap(ps2.lin_args());
     static_cast<Derived *>(this)->swap_hook(ps2);
   }
 

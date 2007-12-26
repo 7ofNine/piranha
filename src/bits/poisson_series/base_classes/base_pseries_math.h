@@ -37,7 +37,7 @@ namespace piranha
     *s_series_set()=*ps2.g_series_set();
     arguments().template get<0>()=ps2.arguments().template get<0>();
     arguments().template get<1>()=ps2.arguments().template get<1>();
-    lin_args_=ps2.lin_args_;
+    lin_args()=ps2.lin_args();
     static_cast<Derived *>(this)->assignment_hook(ps2);
     std::cout << "Assignment operator!" << std::endl;
     return *static_cast<Derived *>(this);
@@ -56,7 +56,7 @@ namespace piranha
     s_series_set()->clear();
     arguments().template get<0>()=ps2.arguments().template get<0>();
     arguments().template get<1>()=ps2.arguments().template get<1>();
-    lin_args_=ps2.lin_args();
+    lin_args()=ps2.lin_args();
     const it_s_index2 it_f=ps2.g_s_index().end();
 // TODO: use hinted insertion.
     for (it_s_index2 it=ps2.g_s_index().begin();it!=it_f;++it)
@@ -76,7 +76,7 @@ namespace piranha
     s_series_set()->clear();
     arguments().template get<0>().clear();
     arguments().template get<1>().clear();
-    lin_args_.clear();
+    lin_args().clear();
     insert_check_positive(term_type(cf_type(x),trig_type()));
     std::cout << "Generic assignment operator!" << std::endl;
     return *static_cast<Derived *>(this);
@@ -102,11 +102,11 @@ namespace piranha
   {
     if (Sign)
     {
-      math::vec_add(lin_args_,ps2.lin_args(),lin_args_);
+      math::vec_add(lin_args(),ps2.lin_args(),lin_args());
     }
     else
     {
-      math::vec_sub(lin_args_,ps2.lin_args(),lin_args_);
+      math::vec_sub(lin_args(),ps2.lin_args(),lin_args());
     }
   }
 
