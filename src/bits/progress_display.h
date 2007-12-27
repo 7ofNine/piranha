@@ -24,7 +24,7 @@
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "config.h" // For _PIRANHA_DISPLAY_PROGRESS_MAX_N.
+#include "config.h" // For _PIRANHA_DISPLAY_PROGRESS_MIN_N.
 #include "settings_manager.h"
 
 namespace piranha
@@ -33,7 +33,7 @@ namespace piranha
     class progress_display
   {
     public:
-      progress_display(const size_t &n):active(n > _PIRANHA_DISPLAY_PROGRESS_MAX_N and
+      progress_display(const size_t &n):active(n > _PIRANHA_DISPLAY_PROGRESS_MIN_N and
         settings_manager::display_progress()),pd(0)
       {
         switch (active)

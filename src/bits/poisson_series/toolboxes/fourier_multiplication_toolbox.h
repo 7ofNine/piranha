@@ -24,6 +24,7 @@
 #include <boost/foreach.hpp>
 
 #include "../../buffer.h"
+#include "../../compile_switches.h"
 #include "../../config.h" // For selection of temporary hash container for multiplication and display progress..
 #include "../terms/light_term.h"
 #include "norm_truncation_toolbox.h"
@@ -84,7 +85,7 @@ namespace piranha
         const double norm2_i=ps2.begin()->cf().norm(ps2.arguments().template get<0>());
 // Build the generalized lexicographic representation.
         glr_type glr(*derived_cast,ps2);
-        progress_display<_PIRANHA_DISPLAY_PROGRESS> pd(l1*l2);
+        progress_display<compile_switches::display_progress> pd(l1*l2);
         if (glr.is_viable())
         {
           const max_fast_int h_min = glr.g_h_min(), h_max = glr.g_h_max();

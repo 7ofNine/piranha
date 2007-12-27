@@ -18,24 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CONFIG_H
-#define PIRANHA_CONFIG_H
+#ifndef PIRANHA_COMPILE_SWITCHES_H
+#define PIRANHA_COMPILE_SWITCHES_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
-
-#define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
-#endif
-
-#define likely(exp)   __builtin_expect(exp,1)
-#define unlikely(exp) __builtin_expect(exp,0)
-
-#define _PIRANHA_DISPLAY_PROGRESS_MIN_N (500000)
+namespace piranha
+{
+/// Compile-time switches.
+/**
+ * This struct reports some useful compile-time switches in form of boolean flags.
+ */
+  struct compile_switches
+  {
+/// Has progress display been built?
+    static const bool   display_progress =
+                        #ifdef _PIRANHA_DISPLAY_PROGRESS
+                        true;
+                        #else
+                        false;
+                        #endif
+/// Has integration with GSL libraries been enabled?
+    static const bool   gsl_integration =
+                        #ifdef _PIRANHA_GSL
+                        true;
+                        #else
+                        false;
+                        #endif
+/// Is Piranha using Intel TBB for parallelism?
+    static const bool   use_tbb =
+                        #ifdef _PIRANHA_TBB
+                        true;
+                        #else
+                        false;
+                        #endif
+  };
+}
 
 #endif

@@ -21,14 +21,12 @@
 #ifndef PIRANHA_PACKED_INT_ARRAY_H
 #define PIRANHA_PACKED_INT_ARRAY_H
 
-#ifdef _PIRANHA_SSE2
-#include <emmintrin.h>
-#endif
 #include <boost/integer.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
 
 #include "common_typedefs.h"
+#include "piranha_vectorization.h"
 
 namespace piranha
 {

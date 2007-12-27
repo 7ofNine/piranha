@@ -21,7 +21,7 @@
 #ifndef PIRANHA_PIRANHA_TBB_H
 #define PIRANHA_PIRANHA_TBB_H
 
-#ifdef PIRANHA_TBB
+#ifdef _PIRANHA_TBB
 
 #include <tbb/task_scheduler_init.h>
 
