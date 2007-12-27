@@ -21,8 +21,8 @@
 #include <boost/integer_traits.hpp>
 
 #include "bits/common_typedefs.h"
-#include "bits/config.h" // For GSL functions.
 #include "bits/memory.h"
+#include "bits/piranha_gsl.h"
 #include "bits/settings_manager.h"
 #include "bits/stream_manager.h"
 #include "bits/version.h"

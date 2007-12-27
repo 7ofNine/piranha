@@ -18,27 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CONFIG_H
-#define PIRANHA_CONFIG_H
+#ifndef PIRANHA_GSL_H
+#define PIRANHA_GSL_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
-
-#define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
-#endif
-
-#define likely(exp)   __builtin_expect(exp,1)
-#define unlikely(exp) __builtin_expect(exp,0)
-
-#define _PIRANHA_DISPLAY_PROGRESS_MAX_N (500000)
-#ifndef _PIRANHA_DISPLAY_PROGRESS
-#define _PIRANHA_DISPLAY_PROGRESS (true)
+#ifdef _PIRANHA_GSL
+#include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_sf_result.h>
+#include <gsl/gsl_errno.h>
 #endif
 
 #endif

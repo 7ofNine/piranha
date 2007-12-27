@@ -25,8 +25,8 @@
 #include <iostream>
 #include <vector>
 
-#include "config.h" // For GSL-related includes.
 #include "p_assert.h"
+#include "piranha_gsl.h"
 #include "platform_switches.h"                    // For NAN detection.
 #include "settings_manager.h"
 
