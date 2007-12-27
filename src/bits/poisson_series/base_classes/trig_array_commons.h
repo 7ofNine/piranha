@@ -166,7 +166,7 @@ namespace piranha
  * @param[in] t double time of the evaluation.
  * @param[in] v vector of piranha::psymbol pointers.
  */
-      double t_eval_brute(const double &t, const vector_psym_p &v) const
+      double t_eval(const double &t, const vector_psym_p &v) const
       {
         const size_t w=v.size();
         p_assert(w <= derived_cast->size());
