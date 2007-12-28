@@ -47,14 +47,6 @@ IF(BUILD_TBB_MULTITHREADING)
     tbb/tbb_misc.cpp
     piranha_tbb.cpp
   )
-  IF(WIN32)
-# This is irrelevant at the moment, since TBB does not compile yet in MinGW.
-    ADD_DEFINITIONS(-DUSE_WINTHREAD)
-  ELSE(WIN32)
-    ADD_DEFINITIONS(-DUSE_PTHREAD)
-    SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} pthread dl)
-  ENDIF(WIN32)
-  ADD_DEFINITIONS(-D_PIRANHA_TBB)
 ENDIF(BUILD_TBB_MULTITHREADING)
 
 IF(BUILD_PYRANHA)
