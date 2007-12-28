@@ -143,6 +143,7 @@ namespace piranha
       double g_norm() const;
       eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;
+      bool t_eval(const double &, const double &, const int &, std::vector<eval_type> &) const;
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;
@@ -191,7 +192,6 @@ namespace piranha
       void append_cf_arg(const psym_p);
       void append_trig_arg(const psym_p);
 // Protected probing.
-      bool t_eval(const double &, const double &, const int &, std::vector<eval_type> &) const;
       it_s_index sdp_cutoff(const double &, const double &) const;
       it_s_index discontinuity() const;
       double trig_density() const;
