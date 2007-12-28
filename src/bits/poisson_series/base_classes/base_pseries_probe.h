@@ -85,6 +85,40 @@ namespace piranha
     return retval;
   };
 
+/// Evaluate numerically a series over an interval of time.
+/**
+ * Evaluate the series in the time interval [t0,t1] with n steps. Place the result in vector v. Returns true
+ * if the operation was successful, false otherwise.
+ * @param[in] t0 starting time of evaluation.
+ * @param[in] t1 ending time of evaluation.
+ * @param[out] retval vector that will contain the result of the evaluation.
+ */
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    bool base_pseries<__PIRANHA_BASE_PS_TP>::t_eval(const double &t0,
+    const double &t1, const int &n, std::vector<eval_type> &retval) const
+  {
+    if (n <= 0)
+    {
+      std::cout << "Please insert a strictly positive value for the number of steps in interval series evaluation."
+        << std::endl;
+      return false;
+    }
+    const double step = (t1-t0)/(double)n;
+// Check that step is not null and that signs of interval and step are consistent.
+    if (step == 0 or (t1-t0) * step < 0)
+    {
+      std::cout << "Error: problem in step size in interval series evaluation." << std::endl;
+      return false;
+    }
+// Empty retval.
+    retval.resize(0);
+    for (double t = t0; t <= t1; t+=step)
+    {
+      retval.push_back(static_cast<Derived const *>(this)->t_eval(t));
+    }
+    return true;
+  };
+
 /// Compatibility check for arguments.
 /**
  * Test whether series' arguments are compatible with those from ps2. Compatibility
