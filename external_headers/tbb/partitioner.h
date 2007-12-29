@@ -46,7 +46,7 @@ public:
     simple_partitioner(simple_partitioner &, split) {}
 
     template <typename Range>
-    inline bool should_execute_range(const Range &r, const task &t) {
+    inline bool should_execute_range(const Range &r, const task &) {
         return !r.is_divisible();
     }
 };
