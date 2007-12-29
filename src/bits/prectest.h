@@ -189,17 +189,10 @@ namespace piranha
         build_tc();
       }
 // Ctor & Dtor
-      base_tc():benchmarked_(0)
-        {}
-      ;
-      virtual ~base_tc()
-        {}
-      ;
+      base_tc():benchmarked_(0) {}
+      virtual ~base_tc() {}
     private:
-      eval_type eval_hs(const double &t) const
-      {
-        return benchmarked_->t_eval(t);
-      }
+      eval_type eval_hs(const double &t) const {return benchmarked_->t_eval(t);}
       void build_tc();
       void calc_stats();
       void plot_data(std::ostream &) const;
