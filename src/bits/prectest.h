@@ -170,36 +170,25 @@ namespace piranha
       const double &max_error() const {return max_error_;}
       void gnuplot_save(const std::string &) const;
     protected:
+// Ctor & Dtor
+      base_tc(const double &t1, const double &t2, const size_t &ntot, const T &benchmarked):
+        t1_(t1),t2_(t2),ntot_(ntot),time_(),hs_(),hs_computed_(),benchmarked_(&benchmarked) {}
+      virtual ~base_tc() {}
 /// Calculate diff at time t.
 /**
  * This function will have to be re-implemented in inherited class to perform the desired
  * comparisons.
  */
       virtual eval_type eval_hs_computed(const double &t) const = 0;
-      void init(const double &t1, const double &t2, const size_t &ntot,
-        const T &benchmarked)
-      {
-        t1_=t1;
-        t2_=t2;
-        ntot_=ntot;
-        time_.resize(ntot);
-        hs_.resize(ntot);
-        hs_computed_.resize(ntot);
-        benchmarked_=&benchmarked;
-        build_tc();
-      }
-// Ctor & Dtor
-      base_tc():benchmarked_(0) {}
-      virtual ~base_tc() {}
+      void build_tc();
     private:
       eval_type eval_hs(const double &t) const {return benchmarked_->t_eval(t);}
-      void build_tc();
       void calc_stats();
       void plot_data(std::ostream &) const;
 // Data members
-      double                      t1_;
-      double                      t2_;
-      size_t                      ntot_;
+      const double                t1_;
+      const double                t2_;
+      const size_t                ntot_;
       std::valarray<double>       time_;
       std::valarray<eval_type>    hs_;
       std::valarray<eval_type>    hs_computed_;
@@ -211,6 +200,10 @@ namespace piranha
   template <class T>
     inline void base_tc<T>::build_tc()
   {
+// TODO: place checks here?
+    time_.resize(ntot_);
+    hs_.resize(ntot_);
+    hs_computed_.resize(ntot_);
     const double step_size=(t2_-t1_)/ntot_;
     double t=t1_;
     for (size_t i=0;i<ntot_;++i)
@@ -295,10 +288,7 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_equal(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &a):a_(&a)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
     private:
       const T     *a_;
       virtual eval_type eval_hs_computed(const double &t) const
@@ -314,10 +304,7 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_mult(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &x, const T &y):x_(&x),y_(&y)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const T &x, const T &y):base_tc<T>::base_tc(t1,t2,ntot,b),x_(&x),y_(&y) {base_tc<T>::build_tc();}
     private:
       const T     *x_;
       const T     *y_;
@@ -334,10 +321,8 @@ namespace piranha
       typedef std::complex<T> b_type;
       typedef typename base_tc<b_type>::eval_type eval_type;
       tc_complexp(const b_type &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):a_(&a)
-      {
-        base_tc<b_type>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, const T &a):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),a_(&a)
+        {base_tc<std::complex<T> >::build_tc();}
     private:
       const T     *a_;
       virtual eval_type eval_hs_computed(const double &t) const
@@ -353,10 +338,7 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_cosine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):a_(&a)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
     private:
       const T     *a_;
       virtual eval_type eval_hs_computed(const double &t) const
@@ -372,10 +354,7 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_sine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):a_(&a)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
     private:
       const T     *a_;
       virtual eval_type eval_hs_computed(const double &t) const
@@ -391,10 +370,8 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_Pnm(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, int n, int m, const T &a):a_(&a),n_(n),m_(m)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, int n, int m, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),n_(n),m_(m)
+        {base_tc<T>::build_tc();}
     private:
       const T     *a_;
       int         n_;
@@ -413,11 +390,8 @@ namespace piranha
       typedef typename base_tc<b_type>::eval_type eval_type;
       tc_Ynm(const b_type &b, const double &t1, const double &t2,
         const size_t &ntot, int n, int m, const T &theta, const T
-        &phi):theta_(&theta),phi_(&phi),
-        n_(n),m_(m)
-      {
-        base_tc<b_type>::init(t1,t2,ntot,b);
-      }
+        &phi):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),theta_(&theta),phi_(&phi),
+        n_(n),m_(m) {base_tc<std::complex<T> >::build_tc();}
     private:
       const T     *theta_;
       const T     *phi_;
@@ -437,11 +411,9 @@ namespace piranha
       typedef typename base_tc<b_type>::eval_type eval_type;
       tc_wig_rot(const b_type &b, const double &t1,
         const double &t2,const size_t &ntot, int n, int m, const T &alpha,
-        const T &beta, const T &gamma,const T &theta, const T &phi):n_(n),
-        m_(m),alpha_(&alpha),beta_(&beta),gamma_(&gamma),theta_(&theta),phi_(&phi)
-      {
-        base_tc<b_type>::init(t1,t2,ntot,b);
-      }
+        const T &beta, const T &gamma,const T &theta, const T &phi):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),
+        n_(n),m_(m),alpha_(&alpha),beta_(&beta),gamma_(&gamma),theta_(&theta),phi_(&phi)
+        {base_tc<std::complex<T> >::build_tc();}
     private:
       int         n_;
       int         m_;
@@ -464,10 +436,8 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_pow(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const double &power_, const T &a):a_(&a),power(power_)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, const double &power_, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),power(power_)
+        {base_tc<T>::build_tc();}
     private:
       const T     *a_;
       double      power;
@@ -487,23 +457,12 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_add_ps_to_arg(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, std::string name, const T &a, const T &orig):a_(&a),orig_(&orig)
-      {
-        std::pair<bool,size_t> index=orig_->trig_arg_index(name);
-        switch (index.first)
-        {
-          case true:
-            sym_index_=index.second;
-            base_tc<T>::init(t1,t2,ntot,b);
-            break;
-          case false:
-            std::cout << "Trig arg " << name << " was not found, won't tc_add_ps_to_args." << std::endl;
-        }
-      }
+        const size_t &ntot, std::string name, const T &a, const T &orig):base_tc<T>(t1,t2,ntot,b),a_(&a),orig_(&orig),
+        index_(orig_->trig_arg_index(name)) {base_tc<T>::build_tc();}
     private:
-      const T     *a_;
-      const T     *orig_;
-      size_t      sym_index_;
+      const T                 *a_;
+      const T                 *orig_;
+      std::pair<bool,size_t>  index_;
       virtual eval_type eval_hs_computed(const double &t) const
       {
         typedef typename T::r_it_s_index r_it_s_index;
@@ -516,10 +475,10 @@ namespace piranha
         const r_it_s_index it_f=orig_->g_s_index().rend();
         for (r_it_s_index it=orig_->g_s_index().rbegin();it!=it_f;++it)
         {
-// Check that we are not going outside the boundaries.
-          if (sym_index_ < orig_->trig_width())
+// Check that we found the argument in the series.
+          if (index_.first)
           {
-            multiplier=it->trig()[sym_index_];
+            multiplier=it->trig()[index_.second];
           }
           else
           {
@@ -558,10 +517,8 @@ namespace piranha
       typedef T b_type;
       typedef typename base_tc<T>::eval_type eval_type;
       tc_insert_phases(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const phase_list &pl, const T &a):a_(&a),pl_(&pl)
-      {
-        base_tc<T>::init(t1,t2,ntot,b);
-      }
+        const size_t &ntot, const phase_list &pl, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),pl_(&pl)
+        {base_tc<T>::build_tc();}
     private:
       const T             *a_;
       const phase_list    *pl_;

@@ -245,10 +245,8 @@ namespace piranha
 // b_type stands for "benchmarked type"
       typedef Ps b_type;
       typedef typename base_tc<Ps>::eval_type eval_type;
-      tc_vienne_r6(const Ps &b, const double &t1, const double &t2, const size_t &ntot)
-      {
-        base_tc<Ps>::init(t1,t2,ntot,b);
-      }
+      tc_vienne_r6(const Ps &b, const double &t1, const double &t2, const size_t &ntot):
+        base_tc<Ps>::base_tc(t1,t2,ntot,b) {base_tc<Ps>::build_tc();}
     private:
 // t is expressed in Julian years from J1980.0.
       virtual eval_type eval_hs_computed(const double &t) const
