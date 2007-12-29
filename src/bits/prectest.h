@@ -276,7 +276,6 @@ namespace piranha
   }
 
 // Print plot data to file
-
   template <class T>
     inline void base_tc<T>::plot_data(std::ostream &os) const
   {
@@ -288,7 +287,6 @@ namespace piranha
   }
 
 // Comparisons for math operations
-
   template <class T>
     class tc_equal:public base_tc<T>
   {
@@ -479,12 +477,9 @@ namespace piranha
       }
   };
 
-// FIXME: here and below it would be better to use a function defined in series, instead of
+// TODO: here and below it would be better to use a function defined in series, instead of
 // duplicating code.
 /// Time comparison for addition of a series to an argument.
-/**
- * @see piranha::base_pseries::add_ps_to_arg. FIXME!
- */
   template <class T>
     class tc_add_ps_to_arg:public base_tc<T>
   {
