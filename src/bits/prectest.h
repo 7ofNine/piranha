@@ -51,22 +51,13 @@ namespace piranha
     public:
       sc(const T &, const T &, bool relative=true);
 /// Return differences.
-      const double &diffs(const size_t &n) const
-      {
-        return diffs_[n];
-      }
+      const double &diffs(const size_t &n) const {return diffs_[n];}
       void gnuplot_save(const std::string &) const;
 /// Get size of diffs vector.
-      size_t size() const
-      {
-        return diffs_.size();
-      }
+      size_t size() const {return diffs_.size();}
 /// Get type of differences (absolute or relative).
 // TODO: use enum?
-      bool is_relative() const
-      {
-        return is_relative_;
-      }
+      bool is_relative() const {return is_relative_;}
     private:
       sc() {}
 // Data members
@@ -159,45 +150,24 @@ namespace piranha
   template <class T>
     class base_tc
   {
-    public:
       typedef typename T::ancestor::cf_type cf_type;
+    public:
 /// Alias for evaluation type.
       typedef typename eval_type<cf_type>::type eval_type;
 /// Get number of time comparisons performed.
-      size_t size() const
-      {
-        return time_.size();
-      }
+      size_t size() const {return time_.size();}
 /// Return time at comparison n.
-      const double &time(const size_t &n) const
-      {
-        return time_[n];
-      }
+      const double &time(const size_t &n) const {return time_[n];}
 /// Return value of resulting series at comparison n.
-      const eval_type &hs(const size_t &n) const
-      {
-        return hs_[n];
-      }
+      const eval_type &hs(const size_t &n) const {return hs_[n];}
 /// Return exact value at comparison n.
-      const eval_type &hs_computed(const size_t &n) const
-      {
-        return hs_computed_[n];
-      }
+      const eval_type &hs_computed(const size_t &n) const {return hs_computed_[n];}
 /// Return error at comparison n.
-      double error(const size_t &n) const
-      {
-        return std::abs(hs(n)-hs_computed(n));
-      }
+      double error(const size_t &n) const {return std::abs(hs(n)-hs_computed(n));}
 /// Get rms.
-      const double &sigma() const
-      {
-        return sigma_;
-      }
+      const double &sigma() const {return sigma_;}
 /// Get max error.
-      const double &max_error() const
-      {
-        return max_error_;
-      }
+      const double &max_error() const {return max_error_;}
       void gnuplot_save(const std::string &) const;
     protected:
 /// Calculate diff at time t.
