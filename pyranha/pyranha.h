@@ -78,6 +78,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   typedef void (T::*put_terms_n)(int) const;
   typedef void (T::*put_phases_freqs_noargs)() const;
   typedef void (T::*put_phases_freqs_n)(int) const;
+  typedef typename T::eval_type (T::*t_eval_single) (const double &) const;
   typedef typename T::eval_type (T::*mean_def) (const double &, const double &) const;
   typedef typename T::eval_type (T::*mean_n)(const double &, const double &,
     const size_t &) const;
@@ -107,7 +108,7 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   inst.def("footprint", &T::footprint);
   inst.def("checkup", &T::checkup);
   inst.def("crop", crop_real(&T::crop));
-  inst.def("t_eval", &T::t_eval);
+  inst.def("t_eval", t_eval_single(&T::t_eval));
   inst.def("t_eval_brute", &T::t_eval_brute);
   inst.def("mean", mean_def(&T::mean));
   inst.def("mean", mean_n(&T::mean));
