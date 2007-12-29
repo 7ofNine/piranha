@@ -31,33 +31,6 @@
 namespace piranha
 {
   static const tbb::task_scheduler_init tbb_init;
-
-/// Parallel evaluation of a series over a timespan.
-  template <class Series>
-    class parallel_series_evaluation
-  {
-      typedef typename Series::eval_type eval_type;
-    public:
-      parallel_series_evaluation(std::vector<eval_type> &retval, const Series &series,
-        const double &step, const double &t0):m_retval(retval),m_series(series),m_step(step),m_t0(t0) {}
-      void operator()(const tbb::blocked_range<size_t> &r) const
-      {
-        std::vector<eval_type> *retval=&m_retval;
-        Series const *series=&m_series;
-        const double step = m_step;
-        double t=m_t0;
-        for(size_t i=r.begin();i != r.end();++i)
-        {
-          (*retval)[i]=series->t_eval(t);
-          t+=step;
-        }
-      }
-    private:
-      std::vector<eval_type>  &m_retval;
-      const Series            &m_series;
-      const double            &m_step;
-      const double            &m_t0;
-  };
 }
 
 #endif

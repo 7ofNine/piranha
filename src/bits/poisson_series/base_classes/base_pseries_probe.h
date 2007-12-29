@@ -25,9 +25,10 @@
 #include <iterator>
 #include <set>
 
+#include "../../compile_switches.h" // To detect parallel mode.
 #include "../../config.h" // For (un)likely.
-#include "../../piranha_tbb.h" // For parallel evaluation.
 #include "../../trig_evaluator.h"
+#include "base_pseries_probe_mp.h"
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -98,37 +99,9 @@ namespace piranha
     bool base_pseries<__PIRANHA_BASE_PS_TP>::t_eval(const double &t0,
     const double &t1, const int &n, std::vector<eval_type> &retval) const
   {
-    if (n <= 0)
-    {
-      std::cout << "Please insert a strictly positive value for the number of steps in interval series evaluation."
-        << std::endl;
-      return false;
-    }
-    const double step = (t1-t0)/(double)n;
-// Check that step is not null and that signs of interval and step are consistent.
-    if (step == 0 or (t1-t0) * step < 0)
-    {
-      std::cout << "Error: problem in step size in interval series evaluation." << std::endl;
-      return false;
-    }
-// Resize retval to contain the evaluations.
-    const size_t size = (size_t)n;
-    retval.clear();
-    retval.resize(size);
-#ifdef _PIRANHA_TBB
-// Parallel version.
-    tbb::parallel_for(tbb::blocked_range<size_t>(0,size,100),parallel_series_evaluation<Derived>(retval,
-      *static_cast<Derived const *>(this),step,t0));
-#else
-// Serial version.
-    double t=t0;
-    for (size_t i=0;i < size;++i)
-    {
-      retval[i]=static_cast<Derived const *>(this)->t_eval(t);
-      t+=step;
-    }
-#endif
-    return true;
+    return
+      series_interval_evaluator<compile_switches::use_tbb,Derived>(*static_cast<Derived const *>(this),t0,t1,n,retval).
+      status();
   };
 
 /// Compatibility check for arguments.
