@@ -160,8 +160,16 @@ namespace piranha
         {
           return;
         }
+        const size_t grain_size = ancestor::m_size/100;
+        switch (grain_size == 0)
+        {
+          case true:
+            ancestor::serial_evaluation();
+            break;
+          case false:
 // Parallel version.
-        tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,100),parallel_series_evaluation(*this));
+          tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,grain_size),parallel_series_evaluation(*this));
+        }
       }
     private:
       series_interval_evaluator() {}
