@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <sched.h>
 
-#define __TBB_OFFSET_OF_NEXT -4
 #define __TBB_WORDSIZE 4
 #define __TBB_BIG_ENDIAN 0
 
@@ -77,8 +76,8 @@ __MACHINE_DECL_ATOMICS(4,int32_t,"l")
 
 static int64_t __TBB_machine_cmpswp8 (volatile void *ptr, int64_t value, int64_t comparand )
 {
-    int32_t comparand_lo = (int32_t)comparand;
-    int32_t comparand_hi = ((int32_t*)&comparand)[1];
+    const int32_t comparand_lo = (int32_t)comparand;
+    const int32_t comparand_hi = *(int32_t*)((intptr_t)&comparand+sizeof(int32_t));
     int64_t result;
     // EBX register saved for compliancy with position-independent code (PIC) rules on IA32
     __asm__ __volatile__ (

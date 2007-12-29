@@ -82,7 +82,7 @@ public:
     //! The scoped locking pattern
     /** It helps to avoid the common problem of forgetting to release lock.
         It also nicely provides the "node" for queuing locks. */
-    class scoped_lock {
+    class scoped_lock : private internal::no_copy {
     public:
         //! Construct lock that has not acquired a mutex.
         /** Equivalent to zero-initialization of *this. */
@@ -162,13 +162,18 @@ public:
         //! The pointer to the current mutex that is held, or NULL if no mutex is held.
         spin_rw_mutex* mutex;
 
-        //! True if holding a writer lock, false if hodling a reader lock.
+        //! True if holding a writer lock, false if holding a reader lock.
         /** Not defined if not holding a lock. */
         bool is_writer;
     };
 
 private:
     typedef internal::uintptr state_t;
+    static const state_t WRITER = 1;
+    static const state_t WRITER_PENDING = 2;
+    static const state_t READERS = ~(WRITER | WRITER_PENDING);
+    static const state_t ONE_READER = 4;
+    static const state_t BUSY = WRITER | READERS;
     /** Bit 0 = writer is holding lock
         Bit 1 = request by a writer to acquire lock (hint to readers to wait)
         Bit 2..N = number of readers holding lock */

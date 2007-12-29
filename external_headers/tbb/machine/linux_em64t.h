@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <sched.h>
 
-#define __TBB_OFFSET_OF_NEXT -8
 #define __TBB_WORDSIZE 8
 #define __TBB_BIG_ENDIAN 0
 
@@ -103,8 +102,8 @@ static inline void __TBB_machine_or( volatile void *ptr, uint64_t addend ) {
     __asm__ __volatile__("lock\norq %1,%0" : "=m"(*(uint64_t *)ptr) : "r"(addend) : "memory");
 }
 
-static inline void __TBB_machine_pause( int64_t delay ) {
-    for (int64_t i = 0; i < delay; i++) {
+static inline void __TBB_machine_pause( int32_t delay ) {
+    for (int32_t i = 0; i < delay; i++) {
        __asm__ __volatile__("pause;");
     }
     return;

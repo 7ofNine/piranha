@@ -113,7 +113,12 @@ void PrintVersion();
 //! Print extra TBB version information on stderr
 void PrintExtraVersionInfo( const char* category, const char* description );
 
+//! Type definition for a pointer to a void somefunc(void)
 typedef void (*PointerToHandler)();
+
+//! The macro casts "address of a pointer to a function" to PointerToHandler*.
+/** Need it because (PointerToHandler*)&ptr_to_func causes warnings from g++ 4.1 */
+#define ADDRESS_OF_HANDLER(x) (PointerToHandler*)(void*)(x)
 
 //! Association between a handler name and location of pointer to it.
 struct DynamicLinkDescriptor {
@@ -150,8 +155,8 @@ class ExponentialBackoff {
     //! Time delay, in units of "pause" instructions. 
     /** Should be equal to approximately the number of "pause" instructions
         that take the same time as an context switch. */
-    static const uintptr LOOPS_BEFORE_YIELD = 0x10;
-    uintptr count;
+    static const int LOOPS_BEFORE_YIELD = 0x10;
+    int count;
 public:
     ExponentialBackoff() : count(1) {}
 

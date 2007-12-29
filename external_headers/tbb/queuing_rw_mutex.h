@@ -58,7 +58,7 @@ public:
     //! The scoped locking pattern
     /** It helps to avoid the common problem of forgetting to release lock.
         It also nicely provides the "node" for queuing locks. */
-    class scoped_lock {
+    class scoped_lock : private internal::no_copy {
         /** Request type constants for scoped_lock::state */
         enum state_t {
             STATE_NONE = 0,
@@ -150,7 +150,7 @@ public:
         void wait_for_release_of_internal_lock();
 
         //! A helper function
-        void unblock_or_wait_on_internal_lock( bool );
+        void unblock_or_wait_on_internal_lock( uintptr_t );
     };
 
 private:
