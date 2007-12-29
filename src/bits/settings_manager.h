@@ -28,6 +28,7 @@
 
 #include "common_typedefs.h"
 #include "compile_switches.h"
+#include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
 {
@@ -140,6 +141,9 @@ namespace piranha
       static const std::string              version_;
       static bool                           enable_progress_display_;
       static startup                        startup_;
+#ifdef _PIRANHA_TBB
+      static const tbb::task_scheduler_init tbb_init;
+#endif
   };
 }
 

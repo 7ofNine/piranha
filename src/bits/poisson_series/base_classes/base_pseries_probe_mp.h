@@ -160,6 +160,7 @@ namespace piranha
         {
           return;
         }
+// HARDCODED.
         const size_t grain_size = ancestor::m_size/100;
         switch (grain_size == 0)
         {

@@ -45,7 +45,6 @@ IF(BUILD_TBB_MULTITHREADING)
     tbb/spin_rw_mutex.cpp
     tbb/task.cpp
     tbb/tbb_misc.cpp
-    piranha_tbb.cpp
   )
 ENDIF(BUILD_TBB_MULTITHREADING)
 

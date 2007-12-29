@@ -42,6 +42,10 @@ namespace piranha
   const std::string settings_manager::version_ = __piranha_version;
   bool settings_manager::enable_progress_display_ = true;
   settings_manager::startup settings_manager::startup_;
+#ifdef _PIRANHA_TBB
+  const tbb::task_scheduler_init settings_manager::tbb_init;
+#endif
+
 
   settings_manager::startup::startup()
   {

@@ -26,12 +26,6 @@
 #include <tbb/blocked_range.h>
 #include <tbb/task_scheduler_init.h>
 #include <tbb/parallel_for.h>
-#include <vector>
-
-namespace piranha
-{
-  static const tbb::task_scheduler_init tbb_init;
-}
 
 #endif
 
