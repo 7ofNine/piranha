@@ -32,7 +32,10 @@
 
 namespace piranha
 {
-/// Namespace for concepts.
+/// Namespace for concept classes.
+/**
+ * The classes in this namespace are not to be used, they serve only for documentation purposes.
+ */
 namespace concepts
 {
 /// Concept class for basic coefficients of Poisson series.

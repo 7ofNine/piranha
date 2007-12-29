@@ -29,27 +29,30 @@ namespace concepts
 {
 /// Evaluatable class concept.
 /**
- * Defines a typedef and a time-evaluation method.
+ * Defines a typedef and a time-evaluation method. This class serves only for documentation purposes.
  */
   template <Class EvalType>
     class evaluatable
   {
+    public:
 /// Evaluation type.
 /**
  * This will be the result of the evaluation method.
  */
-    typedef EvalType eval_type;
+      typedef EvalType eval_type;
 /// Time-evaluation.
 /**
  * Evaluate class at time t.
  * @param[in] t time of evaluation.
  */
-    eval_type t_eval(const double &t) const
-    {
-      BOOST_STATIC_ASSERT(sizeof(EvalType) == 0);
-      (void)t;
-      return eval_type();
-    }
+      eval_type t_eval(const double &t) const
+      {
+        BOOST_STATIC_ASSERT(sizeof(EvalType) == 0);
+        (void)t;
+        return eval_type();
+      }
+    private:
+      evaluatable() {BOOST_STATIC_ASSERT(sizeof(EvalType) == 0);}
   };
 }
 }
