@@ -43,7 +43,7 @@ size_t get_initial_auto_partitioner_divisor();
 class simple_partitioner {
 public:
     simple_partitioner() {}
-    simple_partitioner(simple_partitioner &partitioner, split) {}
+    simple_partitioner(simple_partitioner &, split) {}
 
     template <typename Range>
     inline bool should_execute_range(const Range &r, const task &t) {
