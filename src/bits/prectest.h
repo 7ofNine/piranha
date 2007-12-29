@@ -62,17 +62,13 @@ namespace piranha
         return diffs_.size();
       }
 /// Get type of differences (absolute or relative).
-// FIXME: use enum?
+// TODO: use enum?
       bool is_relative() const
       {
         return is_relative_;
       }
     private:
-      sc()
-      {
-        std::cout << "PRIVATE CTOR!" << std::endl;
-        std::exit(1);
-      }
+      sc() {}
 // Data members
       std::valarray<double>   diffs_;
       bool                    is_relative_;
@@ -107,7 +103,8 @@ namespace piranha
         }
         else
         {
-          diffs_[i]=std::abs(it_h->cf().norm(ps2.arguments().template get<0>())-it->cf().norm(ps1.arguments().template get<0>()));
+          diffs_[i]=std::abs(it_h->cf().norm(ps2.arguments().template get<0>())-
+            it->cf().norm(ps1.arguments().template get<0>()));
         }
         if (diffs_[i]>max_diff)
         {
