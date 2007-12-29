@@ -46,7 +46,6 @@ namespace piranha
   const tbb::task_scheduler_init settings_manager::tbb_init;
 #endif
 
-
   settings_manager::startup::startup()
   {
 // Startup report.
