@@ -25,7 +25,7 @@ OPTION(ENABLE_GSL_INTEGRATION "Enable integration with the GNU Scientific Librar
 OPTION(BUILD_FORTRAN "Enable support for Fortran routines \(at the moment used by TASS\)" OFF)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
-OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-threaded parallelism. (CURRENTLY INEFFECTIVE)" OFF)
+OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-threaded parallelism." OFF)
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 OPTION(ENABLE_HOARD "Use the Hoard memory allocator - EXPERIMENTAL." OFF)
 OPTION(ENABLE_SSE2 "Enable series type using SSE2 instructions (requires a SSE2-enabled CPU) - EXPERIMENTAL." OFF)
