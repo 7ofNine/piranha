@@ -239,17 +239,19 @@ namespace piranha
   };
 
   template <class Ps>
-    class tc_vienne_r6:public base_tc<Ps>
+    class tc_vienne_r6:public base_tc<Ps,tc_vienne_r6<Ps> >
   {
+      friend class base_tc<Ps,tc_vienne_r6<Ps> >;
+      typedef base_tc<Ps,tc_vienne_r6<Ps> > ancestor;
     public:
 // b_type stands for "benchmarked type"
       typedef Ps b_type;
-      typedef typename base_tc<Ps>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_vienne_r6(const Ps &b, const double &t1, const double &t2, const size_t &ntot):
-        base_tc<Ps>::base_tc(t1,t2,ntot,b) {base_tc<Ps>::build_tc();}
+        ancestor::base_tc(t1,t2,ntot,b) {ancestor::build_tc();}
     private:
 // t is expressed in Julian years from J1980.0.
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return tass17<Ps>::vienne_r((astro::J1980dot0()+t*astro::JD_per_JY()),6)*
           astro::AU();

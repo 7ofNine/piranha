@@ -147,7 +147,7 @@ namespace piranha
  * of the two factors of the multiplication over the given time span. Comparisons for most operations
  * are provided.
  */
-  template <class T>
+  template <class T, class Derived>
     class base_tc
   {
       typedef typename T::ancestor::cf_type cf_type;
@@ -173,13 +173,6 @@ namespace piranha
 // Ctor & Dtor
       base_tc(const double &t1, const double &t2, const size_t &ntot, const T &benchmarked):
         t1_(t1),t2_(t2),ntot_(ntot),time_(),hs_(),hs_computed_(),benchmarked_(&benchmarked) {}
-      virtual ~base_tc() {}
-/// Calculate diff at time t.
-/**
- * This function will have to be re-implemented in inherited class to perform the desired
- * comparisons.
- */
-      virtual eval_type eval_hs_computed(const double &t) const = 0;
       void build_tc();
     private:
       eval_type eval_hs(const double &t) const {return benchmarked_->t_eval(t);}
@@ -197,8 +190,8 @@ namespace piranha
       const T                     *benchmarked_;
   };
 
-  template <class T>
-    inline void base_tc<T>::build_tc()
+  template <class T, class Derived>
+    inline void base_tc<T,Derived>::build_tc()
   {
 // TODO: place checks here?
     time_.resize(ntot_);
@@ -210,7 +203,7 @@ namespace piranha
     {
       time_[i]=t;
       hs_[i]=eval_hs(t);
-      hs_computed_[i]=eval_hs_computed(t);
+      hs_computed_[i]=static_cast<Derived const *>(this)->eval_hs_computed(t);
       t+=step_size;
     }
     std::cout << "Computing statistics..." << std::endl;
@@ -218,8 +211,8 @@ namespace piranha
     std::cout << "Done." << std::endl;
   }
 
-  template <class T>
-    inline void base_tc<T>::calc_stats()
+  template <class T, class Derived>
+    inline void base_tc<T,Derived>::calc_stats()
   {
     double tmp=0., max=0., candidate;
     if (hs_.size()==0)
@@ -243,8 +236,8 @@ namespace piranha
   }
 
 /// Save results in gnuplot format.
-  template <class T>
-    inline void base_tc<T>::gnuplot_save(const std::string &filename) const
+  template <class T, class Derived>
+    inline void base_tc<T,Derived>::gnuplot_save(const std::string &filename) const
   {
     const std::string plot_file=filename+".plt", data_file=filename+".dat";
     std::ofstream outf_plot(plot_file.c_str(),std::ios_base::trunc);
@@ -269,8 +262,8 @@ namespace piranha
   }
 
 // Print plot data to file
-  template <class T>
-    inline void base_tc<T>::plot_data(std::ostream &os) const
+  template <class T, class Derived>
+    inline void base_tc<T,Derived>::plot_data(std::ostream &os) const
   {
     for (size_t i=0;i<hs_.size();++i)
     {
@@ -281,139 +274,158 @@ namespace piranha
 
 // Comparisons for math operations
   template <class T>
-    class tc_equal:public base_tc<T>
+    class tc_equal:public base_tc<T,tc_equal<T> >
   {
+      friend class base_tc<T,tc_equal<T> >;
+      typedef base_tc<T,tc_equal<T> > ancestor;
     public:
 // b_type stands for "benchmarked type"
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_equal(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
+        const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a) {ancestor::build_tc();}
     private:
       const T     *a_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return a_->t_eval(t);
       }
   };
 
   template <class T>
-    class tc_mult:public base_tc<T>
+    class tc_mult:public base_tc<T,tc_mult<T> >
   {
+      friend class base_tc<T,tc_mult<T> >;
+      typedef base_tc<T,tc_mult<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_mult(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &x, const T &y):base_tc<T>::base_tc(t1,t2,ntot,b),x_(&x),y_(&y) {base_tc<T>::build_tc();}
+        const T &x, const T &y):ancestor::base_tc(t1,t2,ntot,b),x_(&x),y_(&y)
+        {ancestor::build_tc();}
     private:
       const T     *x_;
       const T     *y_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return x_->t_eval(t)*y_->t_eval(t);
       }
   };
 
   template <class T>
-    class tc_complexp:public base_tc<std::complex<T> >
+    class tc_complexp:public base_tc<std::complex<T>,tc_complexp<T> >
   {
+      friend class base_tc<std::complex<T>,tc_complexp<T> >;
+      typedef base_tc<std::complex<T>,tc_complexp<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
-      typedef typename base_tc<b_type>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_complexp(const b_type &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),a_(&a)
-        {base_tc<std::complex<T> >::build_tc();}
+        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        {ancestor::build_tc();}
     private:
       const T     *a_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return math::complexp(a_->t_eval(t));
       }
   };
 
   template <class T>
-    class tc_cosine:public base_tc<T>
+    class tc_cosine:public base_tc<T,tc_cosine<T> >
   {
+      friend class base_tc<T,tc_cosine<T> >;
+      typedef base_tc<T,tc_cosine<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_cosine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
+        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        {ancestor::build_tc();}
     private:
       const T     *a_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return std::cos(a_->t_eval(t));
       }
   };
 
   template <class T>
-    class tc_sine:public base_tc<T>
+    class tc_sine:public base_tc<T,tc_sine<T> >
   {
+      friend class base_tc<T,tc_sine<T> >;
+      typedef base_tc<T,tc_sine<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_sine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a) {base_tc<T>::build_tc();}
+        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        {ancestor::build_tc();}
     private:
       const T     *a_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return std::sin(a_->t_eval(t));
       }
   };
 
   template <class T>
-    class tc_Pnm:public base_tc<T>
+    class tc_Pnm:public base_tc<T,tc_Pnm<T> >
   {
+      friend class base_tc<T,tc_Pnm<T> >;
+      typedef base_tc<T,tc_Pnm<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_Pnm(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, int n, int m, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),n_(n),m_(m)
-        {base_tc<T>::build_tc();}
+        const size_t &ntot, int n, int m, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),n_(n),m_(m)
+        {ancestor::build_tc();}
     private:
       const T     *a_;
       int         n_;
       int         m_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return math::Pnm(n_,m_,a_->t_eval(t));
       }
   };
 
   template <class T>
-    class tc_Ynm:public base_tc<std::complex<T> >
+    class tc_Ynm:public base_tc<std::complex<T>,tc_Ynm<T> >
   {
+      friend class base_tc<std::complex<T>,tc_Ynm<T> >;
+      typedef base_tc<std::complex<T>,tc_Ynm<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
-      typedef typename base_tc<b_type>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_Ynm(const b_type &b, const double &t1, const double &t2,
         const size_t &ntot, int n, int m, const T &theta, const T
-        &phi):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),theta_(&theta),phi_(&phi),
-        n_(n),m_(m) {base_tc<std::complex<T> >::build_tc();}
+        &phi):ancestor::base_tc(t1,t2,ntot,b),theta_(&theta),phi_(&phi),
+        n_(n),m_(m) {ancestor::build_tc();}
     private:
       const T     *theta_;
       const T     *phi_;
       int         n_;
       int         m_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return math::Ynm(n_,m_,theta_->t_eval(t),phi_->t_eval(t));
       }
   };
 
   template <class T>
-    class tc_wig_rot:public base_tc<std::complex<T> >
+    class tc_wig_rot:public base_tc<std::complex<T>,tc_wig_rot<T> >
   {
+      friend class base_tc<std::complex<T>,tc_wig_rot<T> >;
+      typedef base_tc<std::complex<T>,tc_wig_rot<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
-      typedef typename base_tc<b_type>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_wig_rot(const b_type &b, const double &t1,
         const double &t2,const size_t &ntot, int n, int m, const T &alpha,
-        const T &beta, const T &gamma,const T &theta, const T &phi):base_tc<std::complex<T> >::base_tc(t1,t2,ntot,b),
+        const T &beta, const T &gamma,const T &theta, const T &phi):ancestor::base_tc(t1,t2,ntot,b),
         n_(n),m_(m),alpha_(&alpha),beta_(&beta),gamma_(&gamma),theta_(&theta),phi_(&phi)
-        {base_tc<std::complex<T> >::build_tc();}
+        {ancestor::build_tc();}
     private:
       int         n_;
       int         m_;
@@ -422,7 +434,7 @@ namespace piranha
       const T     *gamma_;
       const T     *theta_;
       const T     *phi_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return math::wig_rot(n_,m_,alpha_->t_eval(t),beta_->t_eval(t),gamma_->t_eval(t),
           theta_->t_eval(t),phi_->t_eval(t));
@@ -430,18 +442,20 @@ namespace piranha
   };
 
   template <class T>
-    class tc_pow:public base_tc<T>
+    class tc_pow:public base_tc<T,tc_pow<T> >
   {
+      friend class base_tc<T,tc_pow<T> >;
+      typedef base_tc<T,tc_pow<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_pow(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const double &power_, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),power(power_)
-        {base_tc<T>::build_tc();}
+        const size_t &ntot, const double &power_, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),power(power_)
+        {ancestor::build_tc();}
     private:
       const T     *a_;
       double      power;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         return std::pow(a_->t_eval(t),power);
       }
@@ -451,19 +465,21 @@ namespace piranha
 // duplicating code.
 /// Time comparison for addition of a series to an argument.
   template <class T>
-    class tc_add_ps_to_arg:public base_tc<T>
+    class tc_add_ps_to_arg:public base_tc<T,tc_add_ps_to_arg<T> >
   {
+      friend class base_tc<T,tc_add_ps_to_arg<T> >;
+      typedef base_tc<T,tc_add_ps_to_arg<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_add_ps_to_arg(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, std::string name, const T &a, const T &orig):base_tc<T>(t1,t2,ntot,b),a_(&a),orig_(&orig),
-        index_(orig_->trig_arg_index(name)) {base_tc<T>::build_tc();}
+        const size_t &ntot, std::string name, const T &a, const T &orig):ancestor::base_tc(t1,t2,ntot,b),a_(&a),orig_(&orig),
+        index_(orig_->trig_arg_index(name)) {ancestor::build_tc();}
     private:
       const T                 *a_;
       const T                 *orig_;
       std::pair<bool,size_t>  index_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         typedef typename T::r_it_s_index r_it_s_index;
         eval_type retval(0.);
@@ -511,18 +527,20 @@ namespace piranha
  * @see piranha::base_pseries::insert_phases.
  */
   template <class T>
-    class tc_insert_phases:public base_tc<T>
+    class tc_insert_phases:public base_tc<T,tc_insert_phases<T> >
   {
+      friend class base_tc<T,tc_insert_phases<T> >;
+      typedef base_tc<T,tc_insert_phases<T> > ancestor;
     public:
       typedef T b_type;
-      typedef typename base_tc<T>::eval_type eval_type;
+      typedef typename ancestor::eval_type eval_type;
       tc_insert_phases(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const phase_list &pl, const T &a):base_tc<T>::base_tc(t1,t2,ntot,b),a_(&a),pl_(&pl)
-        {base_tc<T>::build_tc();}
+        const size_t &ntot, const phase_list &pl, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),pl_(&pl)
+        {ancestor::build_tc();}
     private:
       const T             *a_;
       const phase_list    *pl_;
-      virtual eval_type eval_hs_computed(const double &t) const
+      eval_type eval_hs_computed(const double &t) const
       {
         typedef typename T::iterator iterator;
         eval_type retval(0.);
