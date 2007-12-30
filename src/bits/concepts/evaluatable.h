@@ -21,7 +21,7 @@
 #ifndef PIRANHA_EVALUATABLE_H
 #define PIRANHA_EVALUATABLE_H
 
-#include "boost/static_assert.hpp"
+#error "Don't use this class, it is just for documentation purposes."
 
 namespace piranha
 {
@@ -29,30 +29,18 @@ namespace concepts
 {
 /// Evaluatable class concept.
 /**
- * Defines a typedef and a time-evaluation method. This class serves only for documentation purposes.
+ * Defines a time-evaluation method. This class serves only for documentation purposes.
  */
-  template <Class EvalType>
+  template <class Type>
     class evaluatable
   {
     public:
-/// Evaluation type.
-/**
- * This will be the result of the evaluation method.
- */
-      typedef EvalType eval_type;
 /// Time-evaluation.
 /**
  * Evaluate class at time t.
  * @param[in] t time of evaluation.
  */
-      eval_type t_eval(const double &t) const
-      {
-        BOOST_STATIC_ASSERT(sizeof(EvalType) == 0);
-        (void)t;
-        return eval_type();
-      }
-    private:
-      evaluatable() {BOOST_STATIC_ASSERT(sizeof(EvalType) == 0);}
+      typename eval_type<Type>::type t_eval(const double &t) const;
   };
 }
 }
