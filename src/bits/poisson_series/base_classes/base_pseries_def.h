@@ -143,7 +143,6 @@ namespace piranha
       double g_norm() const;
       eval_type t_eval_brute(const double &) const;
       eval_type t_eval(const double &) const;
-      bool t_eval(const double &, const double &, const int &, std::vector<eval_type> &) const;
       eval_type mean(const double &, const double &, const size_t &n = 1000) const;
       bool checkup() const;
       bool is_cf() const;

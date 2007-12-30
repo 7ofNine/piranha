@@ -25,6 +25,7 @@
 #include <iostream>
 #include <valarray>
 
+#include "base_classes/range_evaluator.h"
 #include "common_typedefs.h" // tc_add_ps_to_arg.
 #include "math.h"
 // TODO: once we move prectests in poisson series/, polynomial/, etc move this header there.

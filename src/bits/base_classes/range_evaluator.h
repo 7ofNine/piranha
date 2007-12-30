@@ -18,35 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_BASE_PSERIES_PROBE_MP_H
-#define PIRANHA_BASE_PSERIES_PROBE_MP_H
+#ifndef PIRANHA_RANGE_EVALUATOR_H
+#define PIRANHA_RANGE_EVALUATOR_H
 
-/** @file base_pseries_probe_mp.h
-    \brief Meta-programming for series probing.
-*/
-
-#include "../../piranha_tbb.h" // For parallel evaluation.
+#include "../piranha_tbb.h" // For parallel evaluation.
+#include "../type_traits/eval_type.h" // For evaluation type.
 
 namespace piranha
 {
-/// Base class for the evaluation of a series over a timespan.
+/// Base class for the evaluation over a range.
 /**
  * Upon construction this class will simply perform some sanity checks on the interval evaluation parameters,
  * set a suitability flag and then return.
  */
-  template <class Series>
-    class base_series_interval_evaluator
+  template <class Evaluatable>
+    class base_range_evaluator
   {
-      typedef typename Series::eval_type eval_type;
+    protected:
+      typedef typename eval_type<Evaluatable>::type eval_type;
     public:
 /// Constructor from interval parameters.
 /**
  * If the parameters are sane, is_suitable will be set to true and the retval vector will be appropriately resized,
  * otherwise is_suitable will be set to false.
  */
-      base_series_interval_evaluator(const Series &s, const double &t0, const double &t1,
-        const int &n, std::vector<eval_type> &retval):is_suitable(true),m_series(s),m_t0(t0),
-        m_t1(t1),m_n(n),m_retval(retval)
+      base_range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
+        is_suitable(true),m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_retval()
       {
         preliminary_checks();
         if (!is_suitable)
@@ -54,10 +51,9 @@ namespace piranha
           return;
         }
         m_size = (size_t)n;
-        m_retval.clear();
         m_retval.resize(m_size);
       }
-      void serial_evaluation() const
+      void serial_evaluation()
       {
         if (!is_suitable)
         {
@@ -66,19 +62,19 @@ namespace piranha
         double t=m_t0;
         for (size_t i=0;i < m_size;++i)
         {
-          m_retval[i]=m_series.t_eval(t);
+          m_retval[i]=m_evaluated.t_eval(t);
           t+=m_step;
         }
       }
 /// Return is_suitable flag.
       bool status() const {return is_suitable;}
     private:
-      base_series_interval_evaluator() {}
+      base_range_evaluator() {}
       void preliminary_checks()
       {
         if (m_n <= 0)
         {
-          std::cout << "Please insert a strictly positive value for the number of steps in interval series evaluation."
+          std::cout << "Please insert a strictly positive value for the number of steps in range evaluation."
             << std::endl;
           is_suitable=false;
           return;
@@ -87,7 +83,7 @@ namespace piranha
 // Check that step is not null and that signs of interval and step are consistent.
         if (m_step == 0 or (m_t1-m_t0) * m_step < 0)
         {
-          std::cout << "Error: problem in step size in interval series evaluation." << std::endl;
+          std::cout << "Error: problem in step size in range evaluation." << std::endl;
           is_suitable=false;
           return;
         }
@@ -99,62 +95,63 @@ namespace piranha
       bool                    is_suitable;
 /// Size of the interval.
       size_t                  m_size;
+// These are all references because they are used only in contruction.
 /// Const reference to series.
-      const Series            &m_series;
+      const Evaluatable       &m_evaluated;
 /// Const reference to starting point of time interval.
       const double            &m_t0;
 /// Const reference to ending point of time interval.
       const double            &m_t1;
 /// Requested size of the interval.
-      int                     m_n;
-/// Reference to return value.
-      std::vector<eval_type>  &m_retval;
+      const int               &m_n;
+/// Return values.
+      std::vector<eval_type>  m_retval;
   };
 
-/// Serial evaluation of a series over a timespan.
-  template <bool Parallel, class Series>
-    class series_interval_evaluator:public base_series_interval_evaluator<Series>
+/// Serial range evaluation.
+  template <class Evaluatable, bool Parallel = compile_switches::use_tbb>
+    class range_evaluator:public base_range_evaluator<Evaluatable>
   {
-      typedef typename Series::eval_type eval_type;
-      typedef base_series_interval_evaluator<Series> ancestor;
+      typedef base_range_evaluator<Evaluatable> ancestor;
+      typedef typename ancestor::eval_type eval_type;
     public:
-      series_interval_evaluator(const Series &s, const double &t0, const double &t1, const int &n,
-        std::vector<eval_type> &retval):ancestor::base_series_interval_evaluator(s,t0,t1,n,retval)
+      range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
+        ancestor::base_range_evaluator(e,t0,t1,n)
       {
         ancestor::serial_evaluation();
       }
     private:
-      series_interval_evaluator() {}
+      range_evaluator() {}
   };
 
 #ifdef _PIRANHA_TBB
-/// Parallel evaluation of a series over a timespan.
-  template <class Series>
-    class series_interval_evaluator<true,Series>:public base_series_interval_evaluator<Series>
+/// Parallel range evaluation.
+  template <class Evaluatable>
+    class range_evaluator<Evaluatable,true>:public base_range_evaluator<Evaluatable>
   {
-      typedef typename Series::eval_type eval_type;
-      typedef base_series_interval_evaluator<Series> ancestor;
-      typedef series_interval_evaluator<true,Series> sie_type;
-      class parallel_series_evaluation
+      typedef base_range_evaluator<Evaluatable> ancestor;
+      typedef typename ancestor::eval_type eval_type;
+      typedef range_evaluator<Evaluatable,true> re_type;
+      class parallel_range_evaluation
       {
         public:
-          parallel_series_evaluation(const sie_type &sie):m_sie(sie) {}
+          parallel_range_evaluation(re_type &re):m_re(re) {}
           void operator()(const tbb::blocked_range<size_t> &r) const
           {
-            double t=m_sie.m_t0;
+            double t=m_re.m_t0;
             for(size_t i=r.begin();i != r.end();++i)
             {
-              m_sie.m_retval[i]=m_sie.m_series.t_eval(t);
-              t+=m_sie.m_step;
+              m_re.m_retval[i]=m_re.m_evaluated.t_eval(t);
+              t+=m_re.m_step;
             }
           }
         private:
-          parallel_series_evaluation() {}
-          const sie_type  &m_sie;
+          parallel_range_evaluation() {}
+          re_type &m_re;
       };
     public:
-      series_interval_evaluator(const Series &s, const double &t0, const double &t1, const int &n,
-        std::vector<eval_type> &retval):ancestor::base_series_interval_evaluator(s,t0,t1,n,retval)
+      range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
+        ancestor::base_range_evaluator(e,t0,t1,n)
       {
         if (!ancestor::is_suitable)
         {
@@ -169,11 +166,11 @@ namespace piranha
             break;
           case false:
 // Parallel version.
-          tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,grain_size),parallel_series_evaluation(*this));
+          tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,grain_size),parallel_range_evaluation(*this));
         }
       }
     private:
-      series_interval_evaluator() {}
+      range_evaluator() {}
   };
 #endif
 }

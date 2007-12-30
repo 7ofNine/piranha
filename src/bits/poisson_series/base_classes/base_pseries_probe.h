@@ -25,10 +25,8 @@
 #include <iterator>
 #include <set>
 
-#include "../../compile_switches.h" // To detect parallel mode.
 #include "../../config.h" // For (un)likely.
 #include "../../trig_evaluator.h"
-#include "base_pseries_probe_mp.h"
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -85,23 +83,6 @@ namespace piranha
       retval+=lin_args()[j]*arguments().template get<1>()[j]->t_eval(value);
     }
     return retval;
-  };
-
-/// Evaluate numerically a series over an interval of time.
-/**
- * Evaluate the series in the time interval [t0,t1] with n steps. Place the result in vector v. Returns true
- * if the operation was successful, false otherwise.
- * @param[in] t0 starting time of evaluation.
- * @param[in] t1 ending time of evaluation.
- * @param[out] retval vector that will contain the result of the evaluation.
- */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    bool base_pseries<__PIRANHA_BASE_PS_TP>::t_eval(const double &t0,
-    const double &t1, const int &n, std::vector<eval_type> &retval) const
-  {
-    return
-      series_interval_evaluator<compile_switches::use_tbb,Derived>(*static_cast<Derived const *>(this),t0,t1,n,retval).
-      status();
   };
 
 /// Compatibility check for arguments.
