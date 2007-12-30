@@ -44,14 +44,13 @@ namespace piranha
  * otherwise is_suitable will be set to false.
  */
       base_range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
-        m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_size(0),m_step(0),m_retval()
+        m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_size(0),m_step(0),m_retval(),m_time()
       {
         preliminary_checks();
         m_size = (size_t)n;
         m_retval.resize(m_size);
+        m_time.resize(m_size);
       }
-/// Return size of the range.
-      size_t size() const {return m_size;}
     protected:
 /// Serial evaluation.
       void serial_evaluation()
@@ -60,6 +59,7 @@ namespace piranha
         for (size_t i=0;i < m_size;++i)
         {
           m_retval[i]=m_evaluated.t_eval(t);
+          m_time[i]=t;
           t+=m_step;
         }
       }
@@ -97,6 +97,8 @@ namespace piranha
       double                  m_step;
 /// Return values.
       std::vector<eval_type>  m_retval;
+/// Time array.
+      std::vector<double>     m_time;
   };
 
 /// Serial range evaluation.
