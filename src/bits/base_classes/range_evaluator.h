@@ -21,6 +21,7 @@
 #ifndef PIRANHA_RANGE_EVALUATOR_H
 #define PIRANHA_RANGE_EVALUATOR_H
 
+#include "../compile_switches.h" // For parallel mode.
 #include "../piranha_tbb.h" // For parallel evaluation.
 #include "../type_traits/eval_type.h" // For evaluation type.
 
@@ -43,22 +44,18 @@ namespace piranha
  * otherwise is_suitable will be set to false.
  */
       base_range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
-        is_suitable(true),m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_retval()
+        m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_size(0),m_step(0),m_retval()
       {
         preliminary_checks();
-        if (!is_suitable)
-        {
-          return;
-        }
         m_size = (size_t)n;
         m_retval.resize(m_size);
       }
+/// Return size of the range.
+      size_t size() const {return m_size;}
+    protected:
+/// Serial evaluation.
       void serial_evaluation()
       {
-        if (!is_suitable)
-        {
-          return;
-        }
         double t=m_t0;
         for (size_t i=0;i < m_size;++i)
         {
@@ -66,8 +63,6 @@ namespace piranha
           t+=m_step;
         }
       }
-/// Return is_suitable flag.
-      bool status() const {return is_suitable;}
     private:
       base_range_evaluator() {}
       void preliminary_checks()
@@ -76,7 +71,6 @@ namespace piranha
         {
           std::cout << "Please insert a strictly positive value for the number of steps in range evaluation."
             << std::endl;
-          is_suitable=false;
           return;
         }
         m_step = (m_t1-m_t0)/(double)m_n;
@@ -84,17 +78,10 @@ namespace piranha
         if (m_step == 0 or (m_t1-m_t0) * m_step < 0)
         {
           std::cout << "Error: problem in step size in range evaluation." << std::endl;
-          is_suitable=false;
           return;
         }
       }
     public:
-/// Step of the interval.
-      double                  m_step;
-/// Suitability flag.
-      bool                    is_suitable;
-/// Size of the interval.
-      size_t                  m_size;
 // These are all references because they are used only in contruction.
 /// Const reference to series.
       const Evaluatable       &m_evaluated;
@@ -104,6 +91,10 @@ namespace piranha
       const double            &m_t1;
 /// Requested size of the interval.
       const int               &m_n;
+/// Size of the interval.
+      size_t                  m_size;
+/// Step of the interval.
+      double                  m_step;
 /// Return values.
       std::vector<eval_type>  m_retval;
   };
@@ -116,10 +107,7 @@ namespace piranha
       typedef typename ancestor::eval_type eval_type;
     public:
       range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
-        ancestor::base_range_evaluator(e,t0,t1,n)
-      {
-        ancestor::serial_evaluation();
-      }
+        ancestor::base_range_evaluator(e,t0,t1,n) {ancestor::serial_evaluation();}
     private:
       range_evaluator() {}
   };
@@ -153,12 +141,7 @@ namespace piranha
       range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
         ancestor::base_range_evaluator(e,t0,t1,n)
       {
-        if (!ancestor::is_suitable)
-        {
-          return;
-        }
-// HARDCODED.
-        const size_t grain_size = ancestor::m_size/100;
+        const size_t grain_size = ancestor::m_size/100; // HARDCODED!
         switch (grain_size == 0)
         {
           case true:
@@ -166,7 +149,7 @@ namespace piranha
             break;
           case false:
 // Parallel version.
-          tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,grain_size),parallel_range_evaluation(*this));
+            tbb::parallel_for(tbb::blocked_range<size_t>(0,ancestor::m_size,grain_size),parallel_range_evaluation(*this));
         }
       }
     private:
