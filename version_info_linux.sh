@@ -34,6 +34,6 @@ echo '"TBB: ' "BUILD_KERNEL\t"`uname -rv`'" ENDL \'
 echo '"TBB: ' "BUILD_GCC\t\t"`g++ -v </dev/null 2>&1 | grep 'gcc.*version'`'" ENDL \'
 [ -z "$COMPILER_VERSION" ] || echo '"TBB: ' "BUILD_COMPILER\t"$COMPILER_VERSION'" ENDL \'
 echo '"TBB: ' "BUILD_GLIBC\t"`getconf GNU_LIBC_VERSION | grep glibc | sed -e 's/^glibc //'`'" ENDL \'
-echo '"TBB: ' "BUILD_LD\t\t"`ld`'" ENDL \'
+echo '"TBB: ' "BUILD_LD\t\t"`ld --version|head -n 1`'" ENDL \'
 echo ""
 echo "#define __TBB_DATETIME \""`date -u`"\""
