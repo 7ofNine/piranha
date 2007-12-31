@@ -151,10 +151,9 @@ namespace piranha
   template <class T, class Derived>
     class base_tc
   {
-      typedef typename T::ancestor::cf_type cf_type;
     public:
 /// Alias for evaluation type.
-      typedef typename eval_type<cf_type>::type eval_type;
+      typedef typename eval_type<T>::type eval_type;
 /// Get number of time comparisons performed.
       size_t size() const {return time_.size();}
 /// Return time at comparison n.
@@ -191,6 +190,13 @@ namespace piranha
       const T                     *benchmarked_;
   };
 
+// Template specialization for eval_type type trait.
+  template <class T, class Derived>
+    struct eval_type<base_tc<T,Derived> >
+  {
+    typedef typename eval_type<T>::type type;
+  };
+
   template <class T, class Derived>
     inline void base_tc<T,Derived>::build_tc()
   {
@@ -204,7 +210,7 @@ namespace piranha
     {
       time_[i]=t;
       hs_[i]=eval_hs(t);
-      hs_computed_[i]=static_cast<Derived const *>(this)->eval_hs_computed(t);
+      hs_computed_[i]=static_cast<Derived const *>(this)->t_eval(t);
       t+=step_size;
     }
     std::cout << "Computing statistics..." << std::endl;
@@ -287,7 +293,7 @@ namespace piranha
         const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a) {ancestor::build_tc();}
     private:
       const T     *a_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return a_->t_eval(t);
       }
@@ -307,7 +313,7 @@ namespace piranha
     private:
       const T     *x_;
       const T     *y_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return x_->t_eval(t)*y_->t_eval(t);
       }
@@ -326,7 +332,7 @@ namespace piranha
         {ancestor::build_tc();}
     private:
       const T     *a_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return math::complexp(a_->t_eval(t));
       }
@@ -345,7 +351,7 @@ namespace piranha
         {ancestor::build_tc();}
     private:
       const T     *a_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return std::cos(a_->t_eval(t));
       }
@@ -364,7 +370,7 @@ namespace piranha
         {ancestor::build_tc();}
     private:
       const T     *a_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return std::sin(a_->t_eval(t));
       }
@@ -385,7 +391,7 @@ namespace piranha
       const T     *a_;
       int         n_;
       int         m_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return math::Pnm(n_,m_,a_->t_eval(t));
       }
@@ -408,7 +414,7 @@ namespace piranha
       const T     *phi_;
       int         n_;
       int         m_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return math::Ynm(n_,m_,theta_->t_eval(t),phi_->t_eval(t));
       }
@@ -435,7 +441,7 @@ namespace piranha
       const T     *gamma_;
       const T     *theta_;
       const T     *phi_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return math::wig_rot(n_,m_,alpha_->t_eval(t),beta_->t_eval(t),gamma_->t_eval(t),
           theta_->t_eval(t),phi_->t_eval(t));
@@ -456,7 +462,7 @@ namespace piranha
     private:
       const T     *a_;
       double      power;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return std::pow(a_->t_eval(t),power);
       }
@@ -480,7 +486,7 @@ namespace piranha
       const T                 *a_;
       const T                 *orig_;
       std::pair<bool,size_t>  index_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         typedef typename T::r_it_s_index r_it_s_index;
         eval_type retval(0.);
@@ -541,7 +547,7 @@ namespace piranha
     private:
       const T             *a_;
       const phase_list    *pl_;
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         typedef typename T::iterator iterator;
         eval_type retval(0.);

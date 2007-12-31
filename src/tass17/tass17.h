@@ -251,7 +251,7 @@ namespace piranha
         ancestor::base_tc(t1,t2,ntot,b) {ancestor::build_tc();}
     private:
 // t is expressed in Julian years from J1980.0.
-      eval_type eval_hs_computed(const double &t) const
+      eval_type t_eval(const double &t) const
       {
         return tass17<Ps>::vienne_r((astro::J1980dot0()+t*astro::JD_per_JY()),6)*
           astro::AU();
