@@ -28,6 +28,7 @@
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
 #include <boost/python/overloads.hpp>
+#include <boost/python/return_internal_reference.hpp>
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/self.hpp>
 
@@ -156,6 +157,11 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
   class_<tc_insert_phases<T> > tc_insert_phases_inst("tc_insert_phases",
     init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
   tc_common_instantiation(tc_insert_phases_inst);
+// Range evaluator.
+  class_<range_evaluator<T> > range_eval("range_evaluator","Evaluate series over a time range.",
+    init<const T &,const double &, const double &, const int &>());
+  range_eval.def("values", &range_evaluator<T>::values, return_internal_reference<1>());
+  range_eval.def("times", &range_evaluator<T>::times, return_internal_reference<1>());
   return inst;
 }
 
