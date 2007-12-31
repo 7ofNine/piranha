@@ -51,6 +51,10 @@ namespace piranha
         m_retval.resize(m_size);
         m_time.resize(m_size);
       }
+/// Return const reference to return values vector.
+      const std::vector<eval_type> &values() const {return m_retval;}
+/// Return const reference to interval vector.
+      const std::vector<double> &times() const {return m_time;}
     protected:
 /// Serial evaluation.
       void serial_evaluation()
@@ -128,11 +132,11 @@ namespace piranha
           parallel_range_evaluation(re_type &re):m_re(re) {}
           void operator()(const tbb::blocked_range<size_t> &r) const
           {
-            double t=m_re.m_t0;
             for(size_t i=r.begin();i != r.end();++i)
             {
+              const double t = m_re.m_t0+i*m_re.m_step;
               m_re.m_retval[i]=m_re.m_evaluated.t_eval(t);
-              t+=m_re.m_step;
+              m_re.m_time[i]=t;
             }
           }
         private:
