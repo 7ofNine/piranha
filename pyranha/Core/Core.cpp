@@ -25,8 +25,11 @@
 #include <boost/python/iterator.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/return_value_policy.hpp>
+#include <complex>
+#include <vector>
 
 #include "../../src/piranha.h"
+#include "../stl_containers.h"
 
 using namespace boost::python;
 using namespace piranha;
@@ -210,4 +213,8 @@ BOOST_PYTHON_MODULE(_Core)
     .def("resize", &buffer::resize,"Resize memory buffer (in megabytes).")
     .staticmethod("resize")
     ;
+
+// For range-evaluation.
+    vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
+    vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
 }
