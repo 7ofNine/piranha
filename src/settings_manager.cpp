@@ -66,6 +66,11 @@ namespace piranha
 // Turn off gsl error handler.
     gsl_set_error_handler_off();
 #endif
+#ifdef _PIRANHA_TBB
+    std::cout << "TBB version strings:" << std::endl;
+    std::cout << __TBB_VERSION_STRINGS;
+    std::cout << "TBB:  BUILD_DATE\t\t" << __TBB_DATETIME << std::endl;
+#endif
   }
 
 /// Set path to theories of motion.
