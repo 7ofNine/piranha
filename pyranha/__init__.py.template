@@ -1,1 +1,12 @@
 from @MODULE_NAME@ import *
+
+try:
+  from pylab import plot
+  def __plot_range_evaluator(self):
+    plot(self.times(),self.values())
+  try:
+    range_evaluator.plot = __plot_range_evaluator
+  except NameError:
+    pass
+except ImportError:
+  print "Matplotlib is not installed, disabling plotting methods."
