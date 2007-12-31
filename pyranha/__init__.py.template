@@ -4,9 +4,8 @@ try:
   from pylab import plot
   def __plot_range_evaluator(self):
     plot(self.times(),self.values())
-  try:
-    range_evaluator.plot = __plot_range_evaluator
-  except NameError:
-    pass
+  range_evaluator.plot = __plot_range_evaluator
 except ImportError:
   print "Matplotlib is not installed, disabling plotting methods."
+except NameError:
+  pass
