@@ -23,8 +23,6 @@
 
 #include <complex>
 
-#include "../common_typedefs.h"
-
 namespace piranha
 {
 /// Evaluation type trait.
@@ -42,7 +40,7 @@ namespace piranha
     template <class T>
     struct eval_type<std::complex<T> >
   {
-    typedef complex_double type;
+    typedef std::complex<double> type;
   };
 }
 
