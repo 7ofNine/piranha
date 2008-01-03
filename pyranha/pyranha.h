@@ -57,12 +57,7 @@ void tc_common_instantiation(class_<T> &time_c)
 {
   time_c.def("sigma",&T::sigma,return_value_policy<copy_const_reference>());
   time_c.def("max_error",&T::max_error,return_value_policy<copy_const_reference>());
-  time_c.def("time",&T::time,return_value_policy<copy_const_reference>());
-  time_c.def("hs",&T::hs,return_value_policy<copy_const_reference>());
-  time_c.def("hs_computed",&T::hs_computed,return_value_policy<copy_const_reference>());
-  time_c.def("error",&T::error);
   time_c.def("gnuplot_save",&T::gnuplot_save);
-  time_c.def("size",&T::size);
 }
 
 /// Template for the instantiation of a ps. It will expose methods common to real and complex
@@ -307,19 +302,14 @@ void instantiate_tass17()
     .staticmethod("eiM")
     .def("vienne_r", &tass17<T>::vienne_r,"Calculate radius using Vienne's FORTRAN routine.")
     .staticmethod("vienne_r");
+// TODO: use common_tc_... function defined above?
   class_ <tc_vienne_r6<T> >
     ((std::string("tc_vienne_r6")).c_str(),
     init<typename tc_vienne_r6<T>::b_type,double,double,size_t>())
     .def("sigma",&tc_vienne_r6<T>::sigma,return_value_policy<copy_const_reference>())
     .def("max_error",&tc_vienne_r6<T>::max_error,
     return_value_policy<copy_const_reference>())
-    .def("time",&tc_vienne_r6<T>::time,return_value_policy<copy_const_reference>())
-    .def("hs",&tc_vienne_r6<T>::hs,return_value_policy<copy_const_reference>())
-    .def("hs_computed",&tc_vienne_r6<T>::hs_computed,
-    return_value_policy<copy_const_reference>())
-    .def("error",&tc_vienne_r6<T>::error)
-    .def("gnuplot_save",&tc_vienne_r6<T>::gnuplot_save)
-    .def("size",&tc_vienne_r6<T>::size);
+    .def("gnuplot_save",&tc_vienne_r6<T>::gnuplot_save);
 }
 
 #endif

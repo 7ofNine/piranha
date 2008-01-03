@@ -21,6 +21,7 @@
 #ifndef PIRANHA_PRECTEST_H
 #define PIRANHA_PRECTEST_H
 
+#include <boost/shared_ptr.hpp>
 #include <fstream>
 #include <iostream>
 #include <valarray>
@@ -28,11 +29,10 @@
 #include "base_classes/range_evaluator.h"
 #include "common_typedefs.h" // tc_add_ps_to_arg.
 #include "math.h"
-// TODO: once we move prectests in poisson series/, polynomial/, etc move this header there.
 #include "poisson_series/phase_list.h" // tc_insert_phase.
 #include "stream_manager.h" // Gnuplot save.
 #include "utils.h" // Check filename dir.
-#include "type_traits/eval_type.h"
+#include "type_traits/eval_type.h" // Eval_type.
 
 namespace piranha
 {
@@ -151,68 +151,46 @@ namespace piranha
   template <class T, class Derived>
     class base_tc
   {
-    public:
-/// Alias for evaluation type.
+    protected:
+// Alias for evaluation type.
       typedef typename eval_type<T>::type eval_type;
-/// Get number of time comparisons performed.
-      size_t size() const {return time_.size();}
-/// Return time at comparison n.
-      const double &time(const size_t &n) const {return time_[n];}
-/// Return value of resulting series at comparison n.
-      const eval_type &hs(const size_t &n) const {return hs_[n];}
-/// Return exact value at comparison n.
-      const eval_type &hs_computed(const size_t &n) const {return hs_computed_[n];}
-/// Return error at comparison n.
-      double error(const size_t &n) const {return std::abs(hs(n)-hs_computed(n));}
+    private:
+      typedef range_evaluator<T> re_plain;
+      typedef boost::shared_ptr<re_plain> re_plain_ptr;
+      typedef range_evaluator<Derived> re_manip;
+      typedef boost::shared_ptr<re_manip> re_manip_ptr;
+    public:
 /// Get rms.
-      const double &sigma() const {return sigma_;}
+      const double &sigma() const {return m_sigma;}
 /// Get max error.
-      const double &max_error() const {return max_error_;}
+      const double &max_error() const {return m_max_error;}
+/// Save in gnuplot format.
       void gnuplot_save(const std::string &) const;
     protected:
 // Ctor & Dtor
-      base_tc(const double &t1, const double &t2, const size_t &ntot, const T &benchmarked):
-        t1_(t1),t2_(t2),ntot_(ntot),time_(),hs_(),hs_computed_(),benchmarked_(&benchmarked) {}
+      base_tc(const T &benchmarked, const double &t0, const double &t1, const int &n):
+        m_plain_eval(),m_manip_eval(),m_sigma(0),m_max_error(0),m_benchmarked(benchmarked),
+        m_t0(t0),m_t1(t1),m_n(n) {}
       void build_tc();
     private:
-      eval_type eval_hs(const double &t) const {return benchmarked_->t_eval(t);}
       void calc_stats();
       void plot_data(std::ostream &) const;
 // Data members
-      const double                t1_;
-      const double                t2_;
-      const size_t                ntot_;
-      std::valarray<double>       time_;
-      std::valarray<eval_type>    hs_;
-      std::valarray<eval_type>    hs_computed_;
-      double                      sigma_;
-      double                      max_error_;
-      const T                     *benchmarked_;
-  };
-
-// Template specialization for eval_type type trait.
-  template <class T, class Derived>
-    struct eval_type<base_tc<T,Derived> >
-  {
-    typedef typename eval_type<T>::type type;
+      re_plain_ptr  m_plain_eval;
+      re_manip_ptr  m_manip_eval;
+      double        m_sigma;
+      double        m_max_error;
+      const T       &m_benchmarked;
+      const double  m_t0;
+      const double  m_t1;
+      const int     m_n;
   };
 
   template <class T, class Derived>
     inline void base_tc<T,Derived>::build_tc()
   {
-// TODO: place checks here?
-    time_.resize(ntot_);
-    hs_.resize(ntot_);
-    hs_computed_.resize(ntot_);
-    const double step_size=(t2_-t1_)/ntot_;
-    double t=t1_;
-    for (size_t i=0;i<ntot_;++i)
-    {
-      time_[i]=t;
-      hs_[i]=eval_hs(t);
-      hs_computed_[i]=static_cast<Derived const *>(this)->t_eval(t);
-      t+=step_size;
-    }
+    m_plain_eval.reset(new re_plain(m_benchmarked,m_t0,m_t1,m_n));
+    m_manip_eval.reset(new re_manip(*static_cast<Derived const *>(this),m_t0,m_t1,m_n));
     std::cout << "Computing statistics..." << std::endl;
     calc_stats();
     std::cout << "Done." << std::endl;
@@ -222,24 +200,19 @@ namespace piranha
     inline void base_tc<T,Derived>::calc_stats()
   {
     double tmp=0., max=0., candidate;
-    if (hs_.size()==0)
+    const size_t size = m_plain_eval->values().size();
+    p_assert(size == m_manip_eval->values().size());
+    for (size_t i=0;i < size;++i)
     {
-      sigma_=tmp;
-      max_error_=max;
-      return;
-    }
-    size_t i;
-    for (i=0;i<hs_.size();++i)
-    {
-      candidate=std::abs(hs_[i]-hs_computed_[i]);
-      if (candidate>max)
+      candidate=std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]);
+      if (candidate > max)
       {
         max=candidate;
       }
       tmp+=math::natural_pow(2,candidate);
     }
-    sigma_=std::sqrt(tmp/(i+1.));
-    max_error_=max;
+    m_sigma=std::sqrt(tmp/(size+1.));
+    m_max_error=max;
   }
 
 /// Save results in gnuplot format.
@@ -272,10 +245,11 @@ namespace piranha
   template <class T, class Derived>
     inline void base_tc<T,Derived>::plot_data(std::ostream &os) const
   {
-    for (size_t i=0;i<hs_.size();++i)
+    const size_t size = m_plain_eval->times().size();
+    for (size_t i=0;i < size;++i)
     {
-      os << time_[i] << '\t' << std::abs(hs_[i]-hs_computed_[i]) << '\t' <<
-        std::abs(hs_computed_[i]) << std::endl;
+      os << m_plain_eval->times()[i] << '\t' << std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]) << '\t' <<
+        std::abs(m_manip_eval->values()[i]) << std::endl;
     }
   }
 
@@ -290,13 +264,13 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_equal(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a) {ancestor::build_tc();}
-    private:
-      const T     *a_;
+        const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a) {ancestor::build_tc();}
       eval_type t_eval(const double &t) const
       {
         return a_->t_eval(t);
       }
+    private:
+      const T     *a_;
   };
 
   template <class T>
@@ -308,15 +282,15 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_mult(const T &b, const double &t1, const double &t2, const size_t &ntot,
-        const T &x, const T &y):ancestor::base_tc(t1,t2,ntot,b),x_(&x),y_(&y)
+        const T &x, const T &y):ancestor::base_tc(b,t1,t2,ntot),x_(&x),y_(&y)
         {ancestor::build_tc();}
-    private:
-      const T     *x_;
-      const T     *y_;
       eval_type t_eval(const double &t) const
       {
         return x_->t_eval(t)*y_->t_eval(t);
       }
+    private:
+      const T     *x_;
+      const T     *y_;
   };
 
   template <class T>
@@ -328,14 +302,20 @@ namespace piranha
       typedef std::complex<T> b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_complexp(const b_type &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        const size_t &ntot, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a)
         {ancestor::build_tc();}
-    private:
-      const T     *a_;
       eval_type t_eval(const double &t) const
       {
         return math::complexp(a_->t_eval(t));
       }
+    private:
+      const T     *a_;
+  };
+
+  template <class T>
+    struct eval_type<tc_complexp<T> >
+  {
+    typedef std::complex<double> type;
   };
 
   template <class T>
@@ -347,14 +327,14 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_cosine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        const size_t &ntot, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a)
         {ancestor::build_tc();}
-    private:
-      const T     *a_;
       eval_type t_eval(const double &t) const
       {
         return std::cos(a_->t_eval(t));
       }
+    private:
+      const T     *a_;
   };
 
   template <class T>
@@ -366,14 +346,14 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_sine(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a)
+        const size_t &ntot, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a)
         {ancestor::build_tc();}
-    private:
-      const T     *a_;
       eval_type t_eval(const double &t) const
       {
         return std::sin(a_->t_eval(t));
       }
+    private:
+      const T     *a_;
   };
 
   template <class T>
@@ -385,16 +365,16 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_Pnm(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, int n, int m, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),n_(n),m_(m)
+        const size_t &ntot, int n, int m, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a),n_(n),m_(m)
         {ancestor::build_tc();}
-    private:
-      const T     *a_;
-      int         n_;
-      int         m_;
       eval_type t_eval(const double &t) const
       {
         return math::Pnm(n_,m_,a_->t_eval(t));
       }
+    private:
+      const T     *a_;
+      int         n_;
+      int         m_;
   };
 
   template <class T>
@@ -407,17 +387,17 @@ namespace piranha
       typedef typename ancestor::eval_type eval_type;
       tc_Ynm(const b_type &b, const double &t1, const double &t2,
         const size_t &ntot, int n, int m, const T &theta, const T
-        &phi):ancestor::base_tc(t1,t2,ntot,b),theta_(&theta),phi_(&phi),
+        &phi):ancestor::base_tc(b,t1,t2,ntot),theta_(&theta),phi_(&phi),
         n_(n),m_(m) {ancestor::build_tc();}
+      eval_type t_eval(const double &t) const
+      {
+        return math::Ynm(n_,m_,theta_->t_eval(t),phi_->t_eval(t));
+      }
     private:
       const T     *theta_;
       const T     *phi_;
       int         n_;
       int         m_;
-      eval_type t_eval(const double &t) const
-      {
-        return math::Ynm(n_,m_,theta_->t_eval(t),phi_->t_eval(t));
-      }
   };
 
   template <class T>
@@ -430,9 +410,14 @@ namespace piranha
       typedef typename ancestor::eval_type eval_type;
       tc_wig_rot(const b_type &b, const double &t1,
         const double &t2,const size_t &ntot, int n, int m, const T &alpha,
-        const T &beta, const T &gamma,const T &theta, const T &phi):ancestor::base_tc(t1,t2,ntot,b),
+        const T &beta, const T &gamma,const T &theta, const T &phi):ancestor::base_tc(b,t1,t2,ntot),
         n_(n),m_(m),alpha_(&alpha),beta_(&beta),gamma_(&gamma),theta_(&theta),phi_(&phi)
         {ancestor::build_tc();}
+      eval_type t_eval(const double &t) const
+      {
+        return math::wig_rot(n_,m_,alpha_->t_eval(t),beta_->t_eval(t),gamma_->t_eval(t),
+          theta_->t_eval(t),phi_->t_eval(t));
+      }
     private:
       int         n_;
       int         m_;
@@ -441,11 +426,6 @@ namespace piranha
       const T     *gamma_;
       const T     *theta_;
       const T     *phi_;
-      eval_type t_eval(const double &t) const
-      {
-        return math::wig_rot(n_,m_,alpha_->t_eval(t),beta_->t_eval(t),gamma_->t_eval(t),
-          theta_->t_eval(t),phi_->t_eval(t));
-      }
   };
 
   template <class T>
@@ -457,15 +437,15 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_pow(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const double &power_, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),power(power_)
+        const size_t &ntot, const double &power_, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a),power(power_)
         {ancestor::build_tc();}
-    private:
-      const T     *a_;
-      double      power;
       eval_type t_eval(const double &t) const
       {
         return std::pow(a_->t_eval(t),power);
       }
+    private:
+      const T     *a_;
+      double      power;
   };
 
 // TODO: here and below it would be better to use a function defined in series, instead of
@@ -480,12 +460,8 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_add_ps_to_arg(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, std::string name, const T &a, const T &orig):ancestor::base_tc(t1,t2,ntot,b),a_(&a),orig_(&orig),
+        const size_t &ntot, std::string name, const T &a, const T &orig):ancestor::base_tc(b,t1,t2,ntot),a_(&a),orig_(&orig),
         index_(orig_->trig_arg_index(name)) {ancestor::build_tc();}
-    private:
-      const T                 *a_;
-      const T                 *orig_;
-      std::pair<bool,size_t>  index_;
       eval_type t_eval(const double &t) const
       {
         typedef typename T::r_it_s_index r_it_s_index;
@@ -527,6 +503,10 @@ namespace piranha
         }
         return retval;
       }
+    private:
+      const T                 *a_;
+      const T                 *orig_;
+      std::pair<bool,size_t>  index_;
   };
 
 /// Time comparison for phase insertion.
@@ -542,11 +522,8 @@ namespace piranha
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_insert_phases(const T &b, const double &t1, const double &t2,
-        const size_t &ntot, const phase_list &pl, const T &a):ancestor::base_tc(t1,t2,ntot,b),a_(&a),pl_(&pl)
+        const size_t &ntot, const phase_list &pl, const T &a):ancestor::base_tc(b,t1,t2,ntot),a_(&a),pl_(&pl)
         {ancestor::build_tc();}
-    private:
-      const T             *a_;
-      const phase_list    *pl_;
       eval_type t_eval(const double &t) const
       {
         typedef typename T::iterator iterator;
@@ -596,6 +573,9 @@ namespace piranha
         }
         return retval;
       }
+    private:
+      const T             *a_;
+      const phase_list    *pl_;
   };
 }
 #endif

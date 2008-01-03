@@ -248,7 +248,7 @@ namespace piranha
       typedef Ps b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_vienne_r6(const Ps &b, const double &t1, const double &t2, const size_t &ntot):
-        ancestor::base_tc(t1,t2,ntot,b) {ancestor::build_tc();}
+        ancestor::base_tc(b,t1,t2,ntot) {ancestor::build_tc();}
     private:
 // t is expressed in Julian years from J1980.0.
       eval_type t_eval(const double &t) const
