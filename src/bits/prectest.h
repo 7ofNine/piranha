@@ -163,6 +163,10 @@ namespace piranha
       const double &sigma() const {return m_sigma;}
 /// Get max error.
       const double &max_error() const {return m_max_error;}
+/// Get const reference to plain range evaluator.
+      const re_plain &plain_eval() const {return *m_plain_eval;}
+/// Get const reference to manipulated range evaluator.
+      const re_manip &manip_eval() const {return *m_manip_eval;}
 /// Save in gnuplot format.
       void gnuplot_save(const std::string &) const;
     protected:

@@ -39,7 +39,7 @@ using namespace piranha;
 
 /// Instantiation of spectral comparison.
 template <class T>
-class_<sc<T> > sc_instatiation()
+  class_<sc<T> > sc_instatiation()
 {
   class_<sc<T> > retval("sc",init<T,T,bool>());
   retval.def(init<T,T>());
@@ -50,20 +50,36 @@ class_<sc<T> > sc_instatiation()
   return retval;
 }
 
+template <class T>
+  void range_evaluator_instantiation(const std::string &name, const std::string &descr)
+{
+  class_<range_evaluator<T> > range_eval(name.c_str(),descr.c_str(),
+      init<const T &,const double &, const double &, const int &>());
+  range_eval.def("values", &range_evaluator<T>::values, return_internal_reference<1>());
+  range_eval.def("times", &range_evaluator<T>::times, return_internal_reference<1>());
+}
+
 /// Instantiation of common functions for time comparison.
 // Here T is the tc of operation<series_type>.
 template <class T>
-void tc_common_instantiation(class_<T> &time_c)
+  void tc_common_instantiation(const std::string &name, class_<T> &time_c)
 {
   time_c.def("sigma",&T::sigma,return_value_policy<copy_const_reference>());
   time_c.def("max_error",&T::max_error,return_value_policy<copy_const_reference>());
   time_c.def("gnuplot_save",&T::gnuplot_save);
+  range_evaluator_instantiation<T>(std::string("__range_evaluator_")+name,
+    std::string("Range evaluator for ")+name+".");
+  time_c.def("plain_eval",&T::plain_eval,return_internal_reference<1>());
+  time_c.def("manip_eval",&T::manip_eval,return_internal_reference<1>());
 }
+
+/// Helper macro that calls tc_common_instantiation using just one parameter instead of two.
+#define __tc_common_instantiation(name) tc_common_instantiation(#name,name##_inst)
 
 /// Template for the instantiation of a ps. It will expose methods common to real and complex
 /// ps, the specializations take place below.
 template <class T>
-class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
+  class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
 {
 // This is a trick to help resolve overloaded methods inside classes.
   typedef void (T::*crop_it)(const typename T::it_s_index &);
@@ -145,29 +161,27 @@ class_<T> ps_basic_instantiation(const std::string &name, const std::string &des
 // Instantiate common time comparisons.
   class_<tc_equal<T> > tc_equal_inst("tc_equal",
     init<typename tc_equal<T>::b_type,double,double,size_t,T>());
-  tc_common_instantiation(tc_equal_inst);
+  __tc_common_instantiation(tc_equal);
   class_<tc_mult<T> > tc_mult_inst("tc_mult",
     init<typename tc_mult<T>::b_type,double,double,size_t,T,T>());
-  tc_common_instantiation(tc_mult_inst);
+  __tc_common_instantiation(tc_mult);
   class_<tc_insert_phases<T> > tc_insert_phases_inst("tc_insert_phases",
     init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
-  tc_common_instantiation(tc_insert_phases_inst);
-// Range evaluator.
-  class_<range_evaluator<T> > range_eval("range_evaluator","Evaluate series over a time range.",
-    init<const T &,const double &, const double &, const int &>());
-  range_eval.def("values", &range_evaluator<T>::values, return_internal_reference<1>());
-  range_eval.def("times", &range_evaluator<T>::times, return_internal_reference<1>());
+  __tc_common_instantiation(tc_insert_phases);
+// Range evaluator for series.
+  range_evaluator_instantiation<T>("range_evaluator",std::string("Evaluate ")+name+
+    " over a time range.");
   return inst;
 }
 
 template <class T>
-void ps_instantiate_differential_specifics(class_<T> &inst)
+  void ps_instantiate_differential_specifics(class_<T> &inst)
 {
   inst.def("partial", &T::partial);
 }
 
 template <class T>
-void fourier_specifics(class_<T> &inst)
+  void fourier_specifics(class_<T> &inst)
 {
   inst.def("get_truncation", &T::get_truncation, return_value_policy<copy_const_reference>(),
     "Get norm truncation level.").staticmethod("get_truncation");
@@ -175,7 +189,7 @@ void fourier_specifics(class_<T> &inst)
 }
 
 template <class T>
-void ps_instantiate_real_specifics(class_<T> &real)
+  void ps_instantiate_real_specifics(class_<T> &real)
 {
   typedef T real_ps;
   typedef void (real_ps::*real_add_ps_to_arg_index)(trig_size_t, const real_ps &);
@@ -193,29 +207,29 @@ void ps_instantiate_real_specifics(class_<T> &real)
 //   def("wig_rot",&math::wig_rot<real_ps>,"Wigner rotation theorem for spherical harmonics.");
   class_<tc_complexp<real_ps> > tc_complexp_inst("tc_complexp",
     init<typename tc_complexp<real_ps>::b_type,double,double,size_t,real_ps>());
-  tc_common_instantiation(tc_complexp_inst);
+  __tc_common_instantiation(tc_complexp);
   class_<tc_cosine<real_ps> > tc_cosine_inst("tc_cosine",
     init<typename tc_cosine<real_ps>::b_type,double,double,size_t,real_ps>());
-  tc_common_instantiation(tc_cosine_inst);
+  __tc_common_instantiation(tc_cosine);
   class_<tc_sine<real_ps> > tc_sine_inst("tc_sine",
     init<typename tc_sine<real_ps>::b_type,double,double,size_t,real_ps>());
-  tc_common_instantiation(tc_sine_inst);
+  __tc_common_instantiation(tc_sine);
   class_<tc_Pnm<real_ps> > tc_Pnm_inst("tc_Pnm",
     init<typename tc_Pnm<real_ps>::b_type,double,double,size_t,int,int,real_ps>());
-  tc_common_instantiation(tc_Pnm_inst);
+  __tc_common_instantiation(tc_Pnm);
   class_<tc_Ynm<real_ps> > tc_Ynm_inst("tc_Ynm",
     init<typename tc_Ynm<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps>());
-  tc_common_instantiation(tc_Ynm_inst);
+  __tc_common_instantiation(tc_Ynm);
   class_<tc_wig_rot<real_ps> > tc_wig_rot_inst("tc_wig_rot",
     init<typename tc_wig_rot<real_ps>::b_type,double,double,size_t,int,int,real_ps,real_ps,
     real_ps,real_ps,real_ps>());
-  tc_common_instantiation(tc_wig_rot_inst);
+  __tc_common_instantiation(tc_wig_rot);
   class_<tc_pow<real_ps> > tc_pow_inst("tc_pow",
     init<typename tc_pow<real_ps>::b_type,double,double,size_t,double,real_ps>());
-  tc_common_instantiation(tc_pow_inst);
+  __tc_common_instantiation(tc_pow);
   class_<tc_add_ps_to_arg<real_ps> > tc_add_ps_to_arg_inst("tc_add_ps_to_arg",
     init<typename tc_add_ps_to_arg<real_ps>::b_type,double,double,size_t,std::string,real_ps,real_ps>());
-  tc_common_instantiation(tc_add_ps_to_arg_inst);
+  __tc_common_instantiation(tc_add_ps_to_arg);
 }
 
 // TODO: separate abs into power function instantiation, and use type traits or overloading or specialization to
@@ -303,13 +317,9 @@ void instantiate_tass17()
     .def("vienne_r", &tass17<T>::vienne_r,"Calculate radius using Vienne's FORTRAN routine.")
     .staticmethod("vienne_r");
 // TODO: use common_tc_... function defined above?
-  class_ <tc_vienne_r6<T> >
-    ((std::string("tc_vienne_r6")).c_str(),
-    init<typename tc_vienne_r6<T>::b_type,double,double,size_t>())
-    .def("sigma",&tc_vienne_r6<T>::sigma,return_value_policy<copy_const_reference>())
-    .def("max_error",&tc_vienne_r6<T>::max_error,
-    return_value_policy<copy_const_reference>())
-    .def("gnuplot_save",&tc_vienne_r6<T>::gnuplot_save);
+  class_<tc_vienne_r6<T> > tc_vienne_r6_inst("tc_vienne_r6",
+    init<typename tc_vienne_r6<T>::b_type,double,double,size_t>());
+  __tc_common_instantiation(tc_vienne_r6);
 }
 
 #endif
