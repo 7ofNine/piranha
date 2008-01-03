@@ -34,7 +34,7 @@ namespace piranha
     extern void posired_(const double &dj, const int &i, double xyz[3], double vxyz[3]);
   }
 #else
-  inline void posired_(const double &dj, const int &i, double xyz[3], double vxyz[3])
+  inline void posired_(const double &, const int &, double xyz[3], double vxyz[3])
   {
     std::cout << "WARNING: FORTRAN support was not compiled in, returning 0." << std::endl;
     xyz[0]=xyz[1]=xyz[2]=vxyz[0]=vxyz[1]=vxyz[2]=0.;
