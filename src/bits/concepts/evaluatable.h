@@ -21,6 +21,8 @@
 #ifndef PIRANHA_EVALUATABLE_H
 #define PIRANHA_EVALUATABLE_H
 
+#include "../type_traits/eval_type.h"
+
 #error "Don't use this class, it is just for documentation purposes."
 
 namespace piranha
@@ -29,21 +31,26 @@ namespace concepts
 {
 /// Evaluatable class concept.
 /**
- * Defines a time-evaluation method. Return value should be decided through the piranha::eval_type type trait.
- * This class serves only for documentation purposes and must not be used.
+ * Defines a time-evaluation method. Return value is typedeffed as eval_type and should be established
+ * through the piranha::eval_type type trait. This class serves only for documentation purposes and
+ * must not be used.
  */
   template <class Type>
     class evaluatable
   {
     public:
+/// Evaluation type typedef.
+/**
+ * @see piranha::eval_type for evaluation type trait.
+ */
+      typedef typename eval_type<Type>::type eval_type;
 /// Time-evaluation.
 /**
  * Evaluate class at time t. Return value can be either double or std::complex<double>, depending on the type
  * of the class.
  * @param[in] t time of evaluation.
- * @see piranha::eval_type for evaluation type trait.
  */
-      typename eval_type<Type>::type t_eval(const double &t) const;
+      eval_type t_eval(const double &t) const;
   };
 }
 }
