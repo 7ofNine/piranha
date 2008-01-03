@@ -256,7 +256,6 @@ namespace piranha
   template <class T>
     class tc_equal:public base_tc<T,tc_equal<T> >
   {
-      friend class base_tc<T,tc_equal<T> >;
       typedef base_tc<T,tc_equal<T> > ancestor;
     public:
 // b_type stands for "benchmarked type"
@@ -275,7 +274,6 @@ namespace piranha
   template <class T>
     class tc_mult:public base_tc<T,tc_mult<T> >
   {
-      friend class base_tc<T,tc_mult<T> >;
       typedef base_tc<T,tc_mult<T> > ancestor;
     public:
       typedef T b_type;
@@ -295,7 +293,6 @@ namespace piranha
   template <class T>
     class tc_complexp:public base_tc<std::complex<T>,tc_complexp<T> >
   {
-      friend class base_tc<std::complex<T>,tc_complexp<T> >;
       typedef base_tc<std::complex<T>,tc_complexp<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
@@ -314,7 +311,6 @@ namespace piranha
   template <class T>
     class tc_cosine:public base_tc<T,tc_cosine<T> >
   {
-      friend class base_tc<T,tc_cosine<T> >;
       typedef base_tc<T,tc_cosine<T> > ancestor;
     public:
       typedef T b_type;
@@ -333,7 +329,6 @@ namespace piranha
   template <class T>
     class tc_sine:public base_tc<T,tc_sine<T> >
   {
-      friend class base_tc<T,tc_sine<T> >;
       typedef base_tc<T,tc_sine<T> > ancestor;
     public:
       typedef T b_type;
@@ -352,7 +347,6 @@ namespace piranha
   template <class T>
     class tc_Pnm:public base_tc<T,tc_Pnm<T> >
   {
-      friend class base_tc<T,tc_Pnm<T> >;
       typedef base_tc<T,tc_Pnm<T> > ancestor;
     public:
       typedef T b_type;
@@ -373,7 +367,6 @@ namespace piranha
   template <class T>
     class tc_Ynm:public base_tc<std::complex<T>,tc_Ynm<T> >
   {
-      friend class base_tc<std::complex<T>,tc_Ynm<T> >;
       typedef base_tc<std::complex<T>,tc_Ynm<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
@@ -396,7 +389,6 @@ namespace piranha
   template <class T>
     class tc_wig_rot:public base_tc<std::complex<T>,tc_wig_rot<T> >
   {
-      friend class base_tc<std::complex<T>,tc_wig_rot<T> >;
       typedef base_tc<std::complex<T>,tc_wig_rot<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
@@ -424,7 +416,6 @@ namespace piranha
   template <class T>
     class tc_pow:public base_tc<T,tc_pow<T> >
   {
-      friend class base_tc<T,tc_pow<T> >;
       typedef base_tc<T,tc_pow<T> > ancestor;
     public:
       typedef T b_type;
@@ -447,7 +438,6 @@ namespace piranha
   template <class T>
     class tc_add_ps_to_arg:public base_tc<T,tc_add_ps_to_arg<T> >
   {
-      friend class base_tc<T,tc_add_ps_to_arg<T> >;
       typedef base_tc<T,tc_add_ps_to_arg<T> > ancestor;
     public:
       typedef T b_type;
@@ -509,7 +499,6 @@ namespace piranha
   template <class T>
     class tc_insert_phases:public base_tc<T,tc_insert_phases<T> >
   {
-      friend class base_tc<T,tc_insert_phases<T> >;
       typedef base_tc<T,tc_insert_phases<T> > ancestor;
     public:
       typedef T b_type;
