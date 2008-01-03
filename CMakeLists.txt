@@ -1,5 +1,6 @@
 PROJECT(piranha)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
 INCLUDE(${CMAKE_ROOT}/Modules/CMakeDependentOption.cmake)
 INCLUDE(${CMAKE_ROOT}/Modules/FindPythonLibs.cmake)
 INCLUDE(FindGMP)

@@ -1,5 +1,5 @@
 MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
-  SET(GCC_SPECIFIC_FLAGS "-Wall -Wextra")
+  SET(GCC_SPECIFIC_FLAGS "-Wall -Wextra -fmessage-length=0")
   CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden __VISIBILITY_INLINES_HIDDEN_FLAG)
   IF(__VISIBILITY_INLINES_HIDDEN_FLAG)
     MESSAGE(STATUS "GCC supports the '-fvisibility-inlines-hidden' flag")
