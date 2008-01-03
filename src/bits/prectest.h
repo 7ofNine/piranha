@@ -32,7 +32,6 @@
 #include "poisson_series/phase_list.h" // tc_insert_phase.
 #include "stream_manager.h" // Gnuplot save.
 #include "utils.h" // Check filename dir.
-#include "type_traits/eval_type.h" // Eval_type.
 
 namespace piranha
 {
@@ -310,12 +309,6 @@ namespace piranha
       }
     private:
       const T     *a_;
-  };
-
-  template <class T>
-    struct eval_type<tc_complexp<T> >
-  {
-    typedef std::complex<double> type;
   };
 
   template <class T>

@@ -23,20 +23,20 @@
 
 #include "../compile_switches.h" // For parallel mode.
 #include "../piranha_tbb.h" // For parallel evaluation.
-#include "../type_traits/eval_type.h" // For evaluation type.
 
 namespace piranha
 {
 /// Base class for the evaluation over a range.
 /**
  * Upon construction this class will simply perform some sanity checks on the interval evaluation parameters,
- * set a suitability flag and then return.
+ * set a suitability flag and then return. In order to be evaluated, a class must conform to the
+ * piranha::concepts::evaluatable concept.
  */
   template <class Evaluatable>
     class base_range_evaluator
   {
     protected:
-      typedef typename eval_type<Evaluatable>::type eval_type;
+      typedef typename Evaluatable::eval_type eval_type;
     public:
 /// Constructor from interval parameters.
 /**
