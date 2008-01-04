@@ -25,50 +25,56 @@
 
 namespace piranha
 {
-/// Simple Poisson series term class.
-  template <class Cf, class Trig>
-    class simple_term:public base_term<Cf,Trig>
+  /// Simple Poisson series term class.
+  template <class Cf, class Trig> class simple_term : public base_term<Cf,Trig>
   {
     public:
-/// Alias for the ancestor.
+      /// Alias for the ancestor.
       typedef base_term<Cf,Trig> ancestor;
-/// Alias for coefficient type.
+      /// Alias for coefficient type.
       typedef Cf cf_type;
-/// Alias for trigonometric type.
+      /// Alias for trigonometric type.
       typedef Trig trig_type;
-/// Alias for evaluation type.
+      /// Alias for evaluation type.
       typedef typename ancestor::eval_type eval_type;
-/// Default constructor.
-      explicit simple_term():ancestor::base_term() {}
-/// Constructor from generic coefficient and fixed trigonometric part.
-/**
- * Constructs from generic coefficient type.
- */
-      template <class Cf2>
-        explicit simple_term(const Cf2 &c, const trig_type &t):ancestor(cf_type(c),t) {}
-/// Generic copy constructor.
-/**
- * Constructs from piranha::simple_term with generic coefficient type.
- */
-      template <class Cf2>
-        explicit simple_term(const simple_term<Cf2,trig_type> &term):ancestor(term) {}
-// Getters
-/// Get mutable coefficient reference.
+      /// Default constructor.
+      explicit simple_term() :
+        ancestor::base_term()
+      {
+      }
+      /// Constructor from generic coefficient and fixed trigonometric part.
+      /**
+       * Constructs from generic coefficient type.
+       */
+      template <class Cf2> explicit simple_term(const Cf2 &c, const trig_type &t) :
+        ancestor(cf_type(c), t)
+      {
+      }
+      /// Generic copy constructor.
+      /**
+       * Constructs from piranha::simple_term with generic coefficient type.
+       */
+      template <class Cf2> explicit simple_term(const simple_term<Cf2,trig_type> &term) :
+        ancestor(term)
+      {
+      }
+      // Getters
+      /// Get mutable coefficient reference.
       cf_type &cf()
       {
         return ancestor::elements.template get<0>();
       }
-/// Get const reference to coefficient.
+      /// Get const reference to coefficient.
       const cf_type &cf() const
       {
         return ancestor::elements.template get<0>();
       }
-/// Get mutable reference to trigonometric part.
+      /// Get mutable reference to trigonometric part.
       trig_type &trig()
       {
         return ancestor::elements.template get<1>();
       }
-/// Get const reference to trigonometric part.
+      /// Get const reference to trigonometric part.
       const trig_type &trig() const
       {
         return ancestor::elements.template get<1>();
@@ -77,7 +83,7 @@ namespace piranha
       {
         return (sizeof(simple_term));
       }
-/// Assignment operator.
+      /// Assignment operator.
       simple_term &operator=(const simple_term &t2)
       {
         if (this == &t2)
@@ -87,7 +93,7 @@ namespace piranha
         ancestor::elements = t2.elements;
         return *this;
       }
-/// Invert the sign of trigonometric multipliers.
+      /// Invert the sign of trigonometric multipliers.
       void invert_trig_args()
       {
         trig().invert_sign();
@@ -96,57 +102,55 @@ namespace piranha
           cf().invert_sign();
         }
       }
-// I/O.
-/// Print in plain format.
+      // I/O.
+      /// Print in plain format.
       void print_plain(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
-// Setup formatting.
+        // Setup formatting.
         stream_manager::setup_print(out_stream);
-        cf().print_plain(out_stream,cv);
+        cf().print_plain(out_stream, cv);
         out_stream << stream_manager::data_separator();
-        trig().print_plain(out_stream,tv);
+        trig().print_plain(out_stream, tv);
       }
-/// Print in latex format.
+      /// Print in latex format.
       void print_latex(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
-// Setup formatting
+        // Setup formatting
         stream_manager::setup_print(out_stream);
-        cf().print_latex(out_stream,cv);
+        cf().print_latex(out_stream, cv);
         out_stream << "&";
-        out_stream << "$" << trig().phase(tv) <<
-          "$" << "&" << "$" << trig().freq(tv) << "$" << "&";
-        trig().print_latex(out_stream,tv);
+        out_stream << "$" << trig().phase(tv) << "$" << "&" << "$" << trig().freq(tv) << "$" << "&";
+        trig().print_latex(out_stream, tv);
       }
-/// Print to stream.
-/**
- * Print format is set in piranha::stream_manager.
- */
+      /// Print to stream.
+      /**
+       * Print format is set in piranha::stream_manager.
+       */
       void print(std::ostream &out_stream, const vector_psym_p &cv, const vector_psym_p &tv) const
       {
         switch (stream_manager::format())
         {
           case stream_manager::plain:
-            print_plain(out_stream,cv,tv);
+            print_plain(out_stream, cv, tv);
             break;
           case stream_manager::latex:
-            print_latex(out_stream,cv,tv);
+            print_latex(out_stream, cv, tv);
         }
       }
-/// Print to screen.
+      /// Print to screen.
       void put(const vector_psym_p &cv, const vector_psym_p &tv) const
       {
-        print(std::cout,cv,tv);
+        print(std::cout, cv, tv);
       }
-/// Smarter numerical evaluation
-/**
- * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
- * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on the series' characteristics.
- * @param[in] te piranha::trig_evaluator object that caches complex exponentials of trigonometric arguments.
- */
-      template <class TrigEvaluator>
-        eval_type t_eval(TrigEvaluator &te) const
+      /// Smarter numerical evaluation
+      /**
+       * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
+       * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on the series' characteristics.
+       * @param[in] te piranha::trig_evaluator object that caches complex exponentials of trigonometric arguments.
+       */
+      template <class TrigEvaluator> eval_type t_eval(TrigEvaluator &te) const
       {
-        eval_type retval=cf().t_eval(te.value(),te.ps()->arguments().template get<0>());
+        eval_type retval=cf().t_eval(te.value(), te.ps()->arguments().template get<0>());
         retval*=trig().t_eval(te);
         return retval;
       }
