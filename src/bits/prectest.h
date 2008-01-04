@@ -26,10 +26,10 @@
 #include <iostream>
 #include <valarray>
 
-#include "base_classes/range_evaluator.h"
 #include "common_typedefs.h" // tc_add_ps_to_arg.
 #include "math.h"
 #include "poisson_series/phase_list.h" // tc_insert_phase.
+#include "range_evaluator.h"
 #include "stream_manager.h" // Gnuplot save.
 #include "utils.h" // Check filename dir.
 

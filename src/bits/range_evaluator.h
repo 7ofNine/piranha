@@ -21,15 +21,15 @@
 #ifndef PIRANHA_RANGE_EVALUATOR_H
 #define PIRANHA_RANGE_EVALUATOR_H
 
-#include "../compile_switches.h" // For parallel mode.
-#include "../piranha_tbb.h" // For parallel evaluation.
+#include "compile_switches.h" // For parallel mode.
+#include "piranha_tbb.h" // For parallel evaluation.
 
 namespace piranha
 {
 /// Base class for the evaluation over a range.
 /**
- * Upon construction this class will simply perform some sanity checks on the interval evaluation parameters,
- * set a suitability flag and then return. In order to be evaluated, a class must conform to the
+ * Upon construction this class will simply perform some sanity checks on the interval evaluation parameters
+ * and then return. In order to be evaluated, a class must conform to the
  * piranha::concepts::evaluatable concept.
  */
   template <class Evaluatable>
@@ -40,8 +40,8 @@ namespace piranha
     public:
 /// Constructor from interval parameters.
 /**
- * If the parameters are sane, is_suitable will be set to true and the retval vector will be appropriately resized,
- * otherwise is_suitable will be set to false.
+ * If the parameters are sane the retval vector will be appropriately resized, otherwise
+ * size will be zero.
  */
       base_range_evaluator(const Evaluatable &e, const double &t0, const double &t1, const int &n):
         m_evaluated(e),m_t0(t0),m_t1(t1),m_n(n),m_size(0),m_step(0),m_retval(),m_time()
