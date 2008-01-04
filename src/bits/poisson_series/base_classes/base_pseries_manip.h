@@ -26,7 +26,7 @@
 #include "../../config.h" // For (un)likely().
 #include "../../p_exceptions.h"
 #include "../../stats.h"
-#include "../../utils.h"
+#include "../../utils.h" // For class_converter.
 #include "base_pseries_ta_macros.h"
 
 namespace piranha

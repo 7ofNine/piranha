@@ -34,24 +34,42 @@
 
 namespace piranha
 {
-  // Transform from Class2 to Class1.
+  /// Transform from Class2 to Class1.
+  /**
+   * Non-specialized version, it will create a copy of the converted class.
+   */
   template <class Class2, class Class1> class class_converter
   {
     public:
+      /// Constructor.
+      /**
+       * @param[in] c class to be converted.
+       */
       explicit class_converter(const Class2 &c) :
         result(c)
       {
       }
+      /// Copy of the converted class.
       const Class1 result;
   };
 
+  /// Specialized class converter.
+  /**
+   * It will be invoked when the type to convert from is the same as the converted type. A reference
+   * to the convertee is stored inside the class.
+   */
   template <class Class2> class class_converter<Class2, Class2>
   {
     public:
+      /// Constructor.
+      /**
+       * @param[in] c class to be converted.
+       */
       explicit class_converter(const Class2 &c) :
         result(c)
       {
       }
+      /// Reference to the converted class.
       const Class2 &result;
   };
 
