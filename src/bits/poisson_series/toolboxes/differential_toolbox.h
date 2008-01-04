@@ -61,7 +61,7 @@ namespace piranha
             it->cf().partial(cf_s_index.second,tmp_term.cf());
             tmp_term.trig()=it->trig();
             tmp_term.trig().flavour()=it->trig().flavour();
-            retval.insert_check_positive(tmp_term);
+            retval.insert_with_checks(tmp_term);
           }
 // Second part of the derivation.
 // NOTICE: this may be placed somewhere inside trig classes, but probably to do this
@@ -85,7 +85,7 @@ namespace piranha
             {
               tmp_term.trig()=it->trig();
             }
-            retval.insert_check_positive(tmp_term);
+            retval.insert_with_checks(tmp_term);
           }
         }
         return retval;

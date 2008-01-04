@@ -176,7 +176,7 @@ namespace piranha
           term.cf()=build_cf_from_comp<Cmp>(it->cf());
           term.trig()=it->trig();
           term.trig().flavour()=it->trig().flavour();
-          static_cast<Derived *>(this)->insert_check_positive(term);
+          static_cast<Derived *>(this)->insert_with_checks(term);
         }
       }
 // Build series from real and imaginary components.
@@ -211,7 +211,7 @@ namespace piranha
           term.cf()=get_cf_comp<Cmp>(it->cf());
           term.trig()=it->trig();
           term.trig().flavour()=it->trig().flavour();
-          it_hint=retval.insert_check_positive(term,&it_hint);
+          it_hint=retval.insert_with_checks(term,&it_hint);
         }
         return retval;
       }

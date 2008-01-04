@@ -185,7 +185,7 @@ namespace piranha
       template <class Cf2, bool, bool>
         it_s_index insert(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       template <class Cf2>
-        it_s_index insert_check_positive(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
+        it_s_index insert_with_checks(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
       void append_cf_arg(const psym_p);

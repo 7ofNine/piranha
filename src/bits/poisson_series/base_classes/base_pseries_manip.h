@@ -58,7 +58,7 @@ namespace piranha
     cf_type tmp_c=src.cf();
 // Insert first term.
     tmp_term.cf().mult_by(std::cos(phase));
-    retps.insert_check_positive(tmp_term);
+    retps.insert_with_checks(tmp_term);
 // Second term: change flavour and sign.
     switch (src.trig().flavour())
     {
@@ -72,7 +72,7 @@ namespace piranha
         tmp_term.cf()=tmp_c;
         tmp_term.cf().mult_by(std::sin(phase));
     }
-    retps.insert_check_positive(tmp_term);
+    retps.insert_with_checks(tmp_term);
   }
 
 /// Add phase to a term and insert the resulting terms in an external series.
@@ -174,7 +174,7 @@ namespace piranha
         term_type tmp_term=(*it);
         tmp_term.elements.template get<N>().pad_right(new_size);
 // NOTICE: use hinted insertion here?
-        retval.insert_check_positive(tmp_term);
+        retval.insert_with_checks(tmp_term);
       }
       swap(retval);
     }
@@ -413,7 +413,7 @@ namespace piranha
 
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_check_positive(
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_with_checks(
     const Term<Cf2, trig_type> &term, const it_s_index *it_hint)
   {
     return insert<Cf2,true,true>(term,it_hint);
@@ -473,7 +473,7 @@ namespace piranha
       tmp.trig().apply_layout(l_trig);
 // Use safe insert because when reorganizing the args layout maybe a negative multiplier
 // may have been placed in the first position.
-      retval.insert_check_positive(tmp);
+      retval.insert_with_checks(tmp);
     }
 // Take care of lin_args.
     utils::apply_layout(l_trig,retval.lin_args());

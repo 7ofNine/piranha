@@ -159,7 +159,7 @@ namespace piranha
 // Deal with phases.
       if (it_pl==pl.end())
       {
-        it_hint=insert_check_positive(new_term,&it_hint);
+        it_hint=insert_with_checks(new_term,&it_hint);
       }
       else
       {

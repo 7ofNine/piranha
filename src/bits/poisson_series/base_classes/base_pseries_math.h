@@ -61,7 +61,7 @@ namespace piranha
 // TODO: use hinted insertion.
     for (it_s_index2 it=ps2.g_s_index().begin();it!=it_f;++it)
     {
-      insert_check_positive(*it);
+      insert_with_checks(*it);
     }
     static_cast<Derived *>(this)->assignment_hook(ps2);
     std::cout << "Generic assignment operator!" << std::endl;
@@ -77,7 +77,7 @@ namespace piranha
     arguments().template get<0>().clear();
     arguments().template get<1>().clear();
     lin_args().clear();
-    insert_check_positive(term_type(cf_type(x),trig_type()));
+    insert_with_checks(term_type(cf_type(x),trig_type()));
     std::cout << "Generic assignment operator!" << std::endl;
     return *static_cast<Derived *>(this);
   }
@@ -320,7 +320,7 @@ namespace piranha
     {
       tmp_term=*it;
       tmp_term.cf().mult_by(c);
-      it_hint=tmp_ps.insert_check_positive(tmp_term,&it_hint);
+      it_hint=tmp_ps.insert_with_checks(tmp_term,&it_hint);
     }
     swap(tmp_ps);
     return *static_cast<Derived *>(this);
