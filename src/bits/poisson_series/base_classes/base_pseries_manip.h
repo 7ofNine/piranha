@@ -24,8 +24,9 @@
 #include "../../arg_manager.h"
 #include "../../common_typedefs.h" // For layout.
 #include "../../config.h" // For (un)likely().
-#include "../../stats.h"
 #include "../../p_exceptions.h"
+#include "../../stats.h"
+#include "../../utils.h"
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -365,11 +366,11 @@ namespace piranha
      * This function performs some checks and then calls base_pseries::ll_insert.
      */
     template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2, bool CheckTrigSign, bool Sign>
+    template <class Term2, bool CheckTrigSign, bool Sign>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
-      const Term<Cf2, trig_type> &term_, const it_s_index *it_hint)
+      const Term2 &term_, const it_s_index *it_hint)
     {
-      transform_term<Term,Cf2,cf_type,trig_type> term(term_);
+      class_converter<Term2,term_type> term(term_);
       const size_t cw=cf_width(), tw=trig_width();
       // It should not happen because resizing in this case should already be managed
       // by external routines (merge_args, and input from file).
@@ -415,11 +416,12 @@ namespace piranha
     }
 
     template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Cf2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert_with_checks(
-      const Term<Cf2, trig_type> &term, const it_s_index *it_hint)
+    template <class Term2>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::
+    insert_with_checks(
+      const Term2 &term, const it_s_index *it_hint)
     {
-      return insert<Cf2,true,true>(term,it_hint);
+      return insert<Term2,true,true>(term,it_hint);
     }
 
     // --------------

@@ -477,7 +477,7 @@ namespace piranha
           for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
           {
             // TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-            retval.template insert<cf_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig));
+            retval.template insert<term_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig));
           }
           //retval.cumulative_crop(Delta);
         }

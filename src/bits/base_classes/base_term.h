@@ -52,9 +52,8 @@ namespace piranha
       template <int N> struct nth_element
       {
           // Make extra-sure we don't use an invalid index.
-          BOOST_STATIC_ASSERT(N >= 0 and N < size)
-;
-                  typedef typename boost::tuples::element<N,tuple_type>::type type;
+          BOOST_STATIC_ASSERT(N >= 0 and N < size);
+          typedef typename boost::tuples::element<N,tuple_type>::type type;
       };
       /// Empty ctor.
       /**
@@ -64,8 +63,15 @@ namespace piranha
       {
       }
       /// Ctor from elements
-      base_term(const T0 &e0, const T1 &e1 = boost::tuples::null_type(), const T2 &e2 = boost::tuples::null_type(), const T3 &e3 = boost::tuples::null_type(), const T4 &e4 = boost::tuples::null_type(), const T5 &e5 = boost::tuples::null_type(), const T6 &e6 = boost::tuples::null_type()) :
+      base_term(const T0 &e0, const T1 &e1 = boost::tuples::null_type(),
+        const T2 &e2 = boost::tuples::null_type(), const T3 &e3 = boost::tuples::null_type(),
+        const T4 &e4 = boost::tuples::null_type(), const T5 &e5 = boost::tuples::null_type(),
+        const T6 &e6 = boost::tuples::null_type()) :
         elements(e0, e1, e2, e3, e4, e5, e6)
+      {
+      }
+      /// Copy ctor.
+      template <class Term2> base_term(const Term2 &t):elements(t.elements)
       {
       }
       /// Numerical evaluation, brute force version.

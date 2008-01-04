@@ -181,10 +181,10 @@ namespace piranha
     void spectral_cutoff(const double &, const double &);
     template <class Derived2>
     void merge_args(const Derived2 &);
-    template <class Cf2, bool, bool>
-    it_s_index insert(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
-    template <class Cf2>
-    it_s_index insert_with_checks(const Term<Cf2, trig_type> &, const it_s_index *it_hint = 0);
+    template <class Term2, bool, bool>
+    it_s_index insert(const Term2 &, const it_s_index *it_hint = 0);
+    template <class Term2>
+    it_s_index insert_with_checks(const Term2 &, const it_s_index *it_hint = 0);
     void term_erase(const it_h_index &);
     void term_erase(const it_s_index &);
     void append_cf_arg(const psym_p);

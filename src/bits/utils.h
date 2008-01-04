@@ -34,6 +34,27 @@
 
 namespace piranha
 {
+  // Transform from Class2 to Class1.
+  template <class Class2, class Class1> class class_converter
+  {
+    public:
+      explicit class_converter(const Class2 &c) :
+        result(c)
+      {
+      }
+      const Class1 result;
+  };
+
+  template <class Class2> class class_converter<Class2, Class2>
+  {
+    public:
+      explicit class_converter(const Class2 &c) :
+        result(c)
+      {
+      }
+      const Class2 &result;
+  };
+
   template <bool AssignZero, class VectorType> struct layout_assign_helper
   {
       static void run(VectorType &v1, const VectorType &v2, const size_t &i)

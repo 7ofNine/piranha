@@ -54,7 +54,7 @@ namespace piranha
       /**
        * Constructs from piranha::simple_term with generic coefficient type.
        */
-      template <class Cf2> explicit simple_term(const simple_term<Cf2,trig_type> &term) :
+      template <class Term2> explicit simple_term(const Term2 &term) :
         ancestor(term)
       {
       }
