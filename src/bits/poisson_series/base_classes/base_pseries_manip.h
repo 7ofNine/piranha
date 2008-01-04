@@ -422,7 +422,7 @@ namespace piranha
 // --------------
 
 /// Merge arguments.
-/** Merge arguments with those of ps2. After the operation the size of *this will
+/** Merge arguments with those of ps2. After the operation the number ofr arguments will
  * be equal or greater than ps2's. We need the template U because we want to be able to merge
  * symbols also with complex counterparts.
  * @param[in] ps2 piranha::base_pseries arguments are to be merged with.
@@ -431,7 +431,7 @@ namespace piranha
     template <class Derived2>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::merge_args(const Derived2 &ps2)
   {
-    if ((void *)this == (void *)&ps2)
+    if (static_cast<void *>(this) == static_cast<void const *>(&ps2))
     {
       std::cout << "Trying to merge with self, returning." << std::endl;
       return;
