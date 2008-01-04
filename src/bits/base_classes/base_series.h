@@ -26,12 +26,11 @@ namespace piranha
   // Base series class.
   /*
    * Term must derive from piranha::base_term class. 
-   */   
-  template <class Term, class Derived>
-    class base_series
+   */
+  template <class Term, class Derived> class base_series
   {
     protected:
-      
+
   };
 }
 
