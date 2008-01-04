@@ -45,6 +45,11 @@ namespace piranha
     public:
 /// Alias for the tuple type.
       typedef boost::tuple<T0,T1,T2,T3,T4,T5,T6> tuple_type;
+/// Alias for evaluation type.
+/**
+ * Evaluation type is determined by the first element of the tuple.
+ */
+      typedef typename eval_type<T0>::type eval_type;
 /// Number of elements.
       static const size_t size = boost::tuples::length<tuple_type>::value;
 /// Last index of tuple.
@@ -53,14 +58,10 @@ namespace piranha
       template <int N>
         struct nth_element
       {
-        BOOST_STATIC_ASSERT(N < size);
+// Make extra-sure we don't use an invalid index.
+        BOOST_STATIC_ASSERT(N >= 0 and N < size);
         typedef typename boost::tuples::element<N,tuple_type>::type type;
       };
-/// Alias for evaluation type.
-/**
- * Evaluation type is determined by the first element of the tuple.
- */
-      typedef typename eval_type<T0>::type eval_type;
 /// Empty ctor.
 /**
  * Default-initializes all elements of the term.
