@@ -40,41 +40,6 @@ def plot_ps(ps,mark='o',color='b',logscale=True):
         semilogy(rng,amps,color+mark)
         xlim(0,len(ps))
 
-
-def plot_ts(ps,t0,t1,n,xlab="Time",ylab="Value",mark='o',color='b'):
-        rng=range(n)
-        y=list()
-        x=list()
-        t=t0;
-        delta=(t1-t0-0.)/n
-        for i in rng:
-            x.append(t)
-            y.append(ps.t_eval(t))
-            t+=delta
-        plot(x,y,color+mark)
-        xlabel(xlab)
-        ylabel(ylab)
-
-def plot_tc(tc,xlab="Time",ylab="Value",mark='+',logscale=True,lgnd=True):
-	if logscale:
-		plot_func=semilogy
-	else:
-		plot_func=plot
-	rng=range(tc.size())
-	time=list()
-	exact=list()
-	diff=list()
-	for i in rng:
-		time.append(tc.time(i))
-		exact.append(abs(tc.hs(i)))
-		diff.append(tc.error(i))
-	plot_func(time,diff,'g'+mark,time,exact,'r',linewidth=2)
-	if lgnd:
-		legend(('Diff','Exact'),loc='best')
-	xlabel(xlab)
-	ylabel(ylab)
-	title(r'$ \sigma = '+str(tc.sigma())+' $')
-
 def plot_sc(sc,xlab="Term Index",ylab="Coefficient Delta"):
 	rng=range(sc.size())
 	col=list()
