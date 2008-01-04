@@ -45,6 +45,17 @@ namespace piranha
     public:
 /// Alias for the tuple type.
       typedef boost::tuple<T0,T1,T2,T3,T4,T5,T6> tuple_type;
+/// Number of elements.
+      static const size_t size = boost::tuples::length<tuple_type>::value;
+/// Last index of tuple.
+      static const size_t last_index = size-1;
+/// Helper struct for the selection of element number N.
+      template <int N>
+        struct nth_element
+      {
+        BOOST_STATIC_ASSERT(N < size);
+        typedef typename boost::tuples::element<N,tuple_type>::type type;
+      };
 /// Alias for evaluation type.
 /**
  * Evaluation type is determined by the first element of the tuple.
@@ -111,10 +122,6 @@ namespace piranha
 // Data members.
 /// Elements of the term.
       tuple_type          elements;
-/// Number of elements.
-      static const size_t size = boost::tuples::length<tuple_type>::value;
-/// Last index of tuple.
-      static const size_t last_index = size-1;
   };
 
 /// Overload of hash_value function for piranha::base_term.
