@@ -71,7 +71,12 @@ namespace piranha
       {
       }
       /// Copy ctor.
-      template <class Term2> base_term(const Term2 &t):elements(t.elements)
+      /**
+       * Construct from base_term with different elements. Successful if elements can be converted.
+       * @param[in] t base_term which will be copied.
+       */
+      template <class T0_2, class T1_2, class T2_2, class T3_2, class T4_2, class T5_2, class T6_2>
+      base_term(const base_term<T0_2,T1_2,T2_2,T3_2,T4_2,T5_2,T6_2> &t):elements(t.elements)
       {
       }
       /// Numerical evaluation, brute force version.

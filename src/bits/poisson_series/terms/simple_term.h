@@ -52,9 +52,9 @@ namespace piranha
       }
       /// Generic copy constructor.
       /**
-       * Constructs from piranha::simple_term with generic coefficient type.
+       * Constructs from piranha::simple_term with optionally different coefficient type.
        */
-      template <class Term2> explicit simple_term(const Term2 &term) :
+      template <class Cf2> explicit simple_term(const simple_term<Cf2,Trig> &term) :
         ancestor(term)
       {
       }
