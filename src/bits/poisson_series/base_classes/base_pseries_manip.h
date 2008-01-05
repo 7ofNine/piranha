@@ -295,8 +295,7 @@ namespace piranha
       {
         return g_s_index().end();
       }
-      p_assert(term.cf().is_insertable(cf_width()) and !term.cf().needs_padding(cf_width()));
-      p_assert(term.trig().is_insertable(trig_width()) and !term.trig().needs_padding(trig_width()));
+      p_assert(term.is_insertable(*this) and !term.needs_padding(*this));
       p_assert(term.trig().sign()>0);
       it_s_index ret_it;
       it_h_index it(find_term(term));
