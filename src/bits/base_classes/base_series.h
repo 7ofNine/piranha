@@ -47,24 +47,23 @@ namespace piranha
       template <class SortedIterator, class Term2, bool AdditionalChecks, bool Sign> SortedIterator insert(
         const Term2 &term_, SortedIterator it_hint)
       {
-        typedef typename Derived::term_type term_type;
-        class_converter<Term2,term_type> term(term_);
+        class_converter<Term2,Term> term(term_);
         // It should not happen because resizing in this case should already be managed
         // by external routines (merge_args, and input from file).
-        p_assert(term.result.is_insertable(*this));
-        term_type *new_term(0);
-        const bool padding_needed=(term.result.needs_padding(*this));
+        p_assert(term.result.is_insertable(*derived_cast));
+        Term *new_term(0);
+        const bool padding_needed=(term.result.needs_padding(*derived_cast));
         if (unlikely(padding_needed))
         {
           new_term=Derived::term_allocator.allocate(1);
           Derived::term_allocator.construct(new_term, term.result);
-          new_term->pad_right(*this);
+          new_term->pad_right(*derived_cast);
         }
         if (AdditionalChecks)
         {
-          derived_cast->i_perform_additional_checks(term.result,new_term);
+          new_term = derived_cast->i_perform_additional_checks(term.result,new_term);
         }
-        const term_type *insert_term;
+        const Term *insert_term;
         if (new_term == 0)
         {
           insert_term=&term.result;
@@ -72,7 +71,7 @@ namespace piranha
         {
           insert_term=new_term;
         }
-        SortedIterator ret_it=derived_cast->ll_insert<Sign>(*insert_term, &it_hint);
+        SortedIterator ret_it=derived_cast->template ll_insert<Sign>(*insert_term, &it_hint);
         if (new_term != 0)
         {
           Derived::term_allocator.destroy(new_term);
