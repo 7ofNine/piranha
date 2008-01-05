@@ -34,6 +34,16 @@ namespace piranha
   template <class Term, class Derived> class base_series
   {
     public:
+      /// High-level insertion function.
+      /**
+       * This function is used to insert terms into a series. It requires that the arguments
+       * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
+       * ones, otherwise an assertion fails and the program aborts. base_pseries::merge_args,
+       * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
+       * to the series.
+       *
+       * This function performs some checks and then calls base_pseries::ll_insert.
+       */
       template <class SortedIterator, class Term2, bool AdditionalChecks, bool Sign> SortedIterator insert(
         const Term2 &term_, SortedIterator it_hint)
       {
@@ -46,8 +56,8 @@ namespace piranha
         const bool padding_needed=(term.result.needs_padding(*this));
         if (unlikely(padding_needed))
         {
-          new_term=derived_cast->term_allocator.allocate(1);
-          term_allocator.construct(new_term, term.result);
+          new_term=Derived::term_allocator.allocate(1);
+          Derived::term_allocator.construct(new_term, term.result);
           new_term->pad_right(*this);
         }
         if (AdditionalChecks)
@@ -62,11 +72,11 @@ namespace piranha
         {
           insert_term=new_term;
         }
-        SortedIterator ret_it=derived_cast->ll_insert<Sign>(*insert_term, it_hint);
+        SortedIterator ret_it=derived_cast->ll_insert<Sign>(*insert_term, &it_hint);
         if (new_term != 0)
         {
-          derived_cast->term_allocator.destroy(new_term);
-          derived_cast->term_allocator.deallocate(new_term, 1);
+          Derived::term_allocator.destroy(new_term);
+          Derived::term_allocator.deallocate(new_term, 1);
         }
         return ret_it;
       }
