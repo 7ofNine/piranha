@@ -338,22 +338,6 @@ namespace piranha
       return ret_it;
     }
 
-    template <template <class, class> class Term, class Cf2, class Cf1, class Trig>
-    struct transform_term
-    {
-      explicit transform_term(const Term<Cf2,Trig> &term):result(term.cf(),term.trig())
-      {}
-      Term<Cf1,Trig> result;
-    };
-
-    template <template <class, class> class Term, class Cf, class Trig>
-    struct transform_term<Term,Cf,Cf,Trig>
-    {
-      explicit transform_term(const Term<Cf,Trig> &term):result(term)
-      {}
-      const Term<Cf,Trig> &result;
-    };
-
     // Perform additional checks during insertion.
     template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::i_perform_additional_checks(const term_type &in,
