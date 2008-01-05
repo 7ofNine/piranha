@@ -239,10 +239,10 @@ namespace piranha
   };
 
   template <class Ps>
-    class tc_vienne_r6:public base_tc<Ps,tc_vienne_r6<Ps> >
+    class tc_vienne_r6:public base_tc<Ps,tc_vienne_r6<Ps>,compile_switches::use_tbb,false>
   {
-      friend class base_tc<Ps,tc_vienne_r6<Ps> >;
-      typedef base_tc<Ps,tc_vienne_r6<Ps> > ancestor;
+      friend class base_tc<Ps,tc_vienne_r6<Ps>,compile_switches::use_tbb,false>;
+      typedef base_tc<Ps,tc_vienne_r6<Ps>,compile_switches::use_tbb,false> ancestor;
     public:
 // b_type stands for "benchmarked type"
       typedef Ps b_type;

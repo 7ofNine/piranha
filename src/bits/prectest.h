@@ -27,6 +27,7 @@
 #include <valarray>
 
 #include "common_typedefs.h" // tc_add_ps_to_arg.
+#include "compile_switches.h" // For explicit parallel mode.
 #include "math.h"
 #include "poisson_series/phase_list.h" // tc_insert_phase.
 #include "range_evaluator.h"
@@ -147,16 +148,16 @@ namespace piranha
  * of the two factors of the multiplication over the given time span. Comparisons for most operations
  * are provided.
  */
-  template <class T, class Derived>
-    class base_tc
+  template <class T, class Derived, bool ParallelPlain=compile_switches::use_tbb,
+    bool ParallelManip=compile_switches::use_tbb> class base_tc
   {
     protected:
 // Alias for evaluation type.
       typedef typename eval_type<T>::type eval_type;
     private:
-      typedef range_evaluator<T> re_plain;
+      typedef range_evaluator<T,ParallelPlain> re_plain;
       typedef boost::shared_ptr<re_plain> re_plain_ptr;
-      typedef range_evaluator<Derived> re_manip;
+      typedef range_evaluator<Derived,ParallelManip> re_manip;
       typedef boost::shared_ptr<re_manip> re_manip_ptr;
     public:
 /// Get rms.
@@ -168,16 +169,70 @@ namespace piranha
 /// Get const reference to manipulated range evaluator.
       const re_manip &manip_eval() const {return *m_manip_eval;}
 /// Save in gnuplot format.
-      void gnuplot_save(const std::string &) const;
+      void gnuplot_save(const std::string &filename) const
+      {
+        const std::string plot_file=filename+".plt", data_file=filename+".dat";
+        std::ofstream outf_plot(plot_file.c_str(),std::ios_base::trunc);
+        std::ofstream outf_data(data_file.c_str(),std::ios_base::trunc);
+        if (outf_plot.fail() || outf_data.fail())
+        {
+          std::cout << "Error saving to file " << filename << std::endl;
+          outf_plot.close();
+          outf_data.close();
+          return;
+        }
+        stream_manager::setup_print(outf_data);
+    // Setup plot commands
+        outf_plot << "set logscale y" << std::endl;
+        outf_plot << "plot '" << data_file << "' using 1:2 title 'diff', '" <<
+          data_file << "' using 1:3 title 'exact'";
+        outf_plot << std::endl << "reset";
+        outf_plot.close();
+    // Write to data file
+        plot_data(outf_data);
+        outf_data.close();
+      }
     protected:
 // Ctor & Dtor
       base_tc(const T &benchmarked, const double &t0, const double &t1, const int &n):
         m_plain_eval(),m_manip_eval(),m_sigma(0),m_max_error(0),m_benchmarked(benchmarked),
         m_t0(t0),m_t1(t1),m_n(n) {}
-      void build_tc();
+      /// Build the time comparison.
+      void build_tc()
+      {
+        m_plain_eval.reset(new re_plain(m_benchmarked,m_t0,m_t1,m_n));
+        m_manip_eval.reset(new re_manip(*static_cast<Derived const *>(this),m_t0,m_t1,m_n));
+        std::cout << "Computing statistics..." << std::endl;
+        calc_stats();
+        std::cout << "Done." << std::endl;
+      }
     private:
-      void calc_stats();
-      void plot_data(std::ostream &) const;
+      void calc_stats()
+      {
+        double tmp=0., max=0., candidate;
+        const size_t size = m_plain_eval->values().size();
+        p_assert(size == m_manip_eval->values().size());
+        for (size_t i=0;i < size;++i)
+        {
+          candidate=std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]);
+          if (candidate > max)
+          {
+            max=candidate;
+          }
+          tmp+=math::natural_pow(2,candidate);
+        }
+        m_sigma=std::sqrt(tmp/(size+1.));
+        m_max_error=max;
+      }
+      void plot_data(std::ostream &os) const
+      {
+        const size_t size = m_plain_eval->times().size();
+        for (size_t i=0;i < size;++i)
+        {
+          os << m_plain_eval->times()[i] << '\t' << std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]) << '\t' <<
+            std::abs(m_manip_eval->values()[i]) << std::endl;
+        }
+      }
 // Data members
       re_plain_ptr  m_plain_eval;
       re_manip_ptr  m_manip_eval;
@@ -188,73 +243,6 @@ namespace piranha
       const double  m_t1;
       const int     m_n;
   };
-
-  template <class T, class Derived>
-    inline void base_tc<T,Derived>::build_tc()
-  {
-    m_plain_eval.reset(new re_plain(m_benchmarked,m_t0,m_t1,m_n));
-    m_manip_eval.reset(new re_manip(*static_cast<Derived const *>(this),m_t0,m_t1,m_n));
-    std::cout << "Computing statistics..." << std::endl;
-    calc_stats();
-    std::cout << "Done." << std::endl;
-  }
-
-  template <class T, class Derived>
-    inline void base_tc<T,Derived>::calc_stats()
-  {
-    double tmp=0., max=0., candidate;
-    const size_t size = m_plain_eval->values().size();
-    p_assert(size == m_manip_eval->values().size());
-    for (size_t i=0;i < size;++i)
-    {
-      candidate=std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]);
-      if (candidate > max)
-      {
-        max=candidate;
-      }
-      tmp+=math::natural_pow(2,candidate);
-    }
-    m_sigma=std::sqrt(tmp/(size+1.));
-    m_max_error=max;
-  }
-
-/// Save results in gnuplot format.
-  template <class T, class Derived>
-    inline void base_tc<T,Derived>::gnuplot_save(const std::string &filename) const
-  {
-    const std::string plot_file=filename+".plt", data_file=filename+".dat";
-    std::ofstream outf_plot(plot_file.c_str(),std::ios_base::trunc);
-    std::ofstream outf_data(data_file.c_str(),std::ios_base::trunc);
-    if (outf_plot.fail() || outf_data.fail())
-    {
-      std::cout << "Error saving to file " << filename << std::endl;
-      outf_plot.close();
-      outf_data.close();
-      return;
-    }
-    stream_manager::setup_print(outf_data);
-// Setup plot commands
-    outf_plot << "set logscale y" << std::endl;
-    outf_plot << "plot '" << data_file << "' using 1:2 title 'diff', '" <<
-      data_file << "' using 1:3 title 'exact'";
-    outf_plot << std::endl << "reset";
-    outf_plot.close();
-// Write to data file
-    plot_data(outf_data);
-    outf_data.close();
-  }
-
-// Print plot data to file
-  template <class T, class Derived>
-    inline void base_tc<T,Derived>::plot_data(std::ostream &os) const
-  {
-    const size_t size = m_plain_eval->times().size();
-    for (size_t i=0;i < size;++i)
-    {
-      os << m_plain_eval->times()[i] << '\t' << std::abs(m_plain_eval->values()[i]-m_manip_eval->values()[i]) << '\t' <<
-        std::abs(m_manip_eval->values()[i]) << std::endl;
-    }
-  }
 
 // Comparisons for math operations
   template <class T>
