@@ -354,6 +354,22 @@ namespace piranha
       const Term<Cf,Trig> &result;
     };
 
+    // Perform additional checks during insertion.
+    template <__PIRANHA_BASE_PS_TP_DECL>
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::i_perform_additional_checks(const term_type &in,
+      term_type *out) const
+    {
+      if (in.trig().sign() < 0)
+      {
+        if (out == 0)
+        {
+          out=term_allocator.allocate(1);
+          term_allocator.construct(out,in);
+        }
+        out->invert_trig_args();
+      }
+    }
+
     /// Main insertion function.
     /**
      * This function is used to insert terms into a series. It requires that the arguments

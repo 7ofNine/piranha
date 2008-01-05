@@ -234,6 +234,7 @@ namespace piranha
     template <class Derived2>
     void merge_incompatible_args(const Derived2 &);
     it_h_index find_term(const term_type &) const;
+    void i_perform_additional_checks(const term_type &, term_type *out) const;
     template <bool>
     it_s_index term_insert_new(const term_type &, const it_s_index *it_hint);
     void term_update(const it_h_index &, cf_type &);
