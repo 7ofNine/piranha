@@ -33,6 +33,7 @@
 #include "base_pseries_hooks.h"
 #include "base_pseries_ta_macros.h"
 #include "../phase_list.h"
+#include "../../base_classes/base_series.h"
 #include "../../psymbol.h"
 #include "../../type_traits/eval_type.h"  // For eval_type.
 namespace piranha
@@ -45,8 +46,11 @@ namespace piranha
    * This class should not be used directly, it should be inherited by a more specialized class.
    */
   template <__PIRANHA_BASE_PS_TP_DECL= std::allocator<char> >
-  class base_pseries:base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >
+  class base_pseries:public base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >,
+  protected base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> >
   {
+    typedef base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> > ancestor;
+    friend class base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> >;
     public:
     /// Alias for self.
     typedef base_pseries self;
