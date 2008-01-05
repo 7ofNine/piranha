@@ -371,19 +371,16 @@ namespace piranha
       const Term2 &term_, const it_s_index *it_hint)
     {
       class_converter<Term2,term_type> term(term_);
-      const size_t cw=cf_width(), tw=trig_width();
       // It should not happen because resizing in this case should already be managed
       // by external routines (merge_args, and input from file).
-      p_assert(term.result.cf().is_insertable(cw));
-      p_assert(term.result.trig().is_insertable(tw));
+      p_assert(term.result.is_insertable(*this));
       term_type *new_term(0);
-      const bool padding_needed=(term.result.cf().needs_padding(cw) or term.result.trig().needs_padding(tw));
+      const bool padding_needed=(term.result.needs_padding(*this));
       if (unlikely(padding_needed))
       {
         new_term=term_allocator.allocate(1);
         term_allocator.construct(new_term,term.result);
-        new_term->cf().pad_right(cw);
-        new_term->trig().pad_right(tw);
+        new_term->pad_right(*this);
       }
       if (CheckTrigSign)
       {

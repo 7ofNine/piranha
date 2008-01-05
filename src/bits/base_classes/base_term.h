@@ -104,7 +104,7 @@ namespace piranha
       {
         return term_helper_checkup<last_index>::run(*this, s);
       }
-      /// See if a term can be ignored when inserting it into a series.
+      /// Check whether a term can be ignored when inserting it into a series.
       /**
        * Returns true if at least one of the elements of the term is ignorable.
        *
@@ -113,6 +113,40 @@ namespace piranha
       template <class Series> bool is_ignorable(const Series &s) const
       {
         return term_helper_ignorability<last_index>::run(*this, s);
+      }
+      /// Check whether a term can be inserted into a series.
+      /**
+       * Returns true if the number of arguments provided by the series for each element of the term
+       * is compatible for insertion of the term into the series, false otherwise.
+       * Typically this means that the size of each element must not exceed the number of arguments
+       * for each element.
+       *
+       * @param[in] s series used to retrieve insertability criterions from.
+       */
+      template <class Series> bool is_insertable(const Series &s) const
+      {
+        return term_helper_insertability<last_index>::run(*this, s);
+      }
+      /// Check whether a term needs padding for insertion into a series.
+      /**
+       * Returns true if term needs right-padding with zeroes before insertion into series,
+       * false otherwise.
+       *
+       * @param[in] s series used to establish if padding is needed or not.
+       */
+      template <class Series> bool needs_padding(const Series &s) const
+      {
+        return term_helper_needs_padding<last_index>::run(*this, s);
+      }
+      /// Pad right all elements of the term.
+      /**
+       * Padding sizes are taken from input series.
+       *
+       * @param[in] s series padding parameters are fetched from.
+       */
+      template <class Series> void pad_right(const Series &s)
+      {
+        term_helper_pad_right<last_index>::run(*this, s);
       }
       /// Return const reference to the last element.
       const typename boost::tuples::element<boost::tuples::length<tuple_type>::value-1,tuple_type>::type & last_element() const
