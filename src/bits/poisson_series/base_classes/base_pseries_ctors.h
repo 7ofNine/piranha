@@ -100,7 +100,7 @@ namespace piranha
           append_cf_arg(psymbol_manager::get_pointer(psym).second);
           cf_type c(psym);
           term_type term(c,trig_type());
-          insert_with_checks(term);
+          insert_with_checks(term,g_s_index().end());
         }
         break;
       case (psymbol::trig):
@@ -143,7 +143,7 @@ namespace piranha
       std::cout << "Warning: too many arguments in ctor from coefficient, building null series." << std::endl;
       return;
     }
-    insert_with_checks(term);
+    insert_with_checks(term,g_s_index().end());
   }
 }
 

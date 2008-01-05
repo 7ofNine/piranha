@@ -54,13 +54,14 @@ namespace piranha
         }
         int16 tmp_mult;
         const it_s_index it_f=derived_cast->end();
+        it_s_index it_hint = retval.g_s_index().end();
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {
           tmp_mult=it->trig()[sym_index];
 // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {
-            retval.insert_with_checks(*it);
+            it_hint = retval.insert_with_checks(*it,it_hint);
           }
           else
           {
@@ -68,7 +69,7 @@ namespace piranha
             real_DerivedPs cosp=psc.real(), sinp=psc.imag();
             DerivedPs tmp1, tmp2;
             tmp1.merge_args(*derived_cast);
-            tmp1.insert_with_checks(*it);
+            tmp1.insert_with_checks(*it,tmp1.g_s_index().end());
             tmp2.merge_args(*derived_cast);
             term_type tmp_term = *it;
             switch (it->trig().flavour())
@@ -76,13 +77,13 @@ namespace piranha
               case true:
 // Change tmp2's flavour.
                 tmp_term.trig().flavour()=false;
-                tmp2.insert_with_checks(tmp_term);
+                tmp2.insert_with_checks(tmp_term,tmp2.g_s_index().end());
                 retval+=(tmp1*=cosp);
                 retval-=(tmp2*=sinp);
                 break;
               case false:
                 tmp_term.trig().flavour()=true;
-                tmp2.insert_with_checks(tmp_term);
+                tmp2.insert_with_checks(tmp_term,tmp2.g_s_index().end());
                 retval+=(tmp1*=cosp);
                 retval+=(tmp2*=sinp);
             }
@@ -125,12 +126,14 @@ namespace piranha
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
         typedef typename complex_ps::ancestor::trig_type trig_type;
+        typedef typename complex_ps::ancestor::it_s_index it_s_index;
         typedef typename DerivedPs::ancestor::r_it_s_index real_r_it_s_index;
         const DerivedPs *derived_cast=static_cast<DerivedPs const *>(this);
         complex_ps retval;
         retval.merge_args(*derived_cast);
         p_assert(retval.trig_width()==derived_cast->trig_width());
-        retval.insert_with_checks(complex_term_type(complex_cf_type(real_cf_type(1),real_cf_type(0)),trig_type()));
+        retval.insert_with_checks(complex_term_type(complex_cf_type(real_cf_type(1),
+          real_cf_type(0)),trig_type()),retval.g_s_index().end());
         real_r_it_s_index it=derived_cast->g_series_set()->rbegin();
         for (;it!=derived_cast->g_series_set()->rend();++it)
         {
@@ -177,8 +180,8 @@ namespace piranha
         term2.trig().pad_right(retval.trig_width());
         term1.trig().assign_int_vector(derived_cast->lin_args());
         term2.trig().assign_int_vector(derived_cast->lin_args());
-        retval.insert_with_checks(term1);
-        retval.insert_with_checks(term2);
+        retval.insert_with_checks(term1,retval.g_s_index().end());
+        retval.insert_with_checks(term2,retval.g_s_index().end());
         return retval;
       }
       template <class real_cf_type>
@@ -222,6 +225,7 @@ namespace piranha
       {
         typedef typename complex_ps::ancestor::term_type complex_term_type;
         typedef typename complex_ps::ancestor::cf_type complex_cf_type;
+        typedef typename complex_ps::ancestor::it_s_index it_s_index;
         typedef typename DerivedPs::ancestor::cf_type real_cf_type;
         unsigned int i;
         complex_ps retval;
@@ -229,6 +233,7 @@ namespace piranha
         p_assert(retval.trig_width()==static_cast<DerivedPs const *>(this)->trig_width());
         real_cf_type _cf=it->cf(), tmp;
         complex_term_type term1, term2;
+        it_s_index it_hint = retval.g_s_index().end();
         if (it->trig().flavour())
         {
           for (i=0;i<settings_manager::jacang_lim();++i)
@@ -238,13 +243,13 @@ namespace piranha
             term1.trig()=it->trig();
             term1.trig().mult_by_int(i<<1);
             term1.trig().flavour()=true;
-            retval.insert_with_checks(term1);
+            it_hint = retval.insert_with_checks(term1,it_hint);
             jaccosImcf<real_cf_type>(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
             term2.trig().mult_by_int((i<<1)+1);
             term1.trig().flavour()=true;
-            retval.insert_with_checks(term2);
+            it_hint = retval.insert_with_checks(term2,it_hint);
           }
         }
         else
@@ -256,13 +261,13 @@ namespace piranha
             term1.trig()=it->trig();
             term1.trig().mult_by_int(i<<1);
             term1.trig().flavour()=true;
-            retval.insert_with_checks(term1);
+            it_hint = retval.insert_with_checks(term1,it_hint);
             jacsinImcf(i,_cf,tmp);
             term2.cf().set_imag(tmp);
             term2.trig()=it->trig();
             term2.trig().mult_by_int(((i<<1)+1));
             term2.trig().flavour()=false;
-            retval.insert_with_checks(term2);
+            it_hint = retval.insert_with_checks(term2,it_hint);
           }
         }
         return retval;

@@ -168,15 +168,17 @@ namespace piranha
         void insert_component(const real_Derived &comp)
       {
         typedef typename Derived::ancestor::term_type term_type;
+        typedef typename Derived::ancestor::it_s_index it_s_index;
         term_type term;
         const real_it_s_index it_f=comp.g_s_index().end();
+        it_s_index it_hint = static_cast<Derived *>(this)->g_s_index().end();
 // TODO: hinted insertion here.
         for (real_it_s_index it=comp.g_s_index().begin();it!=it_f;++it)
         {
           term.cf()=build_cf_from_comp<Cmp>(it->cf());
           term.trig()=it->trig();
           term.trig().flavour()=it->trig().flavour();
-          static_cast<Derived *>(this)->insert_with_checks(term);
+          it_hint = static_cast<Derived *>(this)->insert_with_checks(term,it_hint);
         }
       }
 // Build series from real and imaginary components.
@@ -211,7 +213,7 @@ namespace piranha
           term.cf()=get_cf_comp<Cmp>(it->cf());
           term.trig()=it->trig();
           term.trig().flavour()=it->trig().flavour();
-          it_hint=retval.insert_with_checks(term,&it_hint);
+          it_hint=retval.insert_with_checks(term,it_hint);
         }
         return retval;
       }

@@ -59,7 +59,8 @@ namespace piranha
       cf_type tmp_c=src.cf();
       // Insert first term.
       tmp_term.cf().mult_by(std::cos(phase));
-      retps.insert_with_checks(tmp_term);
+      it_s_index it_hint = retps.g_s_index().end();
+      it_hint = retps.insert_with_checks(tmp_term,it_hint);
       // Second term: change flavour and sign.
       switch (src.trig().flavour())
       {
@@ -73,7 +74,7 @@ namespace piranha
         tmp_term.cf()=tmp_c;
         tmp_term.cf().mult_by(std::sin(phase));
       }
-      retps.insert_with_checks(tmp_term);
+      retps.insert_with_checks(tmp_term,it_hint);
     }
 
     /// Add phase to a term and insert the resulting terms in an external series.
@@ -170,13 +171,13 @@ namespace piranha
         // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
         const it_h_index it_f=g_h_index().end();
         const size_t new_size=retval.arguments().template get<N>().size();
+        it_s_index it_hint = retval.g_s_index().end();
         for (it_h_index it=g_h_index().begin();it!=it_f;++it)
         {
           // NOTICE: find a way to avoid resizes here?
           term_type tmp_term=(*it);
           tmp_term.elements.template get<N>().pad_right(new_size);
-          // NOTICE: use hinted insertion here?
-          retval.insert_with_checks(tmp_term);
+          it_hint = retval.insert_with_checks(tmp_term,it_hint);
         }
         swap(retval);
       }
@@ -340,8 +341,8 @@ namespace piranha
 
     // Perform additional checks during insertion.
     template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::i_perform_additional_checks(const term_type &in,
-      term_type *out) const
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::term_type *base_pseries<__PIRANHA_BASE_PS_TP>::
+    i_perform_additional_checks(const term_type &in, term_type *out) const
     {
       if (in.trig().sign() < 0)
       {
@@ -352,70 +353,30 @@ namespace piranha
         }
         out->invert_trig_args();
       }
+      return out;
     }
 
     /// Main insertion function.
     /**
-     * This function is used to insert terms into a series. It requires that the arguments
-     * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
-     * ones, otherwise an assertion fails and the program aborts. base_pseries::merge_args,
-     * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
-     * to the series.
-     *
-     * This function performs some checks and then calls base_pseries::ll_insert.
+     * Simple wrapper around piranha::base_series::insert.
      */
     template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Term2, bool CheckTrigSign, bool Sign>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
-      const Term2 &term_, const it_s_index *it_hint)
+      const Term2 &term, const it_s_index &it_hint)
     {
-      class_converter<Term2,term_type> term(term_);
-      // It should not happen because resizing in this case should already be managed
-      // by external routines (merge_args, and input from file).
-      p_assert(term.result.is_insertable(*this));
-      term_type *new_term(0);
-      const bool padding_needed=(term.result.needs_padding(*this));
-      if (unlikely(padding_needed))
-      {
-        new_term=term_allocator.allocate(1);
-        term_allocator.construct(new_term,term.result);
-        new_term->pad_right(*this);
-      }
-      if (CheckTrigSign)
-      {
-        if (term.result.trig().sign() < 0)
-        {
-          if (new_term == 0)
-          {
-            new_term=term_allocator.allocate(1);
-            term_allocator.construct(new_term,term.result);
-          }
-          new_term->invert_trig_args();
-        }
-      }
-      const term_type *insert_term;
-      if (new_term == 0)
-      {
-        insert_term=&term.result;
-      }
-      else
-      {
-        insert_term=new_term;
-      }
-      it_s_index ret_it=ll_insert<Sign>(*insert_term,it_hint);
-      if (new_term != 0)
-      {
-        term_allocator.destroy(new_term);
-        term_allocator.deallocate(new_term,1);
-      }
-      return ret_it;
+      return ancestor::template insert<it_s_index,Term2,CheckTrigSign,Sign>(term,it_hint);
     }
 
+    /// Perform insertion with all checks and without changing sign of the term.
+    /**
+     * Simple wrapper around base_pseries::insert.
+     */
     template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Term2>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::
     insert_with_checks(
-      const Term2 &term, const it_s_index *it_hint)
+      const Term2 &term, const it_s_index &it_hint)
     {
       return insert<Term2,true,true>(term,it_hint);
     }
@@ -466,15 +427,15 @@ namespace piranha
       // Apply layouts to all terms.
       const iterator it_f = end();
       term_type tmp;
+      it_s_index it_hint = retval.g_s_index().end();
       for (iterator it=begin();it != it_f;++it)
       {
-        // TODO: use hinting.
         tmp = *it;
         tmp.cf().apply_layout(l_cf);
         tmp.trig().apply_layout(l_trig);
         // Use safe insert because when reorganizing the args layout maybe a negative multiplier
         // may have been placed in the first position.
-        retval.insert_with_checks(tmp);
+        it_hint = retval.insert_with_checks(tmp,it_hint);
       }
       // Take care of lin_args.
       utils::apply_layout(l_trig,retval.lin_args());

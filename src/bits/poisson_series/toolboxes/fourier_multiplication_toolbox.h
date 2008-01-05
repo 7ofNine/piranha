@@ -63,7 +63,7 @@ namespace piranha
         {
           tmp_term=t;
           tmp_term.cf().mult_by_self(cf,*derived_cast);
-          it_hint=tmp_ps.insert_with_checks(tmp_term,&it_hint);
+          it_hint=tmp_ps.insert_with_checks(tmp_term,it_hint);
         }
         derived_cast->swap(tmp_ps);
       }
@@ -136,6 +136,7 @@ namespace piranha
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
         typedef typename DerivedPs::ancestor::term_type term_type;
+        typedef typename DerivedPs::ancestor::it_s_index it_s_index;
         typedef Glr glr_type;
         typedef typename glr_type::coded_series_type1 cs_type1;
         typedef typename glr_type::coded_series_type2 cs_type2;
@@ -217,6 +218,7 @@ namespace piranha
           tmp_term.trig().pad_right(derived_cast->trig_width());
           std::valarray<mult_type> tmp_array(derived_cast->trig_width());
           max_fast_int k;
+          it_s_index it_hint = retval.g_s_index().end();
           for (k=h_min;k<=h_max;++k)
           {
             if (unlikely(s_point_cos[k].second))
@@ -225,7 +227,7 @@ namespace piranha
               glr.decode_multiindex(k,tmp_array);
               tmp_term.trig().assign_int_vector(tmp_array);
               tmp_term.trig().flavour()=true;
-              retval.insert_with_checks(tmp_term);
+              it_hint = retval.insert_with_checks(tmp_term,it_hint);
             }
           }
           for (k=h_min;k<=h_max;++k)
@@ -236,7 +238,7 @@ namespace piranha
               glr.decode_multiindex(k,tmp_array);
               tmp_term.trig().assign_int_vector(tmp_array);
               tmp_term.trig().flavour()=false;
-              retval.insert_with_checks(tmp_term);
+              it_hint = retval.insert_with_checks(tmp_term,it_hint);
             }
           }
           // Clean up the buffer by calling the coefficient destructors.
@@ -253,6 +255,7 @@ namespace piranha
           typedef typename DerivedPs::ancestor::term_type term_type;
           typedef typename DerivedPs::ancestor::trig_type::value_type mult_type;
           typedef typename DerivedPs::ancestor::allocator_type allocator_type;
+          typedef typename DerivedPs::ancestor::it_s_index it_s_index;
           typedef Glr glr_type;
           typedef typename glr_type::coded_series_type1 cs_type1;
           typedef typename glr_type::coded_series_type2 cs_type2;
@@ -356,6 +359,7 @@ namespace piranha
           tmp_term.trig().pad_right(derived_cast->trig_width());
           std::valarray<mult_type> tmp_array(derived_cast->trig_width());
           ccm_hash_iterator cchm_it;
+          it_s_index it_hint = retval.g_s_index().end();
           {
             const ccm_hash_iterator cchm_it_f=cchm_cos.end();
             for (cchm_it=cchm_cos.begin();cchm_it!=cchm_it_f;++cchm_it)
@@ -364,7 +368,7 @@ namespace piranha
               glr.decode_multiindex(cchm_it->code,tmp_array);
               tmp_term.trig().assign_int_vector(tmp_array);
               tmp_term.trig().flavour()=true;
-              retval.insert_with_checks(tmp_term);
+              it_hint = retval.insert_with_checks(tmp_term,it_hint);
             }
           }
           {
@@ -375,7 +379,7 @@ namespace piranha
               glr.decode_multiindex(cchm_it->code,tmp_array);
               tmp_term.trig().assign_int_vector(tmp_array);
               tmp_term.trig().flavour()=false;
-              retval.insert_with_checks(tmp_term);
+              it_hint = retval.insert_with_checks(tmp_term,it_hint);
             }
           }
         }
@@ -474,10 +478,11 @@ namespace piranha
             }
           }
           const m_hash_iterator hm_it_f=hm.end();
+          it_s_index it_hint = retval.g_s_index().end();
           for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
           {
             // TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-            retval.template insert<term_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig));
+            it_hint = retval.template insert<term_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig),it_hint);
           }
           //retval.cumulative_crop(Delta);
         }

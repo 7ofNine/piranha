@@ -35,11 +35,11 @@ namespace piranha
  */
 // TODO: deal with linargs.
 // TODO: special handling of "time" symbol.
-// TODO: hinted insertion.
       Derived partial(const std::string &name) const
       {
         typedef typename Derived::ancestor::cf_type cf_type;
         typedef typename Derived::ancestor::it_h_index it_h_index;
+        typedef typename Derived::ancestor::it_s_index it_s_index;
         typedef typename Derived::ancestor::term_type term_type;
         Derived retval;
         retval.merge_args(*static_cast<Derived const *>(this));
@@ -53,6 +53,7 @@ namespace piranha
         }
         const it_h_index it_f=static_cast<Derived const *>(this)->g_h_index().end();
         term_type tmp_term;
+        it_s_index it_hint = retval.g_s_index().end();
         for (it_h_index it=static_cast<Derived const *>(this)->g_h_index().begin();it!=it_f;++it)
         {
 // First part of the derivation of the product coefficient * trigonometric_part.
@@ -61,7 +62,7 @@ namespace piranha
             it->cf().partial(cf_s_index.second,tmp_term.cf());
             tmp_term.trig()=it->trig();
             tmp_term.trig().flavour()=it->trig().flavour();
-            retval.insert_with_checks(tmp_term);
+            it_hint = retval.insert_with_checks(tmp_term,it_hint);
           }
 // Second part of the derivation.
 // NOTICE: this may be placed somewhere inside trig classes, but probably to do this
@@ -85,7 +86,7 @@ namespace piranha
             {
               tmp_term.trig()=it->trig();
             }
-            retval.insert_with_checks(tmp_term);
+            it_hint = retval.insert_with_checks(tmp_term,it_hint);
           }
         }
         return retval;

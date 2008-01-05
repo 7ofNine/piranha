@@ -48,6 +48,7 @@ namespace piranha
     template <class Derived2>
     inline Derived &base_pseries<__PIRANHA_BASE_PS_TP>::assign_series(const Derived2 &ps2)
     {
+      // TODO: use static_cast.
       if ((void *)this==(void *)&ps2)
       {
         return *static_cast<Derived *>(this);
@@ -58,10 +59,10 @@ namespace piranha
       arguments().template get<1>()=ps2.arguments().template get<1>();
       lin_args()=ps2.lin_args();
       const it_s_index2 it_f=ps2.g_s_index().end();
-      // TODO: use hinted insertion.
+      it_s_index it_hint = g_s_index().end();
       for (it_s_index2 it=ps2.g_s_index().begin();it!=it_f;++it)
       {
-        insert_with_checks(*it);
+        it_hint=insert_with_checks(*it,it_hint);
       }
       static_cast<Derived *>(this)->assignment_hook(ps2);
       std::cout << "Generic assignment operator!" << std::endl;
@@ -143,7 +144,7 @@ namespace piranha
         for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
           it!=ps2.g_h_index().end();++it)
         {
-          it_hint=insert<typename Derived2::ancestor::term_type,true,Sign>(*it,&it_hint);
+          it_hint=insert<typename Derived2::ancestor::term_type,true,Sign>(*it,it_hint);
         }
         return *static_cast<Derived *>(this);
       }
@@ -321,7 +322,7 @@ namespace piranha
       {
         tmp_term=*it;
         tmp_term.cf().mult_by(c);
-        it_hint=tmp_ps.insert_with_checks(tmp_term,&it_hint);
+        it_hint=tmp_ps.insert_with_checks(tmp_term,it_hint);
       }
       swap(tmp_ps);
       return *static_cast<Derived *>(this);
@@ -391,7 +392,7 @@ namespace piranha
       {
         tmp_term=*it;
         tmp_term.cf().divide_by(x);
-        it_hint=tmp_ps.insert<term_type,false,true>(tmp_term,&it_hint);
+        it_hint=tmp_ps.insert<term_type,false,true>(tmp_term,it_hint);
       }
       swap(tmp_ps);
       return *static_cast<Derived *>(this);
