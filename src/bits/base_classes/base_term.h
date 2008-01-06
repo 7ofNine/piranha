@@ -25,6 +25,8 @@
 
 #include "base_term_mp.h"
 
+#define __BASE_TERM_TA T0,T1,T2,T3,T4,T5,T6
+
 namespace piranha
 {
   /// Base term class.
@@ -38,7 +40,7 @@ namespace piranha
   {
     public:
       /// Alias for the tuple type.
-      typedef boost::tuple<T0,T1,T2,T3,T4,T5,T6> tuple_type;
+      typedef boost::tuple<__BASE_TERM_TA> tuple_type;
       /// Alias for evaluation type.
       /**
        * Evaluation type is determined by the first element of the tuple.
@@ -171,9 +173,12 @@ namespace piranha
    * By default the last elements' hash_value() method is used to calculate the term's hash value.
    */
   template <class T0, class T1, class T2, class T3, class T4, class T5, class T6> inline size_t hash_value(
-    const base_term<T0,T1,T2,T3,T4,T5,T6> &t)
+    const base_term<__BASE_TERM_TA> &t)
   {
     return t.last_element().hash_value();
   }
 }
+
+#undef __BASE_TERM_TA
+
 #endif
