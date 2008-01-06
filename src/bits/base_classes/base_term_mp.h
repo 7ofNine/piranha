@@ -94,7 +94,7 @@ namespace piranha
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().is_insertable(s.arguments().template get<Index>().size())
+      return (term.elements.template get<Index>().is_insertable(s.template nth_width<Index>())
         and
         term_helper_insertability<LastIndex,Index+1>::run(term,s));
     }
@@ -104,7 +104,7 @@ namespace piranha
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().is_insertable(s.arguments().template get<LastIndex>().size());
+      return term.elements.template get<LastIndex>().is_insertable(s.template nth_width<LastIndex>());
     }
   };
 
@@ -113,7 +113,7 @@ namespace piranha
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().needs_padding(s.arguments().template get<Index>().size())
+      return (term.elements.template get<Index>().needs_padding(s.template nth_width<Index>())
         or
         term_helper_needs_padding<LastIndex,Index+1>::run(term,s));
     }
@@ -123,7 +123,7 @@ namespace piranha
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().needs_padding(s.arguments().template get<LastIndex>().size());
+      return term.elements.template get<LastIndex>().needs_padding(s.template nth_width<LastIndex>());
     }
   };
 
@@ -132,7 +132,7 @@ namespace piranha
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static void run(Term &term, const Series &s)
     {
-      term.elements.template get<Index>().pad_right(s.arguments().template get<Index>().size());
+      term.elements.template get<Index>().pad_right(s.template nth_width<Index>());
       term_helper_pad_right<LastIndex,Index+1>::run(term,s);
     }
   };
@@ -141,7 +141,7 @@ namespace piranha
   {
     template <class Term, class Series> static void run(Term &term, const Series &s)
     {
-      term.elements.template get<LastIndex>().pad_right(s.arguments().template get<LastIndex>().size());
+      term.elements.template get<LastIndex>().pad_right(s.template nth_width<LastIndex>());
     }
   };
 }
