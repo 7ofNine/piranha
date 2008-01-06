@@ -34,11 +34,12 @@ namespace piranha
   template <class Term, class Derived> class base_series
   {
     public:
+      // TODO: update doc here.
       /// High-level insertion function.
       /**
-       * This function is used to insert terms into a series. It requires that the arguments
-       * in the coefficient and in the trigonometric part of the term are fewer or as many as the series'
-       * ones, otherwise an assertion fails and the program aborts. base_pseries::merge_args,
+       * This function is used to insert terms into a series. It requires that the number of arguments
+       * of each element of the term is smaller or equal to the series',
+       * otherwise an assertion fails and the program aborts. base_pseries::merge_args,
        * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
        * to the series.
        *
