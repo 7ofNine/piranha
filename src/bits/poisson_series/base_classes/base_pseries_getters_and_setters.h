@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_PSERIES_GETTERS_AND_SETTERS_H
 #define PIRANHA_BASE_PSERIES_GETTERS_AND_SETTERS_H
 
+#include <boost/static_assert.hpp>
+
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
@@ -37,17 +39,25 @@ namespace piranha
 
   /// Return trigonometric width.
   template <__PIRANHA_BASE_PS_TP_DECL>
+    template <int N>
+    inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::nth_width() const
+  {
+    BOOST_STATIC_ASSERT(N < term_type::size);
+    return m_arguments.template get<N>().size();
+  }
+
+  /// Return trigonometric width.
+  template <__PIRANHA_BASE_PS_TP_DECL>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::trig_width() const
   {
-    //p_assert(arguments().template get<1>().size()==lin_args_.size());
-    return arguments().template get<1>().size();
+    return nth_width<1>();
   }
 
   /// Return coefficient width.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::cf_width() const
   {
-    return arguments().template get<0>().size();
+    return nth_width<0>();
   }
 
   /// Return const reference to the vector of linear arguments.

@@ -115,6 +115,8 @@ namespace piranha
       size_t length() const;
       const vector_psym_p &cf_args() const;
       const vector_psym_p &trig_args() const;
+      template <int N>
+        size_t nth_width() const;
       size_t trig_width() const;
       size_t cf_width() const;
       const vector_int16 &lin_args() const;
