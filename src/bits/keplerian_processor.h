@@ -29,8 +29,8 @@ namespace piranha
   class keplerian_processor
   {
     public:
-// Proposed format for function names:
-// "returned quantity"_"form of the development"_"variable of the development".
+      // Proposed format for function names:
+      // "returned quantity"_"form of the development"_"variable of the development".
       static sp E_pow_e(const psymbol &, const psymbol &, int);
   };
 }

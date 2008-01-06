@@ -26,5 +26,4 @@
 #include <gsl/gsl_sf_result.h>
 #include <gsl/gsl_errno.h>
 #endif
-
 #endif

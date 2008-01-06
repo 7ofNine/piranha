@@ -23,7 +23,7 @@
 
 namespace piranha
 {
-/// Toolbox for trigonometric operations common to real and complex series.
+  /// Toolbox for trigonometric operations common to real and complex series.
   template <class DerivedPs>
     class base_trigonometric_toolbox
   {
@@ -41,11 +41,11 @@ namespace piranha
           return;
         }
         DerivedPs retval;
-// Model retval after this.
+        // Model retval after this.
         retval.merge_args(*derived_cast);
-// Import also linear arguments.
+        // Import also linear arguments.
         retval.lin_args()=derived_cast->lin_args();
-// Merge with other series. If we don't succeed return unmodified this.
+        // Merge with other series. If we don't succeed return unmodified this.
         try {retval.merge_args(p);}
         catch (exceptions::add_arguments &e)
         {
@@ -58,7 +58,7 @@ namespace piranha
         for (it_s_index it=derived_cast->begin();it!=it_f;++it)
         {
           tmp_mult=it->trig()[sym_index];
-// If the symbol's multiplier is zero we simply insert the term.
+          // If the symbol's multiplier is zero we simply insert the term.
           if (tmp_mult==0)
           {
             it_hint = retval.insert_with_checks(*it,it_hint);
@@ -75,7 +75,7 @@ namespace piranha
             switch (it->trig().flavour())
             {
               case true:
-// Change tmp2's flavour.
+                // Change tmp2's flavour.
                 tmp_term.trig().flavour()=false;
                 tmp2.insert_with_checks(tmp_term,tmp2.g_s_index().end());
                 retval+=(tmp1*=cosp);
@@ -89,7 +89,7 @@ namespace piranha
             }
           }
         }
-// Take care of lin_args.
+        // Take care of lin_args.
         if (derived_cast->lin_args()[sym_index]!=0)
         {
           retval+=(p*derived_cast->
@@ -113,13 +113,13 @@ namespace piranha
       }
   };
 
-/// Toolbox for trigonometric operations.
+  /// Toolbox for trigonometric operations.
   template <class DerivedPs>
     class trigonometric_toolbox:public base_trigonometric_toolbox<DerivedPs>
   {
     public:
       typedef std::complex<DerivedPs> complex_ps;
-// Maths
+      // Maths
       complex_ps complexp() const
       {
         typedef typename DerivedPs::ancestor::cf_type real_cf_type;
@@ -147,22 +147,22 @@ namespace piranha
         }
         return retval;
       }
-/// Calculate cosine of series.
+      /// Calculate cosine of series.
       DerivedPs cosine() const
       {
         return complexp().real();
       }
-/// Calculate sine of series.
+      /// Calculate sine of series.
       DerivedPs sine() const
       {
         return complexp().imag();
       }
     private:
-// Maths
-/// Complex exponential of a vector of integers.
-/**
- * This will generate a single-term Poisson series with unity coefficient.
- */
+      // Maths
+      /// Complex exponential of a vector of integers.
+      /**
+       * This will generate a single-term Poisson series with unity coefficient.
+       */
       complex_ps complexp_linargs() const
       {
         typedef typename DerivedPs::ancestor::cf_type real_cf_type;
@@ -208,18 +208,18 @@ namespace piranha
         retval=cf.besselJ(2*i+1,static_cast<DerivedPs const *>(this)->arguments().template get<0>());
         retval.mult_by(2);
       }
-/// Jacobi-Anger development of a term.
-/**
- * Mathematically speaking this development converges gracely for series whose coefficients are
- * <=1. It should not be a problem with ephemerides of celestial bodies - the 1st order angular
- * perturbation(s) must be less than 1rad/timeunit - maybe then it is enough to change timescale?
- * Or maybe we can split up the biggest terms, do separate complexps and multiply at the end
- * and assemble the result....
- */
-// This has to be templated this way because we don't know, during multiple inheritance,
-// about typedefs in DerivedPs class. Fortunately the problem is not serious here, since this
-// function is private and when it is called the compiler determines automatically the iterator
-// type from the context.
+      /// Jacobi-Anger development of a term.
+      /**
+       * Mathematically speaking this development converges gracely for series whose coefficients are
+       * <=1. It should not be a problem with ephemerides of celestial bodies - the 1st order angular
+       * perturbation(s) must be less than 1rad/timeunit - maybe then it is enough to change timescale?
+       * Or maybe we can split up the biggest terms, do separate complexps and multiply at the end
+       * and assemble the result....
+       */
+      // This has to be templated this way because we don't know, during multiple inheritance,
+      // about typedefs in DerivedPs class. Fortunately the problem is not serious here, since this
+      // function is private and when it is called the compiler determines automatically the iterator
+      // type from the context.
       template <class Iterator>
         complex_ps jacangdev(Iterator it) const
       {
@@ -274,10 +274,10 @@ namespace piranha
       }
   };
 
-/// Toolbox for trigonometric operations, specialization for complex series.
+  /// Toolbox for trigonometric operations, specialization for complex series.
   template <>
     template <class DerivedPs>
     class trigonometric_toolbox<std::complex<DerivedPs> >:public base_trigonometric_toolbox<std::complex<DerivedPs> >
-  {};
+    {};
 }
 #endif

@@ -47,5 +47,4 @@ namespace piranha
       static double trunc_level;
   };
 }
-
 #endif

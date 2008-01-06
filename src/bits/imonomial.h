@@ -25,19 +25,19 @@
 
 namespace piranha
 {
-// Forward declaration.
+  // Forward declaration.
   template <class Cf, class Index, class Expo, class Derived>
     class base_ipoly;
 
-/// Indexed monomial.
+  /// Indexed monomial.
   template <class Cf, class Index>
     class imonomial
   {
-      BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
-      BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
-      BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
-      template <class Cf2, class Index2, class Expo, class Derived>
-        friend class base_ipoly;
+    BOOST_STATIC_ASSERT(boost::is_integral<Index>::value);
+    BOOST_STATIC_ASSERT(boost::is_pod<Index>::value);
+    BOOST_STATIC_ASSERT(!(boost::integer_traits<Index>::is_signed));
+    template <class Cf2, class Index2, class Expo, class Derived>
+      friend class base_ipoly;
     public:
       imonomial(const Cf &value, const Index &i):index(i),cf(value)
         {}
@@ -47,7 +47,7 @@ namespace piranha
       {
         return (index == m.index);
       }
-// TODO: needed?
+      // TODO: needed?
       bool operator<(const imonomial &m) const
       {
         return (index < m.index);
@@ -73,7 +73,7 @@ namespace piranha
   template <class Cf, class Index>
     const Index imonomial<Cf,Index>::max_index;
 
-// Hasher functor to be used in polynomial container.
+  // Hasher functor to be used in polynomial container.
   template <class Monomial>
     struct monomial_hasher
   {
@@ -83,5 +83,4 @@ namespace piranha
     }
   };
 }
-
 #endif

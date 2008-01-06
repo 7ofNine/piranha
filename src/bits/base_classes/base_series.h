@@ -22,14 +22,14 @@
 #define PIRANHA_BASE_SERIES_H
 
 #include "../p_assert.h"
-#include "../utils.h" // For class_converter.
+#include "../utils.h"                             // For class_converter.
 #define derived_cast static_cast<Derived const *>(this)
 
 namespace piranha
 {
   // Base series class.
   /*
-   * Term must derive from piranha::base_term class. 
+   * Term must derive from piranha::base_term class.
    */
   template <class Term, class Derived> class base_series
   {
@@ -83,6 +83,6 @@ namespace piranha
   };
 }
 
-#undef derived_cast
 
+#undef derived_cast
 #endif

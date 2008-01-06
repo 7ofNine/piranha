@@ -24,34 +24,34 @@
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
 
-#include "../../common_typedefs.h" // For t_eval, max_fast_int and layout.
+#include "../../common_typedefs.h"                // For t_eval, max_fast_int and layout.
 #include "../../psymbol.h"
 #include "../../trig_evaluator.h"
-#include "../../utils.h" // For apply_layout.
+#include "../../utils.h"                          // For apply_layout.
 
 namespace piranha
 {
-/// Common class for dense trigonometric array.
-/**
- * Intended to add specific methods to plain arrays for the manipulation of trigonometric
- * parts in Poisson series.
- */
+  /// Common class for dense trigonometric array.
+  /**
+   * Intended to add specific methods to plain arrays for the manipulation of trigonometric
+   * parts in Poisson series.
+   */
   template <class Derived>
     class trig_array_commons
   {
 #define derived_cast (static_cast<const Derived *>(this))
     public:
-// I/O.
+      // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &v) const
       {
         const size_t w=v.size();
-// We assert like this because we want to make sure we don't go out of boundaries,
-// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
+        // We assert like this because we want to make sure we don't go out of boundaries,
+        // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(w <= derived_cast->size())
-        stream_manager::setup_print(out_stream);
+          stream_manager::setup_print(out_stream);
         for (size_t i=0;i < w;++i)
         {
-// We cast to max_fast_int, which should be the largest type admitted for multipliers.
+          // We cast to max_fast_int, which should be the largest type admitted for multipliers.
           out_stream << (max_fast_int)(*derived_cast)[i] << stream_manager::data_separator();
         }
         switch (derived_cast->flavour())
@@ -67,7 +67,7 @@ namespace piranha
       {
         const size_t w=v.size();
         p_assert(w <= derived_cast->size())
-        stream_manager::setup_print(out_stream);
+          stream_manager::setup_print(out_stream);
         switch (derived_cast->flavour())
         {
           case true:
@@ -91,8 +91,8 @@ namespace piranha
               tmp.append("-");
             }
             else if ((*derived_cast)[i] == 1)
-            {}
-            else
+              {}
+              else
             {
               tmp.append(boost::lexical_cast<std::string>((max_fast_int)(*derived_cast)[i]));
             }
@@ -101,7 +101,7 @@ namespace piranha
           }
         }
         tmp.append("$");
-// If we did not write anything erase math markers.
+        // If we did not write anything erase math markers.
         if (tmp == "$$")
         {
           tmp.clear();
@@ -116,7 +116,7 @@ namespace piranha
           (*derived_cast)[i]*=-1;
         }
       }
-/// Assign vector of multipliers.
+      /// Assign vector of multipliers.
       template <class T>
         void assign_int_vector(const T &v)
       {
@@ -131,7 +131,7 @@ namespace piranha
       {
         utils::apply_layout(l,*derived_cast);
       }
-/// Density.
+      /// Density.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
       {
@@ -146,26 +146,26 @@ namespace piranha
         }
         return ((double)tmp)/w;
       }
-/// Frequency.
-/**
- * Get the frequency of the linear combination, given a vector of piranha::psymbol pointers describing
- * the arguments.
- * @param[in] v vector of piranha::psymbol pointers.
- */
+      /// Frequency.
+      /**
+       * Get the frequency of the linear combination, given a vector of piranha::psymbol pointers describing
+       * the arguments.
+       * @param[in] v vector of piranha::psymbol pointers.
+       */
       double freq(const vector_psym_p &v) const {return combined_poly_eval<1>(v);}
-/// Phase.
-/**
- * Get the phase of the linear combination, given a vector of piranha::psymbol pointers describing the
- * arguments.
- * @param[in] v vector of piranha::psymbol pointers.
- */
+      /// Phase.
+      /**
+       * Get the phase of the linear combination, given a vector of piranha::psymbol pointers describing the
+       * arguments.
+       * @param[in] v vector of piranha::psymbol pointers.
+       */
       double phase(const vector_psym_p &v) const {return combined_poly_eval<0>(v);}
-/// Time evaluation of arguments.
-/**
- * Returns the value assumed by the linear combination of arguments at time t.
- * @param[in] t double time of the evaluation.
- * @param[in] v vector of piranha::psymbol pointers.
- */
+      /// Time evaluation of arguments.
+      /**
+       * Returns the value assumed by the linear combination of arguments at time t.
+       * @param[in] t double time of the evaluation.
+       * @param[in] v vector of piranha::psymbol pointers.
+       */
       double t_eval(const double &t, const vector_psym_p &v) const
       {
         const size_t w=v.size();
@@ -186,13 +186,13 @@ namespace piranha
             return std::sin(retval);
         }
       }
-/// Time evaluation of complex exponential of the arguments.
-/**
- * Returns the real or imaginary part (depending on flavour) of the complex exponential of the
- * linear combination of arguments at time t.
- * Uses a piranha::trig_evaluator object which contains a cache of the complex exponentials of arguments.
- * @param[in] te piranha::trig_evaluator containing a cache of complex exponentials of arguments.
- */
+      /// Time evaluation of complex exponential of the arguments.
+      /**
+       * Returns the real or imaginary part (depending on flavour) of the complex exponential of the
+       * linear combination of arguments at time t.
+       * Uses a piranha::trig_evaluator object which contains a cache of the complex exponentials of arguments.
+       * @param[in] te piranha::trig_evaluator containing a cache of complex exponentials of arguments.
+       */
       template <class TrigEvaluator>
         double t_eval(TrigEvaluator &te) const
       {
@@ -214,10 +214,10 @@ namespace piranha
             return retval.imag();
         }
       }
-/// Sign.
-/**
- * Return the sign of the first non-zero element of the combination. Zero is considered positive.
- */
+      /// Sign.
+      /**
+       * Return the sign of the first non-zero element of the combination. Zero is considered positive.
+       */
       short int sign() const
       {
         const size_t w=derived_cast->size();
@@ -234,18 +234,18 @@ namespace piranha
         }
         return 1;
       }
-// All multipliers are zero and flavour is sine.
+      // All multipliers are zero and flavour is sine.
       template <class Series>
         bool is_ignorable(const Series &) const
       {
         return (derived_cast->is_zero() and !derived_cast->flavour());
       }
-/// Equality test.
+      /// Equality test.
       bool operator==(const Derived &t2) const
       {
         return (derived_cast->flavour() == t2.flavour() and derived_cast->equal_to(t2));
       }
-/// Less than.
+      /// Less than.
       bool operator<(const Derived &t2) const
       {
         if (derived_cast->flavour() < t2.flavour())
@@ -276,7 +276,7 @@ namespace piranha
         boost::hash_combine(retval,derived_cast->flavour());
         return retval;
       }
-/// Multiply by an integer.
+      /// Multiply by an integer.
       void mult_by_int(const int &n)
       {
         const size_t w=derived_cast->size();
@@ -290,8 +290,8 @@ namespace piranha
       trig_array_commons(const deque_string &sd)
       {
         typedef typename Derived::value_type value_type;
-// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
-// TODO: do it everywhere!
+        // TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
+        // TODO: do it everywhere!
         const size_t w=sd.size();
         if (w == 0)
         {
@@ -299,13 +299,13 @@ namespace piranha
           std::abort();
           return;
         }
-// Now we know  w >= 1.
+        // Now we know  w >= 1.
         derived_cast->resize(w-1);
         for (size_t i=0;i < w-1;++i)
         {
           (*derived_cast)[i]=utils::lexical_converter<value_type>(sd[i]);
         }
-// Take care of flavour.
+        // Take care of flavour.
         if (*sd.back().c_str() == 's')
         {
           derived_cast->flavour()=false;
@@ -316,7 +316,7 @@ namespace piranha
         }
       }
     private:
-// NOTICE: is there some caching mechanism that can be used here?
+      // NOTICE: is there some caching mechanism that can be used here?
       template <int N>
         double combined_poly_eval(const vector_psym_p &v) const
       {
@@ -326,7 +326,7 @@ namespace piranha
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
-// We must be sure that there actually is component N in every symbol we are going to use.
+          // We must be sure that there actually is component N in every symbol we are going to use.
           if (v[i]->poly_eval().size() > N)
           {
             retval+=(*derived_cast)[i]*v[i]->poly_eval()[N];
@@ -337,5 +337,4 @@ namespace piranha
 #undef derived_cast
   };
 }
-
 #endif

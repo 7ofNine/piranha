@@ -35,15 +35,15 @@
 
 namespace piranha
 {
-/// Class that groups together useful mathematical functions.
+  /// Class that groups together useful mathematical functions.
   class math
   {
     public:
-// Operations on vectors
-// Add/subtract two differently sized containers, whose members can be accessed through the
-// "[]" operator.
-// The result goes into retval.
-// Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
+      // Operations on vectors
+      // Add/subtract two differently sized containers, whose members can be accessed through the
+      // "[]" operator.
+      // The result goes into retval.
+      // Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
       template <class T>
         static void vec_add(const T &v1, const T &v2, T &retval)
       {
@@ -60,7 +60,7 @@ namespace piranha
           retval[j]=v1[j];
         }
       }
-// Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
+      // Pre-requisites: v1.size() >= v2.size(), retval.size()==v1.size().
       template <class T>
         static void vec_sub(const T &v1, const T &v2, T &retval)
       {
@@ -77,7 +77,7 @@ namespace piranha
           retval[j]=v1[j];
         }
       }
-/// Check whether a vector is filled with zero elements.
+      /// Check whether a vector is filled with zero elements.
       template <class T>
         static bool is_zero_vec(const T &v)
       {
@@ -91,7 +91,7 @@ namespace piranha
         }
         return true;
       }
-/// Sign function.
+      /// Sign function.
       static short int sgn(int x)
       {
         if (x<0)
@@ -103,13 +103,13 @@ namespace piranha
           return 1;
         }
       }
-/// Kroenecker Delta function.
+      /// Kroenecker Delta function.
       template <class T, class U>
         static int Kdelta(const T &n1, const U &n2)
       {
         return (n1==n2);
       }
-/// Find maximum value.
+      /// Find maximum value.
       template <class T>
         static const T &max(const T &a, const T &b)
       {
@@ -122,7 +122,7 @@ namespace piranha
           return b;
         }
       }
-/// Find minimum value.
+      /// Find minimum value.
       template <class T>
         static const T &min(const T &a, const T &b)
       {
@@ -135,18 +135,18 @@ namespace piranha
           return b;
         }
       }
-/// Check whether an integer is odd.
+      /// Check whether an integer is odd.
       static bool is_odd(const long int &n)
       {
         return (n&1);
       }
-/// Return norm, generic version.
+      /// Return norm, generic version.
       template <class T>
         static double norm(const T &x)
       {
         return x.g_norm();
       }
-/// Condon-Shortley phase.
+      /// Condon-Shortley phase.
       static int cs_phase(const long int &n)
       {
         if (is_odd(n))
@@ -158,11 +158,11 @@ namespace piranha
           return 1;
         }
       }
-/// Generalized binomial coefficient.
+      /// Generalized binomial coefficient.
       template <class T>
         static T choose(const T &z, const long int &k)
       {
-// k cannot be negative.
+        // k cannot be negative.
         if (k<0)
         {
           return T(0);
@@ -175,18 +175,18 @@ namespace piranha
         }
         return retval;
       }
-/// Factorial.
+      /// Factorial.
       static double factorial(int n)
       {
         return ll_factorial<double>(n);
       }
-/// Generic factorial.
+      /// Generic factorial.
       template <class T>
         static T generic_factorial(int n)
       {
         return ll_factorial<T>(n);
       }
-/// Double factorial.
+      /// Double factorial.
       static double dbl_factorial(int ext_n)
       {
         double k=1;
@@ -212,15 +212,15 @@ namespace piranha
         }
         return k;
       }
-/// Bessel J series limit.
-/**
- * Identifies the number of iterations needed to compute a Bessel function of the first kind
- * through the power series definition in order to reach a precision of the same order of magnitude of
- * Piranha's general relative precision.
- * @param[in] n_, integer order of the Bessel function.
- * @param[in] x, double argument of the Bessel function.
- * @param[in] prec, desired precision.
- */
+      /// Bessel J series limit.
+      /**
+       * Identifies the number of iterations needed to compute a Bessel function of the first kind
+       * through the power series definition in order to reach a precision of the same order of magnitude of
+       * Piranha's general relative precision.
+       * @param[in] n_, integer order of the Bessel function.
+       * @param[in] x, double argument of the Bessel function.
+       * @param[in] prec, desired precision.
+       */
 #define __max_bessel_iter (20)
       static unsigned int besselJ_series_limit(int n_, const double &x, const double &prec)
       {
@@ -256,33 +256,33 @@ namespace piranha
         double target=0;
         if (std::abs(tmp_besselJ)<settings_manager::numerical_zero())
         {
-//std::cout << "Numerical limits of double reached, returning 0." << std::endl;
+          //std::cout << "Numerical limits of double reached, returning 0." << std::endl;
         }
         else if (std::abs(tmp_pow)<settings_manager::numerical_zero())
         {
-// We have problems here since we will be dividing by tmp_pow. Exit with j=0.
-// TODO: add precision warning.
-//std::cout << "Numerical limits of natural_pow reached, returning 0." << std::endl;
+          // We have problems here since we will be dividing by tmp_pow. Exit with j=0.
+          // TODO: add precision warning.
+          //std::cout << "Numerical limits of natural_pow reached, returning 0." << std::endl;
         }
         else
         {
-// Target is multiplied that way because the retval is modified after the "for" cycle,
-// so we must "anticipate" the modification to test whether we are ok with the precision.
+          // Target is multiplied that way because the retval is modified after the "for" cycle,
+          // so we must "anticipate" the modification to test whether we are ok with the precision.
           target=(tmp_besselJ*fact)/tmp_pow*sign_mult;
           const double target_precision=target*prec;
           do
           {
-//std::cout << "tmp is: " << tmp << '\n';
+            //std::cout << "tmp is: " << tmp << '\n';
             ++j;
             (a_jm1/=(j*(n+j)))*=-1;
             a_j=a_jm1;
             a_j*=half_x_pow2;
-//std::cout << "a_j is: " << a_j << '\n';
+            //std::cout << "a_j is: " << a_j << '\n';
             if (std::abs(a_j)<settings_manager::numerical_zero())
             {
-// We cannot improve precision any more, since a_j went to zero. Exit the cycle.
-// TODO: add precision warning.
-//std::cout << "a_j went zero, returning current j\n";
+              // We cannot improve precision any more, since a_j went to zero. Exit the cycle.
+              // TODO: add precision warning.
+              //std::cout << "a_j went zero, returning current j\n";
               break;
             }
             tmp+=a_j;
@@ -299,14 +299,14 @@ namespace piranha
         return j;
       }
 #undef __max_bessel_iter
-/// Bessel function of the first kind. Power series implementation.
-/**
- * Uses the series definition for Bessel functions. To be used with symbolic types,
- * for numerical types it is much better to use math::besselJ.
- * @param[in] n_, integer order of the Bessel function.
- * @param[in] x, double argument of the Bessel function.
- * @param[in] iterations, unsigned int number of iterations.
- */
+      /// Bessel function of the first kind. Power series implementation.
+      /**
+       * Uses the series definition for Bessel functions. To be used with symbolic types,
+       * for numerical types it is much better to use math::besselJ.
+       * @param[in] n_, integer order of the Bessel function.
+       * @param[in] x, double argument of the Bessel function.
+       * @param[in] iterations, unsigned int number of iterations.
+       */
       template <class T, class Integer>
         static T pow_besselJ(int n_, const T &x, unsigned int iterations)
       {
@@ -347,7 +347,7 @@ namespace piranha
         retval*=sign_mult;
         return retval;
       }
-/// Bessel function of the first kind (C standard library implementation).
+      /// Bessel function of the first kind (C standard library implementation).
       static double besselJ(int n, const double &x)
       {
 #ifdef _PIRANHA_GSL
@@ -358,7 +358,7 @@ namespace piranha
           case 0:
             return res.val;
           case GSL_EUNDRFLW:
-// Underflow is ok, we just return 0.
+            // Underflow is ok, we just return 0.
             return 0.;
           default:
             std::cout << "There were some problems calculating BesselJ." << std::endl;
@@ -367,7 +367,7 @@ namespace piranha
         }
 #else
         double retval=jn(n,x);
-// Try to detect underflow.
+        // Try to detect underflow.
         switch (__ISNAN(retval))
         {
           case true:
@@ -377,15 +377,15 @@ namespace piranha
         }
 #endif
       }
-/// Legendre function of the first kind - Pnm(cos(theta)).
-/**
- * This implementation uses recurrence relations.
- */
+      /// Legendre function of the first kind - Pnm(cos(theta)).
+      /**
+       * This implementation uses recurrence relations.
+       */
       template <class T>
         static T Pnm(int n1, int m1, const T &theta)
       {
         T P00(int(1));
-// cf is needed for negative m.
+        // cf is needed for negative m.
         double cf;
         int n, m;
         if (n1>=0)
@@ -405,8 +405,8 @@ namespace piranha
         {
           return T(int(0));
         }
-// NOTE: in ginac and gmp maybe it's better to multiply at the end and generate
-// cf on-the-fly, so that we can "mult_by_frac".
+        // NOTE: in ginac and gmp maybe it's better to multiply at the end and generate
+        // cf on-the-fly, so that we can "mult_by_frac".
         if (m1>=0)
         {
           cf=1.;
@@ -419,17 +419,17 @@ namespace piranha
         int i;
         const std::complex<T> expitheta=complexp(theta);
         const T costheta=expitheta.real(), sintheta=expitheta.imag();
-// Recursion to get from P_00 to P_mm.
+        // Recursion to get from P_00 to P_mm.
         for (i=0;i<m;++i)
         {
           retval*=(-(2*i+1));
           retval*=sintheta;
         }
-// Recursion to get from P_mm to P_nm (n>m).
+        // Recursion to get from P_mm to P_nm (n>m).
         for (i=m;i<n;++i)
         {
-// NOTE: in ginac and gmp we may use a "mult_by_frac" method to avoid losing
-// arbitrary precision. Also in Pnm_vector below.
+          // NOTE: in ginac and gmp we may use a "mult_by_frac" method to avoid losing
+          // arbitrary precision. Also in Pnm_vector below.
           oldPnm*=(-i-m)/(i+1.-m);
           tmp1=oldPnm;
           oldPnm=retval;
@@ -440,7 +440,7 @@ namespace piranha
         retval*=cf;
         return retval;
       }
-/// Non-normalized spherical harmonic.
+      /// Non-normalized spherical harmonic.
       template <class T>
         static std::complex<T> Ynm(int n, int m, const T
         &theta, const T &phi)
@@ -449,7 +449,7 @@ namespace piranha
         m_phi*=m;
         return (complexp(m_phi)*Pnm(n,m,theta));
       }
-/// Vector of Pnm(cos(theta)) from P-n,n to Pnn.
+      /// Vector of Pnm(cos(theta)) from P-n,n to Pnn.
       template <class T>
         static std::vector<T> Pnm_vector(int n1, const T &theta)
       {
@@ -470,12 +470,12 @@ namespace piranha
         }
         const std::complex<T> expitheta=complexp(theta);
         const T costheta=expitheta.real(), sintheta=expitheta.imag();
-// Create vector of Pmm (0<=m<=n).
+        // Create vector of Pmm (0<=m<=n).
         for (i=1;i<n+1;++i)
         {
           Pmm_vec[i]=Pmm_vec[i-1];
-// Here it is (i-1) instead of just i like above because in the sum the first
-// term is 0, not 1
+          // Here it is (i-1) instead of just i like above because in the sum the first
+          // term is 0, not 1
           Pmm_vec[i]*=(-(2*(i-1)+1));
           Pmm_vec[i]*=sintheta;
         }
@@ -483,7 +483,7 @@ namespace piranha
         int m;
         for (i=n;i<2*n+1;++i)
         {
-// Assign Pii.
+          // Assign Pii.
           m=i-n;
           T oldPnm(int(0)), tmp1;
           retval[i]=Pmm_vec[m];
@@ -498,21 +498,21 @@ namespace piranha
             ret+=tmp1;
           }
         }
-// Make some space.
+        // Make some space.
         Pmm_vec.clear();
-// Take care of negative m.
+        // Take care of negative m.
         double cf;
         for (i=n-1;i>=0;--i)
         {
           m=i-n;
-// -m instead of m here, because m<0.
+          // -m instead of m here, because m<0.
           cf=((double)cs_phase(-m)*factorial(n+m))/factorial(n-m);
           retval[i]=retval[n-m];
           retval[i]*=cf;
         }
         return retval;
       }
-/// Vector of spherical harmonics from Yn,-m to Yn,m.
+      /// Vector of spherical harmonics from Yn,-m to Yn,m.
       template <class T>
         static std::vector<std::complex<T> >
         Ynm_vector(int n, const T &theta, const T &phi)
@@ -529,8 +529,8 @@ namespace piranha
         }
         return retval;
       }
-/// Vector of Bessel functions of the first kind from 0 to n.
-// FIXME.
+      /// Vector of Bessel functions of the first kind from 0 to n.
+      // FIXME.
       template <class T>
         static std::vector<T> besselJ_vector(unsigned int n, const T &x)
       {
@@ -554,10 +554,10 @@ namespace piranha
         }
         return retval;
       }
-/// dnkm of Wigner's theorem.
-/**
- * Input is the complex exponential of the angle.
- */
+      /// dnkm of Wigner's theorem.
+      /**
+       * Input is the complex exponential of the angle.
+       */
       template <class T>
         static T dnkm(int n, int k, int m, const std::complex<T> &input)
       {
@@ -569,10 +569,10 @@ namespace piranha
         {
           cf=(double)(cs_phase(t)*factorial(n-k)*factorial(n+m))/(factorial(t)*factorial(n+k-t)*
             factorial(n-m-t)*factorial(m-k+t));
-// Assert >=0, we are going to cast to unsigned int so better safe than sorry.
+          // Assert >=0, we are going to cast to unsigned int so better safe than sorry.
           p_assert(2*n-m+k-2*t>=0);
           p_assert(m-k+2*t>=0);
-// FIXME: cache the results here? There are lots of natural powers here.
+          // FIXME: cache the results here? There are lots of natural powers here.
           tmp=natural_pow((unsigned int)(2*n-m+k-2*t),real_input)*natural_pow((unsigned
             int)(m-k+2*t),imag_input);
           tmp*=cf;
@@ -580,7 +580,7 @@ namespace piranha
         }
         return retval;
       }
-/// Quadratic phase of integer n.
+      /// Quadratic phase of integer n.
       static std::complex<int> quad_phase(int n)
       {
         if (is_odd(n))
@@ -606,7 +606,7 @@ namespace piranha
           }
         }
       }
-/// Dnkm of Wigern's theorem.
+      /// Dnkm of Wigern's theorem.
       template <class T>
         static std::complex<T>
         Dnkm(int n, int k, int m, const T &alpha,
@@ -616,16 +616,16 @@ namespace piranha
         return complexp(alpha*(-k)-gamma*(m))*(
           std::complex<T>(quad_phase(k-m).real(),quad_phase(k-m).imag())*=dnkm_tmp);
       }
-/// Wigner rotation theorem.
-/**
- * Returns Ynm'(theta,phi), i.e. Ynm(theta,phi) rotated under the three
- * Euler angles (alpha,beta,gamma).
- */
+      /// Wigner rotation theorem.
+      /**
+       * Returns Ynm'(theta,phi), i.e. Ynm(theta,phi) rotated under the three
+       * Euler angles (alpha,beta,gamma).
+       */
       template <class T>
         static std::complex<T> wig_rot(int n, int m,
         const T &alpha, const T &beta, const T &gamma, const T &theta, const T &phi)
       {
-// NOTE: what does it give to multiply by .5 a series with non-zero linargs?
+        // NOTE: what does it give to multiply by .5 a series with non-zero linargs?
         std::complex<T> complexhalfbeta=complexp(beta*.5);
         std::vector<std::complex<T> > Ynm_vec=Ynm_vector(n,theta,phi);
         std::complex<T> retval(0,0);
@@ -638,7 +638,7 @@ namespace piranha
         }
         return retval;
       }
-/// Natural power.
+      /// Natural power.
       template <class T>
         static T natural_pow(unsigned int n, const T &x)
       {
@@ -653,29 +653,29 @@ namespace piranha
         }
         return retval;
       }
-/// Complex exponential, generic version.
+      /// Complex exponential, generic version.
       template <class T>
         static std::complex<T> complexp(const T &x)
       {
         return x.complexp();
       }
-/// Cosine, generic version.
+      /// Cosine, generic version.
       template <class T>
         static T cosine(const T &x)
       {
         return x.cosine();
       }
-/// Sine, generic version.
+      /// Sine, generic version.
       template <class T>
         static T sine(const T &x)
       {
         return x.sine();
       }
     private:
-/// Private ctor.
+      /// Private ctor.
       math()
         {}
-// Low-level factorial function.
+      // Low-level factorial function.
       template <class T>
         static T ll_factorial(int n)
       {
@@ -695,28 +695,28 @@ namespace piranha
       }
   };
 
-/// Find norm, specialization for double.
+  /// Find norm, specialization for double.
   template <>
     inline double math::norm<double>(const double &x)
   {
     return std::abs(x);
   }
 
-/// Complex exponential, specialization for double.
+  /// Complex exponential, specialization for double.
   template <>
     inline std::complex<double> math::complexp<double>(const double &x)
   {
     return std::polar(1.,x);
   }
 
-/// Cosine, specialization for double.
+  /// Cosine, specialization for double.
   template <>
     inline double math::cosine<double>(const double &x)
   {
     return std::cos(x);
   }
 
-/// Sine, specialization for double.
+  /// Sine, specialization for double.
   template <>
     inline double math::sine<double>(const double &x)
   {

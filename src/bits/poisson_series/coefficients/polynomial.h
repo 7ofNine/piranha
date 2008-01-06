@@ -31,32 +31,32 @@ namespace piranha
     public:
       typedef base_polynomial<T,polynomial> ancestor;
       typedef typename ancestor::m_type m_type;
-// Start INTERFACE definition for the real version.
-//-------------------------------------------------------
-/// Alias for the evaluation type.
+      // Start INTERFACE definition for the real version.
+      //-------------------------------------------------------
+      /// Alias for the evaluation type.
       typedef typename m_type::eval_type eval_type;
-// Ctors.
-/// Default constructor.
+      // Ctors.
+      /// Default constructor.
       explicit polynomial():ancestor::base_polynomial()
         {}
-/// Constructor from int.
+      /// Constructor from int.
       explicit polynomial(int n):ancestor::base_polynomial(n)
         {}
-/// Constructor from double.
+      /// Constructor from double.
       explicit polynomial(const double &x):ancestor::base_polynomial(x)
         {}
-/// Constructor from psymbol
+      /// Constructor from psymbol
       explicit polynomial(const psymbol &psym):ancestor::base_polynomial(psym)
         {}
-/// Copy constructor.
+      /// Copy constructor.
       polynomial(const polynomial &p):ancestor::base_polynomial(p)
         {}
       explicit polynomial(const std::string &s):ancestor::base_polynomial(s)
         {}
-/// Destructor.
+      /// Destructor.
       ~polynomial()
         {}
-/// Assignment operator.
+      /// Assignment operator.
       polynomial &operator=(const polynomial &p)
       {
         ancestor::basic_assignment(p);
@@ -97,8 +97,8 @@ namespace piranha
       {
         return (polynomial(*this)*=-1);
       }
-// Maths
-/// Bessel function of the first kind.
+      // Maths
+      /// Bessel function of the first kind.
       polynomial besselJ(int n, const vector_psym_p &v) const
       {
         const unsigned int iterations=math::besselJ_series_limit(n,ancestor::t_eval(0,v));
@@ -110,8 +110,8 @@ namespace piranha
         retval.basic_pow(x);
         return retval;
       }
-// End INTERFACE definition.
-//-------------------------------------------------------
+      // End INTERFACE definition.
+      //-------------------------------------------------------
       polynomial &operator/=(const mpz_class &n)
       {
         ancestor::ll_generic_integer_division(n);
@@ -123,7 +123,7 @@ namespace piranha
 
 namespace std
 {
-// COMPLEX COUNTERPART
+  // COMPLEX COUNTERPART
   template <class T>
     struct complex<piranha::polynomial<T> > :
   public piranha::base_polynomial<complex<T>,complex<piranha::polynomial<T> > >
@@ -136,37 +136,37 @@ namespace std
       typedef typename real_type::m_type real_m_type;
       typedef typename m_type::numerical_type numerical_type;
       typedef typename real_m_type::numerical_type real_numerical_type;
-// Access to iterators and indices of base.
-//typedef typename ancestor::expo_index expo_index;
+      // Access to iterators and indices of base.
+      //typedef typename ancestor::expo_index expo_index;
       typedef typename ancestor::iterator iterator;
       typedef typename real_type::iterator real_iterator;
-// Start INTERFACE definition for the complex specialization.
-//-------------------------------------------------------
+      // Start INTERFACE definition for the complex specialization.
+      //-------------------------------------------------------
     public:
       typedef piranha::complex_double eval_type;
-// Ctors and dtor.
+      // Ctors and dtor.
       explicit complex():ancestor::base_polynomial()
         {}
       explicit complex(const std::string &s):ancestor::base_polynomial(s)
         {}
-/// Constructor from real counterparts.
-/**
- * Takes monomials from r and i, turns them into complex monomials and inserts into self.
- */
+      /// Constructor from real counterparts.
+      /**
+       * Takes monomials from r and i, turns them into complex monomials and inserts into self.
+       */
       explicit complex(const real_type &r, const real_type &i)
       {
-// We do not need to care about widths because insertion in base_polynomial can cope with
-// larger and smaller polynomials.
-// In any case, this is a problem pseries should take care of, so maybe:
-// FIXME: assert equality between widths once we are using polynomials exclusively in pseries.
+        // We do not need to care about widths because insertion in base_polynomial can cope with
+        // larger and smaller polynomials.
+        // In any case, this is a problem pseries should take care of, so maybe:
+        // FIXME: assert equality between widths once we are using polynomials exclusively in pseries.
         real_iterator it, it_f;
         it_f=r.e_index().end();
-// Insert real part.
+        // Insert real part.
         for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
         }
-// Insert imaginary part.
+        // Insert imaginary part.
         it_f=i.e_index().end();
         m_type tmp;
         for (it=i.e_index().begin();it!=it_f;++it)
@@ -182,10 +182,10 @@ namespace std
       }
       explicit complex(const real_type &r)
       {
-// FIXME: share with ctor from real+imaginary?
+        // FIXME: share with ctor from real+imaginary?
         real_iterator it, it_f;
         it_f=r.e_index().end();
-// Insert real part.
+        // Insert real part.
         for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
@@ -199,7 +199,7 @@ namespace std
       {
         ancestor::insert(m_type(n));
       }
-// FIXME: where is this used?
+      // FIXME: where is this used?
       explicit complex(int n1, int n2)
       {
         m_type tmp(n1);
@@ -208,22 +208,22 @@ namespace std
         tmp.numerical_cf()=numerical_type(real_numerical_type(0.),tmp.numerical_cf().real());
         ancestor::insert(tmp);
       }
-/*explicit complex(const double &x):
-    ancestor::simple_container(complex_double(x,0.))
-{}
-explicit complex(const double &x1, const double x2):
-    ancestor::simple_container(complex_double(x1,x2))
-{}*/
+      /*explicit complex(const double &x):
+          ancestor::simple_container(complex_double(x,0.))
+      {}
+      explicit complex(const double &x1, const double x2):
+          ancestor::simple_container(complex_double(x1,x2))
+      {}*/
       ~complex()
         {}
       real_type real() const
       {
-// FIXME: share this code with above ctors?
-// FIXME: use hinted insertion for improved performance.
+        // FIXME: share this code with above ctors?
+        // FIXME: use hinted insertion for improved performance.
         real_type retval;
         iterator it, it_f;
         it_f=ancestor::e_index().end();
-// Insert real part.
+        // Insert real part.
         for (it=ancestor::e_index().begin();it!=it_f;++it)
         {
           real_m_type tmp(it->numerical_cf().real(),it->rational_cf(),it->container());
@@ -234,12 +234,12 @@ explicit complex(const double &x1, const double x2):
 
       real_type imag() const
       {
-// FIXME: share this code with above ctors?
-// FIXME: share also with real().
+        // FIXME: share this code with above ctors?
+        // FIXME: share also with real().
         real_type retval;
         iterator it, it_f;
         it_f=ancestor::e_index().end();
-// Insert real part.
+        // Insert real part.
         for (it=ancestor::e_index().begin();it!=it_f;++it)
         {
           real_m_type tmp(it->numerical_cf().imag(),it->rational_cf(),it->container());
@@ -247,27 +247,27 @@ explicit complex(const double &x1, const double x2):
         }
         return retval;
       }
-// Setters.
-/// Like constructor from real.
-// FIXME: abstract and share.
+      // Setters.
+      /// Like constructor from real.
+      // FIXME: abstract and share.
       void set_real(const real_type &r)
       {
         ancestor::clear();
         real_iterator it, it_f;
         it_f=r.e_index().end();
-// Insert real part.
+        // Insert real part.
         for (it=r.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(*it));
         }
       }
-// FIXME: complete set/add API here.
+      // FIXME: complete set/add API here.
       void set_imag(const real_type &i)
       {
         ancestor::clear();
         real_iterator it, it_f;
         it_f=i.e_index().end();
-// Insert imag part.
+        // Insert imag part.
         for (it=i.e_index().begin();it!=it_f;++it)
         {
           ancestor::insert(m_type(numerical_type(real_numerical_type(0.),it->numerical_cf()),

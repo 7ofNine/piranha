@@ -30,31 +30,31 @@
 namespace piranha
 {
   template <int Bits, class Allocator = std::allocator<char> >
-/// Trigonometric array, dynamically sized version.
-/**
- * It wraps a piranha::int_array with signed integer sized Bits, and adds the
- * capabilities needed for trigonometric manipulation.
- */
+  /// Trigonometric array, dynamically sized version.
+  /**
+   * It wraps a piranha::int_array with signed integer sized Bits, and adds the
+   * capabilities needed for trigonometric manipulation.
+   */
     class trig_array: public int_array<Bits,true,Allocator>,
-      public trig_array_commons<trig_array<Bits> >
+    public trig_array_commons<trig_array<Bits> >
   {
-      typedef trig_array_commons<trig_array> trig_commons;
-      typedef int_array<Bits,true,Allocator> ancestor;
+    typedef trig_array_commons<trig_array> trig_commons;
+    typedef int_array<Bits,true,Allocator> ancestor;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
-// Start INTERFACE definition.
-//-------------------------------------------------------
-// Ctors.
-/// Default ctor.
+      // Start INTERFACE definition.
+      //-------------------------------------------------------
+      // Ctors.
+      /// Default ctor.
       trig_array():ancestor::int_array() {}
-/// Ctor from piranha::deque_string.
+      /// Ctor from piranha::deque_string.
       trig_array(const deque_string &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
-// Probing.
-/// Data footprint.
-/**
- * Returns the memory occupied by the data members.
- */
+      // Probing.
+      /// Data footprint.
+      /**
+       * Returns the memory occupied by the data members.
+       */
       size_t data_footprint() const {return (ancestor::size()*sizeof(value_type));}
       template <class Series>
         bool checkup(const Series &s) const
@@ -68,30 +68,30 @@ namespace piranha
             return true;
         }
       }
-// Math.
-/// Multiplication.
-/**
- * Multiplication of two trigonometric functions using Werner's formulas, i.e.
- * \f[
- * C\cos\alpha\cdot\cos\beta=
- * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
- * \f]
- * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
- * and in the second one always goes \f$ \alpha + \beta \f$ one.
- * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
- * that return values are empty).
- * @param[in] t2 factor.
- * @param[out] ret1 first return value.
- * @param[out] ret2 second return value.
- */
+      // Math.
+      /// Multiplication.
+      /**
+       * Multiplication of two trigonometric functions using Werner's formulas, i.e.
+       * \f[
+       * C\cos\alpha\cdot\cos\beta=
+       * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
+       * \f]
+       * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
+       * and in the second one always goes \f$ \alpha + \beta \f$ one.
+       * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
+       * that return values are empty).
+       * @param[in] t2 factor.
+       * @param[out] ret1 first return value.
+       * @param[out] ret2 second return value.
+       */
       void trigmult(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
-// NOTE: we are not using here a general version of vector addition/subtraction
-// because this way we can do two operations (+ and -) every cycle. This is a performance
-// critical part, so the optimization should be worth the hassle.
+      // NOTE: we are not using here a general version of vector addition/subtraction
+      // because this way we can do two operations (+ and -) every cycle. This is a performance
+      // critical part, so the optimization should be worth the hassle.
       {
         const size_type max_w=ancestor::size(), min_w=t2.size();
-// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
-// already adjusted my merge_args in multiplication routines.
+        // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
+        // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
         p_assert(ret1.size() == max_w);
         p_assert(ret2.size() == max_w);
@@ -107,12 +107,12 @@ namespace piranha
           ret2[i]=(*this)[i];
         }
       }
-/// Does trig_array needs padding to be inserted in series with trig_width equal to n?
+      /// Does trig_array needs padding to be inserted in series with trig_width equal to n?
       bool needs_padding(const size_t &n) const {return (ancestor::size() < n);}
-/// Does is trig_array insertable in series with trig_width equal to n?
+      /// Does is trig_array insertable in series with trig_width equal to n?
       bool is_insertable(const size_t &n) const {return (ancestor::size() <= n);}
-// End INTERFACE definition.
-//-------------------------------------------------------
+      // End INTERFACE definition.
+      //-------------------------------------------------------
   };
 }
 #endif

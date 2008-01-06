@@ -46,7 +46,7 @@ namespace piranha
        * @param[in] c class to be converted.
        */
       explicit class_converter(const Class2 &c) :
-        result(c)
+      result(c)
       {
       }
       /// Copy of the converted class.
@@ -66,7 +66,7 @@ namespace piranha
        * @param[in] c class to be converted.
        */
       explicit class_converter(const Class2 &c) :
-        result(c)
+      result(c)
       {
       }
       /// Reference to the converted class.
@@ -75,19 +75,19 @@ namespace piranha
 
   template <bool AssignZero, class VectorType> struct layout_assign_helper
   {
-      static void run(VectorType &v1, const VectorType &v2, const size_t &i)
-      {
-        p_assert(i < v2.size());
-        v1[i]=v2[i];
-      }
+    static void run(VectorType &v1, const VectorType &v2, const size_t &i)
+    {
+      p_assert(i < v2.size());
+      v1[i]=v2[i];
+    }
   };
 
   template <class VectorType> struct layout_assign_helper<true, VectorType>
   {
-      static void run(VectorType &v1, const VectorType &, const size_t &i)
-      {
-        v1[i]=0;
-      }
+    static void run(VectorType &v1, const VectorType &, const size_t &i)
+    {
+      v1[i]=0;
+    }
   };
 
   class utils
@@ -197,7 +197,7 @@ namespace piranha
       }
       /// Cache all pointers to elements of a container into an array.
       template <class Container, class Contained>
-      static void array_pointer(const Container &c, std::valarray<Contained const *> &v)
+        static void array_pointer(const Container &c, std::valarray<Contained const *> &v)
       {
         typedef typename Container::const_iterator const_iterator;
         const size_t l=c.length();
@@ -212,7 +212,7 @@ namespace piranha
       }
       /// Get relative layout of two vectors.
       template <class VectorType>
-      static layout_type get_layout(const VectorType &v1, const VectorType &v2)
+        static layout_type get_layout(const VectorType &v1, const VectorType &v2)
       {
         const size_t size1 = v1.size(), size2 = v2.size();
         // First we must construct v2's layout wrt to v1.
@@ -260,7 +260,7 @@ namespace piranha
        * Applies layout l to vector v1, where the missing elements in the layout are taken from v2.
        */
       template <class VectorType>
-      static void apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
+        static void apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
       {
         generic_apply_layout<false,VectorType>(l,v1,v2);
       }
@@ -269,11 +269,11 @@ namespace piranha
        * Applies layout l to vector v1, where the missing elements are zeroed.
        */
       template <class VectorType>
-      static void apply_layout(const layout_type &l, VectorType &v1)
+        static void apply_layout(const layout_type &l, VectorType &v1)
       {
         generic_apply_layout<true,VectorType>(l,v1,VectorType());
       }
-      private:
+    private:
       /// Check whether a string is valid.
       /**
        * Invalid strings are empty or commented.
@@ -288,7 +288,7 @@ namespace piranha
         return true;
       }
       template <bool AssignZero, class VectorType>
-      static void generic_apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
+        static void generic_apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
       {
         const size_t l_size = l.size();
         // The layout must have at least all arguments in v1.
@@ -302,15 +302,14 @@ namespace piranha
           switch (l[i].first)
           {
             case true:
-            p_assert(l[i].second < old.size());
-            v1[i]=old[l[i].second];
-            break;
+              p_assert(l[i].second < old.size());
+              v1[i]=old[l[i].second];
+              break;
             case false:
-            layout_assign_helper<AssignZero,VectorType>::run(v1,v2,i);
+              layout_assign_helper<AssignZero,VectorType>::run(v1,v2,i);
           }
         }
       }
-    };
-  }
-
+  };
+}
 #endif

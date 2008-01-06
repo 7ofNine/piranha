@@ -34,10 +34,10 @@
 
 namespace piranha
 {
-/// Base polynomial class.
-/**
- * Implemented as a sorted multiindex container for monomials M.
- */
+  /// Base polynomial class.
+  /**
+   * Implemented as a sorted multiindex container for monomials M.
+   */
   template <class T, class Derived>
     class base_polynomial
   {
@@ -54,42 +54,42 @@ namespace piranha
       typedef typename set_type::template nth_index<0>::type expo_index;
       typedef typename expo_index::iterator iterator;
       friend class std::complex<Derived>;
-// Start INTERFACE definition.
-//-------------------------------------------------------
-/// Alias for the evaluation type.
-// FIXME: deprecated.
+      // Start INTERFACE definition.
+      //-------------------------------------------------------
+      /// Alias for the evaluation type.
+      // FIXME: deprecated.
       typedef typename m_type::eval_type eval_type;
-// Ctors.
-/// Default constructor.
+      // Ctors.
+      /// Default constructor.
       explicit base_polynomial():set_()
         {}
-/// Constructor from int.
+      /// Constructor from int.
       explicit base_polynomial(int n)
       {
         insert(m_type(n));
       }
-/// Constructor from double.
+      /// Constructor from double.
       explicit base_polynomial(const double &x)
       {
         insert(m_type(x));
       }
-/// Constructor from psymbol.
+      /// Constructor from psymbol.
       explicit base_polynomial(const psymbol &psym)
       {
         m_type tmp_m(psym);
         insert(tmp_m);
       }
-/// Copy constructor.
+      /// Copy constructor.
       base_polynomial(const base_polynomial &p):set_(p.set_)
         {}
       explicit base_polynomial(const std::string &);
-/// Destructor.
+      /// Destructor.
       ~base_polynomial()
         {}
-// I/O.
+      // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
-// Manipulation.
+      // Manipulation.
       void pad_right(const size_t &);
       void append_args(const size_t &);
       void prepend_args(const size_t &);
@@ -98,9 +98,9 @@ namespace piranha
       {
         set_.clear();
       }
-// Evaluation
+      // Evaluation
       eval_type t_eval(const double &, const vector_psym_p &) const;
-// Probing
+      // Probing
       size_t length() const
       {
         return set_.size();
@@ -130,32 +130,32 @@ namespace piranha
           return e_index().begin()->g_min_expo();
         }
       }
-/// Check whether base_polynomial is larger than size w.
+      /// Check whether base_polynomial is larger than size w.
       bool larger(const size_t &w) const
       {
         return (width()>w);
       }
-/// Check whether base_polynomial is smaller than size w.
+      /// Check whether base_polynomial is smaller than size w.
       bool smaller(const size_t &w) const
       {
         return (width()<w);
       }
-/// Check whether base_polynomial is compatible with size w.
+      /// Check whether base_polynomial is compatible with size w.
       bool is_compatible(const size_t &w) const
       {
         return (width()==w);
       }
-/// Get actual size of base_polynomial.
+      /// Get actual size of base_polynomial.
       size_t actual_width() const
       {
         return width();
       }
-// Maths.
-/// Partial derivative with respect to nth argument.
-/**
- * Result is stored in input parameter "retval". No assumptions on retval are made.
- * @param[out] retval, Derived class in which the result will be stored.
- */
+      // Maths.
+      /// Partial derivative with respect to nth argument.
+      /**
+       * Result is stored in input parameter "retval". No assumptions on retval are made.
+       * @param[out] retval, Derived class in which the result will be stored.
+       */
       void partial(const size_t &n, Derived &retval) const
       {
         retval.clear();
@@ -167,8 +167,8 @@ namespace piranha
           retval.insert(tmp_m);
         }
       }
-// End INTERFACE definition.
-//-------------------------------------------------------
+      // End INTERFACE definition.
+      //-------------------------------------------------------
       const expo_index &e_index() const
       {
         return set_.template get
@@ -195,10 +195,10 @@ namespace piranha
         }
         return e_index().begin()->width();
       }
-/// Check if the polynomial can be raised to real power.
+      /// Check if the polynomial can be raised to real power.
       bool pow_preliminary_checks() const
       {
-// Requisite: first monomial of the polynomial must be purely numerical and positive.
+        // Requisite: first monomial of the polynomial must be purely numerical and positive.
         if (length() > 0)
         {
           if (e_index().begin()->is_symbolic() || e_index().begin()->g_numerical_cf().value() < 0)
@@ -213,7 +213,7 @@ namespace piranha
       }
       bool pow_handle_special_cases(const double &x)
       {
-// Special handling in case of empty polynomial.
+        // Special handling in case of empty polynomial.
         if (empty())
         {
           if (std::abs(x)<settings_manager::numerical_zero())
@@ -228,22 +228,22 @@ namespace piranha
             std::abort();
             return true;
           }
-// 0^x, just return.
+          // 0^x, just return.
           return true;
         }
         if (std::abs(1-x)<settings_manager::numerical_zero())
         {
-// this^1.
+          // this^1.
           return true;
         }
         if (std::abs(x)<settings_manager::numerical_zero())
         {
-// this^0.
+          // this^0.
           clear();
           insert(m_type((int)1));
           return true;
         }
-// Optimization: if the first monomial, which is numerical, is also the only one, simply compute power.
+        // Optimization: if the first monomial, which is numerical, is also the only one, simply compute power.
         if (length()==1)
         {
           Derived retval;
@@ -253,48 +253,48 @@ namespace piranha
         }
         return false;
       }
-/*      void pow_suitable(boost::tuple<bool,int> &s, const size_t &n) const
+      /*      void pow_suitable(boost::tuple<bool,int> &s, const size_t &n) const
+            {
+              p_assert(n<width());
+      // If assert below fails, the retval tuple may end up uninitialized.
+              p_assert(length()>=1);
+      // The minimum index until now is the first monomials's.
+              s.get<1>()=e_index().begin()->container()[n];
+              int candidate;
+              const iterator it_f=e_index().end();
+              for (iterator it=e_index().begin();it!=it_f;++it)
+              {
+      candidate=it->container()[n];
+      if (candidate<=0)
       {
-        p_assert(n<width());
-// If assert below fails, the retval tuple may end up uninitialized.
-        p_assert(length()>=1);
-// The minimum index until now is the first monomials's.
-        s.get<1>()=e_index().begin()->container()[n];
-        int candidate;
-        const iterator it_f=e_index().end();
-        for (iterator it=e_index().begin();it!=it_f;++it)
-        {
-candidate=it->container()[n];
-if (candidate<=0)
-{
-s.get<0>()=false;
-std::cout << "Non suitability for real powers detected." << std::endl;
-return;
-}
-else
-{
-if (candidate < s.get<1>())
-{
-s.get<1>()=candidate;
-}
-}
-}
-s.get<0>()=true;
-std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
-}
-*/
-/// Maximum natural power allowed.
-/**
- * Maximum natural power that will produce a non-null single-variable polynomial,
- * given the desired exponent limit for the variable and the variable's minimum exponent
- * in the polynomial.
- */
-/*      unsigned int max_natural_power(int limit, int min_expo) const
-      {
-        p_assert(limit >= 0 && min_expo > 0 );
-        return (unsigned int)std::floor(((float)limit)/min_expo);
+      s.get<0>()=false;
+      std::cout << "Non suitability for real powers detected." << std::endl;
+      return;
       }
-*/
+      else
+      {
+      if (candidate < s.get<1>())
+      {
+      s.get<1>()=candidate;
+      }
+      }
+      }
+      s.get<0>()=true;
+      std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>() << std::endl;
+      }
+      */
+      /// Maximum natural power allowed.
+      /**
+       * Maximum natural power that will produce a non-null single-variable polynomial,
+       * given the desired exponent limit for the variable and the variable's minimum exponent
+       * in the polynomial.
+       */
+      /*      unsigned int max_natural_power(int limit, int min_expo) const
+            {
+              p_assert(limit >= 0 && min_expo > 0 );
+              return (unsigned int)std::floor(((float)limit)/min_expo);
+            }
+      */
       void base_merge(const base_polynomial &, bool);
       template <class N>
         void ll_generic_integer_division(const N &);
@@ -305,10 +305,10 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
           set_=p.set_;
         }
       }
-// TODO check if these are really used.
+      // TODO check if these are really used.
       void mult_by_int(int);
       void mult_by_double(const double &);
-//void basic_pow(const double &, const vec_expo_index_limit limits &);
+      //void basic_pow(const double &, const vec_expo_index_limit limits &);
     protected:
       static const std::string  separator_;
       set_type                  set_;
@@ -318,7 +318,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
   template <class T, class Derived>
     const std::string base_polynomial<T,Derived>::separator_="&";
 
-/// Constructor from string.
+  /// Constructor from string.
   template <class T, class Derived>
     inline base_polynomial<T,Derived>::base_polynomial(const std::string &str)
   {
@@ -338,7 +338,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
   }
 
-/// Print in plain format.
+  /// Print in plain format.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::print_plain(std::ostream &out_stream, const vector_psym_p &cv) const
   {
@@ -358,11 +358,11 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     out_stream << '}';
   }
 
-/// Print in latex format.
+  /// Print in latex format.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::print_latex(std::ostream &out_stream, const vector_psym_p &cv) const
   {
-// TODO: cache end() here.
+    // TODO: cache end() here.
     stream_manager::setup_print(out_stream);
     for (iterator it=e_index().begin();it!=e_index().end();++it)
     {
@@ -374,7 +374,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
   }
 
-/// Increase size.
+  /// Increase size.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::pad_right(const size_t &w)
   {
@@ -390,14 +390,14 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     swap(retval);
   }
 
-/// Append arguments.
+  /// Append arguments.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::append_args(const size_t &n)
   {
     pad_right(width()+n);
   }
 
-/// Prepend arguments.
+  /// Prepend arguments.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::prepend_args(const size_t &n)
   {
@@ -412,14 +412,14 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     swap(retval);
   }
 
-/// Swap contents with another base_polynomial.
+  /// Swap contents with another base_polynomial.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::swap(Derived &p)
   {
     set_.swap(p.set_);
   }
 
-/// Insert a new element.
+  /// Insert a new element.
   template <class T, class Derived>
     inline void base_polynomial<T,Derived>::insert(const m_type &m, bool sign)
   {
@@ -431,7 +431,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     m_type *new_m=0;
     if (m.smaller(w))
     {
-// FIXME: use proper allocator.
+      // FIXME: use proper allocator.
       new_m = new m_type(m);
       new_m->pad_right(w);
     }
@@ -448,7 +448,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     const std::pair<iterator,bool> insert_result=e_index().insert(*insert_m);
     if (insert_result.second)
     {
-// The term is NOT a duplicate, it has been inserted in the set; if requested, subtract.
+      // The term is NOT a duplicate, it has been inserted in the set; if requested, subtract.
       if (!sign)
       {
         action_assert(e_index().modify(insert_result.first,
@@ -457,16 +457,16 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
     else
     {
-// The term is in the set, hence an existing term will be modified.
-// TODO: place these into class typedefs?
+      // The term is in the set, hence an existing term will be modified.
+      // TODO: place these into class typedefs?
       typename m_type::numerical_type numerical_cf;
       typename m_type::rational_type rational_cf;
-// Add or subtract according to request.
+      // Add or subtract according to request.
       m_type::cfs_algebraic_sum(
         insert_result.first->g_numerical_cf(),insert_m->g_numerical_cf(),
         insert_result.first->g_rational_cf(),insert_m->g_rational_cf(),numerical_cf,
         rational_cf,sign);
-// Check if the resulting coefficient can be ignored (ie it is small).
+      // Check if the resulting coefficient can be ignored (ie it is small).
       if (numerical_cf.abs()<settings_manager::numerical_zero() || rational_cf==0)
       {
         e_index().erase(insert_result.first);
@@ -497,18 +497,18 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
   }
 
-/// Multiply by self limiting the exponents of symbols.
-/**
- * Exponents limits are usually fetched from piranha::symbol_limiter.
- * @see piranha::symbol_limiter.
- */
+  /// Multiply by self limiting the exponents of symbols.
+  /**
+   * Exponents limits are usually fetched from piranha::symbol_limiter.
+   * @see piranha::symbol_limiter.
+   */
   template <class T, class Derived>
     template <class Derived2>
     inline void base_polynomial<T,Derived>::mult_by_self(const Derived2 &p,
     const index_limit &v)
   {
-// This function is to be used only from Poisson series, in which merging of arguments should
-// ensure the validity of the following assert.
+    // This function is to be used only from Poisson series, in which merging of arguments should
+    // ensure the validity of the following assert.
     p_assert(width()>=p.width());
     if (empty())
     {
@@ -540,7 +540,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     {
       it2=it2_i;
       min_expo1=it1->g_min_expo();
-// TODO: check here if it is worth to cache the result of "w>0" (in that case we need to write different cycles).
+      // TODO: check here if it is worth to cache the result of "w>0" (in that case we need to write different cycles).
       if (w>0 && min_expo1+it2->g_min_expo() > limit_min_expo)
       {
         std::cout << "Shortcut1\n";
@@ -556,12 +556,12 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
         proceed=true;
         for (j=0;j<w;++j)
         {
-// Find the exponents of the limited arguments.
+          // Find the exponents of the limited arguments.
           const size_t index=v[j].get<0>();
-// Make sure we are not going outside boundaries.
+          // Make sure we are not going outside boundaries.
           p_assert(index < width());
           ex1=it1->g_container()[index];
-// it2 can be smaller, since we support multiplication by a narrower polynomial.
+          // it2 can be smaller, since we support multiplication by a narrower polynomial.
           if (it2->smaller(index))
           {
             ex2=0;
@@ -595,10 +595,10 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
       return;
     }
     const iterator it_f=e_index().end();
-// TODO: Move "if" outside "for" and make two cycles to optimize?
+    // TODO: Move "if" outside "for" and make two cycles to optimize?
     for (iterator it=e_index().begin();it!=it_f;++it)
     {
-// Distinguish between positive and negative, we want only the numerical coefficient to be signed.
+      // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
         action_assert(e_index().modify(it,typename m_type::update_rational_cf(n*it->g_rational_cf())));
@@ -626,7 +626,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
   }
 
-// Low-level generic division by integer type.
+  // Low-level generic division by integer type.
   template <class T, class Derived>
     template <class N>
     inline void base_polynomial<T,Derived>::ll_generic_integer_division(const N &n)
@@ -637,10 +637,10 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
       std::exit(1);
     }
     const iterator it_f=e_index().end();
-// TODO: Move "if" outside "for" and make two cycles to optimize?
+    // TODO: Move "if" outside "for" and make two cycles to optimize?
     for (iterator it=e_index().begin();it!=it_f;++it)
     {
-// Distinguish between positive and negative, we want only the numerical coefficient to be signed.
+      // Distinguish between positive and negative, we want only the numerical coefficient to be signed.
       if (n>0)
       {
         action_assert(e_index().modify(it,typename m_type::update_rational_cf(it->g_rational_cf()/n)));
@@ -653,7 +653,7 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     }
   }
 
-/// Time evaluation.
+  /// Time evaluation.
   template <class T, class Derived>
     inline typename base_polynomial<T,Derived>::eval_type base_polynomial<T,Derived>::t_eval(const double &t, const vector_psym_p &v) const
   {
@@ -667,18 +667,18 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     return retval;
   }
 
-/// Diagnostic checkup.
+  /// Diagnostic checkup.
   template <class T, class Derived>
     inline bool base_polynomial<T,Derived>::checkup(const size_t &s) const
   {
     const iterator it_f=e_index().end();
     size_t w=width();
-// Let's check that base_polynomial's size is equal to s.
+    // Let's check that base_polynomial's size is equal to s.
     if (s!=w)
     {
       std::cout << "Size mismatch in base_polynomial." << std::endl;
     }
-// Let's check that all monomials have same size.
+    // Let's check that all monomials have same size.
     for (iterator it=e_index().begin();it!=it_f;++it)
     {
       if (!it->checkup(w))
@@ -690,14 +690,14 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     return true;
   }
 
-/// Check whether a base_polynomial is zero.
+  /// Check whether a base_polynomial is zero.
   template <class T, class Derived>
     inline bool base_polynomial<T,Derived>::is_zero(const vector_psym_p &) const
   {
     return empty();
   }
 
-/// Get base_polynomial's norm.
+  /// Get base_polynomial's norm.
   template <class T, class Derived>
     inline double base_polynomial<T,Derived>::norm(const vector_psym_p &v) const
   {
@@ -710,86 +710,86 @@ std::cout << "Final minimum index in real power of polynomial is: " << s.get<1>(
     return std::abs(retval);
   }
 
-/// Basic real power.
-/*  template <class T, class Derived>
-    inline void base_polynomial<T,Derived>::basic_pow(const double &x, const vec_expo_index_limit limits &v)
+  /// Basic real power.
+  /*  template <class T, class Derived>
+      inline void base_polynomial<T,Derived>::basic_pow(const double &x, const vec_expo_index_limit limits &v)
+    {
+      if (!pow_preliminary_checks())
+      {
+        return;
+      }
+      if (pow_handle_special_cases(x))
+      {
+        return;
+      }
+  // This is the remainder part of this, i.e. this without the leading term.
+  Derived x(*static_cast<Derived *>(this));
+  x.e_index().erase(x.e_index().begin());
+  // Now we have to check if with the provided vector for symbol limits we effectively reach a point after which
+  // the binomial expansion will lead to null polynomials being created. We must stop at that point.
+  // In binomial expansions, "x" is raised to a power equal to the number of iterations.
+  int iterations=-1;
+  const size_t v_size=v.size();
+  boost::tuple<bool,int> is_suitable(true,0);
+  for (size_t i=0;j<v_size;++j)
   {
-    if (!pow_preliminary_checks())
-    {
-      return;
-    }
-    if (pow_handle_special_cases(x))
-    {
-      return;
-    }
-// This is the remainder part of this, i.e. this without the leading term.
-Derived x(*static_cast<Derived *>(this));
-x.e_index().erase(x.e_index().begin());
-// Now we have to check if with the provided vector for symbol limits we effectively reach a point after which
-// the binomial expansion will lead to null polynomials being created. We must stop at that point.
-// In binomial expansions, "x" is raised to a power equal to the number of iterations.
-int iterations=-1;
-const size_t v_size=v.size();
-boost::tuple<bool,int> is_suitable(true,0);
-for (size_t i=0;j<v_size;++j)
-{
-// Make sure we are not poking outside the boundaries of the monomial's container for exponents.
-p_assert(v[i].get<0>()<x.width());
-x.pow_suitable(is_suitable);
-if (!is_suitable.get<0>())
-{
-std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self." << std::endl;
-std::abort();
-return;
-}
-if (v[i].get<1>() < 0)
-{
-std::cout << "Cannot accept a negative symbol limit when raising to power." << std::endl;
-std::abort();
-return;
-}
-max_natural_power(v[i].get<1>(),)
-if (is_suitable.get<1>() > iterations)
-{
-iterations=is_suitable.get<1>();
-}
-}
-if (iterations < 0)
-{
-std::cout << "Negative iterations for power, returning self;
-std::abort();
-return;
-}
+  // Make sure we are not poking outside the boundaries of the monomial's container for exponents.
+  p_assert(v[i].get<0>()<x.width());
+  x.pow_suitable(is_suitable);
+  if (!is_suitable.get<0>())
+  {
+  std::cout << "Polynomial cannot be raised to real power given current exponents limits, returning self." << std::endl;
+  std::abort();
+  return;
+  }
+  if (v[i].get<1>() < 0)
+  {
+  std::cout << "Cannot accept a negative symbol limit when raising to power." << std::endl;
+  std::abort();
+  return;
+  }
+  max_natural_power(v[i].get<1>(),)
+  if (is_suitable.get<1>() > iterations)
+  {
+  iterations=is_suitable.get<1>();
+  }
+  }
+  if (iterations < 0)
+  {
+  std::cout << "Negative iterations for power, returning self;
+  std::abort();
+  return;
+  }
 
-max_natural_power(int limit, int min_expo) const
+  max_natural_power(int limit, int min_expo) const
 
-// NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
-const double error=.1*std::pow(derived_cast->g_norm(),power)*
-settings_manager::prec();
-const unsigned int limit_index=pow_limit(error,power);
-Derived retval, x(*derived_cast), tmp(1.);
-x.term_erase(x.g_s_index().begin());
-for (unsigned int i=0;i<=limit_index;++i)
-{
-{
-Derived tmp2(tmp);
-tmp2*=math::choose(power,i);
-tmp2*=Derived(a.pow(power-i),tmp2);
-retval+=tmp2;
-}
-tmp*=x;
-}
-return retval;
+  // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
+  const double error=.1*std::pow(derived_cast->g_norm(),power)*
+  settings_manager::prec();
+  const unsigned int limit_index=pow_limit(error,power);
+  Derived retval, x(*derived_cast), tmp(1.);
+  x.term_erase(x.g_s_index().begin());
+  for (unsigned int i=0;i<=limit_index;++i)
+  {
+  {
+  Derived tmp2(tmp);
+  tmp2*=math::choose(power,i);
+  tmp2*=Derived(a.pow(power-i),tmp2);
+  retval+=tmp2;
+  }
+  tmp*=x;
+  }
+  return retval;
 
-if (set_.size()>1)
-{
-std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
-std::abort();
-}
-Derived retval;
-// Real case.
-retval.insert(e_index().begin()->pow(x));
-swap(retval);
-}*/
+  if (set_.size()>1)
+  {
+  std::cout << "ERROR: won't invert a non singular polynomial." << std::endl;
+  std::abort();
+  }
+  Derived retval;
+  // Real case.
+  retval.insert(e_index().begin()->pow(x));
+  swap(retval);
+  }*/
 }
 #endif

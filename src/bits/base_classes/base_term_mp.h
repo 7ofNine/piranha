@@ -32,118 +32,117 @@ namespace piranha
 {
   template <int LastIndex, int Index = 0> struct term_helper_brute_evaluation
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class ArgumentsTuple> static typename Term::eval_type run(const Term &term,
-        const double &t, const ArgumentsTuple &a)
-      {
-        BOOST_STATIC_ASSERT(Term::size == (size_t)boost::tuples::length<ArgumentsTuple>::value);
-        return term.elements.template get<Index>().t_eval(t, a.template get<Index>())* term_helper_brute_evaluation<LastIndex, Index+1>::run(term, t,
-          a);
-      }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class ArgumentsTuple> static typename Term::eval_type run(const Term &term,
+      const double &t, const ArgumentsTuple &a)
+    {
+      BOOST_STATIC_ASSERT(Term::size == (size_t)boost::tuples::length<ArgumentsTuple>::value);
+      return term.elements.template get<Index>().t_eval(t, a.template get<Index>())* term_helper_brute_evaluation<LastIndex, Index+1>::run(term, t,
+        a);
+    }
   };
 
   template <int LastIndex> struct term_helper_brute_evaluation<LastIndex, LastIndex>
   {
-      template <class Term, class ArgumentsTuple> static typename Term::eval_type run(const Term &term,
-        const double &t, const ArgumentsTuple &a)
-      {
-        BOOST_STATIC_ASSERT(Term::size == (size_t)boost::tuples::length<ArgumentsTuple>::value);
-        return term.elements.template get<LastIndex>().t_eval(t, a.template get<LastIndex>());
-      }
+    template <class Term, class ArgumentsTuple> static typename Term::eval_type run(const Term &term,
+      const double &t, const ArgumentsTuple &a)
+    {
+      BOOST_STATIC_ASSERT(Term::size == (size_t)boost::tuples::length<ArgumentsTuple>::value);
+      return term.elements.template get<LastIndex>().t_eval(t, a.template get<LastIndex>());
+    }
   };
 
   template <int LastIndex, int Index = 0> struct term_helper_checkup
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return (term.elements.template get<Index>().checkup(s)
-          and term_helper_checkup<LastIndex,Index+1>::run(term,s));
-        }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return (term.elements.template get<Index>().checkup(s)
+        and term_helper_checkup<LastIndex,Index+1>::run(term,s));
+    }
   };
 
   template <int LastIndex> struct term_helper_checkup<LastIndex, LastIndex>
   {
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return term.elements.template get<LastIndex>().checkup(s);
-      }
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return term.elements.template get<LastIndex>().checkup(s);
+    }
   };
 
   template <int LastIndex, int Index = 0> struct term_helper_ignorability
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return (term.elements.template get<Index>().is_ignorable(s)
-          or
-          term_helper_ignorability<LastIndex,Index+1>::run(term,s));
-        }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return (term.elements.template get<Index>().is_ignorable(s)
+        or
+        term_helper_ignorability<LastIndex,Index+1>::run(term,s));
+    }
   };
 
   template <int LastIndex> struct term_helper_ignorability<LastIndex, LastIndex>
   {
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return term.elements.template get<LastIndex>().is_ignorable(s);
-      }
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return term.elements.template get<LastIndex>().is_ignorable(s);
+    }
   };
 
   template <int LastIndex, int Index = 0> struct term_helper_insertability
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return (term.elements.template get<Index>().is_insertable(s.arguments().template get<Index>().size())
-          and
-          term_helper_insertability<LastIndex,Index+1>::run(term,s));
-        }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return (term.elements.template get<Index>().is_insertable(s.arguments().template get<Index>().size())
+        and
+        term_helper_insertability<LastIndex,Index+1>::run(term,s));
+    }
   };
 
   template <int LastIndex> struct term_helper_insertability<LastIndex, LastIndex>
   {
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return term.elements.template get<LastIndex>().is_insertable(s.arguments().template get<LastIndex>().size());
-      }
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return term.elements.template get<LastIndex>().is_insertable(s.arguments().template get<LastIndex>().size());
+    }
   };
 
   template <int LastIndex, int Index = 0> struct term_helper_needs_padding
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return (term.elements.template get<Index>().needs_padding(s.arguments().template get<Index>().size())
-          or
-          term_helper_needs_padding<LastIndex,Index+1>::run(term,s));
-        }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return (term.elements.template get<Index>().needs_padding(s.arguments().template get<Index>().size())
+        or
+        term_helper_needs_padding<LastIndex,Index+1>::run(term,s));
+    }
   };
 
   template <int LastIndex> struct term_helper_needs_padding<LastIndex, LastIndex>
   {
-      template <class Term, class Series> static bool run(const Term &term, const Series &s)
-      {
-        return term.elements.template get<LastIndex>().needs_padding(s.arguments().template get<LastIndex>().size());
-      }
+    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    {
+      return term.elements.template get<LastIndex>().needs_padding(s.arguments().template get<LastIndex>().size());
+    }
   };
 
   template <int LastIndex, int Index = 0> struct term_helper_pad_right
   {
-      BOOST_STATIC_ASSERT(LastIndex >= 0);
-      template <class Term, class Series> static void run(Term &term, const Series &s)
-      {
-        term.elements.template get<Index>().pad_right(s.arguments().template get<Index>().size());
-        term_helper_pad_right<LastIndex,Index+1>::run(term,s);
-      }
+    BOOST_STATIC_ASSERT(LastIndex >= 0);
+    template <class Term, class Series> static void run(Term &term, const Series &s)
+    {
+      term.elements.template get<Index>().pad_right(s.arguments().template get<Index>().size());
+      term_helper_pad_right<LastIndex,Index+1>::run(term,s);
+    }
   };
 
   template <int LastIndex> struct term_helper_pad_right<LastIndex, LastIndex>
   {
-      template <class Term, class Series> static void run(Term &term, const Series &s)
-      {
-        term.elements.template get<LastIndex>().pad_right(s.arguments().template get<LastIndex>().size());
-      }
+    template <class Term, class Series> static void run(Term &term, const Series &s)
+    {
+      term.elements.template get<LastIndex>().pad_right(s.arguments().template get<LastIndex>().size());
+    }
   };
 }
-
 #endif

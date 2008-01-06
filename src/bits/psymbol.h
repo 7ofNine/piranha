@@ -35,46 +35,46 @@
 
 namespace piranha
 {
-/// Manage a global set of psymbols.
-/**
- * piranha::psymbol must be registered here to keep a global list of symbol for use in Poisson series.
- */
+  /// Manage a global set of psymbols.
+  /**
+   * piranha::psymbol must be registered here to keep a global list of symbol for use in Poisson series.
+   */
   class psymbol_manager
   {
     public:
-/// Simple symbol class.
-/**
- * This class is used in piranha to represent symbolic entitites (arguments and, in a later stage,
- * symbolic coefficients). It features a string representing the symbol's name and a numerical vector
- * which is used to evaluate the symbol in a polynomial fashion. For instance, if the numerical vector
- * has a size of three and its elements are named \f$ \alpha \f$, \f$ \beta \f$ and \f$ \gamma \f$,
- * it means that the symbol is evaluated as
- * \f[
- * \alpha + \beta t + \gamma t^2,
- * \f]
- * where \f$ t \f$ is time.
- * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
- */
+      /// Simple symbol class.
+      /**
+       * This class is used in piranha to represent symbolic entitites (arguments and, in a later stage,
+       * symbolic coefficients). It features a string representing the symbol's name and a numerical vector
+       * which is used to evaluate the symbol in a polynomial fashion. For instance, if the numerical vector
+       * has a size of three and its elements are named \f$ \alpha \f$, \f$ \beta \f$ and \f$ \gamma \f$,
+       * it means that the symbol is evaluated as
+       * \f[
+       * \alpha + \beta t + \gamma t^2,
+       * \f]
+       * where \f$ t \f$ is time.
+       * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
+       */
       class psymbol
       {
         public:
-/// Enum for psymbol type.
-/**
- * Used to identify psymbols in piranha::base_pseries. Psymbol can be in the coefficient
- * or in the trigonometric part of a term.
- */
+          /// Enum for psymbol type.
+          /**
+           * Used to identify psymbols in piranha::base_pseries. Psymbol can be in the coefficient
+           * or in the trigonometric part of a term.
+           */
           enum type
           {
             cf = 0,
             trig = 1,
           };
-// Ctors
-/// Constructor from std::string and vector_double.
-/**
- * Assigns both psymbol_manager::psymbol::name_ and psymbol_manager::psymbol::poly_eval_.
- * @param[in] str symbol's name.
- * @param[in] pol symbol's polynomial evaluation vector.
- */
+          // Ctors
+          /// Constructor from std::string and vector_double.
+          /**
+           * Assigns both psymbol_manager::psymbol::name_ and psymbol_manager::psymbol::poly_eval_.
+           * @param[in] str symbol's name.
+           * @param[in] pol symbol's polynomial evaluation vector.
+           */
           psymbol(const std::string &str, const vector_double &pol):name_(str),poly_eval_(pol)
             {psymbol_manager::reg(*this);}
           psymbol(const std::string &);
@@ -131,33 +131,33 @@ namespace piranha
             };
             build_from_array(tmp);
           }
-/// Copy constructor.
+          /// Copy constructor.
           psymbol(const psymbol &psym):name_(psym.name_),poly_eval_(psym.poly_eval_) {}
-/// Copy function used in python bindings.
+          /// Copy function used in python bindings.
           psymbol copy() const
           {
             return psymbol(*this);
           }
           bool operator==(const psymbol &) const;
           void print(std::ostream& out_stream=std::cout) const;
-/// Print to screen.
+          /// Print to screen.
           void put() const {print(std::cout);}
           double t_eval(const double &) const;
-// Getters
-/// Get symbol's name.
+          // Getters
+          /// Get symbol's name.
           const std::string &name() const {return name_;}
-/// Get polynomial evaluation vector.
+          /// Get polynomial evaluation vector.
           const vector_double &poly_eval() const {return poly_eval_;}
-// TODO: replace with templated int?
-/// Get symbol's phase.
+          // TODO: replace with templated int?
+          /// Get symbol's phase.
           double phase() const {return get_poly_eval_elem(0);}
-/// Get symbol's frequency.
+          /// Get symbol's frequency.
           double freq() const {return get_poly_eval_elem(1);}
           std::string powers_string() const {return utils::vector_double_to_str(poly_eval_);}
         private:
-// Default constructor. Privatized because it mustn't be called.
+          // Default constructor. Privatized because it mustn't be called.
           psymbol() {p_assert(false);}
-// Helper for getting poly evals.
+          // Helper for getting poly evals.
           double get_poly_eval_elem(const size_t &n) const
           {
             if (n>=poly_eval_.size())
@@ -167,15 +167,15 @@ namespace piranha
             }
             return poly_eval_[n];
           }
-// Helper for ctor from boost::array.
+          // Helper for ctor from boost::array.
           template <class T>
             void build_from_array(const T &);
-// Data members.
+          // Data members.
         private:
           std::string                 name_;
           vector_double               poly_eval_;
       };
-/// Functor used in psymbol comparison in set.
+      /// Functor used in psymbol comparison in set.
       struct ltpsymbol
       {
         size_t operator()(const psymbol &psym1, const psymbol &psym2) const
@@ -183,16 +183,16 @@ namespace piranha
           return (psym1.name().compare(psym2.name())<0);
         }
       };
-/// Alias for symbol set.
-// TODO: turn into multiindex container, so that we can search by name and drop that ugly O(n)
-// operation somewhere below.
+      /// Alias for symbol set.
+      // TODO: turn into multiindex container, so that we can search by name and drop that ugly O(n)
+      // operation somewhere below.
       typedef std::set
         <psymbol,ltpsymbol> set_type;
-/// Alias for standard iterator, to be used in pyranha.
+      /// Alias for standard iterator, to be used in pyranha.
       typedef set_type::const_iterator iterator;
-/// Alias for iterator.
+      /// Alias for iterator.
       typedef iterator psym_p;
-/// Print to stream.
+      /// Print to stream.
       static void print(std::ostream &stream=std::cout)
       {
         stream_manager::setup_print(stream);
@@ -203,7 +203,7 @@ namespace piranha
           it->print(stream);
         }
       }
-/// Print to screen.
+      /// Print to screen.
       static void put() {print();}
       static std::pair<bool,iterator> get_pointer(const psymbol &psym)
       {
@@ -211,7 +211,7 @@ namespace piranha
         p_assert(retval.first);
         return retval;
       }
-// NOTICE: this is an O(n) operation, maybe it can be sped up.
+      // NOTICE: this is an O(n) operation, maybe it can be sped up.
       static std::pair<bool,iterator> get_pointer(const std::string &name)
       {
         std::pair<bool,iterator> retval(false,end());
@@ -226,30 +226,30 @@ namespace piranha
         }
         return retval;
       }
-// Function to iterate over the manager. To be used in pyranha.
+      // Function to iterate over the manager. To be used in pyranha.
       static iterator begin() {return p_set_.begin();}
       static iterator end() {return p_set_.end();}
       static size_t length() {return p_set_.size();}
     private:
-/// Register a symbol.
-/**
- * Searches for symbol: if it is not found, inserts new, otherwise will override its properties.
- */
+      /// Register a symbol.
+      /**
+       * Searches for symbol: if it is not found, inserts new, otherwise will override its properties.
+       */
       static void reg(const psymbol &psym)
       {
         const iterator it=p_set_.find(psym);
         if (it == p_set_.end())
         {
-// Symbol is not already present, add it.
+          // Symbol is not already present, add it.
           std::pair<iterator,bool> result=p_set_.insert(psym);
           p_assert(result.second);
         }
         else
         {
-// Symbol name is already registered, check that it is really the same symbol.
+          // Symbol name is already registered, check that it is really the same symbol.
           if (!(psym == *it))
           {
-// TODO: overwrite here instead of using old.
+            // TODO: overwrite here instead of using old.
             std::cout << "Warning: you tried to add a psymbol with the same name of another one "
               << "but with different properties. The original one will be used." << std::endl;
             psym.print();
@@ -260,16 +260,16 @@ namespace piranha
           }
         }
       }
-// Data members.
+      // Data members.
     private:
       static set_type             p_set_;
   };
 
-/// Constructor from std::string.
-/**
- * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
- * psymbol with zero poly_eval is built.
- */
+  /// Constructor from std::string.
+  /**
+   * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
+   * psymbol with zero poly_eval is built.
+   */
   inline psymbol_manager::psymbol::psymbol(const std::string &str):name_(str),poly_eval_()
   {
     std::pair<bool,psym_p> res=psymbol_manager::get_pointer(str);
@@ -284,7 +284,7 @@ namespace piranha
     }
   }
 
-// Helper for ctor from boost::array.
+  // Helper for ctor from boost::array.
   template <class T>
     inline void psymbol_manager::psymbol::build_from_array(const T &a)
   {
@@ -296,7 +296,7 @@ namespace piranha
     psymbol_manager::reg(*this);
   }
 
-/// Print to stream.
+  /// Print to stream.
   inline void psymbol_manager::psymbol::print(std::ostream &out_stream) const
   {
     stream_manager::setup_print(out_stream);
@@ -313,7 +313,7 @@ namespace piranha
     out_stream << std::endl;
   }
 
-/// Test for equality.
+  /// Test for equality.
   inline bool psymbol_manager::psymbol::operator==(const psymbol &psym2) const
   {
     if (name_ != psym2.name_)
@@ -329,20 +329,20 @@ namespace piranha
     return true;
   }
 
-/// Time evaluation.
+  /// Time evaluation.
   inline double psymbol_manager::psymbol::t_eval(const double &t) const
   {
     double retval=0.;
     const size_t w=poly_eval_.size();
     for (size_t i=0;i<w;++i)
     {
-// FIXME: use natural_pow or the like here, to speed up?
+      // FIXME: use natural_pow or the like here, to speed up?
       retval+=std::pow(t,(int)i)*poly_eval_[i];
     }
     return retval;
   }
 
-/// Typedefs used in series, terms, coefficients and trigonometric parts.
+  /// Typedefs used in series, terms, coefficients and trigonometric parts.
   typedef psymbol_manager::psym_p psym_p;
   typedef std::vector<psym_p> vector_psym_p;
   typedef psymbol_manager::psymbol psymbol;

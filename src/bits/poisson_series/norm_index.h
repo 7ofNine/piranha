@@ -31,10 +31,10 @@
 
 namespace piranha
 {
-/// Norm extractor.
-/**
- * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
- */
+  /// Norm extractor.
+  /**
+   * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
+   */
   template <class Term>
     struct norm_extractor
   {
@@ -46,13 +46,13 @@ namespace piranha
     }
   };
 
-/// Norm-based indices for base_pseries.
-/**
- * This class specifies the following indices to be used in piranha::base_pseries: a hashed index for the
- * identification
- * of terms and a norm-sorted index to discard terms in multiplications. The class is to be used as the I
- * parameter in piranha::base_pseries classes.
- */
+  /// Norm-based indices for base_pseries.
+  /**
+   * This class specifies the following indices to be used in piranha::base_pseries: a hashed index for the
+   * identification
+   * of terms and a norm-sorted index to discard terms in multiplications. The class is to be used as the I
+   * parameter in piranha::base_pseries classes.
+   */
   template <class Cf, class Trig, template <class, class> class Term>
     struct norm_index
   {

@@ -26,27 +26,27 @@
 
 namespace piranha
 {
-/// Useful astronomical functions and constants.
+  /// Useful astronomical functions and constants.
   class astro
   {
     public:
-/// Transform given Julian Date into time unit suitable for use in the ELP2000 theory.
-/**
- * ELP2000 time is measured in Julian centuries from J2000.0.
- * @param[in] jd double: Julian Date to be converted.
- */
+      /// Transform given Julian Date into time unit suitable for use in the ELP2000 theory.
+      /**
+       * ELP2000 time is measured in Julian centuries from J2000.0.
+       * @param[in] jd double: Julian Date to be converted.
+       */
       static double JD_to_elp2000(const double &jd)
       {
         return ((jd-J2000dot0_)/36525.);
       }
-/// Kepler equation solver for \f$ \cos E \f$.
-/**
- * Find the cosine of eccentric anomaly by successive approximations,
- * given eccentricity and complex exponential of mean anomaly.
- * @param[in] e: eccentricity.
- * @param[in] eiM: complex exponential of mean anomaly.
- * @param[in] prec: double precision desired for the solution, relative to \f$ E \f$.
- */
+      /// Kepler equation solver for \f$ \cos E \f$.
+      /**
+       * Find the cosine of eccentric anomaly by successive approximations,
+       * given eccentricity and complex exponential of mean anomaly.
+       * @param[in] e: eccentricity.
+       * @param[in] eiM: complex exponential of mean anomaly.
+       * @param[in] prec: double precision desired for the solution, relative to \f$ E \f$.
+       */
       template <class T>
         static T kep_cosE(const T &e,
         const std::complex<T> &eiM, const double &prec)
@@ -76,59 +76,59 @@ namespace piranha
         }
         return (cosM*eiphi.real()-sinM*eiphi.imag());
       }
-/// Transform spherical coordinates into x-coordinate.
+      /// Transform spherical coordinates into x-coordinate.
       static double sph_to_x(const double &r, const double &col, const double &lon)
       {
         return (r*std::cos(lon)*std::sin(col));
       }
-/// Transform spherical coordinates into y-coordinate.
+      /// Transform spherical coordinates into y-coordinate.
       static double sph_to_y(const double &r, const double &col, const double &lon)
       {
         return (r*std::sin(lon)*std::sin(col));
       }
-/// Transform spherical coordinates into z-coordinate.
+      /// Transform spherical coordinates into z-coordinate.
       static double sph_to_z(const double &r, const double &col, const double &)
       {
         return (r*std::cos(col));
       }
-// Getters for constants.
-/// Get universal gravitational constant.
+      // Getters for constants.
+      /// Get universal gravitational constant.
       static const double &G()
       {
         return G_;
       }
-/// Get gaussian gravitational constant.
+      /// Get gaussian gravitational constant.
       static const double &k()
       {
         return k_;
       }
-/// Get Julian Date for J2000.0.
+      /// Get Julian Date for J2000.0.
       static const double &J2000dot0()
       {
         return J2000dot0_;
       }
-/// Get Julian Date for J1980.0.
+      /// Get Julian Date for J1980.0.
       static const double &J1980dot0()
       {
         return J1980dot0_;
       }
-/// Get number of Julian Days per Julian Year.
+      /// Get number of Julian Days per Julian Year.
       static const double &JD_per_JY()
       {
         return JD_per_JY_;
       }
-/// Get number of seconds per Julian Year.
+      /// Get number of seconds per Julian Year.
       static const double &seconds_per_JY()
       {
         return seconds_per_JY_;
       }
-// FIXME: is this really at J2000.0?
-/// Get obliquity of the ecliptic at J2000.0.
+      // FIXME: is this really at J2000.0?
+      /// Get obliquity of the ecliptic at J2000.0.
       static const double &eps_0()
       {
         return eps_0_;
       }
-/// Get the Astronomical Unit in meters.
+      /// Get the Astronomical Unit in meters.
       static const double &AU()
       {
         return AU_;
@@ -144,9 +144,9 @@ namespace piranha
       static const double AU_;
   };
 
-/*inline boost::python::numeric::array sph_to_cart(const double &r, const double &col, const double &lon)
-{
-    return boost::python::numeric::array(1.);
-}*/
+  /*inline boost::python::numeric::array sph_to_cart(const double &r, const double &col, const double &lon)
+  {
+      return boost::python::numeric::array(1.);
+  }*/
 }
 #endif

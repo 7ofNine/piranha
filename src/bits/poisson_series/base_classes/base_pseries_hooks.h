@@ -23,27 +23,27 @@
 
 namespace piranha
 {
-/// Hooks for piranha::base_pseries.
+  /// Hooks for piranha::base_pseries.
   template <class Derived>
     class base_pseries_hooks
   {
     protected:
-// Hooks.
-/// Default implementation of assignment hook.
-/**
- * Templatized this way because we want to be able to assign real series to complex ones.
- */
+      // Hooks.
+      /// Default implementation of assignment hook.
+      /**
+       * Templatized this way because we want to be able to assign real series to complex ones.
+       */
       template <class Derived2>
         void assignment_hook(const Derived2 &) {}
-/// Default implementation of swap hook.
+      /// Default implementation of swap hook.
       void swap_hook(Derived &) {}
-/// Default implementation of the hook for post-insertion of a new term.
+      /// Default implementation of the hook for post-insertion of a new term.
       template <class Term>
         void new_term_post_insertion_hook(const Term &) {}
-/// Default implementation of the hook for post-erase of a term.
+      /// Default implementation of the hook for post-erase of a term.
       template <class Term>
         void term_pre_erase_hook(const Term &) {}
-/// Default implementation of the hook for pre-update of a term.
+      /// Default implementation of the hook for pre-update of a term.
       template <class Term, class Cf>
         void term_pre_update_hook(const Term &, const Cf &) {}
   };

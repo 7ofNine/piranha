@@ -29,7 +29,5 @@
 
 // To detect version and build information.
 #include "../src/tbb/tbb_version.h"
-
 #endif
-
 #endif

@@ -39,7 +39,7 @@ namespace piranha
       typedef typename ancestor::eval_type eval_type;
       /// Default constructor.
       explicit simple_term() :
-        ancestor::base_term()
+      ancestor::base_term()
       {
       }
       /// Constructor from generic coefficient and fixed trigonometric part.
@@ -47,7 +47,7 @@ namespace piranha
        * Constructs from generic coefficient type.
        */
       template <class Cf2> explicit simple_term(const Cf2 &c, const trig_type &t) :
-        ancestor(cf_type(c), t)
+      ancestor(cf_type(c), t)
       {
       }
       /// Generic copy constructor.
@@ -55,7 +55,7 @@ namespace piranha
        * Constructs from piranha::simple_term with optionally different coefficient type.
        */
       template <class Cf2> explicit simple_term(const simple_term<Cf2,Trig> &term) :
-        ancestor(term)
+      ancestor(term)
       {
       }
       // Getters

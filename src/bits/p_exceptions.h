@@ -26,23 +26,22 @@
 
 namespace piranha
 {
-/// Piranha exception namespace.
-namespace exceptions
-{
-/// Add arguments exception.
-/**
- * To be used when appending arguments to a Poisson series fails.
- */
-  class add_arguments
+  /// Piranha exception namespace.
+  namespace exceptions
   {
-    public:
-      add_arguments(const std::string &s)
-      {
-        std::cout << "Exception thrown." << std::endl;
-        std::cout << s << std::endl;
-      }
-  };
+    /// Add arguments exception.
+    /**
+     * To be used when appending arguments to a Poisson series fails.
+     */
+    class add_arguments
+    {
+      public:
+        add_arguments(const std::string &s)
+        {
+          std::cout << "Exception thrown." << std::endl;
+          std::cout << s << std::endl;
+        }
+    };
+  }
 }
-}
-
 #endif

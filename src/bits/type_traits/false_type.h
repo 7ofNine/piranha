@@ -28,5 +28,4 @@ namespace piranha
     static const bool   value = false;
   };
 }
-
 #endif

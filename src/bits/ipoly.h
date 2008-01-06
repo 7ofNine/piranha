@@ -25,12 +25,12 @@
 
 namespace piranha
 {
-/// Indexed polynomial.
+  /// Indexed polynomial.
   template <class Cf, class Index, class Expo>
     class ipoly:public base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> >
   {
-      typedef base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> > ancestor;
-      typedef typename ancestor::im_type im_type;
+    typedef base_ipoly<Cf,Index,Expo,ipoly<Cf,Index,Expo> > ancestor;
+    typedef typename ancestor::im_type im_type;
     public:
       typedef typename ancestor::vector_expo vector_expo;
       ipoly():ancestor::base_ipoly(),private_width_(0)
@@ -77,5 +77,4 @@ namespace piranha
       uint16       private_width_;
   };
 }
-
 #endif

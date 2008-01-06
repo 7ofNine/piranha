@@ -23,15 +23,15 @@
 
 namespace piranha
 {
-/// Complex toolbox.
+  /// Complex toolbox.
   template <class real_Derived>
     class complex_toolbox
   {
-/// Alias for complex type.
-      typedef std::complex<real_Derived> Derived;
+    /// Alias for complex type.
+    typedef std::complex<real_Derived> Derived;
     public:
       explicit complex_toolbox() {}
-// Complex specific constructors.
+      // Complex specific constructors.
       explicit complex_toolbox(const std::complex<int> &n)
       {
         static_cast<Derived *>(this)->generic_builder(n);
@@ -58,107 +58,107 @@ namespace piranha
         build_from_components(r,i);
       }
       ~complex_toolbox() {}
-/// Get real part.
+      /// Get real part.
       real_Derived real() const
       {
         return get_comp<Real>();
       }
-/// Get imaginary part.
+      /// Get imaginary part.
       real_Derived imag() const
       {
         return get_comp<Imag>();
       }
-/// Absolute value.
-// TODO:place this into pow toolbox, complex counterpart?
+      /// Absolute value.
+      // TODO:place this into pow toolbox, complex counterpart?
       real_Derived abs() const
       {
         return (real()*real()+imag()*imag()).pow(.5);
       }
-/// Complex conjugate.
+      /// Complex conjugate.
       Derived conj() const
       {
         return Derived(real(),imag()*=-1);
       }
-// Maths interoperability with complex pods and real counterpart.
-/// Assign complex int.
+      // Maths interoperability with complex pods and real counterpart.
+      /// Assign complex int.
       Derived &complex_assign(const std::complex<int> &n)
       {
         return static_cast<Derived *>(this)->assign_generic(n);
       }
-/// Assign complex double.
+      /// Assign complex double.
       Derived &complex_assign(const std::complex<double> &x)
       {
         return static_cast<Derived *>(this)->assign_generic(x);
       }
-/// Assign real counterpart.
+      /// Assign real counterpart.
       Derived &complex_assign(const real_Derived &r)
       {
         return static_cast<Derived *>(this)->assign_series(r);
       }
-/// Add complex int.
+      /// Add complex int.
       Derived &complex_add(const std::complex<int> &n)
       {
         return static_cast<Derived *>(this)->add_generic(n);
       }
-/// Add complex double.
+      /// Add complex double.
       Derived &complex_add(const std::complex<double> &x)
       {
         return static_cast<Derived *>(this)->add_generic(x);
       }
-/// Add real counterpart.
+      /// Add real counterpart.
       Derived &complex_add(const real_Derived &r)
       {
         return static_cast<Derived *>(this)->add_series(r);
       }
-/// Subtract complex int.
+      /// Subtract complex int.
       Derived &complex_subtract(const std::complex<int> &n)
       {
         return static_cast<Derived *>(this)->subtract_generic(n);
       }
-/// Subtract complex double.
+      /// Subtract complex double.
       Derived &complex_subtract(const std::complex<double> &x)
       {
         return static_cast<Derived *>(this)->subtract_generic(x);
       }
-/// Subtract real counterpart.
+      /// Subtract real counterpart.
       Derived &complex_subtract(const real_Derived &r)
       {
         return static_cast<Derived *>(this)->subtract_series(r);
       }
-/// Multiply by complex int.
+      /// Multiply by complex int.
       Derived &complex_mult_by(const std::complex<int> &n)
       {
         return static_cast<Derived *>(this)->mult_by_generic(n);
       }
-/// Multiply by complex double.
+      /// Multiply by complex double.
       Derived &complex_mult_by(const std::complex<double> &x)
       {
         return static_cast<Derived *>(this)->mult_by_generic(x);
       }
-/// Multiply by real counterpart.
+      /// Multiply by real counterpart.
       Derived &complex_mult_by(const real_Derived &r)
       {
         return static_cast<Derived *>(this)->mult_by_series(r);
       }
-/// Divide by complex int.
+      /// Divide by complex int.
       Derived &complex_divide_by(const std::complex<int> &n)
       {
         return static_cast<Derived *>(this)->divide_by_generic(n);
       }
-/// Divide by complex double.
+      /// Divide by complex double.
       Derived &complex_divide_by(const std::complex<double> &x)
       {
         return static_cast<Derived *>(this)->divide_by_generic(x);
       }
     protected:
-// NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
-// parses this part it does not know enough about Derived yet. They are ok in the body of
-// the methods tough, because instantiation happens later.
+      // NOTICE: typedefs regarding Derived type cannot be placed here because when the compiler
+      // parses this part it does not know enough about Derived yet. They are ok in the body of
+      // the methods tough, because instantiation happens later.
       typedef typename real_Derived::ancestor::cf_type real_cf_type;
       typedef std::complex<real_cf_type> cf_type;
       typedef typename real_Derived::ancestor::it_s_index real_it_s_index;
       typedef typename real_Derived::ancestor::term_type real_term_type;
-// TODO: what's with the extra comma at the end?
+      // TODO: what's with the extra comma at the end?
       enum component
       {
         Real,
@@ -172,7 +172,7 @@ namespace piranha
         term_type term;
         const real_it_s_index it_f=comp.g_s_index().end();
         it_s_index it_hint = static_cast<Derived *>(this)->g_s_index().end();
-// TODO: hinted insertion here.
+        // TODO: hinted insertion here.
         for (real_it_s_index it=comp.g_s_index().begin();it!=it_f;++it)
         {
           term.cf()=build_cf_from_comp<Cmp>(it->cf());
@@ -181,10 +181,10 @@ namespace piranha
           it_hint = static_cast<Derived *>(this)->insert_with_checks(term,it_hint);
         }
       }
-// Build series from real and imaginary components.
+      // Build series from real and imaginary components.
       void build_from_components(const real_Derived &p, const real_Derived &q)
       {
-// This one should always succeed.
+        // This one should always succeed.
         static_cast<Derived *>(this)->merge_args(p);
         try {static_cast<Derived *>(this)->merge_args(q);}
         catch (exceptions::add_arguments &e)
@@ -218,7 +218,7 @@ namespace piranha
         return retval;
       }
     private:
-// Extract component from complex pseries
+      // Extract component from complex pseries
       template <component Cmp>
         real_cf_type get_cf_comp(const cf_type &cf) const
       {

@@ -28,7 +28,7 @@ namespace piranha
   template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
     class mult_hash
   {
-      typedef __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator> container_type;
+    typedef __gnu_cxx::hash_set<Element,Hasher,Eq,Allocator> container_type;
     public:
       typedef typename container_type::const_iterator iterator;
       typedef typename container_type::iterator point_iterator;
@@ -56,5 +56,4 @@ namespace piranha
       container_type    private_container_;
   };
 }
-
 #endif

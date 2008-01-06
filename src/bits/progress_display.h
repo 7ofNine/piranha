@@ -24,7 +24,7 @@
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "config.h" // For _PIRANHA_DISPLAY_PROGRESS_MIN_N.
+#include "config.h"                               // For _PIRANHA_DISPLAY_PROGRESS_MIN_N.
 #include "settings_manager.h"
 
 namespace piranha
@@ -81,5 +81,4 @@ namespace piranha
       }
   };
 }
-
 #endif

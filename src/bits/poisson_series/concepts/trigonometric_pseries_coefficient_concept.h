@@ -34,6 +34,6 @@ namespace piranha
   };
 }
 
-#undef __STATIC_ASSERTION_FAILURE
 
+#undef __STATIC_ASSERTION_FAILURE
 #endif

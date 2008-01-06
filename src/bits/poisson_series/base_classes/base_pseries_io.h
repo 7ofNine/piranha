@@ -23,13 +23,13 @@
 
 #include <boost/static_assert.hpp>
 
-#include "../../math.h" // math::min.
-#include "../../utils.h" // str_to_vector_double.
+#include "../../math.h"                           // math::min.
+#include "../../utils.h"                          // str_to_vector_double.
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
 {
-/// Read argument.
+  /// Read argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <psymbol::type Type>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_arg(std::ifstream &inf)
@@ -71,21 +71,21 @@ namespace piranha
     }
   }
 
-/// Read coefficient argument.
+  /// Read coefficient argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_cf_arg(std::ifstream &inf)
   {
     read_arg<psymbol::cf>(inf);
   }
 
-/// Read trigonometric argument.
+  /// Read trigonometric argument.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_trig_arg(std::ifstream &inf)
   {
     read_arg<psymbol::trig>(inf);
   }
 
-// Read linear arguments
+  // Read linear arguments
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_lin_args(std::ifstream &inf)
   {
@@ -119,7 +119,7 @@ namespace piranha
     }
   }
 
-// Read terms.
+  // Read terms.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_terms(std::ifstream &inf,const std::string &filename)
   {
@@ -138,7 +138,7 @@ namespace piranha
         continue;
       }
       term_type new_term;
-// Read cf.
+      // Read cf.
       cf_type cf(split_v[0]);
       if (!cf.is_insertable(cf_width()))
       {
@@ -146,9 +146,9 @@ namespace piranha
         continue;
       }
       new_term.cf()=cf;
-// Ditch out first element of string vector, now that we read it.
+      // Ditch out first element of string vector, now that we read it.
       split_v.pop_front();
-// Read trigonometric part.
+      // Read trigonometric part.
       trig_type trig(split_v);
       if (!trig.is_insertable(trig_width()))
       {
@@ -156,7 +156,7 @@ namespace piranha
         continue;
       }
       new_term.trig()=trig;
-// Deal with phases.
+      // Deal with phases.
       if (it_pl==pl.end())
       {
         it_hint=insert_with_checks(new_term,it_hint);
@@ -177,7 +177,7 @@ namespace piranha
     }
   }
 
-// Identify section
+  // Identify section
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::identify_sections(std::ifstream &inf,const std::string &filename)
   {
@@ -215,7 +215,7 @@ namespace piranha
     }
   }
 
-// Read data
+  // Read data
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::read_data_from_file(std::ifstream &inf,
     const std::string &filename)
@@ -224,22 +224,22 @@ namespace piranha
     std::cout << "EOF" << std::endl;
   }
 
-/// Load series from file.
+  /// Load series from file.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::load_from(const std::string &fn)
   {
     std::ifstream inf;
     std::string filename=utils::open_file(fn,inf);
-// Read from file
+    // Read from file
     if (inf.is_open())
     {
       read_data_from_file(inf,filename);
-// Close file
+      // Close file
       inf.close();
     }
   }
 
-/// Print the first n terms in plain format.
+  /// Print the first n terms in plain format.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::print_terms_plain(std::ostream &out_stream,
     int n) const
@@ -266,7 +266,7 @@ namespace piranha
     }
   }
 
-/// Print the first n terms in LaTeX format.
+  /// Print the first n terms in LaTeX format.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::print_terms_latex(std::ostream &out_stream,
     int n) const
@@ -287,7 +287,7 @@ namespace piranha
       {
         break;
       }
-// Increase i now, so we print correct term number (as opposed to term index).
+      // Increase i now, so we print correct term number (as opposed to term index).
       ++i;
       out_stream << i << "&";
       it->print_latex(out_stream,arguments().template get<0>(),arguments().template get<1>());
@@ -295,10 +295,10 @@ namespace piranha
     }
   }
 
-/// Print the series in plain format up to term number n.
-/**
- * Plain format is the same format used in formatted input from file.
- */
+  /// Print the series in plain format up to term number n.
+  /**
+   * Plain format is the same format used in formatted input from file.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::print_plain(std::ostream &out_stream,
     int limit) const
@@ -332,11 +332,11 @@ namespace piranha
     print_terms_plain(out_stream,limit);
   }
 
-/// Print the series in LaTeX format up to term number n.
-/**
- * Write to a LaTeX tabular environment. The output can then be included in a
- * LaTeX document.
- */
+  /// Print the series in LaTeX format up to term number n.
+  /**
+   * Write to a LaTeX tabular environment. The output can then be included in a
+   * LaTeX document.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::print_latex(std::ostream &out_stream, int limit) const
   {
@@ -346,11 +346,11 @@ namespace piranha
     out_stream << "\\end{xtabular}" << std::endl;
   }
 
-/// Print series to stream.
-/**
- * Print first "limit" terms. If limit is negative, print all terms. The output format is read
- * from the piranha::stream_manager class.
- */
+  /// Print series to stream.
+  /**
+   * Print first "limit" terms. If limit is negative, print all terms. The output format is read
+   * from the piranha::stream_manager class.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::print(std::ostream &out_stream, int limit) const
   {
@@ -364,21 +364,21 @@ namespace piranha
     }
   }
 
-/// Print to screen the first n terms, including series' header.
+  /// Print to screen the first n terms, including series' header.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put(int n) const
   {
     print(std::cout,n);
   }
 
-/// Put all terms, including series' header.
+  /// Put all terms, including series' header.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put() const
   {
     put(-1);
   }
 
-/// Print to screen the first n terms, without series' header.
+  /// Print to screen the first n terms, without series' header.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_terms(int n) const
   {
@@ -392,14 +392,14 @@ namespace piranha
     }
   }
 
-/// Put all terms, without series' header.
+  /// Put all terms, without series' header.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_terms() const
   {
     put_terms(-1);
   }
 
-/// Save series to file.
+  /// Save series to file.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::save_to(const std::string &filename) const
   {
@@ -414,7 +414,7 @@ namespace piranha
     outf.close();
   }
 
-/// Print to screen first n frequencies and phases.
+  /// Print to screen first n frequencies and phases.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_phases_freqs(int n) const
   {
@@ -441,7 +441,7 @@ namespace piranha
     }
   }
 
-/// Print to screen all frequencies and phases.
+  /// Print to screen all frequencies and phases.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::put_phases_freqs() const
   {

@@ -90,35 +90,36 @@ namespace
   gnu_cxx_mutex palloc_init_mutex;
 }
 
+
 namespace piranha
 {
 
   using std::size_t;
   using std::ptrdiff_t;
 
-/**
- *  @brief  Base class for pool_allocator.
- *
- *  @if maint
- *  Uses various allocators to fulfill underlying requests (and makes as
- *  few requests as possible when in default high-speed pool mode).
- *
- *  Important implementation properties:
- *  0. If globally mandated, then allocate objects from new
- *  1. If the clients request an object of size > _S_max_bytes, the resulting
- *     object will be obtained directly from new
- *  2. In all other cases, we allocate an object of size exactly
- *     _S_round_up(requested_size).  Thus the client has enough size
- *     information that we can return the object to the proper free list
- *     without permanently losing part of the object.
- *
- *  @endif
- */
+  /**
+   *  @brief  Base class for pool_allocator.
+   *
+   *  @if maint
+   *  Uses various allocators to fulfill underlying requests (and makes as
+   *  few requests as possible when in default high-speed pool mode).
+   *
+   *  Important implementation properties:
+   *  0. If globally mandated, then allocate objects from new
+   *  1. If the clients request an object of size > _S_max_bytes, the resulting
+   *     object will be obtained directly from new
+   *  2. In all other cases, we allocate an object of size exactly
+   *     _S_round_up(requested_size).  Thus the client has enough size
+   *     information that we can return the object to the proper free list
+   *     without permanently losing part of the object.
+   *
+   *  @endif
+   */
   template <int Alignment>
     class pool_allocator_base
   {
-// Check that Alignment is > 0 and a multiple of 8
-      BOOST_STATIC_ASSERT(Alignment > 0 && (Alignment%8) == 0);
+    // Check that Alignment is > 0 and a multiple of 8
+    BOOST_STATIC_ASSERT(Alignment > 0 && (Alignment%8) == 0);
     protected:
 
       enum { _S_align = Alignment };
@@ -133,7 +134,7 @@ namespace piranha
 
       static _Obj* volatile         _S_free_list[_S_free_list_size];
 
-// Chunk allocation state.
+      // Chunk allocation state.
       static char*                  _S_start_free;
       static char*                  _S_end_free;
       static size_t                 _S_heap_size;
@@ -148,18 +149,18 @@ namespace piranha
       gnu_cxx_mutex&
         _M_get_mutex();
 
-// Returns an object of size __n, and optionally adds to size __n
-// free list.
+      // Returns an object of size __n, and optionally adds to size __n
+      // free list.
       void*
         _M_refill(size_t __n);
 
-// Allocates a chunk for nobjs of size size.  nobjs may be reduced
-// if it is inconvenient to allocate the requested number.
+      // Allocates a chunk for nobjs of size size.  nobjs may be reduced
+      // if it is inconvenient to allocate the requested number.
       char*
         _M_allocate_chunk(size_t __n, int& __nobjs);
   };
 
-// Definitions for pool_allocator_base.
+  // Definitions for pool_allocator_base.
   template <int Alignment>
     inline typename pool_allocator_base<Alignment>::_Obj* volatile*
     pool_allocator_base<Alignment>::_M_get_free_list(size_t __bytes)
@@ -173,9 +174,9 @@ namespace piranha
     pool_allocator_base<Alignment>::_M_get_mutex()
     { return palloc_init_mutex; }
 
-// Allocate memory in large chunks in order to avoid fragmenting the
-// heap too much.  Assume that __n is properly aligned.  We hold the
-// allocation lock.
+  // Allocate memory in large chunks in order to avoid fragmenting the
+  // heap too much.  Assume that __n is properly aligned.  We hold the
+  // allocation lock.
   template <int Alignment>
     inline char*
     pool_allocator_base<Alignment>::_M_allocate_chunk(size_t __n, int& __nobjs)
@@ -200,7 +201,7 @@ namespace piranha
     }
     else
     {
-// Try to make use of the left-over piece.
+      // Try to make use of the left-over piece.
       if (__bytes_left > 0)
       {
         _Obj* volatile* __free_list = _M_get_free_list(__bytes_left);
@@ -216,9 +217,9 @@ namespace piranha
       }
       catch (...)
       {
-// Try to make do with what we have.  That can't hurt.  We
-// do not try smaller requests, since that tends to result
-// in disaster on multi-process machines.
+        // Try to make do with what we have.  That can't hurt.  We
+        // do not try smaller requests, since that tends to result
+        // in disaster on multi-process machines.
         size_t __i = __n;
         for (; __i <= (size_t) _S_max_bytes; __i += (size_t) _S_align)
         {
@@ -230,11 +231,11 @@ namespace piranha
             _S_start_free = (char*)__p;
             _S_end_free = _S_start_free + __i;
             return _M_allocate_chunk(__n, __nobjs);
-// Any leftover piece will eventually make it to the
-// right free list.
+            // Any leftover piece will eventually make it to the
+            // right free list.
           }
         }
-// What we have wasn't enough.  Rethrow.
+        // What we have wasn't enough.  Rethrow.
         _S_start_free = _S_end_free = 0;          // We have no chunk.
         __throw_exception_again;
       }
@@ -244,9 +245,9 @@ namespace piranha
     }
   }
 
-// Returns an object of size __n, and optionally adds to "size
-// __n"'s free list.  We assume that __n is properly aligned.  We
-// hold the allocation lock.
+  // Returns an object of size __n, and optionally adds to "size
+  // __n"'s free list.  We assume that __n is properly aligned.  We
+  // hold the allocation lock.
   template <int Alignment>
     inline void*
     pool_allocator_base<Alignment>::_M_refill(size_t __n)
@@ -262,7 +263,7 @@ namespace piranha
       return __chunk;
     __free_list = _M_get_free_list(__n);
 
-// Build free list in chunk.
+    // Build free list in chunk.
     __result = (_Obj*)(void*)__chunk;
     *__free_list = __next_obj = (_Obj*)(void*)(__chunk + __n);
     for (int __i = 1; ; __i++)
@@ -292,7 +293,7 @@ namespace piranha
   template <int Alignment>
     size_t pool_allocator_base<Alignment>::_S_heap_size = 0;
 
-/// Class pool_allocator.
+  /// Class pool_allocator.
   template<typename _Tp, int Alignment = 8>
     class pool_allocator : private pool_allocator_base<Alignment>
   {
@@ -333,13 +334,13 @@ namespace piranha
         max_size() const throw()
         { return size_t(-1) / sizeof(_Tp); }
 
-// _GLIBCXX_RESOLVE_LIB_DEFECTS
-// 402. wrong new expression in [some_] allocator::construct
+      // _GLIBCXX_RESOLVE_LIB_DEFECTS
+      // 402. wrong new expression in [some_] allocator::construct
       void
         construct(pointer __p, const _Tp& __val)
-        {
-          ::new(__p) value_type(__val);
-        }
+      {
+        ::new(__p) value_type(__val);
+      }
 
       void
         destroy(pointer __p) { __p->~_Tp(); }
@@ -375,9 +376,9 @@ namespace piranha
       if (__builtin_expect(__n > this->max_size(), false))
         std::__throw_bad_alloc();
 
-// If there is a race through here, assume answer from getenv
-// will resolve in same direction.  Inspired by techniques
-// to efficiently support threading found in basic_string.h.
+      // If there is a race through here, assume answer from getenv
+      // will resolve in same direction.  Inspired by techniques
+      // to efficiently support threading found in basic_string.h.
       if (_S_force_new == 0)
       {
         if (std::getenv("GLIBCXX_FORCE_NEW"))
@@ -431,8 +432,8 @@ namespace piranha
   }
 }
 
+
 #undef gnu_cxx_mutex
 #undef gnu_cxx_atomic_add_dispatch
 #undef gnu_cxx_scoped_lock
-
 #endif

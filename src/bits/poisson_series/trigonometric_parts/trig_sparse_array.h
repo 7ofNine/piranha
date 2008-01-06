@@ -25,35 +25,35 @@
 #include <boost/integer_traits.hpp>
 #include <vector>
 
-#include "../../common_typedefs.h" // For layout_type.
+#include "../../common_typedefs.h"                // For layout_type.
 #include "../../p_assert.h"
 #include "../../psymbol.h"
-#include "../../utils.h" // lexical_converter.
+#include "../../utils.h"                          // lexical_converter.
 
 namespace piranha
 {
-/// Sparse array trigonometric class.
+  /// Sparse array trigonometric class.
   class trig_sparse_array
   {
-// TODO: try to replace this with struct containing int16[2], in order to employ packing techniques for
-// hashing and equality testing.
-      typedef std::pair<trig_size_t,int16> pair;
-      typedef std::vector<pair> container_type;
-      typedef container_type::iterator iterator;
-      typedef container_type::const_iterator const_iterator;
+    // TODO: try to replace this with struct containing int16[2], in order to employ packing techniques for
+    // hashing and equality testing.
+    typedef std::pair<trig_size_t,int16> pair;
+    typedef std::vector<pair> container_type;
+    typedef container_type::iterator iterator;
+    typedef container_type::const_iterator const_iterator;
     public:
-// Start INTERFACE definition.
-//-------------------------------------------------------
+      // Start INTERFACE definition.
+      //-------------------------------------------------------
       typedef int16 value_type;
-// Ctors.
-/// Default ctor.
+      // Ctors.
+      /// Default ctor.
       trig_sparse_array():private_flavour_(true) {}
-/// Copy ctor.
+      /// Copy ctor.
       trig_sparse_array(const trig_sparse_array &ts):
-        private_flavour_(ts.flavour()),private_container_(ts.private_container_) {}
+      private_flavour_(ts.flavour()),private_container_(ts.private_container_) {}
       trig_sparse_array(const deque_string &);
       ~trig_sparse_array() {}
-// Getters.
+      // Getters.
       bool &flavour()
       {
         return private_flavour_;
@@ -63,14 +63,14 @@ namespace piranha
         return private_flavour_;
       }
       int16 operator[](const trig_size_t &) const;
-// I/O.
+      // I/O.
       void print_plain(std::ostream &, const vector_psym_p &) const;
       void print_latex(std::ostream &, const vector_psym_p &) const;
-// Manip.
-/// Assign vector of multipliers.
-/**
- * Argument type T must support random access through operator[].
- */
+      // Manip.
+      /// Assign vector of multipliers.
+      /**
+       * Argument type T must support random access through operator[].
+       */
       template <class T>
         void assign_int_vector(const T &v)
       {
@@ -88,7 +88,7 @@ namespace piranha
       void pad_right(const size_t &) {}
       void apply_layout(const layout_type &);
       void invert_sign();
-// Probing.
+      // Probing.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
       {
@@ -118,7 +118,7 @@ namespace piranha
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
       bool operator==(const trig_sparse_array &) const;
       bool operator<(const trig_sparse_array &) const;
-// Math.
+      // Math.
       void trigmult(const trig_sparse_array &, trig_sparse_array &, trig_sparse_array &) const;
       trig_sparse_array &operator=(const trig_sparse_array &ts2)
       {
@@ -130,8 +130,8 @@ namespace piranha
         return *this;
       }
       void mult_by_int(const int &);
-// End INTERFACE definition.
-//-------------------------------------------------------
+      // End INTERFACE definition.
+      //-------------------------------------------------------
       trig_sparse_array &operator+=(const trig_sparse_array &);
       trig_sparse_array &operator-=(const trig_sparse_array &);
       void dump() const
@@ -168,7 +168,7 @@ namespace piranha
       size_t actual_width() const;
       template <class Modifier>
         trig_sparse_array &algebraic_sum(const trig_sparse_array &t2);
-// Functors used in generic algebraic addition routine.
+      // Functors used in generic algebraic addition routine.
       struct sign_modifier_plus
       {
         static const int16 &mod(const int16 &value)
@@ -176,7 +176,7 @@ namespace piranha
           return value;
         }
         static void mod(const container_type &)
-        {}
+          {}
         static void mod(container_type &c, iterator it1, const_iterator it2, const_iterator it2_f)
         {
           c.insert(it1,it2,it2_f);
@@ -209,7 +209,7 @@ namespace piranha
       container_type  private_container_;
   };
 
-/// Constructor from piranha::deque_string.
+  /// Constructor from piranha::deque_string.
   inline trig_sparse_array::trig_sparse_array(const deque_string &sd):private_flavour_(true),private_container_()
   {
     const size_t w=sd.size();
@@ -219,9 +219,9 @@ namespace piranha
       std::abort();
       return;
     }
-// TODO: check this.
-//    private_container_.reserve(w);
-// Now we know  w >= 1.
+    // TODO: check this.
+    //    private_container_.reserve(w);
+    // Now we know  w >= 1.
     int16 tmp_mult;
     for (size_t i=0;i<w-1;++i)
     {
@@ -231,14 +231,14 @@ namespace piranha
         private_container_.push_back(pair(i,tmp_mult));
       }
     }
-// Take care of flavour.
+    // Take care of flavour.
     if (*sd.back().c_str()=='s')
     {
       flavour()=false;
     }
   }
 
-/// Find iterator corresponding to index n. O(n) complexity operation.
+  /// Find iterator corresponding to index n. O(n) complexity operation.
   inline trig_sparse_array::const_iterator trig_sparse_array::find(trig_size_t n) const
   {
     const const_iterator it_f=end();
@@ -247,19 +247,19 @@ namespace piranha
     {
       if (it->first >= n)
       {
-// Maybe we found the element. If so assign retval, otherwise...
+        // Maybe we found the element. If so assign retval, otherwise...
         if (it->first == n)
         {
           retval=it;
         }
-// ... just break, retval was previously assigned to end().
+        // ... just break, retval was previously assigned to end().
         break;
       }
     }
     return retval;
   }
 
-// Getters implementations.
+  // Getters implementations.
   inline int16 trig_sparse_array::operator[](const trig_size_t &n) const
   {
     const const_iterator it=find(n);
@@ -270,7 +270,7 @@ namespace piranha
     return it->second;
   }
 
-/// Actual width.
+  /// Actual width.
   inline size_t trig_sparse_array::actual_width() const
   {
     size_t retval;
@@ -285,8 +285,8 @@ namespace piranha
     return retval;
   }
 
-// I/O implementations.
-// TODO: optimize this, we are calling multiplier which is O(n) but this can be done more efficiently.
+  // I/O implementations.
+  // TODO: optimize this, we are calling multiplier which is O(n) but this can be done more efficiently.
   inline void trig_sparse_array::print_plain(std::ostream &out_stream, const vector_psym_p &tv) const
   {
     stream_manager::setup_print(out_stream);
@@ -337,7 +337,7 @@ namespace piranha
       tmp.append(tv[it->first]->name());
     }
     tmp.append("$");
-// If we did not write anything erase math markers.
+    // If we did not write anything erase math markers.
     if (tmp == "$$")
     {
       tmp.clear();
@@ -372,14 +372,14 @@ namespace piranha
     }
   }
 
-// Probing implementations.
+  // Probing implementations.
   inline double trig_sparse_array::freq(const vector_psym_p &v) const
   {
     double retval=0.;
     const const_iterator it_f=end();
     for (const_iterator it=begin();it!=it_f;++it)
     {
-// We must be sure that there actually is a freq in every symbol we are going to use.
+      // We must be sure that there actually is a freq in every symbol we are going to use.
       if (v[it->first]->poly_eval().size() > 1)
       {
         retval+=it->second*v[it->first]->poly_eval()[1];
@@ -394,7 +394,7 @@ namespace piranha
     const const_iterator it_f=end();
     for (const_iterator it=begin();it!=it_f;++it)
     {
-// We must be sure that there actually is a phase in every symbol we are going to use.
+      // We must be sure that there actually is a phase in every symbol we are going to use.
       if (v[it->first]->poly_eval().size() > 0)
       {
         retval+=it->second*v[it->first]->poly_eval()[0];
@@ -446,7 +446,7 @@ namespace piranha
       retval=-1;
     }
     return retval;
- }
+  }
 
   inline bool trig_sparse_array::operator<(const trig_sparse_array &l2) const
   {
@@ -534,7 +534,7 @@ namespace piranha
     inline bool trig_sparse_array::checkup(const Series &s) const
   {
     const const_iterator it_f=end();
-// Let's check there are not zero elements.
+    // Let's check there are not zero elements.
     for (const_iterator it=begin();it!=it_f;++it)
     {
       if (it->second == 0)
@@ -543,7 +543,7 @@ namespace piranha
         return false;
       }
     }
-// Now check that we do not have elements in excess.
+    // Now check that we do not have elements in excess.
     if (actual_width() > s.trig_width())
     {
       std::cout << "Too many elements in trig_sparse_array for given size." << std::endl;
@@ -592,14 +592,14 @@ namespace piranha
       return *this;
     }
     const size_t w1=private_container_.size(), w2=t2.private_container_.size();
-// At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
+    // At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
     private_container_.reserve(std::max(w1,w2));
     iterator it1=begin();
     const_iterator it2=t2.begin();
     const const_iterator it2_f=t2.end();
     while (it2 != it2_f)
     {
-// We are at the end of this, insert the remaining elements and bail out of the cycle.
+      // We are at the end of this, insert the remaining elements and bail out of the cycle.
       if (it1 == end())
       {
         Modifier::mod(private_container_,it1,it2,it2_f);
@@ -607,78 +607,78 @@ namespace piranha
       }
       else
       {
-// Same index, add/subtract.
+        // Same index, add/subtract.
         if (it1->first == it2->first)
         {
           it1->second+=Modifier::mod(it2->second);
-// If we modified to zero, we have to destroy the element.
+          // If we modified to zero, we have to destroy the element.
           if (it1->second == 0)
           {
-            it1=private_container_.erase(it1); // it1 now points to the element after the erased one (the latter half of the
-                                              // vector was moved down by one position).
+            it1=private_container_.erase(it1);    // it1 now points to the element after the erased one (the latter half of the
+            // vector was moved down by one position).
           }
           else
-// We performed a non-destructive modification. Increase it1.
+            // We performed a non-destructive modification. Increase it1.
           {
             ++it1;
           }
-// Increase it2, it was added to this.
+          // Increase it2, it was added to this.
           ++it2;
         }
-// There is an element which is not present in this and which goes before it1.
+        // There is an element which is not present in this and which goes before it1.
         else if (it1->first > it2->first)
         {
-// it1 will point to the newly inserted element.
+          // it1 will point to the newly inserted element.
           it1=private_container_.insert(it1,pair(it2->first,Modifier::mod(it2->second)));
           ++it1;
           ++it2;
         }
-// it2's index is after it1's. We don't do anything since we don't know if next elements of t2 will be packed or inserted.
-        else /* if (it1->first < it2->first) */
+        // it2's index is after it1's. We don't do anything since we don't know if next elements of t2 will be packed or inserted.
+        else                                      /* if (it1->first < it2->first) */
         {
           ++it1;
         }
       }
     }
     return *this;
-/*    while (it2!=it_f2)
+    /*    while (it2!=it_f2)
+        {
+    // We are at the end of this, insert new term and do not increase iterators on this.
+          if (it1==end())
+          {
+            old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
+            ++it2;
+          }
+    // We found a duplicate, modify it.
+          else if (it1->first==it2->first)
+          {
+    old_it1=modify(it1->second+Modifier::mod(it2->second),old_it1,it1);
+    // Take care in case we erased the element when modifying, we may have run out of elements.
+    if (old_it1==end())
     {
-// We are at the end of this, insert new term and do not increase iterators on this.
-      if (it1==end())
-      {
-        old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
-        ++it2;
-      }
-// We found a duplicate, modify it.
-      else if (it1->first==it2->first)
-      {
-        old_it1=modify(it1->second+Modifier::mod(it2->second),old_it1,it1);
-// Take care in case we erased the element when modifying, we may have run out of elements.
-        if (old_it1==end())
-        {
-// We erased the first element of this' list.
-          it1=begin();
-        }
-        else
-        {
-// We modified to a non-zero value an element of this' list or erased an element else than the first one.
-          it1=old_it1;
-          ++it1;
-        }
-        ++it2;
-      }
-// this has gone past t2.
-      else if (it1->first > it2->first)
-      {
-        old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
-        ++it2;
-      }
-// t2 has gone past this.
-      else if (it1->first < it2->first)
-      {
-        old_it1=it1;
-        ++it1;
-      }
+    // We erased the first element of this' list.
+    it1=begin();
+    }
+    else
+    {
+    // We modified to a non-zero value an element of this' list or erased an element else than the first one.
+    it1=old_it1;
+    ++it1;
+    }
+    ++it2;
+    }
+    // this has gone past t2.
+    else if (it1->first > it2->first)
+    {
+    old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
+    ++it2;
+    }
+    // t2 has gone past this.
+    else if (it1->first < it2->first)
+    {
+    old_it1=it1;
+    ++it1;
+    }
     }
     return *this;*/
   }

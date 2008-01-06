@@ -30,48 +30,47 @@
 
 namespace piranha
 {
-// These are commonly used typedefs.
-/// Alias for 8bit integer.
+  // These are commonly used typedefs.
+  /// Alias for 8bit integer.
   typedef boost::int8_t int8;
-/// Alias for 8bit unsigned integer.
+  /// Alias for 8bit unsigned integer.
   typedef boost::uint8_t uint8;
-/// Alias for 16bit integer.
+  /// Alias for 16bit integer.
   typedef boost::int16_t int16;
-/// Alias for unsigned 16bit integer.
+  /// Alias for unsigned 16bit integer.
   typedef boost::uint16_t uint16;
-/// Alias for 32bit integer.
+  /// Alias for 32bit integer.
   typedef boost::int32_t int32;
-/// Alias for 64bit integer.
+  /// Alias for 64bit integer.
   typedef boost::int64_t int64;
 #ifdef _PIRANHA_64BIT
-/// Maximum fast integer (64-bits).
+  /// Maximum fast integer (64-bits).
   typedef boost::int64_t max_fast_int;
-/// Maximum fast unsigned integer (64-bits).
+  /// Maximum fast unsigned integer (64-bits).
   typedef boost::uint64_t max_fast_uint;
 #else
-/// Maximum fast integer (32-bits).
+  /// Maximum fast integer (32-bits).
   typedef boost::int32_t max_fast_int;
-/// Maximum fast unsigned integer (32-bits).
+  /// Maximum fast unsigned integer (32-bits).
   typedef boost::uint32_t max_fast_uint;
 #endif
-/// Alias for the size of trigonometric containers.
+  /// Alias for the size of trigonometric containers.
   typedef uint16 trig_size_t;
-/// Alias for complex doubles.
+  /// Alias for complex doubles.
   typedef std::complex<double> complex_double;
-/// Alias for array of int16.
+  /// Alias for array of int16.
   typedef std::valarray<int16> array_int16;
-/// Alias for vector of int16.
+  /// Alias for vector of int16.
   typedef std::vector<int16> vector_int16;
-/// Alias for vector of double.
+  /// Alias for vector of double.
   typedef std::vector<double> vector_double;
-/// Deque of strings.
+  /// Deque of strings.
   typedef std::deque<std::string> deque_string;
-/// Alias for degree type.
+  /// Alias for degree type.
   typedef int degree_type;
-// Layout element, to be used in series merging.
+  // Layout element, to be used in series merging.
   typedef std::pair<bool,size_t> layout_element;
-// Layout type, to be used in series merging.
+  // Layout type, to be used in series merging.
   typedef std::vector<layout_element> layout_type;
 }
-
 #endif

@@ -21,53 +21,53 @@
 #ifndef PIRANHA_BASE_MONOMIAL_H
 #define PIRANHA_BASE_MONOMIAL_H
 
-#include <boost/array.hpp> // For ctor from psymbol.
+#include <boost/array.hpp>                        // For ctor from psymbol.
 
 #include "../../psymbol.h"
 
 namespace piranha
 {
-/// Template parameters for piranha::base_monomial.
+  /// Template parameters for piranha::base_monomial.
 #define __BASE_MONOMIAL_TP Cf,Expos
-/// Template parameters for piranha::base_monomial (declaration form).
+  /// Template parameters for piranha::base_monomial (declaration form).
 #define __BASE_MONOMIAL_TP_DECL class Cf, class Expos
 
-/// Generica base monomial class.
+  /// Generica base monomial class.
   template <__BASE_MONOMIAL_TP_DECL>
     class base_monomial
   {
     public:
-/// Alias for coefficient type.
+      /// Alias for coefficient type.
       typedef Cf cf_type;
-/// Alias for exponents type.
+      /// Alias for exponents type.
       typedef Expos expos_type;
-/// Default ctor.
+      /// Default ctor.
       explicit base_monomial():m_cf(),m_expos() {}
-/// Copy ctor from same or different coeffcient and same exponents.
+      /// Copy ctor from same or different coeffcient and same exponents.
       template <class Cf2>
         explicit base_monomial(const base_monomial<Cf2,expos_type> &m):m_cf(m.m_cf),m_expos(m.m_expos) {}
-/// Ctor from same or different coefficient and same exponents.
+      /// Ctor from same or different coefficient and same exponents.
       template <class Cf2>
         explicit base_monomial(const Cf2 &cf, const expos_type &e):m_cf(cf),m_expos(e) {}
       explicit base_monomial(const psymbol &);
-/// Dtor.
+      /// Dtor.
       ~base_monomial() {}
-// Getters and setters.
-/// Return const reference to coefficient.
+      // Getters and setters.
+      /// Return const reference to coefficient.
       const cf_type *g_cf() const {return &m_cf;}
-/// Return const reference to exponents.
+      /// Return const reference to exponents.
       const expos_type *g_expos() const {return &m_expos;}
-/// Return mutable reference to coefficient.
+      /// Return mutable reference to coefficient.
       cf_type *g_cf() {return &m_cf;}
-/// Return mutable reference to exponents.
+      /// Return mutable reference to exponents.
       expos_type *g_expos() {return &m_expos;}
-// Probing.
+      // Probing.
     private:
       Cf    m_cf;
       Expo  m_expos;
   };
 
-/// Constructor from psymbol.
+  /// Constructor from psymbol.
   template <__BASE_MONOMIAL_TP_DECL>
     base_monomial<__BASE_MONOMIAL_TP>::base_monomial(const psymbol &p):m_cf(1),m_expos()
   {
@@ -78,5 +78,4 @@ namespace piranha
 #undef __BASE_MONOMIAL_TP
 #undef __BASE_MONOMIAL_TP_DECL
 }
-
 #endif

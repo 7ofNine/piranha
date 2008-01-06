@@ -32,14 +32,14 @@
 
 namespace piranha
 {
-/// Natural power cacher for integral type.
+  /// Natural power cacher for integral type.
   template <class T>
     class integral_npow_cache
   {
-      BOOST_STATIC_ASSERT(boost::is_integral<T>::value);
-      BOOST_STATIC_ASSERT(boost::is_pod<T>::value);
-      BOOST_STATIC_ASSERT(!(boost::integer_traits<T>::is_signed));
-      typedef std::vector<std::vector<T> > container;
+    BOOST_STATIC_ASSERT(boost::is_integral<T>::value);
+    BOOST_STATIC_ASSERT(boost::is_pod<T>::value);
+    BOOST_STATIC_ASSERT(!(boost::integer_traits<T>::is_signed));
+    typedef std::vector<std::vector<T> > container;
     public:
       static const T &request(const int &n, const T &arg)
       {
@@ -47,16 +47,16 @@ namespace piranha
         p_assert(arg >= 0);
         while (arg >= private_cache_.size())
         {
-// Add a row to the matrix.
+          // Add a row to the matrix.
           private_cache_.push_back(std::vector<T>());
-// Add the first element to the row.
+          // Add the first element to the row.
           private_cache_.back().push_back(1);
         }
         while ((size_t)n >= private_cache_[arg].size())
         {
-//std::cout << "before: " << private_cache_[arg].back() << '\n';
+          //std::cout << "before: " << private_cache_[arg].back() << '\n';
           private_cache_[arg].push_back(arg*private_cache_[arg].back());
-//std::cout << "now: " << private_cache_[arg].back() << '\n';
+          //std::cout << "now: " << private_cache_[arg].back() << '\n';
         }
         return private_cache_[arg][n];
       }
@@ -67,5 +67,4 @@ namespace piranha
   template <class T>
     typename integral_npow_cache<T>::container integral_npow_cache<T>::private_cache_;
 }
-
 #endif

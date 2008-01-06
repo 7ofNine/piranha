@@ -26,31 +26,31 @@
 
 namespace piranha
 {
-/// Initializer list for base_pseries constructors.
+  /// Initializer list for base_pseries constructors.
 #define __base_pseries_init_list lin_args_(),m_arguments(),private_series_set_()
 
-/// Default constructor.
-/**
- * Constructs a null series: empty with zero arguments.
- */
+  /// Default constructor.
+  /**
+   * Constructs a null series: empty with zero arguments.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries():__base_pseries_init_list {}
 
-/// Constructor from int.
+  /// Constructor from int.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(int n):__base_pseries_init_list
   {
     generic_builder(n);
   }
 
-/// Constructor from double.
+  /// Constructor from double.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const double &x):__base_pseries_init_list
   {
     generic_builder(x);
   }
 
-/// Copy constructor.
+  /// Copy constructor.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const Derived &ps):lin_args_(ps.lin_args_),
     m_arguments(ps.m_arguments),private_series_set_(*ps.g_series_set())
@@ -58,22 +58,22 @@ namespace piranha
     std::cout << "Copy ctor" << std::endl;
   }
 
-/// Constructor from file.
-/**
- * Read a series from file.
- */
+  /// Constructor from file.
+  /**
+   * Read a series from file.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const std::string &fn):__base_pseries_init_list
   {
     load_from(fn);
   }
 
-/// Constructor from coefficient.
-/**
- * Constructs a series consisting of a single cosine term with zero trigonometric arguments,
- * provided coefficient and same set of arguments as model.
- * @see base_pseries::cf_type.
- */
+  /// Constructor from coefficient.
+  /**
+   * Constructs a series consisting of a single cosine term with zero trigonometric arguments,
+   * provided coefficient and same set of arguments as model.
+   * @see base_pseries::cf_type.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const cf_type &c, const Derived &model):__base_pseries_init_list
   {
@@ -88,51 +88,51 @@ namespace piranha
     }
   }
 
-/// Constructor from piranha::psymbol.
+  /// Constructor from piranha::psymbol.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::base_pseries(const psymbol &psym, psymbol::type ptype):__base_pseries_init_list
   {
     switch (ptype)
     {
       case (psymbol::cf):
-        {
-// When building as cf create a coefficient from the symbol.
-          append_cf_arg(psymbol_manager::get_pointer(psym).second);
-          cf_type c(psym);
-          term_type term(c,trig_type());
-          insert_with_checks(term,g_s_index().end());
-        }
-        break;
+      {
+        // When building as cf create a coefficient from the symbol.
+        append_cf_arg(psymbol_manager::get_pointer(psym).second);
+        cf_type c(psym);
+        term_type term(c,trig_type());
+        insert_with_checks(term,g_s_index().end());
+      }
+      break;
       case (psymbol::trig):
-        {
-// When building as trig assign argument in lin_args.
-          append_trig_arg(psymbol_manager::get_pointer(psym).second);
-          lin_args_[0]=1;
-        }
-        break;
+      {
+        // When building as trig assign argument in lin_args.
+        append_trig_arg(psymbol_manager::get_pointer(psym).second);
+        lin_args_[0]=1;
+      }
+      break;
       default:
         p_assert(false);
         ;
     }
   }
 
-/// Destructor.
+  /// Destructor.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline base_pseries<__PIRANHA_BASE_PS_TP>::~base_pseries() {}
 
 #undef __base_pseries_init_list
 
-/// Copy.
-/**
- * Returns a copy of this.
- */
+  /// Copy.
+  /**
+   * Returns a copy of this.
+   */
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline Derived base_pseries<__PIRANHA_BASE_PS_TP>::copy() const
   {
     return Derived(*static_cast<Derived const *>(this));
   }
 
-/// Generic builder.
+  /// Generic builder.
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class T>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::generic_builder(const T &x)
@@ -146,5 +146,4 @@ namespace piranha
     insert_with_checks(term,g_s_index().end());
   }
 }
-
 #endif

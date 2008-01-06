@@ -43,7 +43,7 @@ namespace piranha
     private:
       symbol_limiter()
         {}
-// Boilerplate for the multiindex container.
+      // Boilerplate for the multiindex container.
       struct limit_element
       {
         limit_element(psym_p s, uint16 n):symbol(s),limit(n)
@@ -51,9 +51,9 @@ namespace piranha
         psym_p      symbol;
         uint16   limit;
       };
-// We can use this structure as comparison functor, whereas below we hash according to name,
-// because in managing symbols we make sure that there are no symbols with same name. Hence
-// symbol pointer and name are effectively the same thing.
+      // We can use this structure as comparison functor, whereas below we hash according to name,
+      // because in managing symbols we make sure that there are no symbols with same name. Hence
+      // symbol pointer and name are effectively the same thing.
       struct eq_psym_p
       {
         bool operator()(psym_p p1, psym_p p2) const
@@ -90,11 +90,11 @@ namespace piranha
         limits_map;
       typedef limits_map::nth_index<0>::type::iterator map_iterator;
     public:
-/// Limits' indices.
-/**
- * When constructed from a vector of pointers to symbols, it will build a vector specifying limits
- * in terms of the symbols' positions in the input vector.
- */
+      /// Limits' indices.
+      /**
+       * When constructed from a vector of pointers to symbols, it will build a vector specifying limits
+       * in terms of the symbols' positions in the input vector.
+       */
       class index_limit
       {
         typedef std::deque<boost::tuple<size_t,uint16> > vec_expo_index_limit;
@@ -105,7 +105,7 @@ namespace piranha
             {
               return;
             }
-// Initial limit is the first element of limit map.
+            // Initial limit is the first element of limit map.
             private_min_limit_=lmap_.begin()->limit;
             const size_t w=v.size();
             map_iterator mit;
@@ -139,24 +139,24 @@ namespace piranha
             return private_min_limit_;
           }
         private:
-// Make default ctor private, just to make sure it is not called.
+          // Make default ctor private, just to make sure it is not called.
           index_limit() {}
-// Data members.
+          // Data members.
           uint16             private_min_limit_;
           vec_expo_index_limit  private_limits_;
       };
     private:
-/// Check whether a limit has already been set for a symbol.
+      /// Check whether a limit has already been set for a symbol.
       static map_iterator find_expo_limit(psym_p it)
       {
         return lmap_.find(it);
       }
-// Data members.
+      // Data members.
     private:
       static limits_map   lmap_;
   };
 
-// Raise index_limit to piranha namespace.
+  // Raise index_limit to piranha namespace.
   typedef symbol_limiter::index_limit index_limit;
 }
 #endif

@@ -26,8 +26,8 @@
 #endif
 
 #define GCC_VERSION (__GNUC__ * 100000 \
-  + __GNUC_MINOR__ * 1000 \
-  + __GNUC_PATCHLEVEL__ * 10)
++ __GNUC_MINOR__ * 1000 \
++ __GNUC_PATCHLEVEL__ * 10)
 
 #if GCC_VERSION < 304000
 #error "Minimum required GCC version is 3.4"
@@ -37,5 +37,4 @@
 #define unlikely(exp) __builtin_expect(exp,0)
 
 #define _PIRANHA_DISPLAY_PROGRESS_MIN_N (500000)
-
 #endif

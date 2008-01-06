@@ -21,7 +21,7 @@
 #ifndef PIRANHA_PIRANHA_MALLOC_H
 #define PIRANHA_PIRANHA_MALLOC_H
 
-#include <cstdlib> // For malloc.
+#include <cstdlib>                                // For malloc.
 
 #ifdef _PIRANHA_SSE2
 #ifdef _PIRANHA_PRIVATE_MM_MALLOC_H
@@ -31,14 +31,14 @@
 #endif
 #endif
 
-#include "config.h" // For unlikely().
+#include "config.h"                               // For unlikely().
 
 namespace piranha
 {
-/// Memory allocation function.
-/**
- * Wrapper around malloc() (or _mm_malloc() if SSE2 are used).
- */
+  /// Memory allocation function.
+  /**
+   * Wrapper around malloc() (or _mm_malloc() if SSE2 are used).
+   */
   static __inline void *piranha_malloc(const size_t &size)
   {
 #ifdef _PIRANHA_SSE2
@@ -54,10 +54,10 @@ namespace piranha
     return retval;
   }
 
-/// Memory deallocation function.
-/**
- * Wrapper around free() (or _mm_free() if SSE2 are used).
- */
+  /// Memory deallocation function.
+  /**
+   * Wrapper around free() (or _mm_free() if SSE2 are used).
+   */
   static __inline void piranha_free(void *ptr)
   {
 #ifdef _PIRANHA_SSE2
@@ -67,5 +67,4 @@ namespace piranha
 #endif
   }
 }
-
-#endif // PIRANHA_PIRANHA_MALLOC_H
+#endif                                            // PIRANHA_PIRANHA_MALLOC_H

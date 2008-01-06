@@ -28,5 +28,4 @@ namespace piranha
   template <class T>
     struct is_resizable:public true_type {};
 }
-
 #endif

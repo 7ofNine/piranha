@@ -28,52 +28,52 @@
 
 #include "common_typedefs.h"
 #include "compile_switches.h"
-#include "piranha_tbb.h" // For task scheduler init.
+#include "piranha_tbb.h"                          // For task scheduler init.
 
 namespace piranha
 {
-/// Manager class for piranha-specific settings.
-/**
- * This class manages parameters specific to piranha classes.
- */
+  /// Manager class for piranha-specific settings.
+  /**
+   * This class manages parameters specific to piranha classes.
+   */
   class settings_manager
   {
     public:
-/// Return maximum load factor for hashed containers.
-/**
- * Relevant only to those containers with support such setting.
- */
+      /// Return maximum load factor for hashed containers.
+      /**
+       * Relevant only to those containers with support such setting.
+       */
       static const double &load_factor()
       {
         return hash_max_load_factor_;
       }
-// Getters.
-/// Get Jacobi-Anger expansion limit.
+      // Getters.
+      /// Get Jacobi-Anger expansion limit.
       static unsigned int jacang_lim()
       {
         return jacang_limit_;
       }
-/// Get numerical zero.
+      /// Get numerical zero.
       static const double &numerical_zero()
       {
         return numerical_zero_;
       }
-/// Get path to theories of motion files.
+      /// Get path to theories of motion files.
       static const std::string &theories_path()
       {
         return theories_path_;
       }
-/// Get Piranha version.
+      /// Get Piranha version.
       static const std::string &version();
-/// Get default path to theories of motion files.
+      /// Get default path to theories of motion files.
       static const std::string &default_theories_path()
       {
         return default_theories_path_;
       }
-/// Set maximum load factor for hashed containers.
-/**
- * @see settings_manager::load_factor().
- */
+      /// Set maximum load factor for hashed containers.
+      /**
+       * @see settings_manager::load_factor().
+       */
       static void set_load_factor(const double &value)
       {
         if (value <= 0 or value >= 1)
@@ -110,32 +110,32 @@ namespace piranha
         mpf_set_default_prec(n);
       }
     private:
-/// Private ctor.
+      /// Private ctor.
       settings_manager() {}
-/// Startup class.
-/**
- * Startup class is constructed at piranha invocation and sets default parameters.
- */
+      /// Startup class.
+      /**
+       * Startup class is constructed at piranha invocation and sets default parameters.
+       */
       class startup
       {
         public:
           startup();
       };
-/// Load factor for hashed containers.
+      /// Load factor for hashed containers.
       static double                         hash_max_load_factor_;
-/// Numerical zero.
+      /// Numerical zero.
       static double                         numerical_zero_;
-/// Minimum fast unsigned integer.
+      /// Minimum fast unsigned integer.
       static const max_fast_uint            min_u_;
-/// Maximum fast unsigned integer.
+      /// Maximum fast unsigned integer.
       static const max_fast_uint            max_u_;
-/// Minimum fast integer.
+      /// Minimum fast integer.
       static const max_fast_int             min_i_;
-/// Maximum fast integer.
+      /// Maximum fast integer.
       static const max_fast_int             max_i_;
-/// Jacobi Anger expansion limit.
+      /// Jacobi Anger expansion limit.
       static const unsigned int             jacang_limit_;
-/// Path to theories of motion.
+      /// Path to theories of motion.
       static std::string                    theories_path_;
       static const std::string              default_theories_path_;
       static const std::string              version_;
@@ -146,5 +146,4 @@ namespace piranha
 #endif
   };
 }
-
 #endif

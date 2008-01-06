@@ -23,18 +23,18 @@
 
 namespace piranha
 {
-/// Toolbox for differential calculus.
+  /// Toolbox for differential calculus.
   template <class Derived>
     class differential_toolbox
   {
     public:
-/// Partial derivative.
-/**
- * Calculate partial derivative with respect to psymbol "name".
- * @param[in] name std::string, psymbol's name.
- */
-// TODO: deal with linargs.
-// TODO: special handling of "time" symbol.
+      /// Partial derivative.
+      /**
+       * Calculate partial derivative with respect to psymbol "name".
+       * @param[in] name std::string, psymbol's name.
+       */
+      // TODO: deal with linargs.
+      // TODO: special handling of "time" symbol.
       Derived partial(const std::string &name) const
       {
         typedef typename Derived::ancestor::cf_type cf_type;
@@ -45,7 +45,7 @@ namespace piranha
         retval.merge_args(*static_cast<Derived const *>(this));
         const std::pair<bool,size_t> cf_s_index=static_cast<Derived const *>(this)->cf_arg_index(name),
           trig_s_index=static_cast<Derived const *>(this)->trig_arg_index(name);
-// If "name" is not a symbol of the series, return empty series.
+        // If "name" is not a symbol of the series, return empty series.
         if (!cf_s_index.first and !trig_s_index.first)
         {
           std::cout << "No psymbol named '" << name << "', returning empty series in partial derivation." << std::endl;
@@ -56,7 +56,7 @@ namespace piranha
         it_s_index it_hint = retval.g_s_index().end();
         for (it_h_index it=static_cast<Derived const *>(this)->g_h_index().begin();it!=it_f;++it)
         {
-// First part of the derivation of the product coefficient * trigonometric_part.
+          // First part of the derivation of the product coefficient * trigonometric_part.
           if (cf_s_index.first)
           {
             it->cf().partial(cf_s_index.second,tmp_term.cf());
@@ -64,9 +64,9 @@ namespace piranha
             tmp_term.trig().flavour()=it->trig().flavour();
             it_hint = retval.insert_with_checks(tmp_term,it_hint);
           }
-// Second part of the derivation.
-// NOTICE: this may be placed somewhere inside trig classes, but probably to do this
-// we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
+          // Second part of the derivation.
+          // NOTICE: this may be placed somewhere inside trig classes, but probably to do this
+          // we need to make trig_args() aware of flavour (i.e., move flavour outside Term class).
           if (trig_s_index.first)
           {
             tmp_term.cf()=it->cf();
@@ -80,8 +80,8 @@ namespace piranha
                 tmp_term.cf().mult_by(it->trig()[trig_s_index.second]);
                 tmp_term.trig().flavour()=true;
             }
-// Perform this check since if we already assigned trig_args above we don't need to
-// do it again now.
+            // Perform this check since if we already assigned trig_args above we don't need to
+            // do it again now.
             if (!cf_s_index.first)
             {
               tmp_term.trig()=it->trig();

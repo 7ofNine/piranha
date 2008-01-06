@@ -21,7 +21,7 @@
 #ifndef PIRANHA_MEMORY_H
 #define PIRANHA_MEMORY_H
 
-#include <cstring> // For memcpy.
+#include <cstring>                                // For memcpy.
 #include <ext/pool_allocator.h>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -30,19 +30,22 @@ namespace piranha
 {
   struct memory
   {
-      static __gnu_cxx::__pool_alloc<char>  pool_allocator;
+    static __gnu_cxx::__pool_alloc<char>  pool_allocator;
   };
 }
+
 
 inline void *mp_alloc(size_t size)
 {
   return static_cast<void *>(piranha::memory::pool_allocator.allocate(size));
 }
 
+
 inline void mp_free(void *ptr, size_t size)
 {
   piranha::memory::pool_allocator.deallocate((char *)ptr,size);
 }
+
 
 inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
 {
@@ -51,5 +54,4 @@ inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
   mp_free(ptr,old_size);
   return retval;
 }
-
 #endif

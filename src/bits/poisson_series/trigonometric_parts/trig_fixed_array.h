@@ -70,34 +70,34 @@ namespace piranha
       }
   };
 
-/// Trigonometric array, fixed size version.
+  /// Trigonometric array, fixed size version.
   template <int Dim, int Bits>
     class trig_fixed_array: public packed_int_array<Dim,Bits>,
-      public trig_array_commons<trig_fixed_array<Dim,Bits> >
+    public trig_array_commons<trig_fixed_array<Dim,Bits> >
   {
-      typedef packed_int_array<Dim,Bits> ancestor;
-      typedef trig_array_commons<trig_fixed_array<Dim,Bits> > trig_commons;
+    typedef packed_int_array<Dim,Bits> ancestor;
+    typedef trig_array_commons<trig_fixed_array<Dim,Bits> > trig_commons;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
-// Start INTERFACE definition.
-//-------------------------------------------------------
-// Ctors.
-/// Default ctor.
+      // Start INTERFACE definition.
+      //-------------------------------------------------------
+      // Ctors.
+      /// Default ctor.
       trig_fixed_array():ancestor::packed_int_array() {}
-/// Ctor from piranha::deque_string.
+      /// Ctor from piranha::deque_string.
       trig_fixed_array(const deque_string &sd):ancestor::packed_int_array(),trig_commons::trig_array_commons(sd) {}
       static const size_t &size() {return ancestor::max_size;}
-// TODO: check if it is better this or the base version.
+      // TODO: check if it is better this or the base version.
       /*void invert_sign()
       {
         tfa_unrollers<dimension>::invert(&private_container_[0]+dimension);
       }*/
-// Probing.
-/// Data footprint.
-/**
- * Returns the memory occupied by the data members.
- */
+      // Probing.
+      /// Data footprint.
+      /**
+       * Returns the memory occupied by the data members.
+       */
       size_t data_footprint() const
       {
         return sizeof(trig_fixed_array);
@@ -110,7 +110,7 @@ namespace piranha
       bool needs_padding(const size_t &n) const
       {
         p_assert(n <= Dim);
-// Disable compiler warning when asserts are disabled.
+        // Disable compiler warning when asserts are disabled.
         (void)n;
         return false;
       }
@@ -118,8 +118,8 @@ namespace piranha
       {
         return (Dim >= n);
       }
-// All multipliers are zero.
-//TODO: use packing here and place this method in packed int array.
+      // All multipliers are zero.
+      //TODO: use packing here and place this method in packed int array.
       bool is_zero() const
       {
         for (size_type i=0;i<Dim;++i)
@@ -131,22 +131,22 @@ namespace piranha
         }
         return true;
       }
-// Math.
-/// Multiplication.
-/**
- * Multiplication of two trigonometric functions using Werner's formulas, i.e.
- * \f[
- * C\cos\alpha\cdot\cos\beta=
- * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
- * \f]
- * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
- * and in the second one always goes \f$ \alpha + \beta \f$ one.
- * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
- * that return values are empty).
- * @param[in] t2 factor.
- * @param[out] ret1 first return value.
- * @param[out] ret2 second return value.
- */
+      // Math.
+      /// Multiplication.
+      /**
+       * Multiplication of two trigonometric functions using Werner's formulas, i.e.
+       * \f[
+       * C\cos\alpha\cdot\cos\beta=
+       * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
+       * \f]
+       * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
+       * and in the second one always goes \f$ \alpha + \beta \f$ one.
+       * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
+       * that return values are empty).
+       * @param[in] t2 factor.
+       * @param[out] ret1 first return value.
+       * @param[out] ret2 second return value.
+       */
       void trigmult(const trig_fixed_array &t2, trig_fixed_array &ret1, trig_fixed_array &ret2) const
       {
 #ifdef _PIRANHA_SSE2
@@ -155,14 +155,13 @@ namespace piranha
         tfa_unrollers<Dim>::mult(&(*this)[0]+Dim,&t2[0]+Dim,&ret1[0]+Dim,&ret2[0]+Dim);
 #endif
       }
-// End INTERFACE definition.
-//-------------------------------------------------------
+      // End INTERFACE definition.
+      //-------------------------------------------------------
   };
 
-/// Resizable type-traits specialization for piranha::trig_fixed_array.
+  /// Resizable type-traits specialization for piranha::trig_fixed_array.
   template <>
     template <int Dim, int Bits>
     struct is_resizable<trig_fixed_array<Dim,Bits> >:public false_type {};
 }
-
 #endif

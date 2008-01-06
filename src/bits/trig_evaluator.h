@@ -32,14 +32,14 @@ namespace piranha
   template <class DerivedPs>
     class trig_evaluator
   {
-      typedef std::vector<complex_double> vector_complex;
-      typedef std::pair<vector_complex,vector_complex> internal_pair;
-      typedef std::vector<internal_pair> container_type;
+    typedef std::vector<complex_double> vector_complex;
+    typedef std::pair<vector_complex,vector_complex> internal_pair;
+    typedef std::vector<internal_pair> container_type;
     public:
       trig_evaluator(const DerivedPs *ps, const double &t):private_ps_(ps),private_width_(ps->trig_width()),
         private_value_(t),private_container_(private_width_)
       {
-// Initialize powers 1 and -1 for all trigonometric arguments.
+        // Initialize powers 1 and -1 for all trigonometric arguments.
         for (size_t i=0;i<private_width_;++i)
         {
           private_container_[i].first.push_back(std::polar(1.,private_ps_->arguments().template get<1>()[i]->t_eval(t)));
@@ -50,17 +50,17 @@ namespace piranha
       complex_double request_complexp(const size_t &index, const int &power_)
       {
         p_assert(power_!=0);
-// Make sure we are not going outside container's boundaries.
+        // Make sure we are not going outside container's boundaries.
         p_assert(index < private_width_);
         int power=power_;
         vector_complex *exp_vec=&private_container_[index].first;
-// Change sign and pointer to vector of complex exponentials if negative.
+        // Change sign and pointer to vector of complex exponentials if negative.
         if (power_<0)
         {
           power=-power_;
           exp_vec=&private_container_[index].second;
         }
-// Add the missing elements.
+        // Add the missing elements.
         while (exp_vec->size() < (size_t)power)
         {
           exp_vec->push_back((*exp_vec)[0]*((*exp_vec)[exp_vec->size()-1]));
@@ -80,12 +80,11 @@ namespace piranha
         return private_width_;
       }
     private:
-// Data members.
+      // Data members.
       DerivedPs const   *private_ps_;
       const size_t      private_width_;
       const double      private_value_;
       container_type    private_container_;
   };
 }
-
 #endif

@@ -23,24 +23,24 @@
 
 #include <tr1/unordered_set>
 
-#include "settings_manager.h" // For max load factor.
+#include "settings_manager.h"                     // For max load factor.
 
 namespace piranha
 {
   template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
     class mult_hash
   {
-      typedef std::tr1::unordered_set<Element,Hasher,Eq,Allocator,StoreHash> container_type;
+    typedef std::tr1::unordered_set<Element,Hasher,Eq,Allocator,StoreHash> container_type;
     public:
       typedef typename container_type::const_iterator iterator;
       typedef typename container_type::const_iterator point_iterator;
       mult_hash()
       {
-          private_container_.max_load_factor(settings_manager::load_factor());
+        private_container_.max_load_factor(settings_manager::load_factor());
       }
       mult_hash(const size_t &s):private_container_(s)
       {
-          private_container_.max_load_factor(settings_manager::load_factor());
+        private_container_.max_load_factor(settings_manager::load_factor());
       }
       iterator begin() const
       {
@@ -62,5 +62,4 @@ namespace piranha
       container_type    private_container_;
   };
 }
-
 #endif

@@ -26,33 +26,33 @@
 #include <gmpxx.h>
 
 #include "../../common_typedefs.h"
-#include "../../math.h" // besselJ.
+#include "../../math.h"                           // besselJ.
 #include "../../psymbol.h"
 #include "../base_classes/numerical_container.h"
 #include "../concepts/basic_pseries_coefficient_concept.h"
 
 namespace piranha
 {
-/// Mpz numerical coefficient.
-/**
- * This class can be used as coefficient in Poisson series. It encapsulate a GMP mpf_class
- * value and provides access to it.
- *
- * A set of operators is provided to enable interoperability with basic numerical data types.
- */
+  /// Mpz numerical coefficient.
+  /**
+   * This class can be used as coefficient in Poisson series. It encapsulate a GMP mpf_class
+   * value and provides access to it.
+   *
+   * A set of operators is provided to enable interoperability with basic numerical data types.
+   */
   class mpf_cf:
-    public concepts::basic_pseries_coefficient_concept<mpf_cf>,
+  public concepts::basic_pseries_coefficient_concept<mpf_cf>,
     public numerical_container<mpf_class,mpf_cf>
   {
-/// Alias for self.
-      typedef mpf_cf self;
-/// Alias for the parent class.
-      typedef numerical_container<mpf_class,mpf_cf> ancestor;
-/// Alias for concept.
-      typedef concepts::basic_pseries_coefficient_concept<mpf_cf> concept;
+    /// Alias for self.
+    typedef mpf_cf self;
+    /// Alias for the parent class.
+    typedef numerical_container<mpf_class,mpf_cf> ancestor;
+    /// Alias for concept.
+    typedef concepts::basic_pseries_coefficient_concept<mpf_cf> concept;
     public:
-// This is necessary because some moethods are present in concept _and_ in numerical container.
-// We avoid the dreaded diamond problem by explicitly stating which functions to use.
+      // This is necessary because some moethods are present in concept _and_ in numerical container.
+      // We avoid the dreaded diamond problem by explicitly stating which functions to use.
       using ancestor::swap;
       using ancestor::print_plain;
       using ancestor::print_latex;
@@ -68,32 +68,32 @@ namespace piranha
       using ancestor::mult_by;
       using ancestor::mult_by_self;
       using ancestor::divide_by;
-// Start implementation of basic pseries coefficient interface.
-//------------
-// Ctors and dtor.
-/// Empty constructor.
+      // Start implementation of basic pseries coefficient interface.
+      //------------
+      // Ctors and dtor.
+      /// Empty constructor.
       explicit mpf_cf():ancestor::numerical_container() {}
-/// Constructor from string.
+      /// Constructor from string.
       explicit mpf_cf(const std::string &s):ancestor::numerical_container(s) {}
-/// Constructor from symbol.
+      /// Constructor from symbol.
       explicit mpf_cf(const psymbol &):ancestor::numerical_container()
       {
         std::cout << "WARNING: building numerical coefficient from psymbol." << std::endl;
       }
-/// Constructor from integer.
+      /// Constructor from integer.
       explicit mpf_cf(int val):ancestor::numerical_container(val) {}
-/// Constructor from double.
+      /// Constructor from double.
       explicit mpf_cf(const double &val):ancestor::numerical_container(val) {}
-/// Copy constructor.
+      /// Copy constructor.
       mpf_cf(const self &dc):concept::basic_pseries_coefficient_concept(dc),ancestor::numerical_container(dc) {}
-/// Destructor.
+      /// Destructor.
       ~mpf_cf() {}
-// Needed operators.
+      // Needed operators.
       self &operator=(const self &val2)
       {
         return assign_self(val2);
       }
-// Override norm and evaluation.
+      // Override norm and evaluation.
       double norm(const vector_psym_p &) const
       {
         return std::abs(g_value().get_d());
@@ -103,23 +103,23 @@ namespace piranha
         return g_value().get_d();
       }
       static const size_t max_size = ancestor::max_size;
-// End implementation of basic pseries coefficient interface.
-//------------
-// Start implementation of trigonometric pseries coefficient interface.
-// Used in:
-// - trigonometric toolbox,
-//------------
-// TODO: Move into own toolbox and concept.
+      // End implementation of basic pseries coefficient interface.
+      //------------
+      // Start implementation of trigonometric pseries coefficient interface.
+      // Used in:
+      // - trigonometric toolbox,
+      //------------
+      // TODO: Move into own toolbox and concept.
       self besselJ(int n, const vector_psym_p &) const
       {
         self retval;
         retval.s_value()=math::besselJ(n,g_value().get_d());
         return retval;
       }
-// End implementation of trigonometric pseries coefficient interface.
-//------------
-// Start implementation of power-enabled pseries coefficient interface.
-// TODO: Move into own toolbox and concept.
+      // End implementation of trigonometric pseries coefficient interface.
+      //------------
+      // Start implementation of power-enabled pseries coefficient interface.
+      // TODO: Move into own toolbox and concept.
       self pow(const double &y) const
       {
         self retval;
@@ -129,11 +129,12 @@ namespace piranha
   };
 }
 
+
 namespace std
 {
   template <>
     struct complex<piranha::mpf_cf>:
-    public piranha::concepts::complex_basic_pseries_coefficient_concept<piranha::mpf_cf>,
+  public piranha::concepts::complex_basic_pseries_coefficient_concept<piranha::mpf_cf>,
     public piranha::numerical_container<complex<mpf_class>,complex<piranha::mpf_cf> >,
     public piranha::numerical_container_complex_toolbox<piranha::mpf_cf>
   {
@@ -167,9 +168,9 @@ namespace std
       using complex_toolbox::imag;
       using complex_toolbox::set_real;
       using complex_toolbox::set_imag;
-// Start implementation of basic pseries coefficient interface.
-//------------
-// Basic ctors and dtor.
+      // Start implementation of basic pseries coefficient interface.
+      //------------
+      // Basic ctors and dtor.
       explicit complex():ancestor::numerical_container() {}
       explicit complex(const std::string &s):ancestor::numerical_container(s) {}
       explicit complex(const piranha::psymbol &):ancestor::numerical_container() {}
@@ -178,15 +179,15 @@ namespace std
       complex(const complex &c):concept::complex_basic_pseries_coefficient_concept(c),
         ancestor::numerical_container(c),complex_toolbox::numerical_container_complex_toolbox(c) {}
       ~complex() {}
-// Complex specific contructors.
+      // Complex specific contructors.
       explicit complex(int r, int i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
       explicit complex(const std::complex<int> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
       explicit complex(const double &r, const double &i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
       explicit complex(const std::complex<double> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
       explicit complex(const value_type &r):complex_toolbox::numerical_container_complex_toolbox(r) {}
       explicit complex(const value_type &r, const value_type &i):
-        complex_toolbox::numerical_container_complex_toolbox(r,i) {}
-// Operators.
+      complex_toolbox::numerical_container_complex_toolbox(r,i) {}
+      // Operators.
       self &operator=(const self &val2)
       {
         return assign_self(val2);
@@ -195,20 +196,20 @@ namespace std
       {
         return assign_self(r2);
       }
-// Probing.
+      // Probing.
       double norm(const piranha::vector_psym_p &) const
       {
-// NOTICE: the success of this probably depends upon std::complex implementation...
+        // NOTICE: the success of this probably depends upon std::complex implementation...
         return std::abs(g_value()).get_d();
       }
-// Override evaluation.
+      // Override evaluation.
       std::complex<double> t_eval(const double &, const piranha::vector_psym_p &) const
       {
         return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
       }
       static const size_t max_size = ancestor::max_size;
-// End implementation of complex basic pseries coefficient interface.
-//------------
+      // End implementation of complex basic pseries coefficient interface.
+      //------------
   };
 }
 #endif

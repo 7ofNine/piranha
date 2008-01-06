@@ -25,27 +25,27 @@
 #include <string>
 
 #include "../../psymbol.h"
-#include "../../utils.h" // Lexical converter.
+#include "../../utils.h"                          // Lexical converter.
 #include "../../type_traits/eval_type.h"
 
 namespace piranha
 {
-/// Numerical container class.
-/**
- * This class can be used as a base class for coefficients that consist of a
- * numerical entity (double, GMP classes, etc.).
- */
+  /// Numerical container class.
+  /**
+   * This class can be used as a base class for coefficients that consist of a
+   * numerical entity (double, GMP classes, etc.).
+   */
   template <class T, class Derived>
     class numerical_container
   {
-/// Alias for evaluation type.
-      typedef typename eval_type<Derived>::type eval_type;
-/// Alias for self.
-      typedef numerical_container self;
+    /// Alias for evaluation type.
+    typedef typename eval_type<Derived>::type eval_type;
+    /// Alias for self.
+    typedef numerical_container self;
     public:
-// Start implementation of basic pseries coefficient interface.
-//------------
-// Ctors.
+      // Start implementation of basic pseries coefficient interface.
+      //------------
+      // Ctors.
       explicit numerical_container():value_(0) {}
       explicit numerical_container(const std::string &s):value_(utils::lexical_converter<T>(s)) {}
       explicit numerical_container(const psymbol &):value_(0) {}
@@ -53,7 +53,7 @@ namespace piranha
       explicit numerical_container(const double &x):value_(x) {}
       explicit numerical_container(const Derived &sc):value_(sc.value_) {}
       ~numerical_container() {}
-// I/O.
+      // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &) const
       {
         stream_manager::setup_print(out_stream);
@@ -64,7 +64,7 @@ namespace piranha
         stream_manager::setup_print(out_stream);
         out_stream << "$" << value_ << "$";
       }
-// Manipulation
+      // Manipulation
       Derived &swap(Derived &dc)
       {
         std::swap(value_,dc.value_);
@@ -80,7 +80,7 @@ namespace piranha
         p_assert(l.size() == 0);
         (void)l;
       }
-// Probing.
+      // Probing.
       template <class Series>
         bool checkup(const Series &) const
       {
@@ -91,8 +91,8 @@ namespace piranha
         return absolute();
       }
       static const size_t max_size = 0;
-// If value is less than settings_manager::numerical_zero() in absolute value it is considered
-// to be zero.
+      // If value is less than settings_manager::numerical_zero() in absolute value it is considered
+      // to be zero.
       template <class Series>
         bool is_ignorable(const Series &s) const
       {
@@ -105,7 +105,7 @@ namespace piranha
       bool needs_padding(const size_t &s) const
       {
         p_assert(s == 0);
-// Disable compiler warning when asserts are disabled.
+        // Disable compiler warning when asserts are disabled.
         (void)s;
         return false;
       }
@@ -113,7 +113,7 @@ namespace piranha
       {
         return value_;
       }
-// Maths.
+      // Maths.
       Derived &invert_sign()
       {
         value_*=-1;
@@ -148,26 +148,26 @@ namespace piranha
       {
         return divide_by_generic(x);
       }
-// End implementation of basic pseries coefficient interface.
-//------------
-// TODO: move into own toolbox.
+      // End implementation of basic pseries coefficient interface.
+      //------------
+      // TODO: move into own toolbox.
       void partial(const size_t &, Derived &retval) const
       {
         retval=Derived(0);
       }
-/// Get value.
+      /// Get value.
       const T &g_value() const
       {
         return value_;
       }
-/// Set value.
+      /// Set value.
       T &s_value()
       {
         return value_;
       }
     protected:
       template <class U>
-      Derived &assign_self(const U &x)
+        Derived &assign_self(const U &x)
       {
         value_=x.g_value();
         return *static_cast<Derived *>(this);
@@ -202,20 +202,20 @@ namespace piranha
         return std::abs(value_);
       }
     private:
-// Data member.
+      // Data member.
       T value_;
   };
 
-/// Toolbox for complex-specific methods of piranha::numerical_container.
+  /// Toolbox for complex-specific methods of piranha::numerical_container.
   template <class realDerived>
     class numerical_container_complex_toolbox
   {
-      typedef std::complex<realDerived> Derived;
-      typedef realDerived value_type;
+    typedef std::complex<realDerived> Derived;
+    typedef realDerived value_type;
     public:
-// Start implementation of complex basic pseries coefficient interface.
-//------------
-// Ctors.
+      // Start implementation of complex basic pseries coefficient interface.
+      //------------
+      // Ctors.
       numerical_container_complex_toolbox() {}
       explicit numerical_container_complex_toolbox(int r, int i)
       {
@@ -244,7 +244,7 @@ namespace piranha
         static_cast<Derived *>(this)->s_value().real()=r.g_value();
         static_cast<Derived *>(this)->s_value().imag()=i.g_value();
       }
-// Getters and setters.
+      // Getters and setters.
       value_type real() const
       {
         value_type retval;
@@ -266,7 +266,7 @@ namespace piranha
         static_cast<Derived *>(this)->s_value().real()=0;
         static_cast<Derived *>(this)->s_value().imag()=i.g_value();
       }
-// Maths.
+      // Maths.
       template <class DerivedPs>
         Derived &mult_by_self(const value_type &x, const DerivedPs &)
       {
@@ -288,14 +288,15 @@ namespace piranha
       {
         return static_cast<Derived *>(this)->divide_by_generic(c);
       }
-// End implementation of complex basic pseries coefficient interface.
-//------------
+      // End implementation of complex basic pseries coefficient interface.
+      //------------
   };
 }
 
+
 namespace std
 {
-// Overloads for I/O operators.
+  // Overloads for I/O operators.
   template <class T, class Derived>
     inline istream &operator>>(istream &is, piranha::numerical_container<T,Derived> &nc)
   {
@@ -312,5 +313,4 @@ namespace std
     return os;
   }
 }
-
 #endif

@@ -26,13 +26,13 @@
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <memory> // For std::allocator.
+#include <memory>                                 // For std::allocator.
 
 #include "../p_assert.h"
 
 namespace piranha
 {
-// Used below to define the integer type.
+  // Used below to define the integer type.
   template <int Bits, bool Signed>
     struct integer_type_chooser
   {
@@ -41,7 +41,7 @@ namespace piranha
     typedef max_fast_int max_fast_type;
   };
 
-// Specialization for unsigned integers.
+  // Specialization for unsigned integers.
   template <int Bits>
     struct integer_type_chooser<Bits,false>
   {
@@ -50,15 +50,15 @@ namespace piranha
     typedef max_fast_uint max_fast_type;
   };
 
-/// Meta-programmed functor for the calculation of base-2 logarithm.
-/**
- * Result is retrieved through the lg::value const member function.
- */
+  /// Meta-programmed functor for the calculation of base-2 logarithm.
+  /**
+   * Result is retrieved through the lg::value const member function.
+   */
   template <int N, int Cur = 0>
     struct lg
   {
     BOOST_STATIC_ASSERT(N > 0 and (N % 2) == 0);
-/// Value of the base-2 logarithm of N.
+    /// Value of the base-2 logarithm of N.
     static const size_t value = lg<(N >> 1),Cur+1>::value;
   };
 
@@ -68,12 +68,12 @@ namespace piranha
     static const size_t value = Cur;
   };
 
-/// Dynamically-sized integer array.
-/**
- * Parametrized to an integer sized Bits, which can be Signed or not. Contains also
- * a flavour boolean flag, which does not add further weight and can be used in trigonometric parts
- * of Poisson series.
- */
+  /// Dynamically-sized integer array.
+  /**
+   * Parametrized to an integer sized Bits, which can be Signed or not. Contains also
+   * a flavour boolean flag, which does not add further weight and can be used in trigonometric parts
+   * of Poisson series.
+   */
   template <int Bits, bool Signed, class Allocator = std::allocator<char> >
     class int_array
   {
@@ -84,23 +84,23 @@ namespace piranha
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
       BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
-// Cast argument to int_array::max_fast_type pointer.
+      // Cast argument to int_array::max_fast_type pointer.
 #define max_cast(arg) ((max_fast_type *)(arg))
-/// Default ctor.
-/**
- * Constructs empty array.
- */
+      /// Default ctor.
+      /**
+       * Constructs empty array.
+       */
       int_array():m_flavour(true),m_size(0),m_pack_size(0),m_ptr(allocator.allocate(0)) {}
-/// Copy ctor.
+      /// Copy ctor.
       int_array(const int_array &v):m_flavour(v.m_flavour),m_size(v.m_size),m_pack_size(v.m_pack_size),
         m_ptr(allocator.allocate(m_size))
       {
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
       }
-/// Ctor from size.
-/**
- * Initialises to 0 all the elements.
- */
+      /// Ctor from size.
+      /**
+       * Initialises to 0 all the elements.
+       */
       int_array(const size_type &s):m_flavour(true),m_size(s),m_pack_size(s >> pack_shift),
         m_ptr(allocator.allocate(m_size))
       {
@@ -114,23 +114,23 @@ namespace piranha
           m_ptr[i]=0;
         }
       }
-/// Dtor.
+      /// Dtor.
       ~int_array() {allocator.deallocate(m_ptr,m_size);}
-/// Array-like operator[], const version.
+      /// Array-like operator[], const version.
       const value_type &operator[](const size_t &n) const {return m_ptr[n];}
-/// Array-like operator[], mutable version.
+      /// Array-like operator[], mutable version.
       value_type &operator[](const size_t &n) {return m_ptr[n];}
-/// Return const reference to flavour.
+      /// Return const reference to flavour.
       const bool &flavour() const {return m_flavour;}
-/// Return mutable reference to flavour.
+      /// Return mutable reference to flavour.
       bool &flavour() {return m_flavour;}
-/// Return container size.
+      /// Return container size.
       size_t size() const {return m_size;}
-// TODO: should we pass size_t here, and test against size_type and throw in case of out-of-range request?
-/// Resize the container.
-/**
- * The existing elements are copied over.
- */
+      // TODO: should we pass size_t here, and test against size_type and throw in case of out-of-range request?
+      /// Resize the container.
+      /**
+       * The existing elements are copied over.
+       */
       void resize(const size_type &new_size)
       {
         value_type *new_ptr = alloc_if_size_differs(new_size);
@@ -139,26 +139,26 @@ namespace piranha
           return;
         }
         const size_type new_pack_size = (new_size >> pack_shift);
-// Copy to the minimum of the new sizes.
+        // Copy to the minimum of the new sizes.
         packed_copy(new_ptr,m_ptr,std::min(m_size,new_size),std::min(m_pack_size,new_pack_size));
-// Zero the remaining elements, if any.
+        // Zero the remaining elements, if any.
         for (size_type i=m_size;i < new_size;++i)
         {
           new_ptr[i]=0;
         }
-// Destroy old pointer and assign new data members.
+        // Destroy old pointer and assign new data members.
         allocator.deallocate(m_ptr,m_size);
         m_ptr = new_ptr;
         m_size = new_size;
         m_pack_size = new_pack_size;
       }
-/// Pad right.
+      /// Pad right.
       void pad_right(const size_t &n)
       {
         hard_assert(n >= m_size);
         resize(n);
       }
-/// Assignment operator.
+      /// Assignment operator.
       int_array &operator=(const int_array &v)
       {
         value_type *new_ptr = alloc_if_size_differs(v.m_size);
@@ -173,10 +173,10 @@ namespace piranha
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
         return *this;
       }
-/// Hash value.
-/**
- * Hashes only the integer elements of the array, not the flavour.
- */
+      /// Hash value.
+      /**
+       * Hashes only the integer elements of the array, not the flavour.
+       */
       size_t hasher() const
       {
         size_t retval=0;
@@ -191,42 +191,42 @@ namespace piranha
         }
         return retval;
       }
-/// Equality test.
-/**
- * Tests only the integer elements of the array, not the flavour.
- */
+      /// Equality test.
+      /**
+       * Tests only the integer elements of the array, not the flavour.
+       */
       bool equal_to(const int_array &v) const
       {
         switch (m_size == v.size())
         {
           case true:
+          {
+            size_type i;
+            for (i=0;i < m_pack_size;++i)
             {
-              size_type i;
-              for (i=0;i < m_pack_size;++i)
+              if (max_cast(m_ptr)[i] != max_cast(v.m_ptr)[i])
               {
-                if (max_cast(m_ptr)[i] != max_cast(v.m_ptr)[i])
-                {
-                  return false;
-                }
-              }
-              for(i = i << pack_shift;i < m_size;++i)
-              {
-                if (m_ptr[i] != v[i])
-                {
-                  return false;
-                }
+                return false;
               }
             }
-            return true;
-// TODO: experiment here with case false?
+            for(i = i << pack_shift;i < m_size;++i)
+            {
+              if (m_ptr[i] != v[i])
+              {
+                return false;
+              }
+            }
+          }
+          return true;
+          // TODO: experiment here with case false?
           default:
             return false;
         }
       }
-/// Test for zero elements.
-/**
- * Returns true if all integer elements are zero, false otherwise.
- */
+      /// Test for zero elements.
+      /**
+       * Returns true if all integer elements are zero, false otherwise.
+       */
       bool is_zero() const
       {
         size_t i;
@@ -261,7 +261,7 @@ namespace piranha
           new_ptr[i]=old_ptr[i];
         }
       }
-// Allocate if new_size is different from current size.
+      // Allocate if new_size is different from current size.
       value_type *alloc_if_size_differs(const size_type &new_size)
       {
         switch (m_size == new_size)
@@ -273,34 +273,34 @@ namespace piranha
         }
       }
     private:
-// Data members.
-/// Flavour.
+      // Data members.
+      /// Flavour.
       bool                    m_flavour;
-/// Size of the array.
-/**
- * Equal to the number of elements contained by the array.
- */
+      /// Size of the array.
+      /**
+       * Equal to the number of elements contained by the array.
+       */
       size_type               m_size;
-/// Packed size of the array.
-/**
- * Defined by the integer division int_array::m_size / int_array::pack_mult.
- */
+      /// Packed size of the array.
+      /**
+       * Defined by the integer division int_array::m_size / int_array::pack_mult.
+       */
       size_type               m_pack_size;
-/// Pointer to the first value of the array.
+      /// Pointer to the first value of the array.
       value_type              *m_ptr;
-/// Array allocator.
+      /// Array allocator.
       static allocator_type   allocator;
-/// Pack multiplier.
-/**
- * Defined by the integer division between the number of bits of int_array::max_fast_type and the number
- * of bits of int_array::value_type.
- */
+      /// Pack multiplier.
+      /**
+       * Defined by the integer division between the number of bits of int_array::max_fast_type and the number
+       * of bits of int_array::value_type.
+       */
       static const size_type  pack_mult = sizeof(max_fast_type)/sizeof(value_type);
-/// Pack shifting.
-/**
- * Defined as the base-2 logarithm of int_array::pack_mult. If int_array::pack_mult is not a power of two,
- * a compilation error is produced.
- */
+      /// Pack shifting.
+      /**
+       * Defined as the base-2 logarithm of int_array::pack_mult. If int_array::pack_mult is not a power of two,
+       * a compilation error is produced.
+       */
       static const size_type  pack_shift = lg<pack_mult>::value;
 #undef max_cast
   };
@@ -308,5 +308,4 @@ namespace piranha
   template <int Bits, bool Signed, class Allocator>
     typename int_array<Bits,Signed,Allocator>::allocator_type int_array<Bits,Signed,Allocator>::allocator;
 };
-
 #endif

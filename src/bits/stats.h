@@ -25,7 +25,7 @@
 
 namespace piranha
 {
-/// Piranha-specific statistics class.
+  /// Piranha-specific statistics class.
   class stats
   {
     template <__PIRANHA_BASE_PS_TP_DECL>

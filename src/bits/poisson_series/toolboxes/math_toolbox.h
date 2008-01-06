@@ -27,18 +27,18 @@ namespace piranha
     class math_toolbox
   {
     public:
-/// Real power.
-/**
- * Calculate the power of a series. The power can be any real number. It employs the generalized
- * Newton binomial to expand the real power into a series of natural powers. The series' maximum
- * term must have certain features: it must be a cosine with all argument indices set to zero, and
- * the evaluation of its coefficient must be positive and greater than the sum of the norms of all
- * remaining terms. Basically it is as effective as a Taylor expansion.
- *
- * It may be possible in the future to extend to negative coefficients, but in that case the output
- * will have to be a complex series.
- * @param[in] power real power the series will be raised to.
- */
+      /// Real power.
+      /**
+       * Calculate the power of a series. The power can be any real number. It employs the generalized
+       * Newton binomial to expand the real power into a series of natural powers. The series' maximum
+       * term must have certain features: it must be a cosine with all argument indices set to zero, and
+       * the evaluation of its coefficient must be positive and greater than the sum of the norms of all
+       * remaining terms. Basically it is as effective as a Taylor expansion.
+       *
+       * It may be possible in the future to extend to negative coefficients, but in that case the output
+       * will have to be a complex series.
+       * @param[in] power real power the series will be raised to.
+       */
       Derived pow(const double &power) const
       {
         typedef typename Derived::ancestor::cf_type cf_type;
@@ -58,27 +58,27 @@ namespace piranha
           return Derived();
         }
         if (!(derived_cast->g_s_index().begin()->trig().flavour()) or
-            !(derived_cast->g_s_index().begin()->trig().is_zero()))
+          !(derived_cast->g_s_index().begin()->trig().is_zero()))
         {
           std::cout << "ERROR! series' top term is not suitable for real power." << std::endl;
           std::exit(1);
         }
-// NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
-// symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
-// Need to think about this, but it is not essential until symbolic coefficients are introduced.
+        // NOTICE: what does it mean to evaluate here for symbolic coefficients? To be really effective
+        // symbolic coefficients should not have any time dependency. Otherwise this is just an approximation.
+        // Need to think about this, but it is not essential until symbolic coefficients are introduced.
         const cf_type &a=derived_cast->g_s_index().begin()->cf();
         if (a.t_eval(0.,derived_cast->arguments().template get<0>())<0)
         {
           std::cout << "ERROR! I want a positive evaluation for the greatest term's coefficient." << std::endl;
           std::exit(1);
         }
-// Top term must be greater than half of the series' norm.
+        // Top term must be greater than half of the series' norm.
         if (2*a.norm(derived_cast->arguments().template get<0>()) <= derived_cast->g_norm())
         {
           std::cout << "ERROR! series' top term is not big enough for negative power." << std::endl;
           std::exit(1);
         }
-// NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
+        // NOTICE: Hard coded binomial expansion error to 1/10 of desired precision.
         const double error=.1*std::pow(derived_cast->g_norm(),power)*
           derived_cast->get_truncation();
         const unsigned int limit_index=pow_limit(error,power);
@@ -97,10 +97,10 @@ namespace piranha
         return retval;
       }
     private:
-/// Real power limit.
-/**
- * Calculate limit of the development given the desired error and the power. Requirements: error >= 0.
- */
+      /// Real power limit.
+      /**
+       * Calculate limit of the development given the desired error and the power. Requirements: error >= 0.
+       */
 #define __pow_hard_limit 20
       unsigned int pow_limit(const double &error, const double &power) const
       {

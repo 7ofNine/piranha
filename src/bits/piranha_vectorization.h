@@ -24,5 +24,4 @@
 #ifdef _PIRANHA_SSE2
 #include <emmintrin.h>
 #endif
-
 #endif

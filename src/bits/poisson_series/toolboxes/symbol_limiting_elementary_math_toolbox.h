@@ -25,10 +25,10 @@
 
 namespace piranha
 {
-/// Elementary math toolbox for symbolic series.
-/**
- * Implements series truncation according to symbol limits set in piranha::psymbol_limiter.
- */
+  /// Elementary math toolbox for symbolic series.
+  /**
+   * Implements series truncation according to symbol limits set in piranha::psymbol_limiter.
+   */
   template <class Derived>
     class symbol_limiting_elementary_math_toolbox
   {
@@ -72,8 +72,8 @@ namespace piranha
         typedef typename Derived2::ancestor::it_s_index it_s_index2;
         typedef typename Derived::ancestor::term_type term_type;
         const Derived *derived_cast=static_cast<Derived const *>(this);
-// NOTE: at this point retval's width() is greater or equal to _both_ this
-// and ps2. It's the max width indeed.
+        // NOTE: at this point retval's width() is greater or equal to _both_ this
+        // and ps2. It's the max width indeed.
         p_assert(math::max(derived_cast->trig_width(),ps2.trig_width())==retval.trig_width());
         term_type tmp1, tmp2;
         tmp1.trig().pad_right(retval.trig_width());
@@ -91,7 +91,7 @@ namespace piranha
         {
           it2=it2_i;
           min_expo1=it1->cf().g_min_expo();
-// TODO: consider optimization of removing 'limit_exists' check.
+          // TODO: consider optimization of removing 'limit_exists' check.
           if (limit_exists && min_expo1+it2->cf().g_min_expo() > limit_min_expo)
           {
             std::cout << "External shortcut1\n";
@@ -105,9 +105,9 @@ namespace piranha
               break;
             }
             term_by_term_multiplication(*it1,*it2,term_pair,limits);
-// Before insertion we change the sign of trigonometric parts if necessary.
-// This way we won't do a copy inside insertion function.
-// TODO: cache pointers to trigs?
+            // Before insertion we change the sign of trigonometric parts if necessary.
+            // This way we won't do a copy inside insertion function.
+            // TODO: cache pointers to trigs?
             if (term_pair.template get
               <0>().trig().sign()<0)
             {

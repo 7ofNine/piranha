@@ -26,13 +26,13 @@
 #include <iostream>
 #include <valarray>
 
-#include "common_typedefs.h" // tc_add_ps_to_arg.
-#include "compile_switches.h" // For explicit parallel mode.
+#include "common_typedefs.h"                      // tc_add_ps_to_arg.
+#include "compile_switches.h"                     // For explicit parallel mode.
 #include "math.h"
-#include "poisson_series/phase_list.h" // tc_insert_phase.
+#include "poisson_series/phase_list.h"            // tc_insert_phase.
 #include "range_evaluator.h"
-#include "stream_manager.h" // Gnuplot save.
-#include "utils.h" // Check filename dir.
+#include "stream_manager.h"                       // Gnuplot save.
+#include "utils.h"                                // Check filename dir.
 namespace piranha
 {
   /// Term-by-term comparison of two series.
@@ -77,7 +77,7 @@ namespace piranha
 
   /// Constructor from series.
   template <class T> inline sc<T>::sc(const T &ps1, const T &ps2, bool relative) :
-    diffs_(ps1.length()), is_relative_(relative)
+  diffs_(ps1.length()), is_relative_(relative)
   {
     if (ps1.length()==0)
     {
@@ -210,8 +210,8 @@ namespace piranha
     protected:
       // Ctor & Dtor
       base_tc(const T &benchmarked, const double &t0, const double &t1, const int &n) :
-        m_plain_eval(), m_manip_eval(), m_sigma(0), m_max_error(0), m_benchmarked(benchmarked), m_t0(t0),
-          m_t1(t1), m_n(n)
+      m_plain_eval(), m_manip_eval(), m_sigma(0), m_max_error(0), m_benchmarked(benchmarked), m_t0(t0),
+        m_t1(t1), m_n(n)
       {
       }
       /// Build the time comparison.
@@ -263,13 +263,13 @@ namespace piranha
   // Comparisons for math operations
   template <class T> class tc_equal : public base_tc<T,tc_equal<T> >
   {
-      typedef base_tc<T,tc_equal<T> > ancestor;
+    typedef base_tc<T,tc_equal<T> > ancestor;
     public:
       // b_type stands for "benchmarked type"
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_equal(const T &b, const double &t1, const double &t2, const size_t &ntot, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a)
       {
         ancestor::build_tc();
       }
@@ -283,12 +283,12 @@ namespace piranha
 
   template <class T> class tc_mult : public base_tc<T,tc_mult<T> >
   {
-      typedef base_tc<T,tc_mult<T> > ancestor;
+    typedef base_tc<T,tc_mult<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_mult(const T &b, const double &t1, const double &t2, const size_t &ntot, const T &x, const T &y) :
-        ancestor::base_tc(b, t1, t2, ntot), x_(&x), y_(&y)
+      ancestor::base_tc(b, t1, t2, ntot), x_(&x), y_(&y)
       {
         ancestor::build_tc();
       }
@@ -303,12 +303,12 @@ namespace piranha
 
   template <class T> class tc_complexp : public base_tc<std::complex<T>,tc_complexp<T> >
   {
-      typedef base_tc<std::complex<T>,tc_complexp<T> > ancestor;
+    typedef base_tc<std::complex<T>,tc_complexp<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_complexp(const b_type &b, const double &t1, const double &t2, const size_t &ntot, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a)
       {
         ancestor::build_tc();
       }
@@ -322,12 +322,12 @@ namespace piranha
 
   template <class T> class tc_cosine : public base_tc<T,tc_cosine<T> >
   {
-      typedef base_tc<T,tc_cosine<T> > ancestor;
+    typedef base_tc<T,tc_cosine<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_cosine(const T &b, const double &t1, const double &t2, const size_t &ntot, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a)
       {
         ancestor::build_tc();
       }
@@ -341,12 +341,12 @@ namespace piranha
 
   template <class T> class tc_sine : public base_tc<T,tc_sine<T> >
   {
-      typedef base_tc<T,tc_sine<T> > ancestor;
+    typedef base_tc<T,tc_sine<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_sine(const T &b, const double &t1, const double &t2, const size_t &ntot, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a)
       {
         ancestor::build_tc();
       }
@@ -360,12 +360,12 @@ namespace piranha
 
   template <class T> class tc_Pnm : public base_tc<T,tc_Pnm<T> >
   {
-      typedef base_tc<T,tc_Pnm<T> > ancestor;
+    typedef base_tc<T,tc_Pnm<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_Pnm(const T &b, const double &t1, const double &t2, const size_t &ntot, int n, int m, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a), n_(n), m_(m)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a), n_(n), m_(m)
       {
         ancestor::build_tc();
       }
@@ -381,14 +381,14 @@ namespace piranha
 
   template <class T> class tc_Ynm : public base_tc<std::complex<T>,tc_Ynm<T> >
   {
-      typedef base_tc<std::complex<T>,tc_Ynm<T> > ancestor;
+    typedef base_tc<std::complex<T>,tc_Ynm<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_Ynm(const b_type &b, const double &t1, const double &t2, const size_t &ntot, int n, int m,
         const T &theta, const T
         &phi) :
-        ancestor::base_tc(b, t1, t2, ntot), theta_(&theta), phi_(&phi), n_(n), m_(m)
+      ancestor::base_tc(b, t1, t2, ntot), theta_(&theta), phi_(&phi), n_(n), m_(m)
       {
         ancestor::build_tc();
       }
@@ -405,14 +405,14 @@ namespace piranha
 
   template <class T> class tc_wig_rot : public base_tc<std::complex<T>,tc_wig_rot<T> >
   {
-      typedef base_tc<std::complex<T>,tc_wig_rot<T> > ancestor;
+    typedef base_tc<std::complex<T>,tc_wig_rot<T> > ancestor;
     public:
       typedef std::complex<T> b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_wig_rot(const b_type &b, const double &t1, const double &t2, const size_t &ntot, int n, int m,
         const T &alpha, const T &beta, const T &gamma, const T &theta, const T &phi) :
-        ancestor::base_tc(b, t1, t2, ntot), n_(n), m_(m), alpha_(&alpha), beta_(&beta), gamma_(&gamma),
-          theta_(&theta), phi_(&phi)
+      ancestor::base_tc(b, t1, t2, ntot), n_(n), m_(m), alpha_(&alpha), beta_(&beta), gamma_(&gamma),
+        theta_(&theta), phi_(&phi)
       {
         ancestor::build_tc();
       }
@@ -433,13 +433,13 @@ namespace piranha
 
   template <class T> class tc_pow : public base_tc<T,tc_pow<T> >
   {
-      typedef base_tc<T,tc_pow<T> > ancestor;
+    typedef base_tc<T,tc_pow<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_pow(const T &b, const double &t1, const double &t2, const size_t &ntot, const double &power_,
         const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a), power(power_)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a), power(power_)
       {
         ancestor::build_tc();
       }
@@ -457,13 +457,13 @@ namespace piranha
   /// Time comparison for addition of a series to an argument.
   template <class T> class tc_add_ps_to_arg : public base_tc<T,tc_add_ps_to_arg<T> >
   {
-      typedef base_tc<T,tc_add_ps_to_arg<T> > ancestor;
+    typedef base_tc<T,tc_add_ps_to_arg<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_add_ps_to_arg(const T &b, const double &t1, const double &t2, const size_t &ntot, std::string name,
         const T &a, const T &orig) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a), orig_(&orig), index_(orig_->trig_arg_index(name))
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a), orig_(&orig), index_(orig_->trig_arg_index(name))
       {
         ancestor::build_tc();
       }
@@ -519,13 +519,13 @@ namespace piranha
    */
   template <class T> class tc_insert_phases : public base_tc<T,tc_insert_phases<T> >
   {
-      typedef base_tc<T,tc_insert_phases<T> > ancestor;
+    typedef base_tc<T,tc_insert_phases<T> > ancestor;
     public:
       typedef T b_type;
       typedef typename ancestor::eval_type eval_type;
       tc_insert_phases(const T &b, const double &t1, const double &t2, const size_t &ntot,
         const phase_list &pl, const T &a) :
-        ancestor::base_tc(b, t1, t2, ntot), a_(&a), pl_(&pl)
+      ancestor::base_tc(b, t1, t2, ntot), a_(&a), pl_(&pl)
       {
         ancestor::build_tc();
       }
