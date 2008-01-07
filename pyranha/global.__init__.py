@@ -21,8 +21,6 @@
 
 __all__ = [@MODULE_LIST@]
 
-from copy import *
-
 # Global variables: theories of motion
 
 #global elp1
