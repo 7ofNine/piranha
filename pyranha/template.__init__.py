@@ -17,22 +17,25 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from @MODULE_NAME@ import *
-import re
+
+import re as _re
 
 try:
-  from pylab import plot,semilogy
+  import pylab as _pylab
   def __plot_range_evaluator(self,*args,**kwargs):
-    plot(self.times(),self.values(),*args,**kwargs)
+    _pylab.plot(self.times(),self.values(),*args,**kwargs)
   def __plot_tc(self,*args,**kwargs):
     values = list()
     for i in range(self.plain_eval().times().__len__()):
       values.append(abs(self.plain_eval().values()[i]-self.manip_eval().values()[i]))
-    semilogy(self.plain_eval().times(),self.plain_eval().values(),*args,**kwargs)
-    semilogy(self.manip_eval().times(),values,*args,**kwargs)
+    _pylab.semilogy(self.plain_eval().times(),self.plain_eval().values(),*args,**kwargs)
+    _pylab.semilogy(self.manip_eval().times(),values,*args,**kwargs)
   range_evaluator.plot = __plot_range_evaluator
-  tc_list=[i for i in dir(@MODULE_NAME@) if re.search('^tc_.*',i)]
-  for i in tc_list:
-    eval(i).plot = __plot_tc
+  def __add_plot_to_tcs():
+    tc_list=[i for i in dir(@MODULE_NAME@) if _re.search('^tc_.*',i)]
+    for i in tc_list:
+      eval(i).plot = __plot_tc
+  __add_plot_to_tcs()
 except ImportError:
   print "Matplotlib is not installed, disabling plotting methods."
 except NameError:
