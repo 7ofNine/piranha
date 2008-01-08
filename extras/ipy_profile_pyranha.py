@@ -68,22 +68,23 @@ def main():
     #o.prompt_in1 = r'\C_LightBlue[\C_LightCyan\Y2\C_LightBlue]\C_Normal\n\C_Green|\#>'
     #o.prompt_in2 = r'.\D: '
     #o.prompt_out = r'[\#] '
-    import sys
-    # Build a qt4 application if we can, so we init the event loop.
-    try:
-        import PyQt4.QtGui
-        qtapp = PyQt4.QtGui.QApplication(sys.argv)
-    except:
-        pass
-    ip.ex("import pyranha")
-    ip.ex("from pyranha import *")
+
     ip.ex("from copy import copy")
-    import pyranha
-    for i in pyranha.__all__:
-        try:
-            ip.ex("from pyranha.%s import %s" % (i,i.lower()))
-        except:
+    try:
+      ip.ex("import pyranha")
+      import pyranha
+      for i in pyranha.__all__:
+          try:
+              if i == "Core":
+                ip.ex("from pyranha.Core import *")
+              if i != "Gui":
+                ip.ex("from pyranha import %s" % i)
+                ip.ex("from pyranha.%s import %s" % (i,i.lower()))
+          except:
             pass
+    except:
+      print "Error importing pyranha. Most likely Pyranha was not correctly installed."
+
 
 # some config helper functions you can use 
 def import_all(modules):
