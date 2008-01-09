@@ -50,19 +50,21 @@ namespace piranha
       {
         typedef typename DerivedPs::ancestor::term_type term_type;
         typedef typename DerivedPs::ancestor::it_s_index it_s_index;
+        DerivedPs const *derived_const_cast=static_cast<DerivedPs const *>(this);
         DerivedPs *derived_cast=static_cast<DerivedPs *>(this);
-        if (derived_cast->is_empty())
+        if (derived_const_cast->is_empty())
         {
           return;
         }
         DerivedPs tmp_ps;
-        tmp_ps.merge_args(*derived_cast);
+        tmp_ps.merge_args(*derived_const_cast);
         term_type tmp_term;
         it_s_index it_hint=tmp_ps.g_s_index().end();
-        BOOST_FOREACH(term_type t,derived_cast->g_s_index())
+        const it_s_index it_f = derived_const_cast->g_s_index().end();
+        for (it_s_index it = derived_const_cast->g_s_index().begin();it != it_f; ++it)
         {
-          tmp_term=t;
-          tmp_term.cf().mult_by_self(cf,*derived_cast);
+          tmp_term=*it;
+          tmp_term.cf().mult_by_self(cf,*derived_const_cast);
           it_hint=tmp_ps.insert_with_checks(tmp_term,it_hint);
         }
         derived_cast->swap(tmp_ps);
@@ -124,7 +126,7 @@ namespace piranha
       {
         typedef typename DerivedPs::ancestor::cf_type cf_type;
         cf_type new_c=t1.cf();
-        new_c.template mult_by_self(t2.cf(), *static_cast<DerivedPs const *>(this));
+        new_c.template mult_by_self<DerivedPs>(t2.cf(), *static_cast<DerivedPs const *>(this));
         new_c.divide_by(2);
         DerivedPs::term_by_term_multiplication_trig(t1, t2, term_pair, new_c);
       }

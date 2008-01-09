@@ -31,6 +31,8 @@
 
 namespace piranha
 {
+#define derived_const_cast (static_cast<Derived const *>(this))
+#define derived_cast (static_cast<Derived *>(this))
   /// Common class for dense trigonometric array.
   /**
    * Intended to add specific methods to plain arrays for the manipulation of trigonometric
@@ -39,7 +41,6 @@ namespace piranha
   template <class Derived>
     class trig_array_commons
   {
-#define derived_cast (static_cast<const Derived *>(this))
     public:
       // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &v) const
@@ -47,14 +48,14 @@ namespace piranha
         const size_t w=v.size();
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-        p_assert(w <= derived_cast->size())
+        p_assert(w <= derived_const_cast->size())
           stream_manager::setup_print(out_stream);
         for (size_t i=0;i < w;++i)
         {
           // We cast to max_fast_int, which should be the largest type admitted for multipliers.
-          out_stream << (max_fast_int)(*derived_cast)[i] << stream_manager::data_separator();
+          out_stream << (max_fast_int)(*derived_const_cast)[i] << stream_manager::data_separator();
         }
-        switch (derived_cast->flavour())
+        switch (derived_const_cast->flavour())
         {
           case true:
             out_stream << "c";
@@ -66,9 +67,9 @@ namespace piranha
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
         const size_t w=v.size();
-        p_assert(w <= derived_cast->size())
+        p_assert(w <= derived_const_cast->size())
           stream_manager::setup_print(out_stream);
-        switch (derived_cast->flavour())
+        switch (derived_const_cast->flavour())
         {
           case true:
             out_stream << "c&";
@@ -80,21 +81,21 @@ namespace piranha
         std::string tmp("$");
         for (size_t i=0;i < w;++i)
         {
-          if ((*derived_cast)[i] != 0)
+          if ((*derived_const_cast)[i] != 0)
           {
-            if ((*derived_cast)[i] > 0 and !first_one)
+            if ((*derived_const_cast)[i] > 0 and !first_one)
             {
               tmp.append("+");
             }
-            if ((*derived_cast)[i] == -1)
+            if ((*derived_const_cast)[i] == -1)
             {
               tmp.append("-");
             }
-            else if ((*derived_cast)[i] == 1)
+            else if ((*derived_const_cast)[i] == 1)
               {}
               else
             {
-              tmp.append(boost::lexical_cast<std::string>((max_fast_int)(*derived_cast)[i]));
+              tmp.append(boost::lexical_cast<std::string>((max_fast_int)(*derived_const_cast)[i]));
             }
             tmp.append(v[i]->name());
             first_one=false;
@@ -110,7 +111,7 @@ namespace piranha
       }
       void invert_sign()
       {
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
           (*derived_cast)[i]*=-1;
@@ -120,7 +121,7 @@ namespace piranha
       template <class T>
         void assign_int_vector(const T &v)
       {
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         p_assert(v.size() == w);
         for (size_t i=0;i < w;++i)
         {
@@ -136,10 +137,10 @@ namespace piranha
         double density(const DerivedPs &p) const
       {
         size_t tmp=0;
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
-          if ((*derived_cast)[i] != 0)
+          if ((*derived_const_cast)[i] != 0)
           {
             ++tmp;
           }
@@ -169,16 +170,16 @@ namespace piranha
       double t_eval(const double &t, const vector_psym_p &v) const
       {
         const size_t w=v.size();
-        p_assert(w <= derived_cast->size());
+        p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
-          if ((*derived_cast)[i] != 0)
+          if ((*derived_const_cast)[i] != 0)
           {
-            retval+=(*derived_cast)[i]*v[i]->t_eval(t);
+            retval+=(*derived_const_cast)[i]*v[i]->t_eval(t);
           }
         }
-        switch (derived_cast->flavour())
+        switch (derived_const_cast->flavour())
         {
           case true:
             return std::cos(retval);
@@ -197,16 +198,16 @@ namespace piranha
         double t_eval(TrigEvaluator &te) const
       {
         const size_t w=te.width();
-        p_assert(w <= derived_cast->size());
+        p_assert(w <= derived_const_cast->size());
         complex_double retval(1.);
         for (size_t i=0;i < w;++i)
         {
-          if ((*derived_cast)[i] != 0)
+          if ((*derived_const_cast)[i] != 0)
           {
-            retval*=te.request_complexp(i,(*derived_cast)[i]);
+            retval*=te.request_complexp(i,(*derived_const_cast)[i]);
           }
         }
-        switch (derived_cast->flavour())
+        switch (derived_const_cast->flavour())
         {
           case true:
             return retval.real();
@@ -220,14 +221,14 @@ namespace piranha
        */
       short int sign() const
       {
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
-          if ((*derived_cast)[i] > 0)
+          if ((*derived_const_cast)[i] > 0)
           {
             return 1;
           }
-          if ((*derived_cast)[i] < 0)
+          if ((*derived_const_cast)[i] < 0)
           {
             return -1;
           }
@@ -238,32 +239,32 @@ namespace piranha
       template <class Series>
         bool is_ignorable(const Series &) const
       {
-        return (derived_cast->is_zero() and !derived_cast->flavour());
+        return (derived_const_cast->is_zero() and !derived_const_cast->flavour());
       }
       /// Equality test.
       bool operator==(const Derived &t2) const
       {
-        return (derived_cast->flavour() == t2.flavour() and derived_cast->equal_to(t2));
+        return (derived_const_cast->flavour() == t2.flavour() and derived_const_cast->equal_to(t2));
       }
       /// Less than.
       bool operator<(const Derived &t2) const
       {
-        if (derived_cast->flavour() < t2.flavour())
+        if (derived_const_cast->flavour() < t2.flavour())
         {
           return true;
         }
-        else if (derived_cast->flavour() > t2.flavour())
+        else if (derived_const_cast->flavour() > t2.flavour())
         {
           return false;
         }
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         for (size_t i=0;i<w;++i)
         {
-          if ((*derived_cast)[i] < t2[i])
+          if ((*derived_const_cast)[i] < t2[i])
           {
             return true;
           }
-          else if ((*derived_cast)[i] > t2[i])
+          else if ((*derived_const_cast)[i] > t2[i])
           {
             return false;
           }
@@ -272,14 +273,14 @@ namespace piranha
       }
       size_t hash_value() const
       {
-        size_t retval = derived_cast->hasher();
-        boost::hash_combine(retval,derived_cast->flavour());
+        size_t retval = derived_const_cast->hasher();
+        boost::hash_combine(retval,derived_const_cast->flavour());
         return retval;
       }
       /// Multiply by an integer.
       void mult_by_int(const int &n)
       {
-        const size_t w=derived_cast->size();
+        const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
           (*derived_cast)[i]*=n;
@@ -322,19 +323,20 @@ namespace piranha
       {
         BOOST_STATIC_ASSERT(N >= 0);
         const size_t w=v.size();
-        p_assert(w <= derived_cast->size());
+        p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
           // We must be sure that there actually is component N in every symbol we are going to use.
           if (v[i]->poly_eval().size() > N)
           {
-            retval+=(*derived_cast)[i]*v[i]->poly_eval()[N];
+            retval+=(*derived_const_cast)[i]*v[i]->poly_eval()[N];
           }
         }
         return retval;
       }
-#undef derived_cast
   };
+#undef derived_const_cast
+#undef derived_cast
 }
 #endif

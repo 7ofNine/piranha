@@ -23,10 +23,11 @@
 
 #include "../p_assert.h"
 #include "../utils.h"                             // For class_converter.
-#define derived_cast static_cast<Derived const *>(this)
 
 namespace piranha
 {
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
   // Base series class.
   /*
    * Term must derive from piranha::base_term class.
@@ -51,18 +52,18 @@ namespace piranha
         class_converter<Term2,Term> term(term_);
         // It should not happen because resizing in this case should already be managed
         // by external routines (merge_args, and input from file).
-        p_assert(term.result.is_insertable(*derived_cast));
+        p_assert(term.result.is_insertable(*derived_const_cast));
         Term *new_term(0);
-        const bool padding_needed=(term.result.needs_padding(*derived_cast));
+        const bool padding_needed=(term.result.needs_padding(*derived_const_cast));
         if (unlikely(padding_needed))
         {
           new_term=Derived::term_allocator.allocate(1);
           Derived::term_allocator.construct(new_term, term.result);
-          new_term->pad_right(*derived_cast);
+          new_term->pad_right(*derived_const_cast);
         }
         if (AdditionalChecks)
         {
-          new_term = derived_cast->i_perform_additional_checks(term.result,new_term);
+          new_term = derived_const_cast->i_perform_additional_checks(term.result,new_term);
         }
         const Term *insert_term;
         if (new_term == 0)
@@ -81,8 +82,7 @@ namespace piranha
         return ret_it;
       }
   };
-}
-
-
+#undef derived_const_cast
 #undef derived_cast
+}
 #endif

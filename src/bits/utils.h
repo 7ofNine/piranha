@@ -294,7 +294,7 @@ namespace piranha
         // The layout must have at least all arguments in v1.
         p_assert(l_size >= v1.size());
         // Memorize the old vector.
-        VectorType old(v1);
+        const VectorType old(v1);
         // Make space.
         v1.resize(l_size);
         for (size_t i=0;i < l_size;++i)
