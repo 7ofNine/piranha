@@ -36,8 +36,7 @@ namespace piranha
   };
 
   /// Complex specialization for evaluation type trait.
-  template <>
-    template <class T>
+  template <class T>
     struct eval_type<std::complex<T> >
   {
     typedef std::complex<double> type;

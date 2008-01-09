@@ -275,8 +275,7 @@ namespace piranha
   };
 
   /// Toolbox for trigonometric operations, specialization for complex series.
-  template <>
-    template <class DerivedPs>
+  template <class DerivedPs>
     class trigonometric_toolbox<std::complex<DerivedPs> >:public base_trigonometric_toolbox<std::complex<DerivedPs> >
     {};
 }
