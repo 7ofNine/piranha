@@ -50,10 +50,6 @@ namespace piranha
     {
       return m_trig;
     }
-    size_t hasher() const
-    {
-      return trig.hash_value();
-    }
     // Data members.
     mutable Cf    m_cf;
     mutable Trig  m_trig;
