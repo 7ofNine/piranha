@@ -143,13 +143,15 @@ namespace piranha
     outf_data.close();
   }
 
-  /// Series comparison in the time domain
-  /** Two series are evaluated over a time span and statistics on
-   * the evaluations are computed, like maximum error and rms of error (sigma). Beside comparing two
-   * series it is also possible to compare a series against an operation: for instance we can compare
-   * the result of a multiplication against the "correct" result, i.e. the product of the evaluation
-   * of the two factors of the multiplication over the given time span. Comparisons for most operations
-   * are provided.
+  /// Base series comparison in the time domain
+  /**
+   * A series and a function of such series (possibly involving other series and additional parameters)
+   * are evaluated over a time span and statistics on
+   * the evaluations are computed, like maximum error and rms of error (sigma).
+   * Time comparisons for some operations are alread provided as derived classes.
+   * This class is not meant to be used directly: it must be derived so that the derived class
+   * implements the function on the input series. The derived classes must conform to
+   * the piranha::concepts::evaluatable concept.
    */
   template <class T, class Derived, bool ParallelPlain=compile_switches::use_tbb,
     bool ParallelManip=compile_switches::use_tbb> class base_tc
