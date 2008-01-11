@@ -176,6 +176,10 @@ namespace piranha
       };
       // Data members.
       /// Elements of the term.
+      /**
+       * Marked as mutable for speedy operations under certain time-critical operations in hashed containers.
+       * PLEASE NOTE: do _not_ abuse mutability.
+       */
       mutable tuple_type elements;
   };
 
