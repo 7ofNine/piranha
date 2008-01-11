@@ -163,9 +163,20 @@ namespace piranha
       {
         return last_element() == t.last_element();
       }
+      /// Hasher functor.
+      /**
+       * Useful in STL-like containers.
+       */
+      struct hasher
+      {
+        size_t operator()(const base_term &t) const
+        {
+          return t.last_element().hash_value();
+        }
+      };
       // Data members.
       /// Elements of the term.
-      tuple_type elements;
+      mutable tuple_type elements;
   };
 
   /// Overload of hash_value function for piranha::base_term.

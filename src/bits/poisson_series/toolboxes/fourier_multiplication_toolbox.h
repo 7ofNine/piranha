@@ -26,7 +26,6 @@
 #include "../../buffer.h"
 #include "../../compile_switches.h"
 #include "../../config.h"                         // For selection of temporary hash container for multiplication and display progress..
-#include "../terms/light_term.h"
 #include "norm_truncation_toolbox.h"
 #include "../../progress_display.h"
 #include "../pseries_gl_rep.h"
@@ -399,12 +398,10 @@ namespace piranha
         typedef typename DerivedPs2::ancestor::it_s_index it_s_index2;
         typedef typename DerivedPs2::ancestor::term_type term_type2;
         typedef typename DerivedPs::ancestor::allocator_type allocator_type;
-        // Light_term typedefs.
-        typedef light_term<cf_type,trig_type> light_term_type;
-        typedef boost::tuple<light_term_type &, light_term_type &> light_term_pair;
+        typedef boost::tuple<term_type &, term_type &> term_pair_type;
         // Mult_hash typedefs.
-        typedef mult_hash<light_term_type,typename light_term_type::hasher,
-          std::equal_to<light_term_type>,allocator_type,true> m_hash;
+        typedef mult_hash<term_type,typename term_type::hasher,
+          std::equal_to<term_type>,allocator_type,true> m_hash;
         typedef typename m_hash::iterator m_hash_iterator;
         typedef typename m_hash::point_iterator m_hash_point_iterator;
         //std::cout << "Will perform plain multiplication." << '\n';
@@ -413,10 +410,10 @@ namespace piranha
         double norm1;
         // NOTE: at this point retval's width() is greater or equal to _both_ this
         // and ps2. It's the max width indeed.
-        light_term_type tmp1, tmp2;
+        term_type tmp1, tmp2;
         tmp1.trig().pad_right(retval.trig_width());
         tmp2.trig().pad_right(retval.trig_width());
-        light_term_pair term_pair(tmp1,tmp2);
+        term_pair_type term_pair(tmp1,tmp2);
         // Cache all pointers to the terms of this and ps2 in vectors.
         std::valarray<term_type const *> v_p1;
         std::valarray<term_type2 const *> v_p2;
@@ -430,7 +427,7 @@ namespace piranha
         // Cache some pointers.
         trig_type const &t0=term_pair.template get<0>().trig(), &t1=term_pair.template get<1>().trig();
         cf_type const &c0=term_pair.template get<0>().cf(), &c1=term_pair.template get<1>().cf();
-        light_term_type &term0=term_pair.template get<0>(), &term1=term_pair.template get<1>();
+        term_type &term0=term_pair.template get<0>(), &term1=term_pair.template get<1>();
         for (i=0;i<l1;++i)
         {
           norm1=v_p1[i]->cf().norm(derived_cast->arguments().template get<0>());
@@ -465,7 +462,8 @@ namespace piranha
             }
             else
             {
-              hm_p_it->m_cf.add(c0);
+              // Access it directly so that we can take advantage of mutability. 
+              hm_p_it->elements.template get<0>().add(c0);
             }
             hm_p_it=hm.find(term1);
             if (hm_p_it == hm.end())
@@ -474,7 +472,7 @@ namespace piranha
             }
             else
             {
-              hm_p_it->m_cf.add(c1);
+              hm_p_it->elements.template get<0>().add(c1);
             }
             ++pd;
           }
@@ -484,7 +482,7 @@ namespace piranha
         for (m_hash_iterator hm_it=hm.begin();hm_it!=hm_it_f;++hm_it)
         {
           // TODO possible optimization: introduce destructive term ctor (e.g., swap array content instead of copying it)?
-          it_hint = retval.template insert<term_type,false,true>(term_type(hm_it->m_cf,hm_it->m_trig),it_hint);
+          it_hint = retval.template insert<term_type,false,true>(term_type(hm_it->cf(),hm_it->trig()),it_hint);
         }
         //retval.cumulative_crop(Delta);
       }
