@@ -89,34 +89,31 @@ class panelWidget(QtGui.QWidget):
     if n_psym != n_twi:
       for i in psymbol_manager():
         if self.ui.treeWidget.findItems(i.name(),QtCore.Qt.MatchExactly).__len__()==0:
-          newSym=QtGui.QTreeWidgetItem(self.ui.treeWidget)
-          newSym.setText(0,i.name())
-          newSym.setText(1,i.powers_string().replace(stream_manager.data_separator(),'\n'))
-          self.ui.treeWidget.addTopLevelItem(newSym)
+          newSym1=QtGui.QTreeWidgetItem(self.ui.treeWidget)
+          newSym1.setText(0,i.name())
+          newSym2=QtGui.QTreeWidgetItem(newSym1)
+          newSym2.setText(0,i.powers_string().replace(stream_manager.data_separator(),'\n'))
+          self.ui.treeWidget.addTopLevelItem(newSym1)
+          self.ui.treeWidget.addTopLevelItem(newSym2)
   def __updateSymbolsIcons(self):
     if self.renderFlag:
         print "I want to render, but slot is busy. Waiting for next opportunity."
         return
     self.renderFlag=True
-    twiList=self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard)
-    nIcons=0
-    for i in twiList:
-      if i.icon(0).isNull():
-        nIcons=nIcons+1
-    if self.ui.latexRenderCheckBox.checkState()==QtCore.Qt.Checked:
-      if nIcons>0:
-        self.ui.latexRenderingProgressBar.setMaximum(nIcons)
+    if self.ui.latexRenderCheckBox.checkState():
+      # Build a list of tree widget items that have no associated icon.
+      twiList=[i for i in self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard) if i.icon(0).isNull()]
+      if twiList:
+        self.ui.latexRenderingProgressBar.setMaximum(twiList.__len__())
         self.ui.latexRenderingProgressBar.setValue(0)
         self.ui.latexRenderingProgressBar.show()
       for i in twiList:
-        if i.icon(0).isNull():
-          i.setIcon(0,QtGui.QIcon(self.__latexRender(i.text(0))))
-          self.ui.latexRenderingProgressBar.setValue(self.ui.latexRenderingProgressBar.value()+1)
+        i.setIcon(0,QtGui.QIcon(self.__latexRender(i.text(0))))
+        self.ui.latexRenderingProgressBar.setValue(self.ui.latexRenderingProgressBar.value()+1)
       self.ui.latexRenderingProgressBar.hide()
     else:
-      for i in twiList:
-        if not i.icon(0).isNull():
-            i.setIcon(0,QtGui.QIcon())
+      for i in [j for j in self.ui.treeWidget.findItems("*",QtCore.Qt.MatchWildcard) if not j.icon(0).isNull()]:
+        i.setIcon(0,QtGui.QIcon())
     self.renderFlag=False
   def __latexRender(self,str):
     if self.symCache.has_key(str):
@@ -134,7 +131,7 @@ def __latexCleanup(baseName):
 
 
 def latexRender(str_):
-  str=QtCore.QString(r"\documentclass{article}\thispagestyle{empty}\begin{document}$")+str_+r"$\end{document}"
+  str=QtCore.QString(r"\documentclass{minimal}\begin{document}$")+str_+r"$\end{document}"
   tmpFileTex=QtCore.QTemporaryFile(QtCore.QDir.tempPath()+str_.__str__().replace("\\","backslash_")+"_pyranha_tmp_XXXXXX.tex")
   if tmpFileTex.open():
     print "Opened file " + tmpFileTex.fileName()
