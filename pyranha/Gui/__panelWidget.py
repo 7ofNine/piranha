@@ -50,7 +50,7 @@ class panelWidget(QtGui.QWidget):
     self.connect(self.ui.digitsSlider,QtCore.SIGNAL("valueChanged(int)"),self.__setDigits)
     self.connect(self.ui.theoriesPathButton,QtCore.SIGNAL("clicked()"),self.__setTheoriesPathDialog)
     self.connect(self.ui.resetPathButton,QtCore.SIGNAL("clicked()"),self.__resetTheoriesPath)
-    self.connect(self.timer,QtCore.SIGNAL("timeout()"),self.__updateSettings)
+    self.connect(self.timer,QtCore.SIGNAL("timeout()"),self.__globalUpdate)
     self.connect(self.ui.theoriesPathLineEdit,QtCore.SIGNAL("textChanged(const QString &)"),
       self.__setTheoriesPath)
     self.connect(self.ui.fpComboBox,QtCore.SIGNAL("currentIndexChanged(int)"),self.__setFpRep)
@@ -62,7 +62,7 @@ class panelWidget(QtGui.QWidget):
     dialog.setWindowTitle("Select path for theories of motion")
     dialog.setDirectory(settings_manager.theories_path())
     retval=dialog.exec_()
-    if retval==0:
+    if not retval:
       return
     dir=QtCore.QString(dialog.directory().absolutePath())
     self.ui.theoriesPathLineEdit.setText(dir)
@@ -71,7 +71,7 @@ class panelWidget(QtGui.QWidget):
     self.ui.digitsLabel.setText(QtCore.QString.number(stream_manager.digits()))
   def __resetTheoriesPath(self):
     self.ui.theoriesPathLineEdit.setText(settings_manager.default_theories_path())
-  def __updateSettings(self):
+  def __globalUpdate(self):
     self.ui.digitsSlider.setValue(stream_manager.digits())
     if not self.ui.theoriesPathLineEdit.hasFocus():
       self.ui.theoriesPathLineEdit.setText(settings_manager.theories_path())
