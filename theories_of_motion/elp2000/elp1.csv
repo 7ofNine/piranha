@@ -1,6 +1,6 @@
 # Main problem, longitude
 [trig_arg]
-name=theta_g
+name=\theta_g
 poly_eval=0;2.3012167529575e+05
 [trig_arg]
 name=W_1
