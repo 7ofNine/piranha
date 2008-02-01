@@ -74,7 +74,7 @@ namespace piranha
         break;
       case false:
         Derived::term_allocator.destroy(new_term);
-        Derived::term_allocator.deallocate(new_term, 1);
+        Derived::term_allocator.deallocate(new_term,1);
     }
     return ret_it;
   }
