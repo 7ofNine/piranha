@@ -40,11 +40,10 @@ namespace piranha
   {
     class_converter<Term2,Term> term(term_);
     // It should not happen because resizing in this case should already be managed
-    // by external routines (merge_args, and input from file).
+    // by other routines (merge_args, input from file, etc.).
     p_assert(term.result.is_insertable(*derived_const_cast));
     Term *new_term(0);
-    const bool padding_needed=(term.result.needs_padding(*derived_const_cast));
-    switch(unlikely(padding_needed))
+    switch(unlikely(term.result.needs_padding(*derived_const_cast)))
     {
       case true:
         new_term=Derived::term_allocator.allocate(1);
