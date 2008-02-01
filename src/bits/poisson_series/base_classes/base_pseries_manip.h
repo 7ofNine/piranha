@@ -141,7 +141,7 @@ namespace piranha
    */
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <int N>
-    void base_pseries<__PIRANHA_BASE_PS_TP>::append_arg(const psym_p p)
+    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_arg(const psym_p p)
   {
     typedef typename boost::tuples::element<N,typename term_type::tuple_type>::type element_type;
     try
