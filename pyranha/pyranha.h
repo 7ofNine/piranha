@@ -50,13 +50,19 @@ template <class T>
   return retval;
 }
 
+template <class T, bool parallel>
+  void range_evaluator_instantiation(const std::string &name, const std::string &descr)
+{
+  class_<range_evaluator<T,parallel> > range_eval(name.c_str(),descr.c_str(),
+      init<const T &,const double &, const double &, const int &>());
+  range_eval.def("values", &range_evaluator<T,parallel>::values, return_internal_reference<1>());
+  range_eval.def("times", &range_evaluator<T,parallel>::times, return_internal_reference<1>());
+}
+
 template <class T>
   void range_evaluator_instantiation(const std::string &name, const std::string &descr)
 {
-  class_<range_evaluator<T> > range_eval(name.c_str(),descr.c_str(),
-      init<const T &,const double &, const double &, const int &>());
-  range_eval.def("values", &range_evaluator<T>::values, return_internal_reference<1>());
-  range_eval.def("times", &range_evaluator<T>::times, return_internal_reference<1>());
+  range_evaluator_instantiation<T,compile_switches::use_tbb>(name,descr);
 }
 
 /// Instantiation of common functions for time comparison.
@@ -316,10 +322,15 @@ void instantiate_tass17()
     .staticmethod("eiM")
     .def("vienne_r", &tass17<T>::vienne_r,"Calculate radius using Vienne's FORTRAN routine.")
     .staticmethod("vienne_r");
-// TODO: use common_tc_... function defined above?
   class_<tc_vienne_r6<T> > tc_vienne_r6_inst("tc_vienne_r6",
     init<typename tc_vienne_r6<T>::b_type,double,double,size_t>());
   __tc_common_instantiation(tc_vienne_r6);
+#ifdef _PIRANHA_TBB
+// We need also the non-parallel evaluator when parallel is enabled, because otherwise we won't be able
+// to plot from Python.
+  range_evaluator_instantiation<tc_vienne_r6<T>,false>("__range_evaluator_tc_vienne_r6_non_parallel",
+    "Non-parallel range evaluator for tc_vienne_r6.");
+#endif
 }
 
 #endif
