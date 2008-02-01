@@ -56,29 +56,37 @@ namespace piranha
         p_assert(term.result.is_insertable(*derived_const_cast));
         Term *new_term(0);
         const bool padding_needed=(term.result.needs_padding(*derived_const_cast));
-        if (unlikely(padding_needed))
+        switch(unlikely(padding_needed))
         {
-          new_term=Derived::term_allocator.allocate(1);
-          Derived::term_allocator.construct(new_term, term.result);
-          new_term->pad_right(*derived_const_cast);
+          case true:
+            new_term=Derived::term_allocator.allocate(1);
+            Derived::term_allocator.construct(new_term, term.result);
+            new_term->pad_right(*derived_const_cast);
+            break;
+          case false:
+            ;
         }
         if (AdditionalChecks)
         {
           new_term = derived_const_cast->i_perform_additional_checks(term.result,new_term);
         }
-        const Term *insert_term;
-        if (new_term == 0)
+        const Term *insert_term(0);
+        switch (new_term == 0)
         {
-          insert_term=&term.result;
-        } else
-        {
-          insert_term=new_term;
+          case true:
+            insert_term=&term.result;
+            break;
+          case false:
+            insert_term=new_term;
         }
         SortedIterator ret_it=derived_cast->template ll_insert<Sign>(*insert_term, &it_hint);
-        if (new_term != 0)
+        switch (new_term == 0)
         {
-          Derived::term_allocator.destroy(new_term);
-          Derived::term_allocator.deallocate(new_term, 1);
+          case true:
+            break;
+          case false:
+            Derived::term_allocator.destroy(new_term);
+            Derived::term_allocator.deallocate(new_term, 1);
         }
         return ret_it;
       }
