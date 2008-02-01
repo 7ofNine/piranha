@@ -70,60 +70,60 @@ namespace piranha
     }
   };
 
-  template <int LastIndex, int Index = 0> struct term_helper_ignorability
+  template <int LastIndex> struct term_helper_ignorability
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().is_ignorable(s)
+      return (term.elements.template get<LastIndex>().is_ignorable(s)
         or
-        term_helper_ignorability<LastIndex,Index+1>::run(term,s));
+        term_helper_ignorability<LastIndex-1>::run(term,s));
     }
   };
 
-  template <int LastIndex> struct term_helper_ignorability<LastIndex, LastIndex>
+  template <> struct term_helper_ignorability<0>
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().is_ignorable(s);
+      return term.elements.template get<0>().is_ignorable(s);
     }
   };
 
-  template <int LastIndex, int Index = 0> struct term_helper_insertability
+  template <int LastIndex> struct term_helper_insertability
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().is_insertable(s.template nth_width<Index>())
+      return (term.elements.template get<LastIndex>().is_insertable(s.template nth_width<LastIndex>())
         and
-        term_helper_insertability<LastIndex,Index+1>::run(term,s));
+        term_helper_insertability<LastIndex-1>::run(term,s));
     }
   };
 
-  template <int LastIndex> struct term_helper_insertability<LastIndex, LastIndex>
+  template <> struct term_helper_insertability<0>
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().is_insertable(s.template nth_width<LastIndex>());
+      return term.elements.template get<0>().is_insertable(s.template nth_width<0>());
     }
   };
 
-  template <int LastIndex, int Index = 0> struct term_helper_needs_padding
+  template <int LastIndex> struct term_helper_needs_padding
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().needs_padding(s.template nth_width<Index>())
+      return (term.elements.template get<LastIndex>().needs_padding(s.template nth_width<LastIndex>())
         or
-        term_helper_needs_padding<LastIndex,Index+1>::run(term,s));
+        term_helper_needs_padding<LastIndex-1>::run(term,s));
     }
   };
 
-  template <int LastIndex> struct term_helper_needs_padding<LastIndex, LastIndex>
+  template <> struct term_helper_needs_padding<0>
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().needs_padding(s.template nth_width<LastIndex>());
+      return term.elements.template get<0>().needs_padding(s.template nth_width<0>());
     }
   };
 
