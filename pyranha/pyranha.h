@@ -88,8 +88,8 @@ template <class T>
   class_<T> ps_basic_instantiation(const std::string &name, const std::string &description)
 {
 // This is a trick to help resolve overloaded methods inside classes.
-  typedef void (T::*crop_it)(const typename T::it_s_index &);
-  typedef void (T::*crop_real)(const double &);
+  //typedef void (T::*crop_it)(const typename T::it_s_index &);
+  //typedef void (T::*crop_real)(const double &);
   typedef void (T::*put_noargs)() const;
   typedef void (T::*put_n)(int) const;
   typedef void (T::*put_terms_noargs)() const;
@@ -125,7 +125,7 @@ template <class T>
   inst.def("g_norm", &T::g_norm);
   inst.def("footprint", &T::footprint);
   inst.def("checkup", &T::checkup);
-  inst.def("crop", crop_real(&T::crop));
+  //inst.def("crop", crop_real(&T::crop));
   inst.def("t_eval", t_eval_single(&T::t_eval));
   inst.def("t_eval_brute", &T::t_eval_brute);
   inst.def("mean", mean_def(&T::mean));

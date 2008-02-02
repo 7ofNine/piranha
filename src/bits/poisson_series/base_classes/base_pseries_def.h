@@ -131,8 +131,9 @@ namespace piranha
       it_s_index end() const;
       // Public manipulation.
       void swap(Derived &);
-      void cumulative_crop(const double &);
-      void crop(const double &);
+      // TODO: comment out until they are moved into Fourier toolbox.
+      //void cumulative_crop(const double &);
+      //void crop(const double &);
       // Public I/O.
       void print(std::ostream &, int limit=-1) const;
       void put(int) const;
@@ -183,7 +184,8 @@ namespace piranha
       sorted_index &s_s_index();
       hashed_index &s_h_index();
       // Protected manipulation.
-      void crop(const it_s_index &);
+      // TODO: commented until it gets moved into Fourier toolbox.
+      //void crop(const it_s_index &);
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         void merge_args(const Derived2 &);

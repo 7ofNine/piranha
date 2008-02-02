@@ -449,89 +449,89 @@ namespace piranha
    * Crop the series from the bottom so that the sum of the norms of the cropped terms is not
    * greater than delta.
    */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::cumulative_crop(const double &delta)
-  {
-    // Won't crop a nil series
-    if (length() == 0)
-    {
-      return;
-    }
-    double part_norm=0.;
-    it_s_index it=boost::prior(g_s_index().end());
-    while (1)
-    {
-      part_norm+=it->cf().norm(arguments().template get<0>());
-      if (part_norm >= delta)
-      {
-        break;
-      }
-      if (it == g_s_index().begin())
-      {
-        term_erase(it);
-        break;
-      }
-      else
-      {
-        term_erase(it);
-        --it;
-      }
-    }
-  }
+//   template <__PIRANHA_BASE_PS_TP_DECL>
+//     inline void base_pseries<__PIRANHA_BASE_PS_TP>::cumulative_crop(const double &delta)
+//   {
+//     // Won't crop a nil series
+//     if (length() == 0)
+//     {
+//       return;
+//     }
+//     double part_norm=0.;
+//     it_s_index it=boost::prior(g_s_index().end());
+//     while (1)
+//     {
+//       part_norm+=it->cf().norm(arguments().template get<0>());
+//       if (part_norm >= delta)
+//       {
+//         break;
+//       }
+//       if (it == g_s_index().begin())
+//       {
+//         term_erase(it);
+//         break;
+//       }
+//       else
+//       {
+//         term_erase(it);
+//         --it;
+//       }
+//     }
+//   }
 
   /// Crop all terms whose norm is <= delta.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::crop(const double &delta)
-  {
-    // Won't crop a nil series
-    // TODO: replace with empty()?
-    if (length() == 0)
-    {
-      return;
-    }
-    it_s_index it=boost::prior(g_s_index().end());
-    while (1)
-    {
-      if (it->cf().norm(arguments().template get<0>()) >= delta)
-      {
-        break;
-      }
-      if (it == g_s_index().begin())
-      {
-        term_erase(it);
-        break;
-      }
-      else
-      {
-        term_erase(it);
-        --it;
-      }
-    }
-  }
+//   template <__PIRANHA_BASE_PS_TP_DECL>
+//     inline void base_pseries<__PIRANHA_BASE_PS_TP>::crop(const double &delta)
+//   {
+//     // Won't crop a nil series
+//     // TODO: replace with empty()?
+//     if (length() == 0)
+//     {
+//       return;
+//     }
+//     it_s_index it=boost::prior(g_s_index().end());
+//     while (1)
+//     {
+//       if (it->cf().norm(arguments().template get<0>()) >= delta)
+//       {
+//         break;
+//       }
+//       if (it == g_s_index().begin())
+//       {
+//         term_erase(it);
+//         break;
+//       }
+//       else
+//       {
+//         term_erase(it);
+//         --it;
+//       }
+//     }
+//   }
 
   /// Crop all terms from end to it_f (included).
   // Beware that no checks are made on the validity of the iterator!
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::crop(const it_s_index &it_f)
-  {
-    // Won't crop a nil series or if the crop limit is the end of the series
-    if (length()==0 || it_f==g_s_index().end())
-    {
-      return;
-    }
-    it_s_index it=boost::prior(g_s_index().end());
-    while (1)
-    {
-      term_erase(it);
-      --it;
-      if (it==it_f)
-      {
-        // Last term to be erased
-        term_erase(it);
-        break;
-      }
-    }
-  }
+//   template <__PIRANHA_BASE_PS_TP_DECL>
+//     inline void base_pseries<__PIRANHA_BASE_PS_TP>::crop(const it_s_index &it_f)
+//   {
+//     // Won't crop a nil series or if the crop limit is the end of the series
+//     if (length()==0 || it_f==g_s_index().end())
+//     {
+//       return;
+//     }
+//     it_s_index it=boost::prior(g_s_index().end());
+//     while (1)
+//     {
+//       term_erase(it);
+//       --it;
+//       if (it==it_f)
+//       {
+//         // Last term to be erased
+//         term_erase(it);
+//         break;
+//       }
+//     }
+//   }
 
   /// Crop the series to a certain precision in the spectral domain.
   /**
@@ -542,11 +542,11 @@ namespace piranha
    * @param[in] desired relative precision in the spectral domain.
    * @see base_pseries::sdp_cutoff for a description of the cutoff procedure.
    */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::spectral_cutoff(const double &achieved_tdp,
-    const double &desired_sdp)
-  {
-    crop(sdp_cutoff(achieved_tdp,desired_sdp));
-  }
+//   template <__PIRANHA_BASE_PS_TP_DECL>
+//     inline void base_pseries<__PIRANHA_BASE_PS_TP>::spectral_cutoff(const double &achieved_tdp,
+//     const double &desired_sdp)
+//   {
+//     crop(sdp_cutoff(achieved_tdp,desired_sdp));
+//   }
 }
 #endif
