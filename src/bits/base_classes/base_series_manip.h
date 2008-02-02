@@ -35,7 +35,7 @@ namespace piranha
    * This function performs some checks and then calls base_pseries::ll_insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class SortedIterator, class Term2, bool AdditionalChecks, bool Sign>
+    template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, SortedIterator it_hint)
   {
     class_converter<Term2,Term> term(term_);

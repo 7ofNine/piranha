@@ -39,7 +39,7 @@ namespace piranha
   template <__PIRANHA_BASE_SERIES_TP_DECL> class base_series
   {
     public:
-      template <class SortedIterator, class Term2, bool AdditionalChecks, bool Sign>
+      template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
         SortedIterator insert(const Term2 &, SortedIterator);
   };
 }
