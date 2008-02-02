@@ -305,7 +305,8 @@ namespace piranha
       {
         return (is_zero() and !flavour());
       }
-      bool needs_padding(const size_t &) const
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &) const
       {
         return false;
       }

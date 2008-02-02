@@ -108,10 +108,17 @@ namespace piranha
         }
       }
       /// Does trig_array needs padding to be inserted in series with trig_width equal to n?
-      bool needs_padding(const size_t &n) const {return (ancestor::size() < n);}
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &args_tuple) const
+      {
+        return (ancestor::size() < args_tuple.template get<Pos>().size());
+      }
       /// Does is trig_array insertable in series with trig_width equal to n?
       template <class ArgsTuple>
-        bool is_insertable(const ArgsTuple &args_tuple) const {return (ancestor::size() <= args_tuple.template get<Pos>().size());}
+        bool is_insertable(const ArgsTuple &args_tuple) const
+      {
+        return (ancestor::size() <= args_tuple.template get<Pos>().size());
+      }
       // End INTERFACE definition.
       //-------------------------------------------------------
   };

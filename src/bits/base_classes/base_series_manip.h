@@ -44,7 +44,7 @@ namespace piranha
     // by other routines (merge_args, input from file, etc.).
     p_assert(term.result.is_insertable(args_tuple));
     Term *new_term(0);
-    switch(unlikely(term.result.needs_padding(*derived_const_cast)))
+    switch(unlikely(term.result.needs_padding(args_tuple)))
     {
       case true:
         new_term=Derived::term_allocator.allocate(1);

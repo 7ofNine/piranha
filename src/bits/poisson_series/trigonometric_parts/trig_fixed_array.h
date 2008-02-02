@@ -107,11 +107,12 @@ namespace piranha
       {
         return s.cf_width() <= Dim;
       }
-      bool needs_padding(const size_t &n) const
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &args_tuple) const
       {
-        p_assert(n <= Dim);
+        p_assert(args_tuple.template get<Pos>().size() <= Dim);
         // Disable compiler warning when asserts are disabled.
-        (void)n;
+        (void)args_tuple;
         return false;
       }
       template <class ArgsTuple>

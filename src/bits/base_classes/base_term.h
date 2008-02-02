@@ -132,11 +132,11 @@ namespace piranha
        * Returns true if term needs right-padding with zeroes before insertion into series,
        * false otherwise.
        *
-       * @param[in] s series used to establish if padding is needed or not.
+       * @param[in] args_tuple tuple of arguments vectors used for the check for padding.
        */
-      template <class Series> bool needs_padding(const Series &s) const
+      template <class ArgsTuple> bool needs_padding(const ArgsTuple &args_tuple) const
       {
-        return term_helper_needs_padding<last_index>::run(*this, s);
+        return term_helper_needs_padding<last_index>::run(*this, args_tuple);
       }
       /// Pad right all elements of the term.
       /**

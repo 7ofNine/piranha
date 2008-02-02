@@ -104,11 +104,9 @@ namespace piranha
       {
         return true;
       }
-      bool needs_padding(const size_t &s) const
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &) const
       {
-        p_assert(s == 0);
-        // Disable compiler warning when asserts are disabled.
-        (void)s;
         return false;
       }
       const eval_type &t_eval(const double &, const vector_psym_p &) const
