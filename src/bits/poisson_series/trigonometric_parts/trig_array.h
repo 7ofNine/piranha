@@ -29,16 +29,16 @@
 
 namespace piranha
 {
-  template <int Bits, class Allocator = std::allocator<char> >
+  template <int Bits, int Pos, class Allocator = std::allocator<char> >
   /// Trigonometric array, dynamically sized version.
   /**
    * It wraps a piranha::int_array with signed integer sized Bits, and adds the
    * capabilities needed for trigonometric manipulation.
    */
     class trig_array: public int_array<Bits,true,Allocator>,
-    public trig_array_commons<trig_array<Bits> >
+    public trig_array_commons<trig_array<Bits,Pos>,Pos>
   {
-    typedef trig_array_commons<trig_array> trig_commons;
+    typedef trig_array_commons<trig_array,Pos> trig_commons;
     typedef int_array<Bits,true,Allocator> ancestor;
     public:
       typedef typename ancestor::value_type value_type;
@@ -110,7 +110,8 @@ namespace piranha
       /// Does trig_array needs padding to be inserted in series with trig_width equal to n?
       bool needs_padding(const size_t &n) const {return (ancestor::size() < n);}
       /// Does is trig_array insertable in series with trig_width equal to n?
-      bool is_insertable(const size_t &n) const {return (ancestor::size() <= n);}
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &args_tuple) const {return (ancestor::size() <= args_tuple.template get<Pos>().size());}
       // End INTERFACE definition.
       //-------------------------------------------------------
   };

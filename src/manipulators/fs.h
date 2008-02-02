@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef generic_fs<double_cf,trig_array<16>,simple_term,norm_index> fs;
+  typedef generic_fs<double_cf,trig_array<16,1>,simple_term,norm_index> fs;
 }
 #endif

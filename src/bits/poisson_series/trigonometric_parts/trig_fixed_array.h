@@ -71,12 +71,12 @@ namespace piranha
   };
 
   /// Trigonometric array, fixed size version.
-  template <int Dim, int Bits>
+  template <int Dim, int Bits, int Pos>
     class trig_fixed_array: public packed_int_array<Dim,Bits>,
-    public trig_array_commons<trig_fixed_array<Dim,Bits> >
+    public trig_array_commons<trig_fixed_array<Dim,Bits,Pos>,Pos>
   {
     typedef packed_int_array<Dim,Bits> ancestor;
-    typedef trig_array_commons<trig_fixed_array<Dim,Bits> > trig_commons;
+    typedef trig_array_commons<trig_fixed_array<Dim,Bits,Pos>,Pos> trig_commons;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
@@ -114,9 +114,10 @@ namespace piranha
         (void)n;
         return false;
       }
-      bool is_insertable(const size_t &n) const
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &args_tuple) const
       {
-        return (Dim >= n);
+        return (Dim >= args_tuple.template get<Pos>().size());
       }
       // All multipliers are zero.
       //TODO: use packing here and place this method in packed int array.
@@ -161,7 +162,7 @@ namespace piranha
 
   /// Resizable type-traits specialization for piranha::trig_fixed_array.
   template <>
-    template <int Dim, int Bits>
-    struct is_resizable<trig_fixed_array<Dim,Bits> >:public false_type {};
+    template <int Dim, int Bits, int Pos>
+    struct is_resizable<trig_fixed_array<Dim,Bits,Pos> >:public false_type {};
 }
 #endif

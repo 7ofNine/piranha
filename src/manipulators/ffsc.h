@@ -36,7 +36,7 @@ namespace piranha
     struct ffsc
   {
     typedef std::complex<generic_fs<double_cf,
-      trig_fixed_array<N,16>,
+      trig_fixed_array<N,16,1>,
       simple_term,
       norm_index
 #ifdef _PIRANHA_SSE2

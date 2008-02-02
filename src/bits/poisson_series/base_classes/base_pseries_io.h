@@ -150,7 +150,7 @@ namespace piranha
       split_v.pop_front();
       // Read trigonometric part.
       trig_type trig(split_v);
-      if (!trig.is_insertable(trig_width()))
+      if (!trig.is_insertable(m_arguments))
       {
         std::cout << "Warning: trig width is larger than expected, ignoring term." << std::endl;
         continue;

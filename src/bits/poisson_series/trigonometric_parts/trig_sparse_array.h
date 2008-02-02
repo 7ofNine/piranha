@@ -33,8 +33,10 @@
 namespace piranha
 {
   /// Sparse array trigonometric class.
-  class trig_sparse_array
+  template <int Pos>
+    class trig_sparse_array
   {
+    BOOST_STATIC_ASSERT(Pos >= 0);
     // TODO: try to replace this with struct containing int16[2], in order to employ packing techniques for
     // hashing and equality testing.
     typedef std::pair<trig_size_t,int16> pair;
@@ -51,7 +53,34 @@ namespace piranha
       /// Copy ctor.
       trig_sparse_array(const trig_sparse_array &ts):
       private_flavour_(ts.flavour()),private_container_(ts.private_container_) {}
-      trig_sparse_array(const deque_string &);
+      /// Constructor from deque_string.
+      trig_sparse_array(const deque_string &sd)
+      {
+        const size_t w=sd.size();
+        if (w==0)
+        {
+          std::cout << "Warning: constructing empty trig_sparse_array." << std::endl;
+          std::abort();
+          return;
+        }
+        // TODO: check this.
+        //    private_container_.reserve(w);
+        // Now we know  w >= 1.
+        int16 tmp_mult;
+        for (size_t i=0;i<w-1;++i)
+        {
+          tmp_mult=utils::lexical_converter<int16>(sd[i]);
+          if (tmp_mult != 0)
+          {
+            private_container_.push_back(pair(i,tmp_mult));
+          }
+        }
+        // Take care of flavour.
+        if (*sd.back().c_str()=='s')
+        {
+          flavour()=false;
+        }
+      }
       ~trig_sparse_array() {}
       // Getters.
       bool &flavour()
@@ -62,10 +91,72 @@ namespace piranha
       {
         return private_flavour_;
       }
-      int16 operator[](const trig_size_t &) const;
+      int16 operator[](const trig_size_t &n) const
+      {
+        const const_iterator it=find(n);
+        if (it == end())
+        {
+          return 0;
+        }
+        return it->second;
+      }
       // I/O.
-      void print_plain(std::ostream &, const vector_psym_p &) const;
-      void print_latex(std::ostream &, const vector_psym_p &) const;
+      void print_plain(std::ostream &out_stream, const vector_psym_p &tv) const
+      {
+        stream_manager::setup_print(out_stream);
+        const_iterator it=begin();
+        for (trig_size_t i=0;i<tv.size();++i)
+        {
+          out_stream << (*this)[i] << stream_manager::data_separator();
+        }
+        switch (flavour())
+        {
+          case true:
+            out_stream << "c";
+            break;
+          case false:
+            out_stream << "s";
+        }
+      }
+      void print_latex(std::ostream &out_stream, const vector_psym_p &tv) const
+      {
+        stream_manager::setup_print(out_stream);
+        switch (flavour())
+        {
+          case true:
+            out_stream << "c&";
+            break;
+          case false:
+            out_stream << "s&";
+        }
+        std::string tmp("$");
+        const const_iterator it_f=end(), it_b=begin();
+        for (const_iterator it=it_b;it!=it_f;++it)
+        {
+          if (it->second > 0 and it != it_b)
+          {
+            tmp.append("+");
+          }
+          if (it->second == -1)
+          {
+            tmp.append("-");
+          }
+          else if (it->second == 1) {}
+          else
+          {
+            tmp.append(boost::lexical_cast<std::string>(it->second));
+          }
+          p_assert(tv.size()>it->first);
+          tmp.append(tv[it->first]->name());
+        }
+        tmp.append("$");
+        // If we did not write anything erase math markers.
+        if (tmp == "$$")
+        {
+          tmp.clear();
+        }
+        out_stream << tmp;
+      }
       // Manip.
       /// Assign vector of multipliers.
       /**
@@ -86,8 +177,31 @@ namespace piranha
         }
       }
       void pad_right(const size_t &) {}
-      void apply_layout(const layout_type &);
-      void invert_sign();
+      void apply_layout(const layout_type &l)
+      {
+        trig_sparse_array old(*this);
+        private_container_.resize(0);
+        const size_t l_size = l.size();
+        for (size_t i=0;i < l_size;++i)
+        {
+          if (l[i].first)
+          {
+            int16 tmp = old[l[i].second];
+            if (tmp != 0)
+            {
+              private_container_.push_back(pair(i,tmp));
+            }
+          }
+        }
+      }
+      void invert_sign()
+      {
+        const iterator it_f=end();
+        for (iterator it=begin();it!=it_f;++it)
+        {
+          it->second=-it->second;
+        }
+      }
       // Probing.
       template <class DerivedPs>
         double density(const DerivedPs &p) const
@@ -100,26 +214,191 @@ namespace piranha
             return ((double)private_container_.size())/p.trig_width();
         }
       }
-      double freq(const vector_psym_p &) const;
-      double phase(const vector_psym_p &) const;
-      double t_eval(const double &, const vector_psym_p &) const;
+// TODO: share code in freq+phase.
+      double freq(const vector_psym_p &v) const
+      {
+        double retval=0.;
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          // We must be sure that there actually is a freq in every symbol we are going to use.
+          if (v[it->first]->poly_eval().size() > 1)
+          {
+            retval+=it->second*v[it->first]->poly_eval()[1];
+          }
+        }
+        return retval;
+      }
+      double phase(const vector_psym_p &v) const
+      {
+        double retval=0.;
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          // We must be sure that there actually is a phase in every symbol we are going to use.
+          if (v[it->first]->poly_eval().size() > 0)
+          {
+            retval+=it->second*v[it->first]->poly_eval()[0];
+          }
+        }
+        return retval;
+      }
+      double t_eval(const double &t, const vector_psym_p &v) const
+      {
+        double retval=0.;
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          retval+=it->second*v[it->first]->t_eval(t);
+        }
+        switch (flavour())
+        {
+          case true:
+            return std::cos(retval);
+          default:
+            return std::sin(retval);
+        }
+      }
       template <class TrigEvaluator>
-        double t_eval(TrigEvaluator &) const;
-      short int sign() const;
-      size_t hash_value() const;
-      bool is_zero() const;
+        double t_eval(TrigEvaluator &te) const
+      {
+        complex_double retval(1.);
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          retval*=te.request_complexp(it->first,it->second);
+        }
+        switch (flavour())
+        {
+          case true:
+            return retval.real();
+          default:
+            return retval.imag();
+        }
+      }
+      short int sign() const
+      {
+        short int retval=1;
+        if (!empty() && begin()->second < 0)
+        {
+          retval=-1;
+        }
+        return retval;
+      }
+      size_t hash_value() const
+      {
+        size_t seed=flavour();
+        const const_iterator it_f=end();
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          boost::hash_combine(seed,it->first);
+          boost::hash_combine(seed,it->second);
+        }
+        return seed;
+      }
+      bool is_zero() const
+      {
+        return empty();
+      }
       template <class Series>
-        bool is_ignorable(const Series &) const;
-      bool needs_padding(const size_t &) const;
-      bool is_insertable(const size_t &) const;
-      size_t data_footprint() const;
+        bool is_ignorable(const Series &) const
+      {
+        return (is_zero() and !flavour());
+      }
+      bool needs_padding(const size_t &) const
+      {
+        return false;
+      }
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &args_tuple) const
+      {
+        return (actual_width() <= args_tuple.template get<Pos>().size());
+      }
+      size_t data_footprint() const
+      {
+        return (sizeof(pair)*private_container_.size());
+      }
       template <class Series>
-        bool checkup(const Series &) const;
+        bool checkup(const Series &s) const
+      {
+        const const_iterator it_f=end();
+        // Let's check there are not zero elements.
+        for (const_iterator it=begin();it!=it_f;++it)
+        {
+          if (it->second == 0)
+          {
+            std::cout << "Zero element in trig_sparse_array." << std::endl;
+            return false;
+          }
+        }
+        // Now check that we do not have elements in excess.
+        if (actual_width() > s.trig_width())
+        {
+          std::cout << "Too many elements in trig_sparse_array for given size." << std::endl;
+          return false;
+        }
+        return true;
+      }
       static const size_t max_size = boost::integer_traits<size_t>::const_max;
-      bool operator==(const trig_sparse_array &) const;
-      bool operator<(const trig_sparse_array &) const;
+      bool operator==(const trig_sparse_array &l2) const
+      {
+        if (flavour() != l2.flavour())
+        {
+          return false;
+        }
+        return (private_container_ == l2.private_container_);
+      }
+      bool operator<(const trig_sparse_array &l2) const
+      {
+        if (flavour() < l2.flavour())
+        {
+          return true;
+        }
+        else if (flavour() > l2.flavour())
+        {
+          return false;
+        }
+        const const_iterator it_f1=end(), it_f2=l2.end();
+        const_iterator it1=begin(), it2=l2.begin();
+        while (it1!=it_f1 && it2!=it_f2)
+        {
+          if (it1->first < it2->first)
+          {
+            return (it1->second < 0);
+          }
+          if (it2->first < it1->first)
+          {
+            return (it2->second > 0);
+          }
+          if (it1->second < it2->second)
+          {
+            return true;
+          }
+          if (it2->second < it1->second)
+          {
+            return false;
+          }
+          ++it1;
+          ++it2;
+        }
+        if (it1!=it_f1)
+        {
+          return (it1->second < 0);
+        }
+        if (it2!=it_f2)
+        {
+          return (it2->second > 0);
+        }
+        return false;
+      }
       // Math.
-      void trigmult(const trig_sparse_array &, trig_sparse_array &, trig_sparse_array &) const;
+      void trigmult(const trig_sparse_array &l2, trig_sparse_array &ret1, trig_sparse_array &ret2) const
+      {
+        ret1=*this;
+        ret1-=l2;
+        ret2=*this;
+        ret2+=l2;
+      }
       trig_sparse_array &operator=(const trig_sparse_array &ts2)
       {
         if (&ts2!=this)
@@ -129,11 +408,31 @@ namespace piranha
         }
         return *this;
       }
-      void mult_by_int(const int &);
+      void mult_by_int(const int &n)
+      {
+        if (n==0)
+        {
+          private_container_.clear();
+        }
+        else
+        {
+          const iterator it_f=end();
+          for (iterator it=begin();it!=it_f;++it)
+          {
+            it->second*=n;
+          }
+        }
+      }
       // End INTERFACE definition.
       //-------------------------------------------------------
-      trig_sparse_array &operator+=(const trig_sparse_array &);
-      trig_sparse_array &operator-=(const trig_sparse_array &);
+      trig_sparse_array &operator+=(const trig_sparse_array &t2)
+      {
+        return algebraic_sum<sign_modifier_plus>(t2);
+      }
+      trig_sparse_array &operator-=(const trig_sparse_array &t2)
+      {
+        return algebraic_sum<sign_modifier_minus>(t2);
+      }
       void dump() const
       {
         const const_iterator it_f=end();
@@ -164,10 +463,105 @@ namespace piranha
       {
         return private_container_.empty();
       }
-      const_iterator find(trig_size_t) const;
-      size_t actual_width() const;
+      /// Find iterator corresponding to index n. O(n) complexity operation.
+      const_iterator find(trig_size_t n) const
+      {
+        const const_iterator it_f=end();
+        const_iterator retval=it_f;
+        for (const_iterator it=begin();it!=end();++it)
+        {
+          if (it->first >= n)
+          {
+            // Maybe we found the element. If so assign retval, otherwise...
+            if (it->first == n)
+            {
+              retval=it;
+            }
+            // ... just break, retval was previously assigned to end().
+            break;
+          }
+        }
+        return retval;
+      }
+      /// Get actual width.
+      size_t actual_width() const
+      {
+        size_t retval;
+        if (private_container_.size() == 0)
+        {
+          retval=0;
+        }
+        else
+        {
+          retval=private_container_.back().first;
+        }
+        return retval;
+      }
       template <class Modifier>
-        trig_sparse_array &algebraic_sum(const trig_sparse_array &t2);
+        trig_sparse_array &algebraic_sum(const trig_sparse_array &t2)
+      {
+        p_assert(this!=&t2);
+        if (t2.empty())
+        {
+          return *this;
+        }
+        if (empty())
+        {
+          private_container_=t2.private_container_;
+          Modifier::mod(private_container_);
+          return *this;
+        }
+        const size_t w1=private_container_.size(), w2=t2.private_container_.size();
+        // At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
+        private_container_.reserve(std::max(w1,w2));
+        iterator it1=begin();
+        const_iterator it2=t2.begin();
+        const const_iterator it2_f=t2.end();
+        while (it2 != it2_f)
+        {
+          // We are at the end of this, insert the remaining elements and bail out of the cycle.
+          if (it1 == end())
+          {
+            Modifier::mod(private_container_,it1,it2,it2_f);
+            break;
+          }
+          else
+          {
+            // Same index, add/subtract.
+            if (it1->first == it2->first)
+            {
+              it1->second+=Modifier::mod(it2->second);
+              // If we modified to zero, we have to destroy the element.
+              if (it1->second == 0)
+              {
+                it1=private_container_.erase(it1);    // it1 now points to the element after the erased one (the latter half of the
+                // vector was moved down by one position).
+              }
+              else
+                // We performed a non-destructive modification. Increase it1.
+              {
+                ++it1;
+              }
+              // Increase it2, it was added to this.
+              ++it2;
+            }
+            // There is an element which is not present in this and which goes before it1.
+            else if (it1->first > it2->first)
+            {
+              // it1 will point to the newly inserted element.
+              it1=private_container_.insert(it1,pair(it2->first,Modifier::mod(it2->second)));
+              ++it1;
+              ++it2;
+            }
+            // it2's index is after it1's. We don't do anything since we don't know if next elements of t2 will be packed or inserted.
+            else                                      /* if (it1->first < it2->first) */
+            {
+              ++it1;
+            }
+          }
+        }
+        return *this;
+      }
       // Functors used in generic algebraic addition routine.
       struct sign_modifier_plus
       {
@@ -208,497 +602,5 @@ namespace piranha
       bool            private_flavour_;
       container_type  private_container_;
   };
-
-  /// Constructor from piranha::deque_string.
-  inline trig_sparse_array::trig_sparse_array(const deque_string &sd):private_flavour_(true),private_container_()
-  {
-    const size_t w=sd.size();
-    if (w==0)
-    {
-      std::cout << "Warning: constructing empty trig_sparse_array." << std::endl;
-      std::abort();
-      return;
-    }
-    // TODO: check this.
-    //    private_container_.reserve(w);
-    // Now we know  w >= 1.
-    int16 tmp_mult;
-    for (size_t i=0;i<w-1;++i)
-    {
-      tmp_mult=utils::lexical_converter<int16>(sd[i]);
-      if (tmp_mult != 0)
-      {
-        private_container_.push_back(pair(i,tmp_mult));
-      }
-    }
-    // Take care of flavour.
-    if (*sd.back().c_str()=='s')
-    {
-      flavour()=false;
-    }
-  }
-
-  /// Find iterator corresponding to index n. O(n) complexity operation.
-  inline trig_sparse_array::const_iterator trig_sparse_array::find(trig_size_t n) const
-  {
-    const const_iterator it_f=end();
-    const_iterator retval=it_f;
-    for (const_iterator it=begin();it!=end();++it)
-    {
-      if (it->first >= n)
-      {
-        // Maybe we found the element. If so assign retval, otherwise...
-        if (it->first == n)
-        {
-          retval=it;
-        }
-        // ... just break, retval was previously assigned to end().
-        break;
-      }
-    }
-    return retval;
-  }
-
-  // Getters implementations.
-  inline int16 trig_sparse_array::operator[](const trig_size_t &n) const
-  {
-    const const_iterator it=find(n);
-    if (it == end())
-    {
-      return 0;
-    }
-    return it->second;
-  }
-
-  /// Actual width.
-  inline size_t trig_sparse_array::actual_width() const
-  {
-    size_t retval;
-    if (private_container_.size() == 0)
-    {
-      retval=0;
-    }
-    else
-    {
-      retval=private_container_.back().first;
-    }
-    return retval;
-  }
-
-  // I/O implementations.
-  // TODO: optimize this, we are calling multiplier which is O(n) but this can be done more efficiently.
-  inline void trig_sparse_array::print_plain(std::ostream &out_stream, const vector_psym_p &tv) const
-  {
-    stream_manager::setup_print(out_stream);
-    const_iterator it=begin();
-    for (trig_size_t i=0;i<tv.size();++i)
-    {
-      out_stream << (*this)[i] << stream_manager::data_separator();
-    }
-    switch (flavour())
-    {
-      case true:
-        out_stream << "c";
-        break;
-      case false:
-        out_stream << "s";
-    }
-  }
-
-  inline void trig_sparse_array::print_latex(std::ostream &out_stream, const vector_psym_p &tv) const
-  {
-    stream_manager::setup_print(out_stream);
-    switch (flavour())
-    {
-      case true:
-        out_stream << "c&";
-        break;
-      case false:
-        out_stream << "s&";
-    }
-    std::string tmp("$");
-    const const_iterator it_f=end(), it_b=begin();
-    for (const_iterator it=it_b;it!=it_f;++it)
-    {
-      if (it->second > 0 and it != it_b)
-      {
-        tmp.append("+");
-      }
-      if (it->second == -1)
-      {
-        tmp.append("-");
-      }
-      else if (it->second == 1) {}
-      else
-      {
-        tmp.append(boost::lexical_cast<std::string>(it->second));
-      }
-      p_assert(tv.size()>it->first);
-      tmp.append(tv[it->first]->name());
-    }
-    tmp.append("$");
-    // If we did not write anything erase math markers.
-    if (tmp == "$$")
-    {
-      tmp.clear();
-    }
-    out_stream << tmp;
-  }
-
-  inline void trig_sparse_array::invert_sign()
-  {
-    const iterator it_f=end();
-    for (iterator it=begin();it!=it_f;++it)
-    {
-      it->second=-it->second;
-    }
-  }
-
-  inline void trig_sparse_array::apply_layout(const layout_type &l)
-  {
-    trig_sparse_array old(*this);
-    private_container_.resize(0);
-    const size_t l_size = l.size();
-    for (size_t i=0;i < l_size;++i)
-    {
-      if (l[i].first)
-      {
-        int16 tmp = old[l[i].second];
-        if (tmp != 0)
-        {
-          private_container_.push_back(pair(i,tmp));
-        }
-      }
-    }
-  }
-
-  // Probing implementations.
-  inline double trig_sparse_array::freq(const vector_psym_p &v) const
-  {
-    double retval=0.;
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      // We must be sure that there actually is a freq in every symbol we are going to use.
-      if (v[it->first]->poly_eval().size() > 1)
-      {
-        retval+=it->second*v[it->first]->poly_eval()[1];
-      }
-    }
-    return retval;
-  }
-
-  inline double trig_sparse_array::phase(const vector_psym_p &v) const
-  {
-    double retval=0.;
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      // We must be sure that there actually is a phase in every symbol we are going to use.
-      if (v[it->first]->poly_eval().size() > 0)
-      {
-        retval+=it->second*v[it->first]->poly_eval()[0];
-      }
-    }
-    return retval;
-  }
-
-  inline double trig_sparse_array::t_eval(const double &t, const vector_psym_p &v) const
-  {
-    double retval=0.;
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      retval+=it->second*v[it->first]->t_eval(t);
-    }
-    switch (flavour())
-    {
-      case true:
-        return std::cos(retval);
-      default:
-        return std::sin(retval);
-    }
-  }
-
-  template <class TrigEvaluator>
-    inline double trig_sparse_array::t_eval(TrigEvaluator &te) const
-  {
-    complex_double retval(1.);
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      retval*=te.request_complexp(it->first,it->second);
-    }
-    switch (flavour())
-    {
-      case true:
-        return retval.real();
-      default:
-        return retval.imag();
-    }
-  }
-
-  inline short int trig_sparse_array::sign() const
-  {
-    short int retval=1;
-    if (!empty() && begin()->second < 0)
-    {
-      retval=-1;
-    }
-    return retval;
-  }
-
-  inline bool trig_sparse_array::operator<(const trig_sparse_array &l2) const
-  {
-    if (flavour() < l2.flavour())
-    {
-      return true;
-    }
-    else if (flavour() > l2.flavour())
-    {
-      return false;
-    }
-    const const_iterator it_f1=end(), it_f2=l2.end();
-    const_iterator it1=begin(), it2=l2.begin();
-    while (it1!=it_f1 && it2!=it_f2)
-    {
-      if (it1->first < it2->first)
-      {
-        return (it1->second < 0);
-      }
-      if (it2->first < it1->first)
-      {
-        return (it2->second > 0);
-      }
-      if (it1->second < it2->second)
-      {
-        return true;
-      }
-      if (it2->second < it1->second)
-      {
-        return false;
-      }
-      ++it1;
-      ++it2;
-    }
-    if (it1!=it_f1)
-    {
-      return (it1->second < 0);
-    }
-    if (it2!=it_f2)
-    {
-      return (it2->second > 0);
-    }
-    return false;
-  }
-
-  inline size_t trig_sparse_array::hash_value() const
-  {
-    size_t seed=flavour();
-    const const_iterator it_f=end();
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      boost::hash_combine(seed,it->first);
-      boost::hash_combine(seed,it->second);
-    }
-    return seed;
-  }
-
-  inline bool trig_sparse_array::is_zero() const
-  {
-    return empty();
-  }
-
-  template <class Series>
-    inline bool trig_sparse_array::is_ignorable(const Series &) const
-  {
-    return (is_zero() and !flavour());
-  }
-
-  inline bool trig_sparse_array::needs_padding(const size_t &) const
-  {
-    return false;
-  }
-
-  inline bool trig_sparse_array::is_insertable(const size_t &n) const
-  {
-    return (actual_width() <= n);
-  }
-
-  inline size_t trig_sparse_array::data_footprint() const
-  {
-    return (sizeof(pair)*private_container_.size());
-  }
-
-  template <class Series>
-    inline bool trig_sparse_array::checkup(const Series &s) const
-  {
-    const const_iterator it_f=end();
-    // Let's check there are not zero elements.
-    for (const_iterator it=begin();it!=it_f;++it)
-    {
-      if (it->second == 0)
-      {
-        std::cout << "Zero element in trig_sparse_array." << std::endl;
-        return false;
-      }
-    }
-    // Now check that we do not have elements in excess.
-    if (actual_width() > s.trig_width())
-    {
-      std::cout << "Too many elements in trig_sparse_array for given size." << std::endl;
-      return false;
-    }
-    return true;
-  }
-
-  inline bool trig_sparse_array::operator==(const trig_sparse_array &l2) const
-  {
-    if (flavour() != l2.flavour())
-    {
-      return false;
-    }
-    return (private_container_ == l2.private_container_);
-  }
-
-  inline void trig_sparse_array::mult_by_int(const int &n)
-  {
-    if (n==0)
-    {
-      private_container_.clear();
-    }
-    else
-    {
-      const iterator it_f=end();
-      for (iterator it=begin();it!=it_f;++it)
-      {
-        it->second*=n;
-      }
-    }
-  }
-
-  template <class Modifier>
-    inline trig_sparse_array &trig_sparse_array::algebraic_sum(const trig_sparse_array &t2)
-  {
-    p_assert(this!=&t2);
-    if (t2.empty())
-    {
-      return *this;
-    }
-    if (empty())
-    {
-      private_container_=t2.private_container_;
-      Modifier::mod(private_container_);
-      return *this;
-    }
-    const size_t w1=private_container_.size(), w2=t2.private_container_.size();
-    // At this point both vectors have non-zero size. Reserve in advance, in most cases we will be adding elements.
-    private_container_.reserve(std::max(w1,w2));
-    iterator it1=begin();
-    const_iterator it2=t2.begin();
-    const const_iterator it2_f=t2.end();
-    while (it2 != it2_f)
-    {
-      // We are at the end of this, insert the remaining elements and bail out of the cycle.
-      if (it1 == end())
-      {
-        Modifier::mod(private_container_,it1,it2,it2_f);
-        break;
-      }
-      else
-      {
-        // Same index, add/subtract.
-        if (it1->first == it2->first)
-        {
-          it1->second+=Modifier::mod(it2->second);
-          // If we modified to zero, we have to destroy the element.
-          if (it1->second == 0)
-          {
-            it1=private_container_.erase(it1);    // it1 now points to the element after the erased one (the latter half of the
-            // vector was moved down by one position).
-          }
-          else
-            // We performed a non-destructive modification. Increase it1.
-          {
-            ++it1;
-          }
-          // Increase it2, it was added to this.
-          ++it2;
-        }
-        // There is an element which is not present in this and which goes before it1.
-        else if (it1->first > it2->first)
-        {
-          // it1 will point to the newly inserted element.
-          it1=private_container_.insert(it1,pair(it2->first,Modifier::mod(it2->second)));
-          ++it1;
-          ++it2;
-        }
-        // it2's index is after it1's. We don't do anything since we don't know if next elements of t2 will be packed or inserted.
-        else                                      /* if (it1->first < it2->first) */
-        {
-          ++it1;
-        }
-      }
-    }
-    return *this;
-    /*    while (it2!=it_f2)
-        {
-    // We are at the end of this, insert new term and do not increase iterators on this.
-          if (it1==end())
-          {
-            old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
-            ++it2;
-          }
-    // We found a duplicate, modify it.
-          else if (it1->first==it2->first)
-          {
-    old_it1=modify(it1->second+Modifier::mod(it2->second),old_it1,it1);
-    // Take care in case we erased the element when modifying, we may have run out of elements.
-    if (old_it1==end())
-    {
-    // We erased the first element of this' list.
-    it1=begin();
-    }
-    else
-    {
-    // We modified to a non-zero value an element of this' list or erased an element else than the first one.
-    it1=old_it1;
-    ++it1;
-    }
-    ++it2;
-    }
-    // this has gone past t2.
-    else if (it1->first > it2->first)
-    {
-    old_it1=insert_after(it2->first,Modifier::mod(it2->second),old_it1);
-    ++it2;
-    }
-    // t2 has gone past this.
-    else if (it1->first < it2->first)
-    {
-    old_it1=it1;
-    ++it1;
-    }
-    }
-    return *this;*/
-  }
-
-  inline trig_sparse_array &trig_sparse_array::operator+=(const trig_sparse_array &t2)
-  {
-    return algebraic_sum<sign_modifier_plus>(t2);
-  }
-
-  inline trig_sparse_array &trig_sparse_array::operator-=(const trig_sparse_array &t2)
-  {
-    return algebraic_sum<sign_modifier_minus>(t2);
-  }
-
-  inline void trig_sparse_array::trigmult(const trig_sparse_array &l2, trig_sparse_array &ret1, trig_sparse_array &ret2) const
-  {
-    ret1=*this;
-    ret1-=l2;
-    ret2=*this;
-    ret2+=l2;
-  }
 }
 #endif                                            // PIRANHA_trig_sparse_array_H

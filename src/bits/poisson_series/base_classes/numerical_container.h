@@ -38,6 +38,7 @@ namespace piranha
   template <class T, class Derived>
     class numerical_container
   {
+    // TODO: replace value_ with m_value.
     /// Alias for evaluation type.
     typedef typename eval_type<Derived>::type eval_type;
     /// Alias for self.
@@ -98,9 +99,10 @@ namespace piranha
       {
         return (static_cast<Derived const *>(this)->norm(s.arguments().template get<0>()) < settings_manager::numerical_zero());
       }
-      bool is_insertable(const size_t &s) const
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &) const
       {
-        return (s == 0);
+        return true;
       }
       bool needs_padding(const size_t &s) const
       {

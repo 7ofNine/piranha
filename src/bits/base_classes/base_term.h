@@ -118,16 +118,14 @@ namespace piranha
       }
       /// Check whether a term can be inserted into a series.
       /**
-       * Returns true if the number of arguments provided by the series for each element of the term
-       * is compatible for insertion of the term into the series, false otherwise.
-       * Typically this means that the size of each element must not exceed the number of arguments
-       * for each element.
+       * Returns true if the number of arguments provided by the arguments tuple for each element of the term
+       * is compatible for insertion of the term into a series, false otherwise.
        *
-       * @param[in] s series used to retrieve insertability criterions from.
+       * @param[in] args_tuple tuple of arguments vectors used for the check.
        */
-      template <class Series> bool is_insertable(const Series &s) const
+      template <class ArgsTuple> bool is_insertable(const ArgsTuple &args_tuple) const
       {
-        return term_helper_insertability<last_index>::run(*this, s);
+        return term_helper_insertability<last_index>::run(*this, args_tuple);
       }
       /// Check whether a term needs padding for insertion into a series.
       /**

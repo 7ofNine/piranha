@@ -29,6 +29,6 @@
 
 namespace piranha
 {
-  typedef std::complex<generic_fs<double_cf,trig_sparse_array,simple_term,norm_index> > cfsc;
+  typedef std::complex<generic_fs<double_cf,trig_sparse_array<1>,simple_term,norm_index> > cfsc;
 }
 #endif

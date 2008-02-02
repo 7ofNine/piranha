@@ -92,19 +92,19 @@ namespace piranha
   template <int LastIndex> struct term_helper_insertability
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
-    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    template <class Term, class ArgsTuple> static bool run(const Term &term, const ArgsTuple &args_tuple)
     {
-      return (term.elements.template get<LastIndex>().is_insertable(s.template nth_width<LastIndex>())
+      return (term.elements.template get<LastIndex>().is_insertable(args_tuple)
         and
-        term_helper_insertability<LastIndex-1>::run(term,s));
+        term_helper_insertability<LastIndex-1>::run(term,args_tuple));
     }
   };
 
   template <> struct term_helper_insertability<0>
   {
-    template <class Term, class Series> static bool run(const Term &term, const Series &s)
+    template <class Term, class ArgsTuple> static bool run(const Term &term, const ArgsTuple &args_tuple)
     {
-      return term.elements.template get<0>().is_insertable(s.template nth_width<0>());
+      return term.elements.template get<0>().is_insertable(args_tuple);
     }
   };
 

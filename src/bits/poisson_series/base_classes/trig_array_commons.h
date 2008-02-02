@@ -39,9 +39,10 @@ namespace piranha
    * Intended to add specific methods to plain arrays for the manipulation of trigonometric
    * parts in Poisson series.
    */
-  template <class Derived>
+  template <class Derived, int Pos>
     class trig_array_commons
   {
+      BOOST_STATIC_ASSERT(Pos >= 0);
     public:
       // I/O.
       void print_plain(std::ostream &out_stream, const vector_psym_p &v) const
@@ -225,6 +226,7 @@ namespace piranha
         const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
+// TODO: use switch?
           if ((*derived_const_cast)[i] > 0)
           {
             return 1;
