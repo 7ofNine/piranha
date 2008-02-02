@@ -54,7 +54,7 @@ namespace piranha
       trig_sparse_array(const trig_sparse_array &ts):
       private_flavour_(ts.flavour()),private_container_(ts.private_container_) {}
       /// Constructor from deque_string.
-      trig_sparse_array(const deque_string &sd)
+      trig_sparse_array(const deque_string &sd):private_flavour_(true)
       {
         const size_t w=sd.size();
         if (w==0)
