@@ -29,10 +29,11 @@
 #include "../../trig_evaluator.h"
 #include "../../utils.h"                          // For apply_layout.
 
-namespace piranha
-{
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
+
+namespace piranha
+{
   /// Common class for dense trigonometric array.
   /**
    * Intended to add specific methods to plain arrays for the manipulation of trigonometric
@@ -336,7 +337,9 @@ namespace piranha
         return retval;
       }
   };
+}
+
 #undef derived_const_cast
 #undef derived_cast
-}
+
 #endif
