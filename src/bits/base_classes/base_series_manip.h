@@ -35,8 +35,9 @@ namespace piranha
    * This function performs some checks and then calls base_pseries::ll_insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
-    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, SortedIterator it_hint)
+    template <class Term2, class ArgsTuple, class SortedIterator, bool AdditionalChecks, bool Sign>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
+    const ArgsTuple &, SortedIterator it_hint)
   {
     class_converter<Term2,Term> term(term_);
     // It should not happen because resizing in this case should already be managed
@@ -76,6 +77,15 @@ namespace piranha
         Derived::term_allocator.deallocate(new_term,1);
     }
     return ret_it;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
+    SortedIterator it_hint)
+  {
+    return insert<Term2,typename Derived::arguments_tuple_type,SortedIterator,AdditionalChecks,Sign>(
+      term,derived_const_cast->m_arguments,it_hint);
   }
 }
 
