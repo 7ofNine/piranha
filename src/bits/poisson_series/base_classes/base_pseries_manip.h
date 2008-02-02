@@ -170,13 +170,12 @@ namespace piranha
       }
       // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
       const it_h_index it_f=g_h_index().end();
-      const size_t new_size=retval.arguments().template get<N>().size();
       it_s_index it_hint = retval.g_s_index().end();
       for (it_h_index it=g_h_index().begin();it!=it_f;++it)
       {
         // NOTICE: find a way to avoid resizes here?
         term_type tmp_term=(*it);
-        tmp_term.elements.template get<N>().pad_right(new_size);
+        tmp_term.elements.template get<N>().pad_right(retval.arguments());
         it_hint = retval.insert_with_checks(tmp_term,it_hint);
       }
       swap(retval);

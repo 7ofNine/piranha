@@ -119,6 +119,14 @@ namespace piranha
       {
         return (ancestor::size() <= args_tuple.template get<Pos>().size());
       }
+      /// Pad right.
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &args_tuple)
+      {
+        const size_t n=args_tuple.template get<Pos>().size();
+        hard_assert(n >= ancestor::size());
+        ancestor::resize(n);
+      }
       // End INTERFACE definition.
       //-------------------------------------------------------
   };

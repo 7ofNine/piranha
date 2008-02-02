@@ -71,11 +71,9 @@ namespace piranha
         std::swap(value_,dc.value_);
         return *static_cast<Derived *>(this);
       }
-      void pad_right(const size_t &n)
-      {
-        p_assert(n==0);
-        (void)n;
-      }
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &)
+      {}
       void apply_layout(const layout_type &l)
       {
         p_assert(l.size() == 0);

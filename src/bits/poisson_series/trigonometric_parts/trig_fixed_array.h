@@ -115,6 +115,13 @@ namespace piranha
         (void)args_tuple;
         return false;
       }
+      /// Pad right.
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &args_tuple)
+      {
+        p_assert(args_tuple.template get<Pos>().size() == Dim);
+        (void)args_tuple;
+      }
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &args_tuple) const
       {

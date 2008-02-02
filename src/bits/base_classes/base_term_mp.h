@@ -130,18 +130,18 @@ namespace piranha
   template <int LastIndex> struct term_helper_pad_right
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
-    template <class Term, class Series> static void run(Term &term, const Series &s)
+    template <class Term, class ArgsTuple> static void run(Term &term, const ArgsTuple &args_tuple)
     {
-      term.elements.template get<LastIndex>().pad_right(s.template nth_width<LastIndex>());
-      term_helper_pad_right<LastIndex-1>::run(term,s);
+      term.elements.template get<LastIndex>().pad_right(args_tuple);
+      term_helper_pad_right<LastIndex-1>::run(term,args_tuple);
     }
   };
 
   template <> struct term_helper_pad_right<0>
   {
-    template <class Term, class Series> static void run(Term &term, const Series &s)
+    template <class Term, class ArgsTuple> static void run(Term &term, const ArgsTuple &args_tuple)
     {
-      term.elements.template get<0>().pad_right(s.template nth_width<0>());
+      term.elements.template get<0>().pad_right(args_tuple);
     }
   };
 }

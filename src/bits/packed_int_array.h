@@ -194,12 +194,6 @@ namespace piranha
       hard_assert(n <= Dim);
       (void)n;
     }
-    /// Pad right.
-    void pad_right(const size_t &n)
-    {
-      p_assert(n == Dim);
-      (void)n;
-    }
 #ifdef _PIRANHA_SSE2
     static void trigmult(const packed_int_array &t1, const packed_int_array &t2,
       packed_int_array &ret1, packed_int_array &ret2)

@@ -176,7 +176,9 @@ namespace piranha
           }
         }
       }
-      void pad_right(const size_t &) {}
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &)
+      {}
       void apply_layout(const layout_type &l)
       {
         trig_sparse_array old(*this);

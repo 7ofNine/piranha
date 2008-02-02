@@ -144,9 +144,9 @@ namespace piranha
        *
        * @param[in] s series padding parameters are fetched from.
        */
-      template <class Series> void pad_right(const Series &s)
+      template <class ArgsTuple> void pad_right(const ArgsTuple &args_tuple)
       {
-        term_helper_pad_right<last_index>::run(*this, s);
+        term_helper_pad_right<last_index>::run(*this, args_tuple);
       }
       /// Return const reference to the last element.
       const typename boost::tuples::element<boost::tuples::length<tuple_type>::value-1,tuple_type>::type & last_element() const

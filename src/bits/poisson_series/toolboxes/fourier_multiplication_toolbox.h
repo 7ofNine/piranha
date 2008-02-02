@@ -216,7 +216,7 @@ namespace piranha
           }
         }
         term_type tmp_term;
-        tmp_term.trig().pad_right(derived_cast->trig_width());
+        tmp_term.trig().pad_right(derived_cast->arguments());
         std::valarray<mult_type> tmp_array(derived_cast->trig_width());
         max_fast_int k;
         it_s_index it_hint = retval.g_s_index().end();
@@ -357,7 +357,7 @@ namespace piranha
           }
         }
         term_type tmp_term;
-        tmp_term.trig().pad_right(derived_cast->trig_width());
+        tmp_term.trig().pad_right(derived_cast->arguments());
         std::valarray<mult_type> tmp_array(derived_cast->trig_width());
         ccm_hash_iterator cchm_it;
         it_s_index it_hint = retval.g_s_index().end();
@@ -411,8 +411,8 @@ namespace piranha
         // NOTE: at this point retval's width() is greater or equal to _both_ this
         // and ps2. It's the max width indeed.
         term_type tmp1, tmp2;
-        tmp1.trig().pad_right(retval.trig_width());
-        tmp2.trig().pad_right(retval.trig_width());
+        tmp1.trig().pad_right(retval.arguments());
+        tmp2.trig().pad_right(retval.arguments());
         term_pair_type term_pair(tmp1,tmp2);
         // Cache all pointers to the terms of this and ps2 in vectors.
         std::valarray<term_type const *> v_p1;

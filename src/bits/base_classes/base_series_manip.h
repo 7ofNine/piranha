@@ -49,7 +49,7 @@ namespace piranha
       case true:
         new_term=Derived::term_allocator.allocate(1);
         Derived::term_allocator.construct(new_term, term.result);
-        new_term->pad_right(*derived_const_cast);
+        new_term->pad_right(args_tuple);
         break;
       case false:
         ;
