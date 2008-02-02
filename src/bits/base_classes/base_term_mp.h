@@ -37,8 +37,8 @@ namespace piranha
       const double &t, const ArgumentsTuple &a)
     {
       BOOST_STATIC_ASSERT(Term::size == (size_t)boost::tuples::length<ArgumentsTuple>::value);
-      return term.elements.template get<Index>().t_eval(t, a.template get<Index>())* term_helper_brute_evaluation<LastIndex, Index+1>::run(term, t,
-        a);
+      return term.elements.template get<Index>().t_eval(t, a.template get<Index>())*
+        term_helper_brute_evaluation<LastIndex, Index+1>::run(term,t,a);
     }
   };
 
@@ -52,21 +52,21 @@ namespace piranha
     }
   };
 
-  template <int LastIndex, int Index = 0> struct term_helper_checkup
+  template <int LastIndex> struct term_helper_checkup
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return (term.elements.template get<Index>().checkup(s)
-        and term_helper_checkup<LastIndex,Index+1>::run(term,s));
+      return (term.elements.template get<LastIndex>().checkup(s)
+        and term_helper_checkup<LastIndex-1>::run(term,s));
     }
   };
 
-  template <int LastIndex> struct term_helper_checkup<LastIndex, LastIndex>
+  template <> struct term_helper_checkup<0>
   {
     template <class Term, class Series> static bool run(const Term &term, const Series &s)
     {
-      return term.elements.template get<LastIndex>().checkup(s);
+      return term.elements.template get<0>().checkup(s);
     }
   };
 
@@ -127,21 +127,21 @@ namespace piranha
     }
   };
 
-  template <int LastIndex, int Index = 0> struct term_helper_pad_right
+  template <int LastIndex> struct term_helper_pad_right
   {
     BOOST_STATIC_ASSERT(LastIndex >= 0);
     template <class Term, class Series> static void run(Term &term, const Series &s)
     {
-      term.elements.template get<Index>().pad_right(s.template nth_width<Index>());
-      term_helper_pad_right<LastIndex,Index+1>::run(term,s);
+      term.elements.template get<LastIndex>().pad_right(s.template nth_width<LastIndex>());
+      term_helper_pad_right<LastIndex-1>::run(term,s);
     }
   };
 
-  template <int LastIndex> struct term_helper_pad_right<LastIndex, LastIndex>
+  template <> struct term_helper_pad_right<0>
   {
     template <class Term, class Series> static void run(Term &term, const Series &s)
     {
-      term.elements.template get<LastIndex>().pad_right(s.template nth_width<LastIndex>());
+      term.elements.template get<0>().pad_right(s.template nth_width<0>());
     }
   };
 }
