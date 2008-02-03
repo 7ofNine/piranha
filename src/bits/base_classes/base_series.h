@@ -21,14 +21,16 @@
 #ifndef PIRANHA_BASE_SERIES_H
 #define PIRANHA_BASE_SERIES_H
 
+#include <memory>
+
 #include "../p_assert.h"
 #include "../utils.h"                             // For class_converter.
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_BASE_SERIES_TP_DECL class Term, class Derived
-#define __PIRANHA_BASE_SERIES_TP Term,Derived
+#define __PIRANHA_BASE_SERIES_TP_DECL class Term, class Derived, class Allocator
+#define __PIRANHA_BASE_SERIES_TP Term,Derived,Allocator
 
 namespace piranha
 {
@@ -38,12 +40,24 @@ namespace piranha
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL> class base_series
   {
+      /// Alias for term type.
+      typedef Term term_type;
+      /// Alias for allocator type.
+      typedef Allocator allocator_type;
+      /// Alias for allocator rebinding to term_type.
+      typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
     public:
       template <class Term2, class ArgsTuple, class SortedIterator, bool AdditionalChecks, bool Sign>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
         SortedIterator insert(const Term2 &, SortedIterator);
+      /// Rebound allocator for term type.
+      static term_allocator_type term_allocator;
   };
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    typename base_series<__PIRANHA_BASE_SERIES_TP>::term_allocator_type
+    base_series<__PIRANHA_BASE_SERIES_TP>::term_allocator;
 }
 
 #include "base_series_manip.h"

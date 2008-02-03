@@ -47,8 +47,8 @@ namespace piranha
     switch(unlikely(term.result.needs_padding(args_tuple)))
     {
       case true:
-        new_term=Derived::term_allocator.allocate(1);
-        Derived::term_allocator.construct(new_term, term.result);
+        new_term=term_allocator.allocate(1);
+        term_allocator.construct(new_term, term.result);
         new_term->pad_right(args_tuple);
         break;
       case false:
@@ -73,8 +73,8 @@ namespace piranha
       case true:
         break;
       case false:
-        Derived::term_allocator.destroy(new_term);
-        Derived::term_allocator.deallocate(new_term,1);
+        term_allocator.destroy(new_term);
+        term_allocator.deallocate(new_term,1);
     }
     return ret_it;
   }

@@ -347,8 +347,8 @@ namespace piranha
     {
       if (out == 0)
       {
-        out=term_allocator.allocate(1);
-        term_allocator.construct(out,in);
+        out=ancestor::term_allocator.allocate(1);
+        ancestor::term_allocator.construct(out,in);
       }
       out->invert_trig_args();
     }

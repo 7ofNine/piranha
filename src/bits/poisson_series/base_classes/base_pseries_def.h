@@ -47,10 +47,10 @@ namespace piranha
    */
   template <__PIRANHA_BASE_PS_TP_DECL= std::allocator<char> >
     class base_pseries:public base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >,
-    protected base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> >
+    protected base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>
   {
-    typedef base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> > ancestor;
-    friend class base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP> >;
+      typedef base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator> ancestor;
+      friend class base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>;
     public:
       /// Alias for self.
       typedef base_pseries self;
@@ -66,8 +66,6 @@ namespace piranha
       typedef Derived derived_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
-      /// Alias for allocator rebinding to term_type.
-      typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
       /// Alias for the tuple of arguments vectors.
       typedef boost::tuple<vector_psym_p,vector_psym_p> arguments_tuple_type;
       /// Alias for the evaluation type.
@@ -288,11 +286,6 @@ namespace piranha
       vector_int16 lin_args_;
       arguments_tuple_type m_arguments;
       series_set_type private_series_set_;
-      static term_allocator_type term_allocator;
   };
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    typename base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator_type
-    base_pseries<__PIRANHA_BASE_PS_TP>::term_allocator;
 }
 #endif
