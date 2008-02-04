@@ -37,7 +37,7 @@ namespace piranha
    * This function performs some checks and then calls base_pseries::ll_insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Term2, class ArgsTuple, class SortedIterator, bool AdditionalChecks, bool Sign>
+    template <bool AdditionalChecks, bool Sign, class Term2, class ArgsTuple, class SortedIterator>
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
@@ -82,11 +82,11 @@ namespace piranha
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
+    template <bool AdditionalChecks, bool Sign, class Term2, class SortedIterator>
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
     SortedIterator it_hint)
   {
-    return insert<Term2,typename Derived::arguments_tuple_type,SortedIterator,AdditionalChecks,Sign>(
+    return insert<AdditionalChecks,Sign,Term2,typename Derived::arguments_tuple_type,SortedIterator>(
       term,derived_const_cast->m_arguments,it_hint);
   }
 

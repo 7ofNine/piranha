@@ -292,7 +292,7 @@ namespace piranha
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
     const Term2 &term, const it_s_index &it_hint)
   {
-    return ancestor::template insert<Term2,it_s_index,CheckTrigSign,Sign>(term,it_hint);
+    return ancestor::template insert<CheckTrigSign,Sign,Term2,it_s_index>(term,it_hint);
   }
 
   /// Perform insertion with all checks and without changing sign of the term.
