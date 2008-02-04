@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_MANIP_H
 #define PIRANHA_BASE_SERIES_MANIP_H
 
+#include "../stats.h"
+
 namespace piranha
 {
   // TODO: update doc here.
@@ -67,7 +69,7 @@ namespace piranha
       case false:
         insert_term=new_term;
     }
-    SortedIterator ret_it=derived_cast->template ll_insert<Sign>(*insert_term, &it_hint);
+    SortedIterator ret_it=ll_insert<Sign>(*insert_term,args_tuple,it_hint);
     switch (new_term == 0)
     {
       case true:
@@ -86,6 +88,69 @@ namespace piranha
   {
     return insert<Term2,typename Derived::arguments_tuple_type,SortedIterator,AdditionalChecks,Sign>(
       term,derived_const_cast->m_arguments,it_hint);
+  }
+
+  /// Find term.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class PinpointIterator>
+    inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t) const
+  {
+    return derived_const_cast->g_p_index().find(t);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <bool Sign, class ArgsTuple, class SortedIterator>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term,
+    const ArgsTuple &args_tuple, SortedIterator it_hint)
+  {
+    typedef typename Derived::pinpoint_iterator pinpoint_iterator;
+    // We must check for ignorability here, before assertions, since at this point cf_width could be zero
+    // for polynomials, and thus assertion would wrongly fail.
+    if (term.is_ignorable(args_tuple))
+    {
+      return derived_const_cast->g_s_index().end();
+    }
+    p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple));
+    //p_assert(term.trig().sign()>0);
+    SortedIterator ret_it;
+    pinpoint_iterator it(find_term<pinpoint_iterator>(term));
+    if (it == derived_const_cast->g_p_index().end())
+    {
+      // The term is NOT a duplicate, insert in the set. Record where we inserted,
+      // so it can be used in additions and multiplications.
+      ret_it=derived_cast->template term_insert_new<Sign>(term,it_hint);
+      stats::insert();
+    }
+    else
+    {
+      // The term is in the set, hence an existing term will be modified.
+      // Add or subtract according to request.
+      cf_type new_c;
+      switch (Sign)
+      {
+        case true:
+          new_c=it->elements.template get<0>();
+          new_c.add(term.elements.template get<0>());
+          break;
+        case false:
+          new_c=it->elements.template get<0>();
+          new_c.subtract(term.elements.template get<0>());
+      }
+      // Check if the resulting coefficient can be ignored (ie it is small).
+      if (new_c.is_ignorable(args_tuple))
+      {
+        derived_cast->term_erase(it);
+      }
+      else
+      {
+        derived_cast->term_update(it,new_c);
+      }
+      // If we are erasing or updating there's no point in giving an hint on where
+      // the action took place, just return the end() iterator.
+      ret_it=derived_cast->g_s_index().end();
+      stats::pack();
+    }
+    return ret_it;
   }
 }
 

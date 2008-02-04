@@ -86,6 +86,8 @@ namespace piranha
       typedef typename series_set_type::template nth_index<1>::type hashed_index;
       /// Alias for the iterator on hashed index.
       typedef typename hashed_index::const_iterator it_h_index;
+      /// Alias for pinpointing iterator.
+      typedef it_h_index pinpoint_iterator;
       /// Standard iterator.
       /**
        * Standard iterator, so that piranha::base_pseries (and its children) can be used as STL
@@ -122,6 +124,7 @@ namespace piranha
       const series_set_type *g_series_set() const;
       const sorted_index &g_s_index() const;
       const hashed_index &g_h_index() const;
+      const hashed_index &g_p_index() const;
       std::pair<bool,size_t> cf_arg_index(const std::string &) const;
       std::pair<bool,size_t> trig_arg_index(const std::string &) const;
       size_t address() const;
@@ -239,13 +242,10 @@ namespace piranha
         void append_arg(const psym_p);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
-      it_h_index find_term(const term_type &) const;
       term_type *i_perform_additional_checks(const term_type &, term_type *out) const;
       template <bool>
-        it_s_index term_insert_new(const term_type &, const it_s_index *it_hint);
+        it_s_index term_insert_new(const term_type &, it_s_index);
       void term_update(const it_h_index &, cf_type &);
-      template <bool>
-        it_s_index ll_insert(const term_type &, const it_s_index *);
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
       void insert_phases(const phase_list &);

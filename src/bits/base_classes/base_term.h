@@ -112,9 +112,9 @@ namespace piranha
        *
        * @param[in] s series used to retrieve ignorability criterions from.
        */
-      template <class Series> bool is_ignorable(const Series &s) const
+      template <class ArgsTuple> bool is_ignorable(const ArgsTuple &args_tuple) const
       {
-        return term_helper_ignorability<last_index>::run(*this, s);
+        return term_helper_ignorability<last_index>::run(*this, args_tuple);
       }
       /// Check whether a term can be inserted into a series.
       /**

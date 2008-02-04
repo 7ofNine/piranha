@@ -302,8 +302,8 @@ namespace piranha
       {
         return empty();
       }
-      template <class Series>
-        bool is_ignorable(const Series &) const
+      template <class ArgsTuple>
+        bool is_ignorable(const ArgsTuple &) const
       {
         return (is_zero() and !flavour());
       }

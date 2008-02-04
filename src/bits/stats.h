@@ -21,18 +21,13 @@
 #ifndef PIRANHA_STATS_H
 #define PIRANHA_STATS_H
 
-#include "poisson_series/base_classes/base_pseries_def.h"
-
 namespace piranha
 {
   /// Piranha-specific statistics class.
   class stats
   {
-    template <__PIRANHA_BASE_PS_TP_DECL>
-      friend class base_pseries;
     public:
       static double pack_ratio();
-    private:
       static void insert()
       {
         ++total_insertions_;

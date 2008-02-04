@@ -121,6 +121,13 @@ namespace piranha
     return g_series_set()->template get<1>();
   }
 
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    inline const typename base_pseries<__PIRANHA_BASE_PS_TP>::hashed_index &
+    base_pseries<__PIRANHA_BASE_PS_TP>::g_p_index() const
+  {
+    return g_series_set()->template get<1>();
+  }
+
   /// Return index of argument "name".
   /**
    * N is the index of arguments vector in the arguments vectors tuple. Return value is a

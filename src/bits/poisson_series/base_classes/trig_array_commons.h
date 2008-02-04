@@ -239,8 +239,8 @@ namespace piranha
         return 1;
       }
       // All multipliers are zero and flavour is sine.
-      template <class Series>
-        bool is_ignorable(const Series &) const
+      template <class ArgsTuple>
+        bool is_ignorable(const ArgsTuple &) const
       {
         return (derived_const_cast->is_zero() and !derived_const_cast->flavour());
       }

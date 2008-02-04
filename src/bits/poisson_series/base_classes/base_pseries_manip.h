@@ -25,20 +25,11 @@
 #include "../../common_typedefs.h"                // For layout.
 #include "../../config.h"                         // For (un)likely().
 #include "../../p_exceptions.h"
-#include "../../stats.h"
 #include "../../utils.h"                          // For class_converter.
 #include "base_pseries_ta_macros.h"
 
 namespace piranha
 {
-  /// Find term.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_h_index
-    base_pseries<__PIRANHA_BASE_PS_TP>::find_term(const term_type &t) const
-  {
-    return g_h_index().find(t);
-  }
-
   /// Add phase to a term and insert the resulting terms in an external series.
   /**
    * A source term is added a phase, thus generating two terms without phases by trigonometric
@@ -225,24 +216,15 @@ namespace piranha
     template <bool Sign>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
     base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_insert_new(const term_type &term,
-    const it_s_index *it_hint)
+    it_s_index it_hint)
   {
     arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
     it_s_index it_new;
-    if (it_hint==0)
-    {
-      std::pair<iterator,bool> result=s_s_index().insert(term);
-      p_assert(result.second);
-      it_new=result.first;
-    }
-    else
-    {
-      // FIXME: use asserts here? The problem here is that we are using hinted
-      // insertion, the return value is different from above (but above an assert
-      // is needed too).
-      it_new=s_s_index().insert(*it_hint,term);
-      p_assert(it_new!=end());
-    }
+    // TODO: use asserts here? The problem here is that we are using hinted
+    // insertion, the return value is different from above (but above an assert
+    // is needed too).
+    it_new=s_s_index().insert(it_hint,term);
+    p_assert(it_new!=end());
     if (!Sign)
     {
       // This is an O(1) operation, since the order in the set is not changed
@@ -284,60 +266,6 @@ namespace piranha
   // **************** //
   // INSERT FUNCTIONS //
   // **************** //
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <bool Sign>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::ll_insert(
-    const term_type &term, const it_s_index *it_hint)
-  {
-    // We must check for ignorability here, before assertions, since at this point cf_width could be zero
-    // for polynomials, and thus assertion would wrongly fail.
-    if (term.is_ignorable(*this))
-    {
-      return g_s_index().end();
-    }
-    p_assert(term.is_insertable(m_arguments) and !term.needs_padding(m_arguments));
-    p_assert(term.trig().sign()>0);
-    it_s_index ret_it;
-    it_h_index it(find_term(term));
-    if (it == g_h_index().end())
-    {
-      // The term is NOT a duplicate, insert in the set. Record where we inserted,
-      // so it can be used in additions and multiplications.
-      ret_it=term_insert_new<Sign>(term,it_hint);
-      stats::insert();
-    }
-    else
-    {
-      // The term is in the set, hence an existing term will be modified.
-      // Add or subtract according to request.
-      cf_type new_c;
-      if (Sign)
-      {
-        new_c=it->cf();
-        new_c.add(term.cf());
-      }
-      else
-      {
-        new_c=it->cf();
-        new_c.subtract(term.cf());
-      }
-      // Check if the resulting coefficient can be ignored (ie it is small).
-      if (new_c.is_ignorable(*this))
-      {
-        term_erase(it);
-      }
-      else
-      {
-        term_update(it,new_c);
-      }
-      // If we are erasing or updating there's no point in giving an hint on where
-      // the action took place, just return the end() iterator.
-      ret_it=g_s_index().end();
-      stats::pack();
-    }
-    return ret_it;
-  }
-
   // Perform additional checks during insertion.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::term_type *base_pseries<__PIRANHA_BASE_PS_TP>::

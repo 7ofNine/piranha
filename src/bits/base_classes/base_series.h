@@ -42,16 +42,24 @@ namespace piranha
   {
       /// Alias for term type.
       typedef Term term_type;
+      /// Alias for first type.
+      typedef typename boost::tuples::element<0,typename term_type::tuple_type>::type cf_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
       /// Alias for allocator rebinding to term_type.
       typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
     public:
-      template <class Term2, class ArgsTuple, class SortedIterator, bool AdditionalChecks, bool Sign>
+      template <class Term2, class ArgsTuple, class SortedIterator, bool, bool>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-      template <class Term2, class SortedIterator, bool AdditionalChecks, bool Sign>
+      template <class Term2, class SortedIterator, bool, bool>
         SortedIterator insert(const Term2 &, SortedIterator);
+    private:
+      template <class PinpointIterator>
+        PinpointIterator find_term(const term_type &) const;
+      template <bool, class ArgsTuple, class SortedIterator>
+        SortedIterator ll_insert(const term_type &, const ArgsTuple &, SortedIterator);
       /// Rebound allocator for term type.
+    protected:
       static term_allocator_type term_allocator;
   };
 

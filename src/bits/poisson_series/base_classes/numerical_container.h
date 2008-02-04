@@ -92,10 +92,10 @@ namespace piranha
       static const size_t max_size = 0;
       // If value is less than settings_manager::numerical_zero() in absolute value it is considered
       // to be zero.
-      template <class Series>
-        bool is_ignorable(const Series &s) const
+      template <class ArgsTuple>
+        bool is_ignorable(const ArgsTuple &) const
       {
-        return (static_cast<Derived const *>(this)->norm(s.arguments().template get<0>()) < settings_manager::numerical_zero());
+        return (absolute() < settings_manager::numerical_zero());
       }
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &) const
