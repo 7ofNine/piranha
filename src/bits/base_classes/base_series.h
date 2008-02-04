@@ -49,10 +49,14 @@ namespace piranha
       /// Alias for allocator rebinding to term_type.
       typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
     public:
-      template < bool, bool, class Term2, class ArgsTuple, class SortedIterator>
+      template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
+      template <class Term2, class ArgsTuple, class SortedIterator>
+        SortedIterator insert_with_checks(const Term2 &, const ArgsTuple &, SortedIterator);
+      template <class Term2, class SortedIterator>
+        SortedIterator insert_with_checks(const Term2 &, SortedIterator);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;

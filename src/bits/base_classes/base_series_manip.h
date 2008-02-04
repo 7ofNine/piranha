@@ -90,6 +90,26 @@ namespace piranha
       term,derived_const_cast->m_arguments,it_hint);
   }
 
+  /// Perform insertion with all checks and without changing sign of the term.
+  /**
+   * Simple wrapper around base_pseries::insert.
+   */
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Term2, class SortedIterator>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert_with_checks(const Term2 &term,
+    SortedIterator it_hint)
+  {
+    return insert<true,true>(term,derived_const_cast->m_arguments,it_hint);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Term2, class ArgsTuple, class SortedIterator>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert_with_checks(const Term2 &term,
+    const ArgsTuple &args_tuple, SortedIterator it_hint)
+  {
+    return insert<true,true>(term,args_tuple,it_hint);
+  }
+
   /// Find term.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class PinpointIterator>

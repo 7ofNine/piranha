@@ -144,7 +144,7 @@ namespace piranha
       for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
         it!=ps2.g_h_index().end();++it)
       {
-        it_hint=insert<true,Sign>(*it,it_hint);
+        it_hint=ancestor::template insert<true,Sign>(*it,it_hint);
       }
       return *static_cast<Derived *>(this);
     }
@@ -392,7 +392,7 @@ namespace piranha
     {
       tmp_term=*it;
       tmp_term.cf().divide_by(x);
-      it_hint=tmp_ps.insert<term_type,false,true>(tmp_term,it_hint);
+      it_hint=tmp_ps.template insert<false,true>(tmp_term,it_hint);
     }
     swap(tmp_ps);
     return *static_cast<Derived *>(this);

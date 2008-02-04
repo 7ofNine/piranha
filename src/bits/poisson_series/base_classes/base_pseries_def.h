@@ -190,10 +190,6 @@ namespace piranha
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         void merge_args(const Derived2 &);
-      template <bool, bool, class Term2>
-        it_s_index insert(const Term2 &, const it_s_index &it_hint);
-      template <class Term2>
-        it_s_index insert_with_checks(const Term2 &, const it_s_index &it_hint);
       void term_erase(const it_h_index &);
       void term_erase(const it_s_index &);
       void append_cf_arg(const psym_p);

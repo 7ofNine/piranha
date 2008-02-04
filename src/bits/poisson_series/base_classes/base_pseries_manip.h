@@ -283,31 +283,6 @@ namespace piranha
     return out;
   }
 
-  /// Main insertion function.
-  /**
-   * Simple wrapper around piranha::base_series::insert.
-   */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <bool CheckTrigSign, bool Sign, class Term2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
-    const Term2 &term, const it_s_index &it_hint)
-  {
-    return ancestor::template insert<CheckTrigSign,Sign,Term2,it_s_index>(term,it_hint);
-  }
-
-  /// Perform insertion with all checks and without changing sign of the term.
-  /**
-   * Simple wrapper around base_pseries::insert.
-   */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Term2>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::
-    insert_with_checks(
-    const Term2 &term, const it_s_index &it_hint)
-  {
-    return insert<true,true,Term2>(term,it_hint);
-  }
-
   // --------------
 
   /// Merge arguments.
