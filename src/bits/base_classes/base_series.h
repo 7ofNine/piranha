@@ -54,16 +54,16 @@ namespace piranha
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
-        SortedIterator insert_with_checks(const Term2 &, const ArgsTuple &, SortedIterator);
+        SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class SortedIterator>
-        SortedIterator insert_with_checks(const Term2 &, SortedIterator);
+        SortedIterator insert(const Term2 &, SortedIterator);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
       template <bool, class ArgsTuple, class SortedIterator>
         SortedIterator ll_insert(const term_type &, const ArgsTuple &, SortedIterator);
-      /// Rebound allocator for term type.
     protected:
+      /// Rebound allocator for term type.
       static term_allocator_type term_allocator;
   };
 

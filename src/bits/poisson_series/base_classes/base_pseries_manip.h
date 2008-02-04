@@ -51,7 +51,7 @@ namespace piranha
     // Insert first term.
     tmp_term.cf().mult_by(std::cos(phase));
     it_s_index it_hint = retps.g_s_index().end();
-    it_hint = retps.insert_with_checks(tmp_term,it_hint);
+    it_hint = retps.insert(tmp_term,it_hint);
     // Second term: change flavour and sign.
     switch (src.trig().flavour())
     {
@@ -65,7 +65,7 @@ namespace piranha
         tmp_term.cf()=tmp_c;
         tmp_term.cf().mult_by(std::sin(phase));
     }
-    retps.insert_with_checks(tmp_term,it_hint);
+    retps.insert(tmp_term,it_hint);
   }
 
   /// Add phase to a term and insert the resulting terms in an external series.
@@ -167,7 +167,7 @@ namespace piranha
         // NOTICE: find a way to avoid resizes here?
         term_type tmp_term=(*it);
         tmp_term.elements.template get<N>().pad_right(retval.arguments());
-        it_hint = retval.insert_with_checks(tmp_term,it_hint);
+        it_hint = retval.insert(tmp_term,it_hint);
       }
       swap(retval);
     }
@@ -337,7 +337,7 @@ namespace piranha
       tmp.trig().apply_layout(l_trig);
       // Use safe insert because when reorganizing the args layout maybe a negative multiplier
       // may have been placed in the first position.
-      it_hint = retval.insert_with_checks(tmp,it_hint);
+      it_hint = retval.insert(tmp,it_hint);
     }
     // Take care of lin_args.
     utils::apply_layout(l_trig,retval.lin_args());
