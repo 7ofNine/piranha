@@ -288,7 +288,7 @@ namespace piranha
    * Simple wrapper around piranha::base_series::insert.
    */
   template <__PIRANHA_BASE_PS_TP_DECL>
-    template <class Term2, bool CheckTrigSign, bool Sign>
+    template <bool CheckTrigSign, bool Sign, class Term2>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index base_pseries<__PIRANHA_BASE_PS_TP>::insert(
     const Term2 &term, const it_s_index &it_hint)
   {
@@ -305,7 +305,7 @@ namespace piranha
     insert_with_checks(
     const Term2 &term, const it_s_index &it_hint)
   {
-    return insert<Term2,true,true>(term,it_hint);
+    return insert<true,true,Term2>(term,it_hint);
   }
 
   // --------------

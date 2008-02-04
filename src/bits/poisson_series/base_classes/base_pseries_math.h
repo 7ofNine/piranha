@@ -144,7 +144,7 @@ namespace piranha
       for (typename Derived2::ancestor::it_h_index it=ps2.g_h_index().begin();
         it!=ps2.g_h_index().end();++it)
       {
-        it_hint=insert<typename Derived2::ancestor::term_type,true,Sign>(*it,it_hint);
+        it_hint=insert<true,Sign>(*it,it_hint);
       }
       return *static_cast<Derived *>(this);
     }
