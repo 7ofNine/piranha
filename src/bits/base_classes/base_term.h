@@ -50,28 +50,17 @@ namespace piranha
       static const size_t size = boost::tuples::length<tuple_type>::value;
       /// Last index of tuple.
       static const size_t last_index = size-1;
-      /// Helper struct for the selection of element number N.
-      template <int N> struct nth_element
-      {
-        // Make extra-sure we don't use an invalid index.
-        BOOST_STATIC_ASSERT(N >= 0 and N < size);
-        typedef typename boost::tuples::element<N,tuple_type>::type type;
-      };
       /// Empty ctor.
       /**
        * Default-initializes all elements of the term.
        */
-      base_term()
-      {
-      }
+      base_term() {}
       /// Ctor from elements
       base_term(const T0 &e0, const T1 &e1 = boost::tuples::null_type(),
         const T2 &e2 = boost::tuples::null_type(), const T3 &e3 = boost::tuples::null_type(),
         const T4 &e4 = boost::tuples::null_type(), const T5 &e5 = boost::tuples::null_type(),
         const T6 &e6 = boost::tuples::null_type()) :
-      elements(e0, e1, e2, e3, e4, e5, e6)
-      {
-      }
+      elements(e0, e1, e2, e3, e4, e5, e6) {}
       /// Copy ctor.
       /**
        * Construct from base_term with different elements. Successful if elements can be converted.
@@ -79,9 +68,7 @@ namespace piranha
        */
       template <class T0_2, class T1_2, class T2_2, class T3_2, class T4_2, class T5_2, class T6_2> base_term(
         const base_term<T0_2,T1_2,T2_2,T3_2,T4_2,T5_2,T6_2> &t) :
-      elements(t.elements)
-      {
-      }
+      elements(t.elements) {}
       /// Numerical evaluation, brute force version.
       /**
        * Evaluate numerically the term given the time of evaluation and a vector of piranha::psymbol describing
