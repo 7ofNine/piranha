@@ -24,6 +24,7 @@
 #include <iostream>
 #include <string>
 
+#include "../../arg_manager.h"
 #include "../../psymbol.h"
 #include "../../utils.h"                          // Lexical converter.
 #include "../../type_traits/eval_type.h"
@@ -85,7 +86,8 @@ namespace piranha
       {
         return true;
       }
-      double norm(const vector_psym_p &) const
+      template <class ArgsTuple>
+        double norm(const ArgsTuple &) const
       {
         return absolute();
       }

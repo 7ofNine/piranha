@@ -16,7 +16,6 @@ SET(SRC_LIST ${SRC_LIST}
   settings_manager.cpp
   stats.cpp
   astro.cpp
-  arg_manager.cpp
   stream_manager.cpp
   psymbol.cpp
   compile_switches.cpp

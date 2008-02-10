@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_H
 #define PIRANHA_BASE_SERIES_H
 
+#include <boost/static_assert.hpp>
 #include <memory>
 
 #include "../p_assert.h"
@@ -42,12 +43,13 @@ namespace piranha
   {
       /// Alias for term type.
       typedef Term term_type;
-      /// Alias for first type.
+      /// Alias for coefficient type.
       typedef typename boost::tuples::element<0,typename term_type::tuple_type>::type cf_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
       /// Alias for allocator rebinding to term_type.
       typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
+      BOOST_STATIC_ASSERT(term_type::size == 2);
     public:
       template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
@@ -57,11 +59,38 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
+      template <int N, class ArgsTuple, class Iterator>
+        void term_erase(const ArgsTuple &, Iterator);
+      template <int N, class Iterator>
+        void term_erase(Iterator);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
       template <bool, class ArgsTuple, class SortedIterator>
         SortedIterator ll_insert(const term_type &, const ArgsTuple &, SortedIterator);
+      template <bool, class ArgsTuple, class SortedIterator>
+        SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
+      template <class ArgsTuple, class PinpointIterator>
+        void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
+      // Functors.
+      struct modifier_invert_term_sign
+      {
+        void operator()(term_type &term) const
+        {
+          term.elements.template get<0>().invert_sign();
+        }
+      };
+      struct modifier_update_cf
+      {
+          modifier_update_cf(cf_type &new_cf):m_new_cf(new_cf) {}
+          ~modifier_update_cf() {}
+          void operator()(term_type &term)
+          {
+            term.cf().swap(m_new_cf);
+          }
+        private:
+          cf_type &m_new_cf;
+      };
     protected:
       /// Rebound allocator for term type.
       static term_allocator_type term_allocator;

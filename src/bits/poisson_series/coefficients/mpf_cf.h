@@ -94,7 +94,8 @@ namespace piranha
         return assign_self(val2);
       }
       // Override norm and evaluation.
-      double norm(const vector_psym_p &) const
+      template <class ArgsTuple>
+        double norm(const ArgsTuple &) const
       {
         return std::abs(g_value().get_d());
       }

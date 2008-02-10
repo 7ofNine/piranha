@@ -36,6 +36,7 @@
 #include "../../base_classes/base_series.h"
 #include "../../psymbol.h"
 #include "../../type_traits/eval_type.h"          // For eval_type.
+
 namespace piranha
 {
   /// Base series class.
@@ -115,7 +116,7 @@ namespace piranha
       size_t length() const;
       const vector_psym_p &cf_args() const;
       const vector_psym_p &trig_args() const;
-      template <int N>
+      template <int>
         size_t nth_width() const;
       size_t trig_width() const;
       size_t cf_width() const;
@@ -124,7 +125,8 @@ namespace piranha
       const series_set_type *g_series_set() const;
       const sorted_index &g_s_index() const;
       const hashed_index &g_h_index() const;
-      const hashed_index &g_p_index() const;
+      template <int N>
+        const typename series_set_type::template nth_index<N>::type &nth_index() const;
       std::pair<bool,size_t> cf_arg_index(const std::string &) const;
       std::pair<bool,size_t> trig_arg_index(const std::string &) const;
       size_t address() const;
@@ -184,14 +186,14 @@ namespace piranha
       series_set_type *s_series_set();
       sorted_index &s_s_index();
       hashed_index &s_h_index();
+      template <int N>
+        typename series_set_type::template nth_index<N>::type &nth_index();
       // Protected manipulation.
       // TODO: commented until it gets moved into Fourier toolbox.
       //void crop(const it_s_index &);
       void spectral_cutoff(const double &, const double &);
       template <class Derived2>
         void merge_args(const Derived2 &);
-      void term_erase(const it_h_index &);
-      void term_erase(const it_s_index &);
       void append_cf_arg(const psym_p);
       void append_trig_arg(const psym_p);
       // Protected probing.
@@ -239,8 +241,6 @@ namespace piranha
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
       term_type *i_perform_additional_checks(const term_type &, term_type *out) const;
-      template <bool>
-        it_s_index term_insert_new(const term_type &, it_s_index);
       void term_update(const it_h_index &, cf_type &);
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;
@@ -264,20 +264,6 @@ namespace piranha
       void read_trig_arg(std::ifstream &);
       void read_lin_args(std::ifstream &);
       void read_terms(std::ifstream &, const std::string &);
-      // Functors.
-      // Functor to update the coefficient.
-      struct modifier_update_cf
-      {
-        modifier_update_cf(cf_type &new_cf):new_cf_(&new_cf)
-          {}
-        ~modifier_update_cf()
-          {}
-        void operator()(term_type &term)
-        {
-          term.cf().swap(*new_cf_);
-        }
-        cf_type *new_cf_;
-      };
       // Data members.
       vector_int16 lin_args_;
       arguments_tuple_type m_arguments;

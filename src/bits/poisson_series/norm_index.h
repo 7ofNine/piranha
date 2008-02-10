@@ -35,14 +35,14 @@ namespace piranha
   /**
    * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
    */
-  template <class Term>
+  template <class Term, class ArgsTuple>
     struct norm_extractor
   {
     typedef double result_type;
     double operator()(const Term &t) const
     {
-      p_assert(arg_manager::assigned());
-      return t.cf().norm(*arg_manager::cf_args());
+      p_assert(arg_manager<ArgsTuple>::assigned());
+      return t.cf().norm(arg_manager<ArgsTuple>::get());
     }
   };
 
@@ -60,7 +60,7 @@ namespace piranha
       boost::multi_index::ordered_unique <
       boost::multi_index::composite_key <
       Term<Cf, Trig>,
-      norm_extractor<Term<Cf, Trig> >,
+      norm_extractor<Term<Cf, Trig>,boost::tuple<vector_psym_p,vector_psym_p> >,
       boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
       &Term<Cf, Trig>::trig >
       >,

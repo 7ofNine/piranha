@@ -122,10 +122,11 @@ namespace piranha
   }
 
   template <__PIRANHA_BASE_PS_TP_DECL>
-    inline const typename base_pseries<__PIRANHA_BASE_PS_TP>::hashed_index &
-    base_pseries<__PIRANHA_BASE_PS_TP>::g_p_index() const
+    template <int N>
+    inline const typename base_pseries<__PIRANHA_BASE_PS_TP>::series_set_type::template nth_index<N>::type &
+    base_pseries<__PIRANHA_BASE_PS_TP>::nth_index() const
   {
-    return g_series_set()->template get<1>();
+    return g_series_set()->template get<N>();
   }
 
   /// Return index of argument "name".
@@ -257,6 +258,14 @@ namespace piranha
     base_pseries<__PIRANHA_BASE_PS_TP>::s_h_index()
   {
     return s_series_set()->template get<1>();
+  }
+
+  template <__PIRANHA_BASE_PS_TP_DECL>
+    template <int N>
+    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::series_set_type::template nth_index<N>::type &
+    base_pseries<__PIRANHA_BASE_PS_TP>::nth_index()
+  {
+    return s_series_set()->template get<N>();
   }
 }
 #endif

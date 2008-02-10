@@ -21,6 +21,9 @@
 #ifndef PIRANHA_ARG_MANAGER_H
 #define PIRANHA_ARG_MANAGER_H
 
+#include <boost/static_assert.hpp>
+#include <boost/tuple/tuple.hpp>
+
 #include "psymbol.h"
 
 namespace piranha
@@ -34,7 +37,8 @@ namespace piranha
    * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
    * through the arg_manager::cf_args and arg_manager::trig_args methods.
    */
-  class arg_manager
+  template <class ArgsTuple>
+    class arg_manager
   {
     public:
       /// Argument assigner.
@@ -45,48 +49,40 @@ namespace piranha
       class arg_assigner
       {
         public:
-          /// Constructor from pointers to piranha::vector_psym_p.
-          arg_assigner(vector_psym_p const *cf_a, vector_psym_p const *trig_a)
-            :was_assigned_(assigned_)
+          /// Constructor from tuple of arguments vectors.
+          arg_assigner(const ArgsTuple &args_tuple)
+            :m_was_assigned(m_assigned)
           {
-            p_assert(!was_assigned_);
-            cf_args_=cf_a;
-            trig_args_=trig_a;
-            assigned_=true;
+            p_assert(!m_was_assigned);
+            m_args_tuple=&args_tuple;
+            m_assigned=true;
           }
           /// Destructor: undoes assignment.
-          ~arg_assigner()
-          {
-            assigned_=false;
-          }
+          ~arg_assigner() {m_assigned=false;}
         private:
-          bool was_assigned_;
-      }
-      ;
+          bool m_was_assigned;
+      };
       /// Check whether arguments were assigned or not.
       static bool assigned()
       {
-        return assigned_;
+        return m_assigned;
       }
-      /// Retrieve pointer to coefficient arguments vector.
-      static vector_psym_p const *cf_args()
+      /// Retrieve const reference to arguments tuple.
+      static const ArgsTuple &get()
       {
-        return cf_args_;
-      }
-      /// Retrieve pointer to trigonometric arguments vector.
-      static vector_psym_p const *trig_args()
-      {
-        return trig_args_;
+        return *m_args_tuple;
       }
     private:
-      arg_manager()
-        {}
-      ~arg_manager()
-        {}
+      arg_manager() {}
+      ~arg_manager() {}
     private:
-      static bool                       assigned_;
-      static vector_psym_p const        *cf_args_;
-      static vector_psym_p const        *trig_args_;
+      static bool                 m_assigned;
+      static const ArgsTuple      *m_args_tuple;
   };
+
+  template <class ArgsTuple>
+    bool arg_manager<ArgsTuple>::m_assigned = false;
+  template <class ArgsTuple>
+    const ArgsTuple *arg_manager<ArgsTuple>::m_args_tuple = 0;
 }
 #endif

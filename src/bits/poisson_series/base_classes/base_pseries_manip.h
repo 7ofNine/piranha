@@ -211,58 +211,6 @@ namespace piranha
     static_cast<Derived *>(this)->swap_hook(ps2);
   }
 
-  // Insert a new term into the series
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <bool Sign>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::it_s_index
-    base_pseries<Cf, Trig, Term, I, Derived, Allocator>::term_insert_new(const term_type &term,
-    it_s_index it_hint)
-  {
-    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
-    it_s_index it_new;
-    // TODO: use asserts here? The problem here is that we are using hinted
-    // insertion, the return value is different from above (but above an assert
-    // is needed too).
-    it_new=s_s_index().insert(it_hint,term);
-    p_assert(it_new!=end());
-    if (!Sign)
-    {
-      // This is an O(1) operation, since the order in the set is not changed
-      // There is a re-hash involved, it still should be cheaper than
-      // creating a new term though.
-      cf_type new_c=it_new->cf();
-      new_c.invert_sign();
-      action_assert(s_s_index().modify(it_new,modifier_update_cf(new_c)));
-    }
-    static_cast<Derived *>(this)->new_term_post_insertion_hook(term);
-    return it_new;
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_erase(const it_h_index &it)
-  {
-    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
-    static_cast<Derived *>(this)->term_pre_erase_hook(*it);
-    s_h_index().erase(it);
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_erase(const it_s_index &it)
-  {
-    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
-    static_cast<Derived *>(this)->term_pre_erase_hook(*it);
-    s_s_index().erase(it);
-  }
-
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_update(const it_h_index &it, cf_type &new_c)
-  {
-    arg_manager::arg_assigner aa(&arguments().template get<0>(),&arguments().template get<1>());
-    static_cast<Derived *>(this)->term_pre_update_hook(*it,new_c);
-    // Update the existing term
-    action_assert(s_h_index().modify(it,modifier_update_cf(new_c)));
-  }
-
   // **************** //
   // INSERT FUNCTIONS //
   // **************** //

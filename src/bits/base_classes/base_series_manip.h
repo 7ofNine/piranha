@@ -34,7 +34,7 @@ namespace piranha
    * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
    * to the series.
    *
-   * This function performs some checks and then calls base_pseries::ll_insert.
+   * This function performs some checks and then calls ll_insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <bool AdditionalChecks, bool Sign, class Term2, class ArgsTuple, class SortedIterator>
@@ -83,10 +83,9 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <bool AdditionalChecks, bool Sign, class Term2, class SortedIterator>
-    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
-    SortedIterator it_hint)
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
   {
-    return insert<AdditionalChecks,Sign,Term2,typename Derived::arguments_tuple_type,SortedIterator>(
+    return insert<AdditionalChecks,Sign,Term2,typename Derived::arguments_tuple_type>(
       term,derived_const_cast->m_arguments,it_hint);
   }
 
@@ -96,8 +95,8 @@ namespace piranha
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class Term2, class SortedIterator>
-    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
-    SortedIterator it_hint)
+    inline SortedIterator
+    base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
   {
     return insert<true,true>(term,derived_const_cast->m_arguments,it_hint);
   }
@@ -115,7 +114,7 @@ namespace piranha
     template <class PinpointIterator>
     inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t) const
   {
-    return derived_const_cast->g_p_index().find(t);
+    return derived_const_cast->template nth_index<1>().find(t);
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -128,17 +127,17 @@ namespace piranha
     // for polynomials, and thus assertion would wrongly fail.
     if (term.is_ignorable(args_tuple))
     {
-      return derived_const_cast->g_s_index().end();
+      return derived_const_cast->template nth_index<0>().end();
     }
     p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple));
     //p_assert(term.trig().sign()>0);
     SortedIterator ret_it;
     pinpoint_iterator it(find_term<pinpoint_iterator>(term));
-    if (it == derived_const_cast->g_p_index().end())
+    if (it == derived_const_cast->template nth_index<1>().end())
     {
       // The term is NOT a duplicate, insert in the set. Record where we inserted,
       // so it can be used in additions and multiplications.
-      ret_it=derived_cast->template term_insert_new<Sign>(term,it_hint);
+      ret_it=term_insert_new<Sign>(term,args_tuple,it_hint);
       stats::insert();
     }
     else
@@ -159,18 +158,66 @@ namespace piranha
       // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_ignorable(args_tuple))
       {
-        derived_cast->term_erase(it);
+        term_erase<1>(args_tuple,it);
       }
       else
       {
-        derived_cast->term_update(it,new_c);
+        term_update(args_tuple,it,new_c);
       }
       // If we are erasing or updating there's no point in giving an hint on where
       // the action took place, just return the end() iterator.
-      ret_it=derived_cast->g_s_index().end();
+      ret_it=derived_cast->template nth_index<0>().end();
       stats::pack();
     }
     return ret_it;
+  }
+
+  // Insert a new term into the series
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <bool Sign, class ArgsTuple, class SortedIterator>
+    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
+    const ArgsTuple &args_tuple, SortedIterator it_hint)
+  {
+    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    SortedIterator it_new(derived_cast->s_s_index().insert(it_hint,term));
+    // TODO: use asserts here? The problem here is that we are using hinted
+    // insertion, the return value is different from above (but above an assert
+    // is needed too).
+    p_assert(it_new!=derived_const_cast->end());
+    if (!Sign)
+    {
+      // This is an O(1) operation, since the order in the set is not changed
+      // There is a re-hash involved, it still should be cheaper than
+      // creating a new term though.
+      action_assert(derived_cast->s_s_index().modify(it_new,modifier_invert_term_sign()));
+    }
+    return it_new;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <int N, class ArgsTuple, class Iterator>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const ArgsTuple &args_tuple,
+    Iterator it)
+  {
+    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    derived_cast->template nth_index<N>().erase(it);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <int N, class Iterator>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(Iterator it)
+  {
+    term_erase<N>(derived_cast->arguments(),it);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple, class PinpointIterator>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
+    PinpointIterator it, cf_type &new_c)
+  {
+    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    // Update the existing term
+    action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
   }
 }
 

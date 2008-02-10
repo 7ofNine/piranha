@@ -83,7 +83,7 @@ namespace piranha
           derived_cast->get_truncation();
         const unsigned int limit_index=pow_limit(error,power);
         Derived retval, x(*derived_cast), tmp(1);
-        x.term_erase(x.g_s_index().begin());
+        x.template term_erase<0>(x.g_s_index().begin());
         for (unsigned int i=0;i<=limit_index;++i)
         {
           {
