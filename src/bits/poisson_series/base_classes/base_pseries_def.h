@@ -240,7 +240,7 @@ namespace piranha
         void append_arg(const psym_p);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
-      term_type *i_perform_additional_checks(const term_type &, term_type *out) const;
+      term_type *canonicalise(const term_type &, term_type *out) const;
       void term_update(const it_h_index &, cf_type &);
       void add_phase_to_term(const double &, iterator, term_type &, base_pseries &) const;
       void add_phase_to_term(const double &, const term_type &, term_type &, base_pseries &) const;

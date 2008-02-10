@@ -217,7 +217,7 @@ namespace piranha
   // Perform additional checks during insertion.
   template <__PIRANHA_BASE_PS_TP_DECL>
     inline typename base_pseries<__PIRANHA_BASE_PS_TP>::term_type *base_pseries<__PIRANHA_BASE_PS_TP>::
-    i_perform_additional_checks(const term_type &in, term_type *out) const
+    canonicalise(const term_type &in, term_type *out) const
   {
     if (in.trig().sign() < 0)
     {

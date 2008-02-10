@@ -58,7 +58,7 @@ namespace piranha
     }
     if (AdditionalChecks)
     {
-      new_term = derived_const_cast->i_perform_additional_checks(term.result,new_term);
+      new_term = derived_const_cast->canonicalise(term.result,new_term);
     }
     const Term *insert_term(0);
     switch (new_term == 0)
