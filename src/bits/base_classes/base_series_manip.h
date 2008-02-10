@@ -89,9 +89,9 @@ namespace piranha
       term,derived_const_cast->m_arguments,it_hint);
   }
 
-  /// Perform insertion with all checks and without changing sign of the term.
+  /// Perform plain insertion with all checks.
   /**
-   * Simple wrapper around base_pseries::insert.
+   * Simple wrapper around base_series::insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class Term2, class SortedIterator>
@@ -216,7 +216,7 @@ namespace piranha
     PinpointIterator it, cf_type &new_c)
   {
     typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
-    // Update the existing term
+    // Update the existing term.
     action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
   }
 }
