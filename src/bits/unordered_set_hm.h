@@ -30,7 +30,7 @@ namespace piranha
   template <class Element, class Hasher, class Eq, class Allocator, bool StoreHash>
     class mult_hash
   {
-      typedef std::tr1::unordered_set<Element,Hasher,Eq,Allocator,StoreHash> container_type;
+      typedef std::tr1::unordered_set<Element,Hasher,Eq,Allocator/*,StoreHash*/> container_type;
     public:
       typedef typename container_type::const_iterator iterator;
       typedef typename container_type::const_iterator point_iterator;
