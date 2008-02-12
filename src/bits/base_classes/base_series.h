@@ -44,7 +44,9 @@ namespace piranha
       /// Alias for term type.
       typedef Term term_type;
       /// Alias for coefficient type.
-      typedef typename boost::tuples::element<0,typename term_type::tuple_type>::type cf_type;
+      typedef typename term_type::cf_type cf_type;
+      /// Alias for key type.
+      typedef typename term_type::key_type key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
       /// Alias for allocator rebinding to term_type.

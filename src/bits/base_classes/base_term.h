@@ -39,6 +39,10 @@ namespace piranha
     class T5 =boost::tuples::null_type, class T6 =boost::tuples::null_type> class base_term
   {
     public:
+      /// Alias for coefficient type.
+      typedef T0 cf_type;
+      /// Alias for key type.
+      typedef T1 key_type;
       /// Alias for the tuple type.
       typedef boost::tuple<__BASE_TERM_TA> tuple_type;
       /// Alias for evaluation type.
