@@ -1,2 +1,3 @@
 - Fix perf. issues in TASSr6 by disabling coded arithmetics for short series
 - Fix unnecessarily long series in binomail expansion for pow.
+- Use reference counted pointer to psymbols to make them live only as necessary.
