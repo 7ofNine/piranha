@@ -123,58 +123,6 @@ namespace piranha
     swap(tmp_ps);
   }
 
-  /// Append argument.
-  /**
-   * The argument will be appended at the end of the corresponding argument vector.
-   * @param[in] N arguments type.
-   * @param[in] p pirahna::psym_p to be appended.
-   * @see base_pseries::m_arguments tuple of arguments vectors.
-   */
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    template <int N>
-    inline void base_pseries<__PIRANHA_BASE_PS_TP>::append_arg(const psym_p p)
-  {
-    typedef typename boost::tuples::element<N,typename term_type::tuple_type>::type element_type;
-    try
-    {
-      Derived retval;
-      retval.lin_args()=lin_args();
-      retval.arguments()=arguments();
-      const std::string description(psymbol_descr<N>());
-      if (arg_index<N>(p->name()).first)
-      {
-        std::cout << description << " already present in series, I won't add it." << std::endl;
-        return;
-      }
-      // Append psymbol.
-      // NOTICE: maybe we can place this exception throwing also in pad_right() methods?
-      if (element_type::max_size < retval.arguments().template get<N>().size()+1)
-      {
-        throw exceptions::add_arguments(std::string("Cannot append further ")+
-          description+", max_size reached.");
-      }
-      retval.arguments().template get<N>().push_back(p);
-      // Deal with lin_args if argument is trigonometric.
-      if (N == psymbol::trig)
-      {
-        retval.lin_args().push_back(0);
-      }
-      // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
-      const it_h_index it_f=g_h_index().end();
-      it_s_index it_hint = retval.g_s_index().end();
-      for (it_h_index it=g_h_index().begin();it!=it_f;++it)
-      {
-        // NOTICE: find a way to avoid resizes here?
-        term_type tmp_term=(*it);
-        tmp_term.elements.template get<N>().pad_right(retval.arguments());
-        it_hint = retval.insert(tmp_term,it_hint);
-      }
-      swap(retval);
-    }
-    catch (exceptions::add_arguments &e)
-      {}
-  }
-
   /// Append coefficient arguments.
   /**
    * Calls base_pseries::append_args with Type = psymbol::cf.
@@ -209,26 +157,6 @@ namespace piranha
     arguments().template get<1>().swap(ps2.arguments().template get<1>());
     lin_args().swap(ps2.lin_args());
     static_cast<Derived *>(this)->swap_hook(ps2);
-  }
-
-  // **************** //
-  // INSERT FUNCTIONS //
-  // **************** //
-  // Perform additional checks during insertion.
-  template <__PIRANHA_BASE_PS_TP_DECL>
-    inline typename base_pseries<__PIRANHA_BASE_PS_TP>::term_type *base_pseries<__PIRANHA_BASE_PS_TP>::
-    canonicalise(const term_type &in, term_type *out) const
-  {
-    if (in.trig().sign() < 0)
-    {
-      if (out == 0)
-      {
-        out=ancestor::term_allocator.allocate(1);
-        ancestor::term_allocator.construct(out,in);
-      }
-      out->invert_trig_args();
-    }
-    return out;
   }
 
   // --------------

@@ -53,23 +53,24 @@ namespace piranha
    * of terms and a norm-sorted index to discard terms in multiplications. The class is to be used as the I
    * parameter in piranha::base_pseries classes.
    */
-  template <class Cf, class Trig, template <class, class> class Term>
+  template <class Term>
     struct norm_index
   {
+    typedef typename Term::key_type trig_type;
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
       boost::multi_index::composite_key <
-      Term<Cf, Trig>,
-      norm_extractor<Term<Cf, Trig>,boost::tuple<vector_psym_p,vector_psym_p> >,
-      boost::multi_index::const_mem_fun < Term<Cf, Trig>, const Trig &,
-      &Term<Cf, Trig>::trig >
+      Term,
+      norm_extractor<Term,boost::tuple<vector_psym_p,vector_psym_p> >,
+      boost::multi_index::const_mem_fun < Term, const trig_type &,
+      &Term::trig >
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
-      std::less<Trig>
+      std::less<trig_type>
       >
       >,
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Term<Cf, Trig> > >
+      boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
       > type;
   };
 }

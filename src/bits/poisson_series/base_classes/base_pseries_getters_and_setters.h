@@ -42,7 +42,6 @@ namespace piranha
     template <int N>
     inline size_t base_pseries<__PIRANHA_BASE_PS_TP>::nth_width() const
   {
-    BOOST_STATIC_ASSERT(N < term_type::size);
     return m_arguments.template get<N>().size();
   }
 

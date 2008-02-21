@@ -46,12 +46,12 @@ namespace piranha
    *
    * This class should not be used directly, it should be inherited by a more specialized class.
    */
-  template <__PIRANHA_BASE_PS_TP_DECL= std::allocator<char> >
+  template <__PIRANHA_BASE_PS_TP_DECL = std::allocator<char> >
     class base_pseries:public base_pseries_hooks<base_pseries<__PIRANHA_BASE_PS_TP> >,
-    protected base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>
+    protected base_series<Cf,Trig,Term,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>
   {
-      typedef base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator> ancestor;
-      friend class base_series<Term<Cf,Trig>,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>;
+      typedef base_series<Cf,Trig,Term,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator> ancestor;
+      friend class base_series<Cf,Trig,Term,base_pseries<__PIRANHA_BASE_PS_TP>,Allocator>;
     public:
       /// Alias for self.
       typedef base_pseries self;
@@ -59,14 +59,14 @@ namespace piranha
       typedef Cf cf_type;
       /// Alias for trigonometric type.
       typedef Trig trig_type;
-      /// Alias for term type.
-      typedef Term<cf_type,trig_type> term_type;
-      /// Alias for index type.
-      typedef I<cf_type,trig_type,Term> index_type;
-      /// Alias for derived series.
-      typedef Derived derived_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
+      /// Alias for term type.
+      typedef Term<cf_type,trig_type,allocator_type> term_type;
+      /// Alias for index type.
+      typedef I<term_type> index_type;
+      /// Alias for derived series.
+      typedef Derived derived_type;
       /// Alias for the tuple of arguments vectors.
       typedef boost::tuple<vector_psym_p,vector_psym_p> arguments_tuple_type;
       /// Alias for the evaluation type.
@@ -224,7 +224,7 @@ namespace piranha
       template <class Derived2>
         bool series_multiplication_optimize_for_cf(const Derived2 &);
       template <class Cf2, class LightTermPair>
-        static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type> &,
+        static void term_by_term_multiplication_trig(const term_type &, const Term<Cf2,trig_type,allocator_type> &,
         LightTermPair &, cf_type &);
     private:
       // Private getters.
@@ -235,9 +235,6 @@ namespace piranha
         bool is_args_compatible(const Derived2 &) const;
       template <int>
         static std::string psymbol_descr();
-      // Private manipulation.
-      template <int>
-        void append_arg(const psym_p);
       template <class Derived2>
         void merge_incompatible_args(const Derived2 &);
       term_type *canonicalise(const term_type &, term_type *out) const;

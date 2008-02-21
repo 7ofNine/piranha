@@ -26,11 +26,12 @@
 namespace piranha
 {
   /// Simple Poisson series term class.
-  template <class Cf, class Trig> class simple_term : public base_term<Cf,Trig>
+  template <class Cf, class Trig, class Allocator>
+    class simple_term: public base_term<Cf,Trig,Allocator,simple_term<Cf,Trig,Allocator> >
   {
     public:
       /// Alias for the ancestor.
-      typedef base_term<Cf,Trig> ancestor;
+      typedef base_term<Cf,Trig,Allocator,simple_term<Cf,Trig,Allocator> > ancestor;
       /// Alias for coefficient type.
       typedef Cf cf_type;
       /// Alias for trigonometric type.
@@ -38,46 +39,44 @@ namespace piranha
       /// Alias for evaluation type.
       typedef typename ancestor::eval_type eval_type;
       /// Default constructor.
-      explicit simple_term() :
-      ancestor::base_term()
-      {
-      }
+      explicit simple_term():
+      ancestor::base_term() {}
       /// Constructor from generic coefficient and fixed trigonometric part.
       /**
        * Constructs from generic coefficient type.
        */
-      template <class Cf2> explicit simple_term(const Cf2 &c, const trig_type &t) :
-      ancestor(cf_type(c), t)
-      {
-      }
+      template <class Cf2>
+        explicit simple_term(const Cf2 &c, const trig_type &t):
+        ancestor(cf_type(c),t)
+        {}
       /// Generic copy constructor.
       /**
        * Constructs from piranha::simple_term with optionally different coefficient type.
        */
-      template <class Cf2> explicit simple_term(const simple_term<Cf2,Trig> &term) :
-      ancestor(term)
-      {
-      }
+      template <class Cf2>
+        explicit simple_term(const simple_term<Cf2,Trig,Allocator> &term):
+        ancestor(term)
+        {}
       // Getters
       /// Get mutable coefficient reference.
       cf_type &cf()
       {
-        return ancestor::elements.template get<0>();
+        return ancestor::m_cf;
       }
       /// Get const reference to coefficient.
       const cf_type &cf() const
       {
-        return ancestor::elements.template get<0>();
+        return ancestor::m_cf;
       }
       /// Get mutable reference to trigonometric part.
       trig_type &trig()
       {
-        return ancestor::elements.template get<1>();
+        return ancestor::m_key;
       }
       /// Get const reference to trigonometric part.
       const trig_type &trig() const
       {
-        return ancestor::elements.template get<1>();
+        return ancestor::m_key;
       }
       size_t footprint() const
       {
@@ -86,11 +85,11 @@ namespace piranha
       /// Assignment operator.
       simple_term &operator=(const simple_term &t2)
       {
-        if (this == &t2)
+        if (this != &t2)
         {
-          return *this;
+          ancestor::m_cf = t2.m_cf;
+          ancestor::m_key = t2.m_key;
         }
-        ancestor::elements = t2.elements;
         return *this;
       }
       /// Invert the sign of trigonometric multipliers.
@@ -153,6 +152,20 @@ namespace piranha
         eval_type retval=cf().t_eval(te.value(), te.ps()->arguments().template get<0>());
         retval*=trig().t_eval(te);
         return retval;
+      }
+      simple_term *canonicalise(simple_term *out) const
+      {
+// TODO: use switch?
+        if (trig().sign() < 0)
+        {
+          if (out == 0)
+          {
+            out=ancestor::term_allocator.allocate(1);
+            ancestor::term_allocator.construct(out,*this);
+          }
+          out->invert_trig_args();
+        }
+        return out;
       }
   };
 }

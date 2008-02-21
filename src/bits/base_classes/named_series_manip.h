@@ -18,12 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef BASE_PSERIES_TA_MACROS_H
-#define BASE_PSERIES_TA_MACROS_H
+#ifndef PIRANHA_NAMED_SERIES_MANIP_H
+#define PIRANHA_NAMED_SERIES_MANIP_H
 
-/// Template parameters for piranha::base_pseries.
-#define __PIRANHA_BASE_PS_TP Cf,Trig,Term,I,Derived,Allocator
-/// Template parameters for piranha::base_pseries (declaration form).
-#define __PIRANHA_BASE_PS_TP_DECL class Cf, class Trig, template <class, class, class> class Term, template <class> class I, \
-  class Derived, class Allocator
+namespace piranha
+{
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <bool AdditionalChecks, bool Sign, class Term2, class SortedIterator>
+    inline SortedIterator named_series<__PIRANHA_NAMED_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
+  {
+    return derived_cast->insert<AdditionalChecks,Sign,Term2,arguments_tuple_type>(term,m_arguments,it_hint);
+  }
+
+  /// Perform plain insertion with all checks.
+  /**
+   * Simple wrapper around named_series::insert.
+   */
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class Term2, class SortedIterator>
+    inline SortedIterator
+    named_series<__PIRANHA_NAMED_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
+  {
+    return insert<true,true>(term,m_arguments,it_hint);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <int M, class Iterator>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::term_erase(Iterator it)
+  {
+    derived_cast->template term_erase<M>(m_arguments,it);
+  }
+}
+
 #endif

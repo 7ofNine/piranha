@@ -18,12 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef BASE_PSERIES_TA_MACROS_H
-#define BASE_PSERIES_TA_MACROS_H
+#ifndef PIRANHA_NAMED_SERIES_H
+#define PIRANHA_NAMED_SERIES_H
 
-/// Template parameters for piranha::base_pseries.
-#define __PIRANHA_BASE_PS_TP Cf,Trig,Term,I,Derived,Allocator
-/// Template parameters for piranha::base_pseries (declaration form).
-#define __PIRANHA_BASE_PS_TP_DECL class Cf, class Trig, template <class, class, class> class Term, template <class> class I, \
-  class Derived, class Allocator
+#include "../ntuple.h"
+#include "../psymbol.h"
+
+// Useful shortcuts.
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+#define __PIRANHA_NAMED_SERIES_TP_DECL int N, class Derived
+#define __PIRANHA_NAMED_SERIES_TP N,Derived
+
+namespace piranha
+{
+  /// Named series toolbox.
+  /**
+   * To be used as a toolbox for a class which inherits also from piranha::base_series.
+   */
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    class named_series
+  {
+    public:
+      typedef ntuple<vector_psym_p,N> arguments_tuple_type;
+      template <bool, bool, class Term2, class SortedIterator>
+        SortedIterator insert(const Term2 &, SortedIterator);
+      template <class Term2, class SortedIterator>
+        SortedIterator insert(const Term2 &, SortedIterator);
+      template <int N, class Iterator>
+        void term_erase(Iterator);
+      // Data member.
+      arguments_tuple_type  m_arguments;
+  };
+}
+
+#include "named_series_manip.h"
+
+#undef derived_const_cast
+#undef derived_cast
+#undef __PIRANHA_NAMED_SERIES_TP_DECL
+#undef __PIRANHA_NAMED_SERIES_TP
+
 #endif

@@ -183,7 +183,7 @@ namespace piranha
   template <__PIRANHA_BASE_PS_TP_DECL>
     template <class Cf2, class LightTermPair>
     inline void base_pseries<__PIRANHA_BASE_PS_TP>::term_by_term_multiplication_trig(
-    const term_type &t1, const Term<Cf2,trig_type> &t2, LightTermPair &term_pair,
+    const term_type &t1, const Term<Cf2,trig_type,allocator_type> &t2, LightTermPair &term_pair,
     cf_type &new_c)
   {
     t1.trig().trigmult(t2.trig(),term_pair.template get

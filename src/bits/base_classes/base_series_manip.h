@@ -41,16 +41,16 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
-    class_converter<Term2,Term> term(term_);
+    class_converter<Term2,term_type> term(term_);
     // It should not happen because resizing in this case should already be managed
     // by other routines (merge_args, input from file, etc.).
     p_assert(term.result.is_insertable(args_tuple));
-    Term *new_term(0);
+    term_type *new_term(0);
     switch(unlikely(term.result.needs_padding(args_tuple)))
     {
       case true:
-        new_term=term_allocator.allocate(1);
-        term_allocator.construct(new_term, term.result);
+        new_term=term_type::allocator.allocate(1);
+        term_type::allocator.construct(new_term, term.result);
         new_term->pad_right(args_tuple);
         break;
       case false:
@@ -60,7 +60,7 @@ namespace piranha
     {
       new_term = derived_const_cast->canonicalise(term.result,new_term);
     }
-    const Term *insert_term(0);
+    const term_type *insert_term(0);
     switch (new_term == 0)
     {
       case true:
@@ -75,30 +75,10 @@ namespace piranha
       case true:
         break;
       case false:
-        term_allocator.destroy(new_term);
-        term_allocator.deallocate(new_term,1);
+        term_type::allocator.destroy(new_term);
+        term_type::allocator.deallocate(new_term,1);
     }
     return ret_it;
-  }
-
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <bool AdditionalChecks, bool Sign, class Term2, class SortedIterator>
-    inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
-  {
-    return insert<AdditionalChecks,Sign,Term2,typename Derived::arguments_tuple_type>(
-      term,derived_const_cast->m_arguments,it_hint);
-  }
-
-  /// Perform plain insertion with all checks.
-  /**
-   * Simple wrapper around base_series::insert.
-   */
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Term2, class SortedIterator>
-    inline SortedIterator
-    base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
-  {
-    return insert<true,true>(term,derived_const_cast->m_arguments,it_hint);
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -148,12 +128,12 @@ namespace piranha
       switch (Sign)
       {
         case true:
-          new_c=it->elements.template get<0>();
-          new_c.add(term.elements.template get<0>());
+          new_c=it->m_cf;
+          new_c.add(term.m_cf);
           break;
         case false:
-          new_c=it->elements.template get<0>();
-          new_c.subtract(term.elements.template get<0>());
+          new_c=it->m_cf;
+          new_c.subtract(term.m_cf);
       }
       // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_ignorable(args_tuple))
@@ -204,13 +184,6 @@ namespace piranha
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <int N, class Iterator>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(Iterator it)
-  {
-    term_erase<N>(derived_cast->arguments(),it);
-  }
-
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple, class PinpointIterator>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
     PinpointIterator it, cf_type &new_c)
@@ -218,6 +191,81 @@ namespace piranha
     typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
     // Update the existing term.
     action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
+  }
+
+  /// Append an argument.
+  /**
+   * The argument will be appended at the end of the corresponding argument vector. This method can be used only
+   * on empty series.
+   * @param[in] N arguments position.
+   * @param[in] p pirahna::psym_p to be appended.
+   */
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <int N>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::append_arg(const psym_p p)
+  {
+    hard_assert(derived_const_cast->empty());
+    try
+    {
+      // TODO: port.
+      if (derived_const_cast->arg_index<N>(p->name()).first)
+      {
+        std::cout << "Symbol already present in series, I won't add it." << std::endl;
+        return;
+      }
+      if (!cf_type::template admits_size<N>(derived_const_cast->arguments().template get<N>().size()+1))
+      {
+        throw exceptions::add_arguments(std::string("Cannot append cf argument, max_size reached.");
+      }
+      if (!key_type::template admits_size<N>(derived_const_cast->arguments().template get<N>().size()+1))
+      {
+        throw exceptions::add_arguments(std::string("Cannot append key argument, max_size reached.");
+      }
+    }
+
+
+
+
+
+    typedef typename boost::tuples::element<N,typename term_type::tuple_type>::type element_type;
+    try
+    {
+      Derived retval;
+      retval.lin_args()=lin_args();
+      retval.arguments()=arguments();
+      const std::string description(psymbol_descr<N>());
+      if (arg_index<N>(p->name()).first)
+      {
+        std::cout << description << " already present in series, I won't add it." << std::endl;
+        return;
+      }
+      // Append psymbol.
+      // NOTICE: maybe we can place this exception throwing also in pad_right() methods?
+      if (element_type::max_size < retval.arguments().template get<N>().size()+1)
+      {
+        throw exceptions::add_arguments(std::string("Cannot append further ")+
+          description+", max_size reached.");
+      }
+      retval.arguments().template get<N>().push_back(p);
+      // Deal with lin_args if argument is trigonometric.
+      if (N == psymbol::trig)
+      {
+        retval.lin_args().push_back(0);
+      }
+      // NOTICE: this can be probably split in 2 here if we want to use it in generic_series routines.
+      const it_h_index it_f=g_h_index().end();
+      it_s_index it_hint = retval.g_s_index().end();
+      for (it_h_index it=g_h_index().begin();it!=it_f;++it)
+      {
+        // NOTICE: find a way to avoid resizes here?
+        term_type tmp_term=(*it);
+        tmp_term.elements.template get<N>().pad_right(retval.arguments());
+        it_hint = retval.insert(tmp_term,it_hint);
+      }
+      swap(retval);
+    }
+    catch (exceptions::add_arguments &e)
+      {}
   }
 }
 

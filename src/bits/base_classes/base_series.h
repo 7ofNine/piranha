@@ -30,8 +30,8 @@
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_BASE_SERIES_TP_DECL class Term, class Derived, class Allocator
-#define __PIRANHA_BASE_SERIES_TP Term,Derived,Allocator
+#define __PIRANHA_BASE_SERIES_TP_DECL class Cf, class Key, template <class, class, class> class Term, class Derived, class Allocator
+#define __PIRANHA_BASE_SERIES_TP Cf,Key,Term,Derived,Allocator
 
 namespace piranha
 {
@@ -41,30 +41,21 @@ namespace piranha
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL> class base_series
   {
-      /// Alias for term type.
-      typedef Term term_type;
       /// Alias for coefficient type.
-      typedef typename term_type::cf_type cf_type;
+      typedef Cf cf_type;
       /// Alias for key type.
-      typedef typename term_type::key_type key_type;
+      typedef Key key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
-      /// Alias for allocator rebinding to term_type.
-      typedef typename allocator_type::template rebind<term_type>::other term_allocator_type;
-      BOOST_STATIC_ASSERT(term_type::size == 2);
+      /// Alias for term type.
+      typedef Term<Cf,Key,Allocator> term_type;
     public:
       template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-      template <bool, bool, class Term2, class SortedIterator>
-        SortedIterator insert(const Term2 &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-      template <class Term2, class SortedIterator>
-        SortedIterator insert(const Term2 &, SortedIterator);
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
-      template <int N, class Iterator>
-        void term_erase(Iterator);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
@@ -93,19 +84,14 @@ namespace piranha
         private:
           cf_type &m_new_cf;
       };
-    protected:
-      /// Rebound allocator for term type.
-      static term_allocator_type term_allocator;
   };
-
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    typename base_series<__PIRANHA_BASE_SERIES_TP>::term_allocator_type
-    base_series<__PIRANHA_BASE_SERIES_TP>::term_allocator;
 }
 
 #include "base_series_manip.h"
 
 #undef derived_const_cast
 #undef derived_cast
+#undef __PIRANHA_BASE_SERIES_TP_DECL
+#undef __PIRANHA_BASE_SERIES_TP
 
 #endif

@@ -18,12 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef BASE_PSERIES_TA_MACROS_H
-#define BASE_PSERIES_TA_MACROS_H
+#ifndef PIRANHA_NTUPLE_H
+#define PIRANHA_NTUPLE_H
 
-/// Template parameters for piranha::base_pseries.
-#define __PIRANHA_BASE_PS_TP Cf,Trig,Term,I,Derived,Allocator
-/// Template parameters for piranha::base_pseries (declaration form).
-#define __PIRANHA_BASE_PS_TP_DECL class Cf, class Trig, template <class, class, class> class Term, template <class> class I, \
-  class Derived, class Allocator
+#include <boost/static_assert.hpp>
+#include <boost/tuple/tuple.hpp>
+
+namespace piranha
+{
+  /// Wrapper for tuple of homogeneous types.
+  template <class T, int N>
+    struct Ntuple
+  {
+    BOOST_STATIC_ASSERT(N > 0);
+    typedef boost::tuples::cons<T,typename Ntuple<T,N-1>::type> type;
+  };
+  
+  template <class T>
+    struct Ntuple<T,1>
+  {
+    typedef boost::tuples::cons<T,boost::tuples::null_type> type;
+  };
+}
+
 #endif

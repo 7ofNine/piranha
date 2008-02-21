@@ -463,7 +463,7 @@ namespace piranha
             else
             {
               // Access it directly so that we can take advantage of mutability. 
-              hm_p_it->elements.template get<0>().add(c0);
+              hm_p_it->m_cf.add(c0);
             }
             hm_p_it=hm.find(term1);
             if (hm_p_it == hm.end())
@@ -472,7 +472,7 @@ namespace piranha
             }
             else
             {
-              hm_p_it->elements.template get<0>().add(c1);
+              hm_p_it->m_cf.add(c1);
             }
             ++pd;
           }
