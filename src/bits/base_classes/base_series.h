@@ -25,13 +25,14 @@
 #include <memory>
 
 #include "../p_assert.h"
-#include "../utils.h"                             // For class_converter.
+#include "../utils.h" // For class_converter.
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_BASE_SERIES_TP_DECL class Cf, class Key, template <class, class, class> class Term, class Derived, class Allocator
-#define __PIRANHA_BASE_SERIES_TP Cf,Key,Term,Derived,Allocator
+#define __PIRANHA_BASE_SERIES_TP_DECL class Cf, class Key, template <class, class, class> class Term, char Separator1, char Separator2 \
+  class Derived, class Allocator
+#define __PIRANHA_BASE_SERIES_TP Cf,Key,Term,Separator1,Separator2,Derived,Allocator
 
 namespace piranha
 {
@@ -39,7 +40,8 @@ namespace piranha
   /**
    * Term must derive from piranha::base_term class.
    */
-  template <__PIRANHA_BASE_SERIES_TP_DECL> class base_series
+  template <__PIRANHA_BASE_SERIES_TP_DECL = std::allocator<char> >
+    class base_series
   {
       /// Alias for coefficient type.
       typedef Cf cf_type;
@@ -50,6 +52,10 @@ namespace piranha
       /// Alias for term type.
       typedef Term<Cf,Key,Allocator> term_type;
     public:
+      static const char sep1 = Separator1;
+      static const char sep2 = Separator2;
+      // Check that the separators do not conflict.
+      BOOST_STATIC_ASSERT(sep1 != sep2);
       template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>

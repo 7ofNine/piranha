@@ -39,8 +39,8 @@ namespace piranha
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     class named_series
   {
-    public:
       typedef ntuple<vector_psym_p,N> arguments_tuple_type;
+    public:
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <class Term2, class SortedIterator>
