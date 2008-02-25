@@ -18,63 +18,62 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "bits/stream_manager.h"
+#include "core/stream_manager.h"
 
 namespace piranha
 {
-  unsigned int stream_manager::digits_ = 15;
-  const std::string stream_manager::data_separator_ = ";";
-  stream_manager::out_format stream_manager::format_ = stream_manager::plain;
-  const unsigned int stream_manager::min_digits_ = 0;
-  const unsigned int stream_manager::max_digits_ = 50;
-  stream_manager::fp_representation stream_manager::fp_rep_ = stream_manager::scientific;
+  unsigned int stream_manager::m_digits = 15;
+  stream_manager::out_format stream_manager::m:format = stream_manager::plain;
+  const unsigned int stream_manager::m_min_digits = 0;
+  const unsigned int stream_manager::m_max_digits = 50;
+  stream_manager::fp_representation stream_manager::m_fp_rep = stream_manager::scientific;
 
   unsigned int stream_manager::digits()
   {
-    return digits_;
+    return m_digits;
   }
 
   unsigned int stream_manager::min_digits()
   {
-    return min_digits_;
+    return m_min_digits;
   }
 
   unsigned int stream_manager::max_digits()
   {
-    return max_digits_;
+    return m_max_digits;
   }
 
   const std::string &stream_manager::data_separator()
   {
-    return data_separator_;
+    return m_data_separator;
   }
 
   void stream_manager::set_digits(int n)
   {
-    if (n<(int)min_digits_ || n>(int)max_digits_)
+    if (n<(int)m_min_digits || n>(int)m_max_digits)
     {
       std::cout << "Invalid number of digits." << std::endl;
     }
     else
     {
-      digits_=(unsigned int)n;
+      m_digits=(unsigned int)n;
     }
   }
 
   void stream_manager::set_fp_rep(fp_representation fpr)
   {
-    fp_rep_=fpr;
+    m_fp_rep=fpr;
   }
 
   stream_manager::fp_representation stream_manager::fp_rep()
   {
-    return fp_rep_;
+    return m_fp_rep;
   }
 
   void stream_manager::setup_print(std::ostream &out_stream)
   {
-    out_stream << std::setprecision(digits_);
-    switch (fp_rep_)
+    out_stream << std::setprecision(m_digits);
+    switch (m_fp_rep)
     {
       case scientific:
         out_stream << std::scientific;
@@ -87,11 +86,11 @@ namespace piranha
 
   stream_manager::out_format stream_manager::format()
   {
-    return format_;
+    return m_format;
   }
 
   void stream_manager::set_format(out_format fmt)
   {
-    format_=fmt;
+    m_format=fmt;
   }
 }
