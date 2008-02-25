@@ -74,7 +74,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_latex(std::ostream &stream,
     const ArgsTuple &args_tuple, int limit) const
   {
-    // TODO: to be implemented.
+// TODO: to be implemented.
   }
 }
 
