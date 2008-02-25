@@ -98,11 +98,11 @@ namespace std
 {
   template <>
     struct complex<piranha::double_cf>:
-    public piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> >,
+    public piranha::numerical_container<std::complex<double>,complex<piranha::double_cf> >,
     public piranha::numerical_container_complex_toolbox<piranha::double_cf>
   {
     private:
-      typedef piranha::numerical_container<piranha::complex_double,complex<piranha::double_cf> > ancestor;
+      typedef piranha::numerical_container<std::complex<double>,complex<piranha::double_cf> > ancestor;
       typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
       typedef complex self;
       friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;

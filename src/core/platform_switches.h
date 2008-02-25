@@ -18,45 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_TYPEDEFS_H
-#define PIRANHA_COMMON_TYPEDEFS_H
+#ifndef PIRANHA_PLATFORM_SWITCHES_H
+#define PIRANHA_PLATFORM_SWITCHES_H
 
-#include <boost/cstdint.hpp>
-#include <complex>
-#include <deque>
-#include <string>
-#include <vector>
+#include <cmath>
 
-namespace piranha
-{
-  // These are commonly used typedefs.
-  /// Alias for 8bit integer.
-  typedef boost::int8_t int8;
-  /// Alias for 8bit unsigned integer.
-  typedef boost::uint8_t uint8;
-  /// Alias for 16bit integer.
-  typedef boost::int16_t int16;
-  /// Alias for unsigned 16bit integer.
-  typedef boost::uint16_t uint16;
-  /// Alias for 32bit integer.
-  typedef boost::int32_t int32;
-  /// Alias for 64bit integer.
-  typedef boost::int64_t int64;
-#ifdef _PIRANHA_64BIT
-  /// Maximum fast integer (64-bits).
-  typedef boost::int64_t max_fast_int;
-  /// Maximum fast unsigned integer (64-bits).
-  typedef boost::uint64_t max_fast_uint;
+#ifdef _PIRANHA_WIN32
+#define __ISNAN(x) _isnan(x)
+#define __JNL(n,x) jn(n,x)
 #else
-  /// Maximum fast integer (32-bits).
-  typedef boost::int32_t max_fast_int;
-  /// Maximum fast unsigned integer (32-bits).
-  typedef boost::uint32_t max_fast_uint;
+#define __ISNAN(x) isnan(x)
+#define __JNL(n,x) jnl(n,x)
 #endif
-  // TODO: move this somewhere elses.
-  /// Layout element, to be used in series merging.
-  typedef std::pair<bool,size_t> layout_element;
-  /// Layout type, to be used in series merging.
-  typedef std::vector<layout_element> layout_type;
-}
 #endif

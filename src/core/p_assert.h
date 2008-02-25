@@ -18,45 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_TYPEDEFS_H
-#define PIRANHA_COMMON_TYPEDEFS_H
+#ifndef PIRANHA_P_ASSERT_H
+#define PIRANHA_P_ASSERT_H
 
-#include <boost/cstdint.hpp>
-#include <complex>
-#include <deque>
-#include <string>
-#include <vector>
+#include "config.h" // For "unlikely()".
 
-namespace piranha
-{
-  // These are commonly used typedefs.
-  /// Alias for 8bit integer.
-  typedef boost::int8_t int8;
-  /// Alias for 8bit unsigned integer.
-  typedef boost::uint8_t uint8;
-  /// Alias for 16bit integer.
-  typedef boost::int16_t int16;
-  /// Alias for unsigned 16bit integer.
-  typedef boost::uint16_t uint16;
-  /// Alias for 32bit integer.
-  typedef boost::int32_t int32;
-  /// Alias for 64bit integer.
-  typedef boost::int64_t int64;
-#ifdef _PIRANHA_64BIT
-  /// Maximum fast integer (64-bits).
-  typedef boost::int64_t max_fast_int;
-  /// Maximum fast unsigned integer (64-bits).
-  typedef boost::uint64_t max_fast_uint;
-#else
-  /// Maximum fast integer (32-bits).
-  typedef boost::int32_t max_fast_int;
-  /// Maximum fast unsigned integer (32-bits).
-  typedef boost::uint32_t max_fast_uint;
-#endif
-  // TODO: move this somewhere elses.
-  /// Layout element, to be used in series merging.
-  typedef std::pair<bool,size_t> layout_element;
-  /// Layout type, to be used in series merging.
-  typedef std::vector<layout_element> layout_type;
+#define hard_assert(result) \
+if (unlikely((result)==false)) \
+{ \
+  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+  exit(1); \
 }
+
+#if defined _ENABLE_ASSERTS
+
+#define p_assert(result) hard_assert(result)
+
+#define action_assert(action) \
+if (unlikely((action)==false)) \
+{ \
+  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+  exit(1); \
+}
+
+#else
+
+#define p_assert(__arg,...)
+
+#define action_assert(action,...) action
+#endif                                            // _ENABLE_ASSERTS
 #endif

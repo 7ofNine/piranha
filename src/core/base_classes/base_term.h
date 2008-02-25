@@ -69,7 +69,7 @@ namespace piranha
         boost::split(vs,str,boost::is_any_of(std::string(separator)));
         if (vs.size() != 2)
         {
-          throw bad_input;
+          throw bad_input();
         }
         else
         {
