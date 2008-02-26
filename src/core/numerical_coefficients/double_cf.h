@@ -137,7 +137,8 @@ namespace std
       //------------
       // Basic ctors and dtor.
       explicit complex():ancestor::numerical_container() {}
-      explicit complex(const std::string &s):ancestor::numerical_container(s) {}
+      template <class ArgsTuple>
+        explicit complex(const std::string &s, const ArgsTuple &a):ancestor::numerical_container(s,a) {}
       explicit complex(int n):ancestor::numerical_container(n) {}
       explicit complex(const double &x):ancestor::numerical_container(x) {}
       complex(const complex &c):ancestor::numerical_container(c),complex_toolbox::numerical_container_complex_toolbox(c)
