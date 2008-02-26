@@ -34,9 +34,9 @@ namespace piranha
 {
   /// Named series toolbox.
   /**
-   * To be used as a toolbox for a class which inherits also from piranha::base_series.
+   * To be used as a toolbox for piranha::base_series.
    * ArgsSpecifiers must be a boost::tuple of structures each one containing a static const string
-   * describing the arguments of the series.
+   * called "name" describing the arguments of the series.
    */
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     class named_series

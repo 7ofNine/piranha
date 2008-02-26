@@ -18,45 +18,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CF_SERIES_H
-#define PIRANHA_CF_SERIES_H
-
-#include <boost/algorithm/string.hpp>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include "../exceptions.h"
-
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_CF_SERIES_TP_DECL class Derived
-#define __PIRANHA_CF_SERIES_TP Derived
+#ifndef PIRANHA_CF_SERIES_IO_H
+#define PIRANHA_CF_SERIES_IO_H
 
 namespace piranha
 {
-  /// Toolbox for using a series as a coefficient in another series.
-  /**
-   * Intended to be inherited by piranha::base_series.
-   */
   template <__PIRANHA_CF_SERIES_TP_DECL>
-    class cf_series
+    template <class ArgsTuple>
+    inline cf_series<__PIRANHA_CF_SERIES_TP>::cf_series(std::string &str, const ArgsTuple &args_tuple)
   {
-    public:
-      /// Constructor from string.
-      /**
-       * The whole series is stored into a string when using it as coefficient in another series.
-       */
-      template <class ArgsTuple>
-        cf_series(std::string &, const ArgsTuple &);
-  };
+    typedef typename Derived::term_type term_type;
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    const char separator = Derived::separator;
+    // Remove extra spaces.
+    boost::trim(str);
+    // Split into single terms.
+    std::vector<std::string> vs;
+    boost::split(vs,str,boost::is_any_of(std::string(separator)));
+    // Fetch the end of the sorted index as hint.
+    const_sorted_iterator it_hint = derived_const_cast->g_s_index().end();
+    const size_t length = vs.size();
+    for (size_t i=0; i < length; ++i)
+    {
+      try
+      {
+        // Try to build the term from the string.
+        term_type term(vs[i],args_tuple);
+        it_hint = derived_cast->insert(term,args_tuple,it_hint);
+      }
+      catch(bad_input &b)
+      {
+        std::cout << b.what() << std::endl;
+        std::cout << "Error reading term in coefficient series, ignoring it." << std::endl;
+      }
+    }
+  }
 }
-
-#include "cf_series_io.h"
-
-#undef __PIRANHA_CF_SERIES_TP
-#undef __PIRANHA_CF_SERIES_TP_DECL
-#undef derived_const_cast
-#undef derived_cast
 
 #endif
