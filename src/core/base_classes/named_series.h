@@ -21,41 +21,55 @@
 #ifndef PIRANHA_NAMED_SERIES_H
 #define PIRANHA_NAMED_SERIES_H
 
+#include <boost/static_assert.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <string>
+
 #include "../ntuple.h"
 #include "../psymbol.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsSpecifiers, class Derived
-#define __PIRANHA_NAMED_SERIES_TP ArgsSpecifiers,Derived
+#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Derived
+#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Derived
 
 namespace piranha
 {
   /// Named series toolbox.
   /**
-   * To be used as a toolbox for piranha::base_series.
-   * ArgsSpecifiers must be a boost::tuple of structures each one containing a static const string
-   * called "name" describing the arguments of the series.
+   * Toolbox for generating series with arguments.
+   * ArgsDescr must be a boost::tuple of structures each one containing a static const string
+   * called "name" naming the arguments of the series.
    */
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     class named_series
   {
-      typedef ntuple<vector_psym_p,boost::tuples::length<ArgsSpecifiers>::value> arguments_tuple_type;
-      typedef ArgsSpecifiers arguments_descriptions;
+      typedef ArgsDescr arguments_description;
     public:
+      /// Compile-time constant for the number of arguments sets.
+      static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
+      typedef ntuple<vector_psym_p,n_arguments_sets> arguments_tuple_type;
+      BOOST_STATIC_ASSERT(n_arguments_sets > 0);
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <int N, class Iterator>
         void term_erase(Iterator);
-      // Data member.
+    //private:
+      static int args_pos(const std::string &);
+    protected:
       arguments_tuple_type  m_arguments;
   };
+
+  // Initialization of static members.
+   template <__PIRANHA_NAMED_SERIES_TP_DECL>
+     const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
 }
 
 #include "named_series_manip.h"
+#include "named_series_probe.h"
 
 #undef derived_const_cast
 #undef derived_cast
