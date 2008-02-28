@@ -21,6 +21,11 @@
 #ifndef PIRANHA_CF_SERIES_IO_H
 #define PIRANHA_CF_SERIES_IO_H
 
+#include <boost/algorithm/string.hpp>
+#include <iostream>
+#include <string>
+#include <vector>
+
 namespace piranha
 {
   template <__PIRANHA_CF_SERIES_TP_DECL>

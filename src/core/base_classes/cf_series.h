@@ -21,10 +21,7 @@
 #ifndef PIRANHA_CF_SERIES_H
 #define PIRANHA_CF_SERIES_H
 
-#include <boost/algorithm/string.hpp>
-#include <iostream>
 #include <string>
-#include <vector>
 
 #include "../exceptions.h"
 
