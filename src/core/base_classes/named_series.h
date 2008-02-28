@@ -49,7 +49,7 @@ namespace piranha
     public:
       /// Compile-time constant for the number of arguments sets.
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
-      typedef ntuple<vector_psym_p,n_arguments_sets> arguments_tuple_type;
+      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
@@ -57,8 +57,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, SortedIterator);
       template <int N, class Iterator>
         void term_erase(Iterator);
-    //private:
-      static int args_pos(const std::string &);
+    private:
+      void append_arg(const std::string &, const psym_p &);
     protected:
       arguments_tuple_type  m_arguments;
   };
@@ -68,6 +68,7 @@ namespace piranha
      const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
 }
 
+#include "named_series_io.h"
 #include "named_series_manip.h"
 #include "named_series_probe.h"
 

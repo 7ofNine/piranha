@@ -46,7 +46,19 @@ namespace piranha
       static unsigned int max_digits();
       // Setters
       static void set_digits(int n);
-      static void setup_print(std::ostream &out_stream=std::cout);
+      static void setup_print(std::ostream &out_stream=std::cout)
+      {
+        out_stream << std::setprecision(m_digits);
+        switch (m_fp_rep)
+        {
+          case scientific:
+            out_stream << std::scientific;
+            break;
+          case decimal:
+            out_stream << std::fixed;
+            break;
+        }
+      }
       static out_format format();
       static void set_format(out_format);
       static fp_representation fp_rep();
@@ -63,5 +75,10 @@ namespace piranha
       /// Floating point representation.
       static fp_representation        m_fp_rep;
   };
+
+  // Static initializations.
+  unsigned int stream_manager::m_digits = 15;
+  stream_manager::out_format stream_manager::m_format = stream_manager::plain;
+  stream_manager::fp_representation stream_manager::m_fp_rep = stream_manager::scientific;
 }
 #endif

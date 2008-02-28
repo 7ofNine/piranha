@@ -232,13 +232,14 @@ namespace piranha
         }
       };
       // Data members.
-      /// Elements of the term.
+      /// Coefficient.
       /**
        * Marked as mutable for speedy operations under certain time-critical operations in hashed containers.
        * PLEASE NOTE: do _not_ abuse mutability.
        */
       mutable cf_type   m_cf;
-      mutable key_type  m_key;
+      /// Key.
+      key_type          m_key;
       /// Rebound allocator for term type.
       static allocator_type allocator;
       /// Separator between coefficient and key in I/O.
