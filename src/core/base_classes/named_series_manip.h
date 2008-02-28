@@ -49,19 +49,6 @@ namespace piranha
     derived_cast->template term_erase<N>(m_arguments,it);
   }
 
-  /// Is U a T?
-  template <class U, class T>
-    struct is_a
-  {
-    static const bool value = false;
-  };
-
-  template <class T>
-    struct is_a<T,T>
-  {
-    static const bool value = true;
-  };
-
   // Meta-programming for appending an argument.
   template <class ArgsDescr>
     struct named_series_append_arg
@@ -73,6 +60,15 @@ namespace piranha
       switch (ArgsDescr::head_type::name == s)
       {
         case true:
+          // Check that the argument is not already present in this set.
+          for (vector_psym_p::iterator it = args_tuple.get_head().begin(); it != args_tuple.get_head().end(); ++it)
+          {
+            if (arg == (*it))
+            {
+              std::cout << "Error: " << s << " argument '" << (*it)->name() << "' already present in the set." << std::endl;
+              return;
+            }
+          }
           args_tuple.get_head().push_back(arg);
           break;
         case false:
