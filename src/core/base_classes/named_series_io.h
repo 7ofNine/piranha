@@ -21,9 +21,33 @@
 #ifndef PIRANHA_NAMED_SERIES_IO_H
 #define PIRANHA_NAMED_SERIES_IO_H
 
+#include <boost/tuple/tuple.hpp>
+#include <iostream>
+
 namespace piranha
 {
+  template <class ArgsDescr>
+    inline void named_series_print_plain(std::ostream &stream,
+    const typename ntuple<vector_psym_p,boost::tuples::length<ArgsDescr>::value>::type &args_tuple)
+  {
+    for (size_t i=0; i < args_tuple.get_head().size(); ++i)
+    {
+      stream << "[" << ArgsDescr::head_type::name << "_arg]" << std::endl;
+      args_tuple.get_head()[i]->print(stream);
+    }
+    named_series_print_plain<typename ArgsDescr::tail_type>(stream,args_tuple.get_tail());
+  }
 
+  template <>
+    inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &,
+    const ntuple<vector_psym_p,boost::tuples::length<boost::tuples::null_type>::value>::type &)
+  {}
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream) const
+  {
+    named_series_print_plain<arguments_description>(stream,m_arguments);
+  }
 }
 
 #endif

@@ -39,6 +39,12 @@ namespace piranha
   {
     typedef boost::tuples::cons<T,boost::tuples::null_type> type;
   };
+
+  template <class T>
+    struct ntuple<T,0>
+  {
+    typedef boost::tuples::null_type type;
+  };
 }
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <iostream>
 #include <string>
 
 #include "../ntuple.h"
@@ -57,7 +58,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, SortedIterator);
       template <int N, class Iterator>
         void term_erase(Iterator);
-    private:
+    //private:
+      void print_plain(std::ostream &) const;
       void append_arg(const std::string &, const psym_p &);
     protected:
       arguments_tuple_type  m_arguments;

@@ -21,8 +21,6 @@
 #ifndef PIRANHA_NAMED_SERIES_MANIP_H
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
-#include <boost/static_assert.hpp>
-
 namespace piranha
 {
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -51,39 +49,44 @@ namespace piranha
     derived_cast->template term_erase<N>(m_arguments,it);
   }
 
-  // Meta-programming for appending argument.
-  template <int N>
-    struct append_series_argument
+  /// Is U a T?
+  template <class U, class T>
+    struct is_a
   {
-    BOOST_STATIC_ASSERT(N > 0);
-    template <class ArgsTuple, class ArgsDescr>
-      static void run(const std::string &s, ArgsTuple &args_tuple, const psym_p &arg)
+    static const bool value = false;
+  };
+
+  template <class T>
+    struct is_a<T,T>
+  {
+    static const bool value = true;
+  };
+
+  // Meta-programming for appending an argument.
+  template <class ArgsDescr>
+    struct named_series_append_arg
+  {
+    static void run(const std::string &s,
+      typename ntuple<vector_psym_p,boost::tuples::length<ArgsDescr>::value>::type &args_tuple,
+      const psym_p &arg)
     {
-      switch (boost::tuples::element<N,ArgsDescr>::type::name == s)
+      switch (ArgsDescr::head_type::name == s)
       {
         case true:
-          args_tuple.template get<N>().push_back(arg);
+          args_tuple.get_head().push_back(arg);
           break;
         case false:
-          append_series_argument<N-1>::template run<ArgsTuple,ArgsDescr>(s,args_tuple,arg);
+          named_series_append_arg<typename ArgsDescr::tail_type>::run(s,args_tuple.get_tail(),arg);
       }
     }
   };
 
   template <>
-    struct append_series_argument<0>
+    struct named_series_append_arg<boost::tuples::null_type>
   {
-    template <class ArgsTuple, class ArgsDescr>
-      static void run(const std::string &s, ArgsTuple &args_tuple, const psym_p &arg)
+    static void run(const std::string &s, const boost::tuples::null_type &, const psym_p &)
     {
-      switch (boost::tuples::element<0,ArgsDescr>::type::name == s)
-      {
-        case true:
-          args_tuple.template get<0>().push_back(arg);
-          break;
-        case false:
-          std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
-      }
+      std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
     }
   };
 
@@ -91,8 +94,7 @@ namespace piranha
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym_p &arg)
   {
     p_assert(derived_const_cast->empty());
-    append_series_argument<n_arguments_sets-1>::
-      template run<arguments_tuple_type,arguments_description>(s,m_arguments,arg);
+    named_series_append_arg<arguments_description>::run(s,m_arguments,arg);
   }
 }
 
