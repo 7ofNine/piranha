@@ -135,7 +135,7 @@ namespace piranha
           /// Get symbol's name.
           const std::string &name() const {return m_name;}
           /// Get polynomial evaluation vector.
-          const std::vector<double> &poly_eval() const {return m_time_eval;}
+          const std::vector<double> &time_eval() const {return m_time_eval;}
           /// Get symbol's phase.
           double phase() const {return get_time_eval<0>();}
           /// Get symbol's frequency.
@@ -144,13 +144,13 @@ namespace piranha
         private:
           // Default constructor. Privatized because it mustn't be called.
           psymbol() {p_assert(false);}
-          // Helper for getting poly evals.
+          // Helper for getting time evals.
           template <int N>
           double get_time_eval() const
           {
             if (N >= m_time_eval.size())
             {
-              std::cout << "WARNING: Poly eval element out of bounds, returning 0." << std::endl;
+              std::cout << "WARNING: Time eval element out of bounds, returning 0." << std::endl;
               return 0;
             }
             return m_time_eval[N];
@@ -261,7 +261,7 @@ namespace piranha
   /// Constructor from std::string.
   /**
    * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise
-   * psymbol with zero poly_eval is built.
+   * psymbol with zero m_time_eval is built.
    */
   inline psymbol_manager::psymbol::psymbol(const std::string &str):m_name(str),m_time_eval()
   {
@@ -273,7 +273,7 @@ namespace piranha
     else
     {
       m_name=res.second->name();
-      m_time_eval=res.second->poly_eval();
+      m_time_eval=res.second->time_eval();
     }
   }
 
@@ -294,7 +294,7 @@ namespace piranha
   {
     stream_manager::setup_print(out_stream);
     out_stream << "name=" << m_name << std::endl;
-    out_stream << "poly_eval=";
+    out_stream << "time_eval=";
     for (unsigned int j=0;j<m_time_eval.size();++j)
     {
       out_stream << m_time_eval[j];
@@ -316,7 +316,7 @@ namespace piranha
     }
     else if (m_time_eval != psym2.m_time_eval)
     {
-      std::cout << "Different poly_eval!" << std::endl;
+      std::cout << "Different time_eval!" << std::endl;
       return false;
     }
     return true;
