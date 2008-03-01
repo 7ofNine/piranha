@@ -23,8 +23,10 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "../ntuple.h"
 #include "../psymbol.h"
@@ -61,15 +63,22 @@ namespace piranha
     //private:
       void print_plain(std::ostream &) const;
       void append_arg(const std::string &, const psym_p &);
+      void read_from_file(std::ifstream &, const std::string &);
     protected:
       arguments_tuple_type  m_arguments;
+    private:
+      static std::vector<std::string> unknown_data;
   };
 
   // Initialization of static members.
    template <__PIRANHA_NAMED_SERIES_TP_DECL>
      const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
+
+   template <__PIRANHA_NAMED_SERIES_TP_DECL>
+     std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 }
 
+#include "named_series_ctors.h"
 #include "named_series_io.h"
 #include "named_series_manip.h"
 #include "named_series_probe.h"
