@@ -41,16 +41,15 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
-    class_converter<Term2,term_type> term(term_);
-    // It should not happen because resizing in this case should already be managed
-    // by other routines (merge_args, input from file, etc.).
-    p_assert(term.result.is_insertable(args_tuple));
+    class_converter<Term2,term_type> converted_term(term_);
+    // Make sure the appropriate routines for the management of arguments have been called.
+    p_assert(converted_term.result.is_insertable(args_tuple));
     term_type *new_term(0);
-    switch(unlikely(term.result.needs_padding(args_tuple)))
+    switch(unlikely(converted_term.result.needs_padding(args_tuple)))
     {
       case true:
         new_term=term_type::allocator.allocate(1);
-        term_type::allocator.construct(new_term, term.result);
+        term_type::allocator.construct(new_term,converted_term.result);
         new_term->pad_right(args_tuple);
         break;
       case false:
@@ -58,13 +57,13 @@ namespace piranha
     }
     if (AdditionalChecks)
     {
-      new_term = term.result.canonicalise(new_term);
+      new_term = converted_term.result.canonicalise(new_term);
     }
     const term_type *insert_term(0);
     switch (new_term == 0)
     {
       case true:
-        insert_term=&term.result;
+        insert_term=&converted_term.result;
         break;
       case false:
         insert_term=new_term;
@@ -103,8 +102,7 @@ namespace piranha
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
     typedef typename Derived::pinpoint_iterator pinpoint_iterator;
-    // We must check for ignorability here, before assertions, since at this point cf_width could be zero
-    // for polynomials, and thus assertion would wrongly fail.
+
     if (term.is_ignorable(args_tuple))
     {
       return derived_const_cast->template nth_index<0>().end();
