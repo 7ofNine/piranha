@@ -81,4 +81,5 @@ namespace piranha
   stream_manager::out_format stream_manager::m_format = stream_manager::plain;
   stream_manager::fp_representation stream_manager::m_fp_rep = stream_manager::scientific;
 }
+
 #endif
