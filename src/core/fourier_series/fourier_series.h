@@ -21,6 +21,20 @@
 #ifndef PIRANHA_FOURIER_SERIES_H
 #define PIRANHA_FOURIER_SERIES_H
 
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index_container.hpp>
+#include <memory> // For default allocator.
+
+#include "../arg_manager.h"
+#include "../base_classes/base_series.h"
+#include "../base_classes/common_args_descriptions.h"
+#include "../base_classes/named_series.h"
+#include "../fourier_series_common/fs_term.h"
+#include "../ntuple.h"
+
 namespace piranha
 {
   /// Norm extractor.
@@ -46,16 +60,15 @@ namespace piranha
    * parameter in piranha::base_pseries classes.
    */
   template <class Term>
-    struct norm_index
+    struct fourier_series_norm_index
   {
     typedef typename Term::key_type trig_type;
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
       boost::multi_index::composite_key <
       Term,
-      norm_extractor<Term,boost::tuple<vector_psym_p,vector_psym_p> >,
-      boost::multi_index::const_mem_fun < Term, const trig_type &,
-      &Term::trig >
+      norm_extractor<Term,typename ntuple<vector_psym_p,1>::type>,
+      boost::multi_index::const_mem_fun<Term,trig_type,&Term::trig>
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
@@ -65,6 +78,39 @@ namespace piranha
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
       > type;
   };
+
+#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
+#define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
+#define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
+
+  template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
+    class fourier_series:
+    protected base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >,
+    protected named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
+  {
+      typedef fs_term<Cf,Trig,'|',Allocator> term_type_;
+      typedef Allocator allocator_type;
+      typedef named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES > named_ancestor;
+      typedef base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES > base_ancestor;
+      typedef typename boost::multi_index_container <term_type_,typename I<term_type_>::type,allocator_type> container_type;
+      typedef typename container_type::template nth_index<0>::type sorted_index;
+      typedef typename container_type::template nth_index<1>::type pinpoint_index;
+    public:
+      // Needed typedefs.
+      typedef term_type_ term_type;
+      typedef typename sorted_index::const_iterator const_sorted_iterator;
+      typedef typename sorted_index::iterator sorted_iterator;
+      typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+      typedef typename pinpoint_index::iterator pinpoint_iterator;
+      // Ctors.
+      fourier_series() {}
+      fourier_series(const std::string &filename):named_ancestor(filename) {}
+      // Needed getters and setters.
+  };
+
+#undef __PIRANHA_FOURIER_SERIES_TP_DECL
+#undef __PIRANHA_FOURIER_SERIES_TP
+#undef __PIRANHA_FOURIER_SERIES
 }
 
 #endif
