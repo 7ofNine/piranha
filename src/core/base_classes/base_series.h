@@ -81,7 +81,7 @@ namespace piranha
       {
         void operator()(term_type &term) const
         {
-          term.cf.invert_sign();
+          term.m_cf.invert_sign();
         }
       };
       struct modifier_update_cf
@@ -90,7 +90,7 @@ namespace piranha
           ~modifier_update_cf() {}
           void operator()(term_type &term)
           {
-            term.cf.swap(m_new_cf);
+            term.m_cf.swap(m_new_cf);
           }
         private:
           cf_type &m_new_cf;

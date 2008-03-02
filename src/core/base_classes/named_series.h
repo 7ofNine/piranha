@@ -34,8 +34,8 @@
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Derived
-#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Derived
+#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Base, class Derived
+#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Base,Derived
 
 namespace piranha
 {

@@ -21,6 +21,8 @@
 #ifndef PIRANHA_FS_TERM_H
 #define PIRANHA_FS_TERM_H
 
+#include <string>
+
 #include "../base_classes/base_term.h"
 
 namespace piranha
@@ -40,6 +42,11 @@ namespace piranha
       typedef Trig trig_type;
       /// Default constructor.
       explicit fs_term():ancestor::base_term() {}
+      /// Ctor from string.
+      template <class ArgsTuple>
+        explicit fs_term(const std::string &str, const ArgsTuple &args_tuple):
+        ancestor::base_term(str,args_tuple)
+      {}
       /// Constructor from generic coefficient and fixed trigonometric part.
       /**
        * Constructs from generic coefficient type.
@@ -90,7 +97,7 @@ namespace piranha
       // TODO: check if it makes sense to skip the check here and assume canonicalise will be used iff
       // is_canonical has already been testes.
       /// Canonicalise the term.
-      void canonicalise() const
+      void canonicalise()
       {
         if (!is_canonical())
         {

@@ -66,15 +66,17 @@ namespace piranha
         base_term(const std::string &str, const ArgsTuple &args_tuple):m_cf(),m_key()
       {
         std::vector<std::string> vs;
-        boost::split(vs,str,boost::is_any_of(std::string(separator)));
+        boost::split(vs,str,boost::is_any_of(&separator));
         if (vs.size() != 2)
         {
           throw bad_input();
         }
         else
         {
-          m_cf = m_cf(boost::trim(vs[0]),args_tuple);
-          m_key = m_key(boost::trim(vs[1]),args_tuple);
+          boost::trim(vs[0]);
+          boost::trim(vs[1]);
+          m_cf = cf_type(vs[0],args_tuple);
+          m_key = key_type(vs[1],args_tuple);
         }
       }
       /// Copy ctor.

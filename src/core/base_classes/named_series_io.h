@@ -77,7 +77,8 @@ namespace piranha
     {
       if (temp.size() > 2 and temp[0] == '[' and temp[temp.size()-1] == ']')
       {
-        std::string sec_name = boost::trim_if(temp,boost::is_any_of("[]"));
+        std::string sec_name = temp;
+        boost::trim_if(sec_name,boost::is_any_of("[]"));
         std::cout << "New section found: " << sec_name << std::endl;
         std::vector<std::string> split_v;
         boost::split(split_v,sec_name,boost::is_any_of("_"));
@@ -154,7 +155,7 @@ namespace piranha
     typedef typename Derived::term_type term_type;
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     std::string temp;
-    const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>.end();
+    const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
     while (!inf.eof())
     {
       getline(inf,temp,derived_const_cast->separator);

@@ -82,19 +82,25 @@ namespace piranha
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
+#define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,\
+  base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >,\
+  __PIRANHA_FOURIER_SERIES >
 
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
     protected base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >,
-    protected named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
+    protected __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
   {
       typedef fs_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
-      typedef named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES > named_ancestor;
+      typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES > base_ancestor;
       typedef typename boost::multi_index_container <term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
+      friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
+      friend class base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES >;
+      using base_ancestor::insert;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;

@@ -294,9 +294,11 @@ namespace piranha
       }
     protected:
       trig_array_commons() {}
-      trig_array_commons(const std::vector<std::string> &sd)
+      trig_array_commons(const std::string &s)
       {
         typedef typename Derived::value_type value_type;
+        std::vector<std::string> sd;
+        boost::split(sd,s,boost::is_any_of(&separator));
         // TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
         // TODO: do it everywhere!
         const size_t w=sd.size();

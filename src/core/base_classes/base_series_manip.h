@@ -165,7 +165,7 @@ namespace piranha
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
     typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
-    SortedIterator it_new(derived_cast->s_s_index().insert(it_hint,term));
+    SortedIterator it_new(derived_cast->template nth_index<0>().insert(it_hint,term));
     // TODO: use asserts here? The problem here is that we are using hinted
     // insertion, the return value is different from above (but above an assert
     // is needed too).
@@ -175,7 +175,7 @@ namespace piranha
       // This is an O(1) operation, since the order in the set is not changed
       // There is a re-hash involved, it still should be cheaper than
       // creating a new term though.
-      action_assert(derived_cast->s_s_index().modify(it_new,modifier_invert_term_sign()));
+      action_assert(derived_cast->template nth_index<0>().modify(it_new,modifier_invert_term_sign()));
     }
     return it_new;
   }

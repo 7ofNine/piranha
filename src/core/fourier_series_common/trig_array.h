@@ -50,8 +50,9 @@ namespace piranha
       // Ctors.
       /// Default ctor.
       trig_array():ancestor::int_array() {}
-      /// Ctor from piranha::deque_string.
-      trig_array(const std::vector<std::string> &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
+      /// Ctor from string.
+      template <class ArgsTuple>
+        explicit trig_array(const std::string &s, const ArgsTuple &):ancestor::int_array(),trig_commons::trig_array_commons(s) {}
       // Probing.
       /// Data footprint.
       /**
