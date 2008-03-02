@@ -30,8 +30,8 @@
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Derived, class Allocator
-#define __PIRANHA_BASE_SERIES_TP Term,Separator,Derived,Allocator
+#define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
+#define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived
 
 namespace piranha
 {
@@ -39,7 +39,7 @@ namespace piranha
   /**
    * Term must derive from piranha::base_term class.
    */
-  template <__PIRANHA_BASE_SERIES_TP_DECL = std::allocator<char> >
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
     class base_series
   {
       /// Alias for term type.
@@ -50,10 +50,10 @@ namespace piranha
       typedef typename term_type::key_type key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
-      // Check that the separators do not conflict.
-      BOOST_STATIC_ASSERT(term_separator != term_type::separator);
     public:
       static const char separator = Separator;
+      // Check that the separators do not conflict.
+      BOOST_STATIC_ASSERT(separator != term_type::separator);
     protected:
       template <class ArgsTuple>
         void print_terms(std::ostream &, const ArgsTuple &, int limit) const;

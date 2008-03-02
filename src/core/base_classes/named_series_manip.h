@@ -24,10 +24,10 @@
 namespace piranha
 {
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    template <bool AdditionalChecks, bool Sign, class Term2, class SortedIterator>
+    template <bool CanonicalCheck, bool Sign, class Term2, class SortedIterator>
     inline SortedIterator named_series<__PIRANHA_NAMED_SERIES_TP>::insert(const Term2 &term, SortedIterator it_hint)
   {
-    return derived_cast->insert<AdditionalChecks,Sign,Term2,arguments_tuple_type>(term,m_arguments,it_hint);
+    return derived_cast->insert<CanonicalCheck,Sign,Term2,arguments_tuple_type>(term,m_arguments,it_hint);
   }
 
   /// Perform plain insertion with all checks.

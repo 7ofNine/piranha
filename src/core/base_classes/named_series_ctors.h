@@ -23,9 +23,15 @@
 
 namespace piranha
 {
-    // Place into ctor from file.
-    // Destroy unknown data.
-    //unknown_data.clear();
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline named_series<__PIRANHA_NAMED_SERIES_TP>::named_series(const std::string &filename)
+  {
+    read_from_file(filename);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline named_series<__PIRANHA_NAMED_SERIES_TP>::named_series()
+  {}
 }
 
 #endif

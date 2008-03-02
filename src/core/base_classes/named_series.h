@@ -54,16 +54,24 @@ namespace piranha
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
       typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
+      // Ctors.
+      named_series ();
+      named_series(const std::string &);
       template <bool, bool, class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <class Term2, class SortedIterator>
         SortedIterator insert(const Term2 &, SortedIterator);
       template <int N, class Iterator>
         void term_erase(Iterator);
+    protected:
+      void read_from_file(const std::string &);
     //private:
       void print_plain(std::ostream &) const;
       void append_arg(const std::string &, const psym_p &);
       void read_from_file(std::ifstream &, const std::string &);
+      void read_sections(std::ifstream &);
+      void read_arg(std::ifstream &, const std::string &);
+      void read_terms(std::ifstream &);
     protected:
       arguments_tuple_type  m_arguments;
     private:

@@ -68,7 +68,7 @@ namespace piranha
       boost::multi_index::composite_key <
       Term,
       norm_extractor<Term,typename ntuple<vector_psym_p,1>::type>,
-      boost::multi_index::const_mem_fun<Term,trig_type,&Term::trig>
+      boost::multi_index::const_mem_fun<Term,const trig_type &,&Term::trig>
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
@@ -106,6 +106,12 @@ namespace piranha
       fourier_series() {}
       fourier_series(const std::string &filename):named_ancestor(filename) {}
       // Needed getters and setters.
+      template <int N>
+        typename container_type::template nth_index<N>::type &nth_index() {return container.template get<N>();}
+      template <int N>
+        const typename container_type::template nth_index<N>::type &nth_index() const {return container.template get<N>();}
+    private:
+      container_type  container;
   };
 
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL

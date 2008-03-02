@@ -23,6 +23,8 @@
 
 #include <boost/integer_traits.hpp>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "../base_classes/int_array.h"
 #include "trig_array_commons.h"
@@ -49,7 +51,7 @@ namespace piranha
       /// Default ctor.
       trig_array():ancestor::int_array() {}
       /// Ctor from piranha::deque_string.
-      trig_array(const deque_string &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
+      trig_array(const std::vector<std::string> &sd):ancestor::int_array(),trig_commons::trig_array_commons(sd) {}
       // Probing.
       /// Data footprint.
       /**

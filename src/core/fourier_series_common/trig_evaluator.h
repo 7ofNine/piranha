@@ -21,20 +21,20 @@
 #ifndef PIRANHA_TRIG_EVALUATOR_H
 #define PIRANHA_TRIG_EVALUATOR_H
 
+#include <complex>
 #include <utility>
 #include <vector>
 
-#include "common_typedefs.h"
-#include "p_assert.h"
+#include "../p_assert.h"
 
 namespace piranha
 {
   template <class DerivedPs>
     class trig_evaluator
   {
-    typedef std::vector<complex_double> vector_complex;
-    typedef std::pair<vector_complex,vector_complex> internal_pair;
-    typedef std::vector<internal_pair> container_type;
+      typedef std::vector<std::complex<double> > vector_complex;
+      typedef std::pair<vector_complex,vector_complex> internal_pair;
+      typedef std::vector<internal_pair> container_type;
     public:
       trig_evaluator(const DerivedPs *ps, const double &t):private_ps_(ps),private_width_(ps->trig_width()),
         private_value_(t),private_container_(private_width_)
@@ -43,11 +43,11 @@ namespace piranha
         for (size_t i=0;i<private_width_;++i)
         {
           private_container_[i].first.push_back(std::polar(1.,private_ps_->arguments().template get<1>()[i]->t_eval(t)));
-          private_container_[i].second.push_back(complex_double(1.)/
+          private_container_[i].second.push_back(std::complex<double>(1.)/
             private_container_[i].first[0]);
         }
       }
-      complex_double request_complexp(const size_t &index, const int &power_)
+      std::complex<double> request_complexp(const size_t &index, const int &power_)
       {
         p_assert(power_!=0);
         // Make sure we are not going outside container's boundaries.

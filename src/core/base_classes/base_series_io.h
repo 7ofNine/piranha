@@ -56,8 +56,8 @@ namespace piranha
     {
       lim=(size_t)n;
     }
-    const const_sorted_iterator it_f = derived_const_cast->g_s_index().end();
-    for (const_sorted_iterator it=derived_const_cast->g_s_index().begin();it!=it_f;++it)
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>.end();
+    for (const_sorted_iterator it=derived_const_cast->template nth_index<0>.begin();it!=it_f;++it)
     {
       if (j == lim)
       {

@@ -37,7 +37,7 @@ namespace piranha
    * This function performs some checks and then calls ll_insert.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <bool AdditionalChecks, bool Sign, class Term2, class ArgsTuple, class SortedIterator>
+    template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple, class SortedIterator>
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
@@ -45,7 +45,7 @@ namespace piranha
     // Make sure the appropriate routines for the management of arguments have been called.
     p_assert(converted_term.result.is_insertable(args_tuple));
     term_type *new_term(0);
-    switch(unlikely(converted_term.result.needs_padding(args_tuple)))
+    switch (unlikely(converted_term.result.needs_padding(args_tuple)))
     {
       case true:
         new_term=term_type::allocator.allocate(1);
@@ -55,9 +55,17 @@ namespace piranha
       case false:
         ;
     }
-    if (AdditionalChecks)
+    if (CanonicalCheck)
     {
-      new_term = converted_term.result.canonicalise(new_term);
+      if (!converted_term.result.is_canonical())
+      {
+        if (new_term == 0)
+        {
+          new_term=term_type::allocator.allocate(1);
+          term_type::allocator.construct(new_term,converted_term.result);
+        }
+        new_term->canonicalise();
+      }
     }
     const term_type *insert_term(0);
     switch (new_term == 0)

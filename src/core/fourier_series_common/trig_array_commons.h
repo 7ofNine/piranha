@@ -23,11 +23,14 @@
 
 #include <boost/integer.hpp>
 #include <boost/static_assert.hpp>
+#include <complex>
+#include <string>
+#include <vector>
 
-#include "../../common_typedefs.h"                // For t_eval, max_fast_int and layout.
-#include "../../psymbol.h"
-#include "../../trig_evaluator.h"
-#include "../../utils.h"                          // For apply_layout.
+#include "../common_typedefs.h"                // For t_eval, max_fast_int and layout.
+#include "../psymbol.h"
+#include "../utils.h"                          // For apply_layout.
+#include "trig_evaluator.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
@@ -55,7 +58,7 @@ namespace piranha
         for (size_t i=0;i < w;++i)
         {
           // We cast to max_fast_int, which should be the largest type admitted for multipliers.
-          out_stream << (max_fast_int)(*derived_const_cast)[i] << stream_manager::data_separator();
+          out_stream << (max_fast_int)(*derived_const_cast)[i] << separator;
         }
         switch (derived_const_cast->flavour())
         {
@@ -155,14 +158,14 @@ namespace piranha
        * the arguments.
        * @param[in] v vector of piranha::psymbol pointers.
        */
-      double freq(const vector_psym_p &v) const {return combined_poly_eval<1>(v);}
+      double freq(const vector_psym_p &v) const {return combined_time_eval<1>(v);}
       /// Phase.
       /**
        * Get the phase of the linear combination, given a vector of piranha::psymbol pointers describing the
        * arguments.
        * @param[in] v vector of piranha::psymbol pointers.
        */
-      double phase(const vector_psym_p &v) const {return combined_poly_eval<0>(v);}
+      double phase(const vector_psym_p &v) const {return combined_time_eval<0>(v);}
       /// Time evaluation of arguments.
       /**
        * Returns the value assumed by the linear combination of arguments at time t.
@@ -201,7 +204,7 @@ namespace piranha
       {
         const size_t w=te.width();
         p_assert(w <= derived_const_cast->size());
-        complex_double retval(1.);
+        std::complex<double> retval(1.);
         for (size_t i=0;i < w;++i)
         {
           if ((*derived_const_cast)[i] != 0)
@@ -291,7 +294,7 @@ namespace piranha
       }
     protected:
       trig_array_commons() {}
-      trig_array_commons(const deque_string &sd)
+      trig_array_commons(const std::vector<std::string> &sd)
       {
         typedef typename Derived::value_type value_type;
         // TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
@@ -322,7 +325,7 @@ namespace piranha
     private:
       // NOTICE: is there some caching mechanism that can be used here?
       template <int N>
-        double combined_poly_eval(const vector_psym_p &v) const
+        double combined_time_eval(const vector_psym_p &v) const
       {
         BOOST_STATIC_ASSERT(N >= 0);
         const size_t w=v.size();
@@ -331,13 +334,14 @@ namespace piranha
         for (size_t i=0;i < w;++i)
         {
           // We must be sure that there actually is component N in every symbol we are going to use.
-          if (v[i]->poly_eval().size() > N)
+          if (v[i]->time_eval().size() > N)
           {
-            retval+=(*derived_const_cast)[i]*v[i]->poly_eval()[N];
+            retval+=(*derived_const_cast)[i]*v[i]->time_eval()[N];
           }
         }
         return retval;
       }
+      static const char separator = ';';
   };
 }
 

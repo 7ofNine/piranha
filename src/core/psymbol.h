@@ -65,7 +65,8 @@ namespace piranha
            * @param[in] str symbol's name.
            * @param[in] pol symbol's polynomial evaluation vector.
            */
-          psymbol(const std::string &str, const std::vector<double> &te):m_name(str),m_time_eval(te)
+          psymbol(const std::string &name, const std::string &te):m_name(name),
+            m_time_eval(utils::str_to_vector<double>(te,separator))
             {psymbol_manager::reg(*this);}
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):m_name(s),m_time_eval((size_t)1)
