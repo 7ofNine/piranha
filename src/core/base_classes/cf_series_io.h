@@ -49,13 +49,15 @@ namespace piranha
       {
         // Try to build the term from the string.
         term_type term(vs[i],args_tuple);
-        // TODO: check for insertability before inserting. Maybe throw bad_input?
+        if (!term.is_insertable(args_tuple))
+        {
+          throw bad_input("Term not insertable in cf_series.");
+        }
         it_hint = derived_cast->insert(term,args_tuple,it_hint);
       }
       catch(bad_input &b)
       {
         std::cout << b.what() << std::endl;
-        std::cout << "Error reading term in coefficient series, ignoring it." << std::endl;
       }
     }
   }

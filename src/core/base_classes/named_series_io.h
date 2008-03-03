@@ -198,9 +198,8 @@ namespace piranha
         term_type term(temp,m_arguments);
         if (!term.is_insertable(m_arguments))
         {
-          throw bad_input("Term not insertable.");
+          throw bad_input("Term not insertable in named series.");
         }
-        // TODO: check for insertability before inserting.
         it_hint = derived_cast->insert(term,derived_const_cast->m_arguments,it_hint);
       }
       catch (bad_input &b)
