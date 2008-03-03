@@ -150,7 +150,7 @@ namespace piranha
           // Clear ifstream's state (it is done automatically on close() on Linux, but not on
           // Windows).
           inf.clear();
-          filename=(settings_manager::theories_path()+std::string("/")+filename);
+          filename=(settings_manager::get_path()+std::string("/")+filename);
           inf.open(filename.c_str());
           if (inf.fail())
           {

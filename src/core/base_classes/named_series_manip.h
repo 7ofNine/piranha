@@ -89,7 +89,7 @@ namespace piranha
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym_p &arg)
   {
-    p_assert(derived_const_cast->empty());
+    p_assert(derived_const_cast->template nth_index<0>().empty());
     named_series_append_arg<arguments_description>::run(s,m_arguments,arg);
   }
 }

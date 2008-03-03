@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/memory.h"
+#ifndef PIRANHA_VERSION_H
+#define PIRANHA_VERSION_H
 
-namespace piranha
-{
-  __gnu_cxx::__pool_alloc<char> memory::pool_allocator = __gnu_cxx::__pool_alloc<char>();
-}
+#define __PIRANHA_VERSION "0.1.0"
+
+#endif

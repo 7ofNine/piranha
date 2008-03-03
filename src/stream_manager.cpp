@@ -23,7 +23,7 @@
 namespace piranha
 {
   unsigned int stream_manager::m_digits = 15;
-  stream_manager::out_format stream_manager::m:format = stream_manager::plain;
+  stream_manager::out_format stream_manager::m_format = stream_manager::plain;
   const unsigned int stream_manager::m_min_digits = 0;
   const unsigned int stream_manager::m_max_digits = 50;
   stream_manager::fp_representation stream_manager::m_fp_rep = stream_manager::scientific;
@@ -41,11 +41,6 @@ namespace piranha
   unsigned int stream_manager::max_digits()
   {
     return m_max_digits;
-  }
-
-  const std::string &stream_manager::data_separator()
-  {
-    return m_data_separator;
   }
 
   void stream_manager::set_digits(int n)

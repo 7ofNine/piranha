@@ -18,10 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "bits/psymbol.h"
+#include "core/psymbol.h"
 
 namespace piranha
 {
-// Initialize static member of psymbol.
+  // Initialize static member of psymbol.
   psymbol_manager::set_type psymbol_manager::p_set_;
+  const std::string psymbol_manager::psymbol::separator = ";";
 }

@@ -18,9 +18,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/memory.h"
+#ifndef PIRANHA_PIRANHA_MALLOC_H
+#define PIRANHA_PIRANHA_MALLOC_H
+
+#include <cstdlib>                                // For malloc.
+
+#ifdef _PIRANHA_SSE2
+#ifdef _PIRANHA_PRIVATE_MM_MALLOC_H
+#include "mm_malloc.h"
+#else
+#include <mm_malloc.h>
+#endif
+#endif
+
+#include "config.h"                               // For unlikely().
 
 namespace piranha
 {
-  __gnu_cxx::__pool_alloc<char> memory::pool_allocator = __gnu_cxx::__pool_alloc<char>();
+  /// Memory allocation function.
+  /**
+   * Wrapper around malloc() (or _mm_malloc() if SSE2 are used).
+   */
+  static __inline void *piranha_malloc(const size_t &size)
+  {
+#ifdef _PIRANHA_SSE2
+    void *retval = _mm_malloc(size,16);
+#else
+    void *retval = malloc(size);
+#endif
+    if (unlikely(retval == NULL))
+    {
+      std::cout << "Error allocating memory, bailing out." << std::endl;
+      std::abort();
+    }
+    return retval;
+  }
+
+  /// Memory deallocation function.
+  /**
+   * Wrapper around free() (or _mm_free() if SSE2 are used).
+   */
+  static __inline void piranha_free(void *ptr)
+  {
+#ifdef _PIRANHA_SSE2
+    _mm_free(ptr);
+#else
+    free(ptr);
+#endif
+  }
 }
+#endif                                            // PIRANHA_PIRANHA_MALLOC_H

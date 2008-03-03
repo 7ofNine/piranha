@@ -30,16 +30,16 @@ namespace piranha
       static double pack_ratio();
       static void insert()
       {
-        ++total_insertions_;
+        ++total_insertions;
       }
       static void pack()
       {
         insert();
-        ++packed_insertions_;
+        ++packed_insertions;
       }
     private:
-      static double  total_insertions_;
-      static double  packed_insertions_;
+      static double  total_insertions;
+      static double  packed_insertions;
   };
 }
-#endif                                            // PIRANHA_STATS_H
+#endif

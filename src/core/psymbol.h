@@ -255,10 +255,6 @@ namespace piranha
       static set_type             p_set_;
   };
 
-  // Static initializations.
-  psymbol_manager::set_type psymbol_manager::p_set_;
-  const std::string psymbol_manager::psymbol::separator = ";";
-
   /// Constructor from std::string.
   /**
    * Searches for psymbol in piranha::psymbol_manager. If found, it builds a copy of symbol, otherwise

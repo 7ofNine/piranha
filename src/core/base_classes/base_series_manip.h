@@ -169,7 +169,7 @@ namespace piranha
     // TODO: use asserts here? The problem here is that we are using hinted
     // insertion, the return value is different from above (but above an assert
     // is needed too).
-    p_assert(it_new!=derived_const_cast->end());
+    p_assert(it_new != derived_const_cast->template nth_index<0>().end());
     if (!Sign)
     {
       // This is an O(1) operation, since the order in the set is not changed

@@ -27,9 +27,9 @@
 #include <string>
 #include <vector>
 
-#include "../common_typedefs.h"                // For t_eval, max_fast_int and layout.
+#include "../common_typedefs.h" // For t_eval, max_fast_int and layout.
 #include "../psymbol.h"
-#include "../utils.h"                          // For apply_layout.
+#include "../utils.h" // For apply_layout.
 #include "trig_evaluator.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
@@ -229,7 +229,7 @@ namespace piranha
         const size_t w=derived_const_cast->size();
         for (size_t i=0;i < w;++i)
         {
-// TODO: use switch?
+          // TODO: use switch?
           if ((*derived_const_cast)[i] > 0)
           {
             return 1;
@@ -345,6 +345,9 @@ namespace piranha
       }
       static const char separator = ';';
   };
+
+  template <class Derived, int Pos>
+    const char trig_array_commons<Derived,Pos>::separator;
 }
 
 #undef derived_const_cast

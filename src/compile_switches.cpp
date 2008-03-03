@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "bits/compile_switches.h"
+#include "core/compile_switches.h"
 
 namespace piranha
 {

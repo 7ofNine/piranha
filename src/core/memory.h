@@ -18,9 +18,40 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/memory.h"
+#ifndef PIRANHA_MEMORY_H
+#define PIRANHA_MEMORY_H
+
+#include <cstring>                                // For memcpy.
+#include <ext/pool_allocator.h>
+#include <gmp.h>
+#include <gmpxx.h>
 
 namespace piranha
 {
-  __gnu_cxx::__pool_alloc<char> memory::pool_allocator = __gnu_cxx::__pool_alloc<char>();
+  struct memory
+  {
+    static __gnu_cxx::__pool_alloc<char>  pool_allocator;
+  };
 }
+
+
+inline void *mp_alloc(size_t size)
+{
+  return static_cast<void *>(piranha::memory::pool_allocator.allocate(size));
+}
+
+
+inline void mp_free(void *ptr, size_t size)
+{
+  piranha::memory::pool_allocator.deallocate((char *)ptr,size);
+}
+
+
+inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
+{
+  void *retval=mp_alloc(new_size);
+  memcpy(retval,ptr,old_size);
+  mp_free(ptr,old_size);
+  return retval;
+}
+#endif

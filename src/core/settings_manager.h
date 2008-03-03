@@ -28,7 +28,7 @@
 
 #include "common_typedefs.h"
 #include "compile_switches.h"
-#include "piranha_tbb.h"                          // For task scheduler init.
+#include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
 {
@@ -43,32 +43,32 @@ namespace piranha
       /**
        * Relevant only to those containers with support such setting.
        */
-      static const double &load_factor()
+      static const double &get_load_factor()
       {
-        return hash_max_load_factor_;
+        return hash_max_load_factor;
       }
       // Getters.
       /// Get Jacobi-Anger expansion limit.
       static unsigned int jacang_lim()
       {
-        return jacang_limit_;
+        return jacang_limit;
       }
       /// Get numerical zero.
-      static const double &numerical_zero()
+      static const double &get_numerical_zero()
       {
-        return numerical_zero_;
+        return numerical_zero;
       }
       /// Get path to theories of motion files.
-      static const std::string &theories_path()
+      static const std::string &get_path()
       {
-        return theories_path_;
+        return path;
       }
       /// Get Piranha version.
-      static const std::string &version();
+      static const std::string &get_version();
       /// Get default path to theories of motion files.
-      static const std::string &default_theories_path()
+      static const std::string &get_default_path()
       {
-        return default_theories_path_;
+        return default_path;
       }
       /// Set maximum load factor for hashed containers.
       /**
@@ -81,20 +81,20 @@ namespace piranha
           std::cout << "Please insert a real number in the ]0,1[ interval." << std::endl;
           return;
         }
-        hash_max_load_factor_ = value;
+        hash_max_load_factor = value;
       }
-      static void set_theories_path(const std::string &);
+      static void set_path(const std::string &);
       static bool display_progress()
       {
-        return enable_progress_display_;
+        return enable_progress_display;
       }
       static void set_display_progress(bool flag)
       {
         if (!(compile_switches::display_progress))
         {
-          std::cout << "Progress bar has not been built." << std::endl;
+          std::cout << "Warning: progress bar has not been built." << std::endl;
         }
-        enable_progress_display_=flag;
+        enable_progress_display=flag;
       }
       static unsigned long int mp_default_prec()
       {
@@ -116,31 +116,31 @@ namespace piranha
       /**
        * Startup class is constructed at piranha invocation and sets default parameters.
        */
-      class startup
+      class startup_class
       {
         public:
-          startup();
+          startup_class();
       };
       /// Load factor for hashed containers.
-      static double                         hash_max_load_factor_;
+      static double                         hash_max_load_factor;
       /// Numerical zero.
-      static double                         numerical_zero_;
+      static double                         numerical_zero;
       /// Minimum fast unsigned integer.
-      static const max_fast_uint            min_u_;
+      static const max_fast_uint            min_u;
       /// Maximum fast unsigned integer.
-      static const max_fast_uint            max_u_;
+      static const max_fast_uint            max_u;
       /// Minimum fast integer.
-      static const max_fast_int             min_i_;
+      static const max_fast_int             min_i;
       /// Maximum fast integer.
-      static const max_fast_int             max_i_;
+      static const max_fast_int             max_i;
       /// Jacobi Anger expansion limit.
-      static const unsigned int             jacang_limit_;
+      static const unsigned int             jacang_limit;
       /// Path to theories of motion.
-      static std::string                    theories_path_;
-      static const std::string              default_theories_path_;
-      static const std::string              version_;
-      static bool                           enable_progress_display_;
-      static startup                        startup_;
+      static std::string                    path;
+      static const std::string              default_path;
+      static const std::string              version;
+      static bool                           enable_progress_display;
+      static startup_class                  startup;
 #ifdef _PIRANHA_TBB
       static const tbb::task_scheduler_init tbb_init;
 #endif

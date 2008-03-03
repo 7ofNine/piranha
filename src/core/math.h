@@ -224,7 +224,7 @@ namespace piranha
 #define __max_bessel_iter (20)
       static unsigned int besselJ_series_limit(int n_, const double &x, const double &prec)
       {
-        if (std::abs(x)<settings_manager::numerical_zero())
+        if (std::abs(x) < settings_manager::get_numerical_zero())
         {
           return 0;
         }
@@ -254,11 +254,11 @@ namespace piranha
         unsigned int j=0;
         double tmp_besselJ=besselJ(n_,x), tmp_pow=natural_pow(n,half_x);
         double target=0;
-        if (std::abs(tmp_besselJ)<settings_manager::numerical_zero())
+        if (std::abs(tmp_besselJ) < settings_manager::get_numerical_zero())
         {
           //std::cout << "Numerical limits of double reached, returning 0." << std::endl;
         }
-        else if (std::abs(tmp_pow)<settings_manager::numerical_zero())
+        else if (std::abs(tmp_pow) < settings_manager::get_numerical_zero())
         {
           // We have problems here since we will be dividing by tmp_pow. Exit with j=0.
           // TODO: add precision warning.
@@ -278,7 +278,7 @@ namespace piranha
             a_j=a_jm1;
             a_j*=half_x_pow2;
             //std::cout << "a_j is: " << a_j << '\n';
-            if (std::abs(a_j)<settings_manager::numerical_zero())
+            if (std::abs(a_j) < settings_manager::get_numerical_zero())
             {
               // We cannot improve precision any more, since a_j went to zero. Exit the cycle.
               // TODO: add precision warning.
