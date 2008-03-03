@@ -110,12 +110,11 @@ namespace piranha
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
     typedef typename Derived::pinpoint_iterator pinpoint_iterator;
-
     if (term.is_ignorable(args_tuple))
     {
       return derived_const_cast->template nth_index<0>().end();
     }
-    p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple));
+    p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple) and term.is_canonical());
     //p_assert(term.trig().sign()>0);
     SortedIterator ret_it;
     pinpoint_iterator it(find_term<pinpoint_iterator>(term));
