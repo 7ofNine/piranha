@@ -79,7 +79,6 @@ namespace piranha
       > type;
   };
 
-// TODO: use macros, ditch named insert functions from named_series, rename to fs.
 
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
@@ -95,12 +94,12 @@ namespace piranha
       typedef fs_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
       typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
-      typedef base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES > base_ancestor;
+      typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
       typedef typename boost::multi_index_container <term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
-      friend class base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES >;
+      friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -123,6 +122,8 @@ namespace piranha
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL
 #undef __PIRANHA_FOURIER_SERIES_TP
 #undef __PIRANHA_FOURIER_SERIES
+#undef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR
+#undef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
 }
 
 #endif
