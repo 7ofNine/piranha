@@ -88,7 +88,7 @@ namespace piranha
 
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
-    public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
+    protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
   {
       typedef fs_term<Cf,Trig,'|',Allocator> term_type_;

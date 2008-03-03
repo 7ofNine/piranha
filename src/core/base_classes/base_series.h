@@ -50,11 +50,10 @@ namespace piranha
       typedef typename term_type::key_type key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
-    public:
+    protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
       BOOST_STATIC_ASSERT(separator != term_type::separator);
-    protected:
       template <class ArgsTuple>
         void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>

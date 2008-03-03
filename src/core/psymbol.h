@@ -67,7 +67,9 @@ namespace piranha
            */
           psymbol(const std::string &name, const std::string &te):m_name(name),
             m_time_eval(utils::str_to_vector<double>(te,separator))
-            {psymbol_manager::reg(*this);}
+          {
+            psymbol_manager::reg(*this);;
+          }
           psymbol(const std::string &);
           psymbol(const std::string &s, const double &x1):m_name(s),m_time_eval((size_t)1)
           {
