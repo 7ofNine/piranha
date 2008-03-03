@@ -104,10 +104,6 @@ namespace piranha
           invert_trig_args();
         }
       }
-      const trig_type &trig() const
-      {
-        return ancestor::m_key;
-      }
   };
 }
 #endif

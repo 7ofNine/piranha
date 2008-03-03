@@ -23,7 +23,7 @@
 
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
 #include <memory> // For default allocator.
@@ -68,7 +68,7 @@ namespace piranha
       boost::multi_index::composite_key <
       Term,
       norm_extractor<Term,typename ntuple<vector_psym_p,1>::type>,
-      boost::multi_index::const_mem_fun<Term,const trig_type &,&Term::trig>
+      key_extractor<Term>
       >,
       boost::multi_index::composite_key_compare<
       std::greater<double>,
