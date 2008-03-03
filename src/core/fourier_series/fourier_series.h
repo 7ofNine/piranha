@@ -79,16 +79,17 @@ namespace piranha
       > type;
   };
 
+// TODO: use macros, ditch named insert functions from named_series, rename to fs.
+
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
-#define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,\
-  base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >,\
-  __PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
 
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
-    protected base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >,
+    protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     protected __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
   {
       typedef fs_term<Cf,Trig,'|',Allocator> term_type_;
@@ -100,7 +101,6 @@ namespace piranha
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class base_series<term_type_,'\n',Allocator,__PIRANHA_FOURIER_SERIES >;
-      using base_ancestor::insert;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -110,14 +110,14 @@ namespace piranha
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
       fourier_series() {}
-      fourier_series(const std::string &filename):named_ancestor(filename) {}
+      fourier_series(const std::string &filename) {named_ancestor::read_from_file(filename);}
       // Needed getters and setters.
       template <int N>
-        typename container_type::template nth_index<N>::type &nth_index() {return container.template get<N>();}
+        typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
       template <int N>
-        const typename container_type::template nth_index<N>::type &nth_index() const {return container.template get<N>();}
+        const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
     private:
-      container_type  container;
+      container_type  m_container;
   };
 
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL

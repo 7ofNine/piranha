@@ -34,8 +34,8 @@
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Base, class Derived
-#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Base,Derived
+#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Derived
+#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Derived
 
 namespace piranha
 {
@@ -54,18 +54,9 @@ namespace piranha
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
       typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
-      // Ctors.
-      named_series ();
-      named_series(const std::string &);
-      template <bool, bool, class Term2, class SortedIterator>
-        SortedIterator insert(const Term2 &, SortedIterator);
-      template <class Term2, class SortedIterator>
-        SortedIterator insert(const Term2 &, SortedIterator);
-      template <int N, class Iterator>
-        void term_erase(Iterator);
     protected:
       void read_from_file(const std::string &);
-    //private:
+    private:
       void print_plain(std::ostream &) const;
       void append_arg(const std::string &, const psym_p &);
       void read_from_file(std::ifstream &, const std::string &);
@@ -73,8 +64,8 @@ namespace piranha
       void read_arg(std::ifstream &, const std::string &);
       void read_terms(std::ifstream &);
     protected:
+      // Data members.
       arguments_tuple_type  m_arguments;
-    private:
       static std::vector<std::string> unknown_data;
   };
 
@@ -86,7 +77,6 @@ namespace piranha
      std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 }
 
-#include "named_series_ctors.h"
 #include "named_series_io.h"
 #include "named_series_manip.h"
 #include "named_series_probe.h"

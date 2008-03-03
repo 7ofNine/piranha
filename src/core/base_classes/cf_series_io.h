@@ -39,7 +39,7 @@ namespace piranha
     boost::trim(str);
     // Split into single terms.
     std::vector<std::string> vs;
-    boost::split(vs,str,boost::is_any_of(std::string(separator)));
+    boost::split(vs,str,boost::is_any_of(std::string(1,separator)));
     // Fetch the end of the sorted index as hint.
     const_sorted_iterator it_hint = derived_const_cast->g_s_index().end();
     const size_t length = vs.size();
@@ -49,6 +49,7 @@ namespace piranha
       {
         // Try to build the term from the string.
         term_type term(vs[i],args_tuple);
+        // TODO: check for insertability before inserting. Maybe throw bad_input?
         it_hint = derived_cast->insert(term,args_tuple,it_hint);
       }
       catch(bad_input &b)

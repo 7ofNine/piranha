@@ -66,10 +66,10 @@ namespace piranha
         base_term(const std::string &str, const ArgsTuple &args_tuple):m_cf(),m_key()
       {
         std::vector<std::string> vs;
-        boost::split(vs,str,boost::is_any_of(&separator));
+        boost::split(vs,str,boost::is_any_of(std::string(1,separator)));
         if (vs.size() != 2)
         {
-          throw bad_input();
+          throw bad_input(std::string("Unable to build term from input '")+str+"'.");
         }
         else
         {

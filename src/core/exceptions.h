@@ -29,10 +29,13 @@ namespace piranha
   class bad_input
   {
     public:
-      std::string what() const
+      bad_input(const std::string &s):m_what(s) {}
+      const std::string &what() const
       {
-        return std::string("Bad input.");
+        return m_what;
       }
+    private:
+      std::string m_what;
   };
 }
 

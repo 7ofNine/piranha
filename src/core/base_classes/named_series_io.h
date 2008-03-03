@@ -25,6 +25,8 @@
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
 
+#include "../exceptions.h"
+
 namespace piranha
 {
   // TMP for series printing.
@@ -159,8 +161,26 @@ namespace piranha
     while (!inf.eof())
     {
       getline(inf,temp,derived_const_cast->separator);
-      term_type term(temp,m_arguments);
-      it_hint = insert(term,it_hint);
+      boost::trim(temp);
+      // Ignore empty lines.
+      if (temp.empty())
+      {
+        continue;
+      }
+      try
+      {
+        term_type term(temp,m_arguments);
+        if (!term.is_insertable(m_arguments))
+        {
+          throw bad_input("Term not insertable.");
+        }
+        // TODO: check for insertability before inserting.
+        it_hint = derived_cast->insert(term,derived_const_cast->m_arguments,it_hint);
+      }
+      catch (bad_input &b)
+      {
+        std::cout << b.what() << std::endl;
+      }
     }
   }
 }
