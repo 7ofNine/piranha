@@ -56,7 +56,9 @@ namespace piranha
       BOOST_STATIC_ASSERT(separator != term_type::separator);
     protected:
       template <class ArgsTuple>
-        void print_terms(std::ostream &, const ArgsTuple &, int limit) const;
+        void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
+      template <class ArgsTuple>
+        void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
       template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
@@ -64,10 +66,6 @@ namespace piranha
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
     private:
-      template <class ArgsTuple>
-        void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
-      template <class ArgsTuple>
-        void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
       template <bool, class ArgsTuple, class SortedIterator>
@@ -98,6 +96,7 @@ namespace piranha
   };
 }
 
+#include "base_series_io.h"
 #include "base_series_manip.h"
 
 #undef derived_const_cast

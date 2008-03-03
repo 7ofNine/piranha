@@ -48,9 +48,35 @@ namespace piranha
   {}
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream) const
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream, int limit) const
   {
     named_series_print_plain<arguments_description>(stream,m_arguments);
+    std::cout << "[terms]" << std::endl;
+    derived_const_cast->print_terms_plain(stream,m_arguments,limit);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_latex(std::ostream &, int) const
+  {
+    // TODO: implement.
+  }
+
+  /// Print series to stream.
+  /**
+   * Print first "limit" terms. If limit is negative, print all terms. The output format is read
+   * from the piranha::stream_manager class.
+   */
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &out_stream, int limit) const
+  {
+    switch (stream_manager::format())
+    {
+      case stream_manager::plain:
+        print_plain(out_stream,limit);
+        break;
+      case stream_manager::latex:
+        print_latex(out_stream,limit);
+    }
   }
 
   // Read from file.

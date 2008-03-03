@@ -52,12 +52,14 @@ namespace piranha
     public:
       /// Compile-time constant for the number of arguments sets.
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
-      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
+      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
+      void print(std::ostream &stream = std::cout, int limit = -1) const;
     protected:
       void read_from_file(const std::string &);
     private:
-      void print_plain(std::ostream &) const;
+      void print_plain(std::ostream &, int) const;
+      void print_latex(std::ostream &, int) const;
       void append_arg(const std::string &, const psym_p &);
       void read_from_file(std::ifstream &, const std::string &);
       void read_sections(std::ifstream &);
@@ -65,7 +67,7 @@ namespace piranha
       void read_terms(std::ifstream &);
     protected:
       // Data members.
-      arguments_tuple_type  m_arguments;
+      arguments_tuple_type            m_arguments;
       static std::vector<std::string> unknown_data;
   };
 

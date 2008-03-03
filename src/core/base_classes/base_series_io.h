@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_BASE_SERIES_H
-#define PIRANHA_BASE_SERIES_H
+#ifndef PIRANHA_BASE_SERIES_IO_H
+#define PIRANHA_BASE_SERIES_IO_H
 
 #include "../stream_manager.h"
 
@@ -27,44 +27,29 @@ namespace piranha
 {
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms(std::ostream &stream,
-    const ArgsTuple &args_tuple, int limit) const
-  {
-    switch (stream_manager::format())
-    {
-      case stream_manager::plain:
-        print_terms_plain(std::cout,limit);
-        break;
-      case stream_manager::latex:
-        print_terms_latex(std::cout,limit);
-    }
-  }
-
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class ArgsTuple>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
     const ArgsTuple &args_tuple, int limit) const
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-    stream_manager::setup_print(out_stream);
+    stream_manager::setup_print(stream);
     size_t j=0, lim;
-    if (n < 0)
+    if (limit < 0)
     {
-      lim=derived_const_cast->length();
+      lim=derived_const_cast->template nth_index<0>().size();
     }
     else
     {
-      lim=(size_t)n;
+      lim=(size_t)limit;
     }
-    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>.end();
-    for (const_sorted_iterator it=derived_const_cast->template nth_index<0>.begin();it!=it_f;++it)
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    for (const_sorted_iterator it=derived_const_cast->template nth_index<0>().begin();it!=it_f;++it)
     {
       if (j == lim)
       {
         break;
       }
-      it->print_plain(out_stream,args_tuple);
-      out_stream << separator;
+      it->print_plain(stream,args_tuple);
+      stream << separator;
       ++j;
     }
   }

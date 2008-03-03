@@ -48,9 +48,10 @@ namespace piranha
       BOOST_STATIC_ASSERT(Pos >= 0);
     public:
       // I/O.
-      void print_plain(std::ostream &out_stream, const vector_psym_p &v) const
+      template <class ArgsTuple>
+        void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const
       {
-        const size_t w=v.size();
+        const size_t w=args_tuple.template get<Pos>().size();
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(w <= derived_const_cast->size())
