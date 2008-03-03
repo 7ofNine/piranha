@@ -171,8 +171,8 @@ namespace piranha
         static std::vector<T> str_to_vector(const std::string &str, const std::string &separator)
       {
         std::vector<std::string> v;
-        const size_t size = v.size();
         boost::split(v,str,boost::is_any_of(separator));
+        const size_t size = v.size();
         std::vector<T> retval(size);
         for (size_t j=0; j < size; ++j)
         {
