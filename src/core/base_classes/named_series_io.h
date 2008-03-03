@@ -51,7 +51,7 @@ namespace piranha
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream, int limit) const
   {
     named_series_print_plain<arguments_description>(stream,m_arguments);
-    std::cout << "[terms]" << std::endl;
+    stream << "[terms]" << std::endl;
     derived_const_cast->print_terms_plain(stream,m_arguments,limit);
   }
 
@@ -207,6 +207,21 @@ namespace piranha
         std::cout << b.what() << std::endl;
       }
     }
+  }
+
+  /// Save series to file.
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::save_to(const std::string &filename) const
+  {
+    std::ofstream outf(filename.c_str(),std::ios_base::trunc);
+    if (outf.fail())
+    {
+      std::cout << "Error saving to file " << filename << "." << std::endl;
+      outf.close();
+      return;
+    }
+    print(outf);
+    outf.close();
   }
 }
 

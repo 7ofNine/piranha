@@ -55,6 +55,7 @@ namespace piranha
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
       typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
       void print(std::ostream &stream = std::cout, int limit = -1) const;
+      void save_to(const std::string &) const;
     protected:
       void read_from_file(const std::string &);
     private:
