@@ -212,16 +212,20 @@ namespace piranha
       {
         return (m_key == t.m_key);
       }
-      /// Assignment
-      void assign(const base_term &t2)
+      /// Check if the term is canonical.
+      /**
+       * Will always return true, re-implement in derived term if necessary.
+       */
+      bool is_canonical() const
       {
-        if (this != &t2)
-        {
-          m_cf = t2.m_cf;
-          m_key = t2.m_key;
-        }
-        return *this;
+        return true;
       }
+      /// Canonicalise the term.
+      /**
+       * Won't do anything, re-implement in derived term if necessary.
+       */
+      void canonicalise()
+      {}
       /// Hasher functor.
       /**
        * Useful in STL-like containers.

@@ -61,21 +61,6 @@ namespace piranha
       template <class Cf2>
         explicit fs_term(const fs_term<Cf2,Trig,Separator,Allocator> &term):ancestor(term)
       {}
-      /// Assignment operator.
-      fs_term &operator=(const fs_term &t2)
-      {
-        ancestor::assign(t2);
-        return *this;
-      }
-      /// Invert the sign of trigonometric multipliers.
-      void invert_trig_args()
-      {
-        ancestor::m_key.invert_sign();
-        if (!(ancestor::m_key.flavour()))
-        {
-          ancestor::m_cf.invert_sign();
-        }
-      }
       /// Smarter numerical evaluation
       /**
        * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
@@ -95,13 +80,23 @@ namespace piranha
         return (ancestor::m_key.sign() > 0);
       }
       // TODO: check if it makes sense to skip the check here and assume canonicalise will be used iff
-      // is_canonical has already been testes.
+      // is_canonical has already been tested.
       /// Canonicalise the term.
       void canonicalise()
       {
         if (!is_canonical())
         {
           invert_trig_args();
+        }
+      }
+    private:
+      // Invert the sign of trigonometric multipliers.
+      void invert_trig_args()
+      {
+        ancestor::m_key.invert_sign();
+        if (!(ancestor::m_key.flavour()))
+        {
+          ancestor::m_cf.invert_sign();
         }
       }
   };
