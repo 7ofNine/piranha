@@ -118,35 +118,9 @@ namespace piranha
           (*derived_cast)[i]*=-1;
         }
       }
-      /// Assign vector of multipliers.
-      template <class T>
-        void assign_int_vector(const T &v)
-      {
-        const size_t w=derived_const_cast->size();
-        p_assert(v.size() == w);
-        for (size_t i=0;i < w;++i)
-        {
-          (*derived_cast)[i]=v[i];
-        }
-      }
       void apply_layout(const layout_type &l)
       {
         utils::apply_layout(l,*derived_cast);
-      }
-      /// Density.
-      template <class DerivedPs>
-        double density(const DerivedPs &p) const
-      {
-        size_t tmp=0;
-        const size_t w=derived_const_cast->size();
-        for (size_t i=0;i < w;++i)
-        {
-          if ((*derived_const_cast)[i] != 0)
-          {
-            ++tmp;
-          }
-        }
-        return ((double)tmp)/w;
       }
       /// Frequency.
       /**
@@ -154,30 +128,33 @@ namespace piranha
        * the arguments.
        * @param[in] v vector of piranha::psymbol pointers.
        */
-      double freq(const vector_psym_p &v) const {return combined_time_eval<1>(v);}
+      template <class ArgsTuple>
+        double freq(const ArgsTuple &args_tuple) const {return combined_time_eval<1>(args_tuple);}
       /// Phase.
       /**
        * Get the phase of the linear combination, given a vector of piranha::psymbol pointers describing the
        * arguments.
        * @param[in] v vector of piranha::psymbol pointers.
        */
-      double phase(const vector_psym_p &v) const {return combined_time_eval<0>(v);}
+      template <class ArgsTuple>
+        double phase(const ArgsTuple &args_tuple) const {return combined_time_eval<0>(args_tuple);}
       /// Time evaluation of arguments.
       /**
        * Returns the value assumed by the linear combination of arguments at time t.
        * @param[in] t double time of the evaluation.
        * @param[in] v vector of piranha::psymbol pointers.
        */
-      double t_eval(const double &t, const vector_psym_p &v) const
+      template <class ArgsTuple>
+        double t_eval(const double &t, const ArgsTuple &args_tuple) const
       {
-        const size_t w=v.size();
+        const size_t w=args_tuple.template get<Pos>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
           if ((*derived_const_cast)[i] != 0)
           {
-            retval+=(*derived_const_cast)[i]*v[i]->t_eval(t);
+            retval+=(*derived_const_cast)[i]*args_tuple.template get<Pos>()[i]->t_eval(t);
           }
         }
         switch (derived_const_cast->flavour())
@@ -322,19 +299,19 @@ namespace piranha
       }
     private:
       // NOTICE: is there some caching mechanism that can be used here?
-      template <int N>
-        double combined_time_eval(const vector_psym_p &v) const
+      template <int N, class ArgsTuple>
+        double combined_time_eval(const ArgsTuple &args_tuple) const
       {
         BOOST_STATIC_ASSERT(N >= 0);
-        const size_t w=v.size();
+        const size_t w=args_tuple.template get<Pos>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
           // We must be sure that there actually is component N in every symbol we are going to use.
-          if (v[i]->time_eval().size() > N)
+          if (args_tuple.template get<Pos>()[i]->time_eval().size() > N)
           {
-            retval+=(*derived_const_cast)[i]*v[i]->time_eval()[N];
+            retval+=(*derived_const_cast)[i]*args_tuple.template get<Pos>()[i]->time_eval()[N];
           }
         }
         return retval;
