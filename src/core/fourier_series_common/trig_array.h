@@ -40,8 +40,8 @@ namespace piranha
     class trig_array: public int_array<Bits,true,Allocator>,
     public trig_array_commons<trig_array<Bits,Pos>,Pos>
   {
-    typedef trig_array_commons<trig_array,Pos> trig_commons;
-    typedef int_array<Bits,true,Allocator> ancestor;
+      typedef trig_array_commons<trig_array,Pos> trig_commons;
+      typedef int_array<Bits,true,Allocator> ancestor;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
@@ -87,7 +87,8 @@ namespace piranha
        * @param[out] ret1 first return value.
        * @param[out] ret2 second return value.
        */
-      void trigmult(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
+      template <class ResultType>
+        void trigmult(const trig_array &t2, ResultType &ret) const
       // NOTE: we are not using here a general version of vector addition/subtraction
       // because this way we can do two operations (+ and -) every cycle. This is a performance
       // critical part, so the optimization should be worth the hassle.
@@ -96,18 +97,18 @@ namespace piranha
         // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
         // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
-        p_assert(ret1.size() == max_w);
-        p_assert(ret2.size() == max_w);
+        p_assert(ret.template get<0>().size() == max_w);
+        p_assert(ret.template get<1>().size() == max_w);
         size_type i;
         for (i=0;i<min_w;++i)
         {
-          ret1[i]=(*this)[i]-t2[i];
-          ret2[i]=(*this)[i]+t2[i];
+          ret.template get<0>()[i]=(*this)[i]-t2[i];
+          ret.template get<1>()[i]=(*this)[i]+t2[i];
         }
         for (;i<max_w;++i)
         {
-          ret1[i]=(*this)[i];
-          ret2[i]=(*this)[i];
+          ret.template get<0>()[i]=(*this)[i];
+          ret.template get<1>()[i]=(*this)[i];
         }
       }
       /// Does trig_array needs padding to be inserted in series with trig_width equal to n?
