@@ -116,6 +116,21 @@ namespace piranha
       }
       /// Dtor.
       ~int_array() {allocator.deallocate(m_ptr,m_size);}
+      /// Print to stream
+      void print(std::ostream &out_stream) const
+      {
+        stream_manager::setup_print(out_stream);
+        for (size_t i=0;i < m_size;++i)
+        {
+          // We cast to max_fast_int, which is the largest integer type admitted..
+          out_stream << (max_fast_int)(m_ptr[i]);
+          // Print the separator iff this is not the last element.
+          if (i != (size_t)(m_size-1))
+          {
+            out_stream << separator;
+          }
+        }
+      }
       /// Array-like operator[], const version.
       const value_type &operator[](const size_t &n) const {return m_ptr[n];}
       /// Array-like operator[], mutable version.
@@ -296,10 +311,15 @@ namespace piranha
        * a compilation error is produced.
        */
       static const size_type  pack_shift = lg<pack_mult>::value;
+    public:
+      static const char separator = ';';
 #undef max_cast
   };
 
   template <int Bits, bool Signed, class Allocator>
     typename int_array<Bits,Signed,Allocator>::allocator_type int_array<Bits,Signed,Allocator>::allocator;
+
+  template <int Bits, bool Signed, class Allocator>
+    const char int_array<Bits,Signed,Allocator>::separator;
 };
 #endif

@@ -51,16 +51,11 @@ namespace piranha
       template <class ArgsTuple>
         void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const
       {
-        const size_t w=args_tuple.template get<Pos>().size();
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-        p_assert(w <= derived_const_cast->size());
-        stream_manager::setup_print(out_stream);
-        for (size_t i=0;i < w;++i)
-        {
-          // We cast to max_fast_int, which is the largest type admitted for multipliers.
-          out_stream << (max_fast_int)(*derived_const_cast)[i] << separator;
-        }
+        p_assert(args_tuple.template get<Pos>().size() <= derived_const_cast->size());
+        derived_const_cast->print(out_stream);
+        out_stream << derived_const_cast->separator;
         switch (derived_const_cast->flavour())
         {
           case true:
@@ -299,7 +294,7 @@ namespace piranha
       {
         typedef typename Derived::value_type value_type;
         std::vector<std::string> sd;
-        boost::split(sd,s,boost::is_any_of(std::string(1,separator)));
+        boost::split(sd,s,boost::is_any_of(std::string(1,derived_const_cast->separator)));
         // TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
         // TODO: do it everywhere!
         const size_t w=sd.size();
@@ -344,11 +339,7 @@ namespace piranha
         }
         return retval;
       }
-      static const char separator = ';';
   };
-
-  template <class Derived, int Pos>
-    const char trig_array_commons<Derived,Pos>::separator;
 }
 
 #undef derived_const_cast
