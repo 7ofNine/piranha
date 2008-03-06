@@ -197,6 +197,16 @@ namespace piranha
     // Update the existing term.
     action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
   }
+
+  /// Swap the terms with another series.
+  /**
+   * All terms get swapped. This is an O(1) time operation.
+   */
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::swap_terms(Derived &ps2)
+  {
+    derived_cast->m_container.swap(ps2.m_container);
+  }
 }
 
 #endif

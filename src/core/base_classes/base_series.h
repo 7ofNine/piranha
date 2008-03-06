@@ -64,6 +64,7 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
+      void swap_terms(Derived &);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
