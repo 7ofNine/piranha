@@ -21,9 +21,7 @@
 #ifndef PIRANHA_CONFIG_H
 #define PIRANHA_CONFIG_H
 
-#ifndef __GNUC__
-#error "GCC is the only supported compiler"
-#endif
+#ifdef __GNUC__
 
 #define GCC_VERSION (__GNUC__ * 100000 \
 + __GNUC_MINOR__ * 1000 \
@@ -36,5 +34,8 @@
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 
+#endif // __GNUC__
+
+// Minimum number of operations needed to trigger the visualization of progress bars.
 #define _PIRANHA_DISPLAY_PROGRESS_MIN_N (500000)
 #endif
