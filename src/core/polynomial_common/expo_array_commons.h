@@ -22,7 +22,10 @@
 #define PIRANHA_EXPO_ARRAY_COMMONS_H
 
 #include <boost/static_assert.hpp>
+#include <cmath> // For std::pow, most likely temporary.
 #include <iostream>
+
+#include "../common_typedefs.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
@@ -51,6 +54,22 @@ namespace piranha
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
         // TODO: implement.
+      }
+      void apply_layout(const layout_type &l)
+      {
+        utils::apply_layout(l,*derived_cast);
+      }
+      template <class ArgsTuple>
+        double t_eval(const double &t, const ArgsTuple &args_tuple) const
+      {
+        const size_t w=args_tuple.template get<Pos>().size();
+        p_assert(w <= derived_const_cast->size());
+        double retval=1.;
+        for (size_t i=0;i < w;++i)
+        {
+          retval*=std::pow(args_tuple.template get<Pos>()[i]->t_eval(t),(*derived_const_cast)[i]);
+        }
+        return retval;
       }
   };
 }
