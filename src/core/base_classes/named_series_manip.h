@@ -232,7 +232,7 @@ namespace piranha
     typename ntuple<std::vector<std::pair<bool,size_t> >,n_arguments_sets>::type l;
     named_series_get_layout<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
     named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
-    derived_cast->template apply_layout(l,retval,retval.m_arguments);
+    derived_cast->template apply_layout_to_terms(retval.m_arguments,l,retval);
     swap(retval);
   }
 }

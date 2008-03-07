@@ -210,9 +210,9 @@ namespace piranha
 
   /// Apply an arguments layout to all terms and insert them into retval.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Layout, class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout(
-    const Layout &l, Derived &retval, const ArgsTuple &args_tuple) const
+    template <class ArgsTuple, class Layout>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(
+    const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     typedef typename Derived::term_type term_type;
