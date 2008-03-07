@@ -21,8 +21,47 @@
 #ifndef PIRANHA_NAMED_SERIES_MANIP_H
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
+#include "../config.h" // For (un)likely
+
 namespace piranha
 {
+  // Template metaprogramming for swapping of arguments in named series.
+  template <class ArgsTuple>
+    struct named_series_swap
+  {
+    static void run(ArgsTuple &a1, ArgsTuple &a2)
+    {
+      a1.template get_head().swap(a2.template get_head());
+      named_series_swap<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
+        a2.template get_tail());
+    }
+  };
+
+  template <>
+    struct named_series_swap<boost::tuples::null_type>
+  {
+    static void run(const boost::tuples::null_type &, const boost::tuples::null_type &)
+    {}
+  };
+
+  /// Swap contents of series.
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
+  {
+    named_series_swap<args_tuple_type>::run(m_arguments,ps2.m_arguments);
+    derived_cast->swap_terms(ps2);
+  }
+
+  /// Build series from arguments tuple.
+  /**
+   * Simply assigns input arguments tuple to named_series::m_arguments.
+   */
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_args(const args_tuple_type &args_tuple)
+  {
+    m_arguments = args_tuple;
+  }
+
   // Meta-programming for appending an argument.
   template <class ArgsDescr>
     struct named_series_append_arg
@@ -65,6 +104,136 @@ namespace piranha
   {
     p_assert(derived_const_cast->template nth_index<0>().empty());
     named_series_append_arg<arguments_description>::run(s,m_arguments,arg);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class Derived2>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
+  {
+    if (static_cast<void *>(this) == static_cast<void const *>(&ps2))
+    {
+      std::cout << "Trying to merge with self, returning." << std::endl;
+      return;
+    }
+    if (unlikely(!is_args_compatible(ps2)))
+    {
+      merge_incompatible_args(ps2);
+    }
+  }
+
+  // Template metaprogramming for getting the relative layout of two series.
+  template <class ArgsTuple>
+    struct named_series_get_layout
+  {
+    static void run(const ArgsTuple &a1, const ArgsTuple &a2,
+      typename ntuple<std::vector<std::pair<bool,size_t> >,
+      boost::tuples::length<ArgsTuple>::value>::type &l)
+    {
+      const size_t size1 = a1.template get_head().size(), size2 = a2.template get_head().size();
+      // First we must construct a2's layout wrt to a1.
+      l.template get_head().resize(size2);
+      for (size_t i=0;i < size2;++i)
+      {
+        // If we won't find a2's element, we'll mark it as not found.
+        l.template get_head()[i].first=false;
+        // For each of a2's elements, look for that same element in a1.
+        for (size_t j=0;j < size1;++j)
+        {
+          if (a1.template get_head()[j] == a2.template get_head()[i])
+          {
+            // We found it, mark as found and proceed to next a2 element.
+            l.template get_head()[i].first=true;
+            l.template get_head()[i].second=j;
+            break;
+          }
+        }
+      }
+      // Now we must take care of those elements of a1 that are not represented in the layout (i.e., they are not in a2)
+      for (size_t i=0;i < size1;++i)
+      {
+        // Look for element index i in the layout.
+        bool found = false;
+        const size_t l_size = l.template get_head().size();
+        for (size_t j=0;j < l_size;++j)
+        {
+          if (l.template get_head()[j].first and l.template get_head()[j].second == i)
+          {
+            found = true;
+            break;
+          }
+        }
+        // If we did not find it, append it to the layout.
+        if (!found)
+        {
+          l.template get_head().push_back(layout_element(true,i));
+        }
+      }
+      named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
+        a2.template get_tail(),l.template get_tail());
+    }
+  };
+
+  template <>
+    struct named_series_get_layout<boost::tuples::null_type>
+  {
+    static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
+      const boost::tuples::null_type &)
+    {}
+  };
+
+  // Template metaprogramming for applying a layout to a series.
+  template <class ArgsTuple>
+    struct named_series_apply_layout_to_args
+  {
+    static void run(ArgsTuple &a1, const ArgsTuple &a2,
+      const typename ntuple<std::vector<std::pair<bool,size_t> >,
+      boost::tuples::length<ArgsTuple>::value>::type &l)
+    {
+      const size_t l_size = l.template get_head().size();
+      // The layout must have at least all arguments in v1.
+      p_assert(l_size >= a1.template get_head().size());
+      // Memorize the old vector.
+      const vector_psym_p old(a1.template get_head());
+      // Make space.
+      a1.template get_head().resize(l_size);
+      for (size_t i=0; i < l_size; ++i)
+      {
+        switch (l.template get_head()[i].first)
+        {
+          case true:
+            // The argument was present in the old arguments sets. Copy it over.
+            p_assert(l.template get_head()[i].second < old.size());
+            a1.template get_head()[i] = old[l.template get_head()[i].second];
+            break;
+          case false:
+            // The argument was not present in the old arguments sets. Fetch it from a2.
+            p_assert(i < a2.template get_head().size());
+            a1.template get_head()[i] = a2.template get_head()[i];
+        }
+      }
+      named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
+        a2.template get_tail(),l.template get_tail());
+    }
+  };
+
+  template <>
+    struct named_series_apply_layout_to_args<boost::tuples::null_type>
+  {
+    static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
+      const boost::tuples::null_type &)
+    {}
+  };
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class Derived2>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
+  {
+    Derived retval(m_arguments);
+    typename ntuple<std::vector<std::pair<bool,size_t> >,n_arguments_sets>::type l;
+    named_series_get_layout<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
+    named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
+    derived_cast->template apply_layout(l,retval,retval.m_arguments);
+    swap(retval);
   }
 }
 

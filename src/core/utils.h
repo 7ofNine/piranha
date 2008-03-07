@@ -214,51 +214,6 @@ namespace piranha
           ++i;
         }
       }
-      /// Get relative layout of two vectors.
-      template <class VectorType>
-        static layout_type get_layout(const VectorType &v1, const VectorType &v2)
-      {
-        const size_t size1 = v1.size(), size2 = v2.size();
-        // First we must construct v2's layout wrt to v1.
-        layout_type l(size2);
-        for (size_t i=0;i < size2;++i)
-        {
-          // If we won't find v2's element, we'll mark it as not found.
-          l[i].first=false;
-          // For each of ps2's elements, look for that same element in v1.
-          for (size_t j=0;j < size1;++j)
-          {
-            if (v1[j] == v2[i])
-            {
-              // We found it, mark as found and proceed to next v2 element.
-              l[i].first=true;
-              l[i].second=j;
-              break;
-            }
-          }
-        }
-        // Now we must take care of those elements of v1 that are not represented in the layout (i.e., they are not in v2)
-        for (size_t i=0;i < size1;++i)
-        {
-          // Look for element index i in the layout.
-          bool found = false;
-          const size_t l_size = l.size();
-          for (size_t j=0;j < l_size;++j)
-          {
-            if (l[j].first and l[j].second == i)
-            {
-              found = true;
-              break;
-            }
-          }
-          // If we did not find it, append it to the layout.
-          if (!found)
-          {
-            l.push_back(layout_element(true,i));
-          }
-        }
-        return l;
-      }
       /// Apply layout to vector of arguments.
       /**
        * Applies layout l to vector v1, where the missing elements in the layout are taken from v2.

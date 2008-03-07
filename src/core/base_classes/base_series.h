@@ -65,6 +65,8 @@ namespace piranha
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
       void swap_terms(Derived &);
+      template <class Layout, class ArgsTuple>
+        void apply_layout(const Layout &, Derived &, const ArgsTuple &) const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;

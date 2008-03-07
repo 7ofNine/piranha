@@ -111,13 +111,13 @@ namespace piranha
           ret.template get<1>()[i]=(*this)[i];
         }
       }
-      /// Does trig_array needs padding to be inserted in series with trig_width equal to n?
+      /// Does trig_array needs padding to be inserted in series?
       template <class ArgsTuple>
         bool needs_padding(const ArgsTuple &args_tuple) const
       {
         return (ancestor::size() < args_tuple.template get<Pos>().size());
       }
-      /// Does is trig_array insertable in series with trig_width equal to n?
+      /// Is trig_array insertable in series?
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &args_tuple) const
       {
@@ -128,8 +128,13 @@ namespace piranha
         void pad_right(const ArgsTuple &args_tuple)
       {
         const size_t n=args_tuple.template get<Pos>().size();
-        hard_assert(n >= ancestor::size());
+        p_assert(n >= ancestor::size());
         ancestor::resize(n);
+      }
+      template <class ArgsTuple, class Layout>
+        void apply_layout(const ArgsTuple &, const Layout &l)
+      {
+        utils::apply_layout(l.template get<Pos>(),*this);
       }
       // End INTERFACE definition.
       //-------------------------------------------------------

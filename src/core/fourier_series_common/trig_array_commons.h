@@ -29,7 +29,6 @@
 
 #include "../common_typedefs.h" // For t_eval, max_fast_int and layout.
 #include "../psymbol.h"
-#include "../utils.h" // For apply_layout.
 #include "trig_evaluator.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
@@ -117,10 +116,6 @@ namespace piranha
         {
           (*derived_cast)[i]*=-1;
         }
-      }
-      void apply_layout(const layout_type &l)
-      {
-        utils::apply_layout(l,*derived_cast);
       }
       /// Frequency.
       /**

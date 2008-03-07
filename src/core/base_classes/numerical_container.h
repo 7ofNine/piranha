@@ -81,11 +81,9 @@ namespace piranha
       template <class ArgsTuple>
         void pad_right(const ArgsTuple &)
       {}
-      void apply_layout(const layout_type &l)
-      {
-        p_assert(l.size() == 0);
-        (void)l;
-      }
+      template <class ArgsTuple, class Layout>
+        void apply_layout(const ArgsTuple &, const Layout &)
+      {}
       // Probing.
       template <class ArgsTuple>
         bool checkup(const ArgsTuple &) const

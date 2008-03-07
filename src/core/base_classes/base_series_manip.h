@@ -207,6 +207,26 @@ namespace piranha
   {
     derived_cast->m_container.swap(ps2.m_container);
   }
+
+  /// Apply an arguments layout to all terms and insert them into retval.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Layout, class ArgsTuple>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout(
+    const Layout &l, Derived &retval, const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::term_type term_type;
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+      it != it_f; ++it)
+    {
+      term_type term(*it);
+      term.m_cf.apply_layout(args_tuple,l);
+      term.m_key.apply_layout(args_tuple,l);
+      it_hint = retval.template insert(term,args_tuple,it_hint);
+    }
+  }
 }
 
 #endif

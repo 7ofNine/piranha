@@ -53,11 +53,13 @@ namespace piranha
       /// Compile-time constant for the number of arguments sets.
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
       BOOST_STATIC_ASSERT(n_arguments_sets > 0);
-      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type arguments_tuple_type;
+      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type args_tuple_type;
       void print(std::ostream &stream = std::cout, int limit = -1) const;
       void save_to(const std::string &) const;
+      void swap(Derived &);
     protected:
       void read_from_file(const std::string &);
+      void construct_from_args(const args_tuple_type &);
     private:
       void print_plain(std::ostream &, int) const;
       void print_latex(std::ostream &, int) const;
@@ -66,9 +68,16 @@ namespace piranha
       void read_sections(std::ifstream &);
       void read_arg(std::ifstream &, const std::string &);
       void read_terms(std::ifstream &);
+      template <class Derived2>
+        bool is_args_compatible(const Derived2 &) const;
+    public:
+      template <class Derived2>
+        void merge_args(const Derived2 &);
+      template <class Derived2>
+        void merge_incompatible_args(const Derived2 &);
     protected:
       // Data members.
-      arguments_tuple_type            m_arguments;
+      args_tuple_type                 m_arguments;
       static std::vector<std::string> unknown_data;
   };
 
