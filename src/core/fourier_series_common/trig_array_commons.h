@@ -41,10 +41,9 @@ namespace piranha
    * Intended to add specific methods to plain arrays for the manipulation of trigonometric
    * parts in Poisson series.
    */
-  template <class Derived, int Pos>
+  template <class Derived>
     class trig_array_commons
   {
-      BOOST_STATIC_ASSERT(Pos >= 0);
     public:
       // I/O.
       template <class ArgsTuple>
@@ -52,7 +51,7 @@ namespace piranha
       {
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-        p_assert(args_tuple.template get<Pos>().size() <= derived_const_cast->size());
+        p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
         derived_const_cast->print(out_stream);
         out_stream << derived_const_cast->separator;
         switch (derived_const_cast->flavour())
@@ -142,14 +141,14 @@ namespace piranha
       template <class ArgsTuple>
         double t_eval(const double &t, const ArgsTuple &args_tuple) const
       {
-        const size_t w=args_tuple.template get<Pos>().size();
+        const size_t w=args_tuple.template get<Derived::position>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
           if ((*derived_const_cast)[i] != 0)
           {
-            retval+=(*derived_const_cast)[i]*args_tuple.template get<Pos>()[i]->t_eval(t);
+            retval+=(*derived_const_cast)[i]*args_tuple.template get<Derived::position>()[i]->t_eval(t);
           }
         }
         switch (derived_const_cast->flavour())
@@ -298,15 +297,15 @@ namespace piranha
         double combined_time_eval(const ArgsTuple &args_tuple) const
       {
         BOOST_STATIC_ASSERT(N >= 0);
-        const size_t w=args_tuple.template get<Pos>().size();
+        const size_t w=args_tuple.template get<Derived::position>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=0.;
         for (size_t i=0;i < w;++i)
         {
           // We must be sure that there actually is component N in every symbol we are going to use.
-          if (args_tuple.template get<Pos>()[i]->time_eval().size() > N)
+          if (args_tuple.template get<Derived::position>()[i]->time_eval().size() > N)
           {
-            retval+=(*derived_const_cast)[i]*args_tuple.template get<Pos>()[i]->time_eval()[N];
+            retval+=(*derived_const_cast)[i]*args_tuple.template get<Derived::position>()[i]->time_eval()[N];
           }
         }
         return retval;

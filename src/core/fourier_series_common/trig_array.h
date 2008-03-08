@@ -29,6 +29,9 @@
 #include "../base_classes/int_array.h"
 #include "trig_array_commons.h"
 
+#define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator
+#define __PIRANHA_TRIG_ARRAY_TP Bits,Pos,Allocator
+
 namespace piranha
 {
   /// Trigonometric array, dynamically sized version.
@@ -36,17 +39,16 @@ namespace piranha
    * It wraps a piranha::int_array with signed integer sized Bits, and adds the
    * capabilities needed for trigonometric manipulation.
    */
-  template <int Bits, int Pos, class Allocator = std::allocator<char> >
-    class trig_array: public int_array<Bits,true,Allocator,trig_array<Bits,Pos> >,
-    public trig_array_commons<trig_array<Bits,Pos>,Pos>
+  template <__PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
+    class trig_array:
+    public int_array<Bits,Pos,true,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> >,
+    public trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
   {
-      BOOST_STATIC_ASSERT(Pos >= 0);
-      typedef trig_array_commons<trig_array,Pos> trig_commons;
-      typedef int_array<Bits,true,Allocator,trig_array<Bits,Pos> > ancestor;
+      typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
+      typedef int_array<Bits,Pos,true,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
-      static const int position = Pos;
       // Start INTERFACE definition.
       //-------------------------------------------------------
       // Ctors.
@@ -101,16 +103,12 @@ namespace piranha
           ret.template get<1>()[i]=(*this)[i];
         }
       }
-      /// Pad right.
-      template <class ArgsTuple>
-        void pad_right(const ArgsTuple &args_tuple)
-      {
-        const size_t n=args_tuple.template get<Pos>().size();
-        p_assert(n >= ancestor::size());
-        ancestor::resize(n);
-      }
       // End INTERFACE definition.
       //-------------------------------------------------------
   };
 }
+
+#undef __PIRANHA_TRIG_ARRAY_TP_DECL
+#undef __PIRANHA_TRIG_ARRAY_TP
+
 #endif

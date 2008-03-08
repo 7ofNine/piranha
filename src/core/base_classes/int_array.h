@@ -34,8 +34,8 @@
 #define max_cast(arg) ((max_fast_type *)(arg))
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_INT_ARRAY_TP_DECL int Bits, bool Signed, class Allocator, class Derived
-#define __PIRANHA_INT_ARRAY_TP Bits,Signed,Allocator,Derived
+#define __PIRANHA_INT_ARRAY_TP_DECL int Bits, int Pos, bool Signed, class Allocator, class Derived
+#define __PIRANHA_INT_ARRAY_TP Bits,Pos,Signed,Allocator,Derived
 
 namespace piranha
 {
@@ -92,6 +92,8 @@ namespace piranha
       typedef uint8 size_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
       BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
+      BOOST_STATIC_ASSERT(Pos >= 0);
+      static const int position = Pos;
       /// Default ctor.
       /**
        * Constructs empty array.
@@ -265,18 +267,18 @@ namespace piranha
       template <class ArgsTuple>
         bool needs_padding(const ArgsTuple &args_tuple) const
       {
-        return (m_size < args_tuple.template get<Derived::position>().size());
+        return (m_size < args_tuple.template get<Pos>().size());
       }
       /// Am I insertable in a series?
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &args_tuple) const
       {
-        return (m_size <= args_tuple.template get<Derived::position>().size());
+        return (m_size <= args_tuple.template get<Pos>().size());
       }
       template <class ArgsTuple>
         bool checkup(const ArgsTuple &args_tuple) const
       {
-        switch (args_tuple.template get<Derived::position>().size() != m_size)
+        switch (args_tuple.template get<Pos>().size() != m_size)
         {
           case true:
             std::cout << "Size mismatch in int_array." << std::endl;
@@ -285,10 +287,17 @@ namespace piranha
             return true;
         }
       }
+      /// Pad right.
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &args_tuple)
+      {
+        p_assert(args_tuple.template get<Pos>().size() >= m_size);
+        resize(args_tuple.template get<Pos>().size());
+      }
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &l)
       {
-        const size_t l_size = l.template get<Derived::position>().size();
+        const size_t l_size = l.template get<Pos>().size();
         // The layout must have at least all arguments in this.
         p_assert(l_size >= m_size);
         // Memorize the old vector.
@@ -297,11 +306,11 @@ namespace piranha
         resize(l_size);
         for (size_t i=0;i < l_size;++i)
         {
-          switch (l.template get<Derived::position>()[i].first)
+          switch (l.template get<Pos>()[i].first)
           {
             case true:
-              p_assert(l.template get<Derived::position>()[i].second < old.m_size);
-              (*this)[i]=old[l.template get<Derived::position>()[i].second];
+              p_assert(l.template get<Pos>()[i].second < old.m_size);
+              (*this)[i]=old[l.template get<Pos>()[i].second];
               break;
             case false:
               (*this)[i]=0;
