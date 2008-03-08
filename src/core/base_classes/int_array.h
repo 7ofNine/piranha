@@ -261,6 +261,18 @@ namespace piranha
         }
         return true;
       }
+      /// Do I need padding in order to be inserted in series?
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &args_tuple) const
+      {
+        return (m_size < args_tuple.template get<Derived::position>().size());
+      }
+      /// Am I insertable in a series?
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &args_tuple) const
+      {
+        return (m_size <= args_tuple.template get<Derived::position>().size());
+      }
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &l)
       {

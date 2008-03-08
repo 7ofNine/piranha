@@ -113,18 +113,6 @@ namespace piranha
           ret.template get<1>()[i]=(*this)[i];
         }
       }
-      /// Does trig_array needs padding to be inserted in series?
-      template <class ArgsTuple>
-        bool needs_padding(const ArgsTuple &args_tuple) const
-      {
-        return (ancestor::size() < args_tuple.template get<Pos>().size());
-      }
-      /// Is trig_array insertable in series?
-      template <class ArgsTuple>
-        bool is_insertable(const ArgsTuple &args_tuple) const
-      {
-        return (ancestor::size() <= args_tuple.template get<Pos>().size());
-      }
       /// Pad right.
       template <class ArgsTuple>
         void pad_right(const ArgsTuple &args_tuple)
