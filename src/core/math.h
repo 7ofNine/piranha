@@ -21,6 +21,7 @@
 #ifndef PIRANHA_MATH_H
 #define PIRANHA_MATH_H
 
+#include <boost/static_assert.hpp>
 #include <complex>
 #include <iostream>
 #include <vector>
@@ -35,6 +36,24 @@
 
 namespace piranha
 {
+  /// Meta-programmed functor for the calculation of base-2 logarithm.
+  /**
+   * Result is retrieved through the lg::value const member function.
+   */
+  template <int N>
+    struct lg
+  {
+    BOOST_STATIC_ASSERT(N > 0 and (N % 2) == 0);
+    /// Value of the base-2 logarithm of N.
+    static const size_t value = lg<(N >> 1)>::value+1;
+  };
+
+  template <>
+    struct lg<1>
+  {
+    static const size_t value = 0;
+  };
+
   /// Class that groups together useful mathematical functions.
   class math
   {

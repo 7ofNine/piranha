@@ -26,8 +26,9 @@
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <memory>                                 // For std::allocator.
+#include <memory> // For std::allocator.
 
+#include "../math.h" // For lg.
 #include "../p_assert.h"
 
 // Cast argument to int_array::max_fast_type pointer.
@@ -55,24 +56,6 @@ namespace piranha
     BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
     typedef typename boost::uint_t<Bits>::fast type;
     typedef max_fast_uint max_fast_type;
-  };
-
-  /// Meta-programmed functor for the calculation of base-2 logarithm.
-  /**
-   * Result is retrieved through the lg::value const member function.
-   */
-  template <int N>
-    struct lg
-  {
-    BOOST_STATIC_ASSERT(N > 0 and (N % 2) == 0);
-    /// Value of the base-2 logarithm of N.
-    static const size_t value = lg<(N >> 1)>::value+1;
-  };
-
-  template <>
-    struct lg<1>
-  {
-    static const size_t value = 0;
   };
 
   /// Dynamically-sized integer array.
