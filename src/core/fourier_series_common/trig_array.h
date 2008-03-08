@@ -37,14 +37,16 @@ namespace piranha
    * It wraps a piranha::int_array with signed integer sized Bits, and adds the
    * capabilities needed for trigonometric manipulation.
    */
-    class trig_array: public int_array<Bits,true,Allocator>,
+    class trig_array: public int_array<Bits,true,Allocator,trig_array<Bits,Pos> >,
     public trig_array_commons<trig_array<Bits,Pos>,Pos>
   {
+      BOOST_STATIC_ASSERT(Pos >= 0);
       typedef trig_array_commons<trig_array,Pos> trig_commons;
-      typedef int_array<Bits,true,Allocator> ancestor;
+      typedef int_array<Bits,true,Allocator,trig_array<Bits,Pos> > ancestor;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
+      static const int position = Pos;
       // Start INTERFACE definition.
       //-------------------------------------------------------
       // Ctors.
@@ -130,11 +132,6 @@ namespace piranha
         const size_t n=args_tuple.template get<Pos>().size();
         p_assert(n >= ancestor::size());
         ancestor::resize(n);
-      }
-      template <class ArgsTuple, class Layout>
-        void apply_layout(const ArgsTuple &, const Layout &l)
-      {
-        utils::apply_layout(l.template get<Pos>(),*this);
       }
       // End INTERFACE definition.
       //-------------------------------------------------------

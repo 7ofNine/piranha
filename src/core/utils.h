@@ -28,7 +28,6 @@
 #include <fstream>
 #include <valarray>
 
-#include "common_typedefs.h"
 #include "settings_manager.h"
 #include "stream_manager.h"
 
@@ -38,19 +37,17 @@ namespace piranha
   /**
    * Non-specialized version, it will create a copy of the converted class.
    */
-  template <class Class2, class Class1> class class_converter
+  template <class Class2, class Class1>
+    struct class_converter
   {
-    public:
-      /// Constructor.
-      /**
-       * @param[in] c class to be converted.
-       */
-      explicit class_converter(const Class2 &c) :
-      result(c)
-      {
-      }
-      /// Copy of the converted class.
-      const Class1 result;
+    /// Constructor.
+    /**
+     * @param[in] c class to be converted.
+     */
+    explicit class_converter(const Class2 &c):result(c)
+    {}
+    /// Copy of the converted class.
+    const Class1 result;
   };
 
   /// Specialized class converter.
@@ -58,36 +55,17 @@ namespace piranha
    * It will be invoked when the type to convert from is the same as the converted type. A reference
    * to the convertee is stored inside the class.
    */
-  template <class Class2> class class_converter<Class2, Class2>
+  template <class Class2>
+    struct class_converter<Class2, Class2>
   {
-    public:
-      /// Constructor.
-      /**
-       * @param[in] c class to be converted.
-       */
-      explicit class_converter(const Class2 &c) :
-      result(c)
-      {
-      }
-      /// Reference to the converted class.
-      const Class2 &result;
-  };
-
-  template <bool AssignZero, class VectorType> struct layout_assign_helper
-  {
-    static void run(VectorType &v1, const VectorType &v2, const size_t &i)
-    {
-      p_assert(i < v2.size());
-      v1[i]=v2[i];
-    }
-  };
-
-  template <class VectorType> struct layout_assign_helper<true, VectorType>
-  {
-    static void run(VectorType &v1, const VectorType &, const size_t &i)
-    {
-      v1[i]=0;
-    }
+    /// Constructor.
+    /**
+     * @param[in] c class to be converted.
+     */
+    explicit class_converter(const Class2 &c):result(c)
+    {}
+    /// Reference to the converted class.
+    const Class2 &result;
   };
 
   class utils
@@ -108,7 +86,7 @@ namespace piranha
         }
         catch(boost::bad_lexical_cast &)
         {
-          std::cout << "Error in lexical_converter, returning default ctor." << std::endl;
+          std::cout << "Error in lexical_converter, returning default cted object." << std::endl;
           retval=T();
         }
         return retval;
@@ -214,24 +192,6 @@ namespace piranha
           ++i;
         }
       }
-      /// Apply layout to vector of arguments.
-      /**
-       * Applies layout l to vector v1, where the missing elements in the layout are taken from v2.
-       */
-      template <class VectorType>
-        static void apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
-      {
-        generic_apply_layout<false,VectorType>(l,v1,v2);
-      }
-      /// Apply layout to vector of arguments.
-      /**
-       * Applies layout l to vector v1, where the missing elements are zeroed.
-       */
-      template <class VectorType>
-        static void apply_layout(const layout_type &l, VectorType &v1)
-      {
-        generic_apply_layout<true,VectorType>(l,v1,VectorType());
-      }
     private:
       /// Check whether a string is valid.
       /**
@@ -245,29 +205,6 @@ namespace piranha
           return false;
         }
         return true;
-      }
-      template <bool AssignZero, class VectorType>
-        static void generic_apply_layout(const layout_type &l, VectorType &v1, const VectorType &v2)
-      {
-        const size_t l_size = l.size();
-        // The layout must have at least all arguments in v1.
-        p_assert(l_size >= v1.size());
-        // Memorize the old vector.
-        const VectorType old(v1);
-        // Make space.
-        v1.resize(l_size);
-        for (size_t i=0;i < l_size;++i)
-        {
-          switch (l[i].first)
-          {
-            case true:
-              p_assert(l[i].second < old.size());
-              v1[i]=old[l[i].second];
-              break;
-            case false:
-              layout_assign_helper<AssignZero,VectorType>::run(v1,v2,i);
-          }
-        }
       }
   };
 }

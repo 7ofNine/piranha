@@ -30,6 +30,13 @@
 
 #include "../p_assert.h"
 
+// Cast argument to int_array::max_fast_type pointer.
+#define max_cast(arg) ((max_fast_type *)(arg))
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+#define __PIRANHA_INT_ARRAY_TP_DECL int Bits, bool Signed, class Allocator, class Derived
+#define __PIRANHA_INT_ARRAY_TP Bits,Signed,Allocator,Derived
+
 namespace piranha
 {
   // Used below to define the integer type.
@@ -70,11 +77,11 @@ namespace piranha
 
   /// Dynamically-sized integer array.
   /**
-   * Parametrized to an integer sized Bits, which can be Signed or not. Contains also
-   * a flavour boolean flag, which does not add further weight and can be used in trigonometric parts
+   * Parametrized to an integer sized Bits, which can be Signed or not. It contains also
+   * a flavour boolean flag, which can be used in trigonometric parts
    * of Poisson series.
    */
-  template <int Bits, bool Signed, class Allocator = std::allocator<char> >
+  template <__PIRANHA_INT_ARRAY_TP_DECL>
     class int_array
   {
     public:
@@ -84,8 +91,6 @@ namespace piranha
       typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
       BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
-      // Cast argument to int_array::max_fast_type pointer.
-#define max_cast(arg) ((max_fast_type *)(arg))
       /// Default ctor.
       /**
        * Constructs empty array.
@@ -255,6 +260,29 @@ namespace piranha
         }
         return true;
       }
+      template <class ArgsTuple, class Layout>
+        void apply_layout(const ArgsTuple &, const Layout &l)
+      {
+        const size_t l_size = l.template get<Derived::position>().size();
+        // The layout must have at least all arguments in this.
+        p_assert(l_size >= m_size);
+        // Memorize the old vector.
+        const Derived old(*derived_const_cast);
+        // Make space.
+        resize(l_size);
+        for (size_t i=0;i < l_size;++i)
+        {
+          switch (l.template get<Derived::position>()[i].first)
+          {
+            case true:
+              p_assert(l.template get<Derived::position>()[i].second < old.m_size);
+              (*this)[i]=old[l.template get<Derived::position>()[i].second];
+              break;
+            case false:
+              (*this)[i]=0;
+          }
+        }
+      }
       static const size_t max_size = boost::integer_traits<size_type>::const_max;
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,
@@ -313,13 +341,19 @@ namespace piranha
       static const size_type  pack_shift = lg<pack_mult>::value;
     public:
       static const char separator = ';';
-#undef max_cast
   };
 
-  template <int Bits, bool Signed, class Allocator>
-    typename int_array<Bits,Signed,Allocator>::allocator_type int_array<Bits,Signed,Allocator>::allocator;
+  template <__PIRANHA_INT_ARRAY_TP_DECL>
+    typename int_array<__PIRANHA_INT_ARRAY_TP>::allocator_type int_array<__PIRANHA_INT_ARRAY_TP>::allocator;
 
-  template <int Bits, bool Signed, class Allocator>
-    const char int_array<Bits,Signed,Allocator>::separator;
+  template <__PIRANHA_INT_ARRAY_TP_DECL>
+    const char int_array<__PIRANHA_INT_ARRAY_TP>::separator;
 };
+
+#undef max_cast
+#undef derived_const_cast
+#undef derived_cast
+#undef __PIRANHA_INT_ARRAY_TP_DECL
+#undef __PIRANHA_INT_ARRAY_TP
+
 #endif
