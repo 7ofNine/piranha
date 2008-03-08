@@ -31,12 +31,12 @@
 
 namespace piranha
 {
-  template <int Bits, int Pos, class Allocator = std::allocator<char> >
   /// Trigonometric array, dynamically sized version.
   /**
    * It wraps a piranha::int_array with signed integer sized Bits, and adds the
    * capabilities needed for trigonometric manipulation.
    */
+  template <int Bits, int Pos, class Allocator = std::allocator<char> >
     class trig_array: public int_array<Bits,true,Allocator,trig_array<Bits,Pos> >,
     public trig_array_commons<trig_array<Bits,Pos>,Pos>
   {
@@ -61,18 +61,6 @@ namespace piranha
        * Returns the memory occupied by the data members.
        */
       size_t data_footprint() const {return (ancestor::size()*sizeof(value_type));}
-      template <class Series>
-        bool checkup(const Series &s) const
-      {
-        switch (s.trig_width() != ancestor::size())
-        {
-          case true:
-            std::cout << "Size mismatch in trig_array." << std::endl;
-            return false;
-          default:
-            return true;
-        }
-      }
       // Math.
       /// Multiplication.
       /**

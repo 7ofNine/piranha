@@ -273,6 +273,18 @@ namespace piranha
       {
         return (m_size <= args_tuple.template get<Derived::position>().size());
       }
+      template <class ArgsTuple>
+        bool checkup(const ArgsTuple &args_tuple) const
+      {
+        switch (args_tuple.template get<Derived::position>().size() != m_size)
+        {
+          case true:
+            std::cout << "Size mismatch in int_array." << std::endl;
+            return false;
+          default:
+            return true;
+        }
+      }
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &l)
       {
