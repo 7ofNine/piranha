@@ -84,11 +84,12 @@ namespace piranha
   template <__PIRANHA_INT_ARRAY_TP_DECL>
     class int_array
   {
-    public:
-      typedef typename integer_type_chooser<Bits,Signed>::type value_type;
+      typedef typename integer_type_chooser<Bits,Signed>::type value_type_;
       typedef typename integer_type_chooser<Bits,Signed>::max_fast_type max_fast_type;
+      typedef typename Allocator::template rebind<value_type_>::other allocator_type;
+    public:
+      typedef value_type_ value_type;
       typedef uint8 size_type;
-      typedef typename Allocator::template rebind<value_type>::other allocator_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
       BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
       /// Default ctor.
