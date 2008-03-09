@@ -21,8 +21,7 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
-#include <boost/integer_traits.hpp>
-#include <memory>
+#include <memory> // For standard allocator.
 #include <string>
 #include <vector>
 
@@ -80,7 +79,7 @@ namespace piranha
        * @param[out] ret2 second return value.
        */
       template <class ResultType>
-        void trigmult(const trig_array &t2, ResultType &ret) const
+        void multiply(const trig_array &t2, ResultType &ret) const
       // NOTE: we are not using here a general version of vector addition/subtraction
       // because this way we can do two operations (+ and -) every cycle. This is a performance
       // critical part, so the optimization should be worth the hassle.

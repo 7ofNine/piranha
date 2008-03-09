@@ -21,7 +21,7 @@
 #ifndef PIRANHA_TRIG_ARRAY_COMMONS_H
 #define PIRANHA_TRIG_ARRAY_COMMONS_H
 
-#include <boost/integer.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/static_assert.hpp>
 #include <complex>
 #include <string>

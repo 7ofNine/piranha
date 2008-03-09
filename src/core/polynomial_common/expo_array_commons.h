@@ -21,11 +21,12 @@
 #ifndef PIRANHA_EXPO_ARRAY_COMMONS_H
 #define PIRANHA_EXPO_ARRAY_COMMONS_H
 
+#include <boost/algorithm/string/split.hpp>
 #include <boost/static_assert.hpp>
 #include <cmath> // For std::pow, most likely temporary.
 #include <iostream>
-
-#include "../common_typedefs.h"
+#include <string>
+#include <vector>
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
@@ -74,6 +75,53 @@ namespace piranha
         bool is_ignorable(const ArgsTuple &) const
       {
         return false;
+      }
+      /// Equality test.
+      bool operator==(const Derived &e2) const
+      {
+        return derived_const_cast->equal_to(e2);
+      }
+      /// Less than.
+      bool operator<(const Derived &e2) const
+      {
+        return degree() < e2.degree();
+      }
+      /// Calculate hash value.
+      size_t hash_value() const
+      {
+        return derived_const_cast->hasher();
+      }
+    protected:
+      expo_array_commons() {}
+      expo_array_commons(const std::string &s)
+      {
+        typedef typename Derived::value_type value_type;
+        std::vector<std::string> sd;
+        boost::split(sd,s,boost::is_any_of(std::string(1,derived_const_cast->separator)));
+        // TODO: check here that we are not loading too many multipliers, outside expo_size_t range.
+        // TODO: do it everywhere!
+        const size_t w=sd.size();
+        if (w == 0)
+        {
+          std::cout << "Warning: constructing empty expo_array." << std::endl;
+          std::abort();
+          return;
+        }
+        // Now we know  w >= 1.
+        derived_cast->resize(w-1);
+        for (size_t i=0;i < w-1;++i)
+        {
+          (*derived_cast)[i]=utils::lexical_converter<value_type>(sd[i]);
+        }
+      }
+      int degree() const
+      {
+        int retval = 0;
+        for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
+        {
+          retval+=(*derived_const_cast)[i];
+        }
+        return retval;
       }
   };
 }
