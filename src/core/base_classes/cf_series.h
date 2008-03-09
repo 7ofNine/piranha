@@ -39,7 +39,7 @@ namespace piranha
   template <__PIRANHA_CF_SERIES_TP_DECL>
     class cf_series
   {
-    private:
+    protected:
       /// Constructor from string.
       /**
        * The whole series is stored into a string when using it as coefficient in another series.
