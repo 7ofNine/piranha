@@ -30,7 +30,7 @@ namespace piranha
 {
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline cf_series<__PIRANHA_CF_SERIES_TP>::cf_series(std::string &str, const ArgsTuple &args_tuple)
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(std::string &str, const ArgsTuple &args_tuple)
   {
     typedef typename Derived::term_type term_type;
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;

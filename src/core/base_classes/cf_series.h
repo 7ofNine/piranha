@@ -39,13 +39,13 @@ namespace piranha
   template <__PIRANHA_CF_SERIES_TP_DECL>
     class cf_series
   {
-    public:
+    private:
       /// Constructor from string.
       /**
        * The whole series is stored into a string when using it as coefficient in another series.
        */
       template <class ArgsTuple>
-        cf_series(std::string &, const ArgsTuple &);
+        void construct_from_string(std::string &, const ArgsTuple &);
   };
 }
 
