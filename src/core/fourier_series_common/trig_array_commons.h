@@ -230,19 +230,7 @@ namespace piranha
         {
           return false;
         }
-        const size_t w=derived_const_cast->size();
-        for (size_t i=0;i<w;++i)
-        {
-          if ((*derived_const_cast)[i] < t2[i])
-          {
-            return true;
-          }
-          else if ((*derived_const_cast)[i] > t2[i])
-          {
-            return false;
-          }
-        }
-        return false;
+        return derived_const_cast->lexicographic_less_than(t2);
       }
       size_t hash_value() const
       {

@@ -74,7 +74,6 @@ namespace piranha
       typedef value_type_ value_type;
       typedef uint8 size_type;
       BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
-      BOOST_STATIC_ASSERT(!boost::integer_traits<size_type>::is_signed);
       BOOST_STATIC_ASSERT(Pos >= 0);
       static const int position = Pos;
       /// Default ctor.
@@ -197,10 +196,9 @@ namespace piranha
        */
       bool equal_to(const int_array &v) const
       {
-        switch (m_size == v.size())
+        switch (m_size == v.m_size)
         {
           case true:
-          {
             size_type i;
             for (i=0;i < m_pack_size;++i)
             {
@@ -216,12 +214,26 @@ namespace piranha
                 return false;
               }
             }
-          }
-          return true;
-          // TODO: experiment here with case false?
+            return true;
           default:
             return false;
         }
+      }
+      bool lexicographic_less_than(const Derived &a2) const
+      {
+        p_assert(m_size == a2.m_size);
+        for (size_t i=0; i < m_size; ++i)
+        {
+          if (m_ptr[i] < a2[i])
+          {
+            return true;
+          }
+          else if (m_ptr[i] > a2[i])
+          {
+            return false;
+          }
+        }
+        return false;
       }
       /// Test for zero elements.
       /**
@@ -293,14 +305,13 @@ namespace piranha
           {
             case true:
               p_assert(l.template get<Pos>()[i].second < old.m_size);
-              (*this)[i]=old[l.template get<Pos>()[i].second];
+              m_ptr[i]=old[l.template get<Pos>()[i].second];
               break;
             case false:
-              (*this)[i]=0;
+              m_ptr[i]=0;
           }
         }
       }
-      static const size_t max_size = boost::integer_traits<size_type>::const_max;
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,
         const size_type &pack_size)
@@ -362,9 +373,6 @@ namespace piranha
 
   template <__PIRANHA_INT_ARRAY_TP_DECL>
     typename int_array<__PIRANHA_INT_ARRAY_TP>::allocator_type int_array<__PIRANHA_INT_ARRAY_TP>::allocator;
-
-  template <__PIRANHA_INT_ARRAY_TP_DECL>
-    const char int_array<__PIRANHA_INT_ARRAY_TP>::separator;
 };
 
 #undef max_cast

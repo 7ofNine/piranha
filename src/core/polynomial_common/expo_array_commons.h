@@ -37,10 +37,9 @@ namespace piranha
    * Intended to add specific methods to plain arrays for the manipulation of exponent
    * parts in polynomials.
    */
-  template <class Derived, int Pos>
+  template <class Derived>
     class expo_array_commons
   {
-      BOOST_STATIC_ASSERT(Pos >= 0);
     public:
       // I/O.
       template <class ArgsTuple>
@@ -48,28 +47,33 @@ namespace piranha
       {
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-        p_assert(args_tuple.template get<Pos>().size() <= derived_const_cast->size());
+        p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
         derived_const_cast->print(out_stream);
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
         // TODO: implement.
       }
-      void apply_layout(const layout_type &l)
-      {
-        utils::apply_layout(l,*derived_cast);
-      }
       template <class ArgsTuple>
         double t_eval(const double &t, const ArgsTuple &args_tuple) const
       {
-        const size_t w=args_tuple.template get<Pos>().size();
+        const size_t w=args_tuple.template get<Derived::position>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=1.;
         for (size_t i=0;i < w;++i)
         {
-          retval*=std::pow(args_tuple.template get<Pos>()[i]->t_eval(t),(*derived_const_cast)[i]);
+          retval*=std::pow(args_tuple.template get<Derived::position>()[i]->t_eval(t),(*derived_const_cast)[i]);
         }
         return retval;
+      }
+      /// Am I ignorabled?
+      /**
+       * A product of integer powers of literal variables is never zero, hence never ignorable.
+       */
+      template <class ArgsTuple>
+        bool is_ignorable(const ArgsTuple &) const
+      {
+        return false;
       }
   };
 }
