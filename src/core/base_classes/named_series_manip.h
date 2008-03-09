@@ -31,9 +31,9 @@ namespace piranha
   {
     static void run(ArgsTuple &a1, ArgsTuple &a2)
     {
-      a1.template get_head().swap(a2.template get_head());
-      named_series_swap<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
-        a2.template get_tail());
+      a1.get_head().swap(a2.get_head());
+      named_series_swap<typename ArgsTuple::tail_type>::run(a1.get_tail(),
+        a2.get_tail());
     }
   };
 
@@ -129,21 +129,21 @@ namespace piranha
       typename ntuple<std::vector<std::pair<bool,size_t> >,
       boost::tuples::length<ArgsTuple>::value>::type &l)
     {
-      const size_t size1 = a1.template get_head().size(), size2 = a2.template get_head().size();
+      const size_t size1 = a1.get_head().size(), size2 = a2.get_head().size();
       // First we must construct a2's layout wrt to a1.
-      l.template get_head().resize(size2);
+      l.get_head().resize(size2);
       for (size_t i=0;i < size2;++i)
       {
         // If we won't find a2's element, we'll mark it as not found.
-        l.template get_head()[i].first=false;
+        l.get_head()[i].first=false;
         // For each of a2's elements, look for that same element in a1.
         for (size_t j=0;j < size1;++j)
         {
-          if (a1.template get_head()[j] == a2.template get_head()[i])
+          if (a1.get_head()[j] == a2.get_head()[i])
           {
             // We found it, mark as found and proceed to next a2 element.
-            l.template get_head()[i].first=true;
-            l.template get_head()[i].second=j;
+            l.get_head()[i].first=true;
+            l.get_head()[i].second=j;
             break;
           }
         }
@@ -153,10 +153,10 @@ namespace piranha
       {
         // Look for element index i in the layout.
         bool found = false;
-        const size_t l_size = l.template get_head().size();
+        const size_t l_size = l.get_head().size();
         for (size_t j=0;j < l_size;++j)
         {
-          if (l.template get_head()[j].first and l.template get_head()[j].second == i)
+          if (l.get_head()[j].first and l.get_head()[j].second == i)
           {
             found = true;
             break;
@@ -165,11 +165,11 @@ namespace piranha
         // If we did not find it, append it to the layout.
         if (!found)
         {
-          l.template get_head().push_back(layout_element(true,i));
+          l.get_head().push_back(layout_element(true,i));
         }
       }
-      named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
-        a2.template get_tail(),l.template get_tail());
+      named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.get_tail(),
+        a2.get_tail(),l.get_tail());
     }
   };
 
@@ -189,30 +189,30 @@ namespace piranha
       const typename ntuple<std::vector<std::pair<bool,size_t> >,
       boost::tuples::length<ArgsTuple>::value>::type &l)
     {
-      const size_t l_size = l.template get_head().size();
+      const size_t l_size = l.get_head().size();
       // The layout must have at least all arguments in v1.
-      p_assert(l_size >= a1.template get_head().size());
+      p_assert(l_size >= a1.get_head().size());
       // Memorize the old vector.
-      const vector_psym_p old(a1.template get_head());
+      const vector_psym_p old(a1.get_head());
       // Make space.
-      a1.template get_head().resize(l_size);
+      a1.get_head().resize(l_size);
       for (size_t i=0; i < l_size; ++i)
       {
-        switch (l.template get_head()[i].first)
+        switch (l.get_head()[i].first)
         {
           case true:
             // The argument was present in the old arguments sets. Copy it over.
-            p_assert(l.template get_head()[i].second < old.size());
-            a1.template get_head()[i] = old[l.template get_head()[i].second];
+            p_assert(l.get_head()[i].second < old.size());
+            a1.get_head()[i] = old[l.get_head()[i].second];
             break;
           case false:
             // The argument was not present in the old arguments sets. Fetch it from a2.
-            p_assert(i < a2.template get_head().size());
-            a1.template get_head()[i] = a2.template get_head()[i];
+            p_assert(i < a2.get_head().size());
+            a1.get_head()[i] = a2.get_head()[i];
         }
       }
-      named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.template get_tail(),
-        a2.template get_tail(),l.template get_tail());
+      named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.get_tail(),
+        a2.get_tail(),l.get_tail());
     }
   };
 
@@ -232,7 +232,7 @@ namespace piranha
     typename ntuple<std::vector<std::pair<bool,size_t> >,n_arguments_sets>::type l;
     named_series_get_layout<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
     named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
-    derived_cast->template apply_layout_to_terms(retval.m_arguments,l,retval);
+    derived_cast->apply_layout_to_terms(retval.m_arguments,l,retval);
     swap(retval);
   }
 }

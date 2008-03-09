@@ -224,7 +224,7 @@ namespace piranha
       term_type term(*it);
       term.m_cf.apply_layout(args_tuple,l);
       term.m_key.apply_layout(args_tuple,l);
-      it_hint = retval.template insert(term,args_tuple,it_hint);
+      it_hint = retval.insert(term,args_tuple,it_hint);
     }
   }
 }

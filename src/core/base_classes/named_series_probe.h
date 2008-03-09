@@ -29,14 +29,14 @@ namespace piranha
   template <class ArgsTuple>
     inline bool named_series_is_args_compatible(const ArgsTuple &a1, const ArgsTuple &a2)
   {
-    const size_t w = a2.template get_head().size();
-    if (unlikely(w > a1.template get_head().size()))
+    const size_t w = a2.get_head().size();
+    if (unlikely(w > a1.get_head().size()))
     {
       return false;
     }
     for (size_t i=0; i<w; ++i)
     {
-      if (unlikely(a1.template get_head()[i] != a2.template get_head()[i]))
+      if (unlikely(a1.get_head()[i] != a2.get_head()[i]))
       {
         return false;
       }
