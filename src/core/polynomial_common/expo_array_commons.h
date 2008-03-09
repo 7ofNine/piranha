@@ -81,15 +81,19 @@ namespace piranha
       {
         return derived_const_cast->equal_to(e2);
       }
-      /// Less than.
-      bool operator<(const Derived &e2) const
-      {
-        return degree() < e2.degree();
-      }
       /// Calculate hash value.
       size_t hash_value() const
       {
         return derived_const_cast->hasher();
+      }
+      int get_degree() const
+      {
+        int retval = 0;
+        for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
+        {
+          retval+=(*derived_const_cast)[i];
+        }
+        return retval;
       }
     protected:
       expo_array_commons() {}
@@ -107,21 +111,11 @@ namespace piranha
           std::abort();
           return;
         }
-        // Now we know  w >= 1.
-        derived_cast->resize(w-1);
-        for (size_t i=0;i < w-1;++i)
+        derived_cast->resize(w);
+        for (size_t i=0;i < w;++i)
         {
           (*derived_cast)[i]=utils::lexical_converter<value_type>(sd[i]);
         }
-      }
-      int degree() const
-      {
-        int retval = 0;
-        for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
-        {
-          retval+=(*derived_const_cast)[i];
-        }
-        return retval;
       }
   };
 }

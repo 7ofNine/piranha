@@ -337,7 +337,7 @@ namespace piranha
             return allocator.allocate(new_size);
         }
       }
-    private:
+    protected:
       // Data members.
       /// Flavour.
       bool                    m_flavour;

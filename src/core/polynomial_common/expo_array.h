@@ -44,6 +44,7 @@ namespace piranha
     public expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >
   {
       typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
+      friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
       typedef int_array<Bits,Pos,true,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
     public:
       typedef typename ancestor::value_type value_type;
@@ -78,7 +79,7 @@ namespace piranha
         size_type i;
         for (i=0;i<min_w;++i)
         {
-          ret[i]=(*this)[i]+t2[i];
+          ret[i]=(*this)[i]+e2[i];
         }
         for (;i<max_w;++i)
         {
