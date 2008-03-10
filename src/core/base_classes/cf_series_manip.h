@@ -18,53 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CF_SERIES_H
-#define PIRANHA_CF_SERIES_H
-
-#include <string>
-
-#include "../exceptions.h"
-
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_CF_SERIES_TP_DECL class Derived
-#define __PIRANHA_CF_SERIES_TP Derived
+#ifndef PIRANHA_CF_SERIES_MANIP_H
+#define PIRANHA_CF_SERIES_MANIP_H
 
 namespace piranha
 {
-  /// Toolbox for using a series as a coefficient in another series.
-  /**
-   * Intended to be inherited by piranha::base_series.
-   */
   template <__PIRANHA_CF_SERIES_TP_DECL>
-    class cf_series
+    template <class ArgsTuple>
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &args_tuple)
   {
-    public:
-      template <class ArgsTuple>
-        bool is_insertable(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        bool needs_padding(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        bool is_ignorable(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        void pad_right(const ArgsTuple &);
-    protected:
-      /// Constructor from string.
-      /**
-       * The whole series is stored into a string when using it as coefficient in another series.
-       */
-      template <class ArgsTuple>
-        void construct_from_string(const std::string &, const ArgsTuple &);
-  };
+    typedef typename Derived::term_type term_type;
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    if (derived_const_cast->template nth_index<0>().empty())
+    {
+      return;
+    }
+    Derived retval;
+    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      term_type term(*it);
+      term.pad_right(args_tuple);
+      it_hint = retval.insert(term,args_tuple,it_hint);
+    }
+    derived_cast->swap_terms(retval);
+  }
 }
-
-#include "cf_series_io.h"
-#include "cf_series_manip.h"
-#include "cf_series_probe.h"
-
-#undef __PIRANHA_CF_SERIES_TP
-#undef __PIRANHA_CF_SERIES_TP_DECL
-#undef derived_const_cast
-#undef derived_cast
 
 #endif

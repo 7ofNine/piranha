@@ -30,7 +30,7 @@ namespace piranha
 {
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(std::string &str, const ArgsTuple &args_tuple)
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str, const ArgsTuple &args_tuple)
   {
     typedef typename Derived::term_type term_type;
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
@@ -41,7 +41,7 @@ namespace piranha
     std::vector<std::string> vs;
     boost::split(vs,str,boost::is_any_of(std::string(1,separator)));
     // Fetch the end of the sorted index as hint.
-    const_sorted_iterator it_hint = derived_const_cast->g_s_index().end();
+    const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
     const size_t length = vs.size();
     for (size_t i=0; i < length; ++i)
     {
