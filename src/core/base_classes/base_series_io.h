@@ -49,7 +49,10 @@ namespace piranha
         break;
       }
       it->print_plain(stream,args_tuple);
-      stream << separator;
+      if (j < lim-1)
+      {
+        stream << separator;
+      }
       ++j;
     }
   }
