@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CF_SERIES_H
 #define PIRANHA_CF_SERIES_H
 
+#include <iostream>
 #include <string>
 
 #include "../exceptions.h"
@@ -41,6 +42,8 @@ namespace piranha
   {
     public:
       template <class ArgsTuple>
+        void print_plain(std::ostream &, const ArgsTuple &) const;
+      template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &) const;
       template <class ArgsTuple>
         bool needs_padding(const ArgsTuple &) const;
@@ -48,6 +51,13 @@ namespace piranha
         bool is_ignorable(const ArgsTuple &) const;
       template <class ArgsTuple>
         void pad_right(const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &add(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &subtract(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
+        void invert_sign(const ArgsTuple &);
+      void swap(Derived &);
     protected:
       /// Constructor from string.
       /**
@@ -60,6 +70,7 @@ namespace piranha
 
 #include "cf_series_io.h"
 #include "cf_series_manip.h"
+#include "cf_series_math.h"
 #include "cf_series_probe.h"
 
 #undef __PIRANHA_CF_SERIES_TP

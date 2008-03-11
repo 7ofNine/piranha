@@ -18,49 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_POLYNOMIAL_COMMONS_H
-#define	PIRANHA_POLYNOMIAL_COMMONS_H
-
-#include <boost/multi_index/composite_key.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-
-#include "../arg_manager.h"
-#include "../ntuple.h"
+#ifndef PIRANHA_BASE_SERIES_MATH_H
+#define PIRANHA_BASE_SERIES_MATH_H
 
 namespace piranha
 {
-  /// Degree extractor.
-  /**
-   * Extract degree from monomial.
-   */
-  template <class Term>
-    struct degree_extractor
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <bool Sign, class Derived2, class ArgsTuple>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
   {
-    typedef int result_type;
-    int operator()(const Term &m) const
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+    const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
+    const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
+    for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it)
     {
-      return m.m_key.get_degree();
+      // No need to check, we are merging from another series.
+      it_hint = insert<false,Sign>(*it,args_tuple,it_hint);
     }
-  };
-
-  /// Degree-based index for polynomials.
-  /**
-   * This class specifies the following indices to be used in polynomials: a degree-sorted index
-   * and an exponent-hashed index.
-   */
-  template <class Monomial>
-    struct degree_index
-  {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_non_unique <
-      degree_extractor<Monomial>
-      >,
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Monomial> >
-      > type;
-  };
+  }
 }
 
 #endif
-

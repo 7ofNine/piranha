@@ -64,7 +64,7 @@ namespace piranha
           new_term=term_type::allocator.allocate(1);
           term_type::allocator.construct(new_term,converted_term.result);
         }
-        new_term->canonicalise();
+        new_term->canonicalise(args_tuple);
       }
     }
     const term_type *insert_term(0);
@@ -115,7 +115,6 @@ namespace piranha
       return derived_const_cast->template nth_index<0>().end();
     }
     p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple) and term.is_canonical());
-    //p_assert(term.trig().sign()>0);
     SortedIterator ret_it;
     pinpoint_iterator it(find_term<pinpoint_iterator>(term));
     if (it == derived_const_cast->template nth_index<1>().end())
@@ -134,11 +133,11 @@ namespace piranha
       {
         case true:
           new_c=it->m_cf;
-          new_c.add(term.m_cf);
+          new_c.add(term.m_cf,args_tuple);
           break;
         case false:
           new_c=it->m_cf;
-          new_c.subtract(term.m_cf);
+          new_c.subtract(term.m_cf,args_tuple);
       }
       // Check if the resulting coefficient can be ignored (ie it is small).
       if (new_c.is_ignorable(args_tuple))
@@ -163,7 +162,7 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
-    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
     SortedIterator it_new(derived_cast->template nth_index<0>().insert(it_hint,term));
     // TODO: use asserts here? The problem here is that we are using hinted
     // insertion, the return value is different from above (but above an assert
@@ -174,7 +173,7 @@ namespace piranha
       // This is an O(1) operation, since the order in the set is not changed
       // There is a re-hash involved, it still should be cheaper than
       // creating a new term though.
-      action_assert(derived_cast->template nth_index<0>().modify(it_new,modifier_invert_term_sign()));
+      action_assert(derived_cast->template nth_index<0>().modify(it_new,modifier_invert_term_sign<ArgsTuple>(args_tuple)));
     }
     return it_new;
   }
@@ -184,7 +183,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const ArgsTuple &args_tuple,
     Iterator it)
   {
-    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
     derived_cast->template nth_index<N>().erase(it);
   }
 
@@ -193,7 +192,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
     PinpointIterator it, cf_type &new_c)
   {
-    typename arg_manager<ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
     // Update the existing term.
     action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
   }

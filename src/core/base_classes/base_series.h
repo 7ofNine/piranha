@@ -67,6 +67,8 @@ namespace piranha
       void swap_terms(Derived &);
       template <class ArgsTuple, class Layout>
         void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
+      template <bool, class Derived2, class ArgsTuple>
+        void merge_terms(const Derived2 &, const ArgsTuple &);
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
@@ -77,12 +79,15 @@ namespace piranha
       template <class ArgsTuple, class PinpointIterator>
         void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
       // Functors.
-      struct modifier_invert_term_sign
+      template <class ArgsTuple>
+        struct modifier_invert_term_sign
       {
+        modifier_invert_term_sign(const ArgsTuple &args_tuple):a(args_tuple) {}
         void operator()(term_type &term) const
         {
-          term.m_cf.invert_sign();
+          term.m_cf.invert_sign(a);
         }
+        const ArgsTuple &a;
       };
       struct modifier_update_cf
       {
@@ -100,6 +105,7 @@ namespace piranha
 
 #include "base_series_io.h"
 #include "base_series_manip.h"
+#include "base_series_math.h"
 
 #undef derived_const_cast
 #undef derived_cast

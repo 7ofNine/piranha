@@ -18,49 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_POLYNOMIAL_COMMONS_H
-#define	PIRANHA_POLYNOMIAL_COMMONS_H
-
-#include <boost/multi_index/composite_key.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-
-#include "../arg_manager.h"
-#include "../ntuple.h"
+#ifndef PIRANHA_NAMED_SERIES_MATH_H
+#define PIRANHA_NAMED_SERIES_MATH_H
 
 namespace piranha
 {
-  /// Degree extractor.
-  /**
-   * Extract degree from monomial.
-   */
-  template <class Term>
-    struct degree_extractor
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <bool Sign, class Derived2>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_with_series(const Derived2 &s2)
   {
-    typedef int result_type;
-    int operator()(const Term &m) const
-    {
-      return m.m_key.get_degree();
-    }
-  };
-
-  /// Degree-based index for polynomials.
-  /**
-   * This class specifies the following indices to be used in polynomials: a degree-sorted index
-   * and an exponent-hashed index.
-   */
-  template <class Monomial>
-    struct degree_index
-  {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_non_unique <
-      degree_extractor<Monomial>
-      >,
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Monomial> >
-      > type;
-  };
+    merge_args(s2);
+    derived_cast->merge_terms<Sign>(s2,m_arguments);
+  }
 }
 
 #endif
-

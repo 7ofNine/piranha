@@ -30,11 +30,12 @@ namespace piranha
 {
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str, const ArgsTuple &args_tuple)
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
   {
     typedef typename Derived::term_type term_type;
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     const char separator = Derived::separator;
+    std::string str(str_);
     // Remove extra spaces.
     boost::trim(str);
     // Split into single terms.
@@ -60,6 +61,13 @@ namespace piranha
         std::cout << b.what() << std::endl;
       }
     }
+  }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
+  {
+    derived_const_cast->print_terms_plain(stream,args_tuple,-1);
   }
 }
 

@@ -224,7 +224,8 @@ namespace piranha
       /**
        * Won't do anything, re-implement in derived term if necessary.
        */
-      void canonicalise()
+      template <class ArgsTuple>
+        void canonicalise(const ArgsTuple &)
       {}
       /// Hasher functor.
       /**

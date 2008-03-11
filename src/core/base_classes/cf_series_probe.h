@@ -41,7 +41,7 @@ namespace piranha
 
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_ignorable(const ArgsTuple &args_tuple) const
+    inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_ignorable(const ArgsTuple &) const
   {
     return (derived_const_cast->template nth_index<0>().empty());
   }

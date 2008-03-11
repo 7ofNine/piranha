@@ -44,6 +44,12 @@ namespace piranha
     }
     derived_cast->swap_terms(retval);
   }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
+  {
+    derived_cast->swap_terms(s2);
+  }
 }
 
 #endif

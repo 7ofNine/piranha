@@ -82,21 +82,23 @@ namespace piranha
       // TODO: check if it makes sense to skip the check here and assume canonicalise will be used iff
       // is_canonical has already been tested.
       /// Canonicalise the term.
-      void canonicalise()
+      template <class ArgsTuple>
+        void canonicalise(const ArgsTuple &args_tuple)
       {
         if (!is_canonical())
         {
-          invert_trig_args();
+          invert_trig_args(args_tuple);
         }
       }
     private:
       // Invert the sign of trigonometric multipliers.
-      void invert_trig_args()
+      template <class ArgsTuple>
+        void invert_trig_args(const ArgsTuple &args_tuple)
       {
         ancestor::m_key.invert_sign();
         if (!(ancestor::m_key.flavour()))
         {
-          ancestor::m_cf.invert_sign();
+          ancestor::m_cf.invert_sign(args_tuple);
         }
       }
   };

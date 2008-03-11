@@ -70,6 +70,8 @@ namespace piranha
       void read_terms(std::ifstream &);
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
+      template <bool, class Derived2>
+        void merge_with_series(const Derived2 &);
     public:
       template <class Derived2>
         void merge_args(const Derived2 &);
@@ -91,6 +93,7 @@ namespace piranha
 
 #include "named_series_io.h"
 #include "named_series_manip.h"
+#include "named_series_math.h"
 #include "named_series_probe.h"
 
 #undef derived_const_cast

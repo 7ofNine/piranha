@@ -39,13 +39,12 @@
 
 namespace piranha
 {
-  template <class Term, class ArgsTuple>
+  template <class Term>
     struct poisson_series_degree_extractor
   {
     typedef int result_type;
     double operator()(const Term &t) const
     {
-      p_assert(arg_manager<ArgsTuple>::assigned());
       return t.m_cf.get_degree();
     }
   };
@@ -55,7 +54,7 @@ namespace piranha
   {
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_non_unique <
-      poisson_series_degree_extractor<Term,typename ntuple<vector_psym_p,2>::type>
+      poisson_series_degree_extractor<Term>
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
       > type;
@@ -70,7 +69,8 @@ namespace piranha
       typedef Allocator allocator_type;
       typedef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-      typedef typename boost::multi_index_container <term_type_,typename ITrig<term_type_>::type,allocator_type> container_type;
+      typedef typename boost::multi_index_container <term_type_,
+        typename ITrig<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR;

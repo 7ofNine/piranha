@@ -37,7 +37,7 @@ namespace piranha
    * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
    * through the arg_manager::cf_args and arg_manager::trig_args methods.
    */
-  template <class ArgsTuple>
+  template <class Term, class ArgsTuple>
     class arg_manager
   {
     public:
@@ -80,9 +80,9 @@ namespace piranha
       static const ArgsTuple      *m_args_tuple;
   };
 
-  template <class ArgsTuple>
-    bool arg_manager<ArgsTuple>::m_assigned = false;
-  template <class ArgsTuple>
-    const ArgsTuple *arg_manager<ArgsTuple>::m_args_tuple = 0;
+  template <class Term, class ArgsTuple>
+    bool arg_manager<Term,ArgsTuple>::m_assigned = false;
+  template <class Term, class ArgsTuple>
+    const ArgsTuple *arg_manager<Term,ArgsTuple>::m_args_tuple = 0;
 }
 #endif

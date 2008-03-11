@@ -119,16 +119,18 @@ namespace piranha
         return m_value;
       }
       // Maths.
-      Derived &invert_sign()
+      template <class ArgsTuple>
+        void invert_sign(const ArgsTuple &)
       {
         m_value*=-1;
-        return *derived_cast;
       }
-      Derived &add(const Derived &val2)
+      template <class ArgsTuple>
+        Derived &add(const Derived &val2, const ArgsTuple &)
       {
         return add_generic(val2.g_value());
       }
-      Derived &subtract(const Derived &val2)
+      template <class ArgsTuple>
+        Derived &subtract(const Derived &val2, const ArgsTuple &)
       {
         return subtract_generic(val2.g_value());
       }

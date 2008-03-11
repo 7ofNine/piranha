@@ -63,6 +63,14 @@ namespace piranha
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
       template <int N>
         const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
+      int get_degree() const
+      {
+        if (nth_index<0>().empty())
+        {
+          return 0;
+        }
+        return nth_index<0>().begin()->m_key.get_degree();
+      }
     private:
       container_type  m_container;
   };
