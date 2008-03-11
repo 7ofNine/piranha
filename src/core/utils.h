@@ -148,6 +148,10 @@ namespace piranha
       template <class T>
         static std::vector<T> str_to_vector(const std::string &str, const std::string &separator)
       {
+        if (str.empty())
+        {
+          return std::vector<T>();
+        }
         std::vector<std::string> v;
         boost::split(v,str,boost::is_any_of(separator));
         const size_t size = v.size();
