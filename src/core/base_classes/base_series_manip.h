@@ -199,7 +199,7 @@ namespace piranha
 
   /// Swap the terms with another series.
   /**
-   * All terms get swapped. This is an O(1) time operation.
+   * All terms get swapped.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::swap_terms(Derived &ps2)
