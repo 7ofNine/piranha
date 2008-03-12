@@ -41,6 +41,7 @@ namespace piranha
     typedef int result_type;
     int operator()(const Term &m) const
     {
+      p_assert((arg_manager<Term>::assigned()));
       return m.m_key.get_degree();
     }
   };

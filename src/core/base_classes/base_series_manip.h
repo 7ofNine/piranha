@@ -162,7 +162,7 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
-    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term>::arg_assigner aa(args_tuple);
     SortedIterator it_new(derived_cast->template nth_index<0>().insert(it_hint,term));
     // TODO: use asserts here? The problem here is that we are using hinted
     // insertion, the return value is different from above (but above an assert
@@ -183,7 +183,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const ArgsTuple &args_tuple,
     Iterator it)
   {
-    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term>::arg_assigner aa(args_tuple);
     derived_cast->template nth_index<N>().erase(it);
   }
 
@@ -192,7 +192,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
     PinpointIterator it, cf_type &new_c)
   {
-    typename arg_manager<Term,ArgsTuple>::arg_assigner aa(args_tuple);
+    typename arg_manager<Term>::arg_assigner aa(args_tuple);
     // Update the existing term.
     action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
   }

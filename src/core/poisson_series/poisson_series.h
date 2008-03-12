@@ -30,7 +30,7 @@
 #include "../polynomial_cf/polynomial_cf.h"
 
 #define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, template <class> class IPoly,\
-    template <class> class ITrig, class Allocator
+  template <class> class ITrig, class Allocator
 #define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,Allocator
 #define __PIRANHA_POISSON_SERIES poisson_series<__PIRANHA_POISSON_SERIES_TP>
 #define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<fs_term<polynomial_cf<Cf,Expo,IPoly,Allocator>,Trig,'|',Allocator>,\
@@ -45,6 +45,7 @@ namespace piranha
     typedef int result_type;
     double operator()(const Term &t) const
     {
+      p_assert((arg_manager<Term>::assigned()));
       return t.m_cf.get_degree();
     }
   };

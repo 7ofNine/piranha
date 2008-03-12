@@ -24,10 +24,29 @@
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
 
+#include "ntuple.h"
 #include "psymbol.h"
 
 namespace piranha
 {
+  template <class ArgsTuple, class StaticArgsTuple>
+    struct arg_manager_assign_tuple
+  {
+    static void run(const ArgsTuple &args_tuple, StaticArgsTuple &t)
+    {
+      t.get_head() = args_tuple.get_head();
+      arg_manager_assign_tuple<typename ArgsTuple::tail_type, typename StaticArgsTuple::tail_type>::
+        run(args_tuple.get_tail(),t.get_tail());
+    }
+  };
+
+  template <class StaticArgsTuple>
+    struct arg_manager_assign_tuple<boost::tuples::null_type,StaticArgsTuple>
+  {
+    static void run(const boost::tuples::null_type &, StaticArgsTuple &)
+    {}
+  };
+
   /// Manager for arguments.
   /**
    * This class is used to manage information about arguments in those context where such information
@@ -37,9 +56,10 @@ namespace piranha
    * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
    * through the arg_manager::cf_args and arg_manager::trig_args methods.
    */
-  template <class Term, class ArgsTuple>
+  template <class Term>
     class arg_manager
   {
+      typedef typename ntuple<vector_psym_p &,10>::type temp_tuple_type;
     public:
       /// Argument assigner.
       /**
@@ -50,11 +70,12 @@ namespace piranha
       {
         public:
           /// Constructor from tuple of arguments vectors.
-          arg_assigner(const ArgsTuple &args_tuple)
+          template <class ArgsTuple>
+            arg_assigner(const ArgsTuple &args_tuple)
             :m_was_assigned(m_assigned)
           {
             p_assert(!m_was_assigned);
-            m_args_tuple=&args_tuple;
+            arg_manager_assign_tuple<ArgsTuple,temp_tuple_type>::run(args_tuple,m_args_tuple);
             m_assigned=true;
           }
           /// Destructor: undoes assignment.
@@ -68,21 +89,36 @@ namespace piranha
         return m_assigned;
       }
       /// Retrieve const reference to arguments tuple.
-      static const ArgsTuple &get()
+      static const temp_tuple_type &get()
       {
-        return *m_args_tuple;
+        return m_args_tuple;
       }
     private:
       arg_manager() {}
       ~arg_manager() {}
     private:
       static bool                 m_assigned;
-      static const ArgsTuple      *m_args_tuple;
+      static vector_psym_p        m_arg_vector;
+      static temp_tuple_type      m_args_tuple;
   };
 
-  template <class Term, class ArgsTuple>
-    bool arg_manager<Term,ArgsTuple>::m_assigned = false;
-  template <class Term, class ArgsTuple>
-    const ArgsTuple *arg_manager<Term,ArgsTuple>::m_args_tuple = 0;
+  template <class Term>
+    bool arg_manager<Term>::m_assigned = false;
+  template <class Term>
+    vector_psym_p arg_manager<Term>::m_arg_vector;
+  template <class Term>
+    typename arg_manager<Term>::temp_tuple_type arg_manager<Term>::m_args_tuple =
+    typename arg_manager<Term>::temp_tuple_type(
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector,
+    arg_manager<Term>::m_arg_vector
+    );
 }
 #endif

@@ -41,14 +41,14 @@ namespace piranha
   /**
    * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
    */
-  template <class Term, class ArgsTuple>
+  template <class Term>
     struct norm_extractor
   {
     typedef double result_type;
     double operator()(const Term &t) const
     {
-      p_assert((arg_manager<Term,ArgsTuple>::assigned()));
-      return t.m_cf.norm(arg_manager<Term,ArgsTuple>::get());
+      p_assert((arg_manager<Term>::assigned()));
+      return t.m_cf.norm(arg_manager<Term>::get());
     }
   };
 
@@ -57,14 +57,14 @@ namespace piranha
    * This class specifies the following indices to be used in a series: a norm-sorted index
    * on the coefficients, a hashed index on the keys.
    */
-  template <class Term, class ArgsTuple>
+  template <class Term>
     struct norm_index
   {
     typedef boost::multi_index::indexed_by <
       boost::multi_index::ordered_unique <
       boost::multi_index::composite_key <
       Term,
-      norm_extractor<Term,ArgsTuple>,
+      norm_extractor<Term>,
       key_extractor<Term>
       >,
       boost::multi_index::composite_key_compare<
@@ -77,7 +77,7 @@ namespace piranha
   };
 
 
-#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class,class> class I, class Allocator
+#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
@@ -92,8 +92,7 @@ namespace piranha
       typedef Allocator allocator_type;
       typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-      typedef typename named_ancestor::args_tuple_type args_tuple_type_;
-      typedef typename boost::multi_index_container <term_type_,typename I<term_type_,args_tuple_type_>::type,allocator_type> container_type;
+      typedef typename boost::multi_index_container <term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
