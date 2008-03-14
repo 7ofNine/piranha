@@ -22,6 +22,7 @@
 #define PIRANHA_ASTRO_H
 
 #include "math.h"
+#include "platform_switches.h" // For visibility
 #include "settings_manager.h"
 
 namespace piranha
@@ -35,7 +36,7 @@ namespace piranha
        * ELP2000 time is measured in Julian centuries from J2000.0.
        * @param[in] jd double: Julian Date to be converted.
        */
-      static double JD_to_elp2000(const double &jd)
+      __PIRANHA_VISIBLE static double JD_to_elp2000(const double &jd)
       {
         return ((jd-J2000dot0_)/36525.);
       }
@@ -134,14 +135,14 @@ namespace piranha
         return AU_;
       }
     private:
-      static const double G_;
-      static const double k_;
-      static const double J2000dot0_;
-      static const double J1980dot0_;
-      static const double JD_per_JY_;
-      static const double seconds_per_JY_;
-      static const double eps_0_;
-      static const double AU_;
+      __PIRANHA_VISIBLE static const double G_;
+      __PIRANHA_VISIBLE static const double k_;
+      __PIRANHA_VISIBLE static const double J2000dot0_;
+      __PIRANHA_VISIBLE static const double J1980dot0_;
+      __PIRANHA_VISIBLE static const double JD_per_JY_;
+      __PIRANHA_VISIBLE static const double seconds_per_JY_;
+      __PIRANHA_VISIBLE static const double eps_0_;
+      __PIRANHA_VISIBLE static const double AU_;
   };
 
   /*inline boost::python::numeric::array sph_to_cart(const double &r, const double &col, const double &lon)

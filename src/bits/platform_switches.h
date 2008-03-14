@@ -26,8 +26,10 @@
 #ifdef _PIRANHA_WIN32
 #define __ISNAN(x) _isnan(x)
 #define __JNL(n,x) jn(n,x)
+#define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
 #define __ISNAN(x) isnan(x)
 #define __JNL(n,x) jnl(n,x)
+#define __PIRANHA_VISIBLE
 #endif
 #endif

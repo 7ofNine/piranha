@@ -25,6 +25,7 @@
 
 #include "config.h"
 #include "piranha_malloc.h"
+#include "platform_switches.h" // For visibility
 
 namespace piranha
 {
@@ -66,7 +67,7 @@ namespace piranha
       private:
         size_t              size;
         void                *ptr;
-        static const size_t bytes_per_MB;
+        __PIRANHA_VISIBLE static const size_t bytes_per_MB;
     };
     public:
       template <class T>
@@ -88,7 +89,7 @@ namespace piranha
         bi.resize(n_MB);
       }
     private:
-      static buffer_init  bi;
+      __PIRANHA_VISIBLE static buffer_init  bi;
   };
 }
 #endif

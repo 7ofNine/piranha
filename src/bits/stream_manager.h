@@ -25,6 +25,8 @@
 #include <iostream>
 #include <string>
 
+#include "platform_switches.h" // For visibility
+
 namespace piranha
 {
   class stream_manager
@@ -41,17 +43,17 @@ namespace piranha
         decimal
       };
       // Getters.
-      static unsigned int digits();
-      static const std::string &data_separator();
-      static unsigned int min_digits();
-      static unsigned int max_digits();
+      __PIRANHA_VISIBLE static unsigned int digits();
+      __PIRANHA_VISIBLE static const std::string &data_separator();
+      __PIRANHA_VISIBLE static unsigned int min_digits();
+      __PIRANHA_VISIBLE static unsigned int max_digits();
       // Setters
-      static void set_digits(int n);
-      static void setup_print(std::ostream &out_stream=std::cout);
-      static out_format format();
-      static void set_format(out_format);
-      static fp_representation fp_rep();
-      static void set_fp_rep(fp_representation);
+      __PIRANHA_VISIBLE static void set_digits(int n);
+      __PIRANHA_VISIBLE static void setup_print(std::ostream &out_stream=std::cout);
+      __PIRANHA_VISIBLE static out_format format();
+      __PIRANHA_VISIBLE static void set_format(out_format);
+      __PIRANHA_VISIBLE static fp_representation fp_rep();
+      __PIRANHA_VISIBLE static void set_fp_rep(fp_representation);
     private:
       /// Minimum number of digits for output streams.
       static const unsigned int       min_digits_;
