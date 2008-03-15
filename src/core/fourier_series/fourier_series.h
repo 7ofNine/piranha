@@ -21,10 +21,6 @@
 #ifndef PIRANHA_FOURIER_SERIES_H
 #define PIRANHA_FOURIER_SERIES_H
 
-#include <boost/multi_index/composite_key.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
 #include <memory> // For default allocator.
 
@@ -35,54 +31,14 @@
 #include "../fourier_series_common/fs_term.h"
 #include "../ntuple.h"
 
-namespace piranha
-{
-  /// Norm extractor.
-  /**
-   * Extract norm from term, asserting that arguments have been assigned through piranha::arg_manager.
-   */
-  template <class Term>
-    struct norm_extractor
-  {
-    typedef double result_type;
-    double operator()(const Term &t) const
-    {
-      p_assert((arg_manager<Term>::assigned()));
-      return t.m_cf.norm(arg_manager<Term>::get());
-    }
-  };
-
-  /// Norm-based index for series.
-  /**
-   * This class specifies the following indices to be used in a series: a norm-sorted index
-   * on the coefficients, a hashed index on the keys.
-   */
-  template <class Term>
-    struct norm_index
-  {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_unique <
-      boost::multi_index::composite_key <
-      Term,
-      norm_extractor<Term>,
-      key_extractor<Term>
-      >,
-      boost::multi_index::composite_key_compare<
-      std::greater<double>,
-      std::less<typename Term::key_type>
-      >
-      >,
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-      > type;
-  };
-
-
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
 
+namespace piranha
+{
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
     protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
@@ -124,12 +80,12 @@ namespace piranha
     private:
       container_type  m_container;
   };
+}
 
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL
 #undef __PIRANHA_FOURIER_SERIES_TP
 #undef __PIRANHA_FOURIER_SERIES
 #undef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR
 #undef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
-}
 
 #endif

@@ -28,7 +28,6 @@
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../polynomial_common/monomial.h"
-#include "../polynomial_common/polynomial_commons.h"
 
 #define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, class Allocator
 #define __PIRANHA_POLYNOMIAL_TP Cf,Expo,I,Allocator

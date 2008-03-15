@@ -270,20 +270,6 @@ namespace piranha
   {
     return t.m_key.hash_value();
   }
-
-  /// Key extractor.
-  /**
-   * To be used in multiindex containers.
-   */
-  template <class Term>
-    struct key_extractor
-  {
-    typedef const typename Term::key_type &result_type;
-    const typename Term::key_type &operator()(const Term &t) const
-    {
-      return t.m_key;
-    }
-  };
 }
 
 #undef __PIRANHA_BASE_TERM_TP_DECL

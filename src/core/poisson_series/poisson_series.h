@@ -21,7 +21,8 @@
 #ifndef PIRANHA_POISSON_SERIES_H
 #define PIRANHA_POISSON_SERIES_H
 
-#include <memory>
+#include <boost/multi_index_container.hpp>
+#include <memory> // For default allocator.
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
@@ -39,28 +40,6 @@
 
 namespace piranha
 {
-  template <class Term>
-    struct poisson_series_degree_extractor
-  {
-    typedef int result_type;
-    double operator()(const Term &t) const
-    {
-      p_assert((arg_manager<Term>::assigned()));
-      return t.m_cf.get_degree();
-    }
-  };
-
-  template <class Term>
-    struct poisson_series_term_index
-  {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_non_unique <
-      poisson_series_degree_extractor<Term>
-      >,
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-      > type;
-  };
-
   template <__PIRANHA_POISSON_SERIES_TP_DECL = std::allocator<char> >
     class poisson_series:
     protected __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,

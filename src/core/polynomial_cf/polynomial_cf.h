@@ -21,8 +21,10 @@
 #ifndef PIRANHA_POLYNOMIAL_CF_H
 #define PIRANHA_POLYNOMIAL_CF_H
 
+#include <boost/multi_index_container.hpp>
+
+#include "../base_classes/base_series.h"
 #include "../base_classes/cf_series.h"
-#include "../polynomial_common/polynomial_commons.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, class Allocator
 #define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Allocator
