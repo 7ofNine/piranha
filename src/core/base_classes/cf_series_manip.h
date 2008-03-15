@@ -50,6 +50,15 @@ namespace piranha
   {
     derived_cast->swap_terms(s2);
   }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple, class Layout>
+    inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const ArgsTuple &args_tuple, const Layout &l)
+  {
+    Derived retval;
+    derived_cast->apply_layout_to_terms(args_tuple,l,retval);
+    derived_cast->swap_terms(retval);
+  }
 }
 
 #endif

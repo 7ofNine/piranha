@@ -58,6 +58,8 @@ namespace piranha
       template <class ArgsTuple>
         void invert_sign(const ArgsTuple &);
       void swap(Derived &);
+      template <class ArgsTuple, class Layout>
+        void apply_layout(const ArgsTuple &, const Layout &);
     protected:
       /// Constructor from string.
       /**
