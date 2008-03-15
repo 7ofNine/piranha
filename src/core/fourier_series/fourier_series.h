@@ -28,13 +28,13 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
-#include "../fourier_series_common/fs_term.h"
+#include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
-#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<fs_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
 
 namespace piranha
@@ -44,7 +44,7 @@ namespace piranha
     protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
   {
-      typedef fs_term<Cf,Trig,'|',Allocator> term_type_;
+      typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
       typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;

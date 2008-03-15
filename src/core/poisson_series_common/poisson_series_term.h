@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_FS_TERM_H
-#define PIRANHA_FS_TERM_H
+#ifndef PIRANHA_POISSON_SERIES_TERM_H
+#define PIRANHA_POISSON_SERIES_TERM_H
 
 #include <string>
 
@@ -29,10 +29,10 @@ namespace piranha
 {
   /// Term class for Fourier series.
   template <class Cf, class Trig, char Separator, class Allocator>
-    class fs_term: public base_term<Cf,Trig,Separator,fs_term<Cf,Trig,Separator,Allocator>,Allocator>
+    class poisson_series_term: public base_term<Cf,Trig,Separator,poisson_series_term<Cf,Trig,Separator,Allocator>,Allocator>
   {
       /// Alias for the ancestor.
-      typedef base_term<Cf,Trig,Separator,fs_term<Cf,Trig,Separator,Allocator>,Allocator> ancestor;
+      typedef base_term<Cf,Trig,Separator,poisson_series_term<Cf,Trig,Separator,Allocator>,Allocator> ancestor;
       /// Alias for evaluation type.
       typedef typename ancestor::eval_type eval_type;
     public:
@@ -41,10 +41,10 @@ namespace piranha
       /// Alias for trigonometric type.
       typedef Trig trig_type;
       /// Default constructor.
-      explicit fs_term():ancestor::base_term() {}
+      explicit poisson_series_term():ancestor::base_term() {}
       /// Ctor from string.
       template <class ArgsTuple>
-        explicit fs_term(const std::string &str, const ArgsTuple &args_tuple):
+        explicit poisson_series_term(const std::string &str, const ArgsTuple &args_tuple):
         ancestor::base_term(str,args_tuple)
       {}
       /// Constructor from generic coefficient and fixed trigonometric part.
@@ -52,14 +52,14 @@ namespace piranha
        * Constructs from generic coefficient type.
        */
       template <class Cf2>
-        explicit fs_term(const Cf2 &c, const trig_type &t):ancestor(cf_type(c),t)
+        explicit poisson_series_term(const Cf2 &c, const trig_type &t):ancestor(cf_type(c),t)
       {}
       /// Generic copy constructor.
       /**
-       * Constructs from piranha::fs_term with optionally different coefficient type.
+       * Constructs from piranha::poisson_series_term with optionally different coefficient type.
        */
       template <class Cf2>
-        explicit fs_term(const fs_term<Cf2,Trig,Separator,Allocator> &term):ancestor(term)
+        explicit poisson_series_term(const poisson_series_term<Cf2,Trig,Separator,Allocator> &term):ancestor(term)
       {}
       /// Smarter numerical evaluation
       /**
