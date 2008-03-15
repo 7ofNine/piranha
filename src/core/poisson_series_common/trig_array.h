@@ -43,6 +43,7 @@ namespace piranha
     public int_array<Bits,Pos,true,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> >,
     public trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
   {
+      friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
       typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
       typedef int_array<Bits,Pos,true,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
     public:

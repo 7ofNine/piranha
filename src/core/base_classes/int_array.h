@@ -87,25 +87,82 @@ namespace piranha
       {
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
       }
-      /// Ctor from size.
-      /**
-       * Initialises to 0 all the elements.
-       */
-      int_array(const size_type &s):m_flavour(true),m_size(s),m_pack_size(s >> pack_shift),
-        m_ptr(allocator.allocate(m_size))
-      {
-        size_type i;
-        for (i=0;i < m_pack_size;++i)
-        {
-          max_cast(m_ptr)[i]=0;
-        }
-        for(i = i << pack_shift;i < m_size;++i)
-        {
-          m_ptr[i]=0;
-        }
-      }
       /// Dtor.
       ~int_array() {allocator.deallocate(m_ptr,m_size);}
+      /// Assignment operator.
+      int_array &operator=(const int_array &v)
+      {
+        value_type *new_ptr = alloc_if_size_differs(v.m_size);
+        if (new_ptr != m_ptr)
+        {
+          allocator.deallocate(m_ptr,m_size);
+          m_flavour = v.m_flavour;
+          m_ptr = new_ptr;
+          m_size = v.m_size;
+          m_pack_size = v.m_pack_size;
+        }
+        packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
+        return *this;
+      }
+      /// Do I need padding in order to be inserted in series?
+      template <class ArgsTuple>
+        bool needs_padding(const ArgsTuple &args_tuple) const
+      {
+        return (m_size < args_tuple.template get<Pos>().size());
+      }
+      /// Am I insertable in a series?
+      template <class ArgsTuple>
+        bool is_insertable(const ArgsTuple &args_tuple) const
+      {
+        return (m_size <= args_tuple.template get<Pos>().size());
+      }
+      template <class ArgsTuple>
+        bool checkup(const ArgsTuple &args_tuple) const
+      {
+        switch (args_tuple.template get<Pos>().size() != m_size)
+        {
+          case true:
+            std::cout << "Size mismatch in int_array." << std::endl;
+            return false;
+          default:
+            return true;
+        }
+      }
+      /// Pad right.
+      template <class ArgsTuple>
+        void pad_right(const ArgsTuple &args_tuple)
+      {
+        p_assert(args_tuple.template get<Pos>().size() >= m_size);
+        resize(args_tuple.template get<Pos>().size());
+      }
+      template <class ArgsTuple, class Layout>
+        void apply_layout(const ArgsTuple &, const Layout &l)
+      {
+        const size_t l_size = l.template get<Pos>().size();
+        // The layout must have at least all arguments in this.
+        p_assert(l_size >= m_size);
+        // Memorize the old vector.
+        const Derived old(*derived_const_cast);
+        // Make space.
+        resize(l_size);
+        for (size_t i=0;i < l_size;++i)
+        {
+          switch (l.template get<Pos>()[i].first)
+          {
+            case true:
+              p_assert(l.template get<Pos>()[i].second < old.m_size);
+              m_ptr[i]=old[l.template get<Pos>()[i].second];
+              break;
+            case false:
+              m_ptr[i]=0;
+          }
+        }
+      }
+    protected:
+      /// Array-like operator[], const version.
+      const value_type &operator[](const size_t &n) const {return m_ptr[n];}
+      /// Array-like operator[], mutable version.
+      value_type &operator[](const size_t &n) {return m_ptr[n];}
       /// Print to stream
       void print(std::ostream &out_stream) const
       {
@@ -121,16 +178,31 @@ namespace piranha
           }
         }
       }
-      /// Array-like operator[], const version.
-      const value_type &operator[](const size_t &n) const {return m_ptr[n];}
-      /// Array-like operator[], mutable version.
-      value_type &operator[](const size_t &n) {return m_ptr[n];}
-      /// Return const reference to flavour.
-      const bool &flavour() const {return m_flavour;}
-      /// Return mutable reference to flavour.
-      bool &flavour() {return m_flavour;}
       /// Return container size.
       size_t size() const {return m_size;}
+      /// Test for zero elements.
+      /**
+       * Returns true if all integer elements are zero, false otherwise.
+       */
+      bool is_zero() const
+      {
+        size_t i;
+        for (i=0;i < m_pack_size;++i)
+        {
+          if (max_cast(m_ptr)[i] != 0)
+          {
+            return false;
+          }
+        }
+        for(i = i << pack_shift;i < m_size;++i)
+        {
+          if (m_ptr[i] != 0)
+          {
+            return false;
+          }
+        }
+        return true;
+      }
       // TODO: should we pass size_t here, and test against size_type and throw in case of out-of-range request?
       /// Resize the container.
       /**
@@ -156,21 +228,6 @@ namespace piranha
         m_ptr = new_ptr;
         m_size = new_size;
         m_pack_size = new_pack_size;
-      }
-      /// Assignment operator.
-      int_array &operator=(const int_array &v)
-      {
-        value_type *new_ptr = alloc_if_size_differs(v.m_size);
-        if (new_ptr != m_ptr)
-        {
-          allocator.deallocate(m_ptr,m_size);
-          m_flavour = v.m_flavour;
-          m_ptr = new_ptr;
-          m_size = v.m_size;
-          m_pack_size = v.m_pack_size;
-        }
-        packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
-        return *this;
       }
       /// Hash value.
       /**
@@ -234,83 +291,6 @@ namespace piranha
           }
         }
         return false;
-      }
-      /// Test for zero elements.
-      /**
-       * Returns true if all integer elements are zero, false otherwise.
-       */
-      bool is_zero() const
-      {
-        size_t i;
-        for (i=0;i < m_pack_size;++i)
-        {
-          if (max_cast(m_ptr)[i] != 0)
-          {
-            return false;
-          }
-        }
-        for(i = i << pack_shift;i < m_size;++i)
-        {
-          if (m_ptr[i] != 0)
-          {
-            return false;
-          }
-        }
-        return true;
-      }
-      /// Do I need padding in order to be inserted in series?
-      template <class ArgsTuple>
-        bool needs_padding(const ArgsTuple &args_tuple) const
-      {
-        return (m_size < args_tuple.template get<Pos>().size());
-      }
-      /// Am I insertable in a series?
-      template <class ArgsTuple>
-        bool is_insertable(const ArgsTuple &args_tuple) const
-      {
-        return (m_size <= args_tuple.template get<Pos>().size());
-      }
-      template <class ArgsTuple>
-        bool checkup(const ArgsTuple &args_tuple) const
-      {
-        switch (args_tuple.template get<Pos>().size() != m_size)
-        {
-          case true:
-            std::cout << "Size mismatch in int_array." << std::endl;
-            return false;
-          default:
-            return true;
-        }
-      }
-      /// Pad right.
-      template <class ArgsTuple>
-        void pad_right(const ArgsTuple &args_tuple)
-      {
-        p_assert(args_tuple.template get<Pos>().size() >= m_size);
-        resize(args_tuple.template get<Pos>().size());
-      }
-      template <class ArgsTuple, class Layout>
-        void apply_layout(const ArgsTuple &, const Layout &l)
-      {
-        const size_t l_size = l.template get<Pos>().size();
-        // The layout must have at least all arguments in this.
-        p_assert(l_size >= m_size);
-        // Memorize the old vector.
-        const Derived old(*derived_const_cast);
-        // Make space.
-        resize(l_size);
-        for (size_t i=0;i < l_size;++i)
-        {
-          switch (l.template get<Pos>()[i].first)
-          {
-            case true:
-              p_assert(l.template get<Pos>()[i].second < old.m_size);
-              m_ptr[i]=old[l.template get<Pos>()[i].second];
-              break;
-            case false:
-              m_ptr[i]=0;
-          }
-        }
       }
     private:
       void packed_copy(value_type *new_ptr, const value_type *old_ptr, const size_type &size,

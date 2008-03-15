@@ -35,7 +35,7 @@ namespace piranha
 {
   /// Common class for dense exponent array.
   /**
-   * Intended to add specific methods to plain arrays for the manipulation of exponent
+   * Intended to extend piranha::int_array for the manipulation of exponent
    * parts in polynomials.
    */
   template <class Derived>
@@ -86,6 +86,7 @@ namespace piranha
       {
         return derived_const_cast->hasher();
       }
+      /// Return the total degree of the exponents array.
       int get_degree() const
       {
         int retval = 0;
@@ -97,7 +98,7 @@ namespace piranha
       }
     protected:
       expo_array_commons() {}
-      expo_array_commons(const std::string &s)
+      explicit expo_array_commons(const std::string &s)
       {
         typedef typename Derived::value_type value_type;
         std::vector<std::string> sd;

@@ -38,13 +38,17 @@ namespace piranha
 {
   /// Common class for dense trigonometric array.
   /**
-   * Intended to add specific methods to plain arrays for the manipulation of trigonometric
+   * Intended to extend piranha::int_array for the manipulation of trigonometric
    * parts in Poisson series.
    */
   template <class Derived>
     class trig_array_commons
   {
     public:
+      /// Return const reference to flavour.
+      const bool &flavour() const {return derived_const_cast->m_flavour;}
+      /// Return mutable reference to flavour.
+      bool &flavour() {return derived_cast->m_flavour;}
       // I/O.
       template <class ArgsTuple>
         void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const
@@ -58,7 +62,7 @@ namespace piranha
         {
           out_stream << derived_const_cast->separator;
         }
-        switch (derived_const_cast->flavour())
+        switch (derived_const_cast->m_flavour)
         {
           case true:
             out_stream << "c";
@@ -72,7 +76,7 @@ namespace piranha
         const size_t w=v.size();
         p_assert(w <= derived_const_cast->size())
           stream_manager::setup_print(out_stream);
-        switch (derived_const_cast->flavour())
+        switch (derived_const_cast->m_flavour)
         {
           case true:
             out_stream << "c&";
@@ -155,7 +159,7 @@ namespace piranha
             retval+=(*derived_const_cast)[i]*args_tuple.template get<Derived::position>()[i]->t_eval(t);
           }
         }
-        switch (derived_const_cast->flavour())
+        switch (derived_const_cast->m_flavour)
         {
           case true:
             return std::cos(retval);
@@ -183,7 +187,7 @@ namespace piranha
             retval*=te.request_complexp(i,(*derived_const_cast)[i]);
           }
         }
-        switch (derived_const_cast->flavour())
+        switch (derived_const_cast->m_flavour)
         {
           case true:
             return retval.real();
@@ -194,6 +198,7 @@ namespace piranha
       /// Sign.
       /**
        * Return the sign of the first non-zero element of the combination. Zero is considered positive.
+       * This function is used to test for canonical form in piranha::poisson_series_term.
        */
       short int sign() const
       {
@@ -216,30 +221,34 @@ namespace piranha
       template <class ArgsTuple>
         bool is_ignorable(const ArgsTuple &) const
       {
-        return (derived_const_cast->is_zero() and !derived_const_cast->flavour());
+        return (derived_const_cast->is_zero() and !derived_const_cast->m_flavour);
       }
       /// Equality test.
       bool operator==(const Derived &t2) const
       {
-        return (derived_const_cast->flavour() == t2.flavour() and derived_const_cast->equal_to(t2));
+        return (derived_const_cast->m_flavour == t2.m_flavour and derived_const_cast->equal_to(t2));
       }
       /// Less than.
       bool operator<(const Derived &t2) const
       {
-        if (derived_const_cast->flavour() < t2.flavour())
+        if (derived_const_cast->m_flavour < t2.m_flavour)
         {
           return true;
         }
-        else if (derived_const_cast->flavour() > t2.flavour())
+        else if (derived_const_cast->m_flavour > t2.m_flavour)
         {
           return false;
         }
         return derived_const_cast->lexicographic_less_than(t2);
       }
+      /// Calculate hash_value.
+      /**
+       * Used by the hash_value overload for piranha::base_term.
+       */
       size_t hash_value() const
       {
         size_t retval = derived_const_cast->hasher();
-        boost::hash_combine(retval,derived_const_cast->flavour());
+        boost::hash_combine(retval,derived_const_cast->m_flavour);
         return retval;
       }
       /// Multiply by an integer.
@@ -253,7 +262,7 @@ namespace piranha
       }
     protected:
       trig_array_commons() {}
-      trig_array_commons(const std::string &s)
+      explicit trig_array_commons(const std::string &s)
       {
         typedef typename Derived::value_type value_type;
         std::vector<std::string> sd;
@@ -276,11 +285,11 @@ namespace piranha
         // Take care of flavour.
         if (*sd.back().c_str() == 's')
         {
-          derived_cast->flavour()=false;
+          derived_cast->m_flavour=false;
         }
         else
         {
-          derived_cast->flavour()=true;
+          derived_cast->m_flavour=true;
         }
       }
     private:
