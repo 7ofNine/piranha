@@ -74,8 +74,7 @@ namespace piranha
         // Assert widths, *this should always come from a polynomial, and its width should hence be
         // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
-        p_assert(ret.template get<0>().size() == max_w);
-        p_assert(ret.template get<1>().size() == max_w);
+        p_assert(ret.size() == max_w);
         size_type i;
         for (i=0;i<min_w;++i)
         {
