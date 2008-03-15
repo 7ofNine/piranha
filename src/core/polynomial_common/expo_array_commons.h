@@ -67,9 +67,9 @@ namespace piranha
         }
         return retval;
       }
-      /// Am I ignorabled?
+      /// Am I ignorable?
       /**
-       * A product of integer powers of literal variables is never zero, hence never ignorable.
+       * By construction an array of exponents is never ignorable.
        */
       template <class ArgsTuple>
         bool is_ignorable(const ArgsTuple &) const
@@ -106,12 +106,6 @@ namespace piranha
         // TODO: check here that we are not loading too many multipliers, outside expo_size_t range.
         // TODO: do it everywhere!
         const size_t w=sd.size();
-        if (w == 0)
-        {
-          std::cout << "Warning: constructing empty expo_array." << std::endl;
-          std::abort();
-          return;
-        }
         derived_cast->resize(w);
         for (size_t i=0;i < w;++i)
         {

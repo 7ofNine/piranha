@@ -272,13 +272,13 @@ namespace piranha
         const size_t w=sd.size();
         if (w == 0)
         {
-          std::cout << "Warning: constructing empty trig_array." << std::endl;
-          std::abort();
+          // Set flavour to true, so that trig_array is logically equivalent to the unity.
+          derived_cast->m_flavour=true;
           return;
         }
         // Now we know  w >= 1.
         derived_cast->resize(w-1);
-        for (size_t i=0;i < w-1;++i)
+        for (size_t i=0;i < w-1; ++i)
         {
           (*derived_cast)[i]=utils::lexical_converter<value_type>(sd[i]);
         }
@@ -287,8 +287,13 @@ namespace piranha
         {
           derived_cast->m_flavour=false;
         }
+        else if (*sd.back().c_str() == 'c')
+        {
+          derived_cast->m_flavour=true;
+        }
         else
         {
+          std::cout << "Warning: undefined flavour '" << sd.back() << "', defaulting to cosine."<< std::endl;
           derived_cast->m_flavour=true;
         }
       }
