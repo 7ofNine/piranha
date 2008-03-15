@@ -28,6 +28,10 @@
 
 namespace piranha
 {
+  /// Constructor from string.
+  /**
+    * The whole series is stored into a string when using it as coefficient in another series.
+    */
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
@@ -63,6 +67,7 @@ namespace piranha
     }
   }
 
+  /// Print in plain mode.
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const

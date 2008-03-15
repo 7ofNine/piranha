@@ -61,10 +61,6 @@ namespace piranha
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &);
     protected:
-      /// Constructor from string.
-      /**
-       * The whole series is stored into a string when using it as coefficient in another series.
-       */
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);
   };
