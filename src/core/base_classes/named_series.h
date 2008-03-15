@@ -58,9 +58,9 @@ namespace piranha
       void save_to(const std::string &) const;
       void swap(Derived &);
       template <class Derived2>
-        void merge_args(const Derived2 &);
+        Derived &add(const Derived2 &);
       template <class Derived2>
-        void merge_incompatible_args(const Derived2 &);
+        Derived &subtract(const Derived2 &);
     protected:
       void read_from_file(const std::string &);
       void construct_from_args(const args_tuple_type &);
@@ -74,8 +74,12 @@ namespace piranha
       void read_terms(std::ifstream &);
       template <class Derived2>
         bool is_args_compatible(const Derived2 &) const;
+      template <class Derived2>
+        void merge_incompatible_args(const Derived2 &);
       template <bool, class Derived2>
-        void merge_with_series(const Derived2 &);
+        Derived &merge_with_series(const Derived2 &);
+      template <class Derived2>
+        void merge_args(const Derived2 &);
     protected:
       // Data members.
       args_tuple_type                 m_arguments;

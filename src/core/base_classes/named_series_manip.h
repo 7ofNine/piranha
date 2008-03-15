@@ -48,8 +48,12 @@ namespace piranha
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
   {
-    named_series_swap<args_tuple_type>::run(m_arguments,ps2.m_arguments);
-    derived_cast->swap_terms(ps2);
+    // Do something only if we are not swapping with self.
+    if (derived_cast != &ps2)
+    {
+      named_series_swap<args_tuple_type>::run(m_arguments,ps2.m_arguments);
+      derived_cast->swap_terms(ps2);
+    }
   }
 
   /// Build series from arguments tuple.
