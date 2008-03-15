@@ -60,10 +60,9 @@ namespace piranha
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
       polynomial() {}
-      explicit polynomial(const std::string &filename)
-      {
-        named_ancestor::construct_from_file(filename);
-      }
+      explicit polynomial(const std::string &filename) {named_ancestor::construct_from_file(filename);}
+      explicit polynomial(const int &n) {base_ancestor::construct_from_number(n,named_ancestor::m_arguments);}
+      explicit polynomial(const double &x) {base_ancestor::construct_from_number(x,named_ancestor::m_arguments);}
       // Needed getters and setters.
       template <int N>
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
@@ -71,10 +70,7 @@ namespace piranha
         const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
     private:
       // Private ctors.
-      polynomial(const typename named_ancestor::args_tuple_type &args_tuple)
-      {
-        named_ancestor::construct_from_args(args_tuple);
-      }
+      polynomial(const typename named_ancestor::args_tuple_type &args_tuple) {named_ancestor::construct_from_args(args_tuple);}
     private:
       container_type  m_container;
   };

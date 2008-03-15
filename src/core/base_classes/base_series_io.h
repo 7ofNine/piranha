@@ -33,7 +33,7 @@ namespace piranha
     // Make sure we are being called from an empty series.
     p_assert(derived_const_cast->template nth_index<0>().empty());
     term_type term;
-    term.m_cf = cf_type(x);
+    term.m_cf = cf_type(x,args_tuple);
     insert(term,args_tuple,derived_const_cast->template nth_index<0>().end());
   }
 

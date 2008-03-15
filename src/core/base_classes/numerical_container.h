@@ -55,8 +55,10 @@ namespace piranha
       template <class ArgsTuple>
         explicit numerical_container(const std::string &s, const ArgsTuple &):m_value(utils::lexical_converter<T>(s))
       {}
-      explicit numerical_container(int n):m_value(n) {}
-      explicit numerical_container(const double &x):m_value(x) {}
+      template <class ArgsTuple>
+        explicit numerical_container(const int &n, const ArgsTuple &):m_value(n) {}
+      template <class ArgsTuple>
+        explicit numerical_container(const double &x, const ArgsTuple &):m_value(x) {}
       explicit numerical_container(const Derived &sc):m_value(sc.m_value) {}
       // I/O.
       template <class ArgsTuple>

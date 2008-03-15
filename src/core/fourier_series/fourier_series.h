@@ -72,10 +72,7 @@ namespace piranha
         const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
     private:
       // Private ctors.
-      fourier_series(const typename named_ancestor::args_tuple_type &args_tuple)
-      {
-        named_ancestor::construct_from_args(args_tuple);
-      }
+      fourier_series(const typename named_ancestor::args_tuple_type &args_tuple) {named_ancestor::construct_from_args(args_tuple);}
     private:
       container_type  m_container;
   };

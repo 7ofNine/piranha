@@ -53,9 +53,11 @@ namespace piranha
         explicit double_cf(const std::string &s, const ArgsTuple &a):ancestor::numerical_container(s,a)
       {}
       /// Constructor from integer.
-      explicit double_cf(int val):ancestor::numerical_container(val) {}
+      template <class ArgsTuple>
+        explicit double_cf(const int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
       /// Constructor from double.
-      explicit double_cf(const double &val):ancestor::numerical_container(val) {}
+      template <class ArgsTuple>
+        explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
       /// Copy constructor.
       double_cf(const self &dc):ancestor::numerical_container(dc) {}
       // Needed operators.
@@ -139,8 +141,10 @@ namespace std
       explicit complex():ancestor::numerical_container() {}
       template <class ArgsTuple>
         explicit complex(const std::string &s, const ArgsTuple &a):ancestor::numerical_container(s,a) {}
-      explicit complex(int n):ancestor::numerical_container(n) {}
-      explicit complex(const double &x):ancestor::numerical_container(x) {}
+      template <class ArgsTuple>
+        explicit complex(const int &n, const ArgsTuple &a):ancestor::numerical_container(n,a) {}
+      template <class ArgsTuple>
+        explicit complex(const double &x, const ArgsTuple &a):ancestor::numerical_container(x,a) {}
       complex(const complex &c):ancestor::numerical_container(c),complex_toolbox::numerical_container_complex_toolbox(c)
       {}
       // Complex specific contructors.

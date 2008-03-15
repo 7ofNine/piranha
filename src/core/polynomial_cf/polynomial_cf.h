@@ -59,7 +59,11 @@ namespace piranha
       polynomial_cf() {}
       /// Ctor from string.
       template <class ArgsTuple>
-        polynomial_cf(const std::string &s, const ArgsTuple &args_tuple) {cf_ancestor::construct_from_string(s,args_tuple);}
+        explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple) {cf_ancestor::construct_from_string(s,args_tuple);}
+      template <class ArgsTuple>
+        explicit polynomial_cf(const int &n, const ArgsTuple &a) {base_ancestor::construct_from_number(n,a);}
+      template <class ArgsTuple>
+        explicit polynomial_cf(const double &x, const ArgsTuple &a) {base_ancestor::construct_from_number(x,a);}
       // Needed getters and setters.
       template <int N>
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
