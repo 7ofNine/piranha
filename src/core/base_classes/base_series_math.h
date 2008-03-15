@@ -23,10 +23,12 @@
 
 namespace piranha
 {
+  // Do not use this to merge with self, assertion will fail.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <bool Sign, class Derived2, class ArgsTuple>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
   {
+    p_assert(derived_cast != &s2);
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
     const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();

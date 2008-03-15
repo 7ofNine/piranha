@@ -204,6 +204,7 @@ namespace piranha
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::swap_terms(Derived &ps2)
   {
+    p_assert(derived_cast != &ps2);
     derived_cast->m_container.swap(ps2.m_container);
   }
 
