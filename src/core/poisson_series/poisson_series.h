@@ -66,7 +66,7 @@ namespace piranha
       poisson_series() {}
       explicit poisson_series(const std::string &filename)
       {
-        named_ancestor::read_from_file(filename);
+        named_ancestor::construct_from_file(filename);
       }
       // Needed getters and setters.
       template <int N>

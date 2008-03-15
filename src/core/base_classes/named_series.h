@@ -62,7 +62,7 @@ namespace piranha
       template <class Derived2>
         Derived &subtract(const Derived2 &);
     protected:
-      void read_from_file(const std::string &);
+      void construct_from_file(const std::string &);
       void construct_from_args(const args_tuple_type &);
     private:
       void print_plain(std::ostream &, int) const;

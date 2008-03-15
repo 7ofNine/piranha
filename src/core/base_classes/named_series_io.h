@@ -79,9 +79,9 @@ namespace piranha
     }
   }
 
-  // Read from file.
+  /// Construct from file.
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_from_file(const std::string &fn)
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_file(const std::string &fn)
   {
     std::ifstream inf;
     std::string filename=utils::open_file(fn,inf);
