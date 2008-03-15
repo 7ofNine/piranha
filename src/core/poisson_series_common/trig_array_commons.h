@@ -53,7 +53,11 @@ namespace piranha
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
         derived_const_cast->print(out_stream);
-        out_stream << derived_const_cast->separator;
+        // Print the separator before flavour only if we actually printed something above.
+        if (derived_const_cast->size() != 0)
+        {
+          out_stream << derived_const_cast->separator;
+        }
         switch (derived_const_cast->flavour())
         {
           case true:

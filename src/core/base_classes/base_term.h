@@ -75,8 +75,15 @@ namespace piranha
         {
           boost::trim(vs[0]);
           boost::trim(vs[1]);
-          m_cf = cf_type(vs[0],args_tuple);
-          m_key = key_type(vs[1],args_tuple);
+          // Try to build only if the strings actually contain something.
+          if (!vs[0].empty())
+          {
+            m_cf = cf_type(vs[0],args_tuple);
+          }
+          if (!vs[1].empty())
+          {
+            m_key = key_type(vs[1],args_tuple);
+          }
         }
       }
       /// Copy ctor.
