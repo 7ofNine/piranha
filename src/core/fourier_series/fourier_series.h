@@ -62,10 +62,9 @@ namespace piranha
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
       fourier_series() {}
-      explicit fourier_series(const std::string &filename)
-      {
-        named_ancestor::construct_from_file(filename);
-      }
+      explicit fourier_series(const std::string &filename) {named_ancestor::construct_from_file(filename);}
+      explicit fourier_series(const int &n) {base_ancestor::construct_from_number(n,named_ancestor::m_arguments);}
+      explicit fourier_series(const double &x) {base_ancestor::construct_from_number(x,named_ancestor::m_arguments);}
       // Needed getters and setters.
       template <int N>
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}

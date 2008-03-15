@@ -54,6 +54,8 @@ namespace piranha
       static const char separator = Separator;
       // Check that the separators do not conflict.
       BOOST_STATIC_ASSERT(separator != term_type::separator);
+      template <class Number, class ArgsTuple>
+        void construct_from_number(const Number &, const ArgsTuple &);
       template <class ArgsTuple>
         void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>

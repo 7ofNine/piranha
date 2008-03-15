@@ -25,6 +25,18 @@
 
 namespace piranha
 {
+  /// Construct from numerical quantity.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Number, class ArgsTuple>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
+  {
+    // Make sure we are being called from an empty series.
+    p_assert(derived_const_cast->template nth_index<0>().empty());
+    term_type term;
+    term.m_cf = cf_type(x);
+    insert(term,args_tuple,derived_const_cast->template nth_index<0>().end());
+  }
+
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
