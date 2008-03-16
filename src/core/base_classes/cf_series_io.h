@@ -53,16 +53,24 @@ namespace piranha
       try
       {
         // Try to build the term from the string.
+        // Here we check that the term is insertable, i.e., the number of arguments is compatible
+        // with the provided args tuple.
         term_type term(vs[i],args_tuple);
+        // TODO: most likely this throw can be moved inside the main insert function of base_series,
+        // as soon as we make sure that it won't impact performance too much.
         if (!term.is_insertable(args_tuple))
         {
-          throw bad_input("Term not insertable in cf_series.");
+          throw term_not_insertable("Term not insertable in cf_series.");
         }
         it_hint = derived_cast->insert(term,args_tuple,it_hint);
       }
-      catch(bad_input &b)
+      catch(bad_input &bi)
       {
-        std::cout << b.what() << std::endl;
+        std::cout << bi.what() << std::endl;
+      }
+      catch(term_not_insertable &tni)
+      {
+        std::cout << tni.what() << std::endl;
       }
     }
   }

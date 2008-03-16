@@ -37,6 +37,18 @@ namespace piranha
     private:
       std::string m_what;
   };
+
+  class term_not_insertable
+  {
+    public:
+      term_not_insertable(const std::string &s):m_what(s) {}
+      const std::string &what() const
+      {
+        return m_what;
+      }
+    private:
+      std::string m_what;
+  };
 }
 
 #endif
