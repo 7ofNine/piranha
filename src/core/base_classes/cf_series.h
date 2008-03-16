@@ -60,9 +60,15 @@ namespace piranha
       void swap(Derived &);
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &);
+      template <class ArgsTuple>
+        Derived &mult_by(const int &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &mult_by(const double &, const ArgsTuple &);
     protected:
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);
+      template <class T, class ArgsTuple>
+        Derived &mult_by_generic(const T &, const ArgsTuple &);
   };
 }
 

@@ -57,10 +57,13 @@ namespace piranha
       void print(std::ostream &stream = std::cout, int limit = -1) const;
       void save_to(const std::string &) const;
       void swap(Derived &);
+// TODO: move these into protected when we are done? Or let them stay in public?
       template <class Derived2>
         Derived &add(const Derived2 &);
       template <class Derived2>
         Derived &subtract(const Derived2 &);
+      Derived &mult_by(const int &);
+      Derived &mult_by(const double &);
     protected:
       void construct_from_file(const std::string &);
       void construct_from_args(const args_tuple_type &);
@@ -80,6 +83,8 @@ namespace piranha
         Derived &merge_with_series(const Derived2 &);
       template <class Derived2>
         void merge_args(const Derived2 &);
+      template <class T>
+        Derived &mult_by_generic(const T &);
     protected:
       // Data members.
       args_tuple_type                 m_arguments;

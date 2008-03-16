@@ -54,6 +54,29 @@ namespace piranha
   {
     return merge_with_series<false>(s2);
   }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class T>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by_generic(const T &x)
+  {
+    Derived retval;
+    retval.merge_args(*derived_const_cast);
+    derived_cast->multiply_coefficients_by(x,retval,m_arguments);
+    swap(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const int &n)
+  {
+    return mult_by_generic(n);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const double &x)
+  {
+    return mult_by_generic(x);
+  }
 }
 
 #endif

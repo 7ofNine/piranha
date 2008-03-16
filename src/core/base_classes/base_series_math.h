@@ -28,15 +28,34 @@ namespace piranha
     template <bool Sign, class Derived2, class ArgsTuple>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
   {
-    p_assert(derived_cast != &s2);
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+    p_assert(derived_cast != &s2);
     const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
     const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
     for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it)
     {
       // No need to check, we are merging from another series.
       it_hint = insert<false,Sign>(*it,args_tuple,it_hint);
+    }
+  }
+
+  // Multiply all the coefficients of the series by a generic quantity x, and place the result into retval.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class T, class ArgsTuple>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x, Derived &retval, const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::term_type term_type;
+    // Make sure we are operating on an empty series.
+    p_assert(retval.template nth_index<0>().empty());
+    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      term_type term(*it);
+      term.m_cf.mult_by(x,args_tuple);
+      it_hint = retval.insert(term,args_tuple,it_hint);
     }
   }
 }

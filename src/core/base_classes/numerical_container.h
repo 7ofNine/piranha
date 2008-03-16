@@ -136,16 +136,18 @@ namespace piranha
       {
         return subtract_generic(val2.g_value());
       }
-      Derived &mult_by(int n)
+      template <class ArgsTuple>
+        Derived &mult_by(const int &n, const ArgsTuple &)
       {
         return mult_by_generic(n);
       }
-      Derived &mult_by(const double &x)
+      template <class ArgsTuple>
+        Derived &mult_by(const double &x, const ArgsTuple &)
       {
         return mult_by_generic(x);
       }
-      template <class DerivedPs>
-        Derived &mult_by_self(const self &x, const DerivedPs &)
+      template <class ArgsTuple>
+        Derived &mult_by(const self &x, const ArgsTuple &)
       {
         return mult_by_generic(x.g_value());
       }

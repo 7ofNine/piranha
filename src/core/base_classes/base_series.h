@@ -71,6 +71,8 @@ namespace piranha
         void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
       template <bool, class Derived2, class ArgsTuple>
         void merge_terms(const Derived2 &, const ArgsTuple &);
+      template <class T, class ArgsTuple>
+        void multiply_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
