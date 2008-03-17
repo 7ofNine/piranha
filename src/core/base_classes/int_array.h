@@ -92,15 +92,22 @@ namespace piranha
       /// Assignment operator.
       int_array &operator=(const int_array &v)
       {
-        value_type *new_ptr = alloc_if_size_differs(v.m_size);
-        if (new_ptr != m_ptr)
+        // Take care of flavour.
+        m_flavour = v.m_flavour;
+        switch (m_size == v.m_size)
         {
-          allocator.deallocate(m_ptr,m_size);
-          m_flavour = v.m_flavour;
-          m_ptr = new_ptr;
-          m_size = v.m_size;
-          m_pack_size = v.m_pack_size;
+          // If the size is equal, do nothing.
+          case true:
+            ;
+          // Otherwise deallocate current allocated memory, allocate with the new size
+          // and assign the proper sizes to this.
+          default:
+            allocator.deallocate(m_ptr,m_size);
+            m_ptr = allocator.allocate(v.m_size);
+            m_size = v.m_size;
+            m_pack_size = v.m_pack_size;
         }
+        // Perform the copy from v to this.
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
         return *this;
       }
@@ -210,11 +217,12 @@ namespace piranha
        */
       void resize(const size_type &new_size)
       {
-        value_type *new_ptr = alloc_if_size_differs(new_size);
-        if (new_ptr == m_ptr)
+        if (m_size == new_size)
         {
           return;
         }
+        // Allocate space for the new size.
+        value_type *new_ptr = allocator.allocate(new_size);
         const size_type new_pack_size = (new_size >> pack_shift);
         // Copy to the minimum of the new sizes.
         packed_copy(new_ptr,m_ptr,std::min(m_size,new_size),std::min(m_pack_size,new_pack_size));
@@ -304,17 +312,6 @@ namespace piranha
         for(i = i << pack_shift;i < size;++i)
         {
           new_ptr[i]=old_ptr[i];
-        }
-      }
-      // Allocate if new_size is different from current size.
-      value_type *alloc_if_size_differs(const size_type &new_size)
-      {
-        switch (m_size == new_size)
-        {
-          case true:
-            return m_ptr;
-          default:
-            return allocator.allocate(new_size);
         }
       }
     protected:
