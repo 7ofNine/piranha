@@ -71,24 +71,30 @@ namespace piranha
   template <class Term>
     struct cf_degree_index
   {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_non_unique <
-      cf_degree_extractor<Term>
+    typedef boost::multi_index::indexed_by
+    <
+      boost::multi_index::ordered_non_unique
+      <
+        cf_degree_extractor<Term>
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-      > type;
+    >
+    type;
   };
 
   /// Index based on the degree of the key.
   template <class Term>
     struct key_degree_index
   {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_non_unique <
-      key_degree_extractor<Term>
+    typedef boost::multi_index::indexed_by
+    <
+      boost::multi_index::ordered_non_unique
+      <
+        key_degree_extractor<Term>
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-      > type;
+    >
+    type;
   };
 
   // Norm extractor. Operates on coefficient.
@@ -107,20 +113,25 @@ namespace piranha
   template <class Term>
     struct norm_index
   {
-    typedef boost::multi_index::indexed_by <
-      boost::multi_index::ordered_unique <
-      boost::multi_index::composite_key <
-      Term,
-      norm_extractor<Term>,
-      key_extractor<Term>
-      >,
-      boost::multi_index::composite_key_compare<
-      std::greater<double>,
-      std::less<typename Term::key_type>
-      >
+    typedef boost::multi_index::indexed_by
+    <
+      boost::multi_index::ordered_unique
+      <
+        boost::multi_index::composite_key
+        <
+          Term,
+          norm_extractor<Term>,
+          key_extractor<Term>
+        >,
+        boost::multi_index::composite_key_compare
+        <
+          std::greater<double>,
+          std::less<typename Term::key_type>
+        >
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-      > type;
+    >
+    type;
   };
 }
 
