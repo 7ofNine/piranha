@@ -124,6 +124,10 @@ namespace piranha
           (*derived_cast)[i]*=-1;
         }
       }
+      bool is_unity() const
+      {
+        return (derived_const_cast->elements_are_zero() and derived_const_cast->m_flavour);
+      }
       /// Frequency.
       /**
        * Get the frequency of the linear combination, given a vector of piranha::psymbol pointers describing

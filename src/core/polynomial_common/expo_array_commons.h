@@ -76,6 +76,10 @@ namespace piranha
       {
         return false;
       }
+      bool is_unity() const
+      {
+        return (derived_const_cast->elements_are_zero());
+      }
       /// Equality test.
       bool operator==(const Derived &e2) const
       {

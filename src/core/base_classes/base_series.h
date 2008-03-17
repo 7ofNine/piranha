@@ -74,7 +74,7 @@ namespace piranha
       template <class T, class ArgsTuple>
         void multiply_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
       template <class Derived2, class ArgsTuple>
-        void multiply_terms(const Derived2 &, Derived &, const ArgsTuple &) const;
+        void multiply_by_series(const Derived2 &, Derived &, const ArgsTuple &) const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
@@ -84,6 +84,7 @@ namespace piranha
         SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
       template <class ArgsTuple, class PinpointIterator>
         void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
+      bool is_single_cf() const;
       // Functors.
       template <class ArgsTuple>
         struct modifier_invert_term_sign
@@ -112,6 +113,7 @@ namespace piranha
 #include "base_series_io.h"
 #include "base_series_manip.h"
 #include "base_series_math.h"
+#include "base_series_probe.h"
 
 #undef derived_const_cast
 #undef derived_cast

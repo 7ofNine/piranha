@@ -61,29 +61,28 @@ namespace piranha
   }
 
   // Multiply term-by-term with another series, and place the result into retval.
-//   template <__PIRANHA_BASE_SERIES_TP_DECL>
-//     template <class Derived2, class ArgsTuple>
-//     inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_by_series(const Derived2 &s2, Derived &retval,
-//     const ArgsTuple &args_tuple) const
-//   {
-//     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-//     typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
-//     // Make sure we are inserting into an empty return value.
-//     p_assert(retval.template nth_index<0>().empty());
-//     // Just leave an empty series if this or s2 are zero.
-//     if (derived_const_cast->template nth_index<0>.empty() or s2.template nth_index<0>.empty())
-//     {
-//       return;
-//     }
-//     // Optimize if the second series is a pure coefficient series.
-//     // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
-//     if (s2.is_single_cf())
-//     {
-//       multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
-//       return;
-//     }
-// 
-//   }
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class Derived2, class ArgsTuple>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_by_series(const Derived2 &s2, Derived &retval,
+    const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+    // Make sure we are inserting into an empty return value.
+    p_assert(retval.template nth_index<0>().empty());
+    // Just leave an empty series if this or s2 are zero.
+    if (derived_const_cast->template nth_index<0>.empty() or s2.template nth_index<0>.empty())
+    {
+      return;
+    }
+    // Optimize if the second series is a pure coefficient series.
+    // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
+    if (s2.is_single_cf())
+    {
+      multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
+      return;
+    }
+  }
 }
 
 #endif
