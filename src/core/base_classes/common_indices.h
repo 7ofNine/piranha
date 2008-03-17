@@ -54,6 +54,18 @@ namespace piranha
     }
   };
 
+  // Key minimum degree extractor.
+  template <class Term>
+    struct key_min_degree_extractor
+  {
+    typedef int result_type;
+    int operator()(const Term &t) const
+    {
+      p_assert((arg_manager<Term>::assigned()));
+      return t.m_key.get_min_degree();
+    }
+  };
+
   // Coefficient degree extractor.
   template <class Term>
     struct cf_degree_extractor
@@ -72,24 +84,48 @@ namespace piranha
   {
     typedef boost::multi_index::indexed_by
     <
-      boost::multi_index::ordered_non_unique
+      // Unique because the composite key below ensures we cannot have duplicates.
+      boost::multi_index::ordered_unique
       <
-        cf_degree_extractor<Term>
+        boost::multi_index::composite_key
+        <
+          Term,
+          cf_degree_extractor<Term>,
+          key_extractor<Term>
+        >,
+        boost::multi_index::composite_key_compare
+        <
+          std::less<int>,
+          std::less<typename Term::key_type>
+        >
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
     >
     type;
   };
 
-  /// Index based on the degree of the key.
+  /// Index based on the minimum degree of the key.
   template <class Term>
-    struct key_degree_index
+    struct key_min_degree_index
   {
     typedef boost::multi_index::indexed_by
     <
-      boost::multi_index::ordered_non_unique
+      // Unique because the composite key below ensures we cannot have duplicates.
+      boost::multi_index::ordered_unique
       <
-        key_degree_extractor<Term>
+        boost::multi_index::composite_key
+        <
+          Term,
+          key_min_degree_extractor<Term>,
+          key_degree_extractor<Term>,
+          key_extractor<Term>
+        >,
+        boost::multi_index::composite_key_compare
+        <
+          std::less<int>,
+          std::less<int>,
+          std::less<typename Term::key_type>
+        >
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
     >

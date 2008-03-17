@@ -81,6 +81,11 @@ namespace piranha
       {
         return derived_const_cast->equal_to(e2);
       }
+      /// Less than.
+      bool operator<(const Derived &e2) const
+      {
+        return derived_const_cast->lexicographic_less_than(e2);
+      }
       /// Calculate hash value.
       size_t hash_value() const
       {
@@ -93,6 +98,27 @@ namespace piranha
         for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
         {
           retval+=(*derived_const_cast)[i];
+        }
+        return retval;
+      }
+      /// Return the minimum degree of the exponents array.
+      int get_min_degree() const
+      {
+        int retval = 0;
+        if (derived_const_cast->m_size > 0)
+        {
+          retval = (*derived_const_cast)[0];
+        }
+        else
+        {
+          return retval;
+        }
+        for (typename Derived::size_type i=1; i < derived_const_cast->m_size; ++i)
+        {
+          if ((*derived_const_cast)[i] < retval)
+          {
+            retval = (*derived_const_cast)[i];
+          }
         }
         return retval;
       }
