@@ -56,7 +56,7 @@ namespace piranha
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
-        derived_const_cast->print(out_stream);
+        derived_const_cast->print_elements(out_stream);
         // Print the separator before flavour only if we actually printed something above.
         if (derived_const_cast->size() != 0)
         {
@@ -221,12 +221,12 @@ namespace piranha
       template <class ArgsTuple>
         bool is_ignorable(const ArgsTuple &) const
       {
-        return (derived_const_cast->is_zero() and !derived_const_cast->m_flavour);
+        return (derived_const_cast->elements_are_zero() and !derived_const_cast->m_flavour);
       }
       /// Equality test.
       bool operator==(const Derived &t2) const
       {
-        return (derived_const_cast->m_flavour == t2.m_flavour and derived_const_cast->equal_to(t2));
+        return (derived_const_cast->m_flavour == t2.m_flavour and derived_const_cast->elements_equal_to(t2));
       }
       /// Less than.
       bool operator<(const Derived &t2) const
@@ -239,7 +239,7 @@ namespace piranha
         {
           return false;
         }
-        return derived_const_cast->lexicographic_less_than(t2);
+        return derived_const_cast->elements_lex_comparison(t2);
       }
       /// Calculate hash_value.
       /**
@@ -247,7 +247,7 @@ namespace piranha
        */
       size_t hash_value() const
       {
-        size_t retval = derived_const_cast->hasher();
+        size_t retval = derived_const_cast->elements_hasher();
         boost::hash_combine(retval,derived_const_cast->m_flavour);
         return retval;
       }

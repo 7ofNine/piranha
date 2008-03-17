@@ -171,7 +171,7 @@ namespace piranha
       /// Array-like operator[], mutable version.
       value_type &operator[](const size_t &n) {return m_ptr[n];}
       /// Print to stream
-      void print(std::ostream &out_stream) const
+      void print_elements(std::ostream &out_stream) const
       {
         stream_manager::setup_print(out_stream);
         for (size_t i=0;i < m_size;++i)
@@ -191,7 +191,7 @@ namespace piranha
       /**
        * Returns true if all integer elements are zero, false otherwise.
        */
-      bool is_zero() const
+      bool elements_are_zero() const
       {
         size_t i;
         for (i=0;i < m_pack_size;++i)
@@ -241,7 +241,7 @@ namespace piranha
       /**
        * Hashes only the integer elements of the array, not the flavour.
        */
-      size_t hasher() const
+      size_t elements_hasher() const
       {
         size_t retval=0;
         size_type i;
@@ -259,7 +259,7 @@ namespace piranha
       /**
        * Tests only the integer elements of the array, not the flavour.
        */
-      bool equal_to(const int_array &v) const
+      bool elements_equal_to(const int_array &v) const
       {
         switch (m_size == v.m_size)
         {
@@ -284,7 +284,7 @@ namespace piranha
             return false;
         }
       }
-      bool lexicographic_less_than(const Derived &a2) const
+      bool elements_lex_comparison(const Derived &a2) const
       {
         p_assert(m_size == a2.m_size);
         for (size_t i=0; i < m_size; ++i)

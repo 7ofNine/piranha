@@ -49,7 +49,7 @@ namespace piranha
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
-        derived_const_cast->print(out_stream);
+        derived_const_cast->print_elements(out_stream);
       }
       void print_latex(std::ostream &out_stream, const vector_psym_p &v) const
       {
@@ -79,17 +79,17 @@ namespace piranha
       /// Equality test.
       bool operator==(const Derived &e2) const
       {
-        return derived_const_cast->equal_to(e2);
+        return derived_const_cast->elements_equal_to(e2);
       }
       /// Less than.
       bool operator<(const Derived &e2) const
       {
-        return derived_const_cast->lexicographic_less_than(e2);
+        return derived_const_cast->elements_lex_comparison(e2);
       }
       /// Calculate hash value.
       size_t hash_value() const
       {
-        return derived_const_cast->hasher();
+        return derived_const_cast->elements_hasher();
       }
       /// Return the total degree of the exponents array.
       int get_degree() const
