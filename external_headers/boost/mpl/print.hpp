@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Source: /cvsroot/boost/boost/boost/mpl/print.hpp,v $
-// $Date: 2006/11/10 23:15:49 $
-// $Revision: 1.2.14.1 $
+// $Source$
+// $Date: 2006-11-10 18:15:50 -0500 (Fri, 10 Nov 2006) $
+// $Revision: 36000 $
 
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/identity.hpp>
