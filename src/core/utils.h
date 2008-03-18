@@ -181,21 +181,6 @@ namespace piranha
         }
         return retval;
       }
-      /// Cache all pointers to elements of a container into an array.
-      template <class Container, class Contained>
-        static void array_pointer(const Container &c, std::valarray<Contained const *> &v)
-      {
-        typedef typename Container::const_iterator const_iterator;
-        const size_t l=c.length();
-        v.resize(l);
-        size_t i=0;
-        const const_iterator it_f=c.end();
-        for (const_iterator it=c.begin();it!=it_f;++it)
-        {
-          v[i]=&(*it);
-          ++i;
-        }
-      }
     private:
       /// Check whether a string is valid.
       /**

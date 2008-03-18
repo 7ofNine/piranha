@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_MATH_H
 #define PIRANHA_BASE_SERIES_MATH_H
 
+#include <valarray>
+
 namespace piranha
 {
   // Do not use this to merge with self, assertion will fail.
@@ -60,6 +62,21 @@ namespace piranha
     }
   }
 
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::cache_terms_pointers(std::valarray<term_type *> &v) const
+    {
+      typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+      const size_t l = derived_const_cast->template nth_index<0>().size();
+      v.resize(l);
+      size_t i=0;
+      const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();;
+      for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+      {
+        v[i]=&(*it);
+        ++i;
+      }
+    }
+
   // Multiply term-by-term with another series, and place the result into retval.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class Derived2, class ArgsTuple>
@@ -82,6 +99,13 @@ namespace piranha
       multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
       return;
     }
+    // Let's cache the iterators to the terms of the series into two separate vectors, in order to
+    // speed up further manipulations.
+    std::valarray<term_type *> vpt1, vpt2;
+    derived_const_cast->cache_terms_pointers(vpt1);
+    s2.cache_terms_pointers(vpt2);
+    // Create the truncator class.
+    Truncator<Derived,Derived2> trunc(*derived_const_cast,s2);
   }
 }
 
