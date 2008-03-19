@@ -23,17 +23,15 @@
 
 #include <boost/static_assert.hpp>
 #include <memory>
-#include <valarray> // For terms pointers caching.
 
 #include "../p_assert.h"
 #include "../utils.h" // For class_converter.
-#include "truncators.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived, template <class, class> class Truncator
-#define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived,Truncator
+#define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
+#define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived
 
 namespace piranha
 {
@@ -41,7 +39,7 @@ namespace piranha
   /**
    * Term must derive from piranha::base_term class.
    */
-  template <__PIRANHA_BASE_SERIES_TP_DECL = no_truncation >
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
     class base_series
   {
       /// Alias for term type.
@@ -75,8 +73,7 @@ namespace piranha
         void merge_terms(const Derived2 &, const ArgsTuple &);
       template <class T, class ArgsTuple>
         void multiply_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
-      template <class Derived2, class ArgsTuple>
-        void multiply_by_series(const Derived2 &, Derived &, const ArgsTuple &) const;
+      bool is_single_cf() const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &) const;
@@ -86,8 +83,6 @@ namespace piranha
         SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
       template <class ArgsTuple, class PinpointIterator>
         void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
-      bool is_single_cf() const;
-      void cache_terms_pointers(std::valarray<term_type *> &) const;
       // Functors.
       template <class ArgsTuple>
         struct modifier_invert_term_sign
