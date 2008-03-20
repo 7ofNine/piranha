@@ -41,6 +41,8 @@ namespace piranha
   }
 
   // Multiply all the coefficients of the series by a generic quantity x, and place the result into retval.
+  // In case the coefficient is another series, the corresponding arguments must have been merged previously,
+  // otherwise an assertion will fail when inserting terms.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class T, class ArgsTuple>
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x, Derived &retval,

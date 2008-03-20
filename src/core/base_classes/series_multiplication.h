@@ -35,9 +35,54 @@ namespace piranha
   template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL = no_truncation>
     class series_multiplication
   {
+    //private:
+    public:
+      // Multiply term-by-term with another series, and place the result into retval.
+      // Preconditions:
+      // - args_tuple must be the result of a merging of arguments between the two series being multiplied,
+      // - retval must be empty.
+      template <class Derived2, class ArgsTuple>
+        void multiply_by_series(const Derived2 &s2, Derived &retval,
+        const ArgsTuple &args_tuple)
+      {
+        typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+        typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+        typedef typename Derived::term_type term_type;
+        typedef typename Derived2::term_type term_type2;
+        // Make sure we are inserting into an empty return value.
+        p_assert(retval.template nth_index<0>().empty());
+        // Just leave an empty series if this or s2 are zero.
+        if (derived_const_cast->template nth_index<0>().empty() or s2.template nth_index<0>().empty())
+        {
+          ;
+        }
+        // Optimize if the second series is a pure coefficient series.
+        // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
+        else if (s2.is_single_cf())
+        {
+          derived_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
+        }
+        else
+        {
+          //mult_rep<Derived,Derived2> mr(*derived_const_cast,s2);
+          // Let's cache the iterators to the terms of the series into two separate vectors, in order to
+          // speed up further manipulations.
+          //std::valarray<const term_type *> vpt1;
+          //std::valarray<const term_type2 *> vpt2;
+          //cache_terms_pointers(vpt1);
+          //s2.cache_terms_pointers(vpt2);
+          // Create the truncator class.
+          //Truncator<Derived,Derived2> trunc(*derived_const_cast,s2);
+
+
+
+        }
+        // Finally, swap with the terms we have accumulated in the return series.
+        derived_cast->swap_terms(retval);
+      }
     protected:
       template <class Term>
-        void cache_terms_pointers(std::valarray<Term *> &v) const
+        void cache_terms_pointers(std::valarray<const Term *> &v) const
       {
         typedef typename Derived::const_sorted_iterator const_sorted_iterator;
         const size_t l = derived_const_cast->template nth_index<0>().size();
@@ -49,39 +94,6 @@ namespace piranha
           v[i]=&(*it);
           ++i;
         }
-      }
-    private:
-      // Multiply term-by-term with another series, and place the result into retval.
-      template <class Derived2, class ArgsTuple>
-        void multiply_by_series(const Derived2 &s2, Derived &retval,
-        const ArgsTuple &args_tuple) const
-      {
-        typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-        typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
-        typedef typename Derived::term_type term_type;
-        typedef typename Derived2::term_type term_type2;
-        // Make sure we are inserting into an empty return value.
-        p_assert(retval.template nth_index<0>().empty());
-        // Just leave an empty series if this or s2 are zero.
-        if (derived_const_cast->template nth_index<0>.empty() or s2.template nth_index<0>.empty())
-        {
-          return;
-        }
-        // Optimize if the second series is a pure coefficient series.
-        // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
-        if (s2.is_single_cf())
-        {
-          derived_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
-          return;
-        }
-        // Let's cache the iterators to the terms of the series into two separate vectors, in order to
-        // speed up further manipulations.
-        std::valarray<term_type *> vpt1;
-        std::valarray<term_type2 *> vpt2;
-        cache_terms_pointers(vpt1);
-        s2.cache_terms_pointers(vpt2);
-        // Create the truncator class.
-        Truncator<Derived,Derived2> trunc(*derived_const_cast,s2);
       }
   };
 }

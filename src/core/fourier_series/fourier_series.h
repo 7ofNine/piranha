@@ -27,6 +27,7 @@
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
+#include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
@@ -36,13 +37,15 @@
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES >
 
 namespace piranha
 {
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
     protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
-    public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
+    public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
+    public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR
   {
       typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
@@ -53,6 +56,7 @@ namespace piranha
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
+      friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -83,5 +87,6 @@ namespace piranha
 #undef __PIRANHA_FOURIER_SERIES
 #undef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR
 #undef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
+#undef __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR
 
 #endif

@@ -77,6 +77,20 @@ namespace piranha
   {
     return mult_by_generic(x);
   }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class Derived2>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const Derived2 &s2)
+  {
+    Derived retval;
+    // First we merge the arguments of the two series.
+    merge_args(s2);
+    // Then we assign the merged arguments sets to the return value series.
+    retval.merge_args(*derived_const_cast);
+    // Now we can multiply.
+    derived_cast->multiply_by_series(s2,retval,m_arguments);
+    return *derived_cast;
+  }
 }
 
 #endif

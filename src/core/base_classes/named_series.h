@@ -64,6 +64,8 @@ namespace piranha
         Derived &subtract(const Derived2 &);
       Derived &mult_by(const int &);
       Derived &mult_by(const double &);
+      template <class Derived2>
+        Derived &mult_by(const Derived2 &);
     protected:
       void construct_from_file(const std::string &);
       void construct_from_args(const args_tuple_type &);
