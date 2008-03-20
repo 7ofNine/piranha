@@ -169,7 +169,7 @@ namespace piranha
         // If we did not find it, append it to the layout.
         if (!found)
         {
-          l.get_head().push_back(layout_element(true,i));
+          l.get_head().push_back(std::pair<bool,size_t>(true,i));
         }
       }
       named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.get_tail(),

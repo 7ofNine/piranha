@@ -20,7 +20,6 @@
 
 #include <boost/integer_traits.hpp>
 
-#include "core/common_typedefs.h"
 #include "core/memory.h"
 #include "core/piranha_gsl.h"
 #include "core/settings_manager.h"

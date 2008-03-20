@@ -26,8 +26,8 @@
 #include <gmpxx.h>
 #include <string>
 
-#include "common_typedefs.h"
 #include "compile_switches.h"
+#include "integer_typedefs.h"
 #include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha

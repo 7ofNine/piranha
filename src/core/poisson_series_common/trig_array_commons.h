@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include "../common_typedefs.h" // For t_eval, max_fast_int and layout.
+#include "../integer_typedefs.h" // For max_fast_int.
 #include "../psymbol.h"
 #include "trig_evaluator.h"
 

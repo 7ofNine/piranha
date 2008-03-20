@@ -18,14 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_TYPEDEFS_H
-#define PIRANHA_COMMON_TYPEDEFS_H
+#ifndef PIRANHA_INTEGER_TYPEDEFS_H
+#define PIRANHA_INTEGER_TYPEDEFS_H
 
 #include <boost/cstdint.hpp>
-#include <complex>
-#include <deque>
-#include <string>
-#include <vector>
 
 namespace piranha
 {
@@ -53,10 +49,5 @@ namespace piranha
   /// Maximum fast unsigned integer (32-bits).
   typedef boost::uint32_t max_fast_uint;
 #endif
-  // TODO: move this somewhere elses.
-  /// Layout element, to be used in series merging.
-  typedef std::pair<bool,size_t> layout_element;
-  /// Layout type, to be used in series merging.
-  typedef std::vector<layout_element> layout_type;
 }
 #endif

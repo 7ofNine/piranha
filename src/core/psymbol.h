@@ -28,7 +28,6 @@
 #include <string>
 #include <vector>
 
-#include "common_typedefs.h"
 #include "p_assert.h"
 #include "stream_manager.h"
 #include "utils.h"

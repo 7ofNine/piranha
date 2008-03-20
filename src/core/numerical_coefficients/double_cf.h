@@ -23,7 +23,6 @@
 
 #include <complex>
 
-#include "../common_typedefs.h"
 #include "../math.h" // besselJ.
 #include "../base_classes/numerical_container.h"
 
