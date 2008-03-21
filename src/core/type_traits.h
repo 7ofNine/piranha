@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_EVAL_TYPE
-#define PIRANHA_EVAL_TYPE
+#ifndef PIRANHA_TYPE_TRAITS_H
+#define PIRANHA_TYPE_TRAITS_H
 
 #include <complex>
 
@@ -41,5 +41,7 @@ namespace piranha
   {
     typedef std::complex<double> type;
   };
+
+
 }
 #endif

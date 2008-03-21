@@ -27,7 +27,7 @@
 #include "../arg_manager.h"
 #include "../psymbol.h"
 #include "../utils.h" // Lexical converter.
-#include "../type_traits/eval_type.h"
+#include "../type_traits.h"
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)

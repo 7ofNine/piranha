@@ -29,7 +29,7 @@
 
 #include "../exceptions.h"
 #include "../stream_manager.h"
-#include "../type_traits/eval_type.h"
+#include "../type_traits.h"
 
 #define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Derived, class Allocator
 #define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Derived,Allocator
