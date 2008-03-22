@@ -106,6 +106,15 @@ namespace piranha
       // End INTERFACE definition.
       //-------------------------------------------------------
   };
+
+  // Specialise to make a reference when requesting a constant copy.
+  template <__PIRANHA_TRIG_ARRAY_TP_DECL>
+    struct constant_copy<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
+  {
+    typedef trig_array<__PIRANHA_TRIG_ARRAY_TP> const * type;
+    static const trig_array<__PIRANHA_TRIG_ARRAY_TP> &get(type p) {return *p;}
+    static void assign(type res, const trig_array<__PIRANHA_TRIG_ARRAY_TP> &source) {res=&source;}
+  };
 }
 
 #undef __PIRANHA_TRIG_ARRAY_TP_DECL

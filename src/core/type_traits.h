@@ -42,6 +42,12 @@ namespace piranha
     typedef std::complex<double> type;
   };
 
-
+  template <class T>
+    struct constant_copy
+  {
+    typedef T type;
+    static const T &get(const T &x) {return x;}
+    static void assign(type &res, const T &source) {res=source;}
+  };
 }
 #endif

@@ -23,7 +23,7 @@
 
 #include <valarray> // For terms pointers caching.
 
-//#include "series_mult_rep.h"
+#include "series_mult_rep.h"
 #include "truncators.h" // For default truncation methodology.
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -65,7 +65,7 @@ namespace piranha
         }
         else
         {
-          //series_mult_rep<Derived,Derived2> mr(*derived_const_cast,s2);
+          series_mult_rep<Derived,Derived2> mr(*derived_const_cast,s2);
           // Let's cache the iterators to the terms of the series into two separate vectors, in order to
           // speed up further manipulations.
           //std::valarray<const term_type *> vpt1;

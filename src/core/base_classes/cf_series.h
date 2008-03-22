@@ -25,6 +25,7 @@
 #include <string>
 
 #include "../exceptions.h"
+#include "../type_traits.h" // For specialisation of type trait.
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -69,6 +70,15 @@ namespace piranha
         void construct_from_string(const std::string &, const ArgsTuple &);
       template <class T, class ArgsTuple>
         Derived &mult_by_generic(const T &, const ArgsTuple &);
+  };
+
+  // Specialise to make a reference when requesting a constant copy.
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    struct constant_copy<cf_series<__PIRANHA_CF_SERIES_TP> >
+  {
+    typedef cf_series<__PIRANHA_CF_SERIES_TP> const * type;
+    static const cf_series<__PIRANHA_CF_SERIES_TP> &get(type p) {return *p;}
+    static void assign(type res, const cf_series<__PIRANHA_CF_SERIES_TP> &source) {res=&source;}
   };
 }
 
