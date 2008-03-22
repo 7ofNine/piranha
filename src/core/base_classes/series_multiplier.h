@@ -30,7 +30,7 @@
 
 namespace piranha
 {
-  template <class Series1, class Series2>
+  template <class Series1, class Series2, class ArgsTuple>
     class series_multiplier
   {
       typedef typename Series1::term_type term_type;
@@ -52,13 +52,13 @@ namespace piranha
       >
       mult_set;
     public:
-      series_multiplier(const Series1 &s1, const Series2 &s2):
+      series_multiplier(const Series1 &s1, const Series2 &s2, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_cfs1(s1.template nth_index<0>().size()),m_cfs2(s2.template nth_index<0>().size()),
         m_keys1(s1.template nth_index<0>().size()),m_keys2(s2.template nth_index<0>().size()),m_set()
       {
         cache_series_terms(s1,m_cfs1,m_keys1);
         cache_series_terms(s2,m_cfs2,m_keys2);
-        plain_multiplication();
+        plain_multiplication(args_tuple);
       }
     private:
       template <class Series>
@@ -77,7 +77,7 @@ namespace piranha
         }
       }
       // Perform plain multiplication.
-      void plain_multiplication()
+      void plain_multiplication(const ArgsTuple &args_tuple)
       {
         typedef typename term_type::multiplication_result mult_res;
         const size_t size1 = m_cfs1.size(), size2 = m_cfs2.size();
@@ -94,7 +94,7 @@ namespace piranha
               constant_copy<key>::get(m_keys2[j]),
               res
             );
-            insert_multiplication_result<mult_res>::run(res,m_set);
+            insert_multiplication_result<mult_res>::run(res,m_set,args_tuple);
           }
         }
       }

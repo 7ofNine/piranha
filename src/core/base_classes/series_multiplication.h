@@ -65,7 +65,7 @@ namespace piranha
         }
         else
         {
-          series_multiplier<Derived,Derived2> mr(*derived_const_cast,s2);
+          series_multiplier<Derived,Derived2,ArgsTuple> mr(*derived_const_cast,s2,args_tuple);
           // Let's cache the iterators to the terms of the series into two separate vectors, in order to
           // speed up further manipulations.
           //std::valarray<const term_type *> vpt1;

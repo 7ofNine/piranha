@@ -28,39 +28,45 @@ namespace piranha
   struct base_insert_multiplication_result
   {
     protected:
-      template <class SingleRes, class MultSet>
-        static void insert_single_res(const SingleRes &mult_res, MultSet &mult_set)
+      template <class SingleRes, class MultSet, class ArgsTuple>
+        static void insert_single_res(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple)
       {
-        const typename MultSet::const_iterator it = mult_set.find(mult_res);
+        const typename MultSet::const_iterator it = mult_set.find(res);
         switch (it == mult_set.end())
         {
+          // Not duplicate, insert it.
           case true:
-            ;
+            mult_set.insert(res);
             break;
+          // Duplicate, modify existing.
           case false:
-            ;
+            it->m_cf.add(res.m_cf,args_tuple);
         }
       }
   };
 
+  // This gets specialised here and below to handle both the case in which the multiplication result
+  // is a single entity, and that in which multiplication result is a cons list of return values.
+  // This is needed to handle the case of Poisson series, in which we have two terms resulting from each
+  // term-by-term multiplication.
   template <class SingleRes>
     struct insert_multiplication_result:public base_insert_multiplication_result
   {
-    template <class MultSet>
-      static void run(const SingleRes &res, MultSet &mult_set)
+    template <class MultSet, class ArgsTuple>
+      static void run(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple)
     {
-      insert_single_res(res,mult_set);
+      insert_single_res(res,mult_set,args_tuple);
     }
   };
 
   template <class Head, class Tail>
     struct insert_multiplication_result<boost::tuples::cons<Head,Tail> >:public base_insert_multiplication_result
   {
-    template <class MultSet>
-      static void run(const boost::tuples::cons<Head,Tail> &mult_res, MultSet &mult_set)
+    template <class MultSet, class ArgsTuple>
+      static void run(const boost::tuples::cons<Head,Tail> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple)
     {
-      insert_single_res(mult_res.get_head(),mult_set);
-      insert_multiplication_result<Tail>::run(mult_res.get_tail(),mult_set);
+      insert_single_res(mult_res.get_head(),mult_set,args_tuple);
+      insert_multiplication_result<Tail>::run(mult_res.get_tail(),mult_set,args_tuple);
     }
   };
 
@@ -68,10 +74,10 @@ namespace piranha
     struct insert_multiplication_result<boost::tuples::cons<Head,boost::tuples::null_type> >:
     public base_insert_multiplication_result
   {
-    template <class MultSet>
-      static void run(const boost::tuples::cons<Head,boost::tuples::null_type> &mult_res, MultSet &mult_set)
+    template <class MultSet, class ArgsTuple>
+      static void run(const boost::tuples::cons<Head,boost::tuples::null_type> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple)
     {
-      insert_single_res(mult_res.get_head(),mult_set);
+      insert_single_res(mult_res.get_head(),mult_set,args_tuple);
     }
   };
 }
