@@ -25,6 +25,7 @@
 #include <string>
 
 #include "../base_classes/base_term.h"
+#include "../ntuple.h"
 
 namespace piranha
 {
@@ -42,7 +43,7 @@ namespace piranha
       /// Alias for trigonometric type.
       typedef Trig trig_type;
       /// Result of the multiplication of two terms.
-      typedef boost::tuple<poisson_series_term,poisson_series_term> multiplication_result;
+      typedef typename ntuple<poisson_series_term,2>::type multiplication_result;
       /// Default constructor.
       explicit poisson_series_term():ancestor::base_term() {}
       /// Ctor from string.
