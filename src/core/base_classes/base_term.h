@@ -223,7 +223,8 @@ namespace piranha
       /**
        * Will always return true, re-implement in derived term if necessary.
        */
-      bool is_canonical() const
+      template <class ArgsTuple>
+        bool is_canonical(const ArgsTuple &) const
       {
         return true;
       }

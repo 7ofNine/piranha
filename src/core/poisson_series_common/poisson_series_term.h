@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POISSON_SERIES_TERM_H
 #define PIRANHA_POISSON_SERIES_TERM_H
 
+#include <boost/tuple/tuple.hpp>
 #include <string>
 
 #include "../base_classes/base_term.h"
@@ -40,6 +41,8 @@ namespace piranha
       typedef Cf cf_type;
       /// Alias for trigonometric type.
       typedef Trig trig_type;
+      /// Result of the multiplication of two terms.
+      typedef boost::tuple<poisson_series_term,poisson_series_term> multiplication_result;
       /// Default constructor.
       explicit poisson_series_term():ancestor::base_term() {}
       /// Ctor from string.
@@ -75,7 +78,8 @@ namespace piranha
         return retval;
       }
       /// Check if the term is canonical.
-      bool is_canonical() const
+      template <class ArgsTuple>
+        bool is_canonical(const ArgsTuple &) const
       {
         return (ancestor::m_key.sign() > 0);
       }
@@ -85,10 +89,16 @@ namespace piranha
       template <class ArgsTuple>
         void canonicalise(const ArgsTuple &args_tuple)
       {
-        if (!is_canonical())
+        if (!is_canonical(args_tuple))
         {
           invert_trig_args(args_tuple);
         }
+      }
+      template <class Cf2>
+        static void multiply(const cf_type &cf1, const trig_type &trig1, const Cf2 &cf2, const trig_type &trig2,
+        multiplication_result &res)
+      {
+
       }
     private:
       // Invert the sign of trigonometric multipliers.
