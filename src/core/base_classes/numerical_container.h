@@ -151,11 +151,13 @@ namespace piranha
       {
         return mult_by_generic(x.g_value());
       }
-      Derived &divide_by(int n)
+      template <class ArgsTuple>
+        Derived &divide_by(const int &n, const ArgsTuple &)
       {
         return divide_by_generic(n);
       }
-      Derived &divide_by(const double &x)
+      template <class ArgsTuple>
+        Derived &divide_by(const double &x, const ArgsTuple &)
       {
         return divide_by_generic(x);
       }
