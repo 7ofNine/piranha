@@ -65,36 +65,10 @@ namespace piranha
         }
         else
         {
-          series_multiplier<Derived,Derived2,ArgsTuple> mr(*derived_const_cast,s2,args_tuple);
-          // Let's cache the iterators to the terms of the series into two separate vectors, in order to
-          // speed up further manipulations.
-          //std::valarray<const term_type *> vpt1;
-          //std::valarray<const term_type2 *> vpt2;
-          //cache_terms_pointers(vpt1);
-          //s2.cache_terms_pointers(vpt2);
-          // Create the truncator class.
-          //Truncator<Derived,Derived2> trunc(*derived_const_cast,s2);
-
-
-
+          series_multiplier<Derived,Derived2,ArgsTuple> mr(*derived_const_cast,s2,retval,args_tuple);
         }
         // Finally, swap with the terms we have accumulated in the return series.
         derived_cast->swap_terms(retval);
-      }
-    protected:
-      template <class Term>
-        void cache_terms_pointers(std::valarray<const Term *> &v) const
-      {
-        typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-        const size_t l = derived_const_cast->template nth_index<0>().size();
-        v.resize(l);
-        size_t i=0;
-        const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();;
-        for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
-        {
-          v[i]=&(*it);
-          ++i;
-        }
       }
   };
 }

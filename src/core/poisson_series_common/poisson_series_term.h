@@ -95,11 +95,44 @@ namespace piranha
           invert_trig_args(args_tuple);
         }
       }
-      template <class Cf2>
+      /// Term multiplication.
+      /**
+       * NOTE: the result of multiplication here _must_ be canonical.
+       */
+      template <class Cf2, class ArgsTuple>
         static void multiply(const cf_type &cf1, const trig_type &trig1, const Cf2 &cf2, const trig_type &trig2,
-        multiplication_result &res)
+        multiplication_result &res, const ArgsTuple &args_tuple)
       {
-
+        // Perform the trigonometric multiplication.
+        trig1.multiply(trig2,res.template get<0>().m_key,res.template get<1>().m_key);
+        // Handle coefficient multiplication. Do the first coefficient, then assign the second one.
+        // TODO: maybe provide the semantics to coefficients for something like this:
+        // cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,args_tuple),
+        // so that we can avoid a copy.
+        res.template get<0>().m_cf=cf1;
+        res.template get<0>().m_cf.mult_by(cf2,args_tuple);
+        res.template get<0>().m_cf.divide_by(2,args_tuple);
+        res.template get<1>().m_cf=res.template get<0>().m_cf;
+        // Now adjust the signs according to werner's formulas.
+        if (trig1.flavour() == trig2.flavour())
+        {
+          res.template get<0>().m_key.flavour()=res.template get<1>().m_key.flavour()=true;
+          if(!trig1.flavour())
+          {
+            res.template get<1>().m_cf.invert_sign(args_tuple);
+          }
+        }
+        else
+        {
+          res.template get<0>().m_key.flavour()=res.template get<1>().m_key.flavour()=false;
+          if(trig1.flavour())
+          {
+            res.template get<0>().m_cf.invert_sign(args_tuple);
+          }
+        }
+        // Finally, canonicalise the retval terms.
+        res.template get<0>().canonicalise(args_tuple);
+        res.template get<1>().canonicalise(args_tuple);
       }
     private:
       // Invert the sign of trigonometric multipliers.

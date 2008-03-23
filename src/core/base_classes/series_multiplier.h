@@ -25,14 +25,16 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <valarray>
 
-#include "series_multiplier_mp.h"
+#include "../settings_manager.h"
 #include "../type_traits.h"
+#include "series_multiplier_mp.h"
 
 namespace piranha
 {
   template <class Series1, class Series2, class ArgsTuple>
     class series_multiplier
   {
+    protected:
       typedef typename Series1::term_type term_type;
       typedef typename Series1::term_type::cf_type cf1;
       typedef typename Series2::term_type::cf_type cf2;
@@ -40,8 +42,6 @@ namespace piranha
       typedef typename constant_copy<cf1>::type sm_cf1;
       typedef typename constant_copy<cf2>::type sm_cf2;
       typedef typename constant_copy<key>::type sm_key;
-      typedef typename Series1::const_sorted_iterator const_sorted_iterator1;
-      typedef typename Series2::const_sorted_iterator const_sorted_iterator2;
       typedef boost::multi_index_container
       <
         term_type,
@@ -52,15 +52,17 @@ namespace piranha
       >
       mult_set;
     public:
-      series_multiplier(const Series1 &s1, const Series2 &s2, const ArgsTuple &args_tuple):
-        m_s1(s1),m_s2(s2),m_cfs1(s1.template nth_index<0>().size()),m_cfs2(s2.template nth_index<0>().size()),
+      series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+        m_s1(s1),m_s2(s2),m_retval(retval),m_cfs1(s1.template nth_index<0>().size()),m_cfs2(s2.template nth_index<0>().size()),
         m_keys1(s1.template nth_index<0>().size()),m_keys2(s2.template nth_index<0>().size()),m_set()
       {
+        m_set.max_load_factor(settings_manager::get_load_factor());
         cache_series_terms(s1,m_cfs1,m_keys1);
         cache_series_terms(s2,m_cfs2,m_keys2);
         plain_multiplication(args_tuple);
+        insert_plain_result_into_retval(args_tuple);
       }
-    private:
+    protected:
       template <class Series>
         void cache_series_terms(const Series &s,
         std::valarray<typename constant_copy<typename Series::term_type::cf_type>::type> &cfs,
@@ -92,16 +94,32 @@ namespace piranha
               constant_copy<key>::get(m_keys1[i]),
               constant_copy<cf2>::get(m_cfs2[j]),
               constant_copy<key>::get(m_keys2[j]),
-              res
-            );
+              res,args_tuple);
             insert_multiplication_result<mult_res>::run(res,m_set,args_tuple);
           }
+        }
+      }
+      // After the multiplication has been performed and the result stored in the temporary hash table,
+      // fetch the terms from there and put them into retval.
+      void insert_plain_result_into_retval(const ArgsTuple &args_tuple)
+      {
+        typedef typename mult_set::const_iterator hash_iterator;
+        typedef typename Series1::const_sorted_iterator sorted_iterator;
+        term_type term;
+        sorted_iterator it_hint = m_retval.template nth_index<0>().end();
+        const hash_iterator it_f = m_set.end();
+        for (hash_iterator it = m_set.begin(); it != it_f; ++it)
+        {
+          term.m_cf = it->m_cf;
+          term.m_key = it->m_key;
+          it_hint = m_retval.template insert<false,true>(term,args_tuple,it_hint);
         }
       }
     protected:
       // References to the series.
       const Series1           &m_s1;
       const Series2           &m_s2;
+      Series1                 &m_retval;
       // Vectors of input coefficients converted for representation during series multiplication.
       std::valarray<sm_cf1>   m_cfs1;
       std::valarray<sm_cf2>   m_cfs2;

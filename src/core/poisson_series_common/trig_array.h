@@ -66,6 +66,8 @@ namespace piranha
       // Math.
       /// Multiplication.
       /**
+       * Used in poisson_series_term multiplication.
+       * TODO: update docs below.
        * Multiplication of two trigonometric functions using Werner's formulas, i.e.
        * \f[
        * C\cos\alpha\cdot\cos\beta=
@@ -79,8 +81,7 @@ namespace piranha
        * @param[out] ret1 first return value.
        * @param[out] ret2 second return value.
        */
-      template <class ResultType>
-        void multiply(const trig_array &t2, ResultType &ret) const
+      void multiply(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
       // NOTE: we are not using here a general version of vector addition/subtraction
       // because this way we can do two operations (+ and -) every cycle. This is a performance
       // critical part, so the optimization should be worth the hassle.
@@ -89,18 +90,21 @@ namespace piranha
         // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
         // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
-        p_assert(ret.template get<0>().size() == max_w);
-        p_assert(ret.template get<1>().size() == max_w);
+        // Adjust the width of retvals, if needed.
+        ret1.resize(max_w);
+        ret2.resize(max_w);
+        p_assert(ret1.size() == max_w);
+        p_assert(ret2.size() == max_w);
         size_type i;
-        for (i=0;i<min_w;++i)
+        for (i=0; i < min_w; ++i)
         {
-          ret.template get<0>()[i]=(*this)[i]-t2[i];
-          ret.template get<1>()[i]=(*this)[i]+t2[i];
+          ret1[i]=(*this)[i]-t2[i];
+          ret2[i]=(*this)[i]+t2[i];
         }
-        for (;i<max_w;++i)
+        for (; i < max_w; ++i)
         {
-          ret.template get<0>()[i]=(*this)[i];
-          ret.template get<1>()[i]=(*this)[i];
+          ret1[i]=(*this)[i];
+          ret2[i]=(*this)[i];
         }
       }
       // End INTERFACE definition.
@@ -113,7 +117,7 @@ namespace piranha
   {
     typedef trig_array<__PIRANHA_TRIG_ARRAY_TP> const * type;
     static const trig_array<__PIRANHA_TRIG_ARRAY_TP> &get(type p) {return *p;}
-    static void assign(type res, const trig_array<__PIRANHA_TRIG_ARRAY_TP> &source) {res=&source;}
+    static void assign(type &res, const trig_array<__PIRANHA_TRIG_ARRAY_TP> &source) {res=&source;}
   };
 }
 

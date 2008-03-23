@@ -57,6 +57,7 @@ namespace piranha
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
+      template <class Series1, class Series2, class ArgsTuple> friend class series_multiplier;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
