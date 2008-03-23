@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SERIES_MULTIPLIER_H
-#define PIRANHA_SERIES_MULTIPLIER_H
+#ifndef PIRANHA_PLAIN_SERIES_MULTIPLIER_H
+#define PIRANHA_PLAIN_SERIES_MULTIPLIER_H
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -27,12 +27,12 @@
 
 #include "../settings_manager.h"
 #include "../type_traits.h"
-#include "series_multiplier_mp.h"
+#include "plain_series_multiplier_mp.h"
 
 namespace piranha
 {
   template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
-    class series_multiplier
+    class plain_series_multiplier
   {
       typedef Truncator<Series1,Series2,ArgsTuple> truncator_type;
     protected:
@@ -53,7 +53,7 @@ namespace piranha
       >
       mult_set;
     public:
-      series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+      plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set()
       {
         // Set proper load factor for hash set.
