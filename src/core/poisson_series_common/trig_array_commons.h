@@ -56,6 +56,7 @@ namespace piranha
         // We assert like this because we want to make sure we don't go out of boundaries,
         // and because in case of fixed-width we may have smaller size of v wrt to "real" size.
         p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
+        (void)args_tuple;
         derived_const_cast->print_elements(out_stream);
         // Print the separator before flavour only if we actually printed something above.
         if (derived_const_cast->size() != 0)
