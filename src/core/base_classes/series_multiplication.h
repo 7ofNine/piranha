@@ -23,8 +23,6 @@
 
 #include <valarray> // For terms pointers caching.
 
-#include "truncators.h" // For default truncation methodology.
-
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 #define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, template <class, class, class, \
@@ -34,7 +32,7 @@
 
 namespace piranha
 {
-  template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL = no_truncation>
+  template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
     class series_multiplication
   {
     protected:

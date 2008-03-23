@@ -30,6 +30,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/plain_series_multiplier.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/truncators.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
@@ -38,7 +39,7 @@
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
-#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, plain_series_multiplier >
+#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, plain_series_multiplier, no_truncation >
 
 namespace piranha
 {
