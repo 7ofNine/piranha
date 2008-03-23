@@ -23,21 +23,21 @@
 
 #include <valarray> // For terms pointers caching.
 
-#include "series_multiplier.h"
 #include "truncators.h" // For default truncation methodology.
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, template <class, class> class Truncator
-#define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Truncator
+#define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, template <class, class, class, \
+  template <class, class, class> class Truncator> class Multiplier, \
+  template <class, class, class> class Truncator
+#define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 namespace piranha
 {
   template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL = no_truncation>
     class series_multiplication
   {
-    //private:
-    public:
+    protected:
       // Multiply term-by-term with another series, and place the result into retval.
       // Preconditions:
       // - args_tuple must be the result of a merging of arguments between the two series being multiplied,
@@ -65,7 +65,7 @@ namespace piranha
         }
         else
         {
-          series_multiplier<Derived,Derived2,ArgsTuple> mr(*derived_const_cast,s2,retval,args_tuple);
+          Multiplier<Derived,Derived2,ArgsTuple,Truncator> mr(*derived_const_cast,s2,retval,args_tuple);
         }
         // Finally, swap with the terms we have accumulated in the return series.
         derived_cast->swap_terms(retval);

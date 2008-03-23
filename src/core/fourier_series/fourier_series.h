@@ -28,6 +28,7 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/series_multiplication.h"
+#include "../base_classes/series_multiplier.h"
 #include "../base_classes/named_series.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
@@ -37,7 +38,7 @@
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
-#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, series_multiplier >
 
 namespace piranha
 {
@@ -57,7 +58,8 @@ namespace piranha
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
-      template <class Series1, class Series2, class ArgsTuple> friend class series_multiplier;
+      template <class Series1, class Series2, class ArgsTuple, template <class, class, class > class Truncator>
+        friend class series_multiplier;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;

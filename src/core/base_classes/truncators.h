@@ -23,11 +23,17 @@
 
 namespace piranha
 {
-  template <class Series1, class Series2>
+  template <class Series1, class Series2, class ArgsTuple>
     class no_truncation
   {
+      typedef typename Series1::term_type term_type;
+      typedef typename Series1::term_type::cf_type cf_type1;
+      typedef typename Series2::term_type::cf_type cf_type2;
+      typedef typename Series1::term_type::key_type key_type;
     public:
-      no_truncation(const Series1 &, const Series2 &) {}
+      no_truncation(const Series1 &, const Series2 &, const ArgsTuple &) {}
+      bool accept_term(const term_type &) const {return true;}
+      bool skip_from_here(const cf_type1 &, const key_type &, const cf_type2 &, const key_type &) const {return false;}
   };
 }
 

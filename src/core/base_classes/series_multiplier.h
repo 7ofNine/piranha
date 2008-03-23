@@ -31,9 +31,10 @@
 
 namespace piranha
 {
-  template <class Series1, class Series2, class ArgsTuple>
+  template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
     class series_multiplier
   {
+      typedef Truncator<Series1,Series2,ArgsTuple> truncator_type;
     protected:
       typedef typename Series1::term_type term_type;
       typedef typename Series1::term_type::cf_type cf1;
@@ -56,11 +57,12 @@ namespace piranha
         m_s1(s1),m_s2(s2),m_retval(retval),m_cfs1(s1.template nth_index<0>().size()),m_cfs2(s2.template nth_index<0>().size()),
         m_keys1(s1.template nth_index<0>().size()),m_keys2(s2.template nth_index<0>().size()),m_set()
       {
+        // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
         cache_series_terms(s1,m_cfs1,m_keys1);
         cache_series_terms(s2,m_cfs2,m_keys2);
         plain_multiplication(args_tuple);
-        insert_plain_result_into_retval(args_tuple);
+        plain_insert_result_into_retval(args_tuple);
       }
     protected:
       template <class Series>
@@ -82,6 +84,7 @@ namespace piranha
       void plain_multiplication(const ArgsTuple &args_tuple)
       {
         typedef typename term_type::multiplication_result mult_res;
+        truncator_type trunc(m_s1,m_s2,args_tuple);
         const size_t size1 = m_cfs1.size(), size2 = m_cfs2.size();
         p_assert(size1 == m_keys1.size() and size2 == m_keys2.size());
         mult_res res;
@@ -89,19 +92,27 @@ namespace piranha
         {
           for (size_t j = 0; j < size2; ++j)
           {
+            if (trunc.skip_from_here(
+              constant_copy<cf1>::get(m_cfs1[i]),
+              constant_copy<key>::get(m_keys1[i]),
+              constant_copy<cf2>::get(m_cfs2[j]),
+              constant_copy<key>::get(m_keys2[j])))
+            {
+              break;
+            }
             term_type::multiply(
               constant_copy<cf1>::get(m_cfs1[i]),
               constant_copy<key>::get(m_keys1[i]),
               constant_copy<cf2>::get(m_cfs2[j]),
               constant_copy<key>::get(m_keys2[j]),
               res,args_tuple);
-            insert_multiplication_result<mult_res>::run(res,m_set,args_tuple);
+            insert_multiplication_result<mult_res>::run(res,m_set,args_tuple,trunc);
           }
         }
       }
       // After the multiplication has been performed and the result stored in the temporary hash table,
       // fetch the terms from there and put them into retval.
-      void insert_plain_result_into_retval(const ArgsTuple &args_tuple)
+      void plain_insert_result_into_retval(const ArgsTuple &args_tuple)
       {
         typedef typename mult_set::const_iterator hash_iterator;
         typedef typename Series1::const_sorted_iterator sorted_iterator;

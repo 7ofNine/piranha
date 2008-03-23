@@ -78,7 +78,7 @@ namespace piranha
   {
     typedef cf_series<__PIRANHA_CF_SERIES_TP> const * type;
     static const cf_series<__PIRANHA_CF_SERIES_TP> &get(type p) {return *p;}
-    static void assign(type res, const cf_series<__PIRANHA_CF_SERIES_TP> &source) {res=&source;}
+    static void assign(type &res, const cf_series<__PIRANHA_CF_SERIES_TP> &source) {res=&source;}
   };
 }
 

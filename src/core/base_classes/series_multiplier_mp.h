@@ -28,19 +28,27 @@ namespace piranha
   struct base_insert_multiplication_result
   {
     protected:
-      template <class SingleRes, class MultSet, class ArgsTuple>
-        static void insert_single_res(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple)
+      template <class SingleRes, class MultSet, class ArgsTuple, class Truncator>
+        static void insert_single_res(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple,
+        const Truncator &trunc)
       {
         const typename MultSet::const_iterator it = mult_set.find(res);
-        switch (it == mult_set.end())
+        switch (trunc.accept_term(res))
         {
-          // Not duplicate, insert it.
           case true:
-            mult_set.insert(res);
+            switch (it == mult_set.end())
+            {
+              // Not duplicate, insert it.
+              case true:
+                mult_set.insert(res);
+                break;
+              // Duplicate, modify existing.
+              case false:
+                it->m_cf.add(res.m_cf,args_tuple);
+            }
             break;
-          // Duplicate, modify existing.
           case false:
-            it->m_cf.add(res.m_cf,args_tuple);
+            ;
         }
       }
   };
@@ -52,21 +60,22 @@ namespace piranha
   template <class SingleRes>
     struct insert_multiplication_result:public base_insert_multiplication_result
   {
-    template <class MultSet, class ArgsTuple>
-      static void run(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple)
+    template <class MultSet, class ArgsTuple, class Truncator>
+      static void run(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple, const Truncator &trunc)
     {
-      insert_single_res(res,mult_set,args_tuple);
+      insert_single_res(res,mult_set,args_tuple,trunc);
     }
   };
 
   template <class Head, class Tail>
     struct insert_multiplication_result<boost::tuples::cons<Head,Tail> >:public base_insert_multiplication_result
   {
-    template <class MultSet, class ArgsTuple>
-      static void run(const boost::tuples::cons<Head,Tail> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple)
+    template <class MultSet, class ArgsTuple, class Truncator>
+      static void run(const boost::tuples::cons<Head,Tail> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple,
+      const Truncator &trunc)
     {
-      insert_single_res(mult_res.get_head(),mult_set,args_tuple);
-      insert_multiplication_result<Tail>::run(mult_res.get_tail(),mult_set,args_tuple);
+      insert_single_res(mult_res.get_head(),mult_set,args_tuple,trunc);
+      insert_multiplication_result<Tail>::run(mult_res.get_tail(),mult_set,args_tuple,trunc);
     }
   };
 
@@ -74,10 +83,11 @@ namespace piranha
     struct insert_multiplication_result<boost::tuples::cons<Head,boost::tuples::null_type> >:
     public base_insert_multiplication_result
   {
-    template <class MultSet, class ArgsTuple>
-      static void run(const boost::tuples::cons<Head,boost::tuples::null_type> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple)
+    template <class MultSet, class ArgsTuple, class Truncator>
+      static void run(const boost::tuples::cons<Head,boost::tuples::null_type> &mult_res, MultSet &mult_set,
+      const ArgsTuple &args_tuple, const Truncator &trunc)
     {
-      insert_single_res(mult_res.get_head(),mult_set,args_tuple);
+      insert_single_res(mult_res.get_head(),mult_set,args_tuple,trunc);
     }
   };
 }
