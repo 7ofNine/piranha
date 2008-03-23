@@ -68,7 +68,6 @@ namespace piranha
         Derived &mult_by(const Derived2 &);
     protected:
       void construct_from_file(const std::string &);
-      void construct_from_args(const args_tuple_type &);
     private:
       void print_plain(std::ostream &, int) const;
       void print_latex(std::ostream &, int) const;

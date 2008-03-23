@@ -56,16 +56,6 @@ namespace piranha
     }
   }
 
-  /// Build series from arguments tuple.
-  /**
-   * Simply assigns input arguments tuple to named_series::m_arguments.
-   */
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_args(const args_tuple_type &args_tuple)
-  {
-    m_arguments = args_tuple;
-  }
-
   // Meta-programming for appending an argument.
   template <class ArgsDescr>
     struct named_series_append_arg
@@ -232,11 +222,18 @@ namespace piranha
     template <class Derived2>
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
   {
-    Derived retval(m_arguments);
+    // Build an empty retval and assign it the same arguments as this.
+    Derived retval;
+    retval.m_arguments = m_arguments;
+    // Build a tuple of layouts.
     typename ntuple<std::vector<std::pair<bool,size_t> >,n_arguments_sets>::type l;
+    // Get the relative layouts of this wrt ps2 and put the result into l.
     named_series_get_layout<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
+    // Apply the layout to the arguments tuple of retval.
     named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments,ps2.m_arguments,l);
+    // Apply the layout to all terms of this, which will be inserted into retval.
     derived_cast->apply_layout_to_terms(retval.m_arguments,l,retval);
+    // Finally, swap the contents of retval with this.
     swap(retval);
   }
 }
