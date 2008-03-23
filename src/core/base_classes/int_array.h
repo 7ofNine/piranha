@@ -217,9 +217,12 @@ namespace piranha
        */
       void resize(const size_type &new_size)
       {
-        if (m_size == new_size)
+        switch (m_size == new_size)
         {
-          return;
+          case true:
+            return;
+          case false:
+            ;
         }
         // Allocate space for the new size.
         value_type *new_ptr = allocator.allocate(new_size);
