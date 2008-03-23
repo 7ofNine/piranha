@@ -54,15 +54,18 @@ namespace piranha
       mult_set;
     public:
       series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        m_s1(s1),m_s2(s2),m_retval(retval),m_cfs1(s1.template nth_index<0>().size()),m_cfs2(s2.template nth_index<0>().size()),
-        m_keys1(s1.template nth_index<0>().size()),m_keys2(s2.template nth_index<0>().size()),m_set()
+        m_s1(s1),m_s2(s2),m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set()
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
-        cache_series_terms(s1,m_cfs1,m_keys1);
-        cache_series_terms(s2,m_cfs2,m_keys2);
-        plain_multiplication(args_tuple);
-        plain_insert_result_into_retval(args_tuple);
+      }
+      void perform_multiplication()
+      {
+        adjust_sizes();
+        cache_series_terms(m_s1,m_cfs1,m_keys1);
+        cache_series_terms(m_s2,m_cfs2,m_keys2);
+        plain_multiplication(m_args_tuple);
+        plain_insert_result_into_retval(m_args_tuple);
       }
     protected:
       template <class Series>
@@ -126,11 +129,20 @@ namespace piranha
           it_hint = m_retval.template insert<false,true>(term,args_tuple,it_hint);
         }
       }
+      void adjust_sizes()
+      {
+        const size_t size1 = m_s1.template nth_index<0>().size(), size2 = m_s2.template nth_index<0>().size();
+        m_cfs1.resize(size1);
+        m_cfs2.resize(size2);
+        m_keys1.resize(size1);
+        m_keys2.resize(size2);
+      }
     protected:
       // References to the series.
       const Series1           &m_s1;
       const Series2           &m_s2;
       Series1                 &m_retval;
+      const ArgsTuple         &m_args_tuple;
       // Vectors of input coefficients converted for representation during series multiplication.
       std::valarray<sm_cf1>   m_cfs1;
       std::valarray<sm_cf2>   m_cfs2;

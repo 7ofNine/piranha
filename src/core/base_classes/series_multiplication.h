@@ -65,7 +65,8 @@ namespace piranha
         }
         else
         {
-          Multiplier<Derived,Derived2,ArgsTuple,Truncator> mr(*derived_const_cast,s2,retval,args_tuple);
+          Multiplier<Derived,Derived2,ArgsTuple,Truncator> m(*derived_const_cast,s2,retval,args_tuple);
+          m.perform_multiplication();
         }
         // Finally, swap with the terms we have accumulated in the return series.
         derived_cast->swap_terms(retval);
