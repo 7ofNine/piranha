@@ -42,11 +42,15 @@ namespace piranha
     typedef std::complex<double> type;
   };
 
+  /// Representation used for coefficients and keys of piranha::base_series object during multiplication.
   template <class T>
-    struct constant_copy
+    struct series_mult_rep
   {
+    /// Representation type.
     typedef T type;
-    static const T &get(const T &x) {return x;}
+    /// Get a const reference to the element represented by x.
+    static const T &get(const type &x) {return x;}
+    /// Assign T value source to the representation type res.
     static void assign(type &res, const T &source) {res=source;}
   };
 }

@@ -111,9 +111,9 @@ namespace piranha
       //-------------------------------------------------------
   };
 
-  // Specialise to make a reference when requesting a constant copy.
+  // Representation for trigonometric array during series multiplication is a const pointer.
   template <__PIRANHA_TRIG_ARRAY_TP_DECL>
-    struct constant_copy<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
+    struct series_mult_rep<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
   {
     typedef trig_array<__PIRANHA_TRIG_ARRAY_TP> const * type;
     static const trig_array<__PIRANHA_TRIG_ARRAY_TP> &get(type p) {return *p;}

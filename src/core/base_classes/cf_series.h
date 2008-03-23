@@ -72,9 +72,9 @@ namespace piranha
         Derived &mult_by_generic(const T &, const ArgsTuple &);
   };
 
-  // Specialise to make a reference when requesting a constant copy.
+  // Representation for coefficient series during series multiplication is a const pointer.
   template <__PIRANHA_CF_SERIES_TP_DECL>
-    struct constant_copy<cf_series<__PIRANHA_CF_SERIES_TP> >
+    struct series_mult_rep<cf_series<__PIRANHA_CF_SERIES_TP> >
   {
     typedef cf_series<__PIRANHA_CF_SERIES_TP> const * type;
     static const cf_series<__PIRANHA_CF_SERIES_TP> &get(type p) {return *p;}

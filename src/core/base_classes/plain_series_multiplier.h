@@ -40,9 +40,9 @@ namespace piranha
       typedef typename Series1::term_type::cf_type cf1;
       typedef typename Series2::term_type::cf_type cf2;
       typedef typename Series1::term_type::key_type key;
-      typedef typename constant_copy<cf1>::type sm_cf1;
-      typedef typename constant_copy<cf2>::type sm_cf2;
-      typedef typename constant_copy<key>::type sm_key;
+      typedef typename series_mult_rep<cf1>::type sm_cf1;
+      typedef typename series_mult_rep<cf2>::type sm_cf2;
+      typedef typename series_mult_rep<key>::type sm_key;
       typedef boost::multi_index_container
       <
         term_type,
@@ -70,16 +70,16 @@ namespace piranha
     protected:
       template <class Series>
         void cache_series_terms(const Series &s,
-        std::valarray<typename constant_copy<typename Series::term_type::cf_type>::type> &cfs,
-        std::valarray<typename constant_copy<typename Series::term_type::key_type>::type> &keys)
+        std::valarray<typename series_mult_rep<typename Series::term_type::cf_type>::type> &cfs,
+        std::valarray<typename series_mult_rep<typename Series::term_type::key_type>::type> &keys)
       {
         typedef typename Series::const_sorted_iterator const_sorted_iterator;
         const const_sorted_iterator it_f = s.template nth_index<0>().end();
         size_t i=0;
         for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it)
         {
-          constant_copy<typename Series::term_type::cf_type>::assign(cfs[i],it->m_cf); 
-          constant_copy<typename Series::term_type::key_type>::assign(keys[i],it->m_key);
+          series_mult_rep<typename Series::term_type::cf_type>::assign(cfs[i],it->m_cf); 
+          series_mult_rep<typename Series::term_type::key_type>::assign(keys[i],it->m_key);
           ++i;
         }
       }
@@ -96,18 +96,18 @@ namespace piranha
           for (size_t j = 0; j < size2; ++j)
           {
             if (trunc.skip_from_here(
-              constant_copy<cf1>::get(m_cfs1[i]),
-              constant_copy<key>::get(m_keys1[i]),
-              constant_copy<cf2>::get(m_cfs2[j]),
-              constant_copy<key>::get(m_keys2[j])))
+              series_mult_rep<cf1>::get(m_cfs1[i]),
+              series_mult_rep<key>::get(m_keys1[i]),
+              series_mult_rep<cf2>::get(m_cfs2[j]),
+              series_mult_rep<key>::get(m_keys2[j])))
             {
               break;
             }
             term_type::multiply(
-              constant_copy<cf1>::get(m_cfs1[i]),
-              constant_copy<key>::get(m_keys1[i]),
-              constant_copy<cf2>::get(m_cfs2[j]),
-              constant_copy<key>::get(m_keys2[j]),
+              series_mult_rep<cf1>::get(m_cfs1[i]),
+              series_mult_rep<key>::get(m_keys1[i]),
+              series_mult_rep<cf2>::get(m_cfs2[j]),
+              series_mult_rep<key>::get(m_keys2[j]),
               res,args_tuple);
             insert_multiplication_result<mult_res>::run(res,m_set,args_tuple,trunc);
           }
