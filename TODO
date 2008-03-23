@@ -3,3 +3,4 @@
 - Use reference counted pointer to psymbols to make them live only as necessary?
 - Unify stream_manager and settings?
 - Unify memory handling (piranha_malloc, buffer, memory.h).
+- Move meta-programming in base_series_* into own headers to improve readability.
