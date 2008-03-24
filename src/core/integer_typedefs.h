@@ -25,6 +25,12 @@
 
 namespace piranha
 {
+  /// Integer selector.
+  /**
+   * It detects wehther the platform is 64bit or 32bit, and sets maximum and minimum
+   * "fast" integer types accordingly, using the boost integer libraries. If the platform is
+   * other than 32bit or 64bit it won't define any type.
+   */
   template <int SizeOfPointer>
     struct int_selector {};
 
@@ -57,9 +63,9 @@ namespace piranha
   typedef boost::int32_t int32;
   /// Alias for 64bit integer.
   typedef boost::int64_t int64;
-  /// Maximum fast integer.
+  /// Maximum fast integer, detected through piranha::int_selector.
   typedef int_selector<sizeof(void *)>::max_fast_int max_fast_int;
-  /// Maximum fast unsigned integer.
+  /// Maximum fast unsigned integer, detected through piranha::int_selector.
   typedef int_selector<sizeof(void *)>::max_fast_uint max_fast_uint;
 }
 #endif
