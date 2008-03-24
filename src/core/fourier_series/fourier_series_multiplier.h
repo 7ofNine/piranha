@@ -22,6 +22,7 @@
 #define PIRANHA_FOURIER_SERIES_MULTIPLIER_H
 
 #include "../base_classes/plain_series_multiplier.h"
+#include "../integer_typedefs.h"
 
 namespace piranha
 {
@@ -56,6 +57,8 @@ namespace piranha
         ancestor::plain_multiplication();
         ancestor::plain_insert_result_into_retval();
       }
+    private:
+      
   };
 }
 

@@ -72,13 +72,13 @@ namespace piranha
 #endif
   }
 
-/// Set path to theories of motion.
+  /// Set path to theories of motion.
   void settings_manager::set_path(const std::string &str)
   {
     path=str;
   }
 
-/// Get version.
+  /// Get version.
   const std::string &settings_manager::get_version()
   {
     return version;

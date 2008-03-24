@@ -34,6 +34,13 @@
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 
+#else // __GNUC__
+
+#warning Only the GNU compiler is officially supported.
+
+#define likely(exp)   exp
+#define unlikely(exp) exp
+
 #endif // __GNUC__
 
 // Minimum number of operations needed to trigger the visualization of progress bars.
