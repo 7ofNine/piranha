@@ -12,7 +12,6 @@ ENDIF(BUILD_PYRANHA_SP)
 SET(SRC_LIST ${SRC_LIST}
   memory.cpp
 #  norm_truncation.cpp
-  buffer.cpp
   settings_manager.cpp
   stats.cpp
   astro.cpp
