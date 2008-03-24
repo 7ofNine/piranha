@@ -59,13 +59,10 @@ namespace piranha
   typedef boost::int16_t int16;
   /// Alias for unsigned 16bit integer.
   typedef boost::uint16_t uint16;
-  /// Alias for 32bit integer.
-  typedef boost::int32_t int32;
-  /// Alias for 64bit integer.
-  typedef boost::int64_t int64;
   /// Maximum fast integer, detected through piranha::int_selector.
   typedef int_selector<sizeof(void *)>::max_fast_int max_fast_int;
   /// Maximum fast unsigned integer, detected through piranha::int_selector.
   typedef int_selector<sizeof(void *)>::max_fast_uint max_fast_uint;
 }
+
 #endif
