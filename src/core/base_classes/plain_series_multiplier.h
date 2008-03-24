@@ -31,14 +31,24 @@
 
 namespace piranha
 {
+  /// Generic series multiplier.
+  /**
+   * Called from piranha::series_multiplication to multiply two piranha::base_series. This multiplier is generic,
+   * provided that certain methods are implemented in the term class used for the series.
+   */
   template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
     class plain_series_multiplier
   {
-      typedef Truncator<Series1,Series2,ArgsTuple> truncator_type;
     protected:
+      /// Alias for the truncator type.
+      typedef Truncator<Series1,Series2,ArgsTuple> truncator_type;
+      /// Alias for term type of first input series and return value series.
       typedef typename Series1::term_type term_type;
+      /// Alias for the coefficient type of the first input series.
       typedef typename Series1::term_type::cf_type cf1;
+      /// Alias for the coefficient type of the second input series.
       typedef typename Series2::term_type::cf_type cf2;
+      /// Alias for the key type (common to both input series).
       typedef typename Series1::term_type::key_type key;
       typedef typename series_mult_rep<cf1>::type sm_cf1;
       typedef typename series_mult_rep<cf2>::type sm_cf2;
@@ -64,8 +74,8 @@ namespace piranha
         adjust_sizes();
         cache_series_terms(m_s1,m_cfs1,m_keys1);
         cache_series_terms(m_s2,m_cfs2,m_keys2);
-        plain_multiplication(m_args_tuple);
-        plain_insert_result_into_retval(m_args_tuple);
+        plain_multiplication();
+        plain_insert_result_into_retval();
       }
     protected:
       template <class Series>
@@ -84,10 +94,10 @@ namespace piranha
         }
       }
       // Perform plain multiplication.
-      void plain_multiplication(const ArgsTuple &args_tuple)
+      void plain_multiplication()
       {
         typedef typename term_type::multiplication_result mult_res;
-        truncator_type trunc(m_s1,m_s2,args_tuple);
+        truncator_type trunc(m_s1,m_s2,m_args_tuple);
         const size_t size1 = m_cfs1.size(), size2 = m_cfs2.size();
         p_assert(size1 == m_keys1.size() and size2 == m_keys2.size());
         mult_res res;
@@ -108,14 +118,14 @@ namespace piranha
               series_mult_rep<key>::get(m_keys1[i]),
               series_mult_rep<cf2>::get(m_cfs2[j]),
               series_mult_rep<key>::get(m_keys2[j]),
-              res,args_tuple);
-            insert_multiplication_result<mult_res>::run(res,m_set,args_tuple,trunc);
+              res,m_args_tuple);
+            insert_multiplication_result<mult_res>::run(res,m_set,m_args_tuple,trunc);
           }
         }
       }
       // After the multiplication has been performed and the result stored in the temporary hash table,
       // fetch the terms from there and put them into retval.
-      void plain_insert_result_into_retval(const ArgsTuple &args_tuple)
+      void plain_insert_result_into_retval()
       {
         typedef typename mult_set::const_iterator hash_iterator;
         typedef typename Series1::const_sorted_iterator sorted_iterator;
@@ -126,7 +136,7 @@ namespace piranha
         {
           term.m_cf = it->m_cf;
           term.m_key = it->m_key;
-          it_hint = m_retval.template insert<false,true>(term,args_tuple,it_hint);
+          it_hint = m_retval.template insert<false,true>(term,m_args_tuple,it_hint);
         }
       }
       void adjust_sizes()
