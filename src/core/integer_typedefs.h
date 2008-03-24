@@ -25,6 +25,25 @@
 
 namespace piranha
 {
+  template <int SizeOfPointer>
+    struct int_selector {};
+
+  // Specialization for 32bit archs.
+  template <>
+    struct int_selector<4>
+  {
+    typedef boost::int32_t  max_fast_int;
+    typedef boost::uint32_t max_fast_uint;
+  };
+
+  // Specialization for 64bit archs.
+  template <>
+    struct int_selector<8>
+  {
+    typedef boost::int64_t  max_fast_int;
+    typedef boost::uint64_t max_fast_uint;
+  };
+
   // These are commonly used typedefs.
   /// Alias for 8bit integer.
   typedef boost::int8_t int8;
@@ -38,16 +57,9 @@ namespace piranha
   typedef boost::int32_t int32;
   /// Alias for 64bit integer.
   typedef boost::int64_t int64;
-#ifdef _PIRANHA_64BIT
-  /// Maximum fast integer (64-bits).
-  typedef boost::int64_t max_fast_int;
-  /// Maximum fast unsigned integer (64-bits).
-  typedef boost::uint64_t max_fast_uint;
-#else
-  /// Maximum fast integer (32-bits).
-  typedef boost::int32_t max_fast_int;
-  /// Maximum fast unsigned integer (32-bits).
-  typedef boost::uint32_t max_fast_uint;
-#endif
+  /// Maximum fast integer.
+  typedef int_selector<sizeof(void *)>::max_fast_int max_fast_int;
+  /// Maximum fast unsigned integer.
+  typedef int_selector<sizeof(void *)>::max_fast_uint max_fast_uint;
 }
 #endif
