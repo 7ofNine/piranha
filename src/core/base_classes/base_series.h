@@ -50,6 +50,11 @@ namespace piranha
       typedef typename term_type::key_type key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
+    public:
+      template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
+        SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
+      template <class Term2, class ArgsTuple, class SortedIterator>
+        SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -60,10 +65,6 @@ namespace piranha
         void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>
         void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
-      template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
-        SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-      template <class Term2, class ArgsTuple, class SortedIterator>
-        SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
       void swap_terms(Derived &);

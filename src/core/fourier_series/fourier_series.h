@@ -28,24 +28,24 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/series_multiplication.h"
-#include "../base_classes/plain_series_multiplier.h"
 #include "../base_classes/named_series.h"
-#include "../base_classes/truncators.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
-#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, class Allocator
-#define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Allocator
+#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, \
+  template <class, class, class, template <class, class, class> class> class Multiplier, \
+  template <class, class, class> class Truncator, class Allocator
+#define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
-#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, plain_series_multiplier, no_truncation >
+#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, Multiplier, Truncator>
 
 namespace piranha
 {
   template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
     class fourier_series:
-    protected __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
+    public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR
   {
@@ -59,8 +59,6 @@ namespace piranha
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
-      template <class Series1, class Series2, class ArgsTuple, template <class, class, class > class Truncator>
-        friend class plain_series_multiplier;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
