@@ -25,6 +25,7 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <valarray>
 
+#include "../p_assert.h"
 #include "../settings_manager.h"
 #include "../type_traits.h"
 #include "plain_series_multiplier_mp.h"
@@ -73,7 +74,7 @@ namespace piranha
       }
       void perform_multiplication()
       {
-        adjust_sizes();
+        adjust_input_sizes();
         cache_series_terms(m_s1,m_cfs1,m_keys1);
         cache_series_terms(m_s2,m_cfs2,m_keys2);
         plain_multiplication();
@@ -141,7 +142,8 @@ namespace piranha
           it_hint = m_retval.template insert<false,true>(term,m_args_tuple,it_hint);
         }
       }
-      void adjust_sizes()
+      /// Adjust the sizes of the vectors representing internally the input series.
+      void adjust_input_sizes()
       {
         const size_t size1 = m_s1.template nth_index<0>().size(), size2 = m_s2.template nth_index<0>().size();
         m_cfs1.resize(size1);

@@ -50,7 +50,7 @@ namespace piranha
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
       {
-        ancestor::adjust_sizes();
+        ancestor::adjust_input_sizes();
         ancestor::cache_series_terms(ancestor::m_s1,ancestor::m_cfs1,ancestor::m_keys1);
         ancestor::cache_series_terms(ancestor::m_s2,ancestor::m_cfs2,ancestor::m_keys2);
         ancestor::plain_multiplication();
