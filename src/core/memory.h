@@ -92,6 +92,7 @@ namespace piranha
     free(ptr);
   }
 
+  // Wrapper functions to use a custom allocator inside the GMP libraries.
   inline void *mp_alloc(size_t size)
   {
     return static_cast<void *>(piranha::memory::pool_allocator.allocate(size));
