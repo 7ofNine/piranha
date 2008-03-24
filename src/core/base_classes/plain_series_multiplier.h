@@ -35,6 +35,8 @@ namespace piranha
   /**
    * Called from piranha::series_multiplication to multiply two piranha::base_series. This multiplier is generic,
    * provided that certain methods are implemented in the term class used for the series.
+   *
+   * This class can be extended to build more specific multipliers.
    */
   template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
     class plain_series_multiplier
