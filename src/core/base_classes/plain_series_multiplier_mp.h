@@ -53,42 +53,25 @@ namespace piranha
       }
   };
 
-  // This gets specialised here and below to handle both the case in which the multiplication result
-  // is a single entity, and that in which multiplication result is a cons list of return values.
-  // This is needed to handle the case of Poisson series, in which we have two terms resulting from each
-  // term-by-term multiplication.
-  template <class SingleRes>
+  // Traverse the tuple of results for multiplication and insert each result into the multiplication result set.
+  template <class ResultTuple>
     struct insert_multiplication_result:public base_insert_multiplication_result
   {
     template <class MultSet, class ArgsTuple, class Truncator>
-      static void run(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple, const Truncator &trunc)
-    {
-      insert_single_res(res,mult_set,args_tuple,trunc);
-    }
-  };
-
-  template <class Head, class Tail>
-    struct insert_multiplication_result<boost::tuples::cons<Head,Tail> >:public base_insert_multiplication_result
-  {
-    template <class MultSet, class ArgsTuple, class Truncator>
-      static void run(const boost::tuples::cons<Head,Tail> &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple,
+      static void run(const ResultTuple &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple,
       const Truncator &trunc)
     {
       insert_single_res(mult_res.get_head(),mult_set,args_tuple,trunc);
-      insert_multiplication_result<Tail>::run(mult_res.get_tail(),mult_set,args_tuple,trunc);
+      insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(),mult_set,args_tuple,trunc);
     }
   };
 
-  template <class Head>
-    struct insert_multiplication_result<boost::tuples::cons<Head,boost::tuples::null_type> >:
-    public base_insert_multiplication_result
+  template <>
+    struct insert_multiplication_result<boost::tuples::null_type>
   {
     template <class MultSet, class ArgsTuple, class Truncator>
-      static void run(const boost::tuples::cons<Head,boost::tuples::null_type> &mult_res, MultSet &mult_set,
-      const ArgsTuple &args_tuple, const Truncator &trunc)
-    {
-      insert_single_res(mult_res.get_head(),mult_set,args_tuple,trunc);
-    }
+      static void run(const boost::tuples::null_type &, MultSet &, const ArgsTuple &, const Truncator &)
+    {}
   };
 }
 
