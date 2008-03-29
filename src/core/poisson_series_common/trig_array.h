@@ -23,7 +23,6 @@
 
 #include <memory> // For standard allocator.
 #include <string>
-#include <vector>
 
 #include "../base_classes/int_array.h"
 #include "trig_array_commons.h"
