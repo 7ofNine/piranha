@@ -165,6 +165,34 @@ namespace piranha
           }
         }
       }
+      /// Update the upper and lower limits of the integers stored in the array.
+      /**
+       * If FirstOnes is true, then the integers are uploaded to vector v, otherwise
+       * the integers are analysed and uploaded to v only if they they are outside the limits
+       * already defined in v.
+       */
+      template <bool InitialLimits, class LimitsVector>
+        void update_limits(LimitsVector &v) const
+      {
+        switch (InitialLimits)
+        {
+          case true:
+            for (size_type i=0; i < m_size; ++i)
+            {
+              v[i].first = m_ptr[i];
+              v[i].second = m_ptr[i];
+            }
+            break;
+          case false:
+            for (size_type i = 0; i < m_size; ++i)
+            {
+              if (m_ptr[i] < v[i].first)
+                v[i].first = m_ptr[i];
+              if (m_ptr[i] > v[i].second)
+                v[i].second = m_ptr[i];
+            }
+        }
+      }
     protected:
       /// Array-like operator[], const version.
       const value_type &operator[](const size_t &n) const {return m_ptr[n];}
