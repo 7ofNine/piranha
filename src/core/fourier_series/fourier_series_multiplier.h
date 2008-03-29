@@ -45,30 +45,43 @@ namespace piranha
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
       typedef typename ancestor::truncator_type truncator_type;
       typedef typename ancestor::term_type term_type;
-      typedef typename ancestor::cf1 cf1;
-      typedef typename ancestor::cf2 cf2;
-      typedef typename ancestor::key key;
+      typedef typename ancestor::cf_type1 cf_type1;
+      typedef typename ancestor::cf_type2 cf_type2;
+      typedef typename ancestor::key_type key_type;
       typedef typename ancestor::sm_cf1 sm_cf1;
       typedef typename ancestor::sm_cf2 sm_cf2;
       typedef typename ancestor::sm_key sm_key;
       typedef typename ancestor::mult_set mult_set;
+      typedef boost::integer_traits<max_fast_int> traits;
     public:
       fourier_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
-        m_min_max1(args_tuple.template get<key::position>().size()),
-        m_min_max2(args_tuple.template get<key::position>().size()),
-        m_res_min_max(args_tuple.template get<key::position>().size())
+        m_size(args_tuple.template get<key_type::position>().size()),
+        m_cr_is_viable(false),
+        m_min_max1(m_size),
+        m_min_max2(m_size),
+        m_res_min_max(m_size),
+        // Coding vector is larger to accomodate extra element at the end.
+        m_coding_vector(m_size+1)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
       {
         find_input_min_max();
         calculate_result_min_max();
-        ancestor::adjust_input_sizes();
-        ancestor::cache_series_terms(ancestor::m_s1,ancestor::m_cfs1,ancestor::m_keys1);
-        ancestor::cache_series_terms(ancestor::m_s2,ancestor::m_cfs2,ancestor::m_keys2);
-        ancestor::plain_multiplication();
-        ancestor::plain_insert_result_into_retval();
+        determine_viability();
+        if (m_cr_is_viable)
+        {
+
+        }
+        else
+        {
+          ancestor::adjust_input_sizes();
+          ancestor::cache_series_terms(ancestor::m_s1,ancestor::m_cfs1,ancestor::m_keys1);
+          ancestor::cache_series_terms(ancestor::m_s2,ancestor::m_cfs2,ancestor::m_keys2);
+          ancestor::plain_multiplication();
+          ancestor::plain_insert_result_into_retval();
+        }
       }
     private:
       void find_input_min_max()
@@ -108,10 +121,9 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
       }
       void calculate_result_min_max()
       {
-        const size_t size = ancestor::m_args_tuple.template get<key::position>().size();
         std::vector<mpz_class> tmp_vec(8);
         std::pair<typename std::vector<mpz_class>::const_iterator,std::vector<mpz_class>::const_iterator> min_max;
-        for (size_t i=0; i < size; ++i)
+        for (size_t i=0; i < m_size; ++i)
         {
           tmp_vec[0]=mpz_class(m_min_max1[i].second)+mpz_class(m_min_max2[i].second);
           tmp_vec[1]=mpz_class(m_min_max1[i].first)+mpz_class(m_min_max2[i].first);
@@ -131,13 +143,75 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
   std::cout << m_res_min_max[i].first << ',' << m_res_min_max[i].second << '\n';
 }
       }
+      void determine_viability()
+      {
+        // We must do the computations with arbitrary integers to avoid exceeding range.
+        mpz_class hmin(0), hmax(0), ck(1);
+        for (size_t i=0; i < m_size; ++i)
+        {
+          hmin+=ck*m_res_min_max[i].first;
+          hmax+=ck*m_res_min_max[i].second;
+          // Assign also the coding vector, so we avoid doing it later.
+          m_coding_vector[i]=ck.get_si();
+          ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
+        }
+        // We want to fill on extra slot of the coding vector (wrt to the nominal size,
+        // corresponding to the arguments number for the key). This is handy for decodification.
+        m_coding_vector[m_size]=ck.get_si();
+        if (ck > traits::min() && ck < traits::max())
+        {
+          m_cr_is_viable = true;
+          m_h_min = hmin.get_si();
+          m_h_max = hmax.get_si();
+std::cout << "Coding vector: ";
+for (size_t i=0; i < m_size; ++i)
+{
+  std::cout << m_coding_vector[i] << '\t';
+}
+std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+        }
+      }
+      /// Code the series.
+      void code_series()
+      {
+//         const iterator1 it1_f = p1.end();
+//         const iterator2 it2_f = p2.end();
+//         iterator1 it1 = p1.begin();
+//         iterator2 it2 = p2.begin();
+//         const size_t l1 = p1.length(), l2 = p2.length();
+//         cs1.resize(l1);
+//         cs2.resize(l2);
+//         size_t i;
+//         for (i=0;i<l1;++i)
+//         {
+//           cs1[i].cf()=it1->cf();
+//           code_multiindex(it1->trig(),cs1[i].code);
+//           cs1[i].flavour=it1->trig().flavour();
+//           ++it1;
+//         }
+//         for (i=0;i<l2;++i)
+//         {
+//           cs2[i].cf()=it2->cf();
+//           code_multiindex(it2->trig(),cs2[i].code);
+//           cs2[i].flavour=it2->trig().flavour();
+//           ++it2;
+//         }
+      }
     private:
+      // Size of limits vectors (corresponding to the size of arguments vector of the key).
+      const size_t                                          m_size;
+      // Is coded representation viable?
+      bool                                                  m_cr_is_viable;
       // Vectors of minimum and maximum value pairs for the series being multiplied.
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max1;
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max2;
       // Vector of minimum and maximum value pairs for the resulting series.
       // GMP is used to avoid trespassing the range limits of max_fast_int.
       std::valarray<std::pair<mpz_class,mpz_class> >        m_res_min_max;
+      // Coding vector.
+      std::valarray<max_fast_int>                           m_coding_vector;
+      max_fast_int                                          m_h_min;
+      max_fast_int                                          m_h_max;
   };
 }
 

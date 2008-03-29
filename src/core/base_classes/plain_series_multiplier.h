@@ -48,14 +48,14 @@ namespace piranha
       /// Alias for term type of first input series and return value series.
       typedef typename Series1::term_type term_type;
       /// Alias for the coefficient type of the first input series.
-      typedef typename Series1::term_type::cf_type cf1;
+      typedef typename Series1::term_type::cf_type cf_type1;
       /// Alias for the coefficient type of the second input series.
-      typedef typename Series2::term_type::cf_type cf2;
+      typedef typename Series2::term_type::cf_type cf_type2;
       /// Alias for the key type (common to both input series).
-      typedef typename Series1::term_type::key_type key;
-      typedef typename series_mult_rep<cf1>::type sm_cf1;
-      typedef typename series_mult_rep<cf2>::type sm_cf2;
-      typedef typename series_mult_rep<key>::type sm_key;
+      typedef typename Series1::term_type::key_type key_type;
+      typedef typename series_mult_rep<cf_type1>::type sm_cf1;
+      typedef typename series_mult_rep<cf_type2>::type sm_cf2;
+      typedef typename series_mult_rep<key_type>::type sm_key;
       typedef boost::multi_index_container
       <
         term_type,
@@ -109,18 +109,18 @@ namespace piranha
           for (size_t j = 0; j < size2; ++j)
           {
             if (trunc.skip_from_here(
-              series_mult_rep<cf1>::get(m_cfs1[i]),
-              series_mult_rep<key>::get(m_keys1[i]),
-              series_mult_rep<cf2>::get(m_cfs2[j]),
-              series_mult_rep<key>::get(m_keys2[j])))
+              series_mult_rep<cf_type1>::get(m_cfs1[i]),
+              series_mult_rep<key_type>::get(m_keys1[i]),
+              series_mult_rep<cf_type2>::get(m_cfs2[j]),
+              series_mult_rep<key_type>::get(m_keys2[j])))
             {
               break;
             }
             term_type::multiply(
-              series_mult_rep<cf1>::get(m_cfs1[i]),
-              series_mult_rep<key>::get(m_keys1[i]),
-              series_mult_rep<cf2>::get(m_cfs2[j]),
-              series_mult_rep<key>::get(m_keys2[j]),
+              series_mult_rep<cf_type1>::get(m_cfs1[i]),
+              series_mult_rep<key_type>::get(m_keys1[i]),
+              series_mult_rep<cf_type2>::get(m_cfs2[j]),
+              series_mult_rep<key_type>::get(m_keys2[j]),
               res,m_args_tuple);
             insert_multiplication_result<mult_res>::run(res,m_set,m_args_tuple,trunc);
           }
