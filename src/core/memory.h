@@ -106,7 +106,7 @@ namespace piranha
   inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
   {
     void *retval=mp_alloc(new_size);
-    memcpy(retval,ptr,old_size);
+    memcpy(retval,ptr,std::min(old_size,new_size));
     mp_free(ptr,old_size);
     return retval;
   }
