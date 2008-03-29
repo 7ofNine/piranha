@@ -53,7 +53,7 @@ namespace piranha
       }
   };
 
-  // Traverse the tuple of results for multiplication and insert each result into the multiplication result set.
+  // Traverse the tuple of results of multiplication and insert each result into the multiplication result set.
   template <class ResultTuple>
     struct insert_multiplication_result:public base_insert_multiplication_result
   {
