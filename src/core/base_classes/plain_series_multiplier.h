@@ -74,13 +74,17 @@ namespace piranha
       }
       void perform_multiplication()
       {
+        perform_plain_multiplication();
+      }
+    protected:
+      void perform_plain_multiplication()
+      {
         adjust_input_sizes();
         cache_series_terms(m_s1,m_cfs1,m_keys1);
         cache_series_terms(m_s2,m_cfs2,m_keys2);
         plain_multiplication();
         plain_insert_result_into_retval();
       }
-    protected:
       template <class Series>
         void cache_series_terms(const Series &s,
         std::valarray<typename series_mult_rep<typename Series::term_type::cf_type>::type> &cfs,

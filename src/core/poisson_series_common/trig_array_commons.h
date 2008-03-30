@@ -25,6 +25,7 @@
 #include <boost/static_assert.hpp>
 #include <complex>
 #include <string>
+#include <utility> // For std::pair.
 #include <vector>
 
 #include "../integer_typedefs.h" // For max_fast_int.
@@ -45,6 +46,8 @@ namespace piranha
     class trig_array_commons
   {
     public:
+      /// Type of coded trigonometric array.
+      typedef std::pair<max_fast_int,bool> coded_type;
       /// Return const reference to flavour.
       const bool &flavour() const {return derived_const_cast->m_flavour;}
       /// Return mutable reference to flavour.

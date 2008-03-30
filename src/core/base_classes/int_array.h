@@ -167,7 +167,7 @@ namespace piranha
       }
       /// Update the upper and lower limits of the integers stored in the array.
       /**
-       * If FirstOnes is true, then the integers are uploaded to vector v, otherwise
+       * If InitialLimits is true, then the integers are uploaded to vector v, otherwise
        * the integers are analysed and uploaded to v only if they they are outside the limits
        * already defined in v.
        */
@@ -187,10 +187,44 @@ namespace piranha
             for (size_type i = 0; i < m_size; ++i)
             {
               if (m_ptr[i] < v[i].first)
+              {
                 v[i].first = m_ptr[i];
+              }
               if (m_ptr[i] > v[i].second)
+              {
                 v[i].second = m_ptr[i];
+              }
             }
+        }
+      }
+      /// Codify integers into generalised lexicographic representation.
+      template <class CodingVector, class ArgsTuple>
+        void code(const CodingVector &v, max_fast_int &retval, const ArgsTuple &) const
+      {
+        // The -1 is because the coding vector contains one extra element at the end.
+        // The assert is >= instead of == beacuse we may code an array smaller than the
+        // coding vector when multiplying series with different numbers of arguments.
+        p_assert(v.size() - 1 >= m_size);
+        retval = 0;
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          retval += (v[i]*m_ptr[i]);
+        }
+      }
+      /// Decode integers from generalised lexicographic representation.
+      template <class CodingVector, class MinMaxVec, class ArgsTuple>
+        void decode(const max_fast_int &n, const CodingVector &v, const max_fast_int &h_min,
+        const MinMaxVec &mmv, const ArgsTuple &args_tuple)
+      {
+        resize(args_tuple.template get<position>().size());
+        // The -1 is because the coding vector contains one extra element at the end.
+        // The assert is == beacuse when decoding we know that the size of the array
+        // must be the same as the coding vector's.
+        p_assert(v.size() - 1 == m_size);
+        const max_fast_int tmp = n - h_min;
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          m_ptr[i]=((tmp%v[i+1])/(v[i])+mmv[i].first);
         }
       }
     protected:

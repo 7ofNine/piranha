@@ -48,6 +48,7 @@ namespace piranha
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;
+      typedef typename trig_commons::coded_type coded_type;
       // Start INTERFACE definition.
       //-------------------------------------------------------
       // Ctors.
