@@ -65,11 +65,12 @@ namespace piranha
         m_res_min_max(m_size),
         // Coding vector is larger to accomodate extra element at the end.
         m_coding_vector(m_size+1),
-        m_vc_res(0)
+        m_vc_res_cos(0),m_vc_res_sin(0)
       {}
       ~fourier_series_multiplier()
       {
-        piranha_free(m_vc_res);
+        piranha_free(m_vc_res_cos);
+        piranha_free(m_vc_res_sin);
       }
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -79,7 +80,8 @@ namespace piranha
         determine_viability();
         if (m_cr_is_viable)
         {
-          code_series();
+          store_coefficients_code_keys();
+          store_flavours();
           if (!perform_vector_coded_multiplication())
           {
             
@@ -163,7 +165,11 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
         m_coding_vector[m_size]=ck.get_si();
-        if (ck > traits::min() && ck < traits::max())
+        p_assert(ck > 0);
+        // Determine viability by checking that ck and the minimum/maximum values for the codes
+        // respect the fast integer boundaries.
+        if (ck < traits::max() and hmin > traits::min() and hmin < traits::max() and
+          hmax > traits::min() and hmax < traits::max())
         {
           m_cr_is_viable = true;
           m_h_min = hmin.get_si();
@@ -172,6 +178,12 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
           m_fast_res_min_max.resize(m_size);
           for (size_t i = 0; i < m_size; ++i)
           {
+            if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
+              m_res_min_max[i].second < traits::min() or m_res_min_max[i].second > traits::max())
+            {
+              std::cout << "Warning: results of series multiplication cross " <<
+              "fast integer limits. Expect errors." << std::endl;
+            }
             m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
             m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
           }
@@ -183,50 +195,70 @@ for (size_t i=0; i < m_size; ++i)
 std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
       }
-      /// Code the series.
-      void code_series()
+      /// Store coefficients and code keys.
+      void store_coefficients_code_keys()
       {
-        const iterator1 it1_f = ancestor::m_s1.template nth_index<0>().end();
-        const iterator2 it2_f = ancestor::m_s2.template nth_index<0>().end();
         iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
         iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
-        const size_t size1 = ancestor::m_s1.template nth_index<0>().size(), size2 = ancestor::m_s2.template nth_index<0>().size();
         // Make space in the coefficients and coded keys vectors.
-        ancestor::m_cfs1.resize(size1);
-        ancestor::m_cfs2.resize(size2);
-        m_ckeys1.resize(size1);
-        m_ckeys2.resize(size2);
+        ancestor::m_cfs1.resize(ancestor::m_size1);
+        ancestor::m_cfs2.resize(ancestor::m_size2);
+        m_ckeys1.resize(ancestor::m_size1);
+        m_ckeys2.resize(ancestor::m_size2);
         size_t i;
-        for (i = 0; i < size1; ++i)
+        for (i = 0; i < ancestor::m_size1; ++i)
         {
           series_mult_rep<cf_type1>::assign(ancestor::m_cfs1[i],it1->m_cf);
-          it1->m_key.code(m_coding_vector,m_ckeys1[i].first,ancestor::m_args_tuple);
+          it1->m_key.code(m_coding_vector,m_ckeys1[i],ancestor::m_args_tuple);
           ++it1;
         }
-        for (i = 0; i < size2; ++i)
+        for (i = 0; i < ancestor::m_size2; ++i)
         {
           series_mult_rep<cf_type2>::assign(ancestor::m_cfs2[i],it2->m_cf);
-          it2->m_key.code(m_coding_vector,m_ckeys2[i].first,ancestor::m_args_tuple);
+          it2->m_key.code(m_coding_vector,m_ckeys2[i],ancestor::m_args_tuple);
+          ++it2;
+        }
+      }
+      /// Store flavours of the series into own vectors.
+      void store_flavours()
+      {
+        iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
+        iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
+        // Make space in the flavours vectors.
+        m_flavours1.resize(ancestor::m_size1);
+        m_flavours2.resize(ancestor::m_size2);
+        size_t i;
+        for (i = 0; i < ancestor::m_size1; ++i)
+        {
+          m_flavours1[i] = it1->m_key.flavour();
+          ++it1;
+        }
+        for (i = 0; i < ancestor::m_size2; ++i)
+        {
+          m_flavours2[i] = it2->m_key.flavour();
           ++it2;
         }
       }
       bool perform_vector_coded_multiplication()
       {
-        // Try to allocate the space for vector coded multiplication. We need twice the number of possible
-        // codes to accomodate sines and cosines results.
+        // Try to allocate the space for vector coded multiplication. We need two arrays of results,
+        // one for cosines, one for sines.
         // The +1 is needed because we need the number of possible codes between min and max, e.g.:
         // m_h_min = 1, m_h_max = 2 --> n of codes = 2.
         const size_t n_codes = (size_t)(m_h_max - m_h_min + 1);
         try
         {
-          m_vc_res = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*(n_codes << 1));
+          m_vc_res_cos = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
+          m_vc_res_sin = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
           // Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
           // we are sure it will be initialized properly. We want to make sure the coefficients are initialized
           // to zero in order to accumulate Poisson terms during multiplication.
-          for (size_t i = 0; i < (n_codes << 1); ++i)
+          for (size_t i = 0; i < n_codes; ++i)
           {
-            ::new(&((m_vc_res+i)->first)) cf_type1(0,ancestor::m_args_tuple);
-            (m_vc_res+i)->second = false;
+            ::new(&((m_vc_res_cos+i)->first)) cf_type1(0,ancestor::m_args_tuple);
+            (m_vc_res_cos+i)->second = false;
+            ::new(&((m_vc_res_sin+i)->first)) cf_type1(0,ancestor::m_args_tuple);
+            (m_vc_res_sin+i)->second = false;
           }
         }
         catch(std::bad_alloc)
@@ -236,23 +268,22 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-        vc_res_type *vc_res_cos =  m_vc_res - m_h_min, *vc_res_sin = m_vc_res + n_codes - m_h_min;
+        vc_res_type *vc_res_cos =  m_vc_res_cos - m_h_min, *vc_res_sin = m_vc_res_sin - m_h_min;
         // Perform multiplication.
-        const size_t size1 = ancestor::m_s1.template nth_index<0>().size(), size2 = ancestor::m_s2.template nth_index<0>().size();
         cf_type1 tmp_cf;
-        for (size_t i = 0; i < size1; ++i)
+        for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
-          for (size_t j = 0; j < size2; ++j)
+          for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             tmp_cf = series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]);
             tmp_cf.mult_by(series_mult_rep<cf_type1>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);
-            const max_fast_int index_plus = m_ckeys1[i].first + m_ckeys2[j].first,
-              index_minus = m_ckeys1[i].first - m_ckeys2[j].first;
-            switch (m_ckeys1[i].second == m_ckeys2[j].second)
+            const max_fast_int index_plus = m_ckeys1[i] + m_ckeys2[j],
+              index_minus = m_ckeys1[i] - m_ckeys2[j];
+            switch (m_flavours1[i] == m_flavours2[j])
             {
               case true:
-                switch (m_ckeys1[i].second)
+                switch (m_flavours1[i])
                 {
                   case true:
                     vc_res_cos[index_minus].first.add(tmp_cf,ancestor::m_args_tuple);
@@ -268,7 +299,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
                 }
                 break;
               case false:
-                switch (m_ckeys1[i].second)
+                switch (m_flavours1[i])
                 {
                   case true:
                     vc_res_sin[index_minus].first.subtract(tmp_cf,ancestor::m_args_tuple);
@@ -318,9 +349,10 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
         // Call dtors for the coefficients in the allocated space.
         // This is necessary for non-trivial coefficients.
-        for (size_t i = 0; i < (n_codes << 1); ++i)
+        for (size_t i = 0; i < n_codes; ++i)
         {
-          (m_vc_res+i)->first.~cf_type1();
+          (m_vc_res_cos+i)->first.~cf_type1();
+          (m_vc_res_sin+i)->first.~cf_type1();
         }
         return true;
       }
@@ -342,10 +374,14 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
       max_fast_int                                          m_h_min;
       max_fast_int                                          m_h_max;
       // Coded keys.
-      std::valarray<typename key_type::coded_type>          m_ckeys1;
-      std::valarray<typename key_type::coded_type>          m_ckeys2;
-      // Result of vector coded multiplication.
-      vc_res_type                                           *m_vc_res;
+      std::valarray<max_fast_int>                           m_ckeys1;
+      std::valarray<max_fast_int>                           m_ckeys2;
+      // For Poisson series we also need flavours.
+      std::valarray<bool>                                   m_flavours1;
+      std::valarray<bool>                                   m_flavours2;
+      // Results of vector coded multiplication.
+      vc_res_type                                           *m_vc_res_cos;
+      vc_res_type                                           *m_vc_res_sin;
   };
 }
 

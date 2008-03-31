@@ -67,7 +67,8 @@ namespace piranha
       mult_set;
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        m_s1(s1),m_s2(s2),m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set()
+        m_s1(s1),m_s2(s2),m_size1(m_s1.template nth_index<0>().size()),m_size2(m_s2.template nth_index<0>().size()),
+        m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set()
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
@@ -149,16 +150,18 @@ namespace piranha
       /// Adjust the sizes of the vectors representing internally the input series.
       void adjust_input_sizes()
       {
-        const size_t size1 = m_s1.template nth_index<0>().size(), size2 = m_s2.template nth_index<0>().size();
-        m_cfs1.resize(size1);
-        m_cfs2.resize(size2);
-        m_keys1.resize(size1);
-        m_keys2.resize(size2);
+        m_cfs1.resize(m_size1);
+        m_cfs2.resize(m_size2);
+        m_keys1.resize(m_size1);
+        m_keys2.resize(m_size2);
       }
     protected:
       // References to the series.
       const Series1           &m_s1;
       const Series2           &m_s2;
+      // Sizes of the series.
+      const size_t            m_size1;
+      const size_t            m_size2;
       Series1                 &m_retval;
       const ArgsTuple         &m_args_tuple;
       // Vectors of input coefficients converted for representation during series multiplication.
