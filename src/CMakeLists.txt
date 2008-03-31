@@ -56,6 +56,7 @@ IF(BUILD_PYRANHA)
     boost_python/object/class.cpp
     boost_python/object/enum.cpp
     boost_python/object/function.cpp
+    boost_python/object/function_doc_signature.cpp
     boost_python/object/inheritance.cpp
     boost_python/object/iterator.cpp
     boost_python/object/life_support.cpp
