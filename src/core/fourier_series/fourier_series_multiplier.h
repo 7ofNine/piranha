@@ -67,11 +67,6 @@ namespace piranha
         m_coding_vector(m_size+1),
         m_vc_res_cos(0),m_vc_res_sin(0)
       {}
-      ~fourier_series_multiplier()
-      {
-        piranha_free(m_vc_res_cos);
-        piranha_free(m_vc_res_sin);
-      }
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
       {
@@ -270,12 +265,11 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
         vc_res_type *vc_res_cos =  m_vc_res_cos - m_h_min, *vc_res_sin = m_vc_res_sin - m_h_min;
         // Perform multiplication.
-        cf_type1 tmp_cf;
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
-            tmp_cf = series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]);
+            cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
             tmp_cf.mult_by(series_mult_rep<cf_type1>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);
             const max_fast_int index_plus = m_ckeys1[i] + m_ckeys2[j],
@@ -354,6 +348,9 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
           (m_vc_res_cos+i)->first.~cf_type1();
           (m_vc_res_sin+i)->first.~cf_type1();
         }
+        // Free the allocated space.
+        piranha_free(m_vc_res_cos);
+        piranha_free(m_vc_res_sin);
         return true;
       }
     private:
