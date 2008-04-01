@@ -417,57 +417,64 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
             // Create the second term, using the first one's coefficient and an appropriate code.
             cterm tmp_term2(tmp_term1.m_cf,m_ckeys1[i]+m_ckeys2[j]);
             // Now fix flavours and coefficient signs.
-            if (m_flavours1[i] == m_flavours2[j])
+            switch (m_flavours1[i] == m_flavours2[j])
             {
-              if (!m_flavours1[i])
-              {
-                tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
-              }
-              // Insert into cosine container.
-              it = cms_cos.find(tmp_term1.m_ckey);
-              if (it == cms_cos.end())
-              {
-                cms_cos.insert(tmp_term1);
-              }
-              else
-              {
-                it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
-              }
-              it = cms_cos.find(tmp_term2.m_ckey);
-              if (it == cms_cos.end())
-              {
-                cms_cos.insert(tmp_term2);
-              }
-              else
-              {
-                it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
-              }
-            }
-            else
-            {
-              if (m_flavours1[i])
-              {
-                tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
-              }
-              // Insert into sine container.
-              it = cms_sin.find(tmp_term1.m_ckey);
-              if (it == cms_sin.end())
-              {
-                cms_sin.insert(tmp_term1);
-              }
-              else
-              {
-                it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
-              }
-              it = cms_sin.find(tmp_term2.m_ckey);
-              if (it == cms_sin.end())
-              {
-                cms_sin.insert(tmp_term2);
-              }
-              else
-              {
-                it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
-              }
+              case true:
+                switch (m_flavours1[i])
+                {
+                  case true:
+                    break;
+                  case false:
+                    tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
+                }
+                // Insert into cosine container.
+                it = cms_cos.find(tmp_term1.m_ckey);
+                switch (it == cms_cos.end())
+                {
+                  case true:
+                    cms_cos.insert(tmp_term1);
+                    break;
+                  case false:
+                    it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
+                }
+                it = cms_cos.find(tmp_term2.m_ckey);
+                switch (it == cms_cos.end())
+                {
+                  case true:
+                    cms_cos.insert(tmp_term2);
+                    break;
+                  case false:
+                    it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
+                }
+                break;
+              case false:
+                switch (m_flavours1[i])
+                {
+                  case true:
+                    tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
+                    break;
+                  case false:
+                    ;
+                }
+                // Insert into sine container.
+                it = cms_sin.find(tmp_term1.m_ckey);
+                switch (it == cms_sin.end())
+                {
+                  case true:
+                    cms_sin.insert(tmp_term1);
+                    break;
+                  case false:
+                    it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
+                }
+                it = cms_sin.find(tmp_term2.m_ckey);
+                switch (it == cms_sin.end())
+                {
+                  case true:
+                    cms_sin.insert(tmp_term2);
+                    break;
+                  case false:
+                    it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
+                }
             }
           }
         }
