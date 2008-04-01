@@ -275,8 +275,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
       }
       bool perform_vector_coded_multiplication()
       {
-        typedef std::pair<cf_type1,bool> vc_res_type;
-        vc_res_type *p_vc_res_cos(0), *p_vc_res_sin(0);
+        cf_type1 *p_vc_res_cos(0), *p_vc_res_sin(0);
         // Try to allocate the space for vector coded multiplication. We need two arrays of results,
         // one for cosines, one for sines.
         // The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -284,17 +283,15 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         const size_t n_codes = (size_t)(m_h_max - m_h_min + 1);
         try
         {
-          p_vc_res_cos = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
-          p_vc_res_sin = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
+          p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1)*n_codes);
+          p_vc_res_sin = (cf_type1 *)piranha_malloc(sizeof(cf_type1)*n_codes);
           // Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
           // we are sure it will be initialized properly. We want to make sure the coefficients are initialized
           // to zero in order to accumulate Poisson terms during multiplication.
           for (size_t i = 0; i < n_codes; ++i)
           {
-            ::new(&((p_vc_res_cos+i)->first)) cf_type1(0,ancestor::m_args_tuple);
-            (p_vc_res_cos+i)->second = false;
-            ::new(&((p_vc_res_sin+i)->first)) cf_type1(0,ancestor::m_args_tuple);
-            (p_vc_res_sin+i)->second = false;
+            ::new(p_vc_res_cos+i) cf_type1(0,ancestor::m_args_tuple);
+            ::new(p_vc_res_sin+i) cf_type1(0,ancestor::m_args_tuple);
           }
         }
         catch(std::bad_alloc)
@@ -306,7 +303,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-        vc_res_type *vc_res_cos =  p_vc_res_cos - m_h_min, *vc_res_sin = p_vc_res_sin - m_h_min;
+        cf_type1 *vc_res_cos =  p_vc_res_cos - m_h_min, *vc_res_sin = p_vc_res_sin - m_h_min;
         // Perform multiplication.
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
@@ -323,32 +320,24 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
                 switch (m_flavours1[i])
                 {
                   case true:
-                    vc_res_cos[index_minus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_cos[index_minus].second = true;
-                    vc_res_cos[index_plus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_cos[index_plus].second = true;
+                    vc_res_cos[index_minus].add(tmp_cf,ancestor::m_args_tuple);
+                    vc_res_cos[index_plus].add(tmp_cf,ancestor::m_args_tuple);
                     break;
                   case false:
-                    vc_res_cos[index_minus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_cos[index_minus].second = true;
-                    vc_res_cos[index_plus].first.subtract(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_cos[index_plus].second = true;
+                    vc_res_cos[index_minus].add(tmp_cf,ancestor::m_args_tuple);
+                    vc_res_cos[index_plus].subtract(tmp_cf,ancestor::m_args_tuple);
                 }
                 break;
               case false:
                 switch (m_flavours1[i])
                 {
                   case true:
-                    vc_res_sin[index_minus].first.subtract(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_sin[index_minus].second = true;
-                    vc_res_sin[index_plus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_sin[index_plus].second = true;
+                    vc_res_sin[index_minus].subtract(tmp_cf,ancestor::m_args_tuple);
+                    vc_res_sin[index_plus].add(tmp_cf,ancestor::m_args_tuple);
                     break;
                   case false:
-                    vc_res_sin[index_minus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_sin[index_minus].second = true;
-                    vc_res_sin[index_plus].first.add(tmp_cf,ancestor::m_args_tuple);
-                    vc_res_sin[index_plus].second = true;
+                    vc_res_sin[index_minus].add(tmp_cf,ancestor::m_args_tuple);
+                    vc_res_sin[index_plus].add(tmp_cf,ancestor::m_args_tuple);
                 }
             }
           }
@@ -358,38 +347,36 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
         for (max_fast_int i = m_h_min; i <= m_h_max; ++i)
         {
-          switch (unlikely(vc_res_cos[i].second))
+          switch (likely(vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)))
           {
             case true:
-              tmp_term.m_cf = vc_res_cos[i].first;
+              break;
+            case false:
+              tmp_term.m_cf = vc_res_cos[i];
               tmp_term.m_key.decode(i,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = true;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
-              break;
-            case false:
-              ;
           }
         }
         for (max_fast_int i = m_h_min; i <= m_h_max; ++i)
         {
-          switch (unlikely(vc_res_sin[i].second))
+          switch (likely(vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)))
           {
             case true:
-              tmp_term.m_cf = vc_res_sin[i].first;
+              break;
+            case false:
+              tmp_term.m_cf = vc_res_sin[i];
               tmp_term.m_key.decode(i,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = false;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
-              break;
-            case false:
-              ;
           }
         }
         // Call dtors for the coefficients in the allocated space.
         // This is necessary for non-trivial coefficients.
         for (size_t i = 0; i < n_codes; ++i)
         {
-          (p_vc_res_cos+i)->first.~cf_type1();
-          (p_vc_res_sin+i)->first.~cf_type1();
+          (p_vc_res_cos+i)->~cf_type1();
+          (p_vc_res_sin+i)->~cf_type1();
         }
         // Free the allocated space.
         piranha_free(p_vc_res_cos);
