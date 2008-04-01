@@ -59,8 +59,6 @@ namespace piranha
       typedef boost::integer_traits<max_fast_int> traits;
       typedef typename Series1::const_sorted_iterator iterator1;
       typedef typename Series2::const_sorted_iterator iterator2;
-      // Typedefs for vector coded arithmetics.
-      typedef std::pair<cf_type1,bool> vc_res_type;
       // Typedefs for hash coded arithmetics.
       // This is the representation of a term for the hash coded representation.
       struct cterm
@@ -105,8 +103,7 @@ namespace piranha
         m_min_max2(m_size),
         m_res_min_max(m_size),
         // Coding vector is larger to accomodate extra element at the end.
-        m_coding_vector(m_size+1),
-        m_vc_res_cos(0),m_vc_res_sin(0)
+        m_coding_vector(m_size+1)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -118,7 +115,7 @@ namespace piranha
         {
           store_coefficients_code_keys();
           store_flavours();
-          //if (!perform_vector_coded_multiplication())
+          if (!perform_vector_coded_multiplication())
           {
             std::cout << "Going for hashed!\n";
             perform_hash_coded_multiplication();
@@ -278,6 +275,8 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
       }
       bool perform_vector_coded_multiplication()
       {
+        typedef std::pair<cf_type1,bool> vc_res_type;
+        vc_res_type *p_vc_res_cos(0), *p_vc_res_sin(0);
         // Try to allocate the space for vector coded multiplication. We need two arrays of results,
         // one for cosines, one for sines.
         // The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -285,29 +284,29 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         const size_t n_codes = (size_t)(m_h_max - m_h_min + 1);
         try
         {
-          m_vc_res_cos = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
-          m_vc_res_sin = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
+          p_vc_res_cos = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
+          p_vc_res_sin = (vc_res_type *)piranha_malloc(sizeof(vc_res_type)*n_codes);
           // Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
           // we are sure it will be initialized properly. We want to make sure the coefficients are initialized
           // to zero in order to accumulate Poisson terms during multiplication.
           for (size_t i = 0; i < n_codes; ++i)
           {
-            ::new(&((m_vc_res_cos+i)->first)) cf_type1(0,ancestor::m_args_tuple);
-            (m_vc_res_cos+i)->second = false;
-            ::new(&((m_vc_res_sin+i)->first)) cf_type1(0,ancestor::m_args_tuple);
-            (m_vc_res_sin+i)->second = false;
+            ::new(&((p_vc_res_cos+i)->first)) cf_type1(0,ancestor::m_args_tuple);
+            (p_vc_res_cos+i)->second = false;
+            ::new(&((p_vc_res_sin+i)->first)) cf_type1(0,ancestor::m_args_tuple);
+            (p_vc_res_sin+i)->second = false;
           }
         }
         catch(std::bad_alloc)
         {
-          piranha_free(m_vc_res_cos);
-          piranha_free(m_vc_res_sin);
+          piranha_free(p_vc_res_cos);
+          piranha_free(p_vc_res_sin);
           return false;
         }
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-        vc_res_type *vc_res_cos =  m_vc_res_cos - m_h_min, *vc_res_sin = m_vc_res_sin - m_h_min;
+        vc_res_type *vc_res_cos =  p_vc_res_cos - m_h_min, *vc_res_sin = p_vc_res_sin - m_h_min;
         // Perform multiplication.
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
@@ -389,12 +388,12 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         // This is necessary for non-trivial coefficients.
         for (size_t i = 0; i < n_codes; ++i)
         {
-          (m_vc_res_cos+i)->first.~cf_type1();
-          (m_vc_res_sin+i)->first.~cf_type1();
+          (p_vc_res_cos+i)->first.~cf_type1();
+          (p_vc_res_sin+i)->first.~cf_type1();
         }
         // Free the allocated space.
-        piranha_free(m_vc_res_cos);
-        piranha_free(m_vc_res_sin);
+        piranha_free(p_vc_res_cos);
+        piranha_free(p_vc_res_sin);
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -524,11 +523,6 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
       // For Poisson series we also need flavours.
       std::valarray<bool>                                   m_flavours1;
       std::valarray<bool>                                   m_flavours2;
-      // Results of vector coded multiplication.
-      // TODO: move these into vector coded routine, there's no reason why they should stay here,
-      // as they are not shared anywhere.
-      vc_res_type                                           *m_vc_res_cos;
-      vc_res_type                                           *m_vc_res_sin;
   };
 }
 
