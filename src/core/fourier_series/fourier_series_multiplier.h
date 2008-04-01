@@ -22,7 +22,11 @@
 #define PIRANHA_FOURIER_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp> // For integer limits.
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -33,6 +37,7 @@
 #include "../base_classes/plain_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
+#include "../settings_manager.h"
 
 namespace piranha
 {
@@ -54,7 +59,42 @@ namespace piranha
       typedef boost::integer_traits<max_fast_int> traits;
       typedef typename Series1::const_sorted_iterator iterator1;
       typedef typename Series2::const_sorted_iterator iterator2;
+      // Typedefs for vector coded arithmetics.
       typedef std::pair<cf_type1,bool> vc_res_type;
+      // Typedefs for hash coded arithmetics.
+      // This is the representation of a term for the hash coded representation.
+      struct cterm
+      {
+        mutable cf_type1  m_cf;
+        max_fast_int      m_ckey;
+        // Templatized this way because we want to build complexes from reals.
+        template <class Cf>
+          cterm(const Cf &cf, const max_fast_int &code):m_cf(cf),m_ckey(code) {}
+        struct hasher
+        {
+          size_t operator()(const cterm &t) const
+          {
+            return boost::hash<max_fast_int>()(t.m_ckey);
+          }
+        };
+        struct equal_to
+        {
+          bool operator()(const cterm &t1, const cterm &t2) const
+          {
+            return (t1.m_ckey == t2.m_ckey);
+          }
+        };
+      };
+      // Hash set for coded multiplication.
+      typedef boost::multi_index_container
+      <
+        cterm,
+        boost::multi_index::indexed_by
+        <
+          boost::multi_index::hashed_unique<boost::multi_index::identity<cterm>,typename cterm::hasher,typename cterm::equal_to>
+        >
+      >
+      cmult_set;
     public:
       fourier_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
@@ -77,9 +117,10 @@ namespace piranha
         {
           store_coefficients_code_keys();
           store_flavours();
-          if (!perform_vector_coded_multiplication())
+          //if (!perform_vector_coded_multiplication())
           {
-            
+            std::cout << "Going for hashed!\n";
+            perform_hash_coded_multiplication();
           }
         }
         else
@@ -354,6 +395,103 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         piranha_free(m_vc_res_cos);
         piranha_free(m_vc_res_sin);
         return true;
+      }
+      void perform_hash_coded_multiplication()
+      {
+        typedef typename cmult_set::iterator c_iterator;
+        c_iterator it;
+        cmult_set cms_cos, cms_sin;
+        // Set max load factors.
+        cms_cos.max_load_factor(settings_manager::get_load_factor());
+        cms_sin.max_load_factor(settings_manager::get_load_factor());
+        for (size_t i = 0; i < ancestor::m_size1; ++i)
+        {
+          for (size_t j = 0; j < ancestor::m_size2; ++j)
+          {
+            cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),m_ckeys1[i]);
+            // Handle the coefficient, with positive signs for now.
+            tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+            tmp_term1.m_cf.divide_by(2,ancestor::m_args_tuple);
+            tmp_term1.m_ckey -= m_ckeys2[j];
+            // Create the second term, using the first one's coefficient and an appropriate code.
+            cterm tmp_term2(tmp_term1.m_cf,m_ckeys1[i]+m_ckeys2[j]);
+            // Now fix flavours and coefficient signs.
+            if (m_flavours1[i] == m_flavours2[j])
+            {
+              if (!m_flavours1[i])
+              {
+                tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
+              }
+              // Insert into cosine container.
+              it = cms_cos.find(tmp_term1);
+              if (it == cms_cos.end())
+              {
+                cms_cos.insert(tmp_term1);
+              }
+              else
+              {
+                it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
+              }
+              it = cms_cos.find(tmp_term2);
+              if (it == cms_cos.end())
+              {
+                cms_cos.insert(tmp_term2);
+              }
+              else
+              {
+                it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
+              }
+            }
+            else
+            {
+              if (m_flavours1[i])
+              {
+                tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
+              }
+              // Insert into sine container.
+              it = cms_sin.find(tmp_term1);
+              if (it == cms_sin.end())
+              {
+                cms_sin.insert(tmp_term1);
+              }
+              else
+              {
+                it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
+              }
+              it = cms_sin.find(tmp_term2);
+              if (it == cms_sin.end())
+              {
+                cms_sin.insert(tmp_term2);
+              }
+              else
+              {
+                it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
+              }
+            }
+          }
+        }
+        term_type tmp_term;
+        iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
+        {
+          const c_iterator c_it_f = cms_cos.end();
+          for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it)
+          {
+            tmp_term.m_cf = c_it->m_cf;
+            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.flavour() = true;
+            it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
+          }
+        }
+        {
+          const c_iterator c_it_f = cms_sin.end();
+          for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it)
+          {
+            tmp_term.m_cf = c_it->m_cf;
+            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.flavour() = false;
+            it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
+          }
+        }
       }
     private:
       // Size of limits vectors (corresponding to the size of arguments vector of the key).
