@@ -23,6 +23,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
 #include <valarray>
 
 #include "../p_assert.h"
