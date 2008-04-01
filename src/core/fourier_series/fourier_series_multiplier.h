@@ -26,7 +26,7 @@
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/member.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -72,16 +72,16 @@ namespace piranha
           cterm(const Cf &cf, const max_fast_int &code):m_cf(cf),m_ckey(code) {}
         struct hasher
         {
-          size_t operator()(const cterm &t) const
+          size_t operator()(const max_fast_int &code) const
           {
-            return boost::hash<max_fast_int>()(t.m_ckey);
+            return boost::hash<max_fast_int>()(code);
           }
         };
         struct equal_to
         {
-          bool operator()(const cterm &t1, const cterm &t2) const
+          bool operator()(const max_fast_int &code1, const max_fast_int &code2) const
           {
-            return (t1.m_ckey == t2.m_ckey);
+            return (code1 == code2);
           }
         };
       };
@@ -91,7 +91,8 @@ namespace piranha
         cterm,
         boost::multi_index::indexed_by
         <
-          boost::multi_index::hashed_unique<boost::multi_index::identity<cterm>,typename cterm::hasher,typename cterm::equal_to>
+          boost::multi_index::hashed_unique<boost::multi_index::member<cterm,max_fast_int,&cterm::m_ckey>,
+          typename cterm::hasher,typename cterm::equal_to>
         >
       >
       cmult_set;
@@ -423,7 +424,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
                 tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
               }
               // Insert into cosine container.
-              it = cms_cos.find(tmp_term1);
+              it = cms_cos.find(tmp_term1.m_ckey);
               if (it == cms_cos.end())
               {
                 cms_cos.insert(tmp_term1);
@@ -432,7 +433,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
               {
                 it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
               }
-              it = cms_cos.find(tmp_term2);
+              it = cms_cos.find(tmp_term2.m_ckey);
               if (it == cms_cos.end())
               {
                 cms_cos.insert(tmp_term2);
@@ -449,7 +450,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
                 tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
               }
               // Insert into sine container.
-              it = cms_sin.find(tmp_term1);
+              it = cms_sin.find(tmp_term1.m_ckey);
               if (it == cms_sin.end())
               {
                 cms_sin.insert(tmp_term1);
@@ -458,7 +459,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
               {
                 it->m_cf.add(tmp_term1.m_cf,ancestor::m_args_tuple);
               }
-              it = cms_sin.find(tmp_term2);
+              it = cms_sin.find(tmp_term2.m_ckey);
               if (it == cms_sin.end())
               {
                 cms_sin.insert(tmp_term2);
