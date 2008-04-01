@@ -258,6 +258,8 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
         catch(std::bad_alloc)
         {
+          piranha_free(m_vc_res_cos);
+          piranha_free(m_vc_res_sin);
           return false;
         }
         // Define the base pointers for storing the results of multiplication.
@@ -270,7 +272,7 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
-            tmp_cf.mult_by(series_mult_rep<cf_type1>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+            tmp_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);
             const max_fast_int index_plus = m_ckeys1[i] + m_ckeys2[j],
               index_minus = m_ckeys1[i] - m_ckeys2[j];
@@ -377,6 +379,8 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
       std::valarray<bool>                                   m_flavours1;
       std::valarray<bool>                                   m_flavours2;
       // Results of vector coded multiplication.
+      // TODO: move these into vector coded routine, there's no reason why they should stay here,
+      // as they are not shared anywhere.
       vc_res_type                                           *m_vc_res_cos;
       vc_res_type                                           *m_vc_res_sin;
   };
