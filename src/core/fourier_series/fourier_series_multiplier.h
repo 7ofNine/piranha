@@ -347,6 +347,8 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
         for (max_fast_int i = m_h_min; i <= m_h_max; ++i)
         {
+          // Take a shortcut and check for ignorability of the coefficient here.
+          // This way we avoid decodification, and all the series term insertion yadda-yadda.
           switch (likely(vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)))
           {
             case true:
