@@ -46,10 +46,10 @@ namespace piranha
       typedef typename Series2::term_type::cf_type cf_type2;
       typedef typename Series1::term_type::key_type key_type;
     public:
-      norm_truncator(const Series1 &s1, const Series2 &s2, const ArgsTuple &a):m_s1(s1),m_s2(s2),m_args_tuple(a),
+      norm_truncator(const Series1 &s1, const Series2 &s2, const ArgsTuple &a):m_args_tuple(a),
         m_delta_threshold(
-        m_s1.norm(m_args_tuple)*m_s2.norm(m_args_tuple)*m_s1.get_truncation()/
-        (2*m_s1.template nth_index<0>().size()*m_s2.template nth_index<0>().size()))
+        s1.norm(m_args_tuple)*s2.norm(m_args_tuple)*s1.get_truncation()/
+        (2*s1.template nth_index<0>().size()*s2.template nth_index<0>().size()))
       {}
       bool accept(const term_type &) const {return true;}
       bool skip(const cf_type1 &c1, const key_type &, const cf_type2 &c2, const key_type &) const
@@ -57,8 +57,6 @@ namespace piranha
         return (c1.norm(m_args_tuple) * c2.norm(m_args_tuple) / 2 < m_delta_threshold);
       }
     private:
-      const Series1   &m_s1;
-      const Series2   &m_s2;
       const ArgsTuple &m_args_tuple;
       const double    m_delta_threshold;
   };
