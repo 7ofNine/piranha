@@ -21,14 +21,22 @@
 #ifndef PIRANHA_FS_H
 #define PIRANHA_FS_H
 
-#include "../bits/poisson_series/coefficients/double_cf.h"
-#include "../bits/poisson_series/norm_index.h"
-#include "../bits/poisson_series/generic_fs.h"
-#include "../bits/poisson_series/terms/simple_term.h"
-#include "../bits/poisson_series/trigonometric_parts/trig_array.h"
+#include "../core/base_classes/common_indices.h"
+#include "../core/fourier_series/fourier_series.h"
+#include "../core/poisson_series_common/poisson_series_multiplier.h"
+#include "../core/numerical_coefficients/double_cf.h"
+#include "../core/poisson_series_common/trig_array.h"
+#include "../core/base_classes/truncators.h"
 
 namespace piranha
 {
-  typedef generic_fs<double_cf,trig_array<16,1>,simple_term,norm_index> fs;
+  /// Definition of the Fourier series manipulator.
+  typedef fourier_series<
+    double_cf,trig_array<16,0>,
+    norm_index,
+    poisson_series_multiplier,
+    norm_truncator
+  > fs;
 }
+
 #endif

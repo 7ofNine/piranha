@@ -18,13 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#ifndef PIRANHA_FS_H
+#define PIRANHA_FS_H
 
-/// Piranha top-level namespace.
-namespace piranha {}
+#include "../bits/poisson_series/coefficients/double_cf.h"
+#include "../bits/poisson_series/norm_index.h"
+#include "../bits/poisson_series/generic_fs.h"
+#include "../bits/poisson_series/terms/simple_term.h"
+#include "../bits/poisson_series/trigonometric_parts/trig_array.h"
 
-// Include all piranha manipulators.
-#include "manipulators/fs.h"
-
+namespace piranha
+{
+  typedef generic_fs<double_cf,trig_array<16,1>,simple_term,norm_index> fs;
+}
 #endif
