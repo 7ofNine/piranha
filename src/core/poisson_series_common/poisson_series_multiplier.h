@@ -260,7 +260,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
               break;
             case false:
               tmp_term.m_cf = vc_res_cos[i];
-              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
+                coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = true;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -273,7 +274,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
               break;
             case false:
               tmp_term.m_cf = vc_res_sin[i];
-              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
+                coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = false;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -386,7 +388,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
+              coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = true;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -396,7 +399,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
+              coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = false;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -404,8 +408,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
       }
     private:
       // For Poisson series we also need flavours.
-      std::valarray<bool>                                   m_flavours1;
-      std::valarray<bool>                                   m_flavours2;
+      std::valarray<bool> m_flavours1;
+      std::valarray<bool> m_flavours2;
   };
 }
 
