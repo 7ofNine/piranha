@@ -276,6 +276,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             {
               break;
             }
+            // TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
+            // generating only one coefficient and change its sign later if needed - after insertion.
             cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),coded_ancestor::m_ckeys1[i]);
             // Handle the coefficient, with positive signs for now.
             tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
