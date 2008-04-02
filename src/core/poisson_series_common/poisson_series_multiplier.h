@@ -102,10 +102,6 @@ namespace piranha
     public:
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
-        m_min_max1(coded_ancestor::m_size),
-        m_min_max2(coded_ancestor::m_size),
-        m_res_min_max(coded_ancestor::m_size),
-        m_fast_res_min_max(coded_ancestor::m_size),
         // Coding vector is larger to accomodate extra element at the end.
         m_coding_vector(coded_ancestor::m_size+1)
       {}
@@ -140,28 +136,28 @@ namespace piranha
         // Fill first minmax vector. This works because at this point we are sure both series have
         // at least one term. Assert it, just to make sure.
         p_assert(!ancestor::m_s1.template nth_index<0>().empty() and !ancestor::m_s2.template nth_index<0>().empty());
-        it1->m_key.template update_limits<true>(m_min_max1);
-        it2->m_key.template update_limits<true>(m_min_max2);
+        it1->m_key.template update_limits<true>(coded_ancestor::m_min_max1);
+        it2->m_key.template update_limits<true>(coded_ancestor::m_min_max2);
         // Move to the second terms and cycle on all remaining terms.
         ++it1;
         ++it2;
         for (; it1 != it_f1; ++it1)
         {
-          it1->m_key.template update_limits<false>(m_min_max1);
+          it1->m_key.template update_limits<false>(coded_ancestor::m_min_max1);
         }
         for (; it2 != it_f2; ++it2)
         {
-          it2->m_key.template update_limits<false>(m_min_max2);
+          it2->m_key.template update_limits<false>(coded_ancestor::m_min_max2);
         }
 std::cout << "Limits are:\n";
-for (size_t i = 0; i < m_min_max1.size(); ++i)
+for (size_t i = 0; i < coded_ancestor::m_min_max1.size(); ++i)
 {
-  std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
+  std::cout << coded_ancestor::m_min_max1[i].first << ',' << coded_ancestor::m_min_max1[i].second << '\n';
 }
 std::cout << "and:\n";
-for (size_t i = 0; i < m_min_max2.size(); ++i)
+for (size_t i = 0; i < coded_ancestor::m_min_max2.size(); ++i)
 {
-  std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
+  std::cout << coded_ancestor::m_min_max2[i].first << ',' << coded_ancestor::m_min_max2[i].second << '\n';
 }
       }
       void calculate_result_min_max()
@@ -170,22 +166,22 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
         std::pair<typename std::vector<mpz_class>::const_iterator,std::vector<mpz_class>::const_iterator> min_max;
         for (size_t i=0; i < coded_ancestor::m_size; ++i)
         {
-          tmp_vec[0]=mpz_class(m_min_max1[i].second)+mpz_class(m_min_max2[i].second);
-          tmp_vec[1]=mpz_class(m_min_max1[i].first)+mpz_class(m_min_max2[i].first);
-          tmp_vec[2]=mpz_class(m_min_max1[i].second)-mpz_class(m_min_max2[i].first);
-          tmp_vec[3]=mpz_class(m_min_max1[i].first)-mpz_class(m_min_max2[i].second);
-          tmp_vec[4]=mpz_class(m_min_max1[i].first);
-          tmp_vec[5]=mpz_class(m_min_max2[i].first);
-          tmp_vec[6]=mpz_class(m_min_max1[i].second);
-          tmp_vec[7]=mpz_class(m_min_max2[i].second);
+          tmp_vec[0]=mpz_class(coded_ancestor::m_min_max1[i].second)+mpz_class(coded_ancestor::m_min_max2[i].second);
+          tmp_vec[1]=mpz_class(coded_ancestor::m_min_max1[i].first)+mpz_class(coded_ancestor::m_min_max2[i].first);
+          tmp_vec[2]=mpz_class(coded_ancestor::m_min_max1[i].second)-mpz_class(coded_ancestor::m_min_max2[i].first);
+          tmp_vec[3]=mpz_class(coded_ancestor::m_min_max1[i].first)-mpz_class(coded_ancestor::m_min_max2[i].second);
+          tmp_vec[4]=mpz_class(coded_ancestor::m_min_max1[i].first);
+          tmp_vec[5]=mpz_class(coded_ancestor::m_min_max2[i].first);
+          tmp_vec[6]=mpz_class(coded_ancestor::m_min_max1[i].second);
+          tmp_vec[7]=mpz_class(coded_ancestor::m_min_max2[i].second);
           min_max = boost::minmax_element(tmp_vec.begin(),tmp_vec.end());
-          m_res_min_max[i].first=*(min_max.first);
-          m_res_min_max[i].second=*(min_max.second);
+          coded_ancestor::m_res_min_max[i].first=*(min_max.first);
+          coded_ancestor::m_res_min_max[i].second=*(min_max.second);
         }
 std::cout << "Mult limits are:\n";
-for (size_t i = 0; i < m_res_min_max.size(); ++i)
+for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
 {
-  std::cout << m_res_min_max[i].first << ',' << m_res_min_max[i].second << '\n';
+  std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
 }
       }
       void determine_viability()
@@ -194,11 +190,11 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
         mpz_class hmin(0), hmax(0), ck(1);
         for (size_t i=0; i < coded_ancestor::m_size; ++i)
         {
-          hmin+=ck*m_res_min_max[i].first;
-          hmax+=ck*m_res_min_max[i].second;
+          hmin+=ck*coded_ancestor::m_res_min_max[i].first;
+          hmax+=ck*coded_ancestor::m_res_min_max[i].second;
           // Assign also the coding vector, so we avoid doing it later.
           m_coding_vector[i]=ck.get_si();
-          ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
+          ck*=(coded_ancestor::m_res_min_max[i].second-coded_ancestor::m_res_min_max[i].first+1);
         }
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
@@ -215,14 +211,14 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
           // Downcast minimum and maximum result values to fast integers.
           for (size_t i = 0; i < coded_ancestor::m_size; ++i)
           {
-            if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
-              m_res_min_max[i].second < traits::min() or m_res_min_max[i].second > traits::max())
+            if (coded_ancestor::m_res_min_max[i].first < traits::min() or coded_ancestor::m_res_min_max[i].first > traits::max() or
+              coded_ancestor::m_res_min_max[i].second < traits::min() or coded_ancestor::m_res_min_max[i].second > traits::max())
             {
               std::cout << "Warning: results of series multiplication cross " <<
               "fast integer limits. Expect errors." << std::endl;
             }
-            m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
-            m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
+            coded_ancestor::m_fast_res_min_max[i].first = coded_ancestor::m_res_min_max[i].first.get_si();
+            coded_ancestor::m_fast_res_min_max[i].second = coded_ancestor::m_res_min_max[i].second.get_si();
           }
 std::cout << "Coding vector: ";
 for (size_t i=0; i < coded_ancestor::m_size; ++i)
@@ -369,7 +365,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
               break;
             case false:
               tmp_term.m_cf = vc_res_cos[i];
-              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = true;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -382,7 +378,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
               break;
             case false:
               tmp_term.m_cf = vc_res_sin[i];
-              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = false;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -495,7 +491,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
           for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = true;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -505,21 +501,13 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
           for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = false;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
       }
     private:
-      // Vectors of minimum and maximum value pairs for the series being multiplied.
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max1;
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max2;
-      // Vector of minimum and maximum value pairs for the resulting series.
-      // GMP is used to avoid trespassing the range limits of max_fast_int.
-      std::valarray<std::pair<mpz_class,mpz_class> >        m_res_min_max;
-      // Version of the above downcast to fast integer type.
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_fast_res_min_max;
       // Coding vector.
       std::valarray<max_fast_int>                           m_coding_vector;
       max_fast_int                                          m_h_min;
