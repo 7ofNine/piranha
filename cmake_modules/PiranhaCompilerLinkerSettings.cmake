@@ -17,7 +17,7 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
-  SET(GCC_SPECIFIC_FLAGS "-Wall -Wextra -fmessage-length=0")
+  SET(GCC_SPECIFIC_FLAGS "-Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
   CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden __VISIBILITY_INLINES_HIDDEN_FLAG)
   IF(__VISIBILITY_INLINES_HIDDEN_FLAG)
     MESSAGE(STATUS "GCC supports the '-fvisibility-inlines-hidden' flag")
