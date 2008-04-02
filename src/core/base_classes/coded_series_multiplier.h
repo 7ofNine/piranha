@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
+#include <boost/integer_traits.hpp> // For integer limits.
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -36,6 +37,7 @@ namespace piranha
   template <class Derived>
     class coded_series_multiplier
   {
+      typedef boost::integer_traits<max_fast_int> traits;
     protected:
       coded_series_multiplier():
         m_cr_is_viable(false),
@@ -78,6 +80,50 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
 {
   std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
 }
+      }
+      void determine_viability()
+      {
+        // We must do the computations with arbitrary integers to avoid exceeding range.
+        mpz_class hmin(0), hmax(0), ck(1);
+        for (size_t i=0; i < m_size; ++i)
+        {
+          hmin+=ck*m_res_min_max[i].first;
+          hmax+=ck*m_res_min_max[i].second;
+          // Assign also the coding vector, so we avoid doing it later.
+          m_coding_vector[i]=ck.get_si();
+          ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
+        }
+        // We want to fill on extra slot of the coding vector (wrt to the nominal size,
+        // corresponding to the arguments number for the key). This is handy for decodification.
+        m_coding_vector[m_size]=ck.get_si();
+        p_assert(ck > 0);
+        // Determine viability by checking that ck and the minimum/maximum values for the codes
+        // respect the fast integer boundaries.
+        if (ck < traits::max() and hmin > traits::min() and hmin < traits::max() and
+          hmax > traits::min() and hmax < traits::max())
+        {
+          m_cr_is_viable = true;
+          m_h_min = hmin.get_si();
+          m_h_max = hmax.get_si();
+          // Downcast minimum and maximum result values to fast integers.
+          for (size_t i = 0; i < m_size; ++i)
+          {
+            if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
+              m_res_min_max[i].second < traits::min() or m_res_min_max[i].second > traits::max())
+            {
+              std::cout << "Warning: results of series multiplication cross " <<
+              "fast integer limits. Expect errors." << std::endl;
+            }
+            m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
+            m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
+          }
+std::cout << "Coding vector: ";
+for (size_t i=0; i < m_size; ++i)
+{
+  std::cout << m_coding_vector[i] << '\t';
+}
+std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+        }
       }
     protected:
       // Is coded representation viable?

@@ -23,7 +23,6 @@
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/functional/hash.hpp>
-#include <boost/integer_traits.hpp> // For integer limits.
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/member.hpp>
@@ -61,7 +60,6 @@ namespace piranha
       typedef typename ancestor::cf_type2 cf_type2;
       typedef typename ancestor::key_type key_type;
       typedef typename ancestor::mult_set mult_set;
-      typedef boost::integer_traits<max_fast_int> traits;
       typedef typename Series1::const_sorted_iterator iterator1;
       typedef typename Series2::const_sorted_iterator iterator2;
       // Typedefs for hash coded arithmetics.
@@ -108,7 +106,7 @@ namespace piranha
       {
         coded_ancestor::find_input_min_max();
         calculate_result_min_max();
-        determine_viability();
+        coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
           store_coefficients_code_keys();
@@ -148,50 +146,6 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
 {
   std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
 }
-      }
-      void determine_viability()
-      {
-        // We must do the computations with arbitrary integers to avoid exceeding range.
-        mpz_class hmin(0), hmax(0), ck(1);
-        for (size_t i=0; i < coded_ancestor::m_size; ++i)
-        {
-          hmin+=ck*coded_ancestor::m_res_min_max[i].first;
-          hmax+=ck*coded_ancestor::m_res_min_max[i].second;
-          // Assign also the coding vector, so we avoid doing it later.
-          coded_ancestor::m_coding_vector[i]=ck.get_si();
-          ck*=(coded_ancestor::m_res_min_max[i].second-coded_ancestor::m_res_min_max[i].first+1);
-        }
-        // We want to fill on extra slot of the coding vector (wrt to the nominal size,
-        // corresponding to the arguments number for the key). This is handy for decodification.
-        coded_ancestor::m_coding_vector[coded_ancestor::m_size]=ck.get_si();
-        p_assert(ck > 0);
-        // Determine viability by checking that ck and the minimum/maximum values for the codes
-        // respect the fast integer boundaries.
-        if (ck < traits::max() and hmin > traits::min() and hmin < traits::max() and
-          hmax > traits::min() and hmax < traits::max())
-        {
-          coded_ancestor::m_cr_is_viable = true;
-          coded_ancestor::m_h_min = hmin.get_si();
-          coded_ancestor::m_h_max = hmax.get_si();
-          // Downcast minimum and maximum result values to fast integers.
-          for (size_t i = 0; i < coded_ancestor::m_size; ++i)
-          {
-            if (coded_ancestor::m_res_min_max[i].first < traits::min() or coded_ancestor::m_res_min_max[i].first > traits::max() or
-              coded_ancestor::m_res_min_max[i].second < traits::min() or coded_ancestor::m_res_min_max[i].second > traits::max())
-            {
-              std::cout << "Warning: results of series multiplication cross " <<
-              "fast integer limits. Expect errors." << std::endl;
-            }
-            coded_ancestor::m_fast_res_min_max[i].first = coded_ancestor::m_res_min_max[i].first.get_si();
-            coded_ancestor::m_fast_res_min_max[i].second = coded_ancestor::m_res_min_max[i].second.get_si();
-          }
-std::cout << "Coding vector: ";
-for (size_t i=0; i < coded_ancestor::m_size; ++i)
-{
-  std::cout << coded_ancestor::m_coding_vector[i] << '\t';
-}
-std::cout << "+\t" << coded_ancestor::m_coding_vector[coded_ancestor::m_size] << '\n';
-        }
       }
       /// Store coefficients and code keys.
       void store_coefficients_code_keys()
