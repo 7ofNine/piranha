@@ -11,7 +11,7 @@ ENDIF(BUILD_PYRANHA_SP)
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
 SET(SRC_LIST ${SRC_LIST}
   memory.cpp
-#  norm_truncation.cpp
+  norm_truncatable_series.cpp
   settings_manager.cpp
   stats.cpp
   astro.cpp

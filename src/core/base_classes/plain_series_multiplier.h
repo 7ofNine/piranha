@@ -69,7 +69,7 @@ namespace piranha
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_size1(m_s1.template nth_index<0>().size()),m_size2(m_s2.template nth_index<0>().size()),
-        m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set()
+        m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set(),m_trunc(m_s1,m_s2,m_args_tuple)
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
@@ -106,7 +106,6 @@ namespace piranha
       void plain_multiplication()
       {
         typedef typename term_type::multiplication_result mult_res;
-        truncator_type trunc(m_s1,m_s2,m_args_tuple);
         const size_t size1 = m_cfs1.size(), size2 = m_cfs2.size();
         p_assert(size1 == m_keys1.size() and size2 == m_keys2.size());
         mult_res res;
@@ -114,7 +113,7 @@ namespace piranha
         {
           for (size_t j = 0; j < size2; ++j)
           {
-            if (trunc.skip_from_here(
+            if (m_trunc.skip(
               series_mult_rep<cf_type1>::get(m_cfs1[i]),
               series_mult_rep<key_type>::get(m_keys1[i]),
               series_mult_rep<cf_type2>::get(m_cfs2[j]),
@@ -128,7 +127,7 @@ namespace piranha
               series_mult_rep<cf_type2>::get(m_cfs2[j]),
               series_mult_rep<key_type>::get(m_keys2[j]),
               res,m_args_tuple);
-            insert_multiplication_result<mult_res>::run(res,m_set,m_args_tuple,trunc);
+            insert_multiplication_result<mult_res>::run(res,m_set,m_args_tuple,m_trunc);
           }
         }
       }
@@ -173,6 +172,8 @@ namespace piranha
       std::valarray<sm_key>   m_keys2;
       // Container to store the result of the multiplications.
       mult_set                m_set;
+      // Truncator.
+      truncator_type          m_trunc;
   };
 }
 

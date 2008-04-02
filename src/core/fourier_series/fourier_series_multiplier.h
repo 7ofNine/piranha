@@ -309,6 +309,14 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
+            if (ancestor::m_trunc.skip(
+              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
+              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+            {
+              break;
+            }
             // TODO: Does it make sense here to define a method for coefficients like:
             // mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
             // so that we can avoid copying stuff around here and elsewhere?
@@ -400,6 +408,14 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
+            if (ancestor::m_trunc.skip(
+              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
+              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+            {
+              break;
+            }
             cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),m_ckeys1[i]);
             // Handle the coefficient, with positive signs for now.
             tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
