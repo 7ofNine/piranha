@@ -109,7 +109,7 @@ namespace piranha
         coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
-          store_coefficients_code_keys();
+          coded_ancestor::store_coefficients_code_keys();
           store_flavours();
           if (!perform_vector_coded_multiplication())
           {
@@ -146,30 +146,6 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
 {
   std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
 }
-      }
-      /// Store coefficients and code keys.
-      void store_coefficients_code_keys()
-      {
-        iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
-        iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
-        // Make space in the coefficients and coded keys vectors.
-        ancestor::m_cfs1.resize(ancestor::m_size1);
-        ancestor::m_cfs2.resize(ancestor::m_size2);
-        coded_ancestor::m_ckeys1.resize(ancestor::m_size1);
-        coded_ancestor::m_ckeys2.resize(ancestor::m_size2);
-        size_t i;
-        for (i = 0; i < ancestor::m_size1; ++i)
-        {
-          series_mult_rep<cf_type1>::assign(ancestor::m_cfs1[i],it1->m_cf);
-          it1->m_key.code(coded_ancestor::m_coding_vector,coded_ancestor::m_ckeys1[i],ancestor::m_args_tuple);
-          ++it1;
-        }
-        for (i = 0; i < ancestor::m_size2; ++i)
-        {
-          series_mult_rep<cf_type2>::assign(ancestor::m_cfs2[i],it2->m_cf);
-          it2->m_key.code(coded_ancestor::m_coding_vector,coded_ancestor::m_ckeys2[i],ancestor::m_args_tuple);
-          ++it2;
-        }
       }
       /// Store flavours of the series into own vectors.
       void store_flavours()

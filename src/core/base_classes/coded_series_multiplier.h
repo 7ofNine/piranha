@@ -50,13 +50,14 @@ namespace piranha
       {
         typedef typename Derived::iterator1 iterator1;
         typedef typename Derived::iterator2 iterator2;
-        const iterator1 it_f1 = derived_cast->m_s1.template nth_index<0>().end();
-        const iterator2 it_f2 = derived_cast->m_s2.template nth_index<0>().end();
-        iterator1 it1 = derived_cast->m_s1.template nth_index<0>().begin();
-        iterator2 it2 = derived_cast->m_s2.template nth_index<0>().begin();
+        const iterator1 it_f1 = derived_const_cast->m_s1.template nth_index<0>().end();
+        const iterator2 it_f2 = derived_const_cast->m_s2.template nth_index<0>().end();
+        iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
+        iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
         // Fill first minmax vector. This works because at this point we are sure both series have
         // at least one term. Assert it, just to make sure.
-        p_assert(!derived_cast->m_s1.template nth_index<0>().empty() and !derived_cast->m_s2.template nth_index<0>().empty());
+        p_assert(!derived_const_cast->m_s1.template nth_index<0>().empty() and
+          !derived_const_cast->m_s2.template nth_index<0>().empty());
         it1->m_key.template update_limits<true>(m_min_max1);
         it2->m_key.template update_limits<true>(m_min_max2);
         // Move to the second terms and cycle on all remaining terms.
@@ -123,6 +124,34 @@ for (size_t i=0; i < m_size; ++i)
   std::cout << m_coding_vector[i] << '\t';
 }
 std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+        }
+      }
+      /// Store coefficients and code keys.
+      void store_coefficients_code_keys()
+      {
+        typedef typename Derived::iterator1 iterator1;
+        typedef typename Derived::iterator2 iterator2;
+        typedef typename Derived::cf_type1 cf_type1;
+        typedef typename Derived::cf_type2 cf_type2;
+        iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
+        iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
+        // Make space in the coefficients and coded keys vectors.
+        derived_const_cast->m_cfs1.resize(derived_const_cast->m_size1);
+        derived_const_cast->m_cfs2.resize(derived_const_cast->m_size2);
+        m_ckeys1.resize(derived_const_cast->m_size1);
+        m_ckeys2.resize(derived_const_cast->m_size2);
+        size_t i;
+        for (i = 0; i < derived_const_cast->m_size1; ++i)
+        {
+          series_mult_rep<cf_type1>::assign(derived_const_cast->m_cfs1[i],it1->m_cf);
+          it1->m_key.code(m_coding_vector,m_ckeys1[i],derived_const_cast->m_args_tuple);
+          ++it1;
+        }
+        for (i = 0; i < derived_const_cast->m_size2; ++i)
+        {
+          series_mult_rep<cf_type2>::assign(derived_const_cast->m_cfs2[i],it2->m_cf);
+          it2->m_key.code(m_coding_vector,m_ckeys2[i],derived_const_cast->m_args_tuple);
+          ++it2;
         }
       }
     protected:
