@@ -22,9 +22,14 @@
 #define PIRANHA_PIRANHA_H
 
 /// Piranha top-level namespace.
-namespace piranha {}
+namespace piranha
+{
+  /// Namespace for the available manipulators.
+  namespace manipulators {}
+}
 
 // Include all piranha manipulators.
+#include "manipulators/dpoly.h"
 #include "manipulators/fs.h"
 
 #endif

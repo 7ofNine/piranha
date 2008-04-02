@@ -18,28 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_FS_H
-#define PIRANHA_FS_H
+#ifndef PIRANHA_DPOLY_H
+#define PIRANHA_DPOLY_H
 
 #include "../core/base_classes/common_indices.h"
-#include "../core/fourier_series/fourier_series.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/numerical_coefficients/double_cf.h"
-#include "../core/poisson_series_common/trig_array.h"
-#include "../core/base_classes/truncators.h"
+#include "../core/polynomial_common/expo_array.h"
+#include "../core/polynomial/polynomial.h"
 
 namespace piranha
 {
 namespace manipulators
 {
-  /// Fourier series manipulator.
-  typedef fourier_series
+  /// Double coefficient multivariate polynomial manipulator.
+  typedef polynomial
   <
-    double_cf,trig_array<16,0>,
-    norm_index,
-    poisson_series_multiplier,
-    norm_truncator
-  > fs;
+    double_cf,
+    expo_array<16,0>,
+    key_min_degree_index
+  > dpoly;
 }
 }
 
