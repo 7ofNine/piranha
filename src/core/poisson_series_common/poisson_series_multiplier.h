@@ -50,10 +50,11 @@ namespace piranha
   template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
     class poisson_series_multiplier:
     public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
-    public coded_series_multiplier
+    public coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >
   {
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
-      typedef coded_series_multiplier coded_ancestor;
+      typedef coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
+      friend class coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
       typedef typename ancestor::truncator_type truncator_type;
       typedef typename ancestor::term_type term_type;
       typedef typename ancestor::cf_type1 cf_type1;
@@ -101,13 +102,12 @@ namespace piranha
     public:
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
-        m_size(args_tuple.template get<key_type::position>().size()),
-        m_min_max1(m_size),
-        m_min_max2(m_size),
-        m_res_min_max(m_size),
-        m_fast_res_min_max(m_size),
+        m_min_max1(coded_ancestor::m_size),
+        m_min_max2(coded_ancestor::m_size),
+        m_res_min_max(coded_ancestor::m_size),
+        m_fast_res_min_max(coded_ancestor::m_size),
         // Coding vector is larger to accomodate extra element at the end.
-        m_coding_vector(m_size+1)
+        m_coding_vector(coded_ancestor::m_size+1)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -168,7 +168,7 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
       {
         std::vector<mpz_class> tmp_vec(8);
         std::pair<typename std::vector<mpz_class>::const_iterator,std::vector<mpz_class>::const_iterator> min_max;
-        for (size_t i=0; i < m_size; ++i)
+        for (size_t i=0; i < coded_ancestor::m_size; ++i)
         {
           tmp_vec[0]=mpz_class(m_min_max1[i].second)+mpz_class(m_min_max2[i].second);
           tmp_vec[1]=mpz_class(m_min_max1[i].first)+mpz_class(m_min_max2[i].first);
@@ -192,7 +192,7 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
       {
         // We must do the computations with arbitrary integers to avoid exceeding range.
         mpz_class hmin(0), hmax(0), ck(1);
-        for (size_t i=0; i < m_size; ++i)
+        for (size_t i=0; i < coded_ancestor::m_size; ++i)
         {
           hmin+=ck*m_res_min_max[i].first;
           hmax+=ck*m_res_min_max[i].second;
@@ -202,7 +202,7 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
         }
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
-        m_coding_vector[m_size]=ck.get_si();
+        m_coding_vector[coded_ancestor::m_size]=ck.get_si();
         p_assert(ck > 0);
         // Determine viability by checking that ck and the minimum/maximum values for the codes
         // respect the fast integer boundaries.
@@ -213,7 +213,7 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
           m_h_min = hmin.get_si();
           m_h_max = hmax.get_si();
           // Downcast minimum and maximum result values to fast integers.
-          for (size_t i = 0; i < m_size; ++i)
+          for (size_t i = 0; i < coded_ancestor::m_size; ++i)
           {
             if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
               m_res_min_max[i].second < traits::min() or m_res_min_max[i].second > traits::max())
@@ -225,11 +225,11 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
             m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
           }
 std::cout << "Coding vector: ";
-for (size_t i=0; i < m_size; ++i)
+for (size_t i=0; i < coded_ancestor::m_size; ++i)
 {
   std::cout << m_coding_vector[i] << '\t';
 }
-std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
         }
       }
       /// Store coefficients and code keys.
@@ -512,8 +512,6 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
       }
     private:
-      // Size of limits vectors (corresponding to the size of arguments vector of the key).
-      const size_t                                          m_size;
       // Vectors of minimum and maximum value pairs for the series being multiplied.
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max1;
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max2;

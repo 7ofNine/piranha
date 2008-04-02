@@ -21,16 +21,27 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+
 namespace piranha
 {
-  class coded_series_multiplier
+  template <class Derived>
+    class coded_series_multiplier
   {
     protected:
-      coded_series_multiplier():m_cr_is_viable(false) {}
+      coded_series_multiplier():
+        m_cr_is_viable(false),
+        m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size())
+      {}
     protected:
       // Is coded representation viable?
-      bool  m_cr_is_viable;
+      bool          m_cr_is_viable;
+      const size_t  m_size;
   };
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif
