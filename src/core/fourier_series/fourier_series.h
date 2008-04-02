@@ -39,7 +39,8 @@
   template <class, class, class> class Truncator, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
-#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n',Allocator,__PIRANHA_FOURIER_SERIES >
+#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n', \
+  Allocator,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
 #define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, Multiplier, Truncator>
 
@@ -51,11 +52,10 @@ namespace piranha
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
     public norm_truncatable_series,
-    boost::additive<__PIRANHA_FOURIER_SERIES,
-    boost::multipliable<__PIRANHA_FOURIER_SERIES,
+    boost::ring_operators<__PIRANHA_FOURIER_SERIES,
     boost::multipliable2<__PIRANHA_FOURIER_SERIES,double,
     boost::multipliable2<__PIRANHA_FOURIER_SERIES,int
-    > > > >
+    > > >
   {
       typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
