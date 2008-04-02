@@ -281,8 +281,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_term1.m_cf.divide_by(2,ancestor::m_args_tuple);
             tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
-            // Create the second term, using the first one's coefficient and an appropriate code.
-            cterm tmp_term2(tmp_term1.m_cf,coded_ancestor::m_ckeys1[i]+coded_ancestor::m_ckeys2[j]);
+            // Create the second term, using the first one's coefficient and the appropriate code.
+            cterm tmp_term2(tmp_term1.m_cf,coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
             // Now fix flavours and coefficient signs.
             switch (m_flavours1[i] == m_flavours2[j])
             {
