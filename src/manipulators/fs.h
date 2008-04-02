@@ -31,7 +31,8 @@
 namespace piranha
 {
   /// Definition of the Fourier series manipulator.
-  typedef fourier_series<
+  typedef fourier_series
+  <
     double_cf,trig_array<16,0>,
     norm_index,
     poisson_series_multiplier,
