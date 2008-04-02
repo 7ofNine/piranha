@@ -29,6 +29,20 @@ namespace piranha
     return (derived_const_cast->template nth_index<0>().size() == 1 and
       derived_const_cast->template nth_index<0>().begin()->m_key.is_unity());
   }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    double retval = 0;
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
+    }
+    return retval;
+  }
 }
 
 #endif

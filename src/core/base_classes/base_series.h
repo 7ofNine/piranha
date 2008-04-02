@@ -55,6 +55,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
+      template <class ArgsTuple>
+        double norm(const ArgsTuple &) const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
