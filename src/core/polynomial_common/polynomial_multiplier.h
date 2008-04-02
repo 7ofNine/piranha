@@ -214,7 +214,7 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             switch (it == cms.end())
             {
               case true:
-                cos.insert(tmp_term);
+                cms.insert(tmp_term);
                 break;
               case false:
                 it->m_cf.add(tmp_term.m_cf,ancestor::m_args_tuple);

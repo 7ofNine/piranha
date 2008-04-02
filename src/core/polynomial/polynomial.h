@@ -28,25 +28,29 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/series_multiplication.h"
 #include "../polynomial_common/monomial.h"
 
-#define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, class Allocator
-#define __PIRANHA_POLYNOMIAL_TP Cf,Expo,I,Allocator
+#define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, \
+  template <class, class, class, template <class, class, class> class> class Multiplier, \
+  template <class, class, class> class Truncator, class Allocator
+#define __PIRANHA_POLYNOMIAL_TP Cf,Expo,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_POLYNOMIAL polynomial<__PIRANHA_POLYNOMIAL_TP>
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
+#define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
 
 namespace piranha
 {
   template <__PIRANHA_POLYNOMIAL_TP_DECL = std::allocator<char> >
     class polynomial:
-    protected __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
-    boost::additive<__PIRANHA_POLYNOMIAL,
-    //boost::multipliable<__PIRANHA_FOURIER_SERIES,
+    public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
+    boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::multipliable2<__PIRANHA_POLYNOMIAL,double,
     boost::multipliable2<__PIRANHA_POLYNOMIAL,int
-    > > > //>
+    > > >
   {
       typedef monomial<Cf,Expo,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
@@ -57,6 +61,7 @@ namespace piranha
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
+      friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -84,5 +89,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL
 #undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
 
 #endif

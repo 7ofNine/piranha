@@ -2,5 +2,7 @@
 - Fix unnecessarily long series in binomail expansion for pow.
 - Use reference counted pointer to psymbols to make them live only as necessary?
 - Unify stream_manager and settings?
-- Unify memory handling (piranha_malloc, buffer, memory.h).
 - Move meta-programming in base_series_* into own headers to improve readability.
+- Poisson and poly multiplier: truncator calls also when inserting terms for generality,
+  and check for canonical form before final insertion to perform in-line adjustments
+  without the need to copy terms during base_series insertion later.

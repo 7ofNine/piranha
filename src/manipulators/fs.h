@@ -22,11 +22,11 @@
 #define PIRANHA_FS_H
 
 #include "../core/base_classes/common_indices.h"
-#include "../core/fourier_series/fourier_series.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/numerical_coefficients/double_cf.h"
-#include "../core/poisson_series_common/trig_array.h"
 #include "../core/base_classes/truncators.h"
+#include "../core/fourier_series/fourier_series.h"
+#include "../core/numerical_coefficients/double_cf.h"
+#include "../core/poisson_series_common/poisson_series_multiplier.h"
+#include "../core/poisson_series_common/trig_array.h"
 
 namespace piranha
 {
