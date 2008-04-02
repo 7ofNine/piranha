@@ -69,7 +69,7 @@ namespace piranha
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_size1(m_s1.template nth_index<0>().size()),m_size2(m_s2.template nth_index<0>().size()),
-        m_retval(retval),m_args_tuple(args_tuple),m_cfs1(),m_cfs2(),m_keys1(),m_keys2(),m_set(),m_trunc(m_s1,m_s2,m_args_tuple)
+        m_retval(retval),m_args_tuple(args_tuple),m_trunc(m_s1,m_s2,m_args_tuple)
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
