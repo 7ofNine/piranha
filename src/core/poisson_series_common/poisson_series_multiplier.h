@@ -54,6 +54,7 @@ namespace piranha
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
       typedef coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
+      // Some of these typedefs are used also in the coded ancestor.
       typedef typename ancestor::truncator_type truncator_type;
       typedef typename ancestor::term_type term_type;
       typedef typename ancestor::cf_type1 cf_type1;
@@ -62,41 +63,6 @@ namespace piranha
       typedef typename ancestor::mult_set mult_set;
       typedef typename Series1::const_sorted_iterator iterator1;
       typedef typename Series2::const_sorted_iterator iterator2;
-      // Typedefs for hash coded arithmetics.
-      // This is the representation of a term for the hash coded representation.
-      struct cterm
-      {
-        mutable cf_type1  m_cf;
-        max_fast_int      m_ckey;
-        // Templatized this way because we want to build complexes from reals.
-        template <class Cf>
-          cterm(const Cf &cf, const max_fast_int &code):m_cf(cf),m_ckey(code) {}
-        struct hasher
-        {
-          size_t operator()(const max_fast_int &code) const
-          {
-            return boost::hash<max_fast_int>()(code);
-          }
-        };
-        struct equal_to
-        {
-          bool operator()(const max_fast_int &code1, const max_fast_int &code2) const
-          {
-            return (code1 == code2);
-          }
-        };
-      };
-      // Hash set for coded multiplication.
-      typedef boost::multi_index_container
-      <
-        cterm,
-        boost::multi_index::indexed_by
-        <
-          boost::multi_index::hashed_unique<boost::multi_index::member<cterm,max_fast_int,&cterm::m_ckey>,
-          typename cterm::hasher,typename cterm::equal_to>
-        >
-      >
-      cmult_set;
     public:
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
@@ -294,6 +260,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
       }
       void perform_hash_coded_multiplication()
       {
+        typedef typename coded_ancestor::template generic_cterm<cf_type1> cterm;
+        typedef typename coded_ancestor::template generic_cmult_set<cf_type1>::type cmult_set;
         typedef typename cmult_set::iterator c_iterator;
         c_iterator it;
         cmult_set cms_cos, cms_sin;
