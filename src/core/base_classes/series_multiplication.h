@@ -41,7 +41,7 @@ namespace piranha
       // - args_tuple must be the result of a merging of arguments between the two series being multiplied,
       // - retval must be empty.
       template <class Derived2, class ArgsTuple>
-        void multiply_by_series(const Derived2 &s2, Derived &retval,
+        void multiply_by_generic_series(const Derived2 &s2, Derived &retval,
         const ArgsTuple &args_tuple)
       {
         typedef typename Derived::const_sorted_iterator const_sorted_iterator;

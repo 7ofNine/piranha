@@ -64,8 +64,7 @@ namespace piranha
         Derived &subtract(const Derived2 &);
       Derived &mult_by(const int &);
       Derived &mult_by(const double &);
-      template <class Derived2>
-        Derived &mult_by(const Derived2 &);
+      Derived &mult_by(const Derived &);
     protected:
       void construct_from_file(const std::string &);
     private:
@@ -86,6 +85,8 @@ namespace piranha
         void merge_args(const Derived2 &);
       template <class T>
         Derived &mult_by_generic(const T &);
+      template <class Derived2>
+        Derived &mult_by_series(const Derived2 &);
     protected:
       // Data members.
       args_tuple_type                 m_arguments;
