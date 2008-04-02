@@ -22,10 +22,6 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
-#include <boost/functional/hash.hpp>
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -37,7 +33,7 @@
 #include "../base_classes/coded_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../settings_manager.h"
+#include "../settings_manager.h" // For hash load factor.
 
 namespace piranha
 {

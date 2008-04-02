@@ -21,7 +21,11 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
+#include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp> // For integer limits.
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/member.hpp>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -34,6 +38,11 @@
 
 namespace piranha
 {
+  /// Toolbox for coded series multiplication.
+  /**
+   * Intended to be inherited together with piranha::plain_series_multiplier. It adds common methods for coded
+   * series multiplication.
+   */
   template <class Derived>
     class coded_series_multiplier
   {
