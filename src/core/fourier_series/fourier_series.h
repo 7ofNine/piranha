@@ -21,6 +21,7 @@
 #ifndef PIRANHA_FOURIER_SERIES_H
 #define PIRANHA_FOURIER_SERIES_H
 
+#include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
 #include <memory> // For default allocator.
 
@@ -49,7 +50,13 @@ namespace piranha
     public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
-    public norm_truncatable_series
+    public norm_truncatable_series,
+    boost::addable<__PIRANHA_FOURIER_SERIES,
+    boost::subtractable<__PIRANHA_FOURIER_SERIES,
+    boost::multipliable<__PIRANHA_FOURIER_SERIES,
+    boost::multipliable2<__PIRANHA_FOURIER_SERIES,double,
+    boost::multipliable2<__PIRANHA_FOURIER_SERIES,int
+    > > > > >
   {
       typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;

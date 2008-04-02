@@ -43,14 +43,14 @@ namespace piranha
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     template <class Derived2>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::add(const Derived2 &s2)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::add_series(const Derived2 &s2)
   {
     return merge_with_series<true>(s2);
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     template <class Derived2>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::subtract(const Derived2 &s2)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::subtract_series(const Derived2 &s2)
   {
     return merge_with_series<false>(s2);
   }
@@ -64,18 +64,6 @@ namespace piranha
     derived_cast->multiply_coefficients_by(x,retval,m_arguments);
     swap(retval);
     return *derived_cast;
-  }
-
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const int &n)
-  {
-    return mult_by_generic(n);
-  }
-
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const double &x)
-  {
-    return mult_by_generic(x);
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -93,7 +81,31 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by(const Derived &s2)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
+  {
+    return add_series(s2);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const Derived &s2)
+  {
+    return subtract_series(s2);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const int &n)
+  {
+    return mult_by_generic(n);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const double &x)
+  {
+    return mult_by_generic(x);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const Derived &s2)
   {
     return mult_by_series(s2);
   }
