@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POLYNOMIAL_H
 #define PIRANHA_POLYNOMIAL_H
 
+#include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
 #include <memory> // For default allocator.
 
@@ -40,7 +41,12 @@ namespace piranha
   template <__PIRANHA_POLYNOMIAL_TP_DECL = std::allocator<char> >
     class polynomial:
     protected __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
+    public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
+    boost::additive<__PIRANHA_POLYNOMIAL,
+    //boost::multipliable<__PIRANHA_FOURIER_SERIES,
+    boost::multipliable2<__PIRANHA_POLYNOMIAL,double,
+    boost::multipliable2<__PIRANHA_POLYNOMIAL,int
+    > > > //>
   {
       typedef monomial<Cf,Expo,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
