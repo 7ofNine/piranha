@@ -106,7 +106,7 @@ namespace piranha
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
       {
-        find_input_min_max();
+        coded_ancestor::find_input_min_max();
         calculate_result_min_max();
         determine_viability();
         if (coded_ancestor::m_cr_is_viable)
@@ -125,39 +125,6 @@ namespace piranha
         }
       }
     private:
-      void find_input_min_max()
-      {
-        const iterator1 it_f1 = ancestor::m_s1.template nth_index<0>().end();
-        const iterator2 it_f2 = ancestor::m_s2.template nth_index<0>().end();
-        iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
-        iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
-        // Fill first minmax vector. This works because at this point we are sure both series have
-        // at least one term. Assert it, just to make sure.
-        p_assert(!ancestor::m_s1.template nth_index<0>().empty() and !ancestor::m_s2.template nth_index<0>().empty());
-        it1->m_key.template update_limits<true>(coded_ancestor::m_min_max1);
-        it2->m_key.template update_limits<true>(coded_ancestor::m_min_max2);
-        // Move to the second terms and cycle on all remaining terms.
-        ++it1;
-        ++it2;
-        for (; it1 != it_f1; ++it1)
-        {
-          it1->m_key.template update_limits<false>(coded_ancestor::m_min_max1);
-        }
-        for (; it2 != it_f2; ++it2)
-        {
-          it2->m_key.template update_limits<false>(coded_ancestor::m_min_max2);
-        }
-std::cout << "Limits are:\n";
-for (size_t i = 0; i < coded_ancestor::m_min_max1.size(); ++i)
-{
-  std::cout << coded_ancestor::m_min_max1[i].first << ',' << coded_ancestor::m_min_max1[i].second << '\n';
-}
-std::cout << "and:\n";
-for (size_t i = 0; i < coded_ancestor::m_min_max2.size(); ++i)
-{
-  std::cout << coded_ancestor::m_min_max2[i].first << ',' << coded_ancestor::m_min_max2[i].second << '\n';
-}
-      }
       void calculate_result_min_max()
       {
         std::vector<mpz_class> tmp_vec(8);

@@ -26,6 +26,8 @@
 #include <utility> // For std::pair.
 #include <valarray>
 
+#include "../p_assert.h"
+
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
@@ -42,6 +44,41 @@ namespace piranha
         // Coding vector is larger to accomodate extra element at the end.
         m_coding_vector(m_size+1)
       {}
+      void find_input_min_max()
+      {
+        typedef typename Derived::iterator1 iterator1;
+        typedef typename Derived::iterator2 iterator2;
+        const iterator1 it_f1 = derived_cast->m_s1.template nth_index<0>().end();
+        const iterator2 it_f2 = derived_cast->m_s2.template nth_index<0>().end();
+        iterator1 it1 = derived_cast->m_s1.template nth_index<0>().begin();
+        iterator2 it2 = derived_cast->m_s2.template nth_index<0>().begin();
+        // Fill first minmax vector. This works because at this point we are sure both series have
+        // at least one term. Assert it, just to make sure.
+        p_assert(!derived_cast->m_s1.template nth_index<0>().empty() and !derived_cast->m_s2.template nth_index<0>().empty());
+        it1->m_key.template update_limits<true>(m_min_max1);
+        it2->m_key.template update_limits<true>(m_min_max2);
+        // Move to the second terms and cycle on all remaining terms.
+        ++it1;
+        ++it2;
+        for (; it1 != it_f1; ++it1)
+        {
+          it1->m_key.template update_limits<false>(m_min_max1);
+        }
+        for (; it2 != it_f2; ++it2)
+        {
+          it2->m_key.template update_limits<false>(m_min_max2);
+        }
+std::cout << "Limits are:\n";
+for (size_t i = 0; i < m_min_max1.size(); ++i)
+{
+  std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
+}
+std::cout << "and:\n";
+for (size_t i = 0; i < m_min_max2.size(); ++i)
+{
+  std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
+}
+      }
     protected:
       // Is coded representation viable?
       bool                                                  m_cr_is_viable;
