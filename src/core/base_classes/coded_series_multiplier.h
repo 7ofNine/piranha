@@ -38,7 +38,9 @@ namespace piranha
       coded_series_multiplier():
         m_cr_is_viable(false),
         m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
-        m_min_max1(m_size),m_min_max2(m_size),m_res_min_max(m_size),m_fast_res_min_max(m_size)
+        m_min_max1(m_size),m_min_max2(m_size),m_res_min_max(m_size),m_fast_res_min_max(m_size),
+        // Coding vector is larger to accomodate extra element at the end.
+        m_coding_vector(m_size+1)
       {}
     protected:
       // Is coded representation viable?
@@ -53,6 +55,14 @@ namespace piranha
       std::valarray<std::pair<mpz_class,mpz_class> >        m_res_min_max;
       // Version of the above downcast to fast integer type.
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_fast_res_min_max;
+      // Coding vector.
+      std::valarray<max_fast_int>                           m_coding_vector;
+      // Mininum and maximum values of codes.
+      max_fast_int                                          m_h_min;
+      max_fast_int                                          m_h_max;
+      // Coded keys.
+      std::valarray<max_fast_int>                           m_ckeys1;
+      std::valarray<max_fast_int>                           m_ckeys2;
   };
 }
 

@@ -101,9 +101,7 @@ namespace piranha
       cmult_set;
     public:
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
-        // Coding vector is larger to accomodate extra element at the end.
-        m_coding_vector(coded_ancestor::m_size+1)
+        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -193,12 +191,12 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           hmin+=ck*coded_ancestor::m_res_min_max[i].first;
           hmax+=ck*coded_ancestor::m_res_min_max[i].second;
           // Assign also the coding vector, so we avoid doing it later.
-          m_coding_vector[i]=ck.get_si();
+          coded_ancestor::m_coding_vector[i]=ck.get_si();
           ck*=(coded_ancestor::m_res_min_max[i].second-coded_ancestor::m_res_min_max[i].first+1);
         }
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
-        m_coding_vector[coded_ancestor::m_size]=ck.get_si();
+        coded_ancestor::m_coding_vector[coded_ancestor::m_size]=ck.get_si();
         p_assert(ck > 0);
         // Determine viability by checking that ck and the minimum/maximum values for the codes
         // respect the fast integer boundaries.
@@ -206,8 +204,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           hmax > traits::min() and hmax < traits::max())
         {
           coded_ancestor::m_cr_is_viable = true;
-          m_h_min = hmin.get_si();
-          m_h_max = hmax.get_si();
+          coded_ancestor::m_h_min = hmin.get_si();
+          coded_ancestor::m_h_max = hmax.get_si();
           // Downcast minimum and maximum result values to fast integers.
           for (size_t i = 0; i < coded_ancestor::m_size; ++i)
           {
@@ -223,9 +221,9 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
 std::cout << "Coding vector: ";
 for (size_t i=0; i < coded_ancestor::m_size; ++i)
 {
-  std::cout << m_coding_vector[i] << '\t';
+  std::cout << coded_ancestor::m_coding_vector[i] << '\t';
 }
-std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
+std::cout << "+\t" << coded_ancestor::m_coding_vector[coded_ancestor::m_size] << '\n';
         }
       }
       /// Store coefficients and code keys.
@@ -236,19 +234,19 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
         // Make space in the coefficients and coded keys vectors.
         ancestor::m_cfs1.resize(ancestor::m_size1);
         ancestor::m_cfs2.resize(ancestor::m_size2);
-        m_ckeys1.resize(ancestor::m_size1);
-        m_ckeys2.resize(ancestor::m_size2);
+        coded_ancestor::m_ckeys1.resize(ancestor::m_size1);
+        coded_ancestor::m_ckeys2.resize(ancestor::m_size2);
         size_t i;
         for (i = 0; i < ancestor::m_size1; ++i)
         {
           series_mult_rep<cf_type1>::assign(ancestor::m_cfs1[i],it1->m_cf);
-          it1->m_key.code(m_coding_vector,m_ckeys1[i],ancestor::m_args_tuple);
+          it1->m_key.code(coded_ancestor::m_coding_vector,coded_ancestor::m_ckeys1[i],ancestor::m_args_tuple);
           ++it1;
         }
         for (i = 0; i < ancestor::m_size2; ++i)
         {
           series_mult_rep<cf_type2>::assign(ancestor::m_cfs2[i],it2->m_cf);
-          it2->m_key.code(m_coding_vector,m_ckeys2[i],ancestor::m_args_tuple);
+          it2->m_key.code(coded_ancestor::m_coding_vector,coded_ancestor::m_ckeys2[i],ancestor::m_args_tuple);
           ++it2;
         }
       }
@@ -278,8 +276,8 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
         // Try to allocate the space for vector coded multiplication. We need two arrays of results,
         // one for cosines, one for sines.
         // The +1 is needed because we need the number of possible codes between min and max, e.g.:
-        // m_h_min = 1, m_h_max = 2 --> n of codes = 2.
-        const size_t n_codes = (size_t)(m_h_max - m_h_min + 1);
+        // coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
+        const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
         try
         {
           p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1)*n_codes);
@@ -302,7 +300,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-        cf_type1 *vc_res_cos =  p_vc_res_cos - m_h_min, *vc_res_sin = p_vc_res_sin - m_h_min;
+        cf_type1 *vc_res_cos =  p_vc_res_cos - coded_ancestor::m_h_min, *vc_res_sin = p_vc_res_sin - coded_ancestor::m_h_min;
         // Perform multiplication.
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
@@ -322,8 +320,8 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
             cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
             tmp_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);
-            const max_fast_int index_plus = m_ckeys1[i] + m_ckeys2[j],
-              index_minus = m_ckeys1[i] - m_ckeys2[j];
+            const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
+              index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
             switch (m_flavours1[i] == m_flavours2[j])
             {
               case true:
@@ -355,7 +353,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
         // Decode and insert the results into return value.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
-        for (max_fast_int i = m_h_min; i <= m_h_max; ++i)
+        for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i)
         {
           // Take a shortcut and check for ignorability of the coefficient here.
           // This way we avoid decodification, and all the series term insertion yadda-yadda.
@@ -365,12 +363,12 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
               break;
             case false:
               tmp_term.m_cf = vc_res_cos[i];
-              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = true;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
-        for (max_fast_int i = m_h_min; i <= m_h_max; ++i)
+        for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i)
         {
           switch (likely(vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)))
           {
@@ -378,7 +376,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
               break;
             case false:
               tmp_term.m_cf = vc_res_sin[i];
-              tmp_term.m_key.decode(i,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
               tmp_term.m_key.flavour() = false;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -415,13 +413,13 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
             {
               break;
             }
-            cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),m_ckeys1[i]);
+            cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),coded_ancestor::m_ckeys1[i]);
             // Handle the coefficient, with positive signs for now.
             tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_term1.m_cf.divide_by(2,ancestor::m_args_tuple);
-            tmp_term1.m_ckey -= m_ckeys2[j];
+            tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
             // Create the second term, using the first one's coefficient and an appropriate code.
-            cterm tmp_term2(tmp_term1.m_cf,m_ckeys1[i]+m_ckeys2[j]);
+            cterm tmp_term2(tmp_term1.m_cf,coded_ancestor::m_ckeys1[i]+coded_ancestor::m_ckeys2[j]);
             // Now fix flavours and coefficient signs.
             switch (m_flavours1[i] == m_flavours2[j])
             {
@@ -491,7 +489,7 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
           for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = true;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -501,20 +499,13 @@ std::cout << "+\t" << m_coding_vector[coded_ancestor::m_size] << '\n';
           for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,m_coding_vector,m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
             tmp_term.m_key.flavour() = false;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
       }
     private:
-      // Coding vector.
-      std::valarray<max_fast_int>                           m_coding_vector;
-      max_fast_int                                          m_h_min;
-      max_fast_int                                          m_h_max;
-      // Coded keys.
-      std::valarray<max_fast_int>                           m_ckeys1;
-      std::valarray<max_fast_int>                           m_ckeys2;
       // For Poisson series we also need flavours.
       std::valarray<bool>                                   m_flavours1;
       std::valarray<bool>                                   m_flavours2;
