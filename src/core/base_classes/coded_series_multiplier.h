@@ -25,7 +25,7 @@ namespace piranha
 {
   class coded_series_multiplier
   {
-    public:
+    protected:
       coded_series_multiplier():m_cr_is_viable(false) {}
     protected:
       // Is coded representation viable?

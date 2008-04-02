@@ -105,6 +105,7 @@ namespace piranha
         m_min_max1(m_size),
         m_min_max2(m_size),
         m_res_min_max(m_size),
+        m_fast_res_min_max(m_size),
         // Coding vector is larger to accomodate extra element at the end.
         m_coding_vector(m_size+1)
       {}
@@ -212,7 +213,6 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
           m_h_min = hmin.get_si();
           m_h_max = hmax.get_si();
           // Downcast minimum and maximum result values to fast integers.
-          m_fast_res_min_max.resize(m_size);
           for (size_t i = 0; i < m_size; ++i)
           {
             if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
