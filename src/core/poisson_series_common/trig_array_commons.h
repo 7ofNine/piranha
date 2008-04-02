@@ -146,6 +146,12 @@ namespace piranha
        */
       template <class ArgsTuple>
         double phase(const ArgsTuple &args_tuple) const {return combined_time_eval<0>(args_tuple);}
+      /// Norm.
+      /**
+       * The norm of a trigonometric part is always one.
+       */
+      template <class ArgsTuple>
+        double norm(const ArgsTuple &) const {return 1;}
       /// Time evaluation of arguments.
       /**
        * Returns the value assumed by the linear combination of arguments at time t.
