@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_FOURIER_SERIES_MULTIPLIER_H
-#define PIRANHA_FOURIER_SERIES_MULTIPLIER_H
+#ifndef PIRANHA_POISSON_SERIES_MULTIPLIER_H
+#define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/functional/hash.hpp>
@@ -35,21 +35,25 @@
 #include <vector>
 
 #include "../base_classes/plain_series_multiplier.h"
+#include "../base_classes/coded_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../settings_manager.h"
 
 namespace piranha
 {
-  /// Series multiplier specifically tuned for Fourier series.
+  /// Series multiplier specifically tuned for Poisson series.
   /**
    * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
    * like piranha::plain_series_multiplier.
    */
   template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
-    class fourier_series_multiplier:public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>
+    class poisson_series_multiplier:
+    public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
+    public coded_series_multiplier
   {
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
+      typedef coded_series_multiplier coded_ancestor;
       typedef typename ancestor::truncator_type truncator_type;
       typedef typename ancestor::term_type term_type;
       typedef typename ancestor::cf_type1 cf_type1;
@@ -95,10 +99,9 @@ namespace piranha
       >
       cmult_set;
     public:
-      fourier_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+      poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
         m_size(args_tuple.template get<key_type::position>().size()),
-        m_cr_is_viable(false),
         m_min_max1(m_size),
         m_min_max2(m_size),
         m_res_min_max(m_size),
@@ -111,7 +114,7 @@ namespace piranha
         find_input_min_max();
         calculate_result_min_max();
         determine_viability();
-        if (m_cr_is_viable)
+        if (coded_ancestor::m_cr_is_viable)
         {
           store_coefficients_code_keys();
           store_flavours();
@@ -205,7 +208,7 @@ for (size_t i = 0; i < m_res_min_max.size(); ++i)
         if (ck < traits::max() and hmin > traits::min() and hmin < traits::max() and
           hmax > traits::min() and hmax < traits::max())
         {
-          m_cr_is_viable = true;
+          coded_ancestor::m_cr_is_viable = true;
           m_h_min = hmin.get_si();
           m_h_max = hmax.get_si();
           // Downcast minimum and maximum result values to fast integers.
@@ -511,8 +514,6 @@ std::cout << "+\t" << m_coding_vector[m_size] << '\n';
     private:
       // Size of limits vectors (corresponding to the size of arguments vector of the key).
       const size_t                                          m_size;
-      // Is coded representation viable?
-      bool                                                  m_cr_is_viable;
       // Vectors of minimum and maximum value pairs for the series being multiplied.
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max1;
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max2;
