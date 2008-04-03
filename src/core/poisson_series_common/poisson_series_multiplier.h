@@ -150,7 +150,7 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             ::new(p_vc_res_sin+i) cf_type1(0,ancestor::m_args_tuple);
           }
         }
-        catch(std::bad_alloc)
+        catch(const std::bad_alloc &)
         {
           piranha_free(p_vc_res_cos);
           piranha_free(p_vc_res_sin);
