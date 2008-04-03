@@ -119,16 +119,16 @@ namespace piranha
         {
           it2->m_key.template update_limits<false>(m_min_max2);
         }
-std::cout << "Limits are:\n";
-for (size_t i = 0; i < m_min_max1.size(); ++i)
-{
-  std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
-}
-std::cout << "and:\n";
-for (size_t i = 0; i < m_min_max2.size(); ++i)
-{
-  std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
-}
+// std::cout << "Limits are:\n";
+// for (size_t i = 0; i < m_min_max1.size(); ++i)
+// {
+//   std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
+// }
+// std::cout << "and:\n";
+// for (size_t i = 0; i < m_min_max2.size(); ++i)
+// {
+//   std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
+// }
       }
       void determine_viability()
       {
@@ -142,6 +142,7 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
           m_coding_vector[i]=ck.get_si();
           ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
         }
+std::cout << "hmax-hmin=" << hmax-hmin << '\n';
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
         m_coding_vector[m_size]=ck.get_si();
@@ -166,12 +167,12 @@ for (size_t i = 0; i < m_min_max2.size(); ++i)
             m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
             m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
           }
-std::cout << "Coding vector: ";
-for (size_t i=0; i < m_size; ++i)
-{
-  std::cout << m_coding_vector[i] << '\t';
-}
-std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+// std::cout << "Coding vector: ";
+// for (size_t i=0; i < m_size; ++i)
+// {
+//   std::cout << m_coding_vector[i] << '\t';
+// }
+// std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
       }
       /// Store coefficients and code keys.

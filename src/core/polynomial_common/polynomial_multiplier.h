@@ -74,7 +74,7 @@ namespace piranha
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
           {
-            std::cout << "Going for hashed!\n";
+std::cout << "Going for hashed!\n";
             perform_hash_coded_multiplication();
           }
         }
@@ -100,11 +100,11 @@ namespace piranha
           coded_ancestor::m_res_min_max[i].first=*(min_max.first);
           coded_ancestor::m_res_min_max[i].second=*(min_max.second);
         }
-std::cout << "Mult limits are:\n";
-for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
-{
-  std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
-}
+// std::cout << "Mult limits are:\n";
+// for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
+// {
+//   std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+// }
       }
       bool perform_vector_coded_multiplication()
       {
@@ -115,7 +115,9 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
         const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
         try
         {
+std::cout << "Trying\n";
           p_vc_res = (cf_type1 *)piranha_malloc(sizeof(cf_type1)*n_codes);
+std::cout << "Done\n";
           // Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
           // we are sure it will be initialized properly. We want to make sure the coefficients are initialized
           // to zero in order to accumulate monomials during multiplication.
@@ -124,8 +126,9 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             ::new(p_vc_res+i) cf_type1(0,ancestor::m_args_tuple);
           }
         }
-        catch(std::bad_alloc)
+        catch(const std::bad_alloc &)
         {
+std::cout << "Caught!\n";
           piranha_free(p_vc_res);
           return false;
         }
@@ -180,6 +183,7 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
         }
         // Free the allocated space.
         piranha_free(p_vc_res);
+std::cout << "Done coded!\n";
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -221,6 +225,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
             }
           }
         }
+std::cout << "Done multiplying\n";
+//std::exit(1);
         // Decode and insert into retval.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
