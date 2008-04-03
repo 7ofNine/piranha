@@ -43,8 +43,8 @@ if (unlikely((action)==false)) \
 
 #else
 
-#define p_assert(__arg,...)
+#define p_assert(__arg)
 
-#define action_assert(action,...) action
-#endif                                            // _ENABLE_ASSERTS
+#define action_assert(action) action
+#endif // _ENABLE_ASSERTS
 #endif
