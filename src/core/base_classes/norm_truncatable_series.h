@@ -47,7 +47,7 @@ namespace piranha
         }
         else
         {
-          m_truncation_level = std::pow(10,-n);
+          m_truncation_level = std::pow(10.,-n);
         }
       }
     private:
