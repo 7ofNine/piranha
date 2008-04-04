@@ -60,7 +60,11 @@ namespace piranha
       Derived &operator*=(const int &);
       Derived &operator*=(const double &);
       Derived &operator*=(const Derived &);
+      Derived &operator+=(const int &);
+      Derived &operator+=(const double &);
       Derived &operator+=(const Derived &);
+      Derived &operator-=(const int &);
+      Derived &operator-=(const double &);
       Derived &operator-=(const Derived &);
     protected:
       void construct_from_file(const std::string &);

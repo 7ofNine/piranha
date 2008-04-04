@@ -81,9 +81,33 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const int &n)
+  {
+    return derived_cast->template merge_with_number<true>(n,m_arguments);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const double &x)
+  {
+    return derived_cast->template merge_with_number<true>(x,m_arguments);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
     inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
   {
     return add_series(s2);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const int &n)
+  {
+    return derived_cast->template merge_with_number<false>(n,m_arguments);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const double &x)
+  {
+    return derived_cast->template merge_with_number<false>(x,m_arguments);
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
