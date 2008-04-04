@@ -93,6 +93,12 @@ namespace piranha
        */
       template <class Cf2, class Derived2>
         base_term(const base_term<Cf2,Key,Separator,Derived2,Allocator> &t):m_cf(t.m_cf),m_key(t.m_key) {}
+      /// Ctor from coefficient - key pair.
+      /**
+       * Coefficient can be different type, key must be same type.
+       */
+      template <class Cf2>
+        base_term(const Cf2 &cf, const key_type &key):m_cf(cf),m_key(key) {}
       // I/O.
       /// Print in plain format.
       template <class ArgsTuple>
