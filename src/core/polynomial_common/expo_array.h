@@ -71,6 +71,8 @@ namespace piranha
 
       {
         const size_type max_w=ancestor::size(), min_w=e2.size();
+        // Resize, if needed.
+        ret.resize(max_w);
         // Assert widths, *this should always come from a polynomial, and its width should hence be
         // already adjusted my merge_args in multiplication routines.
         p_assert(max_w >= min_w);
