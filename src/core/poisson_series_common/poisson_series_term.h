@@ -47,11 +47,11 @@ namespace piranha
       /// Operators used during term multiplication.
       //typedef typename boost::tuples<subtraction,addition> multiplication_key_operators;
       /// Default constructor.
-      explicit poisson_series_term():ancestor::base_term() {}
+      explicit poisson_series_term():ancestor() {}
       /// Ctor from string.
       template <class ArgsTuple>
         explicit poisson_series_term(const std::string &str, const ArgsTuple &args_tuple):
-        ancestor::base_term(str,args_tuple)
+        ancestor(str,args_tuple)
       {}
       /// Constructor from generic coefficient and fixed trigonometric part.
       /**

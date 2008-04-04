@@ -41,11 +41,11 @@ namespace piranha
       /// Result of the multiplication of two monomials.
       typedef typename boost::tuple<monomial> multiplication_result;
       /// Default constructor.
-      explicit monomial():ancestor::base_term() {}
+      explicit monomial():ancestor() {}
       /// Ctor from string.
       template <class ArgsTuple>
         explicit monomial(const std::string &str, const ArgsTuple &args_tuple):
-        ancestor::base_term(str,args_tuple)
+        ancestor(str,args_tuple)
       {}
       /// Constructor from generic coefficient and fixed exponent part.
       /**
