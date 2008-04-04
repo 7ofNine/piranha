@@ -25,6 +25,7 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/cf_series.h"
+#include "../settings_manager.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, class Allocator
 #define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Allocator
@@ -56,14 +57,26 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       /// Default ctor.
-      polynomial_cf() {}
+      polynomial_cf() {m_container.max_load_factor(settings_manager::get_load_factor());}
       /// Ctor from string.
       template <class ArgsTuple>
-        explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple) {cf_ancestor::construct_from_string(s,args_tuple);}
+        explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple)
+      {
+        m_container.max_load_factor(settings_manager::get_load_factor());
+        cf_ancestor::construct_from_string(s,args_tuple);
+      }
       template <class ArgsTuple>
-        explicit polynomial_cf(const int &n, const ArgsTuple &a) {base_ancestor::construct_from_number(n,a);}
+        explicit polynomial_cf(const int &n, const ArgsTuple &a)
+      {
+        m_container.max_load_factor(settings_manager::get_load_factor());
+        base_ancestor::construct_from_number(n,a);
+      }
       template <class ArgsTuple>
-        explicit polynomial_cf(const double &x, const ArgsTuple &a) {base_ancestor::construct_from_number(x,a);}
+        explicit polynomial_cf(const double &x, const ArgsTuple &a)
+      {
+        m_container.max_load_factor(settings_manager::get_load_factor());
+        base_ancestor::construct_from_number(x,a);
+      }
       // Needed getters and setters.
       template <int N>
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}

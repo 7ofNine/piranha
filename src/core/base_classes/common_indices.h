@@ -168,6 +168,17 @@ namespace piranha
     >
     type;
   };
+
+  /// Hashed index on keys.
+  template <class Term>
+    struct keys_hash_index
+  {
+    typedef boost::multi_index::indexed_by
+    <
+      boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
+    >
+    type;
+  };
 }
 
 #endif

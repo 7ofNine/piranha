@@ -115,9 +115,7 @@ std::cout << "Going for hashed!\n";
         const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
         try
         {
-std::cout << "Trying\n";
           p_vc_res = (cf_type1 *)piranha_malloc(sizeof(cf_type1)*n_codes);
-std::cout << "Done\n";
           // Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
           // we are sure it will be initialized properly. We want to make sure the coefficients are initialized
           // to zero in order to accumulate monomials during multiplication.
@@ -128,7 +126,6 @@ std::cout << "Done\n";
         }
         catch(const std::bad_alloc &)
         {
-std::cout << "Caught!\n";
           piranha_free(p_vc_res);
           return false;
         }
@@ -157,6 +154,7 @@ std::cout << "Caught!\n";
             vc_res[coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]].add(tmp_cf,ancestor::m_args_tuple);
           }
         }
+std::cout << "Done multiplying\n";
         // Decode and insert the results into return value.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
@@ -226,8 +224,8 @@ std::cout << "Done coded!\n";
           }
         }
 std::cout << "Done multiplying\n";
-//std::exit(1);
         // Decode and insert into retval.
+        // TODO: rehash on m_retval here (since we know what the size is going to be)?
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
         const c_iterator c_it_f = cms.end();

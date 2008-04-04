@@ -71,7 +71,7 @@ namespace piranha
     inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &args_tuple)
   {
     typename Derived::term_type term(typename Derived::term_type::cf_type(n,args_tuple),typename Derived::term_type::key_type());
-    insert<true,Sign>(term,args_tuple,derived_const_cast->template nth_index<0>().end());
+    insert<true,Sign>(term,args_tuple,derived_cast->template nth_index<0>().end());
     return *derived_cast;
   }
 }

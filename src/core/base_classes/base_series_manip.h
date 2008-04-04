@@ -96,12 +96,13 @@ namespace piranha
     return insert<true,true>(term,args_tuple,it_hint);
   }
 
+  // This cannot be const because we use this in insertion function, which is non const.
   /// Find term.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class PinpointIterator>
-    inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t) const
+    inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
   {
-    return derived_const_cast->template nth_index<1>().find(t);
+    return derived_cast->template nth_index<1>().find(t);
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -173,7 +174,8 @@ namespace piranha
       // This is an O(1) operation, since the order in the set is not changed
       // There is a re-hash involved, it still should be cheaper than
       // creating a new term though.
-      action_assert(derived_cast->template nth_index<0>().modify(it_new,modifier_invert_term_sign<ArgsTuple>(args_tuple)));
+      modifier_invert_term_sign<ArgsTuple> m(args_tuple);
+      action_assert(derived_cast->template nth_index<0>().modify(it_new,m));
     }
     return it_new;
   }
@@ -194,7 +196,8 @@ namespace piranha
   {
     typename arg_manager<Term>::arg_assigner aa(args_tuple);
     // Update the existing term.
-    action_assert(derived_cast->template nth_index<1>().modify(it,modifier_update_cf(new_c)));
+    modifier_update_cf m(new_c);
+    action_assert(derived_cast->template nth_index<1>().modify(it,m));
   }
 
   /// Swap the terms with another series.
