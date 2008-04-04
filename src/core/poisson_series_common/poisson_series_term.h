@@ -58,7 +58,7 @@ namespace piranha
        * Constructs from generic coefficient type.
        */
       template <class Cf2>
-        explicit poisson_series_term(const Cf2 &c, const trig_type &t):ancestor(cf_type(c),t)
+        explicit poisson_series_term(const Cf2 &c, const trig_type &t):ancestor(c,t)
       {}
       /// Generic copy constructor.
       /**

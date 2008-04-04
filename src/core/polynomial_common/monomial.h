@@ -52,7 +52,7 @@ namespace piranha
        * Constructs from generic coefficient type.
        */
       template <class Cf2>
-        explicit monomial(const Cf2 &c, const expo_type &e):ancestor(cf_type(c),e)
+        explicit monomial(const Cf2 &c, const expo_type &e):ancestor(c,e)
       {}
       /// Generic copy constructor.
       /**
