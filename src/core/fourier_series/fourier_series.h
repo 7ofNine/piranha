@@ -53,8 +53,8 @@ namespace piranha
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
     public norm_truncatable_series,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,
-    boost::multipliable2<__PIRANHA_FOURIER_SERIES,double,
-    boost::multipliable2<__PIRANHA_FOURIER_SERIES,int
+    boost::ring_operators<__PIRANHA_FOURIER_SERIES,int,
+    boost::ring_operators<__PIRANHA_FOURIER_SERIES,double
     > > >
   {
       typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
@@ -75,10 +75,22 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
-      fourier_series() {}
-      explicit fourier_series(const std::string &filename) {named_ancestor::construct_from_file(filename);}
-      explicit fourier_series(const int &n) {base_ancestor::construct_from_number(n,named_ancestor::m_arguments);}
-      explicit fourier_series(const double &x) {base_ancestor::construct_from_number(x,named_ancestor::m_arguments);}
+      fourier_series() {nth_index<1>().max_load_factor(settings_manager::get_load_factor());}
+      explicit fourier_series(const std::string &filename)
+      {
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        named_ancestor::construct_from_file(filename);
+      }
+      explicit fourier_series(const int &n)
+      {
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        base_ancestor::construct_from_number(n,named_ancestor::m_arguments);
+      }
+      explicit fourier_series(const double &x)
+      {
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
+      }
       // Needed getters and setters.
       template <int N>
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
