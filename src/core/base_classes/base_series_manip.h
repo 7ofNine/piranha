@@ -21,6 +21,9 @@
 #ifndef PIRANHA_BASE_SERIES_MANIP_H
 #define PIRANHA_BASE_SERIES_MANIP_H
 
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_same.hpp> // For iterator type detection.
+
 #include "../stats.h"
 
 namespace piranha
@@ -41,6 +44,9 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
+    // We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
+    // iterator to do that.
+    BOOST_STATIC_ASSERT((boost::is_same<SortedIterator,typename Derived::sorted_iterator>::value));
     class_converter<Term2,term_type> converted_term(term_);
     // Make sure the appropriate routines for the management of arguments have been called.
     p_assert(converted_term.result.is_insertable(args_tuple));
@@ -96,12 +102,13 @@ namespace piranha
     return insert<true,true>(term,args_tuple,it_hint);
   }
 
-  // This cannot be const because we use this in insertion function, which is non const.
+  // This cannot be const because we use this in insertion function, hence we need a non const iterator.
   /// Find term.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class PinpointIterator>
     inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
   {
+    BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator,typename Derived::pinpoint_iterator>::value));
     return derived_cast->template nth_index<1>().find(t);
   }
 
@@ -110,6 +117,7 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
+    BOOST_STATIC_ASSERT((boost::is_same<SortedIterator,typename Derived::sorted_iterator>::value));
     typedef typename Derived::pinpoint_iterator pinpoint_iterator;
     if (term.is_ignorable(args_tuple))
     {
@@ -163,6 +171,7 @@ namespace piranha
     inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
     const ArgsTuple &args_tuple, SortedIterator it_hint)
   {
+    BOOST_STATIC_ASSERT((boost::is_same<SortedIterator,typename Derived::sorted_iterator>::value));
     typename arg_manager<Term>::arg_assigner aa(args_tuple);
     SortedIterator it_new(derived_cast->template nth_index<0>().insert(it_hint,term));
     // TODO: use asserts here? The problem here is that we are using hinted
@@ -194,6 +203,7 @@ namespace piranha
     inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
     PinpointIterator it, cf_type &new_c)
   {
+    BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator,typename Derived::pinpoint_iterator>::value));
     typename arg_manager<Term>::arg_assigner aa(args_tuple);
     // Update the existing term.
     modifier_update_cf m(new_c);
@@ -218,9 +228,10 @@ namespace piranha
     const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::sorted_iterator sorted_iterator;
     typedef typename Derived::term_type term_type;
     const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+    sorted_iterator it_hint = retval.template nth_index<0>().end();
     for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
       it != it_f; ++it)
     {

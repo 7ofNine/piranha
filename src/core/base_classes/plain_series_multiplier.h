@@ -136,7 +136,7 @@ namespace piranha
       void plain_insert_result_into_retval()
       {
         typedef typename mult_set::const_iterator hash_iterator;
-        typedef typename Series1::const_sorted_iterator sorted_iterator;
+        typedef typename Series1::sorted_iterator sorted_iterator;
         term_type term;
         sorted_iterator it_hint = m_retval.template nth_index<0>().end();
         const hash_iterator it_f = m_set.end();

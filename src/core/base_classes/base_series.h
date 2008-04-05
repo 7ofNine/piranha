@@ -93,11 +93,9 @@ namespace piranha
         struct modifier_invert_term_sign
       {
         modifier_invert_term_sign(const ArgsTuple &args_tuple):a(args_tuple) {}
-        void operator()(term_type &term)
-        {
-          term.m_cf.invert_sign(a);
-        }
-        void operator()(const term_type &term)
+        // This (and below) are passed as const to allow modification from const interators
+        // that are often used in standard implementations of data structures.
+        void operator()(const term_type &term) const
         {
           term.m_cf.invert_sign(a);
         }
@@ -107,10 +105,6 @@ namespace piranha
       {
           modifier_update_cf(cf_type &new_cf):m_new_cf(new_cf) {}
           ~modifier_update_cf() {}
-          void operator()(term_type &term)
-          {
-            term.m_cf.swap(m_new_cf);
-          }
           void operator()(const term_type &term)
           {
             term.m_cf.swap(m_new_cf);

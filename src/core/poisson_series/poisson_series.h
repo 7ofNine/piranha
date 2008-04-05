@@ -63,20 +63,20 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
-      poisson_series() {m_container.max_load_factor(settings_manager::get_load_factor());}
+      poisson_series() {nth_index<1>().max_load_factor(settings_manager::get_load_factor());}
       explicit poisson_series(const std::string &filename)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         named_ancestor::construct_from_file(filename);
       }
       explicit poisson_series(const int &n)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(n,named_ancestor::m_arguments);
       }
       explicit poisson_series(const double &x)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
       // Needed getters and setters.

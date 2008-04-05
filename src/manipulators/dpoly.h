@@ -21,8 +21,6 @@
 #ifndef PIRANHA_DPOLY_H
 #define PIRANHA_DPOLY_H
 
-#include <ext/pool_allocator.h>
-
 #include "../core/base_classes/common_indices.h"
 #include "../core/base_classes/truncators.h"
 #include "../core/numerical_coefficients/double_cf.h"
@@ -38,11 +36,10 @@ namespace manipulators
   typedef polynomial
   <
     double_cf,
-    expo_array<16,0,__gnu_cxx::__pool_alloc<char> >,
+    expo_array<16,0>,
     keys_hash_index,
     polynomial_multiplier,
-    no_truncation,
-    __gnu_cxx::__pool_alloc<char>
+    no_truncation
   > dpoly;
 }
 }

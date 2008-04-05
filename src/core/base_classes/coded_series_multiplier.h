@@ -96,12 +96,12 @@ namespace piranha
       {}
       void find_input_min_max()
       {
-        typedef typename Derived::iterator1 iterator1;
-        typedef typename Derived::iterator2 iterator2;
-        const iterator1 it_f1 = derived_const_cast->m_s1.template nth_index<0>().end();
-        const iterator2 it_f2 = derived_const_cast->m_s2.template nth_index<0>().end();
-        iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
-        iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
+        typedef typename Derived::const_iterator1 const_iterator1;
+        typedef typename Derived::const_iterator2 const_iterator2;
+        const const_iterator1 it_f1 = derived_const_cast->m_s1.template nth_index<0>().end();
+        const const_iterator2 it_f2 = derived_const_cast->m_s2.template nth_index<0>().end();
+        const_iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
+        const_iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
         // Fill first minmax vector. This works because at this point we are sure both series have
         // at least one term. Assert it, just to make sure.
         p_assert(!derived_const_cast->m_s1.template nth_index<0>().empty() and
@@ -178,12 +178,12 @@ std::cout << "hmax-hmin=" << hmax-hmin << '\n';
       /// Store coefficients and code keys.
       void store_coefficients_code_keys()
       {
-        typedef typename Derived::iterator1 iterator1;
-        typedef typename Derived::iterator2 iterator2;
+        typedef typename Derived::const_iterator1 const_iterator1;
+        typedef typename Derived::const_iterator2 const_iterator2;
         typedef typename Derived::cf_type1 cf_type1;
         typedef typename Derived::cf_type2 cf_type2;
-        iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
-        iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
+        const_iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
+        const_iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
         // Make space in the coefficients and coded keys vectors.
         derived_const_cast->m_cfs1.resize(derived_const_cast->m_size1);
         derived_const_cast->m_cfs2.resize(derived_const_cast->m_size2);

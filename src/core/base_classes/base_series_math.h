@@ -49,10 +49,11 @@ namespace piranha
     const ArgsTuple &args_tuple) const
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::sorted_iterator sorted_iterator;
     typedef typename Derived::term_type term_type;
     // Make sure we are inserting into an empty return value.
     p_assert(retval.template nth_index<0>().empty());
-    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+    sorted_iterator it_hint = retval.template nth_index<0>().end();
     const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
     for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
     {

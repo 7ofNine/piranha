@@ -57,8 +57,10 @@ namespace piranha
       typedef typename ancestor::cf_type2 cf_type2;
       typedef typename ancestor::key_type key_type;
       typedef typename ancestor::mult_set mult_set;
-      typedef typename Series1::const_sorted_iterator iterator1;
-      typedef typename Series2::const_sorted_iterator iterator2;
+      typedef typename Series1::sorted_iterator iterator1;
+      typedef typename Series2::sorted_iterator iterator2;
+      typedef typename Series1::const_sorted_iterator const_iterator1;
+      typedef typename Series2::const_sorted_iterator const_iterator2;
     public:
       polynomial_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)

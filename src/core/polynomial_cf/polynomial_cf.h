@@ -57,24 +57,24 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       /// Default ctor.
-      polynomial_cf() {m_container.max_load_factor(settings_manager::get_load_factor());}
+      polynomial_cf() {nth_index<1>().max_load_factor(settings_manager::get_load_factor());}
       /// Ctor from string.
       template <class ArgsTuple>
         explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         cf_ancestor::construct_from_string(s,args_tuple);
       }
       template <class ArgsTuple>
         explicit polynomial_cf(const int &n, const ArgsTuple &a)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(n,a);
       }
       template <class ArgsTuple>
         explicit polynomial_cf(const double &x, const ArgsTuple &a)
       {
-        m_container.max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(x,a);
       }
       // Needed getters and setters.

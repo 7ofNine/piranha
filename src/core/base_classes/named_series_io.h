@@ -181,9 +181,9 @@ namespace piranha
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_terms(std::ifstream &inf)
   {
     typedef typename Derived::term_type term_type;
-    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::sorted_iterator sorted_iterator;
     std::string temp;
-    const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
+    sorted_iterator it_hint = derived_cast->template nth_index<0>().end();
     while (!inf.eof())
     {
       getline(inf,temp,derived_const_cast->separator);
