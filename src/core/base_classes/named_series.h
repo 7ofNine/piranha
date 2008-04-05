@@ -49,6 +49,8 @@ namespace piranha
     class named_series
   {
       typedef ArgsDescr arguments_description;
+      // Evaluation type. Used internally.
+      typedef typename eval_type<Derived>::type eval_type;
     public:
       /// Compile-time constant for the number of arguments sets.
       static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
@@ -57,6 +59,8 @@ namespace piranha
       void print(std::ostream &stream = std::cout, int limit = -1) const;
       void save_to(const std::string &) const;
       void swap(Derived &);
+      double norm() const;
+      eval_type eval(const double &) const;
       Derived &operator*=(const int &);
       Derived &operator*=(const double &);
       Derived &operator*=(const Derived &);

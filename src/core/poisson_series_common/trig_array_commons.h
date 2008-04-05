@@ -164,7 +164,7 @@ namespace piranha
        * @param[in] v vector of piranha::psymbol pointers.
        */
       template <class ArgsTuple>
-        double t_eval(const double &t, const ArgsTuple &args_tuple) const
+        double eval(const double &t, const ArgsTuple &args_tuple) const
       {
         const size_t w=args_tuple.template get<Derived::position>().size();
         p_assert(w <= derived_const_cast->size());
@@ -173,7 +173,7 @@ namespace piranha
         {
           if ((*derived_const_cast)[i] != 0)
           {
-            retval+=(*derived_const_cast)[i]*args_tuple.template get<Derived::position>()[i]->t_eval(t);
+            retval+=(*derived_const_cast)[i]*args_tuple.template get<Derived::position>()[i]->eval(t);
           }
         }
         switch (derived_const_cast->m_flavour)

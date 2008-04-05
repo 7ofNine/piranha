@@ -132,7 +132,7 @@ namespace piranha
           void print(std::ostream& out_stream=std::cout) const;
           /// Print to screen.
           void put() const {print(std::cout);}
-          double t_eval(const double &) const;
+          double eval(const double &) const;
           // Getters
           /// Get symbol's name.
           const std::string &name() const {return m_name;}
@@ -321,7 +321,7 @@ namespace piranha
   }
 
   /// Time evaluation.
-  inline double psymbol_manager::psymbol::t_eval(const double &t) const
+  inline double psymbol_manager::psymbol::eval(const double &t) const
   {
     double retval=0.;
     const size_t w=m_time_eval.size();

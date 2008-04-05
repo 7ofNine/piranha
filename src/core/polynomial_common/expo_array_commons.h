@@ -57,14 +57,14 @@ namespace piranha
         // TODO: implement.
       }
       template <class ArgsTuple>
-        double t_eval(const double &t, const ArgsTuple &args_tuple) const
+        double eval(const double &t, const ArgsTuple &args_tuple) const
       {
         const size_t w=args_tuple.template get<Derived::position>().size();
         p_assert(w <= derived_const_cast->size());
         double retval=1.;
         for (size_t i=0;i < w;++i)
         {
-          retval*=std::pow(args_tuple.template get<Derived::position>()[i]->t_eval(t),(*derived_const_cast)[i]);
+          retval*=std::pow(args_tuple.template get<Derived::position>()[i]->eval(t),(*derived_const_cast)[i]);
         }
         return retval;
       }
@@ -90,6 +90,17 @@ namespace piranha
       bool operator<(const Derived &e2) const
       {
         return derived_const_cast->elements_lex_comparison(e2);
+      }
+      /// Norm.
+      /**
+       * The norm of an exponent array is always one.
+       */
+      template <class ArgsTuple>
+        double norm(const ArgsTuple &args_tuple) const
+      {
+        p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
+        (void)args_tuple;
+        return 1;
       }
       /// Calculate hash value.
       size_t hash_value() const

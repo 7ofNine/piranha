@@ -59,7 +59,6 @@ namespace piranha
         explicit numerical_container(const int &n, const ArgsTuple &):m_value(n) {}
       template <class ArgsTuple>
         explicit numerical_container(const double &x, const ArgsTuple &):m_value(x) {}
-      explicit numerical_container(const Derived &sc):m_value(sc.m_value) {}
       // I/O.
       template <class ArgsTuple>
         void print_plain(std::ostream &out_stream, const ArgsTuple &) const
@@ -95,15 +94,15 @@ namespace piranha
       template <class ArgsTuple>
         double norm(const ArgsTuple &) const
       {
-        return absolute();
+        return std::abs(m_value);;
       }
       static const size_t max_size = 0;
       // If value is less than numericalzero  in absolute value it is considered
       // to be zero.
       template <class ArgsTuple>
-        bool is_ignorable(const ArgsTuple &) const
+        bool is_ignorable(const ArgsTuple &a) const
       {
-        return (absolute() < settings_manager::get_numerical_zero());
+        return (static_cast<Derived const *>(this)->norm(a) < settings_manager::get_numerical_zero());
       }
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &) const
@@ -116,7 +115,7 @@ namespace piranha
         return false;
       }
       template <class ArgsTuple>
-        const eval_type &t_eval(const ArgsTuple &) const
+        const eval_type &eval(const double &, const ArgsTuple &) const
       {
         return m_value;
       }
@@ -160,6 +159,12 @@ namespace piranha
         Derived &divide_by(const double &x, const ArgsTuple &)
       {
         return divide_by_generic(x);
+      }
+      // Accumulate coefficients during polynomial multiplication.
+      template <class ArgsTuple>
+        void poly_accumulation(const Derived &x1, const Derived &x2, const ArgsTuple &)
+      {
+        m_value += x1.m_value * x2.m_value;
       }
       // End implementation of basic pseries coefficient interface.
       //------------
@@ -209,12 +214,7 @@ namespace piranha
         m_value/=x;
         return *derived_cast;
       }
-    private:
-      double absolute() const
-      {
-        return std::abs(m_value);
-      }
-    private:
+    protected:
       // Data member.
       T m_value;
   };
@@ -226,6 +226,7 @@ namespace piranha
       typedef std::complex<realDerived> Derived;
       typedef realDerived value_type;
     public:
+      // TODO: drop usageof g_value() - s_value() to improve performance?
       // Start implementation of complex basic pseries coefficient interface.
       //------------
       // Ctors.

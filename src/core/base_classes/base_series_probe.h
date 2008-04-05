@@ -32,7 +32,7 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
+    inline double base_series<__PIRANHA_BASE_SERIES_TP>::calculate_norm(const ArgsTuple &args_tuple) const
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
@@ -40,6 +40,21 @@ namespace piranha
     for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
     {
       retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
+    }
+    return retval;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
+    base_series<__PIRANHA_BASE_SERIES_TP>::time_evaluation(const double &t, const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    eval_type retval(0);
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      retval += it->m_cf.eval(t,args_tuple) * it->m_key.eval(t,args_tuple);
     }
     return retval;
   }

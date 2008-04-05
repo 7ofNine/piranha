@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "../p_assert.h"
+#include "../type_traits.h"
 #include "../utils.h" // For class_converter.
 
 // Useful shortcuts.
@@ -50,13 +51,13 @@ namespace piranha
       typedef typename term_type::key_type key_type;
       /// Alias for allocator type.
       typedef Allocator allocator_type;
+      // Evaluation type. Used internally.
+      typedef typename eval_type<Derived>::type eval_type;
     public:
       template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-      template <class ArgsTuple>
-        double norm(const ArgsTuple &) const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -79,6 +80,10 @@ namespace piranha
       template <bool, class Number, class ArgsTuple>
         Derived &merge_with_number(const Number &, const ArgsTuple &);
       bool is_single_cf() const;
+      template <class ArgsTuple>
+        double calculate_norm(const ArgsTuple &) const;
+      template <class ArgsTuple>
+        eval_type time_evaluation(const double &, const ArgsTuple &) const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &);

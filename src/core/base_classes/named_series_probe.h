@@ -64,6 +64,19 @@ namespace piranha
   {
     return named_series_is_args_compatible(m_arguments,ps2.m_arguments);
   }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline double named_series<__PIRANHA_NAMED_SERIES_TP>::norm() const
+  {
+    return derived_const_cast->calculate_norm(m_arguments);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::eval_type
+    named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
+  {
+    return derived_const_cast->time_evaluation(t,m_arguments);
+  }
 }
 
 #endif

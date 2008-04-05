@@ -76,7 +76,7 @@ namespace piranha
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
           {
-std::cout << "Going for hashed!\n";
+std::cout << "Going for hash coded!\n";
             perform_hash_coded_multiplication();
           }
         }
@@ -138,6 +138,7 @@ std::cout << "Going for hashed!\n";
         // Perform multiplication.
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
+          const max_fast_int index1 = coded_ancestor::m_ckeys1[i];
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             if (ancestor::m_trunc.skip(
@@ -148,12 +149,10 @@ std::cout << "Going for hashed!\n";
             {
               break;
             }
-            // TODO: Does it make sense here to define a method for coefficients like:
-            // mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
-            // so that we can avoid copying stuff around here and elsewhere?
-            cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
-            tmp_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
-            vc_res[coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]].add(tmp_cf,ancestor::m_args_tuple);
+            vc_res[index1 + coded_ancestor::m_ckeys2[j]].poly_accumulation(
+              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+              ancestor::m_args_tuple);
           }
         }
 std::cout << "Done multiplying\n";
@@ -175,6 +174,7 @@ std::cout << "Done multiplying\n";
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
+std::cout << "Destroying!\n";
         // Call dtors for the coefficients in the allocated space.
         // This is necessary for non-trivial coefficients.
         for (size_t i = 0; i < n_codes; ++i)
@@ -183,7 +183,7 @@ std::cout << "Done multiplying\n";
         }
         // Free the allocated space.
         piranha_free(p_vc_res);
-std::cout << "Done coded!\n";
+std::cout << "Done vector coded!\n";
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -197,6 +197,7 @@ std::cout << "Done coded!\n";
         cms.max_load_factor(settings_manager::get_load_factor());
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
+          const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             if (ancestor::m_trunc.skip(
@@ -207,21 +208,24 @@ std::cout << "Done coded!\n";
             {
               break;
             }
-            // TODO: can this be optimized to be run in just one pass (for example, for GMP using expression
-            // templates)?
-            cterm tmp_term(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),coded_ancestor::m_ckeys1[i]);
-            // Calculate the coefficient and key.
-            tmp_term.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
-            tmp_term.m_ckey += coded_ancestor::m_ckeys2[j];
-            // Now find the term and handle it.
-            it = cms.find(tmp_term.m_ckey);
+            const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
+            it = cms.find(new_key);
             switch (it == cms.end())
             {
               case true:
-                cms.insert(tmp_term);
-                break;
+                {
+                  // Create new temporary term from old cf and new key.
+                  cterm tmp_term(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),new_key);
+                  // Multiply the old term by the second term.
+                  tmp_term.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+                  cms.insert(tmp_term);
+                  break;
+                }
               case false:
-                it->m_cf.add(tmp_term.m_cf,ancestor::m_args_tuple);
+                it->m_cf.poly_accumulation(
+                  series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+                  series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+                  ancestor::m_args_tuple);
             }
           }
         }
@@ -238,6 +242,7 @@ std::cout << "Done multiplying\n";
             coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
           it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
         }
+std::cout << "Finished hash coded multiplication\n";
       }
   };
 }

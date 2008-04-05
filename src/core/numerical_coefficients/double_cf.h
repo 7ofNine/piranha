@@ -57,13 +57,6 @@ namespace piranha
       /// Constructor from double.
       template <class ArgsTuple>
         explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
-      /// Copy constructor.
-      double_cf(const self &dc):ancestor::numerical_container(dc) {}
-      // Needed operators.
-      self &operator=(const self &val2)
-      {
-        return assign_self(val2);
-      }
       // End implementation of basic pseries coefficient interface.
       //------------
       // Start implementation of trigonometric pseries coefficient interface.
