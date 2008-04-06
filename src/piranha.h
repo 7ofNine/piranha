@@ -30,6 +30,7 @@ namespace piranha
 
 // Include all piranha manipulators.
 #include "manipulators/dpoly.h"
+#include "manipulators/zpoly.h"
 #include "manipulators/fs.h"
 
 #endif
