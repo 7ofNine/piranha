@@ -33,8 +33,8 @@
 #include "../settings_manager.h"
 
 #define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, \
-  template <class, class, class, template <class, class, class> class> class Multiplier, \
-  template <class, class, class> class Truncator, class Allocator
+  template <class, class, class, template <class> class> class Multiplier, \
+  template <class> class Truncator, class Allocator
 #define __PIRANHA_POLYNOMIAL_TP Cf,Expo,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_POLYNOMIAL polynomial<__PIRANHA_POLYNOMIAL_TP>
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >

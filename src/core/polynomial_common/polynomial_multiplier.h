@@ -41,7 +41,7 @@ namespace piranha
    * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
    * like piranha::plain_series_multiplier.
    */
-  template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
+  template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class polynomial_multiplier:
     public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
     public coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >
@@ -55,7 +55,6 @@ namespace piranha
       typedef typename ancestor::cf_type1 cf_type1;
       typedef typename ancestor::cf_type2 cf_type2;
       typedef typename ancestor::key_type key_type;
-      typedef typename ancestor::mult_set mult_set;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
       typedef typename Series1::const_sorted_iterator const_iterator1;
@@ -146,7 +145,8 @@ std::cout << "Going for hash coded!\n";
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
+              ancestor::m_args_tuple))
             {
               break;
             }
@@ -205,7 +205,8 @@ std::cout << "Done vector coded!\n";
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
+              ancestor::m_args_tuple))
             {
               break;
             }

@@ -35,8 +35,8 @@
 #include "../ntuple.h"
 
 #define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, \
-  template <class, class, class, template <class, class, class> class> class Multiplier, \
-  template <class, class, class> class Truncator, class Allocator
+  template <class, class, class, template <class> class> class Multiplier, \
+  template <class> class Truncator, class Allocator
 #define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
 #define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n', \

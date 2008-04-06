@@ -33,7 +33,7 @@ namespace piranha
         const Truncator &trunc)
       {
         const typename MultSet::const_iterator it = mult_set.find(res);
-        switch (trunc.accept(res))
+        switch (trunc.accept(res,args_tuple))
         {
           case true:
             switch (it == mult_set.end())

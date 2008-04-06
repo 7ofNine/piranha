@@ -40,12 +40,11 @@ namespace piranha
    *
    * This class can be extended to build more specific multipliers.
    */
-  template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
+  template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class plain_series_multiplier
   {
     protected:
-      /// Alias for the truncator type.
-      typedef Truncator<Series1,Series2,ArgsTuple> truncator_type;
+      // These typedefs are protected because derived series will want to use them.
       /// Alias for term type of first input series and return value series.
       typedef typename Series1::term_type term_type;
       /// Alias for the coefficient type of the first input series.
@@ -54,6 +53,9 @@ namespace piranha
       typedef typename Series2::term_type::cf_type cf_type2;
       /// Alias for the key type (common to both input series).
       typedef typename Series1::term_type::key_type key_type;
+      /// Alias for the truncator type.
+      typedef Truncator<plain_series_multiplier> truncator_type;
+    private:
       typedef typename series_mult_rep<cf_type1>::type sm_cf1;
       typedef typename series_mult_rep<cf_type2>::type sm_cf2;
       typedef typename series_mult_rep<key_type>::type sm_key;
@@ -68,8 +70,8 @@ namespace piranha
       mult_set;
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        m_s1(s1),m_s2(s2),m_size1(m_s1.template nth_index<0>().size()),m_size2(m_s2.template nth_index<0>().size()),
-        m_retval(retval),m_args_tuple(args_tuple),m_trunc(m_s1,m_s2,m_args_tuple)
+        m_s1(s1),m_s2(s2),m_args_tuple(args_tuple),m_size1(m_s1.template nth_index<0>().size()),
+        m_size2(m_s2.template nth_index<0>().size()),m_retval(retval),m_trunc(*this)
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings_manager::get_load_factor());
@@ -117,7 +119,8 @@ namespace piranha
               series_mult_rep<cf_type1>::get(m_cfs1[i]),
               series_mult_rep<key_type>::get(m_keys1[i]),
               series_mult_rep<cf_type2>::get(m_cfs2[j]),
-              series_mult_rep<key_type>::get(m_keys2[j])))
+              series_mult_rep<key_type>::get(m_keys2[j]),
+              m_args_tuple))
             {
               break;
             }
@@ -155,15 +158,18 @@ namespace piranha
         m_keys1.resize(m_size1);
         m_keys2.resize(m_size2);
       }
-    protected:
+    public:
+      // These needs to be public since they will be accessed by the truncators.
       // References to the series.
       const Series1           &m_s1;
       const Series2           &m_s2;
+      // Reference to the arguments tuple.
+      const ArgsTuple         &m_args_tuple;
+    protected:
       // Sizes of the series.
       const size_t            m_size1;
       const size_t            m_size2;
       Series1                 &m_retval;
-      const ArgsTuple         &m_args_tuple;
       // Vectors of input coefficients converted for representation during series multiplication.
       std::valarray<sm_cf1>   m_cfs1;
       std::valarray<sm_cf2>   m_cfs2;
@@ -172,7 +178,8 @@ namespace piranha
       std::valarray<sm_key>   m_keys2;
       // Container to store the result of the multiplications.
       mult_set                m_set;
-      // Truncator.
+      // Truncator. This must be the last one defined because it will take *this
+      // as parameter for construction.
       truncator_type          m_trunc;
   };
 }

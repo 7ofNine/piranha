@@ -42,7 +42,7 @@ namespace piranha
    * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
    * like piranha::plain_series_multiplier.
    */
-  template <class Series1, class Series2, class ArgsTuple, template <class, class, class> class Truncator>
+  template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class poisson_series_multiplier:
     public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
     public coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >
@@ -56,7 +56,6 @@ namespace piranha
       typedef typename ancestor::cf_type1 cf_type1;
       typedef typename ancestor::cf_type2 cf_type2;
       typedef typename ancestor::key_type key_type;
-      typedef typename ancestor::mult_set mult_set;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
       typedef typename Series1::sorted_iterator iterator1;
@@ -171,7 +170,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
+              ancestor::m_args_tuple))
             {
               break;
             }
@@ -274,7 +274,8 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j])))
+              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
+              ancestor::m_args_tuple))
             {
               break;
             }
