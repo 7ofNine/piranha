@@ -26,7 +26,6 @@
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
-#include <valarray>
 #include <vector>
 
 #include "../base_classes/plain_series_multiplier.h"
