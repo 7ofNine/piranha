@@ -169,13 +169,24 @@ namespace piranha
     type;
   };
 
-  /// Hashed index on keys.
+  /// Hashed index on terms.
   template <class Term>
     struct keys_hash_index
   {
     typedef boost::multi_index::indexed_by
     <
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
+    >
+    type;
+  };
+
+  /// Sorted index on terms.
+  template <class Term>
+    struct keys_sorted_index
+  {
+    typedef boost::multi_index::indexed_by
+    <
+      boost::multi_index::ordered_unique<boost::multi_index::identity<Term> >
     >
     type;
   };
