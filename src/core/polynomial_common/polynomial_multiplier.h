@@ -140,6 +140,8 @@ std::cout << "Going for hash coded!\n";
           const max_fast_int index1 = coded_ancestor::m_ckeys1[i];
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
+            // Calculate index of the result.
+            const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
             if (ancestor::m_trunc.skip(
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
@@ -148,7 +150,7 @@ std::cout << "Going for hash coded!\n";
             {
               break;
             }
-            vc_res[index1 + coded_ancestor::m_ckeys2[j]].poly_accumulation(
+            vc_res[res_index].poly_accumulation(
               series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
               ancestor::m_args_tuple);

@@ -58,6 +58,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
+      template <class ArgsTuple>
+        double calculate_norm(const ArgsTuple &) const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -80,8 +82,6 @@ namespace piranha
       template <bool, class Number, class ArgsTuple>
         Derived &merge_with_number(const Number &, const ArgsTuple &);
       bool is_single_cf() const;
-      template <class ArgsTuple>
-        double calculate_norm(const ArgsTuple &) const;
       template <class ArgsTuple>
         eval_type time_evaluation(const double &, const ArgsTuple &) const;
     private:
