@@ -55,6 +55,8 @@ namespace piranha
     return merge_with_series<false>(s2);
   }
 
+  // Multiply by generic entity. This means that the coefficients of the series get multiplied one by one
+  // by the input value.
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     template <class T>
     inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by_generic(const T &x)
@@ -62,6 +64,17 @@ namespace piranha
     Derived retval;
     retval.merge_args(*derived_const_cast);
     derived_cast->multiply_coefficients_by(x,retval,m_arguments);
+    swap(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <class T>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::divide_by_generic(const T &x)
+  {
+    Derived retval;
+    retval.merge_args(*derived_const_cast);
+    derived_cast->divide_coefficients_by(x,retval,m_arguments);
     swap(retval);
     return *derived_cast;
   }
@@ -132,6 +145,18 @@ namespace piranha
     inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const Derived &s2)
   {
     return mult_by_series(s2);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const int &n)
+  {
+    return divide_by_generic(n);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
+  {
+    return divide_by_generic(x);
   }
 }
 

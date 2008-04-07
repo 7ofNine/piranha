@@ -79,6 +79,8 @@ namespace piranha
         void merge_terms(const Derived2 &, const ArgsTuple &);
       template <class T, class ArgsTuple>
         void multiply_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
+      template <class T, class ArgsTuple>
+        void divide_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
       template <bool, class Number, class ArgsTuple>
         Derived &merge_with_number(const Number &, const ArgsTuple &);
       bool is_single_cf() const;

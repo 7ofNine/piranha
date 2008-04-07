@@ -53,10 +53,12 @@ namespace piranha
     public __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR,
-    //boost::ring_operators<__PIRANHA_POLYNOMIAL,
+    boost::ring_operators<__PIRANHA_POISSON_SERIES,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,int,
-    boost::ring_operators<__PIRANHA_POISSON_SERIES,double
-    > > //>
+    boost::ring_operators<__PIRANHA_POISSON_SERIES,double,
+    boost::dividable<__PIRANHA_POISSON_SERIES,int,
+    boost::dividable<__PIRANHA_POISSON_SERIES,double
+    > > > > >
   {
       typedef poisson_series_term<polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;

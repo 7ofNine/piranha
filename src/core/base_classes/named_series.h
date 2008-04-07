@@ -61,15 +61,17 @@ namespace piranha
       void swap(Derived &);
       double norm() const;
       eval_type eval(const double &) const;
-      Derived &operator*=(const int &);
-      Derived &operator*=(const double &);
-      Derived &operator*=(const Derived &);
       Derived &operator+=(const int &);
       Derived &operator+=(const double &);
       Derived &operator+=(const Derived &);
       Derived &operator-=(const int &);
       Derived &operator-=(const double &);
       Derived &operator-=(const Derived &);
+      Derived &operator*=(const int &);
+      Derived &operator*=(const double &);
+      Derived &operator*=(const Derived &);
+      Derived &operator/=(const int &);
+      Derived &operator/=(const double &);
     protected:
       void construct_from_file(const std::string &);
     private:
@@ -96,6 +98,8 @@ namespace piranha
         Derived &mult_by_generic(const T &);
       template <class Derived2>
         Derived &mult_by_series(const Derived2 &);
+      template <class T>
+        Derived &divide_by_generic(const T &);
     protected:
       // Data members.
       args_tuple_type                 m_arguments;

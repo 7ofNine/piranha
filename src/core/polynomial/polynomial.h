@@ -94,8 +94,10 @@ namespace piranha
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
-    boost::ring_operators<__PIRANHA_POLYNOMIAL,double
-    > > >
+    boost::ring_operators<__PIRANHA_POLYNOMIAL,double,
+    boost::dividable<__PIRANHA_POLYNOMIAL,int,
+    boost::dividable<__PIRANHA_POLYNOMIAL,double
+    > > > > >
   {
       typedef monomial<Cf,Expo,'|',Allocator> term_type_;
       typedef Allocator allocator_type;

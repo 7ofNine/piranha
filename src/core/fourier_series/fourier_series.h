@@ -54,8 +54,10 @@ namespace piranha
     public norm_truncatable_series,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,int,
-    boost::ring_operators<__PIRANHA_FOURIER_SERIES,double
-    > > >
+    boost::ring_operators<__PIRANHA_FOURIER_SERIES,double,
+    boost::dividable<__PIRANHA_FOURIER_SERIES,int,
+    boost::dividable<__PIRANHA_FOURIER_SERIES,double
+    > > > > >
   {
       typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;

@@ -44,7 +44,8 @@ namespace manipulators
     cf_degree_index,
     polynomial_multiplier,
     poisson_series_multiplier,
-    poly_exponents_truncator,
+    //poly_exponents_truncator,
+    no_truncation,
     no_truncation
   > dps;
 }

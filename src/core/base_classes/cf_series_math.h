@@ -80,6 +80,39 @@ namespace piranha
   {
     return mult_by_generic(x,args_tuple);
   }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    derived_cast->multiply_by_generic_series(s2,retval,args_tuple);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class T, class ArgsTuple>
+    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by_generic(const T &x, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    derived_cast->divide_coefficients_by(x,retval,args_tuple);
+    swap(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const int &n, const ArgsTuple &args_tuple)
+  {
+    return divide_by_generic(n,args_tuple);
+  }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
+  {
+    return divide_by_generic(x,args_tuple);
+  }
 }
 
 #endif
