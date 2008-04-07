@@ -24,8 +24,6 @@
 #include <cmath>
 #include <iostream>
 
-#include "../config.h"
-
 namespace piranha
 {
   class norm_truncatable_series
