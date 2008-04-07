@@ -25,20 +25,27 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/cf_series.h"
+#include "../base_classes/expo_truncatable_series.h"
+#include "../base_classes/series_multiplication.h"
 #include "../settings_manager.h"
 
-#define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, class Allocator
-#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Allocator
+#define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
+  template <class, class, class, template <class> class> class Multiplier, \
+  template <class> class Truncator, class Allocator
+#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
 #define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
+#define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
 
 namespace piranha
 {
   template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
     class polynomial_cf:
-    protected __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR
+    public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR,
+    public expo_truncatable_series
   {
       typedef monomial<Cf,Expo,'!',Allocator> term_type_;
       typedef Allocator allocator_type;
@@ -49,6 +56,7 @@ namespace piranha
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR;
+      friend class __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -100,5 +108,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_CF
 #undef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
 
 #endif

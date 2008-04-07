@@ -27,25 +27,33 @@
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/series_multiplication.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../polynomial_cf/polynomial_cf.h"
 
-#define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, template <class> class IPoly,\
-  template <class> class ITrig, class Allocator
-#define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,Allocator
+#define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, \
+  template <class> class IPoly, template <class> class ITrig, \
+  template <class, class, class, template <class> class> class MultPoly, \
+  template <class, class, class, template <class> class> class MultTrig, \
+  template <class> class TruncPoly, template <class> class TruncTrig, \
+  class Allocator
+#define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,MultPoly,MultTrig,TruncPoly,TruncTrig,Allocator
 #define __PIRANHA_POISSON_SERIES poisson_series<__PIRANHA_POISSON_SERIES_TP>
-#define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<poisson_series_term<polynomial_cf<Cf,Expo,IPoly,Allocator>,Trig,'|',Allocator>,\
+#define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<poisson_series_term< \
+  polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>,Trig,'|',Allocator>,\
   '\n',Allocator,__PIRANHA_POISSON_SERIES > 
 #define __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr,trig_args_descr>,__PIRANHA_POISSON_SERIES >
+#define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
 
 namespace piranha
 {
   template <__PIRANHA_POISSON_SERIES_TP_DECL = std::allocator<char> >
     class poisson_series:
-    protected __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,
-    public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR
+    public __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,
+    public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR,
+    public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
   {
-      typedef poisson_series_term<polynomial_cf<Cf,Expo,IPoly,Allocator>,Trig,'|',Allocator> term_type_;
+      typedef poisson_series_term<polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>,Trig,'|',Allocator> term_type_;
       typedef Allocator allocator_type;
       typedef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
@@ -55,6 +63,7 @@ namespace piranha
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_BASE_ANCESTOR;
+      friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -94,5 +103,6 @@ namespace piranha
 #undef __PIRANHA_POISSON_SERIES
 #undef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR
+#undef __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
 
 #endif

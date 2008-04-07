@@ -18,20 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#ifndef PIRANHA_DPS_H
+#define PIRANHA_DPS_H
 
-/// Piranha top-level namespace.
+#include "../core/base_classes/common_indices.h"
+#include "../core/base_classes/truncators.h"
+#include "../core/numerical_coefficients/double_cf.h"
+#include "../core/polynomial_common/expo_array.h"
+#include "../core/polynomial_common/polynomial_multiplier.h"
+#include "../core/poisson_series_common/poisson_series_multiplier.h"
+#include "../core/poisson_series_common/trig_array.h"
+#include "../core/poisson_series/poisson_series.h"
+
 namespace piranha
 {
-  /// Namespace for the available manipulators.
-  namespace manipulators {}
+namespace manipulators
+{
+  /// Double coefficient Poisson series.
+  typedef poisson_series
+  <
+    double_cf,
+    expo_array<16,0>,
+    trig_array<16,1>,
+    key_min_degree_index,
+    cf_degree_index,
+    polynomial_multiplier,
+    poisson_series_multiplier,
+    poly_exponents_truncator,
+    no_truncation
+  > dps;
 }
-
-// Include all piranha manipulators.
-#include "manipulators/dpoly.h"
-#include "manipulators/dps.h"
-#include "manipulators/zpoly.h"
-#include "manipulators/fs.h"
+}
 
 #endif
