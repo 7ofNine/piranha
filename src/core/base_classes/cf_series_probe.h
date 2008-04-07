@@ -45,6 +45,14 @@ namespace piranha
   {
     return (derived_const_cast->template nth_index<0>().empty());
   }
+
+  template <__PIRANHA_CF_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline typename cf_series<__PIRANHA_CF_SERIES_TP>::eval_type
+    cf_series<__PIRANHA_CF_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
+  {
+    return derived_const_cast->time_evaluation(t,args_tuple);
+  }
 }
 
 #endif

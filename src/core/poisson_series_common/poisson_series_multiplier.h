@@ -157,6 +157,7 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           piranha_free(p_vc_res_sin);
           return false;
         }
+std::cout << "Going for Poisson coded\n";
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
