@@ -28,8 +28,8 @@ namespace piranha
     struct no_truncation
   {
     no_truncation(const Multiplier &) {}
-    template <class Term, class ArgsTuple>
-      bool accept(const Term &, const ArgsTuple &) const {return true;}
+    template <class Result, class ArgsTuple>
+      bool accept(const Result &, const ArgsTuple &) const {return true;}
     template <class Cf1, class Cf2, class Key, class ArgsTuple>
       bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const ArgsTuple &) const {return false;}
   };
@@ -40,11 +40,10 @@ namespace piranha
   {
       norm_truncator(const Multiplier &m):m_delta_threshold(
         m.m_s1.calculate_norm(m.m_args_tuple)*m.m_s2.calculate_norm(m.m_args_tuple)*m.m_s1.get_truncation()/
-        (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())
-        )
+        (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
       {}
-      template <class Term, class ArgsTuple>
-        bool accept(const Term &, const ArgsTuple &) const {return true;}
+      template <class Result, class ArgsTuple>
+        bool accept(const Result &, const ArgsTuple &) const {return true;}
       template <class Cf1, class Cf2, class Key, class ArgsTuple>
         bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &, const ArgsTuple &args_tuple) const
       {
@@ -55,9 +54,24 @@ namespace piranha
   };
 
   /// Truncators for polynomials based on the exponent of one or more variables.
-  template <class Series1, class Series2, class ArgsTuple>
+  template <class Multiplier>
     struct poly_exponents_truncator
   {
+      poly_exponents_truncator(const Multiplier &m):m_mult(m) {}
+      template <class ArgsTuple>
+        bool accept(const max_fast_int &, const ArgsTuple &) const
+      {
+        return true;
+      }
+      template <class Term, class ArgsTuple>
+        bool accept(const Term &, const ArgsTuple &) const
+      {
+        return true;
+      }
+    template <class Cf1, class Cf2, class Key, class ArgsTuple>
+      bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const ArgsTuple &) const {return false;}
+    private:
+      const Multiplier  &m_mult;
   };
 }
 

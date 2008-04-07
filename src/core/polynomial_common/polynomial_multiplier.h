@@ -150,10 +150,17 @@ std::cout << "Going for hash coded!\n";
             {
               break;
             }
-            vc_res[res_index].poly_accumulation(
-              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              ancestor::m_args_tuple);
+            switch (ancestor::m_trunc.accept(res_index,ancestor::m_args_tuple))
+            {
+              case true:
+                vc_res[res_index].poly_accumulation(
+                  series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+                  series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+                  ancestor::m_args_tuple);
+                break;
+              case false:
+                ;
+            }
           }
         }
 std::cout << "Done multiplying\n";
@@ -211,29 +218,36 @@ std::cout << "Done vector coded!\n";
               break;
             }
             const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-            it = cms.find(new_key);
-            switch (it == cms.end())
+            switch (ancestor::m_trunc.accept(new_key,ancestor::m_args_tuple))
             {
               case true:
+                it = cms.find(new_key);
+                switch (it == cms.end())
                 {
-                  // Create new temporary term from old cf and new key.
-                  cterm tmp_term(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),new_key);
-                  // Multiply the old term by the second term.
-                  tmp_term.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
-                  cms.insert(tmp_term);
-                  break;
+                  case true:
+                  {
+                    // Create new temporary term from old cf and new key.
+                    cterm tmp_term(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),new_key);
+                    // Multiply the old term by the second term.
+                    tmp_term.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+                    cms.insert(tmp_term);
+                    break;
+                  }
+                  case false:
+                    it->m_cf.poly_accumulation(
+                      series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
+                      series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
+                      ancestor::m_args_tuple);
                 }
               case false:
-                it->m_cf.poly_accumulation(
-                  series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-                  series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-                  ancestor::m_args_tuple);
+                ;
             }
           }
         }
 std::cout << "Done multiplying\n";
         // Decode and insert into retval.
         // TODO: rehash on m_retval here (since we know what the size is going to be)?
+        // This would require the generic wrapper around the container of the series.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
         const c_iterator c_it_f = cms.end();
