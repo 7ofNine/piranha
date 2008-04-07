@@ -171,7 +171,7 @@ namespace piranha
 
   /// Hashed index on terms.
   template <class Term>
-    struct keys_hash_index
+    struct key_hash_index
   {
     typedef boost::multi_index::indexed_by
     <
@@ -182,7 +182,7 @@ namespace piranha
 
   /// Sorted index on terms.
   template <class Term>
-    struct keys_sorted_index
+    struct key_sorted_index
   {
     typedef boost::multi_index::indexed_by
     <
