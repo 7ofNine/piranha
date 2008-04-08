@@ -18,17 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
+#include "../src/piranha.h"
 
 // Fateman's polynomial multiplication test number 1. Calculate:
 // s*(s+1)
 // where s = (1+x+y+z+t)^30
 
 using namespace piranha::manipulators;
+typedef dpoly poly;
 
 int main()
 {
-  dpoly a("fateman_test.dpoly"), b(a);
+  poly a("fateman_test.dpoly"), b(a);
   a*=b;
   a*=b;
   a*=b;
@@ -59,7 +60,7 @@ int main()
   a*=b;
   a*=b;
 
-  dpoly c(a);
+  poly c(a);
   c+=1;
   a*=c;
 
