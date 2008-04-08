@@ -47,6 +47,13 @@ namespace piranha
     class coded_series_multiplier
   {
       typedef boost::integer_traits<max_fast_int> traits;
+    public:
+      // Decode code n into key.
+      template <class Key>
+        void decode(Key &key, const max_fast_int &n) const
+      {
+        key.decode(n,m_coding_vector,m_h_min,m_fast_res_min_max,derived_const_cast->m_args_tuple);
+      }
     protected:
       // Typedefs for hash coded arithmetics.
       // This is the representation of a term for the hash coded representation.

@@ -28,23 +28,22 @@ namespace piranha
   struct base_insert_multiplication_result
   {
     protected:
-      template <class SingleRes, class MultSet, class ArgsTuple, class Truncator>
-        static void insert_single_res(const SingleRes &res, MultSet &mult_set, const ArgsTuple &args_tuple,
-        const Truncator &trunc)
+      template <class SingleRes, class Multiplier>
+        static void insert_single_res(const SingleRes &res, Multiplier &m)
       {
-        const typename MultSet::const_iterator it = mult_set.find(res);
-        switch (trunc.accept(res,args_tuple))
+        const typename Multiplier::mult_set::const_iterator it = m.m_set.find(res);
+        switch (m.m_trunc.accept(res,m.m_args_tuple))
         {
           case true:
-            switch (it == mult_set.end())
+            switch (it == m.m_set.end())
             {
               // Not duplicate, insert it.
               case true:
-                mult_set.insert(res);
+                m.m_set.insert(res);
                 break;
               // Duplicate, modify existing.
               case false:
-                it->m_cf.add(res.m_cf,args_tuple);
+                it->m_cf.add(res.m_cf,m.m_args_tuple);
             }
             break;
           case false:
@@ -57,20 +56,19 @@ namespace piranha
   template <class ResultTuple>
     struct insert_multiplication_result:public base_insert_multiplication_result
   {
-    template <class MultSet, class ArgsTuple, class Truncator>
-      static void run(const ResultTuple &mult_res, MultSet &mult_set, const ArgsTuple &args_tuple,
-      const Truncator &trunc)
+    template <class Multiplier>
+      static void run(const ResultTuple &mult_res, Multiplier &m)
     {
-      insert_single_res(mult_res.get_head(),mult_set,args_tuple,trunc);
-      insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(),mult_set,args_tuple,trunc);
+      insert_single_res(mult_res.get_head(),m);
+      insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(),m);
     }
   };
 
   template <>
     struct insert_multiplication_result<boost::tuples::null_type>
   {
-    template <class MultSet, class ArgsTuple, class Truncator>
-      static void run(const boost::tuples::null_type &, MultSet &, const ArgsTuple &, const Truncator &)
+    template <class Multiplier>
+      static void run(const boost::tuples::null_type &, Multiplier &)
     {}
   };
 }

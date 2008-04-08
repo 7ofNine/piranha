@@ -43,8 +43,9 @@ namespace piranha
   template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class plain_series_multiplier
   {
-    protected:
-      // These typedefs are protected because derived series will want to use them.
+      friend struct base_insert_multiplication_result;
+    public:
+      // These typedefs are public because truncators may want to use them.
       /// Alias for term type of first input series and return value series.
       typedef typename Series1::term_type term_type;
       /// Alias for the coefficient type of the first input series.
@@ -55,10 +56,6 @@ namespace piranha
       typedef typename Series1::term_type::key_type key_type;
       /// Alias for the truncator type.
       typedef Truncator<plain_series_multiplier> truncator_type;
-    private:
-      typedef typename series_mult_rep<cf_type1>::type sm_cf1;
-      typedef typename series_mult_rep<cf_type2>::type sm_cf2;
-      typedef typename series_mult_rep<key_type>::type sm_key;
       typedef boost::multi_index_container
       <
         term_type,
@@ -68,6 +65,10 @@ namespace piranha
         >
       >
       mult_set;
+    private:
+      typedef typename series_mult_rep<cf_type1>::type sm_cf1;
+      typedef typename series_mult_rep<cf_type2>::type sm_cf2;
+      typedef typename series_mult_rep<key_type>::type sm_key;
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_args_tuple(args_tuple),m_size1(m_s1.template nth_index<0>().size()),
@@ -120,7 +121,7 @@ namespace piranha
               series_mult_rep<key_type>::get(m_keys1[i]),
               series_mult_rep<cf_type2>::get(m_cfs2[j]),
               series_mult_rep<key_type>::get(m_keys2[j]),
-              m_args_tuple))
+              *this))
             {
               break;
             }
@@ -130,7 +131,7 @@ namespace piranha
               series_mult_rep<cf_type2>::get(m_cfs2[j]),
               series_mult_rep<key_type>::get(m_keys2[j]),
               res,m_args_tuple);
-            insert_multiplication_result<mult_res>::run(res,m_set,m_args_tuple,m_trunc);
+            insert_multiplication_result<mult_res>::run(res,*this);
           }
         }
       }

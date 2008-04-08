@@ -49,17 +49,17 @@ namespace piranha
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
       typedef coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
-      // Some of these typedefs are used also in the coded ancestor.
-      typedef typename ancestor::truncator_type truncator_type;
-      typedef typename ancestor::term_type term_type;
-      typedef typename ancestor::cf_type1 cf_type1;
-      typedef typename ancestor::cf_type2 cf_type2;
-      typedef typename ancestor::key_type key_type;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
     public:
+      // Some of these typedefs are used in the coded ancestor and may be used in the truncators..
+      typedef typename ancestor::truncator_type truncator_type;
+      typedef typename ancestor::term_type term_type;
+      typedef typename ancestor::cf_type1 cf_type1;
+      typedef typename ancestor::cf_type2 cf_type2;
+      typedef typename ancestor::key_type key_type;
       polynomial_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
       {}
@@ -69,7 +69,7 @@ namespace piranha
         coded_ancestor::find_input_min_max();
         calculate_result_min_max();
         coded_ancestor::determine_viability();
-        if (coded_ancestor::m_cr_is_viable)
+        if (false and coded_ancestor::m_cr_is_viable)
         {
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
@@ -146,11 +146,11 @@ std::cout << "Going for hash coded!\n";
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
               series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              ancestor::m_args_tuple))
+              *this))
             {
               break;
             }
-            switch (ancestor::m_trunc.accept(res_index,ancestor::m_args_tuple))
+            switch (ancestor::m_trunc.accept(res_index,*this))
             {
               case true:
                 vc_res[res_index].poly_accumulation(
@@ -177,8 +177,7 @@ std::cout << "Done multiplying\n";
               break;
             case false:
               tmp_term.m_cf = vc_res[i];
-              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-                coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              coded_ancestor::decode(tmp_term.m_key,i);
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
@@ -213,12 +212,12 @@ std::cout << "Done vector coded!\n";
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
               series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              ancestor::m_args_tuple))
+              *this))
             {
               break;
             }
             const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-            switch (ancestor::m_trunc.accept(new_key,ancestor::m_args_tuple))
+            switch (ancestor::m_trunc.accept(new_key,*this))
             {
               case true:
                 it = cms.find(new_key);
@@ -254,8 +253,7 @@ std::cout << "Done multiplying\n";
         for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
         {
           tmp_term.m_cf = c_it->m_cf;
-          tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-            coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+          coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
           it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
         }
 std::cout << "Finished hash coded multiplication\n";

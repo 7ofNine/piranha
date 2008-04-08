@@ -138,6 +138,23 @@ namespace piranha
         }
         return retval;
       }
+      // Return true if the exponents are smaller than those specified in the limits vector.
+      bool test_expo_limits(const std::vector<std::pair<size_t,int> > &v) const
+      {
+        const size_t size = v.size();
+        for (size_t i = 0; i < size; ++i)
+        {
+          p_assert(v[i].first < derived_const_cast->m_size);
+          switch ((*derived_const_cast)[v[i].first] > v[i].second)
+          {
+            case true:
+              return false;
+            case false:
+              ;
+          }
+        }
+        return true;
+      }
     protected:
       expo_array_commons() {}
       explicit expo_array_commons(const std::string &s)

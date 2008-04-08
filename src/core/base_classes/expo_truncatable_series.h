@@ -66,6 +66,7 @@ namespace piranha
           std::cout << it->first->name() << ',' << it->second << std::endl;
         }
       }
+      static const container_type &get_expo_limits() {return m_expo_limits;}
     private:
       static iterator find_argument(const psym_p &p)
       {

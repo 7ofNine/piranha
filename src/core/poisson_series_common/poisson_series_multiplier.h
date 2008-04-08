@@ -50,17 +50,16 @@ namespace piranha
       typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
       typedef coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
-      // Some of these typedefs are used also in the coded ancestor.
-      typedef typename ancestor::truncator_type truncator_type;
-      typedef typename ancestor::term_type term_type;
-      typedef typename ancestor::cf_type1 cf_type1;
-      typedef typename ancestor::cf_type2 cf_type2;
-      typedef typename ancestor::key_type key_type;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
     public:
+      typedef typename ancestor::truncator_type truncator_type;
+      typedef typename ancestor::term_type term_type;
+      typedef typename ancestor::cf_type1 cf_type1;
+      typedef typename ancestor::cf_type2 cf_type2;
+      typedef typename ancestor::key_type key_type;
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
       {}
@@ -172,7 +171,7 @@ std::cout << "Going for Poisson coded\n";
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
               series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              ancestor::m_args_tuple))
+              *this))
             {
               break;
             }
@@ -225,8 +224,7 @@ std::cout << "Going for Poisson coded\n";
               break;
             case false:
               tmp_term.m_cf = vc_res_cos[i];
-              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-                coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              coded_ancestor::decode(tmp_term.m_key,i);
               tmp_term.m_key.flavour() = true;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -239,8 +237,7 @@ std::cout << "Going for Poisson coded\n";
               break;
             case false:
               tmp_term.m_cf = vc_res_sin[i];
-              tmp_term.m_key.decode(i,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-                coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+              coded_ancestor::decode(tmp_term.m_key,i);
               tmp_term.m_key.flavour() = false;
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -276,7 +273,7 @@ std::cout << "Going for Poisson coded\n";
               series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
               series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
               series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              ancestor::m_args_tuple))
+              *this))
             {
               break;
             }
@@ -358,8 +355,7 @@ std::cout << "Going for Poisson coded\n";
           for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-              coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
             tmp_term.m_key.flavour() = true;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
@@ -369,8 +365,7 @@ std::cout << "Going for Poisson coded\n";
           for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it)
           {
             tmp_term.m_cf = c_it->m_cf;
-            tmp_term.m_key.decode(c_it->m_ckey,coded_ancestor::m_coding_vector,coded_ancestor::m_h_min,
-              coded_ancestor::m_fast_res_min_max,ancestor::m_args_tuple);
+            coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
             tmp_term.m_key.flavour() = false;
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
