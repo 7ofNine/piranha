@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../psymbol.h"
 #include "expo_array_commons.h"
 
 #define __PIRANHA_EXPO_ARRAY_TP_DECL int Bits, int Pos, class Allocator
@@ -58,6 +59,10 @@ namespace piranha
       template <class ArgsTuple>
         explicit expo_array(const std::string &s, const ArgsTuple &):ancestor::int_array(),
         expo_commons::expo_array_commons(s) {}
+      /// Ctor from psymbol.
+      template <class ArgsTuple>
+        explicit expo_array(const psymbol &p, const ArgsTuple &args_tuple):ancestor::int_array(),
+        expo_commons::expo_array_commons(p,args_tuple) {}
       // Probing.
       /// Data footprint.
       /**

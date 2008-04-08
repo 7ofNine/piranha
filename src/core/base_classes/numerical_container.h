@@ -25,7 +25,6 @@
 #include <string>
 
 #include "../arg_manager.h"
-#include "../psymbol.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
 

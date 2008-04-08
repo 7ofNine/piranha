@@ -48,6 +48,8 @@ namespace piranha
     public expo_truncatable_series
   {
       typedef monomial<Cf,Expo,'!',Allocator> term_type_;
+      typedef typename term_type_::cf_type cf_type;
+      typedef typename term_type_::key_type key_type;
       typedef Allocator allocator_type;
       typedef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
       typedef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
@@ -84,6 +86,12 @@ namespace piranha
       {
         nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(x,a);
+      }
+      template <class ArgsTuple>
+        explicit polynomial_cf(const psymbol &p, const ArgsTuple &a)
+      {
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        base_ancestor::insert(term_type(cf_type(1,a),key_type(p,a)),a,nth_index<0>().end());
       }
       // Needed getters and setters.
       template <int N>

@@ -74,10 +74,10 @@ namespace piranha
       Derived &operator/=(const double &);
     protected:
       void construct_from_file(const std::string &);
+      void append_arg(const std::string &, const psym_p &);
     private:
       void print_plain(std::ostream &, int) const;
       void print_latex(std::ostream &, int) const;
-      void append_arg(const std::string &, const psym_p &);
       void read_from_file(std::ifstream &, const std::string &);
       void read_sections(std::ifstream &);
       void read_arg(std::ifstream &, const std::string &);

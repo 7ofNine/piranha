@@ -64,6 +64,8 @@ namespace piranha
     > > > > >
   {
       typedef poisson_series_term<polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>,Trig,'|',Allocator> term_type_;
+      typedef typename term_type_::cf_type cf_type;
+      typedef typename term_type_::key_type key_type;
       typedef Allocator allocator_type;
       typedef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
@@ -97,6 +99,14 @@ namespace piranha
       {
         nth_index<1>().max_load_factor(settings_manager::get_load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
+      }
+      // Ctor from psymbol
+      explicit poisson_series(const psymbol &p)
+      {
+        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        named_ancestor::append_arg("poly",psymbol_manager::get_pointer(p).second);
+        base_ancestor::insert(term_type(cf_type(p,named_ancestor::m_arguments),key_type()),
+          named_ancestor::m_arguments,nth_index<0>().end());
       }
       // Needed getters and setters.
       template <int N>
