@@ -69,7 +69,7 @@ namespace piranha
         coded_ancestor::find_input_min_max();
         calculate_result_min_max();
         coded_ancestor::determine_viability();
-        if (false and coded_ancestor::m_cr_is_viable)
+        if (coded_ancestor::m_cr_is_viable)
         {
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
