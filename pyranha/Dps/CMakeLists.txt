@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Dps SHARED Dps.cpp)
+PYTHONCMOD(_Dps)
