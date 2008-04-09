@@ -58,6 +58,13 @@ namespace piranha
     }
     return retval;
   }
+
+  /// Return the number of elements of the series.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::length() const
+  {
+    return derived_const_cast->template nth_index<0>().size();
+  }
 }
 
 #endif

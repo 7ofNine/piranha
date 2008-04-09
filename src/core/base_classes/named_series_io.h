@@ -223,6 +223,20 @@ namespace piranha
     print(outf);
     outf.close();
   }
+
+  /// Print the series, including header, to screen.
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::put() const
+  {
+    print();
+  }
+
+  /// Print the terms of the series to screen.
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::put_terms() const
+  {
+    derived_const_cast->print_terms_plain(std::cout,m_arguments,-1);
+  }
 }
 
 #endif

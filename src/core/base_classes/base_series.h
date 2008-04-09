@@ -60,6 +60,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class ArgsTuple>
         double calculate_norm(const ArgsTuple &) const;
+      Derived copy() const;
+      size_t length() const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.

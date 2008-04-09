@@ -76,6 +76,13 @@ namespace piranha
   {
 // TODO: to be implemented.
   }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::copy() const
+  {
+    Derived retval(*derived_const_cast);
+    return retval;
+  }
 }
 
 #endif
