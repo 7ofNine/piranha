@@ -72,6 +72,12 @@ namespace piranha
       {
         return g_value().get_d();
       }
+      // Accumulate coefficients during polynomial multiplication.
+      template <class ArgsTuple>
+        void poly_accumulation(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &)
+      {
+        mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
+      }
       // End implementation of basic pseries coefficient interface.
       //------------
       // Start implementation of trigonometric pseries coefficient interface.
