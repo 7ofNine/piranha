@@ -24,6 +24,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
+#include <sstream>
 
 #include "../exceptions.h"
 
@@ -226,16 +227,12 @@ namespace piranha
 
   /// Print the series, including header, to screen.
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::put() const
+    inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::print_to_string() const
   {
-    print();
-  }
-
-  /// Print the terms of the series to screen.
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::put_terms() const
-  {
-    derived_const_cast->print_terms_plain(std::cout,m_arguments,-1);
+    std::ostringstream stream;
+    print(stream,-1);
+    std::string retval(stream.str());
+    return retval;
   }
 }
 

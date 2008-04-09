@@ -90,10 +90,6 @@ template <class T>
 // This is a trick to help resolve overloaded methods inside classes.
   //typedef void (T::*crop_it)(const typename T::it_s_index &);
   //typedef void (T::*crop_real)(const double &);
-  typedef void (T::*put_noargs)() const;
-  typedef void (T::*put_n)(int) const;
-  typedef void (T::*put_terms_noargs)() const;
-  typedef void (T::*put_terms_n)(int) const;
 //   typedef typename eval_type<T>::type (T::*eval_single) (const double &) const;
 //     const size_t &) const;
   class_<T> inst(name.c_str(),description.c_str());
@@ -102,20 +98,17 @@ template <class T>
   inst.def(init<const int &>());
   inst.def(init<const double &>());
   inst.def(init<psymbol &>());
-  inst.def("__copy__", &T::copy);
+  inst.def("__copy__",&T::copy);
+  inst.def("__repr__",&T::print_to_string);
 //   inst.def("__iter__", iterator<T,return_internal_reference<> >());
-  inst.def("__len__", &T::length);
+  inst.def("__len__",&T::length);
 //   inst.def("begin", &T::begin);
 //   inst.def("end", &T::end);
 //   inst.def("address", &T::address);
-  inst.def("save_to", &T::save_to, "Save series to file.");
-  inst.def("put", put_noargs(&T::put));
-  inst.def("put", put_n(&T::put));
-  inst.def("put_terms", put_terms_noargs(&T::put_terms));
-  inst.def("put_terms", put_terms_n(&T::put_terms));
+  inst.def("save_to",&T::save_to, "Save series to file.");
 //   inst.def("put_phases_freqs", put_phases_freqs_noargs(&T::put_phases_freqs));
 //   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
-  inst.def("length", &T::length);
+  inst.def("length",&T::length);
 //   inst.def("cf_width", &T::cf_width);
 //   inst.def("trig_width", &T::trig_width);
 //   inst.def("is_empty", &T::is_empty);
@@ -127,7 +120,7 @@ template <class T>
 //   inst.def("t_eval_brute", &T::t_eval_brute);
 //   inst.def("mean", mean_def(&T::mean));
 //   inst.def("mean", mean_n(&T::mean));
-  inst.def("swap", &T::swap);
+  inst.def("swap",&T::swap);
 // NOTICE: the order seems important here, if we place *=int before *=double we
 // will get just *=double in Python. Go figure...
 // Assignments.
