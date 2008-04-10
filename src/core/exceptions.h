@@ -49,6 +49,18 @@ namespace piranha
     private:
       std::string m_what;
   };
+
+  class unsuitable
+  {
+    public:
+      unsuitable(const std::string &s):m_what(s) {}
+      const std::string &what() const
+      {
+        return m_what;
+      }
+    private:
+      std::string m_what;
+  };
 }
 
 #endif

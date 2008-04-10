@@ -227,6 +227,17 @@ namespace piranha
           m_ptr[i]=((tmp%v[i+1])/(v[i])+mmv[i].first);
         }
       }
+      void assign_int_vector(const std::vector<int> &v)
+      {
+        const size_t size = v.size();
+        p_assert(boost::integer_traits<size_type>::max() > size);
+        resize(size);
+        // TODO: check for assignments out of numerical boundaries.
+        for (size_t i = 0; i < size; ++i)
+        {
+          m_ptr[i] = v[i];
+        }
+      }
     protected:
       /// Array-like operator[], const version.
       const value_type &operator[](const size_t &n) const {return m_ptr[n];}

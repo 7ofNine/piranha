@@ -24,6 +24,7 @@
 #include <boost/python/class.hpp>
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/def.hpp>
+#include <boost/python/exception_translator.hpp>
 #include <boost/python/iterator.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
@@ -174,6 +175,13 @@ template <class T>
 //   range_evaluator_instantiation<T>("range_evaluator",std::string("Evaluate ")+name+
 //     " over a time range.");
   return inst;
+}
+
+template <class T>
+  void series_trigonometric_instantiation(class_<T> &inst)
+{
+  inst.def("cos",&T::cos);
+  inst.def("sin",&T::sin);
 }
 
 template <class T>

@@ -21,9 +21,12 @@
 #ifndef PIRANHA_DOUBLE_CF_H
 #define PIRANHA_DOUBLE_CF_H
 
+#include <cmath>
 #include <complex>
 
+#include "../exceptions.h"
 #include "../math.h" // besselJ.
+#include "../settings_manager.h" // Numerical zero.
 #include "../base_classes/numerical_container.h"
 
 namespace piranha
@@ -57,6 +60,16 @@ namespace piranha
       /// Constructor from double.
       template <class ArgsTuple>
         explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
+      int get_int() const throw (unsuitable)
+      {
+        const char *msg = "Cannot convert coefficient to integer.";
+        int retval = (int)nearbyint(ancestor::m_value);
+        if (std::abs(ancestor::m_value - retval) > settings_manager::get_numerical_zero())
+        {
+          throw (unsuitable(msg));
+        }
+        return retval;
+      }
       // End implementation of basic pseries coefficient interface.
       //------------
       // Start implementation of trigonometric pseries coefficient interface.

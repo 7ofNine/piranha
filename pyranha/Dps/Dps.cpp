@@ -20,10 +20,18 @@
 
 #include "../pyranha.h"
 
+void translator(const unsuitable &u)
+{
+  PyErr_SetString(PyExc_UserWarning, u.what().c_str());
+}
+
 BOOST_PYTHON_MODULE(_Dps)
 {
-  class_<manipulators::dps> inst=series_basic_instantiation<manipulators::dps>(std::string("dps"),
+  register_exception_translator<unsuitable>(translator);
+
+  class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
     std::string("Poisson series with double precision coefficients."));
+  series_trigonometric_instantiation(inst);
   //ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);
   def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,

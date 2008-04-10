@@ -32,6 +32,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../polynomial_cf/polynomial_cf.h"
+#include "poisson_series_trigonometric_toolbox.h"
 
 #define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, \
   template <class> class IPoly, template <class> class ITrig, \
@@ -47,6 +48,7 @@
   '\n',Allocator,__PIRANHA_POISSON_SERIES > 
 #define __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr,trig_args_descr>,__PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
+#define __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR poisson_series_trigonometric_toolbox< __PIRANHA_POISSON_SERIES >
 
 namespace piranha
 {
@@ -56,6 +58,7 @@ namespace piranha
     public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR,
     public expo_truncatable_series,
+    public __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,int,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,double,
@@ -76,6 +79,7 @@ namespace piranha
       friend class __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
+      friend class __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -125,5 +129,6 @@ namespace piranha
 #undef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
 #undef __POISSON_SERIES_POLYNOMIAL
+#undef __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR
 
 #endif

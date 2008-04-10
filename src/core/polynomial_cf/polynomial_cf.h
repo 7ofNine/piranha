@@ -27,6 +27,7 @@
 #include "../base_classes/cf_series.h"
 #include "../base_classes/expo_truncatable_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../exceptions.h"
 #include "../settings_manager.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
@@ -98,6 +99,7 @@ namespace piranha
         typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
       template <int N>
         const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
+      // TODO: place some of these methods into common polynomial toolbox?
       int get_degree() const
       {
         if (nth_index<0>().empty())
@@ -105,6 +107,19 @@ namespace piranha
           return 0;
         }
         return nth_index<0>().begin()->m_key.get_degree();
+      }
+      /// Return a vector of integers representing the polynomial.
+      /**
+       * If the polynomial is not a linear combination of arguments with integer coefficients, it throws an exception.
+       * Otherwise, polynomial coefficient are stored into v. Used in the calculation of circular functions of Poisson series.
+       */
+      void get_int_linear_combination(std::vector<int> &v) const throw (unsuitable)
+      {
+        const const_sorted_iterator it_f = nth_index<0>().end();
+        for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it)
+        {
+          v[it->m_key.linear_arg_position()] = it->m_cf.get_int();
+        }
       }
     private:
       container_type  m_container;

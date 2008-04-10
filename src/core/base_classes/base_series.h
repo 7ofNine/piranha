@@ -62,6 +62,8 @@ namespace piranha
         double calculate_norm(const ArgsTuple &) const;
       Derived copy() const;
       size_t length() const;
+      bool empty() const;
+      bool is_single_cf() const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -85,7 +87,6 @@ namespace piranha
         void divide_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
       template <bool, class Number, class ArgsTuple>
         Derived &merge_with_number(const Number &, const ArgsTuple &);
-      bool is_single_cf() const;
       template <class ArgsTuple>
         eval_type time_evaluation(const double &, const ArgsTuple &) const;
     private:

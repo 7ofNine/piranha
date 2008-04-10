@@ -65,6 +65,13 @@ namespace piranha
   {
     return derived_const_cast->template nth_index<0>().size();
   }
+
+  /// Is series empty?
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline bool base_series<__PIRANHA_BASE_SERIES_TP>::empty() const
+  {
+    return derived_const_cast->template nth_index<0>().empty();
+  }
 }
 
 #endif

@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "../exceptions.h"
 #include "../psymbol.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
@@ -156,6 +157,40 @@ namespace piranha
           }
         }
         return true;
+      }
+      /// Return the position of the linear argument in the monomial.
+      /**
+       * It will throw if the monomial is not linear.
+       */
+      size_t linear_arg_position() const throw(unsuitable)
+      {
+        bool found_linear = false;
+        const char *msg = "Monomial is not linear.";
+        size_t candidate = 0;
+        for (typename Derived::size_type i = 0; i < derived_const_cast->m_size; ++i)
+        {
+          if ((*derived_const_cast)[i] == 1)
+          {
+            if (found_linear)
+            {
+              throw unsuitable(msg);
+            }
+            else
+            {
+              candidate = i;
+              found_linear = true;
+            }
+          }
+          else if ((*derived_const_cast)[i] != 0)
+          {
+            throw unsuitable(msg);
+          }
+        }
+        if (!found_linear)
+        {
+          throw unsuitable(msg);
+        }
+        return candidate;
       }
     protected:
       expo_array_commons() {}
