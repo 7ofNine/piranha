@@ -27,6 +27,7 @@
 #include <string>
 
 #include "compile_switches.h"
+#include "config.h"
 #include "integer_typedefs.h"
 #include "piranha_tbb.h" // For task scheduler init.
 
@@ -122,9 +123,9 @@ namespace piranha
           startup_class();
       };
       /// Load factor for hashed containers.
-      static double                         hash_max_load_factor;
+      __PIRANHA_VISIBLE static double       hash_max_load_factor;
       /// Numerical zero.
-      static double                         numerical_zero;
+      __PIRANHA_VISIBLE static double       numerical_zero;
       /// Minimum fast unsigned integer.
       static const max_fast_uint            min_u;
       /// Maximum fast unsigned integer.
@@ -136,7 +137,7 @@ namespace piranha
       /// Jacobi Anger expansion limit.
       static const unsigned int             jacang_limit;
       /// Path to theories of motion.
-      static std::string                    path;
+      __PIRANHA_VISIBLE static std::string  path;
       static const std::string              default_path;
       static const std::string              version;
       static bool                           enable_progress_display;

@@ -26,6 +26,7 @@
 #include <utility>
 #include <vector>
 
+#include "../config.h"
 #include "../psymbol.h"
 
 namespace piranha
@@ -82,7 +83,7 @@ namespace piranha
         return it;
       }
     private:
-      static container_type m_expo_limits;
+      __PIRANHA_VISIBLE static container_type m_expo_limits;
   };
 }
 

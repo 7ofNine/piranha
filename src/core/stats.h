@@ -21,13 +21,15 @@
 #ifndef PIRANHA_STATS_H
 #define PIRANHA_STATS_H
 
+#include "config.h"
+
 namespace piranha
 {
   /// Piranha-specific statistics class.
   class stats
   {
     public:
-      static double pack_ratio();
+      __PIRANHA_VISIBLE static double pack_ratio();
       static void insert()
       {
         ++total_insertions;
@@ -38,8 +40,8 @@ namespace piranha
         ++packed_insertions;
       }
     private:
-      static double  total_insertions;
-      static double  packed_insertions;
+      __PIRANHA_VISIBLE static double total_insertions;
+      __PIRANHA_VISIBLE static double packed_insertions;
   };
 }
 #endif

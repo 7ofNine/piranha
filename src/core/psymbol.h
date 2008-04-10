@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
 #include "p_assert.h"
 #include "stream_manager.h"
 #include "utils.h"
@@ -162,9 +163,9 @@ namespace piranha
             void build_from_array(const T &);
           // Data members.
         private:
-          std::string                 m_name;
-          std::vector<double>         m_time_eval;
-          static const std::string    separator;
+          std::string                                   m_name;
+          std::vector<double>                           m_time_eval;
+          __PIRANHA_VISIBLE static const std::string    separator;
       };
       /// Functor used in psymbol comparison in set.
       struct ltpsymbol
@@ -252,7 +253,7 @@ namespace piranha
       }
       // Data members.
     private:
-      static set_type             p_set_;
+      __PIRANHA_VISIBLE static set_type             p_set_;
   };
 
   /// Constructor from std::string.
