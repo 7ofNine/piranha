@@ -21,6 +21,9 @@
 #ifndef PIRANHA_CONFIG_H
 #define PIRANHA_CONFIG_H
 
+#include <cmath>
+#include <cstdlib>
+
 #ifdef __GNUC__
 
 #define GCC_VERSION (__GNUC__ * 100000 \
@@ -43,6 +46,17 @@
 
 #endif // __GNUC__
 
-// Minimum number of operations needed to trigger the visualization of progress bars.
-#define _PIRANHA_DISPLAY_PROGRESS_MIN_N (500000)
+// Platform switches.
+#ifdef _PIRANHA_WIN32
+  #define __ISNAN(x) _isnan(x)
+  #define __JNL(n,x) jn(n,x)
+  #define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
+  #define __PIRANHA_VISIBLE __declspec(dllexport)
+#else
+  #define __ISNAN(x) isnan(x)
+  #define __JNL(n,x) jnl(n,x)
+  #define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
+  #define __PIRANHA_VISIBLE
+#endif
+
 #endif

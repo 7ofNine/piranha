@@ -28,7 +28,7 @@
 
 #include "p_assert.h"
 #include "piranha_gsl.h"
-#include "platform_switches.h"                    // For NAN detection.
+#include "config.h"
 #include "settings_manager.h"
 
 // Sign function - FIXME: turn into a template?

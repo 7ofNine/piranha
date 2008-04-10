@@ -29,8 +29,7 @@
 #include <gmp.h>
 #include <gmpxx.h>
 
-#include "config.h" // For unlikely().
-#include "platform_switches.h" // For aligned malloc.
+#include "config.h" // For unlikely(), aligned malloc, etc.
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
 
 namespace piranha
