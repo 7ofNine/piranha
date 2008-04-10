@@ -30,6 +30,7 @@
 #include <gmpxx.h>
 
 #include "config.h" // For unlikely().
+#include "platform_switches.h" // For aligned malloc.
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
 
 namespace piranha
@@ -72,7 +73,7 @@ namespace piranha
     // Test that Alignment is a power of 2.
     BOOST_STATIC_ASSERT(lg<Alignment>::value > 0);
     void *ptr;
-    switch (unlikely(posix_memalign(&ptr,Alignment,size) == 0))
+    switch (unlikely(__ALIGNED_MALLOC(&ptr,Alignment,size) == 0))
     {
       case true:
         throw std::bad_alloc();

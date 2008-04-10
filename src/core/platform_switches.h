@@ -22,12 +22,15 @@
 #define PIRANHA_PLATFORM_SWITCHES_H
 
 #include <cmath>
+#include <cstdlib>
 
 #ifdef _PIRANHA_WIN32
 #define __ISNAN(x) _isnan(x)
 #define __JNL(n,x) jn(n,x)
+#define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
 #else
 #define __ISNAN(x) isnan(x)
 #define __JNL(n,x) jnl(n,x)
+#define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
 #endif
 #endif
