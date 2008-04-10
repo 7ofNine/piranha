@@ -121,7 +121,7 @@ namespace piranha
       static std::string open_file(const std::string &fn, std::ifstream &inf)
       {
         std::string filename=fn;
-        inf.open(filename.c_str());
+        inf.open(filename.c_str(),std::ios::in | std::ios::binary);
         if (inf.fail())
         {
           inf.close();
@@ -129,7 +129,7 @@ namespace piranha
           // Windows).
           inf.clear();
           filename=(settings_manager::get_path()+std::string("/")+filename);
-          inf.open(filename.c_str());
+          inf.open(filename.c_str(),std::ios::in | std::ios::binary);
           if (inf.fail())
           {
             std::cout << "Error opening file \"" << fn << "\"." << std::endl;

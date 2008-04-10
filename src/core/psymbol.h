@@ -291,7 +291,7 @@ namespace piranha
   inline void psymbol_manager::psymbol::print(std::ostream &out_stream) const
   {
     stream_manager::setup_print(out_stream);
-    out_stream << "name=" << m_name << std::endl;
+    out_stream << "name=" << m_name << '\n';
     out_stream << "time_eval=";
     for (unsigned int j=0;j<m_time_eval.size();++j)
     {
@@ -301,7 +301,7 @@ namespace piranha
         out_stream << separator;
       }
     }
-    out_stream << std::endl;
+    out_stream << '\n';
   }
 
   /// Test for equality.

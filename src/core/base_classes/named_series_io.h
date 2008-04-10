@@ -37,7 +37,7 @@ namespace piranha
   {
     for (size_t i=0; i < args_tuple.get_head().size(); ++i)
     {
-      stream << "[" << ArgsDescr::head_type::name << "_arg]" << std::endl;
+      stream << "[" << ArgsDescr::head_type::name << "_arg]" << '\n';
       args_tuple.get_head()[i]->print(stream);
     }
     named_series_print_plain<typename ArgsDescr::tail_type>(stream,args_tuple.get_tail());
