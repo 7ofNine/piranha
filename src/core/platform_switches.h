@@ -28,9 +28,11 @@
 #define __ISNAN(x) _isnan(x)
 #define __JNL(n,x) jn(n,x)
 #define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
+#define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
 #define __ISNAN(x) isnan(x)
 #define __JNL(n,x) jnl(n,x)
 #define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
+#define __PIRANHA_VISIBLE
 #endif
 #endif
