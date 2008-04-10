@@ -158,7 +158,7 @@ namespace piranha
       boost::split(split_v,temp,boost::is_any_of("="));
       if (split_v.size() != 2)
       {
-        std::cout << "Invalid line in "<< name << " argument section." << std::endl;
+        std::cout << "Invalid line in "<< name << " argument section: \"" << temp << "\"" << std::endl; 
       }
       else if (split_v[0] == "name")
       {
@@ -172,7 +172,7 @@ namespace piranha
       }
       else
       {
-        std::cout << "Unknown field in " << name << " argument section." << std::endl;
+        std::cout << "Unknown field in " << name << " argument section: \"" << split_v[0] << "\"" << std::endl;
       }
       cur_pos=inf.tellg();
     }
