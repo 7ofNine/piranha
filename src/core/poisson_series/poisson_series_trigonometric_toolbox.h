@@ -76,6 +76,10 @@ namespace piranha
         typedef typename Derived::key_type key_type;
         try
         {
+          if (!derived_const_cast->is_single_cf())
+          {
+            throw unsuitable("Series is not a linear combination of arguments with integer coefficients.");
+          }
           // The size of the integer vector shall be the same as the poly arguments set's.
           std::vector<int> v(derived_const_cast->m_arguments.template get<0>().size());
           derived_const_cast->template nth_index<0>().begin()->m_cf.get_int_linear_combination(v);
