@@ -110,6 +110,7 @@ template <class T>
 //   inst.def("put_phases_freqs", put_phases_freqs_noargs(&T::put_phases_freqs));
 //   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
   inst.def("length",&T::length);
+  inst.def("eval",&T::eval);
 //   inst.def("cf_width", &T::cf_width);
 //   inst.def("trig_width", &T::trig_width);
 //   inst.def("is_empty", &T::is_empty);
