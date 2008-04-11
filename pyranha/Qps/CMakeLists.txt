@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Qps SHARED Qps.cpp)
+PYTHONCMOD(_Qps)

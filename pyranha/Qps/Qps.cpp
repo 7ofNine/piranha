@@ -18,21 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#include "../pyranha.h"
 
-/// Piranha top-level namespace.
-namespace piranha
+void translator(const unsuitable &u)
 {
-  /// Namespace for the available manipulators.
-  namespace manipulators {}
+  PyErr_SetString(PyExc_UserWarning, u.what().c_str());
 }
 
-// Include all piranha manipulators.
-#include "manipulators/dpoly.h"
-#include "manipulators/dps.h"
-#include "manipulators/qps.h"
-#include "manipulators/zpoly.h"
-#include "manipulators/fs.h"
+BOOST_PYTHON_MODULE(_Qps)
+{
+  register_exception_translator<unsuitable>(translator);
 
-#endif
+  class_<manipulators::qps> inst = series_basic_instantiation<manipulators::qps>(std::string("qps"),
+    std::string("Poisson series with rational coefficients."));
+  series_trigonometric_instantiation(inst);
+  //ps_instantiate_differential_specifics(inst);
+  /*ps_instantiate_real_specifics(inst);
+  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+    "Bessel function of the first kind, power series implementation.");*/
+}

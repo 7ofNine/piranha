@@ -62,7 +62,7 @@ namespace piranha
         explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
       int get_int() const throw (unsuitable)
       {
-        const char *msg = "Cannot convert coefficient to integer.";
+        const char *msg = "Cannot convert double coefficient to integer.";
         int retval = (int)nearbyint(ancestor::m_value);
         if (std::abs(ancestor::m_value - retval) > settings_manager::get_numerical_zero())
         {

@@ -87,6 +87,7 @@ namespace piranha
     private:
       void calculate_result_min_max()
       {
+        // TODO: optimize here the usage of mpz classes.
         std::vector<mpz_class> tmp_vec(8);
         std::pair<typename std::vector<mpz_class>::const_iterator,std::vector<mpz_class>::const_iterator> min_max;
         for (size_t i=0; i < coded_ancestor::m_size; ++i)

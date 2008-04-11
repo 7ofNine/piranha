@@ -29,7 +29,7 @@ using namespace piranha::manipulators;
 int main()
 {
   dpoly a_("small_poly_test.dpoly"), b_(a_);
-  for (size_t i = 0; i < 1000000; ++i)
+  for (size_t i = 0; i < 10000; ++i)
   {
     dpoly a(a_), b(b_);
     a*=b;
