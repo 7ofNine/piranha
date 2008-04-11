@@ -48,7 +48,7 @@ namespace piranha
   settings_manager::startup_class::startup_class()
   {
     // Startup report.
-    std::cout << "This is Piranha version " << get_version() << std::endl;
+    std::cout << "This is Piranha version " << get_version() << __PIRANHA_VERSION_TAG << std::endl;
     std::cout << "Default parameters initialized:" << std::endl;
     std::cout << "Print precision\t\t\t=\t" << stream_manager::digits() << std::endl;
     std::cout << "Numerical zero\t\t\t=\t" << get_numerical_zero() << std::endl;

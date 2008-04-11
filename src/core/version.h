@@ -21,6 +21,7 @@
 #ifndef PIRANHA_VERSION_H
 #define PIRANHA_VERSION_H
 
-#define __PIRANHA_VERSION "0.1.0"
+#define __PIRANHA_VERSION     "0.1.0"
+#define __PIRANHA_VERSION_TAG "-git"
 
 #endif
