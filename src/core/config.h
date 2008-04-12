@@ -27,11 +27,11 @@
 #ifdef __GNUC__
 
 #define GCC_VERSION (__GNUC__ * 100000 \
-+ __GNUC_MINOR__ * 1000 \
-+ __GNUC_PATCHLEVEL__ * 10)
+ + __GNUC_MINOR__ * 1000 \
+ + __GNUC_PATCHLEVEL__ * 10)
 
 #if GCC_VERSION < 304000
-#error "Minimum required GCC version is 3.4"
+#error "The minimum GCC version required is 3.4"
 #endif
 
 #define likely(exp)   __builtin_expect(exp,1)
@@ -56,7 +56,7 @@
   #define __ISNAN(x) isnan(x)
   #define __JNL(n,x) jnl(n,x)
   #define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
-  #define __PIRANHA_VISIBLE
+  #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
 #endif
