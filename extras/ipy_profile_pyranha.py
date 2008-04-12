@@ -69,21 +69,15 @@ def main():
     #o.prompt_in2 = r'.\D: '
     #o.prompt_out = r'[\#] '
 
-    ip.ex("from copy import copy")
-    try:
-      ip.ex("import pyranha")
-      import pyranha
-      for i in pyranha.__all__:
-          try:
-              if i == "Core":
-                ip.ex("from pyranha.Core import *")
-              if i != "Gui":
-                ip.ex("from pyranha import %s" % i)
-                ip.ex("from pyranha.%s import %s" % (i,i.lower()))
-          except:
-            pass
-    except:
-      print "Error importing pyranha. Most likely Pyranha was not correctly installed."
+    ip.ex("from copy import copy as Copy")
+    ip.ex("import pyranha")
+    import pyranha
+    for i in pyranha.__all__:
+      if i == "Core":
+        ip.ex("from pyranha.Core import *")
+      elif i != "Gui":
+        ip.ex("from pyranha import %s" % i)
+        ip.ex("from pyranha.%s import %s" % (i,i.lower()))
 
 
 # some config helper functions you can use 
