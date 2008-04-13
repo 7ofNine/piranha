@@ -52,7 +52,7 @@ namespace piranha
       typedef Allocator allocator_type;
       typedef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
       typedef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-      typedef typename boost::multi_index_container <term_type_,typename I<term_type_>::type,allocator_type> container_type;
+      typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
