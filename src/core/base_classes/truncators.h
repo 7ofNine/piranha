@@ -21,8 +21,13 @@
 #ifndef PIRANHA_TRUNCATORS_H
 #define PIRANHA_TRUNCATORS_H
 
-#include <utility> // For std::pair.
+#include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
+
+#include "../config.h"
+#include "../psymbol.h"
 
 namespace piranha
 {
@@ -58,22 +63,83 @@ namespace piranha
       const double    m_delta_threshold;
   };
 
+  class base_expo_truncator
+  {
+    protected:
+      typedef std::vector<std::pair<psym_p,int> > container_type;
+      typedef container_type::iterator iterator;
+    public:
+      static void add_limit(const std::string &name, const int &n)
+      {
+        std::pair<bool,psym_p> tmp(psymbol_manager::get_pointer(name));
+        switch (tmp.first)
+        {
+          case true:
+          {
+            iterator it = find_argument(tmp.second);
+            if (it == m_expo_limits.end())
+            {
+              m_expo_limits.push_back(std::pair<psym_p,int>(tmp.second,n));
+            }
+            else
+            {
+              it->second = n;
+            }
+            break;
+          }
+          case false:
+            std::cout << "Failed to add exponent limit, no symbol named \"" << name << "\"." << std::endl;
+        }
+      }
+      static void clear() {m_expo_limits.clear();}
+      static void dump()
+      {
+        const iterator it_f = m_expo_limits.end();
+        for (iterator it = m_expo_limits.begin(); it != it_f;)
+        {
+          std::cout << it->first->name() << ',' << it->second;
+          ++it;
+          if (it != it_f)
+          {
+            std::cout << '\n';
+          }
+        }
+      }
+    private:
+      static iterator find_argument(const psym_p &p)
+      {
+        const iterator it_f = m_expo_limits.end();
+        iterator it(m_expo_limits.begin());
+        for (; it != it_f; ++it)
+        {
+          if (it->first == p)
+          {
+            break;
+          }
+        }
+        return it;
+      }
+    protected:
+      __PIRANHA_VISIBLE static container_type m_expo_limits;
+  };
+
   /// Truncators for polynomials based on the exponent of one or more variables.
   template <class BaseMultiplier>
-    struct poly_exponents_truncator
+    class expo_truncator:public base_expo_truncator
   {
+    public:
       template <class Multiplier>
-        poly_exponents_truncator(const Multiplier &m)
+        expo_truncator(const Multiplier &m)
       {
-        const size_t limits_size = m.m_s1.get_expo_limits().size(),
+        const size_t limits_size = m_expo_limits.size(),
           args_size = m.m_args_tuple.template get<Multiplier::key_type::position>().size();
         for (size_t i = 0; i < limits_size; ++i)
         {
           for (size_t j = 0; j < args_size; ++j)
           {
-            if (m.m_s1.get_expo_limits()[i].first == m.m_args_tuple.template get<Multiplier::key_type::position>()[j])
+            if (m_expo_limits[i].first == m.m_args_tuple.template get<Multiplier::key_type::position>()[j])
             {
-              m_positions.push_back(std::pair<size_t,int>(j,m.m_s1.get_expo_limits()[i].second));
+              m_positions.push_back(std::pair<size_t,int>(j,m_expo_limits[i].second));
               // We can break out, there should not be duplicates inside the arguments list.
               break;
             }

@@ -27,7 +27,6 @@
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
-#include "../base_classes/expo_truncatable_series.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../poisson_series_common/poisson_series_term.h"
@@ -57,7 +56,6 @@ namespace piranha
     public __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR,
-    public expo_truncatable_series,
     public __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,int,

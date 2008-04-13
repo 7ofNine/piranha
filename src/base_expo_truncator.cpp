@@ -18,9 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/base_classes/expo_truncatable_series.h"
+#include "core/base_classes/truncators.h"
 
 namespace piranha
 {
-  expo_truncatable_series::container_type expo_truncatable_series::m_expo_limits;
+  // Static initialization for expo-based truncation.
+  base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
 }

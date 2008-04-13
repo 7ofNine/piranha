@@ -196,4 +196,12 @@ BOOST_PYTHON_MODULE(_Core)
 // For range-evaluation.
     vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
     vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
+
+  class_<base_expo_truncator>("expo_truncator","Exponent truncator class",no_init)
+    .def("dump",&base_expo_truncator::dump)
+    .def("clear",&base_expo_truncator::clear)
+    .def("add_limit",&base_expo_truncator::add_limit)
+    .staticmethod("dump")
+    .staticmethod("clear")
+    .staticmethod("add_limit");
 }

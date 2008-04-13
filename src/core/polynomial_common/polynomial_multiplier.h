@@ -74,7 +74,7 @@ namespace piranha
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
           {
-std::cout << "Going for hash coded!\n";
+// std::cout << "Going for hash coded!\n";
             perform_hash_coded_multiplication();
           }
         }
@@ -169,7 +169,7 @@ std::cout << "Going for hash coded!\n";
             }
           }
         }
-std::cout << "Done multiplying\n";
+// std::cout << "Done multiplying\n";
         // Decode and insert the results into return value.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
@@ -187,7 +187,7 @@ std::cout << "Done multiplying\n";
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
-std::cout << "Destroying!\n";
+// std::cout << "Destroying!\n";
         // Call dtors for the coefficients in the allocated space.
         // This is necessary for non-trivial coefficients.
         for (size_t i = 0; i < n_codes; ++i)
@@ -196,7 +196,7 @@ std::cout << "Destroying!\n";
         }
         // Free the allocated space.
         piranha_free(p_vc_res);
-std::cout << "Done vector coded!\n";
+// std::cout << "Done vector coded!\n";
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -249,7 +249,7 @@ std::cout << "Done vector coded!\n";
             }
           }
         }
-std::cout << "Done multiplying\n";
+// std::cout << "Done multiplying\n";
         // Decode and insert into retval.
         // TODO: rehash on m_retval here (since we know what the size is going to be)?
         // This would require the generic wrapper around the container of the series.
@@ -262,7 +262,7 @@ std::cout << "Done multiplying\n";
           coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
           it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
         }
-std::cout << "Finished hash coded multiplication\n";
+// std::cout << "Finished hash coded multiplication\n";
       }
   };
 }

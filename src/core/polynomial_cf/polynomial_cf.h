@@ -25,7 +25,6 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/cf_series.h"
-#include "../base_classes/expo_truncatable_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../settings_manager.h"
@@ -45,8 +44,7 @@ namespace piranha
     class polynomial_cf:
     public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR,
-    public expo_truncatable_series
+    public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
   {
       typedef monomial<Cf,Expo,'!',Allocator> term_type_;
       typedef typename term_type_::cf_type cf_type;
