@@ -21,15 +21,14 @@
 #ifndef PIRANHA_EXCEPTIONS_H
 #define PIRANHA_EXCEPTIONS_H
 
-#include <iostream>
 #include <string>
 
 namespace piranha
 {
-  class bad_input
+  class base_exception
   {
     public:
-      bad_input(const std::string &s):m_what(s) {}
+      base_exception(const std::string &s):m_what(s) {}
       const std::string &what() const
       {
         return m_what;
@@ -38,28 +37,24 @@ namespace piranha
       std::string m_what;
   };
 
-  class term_not_insertable
+  struct bad_input:public base_exception
   {
-    public:
-      term_not_insertable(const std::string &s):m_what(s) {}
-      const std::string &what() const
-      {
-        return m_what;
-      }
-    private:
-      std::string m_what;
+    bad_input(const std::string &s):base_exception(s) {}
   };
 
-  class unsuitable
+  struct term_not_insertable:public base_exception
   {
-    public:
-      unsuitable(const std::string &s):m_what(s) {}
-      const std::string &what() const
-      {
-        return m_what;
-      }
-    private:
-      std::string m_what;
+    term_not_insertable(const std::string &s):base_exception(s) {}
+  };
+
+  struct unsuitable:public base_exception
+  {
+    unsuitable(const std::string &s):base_exception(s) {}
+  };
+
+  struct not_existing:public base_exception
+  {
+    not_existing(const std::string &s):base_exception(s) {}
   };
 }
 
