@@ -18,6 +18,8 @@
 
 from @MODULE_NAME@ import *
 
+import copy as _copy
+import math as _math
 import re as _re
 
 try:
@@ -40,3 +42,21 @@ except ImportError:
   print "Matplotlib is not installed, disabling plotting methods."
 except NameError:
   pass
+
+# Handy definitions of common mathematical functions: try to call the sine/cosine methods of the class,
+# otherwise resort to math.cos/sin.
+def cos(arg):
+  try:
+    return arg.cos()
+  except TypeError:
+    return _math.cos(arg)
+
+def sin(arg):
+  try:
+    return arg.sin()
+  except TypeError:
+    return _math.sin(arg)
+
+# Lift copy function to top level namespace.
+def copy(arg):
+  return _copy.copy(arg)

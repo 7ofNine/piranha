@@ -69,7 +69,6 @@ def main():
     #o.prompt_in2 = r'.\D: '
     #o.prompt_out = r'[\#] '
 
-    ip.ex("from copy import copy as Copy")
     ip.ex("import pyranha")
     import pyranha
     for i in pyranha.__all__:
