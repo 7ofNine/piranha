@@ -101,7 +101,7 @@ namespace piranha
       template <class ArgsTuple>
         bool is_ignorable(const ArgsTuple &a) const
       {
-        return (static_cast<Derived const *>(this)->norm(a) < settings_manager::get_numerical_zero());
+        return (static_cast<Derived const *>(this)->norm(a) < settings_manager::numerical_zero());
       }
       template <class ArgsTuple>
         bool is_insertable(const ArgsTuple &) const

@@ -29,15 +29,14 @@ namespace piranha
 {
   // Settings manager's static members.
   double settings_manager::hash_max_load_factor = 0.3;
-  double settings_manager::numerical_zero = 1E-80;
+  double settings_manager::m_numerical_zero = 1E-80;
   const max_fast_uint settings_manager::min_u = boost::integer_traits<max_fast_uint>::min();
   const max_fast_uint settings_manager::max_u = boost::integer_traits<max_fast_uint>::max();
   const max_fast_int settings_manager::min_i = boost::integer_traits<max_fast_int>::min();
   const max_fast_int settings_manager::max_i = boost::integer_traits<max_fast_int>::max();
-  const unsigned int settings_manager::jacang_limit = 20;
-  std::string settings_manager::path = _PIRANHA_DEFAULT_PATH;
-  const std::string settings_manager::default_path = _PIRANHA_DEFAULT_PATH;
-  const std::string settings_manager::version = __PIRANHA_VERSION;
+  std::string settings_manager::m_path = _PIRANHA_DEFAULT_PATH;
+  const std::string settings_manager::m_default_path = _PIRANHA_DEFAULT_PATH;
+  const std::string settings_manager::m_version = __PIRANHA_VERSION;
   bool settings_manager::enable_progress_display = true;
   settings_manager::startup_class settings_manager::startup;
 #ifdef _PIRANHA_TBB
@@ -47,13 +46,13 @@ namespace piranha
   settings_manager::startup_class::startup_class()
   {
     // Startup report.
-    std::cout << "This is Piranha version " << get_version() << __PIRANHA_VERSION_TAG << std::endl;
+    std::cout << "This is Piranha version " << m_version << __PIRANHA_VERSION_TAG << std::endl;
     std::cout << "Default parameters initialized:" << std::endl;
     std::cout << "Print precision\t\t\t=\t" << stream_manager::digits() << std::endl;
-    std::cout << "Numerical zero\t\t\t=\t" << get_numerical_zero() << std::endl;
+    std::cout << "Numerical zero\t\t\t=\t" << numerical_zero() << std::endl;
     std::cout << "Fast unsigned int range\t\t=\t" << "[0," << max_u << ']' << std::endl;
     std::cout << "Fast signed int range\t\t=\t" << '[' << min_i << ',' << max_i << ']' << std::endl;
-    std::cout << "Default path\t=\t" << get_default_path() << std::endl;
+    std::cout << "Default path\t=\t" << m_default_path << std::endl;
     std::cout << "Piranha is ready." << std::endl;
     std::cout << "_______________________________" << std::endl << std::endl;
     // Setup cout.
@@ -70,12 +69,12 @@ namespace piranha
   /// Set path to theories of motion.
   void settings_manager::set_path(const std::string &str)
   {
-    path=str;
+    m_path = str;
   }
 
   /// Get version.
-  const std::string &settings_manager::get_version()
+  const std::string &settings_manager::version()
   {
-    return version;
+    return m_version;
   }
 }

@@ -28,6 +28,7 @@
 
 #include "compile_switches.h"
 #include "config.h"
+#include "exceptions.h"
 #include "integer_typedefs.h"
 #include "piranha_tbb.h" // For task scheduler init.
 
@@ -49,38 +50,27 @@ namespace piranha
         return hash_max_load_factor;
       }
       // Getters.
-      /// Get Jacobi-Anger expansion limit.
-      static unsigned int jacang_lim()
-      {
-        return jacang_limit;
-      }
       /// Get numerical zero.
-      static const double &get_numerical_zero()
+      static const double &numerical_zero()
       {
-        return numerical_zero;
+        return m_numerical_zero;
       }
       /// Get path to theories of motion files.
-      static const std::string &get_path()
+      static const std::string &path()
       {
-        return path;
+        return m_path;
       }
       /// Get Piranha version.
-      static const std::string &get_version();
-      /// Get default path to theories of motion files.
-      static const std::string &get_default_path()
-      {
-        return default_path;
-      }
+      static const std::string &version();
       /// Set maximum load factor for hashed containers.
       /**
        * @see settings_manager::load_factor().
        */
-      static void set_load_factor(const double &value)
+      static void set_load_factor(const double &value) throw (unsuitable)
       {
         if (value <= 0 or value >= 1)
         {
-          std::cout << "Please insert a real number in the ]0,1[ interval." << std::endl;
-          return;
+          throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
         }
         hash_max_load_factor = value;
       }
@@ -123,7 +113,7 @@ namespace piranha
       /// Load factor for hashed containers.
       __PIRANHA_VISIBLE static double       hash_max_load_factor;
       /// Numerical zero.
-      __PIRANHA_VISIBLE static double       numerical_zero;
+      __PIRANHA_VISIBLE static double       m_numerical_zero;
       /// Minimum fast unsigned integer.
       static const max_fast_uint            min_u;
       /// Maximum fast unsigned integer.
@@ -132,12 +122,10 @@ namespace piranha
       static const max_fast_int             min_i;
       /// Maximum fast integer.
       static const max_fast_int             max_i;
-      /// Jacobi Anger expansion limit.
-      static const unsigned int             jacang_limit;
       /// Path to theories of motion.
-      __PIRANHA_VISIBLE static std::string  path;
-      static const std::string              default_path;
-      static const std::string              version;
+      __PIRANHA_VISIBLE static std::string  m_path;
+      static const std::string              m_default_path;
+      static const std::string              m_version;
       static bool                           enable_progress_display;
       static startup_class                  startup;
 #ifdef _PIRANHA_TBB

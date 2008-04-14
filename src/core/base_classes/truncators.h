@@ -70,7 +70,7 @@ namespace piranha
       typedef std::vector<std::pair<psym_p,int> > container_type;
       typedef container_type::iterator iterator;
     public:
-      static void set_limit(const std::string &name, const int &n)
+      static void limit(const std::string &name, const int &n)
       {
         psym_p tmp(psymbol_manager::get_pointer(name));
         iterator it = find_argument(tmp);

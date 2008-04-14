@@ -64,7 +64,7 @@ namespace piranha
       {
         const char *msg = "Cannot convert double coefficient to integer.";
         int retval = (int)nearbyint(ancestor::m_value);
-        if (std::abs(ancestor::m_value - retval) > settings_manager::get_numerical_zero())
+        if (std::abs(ancestor::m_value - retval) > settings_manager::numerical_zero())
         {
           throw (unsuitable(msg));
         }
