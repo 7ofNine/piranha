@@ -18,12 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PYRANHA_H
-#define PYRANHA_H
+#ifndef PYRANHA_PYRANHA_H
+#define PYRANHA_PYRANHA_H
 
 #include <boost/python/class.hpp>
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/def.hpp>
+#include <boost/python/enum.hpp>
 #include <boost/python/exception_translator.hpp>
 #include <boost/python/iterator.hpp>
 #include <boost/python/module.hpp>
@@ -32,11 +33,17 @@
 #include <boost/python/return_internal_reference.hpp>
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/self.hpp>
+#include <complex>
+#include <exception>
+#include <vector>
 
 #include "../src/piranha.h"
 
 using namespace boost::python;
 using namespace piranha;
+
+#include "stl_containers.h"
+#include "exceptions.h"
 
 /// Instantiation of spectral comparison.
 // template <class T>

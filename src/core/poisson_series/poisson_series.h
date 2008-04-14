@@ -70,7 +70,7 @@ namespace piranha
       typedef Allocator allocator_type;
       typedef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
       typedef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-      typedef typename boost::multi_index_container <term_type_,
+      typedef boost::multi_index_container<term_type_,
         typename ITrig<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
@@ -106,7 +106,7 @@ namespace piranha
       explicit poisson_series(const psymbol &p)
       {
         nth_index<1>().max_load_factor(settings_manager::get_load_factor());
-        named_ancestor::append_arg("poly",psymbol_manager::get_pointer(p).second);
+        named_ancestor::append_arg("poly",psymbol_manager::get_pointer(p));
         base_ancestor::insert(term_type(cf_type(p,named_ancestor::m_arguments),key_type()),
           named_ancestor::m_arguments,nth_index<0>().end());
       }

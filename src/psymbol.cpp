@@ -22,7 +22,7 @@
 
 namespace piranha
 {
-  // Initialize static member of psymbol.
-  psymbol_manager::set_type psymbol_manager::p_set_;
-  const std::string psymbol_manager::psymbol::separator = ";";
+  // Initialize static member of psymbol and psymbol_manager.
+  psymbol_manager::set_type psymbol_manager::set;
+  const std::string psymbol::separator = ";";
 }

@@ -18,18 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/enum.hpp>
-#include <boost/python/iterator.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/return_value_policy.hpp>
-#include <complex>
-#include <vector>
-
-#include "../../src/piranha.h"
-#include "../stl_containers.h"
+#include "../pyranha.h"
 
 using namespace boost::python;
 using namespace piranha;
@@ -37,6 +26,7 @@ using namespace piranha;
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
+    translate_exceptions();
 // Astronomical class instantiation.
 //   class_<astro> class_astro("astro","Useful astronomical functions and constants.",no_init);
 //   class_astro.def("G",&astro::G,return_value_policy<copy_const_reference>(),
@@ -173,16 +163,14 @@ BOOST_PYTHON_MODULE(_Core)
 
 // Symbols.
 // We don't do no_init here because we need to be able to instantiate it in order to iterate.
-  class_<psymbol_manager>("psymbol_manager","Manager for psymbols.",init<>())
-    .def("__iter__", iterator<psymbol_manager,return_internal_reference<> >())
-    .def("__len__", &psymbol_manager::length)
-    .staticmethod("__len__")
-    .def("put", &psymbol_manager::put,"Show registered symbols.")
-    .staticmethod("put")
-    ;
+  class_<psymbol_manager>("_psymbol_manager","Manager for psymbols.",init<>())
+    .def("__iter__",iterator<psymbol_manager,return_internal_reference<> >()).staticmethod("__iter__")
+    .def("__len__",&psymbol_manager::length).staticmethod("__len__")
+    .def("__repr__",&psymbol_manager::print_to_string).staticmethod("__repr__");
 
 // Psymbols.
-  class_<psymbol>("psymbol","Symbol class.",init<const std::string &>())
+  class_<psymbol>("psymbol","Symbolic argument class.",init<const std::string &>())
+    .def(init<const std::string &, const std::string &>())
     .def(init<const std::string &, const double &>())
     .def(init<const std::string &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &>())
@@ -190,18 +178,14 @@ BOOST_PYTHON_MODULE(_Core)
     .def(init<const std::string &, const double &, const double &, const double &, const double &,
     const double &>())
     .def("__copy__",&psymbol::copy)
-    .def("put",&psymbol::put)
-    .def("name",&psymbol::name,return_value_policy<copy_const_reference>());
+    .def("__repr__",&psymbol::print_to_string);
 
 // For range-evaluation.
     vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
     vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
 
-  class_<base_expo_truncator>("expo_truncator","Exponent truncator class",no_init)
-    .def("dump",&base_expo_truncator::dump)
-    .def("clear",&base_expo_truncator::clear)
-    .def("add_limit",&base_expo_truncator::add_limit)
-    .staticmethod("dump")
-    .staticmethod("clear")
-    .staticmethod("add_limit");
+  class_<base_expo_truncator>("_expo_truncator","Exponent truncator class",init<>())
+    .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
+    .def("clear",&base_expo_truncator::clear).staticmethod("clear")
+    .def("set_limit",&base_expo_truncator::set_limit).staticmethod("set_limit");
 }

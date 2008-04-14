@@ -151,7 +151,7 @@ namespace piranha
       {
         std::cout << "Finished parsing " << name << " argument." << std::endl;
         inf.seekg(cur_pos);
-        append_arg(name,psymbol_manager::get_pointer(psymbol(temp_name,temp_time_eval)).second);
+        append_arg(name,psymbol_manager::get_pointer(psymbol(temp_name,temp_time_eval)));
         return;
       }
       std::vector<std::string> split_v;

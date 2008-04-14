@@ -20,14 +20,9 @@
 
 #include "../pyranha.h"
 
-void translator(const unsuitable &u)
-{
-  PyErr_SetString(PyExc_UserWarning, u.what().c_str());
-}
-
 BOOST_PYTHON_MODULE(_Dps)
 {
-  register_exception_translator<unsuitable>(translator);
+  translate_exceptions();
 
   class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
     std::string("Poisson series with double precision coefficients."));

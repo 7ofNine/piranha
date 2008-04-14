@@ -212,7 +212,7 @@ namespace piranha
         explicit expo_array_commons(const psymbol &p, const ArgsTuple &args_tuple)
       {
         p_assert(args_tuple.template get<Derived::position>().size() == 1 and
-          args_tuple.template get<Derived::position>()[0] == psymbol_manager::get_pointer(p).second);
+          args_tuple.template get<Derived::position>()[0] == psymbol_manager::get_pointer(p));
         derived_cast->resize(1);
         (*derived_cast)[0]=1;
       }

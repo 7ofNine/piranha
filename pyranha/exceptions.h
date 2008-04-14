@@ -18,17 +18,25 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#ifndef PYRANHA_EXCEPTIONS_H
+#define PYRANHA_EXCEPTIONS_H
 
-BOOST_PYTHON_MODULE(_Qps)
+template <class Exception>
+  inline void exception_translator(const Exception &e)
 {
-  translate_exceptions();
-
-  class_<manipulators::qps> inst = series_basic_instantiation<manipulators::qps>(std::string("qps"),
-    std::string("Poisson series with rational coefficients."));
-  series_trigonometric_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+  PyErr_SetString(PyExc_UserWarning,e.what().c_str());
 }
+
+template <class Exception>
+  inline void register_exception()
+{
+  register_exception_translator<Exception>(exception_translator<Exception>);
+}
+
+inline void translate_exceptions()
+{
+  register_exception<not_existing>();
+  register_exception<unsuitable>();
+}
+
+#endif

@@ -22,6 +22,7 @@
 #define PIRANHA_TRUNCATORS_H
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -69,41 +70,39 @@ namespace piranha
       typedef std::vector<std::pair<psym_p,int> > container_type;
       typedef container_type::iterator iterator;
     public:
-      static void add_limit(const std::string &name, const int &n)
+      static void set_limit(const std::string &name, const int &n)
       {
-        std::pair<bool,psym_p> tmp(psymbol_manager::get_pointer(name));
-        switch (tmp.first)
+        psym_p tmp(psymbol_manager::get_pointer(name));
+        iterator it = find_argument(tmp);
+        if (it == m_expo_limits.end())
         {
-          case true:
-          {
-            iterator it = find_argument(tmp.second);
-            if (it == m_expo_limits.end())
-            {
-              m_expo_limits.push_back(std::pair<psym_p,int>(tmp.second,n));
-            }
-            else
-            {
-              it->second = n;
-            }
-            break;
-          }
-          case false:
-            std::cout << "Failed to add exponent limit, no symbol named \"" << name << "\"." << std::endl;
+          m_expo_limits.push_back(std::pair<psym_p,int>(tmp,n));
+        }
+        else
+        {
+          it->second = n;
         }
       }
       static void clear() {m_expo_limits.clear();}
-      static void dump()
+      static void print(std::ostream &stream)
       {
         const iterator it_f = m_expo_limits.end();
         for (iterator it = m_expo_limits.begin(); it != it_f;)
         {
-          std::cout << it->first->name() << ',' << it->second;
+          stream << it->first->name() << ',' << it->second;
           ++it;
           if (it != it_f)
           {
-            std::cout << '\n';
+            stream << '\n';
           }
         }
+      }
+      static std::string print_to_string()
+      {
+        std::ostringstream stream;
+        print(stream);
+        std::string retval(stream.str());
+        return retval;
       }
     private:
       static iterator find_argument(const psym_p &p)
