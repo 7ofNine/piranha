@@ -21,7 +21,6 @@
 #include <boost/integer_traits.hpp>
 
 #include "core/memory.h"
-#include "core/piranha_gsl.h"
 #include "core/settings_manager.h"
 #include "core/stream_manager.h"
 #include "core/version.h"
@@ -61,10 +60,6 @@ namespace piranha
     stream_manager::setup_print(std::cout);
     // Custom allocators for gmp.
     mp_set_memory_functions(mp_alloc,mp_realloc,mp_free);
-#ifdef _PIRANHA_GSL
-    // Turn off gsl error handler.
-    gsl_set_error_handler_off();
-#endif
 #ifdef _PIRANHA_TBB
     std::cout << "TBB version strings:" << std::endl;
     std::cout << __TBB_VERSION_STRINGS;

@@ -117,20 +117,20 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
-      polynomial() {nth_index<1>().max_load_factor(settings_manager::get_load_factor());}
+      polynomial() {nth_index<1>().max_load_factor(settings_manager::load_factor());}
       explicit polynomial(const std::string &filename)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         named_ancestor::construct_from_file(filename);
       }
       explicit polynomial(const int &n)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         base_ancestor::construct_from_number(n,named_ancestor::m_arguments);
       }
       explicit polynomial(const double &x)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
       // Needed getters and setters.

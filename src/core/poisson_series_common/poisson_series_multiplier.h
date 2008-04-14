@@ -263,8 +263,8 @@ std::cout << "Going for Poisson coded\n";
         c_iterator it;
         cmult_set cms_cos, cms_sin;
         // Set max load factors.
-        cms_cos.max_load_factor(settings_manager::get_load_factor());
-        cms_sin.max_load_factor(settings_manager::get_load_factor());
+        cms_cos.max_load_factor(settings_manager::load_factor());
+        cms_sin.max_load_factor(settings_manager::load_factor());
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)

@@ -26,72 +26,10 @@ using namespace piranha;
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
-    translate_exceptions();
-// Astronomical class instantiation.
-//   class_<astro> class_astro("astro","Useful astronomical functions and constants.",no_init);
-//   class_astro.def("G",&astro::G,return_value_policy<copy_const_reference>(),
-//     "Universal gravitational constant, from Standish (1995).");
-//   class_astro.def("k",&astro::k,return_value_policy<copy_const_reference>(),
-//     "Gaussian gravitational constant.");
-//   class_astro.def("eps_0",&astro::eps_0,return_value_policy<copy_const_reference>(),
-//     "Obliquity of ecliptic at J2000, from Standish (1995).");
-//   class_astro.def("J2000dot0",&astro::J2000dot0,return_value_policy<copy_const_reference>(),
-//     "J2000.0 epoch in Julian days.");
-//   class_astro.def("J1980dot0",&astro::J1980dot0,return_value_policy<copy_const_reference>(),
-//     "J1980.0 epoch in Julian days.");
-//   class_astro.def("JD_per_JY",&astro::JD_per_JY,return_value_policy<copy_const_reference>(),
-//     "Julian Days per Julian Year.");
-//   class_astro.def("seconds_per_JY",&astro::seconds_per_JY,return_value_policy<copy_const_reference>(),
-//     "Seconds per Julian Year.");
-//   class_astro.def("AU",&astro::AU,return_value_policy<copy_const_reference>(),
-//     "Astronomical Unit, from http://ssd.jpl.nasa.gov/?astro.");
-// Static methods instantiations.
-//   class_astro.staticmethod("G");
-//   class_astro.staticmethod("k");
-//   class_astro.staticmethod("eps_0");
-//   class_astro.staticmethod("J2000dot0");
-//   class_astro.staticmethod("J1980dot0");
-//   class_astro.staticmethod("JD_per_JY");
-//   class_astro.staticmethod("seconds_per_JY");
-//   class_astro.staticmethod("AU");
-// // Astronomical functions.
-//   class_astro.def("JD_to_elp2000",&astro::JD_to_elp2000);
-//   class_astro.def("kep_cosE",&astro::kep_cosE<double>,"Solve Kepler's equation for cosE.");
-//   class_astro.def("sph_to_x",&astro::sph_to_x,"Convert spherical coordinates into x coordinate.");
-//   class_astro.def("sph_to_y",&astro::sph_to_y,"Convert spherical coordinates into y coordinate.");
-//   class_astro.def("sph_to_z",&astro::sph_to_z,"Convert spherical coordinates into z coordinate.");
-//   class_astro.staticmethod("JD_to_elp2000");
-//   class_astro.staticmethod("kep_cosE");
-//   class_astro.staticmethod("sph_to_x");
-//   class_astro.staticmethod("sph_to_y");
-//   class_astro.staticmethod("sph_to_z");
+  translate_exceptions();
 
-// Instantiate mathematical functions.
-//   class_<math> class_math("math","Pyranha mathematical functions for double precision numbers.",no_init);
-//   class_math.def("norm",&math::norm<double>,"Norm.");
-//   class_math.def("natural_pow",&math::natural_pow<double>,"Natural power.");
-//   class_math.def("besselJ",&math::besselJ,"Bessel function of the first kind.");
-//   class_math.def("Pnm",&math::Pnm<double>,"Legendre function of the first kind - Pnm(cos(theta)).");
-//   class_math.def("complexp",&math::complexp<double>,"Complex exponential.");
-//   class_math.def("cosine",&math::cosine<double>,"Cosine.");
-//   class_math.def("sine",&math::sine<double>,"Sine.");
-//   class_math.def("Ynm",&math::Ynm<double>,"Non-normalized spherical harmonic.");
-//   class_math.def("wig_rot",&math::wig_rot<double>,"Wigner rotation theorem for spherical harmonics.");
-//   class_math.def("besselJ_series_limit",&math::besselJ_series_limit,
-//     "Find limit of power series expansion to calculate Bessel functions of the first kind to piranha's general precision.");
-//   class_math.staticmethod("norm");
-//   class_math.staticmethod("natural_pow");
-//   class_math.staticmethod("cosine");
-//   class_math.staticmethod("sine");
-//   class_math.staticmethod("complexp");
-//   class_math.staticmethod("besselJ");
-//   class_math.staticmethod("Pnm");
-//   class_math.staticmethod("Ynm");
-//   class_math.staticmethod("wig_rot");
-//   class_math.staticmethod("besselJ_series_limit");
-
-// Settings.
-  class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
+  // Settings.
+  class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",init<>());
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
 //     "Get value of maximum load factor for hashed containers.");
 //   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
@@ -126,7 +64,7 @@ BOOST_PYTHON_MODULE(_Core)
 //   class_setm.staticmethod("mp_default_prec");
 //   class_setm.staticmethod("set_mp_default_prec");
 
-// Stream manager.
+  // Stream manager.
   enum_<stream_manager::out_format>("out_format")
     .value("plain", stream_manager::plain)
     .value("latex", stream_manager::latex)
@@ -156,19 +94,19 @@ BOOST_PYTHON_MODULE(_Core)
   class_sm.staticmethod("fp_rep");
   class_sm.staticmethod("set_fp_rep");
 
-// Stats.
+  // Stats.
   class_<stats>("stats","Piranha-specific statistics.",no_init)
     .def("pack_ratio",&stats::pack_ratio)
     .staticmethod("pack_ratio");
 
-// Symbols.
-// We don't do no_init here because we need to be able to instantiate it in order to iterate.
+  // Symbols.
+  // We don't do no_init here because we need to be able to instantiate it in order to iterate.
   class_<psymbol_manager>("_psymbol_manager","Manager for psymbols.",init<>())
     .def("__iter__",iterator<psymbol_manager,return_internal_reference<> >()).staticmethod("__iter__")
     .def("__len__",&psymbol_manager::length).staticmethod("__len__")
     .def("__repr__",&psymbol_manager::print_to_string).staticmethod("__repr__");
 
-// Psymbols.
+  // Psymbols.
   class_<psymbol>("psymbol","Symbolic argument class.",init<const std::string &>())
     .def(init<const std::string &, const std::string &>())
     .def(init<const std::string &, const double &>())
@@ -180,12 +118,12 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__copy__",&psymbol::copy)
     .def("__repr__",&psymbol::print_to_string);
 
-// For range-evaluation.
-    vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
-    vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
-
   class_<base_expo_truncator>("_expo_truncator","Exponent truncator class",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
     .def("clear",&base_expo_truncator::clear).staticmethod("clear")
     .def("set_limit",&base_expo_truncator::set_limit).staticmethod("set_limit");
+
+  // For range-evaluation.
+  vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
+  vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
 }

@@ -84,8 +84,9 @@ namespace piranha
         self besselJ(int n, const ArgsTuple &) const
       {
         self retval;
-        retval.s_value()=math::besselJ(n,g_value());
-        return retval;
+        //retval.s_value()=math::besselJ(n,g_value());
+        //return retval;
+        return 0.;
       }
       // End implementation of trigonometric pseries coefficient interface.
       //------------

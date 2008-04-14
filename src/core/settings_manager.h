@@ -44,7 +44,7 @@ namespace piranha
       /**
        * Relevant only to those containers with support such setting.
        */
-      static const double &get_load_factor()
+      static const double &load_factor()
       {
         return hash_max_load_factor;
       }
@@ -111,8 +111,6 @@ namespace piranha
         mpf_set_default_prec(n);
       }
     private:
-      /// Private ctor.
-      settings_manager() {}
       /// Startup class.
       /**
        * Startup class is constructed at piranha invocation and sets default parameters.

@@ -86,26 +86,26 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
-      poisson_series() {nth_index<1>().max_load_factor(settings_manager::get_load_factor());}
+      poisson_series() {nth_index<1>().max_load_factor(settings_manager::load_factor());}
       explicit poisson_series(const std::string &filename)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         named_ancestor::construct_from_file(filename);
       }
       explicit poisson_series(const int &n)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         base_ancestor::construct_from_number(n,named_ancestor::m_arguments);
       }
       explicit poisson_series(const double &x)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
       // Ctor from psymbol
       explicit poisson_series(const psymbol &p)
       {
-        nth_index<1>().max_load_factor(settings_manager::get_load_factor());
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
         named_ancestor::append_arg("poly",psymbol_manager::get_pointer(p));
         base_ancestor::insert(term_type(cf_type(p,named_ancestor::m_arguments),key_type()),
           named_ancestor::m_arguments,nth_index<0>().end());

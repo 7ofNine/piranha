@@ -207,7 +207,7 @@ namespace piranha
         c_iterator it;
         cmult_set cms;
         // Set max load factors.
-        cms.max_load_factor(settings_manager::get_load_factor());
+        cms.max_load_factor(settings_manager::load_factor());
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           const max_fast_int key1 = coded_ancestor::m_ckeys1[i];

@@ -15,7 +15,6 @@ SET(SRC_LIST ${SRC_LIST}
   norm_truncatable_series.cpp
   settings_manager.cpp
   stats.cpp
-  astro.cpp
   stream_manager.cpp
   psymbol.cpp
   compile_switches.cpp
