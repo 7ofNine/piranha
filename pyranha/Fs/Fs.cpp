@@ -22,13 +22,8 @@
 
 BOOST_PYTHON_MODULE(_Fs)
 {
-  class_<fs> inst=ps_basic_instantiation<fs>("fs", "Fourier series class.");
-  ps_instantiate_differential_specifics(inst);
-  ps_instantiate_real_specifics(inst);
-  fourier_specifics(inst);
-  def("kep_cosE", &astro::kep_cosE<fs>,"Solve Kepler's equation for cosE.");
-  def("Pnm",&math::Pnm<fs>,"Legendre function of the first kind - Pnm(cos(theta)).");
-  def("Ynm",&math::Ynm<fs>,"Non-normalized spherical harmonic.");
-  def("wig_rot",&math::wig_rot<fs>,"Wigner rotation theorem for spherical harmonics.");
-  instantiate_tass17<fs>();
+  translate_exceptions();
+
+  class_<manipulators::fs> inst = series_basic_instantiation<manipulators::fs>(std::string("fs"),
+    std::string("Fourier series with double precision coefficients."));
 }

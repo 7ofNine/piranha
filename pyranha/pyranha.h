@@ -105,7 +105,6 @@ template <class T>
   inst.def(init<const std::string &>());
   inst.def(init<const int &>());
   inst.def(init<const double &>());
-  inst.def(init<psymbol &>());
   inst.def("__copy__",&T::copy);
   inst.def("__repr__",&T::print_to_string);
 //   inst.def("__iter__", iterator<T,return_internal_reference<> >());
@@ -190,6 +189,12 @@ template <class T>
 {
   inst.def("cos",&T::cos);
   inst.def("sin",&T::sin);
+}
+
+template <class T>
+  void series_psymbol_instantiation(class_<T> &inst)
+{
+  inst.def(init<const psymbol &>());
 }
 
 template <class T>

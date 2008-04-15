@@ -15,10 +15,11 @@ INCLUDE_DIRECTORIES("external_headers")
 
 # Main build options
 OPTION(BUILD_MAIN "Build 'main.cpp'." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPS "Build double precision Poisson series manipualtor in Pyranha." ON "BUILD_PYRANHA" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QPS "Build rational Poisson series manipualtor in Pyranha." ON "BUILD_PYRANHA" OFF)
 OPTION(ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPS "Build double precision Poisson series manipualtor in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QPS "Build rational coeffcient Poisson series manipualtor in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_FS "Build double coefficient Fourier series manipualtor in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build Qt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(BUILD_TBB_MULTITHREADING "Use Intel's Thread Building Blocks for multi-threaded parallelism." OFF)
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
