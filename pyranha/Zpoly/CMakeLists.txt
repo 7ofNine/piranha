@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Zpoly SHARED Zpoly.cpp)
+PYRANHA_MANIPULATOR(_Zpoly)

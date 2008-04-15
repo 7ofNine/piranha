@@ -124,7 +124,7 @@ BOOST_PYTHON_MODULE(_Core)
 
   class_<base_norm_truncator>("_norm_truncator","Norm truncator.",init<>())
     .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
-    .def("set",&base_norm_truncator::set,"Set truncation level to 10^-n.").staticmethod("set");
+    .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-n.").staticmethod("set");
 
   // For range-evaluation.
   vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");

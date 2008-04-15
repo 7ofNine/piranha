@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../config.h"
+#include "../exceptions.h"
 #include "../psymbol.h"
 #include "../stream_manager.h"
 
@@ -48,11 +49,11 @@ namespace piranha
 
   struct base_norm_truncator
   {
-      static void set(const int &n)
+      static void set(const int &n) throw (unsuitable)
       {
         if (n < 0)
         {
-          std::cout << "Please insert a non-negative integer." << std::endl;
+          throw (unsuitable("Please insert a non-negative integer."));
         }
         else if (n == 0)
         {
