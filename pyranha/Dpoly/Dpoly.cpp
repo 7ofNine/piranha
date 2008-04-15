@@ -27,7 +27,7 @@ BOOST_PYTHON_MODULE(_Dpoly)
   class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
     std::string("Multivariate polynomial with double precision coefficients."));
   //series_trigonometric_instantiation(inst);
-  //series_psymbol_instantiation(inst);
+  series_psymbol_instantiation(inst);
   //ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);
   def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,

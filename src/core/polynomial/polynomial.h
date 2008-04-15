@@ -133,6 +133,11 @@ namespace piranha
         nth_index<1>().max_load_factor(settings_manager::load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
+      explicit polynomial(const psymbol &p)
+      {
+        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        named_ancestor::template construct_from_psymbol<0>(p);
+      }
       // Needed getters and setters.
       template <int>
         container_type &nth_index() {return m_container;}
