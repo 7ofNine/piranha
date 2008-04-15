@@ -118,6 +118,23 @@ namespace piranha
   };
 }
 
+namespace std
+{
+  template <__PIRANHA_POISSON_SERIES_TP_DECL>
+    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> cos(const piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> &p)
+  {
+    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> retval = p.cos();
+    return retval;
+  }
+
+  template <__PIRANHA_POISSON_SERIES_TP_DECL>
+    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> sin(const piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> &p)
+  {
+    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> retval = p.sin();
+    return retval;
+  }
+}
+
 #undef __PIRANHA_POISSON_SERIES_TP_DECL
 #undef __PIRANHA_POISSON_SERIES_TP
 #undef __PIRANHA_POISSON_SERIES
