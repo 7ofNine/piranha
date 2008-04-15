@@ -48,7 +48,21 @@ namespace piranha
 
    struct __PIRANHA_VISIBLE base_norm_truncator
   {
-      static void set(const int &) throw (unsuitable);
+      static void set(const int &n) throw (unsuitable)
+      {
+        if (n < 0)
+        {
+          throw (unsuitable("Please insert a non-negative integer."));
+        }
+        else if (n == 0)
+        {
+          m_truncation_level = 0;
+        }
+        else
+        {
+          m_truncation_level = std::pow(10.,-n);
+        }
+      }
       static void print(std::ostream &stream = std::cout);
       static std::string print_to_string();
     private:
@@ -75,13 +89,13 @@ namespace piranha
       const double    m_delta_threshold;
   };
 
-  class base_expo_truncator
+  class __PIRANHA_VISIBLE base_expo_truncator
   {
     protected:
       typedef std::vector<std::pair<psym_p,int> > container_type;
       typedef container_type::iterator iterator;
     public:
-      static void limit(const std::string &name, const int &n)
+      static void limit(const std::string &name, const int &n) throw (not_existing)
       {
         psym_p tmp(psymbol_manager::get_pointer(name));
         iterator it = find_argument(tmp);
@@ -94,43 +108,26 @@ namespace piranha
           it->second = n;
         }
       }
-      static void clear() {m_expo_limits.clear();}
-      static void print(std::ostream &stream)
+      static void clear_all();
+      static void print(std::ostream &stream = std::cout);
+      static std::string print_to_string();
+      static void clear(const std::string &name) throw (not_existing)
       {
-        const iterator it_f = m_expo_limits.end();
-        for (iterator it = m_expo_limits.begin(); it != it_f;)
+        psym_p tmp(psymbol_manager::get_pointer(name));
+        iterator it = find_argument(tmp);
+        if (it == m_expo_limits.end())
         {
-          stream << it->first->name() << ',' << it->second;
-          ++it;
-          if (it != it_f)
-          {
-            stream << '\n';
-          }
+          throw (not_existing(std::string("Symbol ") +"\"" + name + "\" does not have an exponent limit set."));
         }
-      }
-      static std::string print_to_string()
-      {
-        std::ostringstream stream;
-        print(stream);
-        std::string retval(stream.str());
-        return retval;
+        else
+        {
+          m_expo_limits.erase(it);
+        }
       }
     private:
-      static iterator find_argument(const psym_p &p)
-      {
-        const iterator it_f = m_expo_limits.end();
-        iterator it(m_expo_limits.begin());
-        for (; it != it_f; ++it)
-        {
-          if (it->first == p)
-          {
-            break;
-          }
-        }
-        return it;
-      }
+      static iterator find_argument(const psym_p &);
     protected:
-      __PIRANHA_VISIBLE static container_type m_expo_limits;
+      static container_type m_expo_limits;
   };
 
   /// Truncators for polynomials based on the exponent of one or more variables.

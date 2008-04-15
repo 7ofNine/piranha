@@ -32,22 +32,6 @@ namespace piranha
   // Initial value for norm-based truncation.
   double base_norm_truncator::m_truncation_level = 1E-6;
 
-  void base_norm_truncator::set(const int &n) throw (unsuitable)
-  {
-    if (n < 0)
-    {
-      throw (unsuitable("Please insert a non-negative integer."));
-    }
-    else if (n == 0)
-    {
-      m_truncation_level = 0;
-    }
-    else
-    {
-      m_truncation_level = std::pow(10.,-n);
-    }
-  }
-
   void base_norm_truncator::print(std::ostream &stream)
   {
     stream_manager::setup_print(stream);

@@ -119,7 +119,8 @@ BOOST_PYTHON_MODULE(_Core)
 
   class_<base_expo_truncator>("_expo_truncator","Exponent truncator.",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
-    .def("clear",&base_expo_truncator::clear,"Clear list of exponent limits.").staticmethod("clear")
+    .def("clear_all",&base_expo_truncator::clear_all,"Clear list of exponent limits.").staticmethod("clear_all")
+    .def("clear",&base_expo_truncator::clear,"Clear exponent limit for argument named arg1.").staticmethod("clear")
     .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. If arg1 does not exist, throw an error").staticmethod("limit");
 
   class_<base_norm_truncator>("_norm_truncator","Norm truncator.",init<>())
