@@ -18,39 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NORM_TRUNCATABLE_SERIES_H
-#define PIRANHA_NORM_TRUNCATABLE_SERIES_H
-
-#include <cmath>
-#include <iostream>
+#include "core/base_classes/truncators.h"
 
 namespace piranha
 {
-  class norm_truncatable_series
-  {
-    public:
-      static const double &get_truncation()
-      {
-        return m_truncation_level;
-      }
-      static void set_truncation(const int &n)
-      {
-        if (n < 0)
-        {
-          std::cout << "Please insert a non-negative integer." << std::endl;
-        }
-        else if (n == 0)
-        {
-          m_truncation_level = 0;
-        }
-        else
-        {
-          m_truncation_level = std::pow(10.,-n);
-        }
-      }
-    private:
-      static double m_truncation_level;
-  };
+  // Initial value for norm-based truncation.
+  double base_norm_truncator::m_truncation_level = 1E-6;
 }
-
-#endif

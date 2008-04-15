@@ -33,6 +33,6 @@ namespace piranha
 #include "manipulators/dps.h"
 #include "manipulators/qps.h"
 #include "manipulators/zpoly.h"
-#include "manipulators/fs.h"
+#include "manipulators/dfs.h"
 
 #endif

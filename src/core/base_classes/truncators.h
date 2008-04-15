@@ -21,6 +21,7 @@
 #ifndef PIRANHA_TRUNCATORS_H
 #define PIRANHA_TRUNCATORS_H
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -29,6 +30,7 @@
 
 #include "../config.h"
 #include "../psymbol.h"
+#include "../stream_manager.h"
 
 namespace piranha
 {
@@ -44,13 +46,42 @@ namespace piranha
       bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const Multiplier &) const {return false;}
   };
 
+  struct base_norm_truncator
+  {
+      static void set(const int &n)
+      {
+        if (n < 0)
+        {
+          std::cout << "Please insert a non-negative integer." << std::endl;
+        }
+        else if (n == 0)
+        {
+          m_truncation_level = 0;
+        }
+        else
+        {
+          m_truncation_level = std::pow(10.,-n);
+        }
+      }
+      static std::string print_to_string()
+      {
+        std::ostringstream stream;
+        stream_manager::setup_print(stream);
+        stream << "Truncation level: " << m_truncation_level;
+        std::string retval(stream.str());
+        return retval;
+      }
+    private:
+      __PIRANHA_VISIBLE static double m_truncation_level;
+  };
+
   /// Norm-based truncator.
   template <class BaseMultiplier>
-    struct norm_truncator
+    struct norm_truncator:public base_norm_truncator
   {
       template <class Multiplier>
         norm_truncator(const Multiplier &m):m_delta_threshold(
-        m.m_s1.calculate_norm(m.m_args_tuple)*m.m_s2.calculate_norm(m.m_args_tuple)*m.m_s1.get_truncation()/
+        m.m_s1.calculate_norm(m.m_args_tuple)*m.m_s2.calculate_norm(m.m_args_tuple)*m_truncation_level/
         (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
       {}
       template <class Result, class Multiplier>

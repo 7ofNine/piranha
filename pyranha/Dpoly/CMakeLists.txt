@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Dpoly SHARED Dpoly.cpp)
+PYRANHA_MANIPULATOR(_Dpoly)

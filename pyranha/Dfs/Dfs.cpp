@@ -18,10 +18,12 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/base_classes/norm_truncatable_series.h"
+#include "../pyranha.h"
 
-namespace piranha
+BOOST_PYTHON_MODULE(_Dfs)
 {
-  // Initial value for norm-based truncation.
-  double norm_truncatable_series::m_truncation_level = 1E-6;
+  translate_exceptions();
+
+  class_<manipulators::dfs> inst = series_basic_instantiation<manipulators::dfs>(std::string("dfs"),
+    std::string("Fourier series with double precision coefficients."));
 }

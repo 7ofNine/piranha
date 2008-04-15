@@ -28,7 +28,6 @@
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/norm_truncatable_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../poisson_series_common/poisson_series_term.h"
@@ -51,7 +50,6 @@ namespace piranha
     public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
-    public norm_truncatable_series,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,int,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,double,

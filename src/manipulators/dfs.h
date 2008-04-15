@@ -18,12 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#ifndef PIRANHA_DFS_H
+#define PIRANHA_DFS_H
 
-BOOST_PYTHON_MODULE(_Fs)
+#include "../core/base_classes/common_indices.h"
+#include "../core/base_classes/truncators.h"
+#include "../core/fourier_series/fourier_series.h"
+#include "../core/numerical_coefficients/double_cf.h"
+#include "../core/poisson_series_common/poisson_series_multiplier.h"
+#include "../core/poisson_series_common/trig_array.h"
+
+namespace piranha
 {
-  translate_exceptions();
-
-  class_<manipulators::fs> inst = series_basic_instantiation<manipulators::fs>(std::string("fs"),
-    std::string("Fourier series with double precision coefficients."));
+namespace manipulators
+{
+  /// Fourier series manipulator.
+  typedef fourier_series
+  <
+    double_cf,trig_array<16,0>,
+    norm_index,
+    poisson_series_multiplier,
+    norm_truncator
+  > dfs;
 }
+}
+
+#endif

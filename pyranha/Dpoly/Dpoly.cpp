@@ -18,29 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_FS_H
-#define PIRANHA_FS_H
+#include "../pyranha.h"
 
-#include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/truncators.h"
-#include "../core/fourier_series/fourier_series.h"
-#include "../core/numerical_coefficients/double_cf.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series_common/trig_array.h"
-
-namespace piranha
+BOOST_PYTHON_MODULE(_Dpoly)
 {
-namespace manipulators
-{
-  /// Fourier series manipulator.
-  typedef fourier_series
-  <
-    double_cf,trig_array<16,0>,
-    norm_index,
-    poisson_series_multiplier,
-    norm_truncator
-  > fs;
-}
-}
+  translate_exceptions();
 
-#endif
+  class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
+    std::string("Multivariate polynomial with double precision coefficients."));
+  //series_trigonometric_instantiation(inst);
+  //series_psymbol_instantiation(inst);
+  //ps_instantiate_differential_specifics(inst);
+  /*ps_instantiate_real_specifics(inst);
+  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+    "Bessel function of the first kind, power series implementation.");*/
+}

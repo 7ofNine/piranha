@@ -206,9 +206,7 @@ template <class T>
 template <class T>
   void fourier_specifics(class_<T> &inst)
 {
-  inst.def("get_truncation", &T::get_truncation, return_value_policy<copy_const_reference>(),
-    "Get norm truncation level.").staticmethod("get_truncation");
-  inst.def("set_truncation", &T::set_truncation,"Set norm truncation level.").staticmethod("set_truncation");
+
 }
 
 // template <class T>

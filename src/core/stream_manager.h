@@ -48,6 +48,7 @@ namespace piranha
       __PIRANHA_VISIBLE static unsigned int max_digits();
       // Setters
       __PIRANHA_VISIBLE static void set_digits(int n);
+      // TODO: rename it setup_stream?
       __PIRANHA_VISIBLE static void setup_print(std::ostream &);
       __PIRANHA_VISIBLE static out_format format();
       __PIRANHA_VISIBLE static void set_format(out_format);

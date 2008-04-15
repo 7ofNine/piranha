@@ -41,3 +41,5 @@ def copy(arg):
 
 psymbol_manager = _Core._psymbol_manager()
 expo_truncator = _Core._expo_truncator()
+norm_truncator = _Core._norm_truncator()
+

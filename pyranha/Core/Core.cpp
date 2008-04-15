@@ -117,10 +117,14 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__copy__",&psymbol::copy)
     .def("__repr__",&psymbol::print_to_string);
 
-  class_<base_expo_truncator>("_expo_truncator","Exponent truncator class",init<>())
+  class_<base_expo_truncator>("_expo_truncator","Exponent truncator.",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
     .def("clear",&base_expo_truncator::clear).staticmethod("clear")
     .def("limit",&base_expo_truncator::limit).staticmethod("limit");
+
+  class_<base_norm_truncator>("_norm_truncator","Norm truncator.",init<>())
+    .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
+    .def("set",&base_norm_truncator::set,"Set truncation level to 10^-n.").staticmethod("set");
 
   // For range-evaluation.
   vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");

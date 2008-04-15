@@ -12,7 +12,7 @@ ENDIF(BUILD_PYRANHA_SP)
 SET(SRC_LIST ${SRC_LIST}
   memory.cpp
   base_expo_truncator.cpp
-  norm_truncatable_series.cpp
+  base_norm_truncator.cpp
   settings_manager.cpp
   stats.cpp
   stream_manager.cpp
