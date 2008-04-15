@@ -21,7 +21,6 @@
 #ifndef PIRANHA_TRUNCATORS_H
 #define PIRANHA_TRUNCATORS_H
 
-#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -47,33 +46,13 @@ namespace piranha
       bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const Multiplier &) const {return false;}
   };
 
-  struct base_norm_truncator
+   struct __PIRANHA_VISIBLE base_norm_truncator
   {
-      static void set(const int &n) throw (unsuitable)
-      {
-        if (n < 0)
-        {
-          throw (unsuitable("Please insert a non-negative integer."));
-        }
-        else if (n == 0)
-        {
-          m_truncation_level = 0;
-        }
-        else
-        {
-          m_truncation_level = std::pow(10.,-n);
-        }
-      }
-      static std::string print_to_string()
-      {
-        std::ostringstream stream;
-        stream_manager::setup_print(stream);
-        stream << "Truncation level: " << m_truncation_level;
-        std::string retval(stream.str());
-        return retval;
-      }
+      static void set(const int &) throw (unsuitable);
+      static void print(std::ostream &stream = std::cout);
+      static std::string print_to_string();
     private:
-      __PIRANHA_VISIBLE static double m_truncation_level;
+      static double m_truncation_level;
   };
 
   /// Norm-based truncator.
