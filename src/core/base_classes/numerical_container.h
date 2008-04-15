@@ -25,6 +25,7 @@
 #include <string>
 
 #include "../arg_manager.h"
+#include "../psymbol.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
 
@@ -58,6 +59,12 @@ namespace piranha
         explicit numerical_container(const int &n, const ArgsTuple &):m_value(n) {}
       template <class ArgsTuple>
         explicit numerical_container(const double &x, const ArgsTuple &):m_value(x) {}
+      /// Ctor from psymbol.
+      /**
+       * Sets m_value to one.
+       */
+      template <class ArgsTuple>
+        explicit numerical_container(const psym_p &, const int &, const ArgsTuple &):m_value(1) {}
       // I/O.
       template <class ArgsTuple>
         void print_plain(std::ostream &out_stream, const ArgsTuple &) const

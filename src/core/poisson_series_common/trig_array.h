@@ -56,6 +56,8 @@ namespace piranha
       /// Ctor from string.
       template <class ArgsTuple>
         explicit trig_array(const std::string &s, const ArgsTuple &):ancestor::int_array(),trig_commons::trig_array_commons(s) {}
+      template <class ArgsTuple>
+        explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::int_array(p,n,a) {}
       // Probing.
       /// Data footprint.
       /**

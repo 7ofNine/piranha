@@ -61,8 +61,7 @@ namespace piranha
         expo_commons::expo_array_commons(s) {}
       /// Ctor from psymbol.
       template <class ArgsTuple>
-        explicit expo_array(const psymbol &p, const ArgsTuple &args_tuple):ancestor::int_array(),
-        expo_commons::expo_array_commons(p,args_tuple) {}
+        explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::int_array(p,n,a) {}
       // Probing.
       /// Data footprint.
       /**

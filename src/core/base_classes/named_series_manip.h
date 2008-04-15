@@ -21,6 +21,8 @@
 #ifndef PIRANHA_NAMED_SERIES_MANIP_H
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
+#include <boost/static_assert.hpp>
+
 #include "../config.h" // For (un)likely
 
 namespace piranha
@@ -98,6 +100,24 @@ namespace piranha
   {
     p_assert(derived_const_cast->template nth_index<0>().empty());
     named_series_append_arg<arguments_description>::run(s,m_arguments,arg);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <int N>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym_p &arg)
+  {
+    BOOST_STATIC_ASSERT(N >= 0);
+    p_assert(derived_const_cast->template nth_index<0>().empty());
+    // Check that the argument is not already present in this set.
+    for (vector_psym_p::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it)
+    {
+      if (arg == (*it))
+      {
+        std::cout << "Error: argument '" << (*it)->name() << "' already present in the set." << std::endl;
+        return;
+      }
+    }
+    m_arguments.template get<N>().push_back(arg);
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>

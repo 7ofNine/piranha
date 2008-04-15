@@ -106,9 +106,7 @@ namespace piranha
       explicit poisson_series(const psymbol &p)
       {
         nth_index<1>().max_load_factor(settings_manager::load_factor());
-        named_ancestor::append_arg("poly",psymbol_manager::get_pointer(p));
-        base_ancestor::insert(term_type(cf_type(p,named_ancestor::m_arguments),key_type()),
-          named_ancestor::m_arguments,nth_index<0>().end());
+        named_ancestor::template construct_from_psymbol<0>(p);
       }
       // Needed getters and setters.
       template <int N>

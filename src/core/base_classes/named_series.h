@@ -75,7 +75,11 @@ namespace piranha
       Derived &operator/=(const double &);
     protected:
       void construct_from_file(const std::string &);
+      template <int N>
+        void construct_from_psymbol(const psymbol &);
       void append_arg(const std::string &, const psym_p &);
+      template <int N>
+        void append_arg(const psym_p &);
     private:
       void print_plain(std::ostream &, int) const;
       void print_latex(std::ostream &, int) const;

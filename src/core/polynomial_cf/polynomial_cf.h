@@ -87,10 +87,10 @@ namespace piranha
         base_ancestor::construct_from_number(x,a);
       }
       template <class ArgsTuple>
-        explicit polynomial_cf(const psymbol &p, const ArgsTuple &a)
+        explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a)
       {
         nth_index<1>().max_load_factor(settings_manager::load_factor());
-        base_ancestor::insert(term_type(cf_type(1,a),key_type(p,a)),a,nth_index<0>().end());
+        base_ancestor::construct_from_psymbol_p(p,n,a);
       }
       // Needed getters and setters.
       template <int N>

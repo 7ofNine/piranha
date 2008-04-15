@@ -71,6 +71,8 @@ namespace piranha
       template <class Number, class ArgsTuple>
         void construct_from_number(const Number &, const ArgsTuple &);
       template <class ArgsTuple>
+        void construct_from_psymbol_p(const psym_p &, const int &, const ArgsTuple &);
+      template <class ArgsTuple>
         void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>
         void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;

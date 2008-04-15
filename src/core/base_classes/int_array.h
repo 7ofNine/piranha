@@ -87,6 +87,23 @@ namespace piranha
       {
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
       }
+      /// Ctor from psymbol.
+      /**
+       * If the position mathches input integer n, then set the flavour to true, resize to one element and set it to one.
+       */
+      template <class ArgsTuple>
+        int_array(const psym_p &p, const int &n, const ArgsTuple &args_tuple):
+        m_flavour(true),m_size(0),m_pack_size(0),m_ptr(allocator.allocate(0))
+      {
+        // Construct only if the positions match.
+        if (n == Pos)
+        {
+          p_assert(args_tuple.template get<Pos>().size() == 1 and
+            args_tuple.template get<Pos>()[0] == p);
+          resize(1);
+          m_ptr[0]=1;
+        }
+      }
       /// Dtor.
       ~int_array() {allocator.deallocate(m_ptr,m_size);}
       /// Assignment operator.

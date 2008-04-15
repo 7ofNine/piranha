@@ -208,14 +208,6 @@ namespace piranha
           (*derived_cast)[i]=utils::lexical_converter<value_type>(sd[i]);
         }
       }
-      template <class ArgsTuple>
-        explicit expo_array_commons(const psymbol &p, const ArgsTuple &args_tuple)
-      {
-        p_assert(args_tuple.template get<Derived::position>().size() == 1 and
-          args_tuple.template get<Derived::position>()[0] == psymbol_manager::get_pointer(p));
-        derived_cast->resize(1);
-        (*derived_cast)[0]=1;
-      }
   };
 }
 

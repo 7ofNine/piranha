@@ -27,6 +27,7 @@
 #include <sstream>
 
 #include "../exceptions.h"
+#include "../psymbol.h"
 
 namespace piranha
 {
@@ -233,6 +234,16 @@ namespace piranha
     print(stream,-1);
     std::string retval(stream.str());
     return retval;
+  }
+
+  /// Constructor from psymbol and from position in the arguments set.
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    template <int N>
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psymbol(const psymbol &psym)
+  {
+    psym_p p(psymbol_manager::get_pointer(psym));
+    append_arg<N>(p);
+    derived_cast->construct_from_psymbol_p(p,N,m_arguments);
   }
 }
 

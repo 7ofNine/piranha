@@ -58,13 +58,9 @@ namespace piranha
       explicit mpf_cf(int val):ancestor::numerical_container(val) {}
       /// Constructor from double.
       explicit mpf_cf(const double &val):ancestor::numerical_container(val) {}
-      /// Copy constructor.
-      mpf_cf(const self &dc):ancestor::numerical_container(dc) {}
-      // Needed operators.
-      self &operator=(const self &val2)
-      {
-        return assign_self(val2);
-      }
+      /// Constructor from psymbol.
+      template <class ArgsTuple>
+        explicit mpf_cf(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::numerical_container(p,n,a) {}
       // Override norm and evaluation.
       template <class ArgsTuple>
         double norm(const ArgsTuple &) const
