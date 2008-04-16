@@ -64,6 +64,14 @@ namespace piranha
       size_t length() const;
       bool empty() const;
       bool is_single_cf() const;
+      template <class ArgsTuple>
+        Derived &mult_by(const int &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &mult_by(const double &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &mult_by(const cf_type &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &mult_by(const Derived &, const ArgsTuple &);
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -84,7 +92,7 @@ namespace piranha
       template <bool, class Derived2, class ArgsTuple>
         void merge_terms(const Derived2 &, const ArgsTuple &);
       template <class T, class ArgsTuple>
-        void multiply_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
+        Derived &mult_by_generic(const T &, const ArgsTuple &);
       template <class T, class ArgsTuple>
         void divide_coefficients_by(const T &, Derived &, const ArgsTuple &) const;
       template <bool, class Number, class ArgsTuple>

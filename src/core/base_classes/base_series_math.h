@@ -45,14 +45,12 @@ namespace piranha
   // otherwise an assertion will fail when inserting terms.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class T, class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x, Derived &retval,
-    const ArgsTuple &args_tuple) const
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by_generic(const T &x, const ArgsTuple &args_tuple)
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
     typedef typename Derived::sorted_iterator sorted_iterator;
     typedef typename Derived::term_type term_type;
-    // Make sure we are inserting into an empty return value.
-    p_assert(retval.template nth_index<0>().empty());
+    Derived retval;
     sorted_iterator it_hint = retval.template nth_index<0>().end();
     const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
     for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
@@ -61,6 +59,8 @@ namespace piranha
       term.m_cf.mult_by(x,args_tuple);
       it_hint = retval.insert(term,args_tuple,it_hint);
     }
+    swap_terms(retval);
+    return *derived_cast;
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -93,6 +93,36 @@ namespace piranha
   {
     typename Derived::term_type term(typename Derived::term_type::cf_type(n,args_tuple),typename Derived::term_type::key_type());
     insert<true,Sign>(term,args_tuple,derived_cast->template nth_index<0>().end());
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const int &n, const ArgsTuple &args_tuple)
+  {
+    return mult_by_generic(n,args_tuple);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
+  {
+    return mult_by_generic(x,args_tuple);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const cf_type &x, const ArgsTuple &args_tuple)
+  {
+    return mult_by_generic(x,args_tuple);
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    derived_cast->multiply_by_generic_series(s2,retval,args_tuple);
     return *derived_cast;
   }
 }
