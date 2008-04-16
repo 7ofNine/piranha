@@ -192,6 +192,12 @@ template <class T>
 }
 
 template <class T>
+  void series_pow_instantiation(class_<T> &inst)
+{
+  inst.def("__pow__",&T::pow);
+}
+
+template <class T>
   void series_psymbol_instantiation(class_<T> &inst)
 {
   inst.def(init<const psymbol &>());
