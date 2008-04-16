@@ -95,6 +95,8 @@ namespace piranha
         int_array(const psym_p &p, const int &n, const ArgsTuple &args_tuple):
         m_flavour(true),m_size(0),m_pack_size(0),m_ptr(allocator.allocate(0))
       {
+        (void)p;
+        (void)args_tuple;
         // Construct only if the positions match.
         if (n == Pos)
         {
