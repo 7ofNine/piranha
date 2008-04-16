@@ -26,10 +26,10 @@
 #include <memory> // For default allocator.
 
 #include "../base_classes/base_series.h"
-#include "../base_classes/base_pow_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../base_classes/series_pow_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../settings_manager.h"
 
@@ -41,6 +41,7 @@
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
+#define __PIRANHA_POLYNOMIAL_POW_ANCESTOR series_pow_toolbox< __PIRANHA_POLYNOMIAL >
 
 namespace piranha
 {
@@ -93,7 +94,7 @@ namespace piranha
     public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
-    public base_pow_toolbox< __PIRANHA_POLYNOMIAL >,
+    public __PIRANHA_POLYNOMIAL_POW_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,double,
@@ -111,7 +112,7 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
-      friend class base_pow_toolbox< __PIRANHA_POLYNOMIAL >;
+      friend class __PIRANHA_POLYNOMIAL_POW_ANCESTOR;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -141,11 +142,6 @@ namespace piranha
         nth_index<1>().max_load_factor(settings_manager::load_factor());
         named_ancestor::template construct_from_psymbol<0>(p);
       }
-      polynomial pow(const double &x) const
-      {
-        polynomial retval(base_pow_toolbox< __PIRANHA_POLYNOMIAL >::pow(x,named_ancestor::m_arguments));
-        return retval;
-      }
       // Needed getters and setters.
       template <int>
         container_type &nth_index() {return m_container;}
@@ -170,5 +166,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_POW_ANCESTOR
 
 #endif

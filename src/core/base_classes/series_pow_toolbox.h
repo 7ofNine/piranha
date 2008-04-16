@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_BASE_POW_TOOLBOX
-#define PIRANHA_BASE_POW_TOOLBOX
+#ifndef PIRANHA_SERIES_POW_TOOLBOX
+#define PIRANHA_SERIES_POW_TOOLBOX
 
 #include <cmath>
 
@@ -32,7 +32,7 @@
 namespace piranha
 {
   template <class Derived>
-    struct base_pow_toolbox
+    struct series_pow_toolbox
   {
     public:
       template <class ArgsTuple>
@@ -55,6 +55,11 @@ namespace piranha
         {
           throw (unsuitable("Cannot raise to real power."));
         }
+      }
+      Derived pow(const double &x) const throw(unsuitable)
+      {
+        Derived retval = pow(x,derived_const_cast->m_arguments);
+        return retval;
       }
     private:
       template <class ArgsTuple>

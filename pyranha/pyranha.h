@@ -194,7 +194,8 @@ template <class T>
 template <class T>
   void series_pow_instantiation(class_<T> &inst)
 {
-  inst.def("__pow__",&T::pow);
+  typedef T (T::*pow_unary)(const double &) const;
+  inst.def("__pow__",pow_unary(&T::pow));
 }
 
 template <class T>
