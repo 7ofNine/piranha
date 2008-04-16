@@ -179,8 +179,6 @@ std::cout << "Going for Poisson coded\n";
             // TODO: Does it make sense here to define a method for coefficients like:
             // mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
             // so that we can avoid copying stuff around here and elsewhere?
-            // TODO: don't create a tmp_cf each time, create it outside the loop and assign it here.
-            // For nontrivial coefficients we can save a lot of memory allocations.
             cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
             tmp_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);

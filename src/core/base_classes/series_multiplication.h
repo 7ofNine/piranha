@@ -57,9 +57,7 @@ namespace piranha
         // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
         else if (s2.is_single_cf())
         {
-          derived_cast->mult_by(s2.template nth_index<0>().begin()->m_cf,args_tuple);
-          // We must return here because the swapping is already done inside mult_by in the line above.
-          return;
+          derived_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
         }
         else
         {
