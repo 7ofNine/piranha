@@ -95,6 +95,37 @@ namespace piranha
     insert<true,Sign>(term,args_tuple,derived_cast->template nth_index<0>().end());
     return *derived_cast;
   }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const int &n, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    multiply_coefficients_by(n,retval,args_tuple);
+    swap_terms(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    multiply_coefficients_by(x,retval,args_tuple);
+    swap_terms(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    derived_cast->multiply_by_series(s2,retval,args_tuple);
+    // Grab the terms accumulated into return value.
+    swap_terms(retval);
+    return *derived_cast;
+  }
 }
 
 #endif

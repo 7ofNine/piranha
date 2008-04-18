@@ -39,8 +39,8 @@ namespace piranha
       // - args_tuple must be the result of a merging of arguments between the two series being multiplied,
       // - retval must be empty.
       template <class Derived2, class ArgsTuple>
-        void multiply_by_generic_series(const Derived2 &s2, Derived &retval,
-        const ArgsTuple &args_tuple)
+        void multiply_by_series(const Derived2 &s2, Derived &retval,
+        const ArgsTuple &args_tuple) const
       {
         typedef typename Derived::const_sorted_iterator const_sorted_iterator;
         typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
@@ -57,15 +57,13 @@ namespace piranha
         // TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
         else if (s2.is_single_cf())
         {
-          derived_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
+          derived_const_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf,retval,args_tuple);
         }
         else
         {
           Multiplier<Derived,Derived2,ArgsTuple,Truncator> m(*derived_const_cast,s2,retval,args_tuple);
           m.perform_multiplication();
         }
-        // Finally, swap with the terms we have accumulated in the return series.
-        derived_cast->swap_terms(retval);
       }
   };
 }

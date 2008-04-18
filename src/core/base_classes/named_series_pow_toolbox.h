@@ -18,43 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_TYPE_TRAITS_H
-#define PIRANHA_TYPE_TRAITS_H
+#ifndef PIRANHA_NAMED_SERIES_POW_TOOLBOX
+#define PIRANHA_NAMED_SERIES_POW_TOOLBOX
 
-#include <complex>
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-  /// Evaluation type trait.
-  /**
-   * Specifies the type of evaluation: default is double.
-   */
-  template <class T>
-    struct eval_type
+  template <class Derived>
+    struct named_series_pow_toolbox
   {
-    typedef double type;
-  };
-
-  /// Complex specialization for evaluation type trait.
-  /**
-   * Evaluation type is the complex counterpart of real evaluation type.
-   */
-  template <class T>
-    struct eval_type<std::complex<T> >
-  {
-    typedef std::complex<typename eval_type<T>::type> type;
-  };
-
-  /// Representation used for coefficients and keys of piranha::base_series objects during multiplication.
-  template <class T>
-    struct series_mult_rep
-  {
-    /// Representation type.
-    typedef T type;
-    /// Get a const reference to the element represented by x.
-    static const T &get(const type &x) {return x;}
-    /// Assign T value source to the representation type res.
-    static void assign(type &res, const T &source) {res=source;}
+    Derived pow(const double &x) const throw(unsuitable)
+    {
+      Derived retval(derived_const_cast->a_pow(x,derived_const_cast->m_arguments));
+      retval.m_arguments = derived_const_cast->m_arguments;
+      return retval;
+    }
   };
 }
+
+#undef derived_const_cast
+#undef derived_cast
+
 #endif

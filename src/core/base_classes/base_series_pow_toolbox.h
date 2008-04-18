@@ -18,12 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SERIES_POW_TOOLBOX
-#define PIRANHA_SERIES_POW_TOOLBOX
+#ifndef PIRANHA_BASE_SERIES_POW_TOOLBOX
+#define PIRANHA_BASE_SERIES_POW_TOOLBOX
 
 #include <cmath>
 
 #include "../exceptions.h"
+#include "../p_assert.h"
 #include "../settings_manager.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -32,11 +33,10 @@
 namespace piranha
 {
   template <class Derived>
-    struct series_pow_toolbox
+    struct base_series_pow_toolbox
   {
-    public:
       template <class ArgsTuple>
-        Derived pow(const double &x, const ArgsTuple &args_tuple) const throw(unsuitable)
+        Derived a_pow(const double &x, const ArgsTuple &args_tuple) const throw(unsuitable)
       {
         const int n = (int)nearbyint(x);
         if (std::abs(x - n) <= settings_manager::numerical_zero())
@@ -47,7 +47,7 @@ namespace piranha
           }
           else
           {
-            Derived retval = natural_pow((size_t)n,args_tuple);
+            Derived retval(natural_pow((size_t)n,args_tuple));
             return retval;
           }
         }
@@ -56,37 +56,36 @@ namespace piranha
           throw (unsuitable("Cannot raise to real power."));
         }
       }
-      Derived pow(const double &x) const throw(unsuitable)
-      {
-        Derived retval = pow(x,derived_const_cast->m_arguments);
-        return retval;
-      }
     private:
       template <class ArgsTuple>
         Derived natural_pow(const size_t &n, const ArgsTuple &args_tuple) const
       {
+        typedef typename Derived::term_type term_type;
+        typedef typename term_type::cf_type cf_type;
+        typedef typename term_type::key_type key_type;
+        Derived retval;
         switch (n)
         {
           case 0:
           {
-            Derived retval(1,args_tuple);
-            return retval;
+            retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
+            break;
           }
           case 1:
           {
-            Derived retval(*derived_const_cast);
-            return retval;
+            retval.m_container = derived_const_cast->m_container;
+            break;
           }
           default:
           {
-            Derived retval(*derived_const_cast);
+            retval.m_container = derived_const_cast->m_container;
             for (size_t i = 1; i < n; ++i)
             {
               retval.mult_by((*derived_const_cast),args_tuple);
             }
-            return retval;
           }
         }
+        return retval;
       }
   };
 }

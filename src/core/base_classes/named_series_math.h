@@ -89,7 +89,9 @@ namespace piranha
     // Then we assign the merged arguments sets to the return value series.
     retval.merge_args(*derived_const_cast);
     // Now we can multiply.
-    derived_cast->multiply_by_generic_series(s2,retval,m_arguments);
+    derived_cast->multiply_by_series(s2,retval,m_arguments);
+    // Swap terms with those accumulated into retval.
+    derived_cast->swap_terms(retval);
     return *derived_cast;
   }
 
