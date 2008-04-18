@@ -100,7 +100,7 @@ BOOST_PYTHON_MODULE(_Core)
     .staticmethod("pack_ratio");
 
   // Psymbol manager.
-  class_<psymbol_manager>("_psymbol_manager","Manager for psymbols.",init<>())
+  class_<psymbol_manager>("__psymbol_manager","Manager for psymbols.",init<>())
     .def("__iter__",iterator<psymbol_manager,return_internal_reference<> >()).staticmethod("__iter__")
     .def("__len__",&psymbol_manager::length).staticmethod("__len__")
     .def("__repr__",&psymbol_manager::print_to_string).staticmethod("__repr__");
@@ -117,13 +117,13 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__copy__",&psymbol::copy)
     .def("__repr__",&psymbol::print_to_string);
 
-  class_<base_expo_truncator>("_expo_truncator","Exponent truncator.",init<>())
+  class_<base_expo_truncator>("__expo_truncator","Exponent truncator.",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
     .def("clear_all",&base_expo_truncator::clear_all,"Clear list of exponent limits.").staticmethod("clear_all")
     .def("clear",&base_expo_truncator::clear,"Clear exponent limit for argument named arg1.").staticmethod("clear")
     .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. If arg1 does not exist, throw an error").staticmethod("limit");
 
-  class_<base_norm_truncator>("_norm_truncator","Norm truncator.",init<>())
+  class_<base_norm_truncator>("__norm_truncator","Norm truncator.",init<>())
     .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
     .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 and throw an error otherwise.").staticmethod("set");
 

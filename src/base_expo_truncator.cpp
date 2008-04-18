@@ -29,14 +29,21 @@ namespace piranha
 
   void base_expo_truncator::print(std::ostream &stream)
   {
-    const iterator it_f = m_expo_limits.end();
-    for (iterator it = m_expo_limits.begin(); it != it_f;)
+    if (m_expo_limits.empty())
     {
-      stream << it->first->name() << ',' << it->second;
-      ++it;
-      if (it != it_f)
+      stream << "No exponent limits defined.";
+    }
+    else
+    {
+      const iterator it_f = m_expo_limits.end();
+      for (iterator it = m_expo_limits.begin(); it != it_f;)
       {
-        stream << '\n';
+        stream << it->first->name() << ',' << it->second;
+        ++it;
+        if (it != it_f)
+        {
+          stream << '\n';
+        }
       }
     }
   }

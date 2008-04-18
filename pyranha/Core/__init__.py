@@ -18,8 +18,8 @@
 
 from _Core import *
 
-import copy as _copy
-import math as _math
+import copy as __copy
+import math as __math
 
 # Handy definitions of common mathematical functions: try to call the sine/cosine methods of the class,
 # otherwise resort to math.cos/sin.
@@ -27,19 +27,19 @@ def cos(arg):
   try:
     return arg.cos()
   except TypeError:
-    return _math.cos(arg)
+    return __math.cos(arg)
 
 def sin(arg):
   try:
     return arg.sin()
   except TypeError:
-    return _math.sin(arg)
+    return __math.sin(arg)
 
 # Lift copy function to top level namespace.
 def copy(arg):
-  return _copy.copy(arg)
+  return __copy.copy(arg)
 
-psymbol_manager = _Core._psymbol_manager()
-expo_truncator = _Core._expo_truncator()
-norm_truncator = _Core._norm_truncator()
+psymbol_manager = _Core.__psymbol_manager()
+expo_truncator = _Core.__expo_truncator()
+norm_truncator = _Core.__norm_truncator()
 
