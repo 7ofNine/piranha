@@ -38,7 +38,7 @@ namespace piranha
   /**
    * This class manages parameters specific to piranha classes.
    */
-  class settings_manager
+  class __PIRANHA_VISIBLE settings_manager
   {
     public:
       /// Return maximum load factor for hashed containers.
@@ -59,6 +59,21 @@ namespace piranha
       static const std::string &path()
       {
         return m_path;
+      }
+      /// Get debug flag.
+      static const bool &debug()
+      {
+        return m_debug;
+      }
+      /// Set debug flag.
+      static void debug(const bool &flag)
+      {
+#ifdef _PIRANHA_DEBUG
+        m_debug = flag;
+#else
+        (void)flag;
+        throw(unsuitable("Debug support was not compiled in."));
+#endif
       }
       /// Get Piranha version.
       static const std::string &version();
@@ -111,9 +126,9 @@ namespace piranha
           startup_class();
       };
       /// Load factor for hashed containers.
-      __PIRANHA_VISIBLE static double       hash_max_load_factor;
+      static double                         hash_max_load_factor;
       /// Numerical zero.
-      __PIRANHA_VISIBLE static double       m_numerical_zero;
+      static double                         m_numerical_zero;
       /// Minimum fast unsigned integer.
       static const max_fast_uint            min_u;
       /// Maximum fast unsigned integer.
@@ -123,8 +138,9 @@ namespace piranha
       /// Maximum fast integer.
       static const max_fast_int             max_i;
       /// Path to theories of motion.
-      __PIRANHA_VISIBLE static std::string  m_path;
+      static std::string                    m_path;
       static const std::string              m_default_path;
+      static bool                           m_debug;
       static const std::string              m_version;
       static bool                           enable_progress_display;
       static startup_class                  startup;
@@ -133,4 +149,12 @@ namespace piranha
 #endif
   };
 }
+
+// Debug mode.
+#ifdef _PIRANHA_DEBUG
+  #define __PDEBUG(statement) {if (settings_manager::debug()) {statement;}}
+#else
+  #define __PDEBUG(statement)
+#endif
+
 #endif

@@ -74,12 +74,13 @@ namespace piranha
           coded_ancestor::store_coefficients_code_keys();
           if (!perform_vector_coded_multiplication())
           {
-// std::cout << "Going for hash coded!\n";
+            __PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
             perform_hash_coded_multiplication();
           }
         }
         else
         {
+          __PDEBUG(std::cout << "Going for plain polynomial multiplication\n");
           ancestor::perform_plain_multiplication();
         }
       }
@@ -106,11 +107,13 @@ namespace piranha
           coded_ancestor::m_res_min_max[i].first=*(min_max.first);
           coded_ancestor::m_res_min_max[i].second=*(min_max.second);
         }
-// std::cout << "Mult limits are:\n";
-// for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
-// {
-//   std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
-// }
+        __PDEBUG(
+        std::cout << "Mult limits are:\n";
+        for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
+        {
+          std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+        }
+        );
       }
       bool perform_vector_coded_multiplication()
       {
@@ -135,6 +138,7 @@ namespace piranha
           piranha_free(p_vc_res);
           return false;
         }
+        __PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.

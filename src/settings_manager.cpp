@@ -36,6 +36,7 @@ namespace piranha
   const max_fast_int settings_manager::max_i = boost::integer_traits<max_fast_int>::max();
   std::string settings_manager::m_path = _PIRANHA_DEFAULT_PATH;
   const std::string settings_manager::m_default_path = _PIRANHA_DEFAULT_PATH;
+  bool settings_manager::m_debug = false;
   const std::string settings_manager::m_version = __PIRANHA_VERSION;
   bool settings_manager::enable_progress_display = true;
   settings_manager::startup_class settings_manager::startup;

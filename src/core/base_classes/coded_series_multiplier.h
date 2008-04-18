@@ -32,6 +32,7 @@
 #include <valarray>
 
 #include "../p_assert.h"
+#include "../settings_manager.h" // For debug messages.
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -149,7 +150,7 @@ namespace piranha
           m_coding_vector[i]=ck.get_si();
           ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
         }
-// std::cout << "hmax-hmin=" << hmax-hmin << '\n';
+        __PDEBUG(std::cout << "hmax-hmin=" << hmax-hmin << '\n');
         // We want to fill on extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
         m_coding_vector[m_size]=ck.get_si();

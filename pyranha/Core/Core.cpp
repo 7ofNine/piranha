@@ -20,16 +20,20 @@
 
 #include "../pyranha.h"
 
-using namespace boost::python;
-using namespace piranha;
-
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
   translate_exceptions();
 
   // Settings.
-  class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",init<>());
+  typedef const bool &(*debug_get)();
+  typedef void (*debug_set)(const bool &);
+  class_<settings_manager> class_setm("settings_manager","Settings for Pyranha.",init<>());
+  class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
+    "Get value of the debug flag.");
+  class_setm.def("debug",debug_set(&settings_manager::debug),"Set value of the debug flag.").staticmethod("debug");
+//   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
+//     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
 //     "Get value of maximum load factor for hashed containers.");
 //   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
