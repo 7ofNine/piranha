@@ -25,26 +25,19 @@
 #include <cstdlib>
 
 #ifdef __GNUC__
-
-#define GCC_VERSION (__GNUC__ * 100000 \
- + __GNUC_MINOR__ * 1000 \
- + __GNUC_PATCHLEVEL__ * 10)
-
-#if GCC_VERSION < 304000
-#error "The minimum GCC version required is 3.4"
+  #define GCC_VERSION (__GNUC__ * 100000 \
+    + __GNUC_MINOR__ * 1000 \
+    + __GNUC_PATCHLEVEL__ * 10)
+  #if GCC_VERSION < 304000
+    #error "The minimum GCC version required is 3.4"
+  #endif
+  #define likely(exp)   __builtin_expect(exp,1)
+  #define unlikely(exp) __builtin_expect(exp,0)
+#else
+  #warning Only the GNU compiler is officially supported.
+  #define likely(exp)   exp
+  #define unlikely(exp) exp
 #endif
-
-#define likely(exp)   __builtin_expect(exp,1)
-#define unlikely(exp) __builtin_expect(exp,0)
-
-#else // __GNUC__
-
-#warning Only the GNU compiler is officially supported.
-
-#define likely(exp)   exp
-#define unlikely(exp) exp
-
-#endif // __GNUC__
 
 // Platform switches.
 #ifdef _PIRANHA_WIN32
