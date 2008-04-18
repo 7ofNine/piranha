@@ -135,7 +135,7 @@ template <class T>
 //   inst.def(self=int());
 //   inst.def(self=double());
 //   inst.def(self=self);
-// Addition and subtraction.
+  // Addition and subtraction.
   inst.def(self+=int());
   inst.def(self+=double());
   inst.def(self+=self);
@@ -152,7 +152,7 @@ template <class T>
   inst.def(self-double());
   inst.def(double()-self);
   inst.def(self-self);
-// Multiplication.
+  // Multiplication.
   inst.def(self*=int());
   inst.def(self*=double());
   inst.def(self*=self);
@@ -161,11 +161,13 @@ template <class T>
   inst.def(self*double());
   inst.def(double()*self);
   inst.def(self*self);
-// Division.
+  // Division.
   inst.def(self/=int());
   inst.def(self/=double());
   inst.def(self/int());
   inst.def(self/double());
+  // Exponentiation.
+  inst.def("__pow__",&T::pow);
 // Instantiate spectral comparison.
   //sc_instatiation<T>();
 // Instantiate common time comparisons.
@@ -189,12 +191,6 @@ template <class T>
 {
   inst.def("cos",&T::cos);
   inst.def("sin",&T::sin);
-}
-
-template <class T>
-  void series_pow_instantiation(class_<T> &inst)
-{
-  inst.def("__pow__",&T::pow);
 }
 
 template <class T>

@@ -21,6 +21,8 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
+#include "../exceptions.h"
+
 namespace piranha
 {
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -159,6 +161,14 @@ namespace piranha
     inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
   {
     return divide_by_generic(x);
+  }
+
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const throw(unsuitable)
+  {
+    Derived retval(derived_const_cast->a_pow(x,derived_const_cast->m_arguments));
+    retval.m_arguments = derived_const_cast->m_arguments;
+    return retval;
   }
 }
 
