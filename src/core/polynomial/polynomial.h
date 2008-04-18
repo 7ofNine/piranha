@@ -26,7 +26,6 @@
 #include <memory> // For default allocator.
 
 #include "../base_classes/base_series.h"
-#include "../base_classes/base_series_pow_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_pow_toolbox.h"
@@ -42,7 +41,6 @@
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
-#define __PIRANHA_POLYNOMIAL_BASE_POW_ANCESTOR base_series_pow_toolbox< __PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_POW_ANCESTOR named_series_pow_toolbox< __PIRANHA_POLYNOMIAL >
 
 namespace piranha
@@ -96,7 +94,6 @@ namespace piranha
     public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_BASE_POW_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_POW_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
@@ -115,7 +112,6 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_BASE_POW_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_NAMED_POW_ANCESTOR;
     public:
       // Needed typedefs.
@@ -162,7 +158,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_BASE_POW_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_POW_ANCESTOR
 
 #endif

@@ -21,6 +21,11 @@
 #ifndef PIRANHA_BASE_SERIES_MATH_H
 #define PIRANHA_BASE_SERIES_MATH_H
 
+#include <cmath>
+
+#include "../exceptions.h"
+#include "../settings_manager.h"
+
 namespace piranha
 {
   // Do not use this to merge with self, assertion will fail.
@@ -125,6 +130,102 @@ namespace piranha
     // Grab the terms accumulated into return value.
     swap_terms(retval);
     return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &x,
+    const ArgsTuple &args_tuple) const throw(unsuitable)
+  {
+    const int n = (int)nearbyint(x);
+    if (std::abs(x - n) <= settings_manager::numerical_zero())
+    {
+      if (n < 0)
+      {
+        Derived tmp(derived_const_cast->real_pow(-1,args_tuple));
+        Derived retval(tmp.natural_pow((size_t)(-n),args_tuple));
+        return retval;
+      }
+      else
+      {
+        Derived retval(natural_pow((size_t)n,args_tuple));
+        return retval;
+      }
+    }
+    else
+    {
+      Derived retval(derived_const_cast->real_pow(x,args_tuple));
+      return retval;
+    }
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::real_pow(const double &, const ArgsTuple &) const
+  {
+    throw (unsuitable("Unable to raise to real power."));
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_pow(const size_t &n, const ArgsTuple &args_tuple) const
+  {
+    typedef typename Derived::term_type term_type;
+    typedef typename term_type::cf_type cf_type;
+    typedef typename term_type::key_type key_type;
+    Derived retval;
+    switch (n)
+    {
+      case 0:
+      {
+        retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
+        break;
+      }
+      case 1:
+      {
+        retval.m_container = derived_const_cast->m_container;
+        break;
+      }
+      case 2:
+      {
+        retval.m_container = derived_const_cast->m_container;
+        retval.mult_by(*derived_const_cast,args_tuple);
+        break;
+      }
+      case 3:
+      {
+        retval.m_container = derived_const_cast->m_container;
+        retval.mult_by(*derived_const_cast,args_tuple);
+        retval.mult_by(*derived_const_cast,args_tuple);
+        break;
+      }
+      case 4:
+      {
+        retval.m_container = derived_const_cast->m_container;
+        retval.mult_by(*derived_const_cast,args_tuple);
+        retval.mult_by(*derived_const_cast,args_tuple);
+        retval.mult_by(*derived_const_cast,args_tuple);
+        break;
+      }
+      // Exponentiation by squaring.
+      default:
+      {
+        retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
+        Derived tmp(*derived_const_cast);
+        size_t i = n;
+        while (i)
+        {
+          if (i & 1)
+          {
+            retval.mult_by(tmp,args_tuple);
+            --i;
+          }
+          tmp.mult_by(tmp,args_tuple);
+          i/=2;
+        }
+      }
+    }
+    return retval;
   }
 }
 

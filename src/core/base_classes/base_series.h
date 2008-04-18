@@ -24,6 +24,7 @@
 #include <boost/static_assert.hpp>
 #include <memory>
 
+#include "../exceptions.h"
 #include "../p_assert.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
@@ -70,6 +71,8 @@ namespace piranha
         Derived &mult_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &mult_by(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived a_pow(const double &, const ArgsTuple &) const throw(unsuitable);
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.
@@ -82,6 +85,8 @@ namespace piranha
         void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>
         void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
+      template <class ArgsTuple>
+        eval_type time_evaluation(const double &, const ArgsTuple &) const;
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
       void swap_terms(Derived &);
@@ -96,7 +101,9 @@ namespace piranha
       template <bool, class Number, class ArgsTuple>
         Derived &merge_with_number(const Number &, const ArgsTuple &);
       template <class ArgsTuple>
-        eval_type time_evaluation(const double &, const ArgsTuple &) const;
+        Derived real_pow(const double &, const ArgsTuple &) const;
+      template <class ArgsTuple>
+        Derived natural_pow(const size_t &, const ArgsTuple &) const;
     private:
       template <class PinpointIterator>
         PinpointIterator find_term(const term_type &);
