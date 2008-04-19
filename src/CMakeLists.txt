@@ -13,7 +13,7 @@ SET(SRC_LIST ${SRC_LIST}
   memory.cpp
   base_expo_truncator.cpp
   base_norm_truncator.cpp
-  settings_manager.cpp
+  settings.cpp
   stats.cpp
   stream_manager.cpp
   psymbol.cpp

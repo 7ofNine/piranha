@@ -27,7 +27,7 @@
 #include <valarray>
 
 #include "../p_assert.h"
-#include "../settings_manager.h"
+#include "../settings.h"
 #include "../type_traits.h"
 #include "plain_series_multiplier_mp.h"
 
@@ -75,7 +75,7 @@ namespace piranha
         m_size2(m_s2.template nth_index<0>().size()),m_retval(retval),m_trunc(*this)
       {
         // Set proper load factor for hash set.
-        m_set.max_load_factor(settings_manager::load_factor());
+        m_set.max_load_factor(settings::load_factor());
       }
       void perform_multiplication()
       {

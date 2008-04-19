@@ -32,7 +32,7 @@
 #include "../base_classes/coded_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../settings_manager.h" // For hash load factor.
+#include "../settings.h" // For hash load factor.
 
 namespace piranha
 {
@@ -211,7 +211,7 @@ namespace piranha
         c_iterator it;
         cmult_set cms;
         // Set max load factors.
-        cms.max_load_factor(settings_manager::load_factor());
+        cms.max_load_factor(settings::load_factor());
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           const max_fast_int key1 = coded_ancestor::m_ckeys1[i];

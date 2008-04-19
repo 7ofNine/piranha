@@ -24,7 +24,7 @@
 #include <cmath>
 
 #include "../exceptions.h"
-#include "../settings_manager.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -138,7 +138,7 @@ namespace piranha
     const ArgsTuple &args_tuple) const throw(unsuitable)
   {
     const int n = (int)nearbyint(x);
-    if (std::abs(x - n) <= settings_manager::numerical_zero())
+    if (std::abs(x - n) <= settings::numerical_zero())
     {
       if (n < 0)
       {

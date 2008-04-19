@@ -28,7 +28,7 @@
 #include <fstream>
 #include <valarray>
 
-#include "settings_manager.h"
+#include "settings.h"
 #include "stream_manager.h"
 
 namespace piranha
@@ -128,7 +128,7 @@ namespace piranha
           // Clear ifstream's state (it is done automatically on close() on Linux, but not on
           // Windows).
           inf.clear();
-          filename=(settings_manager::path()+std::string("/")+filename);
+          filename=(settings::path()+std::string("/")+filename);
           inf.open(filename.c_str(),std::ios::in | std::ios::binary);
           if (inf.fail())
           {

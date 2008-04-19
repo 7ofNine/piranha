@@ -27,7 +27,7 @@
 #include "../exceptions.h"
 #include "../math.h" // besselJ.
 #include "../psymbol.h"
-#include "../settings_manager.h" // Numerical zero.
+#include "../settings.h" // Numerical zero.
 #include "../base_classes/numerical_container.h"
 
 namespace piranha
@@ -68,7 +68,7 @@ namespace piranha
       {
         const char *msg = "Cannot convert double coefficient to integer.";
         int retval = (int)nearbyint(ancestor::m_value);
-        if (std::abs(ancestor::m_value - retval) > settings_manager::numerical_zero())
+        if (std::abs(ancestor::m_value - retval) > settings::numerical_zero())
         {
           throw (unsuitable(msg));
         }

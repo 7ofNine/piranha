@@ -28,10 +28,10 @@ BOOST_PYTHON_MODULE(_Core)
   // Settings.
   typedef const bool &(*debug_get)();
   typedef void (*debug_set)(const bool &);
-  class_<settings_manager> class_setm("settings_manager","Settings for Pyranha.",init<>());
-  class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
+  class_<settings> class_setm("settings","Settings for Pyranha.",init<>());
+  class_setm.def("debug",debug_get(&settings::debug),return_value_policy<copy_const_reference>(),
     "Get value of the debug flag.");
-  class_setm.def("debug",debug_set(&settings_manager::debug),"Set value of the debug flag.").staticmethod("debug");
+  class_setm.def("debug",debug_set(&settings::debug),"Set value of the debug flag.").staticmethod("debug");
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),

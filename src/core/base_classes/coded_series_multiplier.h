@@ -32,7 +32,7 @@
 #include <valarray>
 
 #include "../p_assert.h"
-#include "../settings_manager.h" // For debug messages.
+#include "../settings.h" // For debug messages.
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)

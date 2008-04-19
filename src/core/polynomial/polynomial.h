@@ -30,7 +30,7 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../polynomial_common/monomial.h"
-#include "../settings_manager.h"
+#include "../settings.h"
 
 #define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, \
   template <class, class, class, template <class> class> class Multiplier, \
@@ -117,25 +117,25 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       // Ctors.
-      polynomial() {nth_index<1>().max_load_factor(settings_manager::load_factor());}
+      polynomial() {nth_index<1>().max_load_factor(settings::load_factor());}
       explicit polynomial(const std::string &filename)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         named_ancestor::construct_from_file(filename);
       }
       explicit polynomial(const int &n)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_number(n,named_ancestor::m_arguments);
       }
       explicit polynomial(const double &x)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
       explicit polynomial(const psymbol &p)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         named_ancestor::template construct_from_psymbol<0>(p);
       }
       // Needed getters and setters.

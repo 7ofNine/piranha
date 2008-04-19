@@ -21,30 +21,30 @@
 #include <boost/integer_traits.hpp>
 
 #include "core/memory.h"
-#include "core/settings_manager.h"
+#include "core/settings.h"
 #include "core/stream_manager.h"
 #include "core/version.h"
 
 namespace piranha
 {
   // Settings manager's static members.
-  double settings_manager::hash_max_load_factor = 0.3;
-  double settings_manager::m_numerical_zero = 1E-80;
-  const max_fast_uint settings_manager::min_u = boost::integer_traits<max_fast_uint>::min();
-  const max_fast_uint settings_manager::max_u = boost::integer_traits<max_fast_uint>::max();
-  const max_fast_int settings_manager::min_i = boost::integer_traits<max_fast_int>::min();
-  const max_fast_int settings_manager::max_i = boost::integer_traits<max_fast_int>::max();
-  std::string settings_manager::m_path = _PIRANHA_DEFAULT_PATH;
-  const std::string settings_manager::m_default_path = _PIRANHA_DEFAULT_PATH;
-  bool settings_manager::m_debug = false;
-  const std::string settings_manager::m_version = __PIRANHA_VERSION;
-  bool settings_manager::enable_progress_display = true;
-  settings_manager::startup_class settings_manager::startup;
+  double settings::hash_max_load_factor = 0.3;
+  double settings::m_numerical_zero = 1E-80;
+  const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::min();
+  const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::max();
+  const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::min();
+  const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::max();
+  std::string settings::m_path = _PIRANHA_DEFAULT_PATH;
+  const std::string settings::m_default_path = _PIRANHA_DEFAULT_PATH;
+  bool settings::m_debug = false;
+  const std::string settings::m_version = __PIRANHA_VERSION;
+  bool settings::enable_progress_display = true;
+  settings::startup_class settings::startup;
 #ifdef _PIRANHA_TBB
-  const tbb::task_scheduler_init settings_manager::tbb_init;
+  const tbb::task_scheduler_init settings::tbb_init;
 #endif
 
-  settings_manager::startup_class::startup_class()
+  settings::startup_class::startup_class()
   {
     // Startup report.
     std::cout << "This is Piranha version " << m_version << __PIRANHA_VERSION_TAG << std::endl;
@@ -68,13 +68,13 @@ namespace piranha
   }
 
   /// Set path to theories of motion.
-  void settings_manager::set_path(const std::string &str)
+  void settings::set_path(const std::string &str)
   {
     m_path = str;
   }
 
   /// Get version.
-  const std::string &settings_manager::version()
+  const std::string &settings::version()
   {
     return m_version;
   }

@@ -27,7 +27,7 @@
 #include "../base_classes/cf_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
-#include "../settings_manager.h"
+#include "../settings.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
   template <class, class, class, template <class> class> class Multiplier, \
@@ -66,30 +66,30 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       /// Default ctor.
-      polynomial_cf() {nth_index<1>().max_load_factor(settings_manager::load_factor());}
+      polynomial_cf() {nth_index<1>().max_load_factor(settings::load_factor());}
       /// Ctor from string.
       template <class ArgsTuple>
         explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         cf_ancestor::construct_from_string(s,args_tuple);
       }
       template <class ArgsTuple>
         explicit polynomial_cf(const int &n, const ArgsTuple &a)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_number(n,a);
       }
       template <class ArgsTuple>
         explicit polynomial_cf(const double &x, const ArgsTuple &a)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_number(x,a);
       }
       template <class ArgsTuple>
         explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a)
       {
-        nth_index<1>().max_load_factor(settings_manager::load_factor());
+        nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_psymbol_p(p,n,a);
       }
       // Needed getters and setters.

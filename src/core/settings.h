@@ -38,7 +38,7 @@ namespace piranha
   /**
    * This class manages parameters specific to piranha classes.
    */
-  class __PIRANHA_VISIBLE settings_manager
+  class __PIRANHA_VISIBLE settings
   {
     public:
       /// Return maximum load factor for hashed containers.
@@ -79,7 +79,7 @@ namespace piranha
       static const std::string &version();
       /// Set maximum load factor for hashed containers.
       /**
-       * @see settings_manager::load_factor().
+       * @see settings::load_factor().
        */
       static void set_load_factor(const double &value) throw (unsuitable)
       {
@@ -152,7 +152,7 @@ namespace piranha
 
 // Debug mode.
 #ifdef _PIRANHA_DEBUG
-  #define __PDEBUG(statement) {if (settings_manager::debug()) {statement;}}
+  #define __PDEBUG(statement) {if (settings::debug()) {statement;}}
 #else
   #define __PDEBUG(statement)
 #endif
