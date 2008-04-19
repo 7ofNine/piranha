@@ -37,7 +37,7 @@ namespace manipulators
   <
     mpz_cf,
     expo_array<16,0>,
-    key_hash_index,
+    key_degree_index,
     polynomial_multiplier,
     no_truncation
   > zpoly;

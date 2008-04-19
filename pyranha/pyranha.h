@@ -200,6 +200,13 @@ template <class T>
 }
 
 template <class T>
+  void common_polynomial_instantiation(class_<T> &inst)
+{
+  inst.def("degree",&T::degree,"Get the degree of the polynomial.");
+  inst.def("min_degree",&T::min_degree,"Get the minimum degree of the polynomial.");
+}
+
+template <class T>
   void ps_instantiate_differential_specifics(class_<T> &inst)
 {
   inst.def("partial", &T::partial);

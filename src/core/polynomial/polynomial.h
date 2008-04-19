@@ -29,6 +29,7 @@
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../settings.h"
 
@@ -40,6 +41,7 @@
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
+#define __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL >
 
 namespace piranha
 {
@@ -91,6 +93,7 @@ namespace piranha
     class polynomial:
     public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
@@ -105,7 +108,7 @@ namespace piranha
       typedef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
       typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
-      typedef typename container_type::template nth_index<0>::type pinpoint_index;
+      typedef typename container_type::template nth_index<1>::type pinpoint_index;
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
@@ -139,10 +142,10 @@ namespace piranha
         named_ancestor::template construct_from_psymbol<0>(p);
       }
       // Needed getters and setters.
-      template <int>
-        container_type &nth_index() {return m_container;}
-      template <int>
-        const container_type &nth_index() const {return m_container;}
+      template <int N>
+        typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
+      template <int N>
+        const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
     private:
       container_type  m_container;
   };
@@ -154,5 +157,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR
 
 #endif

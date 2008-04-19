@@ -28,6 +28,7 @@ BOOST_PYTHON_MODULE(_Dpoly)
     std::string("Multivariate polynomial with double precision coefficients."));
   //series_trigonometric_instantiation(inst);
   series_psymbol_instantiation(inst);
+  common_polynomial_instantiation(inst);
   //ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);
   def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,

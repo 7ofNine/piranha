@@ -27,6 +27,7 @@
 #include "../base_classes/cf_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
+#include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../settings.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
@@ -37,12 +38,14 @@
 #define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
+#define __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL_CF >
 
 namespace piranha
 {
   template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
     class polynomial_cf:
     public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
   {
@@ -98,14 +101,6 @@ namespace piranha
       template <int N>
         const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
       // TODO: place some of these methods into common polynomial toolbox?
-      int get_degree() const
-      {
-        if (nth_index<0>().empty())
-        {
-          return 0;
-        }
-        return nth_index<0>().begin()->m_key.get_degree();
-      }
       /// Return a vector of integers representing the polynomial.
       /**
        * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
@@ -130,5 +125,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR
 
 #endif

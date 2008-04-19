@@ -18,19 +18,48 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
+#define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
-BOOST_PYTHON_MODULE(_Zpoly)
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+
+namespace piranha
 {
-  translate_exceptions();
-
-  class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
-    std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-  //series_trigonometric_instantiation(inst);
-  series_psymbol_instantiation(inst);
-  common_polynomial_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+  /// Common polynomial toolbox.
+  template <class Derived>
+    struct common_polynomial_toolbox
+  {
+    /// Get the degree of the polynomial.
+    /**
+     * This method assumes that the monomials are sorted in ascending total degree.
+     */
+    int degree() const
+    {
+      if (derived_const_cast->template nth_index<0>().empty())
+      {
+        return 0;
+      }
+      typename Derived::const_sorted_iterator it = derived_const_cast->template nth_index<0>().end();
+      --it;
+      return it->m_key.degree();
+    }
+    /// Get the minimum degree of the polynomial.
+    /**
+     * This method assumes that the monomials are sorted in ascending total degree.
+     */
+    int min_degree() const
+    {
+      if (derived_const_cast->template nth_index<0>().empty())
+      {
+        return 0;
+      }
+      return derived_const_cast->template nth_index<0>().begin()->m_key.degree();
+    }
+  };
 }
+
+#undef derived_const_cast
+#undef derived_cast
+
+#endif

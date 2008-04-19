@@ -49,37 +49,25 @@ namespace piranha
     int operator()(const Term &t) const
     {
       p_assert((arg_manager<Term>::assigned()));
-      return t.m_key.get_degree();
+      return t.m_key.degree();
     }
   };
 
-  // Key minimum degree extractor.
+  // Coefficient minimum degree extractor.
   template <class Term>
-    struct key_min_degree_extractor
-  {
-    typedef int result_type;
-    int operator()(const Term &t) const
-    {
-      p_assert((arg_manager<Term>::assigned()));
-      return t.m_key.get_min_degree();
-    }
-  };
-
-  // Coefficient degree extractor.
-  template <class Term>
-    struct cf_degree_extractor
+    struct cf_min_degree_extractor
   {
     typedef int result_type;
     double operator()(const Term &t) const
     {
       p_assert((arg_manager<Term>::assigned()));
-      return t.m_cf.get_degree();
+      return t.m_cf.min_degree();
     }
   };
 
-  /// Index based on the degree of the coefficient.
+  /// Index based on the minimum degree of the coefficient.
   template <class Term>
-    struct cf_degree_index
+    struct cf_min_degree_index
   {
     typedef boost::multi_index::indexed_by
     <
@@ -89,7 +77,7 @@ namespace piranha
         boost::multi_index::composite_key
         <
           Term,
-          cf_degree_extractor<Term>,
+          cf_min_degree_extractor<Term>,
           key_extractor<Term>
         >,
         boost::multi_index::composite_key_compare
@@ -103,9 +91,9 @@ namespace piranha
     type;
   };
 
-  /// Index based on the minimum degree of the key.
+  /// Index based on the degree of the key.
   template <class Term>
-    struct key_min_degree_index
+    struct key_degree_index
   {
     typedef boost::multi_index::indexed_by
     <
@@ -115,14 +103,12 @@ namespace piranha
         boost::multi_index::composite_key
         <
           Term,
-          key_min_degree_extractor<Term>,
           key_degree_extractor<Term>,
           key_extractor<Term>
         >,
         boost::multi_index::composite_key_compare
         <
           std::less<int>,
-          std::less<int>,
           std::less<typename Term::key_type>
         >
       >,
@@ -131,7 +117,7 @@ namespace piranha
     type;
   };
 
-  // Norm extractor. Operates on coefficient.
+  // Norm extractor. Operates on coefficients.
   template <class Term>
     struct norm_extractor
   {
@@ -164,28 +150,6 @@ namespace piranha
         >
       >,
       boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-    >
-    type;
-  };
-
-  /// Hashed index on terms.
-  template <class Term>
-    struct key_hash_index
-  {
-    typedef boost::multi_index::indexed_by
-    <
-      boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-    >
-    type;
-  };
-
-  /// Sorted index on terms.
-  template <class Term>
-    struct key_sorted_index
-  {
-    typedef boost::multi_index::indexed_by
-    <
-      boost::multi_index::ordered_unique<boost::multi_index::identity<Term> >
     >
     type;
   };

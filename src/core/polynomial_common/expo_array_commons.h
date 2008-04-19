@@ -111,33 +111,12 @@ namespace piranha
         return derived_const_cast->elements_hasher();
       }
       /// Return the total degree of the exponents array.
-      int get_degree() const
+      int degree() const
       {
         int retval = 0;
         for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
         {
           retval+=(*derived_const_cast)[i];
-        }
-        return retval;
-      }
-      /// Return the minimum degree of the exponents array.
-      int get_min_degree() const
-      {
-        int retval = 0;
-        if (derived_const_cast->m_size > 0)
-        {
-          retval = (*derived_const_cast)[0];
-        }
-        else
-        {
-          return retval;
-        }
-        for (typename Derived::size_type i=1; i < derived_const_cast->m_size; ++i)
-        {
-          if ((*derived_const_cast)[i] < retval)
-          {
-            retval = (*derived_const_cast)[i];
-          }
         }
         return retval;
       }
