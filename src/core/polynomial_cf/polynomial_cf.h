@@ -108,8 +108,8 @@ namespace piranha
       }
       /// Return a vector of integers representing the polynomial.
       /**
-       * If the polynomial is not a linear combination of arguments with integer coefficients, it throws an exception.
-       * Otherwise, polynomial coefficient are stored into v. Used in the calculation of circular functions of Poisson series.
+       * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
+       * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of Poisson series.
        */
       void get_int_linear_combination(std::vector<int> &v) const throw (unsuitable)
       {
