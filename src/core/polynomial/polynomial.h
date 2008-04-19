@@ -151,6 +151,17 @@ namespace piranha
   };
 }
 
+// Overload standard math functions for polynomials.
+namespace std
+{
+  template < __PIRANHA_POLYNOMIAL_TP_DECL >
+    piranha::__PIRANHA_POLYNOMIAL pow(const piranha::__PIRANHA_POLYNOMIAL &x, const double &y)
+  {
+    piranha::__PIRANHA_POLYNOMIAL retval(x.pow(y));
+    return retval;
+  }
+}
+
 #undef __PIRANHA_POLYNOMIAL_TP_DECL
 #undef __PIRANHA_POLYNOMIAL_TP
 #undef __PIRANHA_POLYNOMIAL

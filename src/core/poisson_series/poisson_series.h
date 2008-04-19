@@ -118,19 +118,27 @@ namespace piranha
   };
 }
 
+// Overload standard math functions for Poisson series.
 namespace std
 {
   template <__PIRANHA_POISSON_SERIES_TP_DECL>
-    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> cos(const piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> &p)
+    piranha::__PIRANHA_POISSON_SERIES cos(const piranha::__PIRANHA_POISSON_SERIES &p)
   {
-    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> retval = p.cos();
+    piranha::__PIRANHA_POISSON_SERIES retval = p.cos();
     return retval;
   }
 
   template <__PIRANHA_POISSON_SERIES_TP_DECL>
-    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> sin(const piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> &p)
+    piranha::__PIRANHA_POISSON_SERIES sin(const piranha::__PIRANHA_POISSON_SERIES &p)
   {
-    piranha::poisson_series<__PIRANHA_POISSON_SERIES_TP> retval = p.sin();
+    piranha::__PIRANHA_POISSON_SERIES retval = p.sin();
+    return retval;
+  }
+
+  template < __PIRANHA_POISSON_SERIES_TP_DECL >
+    piranha::__PIRANHA_POISSON_SERIES pow(const piranha::__PIRANHA_POISSON_SERIES &x, const double &y)
+  {
+    piranha::__PIRANHA_POISSON_SERIES retval(x.pow(y));
     return retval;
   }
 }

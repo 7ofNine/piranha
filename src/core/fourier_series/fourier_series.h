@@ -23,6 +23,7 @@
 
 #include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
+#include <cmath>
 #include <memory> // For default allocator.
 
 #include "../arg_manager.h"
@@ -99,6 +100,18 @@ namespace piranha
     private:
       container_type  m_container;
   };
+}
+
+// Overload standard math functions for Fourier series.
+namespace std
+{
+  // Overload power function for Fourier series.
+  template < __PIRANHA_FOURIER_SERIES_TP_DECL >
+    piranha::__PIRANHA_FOURIER_SERIES pow(const piranha::__PIRANHA_FOURIER_SERIES &x, const double &y)
+  {
+    piranha::__PIRANHA_FOURIER_SERIES retval(x.pow(y));
+    return retval;
+  }
 }
 
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL
