@@ -75,9 +75,9 @@ namespace piranha
       {
         return g_value().get_d();
       }
-      // Accumulate coefficients during polynomial multiplication.
+      // Multiply and add.
       template <class ArgsTuple>
-        void poly_accumulation(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &)
+        void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &)
       {
         mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
       }

@@ -166,9 +166,9 @@ namespace piranha
       {
         return divide_by_generic(x);
       }
-      // Accumulate coefficients during polynomial multiplication.
+      // Multiply and add.
       template <class ArgsTuple>
-        void poly_accumulation(const Derived &x1, const Derived &x2, const ArgsTuple &)
+        void addmul(const Derived &x1, const Derived &x2, const ArgsTuple &)
       {
         m_value += x1.m_value * x2.m_value;
       }

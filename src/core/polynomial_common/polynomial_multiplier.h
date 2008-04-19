@@ -163,7 +163,7 @@ namespace piranha
             switch (ancestor::m_trunc.accept(res_index,*this))
             {
               case true:
-                vc_res[res_index].poly_accumulation(
+                vc_res[res_index].addmul(
                   series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
                   series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
                   ancestor::m_args_tuple);
@@ -243,7 +243,7 @@ namespace piranha
                     break;
                   }
                   case false:
-                    it->m_cf.poly_accumulation(
+                    it->m_cf.addmul(
                       series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
                       series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
                       ancestor::m_args_tuple);
