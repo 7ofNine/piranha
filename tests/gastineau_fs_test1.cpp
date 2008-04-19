@@ -20,17 +20,18 @@
 
 #include <iostream>
 
-#include "../src/manipulators/fs.h"
+#include "../src/piranha.h"
 
+using namespace piranha;
 using namespace piranha::manipulators;
 
-typedef fs stype;
+typedef dfs stype;
 
 // Gastineau's test on Fourier series: power two of elp3 series without truncation, done 20 times.
 
 int main()
 {
-  stype::set_truncation(0);
+  base_norm_truncator::set(0);
   stype elp3("elp3.fs"), elp3a(elp3);
   for (size_t i = 0; i < 20; ++i)
   {
