@@ -111,15 +111,6 @@ namespace piranha
       // End INTERFACE definition.
       //-------------------------------------------------------
   };
-
-  // Representation for trigonometric array during series multiplication is a const pointer.
-  template <__PIRANHA_TRIG_ARRAY_TP_DECL>
-    struct series_mult_rep<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
-  {
-    typedef trig_array<__PIRANHA_TRIG_ARRAY_TP> const * type;
-    static const trig_array<__PIRANHA_TRIG_ARRAY_TP> &get(type p) {return *p;}
-    static void assign(type &res, const trig_array<__PIRANHA_TRIG_ARRAY_TP> &source) {res=&source;}
-  };
 }
 
 #undef __PIRANHA_TRIG_ARRAY_TP_DECL

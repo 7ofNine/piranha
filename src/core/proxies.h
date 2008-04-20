@@ -18,31 +18,66 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_TYPE_TRAITS_H
-#define PIRANHA_TYPE_TRAITS_H
+#ifndef PIRANHA_PROXIES_H
+#define PIRANHA_PROXIES_H
 
-#include <complex>
+/*! \file proxies.h
+    \brief Proxies.
+    
+    Classes implementing the proxy pattern.
+*/
 
 namespace piranha
 {
-  /// Evaluation type trait.
-  /**
-   * Specifies the type of evaluation: default is double.
-   */
   template <class T>
-    struct eval_type
+    struct copy_proxy
   {
-    typedef double type;
+      copy_proxy():m_element() {}
+      const T &get() const {return m_element;}
+      void assignment(const T &x) {m_element = x;}
+    protected:
+      T m_element;
   };
 
-  /// Complex specialization for evaluation type trait.
-  /**
-   * Evaluation type is the complex counterpart of real evaluation type.
-   */
   template <class T>
-    struct eval_type<std::complex<T> >
+    struct reference_proxy
   {
-    typedef std::complex<typename eval_type<T>::type> type;
+      reference_proxy():m_element(0) {}
+      const T &get() const
+      {
+        p_assert(m_element != 0);
+        return *m_element;
+      }
+      void assignment(const T &x) {m_element = &x;}
+    protected:
+      T const *m_element;
+  };
+
+  /// Proxy for coefficients during series multiplication.
+  /**
+   * Defaults to copying. Use template specialization to change the behaviour.
+   */
+  template <class Cf>
+    class cf_mult_proxy:public copy_proxy<Cf>
+  {
+      typedef copy_proxy<Cf> ancestor;
+    public:
+      cf_mult_proxy():ancestor() {}
+      void operator=(const Cf &cf) {ancestor::assignment(cf);}
+  };
+
+  /// Proxy for keys during series multiplication.
+  /**
+   * Defaults to referencing. Use template specialization to change the behaviour.
+   */
+  template <class Key>
+    class key_mult_proxy:public reference_proxy<Key>
+  {
+      typedef reference_proxy<Key> ancestor;
+    public:
+      key_mult_proxy():ancestor() {}
+      void operator=(const Key &key) {ancestor::assignment(key);}
   };
 }
+
 #endif

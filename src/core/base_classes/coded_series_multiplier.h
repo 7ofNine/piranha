@@ -200,13 +200,13 @@ namespace piranha
         size_t i;
         for (i = 0; i < derived_const_cast->m_size1; ++i)
         {
-          series_mult_rep<cf_type1>::assign(derived_const_cast->m_cfs1[i],it1->m_cf);
+          derived_const_cast->m_cfs1[i] = it1->m_cf;
           it1->m_key.code(m_coding_vector,m_ckeys1[i],derived_const_cast->m_args_tuple);
           ++it1;
         }
         for (i = 0; i < derived_const_cast->m_size2; ++i)
         {
-          series_mult_rep<cf_type2>::assign(derived_const_cast->m_cfs2[i],it2->m_cf);
+          derived_const_cast->m_cfs2[i] = it2->m_cf;
           it2->m_key.code(m_coding_vector,m_ckeys2[i],derived_const_cast->m_args_tuple);
           ++it2;
         }

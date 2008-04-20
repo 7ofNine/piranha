@@ -167,12 +167,8 @@ std::cout << "Going for Poisson coded\n";
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
-            if (ancestor::m_trunc.skip(
-              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
-              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              *this))
+            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i],
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j],*this))
             {
               break;
             }
@@ -181,8 +177,8 @@ std::cout << "Going for Poisson coded\n";
             // so that we can avoid copying stuff around here and elsewhere?
             // TODO: don't create a tmp_cf each time, create it outside the loop and assign it here.
             // For nontrivial coefficients we can save a lot of memory allocations.
-            cf_type1 tmp_cf(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]));
-            tmp_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+            cf_type1 tmp_cf(ancestor::m_cfs1[i].get());
+            tmp_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
             tmp_cf.divide_by(2,ancestor::m_args_tuple);
             const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
               index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
@@ -271,20 +267,16 @@ std::cout << "Going for Poisson coded\n";
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
-            if (ancestor::m_trunc.skip(
-              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
-              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              *this))
+            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
             {
               break;
             }
             // TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
             // generating only one coefficient and change its sign later if needed - after insertion.
-            cterm tmp_term1(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),coded_ancestor::m_ckeys1[i]);
+            cterm tmp_term1(ancestor::m_cfs1[i].get(),coded_ancestor::m_ckeys1[i]);
             // Handle the coefficient, with positive signs for now.
-            tmp_term1.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+            tmp_term1.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
             tmp_term1.m_cf.divide_by(2,ancestor::m_args_tuple);
             tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
             // Create the second term, using the first one's coefficient and the appropriate code.

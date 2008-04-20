@@ -151,22 +151,15 @@ namespace piranha
           {
             // Calculate index of the result.
             const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
-            if (ancestor::m_trunc.skip(
-              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
-              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              *this))
+            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i],ancestor::m_keys1[i],
+              ancestor::m_cfs2[j],ancestor::m_keys2[j],*this))
             {
               break;
             }
             switch (ancestor::m_trunc.accept(res_index,*this))
             {
               case true:
-                vc_res[res_index].addmul(
-                  series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-                  series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-                  ancestor::m_args_tuple);
+                vc_res[res_index].addmul(ancestor::m_cfs1[i].get(),ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
                 break;
               case false:
                 ;
@@ -217,12 +210,8 @@ namespace piranha
           const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
-            if (ancestor::m_trunc.skip(
-              series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-              series_mult_rep<key_type>::get(ancestor::m_keys1[i]),
-              series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-              series_mult_rep<key_type>::get(ancestor::m_keys2[j]),
-              *this))
+            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i],ancestor::m_keys1[i],
+              ancestor::m_cfs2[j],ancestor::m_keys2[j],*this))
             {
               break;
             }
@@ -236,17 +225,14 @@ namespace piranha
                   case true:
                   {
                     // Create new temporary term from old cf and new key.
-                    cterm tmp_term(series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),new_key);
+                    cterm tmp_term(ancestor::m_cfs1[i].get(),new_key);
                     // Multiply the old term by the second term.
-                    tmp_term.m_cf.mult_by(series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),ancestor::m_args_tuple);
+                    tmp_term.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
                     cms.insert(tmp_term);
                     break;
                   }
                   case false:
-                    it->m_cf.addmul(
-                      series_mult_rep<cf_type1>::get(ancestor::m_cfs1[i]),
-                      series_mult_rep<cf_type2>::get(ancestor::m_cfs2[j]),
-                      ancestor::m_args_tuple);
+                    it->m_cf.addmul(ancestor::m_cfs1[i].get(),ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
                 }
               case false:
                 ;

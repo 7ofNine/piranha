@@ -75,15 +75,6 @@ namespace piranha
       template <class T, class ArgsTuple>
         Derived &divide_by_generic(const T &, const ArgsTuple &);
   };
-
-  // Representation for coefficient series during series multiplication is a const pointer.
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    struct series_mult_rep<cf_series<__PIRANHA_CF_SERIES_TP> >
-  {
-    typedef cf_series<__PIRANHA_CF_SERIES_TP> const * type;
-    static const cf_series<__PIRANHA_CF_SERIES_TP> &get(type p) {return *p;}
-    static void assign(type &res, const cf_series<__PIRANHA_CF_SERIES_TP> &source) {res=&source;}
-  };
 }
 
 #include "cf_series_io.h"

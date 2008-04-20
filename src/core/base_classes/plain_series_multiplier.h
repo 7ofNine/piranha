@@ -27,8 +27,8 @@
 #include <valarray>
 
 #include "../p_assert.h"
+#include "../proxies.h"
 #include "../settings.h"
-#include "../type_traits.h"
 #include "plain_series_multiplier_mp.h"
 
 namespace piranha
@@ -66,9 +66,9 @@ namespace piranha
       >
       mult_set;
     private:
-      typedef typename series_mult_rep<cf_type1>::type sm_cf1;
-      typedef typename series_mult_rep<cf_type2>::type sm_cf2;
-      typedef typename series_mult_rep<key_type>::type sm_key;
+      typedef cf_mult_proxy<cf_type1> cf_proxy_type1;
+      typedef cf_mult_proxy<cf_type2> cf_proxy_type2;
+      typedef key_mult_proxy<key_type> key_proxy_type;
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_args_tuple(args_tuple),m_size1(m_s1.template nth_index<0>().size()),
@@ -92,16 +92,16 @@ namespace piranha
       }
       template <class Series>
         void cache_series_terms(const Series &s,
-        std::valarray<typename series_mult_rep<typename Series::term_type::cf_type>::type> &cfs,
-        std::valarray<typename series_mult_rep<typename Series::term_type::key_type>::type> &keys)
+        std::valarray<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
+        std::valarray<key_mult_proxy<typename Series::term_type::key_type> > &keys)
       {
         typedef typename Series::const_sorted_iterator const_sorted_iterator;
         const const_sorted_iterator it_f = s.template nth_index<0>().end();
         size_t i=0;
         for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it)
         {
-          series_mult_rep<typename Series::term_type::cf_type>::assign(cfs[i],it->m_cf); 
-          series_mult_rep<typename Series::term_type::key_type>::assign(keys[i],it->m_key);
+          cfs[i] = it->m_cf;
+          keys[i] = it->m_key;
           ++i;
         }
       }
@@ -116,21 +116,11 @@ namespace piranha
         {
           for (size_t j = 0; j < size2; ++j)
           {
-            if (m_trunc.skip(
-              series_mult_rep<cf_type1>::get(m_cfs1[i]),
-              series_mult_rep<key_type>::get(m_keys1[i]),
-              series_mult_rep<cf_type2>::get(m_cfs2[j]),
-              series_mult_rep<key_type>::get(m_keys2[j]),
-              *this))
+            if (m_trunc.skip(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),*this))
             {
               break;
             }
-            term_type::multiply(
-              series_mult_rep<cf_type1>::get(m_cfs1[i]),
-              series_mult_rep<key_type>::get(m_keys1[i]),
-              series_mult_rep<cf_type2>::get(m_cfs2[j]),
-              series_mult_rep<key_type>::get(m_keys2[j]),
-              res,m_args_tuple);
+            term_type::multiply(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),res,m_args_tuple);
             insert_multiplication_result<mult_res>::run(res,*this);
           }
         }
@@ -162,26 +152,26 @@ namespace piranha
     public:
       // These needs to be public since they will be accessed by the truncators.
       // References to the series.
-      const Series1           &m_s1;
-      const Series2           &m_s2;
+      const Series1                 &m_s1;
+      const Series2                 &m_s2;
       // Reference to the arguments tuple.
-      const ArgsTuple         &m_args_tuple;
+      const ArgsTuple               &m_args_tuple;
     protected:
       // Sizes of the series.
-      const size_t            m_size1;
-      const size_t            m_size2;
-      Series1                 &m_retval;
+      const size_t                  m_size1;
+      const size_t                  m_size2;
+      Series1                       &m_retval;
       // Vectors of input coefficients converted for representation during series multiplication.
-      std::valarray<sm_cf1>   m_cfs1;
-      std::valarray<sm_cf2>   m_cfs2;
+      std::valarray<cf_proxy_type1> m_cfs1;
+      std::valarray<cf_proxy_type2> m_cfs2;
       // Vectors of input keys converted for representation during series multiplication.
-      std::valarray<sm_key>   m_keys1;
-      std::valarray<sm_key>   m_keys2;
+      std::valarray<key_proxy_type> m_keys1;
+      std::valarray<key_proxy_type> m_keys2;
       // Container to store the result of the multiplications.
-      mult_set                m_set;
+      mult_set                      m_set;
       // Truncator. This must be the last one defined because it will take *this
       // as parameter for construction.
-      truncator_type          m_trunc;
+      truncator_type                m_trunc;
   };
 }
 

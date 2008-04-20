@@ -26,6 +26,7 @@
 #include <gmpxx.h>
 
 #include "../base_classes/numerical_container.h"
+#include "../proxies.h"
 
 namespace piranha
 {
@@ -94,6 +95,16 @@ namespace piranha
 //       {
 //         mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
 //       }
+  };
+
+  // Specialisation of cf mult proxy to use reference.
+  template <>
+    class cf_mult_proxy<mpq_cf>:public reference_proxy<mpq_cf>
+  {
+      typedef reference_proxy<mpq_cf> ancestor;
+    public:
+      cf_mult_proxy():ancestor() {}
+      void operator=(const mpq_cf &cf) {ancestor::assignment(cf);}
   };
 }
 

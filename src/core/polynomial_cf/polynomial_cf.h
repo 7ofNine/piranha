@@ -28,6 +28,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
+#include "../proxies.h"
 #include "../settings.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
@@ -104,7 +105,8 @@ namespace piranha
       /// Return a vector of integers representing the polynomial.
       /**
        * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
-       * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of Poisson series.
+       * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of 
+       * Poisson series.
        */
       void get_int_linear_combination(std::vector<int> &v) const throw (unsuitable)
       {
@@ -116,6 +118,17 @@ namespace piranha
       }
     private:
       container_type  m_container;
+  };
+
+  // Specialisation of cf mult proxy to use reference.
+  template < __PIRANHA_POLYNOMIAL_CF_TP_DECL >
+    class cf_mult_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >:
+    public reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >
+  {
+      typedef reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> > ancestor;
+    public:
+      cf_mult_proxy():ancestor() {}
+      void operator=(const polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> &cf) {ancestor::assignment(cf);}
   };
 }
 
