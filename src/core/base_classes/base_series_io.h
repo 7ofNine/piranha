@@ -84,10 +84,10 @@ namespace piranha
     return retval;
   }
 
-  /// Constructor from psymbol and from position in the arguments set.
+  /// Constructor from psym and from position in the arguments set.
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psymbol_p(const psym_p &p, const int &n, const ArgsTuple &a)
+    inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n, const ArgsTuple &a)
   {
     p_assert(derived_cast->template nth_index<0>().empty());
     insert(term_type(cf_type(p,n,a),key_type(p,n,a)),a,derived_cast->template nth_index<0>().end());

@@ -29,7 +29,7 @@
 #include <vector>
 
 #include "../exceptions.h"
-#include "../psymbol.h"
+#include "../psym.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))

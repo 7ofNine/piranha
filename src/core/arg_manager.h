@@ -26,7 +26,7 @@
 
 #include "arg_manager_mp.h"
 #include "ntuple.h"
-#include "psymbol.h"
+#include "psym.h"
 
 namespace piranha
 {

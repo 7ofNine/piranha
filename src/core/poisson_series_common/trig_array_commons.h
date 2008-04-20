@@ -29,7 +29,7 @@
 #include <vector>
 
 #include "../integer_typedefs.h" // For max_fast_int.
-#include "../psymbol.h"
+#include "../psym.h"
 #include "trig_evaluator.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
@@ -132,17 +132,17 @@ namespace piranha
       }
       /// Frequency.
       /**
-       * Get the frequency of the linear combination, given a vector of piranha::psymbol pointers describing
+       * Get the frequency of the linear combination, given a vector of piranha::psym pointers describing
        * the arguments.
-       * @param[in] v vector of piranha::psymbol pointers.
+       * @param[in] v vector of piranha::psym pointers.
        */
       template <class ArgsTuple>
         double freq(const ArgsTuple &args_tuple) const {return combined_time_eval<1>(args_tuple);}
       /// Phase.
       /**
-       * Get the phase of the linear combination, given a vector of piranha::psymbol pointers describing the
+       * Get the phase of the linear combination, given a vector of piranha::psym pointers describing the
        * arguments.
-       * @param[in] v vector of piranha::psymbol pointers.
+       * @param[in] v vector of piranha::psym pointers.
        */
       template <class ArgsTuple>
         double phase(const ArgsTuple &args_tuple) const {return combined_time_eval<0>(args_tuple);}
@@ -161,7 +161,7 @@ namespace piranha
       /**
        * Returns the value assumed by the linear combination of arguments at time t.
        * @param[in] t double time of the evaluation.
-       * @param[in] v vector of piranha::psymbol pointers.
+       * @param[in] v vector of piranha::psym pointers.
        */
       template <class ArgsTuple>
         double eval(const double &t, const ArgsTuple &args_tuple) const

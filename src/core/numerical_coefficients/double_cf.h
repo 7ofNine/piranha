@@ -26,7 +26,7 @@
 
 #include "../exceptions.h"
 #include "../math.h" // besselJ.
-#include "../psymbol.h"
+#include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../base_classes/numerical_container.h"
 
@@ -61,7 +61,7 @@ namespace piranha
       /// Constructor from double.
       template <class ArgsTuple>
         explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
-      /// Constructor from psymbol.
+      /// Constructor from psym.
       template <class ArgsTuple>
         explicit double_cf(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::numerical_container(p,n,a) {}
       int get_int() const throw (unsuitable)

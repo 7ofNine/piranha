@@ -27,7 +27,7 @@
 #include <sstream>
 
 #include "../exceptions.h"
-#include "../psymbol.h"
+#include "../psym.h"
 
 namespace piranha
 {
@@ -152,7 +152,7 @@ namespace piranha
       {
         std::cout << "Finished parsing " << name << " argument." << std::endl;
         inf.seekg(cur_pos);
-        append_arg(name,psymbol_manager::get_pointer(psymbol(temp_name,temp_time_eval)));
+        append_arg(name,psym_manager::get_pointer(psym(temp_name,temp_time_eval)));
         return;
       }
       std::vector<std::string> split_v;
@@ -236,14 +236,14 @@ namespace piranha
     return retval;
   }
 
-  /// Constructor from psymbol and from position in the arguments set.
+  /// Constructor from psym and from position in the arguments set.
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     template <int N>
-    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psymbol(const psymbol &psym)
+    inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const psym &psym)
   {
-    psym_p p(psymbol_manager::get_pointer(psym));
+    psym_p p(psym_manager::get_pointer(psym));
     append_arg<N>(p);
-    derived_cast->construct_from_psymbol_p(p,N,m_arguments);
+    derived_cast->construct_from_psym_p(p,N,m_arguments);
   }
 }
 

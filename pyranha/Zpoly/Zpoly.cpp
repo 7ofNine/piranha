@@ -27,7 +27,6 @@ BOOST_PYTHON_MODULE(_Zpoly)
   class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
     std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
   //series_trigonometric_instantiation(inst);
-  series_psymbol_instantiation(inst);
   common_polynomial_instantiation(inst);
   //ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);

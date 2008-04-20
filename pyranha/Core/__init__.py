@@ -39,7 +39,7 @@ def sin(arg):
 def copy(arg):
   return __copy.copy(arg)
 
-psymbol_manager = _Core.__psymbol_manager()
+psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
 

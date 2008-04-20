@@ -102,11 +102,11 @@ namespace piranha
         nth_index<1>().max_load_factor(settings::load_factor());
         base_ancestor::construct_from_number(x,named_ancestor::m_arguments);
       }
-      // Ctor from psymbol
-      explicit poisson_series(const psymbol &p)
+      // Ctor from psym
+      explicit poisson_series(const psym &p)
       {
         nth_index<1>().max_load_factor(settings::load_factor());
-        named_ancestor::template construct_from_psymbol<0>(p);
+        named_ancestor::template construct_from_psym<0>(p);
       }
       // Needed getters and setters.
       template <int N>

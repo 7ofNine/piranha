@@ -16,7 +16,7 @@ SET(SRC_LIST ${SRC_LIST}
   settings.cpp
   stats.cpp
   stream_manager.cpp
-  psymbol.cpp
+  psym.cpp
   compile_switches.cpp
 )
 

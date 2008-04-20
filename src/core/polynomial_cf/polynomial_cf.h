@@ -93,7 +93,7 @@ namespace piranha
         explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a)
       {
         nth_index<1>().max_load_factor(settings::load_factor());
-        base_ancestor::construct_from_psymbol_p(p,n,a);
+        base_ancestor::construct_from_psym_p(p,n,a);
       }
       // Needed getters and setters.
       template <int N>

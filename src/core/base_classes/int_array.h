@@ -87,7 +87,7 @@ namespace piranha
       {
         packed_copy(m_ptr,v.m_ptr,m_size,m_pack_size);
       }
-      /// Ctor from psymbol.
+      /// Ctor from psym.
       /**
        * If the position mathches input integer n, then set the flavour to true, resize to one element and set it to one.
        */

@@ -103,14 +103,14 @@ BOOST_PYTHON_MODULE(_Core)
     .def("pack_ratio",&stats::pack_ratio)
     .staticmethod("pack_ratio");
 
-  // Psymbol manager.
-  class_<psymbol_manager>("__psymbol_manager","Manager for psymbols.",init<>())
-    .def("__iter__",iterator<psymbol_manager,return_internal_reference<> >()).staticmethod("__iter__")
-    .def("__len__",&psymbol_manager::length).staticmethod("__len__")
-    .def("__repr__",&psymbol_manager::print_to_string).staticmethod("__repr__");
+  // Psym manager.
+  class_<psym_manager>("__psym_manager","Manager for symbols.",init<>())
+    .def("__iter__",iterator<psym_manager,return_internal_reference<> >()).staticmethod("__iter__")
+    .def("__len__",&psym_manager::length).staticmethod("__len__")
+    .def("__repr__",&psym_manager::print_to_string).staticmethod("__repr__");
 
-  // Psymbol.
-  class_<psymbol>("psymbol","Symbolic argument class.",init<const std::string &>())
+  // Psym.
+  class_<psym>("psym","Symbol class.",init<const std::string &>())
     .def(init<const std::string &, const std::string &>())
     .def(init<const std::string &, const double &>())
     .def(init<const std::string &, const double &, const double &>())
@@ -118,8 +118,8 @@ BOOST_PYTHON_MODULE(_Core)
     .def(init<const std::string &, const double &, const double &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &, const double &,
     const double &>())
-    .def("__copy__",&psymbol::copy)
-    .def("__repr__",&psymbol::print_to_string);
+    .def("__copy__",&psym::copy)
+    .def("__repr__",&psym::print_to_string);
 
   class_<base_expo_truncator>("__expo_truncator","Exponent truncator.",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")

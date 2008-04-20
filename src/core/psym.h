@@ -42,7 +42,7 @@
 
 namespace piranha
 {
-  struct psymbol_manager
+  struct psym_manager
   {
       /// Literal symbol class.
       /**
@@ -56,28 +56,28 @@ namespace piranha
         * where \f$ t \f$ is time.
         * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
         */
-      struct psymbol
+      struct psym
       {
-          friend class psymbol_manager;
+          friend class psym_manager;
           // Ctors
           /// Constructor from two std::string objects
           /**
-            * Assigns both psymbol::m_name and psymbol::m_time_eval by parsing the two strings.
+            * Assigns both psym::m_name and psym::m_time_eval by parsing the two strings.
             * @param[in] name symbol's name.
             * @param[in] te symbol's time evaluation expressed in string format.
             */
-          psymbol(const std::string &name, const std::string &te):m_name(name),
+          psym(const std::string &name, const std::string &te):m_name(name),
             m_time_eval(utils::str_to_vector<double>(te,separator))
           {
             reg(*this);
           }
           /// Constructor from std::string.
           /**
-          * Constructs a psymbol with empty time evaluation
+          * Constructs a psym with empty time evaluation
           */
-          psymbol(const std::string &str):m_name(str),m_time_eval() {reg(*this);}
+          psym(const std::string &str):m_name(str),m_time_eval() {reg(*this);}
           // Constructors from multiple values for time evlauation.
-          psymbol(const std::string &s, const double &x1):m_name(s),m_time_eval((size_t)1)
+          psym(const std::string &s, const double &x1):m_name(s),m_time_eval((size_t)1)
           {
             boost::array<double,1> tmp =
             {
@@ -87,7 +87,7 @@ namespace piranha
             };
             build_from_array(tmp);
           }
-          psymbol(const std::string &s, const double &x1, const double &x2):m_name(s),m_time_eval((size_t)2)
+          psym(const std::string &s, const double &x1, const double &x2):m_name(s),m_time_eval((size_t)2)
           {
             boost::array<double,2> tmp =
             {
@@ -97,7 +97,7 @@ namespace piranha
             };
             build_from_array(tmp);
           }
-          psymbol(const std::string &s, const double &x1, const double &x2, const double &x3):
+          psym(const std::string &s, const double &x1, const double &x2, const double &x3):
             m_name(s),m_time_eval((size_t)3)
           {
             boost::array<double,3> tmp =
@@ -108,7 +108,7 @@ namespace piranha
             };
             build_from_array(tmp);
           }
-          psymbol(const std::string &s, const double &x1, const double &x2, const double &x3, const double &x4):
+          psym(const std::string &s, const double &x1, const double &x2, const double &x3, const double &x4):
             m_name(s),m_time_eval((size_t)4)
           {
             boost::array<double,4> tmp =
@@ -119,7 +119,7 @@ namespace piranha
             };
             build_from_array(tmp);
           }
-          psymbol(const std::string &s, const double &x1, const double &x2, const double &x3,
+          psym(const std::string &s, const double &x1, const double &x2, const double &x3,
             const double &x4, const double &x5):m_name(s),m_time_eval((size_t)5)
           {
             boost::array<double,5> tmp =
@@ -131,9 +131,9 @@ namespace piranha
             build_from_array(tmp);
           }
           /// Copy function used in Pyranha.
-          psymbol copy() const
+          psym copy() const
           {
-            return psymbol(*this);
+            return psym(*this);
           }
           /// Print to stream.
           void print(std::ostream &out_stream = std::cout) const
@@ -188,23 +188,23 @@ namespace piranha
         private:
           // Data members.
           const std::string                             m_name;
-          // Mutable because we want to be able to freely change it in the psymbol manager.
+          // Mutable because we want to be able to freely change it in the psym manager.
           mutable std::vector<double>                   m_time_eval;
           __PIRANHA_VISIBLE static const std::string    separator;
       };
     private:
       typedef boost::multi_index_container
       <
-        psymbol,
+        psym,
         boost::multi_index::indexed_by
         <
-          boost::multi_index::ordered_unique<boost::multi_index::const_mem_fun<psymbol,std::string,&psymbol::name> >
+          boost::multi_index::ordered_unique<boost::multi_index::const_mem_fun<psym,std::string,&psym::name> >
         >
       > set_type;
     public:
       typedef set_type::iterator psym_p;
       typedef psym_p iterator;
-      static psym_p get_pointer(const psymbol &psym)
+      static psym_p get_pointer(const psym &psym)
       {
         psym_p retval(get_pointer(psym.m_name));
         return retval;
@@ -241,7 +241,7 @@ namespace piranha
       static iterator begin() {return set.begin();}
       static iterator end() {return set.end();}
     private:
-      static void reg(const psymbol &psym)
+      static void reg(const psym &psym)
       {
         const psym_p it = set.find(psym.m_name);
         if (it == set.end())
@@ -261,8 +261,8 @@ namespace piranha
   };
 
   /// Typedefs used in series, terms, coefficients and trigonometric parts.
-  typedef psymbol_manager::psymbol psymbol;
-  typedef psymbol_manager::psym_p psym_p;
+  typedef psym_manager::psym psym;
+  typedef psym_manager::psym_p psym_p;
   typedef std::vector<psym_p> vector_psym_p;
 }
 #endif

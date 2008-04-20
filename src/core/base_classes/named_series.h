@@ -30,7 +30,7 @@
 
 #include "../exceptions.h"
 #include "../ntuple.h"
-#include "../psymbol.h"
+#include "../psym.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -78,7 +78,7 @@ namespace piranha
     protected:
       void construct_from_file(const std::string &);
       template <int N>
-        void construct_from_psymbol(const psymbol &);
+        void construct_from_psym(const psym &);
       void append_arg(const std::string &, const psym_p &);
       template <int N>
         void append_arg(const psym_p &);

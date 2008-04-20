@@ -29,7 +29,7 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../psymbol.h"
+#include "../psym.h"
 #include "../stream_manager.h"
 
 namespace piranha
@@ -97,7 +97,7 @@ namespace piranha
     public:
       static void limit(const std::string &name, const int &n) throw (not_existing)
       {
-        psym_p tmp(psymbol_manager::get_pointer(name));
+        psym_p tmp(psym_manager::get_pointer(name));
         iterator it = find_argument(tmp);
         if (it == m_expo_limits.end())
         {
@@ -113,7 +113,7 @@ namespace piranha
       static std::string print_to_string();
       static void clear(const std::string &name) throw (not_existing)
       {
-        psym_p tmp(psymbol_manager::get_pointer(name));
+        psym_p tmp(psym_manager::get_pointer(name));
         iterator it = find_argument(tmp);
         if (it == m_expo_limits.end())
         {

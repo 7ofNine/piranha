@@ -194,9 +194,9 @@ template <class T>
 }
 
 template <class T>
-  void series_psymbol_instantiation(class_<T> &inst)
+  void series_psym_instantiation(class_<T> &inst)
 {
-  inst.def(init<const psymbol &>());
+  inst.def(init<const psym &>());
 }
 
 template <class T>
@@ -204,6 +204,14 @@ template <class T>
 {
   inst.def("degree",&T::degree,"Get the degree of the polynomial.");
   inst.def("min_degree",&T::min_degree,"Get the minimum degree of the polynomial.");
+  series_psym_instantiation(inst);
+}
+
+template <class T>
+  void common_poisson_series_instantiation(class_<T> &inst)
+{
+  series_trigonometric_instantiation(inst);
+  series_psym_instantiation(inst);
 }
 
 template <class T>
