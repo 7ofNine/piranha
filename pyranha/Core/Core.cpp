@@ -18,125 +18,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/enum.hpp>
-#include <boost/python/iterator.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/return_value_policy.hpp>
-#include <complex>
-#include <vector>
-
-#include "../../src/piranha.h"
-#include "../stl_containers.h"
-
-using namespace boost::python;
-using namespace piranha;
+#include "../pyranha.h"
 
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
-// Astronomical class instantiation.
-  class_<astro> class_astro("astro","Useful astronomical functions and constants.",no_init);
-  class_astro.def("G",&astro::G,return_value_policy<copy_const_reference>(),
-    "Universal gravitational constant, from Standish (1995).");
-  class_astro.def("k",&astro::k,return_value_policy<copy_const_reference>(),
-    "Gaussian gravitational constant.");
-  class_astro.def("eps_0",&astro::eps_0,return_value_policy<copy_const_reference>(),
-    "Obliquity of ecliptic at J2000, from Standish (1995).");
-  class_astro.def("J2000dot0",&astro::J2000dot0,return_value_policy<copy_const_reference>(),
-    "J2000.0 epoch in Julian days.");
-  class_astro.def("J1980dot0",&astro::J1980dot0,return_value_policy<copy_const_reference>(),
-    "J1980.0 epoch in Julian days.");
-  class_astro.def("JD_per_JY",&astro::JD_per_JY,return_value_policy<copy_const_reference>(),
-    "Julian Days per Julian Year.");
-  class_astro.def("seconds_per_JY",&astro::seconds_per_JY,return_value_policy<copy_const_reference>(),
-    "Seconds per Julian Year.");
-  class_astro.def("AU",&astro::AU,return_value_policy<copy_const_reference>(),
-    "Astronomical Unit, from http://ssd.jpl.nasa.gov/?astro.");
-// Static methods instantiations.
-  class_astro.staticmethod("G");
-  class_astro.staticmethod("k");
-  class_astro.staticmethod("eps_0");
-  class_astro.staticmethod("J2000dot0");
-  class_astro.staticmethod("J1980dot0");
-  class_astro.staticmethod("JD_per_JY");
-  class_astro.staticmethod("seconds_per_JY");
-  class_astro.staticmethod("AU");
-// Astronomical functions.
-  class_astro.def("JD_to_elp2000",&astro::JD_to_elp2000);
-  class_astro.def("kep_cosE",&astro::kep_cosE<double>,"Solve Kepler's equation for cosE.");
-  class_astro.def("sph_to_x",&astro::sph_to_x,"Convert spherical coordinates into x coordinate.");
-  class_astro.def("sph_to_y",&astro::sph_to_y,"Convert spherical coordinates into y coordinate.");
-  class_astro.def("sph_to_z",&astro::sph_to_z,"Convert spherical coordinates into z coordinate.");
-  class_astro.staticmethod("JD_to_elp2000");
-  class_astro.staticmethod("kep_cosE");
-  class_astro.staticmethod("sph_to_x");
-  class_astro.staticmethod("sph_to_y");
-  class_astro.staticmethod("sph_to_z");
+  translate_exceptions();
 
-// Instantiate mathematical functions.
-  class_<math> class_math("math","Pyranha mathematical functions for double precision numbers.",no_init);
-  class_math.def("norm",&math::norm<double>,"Norm.");
-  class_math.def("natural_pow",&math::natural_pow<double>,"Natural power.");
-  class_math.def("besselJ",&math::besselJ,"Bessel function of the first kind.");
-  class_math.def("Pnm",&math::Pnm<double>,"Legendre function of the first kind - Pnm(cos(theta)).");
-  class_math.def("complexp",&math::complexp<double>,"Complex exponential.");
-  class_math.def("cosine",&math::cosine<double>,"Cosine.");
-  class_math.def("sine",&math::sine<double>,"Sine.");
-  class_math.def("Ynm",&math::Ynm<double>,"Non-normalized spherical harmonic.");
-  class_math.def("wig_rot",&math::wig_rot<double>,"Wigner rotation theorem for spherical harmonics.");
-  class_math.def("besselJ_series_limit",&math::besselJ_series_limit,
-    "Find limit of power series expansion to calculate Bessel functions of the first kind to piranha's general precision.");
-  class_math.staticmethod("norm");
-  class_math.staticmethod("natural_pow");
-  class_math.staticmethod("cosine");
-  class_math.staticmethod("sine");
-  class_math.staticmethod("complexp");
-  class_math.staticmethod("besselJ");
-  class_math.staticmethod("Pnm");
-  class_math.staticmethod("Ynm");
-  class_math.staticmethod("wig_rot");
-  class_math.staticmethod("besselJ_series_limit");
+  // Settings.
+  typedef const bool &(*debug_get)();
+  typedef void (*debug_set)(const bool &);
+  class_<settings> class_setm("settings","Settings for Pyranha.",init<>());
+  class_setm.def("debug",debug_get(&settings::debug),return_value_policy<copy_const_reference>(),
+    "Get value of the debug flag.");
+  class_setm.def("debug",debug_set(&settings::debug),"Set value of the debug flag.").staticmethod("debug");
+//   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
+//     "Get value of the debug flag").staticmethod("debug");
+//   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
+//     "Get value of maximum load factor for hashed containers.");
+//   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
+//     "Get value of numerical zero.");
+//   class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
+//     "Get search path for theories of motion's data files.");
+//   class_setm.def("default_theories_path", &settings_manager::default_theories_path,return_value_policy<copy_const_reference>(),
+//     "Get default search path for theories of motion's data files.");
+//   class_setm.def("version", &settings_manager::version,
+//     "Get Piranha's version.", return_value_policy<copy_const_reference>());
+//   class_setm.def("display_progress", &settings_manager::display_progress,
+//     "Display progress bar?");
+//   class_setm.def("set_display_progress", &settings_manager::set_display_progress,
+//     "Set to true to enable the display of progress bar.");
+//   class_setm.def("mp_default_prec", &settings_manager::mp_default_prec,
+//     "Get least default precision of mp floating point in bits.");
+//   class_setm.def("set_mp_default_prec", &settings_manager::set_mp_default_prec,
+//     "Set least default precision of mp floating point in bits.");
+//   class_setm.def("set_load_factor", &settings_manager::set_load_factor,
+//     "Set value of maximum load factor for hashed containers.");
+//   class_setm.def("set_theories_path", &settings_manager::set_theories_path,
+//     "Set search path for theories of motion's data files.");
+//   class_setm.staticmethod("load_factor");
+//   class_setm.staticmethod("set_load_factor");
+//   class_setm.staticmethod("numerical_zero");
+//   class_setm.staticmethod("theories_path");
+//   class_setm.staticmethod("default_theories_path");
+//   class_setm.staticmethod("set_theories_path");
+//   class_setm.staticmethod("version");
+//   class_setm.staticmethod("display_progress");
+//   class_setm.staticmethod("set_display_progress");
+//   class_setm.staticmethod("mp_default_prec");
+//   class_setm.staticmethod("set_mp_default_prec");
 
-// Settings.
-  class_<settings_manager> class_setm("settings_manager","Manage piranha-specific settings.",no_init);
-  class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
-    "Get value of maximum load factor for hashed containers.");
-  class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
-    "Get value of numerical zero.");
-  class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
-    "Get search path for theories of motion's data files.");
-  class_setm.def("default_theories_path", &settings_manager::default_theories_path,return_value_policy<copy_const_reference>(),
-    "Get default search path for theories of motion's data files.");
-  class_setm.def("version", &settings_manager::version,
-    "Get Piranha's version.", return_value_policy<copy_const_reference>());
-  class_setm.def("display_progress", &settings_manager::display_progress,
-    "Display progress bar?");
-  class_setm.def("set_display_progress", &settings_manager::set_display_progress,
-    "Set to true to enable the display of progress bar.");
-  class_setm.def("mp_default_prec", &settings_manager::mp_default_prec,
-    "Get least default precision of mp floating point in bits.");
-  class_setm.def("set_mp_default_prec", &settings_manager::set_mp_default_prec,
-    "Set least default precision of mp floating point in bits.");
-  class_setm.def("set_load_factor", &settings_manager::set_load_factor,
-    "Set value of maximum load factor for hashed containers.");
-  class_setm.def("set_theories_path", &settings_manager::set_theories_path,
-    "Set search path for theories of motion's data files.");
-  class_setm.staticmethod("load_factor");
-  class_setm.staticmethod("set_load_factor");
-  class_setm.staticmethod("numerical_zero");
-  class_setm.staticmethod("theories_path");
-  class_setm.staticmethod("default_theories_path");
-  class_setm.staticmethod("set_theories_path");
-  class_setm.staticmethod("version");
-  class_setm.staticmethod("display_progress");
-  class_setm.staticmethod("set_display_progress");
-  class_setm.staticmethod("mp_default_prec");
-  class_setm.staticmethod("set_mp_default_prec");
-
-// Stream manager.
+  // Stream manager.
   enum_<stream_manager::out_format>("out_format")
     .value("plain", stream_manager::plain)
     .value("latex", stream_manager::latex)
@@ -152,8 +84,6 @@ BOOST_PYTHON_MODULE(_Core)
   class_sm.def("min_digits",&stream_manager::min_digits,"Get minimum number of digits used in output.");
   class_sm.def("max_digits",&stream_manager::max_digits,"Get maximum number of digits used in output.");
   class_sm.def("set_digits",&stream_manager::set_digits,"Set number of digits used in output.");
-  class_sm.def("data_separator",&stream_manager::data_separator,
-    return_value_policy<copy_const_reference>(),"Get string used as data separator.");
   class_sm.def("format",&stream_manager::format,"Get stream output format.");
   class_sm.def("set_format",&stream_manager::set_format,"Set stream output format.");
   class_sm.def("set_fp_rep", &stream_manager::set_fp_rep,
@@ -163,58 +93,45 @@ BOOST_PYTHON_MODULE(_Core)
   class_sm.staticmethod("min_digits");
   class_sm.staticmethod("max_digits");
   class_sm.staticmethod("set_digits");
-  class_sm.staticmethod("data_separator");
   class_sm.staticmethod("format");
   class_sm.staticmethod("set_format");
   class_sm.staticmethod("fp_rep");
   class_sm.staticmethod("set_fp_rep");
 
-// Stats.
+  // Stats.
   class_<stats>("stats","Piranha-specific statistics.",no_init)
     .def("pack_ratio",&stats::pack_ratio)
     .staticmethod("pack_ratio");
 
-// Symbols.
-// We don't do no_init here because we need to be able to instantiate it in order to iterate.
-  class_<psymbol_manager>("psymbol_manager","Manager for psymbols.",init<>())
-    .def("__iter__", iterator<psymbol_manager,return_internal_reference<> >())
-    .def("__len__", &psymbol_manager::length)
-    .staticmethod("__len__")
-    .def("put", &psymbol_manager::put,"Show registered symbols.")
-    .staticmethod("put")
-    ;
+  // Psym manager.
+  class_<psym_manager>("__psym_manager","Manager for symbols.",init<>())
+    .def("__iter__",iterator<psym_manager,return_internal_reference<> >()).staticmethod("__iter__")
+    .def("__len__",&psym_manager::length).staticmethod("__len__")
+    .def("__repr__",&psym_manager::print_to_string).staticmethod("__repr__");
 
-// Psymbol type.
-  enum_<psymbol::type>("psymbol_type")
-    .value("cf", psymbol::cf)
-    .value("trig", psymbol::trig)
-    .export_values();
-
-// List of phases.
-// FIXME: expose method to manipulate them?
-  class_<phase_list>("phase_list","List of phases.",init<std::string>());
-
-// Psymbols.
-  class_<psymbol>("psymbol","Symbol class.",init<const std::string &>())
+  // Psym.
+  class_<psym>("psym","Symbol class.",init<const std::string &>())
+    .def(init<const std::string &, const std::string &>())
     .def(init<const std::string &, const double &>())
     .def(init<const std::string &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &, const double &>())
     .def(init<const std::string &, const double &, const double &, const double &, const double &,
     const double &>())
-    .def("__copy__",&psymbol::copy)
-    .def("put",&psymbol::put)
-    .def("name",&psymbol::name,return_value_policy<copy_const_reference>())
-    .def("phase",&psymbol::phase)
-    .def("freq",&psymbol::freq)
-    .def("powers_string",&psymbol::powers_string);
+    .def("__copy__",&psym::copy)
+    .def("__repr__",&psym::print_to_string);
 
-  class_<buffer>("buffer","Memory buffer",no_init)
-    .def("resize", &buffer::resize,"Resize memory buffer (in megabytes).")
-    .staticmethod("resize")
-    ;
+  class_<base_expo_truncator>("__expo_truncator","Exponent truncator.",init<>())
+    .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
+    .def("clear_all",&base_expo_truncator::clear_all,"Clear list of exponent limits.").staticmethod("clear_all")
+    .def("clear",&base_expo_truncator::clear,"Clear exponent limit for argument named arg1.").staticmethod("clear")
+    .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. If arg1 does not exist, throw an error").staticmethod("limit");
 
-// For range-evaluation.
-    vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
-    vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
+  class_<base_norm_truncator>("__norm_truncator","Norm truncator.",init<>())
+    .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
+    .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 and throw an error otherwise.").staticmethod("set");
+
+  // For range-evaluation.
+  vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
+  vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
 }

@@ -21,11 +21,6 @@
 #ifndef PYRANHA_STL_CONTAINERS_H
 #define PYRANHA_STL_CONTAINERS_H
 
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/return_value_policy.hpp>
-#include <exception>
-
 /// Functions to wrap STL vectors as Python lists.
 template<class T>
   struct vector_to_list_helpers
@@ -54,7 +49,7 @@ template<class T>
   {
       x.push_back(v);
   }
-// This exception will be automatically translated by boost.python.
+  // This exception will be automatically translated by boost.python.
   static void IndexError() {throw(std::out_of_range("List index out of range."));}
 };
 

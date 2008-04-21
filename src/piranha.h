@@ -22,23 +22,18 @@
 #define PIRANHA_PIRANHA_H
 
 /// Piranha top-level namespace.
-namespace piranha {}
+namespace piranha
+{
+  /// Namespace for the available manipulators.
+  namespace manipulators {}
+}
 
 // Include all piranha manipulators.
-#include "manipulators/ffs.h"
-#include "manipulators/ffsc.h"
-#include "manipulators/cfs.h"
-#include "manipulators/cfsc.h"
-#include "manipulators/fs.h"
-#include "manipulators/fsc.h"
-#include "manipulators/mpfs.h"
-#include "manipulators/mpfsc.h"
-
-// Include ipoly for now.
-// TODO: remove it later.
-#include "bits/ipoly.h"
-
-// Include TASS.
-#include "tass17/tass17.h"
+#include "manipulators/dpoly.h"
+#include "manipulators/dps.h"
+#include "manipulators/qps.h"
+#include "manipulators/qpoly.h"
+#include "manipulators/zpoly.h"
+#include "manipulators/dfs.h"
 
 #endif

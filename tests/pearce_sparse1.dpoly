@@ -1,0 +1,17 @@
+[poly_arg]
+name=x
+[poly_arg]
+name=y
+[poly_arg]
+name=z
+[poly_arg]
+name=t
+[poly_arg]
+name=u
+[terms]
+1|0;0;0;0;0
+1|1;0;0;0;0
+1|0;1;0;0;0
+2|0;0;2;0;0
+3|0;0;0;3;0
+5|0;0;0;0;5

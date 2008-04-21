@@ -69,7 +69,9 @@ struct with_custodian_and_ward : BasePolicy_
         bool result = BasePolicy_::precall(args_);
 
         if (!result)
+	{
             Py_DECREF(life_support);
+	}
     
         return result;
     }

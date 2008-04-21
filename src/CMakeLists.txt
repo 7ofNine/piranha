@@ -11,13 +11,12 @@ ENDIF(BUILD_PYRANHA_SP)
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
 SET(SRC_LIST ${SRC_LIST}
   memory.cpp
-  norm_truncation.cpp
-  buffer.cpp
-  settings_manager.cpp
+  base_expo_truncator.cpp
+  base_norm_truncator.cpp
+  settings.cpp
   stats.cpp
-  astro.cpp
   stream_manager.cpp
-  psymbol.cpp
+  psym.cpp
   compile_switches.cpp
 )
 
@@ -57,6 +56,7 @@ IF(BUILD_PYRANHA)
     boost_python/object/class.cpp
     boost_python/object/enum.cpp
     boost_python/object/function.cpp
+    boost_python/object/function_doc_signature.cpp
     boost_python/object/inheritance.cpp
     boost_python/object/iterator.cpp
     boost_python/object/life_support.cpp
