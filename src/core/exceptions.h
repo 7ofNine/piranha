@@ -56,6 +56,11 @@ namespace piranha
   {
     not_existing(const std::string &s):base_exception(s) {}
   };
+
+  struct not_implemented:public base_exception
+  {
+    not_implemented(const std::string &s):base_exception(s) {}
+  };
 }
 
 #endif

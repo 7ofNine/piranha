@@ -36,6 +36,7 @@ template <class Exception>
 inline void translate_exceptions()
 {
   register_exception<not_existing>();
+  register_exception<not_implemented>();
   register_exception<unsuitable>();
 }
 

@@ -135,7 +135,7 @@ namespace piranha
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &x,
-    const ArgsTuple &args_tuple) const throw(unsuitable)
+    const ArgsTuple &args_tuple) const throw(not_implemented)
   {
     const int n = (int)nearbyint(x);
     if (std::abs(x - n) <= settings::numerical_zero())
@@ -163,9 +163,13 @@ namespace piranha
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::real_pow(const double &, const ArgsTuple &) const
   {
-    throw (unsuitable("Unable to raise to real power."));
+    throw (not_implemented("Exponentiation to real power has not been implemented for this series."));
   }
 
+  /// Exponentiation to natural number.
+  /**
+   * Exponentiation by squaring is used internally.
+   */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_pow(const size_t &n, const ArgsTuple &args_tuple) const
@@ -178,14 +182,17 @@ namespace piranha
     {
       case 0:
       {
+        // Return unity.
         retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
         break;
       }
       case 1:
       {
+        // Return self.
         retval.m_container = derived_const_cast->m_container;
         break;
       }
+      // Explicit calculation for simple cases.
       case 2:
       {
         retval.m_container = derived_const_cast->m_container;

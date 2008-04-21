@@ -74,7 +74,7 @@ namespace piranha
       Derived &operator*=(const Derived &);
       Derived &operator/=(const int &);
       Derived &operator/=(const double &);
-      Derived pow(const double &) const throw(unsuitable);
+      Derived pow(const double &) const throw(not_implemented);
     protected:
       void construct_from_file(const std::string &);
       template <int N>
