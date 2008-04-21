@@ -26,6 +26,7 @@
 #include <gmpxx.h>
 
 #include "../base_classes/numerical_container.h"
+#include "../exceptions.h"
 
 namespace piranha
 {
@@ -37,8 +38,8 @@ namespace piranha
    */
   class mpq_cf:public numerical_container<mpq_class,mpq_cf>
   {
-    // Alias for the parent class.
-    typedef numerical_container<mpq_class,mpq_cf> ancestor;
+      // Alias for the parent class.
+      typedef numerical_container<mpq_class,mpq_cf> ancestor;
     public:
       // Start implementation of basic pseries coefficient interface.
       //------------
@@ -66,6 +67,25 @@ namespace piranha
         double norm(const ArgsTuple &) const
       {
         return std::abs(g_value().get_d());
+      }
+      // Override division to catch divide by zero.
+      template <class ArgsTuple>
+        mpq_cf &divide_by(const int &n, const ArgsTuple &a) throw(division_by_zero)
+      {
+        if (n == 0)
+        {
+          throw division_by_zero();
+        }
+        return ancestor::divide_by(n,a);
+      }
+      template <class ArgsTuple>
+        mpq_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero)
+      {
+        if (x == 0)
+        {
+          throw division_by_zero();
+        }
+        return ancestor::divide_by(x,a);
       }
       // Override this, hence avoiding to calculate norm.
       template <class ArgsTuple>
