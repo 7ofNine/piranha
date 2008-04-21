@@ -23,8 +23,6 @@
 
 #include <iostream>
 
-#include "../../platform_switches.h" // For visibility
-
 namespace piranha
 {
   class norm_truncation_toolbox
@@ -46,7 +44,7 @@ namespace piranha
         return trunc_level;
       }
     private:
-      __PIRANHA_VISIBLE static double trunc_level;
+      static double trunc_level;
   };
 }
 #endif

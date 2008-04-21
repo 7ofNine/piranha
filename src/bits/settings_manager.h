@@ -28,8 +28,7 @@
 
 #include "common_typedefs.h"
 #include "compile_switches.h"
-#include "piranha_tbb.h"                          // For task scheduler init
-#include "platform_switches.h" // For visibility
+#include "piranha_tbb.h"                          // For task scheduler init.
 
 namespace piranha
 {
@@ -65,7 +64,7 @@ namespace piranha
         return theories_path_;
       }
       /// Get Piranha version.
-      __PIRANHA_VISIBLE static const std::string &version();
+      static const std::string &version();
       /// Get default path to theories of motion files.
       static const std::string &default_theories_path()
       {
@@ -84,7 +83,7 @@ namespace piranha
         }
         hash_max_load_factor_ = value;
       }
-      __PIRANHA_VISIBLE static void set_theories_path(const std::string &);
+      static void set_theories_path(const std::string &);
       static bool display_progress()
       {
         return enable_progress_display_;
@@ -123,9 +122,9 @@ namespace piranha
           startup();
       };
       /// Load factor for hashed containers.
-      __PIRANHA_VISIBLE static double   hash_max_load_factor_;
+      static double                         hash_max_load_factor_;
       /// Numerical zero.
-      __PIRANHA_VISIBLE static double   numerical_zero_;
+      static double                         numerical_zero_;
       /// Minimum fast unsigned integer.
       static const max_fast_uint            min_u_;
       /// Maximum fast unsigned integer.
@@ -135,12 +134,12 @@ namespace piranha
       /// Maximum fast integer.
       static const max_fast_int             max_i_;
       /// Jacobi Anger expansion limit.
-      __PIRANHA_VISIBLE static const unsigned int             jacang_limit_;
+      static const unsigned int             jacang_limit_;
       /// Path to theories of motion.
-      __PIRANHA_VISIBLE static std::string theories_path_;
-      __PIRANHA_VISIBLE static const std::string              default_theories_path_;
+      static std::string                    theories_path_;
+      static const std::string              default_theories_path_;
       static const std::string              version_;
-      __PIRANHA_VISIBLE static bool                           enable_progress_display_;
+      static bool                           enable_progress_display_;
       static startup                        startup_;
 #ifdef _PIRANHA_TBB
       static const tbb::task_scheduler_init tbb_init;

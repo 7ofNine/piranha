@@ -30,7 +30,6 @@
 
 #include "common_typedefs.h"
 #include "p_assert.h"
-#include "platform_switches.h" // For visibility
 #include "stream_manager.h"
 #include "utils.h"
 
@@ -263,7 +262,7 @@ namespace piranha
       }
       // Data members.
     private:
-      __PIRANHA_VISIBLE static set_type             p_set_;
+      static set_type             p_set_;
   };
 
   /// Constructor from std::string.
