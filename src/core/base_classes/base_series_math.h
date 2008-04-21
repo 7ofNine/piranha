@@ -218,17 +218,23 @@ namespace piranha
       default:
       {
         retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
-        Derived tmp(*derived_const_cast);
-        size_t i = n;
-        while (i)
+        // Use scoping here to have tmp destroyed when it is not needed anymore.
         {
-          if (i & 1)
+          Derived tmp(*derived_const_cast);
+          size_t i = n;
+          while (i)
           {
-            retval.mult_by(tmp,args_tuple);
-            --i;
+            if (i & 1)
+            {
+              retval.mult_by(tmp,args_tuple);
+              --i;
+            }
+            i/=2;
+            if (i != 0)
+            {
+              tmp.mult_by(tmp,args_tuple);
+            }
           }
-          tmp.mult_by(tmp,args_tuple);
-          i/=2;
         }
       }
     }
