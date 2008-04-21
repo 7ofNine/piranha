@@ -105,16 +105,6 @@ namespace piranha
 //         return retval;
 //       }
   };
-
-  // Specialisation of cf mult proxy to use reference.
-  template <>
-    class cf_mult_proxy<mpz_cf>:public reference_proxy<mpz_cf>
-  {
-      typedef reference_proxy<mpz_cf> ancestor;
-    public:
-      cf_mult_proxy():ancestor() {}
-      void operator=(const mpz_cf &cf) {ancestor::assignment(cf);}
-  };
 }
 
 

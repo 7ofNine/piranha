@@ -18,22 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_PIRANHA_H
-#define PIRANHA_PIRANHA_H
+#ifndef PIRANHA_QPOLY_H
+#define PIRANHA_QPOLY_H
 
-/// Piranha top-level namespace.
+#include "../core/base_classes/common_indices.h"
+#include "../core/base_classes/truncators.h"
+#include "../core/numerical_coefficients/mpq_cf.h"
+#include "../core/polynomial_common/expo_array.h"
+#include "../core/polynomial/polynomial.h"
+#include "../core/polynomial_common/polynomial_multiplier.h"
+
 namespace piranha
 {
-  /// Namespace for the available manipulators.
-  namespace manipulators {}
+namespace manipulators
+{
+  /// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
+  typedef polynomial
+  <
+    mpq_cf,
+    expo_array<16,0>,
+    key_degree_index,
+    polynomial_multiplier,
+    no_truncation
+  > qpoly;
 }
-
-// Include all piranha manipulators.
-#include "manipulators/dpoly.h"
-#include "manipulators/dps.h"
-#include "manipulators/qps.h"
-#include "manipulators/qpoly.h"
-#include "manipulators/zpoly.h"
-#include "manipulators/dfs.h"
+}
 
 #endif

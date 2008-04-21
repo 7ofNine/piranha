@@ -28,7 +28,6 @@
 #include "../base_classes/numerical_container.h"
 #include "../common_typedefs.h"
 #include "../math.h"
-#include "../proxies.h"
 
 namespace piranha
 {
@@ -96,16 +95,6 @@ namespace piranha
         retval.s_value()=std::pow(g_value().get_d(),y);
         return retval;
       }
-  };
-
-  // Specialisation of cf mult proxy to use reference.
-  template <>
-    class cf_mult_proxy<mpf_cf>:public reference_proxy<mpf_cf>
-  {
-      typedef reference_proxy<mpf_cf> ancestor;
-    public:
-      cf_mult_proxy():ancestor() {}
-      void operator=(const mpf_cf &cf) {ancestor::assignment(cf);}
   };
 }
 
