@@ -10,7 +10,6 @@ ENDIF(BUILD_PYRANHA_SP)
 # Order is important here: in tass.cpp, for instance, we have destruction of series that depends on
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
 SET(SRC_LIST ${SRC_LIST}
-  memory.cpp
   base_expo_truncator.cpp
   base_norm_truncator.cpp
   settings.cpp

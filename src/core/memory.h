@@ -25,7 +25,6 @@
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
-#include <ext/pool_allocator.h>
 #include <gmp.h>
 #include <gmpxx.h>
 
@@ -34,11 +33,6 @@
 
 namespace piranha
 {
-  struct memory
-  {
-    static __gnu_cxx::__pool_alloc<char>  pool_allocator;
-  };
-
   /// Low level memory allocation function.
   /**
    * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
@@ -95,17 +89,17 @@ namespace piranha
   // Wrapper functions to use a custom allocator inside the GMP libraries.
   inline void *mp_alloc(size_t size)
   {
-    return static_cast<void *>(piranha::memory::pool_allocator.allocate(size));
+    return static_cast<void *>(pool_allocator_char().allocate(size));
   }
 
   inline void mp_free(void *ptr, size_t size)
   {
-    piranha::memory::pool_allocator.deallocate((char *)ptr,size);
+    pool_allocator_char().deallocate((char *)ptr,size);
   }
 
   inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
   {
-    void *retval=mp_alloc(new_size);
+    void *retval = mp_alloc(new_size);
     memcpy(retval,ptr,std::min(old_size,new_size));
     mp_free(ptr,old_size);
     return retval;

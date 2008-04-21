@@ -31,12 +31,28 @@
   #if GCC_VERSION < 304000
     #error "The minimum GCC version required is 3.4"
   #endif
+
+  // Pool allocator of libstdc++.
+  #include <ext/pool_allocator.h>
+  namespace piranha
+  {
+    typedef __gnu_cxx::__pool_alloc<char> pool_allocator_char;
+  }
+
+  // Useful macros.
   #define likely(exp)   __builtin_expect(exp,1)
   #define unlikely(exp) __builtin_expect(exp,0)
 #else
   #warning Only the GNU compiler is officially supported.
   #define likely(exp)   exp
   #define unlikely(exp) exp
+
+  // Pool allocator of non-GCC compiler.
+  #include <memory>
+  namespace piranha
+  {
+    typedef std::allocator<char> pool_allocator_char;
+  }
 #endif
 
 // Platform switches.
