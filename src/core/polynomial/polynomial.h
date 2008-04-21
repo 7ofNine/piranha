@@ -23,6 +23,7 @@
 
 #include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
+#include <cmath>
 #include <memory> // For default allocator.
 
 #include "../base_classes/base_series.h"

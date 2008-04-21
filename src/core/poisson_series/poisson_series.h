@@ -23,6 +23,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/operators.hpp>
+#include <cmath>
 #include <memory> // For default allocator.
 
 #include "../arg_manager.h"
