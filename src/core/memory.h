@@ -89,12 +89,12 @@ namespace piranha
   // Wrapper functions to use a custom allocator inside the GMP libraries.
   inline void *mp_alloc(size_t size)
   {
-    return static_cast<void *>(pool_allocator_char().allocate(size));
+    return static_cast<void *>(gmp_allocator().allocate(size));
   }
 
   inline void mp_free(void *ptr, size_t size)
   {
-    pool_allocator_char().deallocate((char *)ptr,size);
+    gmp_allocator().deallocate((char *)ptr,size);
   }
 
   inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)

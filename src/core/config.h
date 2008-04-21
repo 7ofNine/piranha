@@ -32,11 +32,11 @@
     #error "The minimum GCC version required is 3.4"
   #endif
 
-  // Pool allocator of libstdc++.
+  // Pool allocator of libstdc++ is used as allocator for GMP.
   #include <ext/pool_allocator.h>
   namespace piranha
   {
-    typedef __gnu_cxx::__pool_alloc<char> pool_allocator_char;
+    typedef __gnu_cxx::__pool_alloc<char> gmp_allocator;
   }
 
   // Useful macros.
@@ -44,15 +44,17 @@
   #define unlikely(exp) __builtin_expect(exp,0)
 #else
   #warning Only the GNU compiler is officially supported.
-  #define likely(exp)   exp
-  #define unlikely(exp) exp
 
-  // Pool allocator of non-GCC compiler.
+  // Standard allocator is used as allocator for GMP.
   #include <memory>
   namespace piranha
   {
-    typedef std::allocator<char> pool_allocator_char;
+    typedef std::allocator<char> gmp_allocator;
   }
+
+  // Don't do anything special with (un)likely.
+  #define likely(exp)   exp
+  #define unlikely(exp) exp
 #endif
 
 // Platform switches.
