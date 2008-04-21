@@ -21,8 +21,6 @@
 #ifndef PIRANHA_P_ASSERT_H
 #define PIRANHA_P_ASSERT_H
 
-#include <iostream>
-
 #include "config.h"
 
 #define hard_assert(result) \
@@ -40,8 +38,6 @@ if (unlikely((result)==false)) \
 if (unlikely((action)==false)) \
 { \
   std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-  std::cout << "Press a key to exit." << std::endl; \
-  { char c; std::cin >> c; } \
   exit(1); \
 }
 

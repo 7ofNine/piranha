@@ -257,6 +257,7 @@ namespace piranha
             std::cout << std::endl;
             it->print();
             std::cout << std::endl;
+            std::exit(1);
           }
         }
       }
