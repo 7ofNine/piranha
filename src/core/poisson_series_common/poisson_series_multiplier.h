@@ -71,6 +71,7 @@ namespace piranha
         coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
+          // TODO: add density-based choice of algorithm here.
           coded_ancestor::store_coefficients_code_keys();
           store_flavours();
           if (!perform_vector_coded_multiplication())
