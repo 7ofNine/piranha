@@ -71,6 +71,8 @@ namespace piranha
         coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
+          // Here we should be ok, since we know that the two sizes are greater than zero and even
+          // if we divide by zero we should get Inf, which is fine for our purposes.
           const double density = ((double)ancestor::m_size1 * ancestor::m_size2) /
             (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
           __PDEBUG(std::cout << "Density: " << density << '\n');
