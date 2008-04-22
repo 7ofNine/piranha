@@ -38,7 +38,7 @@ namespace piranha
 {
   /// Series multiplier specifically tuned for Polynomials.
   /**
-   * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
+   * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
    * like piranha::plain_series_multiplier.
    */
   template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
@@ -71,9 +71,13 @@ namespace piranha
         coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
+          const double density = ((double)ancestor::m_size1 * ancestor::m_size2) /
+            (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
+          __PDEBUG(std::cout << "Density: " << density << '\n');
           coded_ancestor::store_coefficients_code_keys();
-          if (!perform_vector_coded_multiplication())
+          if (density < 1E-1 or !perform_vector_coded_multiplication())
           {
+            __PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
             __PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
             perform_hash_coded_multiplication();
           }
@@ -166,7 +170,7 @@ namespace piranha
             }
           }
         }
-// std::cout << "Done multiplying\n";
+        __PDEBUG(std::cout << "Done multiplying\n");
         // Decode and insert the results into return value.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
@@ -184,7 +188,6 @@ namespace piranha
               it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
-// std::cout << "Destroying!\n";
         // Call dtors for the coefficients in the allocated space.
         // This is necessary for non-trivial coefficients.
         for (size_t i = 0; i < n_codes; ++i)
@@ -193,7 +196,7 @@ namespace piranha
         }
         // Free the allocated space.
         piranha_free(p_vc_res);
-// std::cout << "Done vector coded!\n";
+        __PDEBUG(std::cout << "Done vector coded\n");
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -239,7 +242,7 @@ namespace piranha
             }
           }
         }
-// std::cout << "Done multiplying\n";
+        __PDEBUG(std::cout << "Done multiplying\n");
         // Decode and insert into retval.
         // TODO: rehash on m_retval here (since we know what the size is going to be)?
         // This would require the generic wrapper around the container of the series.
@@ -252,7 +255,7 @@ namespace piranha
           coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
           it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
         }
-// std::cout << "Finished hash coded multiplication\n";
+        __PDEBUG(std::cout << "Done hash coded\n");
       }
   };
 }
