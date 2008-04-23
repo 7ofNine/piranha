@@ -230,6 +230,7 @@ namespace piranha
                   case true:
                   {
                     // Create new temporary term from old cf and new key.
+                    // TODO: create this temporary outside and use assignment?
                     cterm tmp_term(ancestor::m_cfs1[i].get(),new_key);
                     // Multiply the old term by the second term.
                     tmp_term.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
