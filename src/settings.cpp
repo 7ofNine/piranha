@@ -58,8 +58,6 @@ namespace piranha
     std::cout << "_______________________________" << std::endl << std::endl;
     // Setup cout.
     stream_manager::setup_print(std::cout);
-    // Custom allocators for gmp.
-    mp_set_memory_functions(mp_alloc,mp_realloc,mp_free);
 #ifdef _PIRANHA_TBB
     std::cout << "TBB version strings:" << std::endl;
     std::cout << __TBB_VERSION_STRINGS;

@@ -85,25 +85,6 @@ namespace piranha
   {
     free(ptr);
   }
-
-  // Wrapper functions to use a custom allocator inside the GMP libraries.
-  inline void *mp_alloc(size_t size)
-  {
-    return static_cast<void *>(gmp_allocator().allocate(size));
-  }
-
-  inline void mp_free(void *ptr, size_t size)
-  {
-    gmp_allocator().deallocate((char *)ptr,size);
-  }
-
-  inline void *mp_realloc(void *ptr, size_t old_size, size_t new_size)
-  {
-    void *retval = mp_alloc(new_size);
-    memcpy(retval,ptr,std::min(old_size,new_size));
-    mp_free(ptr,old_size);
-    return retval;
-  }
 }
 
 #endif
