@@ -74,7 +74,7 @@ namespace piranha
       Derived &operator*=(const Derived &);
       Derived &operator/=(const int &);
       Derived &operator/=(const double &);
-      Derived pow(const double &) const throw(not_implemented);
+      Derived pow(const double &) const;
     protected:
       void construct_from_file(const std::string &);
       template <int N>
@@ -137,6 +137,16 @@ namespace piranha
   { \
     nth_index<1>().max_load_factor(settings::load_factor()); \
     base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
+  } \
+  explicit series_name(const int &n, const args_tuple_type &args_tuple) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(n,args_tuple); \
+  } \
+  explicit series_name(const double &x, const args_tuple_type &args_tuple) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(x,args_tuple); \
   }
 }
 

@@ -69,6 +69,8 @@ namespace piranha
         Derived &divide_by(const int &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &divide_by(const double &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived pow(const double &, const ArgsTuple &) const;
     protected:
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);

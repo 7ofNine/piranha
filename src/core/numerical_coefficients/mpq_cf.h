@@ -100,11 +100,37 @@ namespace piranha
       }
       int get_int() const throw (unsuitable)
       {
-        const char *msg = "Cannot convert rational coefficient to integer.";
         int retval = ancestor::m_value.get_num().get_si();
         if (ancestor::m_value.get_den() != 1)
         {
-          throw (unsuitable(msg));
+          throw (unsuitable("Cannot convert rational coefficient to integer."));
+        }
+        return retval;
+      }
+      template <class ArgsTuple>
+        mpq_cf pow(const double &y, const ArgsTuple &args_tuple) const
+      {
+        mpq_cf retval;
+        // If value = 1, then any power is ok, just return 1.
+        if (ancestor::m_value == 1)
+        {
+          retval = mpq_cf(1,args_tuple);
+          return retval;
+        }
+        const int pow_n((int)nearbyint(y));
+        if (std::abs(pow_n - y) > settings::numerical_zero())
+        {
+          throw (unsuitable("Cannot raise rational coefficient different from unity to real power."));
+        }
+        if (pow_n < 0)
+        {
+          mpq_cf tmp;
+          mpq_inv(tmp.m_value.get_mpq_t(),m_value.get_mpq_t());
+          retval = natural_power(tmp,(size_t)(-pow_n),args_tuple);
+        }
+        else
+        {
+          retval = natural_power(*this,(size_t)pow_n,args_tuple);
         }
         return retval;
       }

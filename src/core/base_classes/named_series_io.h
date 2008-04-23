@@ -241,6 +241,7 @@ namespace piranha
     template <int N>
     inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const psym &psym)
   {
+    p_assert(derived_const_cast->empty());
     psym_p p(psym_manager::get_pointer(psym));
     append_arg<N>(p);
     derived_cast->construct_from_psym_p(p,N,m_arguments);

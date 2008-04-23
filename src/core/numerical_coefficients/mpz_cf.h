@@ -21,11 +21,15 @@
 #ifndef PIRANHA_MPZ_CF_H
 #define PIRANHA_MPZ_CF_H
 
+#include <cmath>
 #include <complex>
 #include <gmp.h>
 #include <gmpxx.h>
 
 #include "../base_classes/numerical_container.h"
+#include "../exceptions.h"
+#include "../math.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -40,8 +44,6 @@ namespace piranha
       // Alias for the parent class.
       typedef numerical_container<mpz_class,mpz_cf> ancestor;
     public:
-      // Start implementation of basic pseries coefficient interface.
-      //------------
       // Ctors and dtor.
       /// Empty constructor.
       explicit mpz_cf():ancestor::numerical_container() {}
@@ -92,7 +94,7 @@ namespace piranha
       template <class ArgsTuple>
         double eval(const double &, const ArgsTuple &) const
       {
-        return g_value().get_d();
+        return ancestor::m_value.get_d();
       }
       // Multiply and add.
       template <class ArgsTuple>
@@ -100,29 +102,25 @@ namespace piranha
       {
         mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
       }
-      // End implementation of basic pseries coefficient interface.
-      //------------
-      // Start implementation of trigonometric pseries coefficient interface.
-      // Used in:
-      // - trigonometric toolbox,
-      //------------
-//       template <class ArgsTuple>
-//         self besselJ(int n, const ArgsTuple &) const
-//       {
-//         self retval;
-//         retval.s_value()=math::besselJ(n,g_value().get_d());
-//         return retval;
-//       }
-      // End implementation of trigonometric pseries coefficient interface.
-      //------------
-      // Start implementation of power-enabled pseries coefficient interface.
-//       template <class ArgsTuple>
-//         self pow(const double &y, const ArgsTuple &) const
-//       {
-//         self retval;
-//         retval.s_value()=std::pow(g_value().get_d(),y);
-//         return retval;
-//       }
+      template <class ArgsTuple>
+        mpz_cf pow(const double &y, const ArgsTuple &args_tuple) const
+      {
+        // If value = 1, then any power is ok, just return 1.
+        if (ancestor::m_value == 1)
+        {
+          return mpz_cf(1,args_tuple);
+        }
+        const int pow_n((int)nearbyint(y));
+        if (std::abs(pow_n - y) > settings::numerical_zero())
+        {
+          throw (unsuitable("Cannot raise integer coefficient different from unity to real power."));
+        }
+        if (pow_n < 0)
+        {
+          throw (unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
+        }
+        return natural_power(*this,(size_t)pow_n,args_tuple);
+      }
   };
 }
 

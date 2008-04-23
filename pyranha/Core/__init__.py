@@ -42,4 +42,3 @@ def copy(arg):
 psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
-

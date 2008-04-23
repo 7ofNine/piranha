@@ -24,6 +24,7 @@
 #include <cmath>
 
 #include "../exceptions.h"
+#include "../math.h"
 #include "../settings.h"
 
 namespace piranha
@@ -135,35 +136,51 @@ namespace piranha
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &x,
-    const ArgsTuple &args_tuple) const throw(not_implemented)
+    const ArgsTuple &args_tuple) const
   {
-    const int n = (int)nearbyint(x);
-    if (std::abs(x - n) <= settings::numerical_zero())
+    typedef typename Derived::term_type term_type;
+    typedef typename term_type::cf_type cf_type;
+    typedef typename term_type::key_type key_type;
+    if (empty() and x < 0)
     {
-      if (n < 0)
-      {
-        Derived tmp(derived_const_cast->real_pow(-1,args_tuple));
-        Derived retval(tmp.natural_pow((size_t)(-n),args_tuple));
-        return retval;
-      }
-      else
-      {
-        Derived retval(natural_pow((size_t)n,args_tuple));
-        return retval;
-      }
+      throw division_by_zero();
+    }
+    // Construct this way so that we intialise properly the arguments in case we are dealing with a named series.
+    Derived retval(0,args_tuple);
+    // If series is a single coefficient, dispatch pow() to that coefficient.
+    if (derived_const_cast->is_single_cf())
+    {
+      retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(x,args_tuple),
+        key_type()),args_tuple,retval.template nth_index<0>().end());
     }
     else
     {
-      Derived retval(derived_const_cast->real_pow(x,args_tuple));
-      return retval;
+      const int n = (int)nearbyint(x);
+      if (std::abs(x - n) <= settings::numerical_zero())
+      {
+        if (n < 0)
+        {
+          Derived tmp(derived_const_cast->real_pow(-1,args_tuple));
+          retval = tmp.natural_pow((size_t)(-n),args_tuple);
+        }
+        else
+        {
+          retval = natural_pow((size_t)n,args_tuple);
+        }
+      }
+      else
+      {
+        retval = derived_const_cast->real_pow(x,args_tuple);
+      }
     }
+    return retval;
   }
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::real_pow(const double &, const ArgsTuple &) const
   {
-    throw (not_implemented("Exponentiation to real power has not been implemented for this series."));
+    throw (not_implemented("Real power for this series has not been implemented."));
   }
 
   /// Exponentiation to natural number.
@@ -174,71 +191,7 @@ namespace piranha
     template <class ArgsTuple>
     inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_pow(const size_t &n, const ArgsTuple &args_tuple) const
   {
-    typedef typename Derived::term_type term_type;
-    typedef typename term_type::cf_type cf_type;
-    typedef typename term_type::key_type key_type;
-    Derived retval;
-    switch (n)
-    {
-      case 0:
-      {
-        // Return unity.
-        retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
-        break;
-      }
-      case 1:
-      {
-        // Return self.
-        retval.m_container = derived_const_cast->m_container;
-        break;
-      }
-      // Explicit calculation for simple cases.
-      case 2:
-      {
-        retval.m_container = derived_const_cast->m_container;
-        retval.mult_by(*derived_const_cast,args_tuple);
-        break;
-      }
-      case 3:
-      {
-        retval.m_container = derived_const_cast->m_container;
-        retval.mult_by(*derived_const_cast,args_tuple);
-        retval.mult_by(*derived_const_cast,args_tuple);
-        break;
-      }
-      case 4:
-      {
-        retval.m_container = derived_const_cast->m_container;
-        retval.mult_by(*derived_const_cast,args_tuple);
-        retval.mult_by(*derived_const_cast,args_tuple);
-        retval.mult_by(*derived_const_cast,args_tuple);
-        break;
-      }
-      // Exponentiation by squaring.
-      default:
-      {
-        retval.insert(term_type(cf_type(1,args_tuple),key_type()),args_tuple,derived_const_cast->template nth_index<0>().end());
-        // Use scoping here to have tmp destroyed when it is not needed anymore.
-        {
-          Derived tmp(*derived_const_cast);
-          size_t i = n;
-          while (i)
-          {
-            if (i & 1)
-            {
-              retval.mult_by(tmp,args_tuple);
-              --i;
-            }
-            i/=2;
-            if (i != 0)
-            {
-              tmp.mult_by(tmp,args_tuple);
-            }
-          }
-        }
-      }
-    }
-    return retval;
+    return natural_power(*derived_const_cast,n,args_tuple);
   }
 }
 

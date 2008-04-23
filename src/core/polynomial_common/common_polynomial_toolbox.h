@@ -21,6 +21,10 @@
 #ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 #define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
+#include <cmath>
+
+#include "../exceptions.h"
+
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
@@ -56,6 +60,11 @@ namespace piranha
       }
       return derived_const_cast->template nth_index<0>().begin()->m_key.degree();
     }
+//     template <class ArgsTuple>
+//       Derived real_pow(const double &x, const ArgsTuple &args_tuple) const
+//     {
+// 
+//     }
   };
 }
 

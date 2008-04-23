@@ -72,7 +72,7 @@ namespace piranha
       template <class ArgsTuple>
         Derived &mult_by(const Derived &, const ArgsTuple &);
       template <class ArgsTuple>
-        Derived a_pow(const double &, const ArgsTuple &) const throw(not_implemented);
+        Derived a_pow(const double &, const ArgsTuple &) const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.

@@ -65,6 +65,7 @@ namespace piranha
       typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
       typedef typename container_type::template nth_index<0>::type sorted_index;
       typedef typename container_type::template nth_index<1>::type pinpoint_index;
+      typedef typename named_ancestor::args_tuple_type args_tuple_type;
       friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;

@@ -41,10 +41,8 @@ namespace piranha
    */
   class double_cf:public numerical_container<double,double_cf>
   {
-    /// Alias for self.
-    typedef double_cf self;
-    /// Alias for the parent class.
-    typedef numerical_container<double,double_cf> ancestor;
+      /// Alias for the parent class.
+      typedef numerical_container<double,double_cf> ancestor;
     public:
       // Start implementation of basic pseries coefficient interface.
       //------------
@@ -66,11 +64,10 @@ namespace piranha
         explicit double_cf(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::numerical_container(p,n,a) {}
       int get_int() const throw (unsuitable)
       {
-        const char *msg = "Cannot convert double coefficient to integer.";
-        int retval = (int)nearbyint(ancestor::m_value);
+        const int retval((int)nearbyint(ancestor::m_value));
         if (std::abs(ancestor::m_value - retval) > settings::numerical_zero())
         {
-          throw (unsuitable(msg));
+          throw (unsuitable("Cannot convert double coefficient to integer."));
         }
         return retval;
       }
@@ -85,9 +82,9 @@ namespace piranha
        * Uses C standard library call.
        */
       template <class ArgsTuple>
-        self besselJ(int n, const ArgsTuple &) const
+        double_cf besselJ(int n, const ArgsTuple &) const
       {
-        self retval;
+        double_cf retval;
         //retval.s_value()=math::besselJ(n,g_value());
         //return retval;
         return 0.;
@@ -96,10 +93,10 @@ namespace piranha
       //------------
       // Start implementation of power-enabled pseries coefficient interface.
       template <class ArgsTuple>
-        self pow(const double &y, const ArgsTuple &) const
+        double_cf pow(const double &y, const ArgsTuple &) const
       {
-        self retval;
-        retval.s_value()=std::pow(g_value(),y);
+        double_cf retval;
+        retval.m_value = std::pow(ancestor::m_value,y);
         return retval;
       }
   };
