@@ -114,11 +114,30 @@ namespace piranha
   };
 
   // Initialization of static members.
-   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-     const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
 
-   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-     std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+
+  // Useful macro for ctors in named series.
+  #define __PIRANHA_NAMED_SERIES_CTORS(series_name) \
+  series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
+  explicit series_name(const std::string &filename) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    named_ancestor::construct_from_file(filename); \
+  } \
+  explicit series_name(const int &n) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
+  } \
+  explicit series_name(const double &x) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
+  }
 }
 
 #include "named_series_io.h"
