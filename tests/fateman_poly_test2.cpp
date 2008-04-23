@@ -30,26 +30,7 @@ typedef dpoly poly;
 int main()
 {
   poly a("fateman_test.dpoly"), b(a);
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-  a*=b;
-
+  a = std::pow(a,20);
   poly c(a);
   c+=1;
   a*=c;
