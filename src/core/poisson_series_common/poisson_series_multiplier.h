@@ -71,17 +71,23 @@ namespace piranha
         coded_ancestor::determine_viability();
         if (coded_ancestor::m_cr_is_viable)
         {
-          // TODO: add density-based choice of algorithm here.
+          // Here we should be ok, since we know that the two sizes are greater than zero and even
+          // if we divide by zero we should get Inf, which is fine for our purposes.
+          const double density = ((double)ancestor::m_size1 * ancestor::m_size2 * 2) /
+            (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
+          __PDEBUG(std::cout << "Density: " << density << '\n');
           coded_ancestor::store_coefficients_code_keys();
           store_flavours();
-          if (!perform_vector_coded_multiplication())
+          if (density < 1E-1 or !perform_vector_coded_multiplication())
           {
-            std::cout << "Going for hashed!\n";
+            __PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
+            __PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
             perform_hash_coded_multiplication();
           }
         }
         else
         {
+          __PDEBUG(std::cout << "Going for plain Poisson series multiplication\n");
           ancestor::perform_plain_multiplication();
         }
       }
@@ -105,11 +111,13 @@ namespace piranha
           coded_ancestor::m_res_min_max[i].first=*(min_max.first);
           coded_ancestor::m_res_min_max[i].second=*(min_max.second);
         }
-std::cout << "Mult limits are:\n";
-for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
-{
-  std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
-}
+        __PDEBUG(
+        std::cout << "Mult limits are:\n";
+        for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
+        {
+          std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+        }
+        );
       }
       /// Store flavours of the series into own vectors.
       void store_flavours()
@@ -158,7 +166,7 @@ for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i)
           piranha_free(p_vc_res_sin);
           return false;
         }
-std::cout << "Going for Poisson coded\n";
+        __PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");
         // Define the base pointers for storing the results of multiplication.
         // Please note that even if here it seems like we are going to write outside allocated memory,
         // the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
@@ -211,6 +219,7 @@ std::cout << "Going for Poisson coded\n";
             }
           }
         }
+        __PDEBUG(std::cout << "Done multiplying\n");
         // Decode and insert the results into return value.
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
@@ -252,6 +261,7 @@ std::cout << "Going for Poisson coded\n";
         // Free the allocated space.
         piranha_free(p_vc_res_cos);
         piranha_free(p_vc_res_sin);
+        __PDEBUG(std::cout << "Done Poisson series vector coded\n");
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -344,6 +354,7 @@ std::cout << "Going for Poisson coded\n";
             }
           }
         }
+        __PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
         term_type tmp_term;
         iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
         {
@@ -366,6 +377,7 @@ std::cout << "Going for Poisson coded\n";
             it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
           }
         }
+        __PDEBUG(std::cout << "Done Poisson series hash coded\n");
       }
     private:
       // For Poisson series we also need flavours.

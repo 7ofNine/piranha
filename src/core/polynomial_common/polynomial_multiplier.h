@@ -198,7 +198,7 @@ namespace piranha
         }
         // Free the allocated space.
         piranha_free(p_vc_res);
-        __PDEBUG(std::cout << "Done vector coded\n");
+        __PDEBUG(std::cout << "Done polynomial vector coded\n");
         return true;
       }
       void perform_hash_coded_multiplication()
@@ -244,7 +244,7 @@ namespace piranha
             }
           }
         }
-        __PDEBUG(std::cout << "Done multiplying\n");
+        __PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
         // Decode and insert into retval.
         // TODO: rehash on m_retval here (since we know what the size is going to be)?
         // This would require the generic wrapper around the container of the series.
@@ -257,7 +257,7 @@ namespace piranha
           coded_ancestor::decode(tmp_term.m_key,c_it->m_ckey);
           it_hint = ancestor::m_retval.insert(tmp_term,ancestor::m_args_tuple,it_hint);
         }
-        __PDEBUG(std::cout << "Done hash coded\n");
+        __PDEBUG(std::cout << "Done polynomial hash coded\n");
       }
   };
 }
