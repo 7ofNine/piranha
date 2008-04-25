@@ -34,13 +34,13 @@
 namespace piranha
 {
   /// Common polynomial toolbox.
+  /**
+  * This toolbox assumes that the monomials are sorted in ascending total degree.
+  */
   template <class Derived>
     struct common_polynomial_toolbox
   {
       /// Get the degree of the polynomial.
-      /**
-      * This method assumes that the monomials are sorted in ascending total degree.
-      */
       int degree() const
       {
         if (derived_const_cast->template nth_index<0>().empty())
@@ -52,9 +52,6 @@ namespace piranha
         return it->m_key.degree();
       }
       /// Get the minimum degree of the polynomial.
-      /**
-      * This method assumes that the monomials are sorted in ascending total degree.
-      */
       int min_degree() const
       {
         if (derived_const_cast->template nth_index<0>().empty())
