@@ -74,7 +74,7 @@ namespace piranha
         {
           throw division_by_zero();
         }
-        return divide_by(n,a);
+        return ancestor::divide_by(n,a);
       }
       template <class ArgsTuple>
         mpz_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero)
@@ -83,7 +83,7 @@ namespace piranha
         {
           throw division_by_zero();
         }
-        return divide_by(x,a);
+        return ancestor::divide_by(x,a);
       }
       // Override this, hence avoiding to calculate norm.
       template <class ArgsTuple>

@@ -100,21 +100,21 @@ namespace piranha
       }
       int get_int() const throw (unsuitable)
       {
-        int retval = ancestor::m_value.get_num().get_si();
-        if (ancestor::m_value.get_den() != 1)
+        int retval = m_value.get_num().get_si();
+        if (m_value.get_den() != 1)
         {
           throw (unsuitable("Cannot convert rational coefficient to integer."));
         }
         return retval;
       }
       template <class ArgsTuple>
-        mpq_cf pow(const double &y, const ArgsTuple &args_tuple) const
+        mpq_cf pow(const double &y, const ArgsTuple &) const
       {
         mpq_cf retval;
         // If value = 1, then any power is ok, just return 1.
-        if (ancestor::m_value == 1)
+        if (m_value == 1)
         {
-          retval = mpq_cf(1,args_tuple);
+          retval.m_value = 1;
           return retval;
         }
         const int pow_n((int)nearbyint(y));
@@ -124,13 +124,14 @@ namespace piranha
         }
         if (pow_n < 0)
         {
-          mpq_cf tmp;
-          mpq_inv(tmp.m_value.get_mpq_t(),m_value.get_mpq_t());
-          retval = natural_power(tmp,(size_t)(-pow_n),args_tuple);
+          mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),(size_t)(-pow_n));
+          mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),(size_t)(-pow_n));
+
         }
         else
         {
-          retval = natural_power(*this,(size_t)pow_n,args_tuple);
+          mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),(size_t)pow_n);
+          mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),(size_t)pow_n);
         }
         return retval;
       }
