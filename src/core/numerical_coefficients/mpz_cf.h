@@ -74,7 +74,7 @@ namespace piranha
         {
           throw division_by_zero();
         }
-        return ancestor::divide_by(n,a);
+        return divide_by(n,a);
       }
       template <class ArgsTuple>
         mpz_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero)
@@ -83,7 +83,7 @@ namespace piranha
         {
           throw division_by_zero();
         }
-        return ancestor::divide_by(x,a);
+        return divide_by(x,a);
       }
       // Override this, hence avoiding to calculate norm.
       template <class ArgsTuple>
@@ -94,7 +94,7 @@ namespace piranha
       template <class ArgsTuple>
         double eval(const double &, const ArgsTuple &) const
       {
-        return ancestor::m_value.get_d();
+        return m_value.get_d();
       }
       // Multiply and add.
       template <class ArgsTuple>
@@ -103,12 +103,14 @@ namespace piranha
         mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
       }
       template <class ArgsTuple>
-        mpz_cf pow(const double &y, const ArgsTuple &args_tuple) const
+        mpz_cf pow(const double &y, const ArgsTuple &) const
       {
+        mpz_cf retval;
         // If value = 1, then any power is ok, just return 1.
-        if (ancestor::m_value == 1)
+        if (m_value == 1)
         {
-          return mpz_cf(1,args_tuple);
+          retval.m_value = 1;
+          return retval;
         }
         const int pow_n((int)nearbyint(y));
         if (std::abs(pow_n - y) > settings::numerical_zero())
@@ -119,7 +121,8 @@ namespace piranha
         {
           throw (unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
         }
-        return natural_power(*this,(size_t)pow_n,args_tuple);
+        mpz_pow_ui(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),(size_t)pow_n);
+        return retval;
       }
   };
 }
