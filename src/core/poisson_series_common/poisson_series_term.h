@@ -70,7 +70,8 @@ namespace piranha
       /// Smarter numerical evaluation
       /**
        * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
-       * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on the series' characteristics.
+       * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on
+       * the series' characteristics.
        * @param[in] te piranha::trig_evaluator object that caches complex exponentials of trigonometric arguments.
        */
       template <class TrigEvaluator>

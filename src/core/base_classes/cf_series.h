@@ -57,25 +57,15 @@ namespace piranha
       template <class ArgsTuple>
         void pad_right(const ArgsTuple &);
       template <class ArgsTuple>
-        Derived &add(const Derived &, const ArgsTuple &);
-      template <class ArgsTuple>
-        Derived &subtract(const Derived &, const ArgsTuple &);
-      template <class ArgsTuple>
         void invert_sign(const ArgsTuple &);
       void swap(Derived &);
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &);
       template <class ArgsTuple>
-        Derived &divide_by(const int &, const ArgsTuple &);
-      template <class ArgsTuple>
-        Derived &divide_by(const double &, const ArgsTuple &);
-      template <class ArgsTuple>
         Derived pow(const double &, const ArgsTuple &) const;
     protected:
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);
-      template <class T, class ArgsTuple>
-        Derived &divide_by_generic(const T &, const ArgsTuple &);
   };
 }
 

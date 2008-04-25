@@ -62,6 +62,8 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR;
+      // Specify we will use the real_pow from the polynomial toolbox.
+      using __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;

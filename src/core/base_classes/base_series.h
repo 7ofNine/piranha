@@ -59,6 +59,8 @@ namespace piranha
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
       template <class Term2, class ArgsTuple, class SortedIterator>
         SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
+      template <int N, class ArgsTuple, class Iterator>
+        void term_erase(const ArgsTuple &, Iterator);
       template <class ArgsTuple>
         double calculate_norm(const ArgsTuple &) const;
       Derived copy() const;
@@ -66,11 +68,19 @@ namespace piranha
       bool empty() const;
       bool is_single_cf() const;
       template <class ArgsTuple>
+        Derived &add(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &subtract(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
         Derived &mult_by(const int &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &mult_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &mult_by(const Derived &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &divide_by(const int &, const ArgsTuple &);
+      template <class ArgsTuple>
+        Derived &divide_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived a_pow(const double &, const ArgsTuple &) const;
     protected:
@@ -87,8 +97,6 @@ namespace piranha
         void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>
         eval_type time_evaluation(const double &, const ArgsTuple &) const;
-      template <int N, class ArgsTuple, class Iterator>
-        void term_erase(const ArgsTuple &, Iterator);
       void swap_terms(Derived &);
       template <class ArgsTuple, class Layout>
         void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;

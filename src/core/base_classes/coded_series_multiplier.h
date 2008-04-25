@@ -217,11 +217,11 @@ namespace piranha
       // Size of the coding vector, min_max vectors, etc.
       const size_t                                          m_size;
       // Vectors of minimum and maximum value pairs for the series being multiplied.
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max1;
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_min_max2;
+      std::vector<std::pair<max_fast_int,max_fast_int> >    m_min_max1;
+      std::vector<std::pair<max_fast_int,max_fast_int> >    m_min_max2;
       // Vector of minimum and maximum value pairs for the resulting series.
       // GMP is used to avoid trespassing the range limits of max_fast_int.
-      std::valarray<std::pair<mpz_class,mpz_class> >        m_res_min_max;
+      std::vector<std::pair<mpz_class,mpz_class> >          m_res_min_max;
       // Version of the above downcast to fast integer type.
       std::valarray<std::pair<max_fast_int,max_fast_int> >  m_fast_res_min_max;
       // Coding vector.

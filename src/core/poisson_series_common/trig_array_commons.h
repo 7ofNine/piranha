@@ -118,14 +118,6 @@ namespace piranha
         }
         out_stream << tmp;
       }
-      void invert_sign()
-      {
-        const size_t w=derived_const_cast->size();
-        for (size_t i=0;i < w;++i)
-        {
-          (*derived_cast)[i]*=-1;
-        }
-      }
       bool is_unity() const
       {
         return (derived_const_cast->elements_are_zero() and derived_const_cast->m_flavour);

@@ -25,22 +25,6 @@ namespace piranha
 {
   template <__PIRANHA_CF_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const Derived &s2, const ArgsTuple &args_tuple)
-  {
-    derived_cast->template merge_terms<true>(s2,args_tuple);
-    return *derived_cast;
-  }
-
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const Derived &s2, const ArgsTuple &args_tuple)
-  {
-    derived_cast->template merge_terms<false>(s2,args_tuple);
-    return *derived_cast;
-  }
-
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
     inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
   {
     typedef typename Derived::const_sorted_iterator const_sorted_iterator;
@@ -56,30 +40,6 @@ namespace piranha
       it_hint = retval.template insert<false,true>(term,args_tuple,it_hint);
     }
     derived_cast->swap_terms(retval);
-  }
-
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class T, class ArgsTuple>
-    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by_generic(const T &x, const ArgsTuple &args_tuple)
-  {
-    Derived retval;
-    derived_cast->divide_coefficients_by(x,retval,args_tuple);
-    derived_cast->swap_terms(retval);
-    return *derived_cast;
-  }
-
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const int &n, const ArgsTuple &args_tuple)
-  {
-    return divide_by_generic(n,args_tuple);
-  }
-
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
-  {
-    return divide_by_generic(x,args_tuple);
   }
 
   template <__PIRANHA_CF_SERIES_TP_DECL>

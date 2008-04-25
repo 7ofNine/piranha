@@ -28,6 +28,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <memory> // For std::allocator.
 
+#include "../integer_typedefs.h"
 #include "../math.h" // For lg.
 #include "../p_assert.h"
 
@@ -184,15 +185,24 @@ namespace piranha
           }
         }
       }
+      /// Invert the sign of the integers in the array.
+      void invert_sign()
+      {
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          m_ptr[i] = -m_ptr[i];
+        }
+      }
       /// Update the upper and lower limits of the integers stored in the array.
       /**
        * If InitialLimits is true, then the integers are uploaded to vector v, otherwise
        * the integers are analysed and uploaded to v only if they they are outside the limits
        * already defined in v.
        */
-      template <bool InitialLimits, class LimitsVector>
-        void update_limits(LimitsVector &v) const
+      template <bool InitialLimits>
+        void update_limits(std::vector<std::pair<max_fast_int,max_fast_int> > &v) const
       {
+        p_assert(v.size() >= m_size);
         switch (InitialLimits)
         {
           case true:

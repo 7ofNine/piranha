@@ -120,6 +120,11 @@ namespace piranha
         }
         return retval;
       }
+      int degree_of(const size_t &i) const
+      {
+        p_assert(i < derived_const_cast->m_size);
+        return (*derived_const_cast)[i];
+      }
       // Return true if the exponents are smaller than those specified in the limits vector.
       bool test_expo_limits(const std::vector<std::pair<size_t,int> > &v) const
       {

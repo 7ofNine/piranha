@@ -89,6 +89,13 @@ namespace piranha
       const double    m_delta_threshold;
   };
 
+  /// Base exponent truncator.
+  /**
+   * Internally it stores a static list of piranha::psym_p + int pairs representing the limits
+   * for the exponents of symbols. This class can be used by those classes that need the
+   * exponent limits (such as truncators for polynomial multiplication, classes that perform power series
+   * expansions, etc.).
+   */
   class __PIRANHA_VISIBLE base_expo_truncator
   {
     protected:
@@ -124,6 +131,26 @@ namespace piranha
           m_expo_limits.erase(it);
         }
       }
+      /// Transform the list of psymbol limits into a list of position - limits.
+      static std::vector<std::pair<size_t,int> > get_positions(const vector_psym_p &v)
+      {
+        std::vector<std::pair<size_t,int> > retval;
+        const size_t limits_size = m_expo_limits.size(),
+          args_size = v.size();
+        for (size_t i = 0; i < limits_size; ++i)
+        {
+          for (size_t j = 0; j < args_size; ++j)
+          {
+            if (m_expo_limits[i].first == v[j])
+            {
+              retval.push_back(std::pair<size_t,int>(j,m_expo_limits[i].second));
+              // We can break out, there should not be duplicates inside the arguments list.
+              break;
+            }
+          }
+        }
+        return retval;
+      }
     private:
       static iterator find_argument(const psym_p &);
     protected:
@@ -136,23 +163,9 @@ namespace piranha
   {
     public:
       template <class Multiplier>
-        expo_truncator(const Multiplier &m)
-      {
-        const size_t limits_size = m_expo_limits.size(),
-          args_size = m.m_args_tuple.template get<Multiplier::key_type::position>().size();
-        for (size_t i = 0; i < limits_size; ++i)
-        {
-          for (size_t j = 0; j < args_size; ++j)
-          {
-            if (m_expo_limits[i].first == m.m_args_tuple.template get<Multiplier::key_type::position>()[j])
-            {
-              m_positions.push_back(std::pair<size_t,int>(j,m_expo_limits[i].second));
-              // We can break out, there should not be duplicates inside the arguments list.
-              break;
-            }
-          }
-        }
-      }
+        expo_truncator(const Multiplier &m):
+        m_positions(base_expo_truncator::get_positions(m.m_args_tuple.template get<Multiplier::key_type::position>()))
+      {}
       template <class Multiplier>
         bool accept(const max_fast_int &n, const Multiplier &m)
       {

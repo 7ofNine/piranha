@@ -114,7 +114,8 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
-      //using __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR::real_pow;
+      // Override base_series::real_pow with the one from the common polynomial toolbox.
+      using __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;

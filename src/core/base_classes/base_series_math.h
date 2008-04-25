@@ -104,8 +104,28 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::add(const Derived &s2, const ArgsTuple &args_tuple)
+  {
+    merge_terms<true>(s2,args_tuple);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::subtract(const Derived &s2, const ArgsTuple &args_tuple)
+  {
+    merge_terms<false>(s2,args_tuple);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
     inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const int &n, const ArgsTuple &args_tuple)
   {
+    if (n == 1)
+    {
+      return *derived_cast;
+    }
     Derived retval;
     multiply_coefficients_by(n,retval,args_tuple);
     swap_terms(retval);
@@ -135,28 +155,72 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &x,
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const int &n, const ArgsTuple &args_tuple)
+  {
+    if (n == 1)
+    {
+      return *derived_cast;
+    }
+    Derived retval;
+    divide_coefficients_by(n,retval,args_tuple);
+    swap_terms(retval);
+    return *derived_cast;
+  }
+
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
+  {
+    Derived retval;
+    divide_coefficients_by(x,retval,args_tuple);
+    swap_terms(retval);
+    return *derived_cast;
+  }
+
+  /// Exponentiation method.
+  /**
+   * This method will handle successfully the case in which x is a natural number. If the series
+   * is a single coefficient, the pow method will be dispatched to said coefficient. If x is not natural,
+   * the base_series::real_pow method will be called. The calling is statically polymorphic, so that it is possible to override
+   * base_series::real_pow in a derived class.
+   */
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class ArgsTuple>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &y,
     const ArgsTuple &args_tuple) const
   {
     typedef typename Derived::term_type term_type;
     typedef typename term_type::cf_type cf_type;
     typedef typename term_type::key_type key_type;
-    if (empty() and x < 0)
+    Derived retval;
+    // Handle the case of empty series.
+    if (empty())
     {
-      throw division_by_zero();
+      if (y < 0)
+      {
+        throw division_by_zero();
+      }
+      // 0**0 == 1
+      else if (y == 0)
+      {
+        retval = Derived(1,args_tuple);
+        return retval;
+      }
+      else
+      {
+        return retval;
+      }
     }
-    // Construct this way so that we intialise properly the arguments in case we are dealing with a named series.
-    Derived retval(0,args_tuple);
     // If series is a single coefficient, dispatch pow() to that coefficient.
     if (derived_const_cast->is_single_cf())
     {
-      retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(x,args_tuple),
+      retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(y,args_tuple),
         key_type()),args_tuple,retval.template nth_index<0>().end());
     }
     else
     {
-      const int n = (int)nearbyint(x);
-      if (std::abs(x - n) <= settings::numerical_zero())
+      const int n = (int)nearbyint(y);
+      if (std::abs(y - n) <= settings::numerical_zero())
       {
         if (n < 0)
         {
@@ -170,7 +234,7 @@ namespace piranha
       }
       else
       {
-        retval = derived_const_cast->real_pow(x,args_tuple);
+        retval = derived_const_cast->real_pow(y,args_tuple);
       }
     }
     return retval;
