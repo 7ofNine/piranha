@@ -10,5 +10,7 @@
   Normally a limb contains 32 or 64 bits. The C data type for a limb is mp_limb_t.". Use this
   to evaluate the real size of GMP variables when we will do cache-blocking during multiplications.
   http://gmplib.org/manual/Integer-Special-Functions.html#Integer-Special-Functions
-- Use the proxy pattern instead of series_mult_rep. Also, check that proxies are really used and the template
-  specialisations are working.
+- Drop insert hint for now, modify all calls, then introduce overloaded insert which takes hint and use it
+  only where it makes sense.
+- Add line - file info into exceptions string.
+- Coded multiplication with mpz as codes when going out of range?
