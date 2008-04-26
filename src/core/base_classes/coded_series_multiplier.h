@@ -122,16 +122,16 @@ namespace piranha
         {
           derived_cast->m_keys2[i2].get().template update_limits<false>(m_min_max2);
         }
-// std::cout << "Limits are:\n";
-// for (size_t i = 0; i < m_min_max1.size(); ++i)
-// {
-//   std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
-// }
-// std::cout << "and:\n";
-// for (size_t i = 0; i < m_min_max2.size(); ++i)
-// {
-//   std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
-// }
+        __PDEBUG(std::cout << "Limits are:\n";
+        for (size_t i = 0; i < m_min_max1.size(); ++i)
+        {
+          std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
+        }
+        std::cout << "and:\n";
+        for (size_t i = 0; i < m_min_max2.size(); ++i)
+        {
+          std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
+        })
       }
       void determine_viability()
       {
@@ -170,12 +170,12 @@ namespace piranha
             m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
             m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
           }
-// std::cout << "Coding vector: ";
-// for (size_t i=0; i < m_size; ++i)
-// {
-//   std::cout << m_coding_vector[i] << '\t';
-// }
-// std::cout << "+\t" << m_coding_vector[m_size] << '\n';
+          __PDEBUG(std::cout << "Coding vector: ";
+          for (size_t i=0; i < m_size; ++i)
+          {
+            std::cout << m_coding_vector[i] << '\t';
+          }
+          std::cout << "+\t" << m_coding_vector[m_size] << '\n';)
         }
       }
       /// Code keys.

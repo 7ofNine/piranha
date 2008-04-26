@@ -26,7 +26,6 @@
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
-#include <valarray>
 #include <vector>
 
 #include "../base_classes/plain_series_multiplier.h"
@@ -61,7 +60,8 @@ namespace piranha
       typedef typename ancestor::cf_type2 cf_type2;
       typedef typename ancestor::key_type key_type;
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
+        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
+        m_flavours1(ancestor::m_size1),m_flavours2(ancestor::m_size2)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -124,9 +124,6 @@ namespace piranha
       {
         iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
         iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
-        // Make space in the flavours vectors.
-        m_flavours1.resize(ancestor::m_size1);
-        m_flavours2.resize(ancestor::m_size2);
         size_t i;
         for (i = 0; i < ancestor::m_size1; ++i)
         {
@@ -381,8 +378,8 @@ namespace piranha
       }
     private:
       // For Poisson series we also need flavours.
-      std::valarray<bool> m_flavours1;
-      std::valarray<bool> m_flavours2;
+      std::vector<bool> m_flavours1;
+      std::vector<bool> m_flavours2;
   };
 }
 
