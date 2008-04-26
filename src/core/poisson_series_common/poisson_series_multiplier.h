@@ -76,7 +76,7 @@ namespace piranha
           const double density = ((double)ancestor::m_size1 * ancestor::m_size2 * 2) /
             (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
           __PDEBUG(std::cout << "Density: " << density << '\n');
-          coded_ancestor::store_coefficients_code_keys();
+          coded_ancestor::code_keys();
           store_flavours();
           if (density < 1E-1 or !perform_vector_coded_multiplication())
           {
@@ -176,8 +176,8 @@ namespace piranha
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
-            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i],
-              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j],*this))
+            if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
             {
               break;
             }

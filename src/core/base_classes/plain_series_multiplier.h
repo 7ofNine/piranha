@@ -24,7 +24,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
-#include <valarray>
+#include <vector>
 
 #include "../p_assert.h"
 #include "../proxies.h"
@@ -72,10 +72,14 @@ namespace piranha
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_args_tuple(args_tuple),m_size1(m_s1.template nth_index<0>().size()),
-        m_size2(m_s2.template nth_index<0>().size()),m_retval(retval),m_trunc(*this)
+        m_size2(m_s2.template nth_index<0>().size()),m_retval(retval),m_cfs1(m_size1),m_cfs2(m_size2),
+        m_keys1(m_size1),m_keys2(m_size2),m_trunc(*this)
       {
         // Set proper load factor for hash set.
         m_set.max_load_factor(settings::load_factor());
+        // Cache the series terms into separate vectors for coefficients and keys.
+        cache_series_terms(m_s1,m_cfs1,m_keys1);
+        cache_series_terms(m_s2,m_cfs2,m_keys2);
       }
       void perform_multiplication()
       {
@@ -84,16 +88,13 @@ namespace piranha
     protected:
       void perform_plain_multiplication()
       {
-        adjust_input_sizes();
-        cache_series_terms(m_s1,m_cfs1,m_keys1);
-        cache_series_terms(m_s2,m_cfs2,m_keys2);
         plain_multiplication();
         plain_insert_result_into_retval();
       }
       template <class Series>
         void cache_series_terms(const Series &s,
-        std::valarray<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
-        std::valarray<key_mult_proxy<typename Series::term_type::key_type> > &keys)
+        std::vector<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
+        std::vector<key_mult_proxy<typename Series::term_type::key_type> > &keys)
       {
         typedef typename Series::const_sorted_iterator const_sorted_iterator;
         const const_sorted_iterator it_f = s.template nth_index<0>().end();
@@ -109,12 +110,10 @@ namespace piranha
       void plain_multiplication()
       {
         typedef typename term_type::multiplication_result mult_res;
-        const size_t size1 = m_cfs1.size(), size2 = m_cfs2.size();
-        p_assert(size1 == m_keys1.size() and size2 == m_keys2.size());
         mult_res res;
-        for (size_t i = 0; i < size1; ++i)
+        for (size_t i = 0; i < m_size1; ++i)
         {
-          for (size_t j = 0; j < size2; ++j)
+          for (size_t j = 0; j < m_size2; ++j)
           {
             if (m_trunc.skip(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),*this))
             {
@@ -141,14 +140,6 @@ namespace piranha
           it_hint = m_retval.template insert<false,true>(term,m_args_tuple,it_hint);
         }
       }
-      /// Adjust the sizes of the vectors representing internally the input series.
-      void adjust_input_sizes()
-      {
-        m_cfs1.resize(m_size1);
-        m_cfs2.resize(m_size2);
-        m_keys1.resize(m_size1);
-        m_keys2.resize(m_size2);
-      }
     public:
       // These needs to be public since they will be accessed by the truncators.
       // References to the series.
@@ -162,11 +153,11 @@ namespace piranha
       const size_t                  m_size2;
       Series1                       &m_retval;
       // Vectors of input coefficients converted for representation during series multiplication.
-      std::valarray<cf_proxy_type1> m_cfs1;
-      std::valarray<cf_proxy_type2> m_cfs2;
+      std::vector<cf_proxy_type1>   m_cfs1;
+      std::vector<cf_proxy_type2>   m_cfs2;
       // Vectors of input keys converted for representation during series multiplication.
-      std::valarray<key_proxy_type> m_keys1;
-      std::valarray<key_proxy_type> m_keys2;
+      std::vector<key_proxy_type>   m_keys1;
+      std::vector<key_proxy_type>   m_keys2;
       // Container to store the result of the multiplications.
       mult_set                      m_set;
       // Truncator. This must be the last one defined because it will take *this

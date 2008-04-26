@@ -29,7 +29,7 @@
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
-#include <valarray>
+#include <vector>
 
 #include "../p_assert.h"
 #include "../settings.h" // For debug messages.
@@ -100,32 +100,27 @@ namespace piranha
         m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
         m_min_max1(m_size),m_min_max2(m_size),m_res_min_max(m_size),m_fast_res_min_max(m_size),
         // Coding vector is larger to accomodate extra element at the end.
-        m_coding_vector(m_size+1)
+        m_coding_vector(m_size+1),
+        m_ckeys1(derived_const_cast->m_size1),m_ckeys2(derived_const_cast->m_size2)
       {}
       void find_input_min_max()
       {
-        typedef typename Derived::const_iterator1 const_iterator1;
-        typedef typename Derived::const_iterator2 const_iterator2;
-        const const_iterator1 it_f1 = derived_const_cast->m_s1.template nth_index<0>().end();
-        const const_iterator2 it_f2 = derived_const_cast->m_s2.template nth_index<0>().end();
-        const_iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
-        const_iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
+        size_t i1 = 0, i2 = 0;
         // Fill first minmax vector. This works because at this point we are sure both series have
         // at least one term. Assert it, just to make sure.
-        p_assert(!derived_const_cast->m_s1.template nth_index<0>().empty() and
-          !derived_const_cast->m_s2.template nth_index<0>().empty());
-        it1->m_key.template update_limits<true>(m_min_max1);
-        it2->m_key.template update_limits<true>(m_min_max2);
+        p_assert(derived_const_cast->m_size1 > 0 and derived_const_cast->m_size2 > 0);
+        derived_const_cast->m_keys1[i1].get().template update_limits<true>(m_min_max1);
+        derived_const_cast->m_keys2[i2].get().template update_limits<true>(m_min_max2);
         // Move to the second terms and cycle on all remaining terms.
-        ++it1;
-        ++it2;
-        for (; it1 != it_f1; ++it1)
+        ++i1;
+        ++i2;
+        for (; i1 < derived_const_cast->m_size1; ++i1)
         {
-          it1->m_key.template update_limits<false>(m_min_max1);
+          derived_cast->m_keys1[i1].get().template update_limits<false>(m_min_max1);
         }
-        for (; it2 != it_f2; ++it2)
+        for (; i2 < derived_const_cast->m_size2; ++i2)
         {
-          it2->m_key.template update_limits<false>(m_min_max2);
+          derived_cast->m_keys2[i2].get().template update_limits<false>(m_min_max2);
         }
 // std::cout << "Limits are:\n";
 // for (size_t i = 0; i < m_min_max1.size(); ++i)
@@ -183,32 +178,16 @@ namespace piranha
 // std::cout << "+\t" << m_coding_vector[m_size] << '\n';
         }
       }
-      /// Store coefficients and code keys.
-      void store_coefficients_code_keys()
+      /// Code keys.
+      void code_keys()
       {
-        typedef typename Derived::const_iterator1 const_iterator1;
-        typedef typename Derived::const_iterator2 const_iterator2;
-        typedef typename Derived::cf_type1 cf_type1;
-        typedef typename Derived::cf_type2 cf_type2;
-        const_iterator1 it1 = derived_const_cast->m_s1.template nth_index<0>().begin();
-        const_iterator2 it2 = derived_const_cast->m_s2.template nth_index<0>().begin();
-        // Make space in the coefficients and coded keys vectors.
-        derived_const_cast->m_cfs1.resize(derived_const_cast->m_size1);
-        derived_const_cast->m_cfs2.resize(derived_const_cast->m_size2);
-        m_ckeys1.resize(derived_const_cast->m_size1);
-        m_ckeys2.resize(derived_const_cast->m_size2);
-        size_t i;
-        for (i = 0; i < derived_const_cast->m_size1; ++i)
+        for (size_t i = 0; i < derived_const_cast->m_size1; ++i)
         {
-          derived_const_cast->m_cfs1[i] = it1->m_cf;
-          it1->m_key.code(m_coding_vector,m_ckeys1[i],derived_const_cast->m_args_tuple);
-          ++it1;
+          derived_const_cast->m_keys1[i].get().code(m_coding_vector,m_ckeys1[i],derived_const_cast->m_args_tuple);
         }
-        for (i = 0; i < derived_const_cast->m_size2; ++i)
+        for (size_t i = 0; i < derived_const_cast->m_size2; ++i)
         {
-          derived_const_cast->m_cfs2[i] = it2->m_cf;
-          it2->m_key.code(m_coding_vector,m_ckeys2[i],derived_const_cast->m_args_tuple);
-          ++it2;
+          derived_const_cast->m_keys2[i].get().code(m_coding_vector,m_ckeys2[i],derived_const_cast->m_args_tuple);
         }
       }
     protected:
@@ -223,15 +202,15 @@ namespace piranha
       // GMP is used to avoid trespassing the range limits of max_fast_int.
       std::vector<std::pair<mpz_class,mpz_class> >          m_res_min_max;
       // Version of the above downcast to fast integer type.
-      std::valarray<std::pair<max_fast_int,max_fast_int> >  m_fast_res_min_max;
+      std::vector<std::pair<max_fast_int,max_fast_int> >    m_fast_res_min_max;
       // Coding vector.
-      std::valarray<max_fast_int>                           m_coding_vector;
+      std::vector<max_fast_int>                             m_coding_vector;
       // Mininum and maximum values of codes.
       max_fast_int                                          m_h_min;
       max_fast_int                                          m_h_max;
       // Coded keys.
-      std::valarray<max_fast_int>                           m_ckeys1;
-      std::valarray<max_fast_int>                           m_ckeys2;
+      std::vector<max_fast_int>                             m_ckeys1;
+      std::vector<max_fast_int>                             m_ckeys2;
   };
 }
 
