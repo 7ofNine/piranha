@@ -186,7 +186,7 @@ namespace piranha
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::a_pow(const double &y,
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const double &y,
     const ArgsTuple &args_tuple) const
   {
     typedef typename Derived::term_type term_type;

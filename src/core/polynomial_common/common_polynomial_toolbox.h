@@ -62,14 +62,14 @@ namespace piranha
       }
       /// Real power.
       /**
-      * This method is written to work in conjunction with base_series::a_pow.
+      * This method is written to work in conjunction with base_series::b_pow.
       */
       template <class ArgsTuple>
         Derived real_pow(const double &y, const ArgsTuple &args_tuple) const
       {
         typedef typename Derived::term_type term_type;
         // Here we know that the cases of single coefficient, empty series and natural power have already been taken care of
-        // in base_series::a_pow. We also know that if y is an integer, it must be -1.
+        // in base_series::b_pow. We also know that if y is an integer, it must be -1.
         p_assert(!derived_const_cast->is_single_cf() and !derived_const_cast->empty());
         Derived retval;
         const int pow_n = (int)nearbyint(y);

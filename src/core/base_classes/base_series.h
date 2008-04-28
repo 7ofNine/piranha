@@ -82,7 +82,7 @@ namespace piranha
       template <class ArgsTuple>
         Derived &divide_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>
-        Derived a_pow(const double &, const ArgsTuple &) const;
+        Derived b_pow(const double &, const ArgsTuple &) const;
     protected:
       static const char separator = Separator;
       // Check that the separators do not conflict.

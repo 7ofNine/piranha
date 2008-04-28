@@ -47,7 +47,7 @@ def sin(arg):
     return __math.sin(arg)
 
 def copy(arg):
-  """Copy function lifted from the copy module."""
+  """Standard copy function. Lifted from the copy module."""
   return __copy.copy(arg)
 
 psym_manager = _Core.__psym_manager()

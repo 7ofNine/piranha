@@ -46,7 +46,7 @@ namespace piranha
     template <class ArgsTuple>
     inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &args_tuple) const
   {
-    return derived_const_cast->a_pow(y,args_tuple);
+    return derived_const_cast->b_pow(y,args_tuple);
   }
 }
 

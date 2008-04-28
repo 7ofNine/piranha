@@ -166,7 +166,7 @@ namespace piranha
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
     inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
   {
-    Derived retval(derived_const_cast->a_pow(x,derived_const_cast->m_arguments));
+    Derived retval(derived_const_cast->b_pow(x,derived_const_cast->m_arguments));
     retval.m_arguments = derived_const_cast->m_arguments;
     return retval;
   }
