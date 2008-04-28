@@ -20,25 +20,60 @@ from _Core import *
 
 import copy as __copy
 import math as __math
+try:
+  import numpy as __numpy
+  import matplotlib as __matplotlib
+except:
+  print "Warning: many capabilities of Pyranha rely on numpy and matplotlib. Please consider installing these packages."
 
-# Handy definitions of common mathematical functions: try to call the sine/cosine methods of the class,
-# otherwise resort to math.cos/sin.
 def cos(arg):
+  """
+  Wrapper around standard cosine function. If arg provides a cos() method, it will be called, otherwise
+  math.cos() will be called.
+  """
   try:
     return arg.cos()
   except TypeError:
     return __math.cos(arg)
 
 def sin(arg):
+  """
+  Wrapper around standard sine function. If arg provides a sin() method, it will be called, otherwise
+  math.sin() will be called.
+  """
   try:
     return arg.sin()
   except TypeError:
     return __math.sin(arg)
 
-# Lift copy function to top level namespace.
 def copy(arg):
+  """Copy function lifted from the copy module."""
   return __copy.copy(arg)
 
 psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
+
+def tc(args, flambda, t0 = 0., t1 = None, step = None):
+  try:
+    args_list = list(args)
+  except TypeError:
+    args_list = [args]
+  if (t1 == None and step != None) or (t1 != None and step == None):
+    raise TypeError, 'You must specify both a final time AND a step size.'
+  if t1 == None:
+    args_list_eval = map(lambda x: x.eval(t0),args_list)
+    return abs(flambda(*args_list).eval(t0)-flambda(*args_list_eval))
+  else:
+    if (t1 <= t0):
+      raise ValueError, 't1 must be strictly greater than t0.'
+    time_array = __numpy.arange(t0,t1,step)
+    retval = __numpy.array([],dtype=float)
+    retval.resize(len(time_array))
+    result = flambda(*args_list);
+    j=0
+    for t in time_array:
+      args_list_eval = map(lambda x: x.eval(t),args_list)
+      retval[j]=abs(result.eval(t)-flambda(*args_list_eval))
+      j=j+1
+    return time_array,retval;
