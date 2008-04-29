@@ -27,10 +27,10 @@ namespace piranha
 {
   /// Monomial class.
   template <class Cf, class Expo, char Separator, class Allocator>
-    class monomial: public base_term<Cf,Expo,Separator,monomial<Cf,Expo,Separator,Allocator>,Allocator>
+    class monomial: public base_term<Cf,Expo,Separator,Allocator,monomial<Cf,Expo,Separator,Allocator> >
   {
       /// Alias for the ancestor.
-      typedef base_term<Cf,Expo,Separator,monomial<Cf,Expo,Separator,Allocator>,Allocator> ancestor;
+      typedef base_term<Cf,Expo,Separator,Allocator,monomial<Cf,Expo,Separator,Allocator> > ancestor;
       /// Alias for evaluation type.
       typedef typename ancestor::eval_type eval_type;
     public:

@@ -31,10 +31,10 @@ namespace piranha
 {
   /// Term class for Fourier series.
   template <class Cf, class Trig, char Separator, class Allocator>
-    class poisson_series_term: public base_term<Cf,Trig,Separator,poisson_series_term<Cf,Trig,Separator,Allocator>,Allocator>
+    class poisson_series_term: public base_term<Cf,Trig,Separator,Allocator,poisson_series_term<Cf,Trig,Separator,Allocator> >
   {
       /// Alias for the ancestor.
-      typedef base_term<Cf,Trig,Separator,poisson_series_term<Cf,Trig,Separator,Allocator>,Allocator> ancestor;
+      typedef base_term<Cf,Trig,Separator,Allocator,poisson_series_term<Cf,Trig,Separator,Allocator> > ancestor;
       /// Alias for evaluation type.
       typedef typename ancestor::eval_type eval_type;
     public:

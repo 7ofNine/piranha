@@ -32,8 +32,8 @@
 #include "../stream_manager.h"
 #include "../type_traits.h"
 
-#define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Derived, class Allocator
-#define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Derived,Allocator
+#define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
+#define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Allocator,Derived
 
 namespace piranha
 {
