@@ -209,7 +209,7 @@ namespace piranha
         psym_p retval(get_pointer(psym.m_name));
         return retval;
       }
-      static psym_p get_pointer(const std::string &name) throw (not_existing)
+      static psym_p get_pointer(const std::string &name)
       {
         psym_p retval(set.find(name));
         if (retval == set.end())

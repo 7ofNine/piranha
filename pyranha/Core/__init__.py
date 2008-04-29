@@ -50,6 +50,18 @@ def copy(arg):
   """Standard copy function. Lifted from the copy module."""
   return __copy.copy(arg)
 
+def partial(arg,name):
+  """
+  Calculate partial derivative of arg with respect to argument name.
+
+  Internally the partial() method of arg is called. If such method is not available, an AttributeError
+  exception will be raised.
+  """
+  try:
+    return arg.partial(name)
+  except AttributeError:
+    raise AttributeError, "The partial() method is not available for this argument type, returning None."
+
 psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()

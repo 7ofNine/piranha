@@ -22,6 +22,8 @@
 #define PIRANHA_NAMED_SERIES_MATH_H
 
 #include "../exceptions.h"
+#include "../psym.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -32,7 +34,7 @@ namespace piranha
     // If we are merging with self, create a copy and call recursively.
     if ((void *)derived_cast == (void *)(&s2))
     {
-      std::cout << "Merging with self, performing a copy." << std::endl;
+      __PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
       return merge_with_series<Sign,Derived2>(Derived(*derived_const_cast));
     }
     else
@@ -168,6 +170,49 @@ namespace piranha
   {
     Derived retval(derived_const_cast->b_pow(x,derived_const_cast->m_arguments));
     retval.m_arguments = derived_const_cast->m_arguments;
+    return retval;
+  }
+
+  template <class PosTuple, class ArgsTuple>
+    struct named_series_get_psym_p_positions
+  {
+    BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);
+    static void run(const psym_p &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple)
+    {
+      // Set to not found.
+      pos_tuple.template get_head().first = false;
+      const size_t w = args_tuple.template get_head().size();
+      for (size_t i = 0; i < w ; ++i)
+      {
+        if (args_tuple.template get_head()[i] == p)
+        {
+          pos_tuple.template get_head().first = true;
+          pos_tuple.template get_head().second = i;
+          break;
+        }
+      }
+      named_series_get_psym_p_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
+        run(p,pos_tuple.template get_tail(),args_tuple.template get_tail());
+    }
+  };
+
+  template <>
+    struct named_series_get_psym_p_positions<boost::tuples::null_type,boost::tuples::null_type>
+  {
+    static void run(const psym_p &, const boost::tuples::null_type &, const boost::tuples::null_type &)
+    {}
+  };
+
+  /// Partial derivative with respect to the argument called "name".
+  template <__PIRANHA_NAMED_SERIES_TP_DECL>
+    inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const std::string &name) const
+  {
+    typedef typename ntuple<std::pair<bool,size_t>,n_arguments_sets>::type pos_tuple_type;
+    pos_tuple_type pos_tuple;
+    psym_p p = psym_manager::get_pointer(name);
+    named_series_get_psym_p_positions<pos_tuple_type,args_tuple_type>::run(p,pos_tuple,m_arguments);
+    Derived retval(derived_const_cast->b_partial(pos_tuple,m_arguments));
+    retval.m_arguments = m_arguments;
     return retval;
   }
 }

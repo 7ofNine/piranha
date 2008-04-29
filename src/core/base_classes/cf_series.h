@@ -63,6 +63,8 @@ namespace piranha
         void apply_layout(const ArgsTuple &, const Layout &);
       template <class ArgsTuple>
         Derived pow(const double &, const ArgsTuple &) const;
+      template <class PosTuple, class ArgsTuple>
+        Derived partial(const PosTuple &, const ArgsTuple &) const;
     protected:
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);

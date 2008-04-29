@@ -172,12 +172,10 @@ namespace piranha
       {
         m_value += x1.m_value * x2.m_value;
       }
-      // End implementation of basic pseries coefficient interface.
-      //------------
-      // TODO: move into own toolbox.
-      void partial(const size_t &, Derived &retval) const
+      template <class PosTuple, class ArgsTuple>
+        Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const
       {
-        retval=Derived(0);
+        return Derived(0,args_tuple);
       }
       /// Get value.
       const T &g_value() const

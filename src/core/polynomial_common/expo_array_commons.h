@@ -176,6 +176,28 @@ namespace piranha
         }
         return candidate;
       }
+      /// Calculate partial derivative.
+      /**
+       * Result is a pair consisting of an integer and an exponent array.
+       */
+      template <class PosTuple, class ArgsTuple>
+        std::pair<int,Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const
+      {
+        std::pair<int,Derived> retval(0,Derived());
+        const size_t pos = pos_tuple.template get<Derived::position>().second;
+        p_assert(pos < derived_const_cast->size());
+        // Do something only if the argument of the partial derivation is present in the exponent array
+        // and the interesting exponent is not zero.
+        // Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
+        // by the coefficient in the partial derivation of the whole term.
+        if (pos_tuple.template get<Derived::position>().first and derived_const_cast->m_ptr[pos] != 0)
+        {
+          retval.second = *derived_const_cast;
+          retval.first = derived_const_cast->m_ptr[pos];
+          --retval.second[pos];
+        }
+        return retval;
+      }
     protected:
       expo_array_commons() {}
       explicit expo_array_commons(const std::string &s)

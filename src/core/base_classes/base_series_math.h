@@ -24,6 +24,7 @@
 #include <cmath>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../math.h"
 #include "../settings.h"
 
@@ -177,11 +178,35 @@ namespace piranha
     return *derived_cast;
   }
 
-  /// Exponentiation method.
+  /// Partial derivative.
   /**
-   * This method will handle successfully the case in which x is a natural number. If the series
+   * Calls partial() on all terms of the series, and inserts the resulting terms into return value.
+   */
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    template <class PosTuple, class ArgsTuple>
+    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+  {
+    BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    typedef typename Derived::sorted_iterator sorted_iterator;
+    Derived retval;
+    typename Derived::term_type tmp_term1, tmp_term2;
+    sorted_iterator it_hint = retval.template nth_index<0>().end();
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      it->partial(tmp_term1,tmp_term2,pos_tuple,args_tuple);
+      it_hint = retval.insert(tmp_term1,args_tuple,it_hint);
+      it_hint = retval.insert(tmp_term2,args_tuple,it_hint);
+    }
+    return retval;
+  }
+
+  /// Real exponentiation.
+  /**
+   * This method will always handle successfully the case in which x is a natural number. If the series
    * is a single coefficient, the pow method will be dispatched to said coefficient. If x is not natural,
-   * the base_series::real_pow method will be called. The calling is statically polymorphic, so that it is possible to override
+   * the base_series::real_pow method will be called. The call is statically polymorphic, so that it is possible to override
    * base_series::real_pow in a derived class.
    */
   template <__PIRANHA_BASE_SERIES_TP_DECL>

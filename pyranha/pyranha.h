@@ -192,6 +192,11 @@ template <class T>
   inst.def("cos",&T::cos);
   inst.def("sin",&T::sin);
 }
+template <class T>
+  void series_differential_instantiation(class_<T> &inst)
+{
+  inst.def("partial", &T::partial);
+}
 
 template <class T>
   void series_psym_instantiation(class_<T> &inst)
@@ -205,6 +210,7 @@ template <class T>
   inst.def("degree",&T::degree,"Get the degree of the polynomial.");
   inst.def("min_degree",&T::min_degree,"Get the minimum degree of the polynomial.");
   series_psym_instantiation(inst);
+  series_differential_instantiation(inst);
 }
 
 template <class T>
@@ -212,12 +218,7 @@ template <class T>
 {
   series_trigonometric_instantiation(inst);
   series_psym_instantiation(inst);
-}
-
-template <class T>
-  void ps_instantiate_differential_specifics(class_<T> &inst)
-{
-  inst.def("partial", &T::partial);
+  series_differential_instantiation(inst);
 }
 
 template <class T>

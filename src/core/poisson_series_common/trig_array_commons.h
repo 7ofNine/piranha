@@ -28,7 +28,6 @@
 #include <utility> // For std::pair.
 #include <vector>
 
-#include "../integer_typedefs.h" // For max_fast_int.
 #include "../psym.h"
 #include "trig_evaluator.h"
 
@@ -104,7 +103,7 @@ namespace piranha
               {}
               else
             {
-              tmp.append(boost::lexical_cast<std::string>((max_fast_int)(*derived_const_cast)[i]));
+              tmp.append(boost::lexical_cast<std::string>((int)(*derived_const_cast)[i]));
             }
             tmp.append(v[i]->name());
             first_one=false;
@@ -268,6 +267,32 @@ namespace piranha
         {
           (*derived_cast)[i]*=n;
         }
+      }
+      /// Calculate partial derivative.
+      /**
+       * Result is a pair consisting of an integer and a trigonometric array.
+       */
+      template <class PosTuple, class ArgsTuple>
+        std::pair<int,Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const
+      {
+        std::pair<int,Derived> retval(0,Derived());
+        // Do something only if the argument of the partial derivation is present in the trigonometric array.
+        // Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
+        // by the coefficient in the partial derivation of the whole term.
+        if (pos_tuple.template get<Derived::position>().first)
+        {
+          retval.second = *derived_const_cast;
+          const size_t pos = pos_tuple.template get<Derived::position>().second;
+          // Change the flavour of the resulting key.
+          retval.second.m_flavour = (!derived_const_cast->m_flavour);
+          p_assert(pos < derived_const_cast->size());
+          retval.first = derived_const_cast->m_ptr[pos];
+          if (derived_const_cast->m_flavour)
+          {
+            retval.first = -retval.first;
+          }
+        }
+        return retval;
       }
     protected:
       trig_array_commons() {}

@@ -25,6 +25,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility> // For std::pair.
 #include <vector>
 
 #include "../exceptions.h"
@@ -241,6 +242,22 @@ namespace piranha
       template <class ArgsTuple>
         void canonicalise(const ArgsTuple &)
       {}
+      /// Calculate partial derivative.
+      /**
+       * The two resulting terms are placed into res1 and res2. It is assumed that the partial derivative
+       * of a key results in an integer and another key, stored in a std::pair.
+       */
+      template <class PosTuple, class ArgsTuple>
+        void partial(Derived &res1, Derived &res2,
+        const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+      {
+        res1.m_cf = m_cf.partial(pos_tuple,args_tuple);
+        res1.m_key = m_key;
+        std::pair<int,key_type> key_partial_result(m_key.partial(pos_tuple,args_tuple));
+        res2.m_key = key_partial_result.second;
+        res2.m_cf = m_cf;
+        res2.m_cf.mult_by(key_partial_result.first,args_tuple);
+      }
       /// Hasher functor.
       /**
        * Useful in STL-like containers.
