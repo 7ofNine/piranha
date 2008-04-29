@@ -131,8 +131,8 @@ namespace piranha
           m_expo_limits.erase(it);
         }
       }
-      /// Transform the list of psymbol limits into a list of position - limits.
-      static std::vector<std::pair<size_t,int> > get_positions(const vector_psym_p &v)
+      /// Transform the list of psymbol limits into a list of positions - limits given a piranha::vector_psym_p.
+      static std::vector<std::pair<size_t,int> > get_positions_limits(const vector_psym_p &v)
       {
         std::vector<std::pair<size_t,int> > retval;
         const size_t limits_size = m_expo_limits.size(),
@@ -164,7 +164,7 @@ namespace piranha
     public:
       template <class Multiplier>
         expo_truncator(const Multiplier &m):
-        m_positions(base_expo_truncator::get_positions(m.m_args_tuple.template get<Multiplier::key_type::position>()))
+        m_positions(base_expo_truncator::get_positions_limits(m.m_args_tuple.template get<Multiplier::key_type::position>()))
       {}
       template <class Multiplier>
         bool accept(const max_fast_int &n, const Multiplier &m)

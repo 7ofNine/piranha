@@ -25,6 +25,7 @@
 #include <cmath>
 
 #include "../base_classes/truncators.h" // To establish a limit for the binomial expansion.
+#include "../base_classes/series_math.h" // For the binomial expansion.
 #include "../exceptions.h"
 #include "../settings.h"
 
@@ -71,7 +72,6 @@ namespace piranha
         // Here we know that the cases of single coefficient, empty series and natural power have already been taken care of
         // in base_series::b_pow. We also know that if y is an integer, it must be -1.
         p_assert(!derived_const_cast->is_single_cf() and !derived_const_cast->empty());
-        Derived retval;
         const int pow_n = (int)nearbyint(y);
         // If y is an integer, assert that it is -1 (i.e., that we are inverting).
         const bool is_inversion = std::abs(y - pow_n) < settings::numerical_zero();
@@ -80,52 +80,30 @@ namespace piranha
         // If we are dealing with a single monomial and the power is -1, just try to invert it.
         if (is_inversion and derived_const_cast->template nth_index<0>().size() == 1)
         {
+          Derived retval;
           term_type tmp(A);
           tmp.m_cf = tmp.m_cf.pow(-1,args_tuple);
           tmp.m_key.invert_sign();
           retval.insert(tmp,args_tuple,retval.template nth_index<0>().end());
+          return retval;
         }
         else
         {
-          // Start the binomial expansion.
-          term_type tmp_term;
-          // First we calculate A**y. See if we can raise to real power the coefficient and the key.
-          // Exceptions will be thrown in case of problems.
-          tmp_term.m_cf = A.m_cf.pow(y,args_tuple);
-          tmp_term.m_key = A.m_key.pow(y,args_tuple);
-          Derived Apowy;
-          Apowy.insert(tmp_term,args_tuple,Apowy.template nth_index<0>().end());
+          // This is X, i.e., the original series without the leading term, which will then be divided by A.
+          Derived XoverA(*derived_const_cast);
+          XoverA.template term_erase<0>(args_tuple,XoverA.template nth_index<0>().begin());
           // Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
+          term_type tmp_term;
           tmp_term.m_cf = A.m_cf.pow(-1,args_tuple);
           tmp_term.m_key = A.m_key.pow(-1,args_tuple);
           Derived Ainv;
           Ainv.insert(tmp_term,args_tuple,Ainv.template nth_index<0>().end());
-          // Now, on to X/A.
-          // This is X, i.e., the original series without the leading term, which will then be divided by A.
-          Derived XoverA(*derived_const_cast);
-          XoverA.template term_erase<0>(args_tuple,XoverA.template nth_index<0>().begin());
+          // Now let's compute X/A.
           XoverA.mult_by(Ainv,args_tuple);
-          if (XoverA.empty())
-          {
-            throw unsuitable("The argument of the binomial expansion is empty.");
-          }
           const size_t n(binomial_limit(XoverA,args_tuple));
           __PDEBUG(std::cout << "Calculated limit for binomial expansion: " << n << '\n');
-          // Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
-          // binomial coefficient incrementally at every step. We start with 1.
-          Derived tmp(1,args_tuple);
-          retval.add(tmp,args_tuple);
-          for (size_t i = 1; i <= n; ++i)
-          {
-            tmp.mult_by(y-i+1,args_tuple);
-            tmp.divide_by((int)i,args_tuple);
-            tmp.mult_by(XoverA,args_tuple);
-            retval.add(tmp,args_tuple);
-          }
-          // Finally, multiply the result of the summation by A**y.
-          retval.mult_by(Apowy,args_tuple);
+          return binomial_expansion(A,XoverA,y,n,args_tuple);
         }
-        return retval;
       }
     private:
       template <class ArgsTuple>
@@ -135,7 +113,7 @@ namespace piranha
         typedef typename Derived::const_sorted_iterator const_sorted_iterator;
         // First let's translate the psym_p - integer pairs from the exponent truncator into
         // size_t - integer pairs. I.e., establish which truncation limits are relevant
-        // to the given tuple of arguments sets and thei positions.
+        // to the given tuple of arguments sets and their positions.
         const std::vector<std::pair<size_t,int> > pos(base_expo_truncator::get_positions_limits(
           args_tuple.template get<term_type::key_type::position>()));
         const size_t pos_size = pos.size();
@@ -151,6 +129,11 @@ namespace piranha
           {
             throw unsuitable("Cannot proceed to binomial expansion if there are negative exponent limits for this series.");
           }
+        }
+        // We don't want this to happen.
+        if (XoverA.empty())
+        {
+          throw unsuitable("The argument of the binomial expansion is empty.");
         }
         // The code that follows is used to build a vector of minimum degrees for those symbolic
         // arguments subject to exponent truncation.
@@ -188,7 +171,7 @@ namespace piranha
           }
           bin_limits[i] =(size_t)std::ceil((float)pos[i].second / minimum_degrees[i]);
         }
-        // Finally, the biggest limit is the one that defines the length of the binomial expansion.
+        // The biggest limit is the one that defines the length of the binomial expansion.
         return *(std::max_element(bin_limits.begin(),bin_limits.end()));
       }
   };

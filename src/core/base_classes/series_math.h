@@ -27,21 +27,25 @@
     The functions defined here require series and arguments tuples as parameters.
 */
 
+#include <boost/type_traits/is_same.hpp> // For term type detection.
+
+#include "../exceptions.h"
+
 namespace piranha
 {
   /// Natural power for series.
   /**
    * Calculated through exponentiation by squaring.
    */
-  template <class T, class ArgsTuple>
-    T natural_power(const T &x, const size_t &n, const ArgsTuple &args_tuple)
+  template <class Series, class ArgsTuple>
+    Series natural_power(const Series &x, const size_t &n, const ArgsTuple &args_tuple)
   {
-    T retval;
+    Series retval;
     switch (n)
     {
       case 0:
       {
-        retval = T(1,args_tuple);
+        retval = Series(1,args_tuple);
         break;
       }
       case 1:
@@ -72,10 +76,10 @@ namespace piranha
       }
       default:
       {
-        retval = T(1,args_tuple);
+        retval = Series(1,args_tuple);
         // Use scoping here to have tmp destroyed when it is not needed anymore.
         {
-          T tmp(x);
+          Series tmp(x);
           size_t i = n;
           while (i)
           {
@@ -93,6 +97,36 @@ namespace piranha
         }
       }
     }
+    return retval;
+  }
+
+  template <class Term, class Series, class ArgsTuple>
+    Series binomial_expansion(const Term &A, const Series &XoverA, const double &y, const size_t &n, const ArgsTuple &args_tuple)
+  {
+    typedef typename Series::term_type term_type;
+    BOOST_STATIC_ASSERT((boost::is_same<Term,term_type>::value));
+    // Start the binomial expansion.
+    term_type tmp_term;
+    // Calculate A**y. See if we can raise to real power the coefficient and the key.
+    // Exceptions will be thrown in case of problems.
+    tmp_term.m_cf = A.m_cf.pow(y,args_tuple);
+    tmp_term.m_key = A.m_key.pow(y,args_tuple);
+    Series Apowy;
+    Apowy.insert(tmp_term,args_tuple,Apowy.template nth_index<0>().end());
+    // Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
+    // binomial coefficient incrementally at every step. We start with 1.
+    Series retval;
+    Series tmp(1,args_tuple);
+    retval.add(tmp,args_tuple);
+    for (size_t i = 1; i <= n; ++i)
+    {
+      tmp.mult_by(y-i+1,args_tuple);
+      tmp.divide_by((int)i,args_tuple);
+      tmp.mult_by(XoverA,args_tuple);
+      retval.add(tmp,args_tuple);
+    }
+    // Finally, multiply the result of the summation by A**y.
+    retval.mult_by(Apowy,args_tuple);
     return retval;
   }
 }
