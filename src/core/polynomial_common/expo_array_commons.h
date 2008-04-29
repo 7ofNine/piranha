@@ -30,6 +30,7 @@
 
 #include "../exceptions.h"
 #include "../psym.h"
+#include "../settings.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
@@ -195,6 +196,35 @@ namespace piranha
           retval.second = *derived_const_cast;
           retval.first = derived_const_cast->m_ptr[pos];
           --retval.second[pos];
+        }
+        return retval;
+      }
+      /// Real exponentiation.
+      /**
+       * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+       */
+      template <class ArgsTuple>
+        Derived pow(const double &y, const ArgsTuple &) const
+      {
+        typedef typename Derived::size_type size_type;
+        Derived retval(*derived_const_cast);
+        const int pow_n = (int)nearbyint(y);
+        if (std::abs(y - pow_n) < settings::numerical_zero())
+        {
+          const size_type w = derived_const_cast->size();
+          // Integer power. Retval has already been set to this, modify integers in-place.
+          for (size_type i = 0; i < w; ++i)
+          {
+            retval[i] *= pow_n;
+          }
+        }
+        else
+        {
+          // Real power is ok only if expo_array is unity.
+          if (!is_unity())
+          {
+            throw unsuitable("Cannot raise non-unity exponent array to real power.");
+          }
         }
         return retval;
       }

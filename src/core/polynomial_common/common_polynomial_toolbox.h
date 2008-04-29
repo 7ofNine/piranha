@@ -89,26 +89,15 @@ namespace piranha
         {
           // Start the binomial expansion.
           term_type tmp_term;
-          // First we calculate A**y. See if we can raise to real power the coefficient.
+          // First we calculate A**y. See if we can raise to real power the coefficient and the key.
+          // Exceptions will be thrown in case of problems.
           tmp_term.m_cf = A.m_cf.pow(y,args_tuple);
-          // If we are inverting, it is all fine and dandy.
-          if (is_inversion)
-          {
-            tmp_term.m_key = A.m_key;
-            tmp_term.m_key.invert_sign();
-          }
-          // Otherwise the only case in which we can proceed is when the key is equal to 1.
-          else if (!A.m_key.is_unity())
-          {
-            // Can't handle real exponentiation of non-unitary sets of exponents.
-            throw (unsuitable("Cannot raise to real power leading monomial during binomial expansion of polynomial."));
-          }
+          tmp_term.m_key = A.m_key.pow(y,args_tuple);
           Derived Apowy;
           Apowy.insert(tmp_term,args_tuple,Apowy.template nth_index<0>().end());
           // Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
           tmp_term.m_cf = A.m_cf.pow(-1,args_tuple);
-          tmp_term.m_key = A.m_key;
-          tmp_term.m_key.invert_sign();
+          tmp_term.m_key = A.m_key.pow(-1,args_tuple);
           Derived Ainv;
           Ainv.insert(tmp_term,args_tuple,Ainv.template nth_index<0>().end());
           // Now, on to X/A.
@@ -147,7 +136,7 @@ namespace piranha
         // First let's translate the psym_p - integer pairs from the exponent truncator into
         // size_t - integer pairs. I.e., establish which truncation limits are relevant
         // to the given tuple of arguments sets and thei positions.
-        const std::vector<std::pair<size_t,int> > pos(base_expo_truncator::get_positions(
+        const std::vector<std::pair<size_t,int> > pos(base_expo_truncator::get_positions_limits(
           args_tuple.template get<term_type::key_type::position>()));
         const size_t pos_size = pos.size();
         if (pos_size == 0)
