@@ -27,6 +27,7 @@
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../settings.h"
+#include "series_math.h" // For natural_power.
 
 namespace piranha
 {
