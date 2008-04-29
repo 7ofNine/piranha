@@ -75,7 +75,7 @@ namespace piranha
   {
       template <class Multiplier>
         norm_truncator(const Multiplier &m):m_delta_threshold(
-        m.m_s1.calculate_norm(m.m_args_tuple)*m.m_s2.calculate_norm(m.m_args_tuple)*m_truncation_level/
+        m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level/
         (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
       {}
       template <class Result, class Multiplier>
@@ -86,7 +86,7 @@ namespace piranha
         return (c1.norm(m.m_args_tuple) * c2.norm(m.m_args_tuple) / 2 < m_delta_threshold);
       }
     private:
-      const double    m_delta_threshold;
+      const double  m_delta_threshold;
   };
 
   /// Base exponent truncator.

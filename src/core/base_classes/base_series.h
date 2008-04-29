@@ -62,7 +62,7 @@ namespace piranha
       template <int N, class ArgsTuple, class Iterator>
         void term_erase(const ArgsTuple &, Iterator);
       template <class ArgsTuple>
-        double calculate_norm(const ArgsTuple &) const;
+        double b_norm(const ArgsTuple &) const;
       Derived copy() const;
       size_t length() const;
       bool empty() const;
@@ -98,7 +98,7 @@ namespace piranha
       template <class ArgsTuple>
         void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
       template <class ArgsTuple>
-        eval_type time_evaluation(const double &, const ArgsTuple &) const;
+        eval_type b_eval(const double &, const ArgsTuple &) const;
       void swap_terms(Derived &);
       template <class ArgsTuple, class Layout>
         void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
