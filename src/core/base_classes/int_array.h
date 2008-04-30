@@ -112,6 +112,11 @@ namespace piranha
       /// Assignment operator.
       int_array &operator=(const int_array &v)
       {
+        // Don't do anything if the memory address is the same.
+        if (this == &v)
+        {
+          return *this;
+        }
         // Take care of flavour.
         m_flavour = v.m_flavour;
         switch (m_size == v.m_size)
