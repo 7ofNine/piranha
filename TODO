@@ -15,3 +15,4 @@
 - Also, make sure that ArgsTuple is always last argument for consistency.
 - Add line - file info into exceptions string.
 - Coded multiplication with mpz as codes when going out of range?
+- plain_series_multiplier -> base_series_multiplier

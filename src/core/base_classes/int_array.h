@@ -199,8 +199,8 @@ namespace piranha
        * the integers are analysed and uploaded to v only if they they are outside the limits
        * already defined in v.
        */
-      template <bool InitialLimits>
-        void update_limits(std::vector<std::pair<max_fast_int,max_fast_int> > &v) const
+      template <bool InitialLimits, class ArgsTuple>
+        void update_limits(std::vector<std::pair<max_fast_int,max_fast_int> > &v, const ArgsTuple &) const
       {
         p_assert(v.size() >= m_size);
         switch (InitialLimits)
