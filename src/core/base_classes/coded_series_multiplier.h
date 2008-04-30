@@ -146,7 +146,7 @@ namespace piranha
           ck*=(m_res_min_max[i].second-m_res_min_max[i].first+1);
         }
         __PDEBUG(std::cout << "hmax-hmin=" << hmax-hmin << '\n');
-        // We want to fill on extra slot of the coding vector (wrt to the nominal size,
+        // We want to fill an extra slot of the coding vector (wrt to the nominal size,
         // corresponding to the arguments number for the key). This is handy for decodification.
         m_coding_vector[m_size]=ck.get_si();
         p_assert(ck > 0);
