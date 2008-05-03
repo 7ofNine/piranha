@@ -106,7 +106,8 @@ namespace piranha
     public:
       template <class Multiplier>
         expo_truncator(const Multiplier &m):
-        m_positions(base_expo_truncator::get_positions_limits(m.m_args_tuple.template get<Multiplier::key_type::position>()))
+        m_positions(base_expo_truncator::get_positions_limits(
+        m.m_args_tuple.template get<Multiplier::term_type1::key_type::position>()))
       {}
       template <class Multiplier>
         bool accept(const max_fast_int &n, const Multiplier &m)
@@ -137,8 +138,8 @@ namespace piranha
         return false;
       }
     private:
-      const std::vector<std::pair<size_t,int> > m_positions;
-      typename BaseMultiplier::key_type         m_tmp_key;
+      const std::vector<std::pair<size_t,int> >     m_positions;
+      typename BaseMultiplier::term_type1::key_type m_tmp_key;
   };
 }
 

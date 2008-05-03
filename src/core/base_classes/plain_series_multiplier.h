@@ -24,6 +24,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
+#include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <vector>
 
 #include "../p_assert.h"
@@ -48,28 +49,25 @@ namespace piranha
     public:
       // These typedefs are public because truncators may want to use them.
       /// Alias for term type of first input series and return value series.
-      typedef typename Series1::term_type term_type;
-      /// Alias for the coefficient type of the first input series.
-      typedef typename Series1::term_type::cf_type cf_type1;
-      /// Alias for the coefficient type of the second input series.
-      typedef typename Series2::term_type::cf_type cf_type2;
-      /// Alias for the key type (common to both input series).
-      typedef typename Series1::term_type::key_type key_type;
+      typedef typename Series1::term_type term_type1;
+      /// Alias for term type of second input series.
+      typedef typename Series2::term_type term_type2;
       /// Alias for the truncator type.
       typedef Truncator<plain_series_multiplier> truncator_type;
       typedef boost::multi_index_container
       <
-        term_type,
+        term_type1,
         boost::multi_index::indexed_by
         <
-          boost::multi_index::hashed_unique<boost::multi_index::identity<term_type> >
+          boost::multi_index::hashed_unique<boost::multi_index::identity<term_type1> >
         >
       >
       mult_set;
     private:
-      typedef cf_mult_proxy<cf_type1> cf_proxy_type1;
-      typedef cf_mult_proxy<cf_type2> cf_proxy_type2;
-      typedef key_mult_proxy<key_type> key_proxy_type;
+      BOOST_STATIC_ASSERT((boost::is_same<typename term_type1::key_type,typename term_type2::key_type>::value));
+      typedef cf_mult_proxy<typename term_type1::cf_type> cf_proxy_type1;
+      typedef cf_mult_proxy<typename term_type2::cf_type> cf_proxy_type2;
+      typedef key_mult_proxy<typename term_type1::key_type> key_proxy_type;
     public:
       plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         m_s1(s1),m_s2(s2),m_args_tuple(args_tuple),m_size1(m_s1.template nth_index<0>().size()),
@@ -110,7 +108,7 @@ namespace piranha
       // Perform plain multiplication.
       void plain_multiplication()
       {
-        typedef typename term_type::multiplication_result mult_res;
+        typedef typename term_type1::multiplication_result mult_res;
         mult_res res;
         for (size_t i = 0; i < m_size1; ++i)
         {
@@ -120,7 +118,7 @@ namespace piranha
             {
               break;
             }
-            term_type::multiply(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),res,m_args_tuple);
+            term_type1::multiply(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),res,m_args_tuple);
             insert_multiplication_result<mult_res>::run(res,*this);
           }
         }
@@ -131,7 +129,7 @@ namespace piranha
       {
         typedef typename mult_set::const_iterator hash_iterator;
         typedef typename Series1::sorted_iterator sorted_iterator;
-        term_type term;
+        term_type1 term;
         sorted_iterator it_hint = m_retval.template nth_index<0>().end();
         const hash_iterator it_f = m_set.end();
         for (hash_iterator it = m_set.begin(); it != it_f; ++it)
