@@ -17,3 +17,6 @@
 - Coded multiplication with mpz as codes when going out of range?
 - plain_series_multiplier -> base_series_multiplier
 - int --> max_fast_int for uniformity and generality?
+- elements_* --> ints_* in int_array for clarity
+- int_array --> key_int_array for clarity
+- add truncators to polynomials, if they do not impact performance too much.
