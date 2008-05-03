@@ -137,8 +137,8 @@ namespace piranha
         return false;
       }
     private:
-      std::vector<std::pair<size_t,int> > m_positions;
-      typename BaseMultiplier::key_type   m_tmp_key;
+      const std::vector<std::pair<size_t,int> > m_positions;
+      typename BaseMultiplier::key_type         m_tmp_key;
   };
 }
 

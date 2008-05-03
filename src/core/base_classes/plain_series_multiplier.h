@@ -44,6 +44,7 @@ namespace piranha
     class plain_series_multiplier
   {
       friend struct base_insert_multiplication_result;
+      friend class Truncator<plain_series_multiplier>;
     public:
       // These typedefs are public because truncators may want to use them.
       /// Alias for term type of first input series and return value series.
@@ -140,14 +141,12 @@ namespace piranha
           it_hint = m_retval.template insert<false,true>(term,m_args_tuple,it_hint);
         }
       }
-    public:
-      // These needs to be public since they will be accessed by the truncators.
+    protected:
       // References to the series.
       const Series1                 &m_s1;
       const Series2                 &m_s2;
       // Reference to the arguments tuple.
       const ArgsTuple               &m_args_tuple;
-    protected:
       // Sizes of the series.
       const size_t                  m_size1;
       const size_t                  m_size2;
