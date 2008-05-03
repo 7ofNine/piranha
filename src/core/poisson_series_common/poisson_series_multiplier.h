@@ -28,7 +28,7 @@
 #include <utility> // For std::pair.
 #include <vector>
 
-#include "../base_classes/plain_series_multiplier.h"
+#include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -39,31 +39,31 @@ namespace piranha
   /// Series multiplier specifically tuned for Poisson series.
   /**
    * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
-   * like piranha::plain_series_multiplier.
+   * like piranha::base_series_multiplier.
    */
   template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class poisson_series_multiplier:
-    public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
+    public base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
+    poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >,
     public coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >
   {
-      typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
+      typedef base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
+        poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > ancestor;
       typedef coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
-    public:
       typedef typename ancestor::term_type1 term_type1;
       typedef typename ancestor::term_type2 term_type2;
       typedef typename ancestor::truncator_type truncator_type;
-    private:
       typedef typename term_type1::cf_type cf_type1;
       typedef typename term_type2::cf_type cf_type2;
       typedef typename term_type1::key_type key_type;
     public:
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple),
+        ancestor::base_series_multiplier(s1,s2,retval,args_tuple),
         m_flavours1(ancestor::m_size1),m_flavours2(ancestor::m_size2)
       {}
       /// Perform multiplication and place the result into m_retval.
@@ -177,7 +177,7 @@ namespace piranha
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
-              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get()))
             {
               break;
             }
@@ -279,7 +279,7 @@ namespace piranha
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
-              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get()))
             {
               break;
             }

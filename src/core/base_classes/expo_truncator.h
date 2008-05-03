@@ -100,29 +100,28 @@ namespace piranha
   };
 
   /// Truncators for polynomials based on the exponent of one or more variables.
-  template <class BaseMultiplier>
+  template <class Multiplier>
     class expo_truncator:public base_expo_truncator
   {
     public:
-      template <class Multiplier>
-        expo_truncator(const Multiplier &m):
+      expo_truncator(Multiplier &m):
+        m_multiplier(m),
         m_positions(base_expo_truncator::get_positions_limits(
-        m.m_args_tuple.template get<Multiplier::term_type1::key_type::position>()))
+        m_multiplier.m_args_tuple.template get<Multiplier::term_type1::key_type::position>()))
       {}
-      template <class Multiplier>
-        bool accept(const max_fast_int &n, const Multiplier &m)
+      bool accept(const max_fast_int &n)
       {
         switch (m_positions.size() == 0)
         {
           case true:
             return true;
           default:
-            m.decode(m_tmp_key,n);
-            return m_tmp_key.test_expo_limits(m_positions);
+            m_multiplier.decode(m_multiplier.m_tmp_key,n);
+            return m_multiplier.m_tmp_key.test_expo_limits(m_positions);
         }
       }
-      template <class Term, class Multiplier>
-        bool accept(const Term &t, const Multiplier &) const
+      template <class Term>
+        bool accept(const Term &t) const
       {
         switch (m_positions.size() == 0)
         {
@@ -132,14 +131,14 @@ namespace piranha
             return t.m_key.test_expo_limits(m_positions);
         }
       }
-      template <class Cf1, class Cf2, class Key, class Multiplier>
-        bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const Multiplier &) const
+      template <class Cf1, class Cf2, class Key>
+        bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const
       {
         return false;
       }
     private:
-      const std::vector<std::pair<size_t,int> >     m_positions;
-      typename BaseMultiplier::term_type1::key_type m_tmp_key;
+      Multiplier                                &m_multiplier;
+      const std::vector<std::pair<size_t,int> > m_positions;
   };
 }
 

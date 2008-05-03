@@ -28,7 +28,7 @@
 #include <utility> // For std::pair.
 #include <vector>
 
-#include "../base_classes/plain_series_multiplier.h"
+#include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -39,32 +39,33 @@ namespace piranha
   /// Series multiplier specifically tuned for Polynomials.
   /**
    * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
-   * like piranha::plain_series_multiplier.
+   * like piranha::base_series_multiplier.
    */
   template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
     class polynomial_multiplier:
-    public plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator>,
+    public base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
+    polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >,
     public coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >
   {
-      typedef plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> ancestor;
+      typedef base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
+        polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> > ancestor;
       typedef coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
+      // This is needed to access the temporary key used for decodification in the truncator.
+      friend class Truncator<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
-    public:
-      // Some of these typedefs are used in the coded ancestor and may be used in the truncators..
       typedef typename ancestor::term_type1 term_type1;
       typedef typename ancestor::term_type1 term_type2;
       typedef typename ancestor::truncator_type truncator_type;
-    private:
       typedef typename term_type1::cf_type cf_type1;
       typedef typename term_type2::cf_type cf_type2;
       typedef typename term_type1::key_type key_type;
     public:
       polynomial_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        ancestor::plain_series_multiplier(s1,s2,retval,args_tuple)
+        ancestor::base_series_multiplier(s1,s2,retval,args_tuple)
       {}
       /// Perform multiplication and place the result into m_retval.
       void perform_multiplication()
@@ -161,11 +162,11 @@ namespace piranha
             // Calculate index of the result.
             const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
             if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
-              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get()))
             {
               break;
             }
-            switch (ancestor::m_trunc.accept(res_index,*this))
+            switch (ancestor::m_trunc.accept(res_index))
             {
               case true:
                 vc_res[res_index].addmul(ancestor::m_cfs1[i].get(),ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
@@ -219,12 +220,12 @@ namespace piranha
           for (size_t j = 0; j < ancestor::m_size2; ++j)
           {
             if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(),ancestor::m_keys1[i].get(),
-              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get(),*this))
+              ancestor::m_cfs2[j].get(),ancestor::m_keys2[j].get()))
             {
               break;
             }
             const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-            switch (ancestor::m_trunc.accept(new_key,*this))
+            switch (ancestor::m_trunc.accept(new_key))
             {
               case true:
                 it = cms.find(new_key);
@@ -263,6 +264,9 @@ namespace piranha
         }
         __PDEBUG(std::cout << "Done polynomial hash coded\n");
       }
+    private:
+      // Temporary key used for the decodification in the truncator.
+      typename term_type1::key_type m_tmp_key;
   };
 }
 

@@ -54,22 +54,24 @@ namespace piranha
   };
 
   /// Norm-based truncator.
-  template <class BaseMultiplier>
+  template <class Multiplier>
     struct norm_truncator:public base_norm_truncator
   {
-      template <class Multiplier>
-        norm_truncator(const Multiplier &m):m_delta_threshold(
+      norm_truncator(Multiplier &m):
+        m_multiplier(m),
+        m_delta_threshold(
         m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level/
         (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
       {}
-      template <class Result, class Multiplier>
-        bool accept(const Result &, const Multiplier &) const {return true;}
-      template <class Cf1, class Cf2, class Key, class Multiplier>
-        bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &, const Multiplier &m) const
+      template <class Result>
+        bool accept(const Result &) const {return true;}
+      template <class Cf1, class Cf2, class Key>
+        bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &) const
       {
-        return (c1.norm(m.m_args_tuple) * c2.norm(m.m_args_tuple) / 2 < m_delta_threshold);
+        return (c1.norm(m_multiplier.m_args_tuple) * c2.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
       }
     private:
+      Multiplier    &m_multiplier;
       const double  m_delta_threshold;
   };
 }
