@@ -18,37 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_QPS_H
-#define PIRANHA_QPS_H
-
-#include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/no_truncation.h"
-#include "../core/base_classes/expo_truncator.h"
-#include "../core/numerical_coefficients/mpq_cf.h"
-#include "../core/polynomial_common/expo_array.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series_common/trig_array.h"
-#include "../core/poisson_series/poisson_series.h"
+#ifndef PIRANHA_NO_TRUNCATION_H
+#define PIRANHA_NO_TRUNCATION_H
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Rational coefficient Poisson series.
-  typedef poisson_series
-  <
-    mpq_cf,
-    expo_array<16,0>,
-    trig_array<16,1>,
-    key_degree_index,
-    cf_min_degree_index,
-    polynomial_multiplier,
-    poisson_series_multiplier,
-    expo_truncator,
-    no_truncation
-  > qps;
-}
+  /// Truncator which does not truncate.
+  template <class BaseMultiplier>
+    struct no_truncation
+  {
+    template <class Multiplier>
+      no_truncation(const Multiplier &) {}
+    template <class Result, class Multiplier>
+      bool accept(const Result &, const Multiplier &) const {return true;}
+    template <class Cf1, class Cf2, class Key, class Multiplier>
+      bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const Multiplier &) const {return false;}
+  };
 }
 
 #endif

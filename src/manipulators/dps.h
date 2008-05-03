@@ -22,7 +22,8 @@
 #define PIRANHA_DPS_H
 
 #include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/truncators.h"
+#include "../core/base_classes/no_truncation.h"
+#include "../core/base_classes/expo_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"

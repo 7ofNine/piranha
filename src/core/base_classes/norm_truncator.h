@@ -18,58 +18,60 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iostream>
-#include <sstream>
+#ifndef PIRANHA_NORM_TRUNCATOR_H
+#define PIRANHA_NORM_TRUNCATOR_H
 
-#include "core/base_classes/expo_truncator.h"
+#include <cmath>
+#include <iostream>
+#include <string>
+
+#include "../config.h"
+#include "../exceptions.h"
 
 namespace piranha
 {
-  // Static initialization for expo-based truncation.
-  base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
-
-  void base_expo_truncator::clear_all() {m_expo_limits.clear();}
-
-  void base_expo_truncator::print(std::ostream &stream)
+  struct __PIRANHA_VISIBLE base_norm_truncator
   {
-    if (m_expo_limits.empty())
-    {
-      stream << "No exponent limits defined.";
-    }
-    else
-    {
-      const iterator it_f = m_expo_limits.end();
-      for (iterator it = m_expo_limits.begin(); it != it_f;)
+      static void set(const int &n)
       {
-        stream << it->first->name() << ',' << it->second;
-        ++it;
-        if (it != it_f)
+        if (n < 0)
         {
-          stream << '\n';
+          throw (unsuitable("Please insert a non-negative integer."));
+        }
+        else if (n == 0)
+        {
+          m_truncation_level = 0;
+        }
+        else
+        {
+          m_truncation_level = std::pow(10.,-n);
         }
       }
-    }
-  }
+      static void print(std::ostream &stream = std::cout);
+      static std::string print_to_string();
+    private:
+      static double m_truncation_level;
+  };
 
-  std::string base_expo_truncator::print_to_string()
+  /// Norm-based truncator.
+  template <class BaseMultiplier>
+    struct norm_truncator:public base_norm_truncator
   {
-    std::ostringstream stream;
-    print(stream);
-    std::string retval(stream.str());
-    return retval;
-  }
-
-  base_expo_truncator::iterator base_expo_truncator::find_argument(const psym_p &p)
-  {
-    const iterator it_f = m_expo_limits.end();
-    iterator it(m_expo_limits.begin());
-    for (; it != it_f; ++it)
-    {
-      if (it->first == p)
+      template <class Multiplier>
+        norm_truncator(const Multiplier &m):m_delta_threshold(
+        m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level/
+        (2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
+      {}
+      template <class Result, class Multiplier>
+        bool accept(const Result &, const Multiplier &) const {return true;}
+      template <class Cf1, class Cf2, class Key, class Multiplier>
+        bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &, const Multiplier &m) const
       {
-        break;
+        return (c1.norm(m.m_args_tuple) * c2.norm(m.m_args_tuple) / 2 < m_delta_threshold);
       }
-    }
-    return it;
-  }
+    private:
+      const double  m_delta_threshold;
+  };
 }
+
+#endif

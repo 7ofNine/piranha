@@ -22,7 +22,7 @@
 #define PIRANHA_DFS_H
 
 #include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/truncators.h"
+#include "../core/base_classes/norm_truncator.h"
 #include "../core/fourier_series/fourier_series.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"

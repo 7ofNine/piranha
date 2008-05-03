@@ -18,13 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include "core/base_classes/truncators.h"
-#include "core/exceptions.h"
+#include "core/base_classes/norm_truncator.h"
 #include "core/stream_manager.h"
 
 namespace piranha

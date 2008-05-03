@@ -22,7 +22,7 @@
 #define PIRANHA_ZPOLY_H
 
 #include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/truncators.h"
+#include "../core/base_classes/no_truncation.h"
 #include "../core/numerical_coefficients/mpz_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial/polynomial.h"
