@@ -121,11 +121,6 @@ namespace piranha
         }
         return retval;
       }
-      int degree_of(const size_t &i) const
-      {
-        p_assert(i < derived_const_cast->m_size);
-        return (*derived_const_cast)[i];
-      }
       // Return true if the exponents are smaller than those specified in the limits vector.
       bool test_expo_limits(const std::vector<std::pair<size_t,int> > &v) const
       {
@@ -150,7 +145,6 @@ namespace piranha
       size_t linear_arg_position() const throw(unsuitable)
       {
         bool found_linear = false;
-        const char *msg = "Monomial is not linear.";
         size_t candidate = 0;
         for (typename Derived::size_type i = 0; i < derived_const_cast->m_size; ++i)
         {
@@ -158,7 +152,8 @@ namespace piranha
           {
             if (found_linear)
             {
-              throw unsuitable(msg);
+              found_linear = false;
+              break;
             }
             else
             {
@@ -168,12 +163,13 @@ namespace piranha
           }
           else if ((*derived_const_cast)[i] != 0)
           {
-            throw unsuitable(msg);
+            found_linear = false;
+            break;
           }
         }
         if (!found_linear)
         {
-          throw unsuitable(msg);
+          throw unsuitable("Monomial is not linear.");
         }
         return candidate;
       }
