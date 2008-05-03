@@ -24,9 +24,11 @@
 #include <algorithm> // To calculate min degree.
 #include <cmath>
 
-#include "../base_classes/truncators.h" // To establish a limit for the binomial expansion.
+// TODO: drop some of these includes later.
+#include "../base_classes/expo_truncator.h" // To establish a limit for the binomial expansion.
 #include "../base_classes/series_math.h" // For the binomial expansion.
 #include "../exceptions.h"
+#include "../p_assert.h"
 #include "../settings.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -61,119 +63,108 @@ namespace piranha
         }
         return derived_const_cast->template nth_index<0>().begin()->m_key.degree();
       }
-      /// Real power.
-      /**
-      * This method is written to work in conjunction with base_series::b_pow.
-      */
-      template <class ArgsTuple>
-        Derived real_pow(const double &y, const ArgsTuple &args_tuple) const
-      {
-        typedef typename Derived::term_type term_type;
-        // Here we know that the cases of single coefficient, empty series and natural power have already been taken care of
-        // in base_series::b_pow. We also know that if y is an integer, it must be -1.
-        p_assert(!derived_const_cast->is_single_cf() and !derived_const_cast->empty());
-        const int pow_n = (int)nearbyint(y);
-        // If y is an integer, assert that it is -1 (i.e., that we are inverting).
-        const bool is_inversion = std::abs(y - pow_n) < settings::numerical_zero();
-        p_assert(!is_inversion or pow_n == -1);
-        term_type A(*derived_const_cast->template nth_index<0>().begin());
-        // If we are dealing with a single monomial and the power is -1, just try to invert it.
-        if (is_inversion and derived_const_cast->template nth_index<0>().size() == 1)
-        {
-          Derived retval;
-          term_type tmp(A);
-          tmp.m_cf = tmp.m_cf.pow(-1,args_tuple);
-          tmp.m_key.invert_sign();
-          retval.insert(tmp,args_tuple,retval.template nth_index<0>().end());
-          return retval;
-        }
-        else
-        {
-          // This is X, i.e., the original series without the leading term, which will then be divided by A.
-          Derived XoverA(*derived_const_cast);
-          XoverA.template term_erase<0>(args_tuple,XoverA.template nth_index<0>().begin());
-          // Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-          term_type tmp_term;
-          tmp_term.m_cf = A.m_cf.pow(-1,args_tuple);
-          tmp_term.m_key = A.m_key.pow(-1,args_tuple);
-          Derived Ainv;
-          Ainv.insert(tmp_term,args_tuple,Ainv.template nth_index<0>().end());
-          // Now let's compute X/A.
-          XoverA.mult_by(Ainv,args_tuple);
-          const size_t n(binomial_limit(XoverA,args_tuple));
-          __PDEBUG(std::cout << "Calculated limit for binomial expansion: " << n << '\n');
-          return binomial_expansion(A,XoverA,y,n,args_tuple);
-        }
-      }
-    private:
-      template <class ArgsTuple>
-        static size_t binomial_limit(const Derived &XoverA, const ArgsTuple &args_tuple)
-      {
-        typedef typename Derived::term_type term_type;
-        typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-        // First let's translate the psym_p - integer pairs from the exponent truncator into
-        // size_t - integer pairs. I.e., establish which truncation limits are relevant
-        // to the given tuple of arguments sets and their positions.
-        const std::vector<std::pair<size_t,int> > pos(base_expo_truncator::get_positions_limits(
-          args_tuple.template get<term_type::key_type::position>()));
-        const size_t pos_size = pos.size();
-        if (pos_size == 0)
-        {
-          throw not_existing("Cannot establish the limit of the binomial expansion: the limits set in the "
-           "exponent truncator do not involve arguments belonging to this series.");
-        }
-        // We don't want negative exponent limits, because they lead to a never-ending expansion.
-        for (size_t i = 0; i < pos_size; ++i)
-        {
-          if (pos[i].second < 0)
-          {
-            throw unsuitable("Cannot proceed to binomial expansion if there are negative exponent limits for this series.");
-          }
-        }
-        // We don't want this to happen.
-        if (XoverA.empty())
-        {
-          throw unsuitable("The argument of the binomial expansion is empty.");
-        }
-        // The code that follows is used to build a vector of minimum degrees for those symbolic
-        // arguments subject to exponent truncation.
-        std::vector<int> minimum_degrees(pos_size);
-        // We must do this the first time outside of the for cycle to set the initial values.
-        const_sorted_iterator it = XoverA.template nth_index<0>().begin();
-        for (size_t i = 0; i < pos_size; ++i)
-        {
-          minimum_degrees[i] = it->m_key.degree_of(pos[i].first);
-        }
-        ++it;
-        int tmp;
-        const const_sorted_iterator it_f = XoverA.template nth_index<0>().end();
-        for (; it != it_f; ++it)
-        {
-          for (size_t i = 0; i < pos_size; ++i)
-          {
-            tmp = it->m_key.degree_of(pos[i].first);
-            if (tmp < minimum_degrees[i])
-            {
-              minimum_degrees[i] = tmp;
-            }
-          }
-        }
-        // Calculate the binomial expansion limit given the minimum degrees we just calculated.
-        std::vector<size_t> bin_limits(pos_size);
-        for (size_t i = 0; i < pos_size; ++i)
-        {
-          // If the minimum degree of the symbol whose exponent we want to limit is zero or less, we are
-          // screwed, since the degree of the symbol would not increase at every step of the expansion
-          // and we would end up in an infinite loop.
-          if (minimum_degrees[i] <= 0)
-          {
-            throw unsuitable("An infinite binomial expansion would be needed to satisfy the given limits on exponents.");
-          }
-          bin_limits[i] =(size_t)std::ceil((float)pos[i].second / minimum_degrees[i]);
-        }
-        // The biggest limit is the one that defines the length of the binomial expansion.
-        return *(std::max_element(bin_limits.begin(),bin_limits.end()));
-      }
+//     protected:
+//       /// Real power.
+//       /**
+//       * This method is written to work in conjunction with base_series::b_pow.
+//       */
+//       template <class ArgsTuple>
+//         Derived real_pow(const double &y, const ArgsTuple &args_tuple) const
+//       {
+//         typedef typename Derived::term_type term_type;
+//         // Here we know that the cases of single coefficient, empty series and natural power have already been taken care of
+//         // in base_series::b_pow. We also know that if y is an integer, it must be -1.
+//         p_assert(!derived_const_cast->is_single_cf() and !derived_const_cast->empty());
+//         const int pow_n = (int)nearbyint(y);
+//         // If y is an integer, assert that it is -1 (i.e., that we are inverting).
+//         const bool is_inversion = std::abs(y - pow_n) < settings::numerical_zero();
+//         p_assert(!is_inversion or pow_n == -1);
+//         term_type A(*derived_const_cast->template nth_index<0>().begin());
+//         // If we are dealing with a single monomial and the power is -1, just try to invert it.
+//         if (is_inversion and derived_const_cast->template nth_index<0>().size() == 1)
+//         {
+//           Derived retval;
+//           term_type tmp(A);
+//           tmp.m_cf = tmp.m_cf.pow(-1,args_tuple);
+//           tmp.m_key.invert_sign();
+//           retval.insert(tmp,args_tuple,retval.template nth_index<0>().end());
+//           return retval;
+//         }
+//         else
+//         {
+//           // This is X, i.e., the original series without the leading term, which will then be divided by A.
+//           Derived XoverA(*derived_const_cast);
+//           XoverA.template term_erase<0>(args_tuple,XoverA.template nth_index<0>().begin());
+//           // Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
+//           term_type tmp_term;
+//           tmp_term.m_cf = A.m_cf.pow(-1,args_tuple);
+//           tmp_term.m_key = A.m_key.pow(-1,args_tuple);
+//           Derived Ainv;
+//           Ainv.insert(tmp_term,args_tuple,Ainv.template nth_index<0>().end());
+//           // Now let's compute X/A.
+//           XoverA.mult_by(Ainv,args_tuple);
+//           const size_t n = power_series_limit(XoverA,args_tuple);
+//           __PDEBUG(std::cout << "Calculated limit for binomial expansion: " << n << '\n');
+//           return binomial_expansion(A,XoverA,y,n,args_tuple);
+//         }
+//       }
+//     private:
+//       template <class ArgsTuple>
+//         std::vector<int> min_limited_exponents(const ArgsTuple &args_tuple) const
+//       {
+//         std::vector<int> min_expos(derived_const_cast->min_key_ints());
+        
+
+
+//         typedef typename Derived::term_type term_type;
+//         typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+//         // First let's translate the psym_p - integer pairs from the exponent truncator into
+//         // size_t - integer pairs. I.e., establish which truncation limits are relevant
+//         // to the given tuple of arguments sets and their positions.
+//         const std::vector<std::pair<size_t,int> > pos(base_expo_truncator::get_positions_limits(
+//           args_tuple.template get<term_type::key_type::position>()));
+//         const size_t pos_size = pos.size();
+//         std::vector<int> retval(pos_size);
+//         // Just take a shortcut in case there are no relevant limited exponents.
+//         if (pos_size == 0)
+//         {
+//           return retval;
+//         }
+//         // We don't want this to happen.
+//         if (derived_const_cast->empty())
+//         {
+//           throw unsuitable("Cannot determine minimum limited exponents because series is empty.");
+//         }
+// //         // We don't want negative exponent limits, because they lead to a never-ending expansion.
+// //         for (size_t i = 0; i < pos_size; ++i)
+// //         {
+// //           if (pos[i].second < 0)
+// //           {
+// //             throw unsuitable("Cannot proceed to a power series expansion if there are negative exponent limits.");
+// //           }
+// //         }
+//         // We must do this the first time outside of the for cycle to set the initial values.
+//         const_sorted_iterator it = XoverA.template nth_index<0>().begin();
+//         for (size_t i = 0; i < pos_size; ++i)
+//         {
+//           retval[i] = it->m_key.degree_of(pos[i].first);
+//         }
+//         ++it;
+//         int tmp;
+//         const const_sorted_iterator it_f = XoverA.template nth_index<0>().end();
+//         for (; it != it_f; ++it)
+//         {
+//           for (size_t i = 0; i < pos_size; ++i)
+//           {
+//             tmp = it->m_key.degree_of(pos[i].first);
+//             if (tmp < retval[i])
+//             {
+//               retval[i] = tmp;
+//             }
+//           }
+//         }
+//         return retval;
+//       }
   };
 }
 
