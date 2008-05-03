@@ -99,7 +99,7 @@ namespace piranha
         m_cr_is_viable(false),
         m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
         m_min_max1(m_size),m_min_max2(m_size),m_res_min_max(m_size),m_fast_res_min_max(m_size),
-        // Coding vector is larger to accomodate extra element at the end.
+        // Coding vector is larger to accomodate extra element at the end (used during decodification).
         m_coding_vector(m_size+1),
         m_ckeys1(derived_const_cast->m_size1),m_ckeys2(derived_const_cast->m_size2)
       {}
