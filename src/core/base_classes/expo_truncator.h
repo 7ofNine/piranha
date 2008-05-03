@@ -26,6 +26,7 @@
 #include <utility>
 #include <vector>
 
+#include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
 

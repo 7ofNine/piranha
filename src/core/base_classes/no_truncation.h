@@ -24,15 +24,14 @@
 namespace piranha
 {
   /// Truncator which does not truncate.
-  template <class BaseMultiplier>
+  template <class Multiplier>
     struct no_truncation
   {
-    template <class Multiplier>
-      no_truncation(const Multiplier &) {}
-    template <class Result, class Multiplier>
-      bool accept(const Result &, const Multiplier &) const {return true;}
-    template <class Cf1, class Cf2, class Key, class Multiplier>
-      bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &, const Multiplier &) const {return false;}
+    no_truncation(const Multiplier &) {}
+    template <class Result>
+      bool accept(const Result &) const {return true;}
+    template <class Cf1, class Cf2, class Key>
+      bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const {return false;}
   };
 }
 
