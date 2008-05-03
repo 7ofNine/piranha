@@ -54,6 +54,7 @@ namespace piranha
       typedef typename Series2::term_type term_type2;
       /// Alias for the truncator type.
       typedef Truncator<plain_series_multiplier> truncator_type;
+    private:
       typedef boost::multi_index_container
       <
         term_type1,
@@ -63,7 +64,6 @@ namespace piranha
         >
       >
       mult_set;
-    private:
       BOOST_STATIC_ASSERT((boost::is_same<typename term_type1::key_type,typename term_type2::key_type>::value));
       typedef cf_mult_proxy<typename term_type1::cf_type> cf_proxy_type1;
       typedef cf_mult_proxy<typename term_type2::cf_type> cf_proxy_type2;
@@ -80,6 +80,11 @@ namespace piranha
         cache_series_terms(m_s1,m_cfs1,m_keys1);
         cache_series_terms(m_s2,m_cfs2,m_keys2);
       }
+      /// Perform multiplication.
+      /**
+       * Method called by piranha::series_multiplication. Can be overloaded by derived multipliers.
+       * Internally it just calls perform_plain_multiplication.
+       */
       void perform_multiplication()
       {
         perform_plain_multiplication();
@@ -90,21 +95,7 @@ namespace piranha
         plain_multiplication();
         plain_insert_result_into_retval();
       }
-      template <class Series>
-        void cache_series_terms(const Series &s,
-        std::vector<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
-        std::vector<key_mult_proxy<typename Series::term_type::key_type> > &keys)
-      {
-        typedef typename Series::const_sorted_iterator const_sorted_iterator;
-        const const_sorted_iterator it_f = s.template nth_index<0>().end();
-        size_t i=0;
-        for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it)
-        {
-          cfs[i] = it->m_cf;
-          keys[i] = it->m_key;
-          ++i;
-        }
-      }
+    private:
       // Perform plain multiplication.
       void plain_multiplication()
       {
@@ -121,6 +112,21 @@ namespace piranha
             term_type1::multiply(m_cfs1[i].get(),m_keys1[i].get(),m_cfs2[j].get(),m_keys2[j].get(),res,m_args_tuple);
             insert_multiplication_result<mult_res>::run(res,*this);
           }
+        }
+      }
+      template <class Series>
+        void cache_series_terms(const Series &s,
+        std::vector<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
+        std::vector<key_mult_proxy<typename Series::term_type::key_type> > &keys)
+      {
+        typedef typename Series::const_sorted_iterator const_sorted_iterator;
+        const const_sorted_iterator it_f = s.template nth_index<0>().end();
+        size_t i=0;
+        for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it)
+        {
+          cfs[i] = it->m_cf;
+          keys[i] = it->m_key;
+          ++i;
         }
       }
       // After the multiplication has been performed and the result stored in the temporary hash table,
