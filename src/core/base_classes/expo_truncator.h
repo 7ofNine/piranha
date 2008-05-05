@@ -96,7 +96,7 @@ namespace piranha
         const size_t size = mle.first.size();
         if (size == 0)
         {
-          throw unsuitable("Cannot calculate limit of power series when there are no exponent limits "
+          throw not_existing("Cannot calculate limit of power series when there are no exponent limits "
             "set for the arguments of the series.");
         }
         for (size_t i = 0; i < size; ++i)
@@ -106,7 +106,8 @@ namespace piranha
           // and we would end up in an infinite loop.
           if (mle.first[i] <= 0)
           {
-            throw unsuitable("Cannot calculate limit of power series if one of the limited exponents has negative value.");
+            throw unsuitable("Cannot calculate limit of power series if one of the limited exponents "
+              "has negative or zero minimum value.");
           }
           if (mle.second[i] < 0)
           {

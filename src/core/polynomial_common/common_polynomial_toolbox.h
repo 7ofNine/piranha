@@ -22,8 +22,10 @@
 #define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
 #include <cmath> // For nearbyint.
+#include <string>
 
 #include "../base_classes/series_math.h" // For the binomial expansion.
+#include "../exceptions.h"
 #include "../p_assert.h"
 #include "../settings.h"
 
@@ -76,7 +78,16 @@ namespace piranha
           // Now let's compute X/A.
           XoverA.mult_by(Ainv,args_tuple);
           // Get the expansion limit from the truncator.
-          const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA,args_tuple);
+          size_t n;
+          try
+          {
+            n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA,args_tuple);
+          }
+          catch (const unsuitable &u)
+          {
+            throw unsuitable(std::string("Polynomial is unsuitable for real exponentiation.\nThe reported error is: ")
+              + u.what());
+          }
           return binomial_expansion(A,XoverA,y,n,args_tuple);
         }
       }

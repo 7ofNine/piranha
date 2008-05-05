@@ -64,11 +64,11 @@ namespace piranha
         }
         it_hint = derived_cast->insert(term,args_tuple,it_hint);
       }
-      catch(bad_input &bi)
+      catch(const bad_input &bi)
       {
         std::cout << bi.what() << std::endl;
       }
-      catch(term_not_insertable &tni)
+      catch(const term_not_insertable &tni)
       {
         std::cout << tni.what() << std::endl;
       }
