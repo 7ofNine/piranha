@@ -29,6 +29,7 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
@@ -42,7 +43,8 @@
 #define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
-#define __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL >
+#define __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POLYNOMIAL >
+#define __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL >
 
 namespace piranha
 {
@@ -94,8 +96,9 @@ namespace piranha
     class polynomial:
     public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,double,
@@ -115,7 +118,7 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
       // Override base_series::real_pow with the one from the common polynomial toolbox.
-      using __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR::real_pow;
+      using __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -123,6 +126,7 @@ namespace piranha
       typedef typename sorted_index::iterator sorted_iterator;
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
+      typedef Multiplier<polynomial,polynomial,typename named_ancestor::args_tuple_type,Truncator> multiplier_type;
       // Ctors.
       __PIRANHA_NAMED_SERIES_CTORS(polynomial);
       // Ctor from psym.
@@ -158,6 +162,7 @@ namespace std
 #undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_COMMON_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR
 
 #endif

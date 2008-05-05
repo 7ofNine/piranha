@@ -18,20 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NO_TRUNCATION_H
-#define PIRANHA_NO_TRUNCATION_H
+#ifndef PIRANHA_NULL_TRUNCATOR_H
+#define PIRANHA_NULL_TRUNCATOR_H
+
+#include "../exceptions.h"
 
 namespace piranha
 {
   /// Truncator which does not truncate.
   template <class Multiplier>
-    struct no_truncation
+    struct null_truncator
   {
-    no_truncation(const Multiplier &) {}
+    null_truncator(const Multiplier &) {}
     template <class Result>
       bool accept(const Result &) const {return true;}
     template <class Cf1, class Cf2, class Key>
       bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const {return false;}
+    // Limit of a power series development of a power series.
+    template <class PowerSeries, class ArgsTuple>
+      static size_t power_series_limit(const PowerSeries &, const ArgsTuple &,
+        const int &start = 0, const int &step_size = 1)
+    {
+      (void)start;
+      (void)step_size;
+      throw unsuitable("Null truncator cannot provide limit for power series.");
+    }
   };
 }
 

@@ -27,6 +27,8 @@
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <memory> // For std::allocator.
+#include <utility> // For std::pair.
+#include <vector>
 
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
@@ -167,6 +169,7 @@ namespace piranha
         p_assert(args_tuple.template get<Pos>().size() >= m_size);
         resize(args_tuple.template get<Pos>().size());
       }
+      // TODO: invert order of parameters here.
       template <class ArgsTuple, class Layout>
         void apply_layout(const ArgsTuple &, const Layout &l)
       {
@@ -198,47 +201,61 @@ namespace piranha
           m_ptr[i] = -m_ptr[i];
         }
       }
-      /// Update the upper and lower limits of the integers stored in the array.
-      /**
-       * If InitialLimits is true, then the integers are uploaded to vector v, otherwise
-       * the integers are analysed and uploaded to v only if they they are outside the limits
-       * already defined in v.
-       */
-      template <bool InitialLimits, class ArgsTuple>
-        void update_limits(std::vector<std::pair<max_fast_int,max_fast_int> > &v, const ArgsTuple &) const
+      /// Upload integers to vector of integers.
+      void upload_ints_to(std::vector<max_fast_int> &v) const
       {
         p_assert(v.size() >= m_size);
-        switch (InitialLimits)
+        for (size_type i = 0; i < m_size; ++i)
         {
-          case true:
-            for (size_type i=0; i < m_size; ++i)
-            {
-              v[i].first = m_ptr[i];
-              v[i].second = m_ptr[i];
-            }
-            break;
-          case false:
-            for (size_type i = 0; i < m_size; ++i)
-            {
-              if (m_ptr[i] < v[i].first)
-              {
-                v[i].first = m_ptr[i];
-              }
-              if (m_ptr[i] > v[i].second)
-              {
-                v[i].second = m_ptr[i];
-              }
-            }
+          v[i] = m_ptr[i];
+        }
+      }
+      /// Upload integers to vector of integer pairs.
+      void upload_ints_to(std::vector<std::pair<max_fast_int,max_fast_int> > &v) const
+      {
+        p_assert(v.size() >= m_size);
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          v[i].first = m_ptr[i];
+          v[i].second = m_ptr[i];
+        }
+      }
+      /// Upload to v those integers which are less than the corresponding elements of v.
+      void test_min_ints(std::vector<max_fast_int> &v) const
+      {
+        p_assert(v.size() >= m_size);
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          if (m_ptr[i] < v[i])
+          {
+            v[i] = m_ptr[i];
+          }
+        }
+      }
+      /// Upload to v.first/second those integers which are less than/greater than the corresponding elements of v.
+      void test_min_max_ints(std::vector<std::pair<max_fast_int,max_fast_int> > &v) const
+      {
+        p_assert(v.size() >= m_size);
+        for (size_type i = 0; i < m_size; ++i)
+        {
+          if (m_ptr[i] < v[i].first)
+          {
+            v[i].first = m_ptr[i];
+          }
+          if (m_ptr[i] > v[i].second)
+          {
+            v[i].second = m_ptr[i];
+          }
         }
       }
       /// Codify integers into generalised lexicographic representation.
       template <class CodingVector, class ArgsTuple>
         void code(const CodingVector &v, max_fast_int &retval, const ArgsTuple &) const
       {
-        // The -1 is because the coding vector contains one extra element at the end.
+        // The +1 is because the coding vector contains one extra element at the end.
         // The assert is >= instead of == beacuse we may code an array smaller than the
         // coding vector when multiplying series with different numbers of arguments.
-        p_assert(v.size() - 1 >= m_size);
+        p_assert(v.size() >= (size_t)m_size + 1);
         retval = 0;
         for (size_type i = 0; i < m_size; ++i)
         {
@@ -252,9 +269,7 @@ namespace piranha
       {
         resize(args_tuple.template get<position>().size());
         // The -1 is because the coding vector contains one extra element at the end.
-        // The assert is == beacuse when decoding we know that the size of the array
-        // must be the same as the coding vector's.
-        p_assert(v.size() - 1 == m_size);
+        p_assert(v.size() == (size_t)m_size + 1);
         const max_fast_int tmp = n - h_min;
         for (size_type i = 0; i < m_size; ++i)
         {

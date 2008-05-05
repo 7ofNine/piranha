@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../psym.h"
 #include "../settings.h"
 
@@ -112,9 +113,9 @@ namespace piranha
         return derived_const_cast->elements_hasher();
       }
       /// Return the total degree of the exponents array.
-      int degree() const
+      max_fast_int degree() const
       {
-        int retval = 0;
+        max_fast_int retval = 0;
         for (typename Derived::size_type i=0; i < derived_const_cast->m_size; ++i)
         {
           retval+=(*derived_const_cast)[i];
@@ -122,7 +123,7 @@ namespace piranha
         return retval;
       }
       // Return true if the exponents are smaller than those specified in the limits vector.
-      bool test_expo_limits(const std::vector<std::pair<size_t,int> > &v) const
+      bool test_expo_limits(const std::vector<std::pair<size_t,max_fast_int> > &v) const
       {
         const size_t size = v.size();
         for (size_t i = 0; i < size; ++i)
@@ -224,6 +225,8 @@ namespace piranha
         }
         return retval;
       }
+      void upload_min_exponents(std::vector<max_fast_int> &v) const {derived_const_cast->upload_ints_to(v);}
+      void test_min_exponents(std::vector <max_fast_int> &v) const {derived_const_cast->test_min_ints(v);}
     protected:
       expo_array_commons() {}
       explicit expo_array_commons(const std::string &s)

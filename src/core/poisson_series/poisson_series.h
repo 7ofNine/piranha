@@ -42,9 +42,9 @@
   class Allocator
 #define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,MultPoly,MultTrig,TruncPoly,TruncTrig,Allocator
 #define __PIRANHA_POISSON_SERIES poisson_series<__PIRANHA_POISSON_SERIES_TP>
-#define __PIRANHA_POISSON_SERIES_POLYNOMIAL polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>
+#define __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,0,Allocator>
 #define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<poisson_series_term< \
-  __PIRANHA_POISSON_SERIES_POLYNOMIAL,Trig,'|',Allocator>, \
+  __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF,Trig,'|',Allocator>, \
   '\n',Allocator,__PIRANHA_POISSON_SERIES > 
 #define __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr,trig_args_descr>,__PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
@@ -65,7 +65,7 @@ namespace piranha
     boost::dividable<__PIRANHA_POISSON_SERIES,double
     > > > > >
   {
-      typedef poisson_series_term<polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>,Trig,'|',Allocator> term_type_;
+      typedef poisson_series_term<__PIRANHA_POISSON_SERIES_POLYNOMIAL_CF,Trig,'|',Allocator> term_type_;
       typedef typename term_type_::cf_type cf_type;
       typedef typename term_type_::key_type key_type;
       typedef Allocator allocator_type;
@@ -136,7 +136,7 @@ namespace std
 #undef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
-#undef __POISSON_SERIES_POLYNOMIAL
+#undef __POISSON_SERIES_POLYNOMIAL_CF
 #undef __PIRANHA_POISSON_SERIES_TRIG_ANCESTOR
 
 #endif

@@ -187,6 +187,13 @@ namespace piranha
       {
         return m_value;
       }
+      int degree() const {return 0;}
+      template <class Vector>
+        void upload_min_exponents(const Vector &) const {}
+      template <class Vector>
+        void test_min_exponents(const Vector &) const {}
+      template <class Vector>
+        bool test_expo_limits(const Vector &) const {return true;}
     protected:
       template <class U>
         Derived &assign_self(const U &x)

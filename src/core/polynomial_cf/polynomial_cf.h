@@ -25,6 +25,7 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/cf_series.h"
+#include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
@@ -33,13 +34,14 @@
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
   template <class, class, class, template <class> class> class Multiplier, \
-  template <class> class Truncator, class Allocator
-#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,Allocator
+  template <class> class Truncator, int ExpoPosition, class Allocator
+#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,ExpoPosition,Allocator
 #define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
 #define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
 #define __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL_CF >
+#define __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<ExpoPosition,__PIRANHA_POLYNOMIAL_CF >
 
 namespace piranha
 {
@@ -48,6 +50,7 @@ namespace piranha
     public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
   {
       typedef monomial<Cf,Expo,'!',Allocator> term_type_;
@@ -71,6 +74,7 @@ namespace piranha
       typedef typename sorted_index::iterator sorted_iterator;
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
+      typedef Multiplier<polynomial_cf,polynomial_cf,boost::tuples::null_type,Truncator> multiplier_type;
       /// Default ctor.
       polynomial_cf() {nth_index<1>().max_load_factor(settings::load_factor());}
       /// Ctor from string.
@@ -141,5 +145,6 @@ namespace piranha
 #undef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR
 
 #endif

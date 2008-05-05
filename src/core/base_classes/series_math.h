@@ -28,6 +28,7 @@
 */
 
 #include <boost/type_traits/is_same.hpp> // For term type detection.
+#include <utility> // For std::pair.
 
 #include "../exceptions.h"
 
@@ -103,8 +104,8 @@ namespace piranha
   template <class Term, class Series, class ArgsTuple>
     Series binomial_expansion(const Term &A, const Series &XoverA, const double &y, const size_t &n, const ArgsTuple &args_tuple)
   {
+    BOOST_STATIC_ASSERT((boost::is_same<Term,typename Series::term_type>::value));
     typedef typename Series::term_type term_type;
-    BOOST_STATIC_ASSERT((boost::is_same<Term,term_type>::value));
     // Start the binomial expansion.
     term_type tmp_term;
     // Calculate A**y. See if we can raise to real power the coefficient and the key.

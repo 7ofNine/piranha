@@ -21,6 +21,9 @@
 #ifndef PIRANHA_EXPO_TRUNCATOR_H
 #define PIRANHA_EXPO_TRUNCATOR_H
 
+#include <algorithm> // To calculate min degree.
+#include <boost/static_assert.hpp>
+#include <cmath> // For std::ceil.
 #include <iostream>
 #include <string>
 #include <utility>
@@ -28,7 +31,10 @@
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
+#include "../p_assert.h"
 #include "../psym.h"
+#include "../settings.h" // For debug messages.
 
 namespace piranha
 {
@@ -42,16 +48,16 @@ namespace piranha
   class __PIRANHA_VISIBLE base_expo_truncator
   {
     protected:
-      typedef std::vector<std::pair<psym_p,int> > container_type;
+      typedef std::vector<std::pair<psym_p,max_fast_int> > container_type;
       typedef container_type::iterator iterator;
     public:
-      static void limit(const std::string &name, const int &n)
+      static void limit(const std::string &name, const max_fast_int &n)
       {
         psym_p tmp(psym_manager::get_pointer(name));
         iterator it = find_argument(tmp);
         if (it == m_expo_limits.end())
         {
-          m_expo_limits.push_back(std::pair<psym_p,int>(tmp,n));
+          m_expo_limits.push_back(std::pair<psym_p,max_fast_int>(tmp,n));
         }
         else
         {
@@ -74,10 +80,63 @@ namespace piranha
           m_expo_limits.erase(it);
         }
       }
-      /// Transform the list of psymbol limits into a list of positions - limits given a piranha::vector_psym_p.
-      static std::vector<std::pair<size_t,int> > get_positions_limits(const vector_psym_p &v)
+      // Limit of a power series development of a power series.
+      template <class PowerSeries, class ArgsTuple>
+        static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &args_tuple,
+          const int &start = 0, const int &step_size = 1)
       {
-        std::vector<std::pair<size_t,int> > retval;
+        p_assert(start >= 0 and step_size >= 1);
+        if (s.empty())
+        {
+          throw unsuitable("Cannot calculate limit of the power series of an empty power series.");
+        }
+        // Let's calculate the minimum exponents of s for which the truncator defines a limit.
+        const std::pair<std::vector<max_fast_int>,std::vector<max_fast_int> >
+          mle(min_limited_exponents(s,args_tuple));
+        const size_t size = mle.first.size();
+        if (size == 0)
+        {
+          throw unsuitable("Cannot calculate limit of power series when there are no exponent limits "
+            "set for the arguments of the series.");
+        }
+        for (size_t i = 0; i < size; ++i)
+        {
+          // If the minimum degree of the symbol whose exponent we want to limit is zero or less, we are
+          // screwed, since the degree of the symbol would not increase at every step of the expansion
+          // and we would end up in an infinite loop.
+          if (mle.first[i] <= 0)
+          {
+            throw unsuitable("Cannot calculate limit of power series if one of the limited exponents has negative value.");
+          }
+          if (mle.second[i] < 0)
+          {
+            throw unsuitable("Cannot calculate limit of power series if there are negative exponent limits for this series.");
+          }
+        }
+        std::vector<size_t> power_limits(size);
+        for (size_t i = 0; i < size; ++i)
+        {
+          float tmp = ((float)mle.second[i] / mle.first[i] - start)/(float)step_size;
+          if (tmp >= 0)
+          {
+            power_limits[i] = (size_t)std::ceil(tmp);
+          }
+          else
+          {
+            __PDEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
+            power_limits[i] = 0;
+          }
+        }
+        // The biggest limit is the one that defines the length of the power series expansion.
+        size_t retval = *(std::max_element(power_limits.begin(),power_limits.end()));
+        __PDEBUG(std::cout << "Calculated limit for power series of power series: " << retval << '\n');
+        return retval;
+      }
+    protected:
+      /// Transform the list of psymbol limits into a list of positions - limits given a piranha::vector_psym_p.
+      static std::vector<std::pair<size_t,max_fast_int> > positions_limits(const vector_psym_p &v)
+      {
+        std::vector<std::pair<size_t,max_fast_int> > retval;
         const size_t limits_size = m_expo_limits.size(),
           args_size = v.size();
         for (size_t i = 0; i < limits_size; ++i)
@@ -86,7 +145,7 @@ namespace piranha
           {
             if (m_expo_limits[i].first == v[j])
             {
-              retval.push_back(std::pair<size_t,int>(j,m_expo_limits[i].second));
+              retval.push_back(std::pair<size_t,max_fast_int>(j,m_expo_limits[i].second));
               // We can break out, there should not be duplicates inside the arguments list.
               break;
             }
@@ -95,6 +154,28 @@ namespace piranha
         return retval;
       }
     private:
+      // Returns minimum_exponent - limit pairs.
+      template <class PowerSeries, class ArgsTuple>
+        static std::pair<std::vector<max_fast_int>,std::vector<max_fast_int> >
+        min_limited_exponents(const PowerSeries &s, const ArgsTuple &args_tuple)
+      {
+        // First let's find out the minimum exponents of the input series.
+        const std::vector<max_fast_int> min_expos(s.min_exponents(args_tuple));
+        // Secondly, find out the position of the limited exponents.
+        const std::vector<std::pair<size_t,max_fast_int> >
+          pos_lim(positions_limits(args_tuple.template get<PowerSeries::expo_position>()));
+        const size_t size = pos_lim.size();
+        std::pair<std::vector<max_fast_int>,std::vector<max_fast_int> > retval;
+        retval.first.resize(size);
+        retval.second.resize(size);
+        for (size_t i = 0; i < size; ++i)
+        {
+          p_assert(pos_lim[i].first < min_expos.size());
+          retval.first[i] = min_expos[pos_lim[i].first];
+          retval.second[i] = pos_lim[i].second;
+        }
+        return retval;
+      }
       static iterator find_argument(const psym_p &);
     protected:
       static container_type m_expo_limits;
@@ -107,9 +188,11 @@ namespace piranha
     public:
       expo_truncator(Multiplier &m):
         m_multiplier(m),
-        m_positions(base_expo_truncator::get_positions_limits(
-        m_multiplier.m_args_tuple.template get<Multiplier::term_type1::key_type::position>()))
-      {}
+        m_positions(base_expo_truncator::positions_limits(
+        m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_position>()))
+      {
+        BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_position == Multiplier::series_type2::expo_position);
+      }
       bool accept(const max_fast_int &n)
       {
         switch (m_positions.size() == 0)
@@ -129,7 +212,7 @@ namespace piranha
           case true:
             return true;
           default:
-            return t.m_key.test_expo_limits(m_positions);
+            return (t.m_cf.test_expo_limits(m_positions) and t.m_key.test_expo_limits(m_positions));
         }
       }
       template <class Cf1, class Cf2, class Key>
@@ -138,8 +221,8 @@ namespace piranha
         return false;
       }
     private:
-      Multiplier                                &m_multiplier;
-      const std::vector<std::pair<size_t,int> > m_positions;
+      Multiplier                                          &m_multiplier;
+      const std::vector<std::pair<size_t,max_fast_int> >  m_positions;
   };
 }
 
