@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_POISSON_SERIES_TRIGONOMETRIC_TOOLBOX_H
-#define PIRANHA_POISSON_SERIES_TRIGONOMETRIC_TOOLBOX_H
+#ifndef PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
+#define PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 
 #include "../exceptions.h"
 
@@ -29,7 +29,7 @@
 namespace piranha
 {
   template <class Derived>
-    class poisson_series_trigonometric_toolbox
+    class common_poisson_series_toolbox
   {
     public:
       Derived sin() const throw (unsuitable)
