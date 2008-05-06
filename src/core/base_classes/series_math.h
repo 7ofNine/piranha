@@ -27,7 +27,8 @@
     The functions defined here require series and arguments tuples as parameters.
 */
 
-#include <boost/type_traits/is_same.hpp> // For term type detection.
+#include <gmp.h>
+#include <gmpxx.h>
 #include <utility> // For std::pair.
 
 #include "../exceptions.h"
@@ -101,10 +102,10 @@ namespace piranha
     return retval;
   }
 
-  template <class Term, class Series, class ArgsTuple>
-    Series binomial_expansion(const Term &A, const Series &XoverA, const double &y, const size_t &n, const ArgsTuple &args_tuple)
+  template <class Series, class ArgsTuple>
+    Series binomial_expansion(const typename Series::term_type &A, const Series &XoverA,
+    const double &y, const size_t &n, const ArgsTuple &args_tuple)
   {
-    BOOST_STATIC_ASSERT((boost::is_same<Term,typename Series::term_type>::value));
     typedef typename Series::term_type term_type;
     // Start the binomial expansion.
     term_type tmp_term;
@@ -119,9 +120,16 @@ namespace piranha
     Series retval;
     Series tmp(1,args_tuple);
     retval.add(tmp,args_tuple);
+    mpq_class mpq_y;
     for (size_t i = 1; i <= n; ++i)
     {
-      tmp.mult_by(y-i+1,args_tuple);
+      // This hack is to make sure we transform y into a fraction as early as possible,
+      // and to do the calculations in rational form. This way we should
+      // minimize the chance of losing precision due to conversion to/from floating point.
+      mpq_y = y;
+      mpq_y -= i;
+      mpq_y += 1;
+      tmp.mult_by(mpq_y.get_d(),args_tuple);
       tmp.divide_by((int)i,args_tuple);
       tmp.mult_by(XoverA,args_tuple);
       retval.add(tmp,args_tuple);
