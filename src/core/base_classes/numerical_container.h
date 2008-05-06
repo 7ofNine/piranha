@@ -45,8 +45,6 @@ namespace piranha
   {
       /// Alias for evaluation type.
       typedef typename eval_type<Derived>::type eval_type;
-      /// Alias for self.
-      typedef numerical_container self;
     public:
       // Start implementation of basic pseries coefficient interface.
       //------------
@@ -152,7 +150,7 @@ namespace piranha
         return mult_by_generic(x);
       }
       template <class ArgsTuple>
-        Derived &mult_by(const self &x, const ArgsTuple &)
+        Derived &mult_by(const Derived &x, const ArgsTuple &)
       {
         return mult_by_generic(x.g_value());
       }
