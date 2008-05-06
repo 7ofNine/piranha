@@ -76,27 +76,7 @@ namespace piranha
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
       typedef Multiplier<polynomial_cf,polynomial_cf,boost::tuples::null_type,Truncator> multiplier_type;
-      /// Default ctor.
-      polynomial_cf() {nth_index<1>().max_load_factor(settings::load_factor());}
-      /// Ctor from string.
-      template <class ArgsTuple>
-        explicit polynomial_cf(const std::string &s, const ArgsTuple &args_tuple)
-      {
-        nth_index<1>().max_load_factor(settings::load_factor());
-        cf_ancestor::construct_from_string(s,args_tuple);
-      }
-      template <class ArgsTuple>
-        explicit polynomial_cf(const int &n, const ArgsTuple &a)
-      {
-        nth_index<1>().max_load_factor(settings::load_factor());
-        base_ancestor::construct_from_number(n,a);
-      }
-      template <class ArgsTuple>
-        explicit polynomial_cf(const double &x, const ArgsTuple &a)
-      {
-        nth_index<1>().max_load_factor(settings::load_factor());
-        base_ancestor::construct_from_number(x,a);
-      }
+      __PIRANHA_CF_SERIES_CTORS(polynomial_cf);
       template <class ArgsTuple>
         explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a)
       {

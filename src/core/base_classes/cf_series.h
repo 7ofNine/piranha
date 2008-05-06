@@ -69,6 +69,28 @@ namespace piranha
       template <class ArgsTuple>
         void construct_from_string(const std::string &, const ArgsTuple &);
   };
+
+  // Useful macro for ctors in coefficient series.
+  #define __PIRANHA_CF_SERIES_CTORS(series_name) \
+  series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
+  template <class ArgsTuple> \
+    explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    cf_ancestor::construct_from_string(s,args_tuple); \
+  } \
+  template <class ArgsTuple> \
+    explicit series_name(const int &n, const ArgsTuple &a) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(n,a); \
+  } \
+  template <class ArgsTuple> \
+    explicit series_name(const double &x, const ArgsTuple &a) \
+  { \
+    nth_index<1>().max_load_factor(settings::load_factor()); \
+    base_ancestor::construct_from_number(x,a); \
+  }
 }
 
 #include "cf_series_io.h"
