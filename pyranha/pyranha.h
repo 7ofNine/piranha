@@ -33,8 +33,10 @@
 #include <boost/python/return_internal_reference.hpp>
 #include <boost/python/return_value_policy.hpp>
 #include <boost/python/self.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <complex>
 #include <exception>
+#include <string>
 #include <vector>
 
 #include "../src/piranha.h"
@@ -42,7 +44,6 @@
 using namespace boost::python;
 using namespace piranha;
 
-#include "stl_containers.h"
 #include "exceptions.h"
 
 /// Instantiation of spectral comparison.
@@ -107,14 +108,8 @@ template <class T>
   inst.def(init<const double &>());
   inst.def("__copy__",&T::copy);
   inst.def("__repr__",&T::print_to_string);
-//   inst.def("__iter__", iterator<T,return_internal_reference<> >());
   inst.def("__len__",&T::length);
-//   inst.def("begin", &T::begin);
-//   inst.def("end", &T::end);
-//   inst.def("address", &T::address);
   inst.def("save_to",&T::save_to, "Save series to file.");
-//   inst.def("put_phases_freqs", put_phases_freqs_noargs(&T::put_phases_freqs));
-//   inst.def("put_phases_freqs", put_phases_freqs_n(&T::put_phases_freqs));
   inst.def("length",&T::length);
   inst.def("eval",&T::eval);
 //   inst.def("cf_width", &T::cf_width);
@@ -129,12 +124,8 @@ template <class T>
 //   inst.def("mean", mean_def(&T::mean));
 //   inst.def("mean", mean_n(&T::mean));
   inst.def("swap",&T::swap);
-// NOTICE: the order seems important here, if we place *=int before *=double we
-// will get just *=double in Python. Go figure...
-// Assignments.
-//   inst.def(self=int());
-//   inst.def(self=double());
-//   inst.def(self=self);
+  // NOTICE: the order seems important here, if we place *=int before *=double we
+  // will get just *=double in Python. Go figure...
   // Addition and subtraction.
   inst.def(self+=int());
   inst.def(self+=double());
@@ -168,21 +159,6 @@ template <class T>
   inst.def(self/double());
   // Exponentiation.
   inst.def("__pow__",&T::pow);
-// Instantiate spectral comparison.
-  //sc_instatiation<T>();
-// Instantiate common time comparisons.
-//   class_<tc_equal<T> > tc_equal_inst("tc_equal",
-//     init<typename tc_equal<T>::b_type,double,double,size_t,T>());
-//   __tc_common_instantiation(tc_equal);
-//   class_<tc_mult<T> > tc_mult_inst("tc_mult",
-//     init<typename tc_mult<T>::b_type,double,double,size_t,T,T>());
-//   __tc_common_instantiation(tc_mult);
-//   class_<tc_insert_phases<T> > tc_insert_phases_inst("tc_insert_phases",
-//     init<typename tc_insert_phases<T>::b_type,double,double,size_t,phase_list,T>());
-//   __tc_common_instantiation(tc_insert_phases);
-// Range evaluator for series.
-//   range_evaluator_instantiation<T>("range_evaluator",std::string("Evaluate ")+name+
-//     " over a time range.");
   return inst;
 }
 

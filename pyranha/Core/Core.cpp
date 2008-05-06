@@ -20,10 +20,17 @@
 
 #include "../pyranha.h"
 
+template <class T>
+  void vector_indexing(const std::string &name)
+{
+  class_<std::vector<T> >((name+"_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
+}
+
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
   translate_exceptions();
+  vector_indexing<double>("double");
 
   // Settings.
   typedef const bool &(*debug_get)();
@@ -125,13 +132,11 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
     .def("clear_all",&base_expo_truncator::clear_all,"Clear list of exponent limits.").staticmethod("clear_all")
     .def("clear",&base_expo_truncator::clear,"Clear exponent limit for argument named arg1.").staticmethod("clear")
-    .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. If arg1 does not exist, throw an error").staticmethod("limit");
+    .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. "
+      "If arg1 does not exist, throw an error").staticmethod("limit");
 
   class_<base_norm_truncator>("__norm_truncator","Norm truncator.",init<>())
     .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
-    .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 and throw an error otherwise.").staticmethod("set");
-
-  // For range-evaluation.
-  vector_to_rolist<std::vector<double> >("vector_double","Vector of double precision values.");
-  vector_to_rolist<std::vector<std::complex<double> > >("vector_complex","Vector of double precision complex values.");
+    .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 "
+      "and throw an error otherwise.").staticmethod("set");
 }
