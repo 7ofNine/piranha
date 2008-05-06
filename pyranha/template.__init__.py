@@ -18,7 +18,7 @@
 
 from @MODULE_NAME@ import *
 
-import re as _re
+import re as __re
 
 try:
   import pylab as _pylab
@@ -32,7 +32,7 @@ try:
     _pylab.semilogy(self.manip_eval().times(),values,*args,**kwargs)
   range_evaluator.plot = __plot_range_evaluator
   def __add_plot_to_tcs():
-    tc_list=[i for i in dir(@MODULE_NAME@) if _re.search('^tc_.*',i)]
+    tc_list=[i for i in dir(@MODULE_NAME@) if __re.search('^tc_.*',i)]
     for i in tc_list:
       eval(i).plot = __plot_tc
   __add_plot_to_tcs()
