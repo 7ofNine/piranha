@@ -18,12 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#include <boost/python/class.hpp>
+#include <boost/python/copy_const_reference.hpp>
+#include <boost/python/enum.hpp>
+#include <boost/python/module.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <string>
+#include <vector>
 
-template <class T>
-  void vector_indexing(const std::string &name)
+#include "../../src/core/base_classes/expo_truncator.h"
+#include "../../src/core/base_classes/norm_truncator.h"
+#include "../../src/core/psym.h"
+#include "../../src/core/settings.h"
+#include "../../src/core/stats.h"
+#include "../../src/core/stream_manager.h"
+#include "../exceptions.h"
+
+using namespace boost::python;
+using namespace piranha;
+using namespace pyranha;
+
+namespace pyranha
 {
-  class_<std::vector<T> >((name+"_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
+  template <class T>
+    void vector_indexing(const std::string &name)
+  {
+    class_<std::vector<T> >((name+"_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
+  }
 }
 
 // Instantiate the pyranha Core module.

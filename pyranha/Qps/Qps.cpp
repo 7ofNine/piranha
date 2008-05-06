@@ -18,7 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../pyranha.h"
+#include <boost/python/class.hpp>
+#include <boost/python/module.hpp>
+#include <string>
+
+#include "../../src/manipulators/qps.h"
+#include "../series_instantiations.h"
+#include "../exceptions.h"
+
+using namespace pyranha;
+using namespace piranha;
+using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Qps)
 {

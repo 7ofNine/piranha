@@ -29,6 +29,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
+#include "../polynomial_common/monomial.h"
 #include "../proxies.h"
 #include "../settings.h"
 

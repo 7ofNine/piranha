@@ -28,6 +28,7 @@
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
+#include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
