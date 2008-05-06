@@ -83,6 +83,7 @@ namespace piranha
       friend class __PIRANHA_POISSON_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR;
+      using __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
       typedef term_type_ term_type;
@@ -90,6 +91,7 @@ namespace piranha
       typedef typename sorted_index::iterator sorted_iterator;
       typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
       typedef typename pinpoint_index::iterator pinpoint_iterator;
+      typedef MultTrig<poisson_series,poisson_series,typename named_ancestor::args_tuple_type,TruncTrig> multiplier_type;
       // Ctors.
       __PIRANHA_NAMED_SERIES_CTORS(poisson_series);
       // Ctor from psym.

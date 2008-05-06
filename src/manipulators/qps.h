@@ -46,7 +46,7 @@ namespace manipulators
     polynomial_multiplier,
     poisson_series_multiplier,
     expo_truncator,
-    null_truncator
+    expo_truncator
   > qps;
 }
 }

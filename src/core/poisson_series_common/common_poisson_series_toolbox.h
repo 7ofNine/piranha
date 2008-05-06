@@ -21,7 +21,11 @@
 #ifndef PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 #define PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 
+#include <cmath> // For nearbyint.
+
+#include "../base_classes/series_math.h"
 #include "../exceptions.h"
+#include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -64,6 +68,48 @@ namespace piranha
           linear_int_helper<true>(retval);
         }
         return retval;  
+      }
+    protected:
+      /// Real power.
+      /**
+      * This method is written to work in conjunction with base_series::b_pow.
+      */
+      template <class ArgsTuple>
+        Derived real_pow(const double &y, const ArgsTuple &args_tuple) const
+      {
+        typedef typename Derived::term_type term_type;
+        // Here we know that the cases of single coefficient, empty series and natural power have already been taken care of
+        // in base_series::b_pow. We also know that if y is an integer, it must be -1.
+        p_assert(!derived_const_cast->is_single_cf() and !derived_const_cast->empty());
+        const int pow_n = (int)nearbyint(y);
+        // If y is an integer, assert that it is -1 (i.e., that we are inverting).
+        const bool is_inversion = std::abs(y - pow_n) < settings::numerical_zero();
+        p_assert(!is_inversion or pow_n == -1);
+        (void)is_inversion;
+        term_type A(*derived_const_cast->template nth_index<0>().begin());
+        // This is X, i.e., the original series without the leading term, which will then be divided by A.
+        Derived XoverA(*derived_const_cast);
+        XoverA.template term_erase<0>(args_tuple,XoverA.template nth_index<0>().begin());
+        // Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
+        term_type tmp_term;
+        tmp_term.m_cf = A.m_cf.pow(-1,args_tuple);
+        tmp_term.m_key = A.m_key.pow(-1,args_tuple);
+        Derived Ainv;
+        Ainv.insert(tmp_term,args_tuple,Ainv.template nth_index<0>().end());
+        // Now let's compute X/A.
+        XoverA.mult_by(Ainv,args_tuple);
+        // Get the expansion limit from the truncator.
+        size_t n;
+        try
+        {
+          n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA,args_tuple);
+        }
+        catch (const unsuitable &u)
+        {
+          throw unsuitable(std::string("Poisson series is unsuitable for real exponentiation.\nThe reported error is: ")
+            + u.what());
+        }
+        return binomial_expansion(A,XoverA,y,n,args_tuple);
       }
     private:
       template <bool Flavour>

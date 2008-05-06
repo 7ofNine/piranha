@@ -23,12 +23,14 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/static_assert.hpp>
+#include <cmath> // For std::abs.
 #include <complex>
 #include <string>
 #include <utility> // For std::pair.
 #include <vector>
 
 #include "../psym.h"
+#include "../settings.h"
 #include "trig_evaluator.h"
 
 #define derived_const_cast (static_cast<Derived const *>(this))
@@ -294,6 +296,29 @@ namespace piranha
         }
         return retval;
       }
+      /// Real exponentiation.
+      /**
+       * If the trigonometric array cannot be raised to the desired power, an exception will be thrown.
+       */
+      template <class ArgsTuple>
+        Derived pow(const double &y, const ArgsTuple &) const
+      {
+        if (!derived_const_cast->elements_are_zero())
+        {
+          throw unsuitable("Trigonometric array is not suitable for real exponentiation.");
+        }
+        Derived retval(*derived_const_cast);
+        // If flavour is sine and power is 0, return 1 beacuse we agree that 0**0 == 1.
+        if (!derived_const_cast->m_flavour and std::abs(y) <= settings::numerical_zero())
+        {
+          retval.m_flavour = true;
+        }
+        return retval;
+      }
+      void upload_min_exponents(std::vector<max_fast_int> &) const {}
+      void test_min_exponents(std::vector<max_fast_int> &) const {}
+      template <class ArgsTuple>
+      bool test_expo_limits(const std::vector<std::pair<size_t,max_fast_int> > &, const ArgsTuple &) const {return true;}
     protected:
       trig_array_commons() {}
       explicit trig_array_commons(const std::string &s)

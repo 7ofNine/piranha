@@ -62,23 +62,53 @@ namespace piranha
           derived_const_cast->template nth_index<0>().begin()->m_key.degree();
       }
       static const int expo_position = ExpoPosition;
+      void upload_min_exponents(std::vector<max_fast_int> &v) const
+      {
+        p_assert(!derived_const_cast->empty());
+        typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+        const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+        const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+        it->m_cf.upload_min_exponents(v);
+        it->m_key.upload_min_exponents(v);
+        for (; it != it_f; ++it)
+        {
+          it->m_cf.test_min_exponents(v);
+          it->m_key.test_min_exponents(v);
+        }
+      }
       /// Get a vector containing the minimum exponents of the series.
       template <class ArgsTuple>
         std::vector<max_fast_int> min_exponents(const ArgsTuple &args_tuple) const
       {
-        p_assert(!derived_const_cast->empty());
         std::vector<max_fast_int> retval(args_tuple.template get<ExpoPosition>().size());
+        upload_min_exponents(retval);
+        return retval;
+      }
+      void test_min_exponents(std::vector<max_fast_int> &v) const
+      {
         typedef typename Derived::const_sorted_iterator const_sorted_iterator;
         const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-        const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
-        it->m_cf.upload_min_exponents(retval);
-        it->m_key.upload_min_exponents(retval);
-        for (; it != it_f; ++it)
+        for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
         {
-          it->m_cf.test_min_exponents(retval);
-          it->m_key.test_min_exponents(retval);
+          it->m_cf.test_min_exponents(v);
+          it->m_key.test_min_exponents(v);
         }
-        return retval;
+      }
+      // Return true if the minimum exponents are smaller than those specified in the limits vector.
+      template <class ArgsTuple>
+        bool test_expo_limits(const std::vector<std::pair<size_t,max_fast_int> > &v, const ArgsTuple &args_tuple) const
+      {
+        const std::vector<max_fast_int> min_expo(min_exponents(args_tuple));
+        const size_t size = v.size();
+        for (size_t i = 0; i < size; ++i)
+        {
+          p_assert(v[i].first < min_expo.size());
+          if (v[i].second < min_expo[v[i].first])
+          {
+            return false;
+          }
+        }
+        return true;
       }
   };
 }

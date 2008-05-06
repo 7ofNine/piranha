@@ -192,8 +192,8 @@ namespace piranha
         void upload_min_exponents(const Vector &) const {}
       template <class Vector>
         void test_min_exponents(const Vector &) const {}
-      template <class Vector>
-        bool test_expo_limits(const Vector &) const {return true;}
+      template <class Vector, class ArgsTuple>
+        bool test_expo_limits(const Vector &, const ArgsTuple &) const {return true;}
     protected:
       template <class U>
         Derived &assign_self(const U &x)

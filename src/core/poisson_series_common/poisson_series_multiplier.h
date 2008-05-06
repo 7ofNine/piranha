@@ -51,17 +51,20 @@ namespace piranha
         poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > ancestor;
       typedef coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
+      friend class Truncator<poisson_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
       typedef typename Series1::const_sorted_iterator const_iterator1;
       typedef typename Series2::const_sorted_iterator const_iterator2;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
+      typedef Series1 series_type1;
+      typedef Series2 series_type2;
       typedef typename ancestor::term_type1 term_type1;
       typedef typename ancestor::term_type2 term_type2;
-      typedef typename ancestor::truncator_type truncator_type;
       typedef typename term_type1::cf_type cf_type1;
       typedef typename term_type2::cf_type cf_type2;
       typedef typename term_type1::key_type key_type;
     public:
+      typedef typename ancestor::truncator_type truncator_type;
       poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
         ancestor::base_series_multiplier(s1,s2,retval,args_tuple),
         m_flavours1(ancestor::m_size1),m_flavours2(ancestor::m_size2)

@@ -202,7 +202,7 @@ namespace piranha
             return true;
           default:
             m_multiplier.decode(m_multiplier.m_tmp_key,n);
-            return m_multiplier.m_tmp_key.test_expo_limits(m_positions);
+            return m_multiplier.m_tmp_key.test_expo_limits(m_positions,m_multiplier.m_args_tuple);
         }
       }
       template <class Term>
@@ -213,7 +213,8 @@ namespace piranha
           case true:
             return true;
           default:
-            return (t.m_cf.test_expo_limits(m_positions) and t.m_key.test_expo_limits(m_positions));
+            return (t.m_cf.test_expo_limits(m_positions,m_multiplier.m_args_tuple) and
+              t.m_key.test_expo_limits(m_positions,m_multiplier.m_args_tuple));
         }
       }
       template <class Cf1, class Cf2, class Key>

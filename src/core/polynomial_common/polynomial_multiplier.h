@@ -51,7 +51,6 @@ namespace piranha
         polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> > ancestor;
       typedef coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> > coded_ancestor;
       friend class coded_series_multiplier<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
-      // This is needed to access the temporary key used for decodification in the truncator.
       friend class Truncator<polynomial_multiplier<Series1,Series2,ArgsTuple,Truncator> >;
       typedef typename Series1::sorted_iterator iterator1;
       typedef typename Series2::sorted_iterator iterator2;
