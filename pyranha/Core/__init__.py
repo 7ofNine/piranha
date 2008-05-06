@@ -46,6 +46,16 @@ def sin(arg):
   except TypeError:
     return __math.sin(arg)
 
+def besselJ(order,arg):
+  """
+  Wrapper around Core.besselJ. If arg provides a besselJ() method, it will be called, otherwise
+  Core.besselJ will be called.
+  """
+  try:
+    return arg.besselJ(order)
+  except TypeError:
+    return _Core.besselJ(order,arg)
+
 def copy(arg):
   """Standard copy function. Lifted from the copy module."""
   return __copy.copy(arg)

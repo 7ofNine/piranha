@@ -20,6 +20,7 @@
 
 #include <boost/python/class.hpp>
 #include <boost/python/copy_const_reference.hpp>
+#include <boost/python/def.hpp>
 #include <boost/python/enum.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -28,6 +29,7 @@
 
 #include "../../src/core/base_classes/expo_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
+#include "../../src/core/math.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
 #include "../../src/core/stats.h"
@@ -160,4 +162,6 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")
     .def("set",&base_norm_truncator::set,"Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 "
       "and throw an error otherwise.").staticmethod("set");
+
+  def("besselJ",&besselJ,"Bessel function of the first kind of integer order.");
 }

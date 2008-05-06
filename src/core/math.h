@@ -21,7 +21,10 @@
 #ifndef PIRANHA_MATH_H
 #define PIRANHA_MATH_H
 
+#include <boost/math/special_functions/bessel.hpp>
 #include <boost/static_assert.hpp>
+
+#include "integer_typedefs.h"
 
 namespace piranha
 {
@@ -42,6 +45,12 @@ namespace piranha
   {
     static const size_t value = 0;
   };
+
+  /// Bessel function of the first kind, integer order.
+  inline double besselJ(const max_fast_int &order, const double &arg)
+  {
+    return boost::math::cyl_bessel_j(order,arg);
+  }
 }
 
 #endif
