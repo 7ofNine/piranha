@@ -25,6 +25,7 @@
 
 #include "../base_classes/series_math.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -61,7 +62,8 @@ namespace piranha
         if (derived_const_cast->empty())
         {
           // Return series logically equivalent to 1.
-          retval.insert(term_type(cf_type(1,retval.m_arguments),key_type()),retval.m_arguments,retval.template nth_index<0>().end());
+          retval.insert(term_type(cf_type((max_fast_int)1,retval.m_arguments),key_type()),
+            retval.m_arguments,retval.template nth_index<0>().end());
         }
         else
         {
@@ -132,7 +134,7 @@ namespace piranha
           // Assign poly args of this as trig args of return value.
           retval.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
           term_type term;
-          term.m_cf = cf_type(1,retval.m_arguments);
+          term.m_cf = cf_type((max_fast_int)1,retval.m_arguments);
           term.m_key.assign_int_vector(v);
           term.m_key.flavour() = Flavour;
           retval.insert(term,retval.m_arguments,retval.template nth_index<0>().end());

@@ -122,7 +122,7 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const int &n, const ArgsTuple &args_tuple)
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
   {
     if (n == 1)
     {
@@ -157,7 +157,7 @@ namespace piranha
 
   template <__PIRANHA_BASE_SERIES_TP_DECL>
     template <class ArgsTuple>
-    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const int &n, const ArgsTuple &args_tuple)
+    inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
   {
     if (n == 1)
     {
@@ -229,7 +229,7 @@ namespace piranha
       // 0**0 == 1
       else if (y == 0)
       {
-        retval = Derived(1,args_tuple);
+        retval = Derived((max_fast_int)1,args_tuple);
         return retval;
       }
       else

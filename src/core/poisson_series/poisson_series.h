@@ -30,8 +30,10 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../integer_typedefs.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
 #include "../polynomial_cf/polynomial_cf.h"
@@ -52,6 +54,7 @@
 #define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
 #define __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR common_poisson_series_toolbox< __PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POISSON_SERIES >
+#define __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< __PIRANHA_POISSON_SERIES >
 
 namespace piranha
 {
@@ -62,10 +65,11 @@ namespace piranha
     public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR,
+    public __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,
-    boost::ring_operators<__PIRANHA_POISSON_SERIES,int,
+    boost::ring_operators<__PIRANHA_POISSON_SERIES,max_fast_int,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,double,
-    boost::dividable<__PIRANHA_POISSON_SERIES,int,
+    boost::dividable<__PIRANHA_POISSON_SERIES,max_fast_int,
     boost::dividable<__PIRANHA_POISSON_SERIES,double
     > > > > >
   {
@@ -84,6 +88,7 @@ namespace piranha
       friend class __PIRANHA_POISSON_SERIES_BASE_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR;
+      friend class __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
       using __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
@@ -144,5 +149,6 @@ namespace std
 #undef __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR
+#undef __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR
 
 #endif

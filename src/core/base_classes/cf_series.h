@@ -71,6 +71,7 @@ namespace piranha
   };
 
   // Useful macro for ctors in coefficient series.
+  // TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
   #define __PIRANHA_CF_SERIES_CTORS(series_name) \
   series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
   template <class ArgsTuple> \
@@ -80,7 +81,7 @@ namespace piranha
     cf_ancestor::construct_from_string(s,args_tuple); \
   } \
   template <class ArgsTuple> \
-    explicit series_name(const int &n, const ArgsTuple &a) \
+    explicit series_name(const max_fast_int &n, const ArgsTuple &a) \
   { \
     nth_index<1>().max_load_factor(settings::load_factor()); \
     base_ancestor::construct_from_number(n,a); \

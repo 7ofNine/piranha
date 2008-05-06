@@ -141,7 +141,7 @@ namespace piranha
           // to zero in order to accumulate monomials during multiplication.
           for (size_t i = 0; i < n_codes; ++i)
           {
-            ::new(p_vc_res+i) cf_type1(0,ancestor::m_args_tuple);
+            ::new(p_vc_res+i) cf_type1((max_fast_int)0,ancestor::m_args_tuple);
           }
         }
         catch(const std::bad_alloc &)

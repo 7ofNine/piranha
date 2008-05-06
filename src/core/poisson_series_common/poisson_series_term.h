@@ -114,7 +114,7 @@ namespace piranha
         // so that we can avoid a copy.
         res.template get<0>().m_cf=cf1;
         res.template get<0>().m_cf.mult_by(cf2,args_tuple);
-        res.template get<0>().m_cf.divide_by(2,args_tuple);
+        res.template get<0>().m_cf.divide_by((max_fast_int)2,args_tuple);
         res.template get<1>().m_cf=res.template get<0>().m_cf;
         // Now adjust the signs according to werner's formulas.
         if (trig1.flavour() == trig2.flavour())

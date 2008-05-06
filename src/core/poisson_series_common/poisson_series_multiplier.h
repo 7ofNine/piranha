@@ -159,8 +159,8 @@ namespace piranha
           // to zero in order to accumulate Poisson terms during multiplication.
           for (size_t i = 0; i < n_codes; ++i)
           {
-            ::new(p_vc_res_cos+i) cf_type1(0,ancestor::m_args_tuple);
-            ::new(p_vc_res_sin+i) cf_type1(0,ancestor::m_args_tuple);
+            ::new(p_vc_res_cos+i) cf_type1((max_fast_int)0,ancestor::m_args_tuple);
+            ::new(p_vc_res_sin+i) cf_type1((max_fast_int)0,ancestor::m_args_tuple);
           }
         }
         catch(const std::bad_alloc &)
@@ -191,7 +191,7 @@ namespace piranha
             // For nontrivial coefficients we can save a lot of memory allocations.
             cf_type1 tmp_cf(ancestor::m_cfs1[i].get());
             tmp_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
-            tmp_cf.divide_by(2,ancestor::m_args_tuple);
+            tmp_cf.divide_by((max_fast_int)2,ancestor::m_args_tuple);
             const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
               index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
             switch (m_flavours1[i] == m_flavours2[j])
@@ -291,7 +291,7 @@ namespace piranha
             cterm tmp_term1(ancestor::m_cfs1[i].get(),coded_ancestor::m_ckeys1[i]);
             // Handle the coefficient, with positive signs for now.
             tmp_term1.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
-            tmp_term1.m_cf.divide_by(2,ancestor::m_args_tuple);
+            tmp_term1.m_cf.divide_by((max_fast_int)2,ancestor::m_args_tuple);
             tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
             // Create the second term, using the first one's coefficient and the appropriate code.
             cterm tmp_term2(tmp_term1.m_cf,coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);

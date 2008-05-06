@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../ntuple.h"
 #include "../psym.h"
 
@@ -63,16 +64,16 @@ namespace piranha
       void swap(Derived &);
       double norm() const;
       eval_type eval(const double &) const;
-      Derived &operator+=(const int &);
+      Derived &operator+=(const max_fast_int &);
       Derived &operator+=(const double &);
       Derived &operator+=(const Derived &);
-      Derived &operator-=(const int &);
+      Derived &operator-=(const max_fast_int &);
       Derived &operator-=(const double &);
       Derived &operator-=(const Derived &);
-      Derived &operator*=(const int &);
+      Derived &operator*=(const max_fast_int &);
       Derived &operator*=(const double &);
       Derived &operator*=(const Derived &);
-      Derived &operator/=(const int &);
+      Derived &operator/=(const max_fast_int &);
       Derived &operator/=(const double &);
       Derived pow(const double &) const;
       Derived partial(const std::string &) const;
@@ -129,7 +130,7 @@ namespace piranha
     nth_index<1>().max_load_factor(settings::load_factor()); \
     named_ancestor::construct_from_file(filename); \
   } \
-  explicit series_name(const int &n) \
+  explicit series_name(const max_fast_int &n) \
   { \
     nth_index<1>().max_load_factor(settings::load_factor()); \
     base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
@@ -139,7 +140,7 @@ namespace piranha
     nth_index<1>().max_load_factor(settings::load_factor()); \
     base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
   } \
-  explicit series_name(const int &n, const args_tuple_type &args_tuple) \
+  explicit series_name(const max_fast_int &n, const args_tuple_type &args_tuple) \
   { \
     nth_index<1>().max_load_factor(settings::load_factor()); \
     base_ancestor::construct_from_number(n,args_tuple); \

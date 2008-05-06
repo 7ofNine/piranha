@@ -22,6 +22,7 @@
 #define PIRANHA_NAMED_SERIES_MATH_H
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../psym.h"
 #include "../settings.h"
 
@@ -100,7 +101,7 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const int &n)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const max_fast_int &n)
   {
     return derived_cast->template merge_with_number<true>(n,m_arguments);
   }
@@ -118,7 +119,7 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const int &n)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const max_fast_int &n)
   {
     return derived_cast->template merge_with_number<false>(n,m_arguments);
   }
@@ -136,7 +137,7 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const int &n)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const max_fast_int &n)
   {
     return mult_by_generic(n);
   }
@@ -154,7 +155,7 @@ namespace piranha
   }
 
   template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const int &n)
+    inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const max_fast_int &n)
   {
     return divide_by_generic(n);
   }

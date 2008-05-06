@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../p_assert.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
@@ -72,13 +73,13 @@ namespace piranha
       template <class ArgsTuple>
         Derived &subtract(const Derived &, const ArgsTuple &);
       template <class ArgsTuple>
-        Derived &mult_by(const int &, const ArgsTuple &);
+        Derived &mult_by(const max_fast_int &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &mult_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &mult_by(const Derived &, const ArgsTuple &);
       template <class ArgsTuple>
-        Derived &divide_by(const int &, const ArgsTuple &);
+        Derived &divide_by(const max_fast_int &, const ArgsTuple &);
       template <class ArgsTuple>
         Derived &divide_by(const double &, const ArgsTuple &);
       template <class ArgsTuple>

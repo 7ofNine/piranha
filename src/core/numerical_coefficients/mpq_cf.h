@@ -55,7 +55,7 @@ namespace piranha
       }
       /// Constructor from integer.
       template <class ArgsTuple>
-        explicit mpq_cf(const int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
+        explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
       /// Constructor from double.
       template <class ArgsTuple>
         explicit mpq_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
@@ -70,7 +70,7 @@ namespace piranha
       }
       // Override division to catch divide by zero.
       template <class ArgsTuple>
-        mpq_cf &divide_by(const int &n, const ArgsTuple &a) throw(division_by_zero)
+        mpq_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) throw(division_by_zero)
       {
         if (n == 0)
         {
@@ -117,7 +117,7 @@ namespace piranha
           retval.m_value = 1;
           return retval;
         }
-        const int pow_n((int)nearbyint(y));
+        const max_fast_int pow_n((max_fast_int)nearbyint(y));
         if (std::abs(pow_n - y) > settings::numerical_zero())
         {
           throw (unsuitable("Cannot raise rational coefficient different from unity to real power."));

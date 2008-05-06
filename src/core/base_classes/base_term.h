@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../stream_manager.h"
 #include "../type_traits.h"
 
@@ -253,7 +254,7 @@ namespace piranha
       {
         res1.m_cf = m_cf.partial(pos_tuple,args_tuple);
         res1.m_key = m_key;
-        std::pair<int,key_type> key_partial_result(m_key.partial(pos_tuple,args_tuple));
+        std::pair<max_fast_int,key_type> key_partial_result(m_key.partial(pos_tuple,args_tuple));
         res2.m_key = key_partial_result.second;
         res2.m_cf = m_cf;
         res2.m_cf.mult_by(key_partial_result.first,args_tuple);

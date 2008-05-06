@@ -32,6 +32,7 @@
 #include <utility> // For std::pair.
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 
 namespace piranha
 {
@@ -47,7 +48,7 @@ namespace piranha
     {
       case 0:
       {
-        retval = Series(1,args_tuple);
+        retval = Series((max_fast_int)1,args_tuple);
         break;
       }
       case 1:
@@ -78,7 +79,7 @@ namespace piranha
       }
       default:
       {
-        retval = Series(1,args_tuple);
+        retval = Series((max_fast_int)1,args_tuple);
         // Use scoping here to have tmp destroyed when it is not needed anymore.
         {
           Series tmp(x);
@@ -118,7 +119,7 @@ namespace piranha
     // Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
     // binomial coefficient incrementally at every step. We start with 1.
     Series retval;
-    Series tmp(1,args_tuple);
+    Series tmp((max_fast_int)1,args_tuple);
     retval.add(tmp,args_tuple);
     mpq_class mpq_y;
     for (size_t i = 1; i <= n; ++i)
@@ -130,7 +131,7 @@ namespace piranha
       mpq_y -= i;
       mpq_y += 1;
       tmp.mult_by(mpq_y.get_d(),args_tuple);
-      tmp.divide_by((int)i,args_tuple);
+      tmp.divide_by((max_fast_int)i,args_tuple);
       tmp.mult_by(XoverA,args_tuple);
       retval.add(tmp,args_tuple);
     }

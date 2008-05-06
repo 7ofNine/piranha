@@ -29,8 +29,10 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../integer_typedefs.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../settings.h"
@@ -45,6 +47,7 @@
 #define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
 #define __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POLYNOMIAL >
 #define __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL >
+#define __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< __PIRANHA_POLYNOMIAL >
 
 namespace piranha
 {
@@ -99,10 +102,11 @@ namespace piranha
     public __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
     public __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
+    public __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,
-    boost::ring_operators<__PIRANHA_POLYNOMIAL,int,
+    boost::ring_operators<__PIRANHA_POLYNOMIAL,max_fast_int,
     boost::ring_operators<__PIRANHA_POLYNOMIAL,double,
-    boost::dividable<__PIRANHA_POLYNOMIAL,int,
+    boost::dividable<__PIRANHA_POLYNOMIAL,max_fast_int,
     boost::dividable<__PIRANHA_POLYNOMIAL,double
     > > > > >
   {
@@ -117,6 +121,7 @@ namespace piranha
       friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
       friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
+      friend class __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
       // Override base_series::real_pow with the one from the common polynomial toolbox.
       using __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
     public:
@@ -164,5 +169,6 @@ namespace std
 #undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR
 #undef __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR
+#undef __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR
 
 #endif

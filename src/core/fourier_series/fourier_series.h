@@ -31,6 +31,7 @@
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
+#include "../integer_typedefs.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
@@ -52,9 +53,9 @@ namespace piranha
     public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
     public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,
-    boost::ring_operators<__PIRANHA_FOURIER_SERIES,int,
+    boost::ring_operators<__PIRANHA_FOURIER_SERIES,max_fast_int,
     boost::ring_operators<__PIRANHA_FOURIER_SERIES,double,
-    boost::dividable<__PIRANHA_FOURIER_SERIES,int,
+    boost::dividable<__PIRANHA_FOURIER_SERIES,max_fast_int,
     boost::dividable<__PIRANHA_FOURIER_SERIES,double
     > > > > >
   {

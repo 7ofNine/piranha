@@ -18,30 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_DPOLY_H
-#define PIRANHA_DPOLY_H
+#ifndef PIRANHA_NAMED_SERIES_SPECIAL_FUNCTIONS_H
+#define PIRANHA_NAMED_SERIES_SPECIAL_FUNCTIONS_H
 
-#include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/expo_truncator.h"
-#include "../core/numerical_coefficients/double_cf.h"
-#include "../core/polynomial_common/expo_array.h"
-#include "../core/polynomial/polynomial.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
+#include "../integer_typedefs.h"
+#include "base_series_special_functions.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Double coefficient multivariate polynomial manipulator.
-  typedef polynomial
-  <
-    double_cf,
-    expo_array<16,0>,
-    key_degree_index,
-    polynomial_multiplier,
-    expo_truncator
-  > dpoly;
+  template <class Derived>
+    struct named_series_special_functions:public base_series_special_functions<Derived>
+  {
+    Derived besselJ(const max_fast_int &order) const
+    {
+      return derived_const_cast->b_besselJ(order,derived_const_cast->m_arguments);
+    }
+  };
 }
-}
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif

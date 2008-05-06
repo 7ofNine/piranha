@@ -55,7 +55,7 @@ namespace piranha
       {}
       /// Constructor from integer.
       template <class ArgsTuple>
-        explicit double_cf(const int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
+        explicit double_cf(const max_fast_int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
       /// Constructor from double.
       template <class ArgsTuple>
         explicit double_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}

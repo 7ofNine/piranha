@@ -25,6 +25,7 @@
 #include <string>
 
 #include "../arg_manager.h"
+#include "../integer_typedefs.h"
 #include "../psym.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
@@ -54,7 +55,7 @@ namespace piranha
         explicit numerical_container(const std::string &s, const ArgsTuple &):m_value(utils::lexical_converter<T>(s))
       {}
       template <class ArgsTuple>
-        explicit numerical_container(const int &n, const ArgsTuple &):m_value(n) {}
+        explicit numerical_container(const max_fast_int &n, const ArgsTuple &):m_value(n) {}
       template <class ArgsTuple>
         explicit numerical_container(const double &x, const ArgsTuple &):m_value(x) {}
       /// Ctor from psym.
@@ -140,7 +141,7 @@ namespace piranha
         return subtract_generic(val2.g_value());
       }
       template <class ArgsTuple>
-        Derived &mult_by(const int &n, const ArgsTuple &)
+        Derived &mult_by(const max_fast_int &n, const ArgsTuple &)
       {
         return mult_by_generic(n);
       }
@@ -155,7 +156,7 @@ namespace piranha
         return mult_by_generic(x.g_value());
       }
       template <class ArgsTuple>
-        Derived &divide_by(const int &n, const ArgsTuple &)
+        Derived &divide_by(const max_fast_int &n, const ArgsTuple &)
       {
         return divide_by_generic(n);
       }
@@ -173,7 +174,7 @@ namespace piranha
       template <class PosTuple, class ArgsTuple>
         Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const
       {
-        return Derived(0,args_tuple);
+        return Derived((max_fast_int)0,args_tuple);
       }
       /// Get value.
       const T &g_value() const
@@ -185,7 +186,7 @@ namespace piranha
       {
         return m_value;
       }
-      int degree() const {return 0;}
+      max_fast_int degree() const {return 0;}
       template <class Vector>
         void upload_min_exponents(const Vector &) const {}
       template <class Vector>
