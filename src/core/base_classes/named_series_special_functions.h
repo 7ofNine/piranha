@@ -34,7 +34,9 @@ namespace piranha
   {
     Derived besselJ(const max_fast_int &order) const
     {
-      return derived_const_cast->b_besselJ(order,derived_const_cast->m_arguments);
+      Derived retval(derived_const_cast->b_besselJ(order,derived_const_cast->m_arguments));
+      retval.m_arguments = derived_const_cast->m_arguments;
+      return retval;
     }
   };
 }
