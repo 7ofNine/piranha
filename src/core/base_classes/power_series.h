@@ -33,7 +33,7 @@ namespace piranha
 {
   /// Power series toolbox.
   /**
-  * This toolbox assumes that the terms of the series are sorted in ascending total degree.
+  * This toolbox assumes that the terms of the series in all echelons are sorted in ascending total degree.
   */
   template <int ExpoPosition, class Derived>
     class power_series
