@@ -58,8 +58,8 @@ namespace piranha
         {
           return 0;
         }
-        return derived_const_cast->template nth_index<0>().begin()->m_cf.degree()+
-          derived_const_cast->template nth_index<0>().begin()->m_key.degree();
+        return derived_const_cast->template nth_index<0>().begin()->m_cf.min_degree()+
+          derived_const_cast->template nth_index<0>().begin()->m_key.min_degree();
       }
       static const int expo_position = ExpoPosition;
       void upload_min_exponents(std::vector<max_fast_int> &v) const

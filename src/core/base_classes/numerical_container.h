@@ -187,6 +187,7 @@ namespace piranha
         return m_value;
       }
       max_fast_int degree() const {return 0;}
+      max_fast_int min_degree() const {return 0;}
       template <class Vector>
         void upload_min_exponents(const Vector &) const {}
       template <class Vector>

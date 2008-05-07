@@ -109,13 +109,19 @@ namespace pyranha
   }
 
   template <class T>
+    void power_series_instantiation(boost::python::class_<T> &inst)
+  {
+    inst.def("degree",&T::degree,"Get the degree of the power series.");
+    inst.def("min_degree",&T::min_degree,"Get the minimum degree of the power series.");
+  }
+
+  template <class T>
     void common_polynomial_instantiation(boost::python::class_<T> &inst)
   {
-    inst.def("degree",&T::degree,"Get the degree of the polynomial.");
-    inst.def("min_degree",&T::min_degree,"Get the minimum degree of the polynomial.");
     series_psym_instantiation(inst);
     series_differential_instantiation(inst);
     series_special_functions_instantiation(inst);
+    power_series_instantiation(inst);
   }
 
   template <class T>
@@ -125,6 +131,7 @@ namespace pyranha
     series_psym_instantiation(inst);
     series_differential_instantiation(inst);
     series_special_functions_instantiation(inst);
+    power_series_instantiation(inst);
   }
 
   template <class T>

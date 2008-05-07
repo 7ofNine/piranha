@@ -122,6 +122,9 @@ namespace piranha
         }
         return retval;
       }
+      // This is the min total degree of a collection.
+      // In this case the collection has a single element, hence the minimum degree is the degree itself.
+      max_fast_int min_degree() const {return degree();}
       /// Return the position of the linear argument in the monomial.
       /**
        * It will throw if the monomial is not linear.
