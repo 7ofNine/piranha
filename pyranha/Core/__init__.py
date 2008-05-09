@@ -56,6 +56,16 @@ def besselJ(order,arg):
   except TypeError:
     return _Core.besselJ(order,arg)
 
+def dbesselJ(order,arg):
+  """
+  Partial derivative of Bessel function of the first kind of integer order. It will call the dbesselJ() method
+  of arg, if available.
+  """
+  try:
+    return arg.dbesselJ(order)
+  except AttributeError:
+    raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
+
 def copy(arg):
   """Standard copy function. Lifted from the copy module."""
   return __copy.copy(arg)

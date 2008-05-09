@@ -77,6 +77,7 @@ namespace piranha
       Derived &operator/=(const double &);
       Derived pow(const double &) const;
       Derived partial(const std::string &) const;
+      Derived partial(const psym &) const;
     protected:
       void construct_from_file(const std::string &);
       template <int N>
@@ -109,6 +110,8 @@ namespace piranha
         Derived &mult_by_series(const Derived2 &);
       template <class T>
         Derived &divide_by_generic(const T &);
+      template <class Argument>
+        Derived generic_partial(const Argument &) const;
     protected:
       // Data members.
       args_tuple_type                 m_arguments;

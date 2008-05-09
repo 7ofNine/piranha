@@ -38,6 +38,12 @@ namespace piranha
       retval.m_arguments = derived_const_cast->m_arguments;
       return retval;
     }
+    Derived dbesselJ(const max_fast_int &order) const
+    {
+      Derived retval(derived_const_cast->b_dbesselJ(order,derived_const_cast->m_arguments));
+      retval.m_arguments = derived_const_cast->m_arguments;
+      return retval;
+    }
   };
 }
 

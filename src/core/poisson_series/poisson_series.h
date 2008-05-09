@@ -36,6 +36,7 @@
 #include "../integer_typedefs.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
+#include "../poisson_series_common/celmec_toolbox.h"
 #include "../polynomial_cf/polynomial_cf.h"
 
 #define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, \
@@ -55,6 +56,7 @@
 #define __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR common_poisson_series_toolbox< __PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< __PIRANHA_POISSON_SERIES >
+#define __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< __PIRANHA_POISSON_SERIES >
 
 namespace piranha
 {
@@ -66,6 +68,7 @@ namespace piranha
     public __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR,
     public __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
+    public __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,max_fast_int,
     boost::ring_operators<__PIRANHA_POISSON_SERIES,double,
@@ -89,6 +92,7 @@ namespace piranha
       friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR;
       friend class __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
+      friend class __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR;
       using __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
     public:
       // Needed typedefs.
@@ -150,5 +154,6 @@ namespace std
 #undef __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR
 #undef __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR
+#undef __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR
 
 #endif

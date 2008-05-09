@@ -93,7 +93,10 @@ namespace pyranha
   template <class T>
     void series_differential_instantiation(boost::python::class_<T> &inst)
   {
-    inst.def("partial", &T::partial);
+    typedef T (T::*partial_name)(const std::string &) const;
+    typedef T (T::*partial_psym)(const piranha::psym &) const;
+    inst.def("partial",partial_name(&T::partial));
+    inst.def("partial",partial_psym(&T::partial));
   }
 
   template <class T>
@@ -106,6 +109,14 @@ namespace pyranha
     void series_special_functions_instantiation(boost::python::class_<T> &inst)
   {
     inst.def("besselJ",&T::besselJ,"Bessel function of the first kind of integer order.");
+    inst.def("dbesselJ",&T::dbesselJ,"Partial derivative of Bessel function of the first kind of integer order.");
+  }
+
+  template <class T>
+    void celmec_instantiation(boost::python::class_<T> &inst)
+  {
+    inst.def("r_a",&T::r_a,"Elliptic expansion of r / a.").staticmethod("r_a");
+    inst.def("sin_f",&T::sin_f,"Ellipic expansion of sin(f).").staticmethod("sin_f");
   }
 
   template <class T>
@@ -132,6 +143,7 @@ namespace pyranha
     series_differential_instantiation(inst);
     series_special_functions_instantiation(inst);
     power_series_instantiation(inst);
+    celmec_instantiation(inst);
   }
 
   template <class T>

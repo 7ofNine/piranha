@@ -42,7 +42,7 @@
 
 namespace piranha
 {
-  struct psym_manager
+  struct __PIRANHA_VISIBLE psym_manager
   {
       /// Literal symbol class.
       /**
@@ -56,7 +56,7 @@ namespace piranha
         * where \f$ t \f$ is time.
         * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
         */
-      struct psym
+      struct __PIRANHA_VISIBLE psym
       {
           friend class psym_manager;
           // Ctors
@@ -187,10 +187,10 @@ namespace piranha
           }
         private:
           // Data members.
-          const std::string                             m_name;
+          const std::string             m_name;
           // Mutable because we want to be able to freely change it in the psym manager.
-          mutable std::vector<double>                   m_time_eval;
-          __PIRANHA_VISIBLE static const std::string    separator;
+          mutable std::vector<double>   m_time_eval;
+          static const std::string      separator;
       };
     private:
       typedef boost::multi_index_container
@@ -257,7 +257,7 @@ namespace piranha
         }
       }
     private:
-      __PIRANHA_VISIBLE static set_type set;
+      static set_type set;
   };
 
   /// Typedefs used in series, terms, coefficients and trigonometric parts.

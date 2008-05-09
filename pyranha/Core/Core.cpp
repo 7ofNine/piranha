@@ -151,12 +151,15 @@ BOOST_PYTHON_MODULE(_Core)
     .def("__copy__",&psym::copy)
     .def("__repr__",&psym::print_to_string);
 
+  typedef void (*limit_name)(const std::string &, const max_fast_int &);
+  typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
   class_<base_expo_truncator>("__expo_truncator","Exponent truncator.",init<>())
     .def("__repr__",&base_expo_truncator::print_to_string).staticmethod("__repr__")
     .def("clear_all",&base_expo_truncator::clear_all,"Clear list of exponent limits.").staticmethod("clear_all")
     .def("clear",&base_expo_truncator::clear,"Clear exponent limit for argument named arg1.").staticmethod("clear")
-    .def("limit",&base_expo_truncator::limit,"Set exponent limit for symbol named arg1 to integer arg2. "
-      "If arg1 does not exist, throw an error").staticmethod("limit");
+    .def("limit",limit_name(&base_expo_truncator::limit),"Set exponent limit for symbol named arg1 to integer arg2. "
+      "If arg1 does not exist, throw an error")
+    .def("limit",limit_psym(&base_expo_truncator::limit),"Set exponent limit for psym arg1 to integer arg2.").staticmethod("limit");
 
   class_<base_norm_truncator>("__norm_truncator","Norm truncator.",init<>())
     .def("__repr__",&base_norm_truncator::print_to_string).staticmethod("__repr__")

@@ -37,7 +37,7 @@ namespace piranha
     class common_poisson_series_toolbox
   {
     public:
-      Derived sin() const throw (unsuitable)
+      Derived sin() const
       {
         Derived retval;
         // In this case the Poisson series is logically equivalent to zero.
@@ -55,8 +55,8 @@ namespace piranha
       Derived cos() const
       {
         typedef typename Derived::term_type term_type;
-        typedef typename Derived::cf_type cf_type;
-        typedef typename Derived::key_type key_type;
+        typedef typename term_type::cf_type cf_type;
+        typedef typename term_type::key_type key_type;
         Derived retval;
         // In this case the Poisson series is logically equivalent to zero.
         if (derived_const_cast->empty())
@@ -115,13 +115,13 @@ namespace piranha
       }
     private:
       template <bool Flavour>
-        void linear_int_helper(Derived &retval) const throw (unsuitable)
+        void linear_int_helper(Derived &retval) const
       {
         // Handle the case in which the Poisson series is logically equivalent to a single polynomial with
         // linearly dependent integer coefficients.
         typedef typename Derived::term_type term_type;
-        typedef typename Derived::cf_type cf_type;
-        typedef typename Derived::key_type key_type;
+        typedef typename term_type::cf_type cf_type;
+        typedef typename term_type::key_type key_type;
         try
         {
           if (!derived_const_cast->is_single_cf())
@@ -141,7 +141,7 @@ namespace piranha
         }
         catch (const unsuitable &u)
         {
-          throw unsuitable(std::string("Sorry, this Poisson series is not suitable for the application of circular functions. ") +
+          throw unsuitable(std::string("This Poisson series is not suitable for the application of circular functions. ") +
             u.what());
         }
       }

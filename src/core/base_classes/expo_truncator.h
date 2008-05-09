@@ -53,16 +53,11 @@ namespace piranha
     public:
       static void limit(const std::string &name, const max_fast_int &n)
       {
-        psym_p tmp(psym_manager::get_pointer(name));
-        iterator it = find_argument(tmp);
-        if (it == m_expo_limits.end())
-        {
-          m_expo_limits.push_back(std::pair<psym_p,max_fast_int>(tmp,n));
-        }
-        else
-        {
-          it->second = n;
-        }
+        generic_limit(name,n);
+      }
+      static void limit(const psym &p, const max_fast_int &n)
+      {
+        generic_limit(p,n);
       }
       static void clear_all();
       static void print(std::ostream &stream = std::cout);
@@ -155,6 +150,20 @@ namespace piranha
         return retval;
       }
     private:
+      template <class Argument>
+        static void generic_limit(const Argument &arg, const max_fast_int &n)
+      {
+        psym_p tmp(psym_manager::get_pointer(arg));
+        iterator it = find_argument(tmp);
+        if (it == m_expo_limits.end())
+        {
+          m_expo_limits.push_back(std::pair<psym_p,max_fast_int>(tmp,n));
+        }
+        else
+        {
+          it->second = n;
+        }
+      }
       // Returns minimum_exponent - limit pairs.
       template <class PowerSeries, class ArgsTuple>
         static std::pair<std::vector<max_fast_int>,std::vector<max_fast_int> >
