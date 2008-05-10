@@ -116,8 +116,19 @@ namespace pyranha
   template <class T>
     void celmec_instantiation(boost::python::class_<T> &inst)
   {
-    inst.def("r_a",&T::r_a,"Elliptic expansion of r / a.").staticmethod("r_a");
-    inst.def("sin_f",&T::sin_f,"Ellipic expansion of sin(f).").staticmethod("sin_f");
+    typedef T (*from_series)(const T &, const T &);
+    typedef T (*from_psym)(const piranha::psym &, const piranha::psym &);
+    typedef T (*from_name)(const std::string &, const std::string &);
+    const char *r_a_docstring = "Elliptic expansion of r / a.";
+    const char *sin_f_docstring = "Elliptic expansion of sin(f).";
+    inst.def("r_a",from_series(&T::r_a),r_a_docstring)
+      .def("r_a",from_psym(&T::r_a),r_a_docstring)
+      .def("r_a",from_name(&T::r_a),r_a_docstring)
+      .staticmethod("r_a");
+    inst.def("sin_f",from_series(&T::sin_f),sin_f_docstring)
+      .def("sin_f",from_psym(&T::sin_f),sin_f_docstring)
+      .def("sin_f",from_name(&T::sin_f),sin_f_docstring)
+      .staticmethod("sin_f");
   }
 
   template <class T>

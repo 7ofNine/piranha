@@ -21,6 +21,8 @@
 #ifndef PIRANHA_CELMEC_TOOLBOX_H
 #define PIRANHA_CELMEC_TOOLBOX_H
 
+#include <string>
+
 #include "../integer_typedefs.h"
 #include "../psym.h"
 
@@ -36,10 +38,9 @@ namespace piranha
     class celmec_toolbox
   {
     public:
-      static Derived r_a(const psym &e, const psym &M)
+      static Derived r_a(const Derived &e_series, const Derived &M_series)
       {
         // First let's build 1+1/2 e^2.
-        Derived e_series(e);
         Derived retval(e_series);
         retval *= e_series;
         retval /= (max_fast_int)2;
@@ -55,21 +56,25 @@ namespace piranha
           expansion_term *= (max_fast_int)i;
           expansion_term = expansion_term.dbesselJ((max_fast_int)i);
           expansion_term /= (max_fast_int)i;
-          Derived trig(M);
+          Derived trig(M_series);
           trig *= (max_fast_int)i;
           trig = trig.cos();
           expansion_term *= trig;
           tmp += expansion_term;
         }
-        // Reuse e_series for the last bit.
-        e_series *= (max_fast_int)(-2);
         tmp *= e_series;
+        tmp *= (max_fast_int)(-2);
         retval += tmp;
         return retval;
       }
-      static Derived sin_f(const psym &e, const psym &M)
+      static Derived r_a(const psym &e, const psym &M) {return r_a(Derived(e),Derived(M));}
+      static Derived r_a(const std::string &e_name, const std::string &M_name)
       {
-        Derived tmp(e), e_series(tmp);
+        return r_a(*psym_manager::get_pointer(e_name),*psym_manager::get_pointer(M_name));
+      }
+      static Derived sin_f(const Derived &e_series, const Derived &M_series)
+      {
+        Derived tmp(e_series);
         tmp *= e_series;
         tmp = (max_fast_int)1 - tmp;
         tmp = tmp.pow(.5);
@@ -81,7 +86,7 @@ namespace piranha
           Derived expansion_term(e_series);
           expansion_term *= (max_fast_int)i;
           expansion_term = expansion_term.dbesselJ((max_fast_int)i);
-          Derived trig(M);
+          Derived trig(M_series);
           trig *= (max_fast_int)i;
           trig = trig.sin();
           expansion_term *= trig;
@@ -89,6 +94,11 @@ namespace piranha
         }
         retval *= tmp;
         return retval;
+      }
+      static Derived sin_f(const psym &e, const psym &M) {return sin_f(Derived(e),Derived(M));}
+      static Derived sin_f(const std::string &e_name, const std::string &M_name)
+      {
+        return sin_f(*psym_manager::get_pointer(e_name),*psym_manager::get_pointer(M_name));
       }
   };
 }
