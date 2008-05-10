@@ -41,12 +41,12 @@ namespace piranha
    */
   template <__PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
     class expo_array:
-    public int_array<Bits,Pos,true,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> >,
+    public int_array<Bits,Pos,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> >,
     public expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >
   {
       friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
       typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
-      typedef int_array<Bits,Pos,true,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
+      typedef int_array<Bits,Pos,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
     public:
       typedef typename ancestor::value_type value_type;
       typedef typename ancestor::size_type size_type;

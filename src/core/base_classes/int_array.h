@@ -34,33 +34,15 @@
 #include "../math.h" // For lg.
 #include "../p_assert.h"
 
-// Cast argument to int_array::max_fast_type pointer.
-#define max_cast(arg) ((max_fast_type *)(arg))
+// Cast argument to piranha::max_fast_int pointer.
+#define max_cast(arg) ((max_fast_int *)(arg))
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_INT_ARRAY_TP_DECL int Bits, int Pos, bool Signed, class Allocator, class Derived
-#define __PIRANHA_INT_ARRAY_TP Bits,Pos,Signed,Allocator,Derived
+#define __PIRANHA_INT_ARRAY_TP_DECL int Bits, int Pos, class Allocator, class Derived
+#define __PIRANHA_INT_ARRAY_TP Bits,Pos,Allocator,Derived
 
 namespace piranha
 {
-  // Used below to define the integer type.
-  template <int Bits, bool Signed>
-    struct integer_type_chooser
-  {
-    BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
-    typedef typename boost::int_t<Bits>::fast type;
-    typedef max_fast_int max_fast_type;
-  };
-
-  // Specialization for unsigned integers.
-  template <int Bits>
-    struct integer_type_chooser<Bits,false>
-  {
-    BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
-    typedef typename boost::uint_t<Bits>::fast type;
-    typedef max_fast_uint max_fast_type;
-  };
-
   /// Dynamically-sized integer array.
   /**
    * Parametrized to an integer sized Bits, which can be Signed or not. It contains also
@@ -70,14 +52,14 @@ namespace piranha
   template <__PIRANHA_INT_ARRAY_TP_DECL>
     class int_array
   {
-      typedef typename integer_type_chooser<Bits,Signed>::type value_type_;
-      typedef typename integer_type_chooser<Bits,Signed>::max_fast_type max_fast_type;
+      typedef typename boost::int_t<Bits>::fast value_type_;
       typedef typename Allocator::template rebind<value_type_>::other allocator_type;
+      BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
+      BOOST_STATIC_ASSERT(sizeof(max_fast_int) % sizeof(value_type_) == 0);
+      BOOST_STATIC_ASSERT(Pos >= 0);
     public:
       typedef value_type_ value_type;
       typedef uint8 size_type;
-      BOOST_STATIC_ASSERT(sizeof(max_fast_type) % sizeof(value_type) == 0);
-      BOOST_STATIC_ASSERT(Pos >= 0);
       static const int position = Pos;
       /// Default ctor.
       /**
@@ -460,10 +442,10 @@ namespace piranha
       static allocator_type   allocator;
       /// Pack multiplier.
       /**
-       * Defined by the integer division between the number of bits of int_array::max_fast_type and the number
+       * Defined by the integer division between the number of bits of piranha::max_fast_int and the number
        * of bits of int_array::value_type.
        */
-      static const size_type  pack_mult = sizeof(max_fast_type)/sizeof(value_type);
+      static const size_type  pack_mult = sizeof(max_fast_int)/sizeof(value_type);
       /// Pack shifting.
       /**
        * Defined as the base-2 logarithm of int_array::pack_mult. If int_array::pack_mult is not a power of two,
