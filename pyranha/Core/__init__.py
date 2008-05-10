@@ -19,68 +19,15 @@
 from _Core import *
 
 import copy as __copy
-import math as __math
 try:
   import numpy as __numpy
   import matplotlib as __matplotlib
 except:
   print "Warning: many capabilities of Pyranha rely on numpy and matplotlib. Please consider installing these packages."
 
-def cos(arg):
-  """
-  Wrapper around standard cosine function. If arg provides a cos() method, it will be called, otherwise
-  math.cos() will be called.
-  """
-  try:
-    return arg.cos()
-  except AttributeError:
-    return __math.cos(arg)
-
-def sin(arg):
-  """
-  Wrapper around standard sine function. If arg provides a sin() method, it will be called, otherwise
-  math.sin() will be called.
-  """
-  try:
-    return arg.sin()
-  except AttributeError:
-    return __math.sin(arg)
-
-def besselJ(order,arg):
-  """
-  Wrapper around Core.besselJ. If arg provides a besselJ() method, it will be called, otherwise
-  Core.besselJ will be called.
-  """
-  try:
-    return arg.besselJ(order)
-  except AttributeError:
-    return _Core.besselJ(order,arg)
-
-def dbesselJ(order,arg):
-  """
-  Partial derivative of Bessel function of the first kind of integer order. It will call the dbesselJ() method
-  of arg, if available.
-  """
-  try:
-    return arg.dbesselJ(order)
-  except AttributeError:
-    raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
-
 def copy(arg):
   """Standard copy function. Lifted from the copy module."""
   return __copy.copy(arg)
-
-def partial(arg,name):
-  """
-  Calculate partial derivative of arg with respect to argument name.
-
-  Internally the partial() method of arg is called. If such method is not available, an AttributeError
-  exception will be raised.
-  """
-  try:
-    return arg.partial(name)
-  except AttributeError:
-    raise AttributeError, "The partial() method is not available for this argument type, returning None."
 
 psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()

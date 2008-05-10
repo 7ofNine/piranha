@@ -77,7 +77,8 @@ def main():
       elif i != "Gui":
         ip.ex("from pyranha import %s" % i)
         ip.ex("from pyranha.%s import %s" % (i,i.lower()))
-
+    ip.ex("from pyranha.Math import *")
+    ip.ex("from pyranha.Celmec import *")
 
 # some config helper functions you can use 
 def import_all(modules):

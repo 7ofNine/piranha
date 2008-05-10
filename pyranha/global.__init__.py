@@ -21,6 +21,15 @@
 
 __all__ = [@MODULE_LIST@]
 
+exec "import %s as __last_module" % __all__[-1]
+
+try:
+  ds = getattr(__last_module,__all__[-1].lower());
+  print "Default series type is " + str(ds)
+except:
+  print "Default series type could not be established, assigning None."
+  ds = None
+
 # Global variables: theories of motion
 
 #global elp1
@@ -30,53 +39,53 @@ __all__ = [@MODULE_LIST@]
 #elp2 = (math.pi/2.) - np("elp2.csv")
 #elp3 = np("elp3.csv")
 
-def plot_ps(ps,mark='o',color='b',logscale=True):
-	rng=range(ps.length())
-	amps=list()
-	for i in ps:
-		amps.append(i.norm())
-        semilogy(rng,amps,color+mark)
-        xlim(0,len(ps))
+#def plot_ps(ps,mark='o',color='b',logscale=True):
+	#rng=range(ps.length())
+	#amps=list()
+	#for i in ps:
+		#amps.append(i.norm())
+        #semilogy(rng,amps,color+mark)
+        #xlim(0,len(ps))
 
-def plot_sc(sc,xlab="Term Index",ylab="Coefficient Delta"):
-	rng=range(sc.size())
-	col=list()
-	for i in rng:
-		col.append(sc.diffs(i))
-	width=1.
-	xlocations=array(range(len(col)))+0.5
-	bar(xlocations,col,width=width)
-	xlabel(xlab)
-	if sc.is_relative():
-		ylabel("Relative "+ylab)
-	else:
-		ylabel(ylab)
-	xlim(0, xlocations[-1]+2*width)
+#def plot_sc(sc,xlab="Term Index",ylab="Coefficient Delta"):
+	#rng=range(sc.size())
+	#col=list()
+	#for i in rng:
+		#col.append(sc.diffs(i))
+	#width=1.
+	#xlocations=array(range(len(col)))+0.5
+	#bar(xlocations,col,width=width)
+	#xlabel(xlab)
+	#if sc.is_relative():
+		#ylabel("Relative "+ylab)
+	#else:
+		#ylabel(ylab)
+	#xlim(0, xlocations[-1]+2*width)
 
-def deg2rad(degrees,minutes,seconds):
-	conv_ratio = math.pi/180.
-	return (degrees*conv_ratio+minutes/60.*conv_ratio+seconds/3600.*conv_ratio)
+#def deg2rad(degrees,minutes,seconds):
+	#conv_ratio = math.pi/180.
+	#return (degrees*conv_ratio+minutes/60.*conv_ratio+seconds/3600.*conv_ratio)
 
-def elp2000(time):
-	return [sph_to_x(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time)),
-		sph_to_y(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time)),
-		sph_to_z(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time))]
+#def elp2000(time):
+	#return [sph_to_x(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time)),
+		#sph_to_y(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time)),
+		#sph_to_z(elp3.t_eval(time),elp2.t_eval(time),elp1.t_eval(time))]
 
-def doodson_Bnm(n,m):
-	if n < 2:
-		print "Invalid n: it must be >= 2"
-		return npc()
-	return (wig_rot(n,m,0,-astro.eps_0(),0,elp2,elp1)*elp3.complex_multiangle(0,-m))*natural_pow(n+1,elp3.inv())
+#def doodson_Bnm(n,m):
+	#if n < 2:
+		#print "Invalid n: it must be >= 2"
+		#return npc()
+	#return (wig_rot(n,m,0,-astro.eps_0(),0,elp2,elp1)*elp3.complex_multiangle(0,-m))*natural_pow(n+1,elp3.inv())
 
-def benchmark(filename="prec_test",steps=1000):
-	foo = wig_rot(1,1,1.,2.,3.,elp2,elp1)
-	print "Final length=",foo.real().length(),",",foo.imag().length()
-	bench=tc_wig_rot_np(foo,0.,.01,steps,1,1,1.,2.,3.,elp2,elp1)
-	bench.gnuplot_save(filename);
-	print "Pack RATIO: ",pack_ratio()
-	return bench
+#def benchmark(filename="prec_test",steps=1000):
+	#foo = wig_rot(1,1,1.,2.,3.,elp2,elp1)
+	#print "Final length=",foo.real().length(),",",foo.imag().length()
+	#bench=tc_wig_rot_np(foo,0.,.01,steps,1,1,1.,2.,3.,elp2,elp1)
+	#bench.gnuplot_save(filename);
+	#print "Pack RATIO: ",pack_ratio()
+	#return bench
 
-def tidal_accel(m,d,r):
-	a_A=abs(astro.G()*m*((2.*d*r-r*r)/(d*d*(d-r)*(d-r))))
-	a_B=abs(astro.G()*m*((-2.*d*r-r*r)/(d*d*(d+r)*(d+r))))
-	return a_A, a_B
+#def tidal_accel(m,d,r):
+	#a_A=abs(astro.G()*m*((2.*d*r-r*r)/(d*d*(d-r)*(d-r))))
+	#a_B=abs(astro.G()*m*((-2.*d*r-r*r)/(d*d*(d+r)*(d+r))))
+	#return a_A, a_B
