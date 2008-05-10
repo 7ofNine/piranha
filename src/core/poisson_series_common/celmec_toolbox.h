@@ -81,7 +81,8 @@ namespace piranha
         tmp *= (max_fast_int)2;
         Derived retval;
         const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series,e_series.m_arguments);
-        for (size_t i = 1; i <= n; ++i)
+        // Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
+        for (size_t i = 1; i <= (n+1); ++i)
         {
           Derived expansion_term(e_series);
           expansion_term *= (max_fast_int)i;
