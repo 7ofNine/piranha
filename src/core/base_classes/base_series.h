@@ -68,6 +68,7 @@ namespace piranha
       size_t length() const;
       bool empty() const;
       bool is_single_cf() const;
+      size_t atoms() const;
       template <class ArgsTuple>
         Derived &add(const Derived &, const ArgsTuple &);
       template <class ArgsTuple>

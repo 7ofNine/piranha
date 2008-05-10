@@ -72,6 +72,20 @@ namespace piranha
   {
     return derived_const_cast->template nth_index<0>().empty();
   }
+
+  /// Number of atoms in the series.
+  template <__PIRANHA_BASE_SERIES_TP_DECL>
+    inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
+  {
+    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+    size_t retval = 0;
+    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
+    {
+      retval += it->m_cf.atoms() + it->m_key.atoms();
+    }
+    return retval;
+  }
 }
 
 #endif

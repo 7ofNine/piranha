@@ -44,6 +44,7 @@ namespace pyranha
     inst.def("__len__",&T::length);
     inst.def("save_to",&T::save_to,"Save series to file.");
     inst.def("eval",&T::eval);
+    inst.def("atoms",&T::atoms);
     inst.def("swap",&T::swap);
     // NOTICE: the order seems important here, if we place *=int before *=double we
     // will get just *=double in Python. Go figure...

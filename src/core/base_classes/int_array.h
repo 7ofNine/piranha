@@ -150,6 +150,7 @@ namespace piranha
       {
         return (m_size <= args_tuple.template get<Pos>().size());
       }
+      size_t atoms() const {return 1;}
       template <class ArgsTuple>
         bool checkup(const ArgsTuple &args_tuple) const
       {

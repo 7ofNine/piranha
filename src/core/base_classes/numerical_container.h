@@ -91,6 +91,7 @@ namespace piranha
         void apply_layout(const ArgsTuple &, const Layout &)
       {}
       // Probing.
+      size_t atoms() const {return 1;}
       template <class ArgsTuple>
         bool checkup(const ArgsTuple &) const
       {
