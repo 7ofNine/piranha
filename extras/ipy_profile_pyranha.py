@@ -71,14 +71,12 @@ def main():
 
     ip.ex("import pyranha")
     import pyranha
-    for i in pyranha.__all__:
-      if i == "Core":
-        ip.ex("from pyranha.Core import *")
-      elif i != "Gui":
-        ip.ex("from pyranha import %s" % i)
-        ip.ex("from pyranha.%s import %s" % (i,i.lower()))
-    ip.ex("from pyranha.Math import *")
-    ip.ex("from pyranha.Celmec import *")
+    for i in pyranha.__manipulators__:
+      ip.ex("from pyranha import %s" % i)
+      ip.ex("from pyranha.%s import %s" % (i,i.lower()))
+    for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
+      ip.ex("from pyranha.%s import *" % i)
+    ip.ex("from pyranha import ds")
 
 # some config helper functions you can use 
 def import_all(modules):

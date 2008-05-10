@@ -20,15 +20,19 @@
 #from matplotlib.pylab import *
 
 __all__ = [@MODULE_LIST@]
+__manipulators__ = [@MANIPULATOR_LIST@]
 
-exec "import %s as __last_module" % __all__[-1]
-
-try:
-  ds = getattr(__last_module,__all__[-1].lower());
+print "Pyranha initializing..."
+print "Available manipulators: ", __manipulators__
+print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
+if len(filter(lambda x: x not in __manipulators__,__all__)) > 0:
+  exec "import %s as __last_manipulator" % __manipulators__[-1]
+  ds = getattr(__last_manipulator,__manipulators__[-1].lower());
   print "Default series type is " + str(ds)
-except:
+else:
   print "Default series type could not be established, assigning None."
   ds = None
+print "Pyranha is ready."
 
 # Global variables: theories of motion
 
