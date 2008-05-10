@@ -102,6 +102,19 @@ namespace piranha
         return sin_f(*psym_manager::get_pointer(e_name),*psym_manager::get_pointer(M_name));
       }
   };
+
+  // Provide also external functions.
+  template <class Series>
+    Series r_a(const Series &e_series, const Series &M_series)
+  {
+    return Series::r_a(e_series,M_series);
+  }
+
+  template <class Series>
+    Series sin_f(const Series &e_series, const Series &M_series)
+  {
+    return Series::sin_f(e_series,M_series);
+  }
 }
 
 #endif

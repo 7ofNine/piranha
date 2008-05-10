@@ -33,7 +33,7 @@ def cos(arg):
   """
   try:
     return arg.cos()
-  except TypeError:
+  except AttributeError:
     return __math.cos(arg)
 
 def sin(arg):
@@ -43,7 +43,7 @@ def sin(arg):
   """
   try:
     return arg.sin()
-  except TypeError:
+  except AttributeError:
     return __math.sin(arg)
 
 def besselJ(order,arg):
@@ -53,7 +53,7 @@ def besselJ(order,arg):
   """
   try:
     return arg.besselJ(order)
-  except TypeError:
+  except AttributeError:
     return _Core.besselJ(order,arg)
 
 def dbesselJ(order,arg):
