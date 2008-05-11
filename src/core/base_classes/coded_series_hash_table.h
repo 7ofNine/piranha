@@ -186,7 +186,7 @@ namespace piranha
         {
           // Increase size until insertion succeeds.
           increase_size();
-          __PDEBUG(std::cout << "Resized coded series hash table. " << '\n');
+          __PDEBUG(std::cout << "Resized coded series hash table." << '\n');
         }
       }
     private:
@@ -235,6 +235,7 @@ namespace piranha
             new_ht.m_container.clear();
             new_ht.m_container.resize(new_ht.m_container.size() << power);
             it = it_i;
+          __PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
           }
         }
         new_ht.m_container.swap(m_container);
