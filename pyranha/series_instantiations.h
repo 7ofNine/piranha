@@ -113,6 +113,12 @@ namespace pyranha
     inst.def("dbesselJ",&T::dbesselJ,"Partial derivative of Bessel function of the first kind of integer order.");
   }
 
+  #define __celmec_inst(arg) \
+    inst.def(#arg,from_series(&T::arg),arg##_docstring) \
+      .def(#arg,from_psym(&T::arg),arg##_docstring) \
+      .def(#arg,from_name(&T::arg),arg##_docstring) \
+      .staticmethod(#arg);
+
   template <class T>
     void celmec_instantiation(boost::python::class_<T> &inst)
   {
@@ -121,15 +127,13 @@ namespace pyranha
     typedef T (*from_name)(const std::string &, const std::string &);
     const char *r_a_docstring = "Elliptic expansion of r / a.";
     const char *sin_f_docstring = "Elliptic expansion of sin(f).";
-    inst.def("r_a",from_series(&T::r_a),r_a_docstring)
-      .def("r_a",from_psym(&T::r_a),r_a_docstring)
-      .def("r_a",from_name(&T::r_a),r_a_docstring)
-      .staticmethod("r_a");
-    inst.def("sin_f",from_series(&T::sin_f),sin_f_docstring)
-      .def("sin_f",from_psym(&T::sin_f),sin_f_docstring)
-      .def("sin_f",from_name(&T::sin_f),sin_f_docstring)
-      .staticmethod("sin_f");
+    const char *cos_E_docstring = "Elliptic expansion of cos(E).";
+    __celmec_inst(r_a);
+    __celmec_inst(sin_f);
+    __celmec_inst(cos_E);
   }
+
+  #undef __celmec_inst
 
   template <class T>
     void power_series_instantiation(boost::python::class_<T> &inst)
