@@ -22,8 +22,9 @@
 
 // Small polynomials multiplication test.
 // s*(s+1)
-// where s = (x+1)^20. Do it 10^6 times.
+// where s = (x+1)^20. Do it 10^4 times.
 
+using namespace piranha;
 using namespace piranha::manipulators;
 
 int main()
@@ -32,28 +33,9 @@ int main()
   for (size_t i = 0; i < 10000; ++i)
   {
     dpoly a(a_), b(b_);
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-    a*=b;
-
+    a = std::pow(a,20);
     dpoly c(a);
-    c+=1;
+    c+=(max_fast_int)1;
     a*=c;
   }
   return 0;
