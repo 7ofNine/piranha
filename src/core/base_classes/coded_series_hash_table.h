@@ -31,14 +31,14 @@
 namespace piranha
 {
   // Forward declaration.
-  template <class, class, int>
+  template <class, class>
     class coded_series_hash_table;
 
   template <class Cf, class Ckey, int N>
     class coded_term_bucket
   {
       BOOST_STATIC_ASSERT(N > 0);
-      friend class coded_series_hash_table<Cf,Ckey,N>;
+      friend class coded_series_hash_table<Cf,Ckey>;
     public:
       static const size_t size = (size_t)N;
       struct term
@@ -62,15 +62,15 @@ namespace piranha
       bool  m_flags[N];
   };
 
-  template <class Cf, class Ckey, int N>
+  template <class Cf, class Ckey>
     class coded_series_hash_table
   {
-      typedef coded_term_bucket<Cf,Ckey,N> bucket_type;
+      static const size_t bucket_size = 9;
+      typedef coded_term_bucket<Cf,Ckey,bucket_size> bucket_type;
       typedef std::vector<bucket_type> container_type;
       static const size_t initial_vector_size = 32;
       BOOST_STATIC_ASSERT(initial_vector_size > 0);
       BOOST_STATIC_ASSERT((initial_vector_size & (initial_vector_size - 1)) == 0);
-      static const size_t bucket_size = bucket_type::size;
     public:
       typedef typename bucket_type::term term_type;
       class iterator
