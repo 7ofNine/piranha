@@ -21,11 +21,7 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
-#include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp> // For integer limits.
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -41,7 +37,7 @@ namespace piranha
 {
   /// Toolbox for coded series multiplication.
   /**
-   * Intended to be inherited together with piranha::plain_series_multiplier. It adds common methods for coded
+   * Intended to be inherited together with piranha::base_series_multiplier. It adds common methods for coded
    * series multiplication.
    */
   template <class Derived>
@@ -56,45 +52,6 @@ namespace piranha
         key.decode(n,m_coding_vector,m_h_min,m_fast_res_min_max,derived_const_cast->m_args_tuple);
       }
     protected:
-      // Typedefs for hash coded arithmetics.
-      // This is the representation of a term for the hash coded representation.
-      template <class Cf>
-        struct generic_cterm
-      {
-        mutable Cf        m_cf;
-        max_fast_int      m_ckey;
-        // Templatized this way because we want to build complexes from reals.
-        template <class Cf2>
-          generic_cterm(const Cf2 &cf2, const max_fast_int &code):m_cf(cf2),m_ckey(code) {}
-        struct hasher
-        {
-          size_t operator()(const max_fast_int &code) const
-          {
-            return boost::hash<max_fast_int>()(code);
-          }
-        };
-        struct equal_to
-        {
-          bool operator()(const max_fast_int &code1, const max_fast_int &code2) const
-          {
-            return (code1 == code2);
-          }
-        };
-      };
-      // Template typedef for the hash set for coded multiplication.
-      template <class Cf>
-        struct generic_cmult_set
-      {
-        typedef boost::multi_index_container
-        <
-          generic_cterm<Cf>,
-          boost::multi_index::indexed_by
-          <
-            boost::multi_index::hashed_unique<boost::multi_index::member<generic_cterm<Cf>,max_fast_int,&generic_cterm<Cf>::m_ckey>,
-            typename generic_cterm<Cf>::hasher,typename generic_cterm<Cf>::equal_to>
-          >
-        > type;
-      };
       coded_series_multiplier():
         m_cr_is_viable(false),
         m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),

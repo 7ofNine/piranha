@@ -30,9 +30,10 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
+#include "../base_classes/coded_series_hash_table.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../settings.h" // For hash load factor.
+#include "../settings.h" // For debug.
 
 namespace piranha
 {
@@ -269,14 +270,10 @@ namespace piranha
       }
       void perform_hash_coded_multiplication()
       {
-        typedef typename coded_ancestor::template generic_cterm<cf_type1> cterm;
-        typedef typename coded_ancestor::template generic_cmult_set<cf_type1>::type cmult_set;
-        typedef typename cmult_set::iterator c_iterator;
-        c_iterator it;
-        cmult_set cms_cos, cms_sin;
-        // Set max load factors.
-        cms_cos.max_load_factor(settings::load_factor());
-        cms_sin.max_load_factor(settings::load_factor());
+        typedef coded_series_hash_table<cf_type1,max_fast_int> csht;
+        typedef typename csht::term_type cterm;
+        typedef typename csht::iterator c_iterator;
+        csht cms_cos, cms_sin;
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           for (size_t j = 0; j < ancestor::m_size2; ++j)
@@ -299,6 +296,7 @@ namespace piranha
             switch (m_flavours1[i] == m_flavours2[j])
             {
               case true:
+              {
                 switch (m_flavours1[i])
                 {
                   case true:
@@ -307,7 +305,7 @@ namespace piranha
                     tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
                 }
                 // Insert into cosine container.
-                it = cms_cos.find(tmp_term1.m_ckey);
+                c_iterator it = cms_cos.find(tmp_term1.m_ckey);
                 switch (it == cms_cos.end())
                 {
                   case true:
@@ -326,7 +324,9 @@ namespace piranha
                     it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
                 }
                 break;
+              }
               case false:
+              {
                 switch (m_flavours1[i])
                 {
                   case true:
@@ -336,7 +336,7 @@ namespace piranha
                     ;
                 }
                 // Insert into sine container.
-                it = cms_sin.find(tmp_term1.m_ckey);
+                c_iterator it = cms_sin.find(tmp_term1.m_ckey);
                 switch (it == cms_sin.end())
                 {
                   case true:
@@ -354,6 +354,7 @@ namespace piranha
                   case false:
                     it->m_cf.add(tmp_term2.m_cf,ancestor::m_args_tuple);
                 }
+              }
             }
           }
         }

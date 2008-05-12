@@ -30,9 +30,10 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
+#include "../base_classes/coded_series_hash_table.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../settings.h" // For hash load factor.
+#include "../settings.h" // For debug.
 
 namespace piranha
 {
@@ -208,13 +209,11 @@ namespace piranha
       }
       void perform_hash_coded_multiplication()
       {
-        typedef typename coded_ancestor::template generic_cterm<cf_type1> cterm;
-        typedef typename coded_ancestor::template generic_cmult_set<cf_type1>::type cmult_set;
-        typedef typename cmult_set::iterator c_iterator;
-        c_iterator it;
-        cmult_set cms;
-        // Set max load factors.
-        cms.max_load_factor(settings::load_factor());
+        typedef coded_series_hash_table<cf_type1,max_fast_int> csht;
+        typedef typename csht::term_type cterm;
+        typedef typename csht::iterator c_iterator;
+        csht cms;
+        cterm tmp_cterm;
         for (size_t i = 0; i < ancestor::m_size1; ++i)
         {
           const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
@@ -229,22 +228,24 @@ namespace piranha
             switch (ancestor::m_trunc.accept(new_key))
             {
               case true:
-                it = cms.find(new_key);
+              {
+                c_iterator it = cms.find(new_key);
                 switch (it == cms.end())
                 {
                   case true:
                   {
                     // Create new temporary term from old cf and new key.
-                    // TODO: create this temporary outside and use assignment?
-                    cterm tmp_term(ancestor::m_cfs1[i].get(),new_key);
+                    tmp_cterm.m_cf = ancestor::m_cfs1[i].get();
+                    tmp_cterm.m_ckey = new_key;
                     // Multiply the old term by the second term.
-                    tmp_term.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
-                    cms.insert(tmp_term);
+                    tmp_cterm.m_cf.mult_by(ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
+                    cms.insert(tmp_cterm);
                     break;
                   }
                   case false:
                     it->m_cf.addmul(ancestor::m_cfs1[i].get(),ancestor::m_cfs2[j].get(),ancestor::m_args_tuple);
                 }
+              }
               case false:
                 ;
             }
