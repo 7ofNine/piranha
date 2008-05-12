@@ -24,6 +24,7 @@
 // s*(s+1)
 // where s = (1+x+y+z+t)^30
 
+using namespace piranha;
 using namespace piranha::manipulators;
 typedef dpoly poly;
 
@@ -32,7 +33,7 @@ int main()
   poly a("fateman_test.dpoly"), b(a);
   a = std::pow(a,30);
   poly c(a);
-  c+=1;
+  c+=(max_fast_int)1;
   a*=c;
 
   std::cout << std::endl << a.nth_index<0>().size() << std::endl;
