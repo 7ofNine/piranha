@@ -59,7 +59,8 @@ namespace piranha
 	template <class Derived2>
 	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
 	{
-		return named_series_is_args_compatible(m_arguments, ps2.m_arguments);
+		// Use getter in second place because we may be interacting with other series type.
+		return named_series_is_args_compatible(m_arguments, ps2.arguments());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
