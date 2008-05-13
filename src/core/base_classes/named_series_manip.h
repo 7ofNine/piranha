@@ -163,9 +163,11 @@ namespace piranha
 	};
 
 	template <>
-	struct named_series_get_layout<boost::tuples::null_type> {
-		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
-						const boost::tuples::null_type &) {}
+	class named_series_get_layout<boost::tuples::null_type>
+	{
+		public:
+			static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
+							const boost::tuples::null_type &) {}
 	};
 
 	// Template metaprogramming for applying a layout to a series.
@@ -200,9 +202,11 @@ namespace piranha
 	};
 
 	template <>
-	struct named_series_apply_layout_to_args<boost::tuples::null_type> {
-		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
-						const boost::tuples::null_type &) {}
+	class named_series_apply_layout_to_args<boost::tuples::null_type>
+	{
+		public:
+			static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
+							const boost::tuples::null_type &) {}
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -215,9 +219,9 @@ namespace piranha
 		// Build a tuple of layouts.
 		typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type l;
 		// Get the relative layouts of this wrt ps2 and put the result into l.
-		named_series_get_layout<args_tuple_type>::run(retval.m_arguments, ps2.m_arguments, l);
+		named_series_get_layout<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments, ps2.m_arguments, l);
+		named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
 		// Apply the layout to all terms of this, which will be inserted into retval.
 		derived_cast->apply_layout_to_terms(retval.m_arguments, l, retval);
 		// Finally, swap the contents of retval with this.
