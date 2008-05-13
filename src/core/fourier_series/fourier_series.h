@@ -35,41 +35,43 @@
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
-#define __PIRANHA_FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, \
+
+
+#define FOURIER_SERIES_TP_DECL class Cf, class Trig, template <class> class I, \
   template <class, class, class, template <class> class> class Multiplier, \
   template <class> class Truncator, class Allocator
-#define __PIRANHA_FOURIER_SERIES_TP Cf,Trig,I,Multiplier,Truncator,Allocator
-#define __PIRANHA_FOURIER_SERIES fourier_series<__PIRANHA_FOURIER_SERIES_TP>
-#define __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n', \
-  Allocator,__PIRANHA_FOURIER_SERIES >
-#define __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,__PIRANHA_FOURIER_SERIES >
-#define __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_FOURIER_SERIES, Multiplier, Truncator>
+#define FOURIER_SERIES_TP Cf,Trig,I,Multiplier,Truncator,Allocator
+#define FOURIER_SERIES fourier_series<FOURIER_SERIES_TP>
+#define FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n', \
+  Allocator,FOURIER_SERIES >
+#define FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,FOURIER_SERIES >
+#define FOURIER_SERIES_MULT_ANCESTOR series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
 
 namespace piranha
 {
-	template < __PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
+	template < FOURIER_SERIES_TP_DECL = std::allocator<char> >
 	class fourier_series:
-				public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
-				public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
-				public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
-				boost::ring_operators < __PIRANHA_FOURIER_SERIES,
-				boost::ring_operators < __PIRANHA_FOURIER_SERIES, max_fast_int,
-				boost::ring_operators < __PIRANHA_FOURIER_SERIES, double,
-				boost::dividable < __PIRANHA_FOURIER_SERIES, max_fast_int,
-				boost::dividable < __PIRANHA_FOURIER_SERIES, double
+				public FOURIER_SERIES_BASE_ANCESTOR,
+				public FOURIER_SERIES_NAMED_ANCESTOR,
+				public FOURIER_SERIES_MULT_ANCESTOR,
+				boost::ring_operators < FOURIER_SERIES,
+				boost::ring_operators < FOURIER_SERIES, max_fast_int,
+				boost::ring_operators < FOURIER_SERIES, double,
+				boost::dividable < FOURIER_SERIES, max_fast_int,
+				boost::dividable < FOURIER_SERIES, double
 				> > > > >
 	{
 			typedef poisson_series_term < Cf, Trig, '|', Allocator > term_type_;
 			typedef Allocator allocator_type;
-			typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
-			typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
+			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
+			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
 			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
-			friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
-			friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
-			friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
+			friend class FOURIER_SERIES_NAMED_ANCESTOR;
+			friend class FOURIER_SERIES_BASE_ANCESTOR;
+			friend class FOURIER_SERIES_MULT_ANCESTOR;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -93,23 +95,41 @@ namespace piranha
 	};
 }
 
+// __PIRANHA_COMPLEX_FOURIER_SERIES_BASE_ANCESTOR
+// 
+// namespace std
+// {
+// 	template < FOURIER_SERIES_TP_DECL >
+// 	class complex<piranha::FOURIER_SERIES>:
+// 				public FOURIER_SERIES_BASE_ANCESTOR,
+// 				public FOURIER_SERIES_NAMED_ANCESTOR,
+// 				public FOURIER_SERIES_MULT_ANCESTOR,
+// 				boost::ring_operators < FOURIER_SERIES,
+// 				boost::ring_operators < FOURIER_SERIES, max_fast_int,
+// 				boost::ring_operators < FOURIER_SERIES, double,
+// 				boost::dividable < FOURIER_SERIES, max_fast_int,
+// 				boost::dividable < FOURIER_SERIES, double
+// 				> > > > >
+// 		
+// }
+
 // Overload standard math functions for Fourier series.
 namespace std
 {
 	// Overload power function for Fourier series.
-	template < __PIRANHA_FOURIER_SERIES_TP_DECL >
-	piranha::__PIRANHA_FOURIER_SERIES pow(const piranha::__PIRANHA_FOURIER_SERIES &x, const double &y)
+	template < FOURIER_SERIES_TP_DECL >
+	piranha::FOURIER_SERIES pow(const piranha::FOURIER_SERIES &x, const double &y)
 	{
-		piranha::__PIRANHA_FOURIER_SERIES retval(x.pow(y));
+		piranha::FOURIER_SERIES retval(x.pow(y));
 		return retval;
 	}
 }
 
-#undef __PIRANHA_FOURIER_SERIES_TP_DECL
-#undef __PIRANHA_FOURIER_SERIES_TP
-#undef __PIRANHA_FOURIER_SERIES
-#undef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR
-#undef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR
-#undef __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR
+#undef FOURIER_SERIES_TP_DECL
+#undef FOURIER_SERIES_TP
+#undef FOURIER_SERIES
+#undef FOURIER_SERIES_BASE_ANCESTOR
+#undef FOURIER_SERIES_NAMED_ANCESTOR
+#undef FOURIER_SERIES_MULT_ANCESTOR
 
 #endif
