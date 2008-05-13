@@ -127,23 +127,27 @@ namespace piranha
 			void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
 			// Functors.
 			template <class ArgsTuple>
-			struct modifier_invert_term_sign {
-				modifier_invert_term_sign(const ArgsTuple &args_tuple): a(args_tuple) {}
-				// This (and below) are passed as const to allow modification from const interators
-				// that are often used in standard implementations of data structures.
-				void operator()(const term_type &term) const {
-					term.m_cf.invert_sign(a);
-				}
-				const ArgsTuple &a;
+			class modifier_invert_term_sign
+			{
+				public:
+					modifier_invert_term_sign(const ArgsTuple &args_tuple): a(args_tuple) {}
+					// This (and below) are passed as const to allow modification from const interators
+					// that are often used in standard implementations of data structures.
+					void operator()(const term_type &term) const {
+						term.m_cf.invert_sign(a);
+					}
+				private:
+					const ArgsTuple &a;
 			};
-			struct modifier_update_cf {
-				modifier_update_cf(cf_type &new_cf): m_new_cf(new_cf) {}
-				~modifier_update_cf() {}
-				void operator()(const term_type &term) {
-					term.m_cf.swap(m_new_cf);
-				}
-private:
-				cf_type &m_new_cf;
+			class modifier_update_cf
+			{
+				public:
+					modifier_update_cf(cf_type &new_cf): m_new_cf(new_cf) {}
+					void operator()(const term_type &term) {
+						term.m_cf.swap(m_new_cf);
+					}
+				private:
+					cf_type &m_new_cf;
 			};
 	};
 }
