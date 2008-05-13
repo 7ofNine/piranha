@@ -45,13 +45,13 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	class base_series
 	{
-			/// Alias for term type.
+			// Alias for term type.
 			typedef Term term_type;
-			/// Alias for coefficient type.
+			// Alias for coefficient type.
 			typedef typename term_type::cf_type cf_type;
-			/// Alias for key type.
+			// Alias for key type.
 			typedef typename term_type::key_type key_type;
-			/// Alias for allocator type.
+			// Alias for allocator type.
 			typedef Allocator allocator_type;
 			// Evaluation type. Used internally.
 			typedef typename eval_type<Derived>::type eval_type;
