@@ -35,7 +35,7 @@ namespace piranha
 		// If we are merging with self, create a copy and call recursively.
 		if ((void *)derived_cast == (void *)(&s2)) {
 			__PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
-			return merge_with_series<Sign, Derived2>(Derived(*derived_const_cast));
+			return merge_with_series<Sign>(Derived(*derived_const_cast));
 		} else {
 			merge_args(s2);
 			derived_cast->template merge_terms<Sign>(s2, m_arguments);
