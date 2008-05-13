@@ -63,6 +63,7 @@ namespace piranha
 			void save_to(const std::string &) const;
 			void swap(Derived &);
 			double norm() const;
+			const args_tuple_type &arguments() const;
 			eval_type eval(const double &) const;
 			Derived &operator+=(const max_fast_int &);
 			Derived &operator+=(const double &);

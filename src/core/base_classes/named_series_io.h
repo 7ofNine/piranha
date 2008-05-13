@@ -218,6 +218,13 @@ namespace piranha
 		append_arg<N>(p);
 		derived_cast->construct_from_psym_p(p, N, m_arguments);
 	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline const typename named_series<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type &
+	named_series<__PIRANHA_NAMED_SERIES_TP>::arguments() const
+	{
+		return m_arguments;
+	}
 }
 
 #endif
