@@ -28,6 +28,7 @@
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../proxies.h"
@@ -98,7 +99,7 @@ namespace piranha
 			 * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of
 			 * Poisson series.
 			 */
-			void get_int_linear_combination(std::vector<int> &v) const throw(unsuitable) {
+			void get_int_linear_combination(std::vector<max_fast_int> &v) {
 				const const_sorted_iterator it_f = nth_index<0>().end();
 				for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 					v[it->m_key.linear_arg_position()] = it->m_cf.get_int();

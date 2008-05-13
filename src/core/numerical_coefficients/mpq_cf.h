@@ -27,6 +27,7 @@
 
 #include "../base_classes/numerical_container.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 
 namespace piranha
 {
@@ -90,8 +91,8 @@ namespace piranha
 			double eval(const double &, const ArgsTuple &) const {
 				return m_value.get_d();
 			}
-			int get_int() const throw(unsuitable) {
-				int retval = m_value.get_num().get_si();
+			max_fast_int get_int() const {
+				max_fast_int retval = m_value.get_num().get_si();
 				if (m_value.get_den() != 1) {
 					throw(unsuitable("Cannot convert rational coefficient to integer."));
 				}

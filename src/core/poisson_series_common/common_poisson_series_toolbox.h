@@ -114,7 +114,7 @@ namespace piranha
 						throw unsuitable("Series is not a linear combination of arguments with integer coefficients.");
 					}
 					// The size of the integer vector shall be the same as the poly arguments set's.
-					std::vector<int> v(derived_const_cast->m_arguments.template get<0>().size());
+					std::vector<max_fast_int> v(derived_const_cast->m_arguments.template get<0>().size());
 					derived_const_cast->template nth_index<0>().begin()->m_cf.get_int_linear_combination(v);
 					// Assign poly args of this as trig args of return value.
 					retval.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();

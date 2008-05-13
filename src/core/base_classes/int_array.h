@@ -232,7 +232,7 @@ namespace piranha
 					m_ptr[i] = ((tmp % v[i+1]) / (v[i]) + mmv[i].first);
 				}
 			}
-			void assign_int_vector(const std::vector<int> &v) {
+			void assign_int_vector(const std::vector<max_fast_int> &v) {
 				const size_t size = v.size();
 				p_assert(boost::integer_traits<size_type>::max() > size);
 				resize(size);

@@ -25,6 +25,7 @@
 #include <complex>
 
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../math.h" // besselJ.
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
@@ -59,8 +60,8 @@ namespace piranha
 			/// Constructor from psym.
 			template <class ArgsTuple>
 			explicit double_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
-			int get_int() const {
-				const int retval((int)nearbyint(ancestor::m_value));
+			max_fast_int get_int() const {
+				const max_fast_int retval((max_fast_int)nearbyint(ancestor::m_value));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
 					throw(unsuitable("Cannot convert double coefficient to integer."));
 				}
