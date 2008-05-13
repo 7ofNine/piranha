@@ -30,18 +30,17 @@
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Double coefficient multivariate polynomial manipulator.
-  typedef polynomial
-  <
-    double_cf,
-    expo_array<16,0>,
-    key_degree_index,
-    polynomial_multiplier,
-    null_truncator
-  > dpoly;
-}
+	namespace manipulators {
+		/// Double coefficient multivariate polynomial manipulator.
+		typedef polynomial
+		<
+		double_cf,
+		expo_array<16, 0>,
+		key_degree_index,
+		polynomial_multiplier,
+		null_truncator
+		> dpoly;
+	}
 }
 
 #endif

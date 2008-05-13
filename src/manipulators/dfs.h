@@ -30,17 +30,16 @@
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Fourier series manipulator.
-  typedef fourier_series
-  <
-    double_cf,trig_array<16,0>,
-    norm_index,
-    poisson_series_multiplier,
-    norm_truncator
-  > dfs;
-}
+	namespace manipulators {
+		/// Fourier series manipulator.
+		typedef fourier_series
+		<
+		double_cf, trig_array<16, 0>,
+		norm_index,
+		poisson_series_multiplier,
+		norm_truncator
+		> dfs;
+	}
 }
 
 #endif

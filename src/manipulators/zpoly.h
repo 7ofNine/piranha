@@ -30,18 +30,17 @@
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Manipulator of multivariate polynomials with arbitrary-size integer coefficients.
-  typedef polynomial
-  <
-    mpz_cf,
-    expo_array<16,0>,
-    key_degree_index,
-    polynomial_multiplier,
-    null_truncator
-  > zpoly;
-}
+	namespace manipulators {
+		/// Manipulator of multivariate polynomials with arbitrary-size integer coefficients.
+		typedef polynomial
+		<
+		mpz_cf,
+		expo_array<16, 0>,
+		key_degree_index,
+		polynomial_multiplier,
+		null_truncator
+		> zpoly;
+	}
 }
 
 #endif

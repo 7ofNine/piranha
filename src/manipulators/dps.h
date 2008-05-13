@@ -33,22 +33,21 @@
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Double coefficient Poisson series.
-  typedef poisson_series
-  <
-    double_cf,
-    expo_array<16,0>,
-    trig_array<16,1>,
-    key_degree_index,
-    cf_min_degree_index,
-    polynomial_multiplier,
-    poisson_series_multiplier,
-    expo_truncator,
-    expo_truncator
-  > dps;
-}
+	namespace manipulators {
+		/// Double coefficient Poisson series.
+		typedef poisson_series
+		<
+		double_cf,
+		expo_array<16, 0>,
+		trig_array<16, 1>,
+		key_degree_index,
+		cf_min_degree_index,
+		polynomial_multiplier,
+		poisson_series_multiplier,
+		expo_truncator,
+		expo_truncator
+		> dps;
+	}
 }
 
 #endif

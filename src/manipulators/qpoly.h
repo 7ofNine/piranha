@@ -30,18 +30,17 @@
 
 namespace piranha
 {
-namespace manipulators
-{
-  /// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
-  typedef polynomial
-  <
-    mpq_cf,
-    expo_array<16,0>,
-    key_degree_index,
-    polynomial_multiplier,
-    null_truncator
-  > qpoly;
-}
+	namespace manipulators {
+		/// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
+		typedef polynomial
+		<
+		mpq_cf,
+		expo_array<16, 0>,
+		key_degree_index,
+		polynomial_multiplier,
+		null_truncator
+		> qpoly;
+	}
 }
 
 #endif
