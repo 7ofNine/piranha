@@ -45,8 +45,7 @@ namespace piranha
 				retval /= (max_fast_int)2;
 				retval += (max_fast_int)1;
 				// Let's find out the upper limit of the r_a development, according to the truncation limits
-				// set in the truncator. Minimum-exponent-wise, r_a is equivalent to a power series from 0 to infty
-				// of e^(1+i).
+				// set in the truncator.
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
 				Derived tmp;
 				for (size_t i = 1; i <= n; ++i) {
