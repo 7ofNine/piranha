@@ -63,7 +63,7 @@ namespace piranha
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(g_value().get_d());
+				return std::abs(m_value.get_d());
 			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>

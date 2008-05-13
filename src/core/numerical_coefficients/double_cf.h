@@ -41,11 +41,9 @@ namespace piranha
 	 */
 	class double_cf: public numerical_container<double, double_cf>
 	{
-			/// Alias for the parent class.
+			// Alias for the parent class.
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
-			// Start implementation of basic pseries coefficient interface.
-			//------------
 			// Ctors and dtor.
 			/// Empty constructor.
 			explicit double_cf(): ancestor::numerical_container() {}
@@ -61,22 +59,16 @@ namespace piranha
 			/// Constructor from psym.
 			template <class ArgsTuple>
 			explicit double_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
-			int get_int() const throw(unsuitable) {
+			int get_int() const {
 				const int retval((int)nearbyint(ancestor::m_value));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
 					throw(unsuitable("Cannot convert double coefficient to integer."));
 				}
 				return retval;
 			}
-			// End implementation of basic pseries coefficient interface.
-			//------------
-			// Start implementation of trigonometric pseries coefficient interface.
-			// Used in:
-			// - trigonometric toolbox,
-			//------------
 			/// Bessel function of the first kind.
 			/**
-			 * Uses C standard library call.
+			 * Uses Boost's math toolkit.
 			 */
 			template <class ArgsTuple>
 			double_cf besselJ(int n, const ArgsTuple &) const {
@@ -85,9 +77,6 @@ namespace piranha
 				//return retval;
 				return 0.;
 			}
-			// End implementation of trigonometric pseries coefficient interface.
-			//------------
-			// Start implementation of power-enabled pseries coefficient interface.
 			template <class ArgsTuple>
 			double_cf pow(const double &y, const ArgsTuple &) const {
 				double_cf retval;

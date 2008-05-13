@@ -122,11 +122,11 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &add(const Derived &val2, const ArgsTuple &) {
-				return add_generic(val2.g_value());
+				return add_generic(val2.value());
 			}
 			template <class ArgsTuple>
 			Derived &subtract(const Derived &val2, const ArgsTuple &) {
-				return subtract_generic(val2.g_value());
+				return subtract_generic(val2.value());
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const max_fast_int &n, const ArgsTuple &) {
@@ -138,7 +138,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const Derived &x, const ArgsTuple &) {
-				return mult_by_generic(x.g_value());
+				return mult_by_generic(x.value());
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const max_fast_int &n, const ArgsTuple &) {
@@ -158,7 +158,7 @@ namespace piranha
 				return Derived((max_fast_int)0, args_tuple);
 			}
 			/// Get value.
-			const T &g_value() const {
+			const T &value() const {
 				return m_value;
 			}
 			/// Set value.
@@ -182,7 +182,7 @@ namespace piranha
 		protected:
 			template <class U>
 			Derived &assign_self(const U &x) {
-				m_value = x.g_value();
+				m_value = x.value();
 				return *derived_cast;
 			}
 			template <class U>
@@ -211,76 +211,76 @@ namespace piranha
 	};
 
 	/// Toolbox for complex-specific methods of piranha::numerical_container.
-	template <class realDerived>
-	class numerical_container_complex_toolbox
-	{
-			typedef std::complex<realDerived> Derived;
-			typedef realDerived value_type;
-		public:
-			// TODO: drop usageof g_value() - s_value() to improve performance?
-			// Start implementation of complex basic pseries coefficient interface.
-			//------------
-			// Ctors.
-			numerical_container_complex_toolbox() {}
-			explicit numerical_container_complex_toolbox(int r, int i) {
-				derived_cast->s_value().real() = r;
-				derived_cast->s_value().imag() = i;
-			}
-			explicit numerical_container_complex_toolbox(const std::complex<int> &c) {
-				derived_cast->s_value() = c;
-			}
-			explicit numerical_container_complex_toolbox(const double &r, const double &i) {
-				derived_cast->s_value().real() = r;
-				derived_cast->s_value().imag() = i;
-			}
-			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
-				derived_cast->s_value() = c;
-			}
-			explicit numerical_container_complex_toolbox(const value_type &r) {
-				derived_cast->s_value().real() = r.g_value();
-			}
-			explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i) {
-				derived_cast->s_value().real() = r.g_value();
-				derived_cast->s_value().imag() = i.g_value();
-			}
-			// Getters and setters.
-			value_type real() const {
-				value_type retval;
-				retval.s_value() = derived_cast->g_value().real();
-				return retval;
-			}
-			value_type imag() const {
-				value_type retval;
-				retval.s_value() = derived_cast->g_value().imag();
-				return retval;
-			}
-			void set_real(const value_type &r) {
-				derived_cast->s_value() = r.g_value();
-			}
-			void set_imag(const value_type &i) {
-				derived_cast->s_value().real() = 0;
-				derived_cast->s_value().imag() = i.g_value();
-			}
-			// Maths.
-			template <class DerivedPs>
-			Derived &mult_by_self(const value_type &x, const DerivedPs &) {
-				derived_cast->mult_by_generic(x.g_value());
-			}
-			Derived &mult_by(const std::complex<int> &c) {
-				derived_cast->mult_by_generic(c);
-			}
-			Derived &mult_by(const std::complex<double> &c) {
-				derived_cast->mult_by_generic(c);
-			}
-			Derived &divide_by(const std::complex<int> &c) {
-				derived_cast->divide_by_generic(c);
-			}
-			Derived &divide_by(const std::complex<double> &c) {
-				derived_cast->divide_by_generic(c);
-			}
-			// End implementation of complex basic pseries coefficient interface.
-			//------------
-	};
+// 	template <class realDerived>
+// 	class numerical_container_complex_toolbox
+// 	{
+// 			typedef std::complex<realDerived> Derived;
+// 			typedef realDerived value_type;
+// 		public:
+// 			// TODO: drop usageof g_value() - s_value() to improve performance?
+// 			// Start implementation of complex basic pseries coefficient interface.
+// 			//------------
+// 			// Ctors.
+// 			numerical_container_complex_toolbox() {}
+// 			explicit numerical_container_complex_toolbox(int r, int i) {
+// 				derived_cast->s_value().real() = r;
+// 				derived_cast->s_value().imag() = i;
+// 			}
+// 			explicit numerical_container_complex_toolbox(const std::complex<int> &c) {
+// 				derived_cast->s_value() = c;
+// 			}
+// 			explicit numerical_container_complex_toolbox(const double &r, const double &i) {
+// 				derived_cast->s_value().real() = r;
+// 				derived_cast->s_value().imag() = i;
+// 			}
+// 			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
+// 				derived_cast->s_value() = c;
+// 			}
+// 			explicit numerical_container_complex_toolbox(const value_type &r) {
+// 				derived_cast->s_value().real() = r.g_value();
+// 			}
+// 			explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i) {
+// 				derived_cast->s_value().real() = r.g_value();
+// 				derived_cast->s_value().imag() = i.g_value();
+// 			}
+// 			// Getters and setters.
+// 			value_type real() const {
+// 				value_type retval;
+// 				retval.s_value() = derived_cast->g_value().real();
+// 				return retval;
+// 			}
+// 			value_type imag() const {
+// 				value_type retval;
+// 				retval.s_value() = derived_cast->g_value().imag();
+// 				return retval;
+// 			}
+// 			void set_real(const value_type &r) {
+// 				derived_cast->s_value() = r.g_value();
+// 			}
+// 			void set_imag(const value_type &i) {
+// 				derived_cast->s_value().real() = 0;
+// 				derived_cast->s_value().imag() = i.g_value();
+// 			}
+// 			// Maths.
+// 			template <class DerivedPs>
+// 			Derived &mult_by_self(const value_type &x, const DerivedPs &) {
+// 				derived_cast->mult_by_generic(x.g_value());
+// 			}
+// 			Derived &mult_by(const std::complex<int> &c) {
+// 				derived_cast->mult_by_generic(c);
+// 			}
+// 			Derived &mult_by(const std::complex<double> &c) {
+// 				derived_cast->mult_by_generic(c);
+// 			}
+// 			Derived &divide_by(const std::complex<int> &c) {
+// 				derived_cast->divide_by_generic(c);
+// 			}
+// 			Derived &divide_by(const std::complex<double> &c) {
+// 				derived_cast->divide_by_generic(c);
+// 			}
+// 			// End implementation of complex basic pseries coefficient interface.
+// 			//------------
+// 	};
 }
 
 namespace std
@@ -291,7 +291,7 @@ namespace std
 	{
 		string tmp;
 		getline(is, tmp);
-		nc.s_value() = piranha::utils::lexical_converter<T>(tmp);
+		nc = piranha::numerical_container<T, Derived>(piranha::utils::lexical_converter<T>(tmp));
 		return is;
 	}
 
