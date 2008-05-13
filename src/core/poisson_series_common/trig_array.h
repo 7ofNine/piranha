@@ -32,85 +32,85 @@
 
 namespace piranha
 {
-  /// Trigonometric array, dynamically sized version.
-  /**
-   * It wraps a piranha::int_array with signed integer sized Bits, and adds the
-   * capabilities needed for trigonometric manipulation.
-   */
-  template <__PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
-    class trig_array:
-    public int_array<Bits,Pos,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> >,
-    public trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
-  {
-      friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
-      typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
-      typedef int_array<Bits,Pos,Allocator,trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
-    public:
-      typedef typename ancestor::value_type value_type;
-      typedef typename ancestor::size_type size_type;
-      // Start INTERFACE definition.
-      //-------------------------------------------------------
-      // Ctors.
-      /// Default ctor.
-      trig_array():ancestor::int_array() {}
-      /// Ctor from string.
-      template <class ArgsTuple>
-        explicit trig_array(const std::string &s, const ArgsTuple &):ancestor::int_array(),trig_commons::trig_array_commons(s) {}
-      template <class ArgsTuple>
-        explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::int_array(p,n,a) {}
-      // Probing.
-      /// Data footprint.
-      /**
-       * Returns the memory occupied by the data members.
-       */
-      size_t data_footprint() const {return (ancestor::size()*sizeof(value_type));}
-      // Math.
-      /// Multiplication.
-      /**
-       * Used in poisson_series_term multiplication.
-       * TODO: update docs below.
-       * Multiplication of two trigonometric functions using Werner's formulas, i.e.
-       * \f[
-       * C\cos\alpha\cdot\cos\beta=
-       * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
-       * \f]
-       * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
-       * and in the second one always goes \f$ \alpha + \beta \f$ one.
-       * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
-       * that return values are empty).
-       * @param[in] t2 factor.
-       * @param[out] ret1 first return value.
-       * @param[out] ret2 second return value.
-       */
-      void multiply(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
-      // NOTE: we are not using here a general version of vector addition/subtraction
-      // because this way we can do two operations (+ and -) every cycle. This is a performance
-      // critical part, so the optimization should be worth the hassle.
-      {
-        const size_type max_w=ancestor::size(), min_w=t2.size();
-        // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
-        // already adjusted my merge_args in multiplication routines.
-        p_assert(max_w >= min_w);
-        // Adjust the width of retvals, if needed.
-        ret1.resize(max_w);
-        ret2.resize(max_w);
-        p_assert(ret1.size() == max_w);
-        p_assert(ret2.size() == max_w);
-        size_type i;
-        for (i=0; i < min_w; ++i)
-        {
-          ret1[i]=(*this)[i]-t2[i];
-          ret2[i]=(*this)[i]+t2[i];
-        }
-        for (; i < max_w; ++i)
-        {
-          ret1[i]=(*this)[i];
-          ret2[i]=(*this)[i];
-        }
-      }
-      // End INTERFACE definition.
-      //-------------------------------------------------------
-  };
+	/// Trigonometric array, dynamically sized version.
+	/**
+	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
+	 * capabilities needed for trigonometric manipulation.
+	 */
+	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
+	class trig_array:
+				public int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >,
+				public trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
+	{
+			friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
+			typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
+			typedef int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
+		public:
+			typedef typename ancestor::value_type value_type;
+			typedef typename ancestor::size_type size_type;
+			// Start INTERFACE definition.
+			//-------------------------------------------------------
+			// Ctors.
+			/// Default ctor.
+			trig_array(): ancestor::int_array() {}
+			/// Ctor from string.
+			template <class ArgsTuple>
+			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array(), trig_commons::trig_array_commons(s) {}
+			template <class ArgsTuple>
+			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			// Probing.
+			/// Data footprint.
+			/**
+			 * Returns the memory occupied by the data members.
+			 */
+			size_t data_footprint() const {
+				return (ancestor::size()*sizeof(value_type));
+			}
+			// Math.
+			/// Multiplication.
+			/**
+			 * Used in poisson_series_term multiplication.
+			 * TODO: update docs below.
+			 * Multiplication of two trigonometric functions using Werner's formulas, i.e.
+			 * \f[
+			 * C\cos\alpha\cdot\cos\beta=
+			 * \frac{C}{2} \cos \left( \alpha - \beta \right) + \frac{C}{2} \cos \left( \alpha + \beta \right)
+			 * \f]
+			 * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
+			 * and in the second one always goes \f$ \alpha + \beta \f$ one.
+			 * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
+			 * that return values are empty).
+			 * @param[in] t2 factor.
+			 * @param[out] ret1 first return value.
+			 * @param[out] ret2 second return value.
+			 */
+			void multiply(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
+			// NOTE: we are not using here a general version of vector addition/subtraction
+			// because this way we can do two operations (+ and -) every cycle. This is a performance
+			// critical part, so the optimization should be worth the hassle.
+			{
+				const size_type max_w = ancestor::size(), min_w = t2.size();
+				// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
+				// already adjusted my merge_args in multiplication routines.
+				p_assert(max_w >= min_w);
+				// Adjust the width of retvals, if needed.
+				ret1.resize(max_w);
+				ret2.resize(max_w);
+				p_assert(ret1.size() == max_w);
+				p_assert(ret2.size() == max_w);
+				size_type i;
+				for (i = 0; i < min_w; ++i) {
+					ret1[i] = (*this)[i] - t2[i];
+					ret2[i] = (*this)[i] + t2[i];
+				}
+				for (; i < max_w; ++i) {
+					ret1[i] = (*this)[i];
+					ret2[i] = (*this)[i];
+				}
+			}
+			// End INTERFACE definition.
+			//-------------------------------------------------------
+	};
 }
 
 #undef __PIRANHA_TRIG_ARRAY_TP_DECL

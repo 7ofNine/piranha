@@ -23,42 +23,40 @@
 
 namespace piranha
 {
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &args_tuple)
-  {
-    typedef typename Derived::term_type term_type;
-    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-    if (derived_const_cast->template nth_index<0>().empty())
-    {
-      return;
-    }
-    Derived retval;
-    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
-    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
-    {
-      term_type term(*it);
-      term.pad_right(args_tuple);
-      it_hint = retval.insert(term,args_tuple,it_hint);
-    }
-    derived_cast->swap_terms(retval);
-  }
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &args_tuple)
+	{
+		typedef typename Derived::term_type term_type;
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		if (derived_const_cast->template nth_index<0>().empty()) {
+			return;
+		}
+		Derived retval;
+		const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			term_type term(*it);
+			term.pad_right(args_tuple);
+			it_hint = retval.insert(term, args_tuple, it_hint);
+		}
+		derived_cast->swap_terms(retval);
+	}
 
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
-  {
-    derived_cast->swap_terms(s2);
-  }
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
+	{
+		derived_cast->swap_terms(s2);
+	}
 
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple, class Layout>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const ArgsTuple &args_tuple, const Layout &l)
-  {
-    Derived retval;
-    derived_cast->apply_layout_to_terms(args_tuple,l,retval);
-    derived_cast->swap_terms(retval);
-  }
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple, class Layout>
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const ArgsTuple &args_tuple, const Layout &l)
+	{
+		Derived retval;
+		derived_cast->apply_layout_to_terms(args_tuple, l, retval);
+		derived_cast->swap_terms(retval);
+	}
 }
 
 #endif

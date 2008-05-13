@@ -23,61 +23,68 @@
 
 /*! \file proxies.h
     \brief Proxies.
-    
+
     Classes implementing the proxy pattern.
 */
 
 namespace piranha
 {
-  template <class T>
-    struct copy_proxy
-  {
-      copy_proxy():m_element() {}
-      const T &get() const {return m_element;}
-      void assignment(const T &x) {m_element = x;}
-    protected:
-      T m_element;
-  };
+	template <class T>
+	struct copy_proxy {
+		copy_proxy(): m_element() {}
+		const T &get() const {
+			return m_element;
+		}
+		void assignment(const T &x) {
+			m_element = x;
+		}
+protected:
+		T m_element;
+	};
 
-  template <class T>
-    struct reference_proxy
-  {
-      reference_proxy():m_element(0) {}
-      const T &get() const
-      {
-        p_assert(m_element != 0);
-        return *m_element;
-      }
-      void assignment(const T &x) {m_element = &x;}
-    protected:
-      T const *m_element;
-  };
+	template <class T>
+	struct reference_proxy {
+		reference_proxy(): m_element(0) {}
+		const T &get() const {
+			p_assert(m_element != 0);
+			return *m_element;
+		}
+		void assignment(const T &x) {
+			m_element = &x;
+		}
+protected:
+		T const *m_element;
+	};
 
-  /// Proxy for coefficients during series multiplication.
-  /**
-   * Defaults to copying. Use template specialization to change the behaviour.
-   */
-  template <class Cf>
-    class cf_mult_proxy:public copy_proxy<Cf>
-  {
-      typedef copy_proxy<Cf> ancestor;
-    public:
-      cf_mult_proxy():ancestor() {}
-      void operator=(const Cf &cf) {ancestor::assignment(cf);}
-  };
+	/// Proxy for coefficients during series multiplication.
+	/**
+	 * Defaults to copying. Use template specialization to change the behaviour.
+	 */
+	template <class Cf>
+	class cf_mult_proxy: public copy_proxy<Cf>
+	{
+			typedef copy_proxy<Cf> ancestor;
+		public:
+			cf_mult_proxy(): ancestor() {}
+			void operator=(const Cf &cf) {
+				ancestor::assignment(cf);
+			}
+	};
 
-  /// Proxy for keys during series multiplication.
-  /**
-   * Defaults to referencing. Use template specialization to change the behaviour.
-   */
-  template <class Key>
-    class key_mult_proxy:public reference_proxy<Key>
-  {
-      typedef reference_proxy<Key> ancestor;
-    public:
-      key_mult_proxy():ancestor() {}
-      void operator=(const Key &key) {ancestor::assignment(key);}
-  };
+	/// Proxy for keys during series multiplication.
+	/**
+	 * Defaults to referencing. Use template specialization to change the behaviour.
+	 */
+	template <class Key>
+	class key_mult_proxy: public reference_proxy<Key>
+	{
+			typedef reference_proxy<Key> ancestor;
+		public:
+			key_mult_proxy(): ancestor() {}
+			void operator=(const Key &key) {
+				ancestor::assignment(key);
+			}
+	};
 }
 
 #endif

@@ -46,77 +46,80 @@
 
 namespace piranha
 {
-  template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
-    class polynomial_cf:
-    public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
-  {
-      typedef monomial<Cf,Expo,'!',Allocator> term_type_;
-      typedef typename term_type_::cf_type cf_type;
-      typedef typename term_type_::key_type key_type;
-      typedef Allocator allocator_type;
-      typedef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
-      typedef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-      typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
-      typedef typename container_type::template nth_index<0>::type sorted_index;
-      typedef typename container_type::template nth_index<1>::type pinpoint_index;
-      friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR;
-      // Specify we will use the real_pow from the polynomial toolbox.
-      using __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR::real_pow;
-    public:
-      // Needed typedefs.
-      typedef term_type_ term_type;
-      typedef typename sorted_index::const_iterator const_sorted_iterator;
-      typedef typename sorted_index::iterator sorted_iterator;
-      typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-      typedef typename pinpoint_index::iterator pinpoint_iterator;
-      typedef Multiplier<polynomial_cf,polynomial_cf,boost::tuples::null_type,Truncator> multiplier_type;
-      __PIRANHA_CF_SERIES_CTORS(polynomial_cf);
-      template <class ArgsTuple>
-        explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a)
-      {
-        nth_index<1>().max_load_factor(settings::load_factor());
-        base_ancestor::construct_from_psym_p(p,n,a);
-      }
-      // Needed getters and setters.
-      template <int N>
-        typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
-      template <int N>
-        const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
-      // TODO: place some of these methods into common polynomial toolbox?
-      /// Return a vector of integers representing the polynomial.
-      /**
-       * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
-       * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of 
-       * Poisson series.
-       */
-      void get_int_linear_combination(std::vector<int> &v) const throw (unsuitable)
-      {
-        const const_sorted_iterator it_f = nth_index<0>().end();
-        for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it)
-        {
-          v[it->m_key.linear_arg_position()] = it->m_cf.get_int();
-        }
-      }
-    private:
-      container_type  m_container;
-  };
+	template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
+	class polynomial_cf:
+				public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
+	{
+			typedef monomial < Cf, Expo, '!', Allocator > term_type_;
+			typedef typename term_type_::cf_type cf_type;
+			typedef typename term_type_::key_type key_type;
+			typedef Allocator allocator_type;
+			typedef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
+			typedef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
+			friend class __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR;
+			friend class __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR;
+			// Specify we will use the real_pow from the polynomial toolbox.
+			using __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR::real_pow;
+		public:
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef Multiplier<polynomial_cf, polynomial_cf, boost::tuples::null_type, Truncator> multiplier_type;
+			__PIRANHA_CF_SERIES_CTORS(polynomial_cf);
+			template <class ArgsTuple>
+			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
+				nth_index<1>().max_load_factor(settings::load_factor());
+				base_ancestor::construct_from_psym_p(p, n, a);
+			}
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+			// TODO: place some of these methods into common polynomial toolbox?
+			/// Return a vector of integers representing the polynomial.
+			/**
+			 * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
+			 * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of
+			 * Poisson series.
+			 */
+			void get_int_linear_combination(std::vector<int> &v) const throw(unsuitable) {
+				const const_sorted_iterator it_f = nth_index<0>().end();
+				for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+					v[it->m_key.linear_arg_position()] = it->m_cf.get_int();
+				}
+			}
+		private:
+			container_type  m_container;
+	};
 
-  // Specialisation of cf mult proxy to use reference.
-  template < __PIRANHA_POLYNOMIAL_CF_TP_DECL >
-    class cf_mult_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >:
-    public reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >
-  {
-      typedef reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> > ancestor;
-    public:
-      cf_mult_proxy():ancestor() {}
-      void operator=(const polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> &cf) {ancestor::assignment(cf);}
-  };
+	// Specialisation of cf mult proxy to use reference.
+	template < __PIRANHA_POLYNOMIAL_CF_TP_DECL >
+	class cf_mult_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >:
+				public reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >
+	{
+			typedef reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> > ancestor;
+		public:
+			cf_mult_proxy(): ancestor() {}
+			void operator=(const polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> &cf) {
+				ancestor::assignment(cf);
+			}
+	};
 }
 
 #undef __PIRANHA_POLYNOMIAL_CF_TP_DECL

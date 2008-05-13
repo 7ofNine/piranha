@@ -33,58 +33,56 @@
 
 namespace piranha
 {
-  /// Low level memory allocation function.
-  /**
-   * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
-   */
-  inline void *piranha_malloc(const size_t &size) throw (std::bad_alloc)
-  {
-    void *retval = malloc(size);
-    switch (unlikely(retval == NULL))
-    {
-      case true:
-        throw std::bad_alloc();
-        break;
-      case false:
-        ;
-    }
-    return retval;
-  }
+	/// Low level memory allocation function.
+	/**
+	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
+	 */
+	inline void *piranha_malloc(const size_t &size) throw(std::bad_alloc)
+	{
+		void *retval = malloc(size);
+		switch (unlikely(retval == NULL)) {
+		case true:
+			throw std::bad_alloc();
+			break;
+		case false:
+			;
+		}
+		return retval;
+	}
 
-  /// Low level memory allocation function supporting alignment specification.
-  /**
-   * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
-   */
-  template <int Alignment>
-    inline void *piranha_malloc(const size_t &size) throw (std::bad_alloc)
-  {
-    BOOST_STATIC_ASSERT(Alignment > 0);
-    // Test that Alignment is a multiple of the size of pointers.
-    BOOST_STATIC_ASSERT(Alignment % sizeof(void *) == 0);
-    // Test that Alignment is at least as big as the size of pointers.
-    BOOST_STATIC_ASSERT(Alignment >= sizeof(void *));
-    // Test that Alignment is a power of 2.
-    BOOST_STATIC_ASSERT(lg<Alignment>::value > 0);
-    void *ptr;
-    switch (unlikely(__ALIGNED_MALLOC(&ptr,Alignment,size) == 0))
-    {
-      case true:
-        throw std::bad_alloc();
-        break;
-      case false:
-        ;
-    }
-    return ptr;
-  }
+	/// Low level memory allocation function supporting alignment specification.
+	/**
+	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
+	 */
+	template <int Alignment>
+	inline void *piranha_malloc(const size_t &size) throw(std::bad_alloc)
+	{
+		BOOST_STATIC_ASSERT(Alignment > 0);
+		// Test that Alignment is a multiple of the size of pointers.
+		BOOST_STATIC_ASSERT(Alignment % sizeof(void *) == 0);
+		// Test that Alignment is at least as big as the size of pointers.
+		BOOST_STATIC_ASSERT(Alignment >= sizeof(void *));
+		// Test that Alignment is a power of 2.
+		BOOST_STATIC_ASSERT(lg<Alignment>::value > 0);
+		void *ptr;
+		switch (unlikely(__ALIGNED_MALLOC(&ptr, Alignment, size) == 0)) {
+		case true:
+			throw std::bad_alloc();
+			break;
+		case false:
+			;
+		}
+		return ptr;
+	}
 
-  /// Low level memory deallocation function.
-  /**
-   * Thin wrapper around free().
-   */
-  inline void piranha_free(void *ptr)
-  {
-    free(ptr);
-  }
+	/// Low level memory deallocation function.
+	/**
+	 * Thin wrapper around free().
+	 */
+	inline void piranha_free(void *ptr)
+	{
+		free(ptr);
+	}
 }
 
 #endif

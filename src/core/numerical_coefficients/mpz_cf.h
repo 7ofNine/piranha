@@ -34,98 +34,85 @@
 
 namespace piranha
 {
-  /// Mpz numerical coefficient.
-  /**
-   * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::base_series.
-   *
-   * A set of operators is provided to enable interoperability with basic numerical data types.
-   */
-  class mpz_cf:public numerical_container<mpz_class,mpz_cf>
-  {
-      // Alias for the parent class.
-      typedef numerical_container<mpz_class,mpz_cf> ancestor;
-    public:
-      // Ctors and dtor.
-      /// Empty constructor.
-      explicit mpz_cf():ancestor::numerical_container() {}
-      /// Constructor from string.
-      template <class ArgsTuple>
-        explicit mpz_cf(const std::string &s, const ArgsTuple &a):ancestor::numerical_container(s,a)
-      {}
-      /// Constructor from integer.
-      template <class ArgsTuple>
-        explicit mpz_cf(const max_fast_int &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
-      /// Constructor from double.
-      template <class ArgsTuple>
-        explicit mpz_cf(const double &val, const ArgsTuple &a):ancestor::numerical_container(val,a) {}
-      /// Constructor from psym.
-      template <class ArgsTuple>
-        explicit mpz_cf(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::numerical_container(p,n,a) {}
-      // Override norm and evaluation.
-      template <class ArgsTuple>
-        double norm(const ArgsTuple &) const
-      {
-        return std::abs(g_value().get_d());
-      }
-      // Override division to catch divide by zero.
-      template <class ArgsTuple>
-        mpz_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) throw(division_by_zero)
-      {
-        if (n == 0)
-        {
-          throw division_by_zero();
-        }
-        return ancestor::divide_by(n,a);
-      }
-      template <class ArgsTuple>
-        mpz_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero)
-      {
-        if (x == 0)
-        {
-          throw division_by_zero();
-        }
-        return ancestor::divide_by(x,a);
-      }
-      // Override this, hence avoiding to calculate norm.
-      template <class ArgsTuple>
-        bool is_ignorable(const ArgsTuple &) const
-      {
-        return (m_value == 0);
-      }
-      template <class ArgsTuple>
-        double eval(const double &, const ArgsTuple &) const
-      {
-        return m_value.get_d();
-      }
-      // Multiply and add.
-      template <class ArgsTuple>
-        void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &)
-      {
-        mpz_addmul(m_value.get_mpz_t(),x1.m_value.get_mpz_t(),x2.m_value.get_mpz_t());
-      }
-      template <class ArgsTuple>
-        mpz_cf pow(const double &y, const ArgsTuple &) const
-      {
-        mpz_cf retval;
-        // If value = 1, then any power is ok, just return 1.
-        if (m_value == 1)
-        {
-          retval.m_value = 1;
-          return retval;
-        }
-        const max_fast_int pow_n((max_fast_int)nearbyint(y));
-        if (std::abs(pow_n - y) > settings::numerical_zero())
-        {
-          throw (unsuitable("Cannot raise integer coefficient different from unity to real power."));
-        }
-        if (pow_n < 0)
-        {
-          throw (unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
-        }
-        mpz_pow_ui(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),(size_t)pow_n);
-        return retval;
-      }
-  };
+	/// Mpz numerical coefficient.
+	/**
+	 * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::base_series.
+	 *
+	 * A set of operators is provided to enable interoperability with basic numerical data types.
+	 */
+	class mpz_cf: public numerical_container<mpz_class, mpz_cf>
+	{
+			// Alias for the parent class.
+			typedef numerical_container<mpz_class, mpz_cf> ancestor;
+		public:
+			// Ctors and dtor.
+			/// Empty constructor.
+			explicit mpz_cf(): ancestor::numerical_container() {}
+			/// Constructor from string.
+			template <class ArgsTuple>
+			explicit mpz_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
+			/// Constructor from integer.
+			template <class ArgsTuple>
+			explicit mpz_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
+			/// Constructor from double.
+			template <class ArgsTuple>
+			explicit mpz_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
+			/// Constructor from psym.
+			template <class ArgsTuple>
+			explicit mpz_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+			// Override norm and evaluation.
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const {
+				return std::abs(g_value().get_d());
+			}
+			// Override division to catch divide by zero.
+			template <class ArgsTuple>
+			mpz_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) throw(division_by_zero) {
+				if (n == 0) {
+					throw division_by_zero();
+				}
+				return ancestor::divide_by(n, a);
+			}
+			template <class ArgsTuple>
+			mpz_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero) {
+				if (x == 0) {
+					throw division_by_zero();
+				}
+				return ancestor::divide_by(x, a);
+			}
+			// Override this, hence avoiding to calculate norm.
+			template <class ArgsTuple>
+			bool is_ignorable(const ArgsTuple &) const {
+				return (m_value == 0);
+			}
+			template <class ArgsTuple>
+			double eval(const double &, const ArgsTuple &) const {
+				return m_value.get_d();
+			}
+			// Multiply and add.
+			template <class ArgsTuple>
+			void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &) {
+				mpz_addmul(m_value.get_mpz_t(), x1.m_value.get_mpz_t(), x2.m_value.get_mpz_t());
+			}
+			template <class ArgsTuple>
+			mpz_cf pow(const double &y, const ArgsTuple &) const {
+				mpz_cf retval;
+				// If value = 1, then any power is ok, just return 1.
+				if (m_value == 1) {
+					retval.m_value = 1;
+					return retval;
+				}
+				const max_fast_int pow_n((max_fast_int)nearbyint(y));
+				if (std::abs(pow_n - y) > settings::numerical_zero()) {
+					throw(unsuitable("Cannot raise integer coefficient different from unity to real power."));
+				}
+				if (pow_n < 0) {
+					throw(unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
+				}
+				mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)pow_n);
+				return retval;
+			}
+	};
 }
 
 

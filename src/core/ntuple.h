@@ -26,25 +26,22 @@
 
 namespace piranha
 {
-  /// Wrapper for tuple of homogeneous types.
-  template <class T, int N>
-    struct ntuple
-  {
-    BOOST_STATIC_ASSERT(N > 0);
-    typedef boost::tuples::cons<T,typename ntuple<T,N-1>::type> type;
-  };
-  
-  template <class T>
-    struct ntuple<T,1>
-  {
-    typedef boost::tuples::cons<T,boost::tuples::null_type> type;
-  };
+	/// Wrapper for tuple of homogeneous types.
+	template <class T, int N>
+	struct ntuple {
+		BOOST_STATIC_ASSERT(N > 0);
+		typedef boost::tuples::cons < T, typename ntuple < T, N - 1 >::type > type;
+	};
 
-  template <class T>
-    struct ntuple<T,0>
-  {
-    typedef boost::tuples::null_type type;
-  };
+	template <class T>
+	struct ntuple<T, 1> {
+		typedef boost::tuples::cons<T, boost::tuples::null_type> type;
+	};
+
+	template <class T>
+	struct ntuple<T, 0> {
+		typedef boost::tuples::null_type type;
+	};
 }
 
 #endif

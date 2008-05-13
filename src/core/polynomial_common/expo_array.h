@@ -34,66 +34,66 @@
 
 namespace piranha
 {
-  /// Exponents array, dynamically sized version.
-  /**
-   * It wraps a piranha::int_array with signed integer sized Bits, and adds the
-   * capabilities needed for exponent manipulation.
-   */
-  template <__PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
-    class expo_array:
-    public int_array<Bits,Pos,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> >,
-    public expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >
-  {
-      friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
-      typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
-      typedef int_array<Bits,Pos,Allocator,expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
-    public:
-      typedef typename ancestor::value_type value_type;
-      typedef typename ancestor::size_type size_type;
-      // Start INTERFACE definition.
-      //-------------------------------------------------------
-      // Ctors.
-      /// Default ctor.
-      expo_array():ancestor::int_array() {}
-      /// Ctor from string.
-      template <class ArgsTuple>
-        explicit expo_array(const std::string &s, const ArgsTuple &):ancestor::int_array(),
-        expo_commons::expo_array_commons(s) {}
-      /// Ctor from psym.
-      template <class ArgsTuple>
-        explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a):ancestor::int_array(p,n,a) {}
-      // Probing.
-      /// Data footprint.
-      /**
-       * Returns the memory occupied by the data members.
-       */
-      size_t data_footprint() const {return (ancestor::size()*sizeof(value_type));}
-      // Math.
-      /// Multiplication.
-      template <class ResultType>
-        void multiply(const expo_array &e2, ResultType &ret) const
+	/// Exponents array, dynamically sized version.
+	/**
+	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
+	 * capabilities needed for exponent manipulation.
+	 */
+	template < __PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
+	class expo_array:
+				public int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >,
+				public expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >
+	{
+			friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
+			typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
+			typedef int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
+		public:
+			typedef typename ancestor::value_type value_type;
+			typedef typename ancestor::size_type size_type;
+			// Start INTERFACE definition.
+			//-------------------------------------------------------
+			// Ctors.
+			/// Default ctor.
+			expo_array(): ancestor::int_array() {}
+			/// Ctor from string.
+			template <class ArgsTuple>
+			explicit expo_array(const std::string &s, const ArgsTuple &): ancestor::int_array(),
+					expo_commons::expo_array_commons(s) {}
+			/// Ctor from psym.
+			template <class ArgsTuple>
+			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			// Probing.
+			/// Data footprint.
+			/**
+			 * Returns the memory occupied by the data members.
+			 */
+			size_t data_footprint() const {
+				return (ancestor::size()*sizeof(value_type));
+			}
+			// Math.
+			/// Multiplication.
+			template <class ResultType>
+			void multiply(const expo_array &e2, ResultType &ret) const
 
-      {
-        const size_type max_w=ancestor::size(), min_w=e2.size();
-        // Resize, if needed.
-        ret.resize(max_w);
-        // Assert widths, *this should always come from a polynomial, and its width should hence be
-        // already adjusted my merge_args in multiplication routines.
-        p_assert(max_w >= min_w);
-        p_assert(ret.size() == max_w);
-        size_type i;
-        for (i=0;i<min_w;++i)
-        {
-          ret[i]=(*this)[i]+e2[i];
-        }
-        for (;i<max_w;++i)
-        {
-          ret[i]=(*this)[i];
-        }
-      }
-      // End INTERFACE definition.
-      //-------------------------------------------------------
-  };
+			{
+				const size_type max_w = ancestor::size(), min_w = e2.size();
+				// Resize, if needed.
+				ret.resize(max_w);
+				// Assert widths, *this should always come from a polynomial, and its width should hence be
+				// already adjusted my merge_args in multiplication routines.
+				p_assert(max_w >= min_w);
+				p_assert(ret.size() == max_w);
+				size_type i;
+				for (i = 0;i < min_w;++i) {
+					ret[i] = (*this)[i] + e2[i];
+				}
+				for (;i < max_w;++i) {
+					ret[i] = (*this)[i];
+				}
+			}
+			// End INTERFACE definition.
+			//-------------------------------------------------------
+	};
 }
 
 #undef __PIRANHA_EXPO_ARRAY_TP_DECL

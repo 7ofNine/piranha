@@ -25,44 +25,42 @@
 
 namespace piranha
 {
-  /// Integer selector.
-  /**
-   * It detects wehther the platform is 64bit or 32bit, and sets maximum and minimum
-   * "fast" integer types accordingly, using the boost integer libraries. If the platform is
-   * other than 32bit or 64bit it won't define any type.
-   */
-  template <int SizeOfPointer>
-    struct int_selector {};
+	/// Integer selector.
+	/**
+	 * It detects wehther the platform is 64bit or 32bit, and sets maximum and minimum
+	 * "fast" integer types accordingly, using the boost integer libraries. If the platform is
+	 * other than 32bit or 64bit it won't define any type.
+	 */
+	template <int SizeOfPointer>
+	struct int_selector {};
 
-  // Specialization for 32bit archs.
-  template <>
-    struct int_selector<4>
-  {
-    typedef boost::int32_t  max_fast_int;
-    typedef boost::uint32_t max_fast_uint;
-  };
+	// Specialization for 32bit archs.
+	template <>
+	struct int_selector<4> {
+		typedef boost::int32_t  max_fast_int;
+		typedef boost::uint32_t max_fast_uint;
+	};
 
-  // Specialization for 64bit archs.
-  template <>
-    struct int_selector<8>
-  {
-    typedef boost::int64_t  max_fast_int;
-    typedef boost::uint64_t max_fast_uint;
-  };
+	// Specialization for 64bit archs.
+	template <>
+	struct int_selector<8> {
+		typedef boost::int64_t  max_fast_int;
+		typedef boost::uint64_t max_fast_uint;
+	};
 
-  // These are commonly used typedefs.
-  /// Alias for 8bit integer.
-  typedef boost::int8_t int8;
-  /// Alias for 8bit unsigned integer.
-  typedef boost::uint8_t uint8;
-  /// Alias for 16bit integer.
-  typedef boost::int16_t int16;
-  /// Alias for unsigned 16bit integer.
-  typedef boost::uint16_t uint16;
-  /// Maximum fast integer, detected through piranha::int_selector.
-  typedef int_selector<sizeof(void *)>::max_fast_int max_fast_int;
-  /// Maximum fast unsigned integer, detected through piranha::int_selector.
-  typedef int_selector<sizeof(void *)>::max_fast_uint max_fast_uint;
+	// These are commonly used typedefs.
+	/// Alias for 8bit integer.
+	typedef boost::int8_t int8;
+	/// Alias for 8bit unsigned integer.
+	typedef boost::uint8_t uint8;
+	/// Alias for 16bit integer.
+	typedef boost::int16_t int16;
+	/// Alias for unsigned 16bit integer.
+	typedef boost::uint16_t uint16;
+	/// Maximum fast integer, detected through piranha::int_selector.
+	typedef int_selector < sizeof(void *) >::max_fast_int max_fast_int;
+	/// Maximum fast unsigned integer, detected through piranha::int_selector.
+	typedef int_selector < sizeof(void *) >::max_fast_uint max_fast_uint;
 }
 
 #endif

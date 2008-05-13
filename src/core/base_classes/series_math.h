@@ -23,7 +23,7 @@
 
 /*! \file series_math.h
     \brief Mathematics for series.
-    
+
     The functions defined here require series and arguments tuples as parameters.
 */
 
@@ -36,109 +36,98 @@
 
 namespace piranha
 {
-  /// Natural power for series.
-  /**
-   * Calculated through exponentiation by squaring.
-   */
-  template <class Series, class ArgsTuple>
-    Series natural_power(const Series &x, const size_t &n, const ArgsTuple &args_tuple)
-  {
-    Series retval;
-    switch (n)
-    {
-      case 0:
-      {
-        retval = Series((max_fast_int)1,args_tuple);
-        break;
-      }
-      case 1:
-      {
-        retval = x;
-        break;
-      }
-      case 2:
-      {
-        retval = x;
-        retval.mult_by(x,args_tuple);
-        break;
-      }
-      case 3:
-      {
-        retval = x;
-        retval.mult_by(x,args_tuple);
-        retval.mult_by(x,args_tuple);
-        break;
-      }
-      case 4:
-      {
-        retval = x;
-        retval.mult_by(x,args_tuple);
-        retval.mult_by(x,args_tuple);
-        retval.mult_by(x,args_tuple);
-        break;
-      }
-      default:
-      {
-        retval = Series((max_fast_int)1,args_tuple);
-        // Use scoping here to have tmp destroyed when it is not needed anymore.
-        {
-          Series tmp(x);
-          size_t i = n;
-          while (i)
-          {
-            if (i & 1)
-            {
-              retval.mult_by(tmp,args_tuple);
-              --i;
-            }
-            i/=2;
-            if (i != 0)
-            {
-              tmp.mult_by(tmp,args_tuple);
-            }
-          }
-        }
-      }
-    }
-    return retval;
-  }
+	/// Natural power for series.
+	/**
+	 * Calculated through exponentiation by squaring.
+	 */
+	template <class Series, class ArgsTuple>
+	Series natural_power(const Series &x, const size_t &n, const ArgsTuple &args_tuple)
+	{
+		Series retval;
+		switch (n) {
+		case 0: {
+			retval = Series((max_fast_int)1, args_tuple);
+			break;
+		}
+		case 1: {
+			retval = x;
+			break;
+		}
+		case 2: {
+			retval = x;
+			retval.mult_by(x, args_tuple);
+			break;
+		}
+		case 3: {
+			retval = x;
+			retval.mult_by(x, args_tuple);
+			retval.mult_by(x, args_tuple);
+			break;
+		}
+		case 4: {
+			retval = x;
+			retval.mult_by(x, args_tuple);
+			retval.mult_by(x, args_tuple);
+			retval.mult_by(x, args_tuple);
+			break;
+		}
+		default: {
+			retval = Series((max_fast_int)1, args_tuple);
+			// Use scoping here to have tmp destroyed when it is not needed anymore.
+			{
+				Series tmp(x);
+				size_t i = n;
+				while (i) {
+					if (i & 1) {
+						retval.mult_by(tmp, args_tuple);
+						--i;
+					}
+					i /= 2;
+					if (i != 0) {
+						tmp.mult_by(tmp, args_tuple);
+					}
+				}
+			}
+		}
+		}
+		return retval;
+	}
 
-  template <class Series, class ArgsTuple>
-    Series binomial_expansion(const typename Series::term_type &A, const Series &XoverA,
-    const double &y, const size_t &n, const ArgsTuple &args_tuple)
-  {
-    typedef typename Series::term_type term_type;
-    // Start the binomial expansion.
-    term_type tmp_term;
-    // Calculate A**y. See if we can raise to real power the coefficient and the key.
-    // Exceptions will be thrown in case of problems.
-    tmp_term.m_cf = A.m_cf.pow(y,args_tuple);
-    tmp_term.m_key = A.m_key.pow(y,args_tuple);
-    Series Apowy;
-    Apowy.insert(tmp_term,args_tuple,Apowy.template nth_index<0>().end());
-    // Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
-    // binomial coefficient incrementally at every step. We start with 1.
-    Series retval;
-    Series tmp((max_fast_int)1,args_tuple);
-    retval.add(tmp,args_tuple);
-    mpq_class mpq_y;
-    for (size_t i = 1; i <= n; ++i)
-    {
-      // This hack is to make sure we transform y into a fraction as early as possible,
-      // and to do the calculations in rational form. This way we should
-      // minimize the chance of losing precision due to conversion to/from floating point.
-      mpq_y = y;
-      mpq_y -= i;
-      mpq_y += 1;
-      tmp.mult_by(mpq_y.get_d(),args_tuple);
-      tmp.divide_by((max_fast_int)i,args_tuple);
-      tmp.mult_by(XoverA,args_tuple);
-      retval.add(tmp,args_tuple);
-    }
-    // Finally, multiply the result of the summation by A**y.
-    retval.mult_by(Apowy,args_tuple);
-    return retval;
-  }
+	template <class Series, class ArgsTuple>
+	Series binomial_expansion(const typename Series::term_type &A, const Series &XoverA,
+							  const double &y, const size_t &n, const ArgsTuple &args_tuple)
+	{
+		typedef typename Series::term_type term_type;
+		// Start the binomial expansion.
+		term_type tmp_term;
+		// Calculate A**y. See if we can raise to real power the coefficient and the key.
+		// Exceptions will be thrown in case of problems.
+		tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
+		tmp_term.m_key = A.m_key.pow(y, args_tuple);
+		Series Apowy;
+		Apowy.insert(tmp_term, args_tuple, Apowy.template nth_index<0>().end());
+		// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
+		// binomial coefficient incrementally at every step. We start with 1.
+		Series retval;
+		Series tmp((max_fast_int)1, args_tuple);
+		retval.add(tmp, args_tuple);
+		mpq_class mpq_y;
+		for (size_t i = 1; i <= n; ++i) {
+			// This hack is to make sure we transform y into a fraction as early as possible,
+			// and to do the calculations in rational form. This way we should
+			// minimize the chance of losing precision due to conversion to/from floating point.
+			mpq_y = y;
+			mpq_y -= i;
+			mpq_y += 1;
+			tmp.mult_by(mpq_y.get_d(), args_tuple);
+			tmp.divide_by((max_fast_int)i, args_tuple);
+			tmp.mult_by(XoverA, args_tuple);
+			retval.add(tmp, args_tuple);
+		}
+		// Finally, multiply the result of the summation by A**y.
+		retval.mult_by(Apowy, args_tuple);
+		return retval;
+	}
 }
 
 #endif

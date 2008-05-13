@@ -25,73 +25,67 @@
 
 namespace piranha
 {
-  /// Construct from numerical quantity.
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class Number, class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
-  {
-    // Make sure we are being called from an empty series.
-    p_assert(derived_const_cast->template nth_index<0>().empty());
-    term_type term;
-    term.m_cf = cf_type(x,args_tuple);
-    insert(term,args_tuple,derived_const_cast->template nth_index<0>().end());
-  }
+	/// Construct from numerical quantity.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Number, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
+	{
+		// Make sure we are being called from an empty series.
+		p_assert(derived_const_cast->template nth_index<0>().empty());
+		term_type term;
+		term.m_cf = cf_type(x, args_tuple);
+		insert(term, args_tuple, derived_const_cast->template nth_index<0>().end());
+	}
 
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
-    const ArgsTuple &args_tuple, int limit) const
-  {
-    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-    stream_manager::setup_print(stream);
-    size_t j=0, lim;
-    if (limit < 0)
-    {
-      lim=derived_const_cast->template nth_index<0>().size();
-    }
-    else
-    {
-      lim=(size_t)limit;
-    }
-    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-    for (const_sorted_iterator it=derived_const_cast->template nth_index<0>().begin();it!=it_f;++it)
-    {
-      if (j == lim)
-      {
-        break;
-      }
-      it->print_plain(stream,args_tuple);
-      if (j < lim-1)
-      {
-        stream << separator;
-      }
-      ++j;
-    }
-  }
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
+			const ArgsTuple &args_tuple, int limit) const
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		stream_manager::setup_print(stream);
+		size_t j = 0, lim;
+		if (limit < 0) {
+			lim = derived_const_cast->template nth_index<0>().size();
+		} else {
+			lim = (size_t)limit;
+		}
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();it != it_f;++it) {
+			if (j == lim) {
+				break;
+			}
+			it->print_plain(stream, args_tuple);
+			if (j < lim - 1) {
+				stream << separator;
+			}
+			++j;
+		}
+	}
 
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_latex(std::ostream &stream,
-    const ArgsTuple &args_tuple, int limit) const
-  {
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_latex(std::ostream &stream,
+			const ArgsTuple &args_tuple, int limit) const
+	{
 // TODO: to be implemented.
-  }
+	}
 
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::copy() const
-  {
-    Derived retval(*derived_const_cast);
-    return retval;
-  }
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::copy() const
+	{
+		Derived retval(*derived_const_cast);
+		return retval;
+	}
 
-  /// Constructor from psym and from position in the arguments set.
-  template <__PIRANHA_BASE_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n, const ArgsTuple &a)
-  {
-    p_assert(derived_cast->template nth_index<0>().empty());
-    insert(term_type(cf_type(p,n,a),key_type(p,n,a)),a,derived_cast->template nth_index<0>().end());
-  }
+	/// Constructor from psym and from position in the arguments set.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n, const ArgsTuple &a)
+	{
+		p_assert(derived_cast->template nth_index<0>().empty());
+		insert(term_type(cf_type(p, n, a), key_type(p, n, a)), a, derived_cast->template nth_index<0>().end());
+	}
 }
 
 #endif

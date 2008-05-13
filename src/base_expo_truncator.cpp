@@ -25,51 +25,47 @@
 
 namespace piranha
 {
-  // Static initialization for expo-based truncation.
-  base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
+// Static initialization for expo-based truncation.
+	base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
 
-  void base_expo_truncator::clear_all() {m_expo_limits.clear();}
+	void base_expo_truncator::clear_all()
+	{
+		m_expo_limits.clear();
+	}
 
-  void base_expo_truncator::print(std::ostream &stream)
-  {
-    if (m_expo_limits.empty())
-    {
-      stream << "No exponent limits defined.";
-    }
-    else
-    {
-      const iterator it_f = m_expo_limits.end();
-      for (iterator it = m_expo_limits.begin(); it != it_f;)
-      {
-        stream << it->first->name() << ',' << it->second;
-        ++it;
-        if (it != it_f)
-        {
-          stream << '\n';
-        }
-      }
-    }
-  }
+	void base_expo_truncator::print(std::ostream &stream)
+	{
+		if (m_expo_limits.empty()) {
+			stream << "No exponent limits defined.";
+		} else {
+			const iterator it_f = m_expo_limits.end();
+			for (iterator it = m_expo_limits.begin(); it != it_f;) {
+				stream << it->first->name() << ',' << it->second;
+				++it;
+				if (it != it_f) {
+					stream << '\n';
+				}
+			}
+		}
+	}
 
-  std::string base_expo_truncator::print_to_string()
-  {
-    std::ostringstream stream;
-    print(stream);
-    std::string retval(stream.str());
-    return retval;
-  }
+	std::string base_expo_truncator::print_to_string()
+	{
+		std::ostringstream stream;
+		print(stream);
+		std::string retval(stream.str());
+		return retval;
+	}
 
-  base_expo_truncator::iterator base_expo_truncator::find_argument(const psym_p &p)
-  {
-    const iterator it_f = m_expo_limits.end();
-    iterator it(m_expo_limits.begin());
-    for (; it != it_f; ++it)
-    {
-      if (it->first == p)
-      {
-        break;
-      }
-    }
-    return it;
-  }
+	base_expo_truncator::iterator base_expo_truncator::find_argument(const psym_p &p)
+	{
+		const iterator it_f = m_expo_limits.end();
+		iterator it(m_expo_limits.begin());
+		for (; it != it_f; ++it) {
+			if (it->first == p) {
+				break;
+			}
+		}
+		return it;
+	}
 }

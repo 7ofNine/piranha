@@ -25,51 +25,43 @@
 
 namespace piranha
 {
-  class base_exception
-  {
-    public:
-      base_exception(const std::string &s):m_what(s) {}
-      const std::string &what() const
-      {
-        return m_what;
-      }
-    private:
-      std::string m_what;
-  };
+	class base_exception
+	{
+		public:
+			base_exception(const std::string &s): m_what(s) {}
+			const std::string &what() const {
+				return m_what;
+			}
+		private:
+			std::string m_what;
+	};
 
-  struct bad_input:public base_exception
-  {
-    bad_input(const std::string &s):base_exception(s) {}
-  };
+	struct bad_input: public base_exception {
+		bad_input(const std::string &s): base_exception(s) {}
+	};
 
-  struct term_not_insertable:public base_exception
-  {
-    term_not_insertable(const std::string &s):base_exception(s) {}
-  };
+	struct term_not_insertable: public base_exception {
+		term_not_insertable(const std::string &s): base_exception(s) {}
+	};
 
-  struct unsuitable:public base_exception
-  {
-    unsuitable(const std::string &s):base_exception(s) {}
-  };
+	struct unsuitable: public base_exception {
+		unsuitable(const std::string &s): base_exception(s) {}
+	};
 
-  struct not_existing:public base_exception
-  {
-    not_existing(const std::string &s):base_exception(s) {}
-  };
+	struct not_existing: public base_exception {
+		not_existing(const std::string &s): base_exception(s) {}
+	};
 
-  struct not_implemented:public base_exception
-  {
-    not_implemented(const std::string &s):base_exception(s) {}
-  };
+	struct not_implemented: public base_exception {
+		not_implemented(const std::string &s): base_exception(s) {}
+	};
 
-  struct division_by_zero
-  {
-    division_by_zero() {}
-    std::string what() const
-    {
-      return std::string("Division by zero.");
-    }
-  };
+	struct division_by_zero {
+		division_by_zero() {}
+		std::string what() const {
+			return std::string("Division by zero.");
+		}
+	};
 }
 
 #endif

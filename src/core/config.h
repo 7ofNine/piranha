@@ -25,35 +25,35 @@
 #include <cstdlib>
 
 #ifdef __GNUC__
-  #define GCC_VERSION (__GNUC__ * 100000 \
+#define GCC_VERSION (__GNUC__ * 100000 \
     + __GNUC_MINOR__ * 1000 \
     + __GNUC_PATCHLEVEL__ * 10)
-  #if GCC_VERSION < 304000
-    #error "The minimum GCC version required is 3.4"
-  #endif
+#if GCC_VERSION < 304000
+#error "The minimum GCC version required is 3.4"
+#endif
 
-  // Useful macros.
-  #define likely(exp)   __builtin_expect(exp,1)
-  #define unlikely(exp) __builtin_expect(exp,0)
+// Useful macros.
+#define likely(exp)   __builtin_expect(exp,1)
+#define unlikely(exp) __builtin_expect(exp,0)
 #else
-  #warning Only the GNU compiler is officially supported.
+#warning Only the GNU compiler is officially supported.
 
-  // Don't do anything special with (un)likely.
-  #define likely(exp)   exp
-  #define unlikely(exp) exp
+// Don't do anything special with (un)likely.
+#define likely(exp)   exp
+#define unlikely(exp) exp
 #endif
 
 // Platform switches.
 #ifdef _PIRANHA_WIN32
-  #define __ISNAN(x) _isnan(x)
-  #define __JNL(n,x) jn(n,x)
-  #define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
-  #define __PIRANHA_VISIBLE __declspec(dllexport)
+#define __ISNAN(x) _isnan(x)
+#define __JNL(n,x) jn(n,x)
+#define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
+#define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
-  #define __ISNAN(x) isnan(x)
-  #define __JNL(n,x) jnl(n,x)
-  #define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
-  #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
+#define __ISNAN(x) isnan(x)
+#define __JNL(n,x) jnl(n,x)
+#define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
+#define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
 #endif

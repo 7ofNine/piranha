@@ -34,33 +34,31 @@
 
 namespace piranha
 {
-  /// Plain series multiplier.
-  template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
-    class plain_series_multiplier:base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
-    plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> >
-  {
-      typedef base_series_multiplier<Series1,Series2,ArgsTuple,Truncator,
-        plain_series_multiplier<Series1,Series2,ArgsTuple,Truncator> > ancestor;
-    public:
-      // These typedefs are public because truncators may want to use them.
-      /// Alias for term type of first input series and return value series.
-      typedef typename Series1::term_type term_type1;
-      /// Alias for term type of second input series.
-      typedef typename Series2::term_type term_type2;
-      /// Alias for the truncator type.
-      typedef Truncator<plain_series_multiplier> truncator_type;
-      plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-        ancestor::base_series_multiplier(s1,s1,retval,args_tuple)
-      {}
-      /// Perform multiplication.
-      /**
-       * Method called by piranha::series_multiplication. Internally it calls perform_plain_multiplication.
-       */
-      void perform_multiplication()
-      {
-        ancestor::perform_plain_multiplication();
-      }
-  };
+	/// Plain series multiplier.
+	template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
+	class plain_series_multiplier: base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+				plain_series_multiplier<Series1, Series2, ArgsTuple, Truncator> >
+	{
+			typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+			plain_series_multiplier<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+		public:
+			// These typedefs are public because truncators may want to use them.
+			/// Alias for term type of first input series and return value series.
+			typedef typename Series1::term_type term_type1;
+			/// Alias for term type of second input series.
+			typedef typename Series2::term_type term_type2;
+			/// Alias for the truncator type.
+			typedef Truncator<plain_series_multiplier> truncator_type;
+			plain_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+					ancestor::base_series_multiplier(s1, s1, retval, args_tuple) {}
+			/// Perform multiplication.
+			/**
+			 * Method called by piranha::series_multiplication. Internally it calls perform_plain_multiplication.
+			 */
+			void perform_multiplication() {
+				ancestor::perform_plain_multiplication();
+			}
+	};
 }
 
 #endif

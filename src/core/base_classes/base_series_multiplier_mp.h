@@ -25,52 +25,44 @@
 
 namespace piranha
 {
-  struct base_insert_multiplication_result
-  {
-    protected:
-      template <class SingleRes, class BaseMultiplier>
-        static void insert_single_res(const SingleRes &res, BaseMultiplier &m)
-      {
-        const typename BaseMultiplier::mult_set::const_iterator it = m.m_set.find(res);
-        switch (m.m_trunc.accept(res))
-        {
-          case true:
-            switch (it == m.m_set.end())
-            {
-              // Not duplicate, insert it.
-              case true:
-                m.m_set.insert(res);
-                break;
-              // Duplicate, modify existing.
-              case false:
-                it->m_cf.add(res.m_cf,m.m_args_tuple);
-            }
-            break;
-          case false:
-            ;
-        }
-      }
-  };
+	struct base_insert_multiplication_result {
+protected:
+		template <class SingleRes, class BaseMultiplier>
+		static void insert_single_res(const SingleRes &res, BaseMultiplier &m) {
+			const typename BaseMultiplier::mult_set::const_iterator it = m.m_set.find(res);
+			switch (m.m_trunc.accept(res)) {
+			case true:
+				switch (it == m.m_set.end()) {
+					// Not duplicate, insert it.
+				case true:
+					m.m_set.insert(res);
+					break;
+					// Duplicate, modify existing.
+				case false:
+					it->m_cf.add(res.m_cf, m.m_args_tuple);
+				}
+				break;
+			case false:
+				;
+			}
+		}
+	};
 
-  // Traverse the tuple of results of multiplication and insert each result into the multiplication result set.
-  template <class ResultTuple>
-    struct insert_multiplication_result:public base_insert_multiplication_result
-  {
-    template <class BaseMultiplier>
-      static void run(const ResultTuple &mult_res, BaseMultiplier &m)
-    {
-      insert_single_res(mult_res.get_head(),m);
-      insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(),m);
-    }
-  };
+	// Traverse the tuple of results of multiplication and insert each result into the multiplication result set.
+	template <class ResultTuple>
+	struct insert_multiplication_result: public base_insert_multiplication_result {
+		template <class BaseMultiplier>
+		static void run(const ResultTuple &mult_res, BaseMultiplier &m) {
+			insert_single_res(mult_res.get_head(), m);
+			insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), m);
+		}
+	};
 
-  template <>
-    struct insert_multiplication_result<boost::tuples::null_type>
-  {
-    template <class BaseMultiplier>
-      static void run(const boost::tuples::null_type &, BaseMultiplier &)
-    {}
-  };
+	template <>
+	struct insert_multiplication_result<boost::tuples::null_type> {
+		template <class BaseMultiplier>
+		static void run(const boost::tuples::null_type &, BaseMultiplier &) {}
+	};
 }
 
 #endif

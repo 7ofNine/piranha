@@ -23,46 +23,45 @@
 
 namespace piranha
 {
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
-  {
-    typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-    typedef typename Derived::term_type term_type;
-    Derived retval;
-    const_sorted_iterator it_hint = retval.template nth_index<0>().end();
-    const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-    for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it)
-    {
-      term_type term(*it);
-      term.m_cf.invert_sign(args_tuple);
-      // No need to check, we are merging terms from this series.
-      it_hint = retval.template insert<false,true>(term,args_tuple,it_hint);
-    }
-    derived_cast->swap_terms(retval);
-  }
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::term_type term_type;
+		Derived retval;
+		const_sorted_iterator it_hint = retval.template nth_index<0>().end();
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			term_type term(*it);
+			term.m_cf.invert_sign(args_tuple);
+			// No need to check, we are merging terms from this series.
+			it_hint = retval.template insert<false, true>(term, args_tuple, it_hint);
+		}
+		derived_cast->swap_terms(retval);
+	}
 
-  /// Real exponentiation.
-  /**
-   * Simple wrapper around base_series::b_pow.
-   */
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class ArgsTuple>
-    inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &args_tuple) const
-  {
-    return derived_const_cast->b_pow(y,args_tuple);
-  }
+	/// Real exponentiation.
+	/**
+	 * Simple wrapper around base_series::b_pow.
+	 */
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->b_pow(y, args_tuple);
+	}
 
-  /// Partial derivative.
-  /**
-   * Simple wrapper around base_series::b_partial.
-   */
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    template <class PosTuple, class ArgsTuple>
-    inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
-  {
-    return derived_const_cast->b_partial(pos_tuple,args_tuple);
-  }
+	/// Partial derivative.
+	/**
+	 * Simple wrapper around base_series::b_partial.
+	 */
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class PosTuple, class ArgsTuple>
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->b_partial(pos_tuple, args_tuple);
+	}
 }
 
 #endif

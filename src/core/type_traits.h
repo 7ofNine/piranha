@@ -25,24 +25,22 @@
 
 namespace piranha
 {
-  /// Evaluation type trait.
-  /**
-   * Specifies the type of evaluation: default is double.
-   */
-  template <class T>
-    struct eval_type
-  {
-    typedef double type;
-  };
+	/// Evaluation type trait.
+	/**
+	 * Specifies the type of evaluation: default is double.
+	 */
+	template <class T>
+	struct eval_type {
+		typedef double type;
+	};
 
-  /// Complex specialization for evaluation type trait.
-  /**
-   * Evaluation type is the complex counterpart of real evaluation type.
-   */
-  template <class T>
-    struct eval_type<std::complex<T> >
-  {
-    typedef std::complex<typename eval_type<T>::type> type;
-  };
+	/// Complex specialization for evaluation type trait.
+	/**
+	 * Evaluation type is the complex counterpart of real evaluation type.
+	 */
+	template <class T>
+	struct eval_type<std::complex<T> > {
+		typedef std::complex<typename eval_type<T>::type> type;
+	};
 }
 #endif

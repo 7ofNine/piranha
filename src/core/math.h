@@ -28,29 +28,27 @@
 
 namespace piranha
 {
-  /// Meta-programmed functor for the calculation of base-2 logarithm.
-  /**
-   * Result is retrieved through the lg::value const member function.
-   */
-  template <int N>
-    struct lg
-  {
-    BOOST_STATIC_ASSERT(N > 0 and (N % 2) == 0);
-    /// Value of the base-2 logarithm of N.
-    static const size_t value = lg<(N >> 1)>::value+1;
-  };
+	/// Meta-programmed functor for the calculation of base-2 logarithm.
+	/**
+	 * Result is retrieved through the lg::value const member function.
+	 */
+	template <int N>
+	struct lg {
+		BOOST_STATIC_ASSERT(N > 0 and(N % 2) == 0);
+		/// Value of the base-2 logarithm of N.
+		static const size_t value = lg < (N >> 1) >::value + 1;
+	};
 
-  template <>
-    struct lg<1>
-  {
-    static const size_t value = 0;
-  };
+	template <>
+	struct lg<1> {
+		static const size_t value = 0;
+	};
 
-  /// Bessel function of the first kind, integer order.
-  inline double besselJ(const max_fast_int &order, const double &arg)
-  {
-    return boost::math::cyl_bessel_j(order,arg);
-  }
+	/// Bessel function of the first kind, integer order.
+	inline double besselJ(const max_fast_int &order, const double &arg)
+	{
+		return boost::math::cyl_bessel_j(order, arg);
+	}
 }
 
 #endif

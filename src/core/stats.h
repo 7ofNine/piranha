@@ -25,23 +25,21 @@
 
 namespace piranha
 {
-  /// Piranha-specific statistics class.
-  class stats
-  {
-    public:
-      __PIRANHA_VISIBLE static double pack_ratio();
-      static void insert()
-      {
-        ++total_insertions;
-      }
-      static void pack()
-      {
-        insert();
-        ++packed_insertions;
-      }
-    private:
-      __PIRANHA_VISIBLE static double total_insertions;
-      __PIRANHA_VISIBLE static double packed_insertions;
-  };
+	/// Piranha-specific statistics class.
+	class stats
+	{
+		public:
+			__PIRANHA_VISIBLE static double pack_ratio();
+			static void insert() {
+				++total_insertions;
+			}
+			static void pack() {
+				insert();
+				++packed_insertions;
+			}
+		private:
+			__PIRANHA_VISIBLE static double total_insertions;
+			__PIRANHA_VISIBLE static double packed_insertions;
+	};
 }
 #endif

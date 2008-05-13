@@ -23,33 +23,32 @@
 
 namespace piranha
 {
-  /// Compile-time switches.
-  /**
-   * This struct reports some useful compile-time switches in form of boolean flags.
-   */
-  struct compile_switches
-  {
-    /// Has progress display been built?
-    static const bool   display_progress =
+	/// Compile-time switches.
+	/**
+	 * This struct reports some useful compile-time switches in form of boolean flags.
+	 */
+	struct compile_switches {
+		/// Has progress display been built?
+		static const bool   display_progress =
 #ifdef _PIRANHA_DISPLAY_PROGRESS
-    true;
+			true;
 #else
-    false;
+			false;
 #endif
-    /// Has integration with GSL libraries been enabled?
-    static const bool   gsl_integration =
+		/// Has integration with GSL libraries been enabled?
+		static const bool   gsl_integration =
 #ifdef _PIRANHA_GSL
-    true;
+			true;
 #else
-    false;
+			false;
 #endif
-    /// Is Piranha using Intel TBB for parallelism?
-    static const bool   use_tbb =
+		/// Is Piranha using Intel TBB for parallelism?
+		static const bool   use_tbb =
 #ifdef _PIRANHA_TBB
-    true;
+			true;
 #else
-    false;
+			false;
 #endif
-  };
+	};
 }
 #endif

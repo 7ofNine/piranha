@@ -22,7 +22,7 @@
 
 namespace piranha
 {
-  const bool compile_switches::display_progress;
-  const bool compile_switches::gsl_integration;
-  const bool compile_switches::use_tbb;
+	const bool compile_switches::display_progress;
+	const bool compile_switches::gsl_integration;
+	const bool compile_switches::use_tbb;
 }

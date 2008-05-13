@@ -34,45 +34,45 @@
 
 namespace piranha
 {
-  /// Toolbox for using a series as a coefficient in another series.
-  /**
-   * Intended to be inherited by piranha::base_series.
-   */
-  template <__PIRANHA_CF_SERIES_TP_DECL>
-    class cf_series
-  {
-      // Evaluation type. Used internally.
-      typedef typename eval_type<Derived>::type eval_type;
-    public:
-      template <class ArgsTuple>
-        void print_plain(std::ostream &, const ArgsTuple &) const;
-      template <class ArgsTuple>
-        bool is_insertable(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        bool needs_padding(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        bool is_ignorable(const ArgsTuple &) const;
-      template <class ArgsTuple>
-        eval_type eval(const double &, const ArgsTuple &) const;
-      template <class ArgsTuple>
-        void pad_right(const ArgsTuple &);
-      template <class ArgsTuple>
-        void invert_sign(const ArgsTuple &);
-      void swap(Derived &);
-      template <class ArgsTuple, class Layout>
-        void apply_layout(const ArgsTuple &, const Layout &);
-      template <class ArgsTuple>
-        Derived pow(const double &, const ArgsTuple &) const;
-      template <class PosTuple, class ArgsTuple>
-        Derived partial(const PosTuple &, const ArgsTuple &) const;
-    protected:
-      template <class ArgsTuple>
-        void construct_from_string(const std::string &, const ArgsTuple &);
-  };
+	/// Toolbox for using a series as a coefficient in another series.
+	/**
+	 * Intended to be inherited by piranha::base_series.
+	 */
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	class cf_series
+	{
+			// Evaluation type. Used internally.
+			typedef typename eval_type<Derived>::type eval_type;
+		public:
+			template <class ArgsTuple>
+			void print_plain(std::ostream &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			bool is_insertable(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			bool needs_padding(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			bool is_ignorable(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			eval_type eval(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			void pad_right(const ArgsTuple &);
+			template <class ArgsTuple>
+			void invert_sign(const ArgsTuple &);
+			void swap(Derived &);
+			template <class ArgsTuple, class Layout>
+			void apply_layout(const ArgsTuple &, const Layout &);
+			template <class ArgsTuple>
+			Derived pow(const double &, const ArgsTuple &) const;
+			template <class PosTuple, class ArgsTuple>
+			Derived partial(const PosTuple &, const ArgsTuple &) const;
+		protected:
+			template <class ArgsTuple>
+			void construct_from_string(const std::string &, const ArgsTuple &);
+	};
 
-  // Useful macro for ctors in coefficient series.
-  // TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
-  #define __PIRANHA_CF_SERIES_CTORS(series_name) \
+	// Useful macro for ctors in coefficient series.
+	// TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
+#define __PIRANHA_CF_SERIES_CTORS(series_name) \
   series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
   template <class ArgsTuple> \
     explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \

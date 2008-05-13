@@ -47,58 +47,62 @@
 
 namespace piranha
 {
-  template <__PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
-    class fourier_series:
-    public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
-    public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
-    public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
-    boost::ring_operators<__PIRANHA_FOURIER_SERIES,
-    boost::ring_operators<__PIRANHA_FOURIER_SERIES,max_fast_int,
-    boost::ring_operators<__PIRANHA_FOURIER_SERIES,double,
-    boost::dividable<__PIRANHA_FOURIER_SERIES,max_fast_int,
-    boost::dividable<__PIRANHA_FOURIER_SERIES,double
-    > > > > >
-  {
-      typedef poisson_series_term<Cf,Trig,'|',Allocator> term_type_;
-      typedef Allocator allocator_type;
-      typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
-      typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-      typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
-      typedef typename container_type::template nth_index<0>::type sorted_index;
-      typedef typename container_type::template nth_index<1>::type pinpoint_index;
-      typedef typename named_ancestor::args_tuple_type args_tuple_type;
-      friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
-      friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
-      friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
-    public:
-      // Needed typedefs.
-      typedef term_type_ term_type;
-      typedef typename sorted_index::const_iterator const_sorted_iterator;
-      typedef typename sorted_index::iterator sorted_iterator;
-      typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-      typedef typename pinpoint_index::iterator pinpoint_iterator;
-      // Ctors.
-      __PIRANHA_NAMED_SERIES_CTORS(fourier_series);
-      // Needed getters and setters.
-      template <int N>
-        typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
-      template <int N>
-        const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
-    private:
-      container_type  m_container;
-  };
+	template < __PIRANHA_FOURIER_SERIES_TP_DECL = std::allocator<char> >
+	class fourier_series:
+				public __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR,
+				public __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR,
+				public __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR,
+				boost::ring_operators < __PIRANHA_FOURIER_SERIES,
+				boost::ring_operators < __PIRANHA_FOURIER_SERIES, max_fast_int,
+				boost::ring_operators < __PIRANHA_FOURIER_SERIES, double,
+				boost::dividable < __PIRANHA_FOURIER_SERIES, max_fast_int,
+				boost::dividable < __PIRANHA_FOURIER_SERIES, double
+				> > > > >
+	{
+			typedef poisson_series_term < Cf, Trig, '|', Allocator > term_type_;
+			typedef Allocator allocator_type;
+			typedef __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
+			typedef __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			friend class __PIRANHA_FOURIER_SERIES_NAMED_ANCESTOR;
+			friend class __PIRANHA_FOURIER_SERIES_BASE_ANCESTOR;
+			friend class __PIRANHA_FOURIER_SERIES_MULT_ANCESTOR;
+		public:
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			// Ctors.
+			__PIRANHA_NAMED_SERIES_CTORS(fourier_series);
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
+	};
 }
 
 // Overload standard math functions for Fourier series.
 namespace std
 {
-  // Overload power function for Fourier series.
-  template < __PIRANHA_FOURIER_SERIES_TP_DECL >
-    piranha::__PIRANHA_FOURIER_SERIES pow(const piranha::__PIRANHA_FOURIER_SERIES &x, const double &y)
-  {
-    piranha::__PIRANHA_FOURIER_SERIES retval(x.pow(y));
-    return retval;
-  }
+	// Overload power function for Fourier series.
+	template < __PIRANHA_FOURIER_SERIES_TP_DECL >
+	piranha::__PIRANHA_FOURIER_SERIES pow(const piranha::__PIRANHA_FOURIER_SERIES &x, const double &y)
+	{
+		piranha::__PIRANHA_FOURIER_SERIES retval(x.pow(y));
+		return retval;
+	}
 }
 
 #undef __PIRANHA_FOURIER_SERIES_TP_DECL

@@ -93,72 +93,75 @@ namespace piranha
 //       container_type  m_container;
 //   };
 
-  // TODO: generalise here (and elsewhere) the backbone container by introducing thin wrappers around standard containers
-  // so that below the typedefs and aliases are truly generic.
-  template <__PIRANHA_POLYNOMIAL_TP_DECL = std::allocator<char> >
-    class polynomial:
-    public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
-    public __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
-    boost::ring_operators<__PIRANHA_POLYNOMIAL,
-    boost::ring_operators<__PIRANHA_POLYNOMIAL,max_fast_int,
-    boost::ring_operators<__PIRANHA_POLYNOMIAL,double,
-    boost::dividable<__PIRANHA_POLYNOMIAL,max_fast_int,
-    boost::dividable<__PIRANHA_POLYNOMIAL,double
-    > > > > >
-  {
-      typedef monomial<Cf,Expo,'|',Allocator> term_type_;
-      typedef Allocator allocator_type;
-      typedef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
-      typedef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-      typedef boost::multi_index_container<term_type_,typename I<term_type_>::type,allocator_type> container_type;
-      typedef typename container_type::template nth_index<0>::type sorted_index;
-      typedef typename container_type::template nth_index<1>::type pinpoint_index;
-      typedef typename named_ancestor::args_tuple_type args_tuple_type;
-      friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
-      friend class __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
-      // Override base_series::real_pow with the one from the common polynomial toolbox.
-      using __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
-    public:
-      // Needed typedefs.
-      typedef term_type_ term_type;
-      typedef typename sorted_index::const_iterator const_sorted_iterator;
-      typedef typename sorted_index::iterator sorted_iterator;
-      typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-      typedef typename pinpoint_index::iterator pinpoint_iterator;
-      typedef Multiplier<polynomial,polynomial,typename named_ancestor::args_tuple_type,Truncator> multiplier_type;
-      // Ctors.
-      __PIRANHA_NAMED_SERIES_CTORS(polynomial);
-      // Ctor from psym.
-      explicit polynomial(const psym &p)
-      {
-        nth_index<1>().max_load_factor(settings::load_factor());
-        named_ancestor::template construct_from_psym<0>(p);
-      }
-      // Needed getters and setters.
-      template <int N>
-        typename container_type::template nth_index<N>::type &nth_index() {return m_container.template get<N>();}
-      template <int N>
-        const typename container_type::template nth_index<N>::type &nth_index() const {return m_container.template get<N>();}
-    private:
-      container_type  m_container;
-  };
+	// TODO: generalise here (and elsewhere) the backbone container by introducing thin wrappers around standard containers
+	// so that below the typedefs and aliases are truly generic.
+	template < __PIRANHA_POLYNOMIAL_TP_DECL = std::allocator<char> >
+	class polynomial:
+				public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
+				public __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
+				boost::ring_operators < __PIRANHA_POLYNOMIAL,
+				boost::ring_operators < __PIRANHA_POLYNOMIAL, max_fast_int,
+				boost::ring_operators < __PIRANHA_POLYNOMIAL, double,
+				boost::dividable < __PIRANHA_POLYNOMIAL, max_fast_int,
+				boost::dividable < __PIRANHA_POLYNOMIAL, double
+				> > > > >
+	{
+			typedef monomial < Cf, Expo, '|', Allocator > term_type_;
+			typedef Allocator allocator_type;
+			typedef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
+			typedef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
+			friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
+			friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
+			friend class __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
+			// Override base_series::real_pow with the one from the common polynomial toolbox.
+			using __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+		public:
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef Multiplier<polynomial, polynomial, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
+			// Ctors.
+			__PIRANHA_NAMED_SERIES_CTORS(polynomial);
+			// Ctor from psym.
+			explicit polynomial(const psym &p) {
+				nth_index<1>().max_load_factor(settings::load_factor());
+				named_ancestor::template construct_from_psym<0>(p);
+			}
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
+	};
 }
 
 // Overload standard math functions for polynomials.
 namespace std
 {
-  template < __PIRANHA_POLYNOMIAL_TP_DECL >
-    piranha::__PIRANHA_POLYNOMIAL pow(const piranha::__PIRANHA_POLYNOMIAL &x, const double &y)
-  {
-    piranha::__PIRANHA_POLYNOMIAL retval(x.pow(y));
-    return retval;
-  }
+	template < __PIRANHA_POLYNOMIAL_TP_DECL >
+	piranha::__PIRANHA_POLYNOMIAL pow(const piranha::__PIRANHA_POLYNOMIAL &x, const double &y)
+	{
+		piranha::__PIRANHA_POLYNOMIAL retval(x.pow(y));
+		return retval;
+	}
 }
 
 #undef __PIRANHA_POLYNOMIAL_TP_DECL

@@ -22,7 +22,7 @@
 
 namespace piranha
 {
-  // Initialize static member of psym and psym_manager.
-  psym_manager::set_type psym_manager::set;
-  const std::string psym::separator = ";";
+// Initialize static member of psym and psym_manager.
+	psym_manager::set_type psym_manager::set;
+	const std::string psym::separator = ";";
 }

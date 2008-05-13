@@ -23,23 +23,19 @@
 
 namespace piranha
 {
-  template <class ArgsTuple, class StaticArgsTuple>
-    struct arg_manager_assign_tuple
-  {
-    static void run(const ArgsTuple &args_tuple, StaticArgsTuple &t)
-    {
-      t.get_head() = args_tuple.get_head();
-      arg_manager_assign_tuple<typename ArgsTuple::tail_type, typename StaticArgsTuple::tail_type>::
-        run(args_tuple.get_tail(),t.get_tail());
-    }
-  };
+	template <class ArgsTuple, class StaticArgsTuple>
+	struct arg_manager_assign_tuple {
+		static void run(const ArgsTuple &args_tuple, StaticArgsTuple &t) {
+			t.get_head() = args_tuple.get_head();
+			arg_manager_assign_tuple<typename ArgsTuple::tail_type, typename StaticArgsTuple::tail_type>::
+			run(args_tuple.get_tail(), t.get_tail());
+		}
+	};
 
-  template <class StaticArgsTuple>
-    struct arg_manager_assign_tuple<boost::tuples::null_type,StaticArgsTuple>
-  {
-    static void run(const boost::tuples::null_type &, StaticArgsTuple &)
-    {}
-  };
+	template <class StaticArgsTuple>
+	struct arg_manager_assign_tuple<boost::tuples::null_type, StaticArgsTuple> {
+		static void run(const boost::tuples::null_type &, StaticArgsTuple &) {}
+	};
 }
 
 #endif

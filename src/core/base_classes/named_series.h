@@ -41,92 +41,92 @@
 
 namespace piranha
 {
-  /// Named series toolbox.
-  /**
-   * Toolbox for generating series with arguments.
-   * ArgsDescr must be a boost::tuple of structures each one containing a static const string
-   * called "name" naming the arguments of the series.
-   */
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    class named_series
-  {
-      typedef ArgsDescr arguments_description;
-      // Evaluation type. Used internally.
-      typedef typename eval_type<Derived>::type eval_type;
-    public:
-      /// Compile-time constant for the number of arguments sets.
-      static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
-      BOOST_STATIC_ASSERT(n_arguments_sets > 0);
-      typedef typename ntuple<vector_psym_p,n_arguments_sets>::type args_tuple_type;
-      void print(std::ostream &stream = std::cout, int limit = -1) const;
-      std::string print_to_string() const;
-      void save_to(const std::string &) const;
-      void swap(Derived &);
-      double norm() const;
-      eval_type eval(const double &) const;
-      Derived &operator+=(const max_fast_int &);
-      Derived &operator+=(const double &);
-      Derived &operator+=(const Derived &);
-      Derived &operator-=(const max_fast_int &);
-      Derived &operator-=(const double &);
-      Derived &operator-=(const Derived &);
-      Derived &operator*=(const max_fast_int &);
-      Derived &operator*=(const double &);
-      Derived &operator*=(const Derived &);
-      Derived &operator/=(const max_fast_int &);
-      Derived &operator/=(const double &);
-      Derived pow(const double &) const;
-      Derived partial(const std::string &) const;
-      Derived partial(const psym &) const;
-    protected:
-      void construct_from_file(const std::string &);
-      template <int N>
-        void construct_from_psym(const psym &);
-      void append_arg(const std::string &, const psym_p &);
-      template <int N>
-        void append_arg(const psym_p &);
-    private:
-      void print_plain(std::ostream &, int) const;
-      void print_latex(std::ostream &, int) const;
-      void read_from_file(std::ifstream &, const std::string &);
-      void read_sections(std::ifstream &);
-      void read_arg(std::ifstream &, const std::string &);
-      void read_terms(std::ifstream &);
-      template <class Derived2>
-        bool is_args_compatible(const Derived2 &) const;
-      template <class Derived2>
-        void merge_incompatible_args(const Derived2 &);
-      template <bool, class Derived2>
-        Derived &merge_with_series(const Derived2 &);
-      template <class Derived2>
-        void merge_args(const Derived2 &);
-      template <class Derived2>
-        Derived &add_series(const Derived2 &);
-      template <class Derived2>
-        Derived &subtract_series(const Derived2 &);
-      template <class T>
-        Derived &mult_by_generic(const T &);
-      template <class Derived2>
-        Derived &mult_by_series(const Derived2 &);
-      template <class T>
-        Derived &divide_by_generic(const T &);
-      template <class Argument>
-        Derived generic_partial(const Argument &) const;
-    protected:
-      // Data members.
-      args_tuple_type                 m_arguments;
-      static std::vector<std::string> unknown_data;
-  };
+	/// Named series toolbox.
+	/**
+	 * Toolbox for generating series with arguments.
+	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
+	 * called "name" naming the arguments of the series.
+	 */
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	class named_series
+	{
+			typedef ArgsDescr arguments_description;
+			// Evaluation type. Used internally.
+			typedef typename eval_type<Derived>::type eval_type;
+		public:
+			/// Compile-time constant for the number of arguments sets.
+			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
+			BOOST_STATIC_ASSERT(n_arguments_sets > 0);
+			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
+			void print(std::ostream &stream = std::cout, int limit = -1) const;
+			std::string print_to_string() const;
+			void save_to(const std::string &) const;
+			void swap(Derived &);
+			double norm() const;
+			eval_type eval(const double &) const;
+			Derived &operator+=(const max_fast_int &);
+			Derived &operator+=(const double &);
+			Derived &operator+=(const Derived &);
+			Derived &operator-=(const max_fast_int &);
+			Derived &operator-=(const double &);
+			Derived &operator-=(const Derived &);
+			Derived &operator*=(const max_fast_int &);
+			Derived &operator*=(const double &);
+			Derived &operator*=(const Derived &);
+			Derived &operator/=(const max_fast_int &);
+			Derived &operator/=(const double &);
+			Derived pow(const double &) const;
+			Derived partial(const std::string &) const;
+			Derived partial(const psym &) const;
+		protected:
+			void construct_from_file(const std::string &);
+			template <int N>
+			void construct_from_psym(const psym &);
+			void append_arg(const std::string &, const psym_p &);
+			template <int N>
+			void append_arg(const psym_p &);
+		private:
+			void print_plain(std::ostream &, int) const;
+			void print_latex(std::ostream &, int) const;
+			void read_from_file(std::ifstream &, const std::string &);
+			void read_sections(std::ifstream &);
+			void read_arg(std::ifstream &, const std::string &);
+			void read_terms(std::ifstream &);
+			template <class Derived2>
+			bool is_args_compatible(const Derived2 &) const;
+			template <class Derived2>
+			void merge_incompatible_args(const Derived2 &);
+			template <bool, class Derived2>
+			Derived &merge_with_series(const Derived2 &);
+			template <class Derived2>
+			void merge_args(const Derived2 &);
+			template <class Derived2>
+			Derived &add_series(const Derived2 &);
+			template <class Derived2>
+			Derived &subtract_series(const Derived2 &);
+			template <class T>
+			Derived &mult_by_generic(const T &);
+			template <class Derived2>
+			Derived &mult_by_series(const Derived2 &);
+			template <class T>
+			Derived &divide_by_generic(const T &);
+			template <class Argument>
+			Derived generic_partial(const Argument &) const;
+		protected:
+			// Data members.
+			args_tuple_type                 m_arguments;
+			static std::vector<std::string> unknown_data;
+	};
 
-  // Initialization of static members.
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
+	// Initialization of static members.
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
 
-  template <__PIRANHA_NAMED_SERIES_TP_DECL>
-    std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
-  // Useful macro for ctors in named series.
-  #define __PIRANHA_NAMED_SERIES_CTORS(series_name) \
+	// Useful macro for ctors in named series.
+#define __PIRANHA_NAMED_SERIES_CTORS(series_name) \
   series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
   explicit series_name(const std::string &filename) \
   { \

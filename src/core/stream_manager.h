@@ -29,43 +29,41 @@
 
 namespace piranha
 {
-  class stream_manager
-  {
-    public:
-      enum out_format
-      {
-        plain,
-        latex
-      };
-      enum fp_representation
-      {
-        scientific,
-        decimal
-      };
-      // Getters.
-      __PIRANHA_VISIBLE static unsigned int digits();
-      __PIRANHA_VISIBLE static unsigned int min_digits();
-      __PIRANHA_VISIBLE static unsigned int max_digits();
-      // Setters
-      __PIRANHA_VISIBLE static void set_digits(int n);
-      // TODO: rename it setup_stream?
-      __PIRANHA_VISIBLE static void setup_print(std::ostream &);
-      __PIRANHA_VISIBLE static out_format format();
-      __PIRANHA_VISIBLE static void set_format(out_format);
-      __PIRANHA_VISIBLE static fp_representation fp_rep();
-      __PIRANHA_VISIBLE static void set_fp_rep(fp_representation);
-    private:
-      /// Minimum number of digits for output streams.
-      static const unsigned int       m_min_digits;
-      /// Maximum number of digits for output streams.
-      static const unsigned int       m_max_digits;
-      /// Number of digits to display in output stream.
-      static unsigned int             m_digits;
-      /// Format for output.
-      static out_format               m_format;
-      /// Floating point representation.
-      static fp_representation        m_fp_rep;
-  };
+	class stream_manager
+	{
+		public:
+			enum out_format {
+				plain,
+				latex
+			};
+			enum fp_representation {
+				scientific,
+				decimal
+			};
+			// Getters.
+			__PIRANHA_VISIBLE static unsigned int digits();
+			__PIRANHA_VISIBLE static unsigned int min_digits();
+			__PIRANHA_VISIBLE static unsigned int max_digits();
+			// Setters
+			__PIRANHA_VISIBLE static void set_digits(int n);
+			// TODO: rename it setup_stream?
+			__PIRANHA_VISIBLE static void setup_print(std::ostream &);
+			__PIRANHA_VISIBLE static out_format format();
+			__PIRANHA_VISIBLE static void set_format(out_format);
+			__PIRANHA_VISIBLE static fp_representation fp_rep();
+			__PIRANHA_VISIBLE static void set_fp_rep(fp_representation);
+		private:
+			/// Minimum number of digits for output streams.
+			static const unsigned int       m_min_digits;
+			/// Maximum number of digits for output streams.
+			static const unsigned int       m_max_digits;
+			/// Number of digits to display in output stream.
+			static unsigned int             m_digits;
+			/// Format for output.
+			static out_format               m_format;
+			/// Floating point representation.
+			static fp_representation        m_fp_rep;
+	};
 }
 
 #endif

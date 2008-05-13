@@ -23,48 +23,43 @@
 namespace piranha
 {
 /// Initialization of static member of piranha::symbol_limiter.
-  symbol_limiter::limits_map symbol_limiter::lmap_;
+	symbol_limiter::limits_map symbol_limiter::lmap_;
 
 /// Set exponent limit for psymbol, from psymbol iterator.
-  void symbol_limiter::set_limit(psym_p it, uint16 n)
-  {
-    if (it==psymbol_manager::end())
-    {
-      std::cout << "Won't set limit for invalid psymbol pointer." << std::endl;
-      std::abort();
-      return;
-    }
-    map_iterator mit=find_expo_limit(it);
-    if (mit==lmap_.end())
-    {
-      std::cout << "Setting new limit." << std::endl;
-      lmap_.insert(limit_element(it,n));
-    }
-    else
-    {
-      std::cout << "Modifying existing limit." << std::endl;
-      lmap_.modify(mit,limit_modifier(n));
-    }
-  }
+	void symbol_limiter::set_limit(psym_p it, uint16 n)
+	{
+		if (it == psymbol_manager::end()) {
+			std::cout << "Won't set limit for invalid psymbol pointer." << std::endl;
+			std::abort();
+			return;
+		}
+		map_iterator mit = find_expo_limit(it);
+		if (mit == lmap_.end()) {
+			std::cout << "Setting new limit." << std::endl;
+			lmap_.insert(limit_element(it, n));
+		} else {
+			std::cout << "Modifying existing limit." << std::endl;
+			lmap_.modify(mit, limit_modifier(n));
+		}
+	}
 
 /// Set exponent limit for psymbol, from psymbol name.
-  void symbol_limiter::set_limit(const std::string &name, uint16 n)
-  {
-    set_limit(psymbol_manager::get_pointer(name),n);
-  }
+	void symbol_limiter::set_limit(const std::string &name, uint16 n)
+	{
+		set_limit(psymbol_manager::get_pointer(name), n);
+	}
 
 /// Clear limits.
-  void symbol_limiter::clear()
-  {
-    lmap_.clear();
-  }
+	void symbol_limiter::clear()
+	{
+		lmap_.clear();
+	}
 
 /// Print to screen limits list.
-  void symbol_limiter::put()
-  {
-    for (map_iterator it=lmap_.begin();it!=lmap_.end();++it)
-    {
-      std::cout << "Limit for '" << it->symbol->name() << "': " << it->limit << std::endl;
-    }
-  }
+	void symbol_limiter::put()
+	{
+		for (map_iterator it = lmap_.begin();it != lmap_.end();++it) {
+			std::cout << "Limit for '" << it->symbol->name() << "': " << it->limit << std::endl;
+		}
+	}
 }

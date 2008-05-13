@@ -23,19 +23,16 @@
 namespace piranha
 {
 // Stats class static members.
-  double stats::total_insertions = 0.;
-  double stats::packed_insertions = 0.;
+	double stats::total_insertions = 0.;
+	double stats::packed_insertions = 0.;
 
 /// Report ratio of packed terms against inserted terms.
-  double stats::pack_ratio()
-  {
-    if (total_insertions == 0)
-    {
-      return 0.;
-    }
-    else
-    {
-      return packed_insertions/total_insertions;
-    }
-  }
+	double stats::pack_ratio()
+	{
+		if (total_insertions == 0) {
+			return 0.;
+		} else {
+			return packed_insertions / total_insertions;
+		}
+	}
 }

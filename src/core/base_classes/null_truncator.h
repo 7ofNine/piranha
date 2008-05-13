@@ -25,25 +25,27 @@
 
 namespace piranha
 {
-  /// Truncator which does not truncate.
-  template <class Multiplier>
-    struct null_truncator
-  {
-    null_truncator(const Multiplier &) {}
-    template <class Result>
-      bool accept(const Result &) const {return true;}
-    template <class Cf1, class Cf2, class Key>
-      bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const {return false;}
-    // Limit of a power series development of a power series.
-    template <class PowerSeries, class ArgsTuple>
-      static size_t power_series_limit(const PowerSeries &, const ArgsTuple &,
-        const int &start = 0, const int &step_size = 1)
-    {
-      (void)start;
-      (void)step_size;
-      throw unsuitable("Null truncator cannot provide limit for power series.");
-    }
-  };
+	/// Truncator which does not truncate.
+	template <class Multiplier>
+	struct null_truncator {
+		null_truncator(const Multiplier &) {}
+		template <class Result>
+		bool accept(const Result &) const {
+			return true;
+		}
+		template <class Cf1, class Cf2, class Key>
+		bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const {
+			return false;
+		}
+		// Limit of a power series development of a power series.
+		template <class PowerSeries, class ArgsTuple>
+		static size_t power_series_limit(const PowerSeries &, const ArgsTuple &,
+										 const int &start = 0, const int &step_size = 1) {
+			(void)start;
+			(void)step_size;
+			throw unsuitable("Null truncator cannot provide limit for power series.");
+		}
+	};
 }
 
 #endif
