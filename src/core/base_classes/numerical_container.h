@@ -94,7 +94,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(m_value);;
+				return std::abs(m_value);
 			}
 			static const size_t max_size = 0;
 			// If value is less than numericalzero  in absolute value it is considered
