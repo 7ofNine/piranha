@@ -213,7 +213,7 @@ namespace piranha
 				boost::split(sd, s, boost::is_any_of(std::string(1, derived_const_cast->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside expo_size_t range.
 				// TODO: do it everywhere!
-				const size_t w = sd.size();
+				const size_t w(sd.size());
 				derived_cast->resize(w);
 				for (size_t i = 0;i < w;++i) {
 					(*derived_cast)[i] = utils::lexical_converter<value_type>(sd[i]);
