@@ -24,7 +24,6 @@
 #include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
 #include <cmath>
-#include <complex>
 #include <memory> // For default allocator.
 
 #include "../arg_manager.h"
@@ -36,17 +35,15 @@
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
-#define FOURIER_SERIES_TP_DECL REAL_NAMED_SERIES_TP_DECL
-#define FOURIER_SERIES_TP REAL_NAMED_SERIES_TP
-#define FOURIER_SERIES_TERM REAL_NAMED_SERIES_TERM(poisson_series_term)
-#define FOURIER_SERIES REAL_NAMED_SERIES(fourier_series)
-#define FOURIER_SERIES_BASE_ANCESTOR REAL_NAMED_SERIES_BASE_ANCESTOR(poisson_series_term,fourier_series)
-#define FOURIER_SERIES_NAMED_ANCESTOR REAL_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,fourier_series)
-#define FOURIER_SERIES_MULT_ANCESTOR series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
+#define FOURIER_SERIES_TERM REAL_NAMED_SERIES_TERM(piranha::poisson_series_term)
+#define FOURIER_SERIES REAL_NAMED_SERIES(piranha::fourier_series)
+#define FOURIER_SERIES_BASE_ANCESTOR REAL_NAMED_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define FOURIER_SERIES_NAMED_ANCESTOR REAL_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,piranha::fourier_series)
+#define FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
 
 namespace piranha
 {
-	template < FOURIER_SERIES_TP_DECL = std::allocator<char> >
+	template < NAMED_SERIES_TP_DECL = std::allocator<char> >
 	class fourier_series:
 				public FOURIER_SERIES_BASE_ANCESTOR,
 				public FOURIER_SERIES_NAMED_ANCESTOR,
@@ -92,36 +89,61 @@ namespace piranha
 	};
 }
 
-// #define COMPLEX_FOURIER_SERIES piranha::fourier_series<GENERIC_FS_TP(complex<Cf>)>
-// #define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_series<poisson_series_term<Cf,Trig,'|',Allocator>,'\n', \
-//   Allocator,FOURIER_SERIES >
-// #define FOURIER_SERIES_NAMED_ANCESTOR named_series<boost::tuple<trig_args_descr>,FOURIER_SERIES >
-// #define FOURIER_SERIES_MULT_ANCESTOR series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
-// 
-// namespace std
-// {
-// 	template < FOURIER_SERIES_TP_DECL >
-// 	class complex<piranha::FOURIER_SERIES>:
-// 				public FOURIER_SERIES_BASE_ANCESTOR,
-// 				public FOURIER_SERIES_NAMED_ANCESTOR,
-// 				public FOURIER_SERIES_MULT_ANCESTOR,
-// 				boost::ring_operators < FOURIER_SERIES,
-// 				boost::ring_operators < FOURIER_SERIES, max_fast_int,
-// 				boost::ring_operators < FOURIER_SERIES, double,
-// 				boost::dividable < FOURIER_SERIES, max_fast_int,
-// 				boost::dividable < FOURIER_SERIES, double
-// 				> > > > >
-// 		
-// }
+#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_NAMED_SERIES_TERM(piranha::poisson_series_term)
+#define COMPLEX_FOURIER_SERIES COMPLEX_NAMED_SERIES(piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_NAMED_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
+		piranha::fourier_series)
+
+namespace std
+{
+	template < NAMED_SERIES_TP_DECL >
+	class complex<FOURIER_SERIES>:
+				public COMPLEX_FOURIER_SERIES_BASE_ANCESTOR,
+				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR
+	{
+			typedef COMPLEX_FOURIER_SERIES_TERM term_type_;
+			typedef Allocator allocator_type;
+			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
+			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			friend class COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR;
+			friend class COMPLEX_FOURIER_SERIES_BASE_ANCESTOR;
+			friend class COMPLEX_FOURIER_SERIES_MULT_ANCESTOR;
+		public:
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			// Ctors.
+			NAMED_SERIES_CTORS(complex);
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
+	};
+}
 
 // Overload standard math functions for Fourier series.
 namespace std
 {
 	// Overload power function for Fourier series.
-	template < FOURIER_SERIES_TP_DECL >
-	piranha::FOURIER_SERIES pow(const piranha::FOURIER_SERIES &x, const double &y)
+	template < NAMED_SERIES_TP_DECL >
+	FOURIER_SERIES pow(const FOURIER_SERIES &x, const double &y)
 	{
-		piranha::FOURIER_SERIES retval(x.pow(y));
+		FOURIER_SERIES retval(x.pow(y));
 		return retval;
 	}
 }

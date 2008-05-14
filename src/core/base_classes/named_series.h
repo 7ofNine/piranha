@@ -23,15 +23,18 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <complex>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include "base_series.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../ntuple.h"
 #include "../psym.h"
+#include "../settings.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -127,48 +130,47 @@ namespace piranha
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
 // Useful macros for named series.
-#define GENERIC_NAMED_SERIES_TP_DECL(Cf) class Cf, class Key, template <class> class I, \
+#define NAMED_SERIES_TP_DECL class Cf, class Key, template <class> class I, \
 				template <class, class, class, template <class> class> class Multiplier, \
 				template <class> class Truncator, class Allocator
-#define GENERIC_NAMED_SERIES_TP(Cf) Cf,Key,I,Multiplier,Truncator,Allocator
-#define GENERIC_NAMED_SERIES_TERM(Cf,term_name) term_name<Cf,Key,'|',Allocator>
-#define GENERIC_NAMED_SERIES(Cf,series_name) series_name< GENERIC_NAMED_SERIES_TP(Cf) >
-#define GENERIC_NAMED_SERIES_BASE_ANCESTOR(Cf,term_name,series_name) base_series<GENERIC_NAMED_SERIES_TERM(Cf,term_name),'\n', \
-	Allocator,GENERIC_NAMED_SERIES(Cf,series_name) >
-#define GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name) named_series<args,GENERIC_NAMED_SERIES(Cf,series_name) >
+#define NAMED_SERIES_TP Cf,Key,I,Multiplier,Truncator,Allocator
+#define REAL_NAMED_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
+#define REAL_NAMED_SERIES(series_name) series_name<NAMED_SERIES_TP>
+#define REAL_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<REAL_NAMED_SERIES_TERM(term_name),'\n', \
+	Allocator,REAL_NAMED_SERIES(series_name) >
+#define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,REAL_NAMED_SERIES(series_name) >
 
-#define REAL_NAMED_SERIES_TP_DECL GENERIC_NAMED_SERIES_TP_DECL(Cf)
-#define REAL_NAMED_SERIES_TP GENERIC_NAMED_SERIES_TP(Cf)
-#define REAL_NAMED_SERIES_TERM(term_name) GENERIC_NAMED_SERIES_TERM(Cf,term_name)
-#define REAL_NAMED_SERIES(series_name) GENERIC_NAMED_SERIES(Cf,series_name)
-#define REAL_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) GENERIC_NAMED_SERIES_BASE_ANCESTOR(Cf,term_name,series_name)
-#define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name)
+#define COMPLEX_NAMED_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
+#define COMPLEX_NAMED_SERIES(series_name) std::complex<REAL_NAMED_SERIES(series_name)>
+#define COMPLEX_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_NAMED_SERIES_TERM(term_name),'\n', \
+	Allocator,COMPLEX_NAMED_SERIES(series_name) >
+#define COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_NAMED_SERIES(series_name) >
 
 #define NAMED_SERIES_CTORS(series_name) \
-	series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
+	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
 	explicit series_name(const std::string &filename) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		named_ancestor::construct_from_file(filename); \
 	} \
-	explicit series_name(const max_fast_int &n) \
+	explicit series_name(const piranha::max_fast_int &n) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
 	} \
 	explicit series_name(const double &x) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
 	} \
-	explicit series_name(const max_fast_int &n, const args_tuple_type &args_tuple) \
+	explicit series_name(const piranha::max_fast_int &n, const args_tuple_type &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,args_tuple); \
 	} \
 	explicit series_name(const double &x, const args_tuple_type &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,args_tuple); \
 	}
 }

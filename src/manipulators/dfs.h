@@ -39,6 +39,8 @@ namespace piranha
 		poisson_series_multiplier,
 		norm_truncator
 		> dfs;
+
+		typedef std::complex<dfs> dfsc;
 	}
 }
 
