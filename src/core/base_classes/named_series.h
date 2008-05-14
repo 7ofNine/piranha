@@ -89,6 +89,8 @@ namespace piranha
 			void append_arg(const std::string &, const psym_p &);
 			template <int N>
 			void append_arg(const psym_p &);
+			template <class Derived2>
+			void merge_args(const Derived2 &);
 		private:
 			void print_plain(std::ostream &, int) const;
 			void print_latex(std::ostream &, int) const;
@@ -102,8 +104,6 @@ namespace piranha
 			void merge_incompatible_args(const Derived2 &);
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
-			template <class Derived2>
-			void merge_args(const Derived2 &);
 			template <class Derived2>
 			Derived &add_series(const Derived2 &);
 			template <class Derived2>
