@@ -126,16 +126,15 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
-	// Useful macros for named series.
-
+// Useful macros for named series.
 #define GENERIC_NAMED_SERIES_TP_DECL(Cf) class Cf, class Key, template <class> class I, \
-  template <class, class, class, template <class> class> class Multiplier, \
-  template <class> class Truncator, class Allocator
+				template <class, class, class, template <class> class> class Multiplier, \
+				template <class> class Truncator, class Allocator
 #define GENERIC_NAMED_SERIES_TP(Cf) Cf,Key,I,Multiplier,Truncator,Allocator
 #define GENERIC_NAMED_SERIES_TERM(Cf,term_name) term_name<Cf,Key,'|',Allocator>
 #define GENERIC_NAMED_SERIES(Cf,series_name) series_name< GENERIC_NAMED_SERIES_TP(Cf) >
 #define GENERIC_NAMED_SERIES_BASE_ANCESTOR(Cf,term_name,series_name) base_series<GENERIC_NAMED_SERIES_TERM(Cf,term_name),'\n', \
-  Allocator,GENERIC_NAMED_SERIES(Cf,series_name) >
+	Allocator,GENERIC_NAMED_SERIES(Cf,series_name) >
 #define GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name) named_series<args,GENERIC_NAMED_SERIES(Cf,series_name) >
 
 #define REAL_NAMED_SERIES_TP_DECL GENERIC_NAMED_SERIES_TP_DECL(Cf)
@@ -146,32 +145,32 @@ namespace piranha
 #define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name)
 
 #define NAMED_SERIES_CTORS(series_name) \
-  series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
-  explicit series_name(const std::string &filename) \
-  { \
-    nth_index<1>().max_load_factor(settings::load_factor()); \
-    named_ancestor::construct_from_file(filename); \
-  } \
-  explicit series_name(const max_fast_int &n) \
-  { \
-    nth_index<1>().max_load_factor(settings::load_factor()); \
-    base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
-  } \
-  explicit series_name(const double &x) \
-  { \
-    nth_index<1>().max_load_factor(settings::load_factor()); \
-    base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
-  } \
-  explicit series_name(const max_fast_int &n, const args_tuple_type &args_tuple) \
-  { \
-    nth_index<1>().max_load_factor(settings::load_factor()); \
-    base_ancestor::construct_from_number(n,args_tuple); \
-  } \
-  explicit series_name(const double &x, const args_tuple_type &args_tuple) \
-  { \
-    nth_index<1>().max_load_factor(settings::load_factor()); \
-    base_ancestor::construct_from_number(x,args_tuple); \
-  }
+	series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
+	explicit series_name(const std::string &filename) \
+	{ \
+		nth_index<1>().max_load_factor(settings::load_factor()); \
+		named_ancestor::construct_from_file(filename); \
+	} \
+	explicit series_name(const max_fast_int &n) \
+	{ \
+		nth_index<1>().max_load_factor(settings::load_factor()); \
+		base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
+	} \
+	explicit series_name(const double &x) \
+	{ \
+		nth_index<1>().max_load_factor(settings::load_factor()); \
+		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
+	} \
+	explicit series_name(const max_fast_int &n, const args_tuple_type &args_tuple) \
+	{ \
+		nth_index<1>().max_load_factor(settings::load_factor()); \
+		base_ancestor::construct_from_number(n,args_tuple); \
+	} \
+	explicit series_name(const double &x, const args_tuple_type &args_tuple) \
+	{ \
+		nth_index<1>().max_load_factor(settings::load_factor()); \
+		base_ancestor::construct_from_number(x,args_tuple); \
+	}
 }
 
 #include "named_series_io.h"
