@@ -38,7 +38,7 @@ namespace piranha
 	class coded_term_bucket
 	{
 			BOOST_STATIC_ASSERT(N > 0);
-			friend class coded_series_hash_table<Cf, Ckey>;
+			template <class, class> friend class coded_series_hash_table;
 		public:
 			static const size_t size = (size_t)N;
 			struct term {
