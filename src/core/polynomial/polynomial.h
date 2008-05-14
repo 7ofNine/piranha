@@ -133,7 +133,7 @@ namespace piranha
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<polynomial, polynomial, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
 			// Ctors.
-			__PIRANHA_NAMED_SERIES_CTORS(polynomial);
+			NAMED_SERIES_CTORS(polynomial);
 			// Ctor from psym.
 			explicit polynomial(const psym &p) {
 				nth_index<1>().max_load_factor(settings::load_factor());

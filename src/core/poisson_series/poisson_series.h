@@ -103,7 +103,7 @@ namespace piranha
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef MultTrig<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, TruncTrig> multiplier_type;
 			// Ctors.
-			__PIRANHA_NAMED_SERIES_CTORS(poisson_series);
+			NAMED_SERIES_CTORS(poisson_series);
 			// Ctor from psym.
 			explicit poisson_series(const psym &p) {
 				nth_index<1>().max_load_factor(settings::load_factor());

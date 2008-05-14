@@ -126,8 +126,26 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
-	// Useful macro for ctors in named series.
-#define __PIRANHA_NAMED_SERIES_CTORS(series_name) \
+	// Useful macros for named series.
+
+#define GENERIC_NAMED_SERIES_TP_DECL(Cf) class Cf, class Key, template <class> class I, \
+  template <class, class, class, template <class> class> class Multiplier, \
+  template <class> class Truncator, class Allocator
+#define GENERIC_NAMED_SERIES_TP(Cf) Cf,Key,I,Multiplier,Truncator,Allocator
+#define GENERIC_NAMED_SERIES_TERM(Cf,term_name) term_name<Cf,Key,'|',Allocator>
+#define GENERIC_NAMED_SERIES(Cf,series_name) series_name< GENERIC_NAMED_SERIES_TP(Cf) >
+#define GENERIC_NAMED_SERIES_BASE_ANCESTOR(Cf,term_name,series_name) base_series<GENERIC_NAMED_SERIES_TERM(Cf,term_name),'\n', \
+  Allocator,GENERIC_NAMED_SERIES(Cf,series_name) >
+#define GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name) named_series<args,GENERIC_NAMED_SERIES(Cf,series_name) >
+
+#define REAL_NAMED_SERIES_TP_DECL GENERIC_NAMED_SERIES_TP_DECL(Cf)
+#define REAL_NAMED_SERIES_TP GENERIC_NAMED_SERIES_TP(Cf)
+#define REAL_NAMED_SERIES_TERM(term_name) GENERIC_NAMED_SERIES_TERM(Cf,term_name)
+#define REAL_NAMED_SERIES(series_name) GENERIC_NAMED_SERIES(Cf,series_name)
+#define REAL_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) GENERIC_NAMED_SERIES_BASE_ANCESTOR(Cf,term_name,series_name)
+#define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) GENERIC_NAMED_SERIES_NAMED_ANCESTOR(Cf,args,series_name)
+
+#define NAMED_SERIES_CTORS(series_name) \
   series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
   explicit series_name(const std::string &filename) \
   { \
