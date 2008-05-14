@@ -219,16 +219,8 @@ namespace piranha
 		public:
 			// Ctors.
 			numerical_container_complex_toolbox() {}
-			explicit numerical_container_complex_toolbox(int r, int i) {
-				derived_cast->m_value.real() = r;
-				derived_cast->m_value.imag() = i;
-			}
-			explicit numerical_container_complex_toolbox(const std::complex<int> &c) {
+			explicit numerical_container_complex_toolbox(const std::complex<max_fast_int> &c) {
 				derived_cast->m_value = c;
-			}
-			explicit numerical_container_complex_toolbox(const double &r, const double &i) {
-				derived_cast->m_value.real() = r;
-				derived_cast->m_value.imag() = i;
 			}
 			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
 				derived_cast->m_value = c;
@@ -251,28 +243,32 @@ namespace piranha
 				retval.m_value = derived_cast->value().imag();
 				return retval;
 			}
-			void set_real(const value_type &r) {
+			void real(const value_type &r) {
 				derived_cast->m_value = r.value();
 			}
-			void set_imag(const value_type &i) {
+			void imag(const value_type &i) {
 				derived_cast->m_value.real() = 0;
 				derived_cast->m_value.imag() = i.value();
 			}
 			// Maths.
-			template <class DerivedPs>
-			Derived &mult_by_self(const value_type &x, const DerivedPs &) {
+			template <class ArgsTuple>
+			Derived &mult_by(const value_type &x, const ArgsTuple &) {
 				derived_cast->mult_by_generic(x.value());
 			}
-			Derived &mult_by(const std::complex<int> &c) {
+			template <class ArgsTuple>
+			Derived &mult_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
 				derived_cast->mult_by_generic(c);
 			}
-			Derived &mult_by(const std::complex<double> &c) {
+			template <class ArgsTuple>
+			Derived &mult_by(const std::complex<double> &c, const ArgsTuple &) {
 				derived_cast->mult_by_generic(c);
 			}
-			Derived &divide_by(const std::complex<int> &c) {
+			template <class ArgsTuple>
+			Derived &divide_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
 				derived_cast->divide_by_generic(c);
 			}
-			Derived &divide_by(const std::complex<double> &c) {
+			template <class ArgsTuple>
+			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
 				derived_cast->divide_by_generic(c);
 			}
 	};

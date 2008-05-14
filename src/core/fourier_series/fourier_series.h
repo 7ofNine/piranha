@@ -94,13 +94,18 @@ namespace piranha
 #define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_NAMED_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>
 
 namespace std
 {
 	template < NAMED_SERIES_TP_DECL >
 	class complex<FOURIER_SERIES>:
 				public COMPLEX_FOURIER_SERIES_BASE_ANCESTOR,
-				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR
+				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR,
+				public COMPLEX_FOURIER_SERIES_MULT_ANCESTOR,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, piranha::max_fast_int,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, double
+				> >
 	{
 			typedef COMPLEX_FOURIER_SERIES_TERM term_type_;
 			typedef Allocator allocator_type;
