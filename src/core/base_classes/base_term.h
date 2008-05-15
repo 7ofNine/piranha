@@ -86,14 +86,10 @@ namespace piranha
 			 * Construct from base_term with different coefficient. Successful if coefficient can be converted.
 			 * @param[in] t base_term which will be copied.
 			 */
-			template <class Cf2, class Derived2>
-			base_term(const base_term<Cf2, Key, Separator, Derived2, Allocator> &t): m_cf(t.m_cf), m_key(t.m_key) {}
+// 			template <class Cf2, class Derived2>
+// 			base_term(const base_term<Cf2, Key, Separator, Derived2, Allocator> &t): m_cf(t.m_cf), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
-			/**
-			 * Coefficient can be different type, key must be same type.
-			 */
-			template <class Cf2>
-			base_term(const Cf2 &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>

@@ -46,18 +46,14 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit monomial(const std::string &str, const ArgsTuple &args_tuple):
 					ancestor(str, args_tuple) {}
-			/// Constructor from generic coefficient and fixed exponent part.
-			/**
-			 * Constructs from generic coefficient type.
-			 */
-			template <class Cf2>
-			explicit monomial(const Cf2 &c, const expo_type &e): ancestor(c, e) {}
+			/// Constructor from coefficient and exponent part.
+			explicit monomial(const cf_type &c, const expo_type &e): ancestor(c, e) {}
 			/// Generic copy constructor.
 			/**
 			 * Constructs from piranha::monomial with optionally different coefficient type.
 			 */
-			template <class Cf2>
-			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term): ancestor(term) {}
+// 			template <class Cf2>
+// 			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term): ancestor(term) {}
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.

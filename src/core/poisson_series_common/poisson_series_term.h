@@ -52,18 +52,14 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit poisson_series_term(const std::string &str, const ArgsTuple &args_tuple):
 					ancestor(str, args_tuple) {}
-			/// Constructor from generic coefficient and fixed trigonometric part.
-			/**
-			 * Constructs from generic coefficient type.
-			 */
-			template <class Cf2>
-			explicit poisson_series_term(const Cf2 &c, const trig_type &t): ancestor(c, t) {}
+			/// Constructor from coefficient and trigonometric part.
+			explicit poisson_series_term(const cf_type &c, const trig_type &t): ancestor(c, t) {}
 			/// Generic copy constructor.
 			/**
 			 * Constructs from piranha::poisson_series_term with optionally different coefficient type.
 			 */
-			template <class Cf2>
-			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term): ancestor(term) {}
+// 			template <class Cf2>
+// 			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term): ancestor(term) {}
 			/// Smarter numerical evaluation
 			/**
 			 * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached

@@ -58,6 +58,14 @@ namespace piranha
 				return *derived_cast;
 			}
 			template <class ArgsTuple>
+			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple)
+			{
+				Derived retval(derived_cast->multiply_by_series(r, args_tuple));
+				// Grab the terms accumulated into return value.
+				derived_cast->swap_terms(retval);
+				return *derived_cast;
+			}
+			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
 				if (cn.real() == 0 and cn.imag() == 0) {
 					throw division_by_zero();

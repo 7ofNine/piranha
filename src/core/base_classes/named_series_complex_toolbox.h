@@ -42,6 +42,9 @@ namespace piranha
 			Derived &operator*=(const std::complex<double> &cx) {
 				return ancestor::mult_by(cx, derived_const_cast->m_arguments);
 			}
+			Derived &operator*=(const RealDerived &r) {
+				return ancestor::mult_by(r, derived_const_cast->m_arguments);
+			}
 			Derived &operator/=(const std::complex<max_fast_int> &cn) {
 				return ancestor::divide_by(cn, derived_const_cast->m_arguments);
 			}
