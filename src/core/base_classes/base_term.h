@@ -84,10 +84,10 @@ namespace piranha
 			/// Copy ctor.
 			/**
 			 * Construct from base_term with different coefficient. Successful if coefficient can be converted.
-			 * @param[in] t base_term which will be copied.
 			 */
-// 			template <class Cf2, class Derived2>
-// 			base_term(const base_term<Cf2, Key, Separator, Derived2, Allocator> &t): m_cf(t.m_cf), m_key(t.m_key) {}
+			template <class Derived2, class ArgsTuple>
+			base_term(const Derived2 &t, const ArgsTuple &args_tuple):
+				m_cf(t.m_cf,args_tuple), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
 			base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			// I/O.

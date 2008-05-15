@@ -28,6 +28,33 @@
 
 namespace piranha
 {
+	/// Transform term.
+	/**
+	 * Non-specialized version, it will create a copy of the converted term.
+	 */
+	template <class Term2, class Term1>
+	struct term_converter {
+		/// Constructor.
+		template <class ArgsTuple>
+		explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c,a) {}
+		/// Copy of the converted term.
+		const Term1	result;
+	};
+
+	/// Specialized term converter.
+	/**
+	 * It will be invoked when the type to convert from is the same as the converted type. A reference
+	 * to the convertee is stored inside the class.
+	 */
+	template <class Term2>
+	struct term_converter<Term2, Term2> {
+		/// Constructor.
+		template <class ArgsTuple>
+		explicit term_converter(const Term2 &c, const ArgsTuple &): result(c) {}
+		/// Reference to the converted term.
+		const Term2 &result;
+	};
+
 	// TODO: update doc here.
 	/// High-level insertion function.
 	/**
@@ -47,7 +74,7 @@ namespace piranha
 		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
 		// iterator to do that.
 		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
-		class_converter<Term2, term_type> converted_term(term_);
+		term_converter<Term2, term_type> converted_term(term_,args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
 		p_assert(converted_term.result.is_insertable(args_tuple));
 		term_type *new_term(0);

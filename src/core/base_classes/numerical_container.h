@@ -243,10 +243,12 @@ namespace piranha
 				retval.m_value = derived_cast->value().imag();
 				return retval;
 			}
-			void real(const value_type &r) {
+			template <class ArgsTuple>
+			void real(const value_type &r, const ArgsTuple &) {
 				derived_cast->m_value = r.value();
 			}
-			void imag(const value_type &i) {
+			template <class ArgsTuple>
+			void imag(const value_type &i, const ArgsTuple &) {
 				derived_cast->m_value.real() = 0;
 				derived_cast->m_value.imag() = i.value();
 			}

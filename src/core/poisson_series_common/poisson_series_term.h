@@ -58,8 +58,9 @@ namespace piranha
 			/**
 			 * Constructs from piranha::poisson_series_term with optionally different coefficient type.
 			 */
-// 			template <class Cf2>
-// 			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term): ancestor(term) {}
+			template <class Cf2, class ArgsTuple>
+			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term, const ArgsTuple &a):
+				ancestor(term,a) {}
 			/// Smarter numerical evaluation
 			/**
 			 * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached

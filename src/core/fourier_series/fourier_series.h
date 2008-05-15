@@ -141,6 +141,7 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
 			// Needed typedefs.
+			typedef FOURIER_SERIES value_type;
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
 			typedef typename sorted_index::iterator sorted_iterator;
@@ -148,6 +149,14 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
+			complex(const value_type &r)
+			{
+				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real(r);
+			}
+			complex(const value_type &r, const value_type &i)
+			{
+				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r,i);
+			}
 			// Needed getters and setters.
 			template <int N>
 			typename container_type::template nth_index<N>::type &nth_index() {

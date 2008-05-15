@@ -51,6 +51,18 @@ namespace piranha
 			Derived &operator/=(const std::complex<double> &cx) {
 				return ancestor::divide_by(cx, derived_const_cast->m_arguments);
 			}
+		protected:
+			void construct_from_real(const RealDerived &r)
+			{
+				derived_cast->m_arguments = r.arguments();
+				ancestor::construct_from_real(r,derived_cast->m_arguments);
+			}
+			void construct_from_real_imag(const RealDerived &r, const RealDerived &i)
+			{
+				derived_cast->m_arguments = r.arguments();
+				derived_cast->merge_args(i);
+				ancestor::construct_from_real_imag(r,i,derived_cast->m_arguments);
+			}
 	};
 }
 
