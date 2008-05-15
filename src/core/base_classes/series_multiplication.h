@@ -24,8 +24,8 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 #define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, template <class, class, class, \
-  template <class> class Truncator> class Multiplier, \
-  template <class> class Truncator
+				template <class> class Truncator> class Multiplier, \
+				template <class> class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 namespace piranha

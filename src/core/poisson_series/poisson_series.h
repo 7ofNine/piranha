@@ -40,17 +40,17 @@
 #include "../polynomial_cf/polynomial_cf.h"
 
 #define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, \
-  template <class> class IPoly, template <class> class ITrig, \
-  template <class, class, class, template <class> class> class MultPoly, \
-  template <class, class, class, template <class> class> class MultTrig, \
-  template <class> class TruncPoly, template <class> class TruncTrig, \
-  class Allocator
+						template <class> class IPoly, template <class> class ITrig, \
+				template <class, class, class, template <class> class> class MultPoly, \
+				template <class, class, class, template <class> class> class MultTrig, \
+				template <class> class TruncPoly, template <class> class TruncTrig, \
+				class Allocator
 #define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,MultPoly,MultTrig,TruncPoly,TruncTrig,Allocator
 #define __PIRANHA_POISSON_SERIES poisson_series<__PIRANHA_POISSON_SERIES_TP>
 #define __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,0,Allocator>
 #define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<poisson_series_term< \
-  __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF,Trig,'|',Allocator>, \
-  '\n',Allocator,__PIRANHA_POISSON_SERIES >
+	__PIRANHA_POISSON_SERIES_POLYNOMIAL_CF,Trig,'|',Allocator>, \
+	'\n',Allocator,__PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr,trig_args_descr>,__PIRANHA_POISSON_SERIES >
 #define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
 #define __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR common_poisson_series_toolbox< __PIRANHA_POISSON_SERIES >

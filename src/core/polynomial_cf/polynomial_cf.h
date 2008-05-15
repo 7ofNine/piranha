@@ -35,8 +35,8 @@
 #include "../settings.h"
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
-  template <class, class, class, template <class> class> class Multiplier, \
-  template <class> class Truncator, int ExpoPosition, class Allocator
+				template <class, class, class, template <class> class> class Multiplier, \
+				template <class> class Truncator, int ExpoPosition, class Allocator
 #define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,ExpoPosition,Allocator
 #define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
 #define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >

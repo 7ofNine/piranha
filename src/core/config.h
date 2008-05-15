@@ -26,8 +26,8 @@
 
 #ifdef __GNUC__
 #define GCC_VERSION (__GNUC__ * 100000 \
-    + __GNUC_MINOR__ * 1000 \
-    + __GNUC_PATCHLEVEL__ * 10)
+					 + __GNUC_MINOR__ * 1000 \
+					 + __GNUC_PATCHLEVEL__ * 10)
 #if GCC_VERSION < 304000
 #error "The minimum GCC version required is 3.4"
 #endif

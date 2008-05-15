@@ -26,24 +26,24 @@
 #include "config.h" // For "unlikely()".
 
 #define hard_assert(result) \
-if (unlikely((result)==false)) \
-{ \
-  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-  exit(1); \
-}
+	if (unlikely((result)==false)) \
+	{ \
+		std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+		exit(1); \
+	}
 
 #if defined _ENABLE_ASSERTS
 
 #define p_assert(result) hard_assert(result)
 
 #define action_assert(action) \
-if (unlikely((action)==false)) \
-{ \
-  std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-  std::cout << "Press a key to exit." << std::endl; \
-  { char c; std::cin >> c; } \
-  std::exit(1); \
-}
+	if (unlikely((action)==false)) \
+	{ \
+		std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
+		std::cout << "Press a key to exit." << std::endl; \
+		{ char c; std::cin >> c; } \
+		std::exit(1); \
+	}
 
 #else
 
