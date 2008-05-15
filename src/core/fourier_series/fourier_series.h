@@ -31,6 +31,7 @@
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/named_series_complex_toolbox.h"
 #include "../integer_typedefs.h"
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
@@ -95,6 +96,7 @@ namespace piranha
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>
+#define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<COMPLEX_FOURIER_SERIES>
 
 namespace std
 {
@@ -103,9 +105,16 @@ namespace std
 				public COMPLEX_FOURIER_SERIES_BASE_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_MULT_ANCESTOR,
+				public COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, piranha::max_fast_int,
-				boost::ring_operators < COMPLEX_FOURIER_SERIES, double
-				> >
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,
+				boost::dividable < COMPLEX_FOURIER_SERIES, piranha::max_fast_int,
+				boost::dividable < COMPLEX_FOURIER_SERIES, double,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, complex<piranha::max_fast_int>,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, complex<double>,
+				boost::dividable < COMPLEX_FOURIER_SERIES, complex<piranha::max_fast_int>,
+				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
+				> > > > > > > >
 	{
 			typedef COMPLEX_FOURIER_SERIES_TERM term_type_;
 			typedef Allocator allocator_type;
@@ -118,7 +127,17 @@ namespace std
 			friend class COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_FOURIER_SERIES_BASE_ANCESTOR;
 			friend class COMPLEX_FOURIER_SERIES_MULT_ANCESTOR;
+			friend class COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX;
+			friend class piranha::base_series_complex_toolbox<COMPLEX_FOURIER_SERIES>;
 		public:
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::mult_by;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::divide_by;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator*=;
+			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator*=;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
+			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;

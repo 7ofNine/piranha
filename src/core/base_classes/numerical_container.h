@@ -253,23 +253,23 @@ namespace piranha
 			// Maths.
 			template <class ArgsTuple>
 			Derived &mult_by(const value_type &x, const ArgsTuple &) {
-				derived_cast->mult_by_generic(x.value());
+				return derived_cast->mult_by_generic(x.value());
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				derived_cast->mult_by_generic(c);
+				return derived_cast->mult_by_generic(c);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<double> &c, const ArgsTuple &) {
-				derived_cast->mult_by_generic(c);
+				return derived_cast->mult_by_generic(c);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				derived_cast->divide_by_generic(c);
+				return derived_cast->divide_by_generic(c);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
-				derived_cast->divide_by_generic(c);
+				return derived_cast->divide_by_generic(c);
 			}
 	};
 }

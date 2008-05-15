@@ -102,6 +102,8 @@ namespace std
 			typedef piranha::double_cf value_type;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
+			using ancestor::divide_by;
+			using complex_toolbox::divide_by;
 // Check if these are needed.
 			/*      using ancestor::swap;
 			      using ancestor::print_plain;

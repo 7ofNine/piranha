@@ -52,14 +52,13 @@ namespace piranha
 	// otherwise an assertion will fail when inserting terms.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x, Derived &retval,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x,
 			const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::sorted_iterator sorted_iterator;
 		typedef typename Derived::term_type term_type;
-		// Make sure we are inserting into an empty return value.
-		p_assert(retval.template nth_index<0>().empty());
+		Derived retval;
 		sorted_iterator it_hint = retval.template nth_index<0>().end();
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
@@ -67,18 +66,18 @@ namespace piranha
 			term.m_cf.mult_by(x, args_tuple);
 			it_hint = retval.insert(term, args_tuple, it_hint);
 		}
+		return retval;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x, Derived &retval,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x,
 			const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::sorted_iterator sorted_iterator;
 		typedef typename Derived::term_type term_type;
-		// Make sure we are inserting into an empty return value.
-		p_assert(retval.template nth_index<0>().empty());
+		Derived retval;
 		sorted_iterator it_hint = retval.template nth_index<0>().end();
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
@@ -86,6 +85,7 @@ namespace piranha
 			term.m_cf.divide_by(x, args_tuple);
 			it_hint = retval.insert(term, args_tuple, it_hint);
 		}
+		return retval;
 	}
 
 	/// Merge series with a number.
@@ -121,12 +121,13 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
-		if (n == 1) {
-			return *derived_cast;
+		if (n == 0) {
+			Derived retval;
+			swap_terms(retval);
+		} else if (n != 1) {
+			Derived retval(multiply_coefficients_by(n, args_tuple));
+			swap_terms(retval);
 		}
-		Derived retval;
-		multiply_coefficients_by(n, retval, args_tuple);
-		swap_terms(retval);
 		return *derived_cast;
 	}
 
@@ -134,9 +135,13 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
-		Derived retval;
-		multiply_coefficients_by(x, retval, args_tuple);
-		swap_terms(retval);
+		if (x == 0) {
+			Derived retval;
+			swap_terms(retval);
+		} else if (x != 1) {
+			Derived retval(multiply_coefficients_by(x, args_tuple));
+			swap_terms(retval);
+		}
 		return *derived_cast;
 	}
 
@@ -144,8 +149,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
 	{
-		Derived retval;
-		derived_cast->multiply_by_series(s2, retval, args_tuple);
+		Derived retval(derived_cast->multiply_by_series(s2, args_tuple));
 		// Grab the terms accumulated into return value.
 		swap_terms(retval);
 		return *derived_cast;
@@ -157,9 +161,10 @@ namespace piranha
 	{
 		if (n == 1) {
 			return *derived_cast;
+		} else if (n == 0) {
+			throw division_by_zero();
 		}
-		Derived retval;
-		divide_coefficients_by(n, retval, args_tuple);
+		Derived retval(divide_coefficients_by(n, args_tuple));
 		swap_terms(retval);
 		return *derived_cast;
 	}
@@ -168,8 +173,12 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
 	{
-		Derived retval;
-		divide_coefficients_by(x, retval, args_tuple);
+		if (x == 1) {
+			return *derived_cast;
+		} else if (x == 0) {
+			throw division_by_zero();
+		}
+		Derived retval(divide_coefficients_by(x, args_tuple));
 		swap_terms(retval);
 		return *derived_cast;
 	}

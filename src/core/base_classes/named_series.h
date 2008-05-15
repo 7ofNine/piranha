@@ -108,12 +108,8 @@ namespace piranha
 			Derived &add_series(const Derived2 &);
 			template <class Derived2>
 			Derived &subtract_series(const Derived2 &);
-			template <class T>
-			Derived &mult_by_generic(const T &);
 			template <class Derived2>
 			Derived &mult_by_series(const Derived2 &);
-			template <class T>
-			Derived &divide_by_generic(const T &);
 			template <class Argument>
 			Derived generic_partial(const Argument &) const;
 		protected:
