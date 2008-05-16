@@ -162,7 +162,7 @@ namespace piranha
 				return m_value;
 			}
 			/// Set value.
-			T &s_value() {
+			T &value() {
 				return m_value;
 			}
 			max_fast_int degree() const {
@@ -233,14 +233,16 @@ namespace piranha
 				derived_cast->m_value.imag() = i.value();
 			}
 			// Getters and setters.
-			value_type real() const {
+			template <class ArgsTuple>
+			value_type real(const ArgsTuple &) const {
 				value_type retval;
-				retval.m_value = derived_cast->value().real();
+				retval.value() = derived_const_cast->value().real();
 				return retval;
 			}
-			value_type imag() const {
+			template <class ArgsTuple>
+			value_type imag(const ArgsTuple &) const {
 				value_type retval;
-				retval.m_value = derived_cast->value().imag();
+				retval.value() = derived_const_cast->value().imag();
 				return retval;
 			}
 			template <class ArgsTuple>
