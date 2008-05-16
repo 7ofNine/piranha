@@ -30,10 +30,6 @@
 
 namespace piranha
 {
-	// Forward declaration.
-	template <class, class>
-	class coded_series_hash_table;
-
 	template <class Cf, class Ckey, int N>
 	class coded_term_bucket
 	{
