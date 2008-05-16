@@ -66,6 +66,7 @@ namespace piranha
 			void save_to(const std::string &) const;
 			void swap(Derived &);
 			double norm() const;
+			// TODO: maybe we can get rid of this with proper friends?
 			const args_tuple_type &arguments() const;
 			eval_type eval(const double &) const;
 			Derived &operator+=(const max_fast_int &);
@@ -83,6 +84,8 @@ namespace piranha
 			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
 		protected:
+			// TODO: check these protected methods, some of them can be moved into private
+			// with proper friendship in manipulator classes.
 			void construct_from_file(const std::string &);
 			template <int N>
 			void construct_from_psym(const psym &);
@@ -91,6 +94,10 @@ namespace piranha
 			void append_arg(const psym_p &);
 			template <class Derived2>
 			void merge_args(const Derived2 &);
+			template <bool, class Derived2>
+			Derived &merge_with_series(const Derived2 &);
+			template <class Derived2>
+			Derived &mult_by_series(const Derived2 &);
 		private:
 			void print_plain(std::ostream &, int) const;
 			void print_latex(std::ostream &, int) const;
@@ -102,14 +109,6 @@ namespace piranha
 			bool is_args_compatible(const Derived2 &) const;
 			template <class Derived2>
 			void merge_incompatible_args(const Derived2 &);
-			template <bool, class Derived2>
-			Derived &merge_with_series(const Derived2 &);
-			template <class Derived2>
-			Derived &add_series(const Derived2 &);
-			template <class Derived2>
-			Derived &subtract_series(const Derived2 &);
-			template <class Derived2>
-			Derived &mult_by_series(const Derived2 &);
 			template <class Argument>
 			Derived generic_partial(const Argument &) const;
 		protected:

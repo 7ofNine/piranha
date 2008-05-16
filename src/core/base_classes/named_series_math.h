@@ -38,34 +38,23 @@ namespace piranha
 			return merge_with_series<Sign>(Derived(*derived_const_cast));
 		} else {
 			merge_args(s2);
-			derived_cast->template merge_terms<Sign>(s2, m_arguments);
+			return derived_cast->template merge_terms<Sign>(s2, m_arguments);
 		}
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Derived2>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::add_series(const Derived2 &s2)
-	{
-		return merge_with_series<true>(s2);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Derived2>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::subtract_series(const Derived2 &s2)
-	{
-		return merge_with_series<false>(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
 	{
-		// First we merge the arguments of the two series.
-		merge_args(s2);
-		// Then we perform the multiplication.
-		derived_cast->mult_by(s2, m_arguments);
-		return *derived_cast;
+		if ((void *)derived_cast == (void *)(&s2)) {
+			__PDEBUG(std::cout << "Multiplying by self, performing a copy." << '\n');
+			return mult_by_series(Derived(*derived_const_cast));
+		} else {
+			// First we merge the arguments of the two series.
+			merge_args(s2);
+			// Then we perform the multiplication.
+			return derived_cast->mult_by(s2, m_arguments);
+		}
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -83,7 +72,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
 	{
-		return add_series(s2);
+		return merge_with_series<true>(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -101,7 +90,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const Derived &s2)
 	{
-		return subtract_series(s2);
+		return merge_with_series<false>(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
