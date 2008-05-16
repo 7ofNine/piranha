@@ -29,6 +29,7 @@
 #include "../psym.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
+#include "numerical_container_complex_toolbox.h"
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -44,8 +45,9 @@ namespace piranha
 	template <class T, class Derived>
 	class numerical_container
 	{
-			/// Alias for evaluation type.
+			// Alias for evaluation type.
 			typedef typename eval_type<Derived>::type eval_type;
+			friend class numerical_container_complex_toolbox<Derived>;
 		public:
 			// Start implementation of basic pseries coefficient interface.
 			//------------
@@ -208,73 +210,6 @@ namespace piranha
 		protected:
 			// Data member.
 			T m_value;
-	};
-
-	/// Toolbox for complex-specific methods of piranha::numerical_container.
-	template <class realDerived>
-	class numerical_container_complex_toolbox
-	{
-			typedef std::complex<realDerived> Derived;
-			typedef realDerived value_type;
-		public:
-			// Ctors.
-			numerical_container_complex_toolbox() {}
-			explicit numerical_container_complex_toolbox(const std::complex<max_fast_int> &c) {
-				derived_cast->m_value = c;
-			}
-			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
-				derived_cast->m_value = c;
-			}
-			explicit numerical_container_complex_toolbox(const value_type &r) {
-				derived_cast->m_value.real() = r.value();
-			}
-			explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i) {
-				derived_cast->m_value.real() = r.value();
-				derived_cast->m_value.imag() = i.value();
-			}
-			// Getters and setters.
-			template <class ArgsTuple>
-			value_type real(const ArgsTuple &) const {
-				value_type retval;
-				retval.value() = derived_const_cast->value().real();
-				return retval;
-			}
-			template <class ArgsTuple>
-			value_type imag(const ArgsTuple &) const {
-				value_type retval;
-				retval.value() = derived_const_cast->value().imag();
-				return retval;
-			}
-			template <class ArgsTuple>
-			void real(const value_type &r, const ArgsTuple &) {
-				derived_cast->m_value = r.value();
-			}
-			template <class ArgsTuple>
-			void imag(const value_type &i, const ArgsTuple &) {
-				derived_cast->m_value.real() = 0;
-				derived_cast->m_value.imag() = i.value();
-			}
-			// Maths.
-			template <class ArgsTuple>
-			Derived &mult_by(const value_type &x, const ArgsTuple &) {
-				return derived_cast->mult_by_generic(x.value());
-			}
-			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				return derived_cast->mult_by_generic(c);
-			}
-			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<double> &c, const ArgsTuple &) {
-				return derived_cast->mult_by_generic(c);
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				return derived_cast->divide_by_generic(c);
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
-				return derived_cast->divide_by_generic(c);
-			}
 	};
 }
 
