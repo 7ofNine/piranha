@@ -61,10 +61,10 @@ namespace piranha
 			/**
 			 * Default-initializes coefficient and key.
 			 */
-			base_term(): m_cf(), m_key() {}
+			explicit base_term(): m_cf(), m_key() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			base_term(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() {
+			explicit base_term(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() {
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
 				if (vs.size() != 2) {
@@ -86,10 +86,10 @@ namespace piranha
 			 * Construct from base_term with different coefficient. Successful if coefficient can be converted.
 			 */
 			template <class Derived2, class ArgsTuple>
-			base_term(const Derived2 &t, const ArgsTuple &args_tuple):
-				m_cf(t.m_cf,args_tuple), m_key(t.m_key) {}
+			explicit base_term(const Derived2 &t, const ArgsTuple &args_tuple):
+					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
-			base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>
