@@ -105,7 +105,7 @@ namespace piranha
 			template <class ArgsTuple, class Layout>
 			void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
 			template <bool, class Derived2, class ArgsTuple>
-			void merge_terms(const Derived2 &, const ArgsTuple &);
+			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
 			Derived multiply_coefficients_by(const T &, const ArgsTuple &) const;
 			template <class T, class ArgsTuple>

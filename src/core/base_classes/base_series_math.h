@@ -34,7 +34,7 @@ namespace piranha
 	// Do not use this to merge with self, assertion will fail.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Derived2, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
@@ -45,6 +45,7 @@ namespace piranha
 			// No need to check, we are merging from another series.
 			it_hint = insert<false, Sign>(*it, args_tuple, it_hint);
 		}
+		return *derived_cast;
 	}
 
 	// Multiply all the coefficients of the series by a generic quantity x, and place the result into retval.
@@ -105,22 +106,21 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::add(const Derived &s2, const ArgsTuple &args_tuple)
 	{
-		merge_terms<true>(s2, args_tuple);
-		return *derived_cast;
+		return merge_terms<true>(s2, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::subtract(const Derived &s2, const ArgsTuple &args_tuple)
 	{
-		merge_terms<false>(s2, args_tuple);
-		return *derived_cast;
+		return merge_terms<false>(s2, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
+		// TODO: share this code with below.
 		if (n == 0) {
 			Derived retval;
 			swap_terms(retval);
@@ -159,6 +159,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
+		// TODO: share this code with below.
 		if (n == 1) {
 			return *derived_cast;
 		} else if (n == 0) {
