@@ -28,6 +28,8 @@
 				template <class> class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
+#include "../p_assert.h"
+
 namespace piranha
 {
 	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
@@ -43,6 +45,7 @@ namespace piranha
 				typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
 				typedef typename Derived::term_type term_type;
 				typedef typename Derived2::term_type term_type2;
+				p_assert((void *)derived_const_cast != (void *)&s2);
 				Derived retval;
 				// Just leave an empty series if this or s2 are zero.
 				if (derived_const_cast->template nth_index<0>().empty() or s2.template nth_index<0>().empty()) {
