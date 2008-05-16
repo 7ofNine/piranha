@@ -45,6 +45,36 @@ namespace piranha
 				return get_comp<1>(args_tuple);
 			}
 			template <class ArgsTuple>
+			Derived &real(const RealDerived &r, const ArgsTuple &args_tuple) {
+				subtract(real(args_tuple),args_tuple);
+				add(r,args_tuple);
+				return *derived_cast;
+			}
+			template <class ArgsTuple>
+			Derived &imag(const RealDerived &i, const ArgsTuple &args_tuple) {
+				typedef typename RealDerived::const_sorted_iterator real_iterator;
+				typedef typename Derived::const_sorted_iterator complex_iterator;
+				typedef typename Derived::term_type complex_term_type;
+				complex_term_type tmp;
+				complex_iterator it_hint = derived_const_cast->template nth_index<0>().end();
+				// First let's remove the old imaginary part.
+				RealDerived old_i(imag(args_tuple));
+				const real_iterator old_i_it_f = old_i.template nth_index<0>().end();
+				for (real_iterator i_it = old_i.template nth_index<0>().begin(); i_it != old_i_it_f; ++i_it) {
+					tmp.m_key = i_it->m_key;
+					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					it_hint = derived_cast->template insert<true,false>(tmp, args_tuple, it_hint);
+				}
+				// Now add the new imaginary part.
+				const real_iterator i_it_f = i.template nth_index<0>().end();
+				for (real_iterator i_it = i.template nth_index<0>().begin(); i_it != i_it_f; ++i_it) {
+					tmp.m_key = i_it->m_key;
+					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					it_hint = derived_cast->insert(tmp, args_tuple, it_hint);
+				}
+				return *derived_cast;
+			}
+			template <class ArgsTuple>
 			Derived &add(const RealDerived &r, const ArgsTuple &args_tuple) {
 				return derived_cast->template merge_terms<true>(r, args_tuple);
 			}
@@ -69,7 +99,7 @@ namespace piranha
 				if (cx.real() == 0 and cx.imag() == 0) {
 					Derived retval;
 					derived_cast->swap_terms(retval);
-				} else if (cx.real() = ! 1 or cx.imag() != 0) {
+				} else if (cx.real() != 1 or cx.imag() != 0) {
 					Derived retval(derived_cast->multiply_coefficients_by(cx, args_tuple));
 					derived_cast->swap_terms(retval);
 				}

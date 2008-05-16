@@ -158,10 +158,20 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
+			explicit complex(const complex<piranha::max_fast_int> &cn) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
+				base_ancestor::construct_from_number(cn,named_ancestor::m_arguments);
+			}
+			explicit complex(const complex<double> &cx) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
+				base_ancestor::construct_from_number(cx,named_ancestor::m_arguments);
+			}
 			explicit complex(const value_type &r) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
 				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real(r);
 			}
 			explicit complex(const value_type &r, const value_type &i) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
 				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r, i);
 			}
 			// Needed getters and setters.

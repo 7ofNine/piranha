@@ -23,6 +23,8 @@
 
 #include <boost/python/class.hpp>
 #include <boost/python/operators.hpp>
+#include <boost/python/return_internal_reference.hpp>
+#include <complex>
 #include <string>
 
 #include "../src/core/integer_typedefs.h"
@@ -30,141 +32,192 @@
 
 namespace pyranha
 {
-  /// Basic series instantiation.
-  template <class T>
-    boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
-  {
-    boost::python::class_<T> inst(name.c_str(),description.c_str());
-    inst.def(boost::python::init<const T &>());
-    inst.def(boost::python::init<const std::string &>());
-    inst.def(boost::python::init<const piranha::max_fast_int &>());
-    inst.def(boost::python::init<const double &>());
-    inst.def("__copy__",&T::copy);
-    inst.def("__repr__",&T::print_to_string);
-    inst.def("__len__",&T::length);
-    inst.def("save_to",&T::save_to,"Save series to file.");
-    inst.def("eval",&T::eval);
-    inst.def("atoms",&T::atoms);
-    inst.def("swap",&T::swap);
-    // NOTICE: the order seems important here, if we place *=int before *=double we
-    // will get just *=double in Python. Go figure...
-    // Addition and subtraction.
-    inst.def(boost::python::self+=piranha::max_fast_int());
-    inst.def(boost::python::self+=double());
-    inst.def(boost::python::self+=boost::python::self);
-    inst.def(boost::python::self+piranha::max_fast_int());
-    inst.def(piranha::max_fast_int()+boost::python::self);
-    inst.def(boost::python::self+double());
-    inst.def(double()+boost::python::self);
-    inst.def(boost::python::self+boost::python::self);
-    inst.def(boost::python::self-=piranha::max_fast_int());
-    inst.def(boost::python::self-=double());
-    inst.def(boost::python::self-=boost::python::self);
-    inst.def(boost::python::self-piranha::max_fast_int());
-    inst.def(piranha::max_fast_int()-boost::python::self);
-    inst.def(boost::python::self-double());
-    inst.def(double()-boost::python::self);
-    inst.def(boost::python::self-boost::python::self);
-    // Multiplication.
-    inst.def(boost::python::self*=piranha::max_fast_int());
-    inst.def(boost::python::self*=double());
-    inst.def(boost::python::self*=boost::python::self);
-    inst.def(boost::python::self*piranha::max_fast_int());
-    inst.def(piranha::max_fast_int()*boost::python::self);
-    inst.def(boost::python::self*double());
-    inst.def(double()*boost::python::self);
-    inst.def(boost::python::self*boost::python::self);
-    // Division.
-    inst.def(boost::python::self/=piranha::max_fast_int());
-    inst.def(boost::python::self/=double());
-    inst.def(boost::python::self/piranha::max_fast_int());
-    inst.def(boost::python::self/double());
-    // Exponentiation.
-    inst.def("__pow__",&T::pow);
-    return inst;
-  }
+	/// Basic series instantiation.
+	template <class T>
+	boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
+	{
+		boost::python::class_<T> inst(name.c_str(), description.c_str());
+		inst.def(boost::python::init<const T &>());
+		inst.def(boost::python::init<const std::string &>());
+		inst.def(boost::python::init<const piranha::max_fast_int &>());
+		inst.def(boost::python::init<const double &>());
+		inst.def("__copy__", &T::copy);
+		inst.def("__repr__", &T::print_to_string);
+		inst.def("__len__", &T::length);
+		inst.def("save_to", &T::save_to, "Save series to file.");
+		inst.def("eval", &T::eval);
+		inst.def("atoms", &T::atoms);
+		inst.def("swap", &T::swap);
+		// NOTICE: the order seems important here, if we place *=int before *=double we
+		// will get just *=double in Python. Go figure...
+		// Addition and subtraction.
+		inst.def(boost::python::self += piranha::max_fast_int());
+		inst.def(boost::python::self += double());
+		inst.def(boost::python::self += boost::python::self);
+		inst.def(boost::python::self + piranha::max_fast_int());
+		inst.def(piranha::max_fast_int() + boost::python::self);
+		inst.def(boost::python::self + double());
+		inst.def(double() + boost::python::self);
+		inst.def(boost::python::self + boost::python::self);
+		inst.def(boost::python::self -= piranha::max_fast_int());
+		inst.def(boost::python::self -= double());
+		inst.def(boost::python::self -= boost::python::self);
+		inst.def(boost::python::self - piranha::max_fast_int());
+		inst.def(piranha::max_fast_int() - boost::python::self);
+		inst.def(boost::python::self - double());
+		inst.def(double() - boost::python::self);
+		inst.def(boost::python::self - boost::python::self);
+		// Multiplication.
+		inst.def(boost::python::self *= piranha::max_fast_int());
+		inst.def(boost::python::self *= double());
+		inst.def(boost::python::self *= boost::python::self);
+		inst.def(boost::python::self*piranha::max_fast_int());
+		inst.def(piranha::max_fast_int()*boost::python::self);
+		inst.def(boost::python::self*double());
+		inst.def(double()*boost::python::self);
+		inst.def(boost::python::self*boost::python::self);
+		// Division.
+		inst.def(boost::python::self /= piranha::max_fast_int());
+		inst.def(boost::python::self /= double());
+		inst.def(boost::python::self / piranha::max_fast_int());
+		inst.def(boost::python::self / double());
+		// Exponentiation.
+		inst.def("__pow__", &T::pow);
+		return inst;
+	}
 
-  template <class T>
-    void series_trigonometric_instantiation(boost::python::class_<T> &inst)
-  {
-    inst.def("cos",&T::cos);
-    inst.def("sin",&T::sin);
-  }
+	template <class T>
+	void series_complex_instantiation(boost::python::class_<std::complex<T> > &inst)
+	{
+		// Ctors.
+		inst.def(boost::python::init<const std::complex<piranha::max_fast_int> &>());
+		inst.def(boost::python::init<const std::complex<double> &>());
+		inst.def(boost::python::init<const T &>());
+		inst.def(boost::python::init<const T &, const T &>());
+		// Addition and subtraction.
+		inst.def(boost::python::self += std::complex<piranha::max_fast_int>());
+		inst.def(boost::python::self += std::complex<double>());
+		inst.def(boost::python::self += T());
+		inst.def(boost::python::self + piranha::max_fast_int());
+		inst.def(std::complex<piranha::max_fast_int>() + boost::python::self);
+		inst.def(boost::python::self + std::complex<double>());
+		inst.def(std::complex<double>() + boost::python::self);
+		inst.def(boost::python::self + T());
+		inst.def(T() + boost::python::self);
+		inst.def(boost::python::self -= std::complex<piranha::max_fast_int>());
+		inst.def(boost::python::self -= std::complex<double>());
+		inst.def(boost::python::self -= T());
+		inst.def(boost::python::self - piranha::max_fast_int());
+		inst.def(std::complex<piranha::max_fast_int>() - boost::python::self);
+		inst.def(boost::python::self - std::complex<double>());
+		inst.def(std::complex<double>() - boost::python::self);
+		inst.def(boost::python::self - T());
+		inst.def(T() - boost::python::self);
+		// Multiplication.
+		inst.def(boost::python::self *= std::complex<piranha::max_fast_int>());
+		inst.def(boost::python::self *= std::complex<double>());
+		inst.def(boost::python::self *= T());
+		inst.def(boost::python::self * piranha::max_fast_int());
+		inst.def(std::complex<piranha::max_fast_int>() * boost::python::self);
+		inst.def(boost::python::self * std::complex<double>());
+		inst.def(std::complex<double>() * boost::python::self);
+		inst.def(boost::python::self * T());
+		inst.def(T() * boost::python::self);
+		// Division.
+		inst.def(boost::python::self /= std::complex<piranha::max_fast_int>());
+		inst.def(boost::python::self /= std::complex<double>());
+		inst.def(boost::python::self / std::complex<piranha::max_fast_int>());
+		inst.def(boost::python::self / std::complex<double>());
+		// Real and imaginary parts assignment and extraction.
+		typedef T (std::complex<T>::*comp_get)() const;
+		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
+		inst.def("real", comp_get(&std::complex<T>::real), "Get real part.");
+		inst.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
+		inst.def("real", comp_set(&std::complex<T>::real), boost::python::return_internal_reference<1>(), "Set real part.");
+		inst.def("imag", comp_set(&std::complex<T>::imag), boost::python::return_internal_reference<1>(), "Set imaginary part.");
+	}
 
-  template <class T>
-    void series_differential_instantiation(boost::python::class_<T> &inst)
-  {
-    typedef T (T::*partial_name)(const std::string &) const;
-    typedef T (T::*partial_psym)(const piranha::psym &) const;
-    inst.def("partial",partial_name(&T::partial));
-    inst.def("partial",partial_psym(&T::partial));
-  }
+	template <class T>
+	void series_trigonometric_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("cos", &T::cos);
+		inst.def("sin", &T::sin);
+	}
 
-  template <class T>
-    void series_psym_instantiation(boost::python::class_<T> &inst)
-  {
-    inst.def(boost::python::init<const piranha::psym &>());
-  }
+	template <class T>
+	void series_differential_instantiation(boost::python::class_<T> &inst)
+	{
+		typedef T(T::*partial_name)(const std::string &) const;
+		typedef T(T::*partial_psym)(const piranha::psym &) const;
+		inst.def("partial", partial_name(&T::partial));
+		inst.def("partial", partial_psym(&T::partial));
+	}
 
-  template <class T>
-    void series_special_functions_instantiation(boost::python::class_<T> &inst)
-  {
-    inst.def("besselJ",&T::besselJ,"Bessel function of the first kind of integer order.");
-    inst.def("dbesselJ",&T::dbesselJ,"Partial derivative of Bessel function of the first kind of integer order.");
-  }
+	template <class T>
+	void series_psym_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def(boost::python::init<const piranha::psym &>());
+	}
 
-  #define __celmec_inst(arg) \
-    inst.def(#arg,from_series(&T::arg),arg##_docstring) \
-      .def(#arg,from_psym(&T::arg),arg##_docstring) \
-      .def(#arg,from_name(&T::arg),arg##_docstring) \
-      .staticmethod(#arg);
+	template <class T>
+	void series_special_functions_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("besselJ", &T::besselJ, "Bessel function of the first kind of integer order.");
+		inst.def("dbesselJ", &T::dbesselJ, "Partial derivative of Bessel function of the first kind of integer order.");
+	}
 
-  template <class T>
-    void celmec_instantiation(boost::python::class_<T> &inst)
-  {
-    typedef T (*from_series)(const T &, const T &);
-    typedef T (*from_psym)(const piranha::psym &, const piranha::psym &);
-    typedef T (*from_name)(const std::string &, const std::string &);
-    const char *r_a_docstring = "Elliptic expansion of r / a.";
-    const char *sin_f_docstring = "Elliptic expansion of sin(f).";
-    const char *cos_E_docstring = "Elliptic expansion of cos(E).";
-    __celmec_inst(r_a);
-    __celmec_inst(sin_f);
-    __celmec_inst(cos_E);
-  }
+#define __celmec_inst(arg) \
+	inst.def(#arg,from_series(&T::arg),arg##_docstring) \
+	.def(#arg,from_psym(&T::arg),arg##_docstring) \
+	.def(#arg,from_name(&T::arg),arg##_docstring) \
+	.staticmethod(#arg);
 
-  #undef __celmec_inst
+	template <class T>
+	void celmec_instantiation(boost::python::class_<T> &inst)
+	{
+		typedef T(*from_series)(const T &, const T &);
+		typedef T(*from_psym)(const piranha::psym &, const piranha::psym &);
+		typedef T(*from_name)(const std::string &, const std::string &);
+		const char *r_a_docstring = "Elliptic expansion of r / a.";
+		const char *sin_f_docstring = "Elliptic expansion of sin(f).";
+		const char *cos_E_docstring = "Elliptic expansion of cos(E).";
+		__celmec_inst(r_a);
+		__celmec_inst(sin_f);
+		__celmec_inst(cos_E);
+	}
 
-  template <class T>
-    void power_series_instantiation(boost::python::class_<T> &inst)
-  {
-    inst.def("degree",&T::degree,"Get the degree of the power series.");
-    inst.def("min_degree",&T::min_degree,"Get the minimum degree of the power series.");
-  }
+#undef __celmec_inst
 
-  template <class T>
-    void common_polynomial_instantiation(boost::python::class_<T> &inst)
-  {
-    series_psym_instantiation(inst);
-    series_differential_instantiation(inst);
-    series_special_functions_instantiation(inst);
-    power_series_instantiation(inst);
-  }
+	template <class T>
+	void power_series_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("degree", &T::degree, "Get the degree of the power series.");
+		inst.def("min_degree", &T::min_degree, "Get the minimum degree of the power series.");
+	}
 
-  template <class T>
-    void common_poisson_series_instantiation(boost::python::class_<T> &inst)
-  {
-    series_trigonometric_instantiation(inst);
-    series_psym_instantiation(inst);
-    series_differential_instantiation(inst);
-    series_special_functions_instantiation(inst);
-    power_series_instantiation(inst);
-    celmec_instantiation(inst);
-  }
+	template <class T>
+	void common_polynomial_instantiation(boost::python::class_<T> &inst)
+	{
+		series_psym_instantiation(inst);
+		series_differential_instantiation(inst);
+		series_special_functions_instantiation(inst);
+		power_series_instantiation(inst);
+	}
 
-  template <class T>
-    void fourier_specifics(boost::python::class_<T> &inst)
-  {}
+	template <class T>
+	void common_poisson_series_instantiation(boost::python::class_<T> &inst)
+	{
+		series_trigonometric_instantiation(inst);
+		series_psym_instantiation(inst);
+		series_differential_instantiation(inst);
+		series_special_functions_instantiation(inst);
+		power_series_instantiation(inst);
+		celmec_instantiation(inst);
+	}
+
+	template <class T>
+	void fourier_specifics(boost::python::class_<T> &inst)
+	{}
 }
 
 #endif

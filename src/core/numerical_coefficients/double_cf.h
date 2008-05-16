@@ -159,6 +159,12 @@ namespace std
 			}
 			// End implementation of complex basic pseries coefficient interface.
 			//------------
+			template <class ArgsTuple>
+			complex pow(const double &y, const ArgsTuple &) const {
+				complex retval;
+				retval.m_value = std::pow(ancestor::m_value, y);
+				return retval;
+			}
 	};
 }
 #endif

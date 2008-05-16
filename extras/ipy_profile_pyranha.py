@@ -74,6 +74,11 @@ def main():
     for i in pyranha.__manipulators__:
       ip.ex("from pyranha import %s" % i)
       ip.ex("from pyranha.%s import %s" % (i,i.lower()))
+      # Try importing the complex counterpart.
+      try:
+        ip.ex("from pyranha.%s import %s" % (i,i.lower()+'c'))
+      except:
+        pass
     for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
       ip.ex("from pyranha.%s import *" % i)
     ip.ex("from pyranha import ds")

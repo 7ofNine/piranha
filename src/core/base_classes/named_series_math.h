@@ -46,15 +46,10 @@ namespace piranha
 	template <class Derived2>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
 	{
-		if ((void *)derived_cast == (void *)(&s2)) {
-			__PDEBUG(std::cout << "Multiplying by self, performing a copy." << '\n');
-			return mult_by_series(Derived(*derived_const_cast));
-		} else {
-			// First we merge the arguments of the two series.
-			merge_args(s2);
-			// Then we perform the multiplication.
-			return derived_cast->mult_by(s2, m_arguments);
-		}
+		// First we merge the arguments of the two series.
+		merge_args(s2);
+		// Then we perform the multiplication.
+		return derived_cast->mult_by(s2, m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

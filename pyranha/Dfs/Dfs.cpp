@@ -32,8 +32,12 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Dfs)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::dfs> inst = series_basic_instantiation<manipulators::dfs>(std::string("dfs"),
-    std::string("Fourier series with double precision coefficients."));
+	class_<manipulators::dfs> inst = series_basic_instantiation<manipulators::dfs>(std::string("dfs"),
+									 std::string("Fourier series with double precision coefficients."));
+
+	class_<manipulators::dfsc> instc = series_basic_instantiation<manipulators::dfsc>(std::string("dfsc"),
+									  std::string("Fourier series with complex double precision coefficients."));
+	series_complex_instantiation(instc);
 }

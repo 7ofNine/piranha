@@ -46,6 +46,14 @@ namespace piranha
 				retval.m_arguments = derived_const_cast->m_arguments;
 				return retval;
 			}
+			Derived &real(const RealDerived &r) {
+				derived_cast->merge_args(r);
+				return ancestor::real(r,derived_const_cast->m_arguments);
+			}
+			Derived &imag(const RealDerived &i) {
+				derived_cast->merge_args(i);
+				return ancestor::imag(i,derived_const_cast->m_arguments);
+			}
 			Derived &operator+=(const std::complex<max_fast_int> &cn) {
 				return derived_cast->template merge_with_number<true>(cn, derived_cast->m_arguments);
 			}
