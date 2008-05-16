@@ -222,14 +222,14 @@ namespace piranha
 			}
 			/// Decode integers from generalised lexicographic representation.
 			template <class CodingVector, class MinMaxVec, class ArgsTuple>
-			void decode(const max_fast_int &n, const CodingVector &v, const max_fast_int &h_min,
+			void decode(const max_fast_int &n, const CodingVector &cv, const max_fast_int &h_min,
 						const MinMaxVec &mmv, const ArgsTuple &args_tuple) {
 				resize(args_tuple.template get<position>().size());
 				// The -1 is because the coding vector contains one extra element at the end.
-				p_assert(v.size() == (size_t)m_size + 1);
+				p_assert(cv.size() == (size_t)m_size + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
-					m_ptr[i] = ((tmp % v[i+1]) / (v[i]) + mmv[i].first);
+					m_ptr[i] = ((tmp % cv[i+1]) / (cv[i]) + mmv[i].first);
 				}
 			}
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
