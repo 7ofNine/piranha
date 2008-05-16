@@ -37,19 +37,24 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 		public:
 			template <class ArgsTuple>
-			RealDerived real() const
-			{
-				RealDerived retval;
-				return retval;
+			RealDerived real(const ArgsTuple &args_tuple) const {
+				return get_comp<0>(args_tuple);
 			}
 			template <class ArgsTuple>
-			RealDerived imag() const
-			{
-				RealDerived retval;
-				return retval;
+			RealDerived imag(const ArgsTuple &args_tuple) const {
+				return get_comp<1>(args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived &add(const RealDerived &r, const ArgsTuple &args_tuple) {
+				return derived_cast->template merge_terms<true>(r, args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived &subtract(const RealDerived &r, const ArgsTuple &args_tuple) {
+				return derived_cast->template merge_terms<false>(r, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
+				// TODO: share this code with below.
 				if (cn.real() == 0 and cn.imag() == 0) {
 					Derived retval;
 					derived_cast->swap_terms(retval);
@@ -71,8 +76,7 @@ namespace piranha
 				return *derived_cast;
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple)
-			{
+			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
 				Derived retval(derived_cast->multiply_by_series(r, args_tuple));
 				// Grab the terms accumulated into return value.
 				derived_cast->swap_terms(retval);
@@ -80,6 +84,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
+				// TODO: share this code with below.
 				if (cn.real() == 0 and cn.imag() == 0) {
 					throw division_by_zero();
 				} else if (cn.real() != 1 or cn.imag() != 0) {
@@ -99,9 +104,31 @@ namespace piranha
 				return *derived_cast;
 			}
 		protected:
+			template <int N, class Real, class ArgsTuple>
+			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &args_tuple) {
+				switch (N) {
+				case 0:
+					return c.real(args_tuple);
+					break;
+				default:
+					return c.imag(args_tuple);
+				}
+			}
+			template <int N, class ArgsTuple>
+			RealDerived get_comp(const ArgsTuple &args_tuple) const {
+				typedef typename RealDerived::const_sorted_iterator real_iterator;
+				typedef typename Derived::const_sorted_iterator complex_iterator;
+				RealDerived retval;
+				const complex_iterator c_it_f = derived_const_cast->template nth_index<0>().end();
+				real_iterator it_hint = retval.template nth_index<0>().end();
+				for (complex_iterator c_it = derived_const_cast->template nth_index<0>().begin(); c_it != c_it_f; ++c_it) {
+					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->m_cf, args_tuple), c_it->m_key);
+					it_hint = retval.insert(tmp, args_tuple, it_hint);
+				}
+				return retval;
+			}
 			template <class ArgsTuple>
-			void construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple)
-			{
+			void construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple) {
 				// TODO: maybe this can be named construct_from_other_series and placed into base_series?
 				typedef typename RealDerived::const_sorted_iterator real_iterator;
 				typedef typename Derived::const_sorted_iterator complex_iterator;
@@ -109,30 +136,27 @@ namespace piranha
 				p_assert(derived_const_cast->template nth_index<0>().empty());
 				const real_iterator r_it_f = r.template nth_index<0>().end();
 				complex_iterator it_hint = derived_const_cast->template nth_index<0>().end();
-				for (real_iterator r_it = r.template nth_index<0>().begin(); r_it != r_it_f; ++r_it)
-				{
-					it_hint = derived_cast->insert(*r_it,args_tuple,it_hint);
+				for (real_iterator r_it = r.template nth_index<0>().begin(); r_it != r_it_f; ++r_it) {
+					it_hint = derived_cast->insert(*r_it, args_tuple, it_hint);
 				}
 			}
 			template <class ArgsTuple>
-			void construct_from_real_imag(const RealDerived &r, const RealDerived &i, const ArgsTuple &args_tuple)
-			{
+			void construct_from_real_imag(const RealDerived &r, const RealDerived &i, const ArgsTuple &args_tuple) {
 				typedef typename RealDerived::const_sorted_iterator real_iterator;
 				typedef typename Derived::const_sorted_iterator complex_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				// Make sure we are being called from an empty series.
 				p_assert(derived_const_cast->template nth_index<0>().empty());
 				// Let's build the real part first.
-				construct_from_real(r,args_tuple);
+				construct_from_real(r, args_tuple);
 				// Now let's proceed to the imaginary part.
 				const real_iterator i_it_f = i.template nth_index<0>().end();
 				complex_term_type tmp;
 				complex_iterator it_hint = derived_const_cast->template nth_index<0>().end();
-				for (real_iterator i_it = i.template nth_index<0>().begin(); i_it != i_it_f; ++i_it)
-				{
+				for (real_iterator i_it = i.template nth_index<0>().begin(); i_it != i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
-					tmp.m_cf.imag(i_it->m_cf,args_tuple);
-					it_hint = derived_cast->insert(tmp,args_tuple,it_hint);
+					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					it_hint = derived_cast->insert(tmp, args_tuple, it_hint);
 				}
 			}
 	};

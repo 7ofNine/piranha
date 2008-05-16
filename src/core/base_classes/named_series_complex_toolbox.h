@@ -36,6 +36,34 @@ namespace piranha
 			typedef base_series_complex_toolbox<RealDerived> ancestor;
 			typedef std::complex<RealDerived> Derived;
 		public:
+			RealDerived real() const {
+				RealDerived retval(ancestor::real(derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				return retval;
+			}
+			RealDerived imag() const {
+				RealDerived retval(ancestor::imag(derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				return retval;
+			}
+			Derived &operator+=(const std::complex<max_fast_int> &cn) {
+				return derived_cast->template merge_with_number<true>(cn, derived_cast->m_arguments);
+			}
+			Derived &operator+=(const std::complex<double> &cx) {
+				return derived_cast->template merge_with_number<true>(cx, derived_cast->m_arguments);
+			}
+			Derived &operator+=(const RealDerived &r) {
+				return derived_cast->template merge_with_series<true>(r);
+			}
+			Derived &operator-=(const std::complex<max_fast_int> &cn) {
+				return derived_cast->template merge_with_number<false>(cn, derived_cast->m_arguments);
+			}
+			Derived &operator-=(const std::complex<double> &cx) {
+				return derived_cast->template merge_with_number<false>(cx, derived_cast->m_arguments);
+			}
+			Derived &operator-=(const RealDerived &r) {
+				return derived_cast->template merge_with_series<false>(r);
+			}
 			Derived &operator*=(const std::complex<max_fast_int> &cn) {
 				return ancestor::mult_by(cn, derived_const_cast->m_arguments);
 			}
@@ -43,7 +71,7 @@ namespace piranha
 				return ancestor::mult_by(cx, derived_const_cast->m_arguments);
 			}
 			Derived &operator*=(const RealDerived &r) {
-				return ancestor::mult_by(r, derived_const_cast->m_arguments);
+				return derived_cast->mult_by_series(r);
 			}
 			Derived &operator/=(const std::complex<max_fast_int> &cn) {
 				return ancestor::divide_by(cn, derived_const_cast->m_arguments);
@@ -52,16 +80,14 @@ namespace piranha
 				return ancestor::divide_by(cx, derived_const_cast->m_arguments);
 			}
 		protected:
-			void construct_from_real(const RealDerived &r)
-			{
-				derived_cast->m_arguments = r.arguments();
-				ancestor::construct_from_real(r,derived_cast->m_arguments);
+			void construct_from_real(const RealDerived &r) {
+				derived_cast->m_arguments = r.m_arguments;
+				ancestor::construct_from_real(r, derived_cast->m_arguments);
 			}
-			void construct_from_real_imag(const RealDerived &r, const RealDerived &i)
-			{
-				derived_cast->m_arguments = r.arguments();
+			void construct_from_real_imag(const RealDerived &r, const RealDerived &i) {
+				derived_cast->m_arguments = r.m_arguments;
 				derived_cast->merge_args(i);
-				ancestor::construct_from_real_imag(r,i,derived_cast->m_arguments);
+				ancestor::construct_from_real_imag(r, i, derived_cast->m_arguments);
 			}
 	};
 }

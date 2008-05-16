@@ -67,6 +67,7 @@ namespace piranha
 			friend class FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class FOURIER_SERIES_BASE_ANCESTOR;
 			friend class FOURIER_SERIES_MULT_ANCESTOR;
+			friend class named_series_complex_toolbox<FOURIER_SERIES>;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -132,10 +133,18 @@ namespace std
 			friend class COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX;
 			friend class piranha::base_series_complex_toolbox<FOURIER_SERIES>;
 		public:
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::add;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::add;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::subtract;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::mult_by;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::divide_by;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator+=;
+			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator+=;
+			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator-=;
+			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator-=;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator*=;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
@@ -149,13 +158,11 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
-			complex(const value_type &r)
-			{
+			explicit complex(const value_type &r) {
 				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real(r);
 			}
-			complex(const value_type &r, const value_type &i)
-			{
-				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r,i);
+			explicit complex(const value_type &r, const value_type &i) {
+				COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r, i);
 			}
 			// Needed getters and setters.
 			template <int N>
