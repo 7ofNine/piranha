@@ -69,7 +69,7 @@ namespace piranha
 			typedef typename bucket_type::term term_type;
 			class iterator
 			{
-				public:
+					friend class coded_series_hash_table;
 					iterator(const coded_series_hash_table *p): m_ht(p), m_vector_index(0), m_bucket_index(0) {
 						// If the first slot is not taken, find the next one.
 						if (!m_ht->m_container[m_vector_index].m_flags[m_bucket_index]) {
@@ -78,6 +78,7 @@ namespace piranha
 					}
 					iterator(const coded_series_hash_table *p, const size_t &vi, const size_t &bi):
 							m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
+				public:
 					iterator &operator++() {
 						next();
 						return *this;
