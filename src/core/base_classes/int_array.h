@@ -229,7 +229,7 @@ namespace piranha
 				p_assert(cv.size() == (size_t)m_size + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
-					m_ptr[i] = ((tmp % cv[i+1]) / (cv[i]) + mmv[i].first);
+					m_ptr[i] = ((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
