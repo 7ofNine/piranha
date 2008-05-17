@@ -32,15 +32,15 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Zpoly)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
-    std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-  //series_trigonometric_instantiation(inst);
-  common_polynomial_instantiation(inst);
-  series_special_functions_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+	class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
+									   std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
+	//series_trigonometric_instantiation(inst);
+	common_polynomial_instantiation(inst);
+	series_special_functions_instantiation(inst);
+	//ps_instantiate_differential_specifics(inst);
+	/*ps_instantiate_real_specifics(inst);
+	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+	  "Bessel function of the first kind, power series implementation.");*/
 }
