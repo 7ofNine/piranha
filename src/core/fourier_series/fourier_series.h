@@ -29,6 +29,7 @@
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
+#include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
@@ -37,15 +38,15 @@
 #include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
 
-#define FOURIER_SERIES_TERM REAL_NAMED_SERIES_TERM(piranha::poisson_series_term)
-#define FOURIER_SERIES REAL_NAMED_SERIES(piranha::fourier_series)
-#define FOURIER_SERIES_BASE_ANCESTOR REAL_NAMED_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
-#define FOURIER_SERIES_NAMED_ANCESTOR REAL_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,piranha::fourier_series)
+#define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::poisson_series_term)
+#define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
+#define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,piranha::fourier_series)
 #define FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
 
 namespace piranha
 {
-	template < NAMED_SERIES_TP_DECL = std::allocator<char> >
+	template < E0_SERIES_TP_DECL = std::allocator<char> >
 	class fourier_series:
 				public FOURIER_SERIES_BASE_ANCESTOR,
 				public FOURIER_SERIES_NAMED_ANCESTOR,
@@ -92,17 +93,17 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_NAMED_SERIES_TERM(piranha::poisson_series_term)
-#define COMPLEX_FOURIER_SERIES COMPLEX_NAMED_SERIES(piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_NAMED_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
+#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::poisson_series_term)
+#define COMPLEX_FOURIER_SERIES COMPLEX_E0_SERIES(piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>
 #define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<FOURIER_SERIES>
 
 namespace std
 {
-	template < NAMED_SERIES_TP_DECL >
+	template < E0_SERIES_TP_DECL >
 	class complex<FOURIER_SERIES>:
 				public COMPLEX_FOURIER_SERIES_BASE_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR,
@@ -178,7 +179,7 @@ namespace std
 namespace std
 {
 	// Overload power function for Fourier series.
-	template < NAMED_SERIES_TP_DECL >
+	template < E0_SERIES_TP_DECL >
 	FOURIER_SERIES pow(const FOURIER_SERIES &x, const double &y)
 	{
 		FOURIER_SERIES retval(x.pow(y));

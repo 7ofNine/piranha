@@ -28,6 +28,7 @@
 #include <memory> // For default allocator.
 
 #include "../base_classes/base_series.h"
+#include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -39,10 +40,10 @@
 #include "../polynomial_common/monomial.h"
 #include "../settings.h"
 
-#define POLYNOMIAL_TERM REAL_NAMED_SERIES_TERM(piranha::monomial)
-#define POLYNOMIAL REAL_NAMED_SERIES(piranha::polynomial)
-#define POLYNOMIAL_BASE_ANCESTOR REAL_NAMED_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
-#define POLYNOMIAL_NAMED_ANCESTOR REAL_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
+#define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::monomial)
+#define POLYNOMIAL E0_SERIES(piranha::polynomial)
+#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
 #define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
 #define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL >
 #define POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< POLYNOMIAL >
@@ -94,7 +95,7 @@ namespace piranha
 
 	// TODO: generalise here (and elsewhere) the backbone container by introducing thin wrappers around standard containers
 	// so that below the typedefs and aliases are truly generic.
-	template < NAMED_SERIES_TP_DECL = std::allocator<char> >
+	template < E0_SERIES_TP_DECL = std::allocator<char> >
 	class polynomial:
 				public POLYNOMIAL_BASE_ANCESTOR,
 				public POLYNOMIAL_NAMED_ANCESTOR,
@@ -153,10 +154,10 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_POLYNOMIAL_TERM COMPLEX_NAMED_SERIES_TERM(piranha::monomial)
-#define COMPLEX_POLYNOMIAL COMPLEX_NAMED_SERIES(piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_NAMED_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
+#define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::monomial)
+#define COMPLEX_POLYNOMIAL COMPLEX_E0_SERIES(piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
 		piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
@@ -165,7 +166,7 @@ namespace piranha
 
 namespace std
 {
-	template < NAMED_SERIES_TP_DECL >
+	template < E0_SERIES_TP_DECL >
 	class complex<POLYNOMIAL>:
 				public COMPLEX_POLYNOMIAL_BASE_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_ANCESTOR,
@@ -250,7 +251,7 @@ namespace std
 // Overload standard math functions for polynomials.
 namespace std
 {
-	template < NAMED_SERIES_TP_DECL >
+	template < E0_SERIES_TP_DECL >
 	POLYNOMIAL pow(const POLYNOMIAL &x, const double &y)
 	{
 		POLYNOMIAL retval(x.pow(y));

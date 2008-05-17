@@ -29,7 +29,6 @@
 #include <string>
 #include <vector>
 
-#include "base_series.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../ntuple.h"
@@ -126,15 +125,7 @@ namespace piranha
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
 // Useful macros for named series.
-#define NAMED_SERIES_TP_DECL class Cf, class Key, template <class> class I, \
-				template <class, class, class, template <class> class> class Multiplier, \
-				template <class> class Truncator, class Allocator
-#define NAMED_SERIES_TP Cf,Key,I,Multiplier,Truncator,Allocator
-#define REAL_NAMED_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
-#define REAL_NAMED_SERIES(series_name) series_name<NAMED_SERIES_TP>
-#define REAL_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<REAL_NAMED_SERIES_TERM(term_name),'\n', \
-	Allocator,REAL_NAMED_SERIES(series_name) >
-#define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,REAL_NAMED_SERIES(series_name) >
+#define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,E0_SERIES(series_name) >
 
 #define NAMED_SERIES_CTORS(series_name) \
 	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \

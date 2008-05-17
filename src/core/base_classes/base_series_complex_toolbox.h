@@ -46,8 +46,8 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &real(const RealDerived &r, const ArgsTuple &args_tuple) {
-				subtract(real(args_tuple),args_tuple);
-				add(r,args_tuple);
+				subtract(real(args_tuple), args_tuple);
+				add(r, args_tuple);
 				return *derived_cast;
 			}
 			template <class ArgsTuple>
@@ -63,7 +63,7 @@ namespace piranha
 				for (real_iterator i_it = old_i.template nth_index<0>().begin(); i_it != old_i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
 					tmp.m_cf.imag(i_it->m_cf, args_tuple);
-					it_hint = derived_cast->template insert<true,false>(tmp, args_tuple, it_hint);
+					it_hint = derived_cast->template insert<true, false>(tmp, args_tuple, it_hint);
 				}
 				// Now add the new imaginary part.
 				const real_iterator i_it_f = i.template nth_index<0>().end();
@@ -184,6 +184,11 @@ namespace piranha
 				return *derived_cast;
 			}
 	};
+
+#define COMPLEX_E0_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
+#define COMPLEX_E0_SERIES(series_name) std::complex<E0_SERIES(series_name)>
+#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
+	Allocator,COMPLEX_E0_SERIES(series_name) >
 }
 
 #undef derived_const_cast

@@ -150,6 +150,15 @@ namespace piranha
 					cf_type &m_new_cf;
 			};
 	};
+
+#define E0_SERIES_TP_DECL class Cf, class Key, template <class> class I, \
+				template <class, class, class, template <class> class> class Multiplier, \
+				template <class> class Truncator, class Allocator
+#define E0_SERIES_TP Cf,Key,I,Multiplier,Truncator,Allocator
+#define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
+#define E0_SERIES(series_name) series_name<E0_SERIES_TP>
+#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
+	Allocator,E0_SERIES(series_name) >
 }
 
 #include "base_series_io.h"

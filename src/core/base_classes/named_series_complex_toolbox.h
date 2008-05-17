@@ -23,7 +23,6 @@
 
 #include <complex>
 
-#include "base_series.h"
 #include "base_series_complex_toolbox.h"
 #include "named_series.h"
 #include "../integer_typedefs.h"
@@ -103,11 +102,7 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_NAMED_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
-#define COMPLEX_NAMED_SERIES(series_name) std::complex<REAL_NAMED_SERIES(series_name)>
-#define COMPLEX_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_NAMED_SERIES_TERM(term_name),'\n', \
-	Allocator,COMPLEX_NAMED_SERIES(series_name) >
-#define COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_NAMED_SERIES(series_name) >
+#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_E0_SERIES(series_name) >
 
 #define COMPLEX_NAMED_SERIES_CTORS(complex_toolbox) \
 	explicit complex(const complex<piranha::max_fast_int> &cn) { \
