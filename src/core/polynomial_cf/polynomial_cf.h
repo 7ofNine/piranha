@@ -36,17 +36,18 @@
 
 #define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
 				template <class, class, class, template <class> class> class Multiplier, \
-				template <class> class Truncator, int ExpoPosition, class Allocator
-#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,ExpoPosition,Allocator
+				template <class> class Truncator, class Allocator
+#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
 #define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
 #define __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL_CF >
-#define __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<ExpoPosition,__PIRANHA_POLYNOMIAL_CF >
+#define __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POLYNOMIAL_CF >
 
 namespace piranha
 {
+	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
 	class polynomial_cf:
 				public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
