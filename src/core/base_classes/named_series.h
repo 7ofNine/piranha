@@ -136,12 +136,6 @@ namespace piranha
 	Allocator,REAL_NAMED_SERIES(series_name) >
 #define REAL_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,REAL_NAMED_SERIES(series_name) >
 
-#define COMPLEX_NAMED_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
-#define COMPLEX_NAMED_SERIES(series_name) std::complex<REAL_NAMED_SERIES(series_name)>
-#define COMPLEX_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_NAMED_SERIES_TERM(term_name),'\n', \
-	Allocator,COMPLEX_NAMED_SERIES(series_name) >
-#define COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_NAMED_SERIES(series_name) >
-
 #define NAMED_SERIES_CTORS(series_name) \
 	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
 	explicit series_name(const std::string &filename) \

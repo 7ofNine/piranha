@@ -23,7 +23,11 @@
 
 #include <complex>
 
+#include "base_series.h"
 #include "base_series_complex_toolbox.h"
+#include "named_series.h"
+#include "../integer_typedefs.h"
+#include "../settings.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -48,11 +52,11 @@ namespace piranha
 			}
 			Derived &real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				return ancestor::real(r,derived_const_cast->m_arguments);
+				return ancestor::real(r, derived_const_cast->m_arguments);
 			}
 			Derived &imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				return ancestor::imag(i,derived_const_cast->m_arguments);
+				return ancestor::imag(i, derived_const_cast->m_arguments);
 			}
 			Derived &operator+=(const std::complex<max_fast_int> &cn) {
 				return derived_cast->template merge_with_number<true>(cn, derived_cast->m_arguments);
@@ -98,6 +102,31 @@ namespace piranha
 				ancestor::construct_from_real_imag(r, i, derived_cast->m_arguments);
 			}
 	};
+
+#define COMPLEX_NAMED_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
+#define COMPLEX_NAMED_SERIES(series_name) std::complex<REAL_NAMED_SERIES(series_name)>
+#define COMPLEX_NAMED_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_NAMED_SERIES_TERM(term_name),'\n', \
+	Allocator,COMPLEX_NAMED_SERIES(series_name) >
+#define COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_NAMED_SERIES(series_name) >
+
+#define COMPLEX_NAMED_SERIES_CTORS \
+	explicit complex(const complex<piranha::max_fast_int> &cn) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		base_ancestor::construct_from_number(cn,named_ancestor::m_arguments); \
+	} \
+	explicit complex(const complex<double> &cx) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		base_ancestor::construct_from_number(cx,named_ancestor::m_arguments); \
+	} \
+	explicit complex(const value_type &r) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real(r); \
+	} \
+	explicit complex(const value_type &r, const value_type &i) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r, i); \
+	}
+
 }
 
 #undef derived_const_cast
