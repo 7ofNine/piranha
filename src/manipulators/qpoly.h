@@ -21,8 +21,10 @@
 #ifndef PIRANHA_QPOLY_H
 #define PIRANHA_QPOLY_H
 
+#include <complex>
+
 #include "../core/base_classes/common_indices.h"
-#include "../core/base_classes/null_truncator.h"
+#include "../core/base_classes/expo_truncator.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial/polynomial.h"
@@ -38,8 +40,10 @@ namespace piranha
 		expo_array<16, 0>,
 		key_degree_index,
 		polynomial_multiplier,
-		null_truncator
+		expo_truncator
 		> qpoly;
+
+		typedef std::complex<qpoly> qpolyc;
 	}
 }
 

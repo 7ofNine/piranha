@@ -42,9 +42,7 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpq_class, mpq_cf> ancestor;
 		public:
-			// Start implementation of basic pseries coefficient interface.
-			//------------
-			// Ctors and dtor.
+			// Ctors. Do not use macro since we need to canonicalize in one of the ctors.
 			/// Empty constructor.
 			explicit mpq_cf(): ancestor::numerical_container() {}
 			/// Constructor from string.
@@ -67,16 +65,20 @@ namespace piranha
 			double norm(const ArgsTuple &) const {
 				return std::abs(m_value.get_d());
 			}
+			template <class ArgsTuple>
+			double eval(const double &, const ArgsTuple &) const {
+				return m_value.get_d();
+			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
-			mpq_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) throw(division_by_zero) {
+			mpq_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
 				if (n == 0) {
 					throw division_by_zero();
 				}
 				return ancestor::divide_by(n, a);
 			}
 			template <class ArgsTuple>
-			mpq_cf &divide_by(const double &x, const ArgsTuple &a) throw(division_by_zero) {
+			mpq_cf &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {
 					throw division_by_zero();
 				}
@@ -86,10 +88,6 @@ namespace piranha
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
-			}
-			template <class ArgsTuple>
-			double eval(const double &, const ArgsTuple &) const {
-				return m_value.get_d();
 			}
 			max_fast_int get_int() const {
 				max_fast_int retval = m_value.get_num().get_si();
@@ -118,6 +116,61 @@ namespace piranha
 					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)pow_n);
 					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)pow_n);
 				}
+				return retval;
+			}
+	};
+}
+
+namespace std
+{
+	template <>
+	class complex<piranha::mpq_cf>:
+				public piranha::numerical_container<std::complex<mpq_class>, complex<piranha::mpq_cf> >,
+				public piranha::numerical_container_complex_toolbox<piranha::mpq_cf>
+	{
+			typedef piranha::numerical_container<std::complex<mpq_class>, complex<piranha::mpq_cf> > ancestor;
+			typedef piranha::numerical_container_complex_toolbox<piranha::mpq_cf> complex_toolbox;
+			friend class piranha::numerical_container_complex_toolbox<piranha::mpq_cf>;
+		public:
+			typedef piranha::mpq_cf value_type;
+			using ancestor::mult_by;
+			using complex_toolbox::mult_by;
+			using ancestor::divide_by;
+			using complex_toolbox::divide_by;
+			NUMERICAL_CONTAINER_CTORS(complex);
+			COMPLEX_NUMERICAL_CONTAINER_CTORS;
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const {
+				return std::abs(complex<double>(m_value.real().get_d(),m_value.imag().get_d()));
+			}
+			template <class ArgsTuple>
+			complex<double> eval(const double &, const ArgsTuple &) const {
+				return complex<double>(m_value.real().get_d(),m_value.imag().get_d());
+			}
+			// Override division to catch divide by zero.
+			template <class ArgsTuple>
+			complex &divide_by(const piranha::max_fast_int &n, const ArgsTuple &a) {
+				if (n == 0) {
+					throw piranha::division_by_zero();
+				}
+				return ancestor::divide_by(n, a);
+			}
+			template <class ArgsTuple>
+			complex &divide_by(const double &x, const ArgsTuple &a) {
+				if (x == 0) {
+					throw piranha::division_by_zero();
+				}
+				return ancestor::divide_by(x, a);
+			}
+			// Override this, hence avoiding to calculate norm.
+			template <class ArgsTuple>
+			bool is_ignorable(const ArgsTuple &) const {
+				return (m_value.real() == 0 and m_value.imag() == 0);
+			}
+			template <class ArgsTuple>
+			complex pow(const double &y, const ArgsTuple &) const {
+				complex retval;
+				retval.m_value = std::pow(ancestor::m_value, y);
 				return retval;
 			}
 	};

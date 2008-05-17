@@ -32,15 +32,19 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Qpoly)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::qpoly> inst = series_basic_instantiation<manipulators::qpoly>(std::string("qpoly"),
-    std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
-  //series_trigonometric_instantiation(inst);
-  common_polynomial_instantiation(inst);
-  series_special_functions_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+	class_<manipulators::qpoly> inst = series_basic_instantiation<manipulators::qpoly>(std::string("qpoly"),
+									   std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
+	//series_trigonometric_instantiation(inst);
+	common_polynomial_instantiation(inst);
+	series_special_functions_instantiation(inst);
+	class_<manipulators::qpolyc> instc = series_basic_instantiation<manipulators::qpolyc>(std::string("qpolyc"),
+									  std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
+	common_polynomial_instantiation(instc);
+	series_complex_instantiation(instc);
+	//ps_instantiate_differential_specifics(inst);
+	/*ps_instantiate_real_specifics(inst);
+	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+	  "Bessel function of the first kind, power series implementation.");*/
 }
