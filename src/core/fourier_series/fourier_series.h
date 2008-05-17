@@ -24,6 +24,7 @@
 #include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
 #include <cmath>
+#include <complex>
 #include <memory> // For default allocator.
 
 #include "../arg_manager.h"
