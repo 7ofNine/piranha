@@ -138,6 +138,8 @@ namespace std
 			template <class ArgsTuple>
 			explicit complex(const double &x, const ArgsTuple &a): ancestor::numerical_container(x, a) {}
 			complex(const complex &c): ancestor::numerical_container(c), complex_toolbox::numerical_container_complex_toolbox(c) {}
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
 			// Complex specific contructors.
 			template <class ArgsTuple>
 			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):

@@ -160,6 +160,8 @@ namespace piranha
 		piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL >
 
 namespace std
 {
@@ -169,6 +171,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_NAMED_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_MULT_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
+				public COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
@@ -194,6 +198,8 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
 			friend class piranha::base_series_complex_toolbox<POLYNOMIAL>;
+			// Override base_series::real_pow with the one from the common polynomial toolbox.
+			using COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
 		public:
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
@@ -218,9 +224,15 @@ namespace std
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef Multiplier<complex, complex, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
+			// Ctor from psym.
+			explicit complex(const piranha::psym &p) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
+				named_ancestor::template construct_from_psym<0>(p);
+			}
 			// Needed getters and setters.
 			template <int N>
 			typename container_type::template nth_index<N>::type &nth_index() {
