@@ -37,17 +37,14 @@
 #include "../polynomial_common/monomial.h"
 #include "../settings.h"
 
-#define __PIRANHA_POLYNOMIAL_TP_DECL class Cf, class Expo, template <class> class I, \
-				template <class, class, class, template <class> class> class Multiplier, \
-				template <class> class Truncator, class Allocator
-#define __PIRANHA_POLYNOMIAL_TP Cf,Expo,I,Multiplier,Truncator,Allocator
-#define __PIRANHA_POLYNOMIAL polynomial<__PIRANHA_POLYNOMIAL_TP>
-#define __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_series<monomial<Cf,Expo,'|',Allocator>,'\n',Allocator,__PIRANHA_POLYNOMIAL >
-#define __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr>,__PIRANHA_POLYNOMIAL >
-#define __PIRANHA_POLYNOMIAL_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL, Multiplier, Truncator>
-#define __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POLYNOMIAL >
-#define __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL >
-#define __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< __PIRANHA_POLYNOMIAL >
+#define POLYNOMIAL_TERM REAL_NAMED_SERIES_TERM(piranha::monomial)
+#define POLYNOMIAL REAL_NAMED_SERIES(piranha::polynomial)
+#define POLYNOMIAL_BASE_ANCESTOR REAL_NAMED_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define POLYNOMIAL_NAMED_ANCESTOR REAL_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
+#define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
+#define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL >
+#define POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< POLYNOMIAL >
+#define POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< POLYNOMIAL >
 
 namespace piranha
 {
@@ -95,35 +92,35 @@ namespace piranha
 
 	// TODO: generalise here (and elsewhere) the backbone container by introducing thin wrappers around standard containers
 	// so that below the typedefs and aliases are truly generic.
-	template < __PIRANHA_POLYNOMIAL_TP_DECL = std::allocator<char> >
+	template < NAMED_SERIES_TP_DECL = std::allocator<char> >
 	class polynomial:
-				public __PIRANHA_POLYNOMIAL_BASE_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_MULT_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
-				boost::ring_operators < __PIRANHA_POLYNOMIAL,
-				boost::ring_operators < __PIRANHA_POLYNOMIAL, max_fast_int,
-				boost::ring_operators < __PIRANHA_POLYNOMIAL, double,
-				boost::dividable < __PIRANHA_POLYNOMIAL, max_fast_int,
-				boost::dividable < __PIRANHA_POLYNOMIAL, double
+				public POLYNOMIAL_BASE_ANCESTOR,
+				public POLYNOMIAL_NAMED_ANCESTOR,
+				public POLYNOMIAL_POWER_SERIES_ANCESTOR,
+				public POLYNOMIAL_MULT_ANCESTOR,
+				public POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
+				public POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
+				boost::ring_operators < POLYNOMIAL,
+				boost::ring_operators < POLYNOMIAL, max_fast_int,
+				boost::ring_operators < POLYNOMIAL, double,
+				boost::dividable < POLYNOMIAL, max_fast_int,
+				boost::dividable < POLYNOMIAL, double
 				> > > > >
 	{
-			typedef monomial < Cf, Expo, '|', Allocator > term_type_;
+			typedef POLYNOMIAL_TERM term_type_;
 			typedef Allocator allocator_type;
-			typedef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
-			typedef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
+			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
+			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
 			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
-			friend class __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR;
-			friend class __PIRANHA_POLYNOMIAL_BASE_ANCESTOR;
-			friend class __PIRANHA_POLYNOMIAL_MULT_ANCESTOR;
-			friend class __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class POLYNOMIAL_NAMED_ANCESTOR;
+			friend class POLYNOMIAL_BASE_ANCESTOR;
+			friend class POLYNOMIAL_MULT_ANCESTOR;
+			friend class POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
 			// Override base_series::real_pow with the one from the common polynomial toolbox.
-			using __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+			using POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -156,22 +153,12 @@ namespace piranha
 // Overload standard math functions for polynomials.
 namespace std
 {
-	template < __PIRANHA_POLYNOMIAL_TP_DECL >
-	piranha::__PIRANHA_POLYNOMIAL pow(const piranha::__PIRANHA_POLYNOMIAL &x, const double &y)
+	template < NAMED_SERIES_TP_DECL >
+	POLYNOMIAL pow(const POLYNOMIAL &x, const double &y)
 	{
-		piranha::__PIRANHA_POLYNOMIAL retval(x.pow(y));
+		POLYNOMIAL retval(x.pow(y));
 		return retval;
 	}
 }
-
-#undef __PIRANHA_POLYNOMIAL_TP_DECL
-#undef __PIRANHA_POLYNOMIAL_TP
-#undef __PIRANHA_POLYNOMIAL
-#undef __PIRANHA_POLYNOMIAL_BASE_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_NAMED_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_MULT_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_POWER_SERIES_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR
 
 #endif
