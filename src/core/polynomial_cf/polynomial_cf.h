@@ -34,12 +34,12 @@
 #include "../proxies.h"
 #include "../settings.h"
 
-#define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Expo, template <class> class I, \
+#define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Key, template <class> class I, \
 				template <class, class, class, template <class> class> class Multiplier, \
 				template <class> class Truncator, class Allocator
-#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Expo,I,Multiplier,Truncator,Allocator
+#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Key,I,Multiplier,Truncator,Allocator
 #define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
-#define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Expo,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
+#define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Key,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
 #define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
 #define __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL_CF >
@@ -56,7 +56,7 @@ namespace piranha
 				public __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
 	{
-			typedef monomial < Cf, Expo, '!', Allocator > term_type_;
+			typedef monomial < Cf, Key, '!', Allocator > term_type_;
 			typedef typename term_type_::cf_type cf_type;
 			typedef typename term_type_::key_type key_type;
 			typedef Allocator allocator_type;
