@@ -36,10 +36,11 @@ BOOST_PYTHON_MODULE(_Dpoly)
 
 	class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
 									   std::string("Multivariate polynomial with double precision coefficients."));
-	//series_trigonometric_instantiation(inst);
 	common_polynomial_instantiation(inst);
+	series_special_functions_instantiation(inst);
 	class_<manipulators::dpolyc> instc = series_basic_instantiation<manipulators::dpolyc>(std::string("dpolyc"),
 									  std::string("Multivariate polynomial with complex double precision coefficients."));
+	common_polynomial_instantiation(instc);
 	series_complex_instantiation(instc);
 	//ps_instantiate_differential_specifics(inst);
 	/*ps_instantiate_real_specifics(inst);

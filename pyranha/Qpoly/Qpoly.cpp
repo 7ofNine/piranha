@@ -38,6 +38,7 @@ BOOST_PYTHON_MODULE(_Qpoly)
     std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
   //series_trigonometric_instantiation(inst);
   common_polynomial_instantiation(inst);
+  series_special_functions_instantiation(inst);
   //ps_instantiate_differential_specifics(inst);
   /*ps_instantiate_real_specifics(inst);
   def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
