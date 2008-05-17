@@ -67,6 +67,7 @@ namespace pyranha
 		inst.def(boost::python::self - double());
 		inst.def(double() - boost::python::self);
 		inst.def(boost::python::self - boost::python::self);
+		inst.def(-boost::python::self);
 		// Multiplication.
 		inst.def(boost::python::self *= piranha::max_fast_int());
 		inst.def(boost::python::self *= double());

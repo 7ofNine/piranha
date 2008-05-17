@@ -89,6 +89,14 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::operator-() const
+	{
+		Derived retval(*derived_const_cast);
+		retval *= (max_fast_int)(-1);
+		return retval;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const max_fast_int &n)
 	{
 		return derived_cast->mult_by(n, m_arguments);

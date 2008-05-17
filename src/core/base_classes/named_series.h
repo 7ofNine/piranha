@@ -75,6 +75,7 @@ namespace piranha
 			Derived &operator-=(const max_fast_int &);
 			Derived &operator-=(const double &);
 			Derived &operator-=(const Derived &);
+			Derived operator-() const;
 			Derived &operator*=(const max_fast_int &);
 			Derived &operator*=(const double &);
 			Derived &operator*=(const Derived &);
