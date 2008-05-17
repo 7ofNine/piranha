@@ -109,7 +109,7 @@ namespace piranha
 	Allocator,COMPLEX_NAMED_SERIES(series_name) >
 #define COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_NAMED_SERIES(series_name) >
 
-#define COMPLEX_NAMED_SERIES_CTORS \
+#define COMPLEX_NAMED_SERIES_CTORS(complex_toolbox) \
 	explicit complex(const complex<piranha::max_fast_int> &cn) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(cn,named_ancestor::m_arguments); \
@@ -120,11 +120,11 @@ namespace piranha
 	} \
 	explicit complex(const value_type &r) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
-		COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real(r); \
+		complex_toolbox::construct_from_real(r); \
 	} \
 	explicit complex(const value_type &r, const value_type &i) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
-		COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag(r, i); \
+		complex_toolbox::construct_from_real_imag(r, i); \
 	}
 
 }

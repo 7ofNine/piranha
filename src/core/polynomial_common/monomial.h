@@ -52,8 +52,9 @@ namespace piranha
 			/**
 			 * Constructs from piranha::monomial with optionally different coefficient type.
 			 */
-// 			template <class Cf2>
-// 			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term): ancestor(term) {}
+			template <class Cf2, class ArgsTuple>
+			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term, const ArgsTuple &a):
+				ancestor(term,a) {}
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.

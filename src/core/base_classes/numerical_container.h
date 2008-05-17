@@ -151,9 +151,9 @@ namespace piranha
 				return divide_by_generic(x);
 			}
 			// Multiply and add.
-			template <class ArgsTuple>
-			void addmul(const Derived &x1, const Derived &x2, const ArgsTuple &) {
-				m_value += x1.m_value * x2.m_value;
+			template <class Derived2, class ArgsTuple>
+			void addmul(const Derived &x1, const Derived2 &x2, const ArgsTuple &) {
+				m_value += x1.m_value * x2.value();
 			}
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const {

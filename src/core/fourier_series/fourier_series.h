@@ -159,7 +159,7 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
-			COMPLEX_NAMED_SERIES_CTORS;
+			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 			// Needed getters and setters.
 			template <int N>
 			typename container_type::template nth_index<N>::type &nth_index() {

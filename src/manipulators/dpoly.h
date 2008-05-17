@@ -21,6 +21,8 @@
 #ifndef PIRANHA_DPOLY_H
 #define PIRANHA_DPOLY_H
 
+#include <complex>
+
 #include "../core/base_classes/common_indices.h"
 #include "../core/base_classes/null_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
@@ -40,6 +42,8 @@ namespace piranha
 		polynomial_multiplier,
 		null_truncator
 		> dpoly;
+
+		typedef std::complex<dpoly> dpolyc;
 	}
 }
 

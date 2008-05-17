@@ -24,11 +24,13 @@
 #include <boost/operators.hpp>
 #include <boost/multi_index_container.hpp>
 #include <cmath>
+#include <complex>
 #include <memory> // For default allocator.
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
@@ -119,6 +121,7 @@ namespace piranha
 			friend class POLYNOMIAL_BASE_ANCESTOR;
 			friend class POLYNOMIAL_MULT_ANCESTOR;
 			friend class POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class named_series_complex_toolbox<POLYNOMIAL>;
 			// Override base_series::real_pow with the one from the common polynomial toolbox.
 			using POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
 		public:
@@ -136,6 +139,88 @@ namespace piranha
 				nth_index<1>().max_load_factor(settings::load_factor());
 				named_ancestor::template construct_from_psym<0>(p);
 			}
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
+	};
+}
+
+#define COMPLEX_POLYNOMIAL_TERM COMPLEX_NAMED_SERIES_TERM(piranha::monomial)
+#define COMPLEX_POLYNOMIAL COMPLEX_NAMED_SERIES(piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_NAMED_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_NAMED_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
+		piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
+#define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
+
+namespace std
+{
+	template < NAMED_SERIES_TP_DECL >
+	class complex<POLYNOMIAL>:
+				public COMPLEX_POLYNOMIAL_BASE_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_NAMED_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_MULT_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
+				boost::ring_operators < COMPLEX_POLYNOMIAL,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
+				boost::dividable < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
+				boost::dividable < COMPLEX_POLYNOMIAL, double,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, POLYNOMIAL,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, complex<piranha::max_fast_int>,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, complex<double>,
+				boost::dividable < COMPLEX_POLYNOMIAL, complex<piranha::max_fast_int>,
+				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
+				> > > > > > > > > >
+	{
+			typedef COMPLEX_POLYNOMIAL_TERM term_type_;
+			typedef Allocator allocator_type;
+			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
+			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			friend class COMPLEX_POLYNOMIAL_NAMED_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
+			friend class piranha::base_series_complex_toolbox<POLYNOMIAL>;
+		public:
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::subtract;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::mult_by;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::divide_by;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator+=;
+			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator+=;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator-=;
+			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator-=;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator*=;
+			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator*=;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator/=;
+			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
+			// Needed typedefs.
+			typedef POLYNOMIAL value_type;
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			// Ctors.
+			NAMED_SERIES_CTORS(complex);
+			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
 			// Needed getters and setters.
 			template <int N>
 			typename container_type::template nth_index<N>::type &nth_index() {

@@ -32,14 +32,17 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Dpoly)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
-    std::string("Multivariate polynomial with double precision coefficients."));
-  //series_trigonometric_instantiation(inst);
-  common_polynomial_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+	class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
+									   std::string("Multivariate polynomial with double precision coefficients."));
+	//series_trigonometric_instantiation(inst);
+	common_polynomial_instantiation(inst);
+	class_<manipulators::dpolyc> instc = series_basic_instantiation<manipulators::dpolyc>(std::string("dpolyc"),
+									  std::string("Multivariate polynomial with complex double precision coefficients."));
+	series_complex_instantiation(instc);
+	//ps_instantiate_differential_specifics(inst);
+	/*ps_instantiate_real_specifics(inst);
+	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+	  "Bessel function of the first kind, power series implementation.");*/
 }
