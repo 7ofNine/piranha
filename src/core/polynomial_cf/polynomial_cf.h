@@ -34,42 +34,39 @@
 #include "../proxies.h"
 #include "../settings.h"
 
-#define __PIRANHA_POLYNOMIAL_CF_TP_DECL class Cf, class Key, template <class> class I, \
-				template <class, class, class, template <class> class> class Multiplier, \
-				template <class> class Truncator, class Allocator
-#define __PIRANHA_POLYNOMIAL_CF_TP Cf,Key,I,Multiplier,Truncator,Allocator
-#define __PIRANHA_POLYNOMIAL_CF polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP>
-#define __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_series<monomial<Cf,Key,'!',Allocator>,',',Allocator,__PIRANHA_POLYNOMIAL_CF >
-#define __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_series< __PIRANHA_POLYNOMIAL_CF >
-#define __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR series_multiplication< __PIRANHA_POLYNOMIAL_CF, Multiplier, Truncator>
-#define __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR common_polynomial_toolbox< __PIRANHA_POLYNOMIAL_CF >
-#define __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POLYNOMIAL_CF >
+#define POLYNOMIAL_CF_TERM E1_SERIES_TERM(piranha::monomial)
+#define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
+#define POLYNOMIAL_CF_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf)
+#define POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< POLYNOMIAL_CF >
+#define POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>
+#define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL_CF >
+#define POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< POLYNOMIAL_CF >
 
 namespace piranha
 {
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
-	template <__PIRANHA_POLYNOMIAL_CF_TP_DECL>
+	template <E0_SERIES_TP_DECL>
 	class polynomial_cf:
-				public __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
-				public __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
+				public POLYNOMIAL_CF_BASE_ANCESTOR,
+				public POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR,
+				public POLYNOMIAL_CF_CF_ANCESTOR,
+				public POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
+				public POLYNOMIAL_CF_MULT_ANCESTOR
 	{
-			typedef monomial < Cf, Key, '!', Allocator > term_type_;
+			typedef POLYNOMIAL_CF_TERM term_type_;
 			typedef typename term_type_::cf_type cf_type;
 			typedef typename term_type_::key_type key_type;
 			typedef Allocator allocator_type;
-			typedef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
-			typedef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
+			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
+			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
 			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
-			friend class __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR;
-			friend class __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR;
-			friend class __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR;
+			friend class POLYNOMIAL_CF_CF_ANCESTOR;
+			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
+			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
 			// Specify we will use the real_pow from the polynomial toolbox.
-			using __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR::real_pow;
+			using POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -111,26 +108,17 @@ namespace piranha
 	};
 
 	// Specialisation of cf mult proxy to use reference.
-	template < __PIRANHA_POLYNOMIAL_CF_TP_DECL >
-	class cf_mult_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >:
-				public reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> >
+	template < E0_SERIES_TP_DECL >
+	class cf_mult_proxy<polynomial_cf<E0_SERIES_TP> >:
+				public reference_proxy<polynomial_cf<E0_SERIES_TP> >
 	{
-			typedef reference_proxy<polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> > ancestor;
+			typedef reference_proxy<polynomial_cf<E0_SERIES_TP> > ancestor;
 		public:
 			cf_mult_proxy(): ancestor() {}
-			void operator=(const polynomial_cf<__PIRANHA_POLYNOMIAL_CF_TP> &cf) {
+			void operator=(const polynomial_cf<E0_SERIES_TP> &cf) {
 				ancestor::assignment(cf);
 			}
 	};
 }
-
-#undef __PIRANHA_POLYNOMIAL_CF_TP_DECL
-#undef __PIRANHA_POLYNOMIAL_CF_TP
-#undef __PIRANHA_POLYNOMIAL_CF
-#undef __PIRANHA_POLYNOMIAL_CF_BASE_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_CF_CF_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_CF_MULT_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_CF_COMMON_ANCESTOR
-#undef __PIRANHA_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR
 
 #endif

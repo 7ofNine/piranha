@@ -159,6 +159,10 @@ namespace piranha
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
 #define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
 	Allocator,E0_SERIES(series_name) >
+
+#define E1_SERIES_TERM(term_name) term_name<Cf,Key,'!',Allocator>
+#define E1_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E1_SERIES_TERM(term_name),',', \
+	Allocator,E0_SERIES(series_name) >
 }
 
 #include "base_series_io.h"
