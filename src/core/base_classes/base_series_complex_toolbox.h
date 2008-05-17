@@ -84,26 +84,11 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
-				// TODO: share this code with below.
-				if (cn.real() == 0 and cn.imag() == 0) {
-					Derived retval;
-					derived_cast->swap_terms(retval);
-				} else if (cn.real() != 1 or cn.imag() != 0) {
-					Derived retval(derived_cast->multiply_coefficients_by(cn, args_tuple));
-					derived_cast->swap_terms(retval);
-				}
-				return *derived_cast;
+				return mult_by_complex(cn, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
-				if (cx.real() == 0 and cx.imag() == 0) {
-					Derived retval;
-					derived_cast->swap_terms(retval);
-				} else if (cx.real() != 1 or cx.imag() != 0) {
-					Derived retval(derived_cast->multiply_coefficients_by(cx, args_tuple));
-					derived_cast->swap_terms(retval);
-				}
-				return *derived_cast;
+				return mult_by_complex(cx, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
@@ -114,24 +99,11 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
-				// TODO: share this code with below.
-				if (cn.real() == 0 and cn.imag() == 0) {
-					throw division_by_zero();
-				} else if (cn.real() != 1 or cn.imag() != 0) {
-					Derived retval(derived_cast->divide_coefficients_by(cn, args_tuple));
-					derived_cast->swap_terms(retval);
-				}
-				return *derived_cast;
+				return divide_by_complex(cn, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
-				if (cx.real() == 0 and cx.imag() == 0) {
-					throw division_by_zero();
-				} else if (cx.real() != 1 or cx.imag() != 0) {
-					Derived retval(derived_cast->divide_coefficients_by(cx, args_tuple));
-					derived_cast->swap_terms(retval);
-				}
-				return *derived_cast;
+				return divide_by_complex(cx, args_tuple);
 			}
 		protected:
 			template <int N, class Real, class ArgsTuple>
@@ -188,6 +160,28 @@ namespace piranha
 					tmp.m_cf.imag(i_it->m_cf, args_tuple);
 					it_hint = derived_cast->insert(tmp, args_tuple, it_hint);
 				}
+			}
+		private:
+			template <class Complex, class ArgsTuple>
+			Derived &divide_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
+				if (c.real() == 0 and c.imag() == 0) {
+					throw division_by_zero();
+				} else if (c.real() != 1 or c.imag() != 0) {
+					Derived retval(derived_cast->divide_coefficients_by(c, args_tuple));
+					derived_cast->swap_terms(retval);
+				}
+				return *derived_cast;
+			}
+			template <class Complex, class ArgsTuple>
+			Derived &mult_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
+				if (c.real() == 0 and c.imag() == 0) {
+					Derived retval;
+					derived_cast->swap_terms(retval);
+				} else if (c.real() != 1 or c.imag() != 0) {
+					Derived retval(derived_cast->multiply_coefficients_by(c, args_tuple));
+					derived_cast->swap_terms(retval);
+				}
+				return *derived_cast;
 			}
 	};
 }
