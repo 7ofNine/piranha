@@ -96,6 +96,19 @@ namespace piranha
 				return derived_cast->divide_by_generic(c);
 			}
 	};
+
+#define COMPLEX_NUMERICAL_CONTAINER_CTORS \
+	template <class ArgsTuple> \
+	explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &): \
+			complex_toolbox::numerical_container_complex_toolbox(c) {} \
+	template <class ArgsTuple> \
+	explicit complex(const std::complex<double> &c, const ArgsTuple &): \
+			complex_toolbox::numerical_container_complex_toolbox(c) {} \
+	template <class ArgsTuple> \
+	explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {} \
+	template <class ArgsTuple> \
+	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): \
+			complex_toolbox::numerical_container_complex_toolbox(r, i) {}
 }
 
 #undef derived_const_cast

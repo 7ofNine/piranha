@@ -45,21 +45,8 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
-			// Ctors and dtor.
-			/// Empty constructor.
-			explicit double_cf(): ancestor::numerical_container() {}
-			/// Constructor from string.
-			template <class ArgsTuple>
-			explicit double_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
-			/// Constructor from integer.
-			template <class ArgsTuple>
-			explicit double_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
-			/// Constructor from double.
-			template <class ArgsTuple>
-			explicit double_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
-			/// Constructor from psym.
-			template <class ArgsTuple>
-			explicit double_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+			// Ctors.
+			NUMERICAL_CONTAINER_CTORS(double_cf);
 			max_fast_int get_int() const {
 				const max_fast_int retval((max_fast_int)nearbyint(ancestor::m_value));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
@@ -96,7 +83,6 @@ namespace std
 	{
 			typedef piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
-			typedef complex self;
 			friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
 		public:
 			typedef piranha::double_cf value_type;
@@ -129,36 +115,8 @@ namespace std
 			      using complex_toolbox::set_imag;*/
 			// Start implementation of basic pseries coefficient interface.
 			//------------
-			// Basic ctors and dtor.
-			explicit complex(): ancestor::numerical_container() {}
-			template <class ArgsTuple>
-			explicit complex(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
-			template <class ArgsTuple>
-			explicit complex(const piranha::max_fast_int &n, const ArgsTuple &a): ancestor::numerical_container(n, a) {}
-			template <class ArgsTuple>
-			explicit complex(const double &x, const ArgsTuple &a): ancestor::numerical_container(x, a) {}
-			complex(const complex &c): ancestor::numerical_container(c), complex_toolbox::numerical_container_complex_toolbox(c) {}
-			template <class ArgsTuple>
-			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
-			// Complex specific contructors.
-			template <class ArgsTuple>
-			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):
-					complex_toolbox::numerical_container_complex_toolbox(c) {}
-			template <class ArgsTuple>
-			explicit complex(const std::complex<double> &c, const ArgsTuple &):
-					complex_toolbox::numerical_container_complex_toolbox(c) {}
-			template <class ArgsTuple>
-			explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {}
-			template <class ArgsTuple>
-			explicit complex(const value_type &r, const value_type &i, const ArgsTuple &):
-					complex_toolbox::numerical_container_complex_toolbox(r, i) {}
-			// Operators.
-			complex &operator=(const self &val2) {
-				return assign_self(val2);
-			}
-			complex &operator=(const value_type &r2) {
-				return assign_self(r2);
-			}
+			NUMERICAL_CONTAINER_CTORS(complex);
+			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			// End implementation of complex basic pseries coefficient interface.
 			//------------
 			template <class ArgsTuple>

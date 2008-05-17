@@ -211,6 +211,17 @@ namespace piranha
 			// Data member.
 			T m_value;
 	};
+
+#define NUMERICAL_CONTAINER_CTORS(derived) \
+	explicit derived(): ancestor::numerical_container() {} \
+	template <class ArgsTuple> \
+	explicit derived(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {} \
+	template <class ArgsTuple> \
+	explicit derived(const piranha::max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
+	template <class ArgsTuple> \
+	explicit derived(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
+	template <class ArgsTuple> \
+	explicit derived(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
 }
 
 namespace std

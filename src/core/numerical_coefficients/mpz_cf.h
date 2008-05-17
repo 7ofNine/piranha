@@ -45,21 +45,8 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpz_class, mpz_cf> ancestor;
 		public:
-			// Ctors and dtor.
-			/// Empty constructor.
-			explicit mpz_cf(): ancestor::numerical_container() {}
-			/// Constructor from string.
-			template <class ArgsTuple>
-			explicit mpz_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
-			/// Constructor from integer.
-			template <class ArgsTuple>
-			explicit mpz_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
-			/// Constructor from double.
-			template <class ArgsTuple>
-			explicit mpz_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
-			/// Constructor from psym.
-			template <class ArgsTuple>
-			explicit mpz_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+			// Ctors
+			NUMERICAL_CONTAINER_CTORS(mpz_cf);
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -115,84 +102,38 @@ namespace piranha
 	};
 }
 
-
 namespace std
 {
-//   template <>
-//     struct complex<piranha::mpf_cf>:
-//     public piranha::numerical_container<complex<mpf_class>,complex<piranha::mpf_cf> >,
-//     public piranha::numerical_container_complex_toolbox<piranha::mpf_cf>
-//   {
-//     private:
-//       typedef piranha::numerical_container<complex<mpf_class>,complex<piranha::mpf_cf> > ancestor;
-//       typedef piranha::numerical_container_complex_toolbox<piranha::mpf_cf> complex_toolbox;
-//       typedef complex self;
-//       friend class piranha::numerical_container_complex_toolbox<piranha::mpf_cf>;
-//     public:
-//       typedef piranha::mpf_cf value_type;
-// //       using ancestor::swap;
-// //       using ancestor::print_plain;
-// //       using ancestor::print_latex;
-// //       using ancestor::checkup;
-// //       using ancestor::invert_sign;
-// //       using ancestor::is_ignorable;
-// //       using ancestor::is_insertable;
-// //       using ancestor::needs_padding;
-// //       using ancestor::pad_right;
-// //       using ancestor::apply_layout;
-// //       using ancestor::add;
-// //       using ancestor::subtract;
-// //       using ancestor::mult_by;
-// //       using ancestor::mult_by_self;
-// //       using ancestor::divide_by;
-// //       using complex_toolbox::mult_by;
-// //       using complex_toolbox::divide_by;
-// //       using complex_toolbox::mult_by_self;
-// //       using complex_toolbox::real;
-// //       using complex_toolbox::imag;
-// //       using complex_toolbox::set_real;
-// //       using complex_toolbox::set_imag;
-//       // Start implementation of basic pseries coefficient interface.
-//       //------------
-//       // Basic ctors and dtor.
-//       explicit complex():ancestor::numerical_container() {}
-//       template <class ArgsTuple>
-//         explicit complex(const std::string &s, const ArgsTuple &a):ancestor::numerical_container(s,a) {}
-//       explicit complex(int n):ancestor::numerical_container(n) {}
-//       explicit complex(const double &x):ancestor::numerical_container(x) {}
-//       complex(const complex &c):ancestor::numerical_container(c),complex_toolbox::numerical_container_complex_toolbox(c) {}
-//       // Complex specific contructors.
-//       explicit complex(int r, int i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
-//       explicit complex(const std::complex<int> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
-//       explicit complex(const double &r, const double &i):complex_toolbox::numerical_container_complex_toolbox(r,i) {}
-//       explicit complex(const std::complex<double> &c):complex_toolbox::numerical_container_complex_toolbox(c) {}
-//       explicit complex(const value_type &r):complex_toolbox::numerical_container_complex_toolbox(r) {}
-//       explicit complex(const value_type &r, const value_type &i):
-//       complex_toolbox::numerical_container_complex_toolbox(r,i) {}
-//       // Operators.
-//       self &operator=(const self &val2)
-//       {
-//         return assign_self(val2);
-//       }
-//       self &operator=(const value_type &r2)
-//       {
-//         return assign_self(r2);
-//       }
-//       // Probing.
-//       template <class ArgsTuple>
-//         double norm(const ArgsTuple &) const
-//       {
-//         // NOTICE: the success of this probably depends upon std::complex implementation...
-//         return std::abs(g_value()).get_d();
-//       }
-//       // Override evaluation.
-//       template <class ArgsTuple>
-//         std::complex<double> t_eval(const double &, const ArgsTuple &) const
-//       {
-//         return std::complex<double>(g_value().real().get_d(),g_value().imag().get_d());
-//       }
-//       // End implementation of complex basic pseries coefficient interface.
-//       //------------
-//   };
+	template <>
+	class complex<piranha::mpz_cf>:
+				public piranha::numerical_container<std::complex<mpz_class>, complex<piranha::mpz_cf> >,
+				public piranha::numerical_container_complex_toolbox<piranha::mpz_cf>
+	{
+			typedef piranha::numerical_container<std::complex<mpz_class>, complex<piranha::mpz_cf> > ancestor;
+			typedef piranha::numerical_container_complex_toolbox<piranha::mpz_cf> complex_toolbox;
+			friend class piranha::numerical_container_complex_toolbox<piranha::mpz_cf>;
+		public:
+			typedef piranha::mpz_cf value_type;
+			using ancestor::mult_by;
+			using complex_toolbox::mult_by;
+			using ancestor::divide_by;
+			using complex_toolbox::divide_by;
+			NUMERICAL_CONTAINER_CTORS(complex);
+			COMPLEX_NUMERICAL_CONTAINER_CTORS;
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const {
+				return std::abs(complex<double>(m_value.real().get_d(),m_value.imag().get_d()));
+			}
+			template <class ArgsTuple>
+			complex<double> eval(const double &, const ArgsTuple &) const {
+				return complex<double>(m_value.real().get_d(),m_value.imag().get_d());
+			}
+			template <class ArgsTuple>
+			complex pow(const double &y, const ArgsTuple &) const {
+				complex retval;
+				retval.m_value = std::pow(ancestor::m_value, y);
+				return retval;
+			}
+	};
 }
 #endif
