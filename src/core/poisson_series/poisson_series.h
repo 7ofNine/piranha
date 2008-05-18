@@ -39,61 +39,56 @@
 #include "../poisson_series_common/celmec_toolbox.h"
 #include "../polynomial_cf/polynomial_cf.h"
 
-#define __PIRANHA_POISSON_SERIES_TP_DECL class Cf, class Expo, class Trig, \
-						template <class> class IPoly, template <class> class ITrig, \
-				template <class, class, class, template <class> class> class MultPoly, \
-				template <class, class, class, template <class> class> class MultTrig, \
-				template <class> class TruncPoly, template <class> class TruncTrig, \
-				class Allocator
-#define __PIRANHA_POISSON_SERIES_TP Cf,Expo,Trig,IPoly,ITrig,MultPoly,MultTrig,TruncPoly,TruncTrig,Allocator
-#define __PIRANHA_POISSON_SERIES poisson_series<__PIRANHA_POISSON_SERIES_TP>
-#define __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF polynomial_cf<Cf,Expo,IPoly,MultPoly,TruncPoly,Allocator>
-#define __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_series<poisson_series_term< \
-	__PIRANHA_POISSON_SERIES_POLYNOMIAL_CF,Trig,'|',Allocator>, \
-	'\n',Allocator,__PIRANHA_POISSON_SERIES >
-#define __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_series<boost::tuple<poly_args_descr,trig_args_descr>,__PIRANHA_POISSON_SERIES >
-#define __PIRANHA_POISSON_SERIES_MULT_ANCESTOR series_multiplication< __PIRANHA_POISSON_SERIES, MultTrig, TruncTrig>
-#define __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR common_poisson_series_toolbox< __PIRANHA_POISSON_SERIES >
-#define __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR power_series<0,__PIRANHA_POISSON_SERIES >
-#define __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< __PIRANHA_POISSON_SERIES >
-#define __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< __PIRANHA_POISSON_SERIES >
+#define POISSON_SERIES E1_SERIES(piranha::poisson_series)
+#define POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,I0,Mult0,Trunc0,Allocator>
+#define POISSON_SERIES_TERM piranha::poisson_series_term < POISSON_SERIES_POLYNOMIAL_CF, Key1, '|', Allocator >
+#define POISSON_SERIES_BASE_ANCESTOR piranha::base_series<piranha::poisson_series_term< \
+	POISSON_SERIES_POLYNOMIAL_CF,Key1,'|',Allocator>, \
+	'\n',Allocator,POISSON_SERIES >
+#define POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
+	POISSON_SERIES >
+#define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
+#define POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< POISSON_SERIES >
+#define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, POISSON_SERIES >
+#define POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
+#define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
 
 namespace piranha
 {
-	template < __PIRANHA_POISSON_SERIES_TP_DECL = std::allocator<char> >
+	template < E1_SERIES_TP_DECL = std::allocator<char> >
 	class poisson_series:
-				public __PIRANHA_POISSON_SERIES_BASE_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_MULT_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
-				public __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR,
-				boost::ring_operators < __PIRANHA_POISSON_SERIES,
-				boost::ring_operators < __PIRANHA_POISSON_SERIES, max_fast_int,
-				boost::ring_operators < __PIRANHA_POISSON_SERIES, double,
-				boost::dividable < __PIRANHA_POISSON_SERIES, max_fast_int,
-				boost::dividable < __PIRANHA_POISSON_SERIES, double
+				public POISSON_SERIES_BASE_ANCESTOR,
+				public POISSON_SERIES_NAMED_ANCESTOR,
+				public POISSON_SERIES_MULT_ANCESTOR,
+				public POISSON_SERIES_COMMON_ANCESTOR,
+				public POISSON_SERIES_POWER_SERIES_ANCESTOR,
+				public POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
+				public POISSON_SERIES_CELMEC_ANCESTOR,
+				boost::ring_operators < POISSON_SERIES,
+				boost::ring_operators < POISSON_SERIES, max_fast_int,
+				boost::ring_operators < POISSON_SERIES, double,
+				boost::dividable < POISSON_SERIES, max_fast_int,
+				boost::dividable < POISSON_SERIES, double
 				> > > > >
 	{
-			typedef poisson_series_term < __PIRANHA_POISSON_SERIES_POLYNOMIAL_CF, Trig, '|', Allocator > term_type_;
+			typedef POISSON_SERIES_TERM term_type_;
 			typedef typename term_type_::cf_type cf_type;
 			typedef typename term_type_::key_type key_type;
 			typedef Allocator allocator_type;
-			typedef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
-			typedef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
+			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
+			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
 			typedef boost::multi_index_container < term_type_,
-			typename ITrig<term_type_>::type, allocator_type > container_type;
+			typename I1<term_type_>::type, allocator_type > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
-			friend class __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR;
-			friend class __PIRANHA_POISSON_SERIES_BASE_ANCESTOR;
-			friend class __PIRANHA_POISSON_SERIES_MULT_ANCESTOR;
-			friend class __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR;
-			friend class __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR;
-			using __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
+			friend class POISSON_SERIES_NAMED_ANCESTOR;
+			friend class POISSON_SERIES_BASE_ANCESTOR;
+			friend class POISSON_SERIES_MULT_ANCESTOR;
+			friend class POISSON_SERIES_COMMON_ANCESTOR;
+			friend class POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class POISSON_SERIES_CELMEC_ANCESTOR;
+			using POISSON_SERIES_COMMON_ANCESTOR::real_pow;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -101,7 +96,7 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef MultTrig<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, TruncTrig> multiplier_type;
+			typedef Mult1<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(poisson_series);
 			// Ctor from psym.
@@ -126,37 +121,26 @@ namespace piranha
 // Overload standard math functions for Poisson series.
 namespace std
 {
-	template <__PIRANHA_POISSON_SERIES_TP_DECL>
-	piranha::__PIRANHA_POISSON_SERIES cos(const piranha::__PIRANHA_POISSON_SERIES &p)
+	template <E1_SERIES_TP_DECL>
+	POISSON_SERIES cos(const POISSON_SERIES &p)
 	{
-		piranha::__PIRANHA_POISSON_SERIES retval = p.cos();
+		POISSON_SERIES retval = p.cos();
 		return retval;
 	}
 
-	template <__PIRANHA_POISSON_SERIES_TP_DECL>
-	piranha::__PIRANHA_POISSON_SERIES sin(const piranha::__PIRANHA_POISSON_SERIES &p)
+	template <E1_SERIES_TP_DECL>
+	POISSON_SERIES sin(const POISSON_SERIES &p)
 	{
-		piranha::__PIRANHA_POISSON_SERIES retval = p.sin();
+		POISSON_SERIES retval = p.sin();
 		return retval;
 	}
 
-	template < __PIRANHA_POISSON_SERIES_TP_DECL >
-	piranha::__PIRANHA_POISSON_SERIES pow(const piranha::__PIRANHA_POISSON_SERIES &x, const double &y)
+	template <E1_SERIES_TP_DECL>
+	POISSON_SERIES pow(const POISSON_SERIES &x, const double &y)
 	{
-		piranha::__PIRANHA_POISSON_SERIES retval(x.pow(y));
+		POISSON_SERIES retval(x.pow(y));
 		return retval;
 	}
 }
-
-#undef __PIRANHA_POISSON_SERIES_TP_DECL
-#undef __PIRANHA_POISSON_SERIES_TP
-#undef __PIRANHA_POISSON_SERIES
-#undef __PIRANHA_POISSON_SERIES_BASE_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_NAMED_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_MULT_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_COMMON_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_POWER_SERIES_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR
-#undef __PIRANHA_POISSON_SERIES_CELMEC_ANCESTOR
 
 #endif

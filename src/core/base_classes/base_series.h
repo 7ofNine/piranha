@@ -160,7 +160,15 @@ namespace piranha
 #define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
 	Allocator,E0_SERIES(series_name) >
 
+#define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
+						template <class> class I0, template <class> class I1, \
+				template <class, class, class, template <class> class> class Mult0, \
+				template <class, class, class, template <class> class> class Mult1, \
+				template <class> class Trunc0, template <class> class Trunc1, \
+				class Allocator
+#define E1_SERIES_TP Cf,Key0,Key1,I0,I1,Mult0,Mult1,Trunc0,Trunc1,Allocator
 #define E1_SERIES_TERM(term_name) term_name<Cf,Key,'!',Allocator>
+#define E1_SERIES(series_name) series_name<E1_SERIES_TP>
 #define E1_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E1_SERIES_TERM(term_name),',', \
 	Allocator,E0_SERIES(series_name) >
 }
