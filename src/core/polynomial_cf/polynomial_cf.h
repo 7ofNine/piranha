@@ -108,19 +108,6 @@ namespace piranha
 		private:
 			container_type  m_container;
 	};
-
-	// Specialisation of cf mult proxy to use reference.
-	template < E0_SERIES_TP_DECL >
-	class cf_mult_proxy< POLYNOMIAL_CF >:
-				public reference_proxy< POLYNOMIAL_CF >
-	{
-			typedef reference_proxy< POLYNOMIAL_CF > ancestor;
-		public:
-			cf_mult_proxy(): ancestor() {}
-			void operator=(const POLYNOMIAL_CF &cf) {
-				ancestor::assignment(cf);
-			}
-	};
 }
 
 #define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_E1_SERIES_TERM(piranha::monomial)
@@ -187,7 +174,20 @@ namespace std
 
 namespace piranha
 {
-	// Specialisation of cf mult proxy to use reference.
+	// Specialisation of cf mult proxy for polynomial_cf to use reference.
+	template < E0_SERIES_TP_DECL >
+	class cf_mult_proxy< POLYNOMIAL_CF >:
+				public reference_proxy< POLYNOMIAL_CF >
+	{
+			typedef reference_proxy< POLYNOMIAL_CF > ancestor;
+		public:
+			cf_mult_proxy(): ancestor() {}
+			void operator=(const POLYNOMIAL_CF &cf) {
+				ancestor::assignment(cf);
+			}
+	};
+
+	// Specialisation of cf mult proxy for complex polynomial_cf to use reference.
 	template < E0_SERIES_TP_DECL >
 	class cf_mult_proxy< COMPLEX_POLYNOMIAL_CF >:
 				public reference_proxy< COMPLEX_POLYNOMIAL_CF >
