@@ -22,8 +22,10 @@
 #define PIRANHA_POLYNOMIAL_CF_H
 
 #include <boost/multi_index_container.hpp>
+#include <complex>
 
 #include "../base_classes/base_series.h"
+#include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/cf_series.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
@@ -75,7 +77,7 @@ namespace piranha
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<polynomial_cf, polynomial_cf, boost::tuples::null_type, Truncator> multiplier_type;
-			__PIRANHA_CF_SERIES_CTORS(polynomial_cf);
+			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
 				nth_index<1>().max_load_factor(settings::load_factor());
@@ -118,6 +120,68 @@ namespace piranha
 			void operator=(const polynomial_cf<E0_SERIES_TP> &cf) {
 				ancestor::assignment(cf);
 			}
+	};
+}
+
+#define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_E1_SERIES_TERM(piranha::monomial)
+#define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::polynomial_cf)
+#define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_E1_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf)
+#define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< COMPLEX_POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>
+#define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POLYNOMIAL_CF >
+
+namespace std
+{
+	template < E0_SERIES_TP_DECL >
+	class complex<POLYNOMIAL_CF>:
+				public COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX
+	{
+			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type_;
+			typedef typename term_type_::cf_type cf_type;
+			typedef typename term_type_::key_type key_type;
+			typedef Allocator allocator_type;
+			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
+			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
+			// Specify we will use the real_pow from the polynomial toolbox.
+			using COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+		public:
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef Multiplier<complex, complex, boost::tuples::null_type, Truncator> multiplier_type;
+			CF_SERIES_CTORS(complex);
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
+				base_ancestor::construct_from_psym_p(p, n, a);
+			}
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
 	};
 }
 

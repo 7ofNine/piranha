@@ -23,6 +23,7 @@
 
 #include <complex>
 
+#include "base_series.h"
 #include "../exceptions.h"
 #include "../p_assert.h"
 
@@ -188,6 +189,10 @@ namespace piranha
 #define COMPLEX_E0_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
 #define COMPLEX_E0_SERIES(series_name) std::complex<E0_SERIES(series_name)>
 #define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
+	Allocator,COMPLEX_E0_SERIES(series_name) >
+
+#define COMPLEX_E1_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'!',Allocator>
+#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_E1_SERIES_TERM(term_name),',', \
 	Allocator,COMPLEX_E0_SERIES(series_name) >
 }
 

@@ -24,7 +24,9 @@
 #include <iostream>
 #include <string>
 
+#include "../integer_typedefs.h" // For ctor macros
 #include "../exceptions.h"
+#include "../settings.h"
 #include "../type_traits.h" // For specialisation of type trait and eval_type.
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -72,24 +74,24 @@ namespace piranha
 
 	// Useful macro for ctors in coefficient series.
 	// TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
-#define __PIRANHA_CF_SERIES_CTORS(series_name) \
-	series_name() {nth_index<1>().max_load_factor(settings::load_factor());} \
+#define CF_SERIES_CTORS(series_name) \
+	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
 	template <class ArgsTuple> \
 	explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		cf_ancestor::construct_from_string(s,args_tuple); \
 	} \
 	template <class ArgsTuple> \
-	explicit series_name(const max_fast_int &n, const ArgsTuple &a) \
+	explicit series_name(const piranha::max_fast_int &n, const ArgsTuple &a) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
-		nth_index<1>().max_load_factor(settings::load_factor()); \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,a); \
 	}
 }
