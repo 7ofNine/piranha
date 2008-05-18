@@ -36,9 +36,9 @@
 #include "../proxies.h"
 #include "../settings.h"
 
-#define POLYNOMIAL_CF_TERM E1_SERIES_TERM(piranha::monomial)
+#define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
 #define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
-#define POLYNOMIAL_CF_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf)
+#define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!',',')
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< POLYNOMIAL_CF >
 #define POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>
 #define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL_CF >

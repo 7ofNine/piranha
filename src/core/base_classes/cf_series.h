@@ -24,6 +24,7 @@
 #include <iostream>
 #include <string>
 
+#include "base_series.h"
 #include "../integer_typedefs.h" // For ctor macros
 #include "../exceptions.h"
 #include "../settings.h"
@@ -94,6 +95,11 @@ namespace piranha
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,a); \
 	}
+
+#define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>
+#define CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) \
+	piranha::base_series<CF_SERIES_TERM(term_name,term_separator),separator, \
+	Allocator,E0_SERIES(series_name) >
 }
 
 #include "cf_series_io.h"

@@ -40,13 +40,10 @@
 #include "../polynomial_cf/polynomial_cf.h"
 
 #define POISSON_SERIES E1_SERIES(piranha::poisson_series)
-#define POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,I0,Mult0,Trunc0,Allocator>
-#define POISSON_SERIES_TERM piranha::poisson_series_term < POISSON_SERIES_POLYNOMIAL_CF, Key1, '|', Allocator >
-#define POISSON_SERIES_BASE_ANCESTOR piranha::base_series<piranha::poisson_series_term< \
-	POISSON_SERIES_POLYNOMIAL_CF,Key1,'|',Allocator>, \
-	'\n',Allocator,POISSON_SERIES >
-#define POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
-	POISSON_SERIES >
+#define POISSON_SERIES_POLYNOMIAL_CF E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
+#define POISSON_SERIES_TERM E1_SERIES_TERM(poisson_series_term,POISSON_SERIES_POLYNOMIAL_CF)
+#define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
+#define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr,piranha::trig_args_descr,POISSON_SERIES)
 #define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
 #define POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< POISSON_SERIES >
 #define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, POISSON_SERIES >

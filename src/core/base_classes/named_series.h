@@ -127,6 +127,8 @@ namespace piranha
 // Useful macros for named series.
 #define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,E0_SERIES(series_name) >
 
+#define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::named_series<boost::tuple<args1,args2>,series_name >
+
 #define NAMED_SERIES_CTORS(series_name) \
 	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
 	explicit series_name(const std::string &filename) \
