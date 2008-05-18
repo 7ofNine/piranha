@@ -32,13 +32,13 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Qps)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::qps> inst = series_basic_instantiation<manipulators::qps>(std::string("qps"),
-    std::string("Poisson series with rational coefficients."));
-  common_poisson_series_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+	class_<manipulators::qps> inst = series_basic_instantiation<manipulators::qps>(std::string("qps"),
+									 std::string("Poisson series with rational coefficients."));
+	common_poisson_series_instantiation(inst);
+	//ps_instantiate_differential_specifics(inst);
+	/*ps_instantiate_real_specifics(inst);
+	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+	  "Bessel function of the first kind, power series implementation.");*/
 }

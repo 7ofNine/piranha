@@ -32,13 +32,13 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Dps)
 {
-  translate_exceptions();
+	translate_exceptions();
 
-  class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
-    std::string("Poisson series with double precision coefficients."));
-  common_poisson_series_instantiation(inst);
-  //ps_instantiate_differential_specifics(inst);
-  /*ps_instantiate_real_specifics(inst);
-  def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-    "Bessel function of the first kind, power series implementation.");*/
+	class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
+									 std::string("Poisson series with double precision coefficients."));
+	common_poisson_series_instantiation(inst);
+	//ps_instantiate_differential_specifics(inst);
+	/*ps_instantiate_real_specifics(inst);
+	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
+	  "Bessel function of the first kind, power series implementation.");*/
 }
