@@ -58,6 +58,7 @@ namespace piranha
 					Derived retval;
 					term_type tmp(A);
 					tmp.m_cf = tmp.m_cf.pow(-1, args_tuple);
+					// TODO: Use pow here?
 					tmp.m_key.invert_sign();
 					retval.insert(tmp, args_tuple, retval.template nth_index<0>().end());
 					return retval;
