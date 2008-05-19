@@ -27,25 +27,26 @@
 
 namespace pyranha
 {
-  template <class Exception>
-    inline void exception_translator(const Exception &e)
-  {
-    PyErr_SetString(PyExc_UserWarning,e.what().c_str());
-  }
+	template <class Exception>
+	inline void exception_translator(const Exception &e)
+	{
+		PyErr_SetString(PyExc_UserWarning, e.what().c_str());
+	}
 
-  template <class Exception>
-    inline void register_exception()
-  {
-    boost::python::register_exception_translator<Exception>(exception_translator<Exception>);
-  }
+	template <class Exception>
+	inline void register_exception()
+	{
+		boost::python::register_exception_translator<Exception>(exception_translator<Exception>);
+	}
 
-  inline void translate_exceptions()
-  {
-    register_exception<piranha::not_existing>();
-    register_exception<piranha::not_implemented>();
-    register_exception<piranha::unsuitable>();
-    register_exception<piranha::division_by_zero>();
-  }
+	inline void translate_exceptions()
+	{
+		register_exception<piranha::bad_input>();
+		register_exception<piranha::not_existing>();
+		register_exception<piranha::not_implemented>();
+		register_exception<piranha::unsuitable>();
+		register_exception<piranha::division_by_zero>();
+	}
 }
 
 #endif
