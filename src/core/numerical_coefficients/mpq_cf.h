@@ -28,6 +28,7 @@
 #include "../base_classes/numerical_container.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -102,19 +103,19 @@ namespace piranha
 				// If value = 1, then any power is ok, just return 1.
 				if (m_value == 1) {
 					retval.m_value = 1;
-					return retval;
-				}
-				const max_fast_int pow_n((max_fast_int)nearbyint(y));
-				if (std::abs(pow_n - y) > settings::numerical_zero()) {
-					throw(unsuitable("Cannot raise rational coefficient different from unity to real power."));
-				}
-				if (pow_n < 0) {
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-pow_n));
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-pow_n));
-
 				} else {
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)pow_n);
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)pow_n);
+					const max_fast_int pow_n((max_fast_int)nearbyint(y));
+					if (std::abs(pow_n - y) > settings::numerical_zero()) {
+						throw(unsuitable("Cannot raise rational coefficient different from unity to real power."));
+					}
+					if (pow_n < 0) {
+						mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-pow_n));
+						mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-pow_n));
+
+					} else {
+						mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)pow_n);
+						mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)pow_n);
+					}
 				}
 				return retval;
 			}
@@ -141,11 +142,11 @@ namespace std
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(complex<double>(m_value.real().get_d(),m_value.imag().get_d()));
+				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return complex<double>(m_value.real().get_d(),m_value.imag().get_d());
+				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
@@ -170,7 +171,42 @@ namespace std
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
-				retval.m_value = std::pow(ancestor::m_value, y);
+				retval.m_value = complex<mpq_class>(0, 0);
+				// If value = 1, then any power is ok, just return 1.
+				if (m_value.real() == 1 and m_value.imag() == 0) {
+					retval.m_value.real() = 1;
+				} else {
+					const piranha::max_fast_int pow_n((piranha::max_fast_int)nearbyint(y));
+					if (std::abs(pow_n - y) > piranha::settings::numerical_zero()) {
+						// Let's accept real power only of zero value.
+						if (m_value.real() != 0 or m_value.imag() != 0) {
+							throw(piranha::unsuitable("Cannot raise complex rational coefficient different from unity to real power."));
+						}
+					} else {
+						size_t count;
+						if (pow_n >= 0) {
+							count = (size_t)pow_n;
+							retval.m_value.real() = 1;
+							for (size_t i = 0; i < count; ++i) {
+								retval.m_value *= m_value;
+							}
+						} else {
+							retval.m_value = m_value;
+							const mpq_class div = m_value.real() * m_value.real() + m_value.imag() * m_value.imag();
+							retval.m_value.real() /= div;
+							retval.m_value.imag() /= div;
+							retval.m_value.imag() *= -1;
+							count = (size_t)(-pow_n) - 1;
+							complex<mpq_class> tmp;
+							if (count != 0) {
+								tmp = retval.m_value;
+							}
+							for (size_t i = 0; i < count; ++i) {
+								retval.m_value *= tmp;
+							}
+						}
+					}
+				}
 				return retval;
 			}
 	};

@@ -142,16 +142,32 @@ namespace std
 			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(complex<double>(m_value.real().get_d(),m_value.imag().get_d()));
+				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return complex<double>(m_value.real().get_d(),m_value.imag().get_d());
+				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
-				retval.m_value = std::pow(ancestor::m_value, y);
+				retval.m_value = complex<mpz_class>(0, 0);
+				// If value = 1, then any power is ok, just return 1.
+				if (m_value.real() == 1 and m_value.imag() == 0) {
+					retval.m_value.real() = 1;
+				} else {
+					const piranha::max_fast_int pow_n((piranha::max_fast_int)nearbyint(y));
+					if (std::abs(pow_n - y) > piranha::settings::numerical_zero()) {
+						throw(piranha::unsuitable("Cannot raise complex integer coefficient different from unity to real power."));
+					}
+					if (pow_n < 0) {
+						throw(piranha::unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
+					}
+					retval.m_value.real() = 1;
+					for (size_t i = 0; i < (size_t)pow_n; ++i) {
+						retval.m_value *= m_value;
+					}
+				}
 				return retval;
 			}
 	};
