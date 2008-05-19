@@ -93,9 +93,9 @@ namespace piranha
 		return retval;
 	}
 
-	template <class Series, class ArgsTuple>
+	template <class Series, class Number, class ArgsTuple>
 	Series binomial_expansion(const typename Series::term_type &A, const Series &XoverA,
-							  const double &y, const size_t &n, const ArgsTuple &args_tuple)
+							  const Number &y, const size_t &n, const ArgsTuple &args_tuple)
 	{
 		typedef typename Series::term_type term_type;
 		// Start the binomial expansion.
@@ -111,15 +111,8 @@ namespace piranha
 		Series retval;
 		Series tmp((max_fast_int)1, args_tuple);
 		retval.add(tmp, args_tuple);
-		mpq_class mpq_y;
 		for (size_t i = 1; i <= n; ++i) {
-			// This hack is to make sure we transform y into a fraction as early as possible,
-			// and to do the calculations in rational form. This way we should
-			// minimize the chance of losing precision due to conversion to/from floating point.
-			mpq_y = y;
-			mpq_y -= i;
-			mpq_y += 1;
-			tmp.mult_by(mpq_y.get_d(), args_tuple);
+			tmp.mult_by(y-(max_fast_int)(i)+(max_fast_int)1, args_tuple);
 			tmp.divide_by((max_fast_int)i, args_tuple);
 			tmp.mult_by(XoverA, args_tuple);
 			retval.add(tmp, args_tuple);
