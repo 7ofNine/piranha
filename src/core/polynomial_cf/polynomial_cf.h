@@ -110,9 +110,9 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_E1_SERIES_TERM(piranha::monomial)
+#define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_CF_SERIES_TERM(piranha::monomial,'!')
 #define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::polynomial_cf)
-#define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_E1_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf)
+#define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!',',')
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL_CF >
@@ -142,10 +142,20 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
+			friend class piranha::base_series_complex_toolbox<POLYNOMIAL_CF>;
 			// Specify we will use the real_pow from the polynomial toolbox.
 			using COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
 		public:
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::add;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::subtract;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.
+			typedef POLYNOMIAL_CF value_type;
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
 			typedef typename sorted_index::iterator sorted_iterator;
@@ -153,6 +163,7 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<complex, complex, boost::tuples::null_type, Truncator> multiplier_type;
 			CF_SERIES_CTORS(complex);
+			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
 				nth_index<1>().max_load_factor(piranha::settings::load_factor());

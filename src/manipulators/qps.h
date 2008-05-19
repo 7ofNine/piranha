@@ -21,6 +21,8 @@
 #ifndef PIRANHA_QPS_H
 #define PIRANHA_QPS_H
 
+#include <complex>
+
 #include "../core/base_classes/common_indices.h"
 #include "../core/base_classes/expo_truncator.h"
 #include "../core/base_classes/null_truncator.h"
@@ -47,6 +49,8 @@ namespace piranha
 		expo_truncator,
 		expo_truncator
 		> qps;
+
+		typedef std::complex<qps> qpsc;
 	}
 }
 

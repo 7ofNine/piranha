@@ -24,12 +24,14 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/operators.hpp>
 #include <cmath>
+#include <complex>
 #include <memory> // For default allocator.
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
+#include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
@@ -41,7 +43,7 @@
 
 #define POISSON_SERIES E1_SERIES(piranha::poisson_series)
 #define POISSON_SERIES_POLYNOMIAL_CF E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
-#define POISSON_SERIES_TERM E1_SERIES_TERM(poisson_series_term,POISSON_SERIES_POLYNOMIAL_CF)
+#define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::poisson_series_term,POISSON_SERIES_POLYNOMIAL_CF)
 #define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr,piranha::trig_args_descr,POISSON_SERIES)
 #define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
@@ -85,6 +87,7 @@ namespace piranha
 			friend class POISSON_SERIES_COMMON_ANCESTOR;
 			friend class POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class POISSON_SERIES_CELMEC_ANCESTOR;
+			friend class named_series_complex_toolbox< POISSON_SERIES >;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_pow;
 		public:
 			// Needed typedefs.
@@ -99,6 +102,105 @@ namespace piranha
 			// Ctor from psym.
 			explicit poisson_series(const psym &p) {
 				nth_index<1>().max_load_factor(settings::load_factor());
+				named_ancestor::template construct_from_psym<0>(p);
+			}
+			// Needed getters and setters.
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index() {
+				return m_container.template get<N>();
+			}
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const {
+				return m_container.template get<N>();
+			}
+		private:
+			container_type  m_container;
+	};
+}
+
+#define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
+#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,I0,Mult0,Trunc0,Allocator>
+#define COMPLEX_POISSON_SERIES_TERM piranha::poisson_series_term<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
+#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
+	COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>
+#define COMPLEX_POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
+// #define COMPLEX_POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< COMPLEX_POISSON_SERIES >
+
+namespace std
+{
+	template <E1_SERIES_TP_DECL>
+	class complex<POISSON_SERIES>:
+				public COMPLEX_POISSON_SERIES_BASE_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_NAMED_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_MULT_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_COMMON_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
+				boost::ring_operators < COMPLEX_POISSON_SERIES,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::max_fast_int,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, double,
+				boost::dividable < COMPLEX_POISSON_SERIES, piranha::max_fast_int,
+				boost::dividable < COMPLEX_POISSON_SERIES, double,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, POISSON_SERIES,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<piranha::max_fast_int>,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<double>,
+				boost::dividable < COMPLEX_POISSON_SERIES, complex<piranha::max_fast_int>,
+				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
+				> > > > > > > > > >
+	{
+			typedef COMPLEX_POISSON_SERIES_TERM term_type_;
+			typedef typename term_type_::cf_type cf_type;
+			typedef typename term_type_::key_type key_type;
+			typedef Allocator allocator_type;
+			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
+			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
+			typedef boost::multi_index_container < term_type_,
+			typename I1<term_type_>::type, allocator_type > container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			friend class COMPLEX_POISSON_SERIES_NAMED_ANCESTOR;
+			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
+			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
+			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
+			friend class piranha::base_series_complex_toolbox<POISSON_SERIES>;
+			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
+		public:
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::add;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::subtract;
+			using piranha::base_series_complex_toolbox<POISSON_SERIES>::mult_by;
+			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::mult_by;
+			using piranha::base_series_complex_toolbox<POISSON_SERIES>::divide_by;
+			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::divide_by;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator+=;
+			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator+=;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator-=;
+			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator-=;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator*=;
+			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator*=;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
+			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator/=;
+			// Needed typedefs.
+			typedef POISSON_SERIES value_type;
+			// Needed typedefs.
+			typedef term_type_ term_type;
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef Mult1<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
+			// Ctors.
+			NAMED_SERIES_CTORS(complex);
+			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);
+			// Ctor from psym.
+			explicit complex(const piranha::psym &p) {
+				nth_index<1>().max_load_factor(piranha::settings::load_factor());
 				named_ancestor::template construct_from_psym<0>(p);
 			}
 			// Needed getters and setters.
@@ -136,6 +238,13 @@ namespace std
 	POISSON_SERIES pow(const POISSON_SERIES &x, const double &y)
 	{
 		POISSON_SERIES retval(x.pow(y));
+		return retval;
+	}
+
+	template <E1_SERIES_TP_DECL>
+	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const double &y)
+	{
+		COMPLEX_POISSON_SERIES retval(x.pow(y));
 		return retval;
 	}
 }

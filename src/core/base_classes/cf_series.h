@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CF_SERIES_H
 #define PIRANHA_CF_SERIES_H
 
+#include <complex>
 #include <iostream>
 #include <string>
 
@@ -96,10 +97,36 @@ namespace piranha
 		base_ancestor::construct_from_number(x,a); \
 	}
 
+#define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \
+	template <class ArgsTuple> \
+	explicit complex(const complex<piranha::max_fast_int> &cn, const ArgsTuple &a) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		base_ancestor::construct_from_number(cn,a); \
+	} \
+	template <class ArgsTuple> \
+	explicit complex(const complex<double> &cx, const ArgsTuple &a) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		base_ancestor::construct_from_number(cx,a); \
+	} \
+	template <class ArgsTuple> \
+	explicit complex(const value_type &r, const ArgsTuple &a) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		complex_toolbox::construct_from_real(r,a); \
+	} \
+	template <class ArgsTuple> \
+	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &a) { \
+		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
+		complex_toolbox::construct_from_real_imag(r, i, a); \
+	}
+
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>
 #define CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) \
 	piranha::base_series<CF_SERIES_TERM(term_name,term_separator),separator, \
 	Allocator,E0_SERIES(series_name) >
+
+#define COMPLEX_CF_SERIES_TERM(term_name,separator) term_name<std::complex<Cf>,Key,separator,Allocator>
+#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) piranha::base_series< \
+	COMPLEX_CF_SERIES_TERM(term_name,term_separator),separator, Allocator,COMPLEX_E0_SERIES(series_name) >
 }
 
 #include "cf_series_io.h"

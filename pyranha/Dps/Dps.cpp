@@ -37,6 +37,12 @@ BOOST_PYTHON_MODULE(_Dps)
 	class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
 									 std::string("Poisson series with double precision coefficients."));
 	common_poisson_series_instantiation(inst);
+	class_<manipulators::dpsc> instc = series_basic_instantiation<manipulators::dpsc>(std::string("dpsc"),
+									   std::string("Poisson series with complex double precision coefficients."));
+	series_psym_instantiation(instc);
+	series_differential_instantiation(instc);
+	power_series_instantiation(instc);
+	series_complex_instantiation(instc);
 	//ps_instantiate_differential_specifics(inst);
 	/*ps_instantiate_real_specifics(inst);
 	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
