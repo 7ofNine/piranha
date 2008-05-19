@@ -41,7 +41,7 @@ namespace piranha
 	 * Calculated through exponentiation by squaring.
 	 */
 	template <class Series, class ArgsTuple>
-	Series natural_power(const Series &x, const size_t &n, const ArgsTuple &args_tuple)
+	Series series_natural_power(const Series &x, const size_t &n, const ArgsTuple &args_tuple)
 	{
 		Series retval;
 		switch (n) {

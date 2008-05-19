@@ -26,6 +26,7 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
+#include "../mpq.h"
 #include "../settings.h"
 #include "series_math.h" // For natural_power.
 
@@ -207,6 +208,70 @@ namespace piranha
 		return retval;
 	}
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const max_fast_int &n,
+			const ArgsTuple &args_tuple) const
+	{
+		typedef typename Derived::term_type term_type;
+		Derived retval;
+		// Handle the case of empty series.
+		if (empty()) {
+			if (n < 0) {
+				throw division_by_zero();
+			}
+			// 0**0 == 1
+			else if (n == 0) {
+				retval = Derived((max_fast_int)1, args_tuple);
+				return retval;
+			} else {
+				return retval;
+			}
+		}
+		// If series is a single coefficient, dispatch pow() to that coefficient.
+		if (derived_const_cast->is_single_cf()) {
+			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(n, args_tuple),
+									key_type()), args_tuple, retval.template nth_index<0>().end());
+		} else if (n >= 0) {
+			// TODO: use swap here to reduce copying?
+			retval = derived_const_cast->natural_power((size_t)n, args_tuple);
+		} else {
+			retval = derived_const_cast->negative_integer_power(n,args_tuple);
+		}
+		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const mpq &q,
+			const ArgsTuple &args_tuple) const
+	{
+		typedef typename Derived::term_type term_type;
+		Derived retval;
+		// Handle the case of empty series.
+		if (empty()) {
+			if (q < (max_fast_int)0) {
+				throw division_by_zero();
+			}
+			// 0**0 == 1
+			else if (q == (max_fast_int)0) {
+				retval = Derived((max_fast_int)1, args_tuple);
+				return retval;
+			} else {
+				return retval;
+			}
+		}
+		// If series is a single coefficient, dispatch pow() to that coefficient.
+		if (derived_const_cast->is_single_cf()) {
+			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(q, args_tuple),
+									key_type()), args_tuple, retval.template nth_index<0>().end());
+		} else {
+			// TODO: use unnamed return value opt here?
+			retval = derived_const_cast->rational_power(q,args_tuple);
+		}
+		return retval;
+	}
+
 	/// Real exponentiation.
 	/**
 	 * This method will always handle successfully the case in which x is a natural number. If the series
@@ -241,26 +306,32 @@ namespace piranha
 			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(y, args_tuple),
 									key_type()), args_tuple, retval.template nth_index<0>().end());
 		} else {
-			const int n = (int)nearbyint(y);
-			if (std::abs(y - n) <= settings::numerical_zero()) {
-				if (n < 0) {
-					Derived tmp(derived_const_cast->real_pow(-1, args_tuple));
-					retval = tmp.natural_pow((size_t)(-n), args_tuple);
-				} else {
-					retval = natural_pow((size_t)n, args_tuple);
-				}
-			} else {
-				retval = derived_const_cast->real_pow(y, args_tuple);
-			}
+			retval = derived_const_cast->real_power(y, args_tuple);
 		}
 		return retval;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::real_pow(const double &, const ArgsTuple &) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::real_power(const double &, const ArgsTuple &) const
 	{
 		throw(not_implemented("Real power for this series has not been implemented."));
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const max_fast_int &n, const ArgsTuple &) const
+	{
+		(void)n;
+		p_assert(n < 0);
+		throw(not_implemented("Negative integer power for this series has not been implemented."));
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::rational_power(const mpq &, const ArgsTuple &) const
+	{
+		throw(not_implemented("Rational power for this series has not been implemented."));
 	}
 
 	/// Exponentiation to natural number.
@@ -269,9 +340,9 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_pow(const size_t &n, const ArgsTuple &args_tuple) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_power(const size_t &n, const ArgsTuple &args_tuple) const
 	{
-		return natural_power(*derived_const_cast, n, args_tuple);
+		return series_natural_power(*derived_const_cast, n, args_tuple);
 	}
 }
 

@@ -26,6 +26,7 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../mpq.h"
 #include "../p_assert.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
@@ -84,6 +85,10 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			Derived b_pow(const max_fast_int &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived b_pow(const mpq &, const ArgsTuple &) const;
+			template <class ArgsTuple>
 			Derived b_pow(const double &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived b_partial(const PosTuple &, const ArgsTuple &) const;
@@ -113,9 +118,13 @@ namespace piranha
 			template <bool, class Number, class ArgsTuple>
 			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived real_pow(const double &, const ArgsTuple &) const;
+			Derived natural_power(const size_t &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived natural_pow(const size_t &, const ArgsTuple &) const;
+			Derived negative_integer_power(const max_fast_int &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived rational_power(const mpq &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived real_power(const double &, const ArgsTuple &) const;
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);

@@ -60,7 +60,7 @@ namespace piranha
 			// This will be used later.
 			Derived square_x2(retval);
 			square_x2.mult_by(square_x2, args_tuple);
-			retval = retval.b_pow(order, args_tuple);
+			retval = retval.b_pow((max_fast_int)order, args_tuple);
 			for (size_t i = 0; i < order; ++i) {
 				retval.divide_by((max_fast_int)(i + 1), args_tuple);
 			}
