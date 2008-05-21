@@ -20,6 +20,7 @@
 
 #include <boost/python/def.hpp>
 #include <boost/python/module.hpp>
+#include <complex>
 
 #include "../../src/core/math.h"
 #include "../exceptions.h"
@@ -30,6 +31,9 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Math)
 {
-  translate_exceptions();
-  def("besselJ",&besselJ,"Bessel function of the first kind of integer order.");
+	translate_exceptions();
+	typedef void (*debug_set)(const bool &);
+	typedef double (*bessel_real)(const max_fast_int &, const double &);
+	typedef std::complex<double> (*bessel_complex)(const max_fast_int &, const std::complex<double> &);
+	def("besselJ", bessel_real(&besselJ), "Bessel function of the first kind of integer order.");
 }
