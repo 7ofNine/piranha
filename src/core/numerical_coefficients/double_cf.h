@@ -35,16 +35,15 @@ namespace piranha
 {
 	/// Double-precision numerical coefficient.
 	/**
-	 * This class can be used as coefficient in Poisson series. It encapsulate a double precision
-	 * numerical value and provides the means to access it.
-	 *
-	 * A set of operators is provided to enable interoperability with basic numerical data types.
+	 * This class is meant to be used as coefficient in series. It encapsulate a double precision
+	 * numerical value and provides the means for manipulation in the context of a series.
 	 */
 	class double_cf: public numerical_container<double, double_cf>
 	{
 			// Alias for the parent class.
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
+			typedef double numerical_type;
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf);
 			max_fast_int get_int() const {
@@ -67,12 +66,15 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			double_cf pow(const max_fast_int &n, const ArgsTuple &) const {
-				double_cf retval;
-				retval.m_value = std::pow(ancestor::m_value, n);
-				return retval;
+				return pow_helper(n);
 			}
 			template <class ArgsTuple>
 			double_cf pow(const double &y, const ArgsTuple &) const {
+				return pow_helper(y);
+			}
+		private:
+			template <class Number>
+			double_cf pow_helper(const Number &y) const {
 				double_cf retval;
 				retval.m_value = std::pow(ancestor::m_value, y);
 				return retval;
@@ -100,12 +102,15 @@ namespace std
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			template <class ArgsTuple>
 			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
-				complex retval;
-				retval.m_value = std::pow(ancestor::m_value, n);
-				return retval;
+				return pow_helper(n);
 			}
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
+				return pow_helper(y);
+			}
+		private:
+			template <class Number>
+			complex pow_helper(const Number &y) const {
 				complex retval;
 				retval.m_value = std::pow(ancestor::m_value, y);
 				return retval;

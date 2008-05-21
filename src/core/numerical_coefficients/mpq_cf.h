@@ -43,6 +43,7 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpq_class, mpq_cf> ancestor;
 		public:
+			typedef mpq_class numerical_type;
 			// Ctors. Do not use macro since we need to canonicalize.
 			/// Empty constructor.
 			explicit mpq_cf(): ancestor::numerical_container() {m_value.canonicalize();}

@@ -37,14 +37,13 @@ namespace piranha
 	/// Mpz numerical coefficient.
 	/**
 	 * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::base_series.
-	 *
-	 * A set of operators is provided to enable interoperability with basic numerical data types.
 	 */
 	class mpz_cf: public numerical_container<mpz_class, mpz_cf>
 	{
 			// Alias for the parent class.
 			typedef numerical_container<mpz_class, mpz_cf> ancestor;
 		public:
+			typedef mpz_class numerical_type;
 			// Ctors
 			NUMERICAL_CONTAINER_CTORS(mpz_cf);
 			// Override norm and evaluation.

@@ -23,6 +23,7 @@
 
 #include <complex>
 
+#include "../exceptions.h"
 #include "../integer_typedefs.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -71,7 +72,6 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void imag(const value_type &i, const ArgsTuple &) {
-				derived_cast->m_value.real() = 0;
 				derived_cast->m_value.imag() = i.value();
 			}
 			// Maths.
@@ -89,11 +89,30 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				return derived_cast->divide_by_generic(c);
+				return complex_division_helper(c);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
-				return derived_cast->divide_by_generic(c);
+				return complex_division_helper(c);
+			}
+		protected:
+			template <class Number>
+			Derived &complex_division_helper(const std::complex<Number> &x)
+			{
+				if (x.real() == 0 and x.imag() == 0) {
+					throw division_by_zero();
+				}
+				// Do something only if we are not dividing by one.
+				if (x.real() != 1 or x.imag() != 0) {
+					Derived retval;
+					const typename Derived::value_type::numerical_type abs2 = x.real() * x.real() + x.imag() * x.imag();
+					retval.m_value.real() = derived_const_cast->m_value.real() * x.real() + derived_const_cast->m_value.imag() * x.imag();
+					retval.m_value.imag() = derived_const_cast->m_value.imag() * x.real() - derived_const_cast->m_value.real() * x.imag();
+					retval.m_value.real() /= abs2;
+					retval.m_value.imag() /= abs2;
+					derived_cast->m_value = retval.m_value;
+				}
+				return *derived_cast;
 			}
 	};
 
