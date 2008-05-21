@@ -43,9 +43,9 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpq_class, mpq_cf> ancestor;
 		public:
-			// Ctors. Do not use macro since we need to canonicalize in one of the ctors.
+			// Ctors. Do not use macro since we need to canonicalize.
 			/// Empty constructor.
-			explicit mpq_cf(): ancestor::numerical_container() {}
+			explicit mpq_cf(): ancestor::numerical_container() {m_value.canonicalize();}
 			/// Constructor from string.
 			template <class ArgsTuple>
 			explicit mpq_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {
@@ -54,13 +54,13 @@ namespace piranha
 			}
 			/// Constructor from integer.
 			template <class ArgsTuple>
-			explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
+			explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {m_value.canonicalize();}
 			/// Constructor from double.
 			template <class ArgsTuple>
-			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {}
+			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {m_value.canonicalize();}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit mpq_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+			explicit mpq_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {m_value.canonicalize();}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -98,22 +98,45 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
+			mpq_cf pow(const max_fast_int &n, const ArgsTuple &) const {
+				mpq_cf retval;
+				if (m_value == 0 and n < 0) {
+					throw division_by_zero();
+				}
+				if (n < 0) {
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-n));
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-n));
+					// We need to canonicalize, since negative numbers may have gone to the denominator.
+					retval.m_value.canonicalize();
+				} else {
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)n);
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)n);
+				}
+				return retval;
+			}
+			template <class ArgsTuple>
 			mpq_cf pow(const double &y, const ArgsTuple &) const {
 				mpq_cf retval;
-				// If value = 1, then any power is ok, just return 1.
-				if (m_value == 1) {
-					retval.m_value = 1;
-				} else {
-					const max_fast_int pow_n((max_fast_int)nearbyint(y));
-					if (std::abs(pow_n - y) > settings::numerical_zero()) {
-						throw(unsuitable("Cannot raise rational coefficient different from unity to real power."));
-					}
-					if (pow_n < 0) {
-						mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-pow_n));
-						mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-pow_n));
+				// If negative, only 1^-something is reasonable.
+				if (y < 0) {
+					if (m_value == 0) {
+						throw division_by_zero();
+					} else if (m_value == 1) {
+						retval.m_value = 1;
 					} else {
-						mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)pow_n);
-						mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)pow_n);
+						throw unsuitable("Cannot raise rational coefficient different from unity to negative real power.");
+					}
+				// If y == 0, then x**0 == 1 for every x.
+				} else if (y == 0) {
+					retval.m_value = 1;
+				// If y > 0, we can accept only 0^y and 1^y.
+				} else {
+					if (m_value == 0) {
+						retval.m_value = 0;
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise rational coefficient different from unity to positive real power.");
 					}
 				}
 				return retval;
@@ -137,8 +160,48 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
-			NUMERICAL_CONTAINER_CTORS(complex);
-			COMPLEX_NUMERICAL_CONTAINER_CTORS;
+			// TODO: expand these ctors, we need to canonicalise the ctor from string.
+			/// Empty constructor.
+			explicit complex(): ancestor::numerical_container() {
+				canonicalize();
+			}
+			/// Constructor from string.
+			template <class ArgsTuple>
+			explicit complex(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {
+				// We need to canonicalize when reading from string.
+				canonicalize();
+			}
+			/// Constructor from integer.
+			template <class ArgsTuple>
+			explicit complex(const piranha::max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+				canonicalize();
+			}
+			/// Constructor from double.
+			template <class ArgsTuple>
+			explicit complex(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+				canonicalize();
+			}
+			/// Constructor from psym.
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
+				canonicalize();
+			}
+			template <class ArgsTuple>
+			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):complex_toolbox::numerical_container_complex_toolbox(c) {
+				canonicalize();
+			}
+			template <class ArgsTuple>
+			explicit complex(const std::complex<double> &c, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(c) {
+				canonicalize();
+			}
+			template <class ArgsTuple>
+			explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {
+				canonicalize();
+			}
+			template <class ArgsTuple>
+			explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r, i) {
+				canonicalize();
+			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
 				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
@@ -168,45 +231,73 @@ namespace std
 				return (m_value.real() == 0 and m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
+			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
 				complex retval;
-				retval.m_value = complex<mpq_class>(0, 0);
-				// If value = 1, then any power is ok, just return 1.
-				if (m_value.real() == 1 and m_value.imag() == 0) {
-					retval.m_value.real() = 1;
-				} else {
-					const piranha::max_fast_int pow_n((piranha::max_fast_int)nearbyint(y));
-					if (std::abs(pow_n - y) > piranha::settings::numerical_zero()) {
-						// Let's accept real power only of zero value.
-						if (m_value.real() != 0 or m_value.imag() != 0) {
-							throw(piranha::unsuitable("Cannot raise complex rational coefficient different from unity to real power."));
-						}
+				// For negative powers, we must guard against division by zero.
+				if (n < 0) {
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						throw piranha::division_by_zero();
+					// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
 					} else {
-						size_t count;
-						if (pow_n >= 0) {
-							count = (size_t)pow_n;
-							retval.m_value.real() = 1;
-							for (size_t i = 0; i < count; ++i) {
-								retval.m_value *= m_value;
-							}
-						} else {
-							retval.m_value = m_value;
-							const mpq_class div = m_value.real() * m_value.real() + m_value.imag() * m_value.imag();
-							retval.m_value.real() /= div;
-							retval.m_value.imag() /= div;
-							retval.m_value.imag() *= -1;
-							count = (size_t)(-pow_n) - 1;
-							complex<mpq_class> tmp;
-							if (count != 0) {
-								tmp = retval.m_value;
-							}
-							for (size_t i = 0; i < count; ++i) {
-								retval.m_value *= tmp;
-							}
+						// Invert the source.
+						retval.m_value = m_value;
+						const mpq_class div = m_value.real() * m_value.real() + m_value.imag() * m_value.imag();
+						retval.m_value.real() /= div;
+						retval.m_value.imag() /= div;
+						retval.m_value.imag() *= -1;
+						const size_t count = (size_t)(-n) - 1;
+						complex<mpq_class> tmp;
+						if (count != 0) {
+							tmp = retval.m_value;
 						}
+						for (size_t i = 0; i < count; ++i) {
+							retval.m_value *= tmp;
+						}
+					}
+				} else {
+					retval.m_value.real() = 1;
+					retval.m_value.imag() = 0;
+					const size_t count = (size_t)n;
+					for (size_t i = 0; i < count; ++i) {
+						retval.m_value *= m_value;
 					}
 				}
 				return retval;
+			}
+			template <class ArgsTuple>
+			complex pow(const double &y, const ArgsTuple &) const {
+				complex retval;
+				if (y < 0) {
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						throw piranha::division_by_zero();
+					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+						retval.m_value.real() = 1;
+						retval.m_value.imag() = 0;
+					} else {
+						throw piranha::unsuitable("Cannot raise complex rational coefficient different from unity to negative real power.");
+					}
+				// If y == 0, then x**0 == 1 for every x.
+				} else if (y == 0) {
+					retval.m_value.real() = 1;
+					retval.m_value.imag() = 0;
+				// If y > 0, we can accept only 0^y and 1^y.
+				} else {
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						retval.m_value.real() = 0;
+						retval.m_value.imag() = 0;
+					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+						retval.m_value.real() = 1;
+						retval.m_value.imag() = 0;
+					} else {
+						throw piranha::unsuitable("Cannot raise complex rational coefficient different from unity to positive real power.");
+					}
+				}
+				return retval;
+			}
+		private:
+			void canonicalize() {
+				m_value.real().canonicalize();
+				m_value.imag().canonicalize();
 			}
 	};
 }

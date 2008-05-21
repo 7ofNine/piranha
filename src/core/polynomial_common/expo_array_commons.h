@@ -161,28 +161,32 @@ namespace piranha
 				}
 				return retval;
 			}
+			/// Integer exponentiation.
+			/**
+			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+			 */
+			template <class ArgsTuple>
+			Derived pow(const max_fast_int &n, const ArgsTuple &) const {
+				typedef typename Derived::size_type size_type;
+				Derived retval(*derived_const_cast);
+				const size_type w = derived_const_cast->size();
+				// Integer power. Retval has already been set to this, modify integers in-place.
+				for (size_type i = 0; i < w; ++i) {
+					retval[i] *= n;
+				}
+				return retval;
+			}
 			/// Real exponentiation.
 			/**
 			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
 			 */
 			template <class ArgsTuple>
-			Derived pow(const double &y, const ArgsTuple &) const {
-				typedef typename Derived::size_type size_type;
-				Derived retval(*derived_const_cast);
-				const int pow_n = (int)nearbyint(y);
-				if (std::abs(y - pow_n) < settings::numerical_zero()) {
-					const size_type w = derived_const_cast->size();
-					// Integer power. Retval has already been set to this, modify integers in-place.
-					for (size_type i = 0; i < w; ++i) {
-						retval[i] *= pow_n;
-					}
-				} else {
-					// Real power is ok only if expo_array is unity.
-					if (!is_unity()) {
-						throw unsuitable("Cannot raise non-unity exponent array to real power.");
-					}
+			Derived pow(const double &, const ArgsTuple &) const {
+				// Real power is ok only if expo_array is unity.
+				if (!is_unity()) {
+					throw unsuitable("Cannot raise non-unity exponent array to real power.");
 				}
-				return retval;
+				return Derived(*derived_const_cast);
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				derived_const_cast->upload_ints_to(v);

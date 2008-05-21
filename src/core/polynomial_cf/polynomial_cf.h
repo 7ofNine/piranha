@@ -26,12 +26,12 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/cf_series.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../proxies.h"
 #include "../settings.h"
@@ -42,7 +42,7 @@
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< POLYNOMIAL_CF >
 #define POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>
 #define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL_CF >
-#define POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< POLYNOMIAL_CF >
+#define POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POLYNOMIAL_CF >
 
 namespace piranha
 {
@@ -50,10 +50,10 @@ namespace piranha
 	template <E0_SERIES_TP_DECL>
 	class polynomial_cf:
 				public POLYNOMIAL_CF_BASE_ANCESTOR,
-				public POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR,
 				public POLYNOMIAL_CF_CF_ANCESTOR,
 				public POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
-				public POLYNOMIAL_CF_MULT_ANCESTOR
+				public POLYNOMIAL_CF_MULT_ANCESTOR,
+				public POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
 			typedef POLYNOMIAL_CF_TERM term_type_;
 			typedef typename term_type_::cf_type cf_type;
@@ -67,8 +67,9 @@ namespace piranha
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
-			// Specify we will use the real_pow from the polynomial toolbox.
-			using POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+			// Specify we will use the real_power from the binomial exponentiation toolbox.
+			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -116,19 +117,19 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL_CF >
-#define COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL_CF >
 
 namespace std
 {
 	template < E0_SERIES_TP_DECL >
 	class complex<POLYNOMIAL_CF>:
 				public COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX
+				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX,
+				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
 			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type_;
 			typedef typename term_type_::cf_type cf_type;
@@ -143,8 +144,9 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
 			friend class piranha::base_series_complex_toolbox<POLYNOMIAL_CF>;
-			// Specify we will use the real_pow from the polynomial toolbox.
-			using COMPLEX_POLYNOMIAL_CF_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+			// Specify we will use the real_power from the binomial exponentiation toolbox.
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::add;

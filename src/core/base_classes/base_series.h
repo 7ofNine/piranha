@@ -26,7 +26,6 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../mpq.h"
 #include "../p_assert.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
@@ -87,8 +86,6 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived b_pow(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived b_pow(const mpq &, const ArgsTuple &) const;
-			template <class ArgsTuple>
 			Derived b_pow(const double &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived b_partial(const PosTuple &, const ArgsTuple &) const;
@@ -122,8 +119,6 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived negative_integer_power(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived rational_power(const mpq &, const ArgsTuple &) const;
-			template <class ArgsTuple>
 			Derived real_power(const double &, const ArgsTuple &) const;
 		private:
 			template <class PinpointIterator>
@@ -134,6 +129,12 @@ namespace piranha
 			SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
 			template <class ArgsTuple, class PinpointIterator>
 			void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
+			template <class Number, class ArgsTuple>
+			Derived &mult_by_number(const Number &, const ArgsTuple &);
+			template <class Number, class ArgsTuple>
+			Derived &divide_by_number(const Number &, const ArgsTuple &);
+			template <class Number, class ArgsTuple>
+			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 			// Functors.
 			template <class ArgsTuple>
 			class modifier_invert_term_sign

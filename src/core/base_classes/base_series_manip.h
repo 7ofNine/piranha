@@ -71,9 +71,9 @@ namespace piranha
 	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
 			const ArgsTuple &args_tuple, SortedIterator it_hint)
 	{
+		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
 		// iterator to do that.
-		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		term_converter<Term2, term_type> converted_term(term_,args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
 		p_assert(converted_term.result.is_insertable(args_tuple));

@@ -105,6 +105,8 @@ namespace piranha
 				Derived tmp(e_series);
 				tmp *= e_series;
 				tmp = (max_fast_int)1 - tmp;
+				// TODO: change this to root.
+				// tmp = tmp.root(2);
 				tmp = tmp.pow(.5);
 				tmp *= (max_fast_int)2;
 				Derived retval;

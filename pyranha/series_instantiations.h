@@ -83,7 +83,10 @@ namespace pyranha
 		inst.def(boost::python::self / piranha::max_fast_int());
 		inst.def(boost::python::self / double());
 		// Exponentiation.
-		inst.def("__pow__", &T::pow);
+		typedef T(T::*pow_double)(const double &) const;
+		typedef T(T::*pow_int)(const piranha::max_fast_int &) const;
+		inst.def("__pow__", pow_double(&T::pow));
+		inst.def("__pow__", pow_int(&T::pow));
 		return inst;
 	}
 

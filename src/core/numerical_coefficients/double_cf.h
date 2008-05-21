@@ -66,6 +66,12 @@ namespace piranha
 				return 0.;
 			}
 			template <class ArgsTuple>
+			double_cf pow(const max_fast_int &n, const ArgsTuple &) const {
+				double_cf retval;
+				retval.m_value = std::pow(ancestor::m_value, n);
+				return retval;
+			}
+			template <class ArgsTuple>
 			double_cf pow(const double &y, const ArgsTuple &) const {
 				double_cf retval;
 				retval.m_value = std::pow(ancestor::m_value, y);
@@ -90,35 +96,14 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
-// Check if these are needed.
-			/*      using ancestor::swap;
-			      using ancestor::print_plain;
-			      using ancestor::print_latex;
-			      using ancestor::checkup;
-			      using ancestor::invert_sign;
-			      using ancestor::t_eval;
-			      using ancestor::norm;
-			      using ancestor::is_ignorable;
-			      using ancestor::is_insertable;
-			      using ancestor::needs_padding;
-			      using ancestor::pad_right;
-			      using ancestor::apply_layout;
-			      using ancestor::add;
-			      using ancestor::subtract;
-			      using ancestor::mult_by;
-			      using ancestor::divide_by;
-			      using complex_toolbox::mult_by;
-			      using complex_toolbox::divide_by;
-			      using complex_toolbox::real;
-			      using complex_toolbox::imag;
-			      using complex_toolbox::set_real;
-			      using complex_toolbox::set_imag;*/
-			// Start implementation of basic pseries coefficient interface.
-			//------------
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
-			// End implementation of complex basic pseries coefficient interface.
-			//------------
+			template <class ArgsTuple>
+			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
+				complex retval;
+				retval.m_value = std::pow(ancestor::m_value, n);
+				return retval;
+			}
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;

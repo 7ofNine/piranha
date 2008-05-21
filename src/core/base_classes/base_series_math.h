@@ -26,9 +26,8 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
-#include "../mpq.h"
+#include "../p_assert.h"
 #include "../settings.h"
-#include "series_math.h" // For natural_power.
 
 namespace piranha
 {
@@ -118,23 +117,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
-	{
-		// TODO: share this code with below.
-		if (n == 0) {
-			Derived retval;
-			swap_terms(retval);
-		} else if (n != 1) {
-			Derived retval(multiply_coefficients_by(n, args_tuple));
-			swap_terms(retval);
-		}
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
+	template <class Number, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		if (x == 0) {
 			Derived retval;
@@ -148,6 +132,20 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
+	{
+		return mult_by_number(n,args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
+	{
+		return mult_by_number(x,args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
 	{
 		Derived retval(derived_cast->multiply_by_series(s2, args_tuple));
@@ -157,23 +155,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
-	{
-		// TODO: share this code with below.
-		if (n == 1) {
-			return *derived_cast;
-		} else if (n == 0) {
-			throw division_by_zero();
-		}
-		Derived retval(divide_coefficients_by(n, args_tuple));
-		swap_terms(retval);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
+	template <class Number, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		if (x == 1) {
 			return *derived_cast;
@@ -183,6 +166,20 @@ namespace piranha
 		Derived retval(divide_coefficients_by(x, args_tuple));
 		swap_terms(retval);
 		return *derived_cast;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
+	{
+		return divide_by_number(n,args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
+	{
+		return divide_by_number(x,args_tuple);
 	}
 
 	/// Partial derivative.
@@ -209,104 +206,65 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const max_fast_int &n,
+	template <class Number, class ArgsTuple>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_power_handler(const Number &y, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::term_type term_type;
-		Derived retval;
-		// Handle the case of empty series.
+		typedef typename term_type::cf_type cf_type;
+		typedef typename term_type::key_type key_type;
+		p_assert(retval.empty());
+		// Handle the case of an empty series.
 		if (empty()) {
-			if (n < 0) {
+			if (y < 0) {
 				throw division_by_zero();
-			}
-			// 0**0 == 1
-			else if (n == 0) {
+			// 0**0 == 1.
+			} else if (y == 0) {
 				retval = Derived((max_fast_int)1, args_tuple);
-				return retval;
+				return true;
+			// 0**n == 0, with n > 0.
 			} else {
-				return retval;
+				return true;
 			}
+		// If the series has a single term, dispatch pow to the coefficient and key of said term.
+		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
+			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+			retval.insert(term_type(it->m_cf.pow(y, args_tuple),it->m_key.pow(y,args_tuple)),
+				args_tuple,retval.template nth_index<0>().end());
+			return true;
 		}
-		// If series is a single coefficient, dispatch pow() to that coefficient.
-		if (derived_const_cast->is_single_cf()) {
-			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(n, args_tuple),
-									key_type()), args_tuple, retval.template nth_index<0>().end());
-		} else if (n >= 0) {
-			// TODO: use swap here to reduce copying?
-			retval = derived_const_cast->natural_power((size_t)n, args_tuple);
-		} else {
-			retval = derived_const_cast->negative_integer_power(n,args_tuple);
-		}
-		return retval;
+		return false;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const mpq &q,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::term_type term_type;
 		Derived retval;
-		// Handle the case of empty series.
-		if (empty()) {
-			if (q < (max_fast_int)0) {
-				throw division_by_zero();
-			}
-			// 0**0 == 1
-			else if (q == (max_fast_int)0) {
-				retval = Derived((max_fast_int)1, args_tuple);
-				return retval;
+		if (!common_power_handler(n,retval,args_tuple)) {
+			if (n >= 0) {
+				Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+				retval.swap_terms(tmp);
 			} else {
-				return retval;
+				Derived tmp(derived_const_cast->negative_integer_power(n,args_tuple));
+				retval.swap_terms(tmp);
 			}
-		}
-		// If series is a single coefficient, dispatch pow() to that coefficient.
-		if (derived_const_cast->is_single_cf()) {
-			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(q, args_tuple),
-									key_type()), args_tuple, retval.template nth_index<0>().end());
-		} else {
-			// TODO: use unnamed return value opt here?
-			retval = derived_const_cast->rational_power(q,args_tuple);
 		}
 		return retval;
 	}
 
 	/// Real exponentiation.
-	/**
-	 * This method will always handle successfully the case in which x is a natural number. If the series
-	 * is a single coefficient, the pow method will be dispatched to said coefficient. If x is not natural,
-	 * the base_series::real_pow method will be called. The call is statically polymorphic, so that it is possible to override
-	 * base_series::real_pow in a derived class.
-	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const double &y,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::term_type term_type;
-		typedef typename term_type::cf_type cf_type;
-		typedef typename term_type::key_type key_type;
 		Derived retval;
-		// Handle the case of empty series.
-		if (empty()) {
-			if (y < 0) {
-				throw division_by_zero();
-			}
-			// 0**0 == 1
-			else if (y == 0) {
-				retval = Derived((max_fast_int)1, args_tuple);
-				return retval;
-			} else {
-				return retval;
-			}
-		}
-		// If series is a single coefficient, dispatch pow() to that coefficient.
-		if (derived_const_cast->is_single_cf()) {
-			retval.insert(term_type(derived_const_cast->template nth_index<0>().begin()->m_cf.pow(y, args_tuple),
-									key_type()), args_tuple, retval.template nth_index<0>().end());
-		} else {
-			retval = derived_const_cast->real_power(y, args_tuple);
+		if (!common_power_handler(y,retval,args_tuple)) {
+			Derived tmp(derived_const_cast->real_power(y, args_tuple));
+			retval.swap_terms(tmp);
 		}
 		return retval;
 	}
@@ -327,13 +285,6 @@ namespace piranha
 		throw(not_implemented("Negative integer power for this series has not been implemented."));
 	}
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::rational_power(const mpq &, const ArgsTuple &) const
-	{
-		throw(not_implemented("Rational power for this series has not been implemented."));
-	}
-
 	/// Exponentiation to natural number.
 	/**
 	 * Exponentiation by squaring is used internally.
@@ -342,7 +293,54 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_power(const size_t &n, const ArgsTuple &args_tuple) const
 	{
-		return series_natural_power(*derived_const_cast, n, args_tuple);
+		Derived retval;
+		switch (n) {
+		case 0: {
+			retval = Derived((max_fast_int)1, args_tuple);
+			break;
+		}
+		case 1: {
+			retval = *derived_const_cast;
+			break;
+		}
+		case 2: {
+			retval = *derived_const_cast;
+			retval.mult_by(*derived_const_cast, args_tuple);
+			break;
+		}
+		case 3: {
+			retval = *derived_const_cast;
+			retval.mult_by(*derived_const_cast, args_tuple);
+			retval.mult_by(*derived_const_cast, args_tuple);
+			break;
+		}
+		case 4: {
+			retval = *derived_const_cast;
+			retval.mult_by(*derived_const_cast, args_tuple);
+			retval.mult_by(*derived_const_cast, args_tuple);
+			retval.mult_by(*derived_const_cast, args_tuple);
+			break;
+		}
+		default: {
+			retval = Derived((max_fast_int)1, args_tuple);
+			// Use scoping here to have tmp destroyed when it is not needed anymore.
+			{
+				Derived tmp(*derived_const_cast);
+				size_t i = n;
+				while (i) {
+					if (i & 1) {
+						retval.mult_by(tmp, args_tuple);
+						--i;
+					}
+					i /= 2;
+					if (i != 0) {
+						tmp.mult_by(tmp, args_tuple);
+					}
+				}
+			}
+		}
+		}
+		return retval;
 	}
 }
 

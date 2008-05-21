@@ -81,22 +81,49 @@ namespace piranha
 			void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &) {
 				mpz_addmul(m_value.get_mpz_t(), x1.m_value.get_mpz_t(), x2.m_value.get_mpz_t());
 			}
+			// To shield against GMP exceptions, we need to filter out some cases here.
+			template <class ArgsTuple>
+			mpz_cf pow(const max_fast_int &n, const ArgsTuple &) const {
+				mpz_cf retval;
+				// If negative, only 1^-something is reasonable.
+				if (n < 0) {
+					if (m_value == 0) {
+						throw division_by_zero();
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise integer coefficient different from unity to negative integer power.");
+					}
+				} else {
+					mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)n);
+				}
+				return retval;
+			}
 			template <class ArgsTuple>
 			mpz_cf pow(const double &y, const ArgsTuple &) const {
 				mpz_cf retval;
-				// If value = 1, then any power is ok, just return 1.
-				if (m_value == 1) {
+				// If negative, only 1^-something is reasonable.
+				if (y < 0) {
+					if (m_value == 0) {
+						throw division_by_zero();
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise integer coefficient different from unity to negative real power.");
+					}
+				// If y == 0, then x**0 == 1 for every x.
+				} else if (y == 0) {
 					retval.m_value = 1;
-					return retval;
+				// If y > 0, we can accept only 0^y and 1^y.
+				} else {
+					if (m_value == 0) {
+						retval.m_value = 0;
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise integer coefficient different from unity to positive real power.");
+					}
 				}
-				const max_fast_int pow_n((max_fast_int)nearbyint(y));
-				if (std::abs(pow_n - y) > settings::numerical_zero()) {
-					throw(unsuitable("Cannot raise integer coefficient different from unity to real power."));
-				}
-				if (pow_n < 0) {
-					throw(unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
-				}
-				mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)pow_n);
 				return retval;
 			}
 	};
@@ -149,23 +176,54 @@ namespace std
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			template <class ArgsTuple>
+			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
+				complex retval;
+				// For negative powers, we must guard against division by zero.
+				if (n < 0) {
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						throw piranha::division_by_zero();
+					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+						retval.m_value.real() = 1;
+						retval.m_value.imag() = 0;
+					} else {
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to negative integer power.");
+					}
+				} else {
+					retval.m_value.real() = 1;
+					retval.m_value.imag() = 0;
+					const size_t count = (size_t)n;
+					for (size_t i = 0; i < count; ++i) {
+						retval.m_value *= m_value;
+					}
+				}
+				return retval;
+			}
+			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
-				retval.m_value = complex<mpz_class>(0, 0);
-				// If value = 1, then any power is ok, just return 1.
-				if (m_value.real() == 1 and m_value.imag() == 0) {
+				if (y < 0) {
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						throw piranha::division_by_zero();
+					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+						retval.m_value.real() = 1;
+						retval.m_value.imag() = 0;
+					} else {
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to negative real power.");
+					}
+				// If y == 0, then x**0 == 1 for every x.
+				} else if (y == 0) {
 					retval.m_value.real() = 1;
+					retval.m_value.imag() = 0;
+				// If y > 0, we can accept only 0^y and 1^y.
 				} else {
-					const piranha::max_fast_int pow_n((piranha::max_fast_int)nearbyint(y));
-					if (std::abs(pow_n - y) > piranha::settings::numerical_zero()) {
-						throw(piranha::unsuitable("Cannot raise complex integer coefficient different from unity to real power."));
-					}
-					if (pow_n < 0) {
-						throw(piranha::unsuitable("Cannot raise integer coefficient different from unity to negative integer power."));
-					}
-					retval.m_value.real() = 1;
-					for (size_t i = 0; i < (size_t)pow_n; ++i) {
-						retval.m_value *= m_value;
+					if (m_value.real() == 0 and m_value.imag() == 0) {
+						retval.m_value.real() = 0;
+						retval.m_value.imag() = 0;
+					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+						retval.m_value.real() = 1;
+						retval.m_value.imag() = 0;
+					} else {
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to positive real power.");
 					}
 				}
 				return retval;

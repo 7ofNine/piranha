@@ -66,6 +66,8 @@ namespace piranha
 			template <class ArgsTuple, class Layout>
 			void apply_layout(const ArgsTuple &, const Layout &);
 			template <class ArgsTuple>
+			Derived pow(const max_fast_int &, const ArgsTuple &) const;
+			template <class ArgsTuple>
 			Derived pow(const double &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;

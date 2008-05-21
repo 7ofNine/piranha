@@ -29,6 +29,7 @@
 
 #include "../arg_manager.h"
 #include "../base_classes/base_series.h"
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -51,6 +52,7 @@
 #define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, POISSON_SERIES >
 #define POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
 #define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
+#define POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POISSON_SERIES >
 
 namespace piranha
 {
@@ -61,6 +63,7 @@ namespace piranha
 				public POISSON_SERIES_MULT_ANCESTOR,
 				public POISSON_SERIES_COMMON_ANCESTOR,
 				public POISSON_SERIES_POWER_SERIES_ANCESTOR,
+				public POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				public POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
 				public POISSON_SERIES_CELMEC_ANCESTOR,
 				boost::ring_operators < POISSON_SERIES,
@@ -88,7 +91,8 @@ namespace piranha
 			friend class POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class POISSON_SERIES_CELMEC_ANCESTOR;
 			friend class named_series_complex_toolbox< POISSON_SERIES >;
-			using POISSON_SERIES_COMMON_ANCESTOR::real_pow;
+			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -128,6 +132,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POISSON_SERIES >
 // #define COMPLEX_POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< COMPLEX_POISSON_SERIES >
 
 namespace std
@@ -139,6 +144,7 @@ namespace std
 				public COMPLEX_POISSON_SERIES_MULT_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_COMMON_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::max_fast_int,
@@ -168,7 +174,8 @@ namespace std
 			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
 			friend class piranha::base_series_complex_toolbox<POISSON_SERIES>;
-			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_pow;
+			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::add;

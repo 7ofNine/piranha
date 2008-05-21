@@ -29,6 +29,7 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -36,7 +37,6 @@
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../integer_typedefs.h"
-#include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../settings.h"
 
@@ -46,7 +46,7 @@
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
 #define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
 #define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL >
-#define POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR common_polynomial_toolbox< POLYNOMIAL >
+#define POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POLYNOMIAL >
 #define POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< POLYNOMIAL >
 
 namespace piranha
@@ -101,7 +101,7 @@ namespace piranha
 				public POLYNOMIAL_NAMED_ANCESTOR,
 				public POLYNOMIAL_POWER_SERIES_ANCESTOR,
 				public POLYNOMIAL_MULT_ANCESTOR,
-				public POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
+				public POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				public POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < POLYNOMIAL,
 				boost::ring_operators < POLYNOMIAL, max_fast_int,
@@ -123,8 +123,9 @@ namespace piranha
 			friend class POLYNOMIAL_MULT_ANCESTOR;
 			friend class POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class named_series_complex_toolbox<POLYNOMIAL>;
-			// Override base_series::real_pow with the one from the common polynomial toolbox.
-			using POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+			// Override power functions with the ones from the binomial exponentiation toolbox.
+			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -162,7 +163,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL >
-#define COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL >
 
 namespace std
 {
@@ -173,7 +174,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_MULT_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
@@ -199,8 +200,9 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
 			friend class piranha::base_series_complex_toolbox<POLYNOMIAL>;
-			// Override base_series::real_pow with the one from the common polynomial toolbox.
-			using COMPLEX_POLYNOMIAL_COMMON_POLYNOMIAL_ANCESTOR::real_pow;
+			// Override power_functions with the ones from the binomial exponentiation toolbox.
+			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 		public:
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
