@@ -32,8 +32,6 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE(_Math)
 {
 	translate_exceptions();
-	typedef void (*debug_set)(const bool &);
-	typedef double (*bessel_real)(const max_fast_int &, const double &);
-	typedef std::complex<double> (*bessel_complex)(const max_fast_int &, const std::complex<double> &);
-	def("besselJ", bessel_real(&besselJ), "Bessel function of the first kind of integer order.");
+	def("besselJ", &besselJ, "Bessel function of the first kind of integer order.");
+	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
 }

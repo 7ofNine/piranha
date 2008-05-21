@@ -49,6 +49,12 @@ namespace piranha
 	{
 		return boost::math::cyl_bessel_j(order, arg);
 	}
+
+	/// Modified Bessel function of the first kind, integer order.
+	inline double besselI(const max_fast_int &order, const double &arg)
+	{
+		return boost::math::cyl_bessel_i(order, arg);
+	}
 }
 
 #endif
