@@ -15,7 +15,10 @@
 - Also, make sure that ArgsTuple is always last argument for consistency.
 - Add line - file info into exceptions string.
 - Coded multiplication with mpz as codes when going out of range?
-- int --> max_fast_int for uniformity and generality?
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
 - add truncators to polynomials, if they do not impact performance too much.
+- implement truncation by degree in expo truncator.
+- fix again proxies to be more general. maybe move them inside classes?
+- decide whether it is good or not to have degrees stored inside expo arrays.
+- implement binomial stuff for Fourier series.
