@@ -164,6 +164,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL >
 #define COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POLYNOMIAL >
 
 namespace std
 {
@@ -175,6 +176,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
@@ -199,6 +201,7 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
+			friend class COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class piranha::base_series_complex_toolbox<POLYNOMIAL>;
 			// Override power_functions with the ones from the binomial exponentiation toolbox.
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;

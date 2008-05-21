@@ -36,15 +36,9 @@ BOOST_PYTHON_MODULE(_Zpoly)
 
 	class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
 									   std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-	//series_trigonometric_instantiation(inst);
 	common_polynomial_instantiation(inst);
-	series_special_functions_instantiation(inst);
 	class_<manipulators::zpolyc> instc = series_basic_instantiation<manipulators::zpolyc>(std::string("zpolyc"),
 									  std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
 	common_polynomial_instantiation(instc);
 	series_complex_instantiation(instc);
-	//ps_instantiate_differential_specifics(inst);
-	/*ps_instantiate_real_specifics(inst);
-	def("pow_besselJ",math::pow_besselJ<gsp,mpz_class>,
-	  "Bessel function of the first kind, power series implementation.");*/
 }
