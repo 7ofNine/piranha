@@ -69,6 +69,8 @@ namespace piranha
 			Derived pow(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived pow(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
 		protected:

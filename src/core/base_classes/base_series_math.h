@@ -342,6 +342,31 @@ namespace piranha
 		}
 		return retval;
 	}
+
+	/// Nth root.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_root(const max_fast_int &n,
+			const ArgsTuple &args_tuple) const
+	{
+		if (n == 0) {
+			throw division_by_zero();
+		}
+		if (n == 1) {
+			return Derived(*derived_const_cast);
+		} else {
+			return derived_const_cast->nth_root(n,args_tuple);
+		}
+	}
+
+	// By default use real power.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
+			const ArgsTuple &args_tuple) const
+	{
+		return b_pow(1./(double)(n),args_tuple);
+	}
 }
 
 #endif

@@ -86,6 +86,8 @@ namespace piranha
 			Derived b_pow(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived b_pow(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived b_root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived b_partial(const PosTuple &, const ArgsTuple &) const;
 		protected:
@@ -119,6 +121,8 @@ namespace piranha
 			Derived negative_integer_power(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived real_power(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);

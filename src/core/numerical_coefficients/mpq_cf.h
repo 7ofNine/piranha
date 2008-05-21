@@ -160,7 +160,6 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
-			// TODO: expand these ctors, we need to canonicalise the ctor from string.
 			/// Empty constructor.
 			explicit complex(): ancestor::numerical_container() {
 				canonicalize();

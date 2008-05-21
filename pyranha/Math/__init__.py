@@ -51,6 +51,16 @@ def sin(arg):
   except AttributeError:
     return __math.sin(arg)
 
+def root(n,arg):
+  """
+  Wrapper around root. If arg provides a root() method, it will be called, otherwise
+  the standard ** operator will be called.
+  """
+  try:
+    return arg.root(n)
+  except AttributeError:
+    return arg**(1./n)
+
 def besselJ(order,arg):
   """
   Wrapper around _Math.besselJ. If arg provides a besselJ() method, it will be called, otherwise

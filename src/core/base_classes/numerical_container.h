@@ -159,6 +159,15 @@ namespace piranha
 			Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const {
 				return Derived((max_fast_int)0, args_tuple);
 			}
+			template <class ArgsTuple>
+			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+				if (n == 0) {
+					throw division_by_zero();
+				} else if (n == 1) {
+					return Derived(*derived_const_cast);
+				}
+				return derived_const_cast->pow(1./(double)(n),args_tuple);
+			}
 			/// Get value.
 			const T &value() const {
 				return m_value;

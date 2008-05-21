@@ -83,6 +83,7 @@ namespace piranha
 			Derived &operator/=(const double &);
 			Derived pow(const double &) const;
 			Derived pow(const max_fast_int &) const;
+			Derived root(const max_fast_int &) const;
 			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
 		protected:

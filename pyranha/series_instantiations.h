@@ -87,6 +87,7 @@ namespace pyranha
 		typedef T(T::*pow_int)(const piranha::max_fast_int &) const;
 		inst.def("__pow__", pow_double(&T::pow));
 		inst.def("__pow__", pow_int(&T::pow));
+		inst.def("root", &T::root);
 		return inst;
 	}
 

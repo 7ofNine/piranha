@@ -142,6 +142,14 @@ namespace piranha
 		return retval;
 	}
 
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::root(const max_fast_int &n) const
+	{
+		Derived retval(derived_const_cast->b_root(n, derived_const_cast->m_arguments));
+		retval.m_arguments = derived_const_cast->m_arguments;
+		return retval;
+	}
+
 	template <class PosTuple, class ArgsTuple>
 	struct named_series_get_psym_p_positions {
 		BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);

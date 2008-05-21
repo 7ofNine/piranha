@@ -329,6 +329,15 @@ namespace piranha
 				}
 				return retval;
 			}
+			template <class ArgsTuple>
+			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+				if (n == 0) {
+					throw division_by_zero();
+				} else if (n == 1) {
+					return Derived(*derived_const_cast);
+				}
+				return pow(1./(double)(n), args_tuple);
+			}
 			void upload_min_exponents(std::vector<max_fast_int> &) const {}
 			void test_min_exponents(std::vector<max_fast_int> &) const {}
 			template <class ArgsTuple>

@@ -70,6 +70,7 @@ namespace piranha
 			// Specify we will use the real_power from the binomial exponentiation toolbox.
 			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -147,6 +148,7 @@ namespace std
 			// Specify we will use the real_power from the binomial exponentiation toolbox.
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::add;

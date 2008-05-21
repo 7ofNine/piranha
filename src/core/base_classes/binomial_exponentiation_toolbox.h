@@ -36,6 +36,8 @@ namespace piranha
 	template <class Derived>
 	class binomial_exponentiation_toolbox
 	{
+		private:
+			enum op_type { power_op, root_op };
 		protected:
 			/// Real power.
 			/**
@@ -43,14 +45,19 @@ namespace piranha
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
-				return generic_power(y, args_tuple);
+				return generic_power<power_op>(y, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived negative_integer_power(const max_fast_int &y, const ArgsTuple &args_tuple) const {
-				return generic_power(y, args_tuple);
+				return generic_power<power_op>(y, args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived nth_root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+				p_assert(n != 0 and n != 1);
+				return generic_power<root_op>(n, args_tuple);
 			}
 		private:
-			template <class Number, class ArgsTuple>
+			template <op_type Op, class Number, class ArgsTuple>
 			Derived generic_power(const Number &y, const ArgsTuple &args_tuple) const {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already been taken care of
@@ -75,9 +82,9 @@ namespace piranha
 						"\nThe reported error is: ")
 									 + u.what());
 				}
-				return binomial_expansion(A, XoverA, y, n, args_tuple);
+				return binomial_expansion<Op>(A, XoverA, y, n, args_tuple);
 			}
-			template <class Term, class Number, class ArgsTuple>
+			template <op_type Op, class Term, class Number, class ArgsTuple>
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
 									const Number &y, const size_t &n, const ArgsTuple &args_tuple)
 			{
@@ -87,8 +94,13 @@ namespace piranha
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
-				tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
-				tmp_term.m_key = A.m_key.pow(y, args_tuple);
+				if (Op == power_op) {
+					tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
+					tmp_term.m_key = A.m_key.pow(y, args_tuple);
+				} else {
+					tmp_term.m_cf = A.m_cf.root(y, args_tuple);
+					tmp_term.m_key = A.m_key.root(y, args_tuple);
+				}
 				Derived Apowy;
 				Apowy.insert(tmp_term, args_tuple, Apowy.template nth_index<0>().end());
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
@@ -96,11 +108,20 @@ namespace piranha
 				Derived retval;
 				Derived tmp((max_fast_int)1, args_tuple);
 				retval.add(tmp, args_tuple);
-				for (size_t i = 1; i <= n; ++i) {
-					tmp.mult_by(y-(max_fast_int)(i)+(max_fast_int)1, args_tuple);
-					tmp.divide_by((max_fast_int)i, args_tuple);
-					tmp.mult_by(XoverA, args_tuple);
-					retval.add(tmp, args_tuple);
+				if (Op == power_op) {
+					for (size_t i = 1; i <= n; ++i) {
+						tmp.mult_by(y-(max_fast_int)(i)+(max_fast_int)1, args_tuple);
+						tmp.divide_by((max_fast_int)i, args_tuple);
+						tmp.mult_by(XoverA, args_tuple);
+						retval.add(tmp, args_tuple);
+					}
+				} else {
+					for (size_t i = 1; i <= n; ++i) {
+						tmp.mult_by((max_fast_int)1-(max_fast_int)(i*y)+y, args_tuple);
+						tmp.divide_by((max_fast_int)y*(max_fast_int)i, args_tuple);
+						tmp.mult_by(XoverA, args_tuple);
+						retval.add(tmp, args_tuple);
+					}
 				}
 				// Finally, multiply the result of the summation by A**y.
 				retval.mult_by(Apowy, args_tuple);

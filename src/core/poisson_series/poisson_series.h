@@ -93,6 +93,7 @@ namespace piranha
 			friend class named_series_complex_toolbox< POISSON_SERIES >;
 			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -178,6 +179,7 @@ namespace std
 			friend class piranha::base_series_complex_toolbox<POISSON_SERIES>;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::add;

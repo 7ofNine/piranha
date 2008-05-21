@@ -126,6 +126,7 @@ namespace piranha
 			// Override power functions with the ones from the binomial exponentiation toolbox.
 			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -206,6 +207,7 @@ namespace std
 			// Override power_functions with the ones from the binomial exponentiation toolbox.
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
