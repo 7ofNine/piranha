@@ -23,6 +23,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <complex>
 #include <iostream>
 #include <sstream>
 
@@ -31,6 +32,12 @@
 
 namespace piranha
 {
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::complex<Derived> named_series<__PIRANHA_NAMED_SERIES_TP>::complex() const
+	{
+		return std::complex<Derived>(*derived_const_cast);
+	}
+
 	// TMP for series printing.
 	template <class ArgsDescr>
 	inline void named_series_print_plain(std::ostream &stream,

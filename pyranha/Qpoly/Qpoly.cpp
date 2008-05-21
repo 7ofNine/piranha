@@ -40,5 +40,5 @@ BOOST_PYTHON_MODULE(_Qpoly)
 	class_<manipulators::qpolyc> instc = series_basic_instantiation<manipulators::qpolyc>(std::string("qpolyc"),
 									  std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
 	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }

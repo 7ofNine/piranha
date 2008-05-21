@@ -41,6 +41,6 @@ BOOST_PYTHON_MODULE(_Dps)
 	series_trigonometric_instantiation(inst);
 	class_<manipulators::dpsc> instc = series_basic_instantiation<manipulators::dpsc>(std::string("dpsc"),
 									   std::string("Poisson series with complex double precision coefficients."));
-	series_complex_instantiation(instc);
 	common_poisson_series_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }

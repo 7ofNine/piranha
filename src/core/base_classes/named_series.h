@@ -60,6 +60,7 @@ namespace piranha
 			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
 			BOOST_STATIC_ASSERT(n_arguments_sets > 0);
 			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
+			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
 			std::string print_to_string() const;
 			void save_to(const std::string &) const;

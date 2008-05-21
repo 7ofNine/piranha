@@ -39,5 +39,5 @@ BOOST_PYTHON_MODULE(_Dfs)
 
 	class_<manipulators::dfsc> instc = series_basic_instantiation<manipulators::dfsc>(std::string("dfsc"),
 									  std::string("Fourier series with complex double precision coefficients."));
-	series_complex_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }

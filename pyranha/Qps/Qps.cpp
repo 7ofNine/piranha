@@ -42,5 +42,5 @@ BOOST_PYTHON_MODULE(_Qps)
 	class_<manipulators::qpsc> instc = series_basic_instantiation<manipulators::qpsc>(std::string("qpsc"),
 									   std::string("Poisson series with complex arbitrary-precision rational coefficients."));
 	common_poisson_series_instantiation(instc);
-	series_complex_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }

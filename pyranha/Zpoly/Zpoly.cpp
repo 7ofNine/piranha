@@ -40,5 +40,5 @@ BOOST_PYTHON_MODULE(_Zpoly)
 	class_<manipulators::zpolyc> instc = series_basic_instantiation<manipulators::zpolyc>(std::string("zpolyc"),
 									  std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
 	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }

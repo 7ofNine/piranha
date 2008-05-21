@@ -21,6 +21,16 @@ from _Math import *
 import pyranha as __pyranha
 import math as __math
 
+def complex(arg):
+  """
+  Wrapper around standard builtin "complex". If arg provides a complex() method, it will be called, otherwise
+  builtin complex will be called.
+  """
+  try:
+    return arg.complex()
+  except AttributeError:
+    return complex(arg)
+
 def cos(arg):
   """
   Wrapper around standard cosine function. If arg provides a cos() method, it will be called, otherwise

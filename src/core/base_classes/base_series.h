@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_SERIES_H
 
 #include <boost/static_assert.hpp>
-#include <memory>
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"

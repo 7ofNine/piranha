@@ -91,54 +91,55 @@ namespace pyranha
 	}
 
 	template <class T>
-	void series_complex_instantiation(boost::python::class_<std::complex<T> > &inst)
+	void series_complex_instantiation(boost::python::class_<std::complex<T> > &instc, boost::python::class_<T> &inst)
 	{
 		// Ctors.
-		inst.def(boost::python::init<const std::complex<piranha::max_fast_int> &>());
-		inst.def(boost::python::init<const std::complex<double> &>());
-		inst.def(boost::python::init<const T &>());
-		inst.def(boost::python::init<const T &, const T &>());
+		instc.def(boost::python::init<const std::complex<piranha::max_fast_int> &>());
+		instc.def(boost::python::init<const std::complex<double> &>());
+		instc.def(boost::python::init<const T &>());
+		instc.def(boost::python::init<const T &, const T &>());
+		inst.def("complex", &T::complex, "Return complex counterpart.");
 		// Addition and subtraction.
-		inst.def(boost::python::self += std::complex<piranha::max_fast_int>());
-		inst.def(boost::python::self += std::complex<double>());
-		inst.def(boost::python::self += T());
-		inst.def(boost::python::self + piranha::max_fast_int());
-		inst.def(std::complex<piranha::max_fast_int>() + boost::python::self);
-		inst.def(boost::python::self + std::complex<double>());
-		inst.def(std::complex<double>() + boost::python::self);
-		inst.def(boost::python::self + T());
-		inst.def(T() + boost::python::self);
-		inst.def(boost::python::self -= std::complex<piranha::max_fast_int>());
-		inst.def(boost::python::self -= std::complex<double>());
-		inst.def(boost::python::self -= T());
-		inst.def(boost::python::self - piranha::max_fast_int());
-		inst.def(std::complex<piranha::max_fast_int>() - boost::python::self);
-		inst.def(boost::python::self - std::complex<double>());
-		inst.def(std::complex<double>() - boost::python::self);
-		inst.def(boost::python::self - T());
-		inst.def(T() - boost::python::self);
+		instc.def(boost::python::self += std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self += std::complex<double>());
+		instc.def(boost::python::self += T());
+		instc.def(boost::python::self + piranha::max_fast_int());
+		instc.def(std::complex<piranha::max_fast_int>() + boost::python::self);
+		instc.def(boost::python::self + std::complex<double>());
+		instc.def(std::complex<double>() + boost::python::self);
+		instc.def(boost::python::self + T());
+		instc.def(T() + boost::python::self);
+		instc.def(boost::python::self -= std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self -= std::complex<double>());
+		instc.def(boost::python::self -= T());
+		instc.def(boost::python::self - piranha::max_fast_int());
+		instc.def(std::complex<piranha::max_fast_int>() - boost::python::self);
+		instc.def(boost::python::self - std::complex<double>());
+		instc.def(std::complex<double>() - boost::python::self);
+		instc.def(boost::python::self - T());
+		instc.def(T() - boost::python::self);
 		// Multiplication.
-		inst.def(boost::python::self *= std::complex<piranha::max_fast_int>());
-		inst.def(boost::python::self *= std::complex<double>());
-		inst.def(boost::python::self *= T());
-		inst.def(boost::python::self * piranha::max_fast_int());
-		inst.def(std::complex<piranha::max_fast_int>() * boost::python::self);
-		inst.def(boost::python::self * std::complex<double>());
-		inst.def(std::complex<double>() * boost::python::self);
-		inst.def(boost::python::self * T());
-		inst.def(T() * boost::python::self);
+		instc.def(boost::python::self *= std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self *= std::complex<double>());
+		instc.def(boost::python::self *= T());
+		instc.def(boost::python::self * piranha::max_fast_int());
+		instc.def(std::complex<piranha::max_fast_int>() * boost::python::self);
+		instc.def(boost::python::self * std::complex<double>());
+		instc.def(std::complex<double>() * boost::python::self);
+		instc.def(boost::python::self * T());
+		instc.def(T() * boost::python::self);
 		// Division.
-		inst.def(boost::python::self /= std::complex<piranha::max_fast_int>());
-		inst.def(boost::python::self /= std::complex<double>());
-		inst.def(boost::python::self / std::complex<piranha::max_fast_int>());
-		inst.def(boost::python::self / std::complex<double>());
+		instc.def(boost::python::self /= std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self /= std::complex<double>());
+		instc.def(boost::python::self / std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
 		typedef T (std::complex<T>::*comp_get)() const;
 		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
-		inst.def("real", comp_get(&std::complex<T>::real), "Get real part.");
-		inst.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
-		inst.def("real", comp_set(&std::complex<T>::real), boost::python::return_internal_reference<1>(), "Set real part.");
-		inst.def("imag", comp_set(&std::complex<T>::imag), boost::python::return_internal_reference<1>(), "Set imaginary part.");
+		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
+		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
+		instc.def("real", comp_set(&std::complex<T>::real), boost::python::return_internal_reference<1>(), "Set real part.");
+		instc.def("imag", comp_set(&std::complex<T>::imag), boost::python::return_internal_reference<1>(), "Set imaginary part.");
 	}
 
 	template <class T>

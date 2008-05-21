@@ -40,5 +40,5 @@ BOOST_PYTHON_MODULE(_Dpoly)
 	class_<manipulators::dpolyc> instc = series_basic_instantiation<manipulators::dpolyc>(std::string("dpolyc"),
 									  std::string("Multivariate polynomial with complex double precision coefficients."));
 	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc);
+	series_complex_instantiation(instc, inst);
 }
