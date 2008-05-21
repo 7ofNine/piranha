@@ -264,19 +264,68 @@ namespace piranha
 				}
 				return retval;
 			}
+			template <class ArgsTuple>
+			Derived pow(const max_fast_int &n, const ArgsTuple &) const {
+				const bool int_zero = derived_const_cast->elements_are_zero();
+				Derived retval;
+				if (n < 0) {
+					// 0^-n.
+					if (int_zero and !derived_const_cast->m_flavour) {
+						throw division_by_zero();
+					// 1^-n == 1. Don't do nothing because retval is already initialized properly.
+					} else if (int_zero and derived_const_cast->m_flavour) {
+						;
+					// x^-n -> no go.
+					} else {
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer exponentiation.");
+					}
+				// x^0 == 1. Don't do nothing because retval is already initialized properly.
+				} else if (n == 0) {
+					;
+				} else {
+					// 0^n == 0.
+					if (int_zero and !derived_const_cast->m_flavour) {
+						retval.m_flavour = false;
+					// 1^y == 1. Don't do nothing because retval is already initialized properly.
+					} else if (int_zero and derived_const_cast->m_flavour) {
+						;
+					// x^n --> no go (it should be handled by natural power routine for series).
+					} else {
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer exponentiation.");
+					}
+				}
+				return retval;
+			}
 			/// Real exponentiation.
-			/**
-			 * If the trigonometric array cannot be raised to the desired power, an exception will be thrown.
-			 */
 			template <class ArgsTuple>
 			Derived pow(const double &y, const ArgsTuple &) const {
-				if (!derived_const_cast->elements_are_zero()) {
-					throw unsuitable("Trigonometric array is not suitable for real exponentiation.");
-				}
-				Derived retval(*derived_const_cast);
-				// If flavour is sine and power is 0, return 1 beacuse we agree that 0**0 == 1.
-				if (!derived_const_cast->m_flavour and std::abs(y) <= settings::numerical_zero()) {
-					retval.m_flavour = true;
+				const bool int_zero = derived_const_cast->elements_are_zero();
+				Derived retval;
+				if (y < 0) {
+					// 0^-y.
+					if (int_zero and !derived_const_cast->m_flavour) {
+						throw division_by_zero();
+					// 1^-y == 1. Don't do nothing because retval is already initialized properly.
+					} else if (int_zero and derived_const_cast->m_flavour) {
+						;
+					// x^-y -> no go.
+					} else {
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real exponentiation.");
+					}
+				// x^0 == 1. Don't do nothing because retval is already initialized properly.
+				} else if (y == 0) {
+					;
+				} else {
+					// 0^y == 0.
+					if (int_zero and !derived_const_cast->m_flavour) {
+						retval.m_flavour = false;
+					// 1^y == 1. Don't do nothing because retval is already initialized properly.
+					} else if (int_zero and derived_const_cast->m_flavour) {
+						;
+					// x^y --> no go.
+					} else {
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real exponentiation.");
+					}
 				}
 				return retval;
 			}
