@@ -343,20 +343,53 @@ namespace piranha
 		return retval;
 	}
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_root_handler(const max_fast_int &n, Derived &retval,
+			const ArgsTuple &args_tuple) const
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::term_type term_type;
+		typedef typename term_type::cf_type cf_type;
+		typedef typename term_type::key_type key_type;
+		p_assert(retval.empty());
+		if (n == 0) {
+			throw division_by_zero();
+		}
+		if (n == 1) {
+			retval = *derived_const_cast;
+			return true;
+		}
+		// Handle the case of an empty series.
+		if (empty()) {
+			if (n < 0) {
+				throw division_by_zero();
+			// 0**n == 0, with n > 0.
+			} else {
+				return true;
+			}
+		// If the series has a single term, dispatch pow to the coefficient and key of said term.
+		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
+			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+			retval.insert(term_type(it->m_cf.root(n, args_tuple),it->m_key.root(n,args_tuple)),
+				args_tuple,retval.template nth_index<0>().end());
+			return true;
+		}
+		return false;
+	}
+
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		if (n == 0) {
-			throw division_by_zero();
+		Derived retval;
+		if (!common_root_handler(n,retval,args_tuple)) {
+			Derived tmp(derived_const_cast->nth_root(n, args_tuple));
+			retval.swap_terms(tmp);
 		}
-		if (n == 1) {
-			return Derived(*derived_const_cast);
-		} else {
-			return derived_const_cast->nth_root(n,args_tuple);
-		}
+		return retval;
 	}
 
 	// By default use real power.

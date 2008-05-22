@@ -138,6 +138,8 @@ namespace piranha
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			bool common_root_handler(const max_fast_int &, Derived &retval, const ArgsTuple &) const;
 			// Functors.
 			template <class ArgsTuple>
 			class modifier_invert_term_sign
