@@ -139,8 +139,8 @@ namespace piranha
 				// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
 				const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
 				try {
-					p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes);
-					p_vc_res_sin = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes);
+					p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes * 2);
+					p_vc_res_sin = p_vc_res_cos + n_codes;
 					// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
 					// we are sure it will be initialized properly. We want to make sure the coefficients are initialized
 					// to zero in order to accumulate Poisson terms during multiplication.
@@ -150,7 +150,6 @@ namespace piranha
 					}
 				} catch (const std::bad_alloc &) {
 					piranha_free(p_vc_res_cos);
-					piranha_free(p_vc_res_sin);
 					return false;
 				}
 				__PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");
@@ -236,7 +235,6 @@ namespace piranha
 				}
 				// Free the allocated space.
 				piranha_free(p_vc_res_cos);
-				piranha_free(p_vc_res_sin);
 				__PDEBUG(std::cout << "Done Poisson series vector coded\n");
 				return true;
 			}
