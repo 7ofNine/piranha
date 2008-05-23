@@ -30,41 +30,45 @@
 
 namespace piranha
 {
-	struct __PIRANHA_VISIBLE base_norm_truncator {
-		static void set(const int &n) {
-			if (n < 0) {
-				throw(unsuitable("Please insert a non-negative integer."));
-			} else if (n == 0) {
-				m_truncation_level = 0;
-			} else {
-				m_truncation_level = std::pow(10., -n);
+	class __PIRANHA_VISIBLE base_norm_truncator
+	{
+		public:
+			static void set(const int &n) {
+				if (n < 0) {
+					throw(unsuitable("Please insert a non-negative integer."));
+				} else if (n == 0) {
+					m_truncation_level = 0;
+				} else {
+					m_truncation_level = std::pow(10., -n);
+				}
 			}
-		}
-		static void print(std::ostream &stream = std::cout);
-		static std::string print_to_string();
-private:
-		static double m_truncation_level;
+			static void print(std::ostream &stream = std::cout);
+			static std::string print_to_string();
+		private:
+			static double m_truncation_level;
 	};
 
 	/// Norm-based truncator.
 	template <class Multiplier>
-	struct norm_truncator: public base_norm_truncator {
-		norm_truncator(Multiplier &m):
-				m_multiplier(m),
-				m_delta_threshold(
-					m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level /
-					(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
-		template <class Result>
-		bool accept(const Result &) const {
-			return true;
-		}
-		template <class Cf1, class Cf2, class Key>
-		bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &) const {
-			return (c1.norm(m_multiplier.m_args_tuple) * c2.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
-		}
-private:
-		Multiplier    &m_multiplier;
-		const double  m_delta_threshold;
+	class norm_truncator: public base_norm_truncator
+	{
+		public:
+			norm_truncator(Multiplier &m):
+					m_multiplier(m),
+					m_delta_threshold(
+						m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level /
+						(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
+			template <class Result>
+			bool accept(const Result &) const {
+				return true;
+			}
+			template <class Cf1, class Cf2, class Key>
+			bool skip(const Cf1 &c1, const Key &, const Cf2 &c2, const Key &) const {
+				return (c1.norm(m_multiplier.m_args_tuple) * c2.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
+			}
+		private:
+			Multiplier    &m_multiplier;
+			const double  m_delta_threshold;
 	};
 }
 

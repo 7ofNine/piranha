@@ -41,6 +41,7 @@ namespace pyranha
 		inst.def(boost::python::init<const std::string &>());
 		inst.def(boost::python::init<const piranha::max_fast_int &>());
 		inst.def(boost::python::init<const double &>());
+		// Some special methods.
 		inst.def("__copy__", &T::copy);
 		inst.def("__repr__", &T::print_to_string);
 		inst.def("__len__", &T::length);
