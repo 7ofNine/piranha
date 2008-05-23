@@ -33,7 +33,7 @@ int main()
   for (size_t i = 0; i < 10000; ++i)
   {
     dpoly a(a_), b(b_);
-    a = std::pow(a,20);
+    a = std::pow(a,(max_fast_int)20);
     dpoly c(a);
     c+=(max_fast_int)1;
     a*=c;
