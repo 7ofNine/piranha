@@ -157,6 +157,7 @@ namespace piranha
 				// Please note that even if here it seems like we are going to write outside allocated memory,
 				// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
 				cf_type1 *vc_res_cos =  p_vc_res_cos - coded_ancestor::m_h_min, *vc_res_sin = p_vc_res_sin - coded_ancestor::m_h_min;
+				cf_type1 tmp_cf;
 				// Perform multiplication.
 				for (size_t i = 0; i < ancestor::m_size1; ++i) {
 					for (size_t j = 0; j < ancestor::m_size2; ++j) {
@@ -169,7 +170,7 @@ namespace piranha
 						// so that we can avoid copying stuff around here and elsewhere?
 						// TODO: don't create a tmp_cf each time, create it outside the loop and assign it here.
 						// For nontrivial coefficients we can save a lot of memory allocations.
-						cf_type1 tmp_cf(ancestor::m_cfs1[i].get());
+						tmp_cf = ancestor::m_cfs1[i].get();
 						tmp_cf.mult_by(ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
 						tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
 						const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
