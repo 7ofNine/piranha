@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/piranha.h"
+#include "../src/manipulators/dpoly.h"
 
 // Pearce's sparse polynomial multiplication test 1. Calculate:
 // f*g

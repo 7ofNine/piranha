@@ -22,6 +22,7 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/static_assert.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -340,6 +341,8 @@ namespace piranha
 				__PDEBUG(std::cout << "Done Poisson series hash coded\n");
 			}
 		private:
+			// Just making sure, eh...
+			BOOST_STATIC_ASSERT(sizeof(char) == sizeof(bool));
 			// For Poisson series we also need flavours.
 			std::vector<char>	m_flavours1;
 			std::vector<char>	m_flavours2;

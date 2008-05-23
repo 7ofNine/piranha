@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/piranha.h"
+#include "../src/manipulators/dpoly.h"
 
 // Fateman's polynomial multiplication test number 2. Calculate:
 // s*(s+1)

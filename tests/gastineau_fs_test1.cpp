@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "../src/piranha.h"
+#include "../src/manipulators/dfs.h"
 
 using namespace piranha;
 using namespace piranha::manipulators;
