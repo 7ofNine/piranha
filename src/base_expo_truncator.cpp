@@ -25,7 +25,7 @@
 
 namespace piranha
 {
-// Static initialization for expo-based truncation.
+	// Static initialization for expo-based truncation.
 	base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
 
 	void base_expo_truncator::clear_all()

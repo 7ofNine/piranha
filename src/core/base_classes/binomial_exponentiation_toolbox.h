@@ -45,20 +45,20 @@ namespace piranha
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
-				return generic_power<power_op>(y, args_tuple);
+				return generic_binomial_power<power_op>(y, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived negative_integer_power(const max_fast_int &y, const ArgsTuple &args_tuple) const {
-				return generic_power<power_op>(y, args_tuple);
+				return generic_binomial_power<power_op>(y, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
 				p_assert(n != 0 and n != 1);
-				return generic_power<root_op>(n, args_tuple);
+				return generic_binomial_power<root_op>(n, args_tuple);
 			}
 		private:
 			template <op_type Op, class Number, class ArgsTuple>
-			Derived generic_power(const Number &y, const ArgsTuple &args_tuple) const {
+			Derived generic_binomial_power(const Number &y, const ArgsTuple &args_tuple) const {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already been taken care of
 				// in base_series::b_pow.
@@ -89,7 +89,7 @@ namespace piranha
 									const Number &y, const size_t &n, const ArgsTuple &args_tuple)
 			{
 				typedef typename Derived::term_type term_type;
-				BOOST_STATIC_ASSERT((boost::is_same<term_type, typename Derived::term_type>::value));
+				BOOST_STATIC_ASSERT((boost::is_same<Term, typename Derived::term_type>::value));
 				// Start the binomial expansion.
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
