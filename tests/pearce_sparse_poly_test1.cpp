@@ -36,8 +36,8 @@ int main()
   dpoly t2("pearce_sparse2.dpoly");
   dpoly u1(t1);
   dpoly u2(t2);
-  t1 = std::pow(t1,12);
-  t2 = std::pow(t2,12);
+  t1 = std::pow(t1,(max_fast_int)12);
+  t2 = std::pow(t2,(max_fast_int)12);
   t1 *= t2;
 
   std::cout << std::endl << t1.nth_index<0>().size() << std::endl;

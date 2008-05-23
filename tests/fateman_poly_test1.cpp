@@ -31,7 +31,7 @@ typedef dpoly poly;
 int main()
 {
   poly a("fateman_test.dpoly"), b(a);
-  a = std::pow(a,30);
+  a = std::pow(a,(max_fast_int)30);
   poly c(a);
   c+=(max_fast_int)1;
   a*=c;
