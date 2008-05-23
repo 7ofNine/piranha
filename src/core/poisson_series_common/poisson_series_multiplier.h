@@ -341,8 +341,8 @@ namespace piranha
 			}
 		private:
 			// For Poisson series we also need flavours.
-			std::vector<bool> m_flavours1;
-			std::vector<bool> m_flavours2;
+			std::vector<char>	m_flavours1;
+			std::vector<char>	m_flavours2;
 	};
 }
 
