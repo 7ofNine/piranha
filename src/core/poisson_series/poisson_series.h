@@ -253,9 +253,23 @@ namespace std
 	}
 
 	template <E1_SERIES_TP_DECL>
+	POISSON_SERIES pow(const POISSON_SERIES &x, const piranha::max_fast_int &n)
+	{
+		POISSON_SERIES retval(x.pow(n));
+		return retval;
+	}
+
+	template <E1_SERIES_TP_DECL>
 	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const double &y)
 	{
 		COMPLEX_POISSON_SERIES retval(x.pow(y));
+		return retval;
+	}
+
+	template <E1_SERIES_TP_DECL>
+	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const piranha::max_fast_int &n)
+	{
+		COMPLEX_POISSON_SERIES retval(x.pow(n));
 		return retval;
 	}
 }

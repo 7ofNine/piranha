@@ -185,6 +185,27 @@ namespace std
 		FOURIER_SERIES retval(x.pow(y));
 		return retval;
 	}
+
+	template < E0_SERIES_TP_DECL >
+	FOURIER_SERIES pow(const FOURIER_SERIES &x, const piranha::max_fast_int &n)
+	{
+		FOURIER_SERIES retval(x.pow(n));
+		return retval;
+	}
+
+	template < E0_SERIES_TP_DECL >
+	COMPLEX_FOURIER_SERIES pow(const COMPLEX_FOURIER_SERIES &x, const double &y)
+	{
+		COMPLEX_FOURIER_SERIES retval(x.pow(y));
+		return retval;
+	}
+
+	template < E0_SERIES_TP_DECL >
+	COMPLEX_FOURIER_SERIES pow(const COMPLEX_FOURIER_SERIES &x, const piranha::max_fast_int &n)
+	{
+		COMPLEX_FOURIER_SERIES retval(x.pow(n));
+		return retval;
+	}
 }
 
 #endif

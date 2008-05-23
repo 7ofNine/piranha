@@ -259,9 +259,30 @@ namespace std
 namespace std
 {
 	template < E0_SERIES_TP_DECL >
+	POLYNOMIAL pow(const POLYNOMIAL &x, const piranha::max_fast_int &n)
+	{
+		POLYNOMIAL retval(x.pow(n));
+		return retval;
+	}
+
+	template < E0_SERIES_TP_DECL >
 	POLYNOMIAL pow(const POLYNOMIAL &x, const double &y)
 	{
 		POLYNOMIAL retval(x.pow(y));
+		return retval;
+	}
+
+	template < E0_SERIES_TP_DECL >
+	COMPLEX_POLYNOMIAL pow(const COMPLEX_POLYNOMIAL &x, const piranha::max_fast_int &n)
+	{
+		COMPLEX_POLYNOMIAL retval(x.pow(n));
+		return retval;
+	}
+
+	template < E0_SERIES_TP_DECL >
+	COMPLEX_POLYNOMIAL pow(const COMPLEX_POLYNOMIAL &x, const double &y)
+	{
+		COMPLEX_POLYNOMIAL retval(x.pow(y));
 		return retval;
 	}
 }
