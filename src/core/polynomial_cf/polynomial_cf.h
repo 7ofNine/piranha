@@ -23,9 +23,11 @@
 
 #include <boost/multi_index_container.hpp>
 #include <complex>
+#include <utility>
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
+#include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/cf_series.h"
 #include "../base_classes/power_series.h"
@@ -43,6 +45,7 @@
 #define POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>
 #define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL_CF >
 #define POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POLYNOMIAL_CF >
+#define POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::base_series_special_functions< POLYNOMIAL_CF >
 
 namespace piranha
 {
@@ -53,6 +56,7 @@ namespace piranha
 				public POLYNOMIAL_CF_CF_ANCESTOR,
 				public POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public POLYNOMIAL_CF_MULT_ANCESTOR,
+				public POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
 				public POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
 			typedef POLYNOMIAL_CF_TERM term_type_;
@@ -95,16 +99,17 @@ namespace piranha
 				return m_container.template get<N>();
 			}
 			// TODO: place some of these methods into common polynomial toolbox?
-			/// Return a vector of integers representing the polynomial.
-			/**
-			 * If the polynomial is not a linear combination of arguments with integer coefficients, an exception will be thrown.
-			 * Otherwise, the polynomial's coefficients are stored into v. Used in the calculation of circular functions of
-			 * Poisson series.
-			 */
-			void get_int_linear_combination(std::vector<max_fast_int> &v) {
+			/// Return a single coefficient and a vector of integers representing the polynomial.
+			void get_int_linear_combination(std::pair<std::vector<cf_type>,std::vector<max_fast_int> > &res) const {
 				const const_sorted_iterator it_f = nth_index<0>().end();
 				for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
-					v[it->m_key.linear_arg_position()] = it->m_cf.get_int();
+					const max_fast_int pos = it->m_key.linear_arg_position();
+					if (pos >= 0) {
+						p_assert(pos < (max_fast_int)res.second.size());
+						res.second[(size_t)pos] = it->m_cf.get_int();
+					} else {
+						res.first.push_back(it->m_cf);
+					}
 				}
 			}
 		private:
@@ -119,6 +124,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL_CF >
 
 namespace std
@@ -130,6 +136,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX,
+				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
 			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type_;

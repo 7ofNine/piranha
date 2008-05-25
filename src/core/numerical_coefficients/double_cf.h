@@ -72,6 +72,8 @@ namespace piranha
 			double_cf pow(const double &y, const ArgsTuple &) const {
 				return pow_helper(y);
 			}
+			template <class ArgsTuple>
+			std::complex<double_cf> complexp(const ArgsTuple &) const;
 		private:
 			template <class Number>
 			double_cf pow_helper(const Number &y) const {
@@ -92,6 +94,7 @@ namespace std
 			typedef piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
 			friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
+			friend class piranha::double_cf;
 		public:
 			typedef piranha::double_cf value_type;
 			using ancestor::mult_by;
@@ -116,6 +119,19 @@ namespace std
 				return retval;
 			}
 	};
+}
+
+namespace piranha
+{
+	// Place it here, since double_cf is not a template class and hence this definition
+	// relies on the complex specialization for double_cf being already available.
+	template <class ArgsTuple>
+	inline std::complex<double_cf> double_cf::complexp(const ArgsTuple &) const
+	{
+		std::complex<double_cf> retval;
+		retval.m_value = std::polar(1.,m_value);
+		return retval;
+	}
 }
 
 #endif

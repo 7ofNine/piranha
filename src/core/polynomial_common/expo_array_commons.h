@@ -117,13 +117,15 @@ namespace piranha
 			}
 			/// Return the position of the linear argument in the monomial.
 			/**
-			 * It will throw if the monomial is not linear.
+			 * It will throw if the monomial is not linear or zero degree.
 			 */
-			size_t linear_arg_position() const throw(unsuitable) {
+			max_fast_int linear_arg_position() const {
 				bool found_linear = false;
-				size_t candidate = 0;
+				bool is_unity = true;
+				max_fast_int candidate = -1;
 				for (typename Derived::size_type i = 0; i < derived_const_cast->m_size; ++i) {
 					if ((*derived_const_cast)[i] == 1) {
+						is_unity = false;
 						if (found_linear) {
 							found_linear = false;
 							break;
@@ -132,11 +134,12 @@ namespace piranha
 							found_linear = true;
 						}
 					} else if ((*derived_const_cast)[i] != 0) {
+						is_unity = false;
 						found_linear = false;
 						break;
 					}
 				}
-				if (!found_linear) {
+				if (!found_linear and !is_unity) {
 					throw unsuitable("Monomial is not linear.");
 				}
 				return candidate;

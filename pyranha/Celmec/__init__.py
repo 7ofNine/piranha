@@ -25,7 +25,7 @@ def r_a(e,M):
   try:
     return __pyranha.ds.r_a(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a r_a method."
+    raise AttributeError, "The series type '" + str(ds) +  "' does not offer an r_a method."
 
 def sin_f(e,M):
   """
@@ -44,3 +44,12 @@ def cos_E(e,M):
     return __pyranha.ds.cos_E(e,M)
   except AttributeError:
     raise AttributeError, "The series type '" + str(ds) +  "' does not offer a cos_E method."
+
+def E(e,M):
+  """
+  Calculate the elliptic expansion of E in terms of e and M.
+  """
+  try:
+    return __pyranha.ds.E(e,M)
+  except AttributeError:
+    raise AttributeError, "The series type '" + str(ds) +  "' does not offer an E method."

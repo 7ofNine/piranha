@@ -235,6 +235,7 @@ namespace piranha
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
 				const size_t size = v.size();
 				p_assert(boost::integer_traits<size_type>::max() > size);
+				// TODO: check where this function is used to see if this resize can be avoided.
 				resize(size);
 				// TODO: check for assignments out of numerical boundaries.
 				for (size_t i = 0; i < size; ++i) {

@@ -142,6 +142,8 @@ namespace piranha
 				}
 				return retval;
 			}
+			template <class ArgsTuple>
+			std::complex<mpq_cf> complexp(const ArgsTuple &) const;
 	};
 }
 
@@ -300,6 +302,15 @@ namespace std
 				m_value.imag().canonicalize();
 			}
 	};
+}
+
+namespace piranha
+{
+	template <class ArgsTuple>
+	inline std::complex<mpq_cf> mpq_cf::complexp(const ArgsTuple &) const
+	{
+		throw unsuitable("Rational coefficient is unsuitable for complex exponentiation.");
+	}
 }
 
 #endif
