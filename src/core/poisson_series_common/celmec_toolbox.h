@@ -129,6 +129,26 @@ namespace piranha
 			static Derived sin_f(const std::string &e_name, const std::string &M_name) {
 				return sin_f(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
 			}
+			static Derived E(const Derived &e_series, const Derived &M_series) {
+				Derived retval(M_series);
+				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				Derived tmp;
+				for (size_t i = 1; i <= n; ++i) {
+					Derived expansion_term((e_series * (max_fast_int)i).besselJ((max_fast_int)i));
+					expansion_term /= (max_fast_int)i;
+					expansion_term *= (M_series * (max_fast_int)i).sin();
+					tmp += expansion_term;
+				}
+				tmp *= (max_fast_int)2;
+				retval += tmp;
+				return retval;
+			}
+			static Derived E(const psym &e, const psym &M) {
+				return E(Derived(e), Derived(M));
+			}
+			static Derived E(const std::string &e_name, const std::string &M_name) {
+				return E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+			}
 	};
 
 	// Provide also external functions.
@@ -139,9 +159,21 @@ namespace piranha
 	}
 
 	template <class Series>
+	Series cos_E(const Series &e_series, const Series &M_series)
+	{
+		return Series::cos_E(e_series, M_series);
+	}
+
+	template <class Series>
 	Series sin_f(const Series &e_series, const Series &M_series)
 	{
 		return Series::sin_f(e_series, M_series);
+	}
+
+	template <class Series>
+	Series E(const Series &e_series, const Series &M_series)
+	{
+		return Series::E(e_series, M_series);
 	}
 }
 
