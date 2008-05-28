@@ -94,7 +94,8 @@ namespace piranha
 										 "has negative or zero minimum value.");
 					}
 					if (mle.second[i] < 0) {
-						throw unsuitable("Cannot calculate limit of power series if there are negative exponent limits for this series.");
+						throw unsuitable("Cannot calculate limit of power series if there are negative "
+										 "exponent limits for this series.");
 					}
 				}
 				std::vector<size_t> power_limits(size);
