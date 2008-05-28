@@ -45,6 +45,15 @@ def cos_E(e,M):
   except AttributeError:
     raise AttributeError, "The series type '" + str(ds) +  "' does not offer a cos_E method."
 
+def sin_E(e,M):
+  """
+  Calculate the elliptic expansion of sin(E) in terms of e and M.
+  """
+  try:
+    return __pyranha.ds.sin_E(e,M)
+  except AttributeError:
+    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a sin_E method."
+
 def E(e,M):
   """
   Calculate the elliptic expansion of E in terms of e and M.

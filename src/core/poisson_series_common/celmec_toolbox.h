@@ -75,9 +75,6 @@ namespace piranha
 				// First let's build 1/2 e.
 				Derived retval(e_series);
 				retval /= (max_fast_int)2;
-				// Let's find out the upper limit of the r_a development, according to the truncation limits
-				// set in the truncator. Minimum-exponent-wise, r_a is equivalent to a power series from 0 to infty
-				// of e^(1+i).
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
 				Derived tmp;
 				for (size_t i = 1; i <= (n + 1); ++i) {
@@ -102,6 +99,30 @@ namespace piranha
 			}
 			static Derived cos_E(const std::string &e_name, const std::string &M_name) {
 				return cos_E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+			}
+			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
+				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				Derived retval;
+				// Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
+				for (size_t i = 1; i <= (n + 1); ++i) {
+					Derived expansion_term(e_series);
+					expansion_term *= (max_fast_int)i;
+					expansion_term = expansion_term.besselJ_div((max_fast_int)i);
+					Derived trig(M_series);
+					trig *= (max_fast_int)i;
+					trig = trig.sin();
+					expansion_term *= trig;
+					retval += expansion_term;
+				}
+				retval *= (max_fast_int)(2);
+				retval.trim();
+				return retval;
+			}
+			static Derived sin_E(const psym &e, const psym &M) {
+				return sin_E(Derived(e), Derived(M));
+			}
+			static Derived sin_E(const std::string &e_name, const std::string &M_name) {
+				return sin_E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
 			}
 			static Derived sin_f(const Derived &e_series, const Derived &M_series) {
 				Derived tmp(e_series);

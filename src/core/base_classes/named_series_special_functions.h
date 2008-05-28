@@ -45,6 +45,12 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			Derived besselJ_div(const max_fast_int &order) const {
+				Derived retval(derived_const_cast->b_besselJ_div(order, derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
 	};
 }
 
