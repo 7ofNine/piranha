@@ -147,6 +147,7 @@ namespace pyranha
 	template <class T>
 	void series_trigonometric_instantiation(boost::python::class_<T> &inst)
 	{
+		inst.def("complexp", &T::complexp);
 		inst.def("cos", &T::cos);
 		inst.def("sin", &T::sin);
 	}
@@ -227,8 +228,11 @@ namespace pyranha
 	}
 
 	template <class T>
-	void fourier_specifics(boost::python::class_<T> &inst)
-	{}
+	void common_fourier_series_instantiation(boost::python::class_<T> &inst)
+	{
+		series_trigonometric_instantiation(inst);
+		series_differential_instantiation(inst);
+	}
 }
 
 #endif

@@ -60,9 +60,8 @@ namespace piranha
 			template <class ArgsTuple>
 			double_cf besselJ(int n, const ArgsTuple &) const {
 				double_cf retval;
-				//retval.s_value()=math::besselJ(n,g_value());
-				//return retval;
-				return 0.;
+				retval.m_value = piranha::besselJ(n,m_value);
+				return retval;
 			}
 			template <class ArgsTuple>
 			double_cf pow(const max_fast_int &n, const ArgsTuple &) const {

@@ -27,6 +27,8 @@
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
+#include "../p_assert.h"
 
 namespace piranha
 {
@@ -44,6 +46,26 @@ namespace piranha
 			}
 			static void print(std::ostream &stream = std::cout);
 			static std::string print_to_string();
+			// Returns the length of a development in powers of x that satisfies the condition that the
+			// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
+			// times smaller.
+			template <class T, class ArgsTuple>
+			static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
+											 const int &start = 0, const int &step_size = 1) {
+				p_assert(step_size >= 1 and start >= 0);
+				const double norm = x.norm(args_tuple);
+				p_assert(norm >= 0);
+				if (norm >= 1) {
+					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion will diverge.");
+				}
+				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
+					/ std::log10(norm) + 1 - start)/step_size);
+				if (retval >= 0) {
+					return retval;
+				} else {
+					return 0;
+				}
+			}
 		private:
 			static double m_truncation_level;
 	};

@@ -33,9 +33,10 @@
 namespace piranha
 {
 	// This assumes that trigonometric variables are in position 1 of the arguments tuples.
-	template <class Derived>
+	template <int TrigPos, class Derived>
 	class jacobi_anger_toolbox
 	{
+			BOOST_STATIC_ASSERT(TrigPos >= 0);
 		protected:
 			template <class Iterator, class ArgsTuple>
 			std::complex<Derived> jacobi_anger(const Iterator &it_avoid, const ArgsTuple &args_tuple) const {
@@ -64,23 +65,22 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
 				// The Jacobi-Anger development is a development into bessel functions of the first kind starting
-				// from zero, hence the power_series_limit function can be used straightforwardly.
+				// from zero and increasing in unity steps, hence the power_series_limit function can be used
+				// straightforwardly.
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(it->m_cf, args_tuple);
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real(it->m_cf.b_besselJ(0, args_tuple), args_tuple);
+					tmp_term.m_cf.real(it->m_cf.besselJ(0, args_tuple), args_tuple);
 					retval.insert(tmp_term, args_tuple, retval.template nth_index<0>().end());
 				}
-				// TODO: Here we are assuming that trigs are in position 1 of the arguments' tuple. It will
-				// be generalized later.
-				const size_t w = args_tuple.template get<1>().size();
+				const size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<max_fast_int> tmp_trig_mults(w);
 				std::complex<max_fast_int> cos_multiplier(0, 2);
 				const_sorted_iterator it_hint = retval.template nth_index<0>().end();
 				for (size_t i = 1; i <= n; ++i) {
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real(it->m_cf.b_besselJ((max_fast_int)i, args_tuple), args_tuple);
+					tmp_term.m_cf.real(it->m_cf.besselJ((max_fast_int)i, args_tuple), args_tuple);
 					it->m_key.upload_ints_to(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;

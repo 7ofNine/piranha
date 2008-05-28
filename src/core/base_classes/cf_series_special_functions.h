@@ -18,26 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <string>
+#ifndef PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
+#define PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
 
-#include "../../src/manipulators/dfs.h"
-#include "../series_instantiations.h"
-#include "../exceptions.h"
+#include "base_series_special_functions.h"
 
-using namespace pyranha;
-using namespace piranha;
-using namespace boost::python;
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
-BOOST_PYTHON_MODULE(_Dfs)
+namespace piranha
 {
-	translate_exceptions();
-
-	class_<manipulators::dfs> inst = series_basic_instantiation<manipulators::dfs>(std::string("dfs"),
-									 std::string("Fourier series with double precision coefficients."));
-	common_fourier_series_instantiation(inst);
-	class_<manipulators::dfsc> instc = series_basic_instantiation<manipulators::dfsc>(std::string("dfsc"),
-									  std::string("Fourier series with complex double precision coefficients."));
-	series_complex_instantiation(instc, inst);
+	template <class Derived>
+	class cf_series_special_functions: public base_series_special_functions<Derived>
+	{
+			typedef base_series_special_functions<Derived> ancestor;
+		public:
+			template <class ArgsTuple>
+			Derived besselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+				return ancestor::b_besselJ(order,args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived dbesselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+				return ancestor::b_dbesselJ(order,args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived besselJ_div(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+				return ancestor::b_besselJ_div(order,args_tuple);
+			}
+	};
 }
+
+#undef derived_const_cast
+#undef derived_cast
+
+#endif

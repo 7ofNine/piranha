@@ -38,8 +38,9 @@
 namespace piranha
 {
 	template <class Derived>
-	class common_poisson_series_toolbox: public jacobi_anger_toolbox<Derived>
+	class common_poisson_series_toolbox: public jacobi_anger_toolbox<1,Derived>
 	{
+			typedef jacobi_anger_toolbox<1,Derived> jacang_ancestor;
 		public:
 			std::complex<Derived> complexp() const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
@@ -52,7 +53,7 @@ namespace piranha
 				int_linear_term = get_int_linear_term<const_sorted_iterator, poly_cf_type>();
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval(
-					jacobi_anger_toolbox<Derived>::jacobi_anger(int_linear_term.first, derived_const_cast->m_arguments));
+					jacang_ancestor::jacobi_anger(int_linear_term.first, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				// If the linear term was found, take care of it.
 				if (int_linear_term.first != derived_const_cast->template nth_index<0>().end()) {

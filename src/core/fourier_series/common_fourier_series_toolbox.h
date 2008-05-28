@@ -18,26 +18,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <string>
+#ifndef PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
+#define PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
 
-#include "../../src/manipulators/dfs.h"
-#include "../series_instantiations.h"
-#include "../exceptions.h"
+#include <complex>
 
-using namespace pyranha;
-using namespace piranha;
-using namespace boost::python;
+#include "../poisson_series_common/jacobi_anger_toolbox.h"
 
-BOOST_PYTHON_MODULE(_Dfs)
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+
+namespace piranha
 {
-	translate_exceptions();
-
-	class_<manipulators::dfs> inst = series_basic_instantiation<manipulators::dfs>(std::string("dfs"),
-									 std::string("Fourier series with double precision coefficients."));
-	common_fourier_series_instantiation(inst);
-	class_<manipulators::dfsc> instc = series_basic_instantiation<manipulators::dfsc>(std::string("dfsc"),
-									  std::string("Fourier series with complex double precision coefficients."));
-	series_complex_instantiation(instc, inst);
+	template <class Derived>
+	class common_fourier_series_toolbox: public jacobi_anger_toolbox<0,Derived>
+	{
+			typedef jacobi_anger_toolbox<0,Derived> jacang_ancestor;
+		public:
+			std::complex<Derived> complexp() const {
+				// Expand using Jacobi-Anger's identity.
+				std::complex<Derived> retval(
+					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
+					derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				return retval;
+			}
+			Derived cos() const {
+				return complexp().real();
+			}
+			Derived sin() const {
+				return complexp().imag();
+			}
+	};
 }
+
+#undef derived_const_cast
+#undef derived_cast
+
+#endif
