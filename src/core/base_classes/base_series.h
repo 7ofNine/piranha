@@ -109,8 +109,14 @@ namespace piranha
 			void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
 			template <bool, class Derived2, class ArgsTuple>
 			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
+			template <class TrimFlags>
+			void trim_test_terms(TrimFlags &) const;
+			template <class TrimFlags, class ArgsTuple>
+			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
 			template <class T, class ArgsTuple>
 			Derived multiply_coefficients_by(const T &, const ArgsTuple &) const;
+			template <class Number, class ArgsTuple>
+			Derived &mult_by_real(const Number &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
 			Derived divide_coefficients_by(const T &, const ArgsTuple &) const;
 			template <bool, class Number, class ArgsTuple>
@@ -132,8 +138,6 @@ namespace piranha
 			SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
 			template <class ArgsTuple, class PinpointIterator>
 			void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
-			template <class Number, class ArgsTuple>
-			Derived &mult_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>

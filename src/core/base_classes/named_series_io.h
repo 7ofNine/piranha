@@ -101,6 +101,7 @@ namespace piranha
 			// Close file
 			inf.close();
 		}
+		trim();
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

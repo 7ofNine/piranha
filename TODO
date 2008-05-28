@@ -22,3 +22,4 @@
 - fix again proxies to be more general. maybe move them inside classes?
 - decide whether it is good or not to have degrees stored inside expo arrays.
 - implement binomial stuff for Fourier series.
+- enable besselJ for polynomials that are single coefficients without bothering about expo limits.

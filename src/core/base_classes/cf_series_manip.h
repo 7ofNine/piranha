@@ -57,6 +57,22 @@ namespace piranha
 		derived_cast->apply_layout_to_terms(args_tuple, l, retval);
 		derived_cast->swap_terms(retval);
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class TrimFlags>
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::trim_test(TrimFlags &tf) const
+	{
+		derived_const_cast->trim_test_terms(tf);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class TrimFlags, class ArgsTuple>
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &args_tuple) const
+	{
+		Derived retval;
+		derived_const_cast->trim_terms(tf, retval, args_tuple);
+		return retval;
+	}
 }
 
 #endif

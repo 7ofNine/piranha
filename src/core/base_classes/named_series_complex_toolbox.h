@@ -42,63 +42,71 @@ namespace piranha
 			RealDerived real() const {
 				RealDerived retval(ancestor::real(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
 				RealDerived retval(ancestor::imag(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
 				return retval;
 			}
 			Derived &real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				return ancestor::real(r, derived_const_cast->m_arguments);
+				ancestor::real(r, derived_const_cast->m_arguments);
+				derived_cast->trim();
+				return *derived_cast;
 			}
 			Derived &imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				return ancestor::imag(i, derived_const_cast->m_arguments);
+				ancestor::imag(i, derived_const_cast->m_arguments);
+				derived_cast->trim();
+				return *derived_cast;
 			}
 			Derived &operator+=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->template merge_with_number<true>(cn, derived_cast->m_arguments);
+				return derived_cast->template merge_number_helper<true>(cn);
 			}
 			Derived &operator+=(const std::complex<double> &cx) {
-				return derived_cast->template merge_with_number<true>(cx, derived_cast->m_arguments);
+				return derived_cast->template merge_number_helper<true>(cx);
 			}
 			Derived &operator+=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<true>(r);
 			}
 			Derived &operator-=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->template merge_with_number<false>(cn, derived_cast->m_arguments);
+				return derived_cast->template merge_number_helper<false>(cn);
 			}
 			Derived &operator-=(const std::complex<double> &cx) {
-				return derived_cast->template merge_with_number<false>(cx, derived_cast->m_arguments);
+				return derived_cast->template merge_number_helper<false>(cx);
 			}
 			Derived &operator-=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<false>(r);
 			}
 			Derived &operator*=(const std::complex<max_fast_int> &cn) {
-				return ancestor::mult_by(cn, derived_const_cast->m_arguments);
+				return derived_cast->mult_number_helper(cn);
 			}
 			Derived &operator*=(const std::complex<double> &cx) {
-				return ancestor::mult_by(cx, derived_const_cast->m_arguments);
+				return derived_cast->mult_number_helper(cx);
 			}
 			Derived &operator*=(const RealDerived &r) {
 				return derived_cast->mult_by_series(r);
 			}
 			Derived &operator/=(const std::complex<max_fast_int> &cn) {
-				return ancestor::divide_by(cn, derived_const_cast->m_arguments);
+				return derived_cast->divide_number_helper(cn);
 			}
 			Derived &operator/=(const std::complex<double> &cx) {
-				return ancestor::divide_by(cx, derived_const_cast->m_arguments);
+				return derived_cast->divide_number_helper(cx);
 			}
 		protected:
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->m_arguments = r.m_arguments;
 				ancestor::construct_from_real(r, derived_cast->m_arguments);
+				derived_cast->trim();
 			}
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i) {
 				derived_cast->m_arguments = r.m_arguments;
 				derived_cast->merge_args(i);
 				ancestor::construct_from_real_imag(r, i, derived_cast->m_arguments);
+				derived_cast->trim();
 			}
 	};
 
@@ -108,10 +116,12 @@ namespace piranha
 	explicit complex(const complex<piranha::max_fast_int> &cn) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(cn,named_ancestor::m_arguments); \
+		named_ancestor::trim(); \
 	} \
 	explicit complex(const complex<double> &cx) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(cx,named_ancestor::m_arguments); \
+		named_ancestor::trim(); \
 	} \
 	explicit complex(const value_type &r) { \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \

@@ -35,11 +35,13 @@ namespace piranha
 		// If we are merging with self, create a copy and call recursively.
 		if ((void *)derived_cast == (void *)(&s2)) {
 			__PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
-			return merge_with_series<Sign>(Derived(*derived_const_cast));
+			merge_with_series<Sign>(Derived(*derived_const_cast));
 		} else {
 			merge_args(s2);
-			return derived_cast->template merge_terms<Sign>(s2, m_arguments);
+			derived_cast->template merge_terms<Sign>(s2, m_arguments);
 		}
+		trim();
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -49,19 +51,30 @@ namespace piranha
 		// First we merge the arguments of the two series.
 		merge_args(s2);
 		// Then we perform the multiplication.
-		return derived_cast->mult_by(s2, m_arguments);
+		derived_cast->mult_by(s2, m_arguments);
+		trim();
+		return *derived_cast;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <bool Sign, class Number>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::merge_number_helper(const Number &x)
+	{
+		derived_cast->template merge_with_number<Sign>(x, m_arguments);
+		trim();
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const max_fast_int &n)
 	{
-		return derived_cast->template merge_with_number<true>(n, m_arguments);
+		return merge_number_helper<true>(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const double &x)
 	{
-		return derived_cast->template merge_with_number<true>(x, m_arguments);
+		return merge_number_helper<true>(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -73,13 +86,13 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const max_fast_int &n)
 	{
-		return derived_cast->template merge_with_number<false>(n, m_arguments);
+		return merge_number_helper<false>(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const double &x)
 	{
-		return derived_cast->template merge_with_number<false>(x, m_arguments);
+		return merge_number_helper<false>(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -97,15 +110,24 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Number>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_number_helper(const Number &x)
+	{
+		derived_cast->mult_by(x, m_arguments);
+		trim();
+		return *derived_cast;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const max_fast_int &n)
 	{
-		return derived_cast->mult_by(n, m_arguments);
+		return mult_number_helper(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const double &x)
 	{
-		return derived_cast->mult_by(x, m_arguments);
+		return mult_number_helper(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -115,15 +137,24 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Number>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
+	{
+		derived_cast->divide_by(x, m_arguments);
+		trim();
+		return *derived_cast;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const max_fast_int &n)
 	{
-		return derived_cast->divide_by(n, m_arguments);
+		return divide_number_helper(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
 	{
-		return derived_cast->divide_by(x, m_arguments);
+		return divide_number_helper(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -131,6 +162,7 @@ namespace piranha
 	{
 		Derived retval(derived_const_cast->b_pow(x, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
+		retval.trim();
 		return retval;
 	}
 
@@ -139,6 +171,7 @@ namespace piranha
 	{
 		Derived retval(derived_const_cast->b_pow(n, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
+		retval.trim();
 		return retval;
 	}
 
@@ -147,6 +180,7 @@ namespace piranha
 	{
 		Derived retval(derived_const_cast->b_root(n, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
+		retval.trim();
 		return retval;
 	}
 
@@ -198,6 +232,7 @@ namespace piranha
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
 		Derived retval(derived_const_cast->b_partial(pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
+		retval.trim();
 		return retval;
 	}
 }

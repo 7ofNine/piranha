@@ -118,7 +118,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by_number(const Number &x, const ArgsTuple &args_tuple)
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by_real(const Number &x, const ArgsTuple &args_tuple)
 	{
 		if (x == 0) {
 			Derived retval;
@@ -134,14 +134,14 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
-		return mult_by_number(n, args_tuple);
+		return mult_by_real(n, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
-		return mult_by_number(x, args_tuple);
+		return mult_by_real(x, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

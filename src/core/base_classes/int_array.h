@@ -166,6 +166,30 @@ namespace piranha
 					}
 				}
 			}
+			template <class TrimFlags>
+			void trim_test(TrimFlags &tf) const {
+				p_assert(tf.template get<position>().size() == m_size);
+				for (size_type i = 0; i < m_size; ++i) {
+					// If the integer is different from zero, turn on the flag..
+					if (m_ptr[i] != 0) {
+						tf.template get<position>()[i] = true;
+					}
+				}
+			}
+			template <class TrimFlags, class ArgsTuple>
+			Derived trim(const TrimFlags &tf, const ArgsTuple &) const {
+				Derived retval;
+				retval.m_flavour = m_flavour;
+				std::vector<max_fast_int> tmp;
+				p_assert(tf.template get<position>().size() == m_size);
+				for (size_type i = 0; i < m_size; ++i) {
+					if (tf.template get<position>()[i]) {
+						tmp.push_back(m_ptr[i]);
+					}
+				}
+				retval.assign_int_vector(tmp);
+				return retval;
+			}
 			/// Invert the sign of the integers in the array.
 			void invert_sign() {
 				for (size_type i = 0; i < m_size; ++i) {

@@ -36,7 +36,7 @@ namespace piranha
 	struct term_converter {
 		/// Constructor.
 		template <class ArgsTuple>
-		explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c,a) {}
+		explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c, a) {}
 		/// Copy of the converted term.
 		const Term1	result;
 	};
@@ -74,7 +74,7 @@ namespace piranha
 		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
 		// iterator to do that.
-		term_converter<Term2, term_type> converted_term(term_,args_tuple);
+		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
 		p_assert(converted_term.result.is_insertable(args_tuple));
 		term_type *new_term(0);
@@ -250,6 +250,39 @@ namespace piranha
 			term.m_cf.apply_layout(args_tuple, l);
 			term.m_key.apply_layout(args_tuple, l);
 			it_hint = retval.insert(term, args_tuple, it_hint);
+		}
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class TrimFlags>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			it->m_cf.trim_test(tf);
+			it->m_key.trim_test(tf);
+		}
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class TrimFlags, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval,
+			const ArgsTuple &args_tuple) const
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::sorted_iterator sorted_iterator;
+		typedef typename Derived::term_type term_type;
+		typedef typename term_type::cf_type cf_type;
+		typedef typename term_type::key_type key_type;
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		sorted_iterator it_hint = retval.template nth_index<0>().end();
+		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			it_hint = retval.insert(
+						  term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
+						  args_tuple,
+						  it_hint
+					  );
 		}
 	}
 }

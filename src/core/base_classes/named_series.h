@@ -97,10 +97,17 @@ namespace piranha
 			void append_arg(const psym_p &);
 			template <class Derived2>
 			void merge_args(const Derived2 &);
+			void trim();
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>
 			Derived &mult_by_series(const Derived2 &);
+			template <bool, class Number>
+			Derived &merge_number_helper(const Number &);
+			template <class Number>
+			Derived &mult_number_helper(const Number &);
+			template <class Number>
+			Derived &divide_number_helper(const Number &);
 		private:
 			void print_plain(std::ostream &, int) const;
 			void print_latex(std::ostream &, int) const;
@@ -143,11 +150,13 @@ namespace piranha
 	{ \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
+		named_ancestor::trim(); \
 	} \
 	explicit series_name(const double &x) \
 	{ \
 		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
+		named_ancestor::trim(); \
 	} \
 	explicit series_name(const piranha::max_fast_int &n, const args_tuple_type &args_tuple) \
 	{ \

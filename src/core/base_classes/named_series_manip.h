@@ -22,8 +22,11 @@
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
 #include <boost/static_assert.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <vector>
 
 #include "../config.h" // For (un)likely
+#include "../ntuple.h"
 
 namespace piranha
 {
@@ -111,7 +114,7 @@ namespace piranha
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
 	{
 		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) {
-			std::cout << "Trying to merge with self, returning." << std::endl;
+			__PDEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
 			return;
 		}
 		if (unlikely(!is_args_compatible(ps2))) {
@@ -226,6 +229,83 @@ namespace piranha
 		derived_cast->apply_layout_to_terms(retval.m_arguments, l, retval);
 		// Finally, swap the contents of retval with this.
 		swap(retval);
+	}
+
+	template <class TrimFlags, class ArgsTuple>
+	struct trim_flags_init {
+		static void run(TrimFlags &tf, const ArgsTuple &args_tuple) {
+			const size_t size = args_tuple.template get_head().size();
+			tf.template get_head().resize(size);
+			for (size_t i = 0; i < size; ++i) {
+				tf.template get_head()[i] = false;
+			}
+			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
+				tf.template get_tail(),
+				args_tuple. template get_tail()
+			);
+		}
+	};
+
+	template <>
+	struct trim_flags_init<boost::tuples::null_type, boost::tuples::null_type> {
+		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
+
+	inline bool trim_flags_proceed(const boost::tuples::null_type &)
+	{
+		return false;
+	}
+
+	template <class TrimFlags>
+	inline bool trim_flags_proceed(const TrimFlags &tf)
+	{
+		const size_t size = tf.template get_head().size();
+		for (size_t i = 0; i < size; ++i) {
+			// If we find a flag that was never turned on, we have something to trim.
+			if (!tf.template get_head()[i]) {
+				return true;
+			}
+		}
+		return trim_flags_proceed(tf.template get_tail());
+	}
+
+	template <class TrimFlags, class ArgsTuple>
+	struct trim_arguments {
+		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
+			const size_t size = tf.template get_head().size();
+			p_assert(size == args_tuple.template get_head().size());
+			vector_psym_p new_vector;
+			for (size_t i = 0; i < size; ++i) {
+				if (tf.template get_head()[i]) {
+					new_vector.push_back(args_tuple.template get_head()[i]);
+				}
+			}
+			new_vector.swap(args_tuple.template get_head());
+			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
+				tf.template get_tail(), args_tuple.template get_tail());
+		}
+	};
+
+	template <>
+	struct trim_arguments<boost::tuples::null_type, boost::tuples::null_type> {
+		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::trim()
+	{
+		typedef typename ntuple<std::vector<bool>, n_arguments_sets>::type trim_flags_type;
+		trim_flags_type trim_flags;
+		trim_flags_init<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
+		derived_const_cast->trim_test_terms(trim_flags);
+		if (trim_flags_proceed(trim_flags)) {
+			// First let's do the arguments.
+			trim_arguments<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
+			// Let's proceed to the terms now.
+			Derived tmp;
+			derived_cast->trim_terms(trim_flags, tmp, m_arguments);
+			derived_cast->swap_terms(tmp);
+		}
 	}
 }
 

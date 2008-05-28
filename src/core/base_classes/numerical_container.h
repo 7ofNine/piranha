@@ -86,6 +86,12 @@ namespace piranha
 			void pad_right(const ArgsTuple &) {}
 			template <class ArgsTuple, class Layout>
 			void apply_layout(const ArgsTuple &, const Layout &) {}
+			template <class TrimFlags>
+			void trim_test(TrimFlags &) const {}
+			template <class TrimFlags, class ArgsTuple>
+			Derived trim(const TrimFlags &, const ArgsTuple &) const {
+				return Derived(*derived_const_cast);
+			}
 			// Probing.
 			size_t atoms() const {
 				return 1;
@@ -166,7 +172,7 @@ namespace piranha
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return derived_const_cast->pow(1./(double)(n),args_tuple);
+				return derived_const_cast->pow(1. / (double)(n), args_tuple);
 			}
 			/// Get value.
 			const T &value() const {

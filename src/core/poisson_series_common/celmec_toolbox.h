@@ -62,6 +62,7 @@ namespace piranha
 				tmp *= e_series;
 				tmp *= (max_fast_int)(-2);
 				retval += tmp;
+				retval.trim();
 				return retval;
 			}
 			static Derived r_a(const psym &e, const psym &M) {
@@ -93,6 +94,7 @@ namespace piranha
 				tmp *= (max_fast_int)(-2);
 				retval += tmp;
 				retval *= (max_fast_int)(-1);
+				retval.trim();
 				return retval;
 			}
 			static Derived cos_E(const psym &e, const psym &M) {
@@ -121,6 +123,7 @@ namespace piranha
 					retval += expansion_term;
 				}
 				retval *= tmp;
+				retval.trim();
 				return retval;
 			}
 			static Derived sin_f(const psym &e, const psym &M) {
@@ -141,6 +144,7 @@ namespace piranha
 				}
 				tmp *= (max_fast_int)2;
 				retval += tmp;
+				retval.trim();
 				return retval;
 			}
 			static Derived E(const psym &e, const psym &M) {
