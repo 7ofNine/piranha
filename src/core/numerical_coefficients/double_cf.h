@@ -129,7 +129,7 @@ namespace piranha
 	inline std::complex<double_cf> double_cf::complexp(const ArgsTuple &) const
 	{
 		std::complex<double_cf> retval;
-		retval.m_value = std::polar(1.,m_value);
+		retval.m_value = std::polar(1., m_value);
 		return retval;
 	}
 }

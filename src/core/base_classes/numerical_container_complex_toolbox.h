@@ -97,8 +97,7 @@ namespace piranha
 			}
 		protected:
 			template <class Number>
-			Derived &complex_division_helper(const std::complex<Number> &x)
-			{
+			Derived &complex_division_helper(const std::complex<Number> &x) {
 				if (x.real() == 0 and x.imag() == 0) {
 					throw division_by_zero();
 				}

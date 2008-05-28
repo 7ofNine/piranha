@@ -180,7 +180,7 @@ namespace piranha
 				boost::hash<Ckey> ckey_hash;
 				const size_t h = ckey_hash(t.m_ckey);
 				// Check that the size is a power of two.
-				p_assert(m_size > 0 and (m_size & (m_size - 1)) == 0);
+				p_assert(m_size > 0 and(m_size & (m_size - 1)) == 0);
 				// Find h % m_size using logical AND, since we are working with powers of two.
 				const size_t vector_pos = (h & (m_size - 1));
 				p_assert(vector_pos < m_size);

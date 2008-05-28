@@ -46,7 +46,9 @@ namespace piranha
 			typedef mpq_class numerical_type;
 			// Ctors. Do not use macro since we need to canonicalize.
 			/// Empty constructor.
-			explicit mpq_cf(): ancestor::numerical_container() {m_value.canonicalize();}
+			explicit mpq_cf(): ancestor::numerical_container() {
+				m_value.canonicalize();
+			}
 			/// Constructor from string.
 			template <class ArgsTuple>
 			explicit mpq_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {
@@ -55,13 +57,19 @@ namespace piranha
 			}
 			/// Constructor from integer.
 			template <class ArgsTuple>
-			explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {m_value.canonicalize();}
+			explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+				m_value.canonicalize();
+			}
 			/// Constructor from double.
 			template <class ArgsTuple>
-			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {m_value.canonicalize();}
+			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+				m_value.canonicalize();
+			}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit mpq_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {m_value.canonicalize();}
+			explicit mpq_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
+				m_value.canonicalize();
+			}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -127,10 +135,10 @@ namespace piranha
 					} else {
 						throw unsuitable("Cannot raise rational coefficient different from unity to negative real power.");
 					}
-				// If y == 0, then x**0 == 1 for every x.
+					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
 					retval.m_value = 1;
-				// If y > 0, we can accept only 0^y and 1^y.
+					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
 					if (m_value == 0) {
 						retval.m_value = 0;
@@ -189,7 +197,7 @@ namespace std
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):complex_toolbox::numerical_container_complex_toolbox(c) {
+			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(c) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
@@ -239,7 +247,7 @@ namespace std
 				if (n < 0) {
 					if (m_value.real() == 0 and m_value.imag() == 0) {
 						throw piranha::division_by_zero();
-					// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
+						// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
 					} else {
 						// Invert the source.
 						retval.m_value = m_value;
@@ -278,11 +286,11 @@ namespace std
 					} else {
 						throw piranha::unsuitable("Cannot raise complex rational coefficient different from unity to negative real power.");
 					}
-				// If y == 0, then x**0 == 1 for every x.
+					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
 					retval.m_value.real() = 1;
 					retval.m_value.imag() = 0;
-				// If y > 0, we can accept only 0^y and 1^y.
+					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
 					if (m_value.real() == 0 and m_value.imag() == 0) {
 						retval.m_value.real() = 0;

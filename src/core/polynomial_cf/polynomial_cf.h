@@ -100,7 +100,7 @@ namespace piranha
 			}
 			// TODO: place some of these methods into common polynomial toolbox?
 			/// Return a single coefficient and a vector of integers representing the polynomial.
-			void get_int_linear_combination(std::pair<std::vector<cf_type>,std::vector<max_fast_int> > &res) const {
+			void get_int_linear_combination(std::pair<std::vector<cf_type>, std::vector<max_fast_int> > &res) const {
 				const const_sorted_iterator it_f = nth_index<0>().end();
 				for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 					const max_fast_int pos = it->m_key.linear_arg_position();

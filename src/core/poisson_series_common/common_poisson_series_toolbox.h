@@ -48,11 +48,11 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
-				std::pair<const_sorted_iterator,std::pair<std::vector<poly_cf_type>,std::vector<max_fast_int> > >
-					int_linear_term = get_int_linear_term<const_sorted_iterator,poly_cf_type>();
+				std::pair<const_sorted_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
+				int_linear_term = get_int_linear_term<const_sorted_iterator, poly_cf_type>();
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval(
-					jacobi_anger_toolbox<Derived>::jacobi_anger(int_linear_term.first,derived_const_cast->m_arguments));
+					jacobi_anger_toolbox<Derived>::jacobi_anger(int_linear_term.first, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				// If the linear term was found, take care of it.
 				if (int_linear_term.first != derived_const_cast->template nth_index<0>().end()) {
@@ -63,12 +63,12 @@ namespace piranha
 					complex_term_type tmp_term1;
 					complex_term_type tmp_term2;
 					tmp_term2.m_key.flavour() = false;
-					tmp_term1.m_cf = complex_cf_type(std::complex<max_fast_int>(1,0), tmp_series.m_arguments);
-					tmp_term2.m_cf = complex_cf_type(std::complex<max_fast_int>(0,1), tmp_series.m_arguments);
+					tmp_term1.m_cf = complex_cf_type(std::complex<max_fast_int>(1, 0), tmp_series.m_arguments);
+					tmp_term2.m_cf = complex_cf_type(std::complex<max_fast_int>(0, 1), tmp_series.m_arguments);
 					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
 					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_series.insert(tmp_term1,tmp_series.m_arguments,tmp_series.template nth_index<0>().end());
-					tmp_series.insert(tmp_term2,tmp_series.m_arguments,tmp_series.template nth_index<0>().end());
+					tmp_series.insert(tmp_term1, tmp_series.m_arguments, tmp_series.template nth_index<0>().end());
+					tmp_series.insert(tmp_term2, tmp_series.m_arguments, tmp_series.template nth_index<0>().end());
 					// Take care of the coefficient-only term, if any.
 					if (int_linear_term.second.first.size() > 0) {
 						std::complex<Derived> tmp_series2;
@@ -80,23 +80,27 @@ namespace piranha
 							),
 							tmp_series2.m_arguments,
 							tmp_term.m_cf.template nth_index<0>().end());
-						tmp_series2.insert(tmp_term,tmp_series2.m_arguments,tmp_series2.template nth_index<0>().end());
+						tmp_series2.insert(tmp_term, tmp_series2.m_arguments, tmp_series2.template nth_index<0>().end());
 						tmp_series *= tmp_series2;
 					}
 					retval *= tmp_series;
 				}
 				return retval;
 			}
-			Derived cos() const {return complexp().real();}
-			Derived sin() const {return complexp().imag();}
+			Derived cos() const {
+				return complexp().real();
+			}
+			Derived sin() const {
+				return complexp().imag();
+			}
 		private:
 			template <class Iterator, class PolyCf>
-			std::pair<Iterator,std::pair<std::vector<PolyCf>,std::vector<max_fast_int> > > get_int_linear_term() const {
+			std::pair<Iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > get_int_linear_term() const {
 				BOOST_STATIC_ASSERT((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value));
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				BOOST_STATIC_ASSERT((boost::is_same<Iterator, const_sorted_iterator>::value));
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-				std::pair<const_sorted_iterator,std::pair<std::vector<PolyCf>,std::vector<max_fast_int> > > retval;
+				std::pair<const_sorted_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
 				retval.first = it_f;
 				// Make space to accomodate all the elements of the linear combination.
 				retval.second.second.resize(derived_const_cast->m_arguments.template get<0>().size());

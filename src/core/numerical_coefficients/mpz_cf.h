@@ -110,10 +110,10 @@ namespace piranha
 					} else {
 						throw unsuitable("Cannot raise integer coefficient different from unity to negative real power.");
 					}
-				// If y == 0, then x**0 == 1 for every x.
+					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
 					retval.m_value = 1;
-				// If y > 0, we can accept only 0^y and 1^y.
+					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
 					if (m_value == 0) {
 						retval.m_value = 0;
@@ -209,11 +209,11 @@ namespace std
 					} else {
 						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to negative real power.");
 					}
-				// If y == 0, then x**0 == 1 for every x.
+					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
 					retval.m_value.real() = 1;
 					retval.m_value.imag() = 0;
-				// If y > 0, we can accept only 0^y and 1^y.
+					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
 					if (m_value.real() == 0 and m_value.imag() == 0) {
 						retval.m_value.real() = 0;

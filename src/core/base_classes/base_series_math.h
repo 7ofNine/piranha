@@ -134,14 +134,14 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
-		return mult_by_number(n,args_tuple);
+		return mult_by_number(n, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
-		return mult_by_number(x,args_tuple);
+		return mult_by_number(x, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -172,14 +172,14 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
-		return divide_by_number(n,args_tuple);
+		return divide_by_number(n, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
 	{
-		return divide_by_number(x,args_tuple);
+		return divide_by_number(x, args_tuple);
 	}
 
 	/// Partial derivative.
@@ -219,19 +219,19 @@ namespace piranha
 		if (empty()) {
 			if (y < 0) {
 				throw division_by_zero();
-			// 0**0 == 1.
+				// 0**0 == 1.
 			} else if (y == 0) {
 				retval = Derived((max_fast_int)1, args_tuple);
 				return true;
-			// 0**n == 0, with n > 0.
+				// 0**n == 0, with n > 0.
 			} else {
 				return true;
 			}
-		// If the series has a single term, dispatch pow to the coefficient and key of said term.
+			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
 			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
-			retval.insert(term_type(it->m_cf.pow(y, args_tuple),it->m_key.pow(y,args_tuple)),
-				args_tuple,retval.template nth_index<0>().end());
+			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)),
+						  args_tuple, retval.template nth_index<0>().end());
 			return true;
 		}
 		return false;
@@ -243,12 +243,12 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		if (!common_power_handler(n,retval,args_tuple)) {
+		if (!common_power_handler(n, retval, args_tuple)) {
 			if (n >= 0) {
 				Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
 				retval.swap_terms(tmp);
 			} else {
-				Derived tmp(derived_const_cast->negative_integer_power(n,args_tuple));
+				Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
 				retval.swap_terms(tmp);
 			}
 		}
@@ -262,7 +262,7 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		if (!common_power_handler(y,retval,args_tuple)) {
+		if (!common_power_handler(y, retval, args_tuple)) {
 			Derived tmp(derived_const_cast->real_power(y, args_tuple));
 			retval.swap_terms(tmp);
 		}
@@ -364,15 +364,15 @@ namespace piranha
 		if (empty()) {
 			if (n < 0) {
 				throw division_by_zero();
-			// 0**n == 0, with n > 0.
+				// 0**n == 0, with n > 0.
 			} else {
 				return true;
 			}
-		// If the series has a single term, dispatch pow to the coefficient and key of said term.
+			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
 			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
-			retval.insert(term_type(it->m_cf.root(n, args_tuple),it->m_key.root(n,args_tuple)),
-				args_tuple,retval.template nth_index<0>().end());
+			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)),
+						  args_tuple, retval.template nth_index<0>().end());
 			return true;
 		}
 		return false;
@@ -385,7 +385,7 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		if (!common_root_handler(n,retval,args_tuple)) {
+		if (!common_root_handler(n, retval, args_tuple)) {
 			Derived tmp(derived_const_cast->nth_root(n, args_tuple));
 			retval.swap_terms(tmp);
 		}
@@ -398,7 +398,7 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		return b_pow(1./(double)(n),args_tuple);
+		return b_pow(1. / (double)(n), args_tuple);
 	}
 }
 

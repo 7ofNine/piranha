@@ -198,7 +198,7 @@ namespace piranha
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return pow(1./(double)(n), args_tuple);
+				return pow(1. / (double)(n), args_tuple);
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				derived_const_cast->upload_ints_to(v);

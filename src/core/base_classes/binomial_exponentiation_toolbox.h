@@ -79,15 +79,14 @@ namespace piranha
 					n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA, args_tuple);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable for real exponentiation through binomial expansion."
-						"\nThe reported error is: ")
+												 "\nThe reported error is: ")
 									 + u.what());
 				}
 				return binomial_expansion<Op>(A, XoverA, y, n, args_tuple);
 			}
 			template <op_type Op, class Term, class Number, class ArgsTuple>
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
-									const Number &y, const size_t &n, const ArgsTuple &args_tuple)
-			{
+											  const Number &y, const size_t &n, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
 				BOOST_STATIC_ASSERT((boost::is_same<Term, typename Derived::term_type>::value));
 				// Start the binomial expansion.
@@ -110,14 +109,14 @@ namespace piranha
 				retval.add(tmp, args_tuple);
 				if (Op == power_op) {
 					for (size_t i = 1; i <= n; ++i) {
-						tmp.mult_by(y-(max_fast_int)(i)+(max_fast_int)1, args_tuple);
+						tmp.mult_by(y - (max_fast_int)(i) + (max_fast_int)1, args_tuple);
 						tmp.divide_by((max_fast_int)i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
 					}
 				} else {
 					for (size_t i = 1; i <= n; ++i) {
-						tmp.mult_by((max_fast_int)1-(max_fast_int)(i*y)+y, args_tuple);
+						tmp.mult_by((max_fast_int)1 - (max_fast_int)(i*y) + y, args_tuple);
 						tmp.divide_by((max_fast_int)y*(max_fast_int)i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
