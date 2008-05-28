@@ -153,6 +153,37 @@ namespace piranha
 			static Derived sin_f(const std::string &e_name, const std::string &M_name) {
 				return sin_f(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
 			}
+			static Derived cos_f(const Derived &e_series, const Derived &M_series) {
+				// 2*(1-e**2).
+				Derived tmp(e_series);
+				tmp *= e_series;
+				tmp = (max_fast_int)1 - tmp;
+				tmp *= (max_fast_int)2;
+				Derived retval;
+				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				// Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
+				for (size_t i = 1; i <= (n + 1); ++i) {
+					Derived expansion_term(e_series);
+					expansion_term *= (max_fast_int)i;
+					expansion_term = expansion_term.besselJ_div((max_fast_int)i);
+					expansion_term *= (max_fast_int)i;
+					Derived trig(M_series);
+					trig *= (max_fast_int)i;
+					trig = trig.cos();
+					expansion_term *= trig;
+					retval += expansion_term;
+				}
+				retval *= tmp;
+				retval -= e_series;
+				retval.trim();
+				return retval;
+			}
+			static Derived cos_f(const psym &e, const psym &M) {
+				return cos_f(Derived(e), Derived(M));
+			}
+			static Derived cos_f(const std::string &e_name, const std::string &M_name) {
+				return cos_f(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+			}
 			static Derived E(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
@@ -187,6 +218,18 @@ namespace piranha
 	Series cos_E(const Series &e_series, const Series &M_series)
 	{
 		return Series::cos_E(e_series, M_series);
+	}
+
+	template <class Series>
+	Series sin_E(const Series &e_series, const Series &M_series)
+	{
+		return Series::sin_E(e_series, M_series);
+	}
+
+	template <class Series>
+	Series cos_f(const Series &e_series, const Series &M_series)
+	{
+		return Series::cos_f(e_series, M_series);
 	}
 
 	template <class Series>
