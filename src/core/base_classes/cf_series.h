@@ -29,7 +29,7 @@
 #include "../integer_typedefs.h" // For ctor macros
 #include "../exceptions.h"
 #include "../settings.h"
-#include "../type_traits.h" // For specialisation of type trait and eval_type.
+#include "../type_traits.h" // For specialisation of type trait
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -45,8 +45,6 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class cf_series
 	{
-			// Evaluation type. Used internally.
-			typedef typename eval_type<Derived>::type eval_type;
 		public:
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;
@@ -56,8 +54,6 @@ namespace piranha
 			bool needs_padding(const ArgsTuple &) const;
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const;
-			template <class ArgsTuple>
-			eval_type eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &);
 			template <class ArgsTuple>

@@ -83,6 +83,8 @@ namespace piranha
 		public:
 			using named_ancestor::norm;
 			using base_ancestor::norm;
+			using named_ancestor::eval;
+			using base_ancestor::eval;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -172,6 +174,8 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
 			using named_ancestor::norm;
 			using base_ancestor::norm;
+			using named_ancestor::eval;
+			using base_ancestor::eval;
 			// Needed typedefs.
 			typedef FOURIER_SERIES value_type;
 			typedef term_type_ term_type;

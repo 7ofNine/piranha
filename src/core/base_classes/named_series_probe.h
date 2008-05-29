@@ -73,7 +73,7 @@ namespace piranha
 	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::eval_type
 	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
-		return derived_const_cast->b_eval(t, m_arguments);
+		return derived_const_cast->eval(t, m_arguments);
 	}
 }
 

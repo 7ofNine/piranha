@@ -65,6 +65,8 @@ namespace piranha
 			double norm(const ArgsTuple &) const;
 			Derived copy() const;
 			size_t length() const;
+			template <class ArgsTuple>
+			eval_type eval(const double &, const ArgsTuple &) const;
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;
@@ -102,8 +104,6 @@ namespace piranha
 			void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>
 			void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
-			template <class ArgsTuple>
-			eval_type b_eval(const double &, const ArgsTuple &) const;
 			void swap_terms(Derived &);
 			template <class ArgsTuple, class Layout>
 			void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;

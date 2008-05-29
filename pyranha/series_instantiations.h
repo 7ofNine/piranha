@@ -29,6 +29,7 @@
 
 #include "../src/core/integer_typedefs.h"
 #include "../src/core/psym.h"
+#include "../src/core/type_traits.h"
 
 namespace pyranha
 {
@@ -46,7 +47,8 @@ namespace pyranha
 		inst.def("__repr__", &T::print_to_string);
 		inst.def("__len__", &T::length);
 		inst.def("save_to", &T::save_to, "Save series to file.");
-		inst.def("eval", &T::eval);
+		typedef typename piranha::eval_type<T>::type (T::*eval_named)(const double &) const;
+		inst.def("eval", eval_named(&T::eval));
 		typedef double (T::*norm_named)() const;
 		inst.def("norm", norm_named(&T::norm));
 		inst.def("atoms", &T::atoms);

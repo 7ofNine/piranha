@@ -46,7 +46,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
-	base_series<__PIRANHA_BASE_SERIES_TP>::b_eval(const double &t, const ArgsTuple &args_tuple) const
+	base_series<__PIRANHA_BASE_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
