@@ -78,7 +78,7 @@ namespace piranha
 			norm_truncator(Multiplier &m):
 					m_multiplier(m),
 					m_delta_threshold(
-						m.m_s1.b_norm(m.m_args_tuple)*m.m_s2.b_norm(m.m_args_tuple)*m_truncation_level /
+						m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
 						(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
 			template <class Result>
 			bool accept(const Result &) const {

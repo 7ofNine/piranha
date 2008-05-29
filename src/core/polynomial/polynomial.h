@@ -128,6 +128,8 @@ namespace piranha
 			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
+			using named_ancestor::norm;
+			using base_ancestor::norm;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -225,6 +227,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
+			using named_ancestor::norm;
+			using base_ancestor::norm;
 			// Needed typedefs.
 			typedef POLYNOMIAL value_type;
 			typedef term_type_ term_type;

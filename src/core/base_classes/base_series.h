@@ -62,7 +62,7 @@ namespace piranha
 			template <int N, class ArgsTuple, class Iterator>
 			void term_erase(const ArgsTuple &, Iterator);
 			template <class ArgsTuple>
-			double b_norm(const ArgsTuple &) const;
+			double norm(const ArgsTuple &) const;
 			Derived copy() const;
 			size_t length() const;
 			bool empty() const;

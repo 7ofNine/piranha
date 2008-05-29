@@ -66,7 +66,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline double named_series<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
-		return derived_const_cast->b_norm(m_arguments);
+		return derived_const_cast->norm(m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
