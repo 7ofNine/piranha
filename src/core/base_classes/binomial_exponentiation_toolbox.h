@@ -41,7 +41,7 @@ namespace piranha
 		protected:
 			/// Real power.
 			/**
-			* This method is written to work in conjunction with base_series::b_pow.
+			* This method is written to work in conjunction with base_series::pow.
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
@@ -61,7 +61,7 @@ namespace piranha
 			Derived generic_binomial_power(const Number &y, const ArgsTuple &args_tuple) const {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already been taken care of
-				// in base_series::b_pow.
+				// in base_series::pow.
 				p_assert(derived_const_cast->template nth_index<0>().size() > 1);
 				term_type A(*derived_const_cast->template nth_index<0>().begin());
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.

@@ -42,50 +42,6 @@ namespace piranha
 		}
 		derived_cast->swap_terms(retval);
 	}
-
-	/// Real exponentiation.
-	/**
-	 * Simple wrapper around base_series::b_pow.
-	 */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &args_tuple) const
-	{
-		return derived_const_cast->b_pow(y, args_tuple);
-	}
-
-	/// Integer exponentiation.
-	/**
-	 * Simple wrapper around base_series::b_pow.
-	 */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const max_fast_int &n, const ArgsTuple &args_tuple) const
-	{
-		return derived_const_cast->b_pow(n, args_tuple);
-	}
-
-	/// Integer exponentiation.
-	/**
-	 * Simple wrapper around base_series::b_pow.
-	 */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::root(const max_fast_int &n, const ArgsTuple &args_tuple) const
-	{
-		return derived_const_cast->b_root(n, args_tuple);
-	}
-
-	/// Partial derivative.
-	/**
-	 * Simple wrapper around base_series::b_partial.
-	 */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class PosTuple, class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
-	{
-		return derived_const_cast->b_partial(pos_tuple, args_tuple);
-	}
 }
 
 #endif

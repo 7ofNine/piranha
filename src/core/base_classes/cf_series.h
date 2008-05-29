@@ -65,14 +65,6 @@ namespace piranha
 			void trim_test(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived pow(const max_fast_int &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived pow(const double &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived root(const max_fast_int &, const ArgsTuple &) const;
-			template <class PosTuple, class ArgsTuple>
-			Derived partial(const PosTuple &, const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

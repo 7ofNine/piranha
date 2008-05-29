@@ -188,7 +188,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
@@ -239,7 +239,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const max_fast_int &n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::pow(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -258,7 +258,7 @@ namespace piranha
 	/// Real exponentiation.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_pow(const double &y,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::pow(const double &y,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -381,7 +381,7 @@ namespace piranha
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::b_root(const max_fast_int &n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -398,7 +398,7 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		return b_pow(1. / (double)(n), args_tuple);
+		return pow(1. / (double)(n), args_tuple);
 	}
 }
 

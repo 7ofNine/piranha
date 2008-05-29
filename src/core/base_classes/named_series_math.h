@@ -160,7 +160,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
 	{
-		Derived retval(derived_const_cast->b_pow(x, derived_const_cast->m_arguments));
+		Derived retval(derived_const_cast->pow(x, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
 		retval.trim();
 		return retval;
@@ -169,7 +169,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const max_fast_int &n) const
 	{
-		Derived retval(derived_const_cast->b_pow(n, derived_const_cast->m_arguments));
+		Derived retval(derived_const_cast->pow(n, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
 		retval.trim();
 		return retval;
@@ -178,7 +178,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::root(const max_fast_int &n) const
 	{
-		Derived retval(derived_const_cast->b_root(n, derived_const_cast->m_arguments));
+		Derived retval(derived_const_cast->root(n, derived_const_cast->m_arguments));
 		retval.m_arguments = derived_const_cast->m_arguments;
 		retval.trim();
 		return retval;
@@ -230,7 +230,7 @@ namespace piranha
 		pos_tuple_type pos_tuple;
 		psym_p p = psym_manager::get_pointer(arg);
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
-		Derived retval(derived_const_cast->b_partial(pos_tuple, m_arguments));
+		Derived retval(derived_const_cast->partial(pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;

@@ -37,7 +37,7 @@ namespace piranha
 		public:
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived b_besselJ(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
+			Derived besselJ(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
 				size_t order;
 				max_fast_int multiplier = 1;
 				if (order_ >= 0) {
@@ -63,7 +63,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.b_pow((max_fast_int)order, args_tuple);
+				retval = retval.pow((max_fast_int)order, args_tuple);
 				for (size_t i = 0; i < order; ++i) {
 					retval.divide_by((max_fast_int)(i + 1), args_tuple);
 				}
@@ -80,7 +80,7 @@ namespace piranha
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived b_dbesselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+			Derived dbesselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
 				if (order < 1) {
 					throw unsuitable("Partial derivative of Bessel function of the first kind is implemented only for "
 									 "strictly positive orders.");
@@ -101,7 +101,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.b_pow(order - 1, args_tuple);
+				retval = retval.pow(order - 1, args_tuple);
 				for (size_t i = 0; i < (size_t)order; ++i) {
 					retval.divide_by((max_fast_int)(i + 1), args_tuple);
 				}
@@ -119,7 +119,7 @@ namespace piranha
 			}
 			/// Bessel function of the first kind of integer order divided by its argument.
 			template <class ArgsTuple>
-			Derived b_besselJ_div(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+			Derived besselJ_div(const max_fast_int &order, const ArgsTuple &args_tuple) const {
 				if (order < 1) {
 					throw unsuitable("Bessel function of the first kind divided by its argument is implemented only for "
 									 "strictly positive orders.");
@@ -140,7 +140,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.b_pow((max_fast_int)order - 1, args_tuple);
+				retval = retval.pow((max_fast_int)order - 1, args_tuple);
 				for (size_t i = 0; i < (size_t)order; ++i) {
 					retval.divide_by((max_fast_int)(i + 1), args_tuple);
 				}

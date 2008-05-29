@@ -99,6 +99,12 @@ namespace piranha
 			using base_ancestor::norm;
 			using named_ancestor::eval;
 			using base_ancestor::eval;
+			using named_ancestor::pow;
+			using base_ancestor::pow;
+			using named_ancestor::root;
+			using base_ancestor::root;
+			using named_ancestor::partial;
+			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -206,6 +212,12 @@ namespace std
 			using base_ancestor::norm;
 			using named_ancestor::eval;
 			using base_ancestor::eval;
+			using named_ancestor::pow;
+			using base_ancestor::pow;
+			using named_ancestor::root;
+			using base_ancestor::root;
+			using named_ancestor::partial;
+			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef POISSON_SERIES value_type;
 			// Needed typedefs.

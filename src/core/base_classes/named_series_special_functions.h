@@ -32,21 +32,22 @@ namespace piranha
 	template <class Derived>
 	class named_series_special_functions: public base_series_special_functions<Derived>
 	{
+			typedef base_series_special_functions<Derived> ancestor;
 		public:
 			Derived besselJ(const max_fast_int &order) const {
-				Derived retval(derived_const_cast->b_besselJ(order, derived_const_cast->m_arguments));
+				Derived retval(ancestor::besselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived dbesselJ(const max_fast_int &order) const {
-				Derived retval(derived_const_cast->b_dbesselJ(order, derived_const_cast->m_arguments));
+				Derived retval(ancestor::dbesselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived besselJ_div(const max_fast_int &order) const {
-				Derived retval(derived_const_cast->b_besselJ_div(order, derived_const_cast->m_arguments));
+				Derived retval(ancestor::besselJ_div(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

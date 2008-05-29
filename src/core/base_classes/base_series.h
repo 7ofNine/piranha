@@ -85,13 +85,13 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived b_pow(const max_fast_int &, const ArgsTuple &) const;
+			Derived pow(const max_fast_int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived b_pow(const double &, const ArgsTuple &) const;
+			Derived pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived b_root(const max_fast_int &, const ArgsTuple &) const;
+			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
-			Derived b_partial(const PosTuple &, const ArgsTuple &) const;
+			Derived partial(const PosTuple &, const ArgsTuple &) const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.
