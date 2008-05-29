@@ -235,7 +235,7 @@ namespace pyranha
 	template <class T>
 	void common_fourier_series_instantiation(boost::python::class_<T> &inst)
 	{
-		series_trigonometric_instantiation(inst);
+		series_special_functions_instantiation(inst);
 		series_differential_instantiation(inst);
 	}
 }
