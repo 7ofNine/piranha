@@ -80,6 +80,9 @@ def main():
       except:
         pass
     for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
+      if i == "Gui":
+        ip.ex("from PyQt4 import QtGui")
+        ip.ex("app = QtGui.QApplication([])")
       ip.ex("from pyranha.%s import *" % i)
     ip.ex("from pyranha import ds")
 

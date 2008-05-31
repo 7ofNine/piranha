@@ -25,13 +25,29 @@ __manipulators__ = [@MANIPULATOR_LIST@]
 print "Pyranha initializing..."
 print "Available manipulators: ", __manipulators__
 print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
+
+# Let's try do define a default series type
 if len(filter(lambda x: x not in __manipulators__,__all__)) > 0:
-  exec "import %s as __last_manipulator" % __manipulators__[-1]
-  ds = getattr(__last_manipulator,__manipulators__[-1].lower());
-  print "Default series type is " + str(ds)
+	exec "import %s as __last_manipulator" % __manipulators__[-1]
+	ds = getattr(__last_manipulator,__manipulators__[-1].lower());
+	print "Default series type is " + str(ds)
 else:
-  print "Default series type could not be established, assigning None."
-  ds = None
+	print "Default series type could not be established, assigning None."
+	ds = None
+
+# Now let's build the list of manipulator types
+__type_list = []
+for __i in __manipulators__:
+	exec "import %s as __cur_manip" % __i
+	__type_list.append(getattr(__cur_manip,__i.lower()))
+	# Let's try to see if we can get the complex counterpart.
+	try:
+		__type_list.append(getattr(__cur_manip,__i.lower()+'c'))
+	except:
+		pass
+
+manipulators_type_tuple = tuple(__type_list)
+
 print "Pyranha is ready."
 
 # Global variables: theories of motion

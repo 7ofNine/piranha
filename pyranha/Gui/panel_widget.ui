@@ -1,0 +1,28 @@
+<ui version="4.0" >
+ <class>panel_widget</class>
+ <widget class="QWidget" name="panel_widget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>798</width>
+    <height>626</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QListView" name="series_list_view" >
+   <property name="geometry" >
+    <rect>
+     <x>40</x>
+     <y>50</y>
+     <width>256</width>
+     <height>431</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
