@@ -25,13 +25,12 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 	class __series_db_model(PyQt4.QtCore.QAbstractItemModel):
 		def __init__(self,parent):
 			PyQt4.QtCore.QAbstractItemModel.__init__(self,parent)
+			# NOTE: this value must match the number of data headers and the number
+			# of rows in each record of the database series.
+			self.__n_columns = 5
 			# This is the interactive name space of the IPython session.
 			self.__ip_ns = IPython.ipapi.get().user_ns
 			self.__series_db = self.__build_series_db()
-			if not self.__series_db:
-				self.__n_columns = 0
-			else:
-				self.__n_columns = len(self.__series_db[0])
 		def __build_series_db(self):
 			retval = map(lambda x:
 				(
@@ -41,17 +40,21 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 					len(self.__ip_ns[x]),
 					self.__ip_ns[x].atoms()
 				),filter(lambda x: type(self.__ip_ns[x]) in pyranha.manipulators_type_tuple, self.__ip_ns))
+			assert(not retval or self.__n_columns == len(retval[0]))
 			retval.sort()
 			return retval
-		def needs_update(self):
-			return self.__series_db != self.__build_series_db()
+		def check_update(self):
+			new_db = self.__build_series_db()
+			if self.__series_db != new_db:
+				self.__series_db = new_db
+				self.reset()
 		def hasChildren(self,model_index):
 			return not model_index.isValid()
 		def rowCount(self,model_index):
 			return len(self.__series_db)
 		def columnCount(self,model_index):
 			return self.__n_columns
-		def index(self,row,column,parent):
+		def index(self,row,column,parent=PyQt4.QtCore.QModelIndex()):
 			# We return a valid index only if parent is root item (i.e., it is invalid)
 			# and if we are not going out of boundaries.
 			if parent.isValid() or not self.hasIndex(row,column,parent):
@@ -106,7 +109,5 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 			self.__global_update(force=True)
 	def __global_update(self,force=False):
 		if force or not self.isActiveWindow():
-			if self.__series_db.needs_update():
-				self.__series_db = self.__series_db_model(self)
-				self.__setup_model()
+			self.__series_db.check_update()
 
