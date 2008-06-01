@@ -12,14 +12,23 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <widget class="QListView" name="series_list_view" >
+  <widget class="QTreeView" name="series_tree_view" >
    <property name="geometry" >
     <rect>
-     <x>40</x>
-     <y>50</y>
-     <width>256</width>
-     <height>431</height>
+     <x>50</x>
+     <y>20</y>
+     <width>551</width>
+     <height>511</height>
     </rect>
+   </property>
+   <property name="rootIsDecorated" >
+    <bool>true</bool>
+   </property>
+   <property name="itemsExpandable" >
+    <bool>false</bool>
+   </property>
+   <property name="sortingEnabled" >
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

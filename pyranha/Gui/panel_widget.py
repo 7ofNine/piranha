@@ -22,35 +22,70 @@ import IPython.ipapi
 import pyranha
 
 class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
-	class __series_list_model(PyQt4.QtCore.QAbstractListModel):
-		def __init__(self,parent = None):
-			PyQt4.QtCore.QAbstractListModel.__init__(self,parent)
-			self.__series_list = []
-			ip = IPython.ipapi.get()
-			self.__series_list = sorted(filter(lambda x: type(ip.user_ns[x]) in pyranha.manipulators_type_tuple, ip.user_ns))
-		def rowCount(self,model_index = PyQt4.QtCore.QModelIndex()):
-			# print len(self.__series_list)
-			return len(self.__series_list)
-		def data(self,index,role):
-			if not index.isValid() or index.row() >= len(self.__series_list):
-				return PyQt4.QtCore.QVariant()
-			if role == PyQt4.QtCore.Qt.DisplayRole:
-				return PyQt4.QtCore.QVariant(self.__series_list[index.row()])
+	class __series_db_model(PyQt4.QtCore.QAbstractItemModel):
+		def __init__(self,parent):
+			PyQt4.QtCore.QAbstractItemModel.__init__(self,parent)
+			# This is the interactive name space of the IPython session.
+			self.__ip_ns = IPython.ipapi.get().user_ns
+			self.__series_db = self.__build_series_db()
+			if not self.__series_db:
+				self.__n_columns = 0
 			else:
+				self.__n_columns = len(self.__series_db[0])
+		def __build_series_db(self):
+			retval = map(lambda x:
+				(
+					id(self.__ip_ns[x]),
+					x,
+					str(type(self.__ip_ns[x])).rpartition('.')[-1].strip('>\''),
+					len(self.__ip_ns[x]),
+					self.__ip_ns[x].atoms()
+				),filter(lambda x: type(self.__ip_ns[x]) in pyranha.manipulators_type_tuple, self.__ip_ns))
+			retval.sort()
+			return retval
+		def needs_update(self):
+			return self.__series_db != self.__build_series_db()
+		def hasChildren(self,model_index):
+			return not model_index.isValid()
+		def rowCount(self,model_index):
+			return len(self.__series_db)
+		def columnCount(self,model_index):
+			return self.__n_columns
+		def index(self,row,column,parent):
+			# We return a valid index only if parent is root item (i.e., it is invalid)
+			# and if we are not going out of boundaries.
+			if parent.isValid() or not self.hasIndex(row,column,parent):
+				return PyQt4.QtCore.QModelIndex()
+			else:
+				return self.createIndex(row,column)
+		def parent(self,index):
+			return PyQt4.QtCore.QModelIndex()
+		def data(self,index,role):
+			# Return empty data if the requested index is not valid or we are using it for
+			# something else than the display role.
+			if not index.isValid() or role != PyQt4.QtCore.Qt.DisplayRole:
 				return PyQt4.QtCore.QVariant()
+			else:
+				return PyQt4.QtCore.QVariant(self.__series_db[index.row()][index.column()])
 	def __init__(self,parent = None):
 		PyQt4.QtGui.QWidget.__init__(self,parent)
 		self.setupUi(self)
 		self.__timer = PyQt4.QtCore.QTimer()
-		self.__timer.start(500)
-		self.__series_list = self.__series_list_model(self)
+		self.__timer.start(1000)
+		self.__series_db = self.__series_db_model(self)
 		# Connections.
 		self.connect(self.__timer,PyQt4.QtCore.SIGNAL("timeout()"),self.__global_update)
 		# Set model.
-		self.series_list_view.setModel(self.__series_list)
+		self.__setup_model()
 		self.show()
+	def __setup_model(self):
+		self.__proxy_model = PyQt4.QtGui.QSortFilterProxyModel(self)
+		self.__proxy_model.setSourceModel(self.__series_db)
+		self.series_tree_view.setModel(self.__proxy_model)
+		self.series_tree_view.hideColumn(0)
 	def __global_update(self):
 		if not self.isActiveWindow():
-			del self.__series_list
-			self.__series_list = self.__series_list_model(self)
-			self.series_list_view.setModel(self.__series_list)
+			if self.__series_db.needs_update():
+				self.__series_db = self.__series_db_model(self)
+				self.__setup_model()
+
