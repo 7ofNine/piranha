@@ -82,6 +82,7 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 		self.__proxy_model = PyQt4.QtGui.QSortFilterProxyModel(self)
 		self.__proxy_model.setSourceModel(self.__series_db)
 		self.series_tree_view.setModel(self.__proxy_model)
+		# We do not want to show the series' id.
 		self.series_tree_view.hideColumn(0)
 	def __global_update(self):
 		if not self.isActiveWindow():
