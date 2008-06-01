@@ -67,14 +67,31 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 				return PyQt4.QtCore.QVariant()
 			else:
 				return PyQt4.QtCore.QVariant(self.__series_db[index.row()][index.column()])
+		def headerData(self,column,orientation,role):
+			if role != PyQt4.QtCore.Qt.DisplayRole:
+				return PyQt4.QtCore.QVariant()
+			if column == 0:
+				return PyQt4.QtCore.QVariant("Id")
+			if column == 1:
+				return PyQt4.QtCore.QVariant("Name")
+			if column == 2:
+				return PyQt4.QtCore.QVariant("Type")
+			if column == 3:
+				return PyQt4.QtCore.QVariant("Length")
+			if column == 4:
+				return PyQt4.QtCore.QVariant("Atoms")
+			assert(False)
 	def __init__(self,parent = None):
 		PyQt4.QtGui.QWidget.__init__(self,parent)
 		self.setupUi(self)
 		self.__timer = PyQt4.QtCore.QTimer()
 		self.__timer.start(1000)
 		self.__series_db = self.__series_db_model(self)
+		# Pointer to QApplication's instance.
+		self.__qapp = PyQt4.QtGui.qApp
 		# Connections.
 		self.connect(self.__timer,PyQt4.QtCore.SIGNAL("timeout()"),self.__global_update)
+		self.connect(self.__qapp,PyQt4.QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"),self.__update_on_activation)
 		# Set model.
 		self.__setup_model()
 		self.show()
@@ -84,8 +101,11 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 		self.series_tree_view.setModel(self.__proxy_model)
 		# We do not want to show the series' id.
 		self.series_tree_view.hideColumn(0)
-	def __global_update(self):
-		if not self.isActiveWindow():
+	def __update_on_activation(self,old,now):
+		if id(self.__qapp.activeWindow()) == id(self):
+			self.__global_update(force=True)
+	def __global_update(self,force=False):
+		if force or not self.isActiveWindow():
 			if self.__series_db.needs_update():
 				self.__series_db = self.__series_db_model(self)
 				self.__setup_model()

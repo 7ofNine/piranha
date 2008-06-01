@@ -33,6 +33,13 @@ psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
 
+def show_gui():
+  try:
+    import pyranha.Gui
+    pyranha.Gui.panel.show()
+  except ImportError:
+    print "Gui support was not built."
+
 def tc(args, flambda, t0 = 0., t1 = None, step = None):
   try:
     args_list = list(args)
