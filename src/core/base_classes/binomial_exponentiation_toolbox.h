@@ -78,7 +78,7 @@ namespace piranha
 				try {
 					n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA, args_tuple);
 				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable for real exponentiation through binomial expansion."
+					throw unsuitable(std::string("Series is unsuitable for exponentiation through binomial expansion."
 												 "\nThe reported error is: ")
 									 + u.what());
 				}

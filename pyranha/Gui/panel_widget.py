@@ -88,7 +88,7 @@ class panel_widget(PyQt4.QtGui.QWidget,Ui_panel_widget):
 		PyQt4.QtGui.QWidget.__init__(self,parent)
 		self.setupUi(self)
 		self.__timer = PyQt4.QtCore.QTimer()
-		self.__timer.start(1000)
+		self.__timer.start(500)
 		self.__series_db = self.__series_db_model(self)
 		# Pointer to QApplication's instance.
 		self.__qapp = PyQt4.QtGui.qApp
