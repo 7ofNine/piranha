@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>panel_widget</class>
- <widget class="QMainWindow" name="panel_widget" >
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -21,33 +21,31 @@
      <height>555</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout" >
-    <item row="0" column="0" >
-     <widget class="QSplitter" name="splitter" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QTreeView" name="series_tree_view" >
-       <property name="alternatingRowColors" >
-        <bool>true</bool>
-       </property>
-       <property name="rootIsDecorated" >
-        <bool>true</bool>
-       </property>
-       <property name="itemsExpandable" >
-        <bool>false</bool>
-       </property>
-       <property name="sortingEnabled" >
-        <bool>true</bool>
-       </property>
-       <property name="headerHidden" >
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QMdiArea" name="mdi_area" />
-     </widget>
-    </item>
-   </layout>
+   <widget class="QTreeView" name="series_tree_view" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>361</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <property name="alternatingRowColors" >
+     <bool>true</bool>
+    </property>
+    <property name="rootIsDecorated" >
+     <bool>true</bool>
+    </property>
+    <property name="itemsExpandable" >
+     <bool>false</bool>
+    </property>
+    <property name="sortingEnabled" >
+     <bool>true</bool>
+    </property>
+    <property name="headerHidden" >
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >

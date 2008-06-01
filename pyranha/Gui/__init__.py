@@ -1,3 +1,3 @@
-import panel_widget as __panel_widget
+import main_window as __main_window
 
-panel = __panel_widget.panel_widget()
+mw = __main_window.main_window()
