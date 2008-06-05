@@ -44,7 +44,7 @@ namespace piranha
 			template <int N>
 			class nth_index
 			{
-					BOOST_STATIC_ASSERT(N == 0);
+					BOOST_STATIC_ASSERT(N == 0 or N == 1);
 				public:
 					typedef series_unordered_set_backend type;
 			};
@@ -53,12 +53,12 @@ namespace piranha
 			}
 			template <int N>
 			series_unordered_set_backend &get() {
-				BOOST_STATIC_ASSERT(N == 0);
+				BOOST_STATIC_ASSERT(N == 0 or N == 1);
 				return *this;
 			}
 			template <int N>
 			const series_unordered_set_backend &get() const {
-				BOOST_STATIC_ASSERT(N == 0);
+				BOOST_STATIC_ASSERT(N == 0 or N == 1);
 				return *this;
 			}
 			size_t size() const {
