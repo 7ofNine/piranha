@@ -21,7 +21,9 @@
 #ifndef PIRANHA_SERIES_MULTIINDEX_BACKEND_H
 #define PIRANHA_SERIES_MULTIINDEX_BACKEND_H
 
+#include <boost/mpl/vector.hpp>
 #include <boost/multi_index_container.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <memory>
 
 #include "../settings.h"
@@ -34,7 +36,8 @@ namespace piranha
 	{
 			typedef Term term_type;
 			typedef Allocator allocator_type;
-			typedef boost::multi_index_container<term_type, typename I<term_type>::type, allocator_type> container_type;
+			typedef typename I<term_type>::type index_type;
+			typedef boost::multi_index_container<term_type, index_type, allocator_type> container_type;
 		public:
 			template <int N>
 			class nth_index
@@ -56,6 +59,7 @@ namespace piranha
 			void swap(series_multiindex_backend &other) {
 				m_container.swap(other.m_container);
 			}
+			static const int n_indices = boost::mpl::size<index_type>::value;
 		private:
 			container_type	m_container;
 	};

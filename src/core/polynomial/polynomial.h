@@ -50,50 +50,6 @@
 
 namespace piranha
 {
-// NOTE: this is an example of replacing the multiindex container for polynomials with a thin wrapper
-// around tr1::unordered_set.
-//
-//   #include <tr1/unordered_set>
-//
-//   template <class Term, class Allocator>
-//   class polynomial_container_type
-//   {
-//       typedef std::tr1::unordered_set<Term,typename Term::hasher,std::equal_to<Term>,Allocator> container_type;
-//     public:
-//       typedef typename container_type::const_iterator const_pinpoint_iterator;
-//       typedef typename container_type::iterator pinpoint_iterator;
-//       typedef const_pinpoint_iterator const_sorted_iterator;
-//       typedef pinpoint_iterator sorted_iterator;
-//       polynomial_container_type() {}
-//       const_sorted_iterator begin() const {return m_container.begin();}
-//       sorted_iterator begin() {return m_container.begin();}
-//       const_sorted_iterator end() const {return m_container.end();}
-//       sorted_iterator end() {return m_container.end();}
-//       void swap(polynomial_container_type &p) {m_container.swap(p.m_container);}
-//       size_t size() const {return m_container.size();}
-//       bool empty() const {return m_container.empty();}
-//       // These cannot be const since we may need to modify the resulting iterator.
-//       pinpoint_iterator find(const Term &t) {return m_container.find(t);}
-//       sorted_iterator insert(const const_sorted_iterator &, const Term &t)
-//       {
-//         std::pair<pinpoint_iterator,bool> res(m_container.insert(t));
-//         p_assert(res.second);
-//         return m_container.begin();
-//       }
-//       template <class Modifier>
-//         bool modify(pinpoint_iterator &it, Modifier &m)
-//       {
-//         m(*it);
-//         return true;
-//       }
-//       void erase(const const_pinpoint_iterator &it) {m_container.erase(*it);}
-//       void max_load_factor(const float &l) {m_container.max_load_factor(l);}
-//     private:
-//       container_type  m_container;
-//   };
-
-	// TODO: generalise here (and elsewhere) the backbone container by introducing thin wrappers around standard containers
-	// so that below the typedefs and aliases are truly generic.
 	template < E0_SERIES_TP_DECL = std::allocator<char> >
 	class polynomial:
 				public POLYNOMIAL_BASE_ANCESTOR,
@@ -150,15 +106,7 @@ namespace piranha
 			explicit polynomial(const psym &p) {
 				named_ancestor::template construct_from_psym<0>(p);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};
@@ -258,15 +206,7 @@ namespace std
 			explicit complex(const piranha::psym &p) {
 				named_ancestor::template construct_from_psym<0>(p);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};

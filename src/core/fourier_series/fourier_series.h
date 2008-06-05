@@ -104,15 +104,8 @@ namespace piranha
 			typedef Multiplier<fourier_series, fourier_series, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(fourier_series);
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			// Index interface.
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};
@@ -203,18 +196,9 @@ namespace std
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<complex, complex, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
-			// Ctors.
 			NAMED_SERIES_CTORS(complex);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};

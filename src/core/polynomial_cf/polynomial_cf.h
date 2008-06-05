@@ -87,15 +87,7 @@ namespace piranha
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 			// TODO: place some of these methods into common polynomial toolbox?
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			void get_int_linear_combination(std::pair<std::vector<cf_type>, std::vector<max_fast_int> > &res) const {
@@ -177,15 +169,7 @@ namespace std
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};

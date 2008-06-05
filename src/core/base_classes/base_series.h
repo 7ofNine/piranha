@@ -192,6 +192,25 @@ namespace piranha
 #define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name >
+
+#define SERIES_INDEX_INTERFACE \
+	template <int N> \
+	typename container_type::template nth_index<N>::type::const_iterator begin() const { \
+		return m_container.template get<N>().begin(); \
+	} \
+	template <int N> \
+	typename container_type::template nth_index<N>::type::const_iterator end() const { \
+		return m_container.template get<N>().end(); \
+	} \
+	template <int N> \
+	typename container_type::template nth_index<N>::type &nth_index() { \
+		return m_container.template get<N>(); \
+	} \
+	template <int N> \
+	const typename container_type::template nth_index<N>::type &nth_index() const { \
+		return m_container.template get<N>(); \
+	} \
+	static const int n_indices = container_type::n_indices;
 }
 
 #include "base_series_io.h"

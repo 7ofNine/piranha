@@ -117,15 +117,7 @@ namespace piranha
 			explicit poisson_series(const psym &p) {
 				named_ancestor::template construct_from_psym<0>(p);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};
@@ -231,15 +223,7 @@ namespace std
 			explicit complex(const piranha::psym &p) {
 				named_ancestor::template construct_from_psym<0>(p);
 			}
-			// Needed getters and setters.
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index() {
-				return m_container.template get<N>();
-			}
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const {
-				return m_container.template get<N>();
-			}
+			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
 	};
