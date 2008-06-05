@@ -193,6 +193,7 @@ namespace piranha
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name >
 
+// Index interface for series. Exposes begin(), end(), nth_index() and n_indices.
 #define SERIES_INDEX_INTERFACE \
 	template <int N> \
 	typename container_type::template nth_index<N>::type::const_iterator begin() const { \
