@@ -25,7 +25,7 @@ def r_a(e,M):
   try:
     return __pyranha.ds.r_a(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer an r_a method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an r_a method."
 
 def cos_f(e,M):
   """
@@ -34,7 +34,7 @@ def cos_f(e,M):
   try:
     return __pyranha.ds.cos_f(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a cos_f method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer a cos_f method."
 
 def sin_f(e,M):
   """
@@ -43,7 +43,7 @@ def sin_f(e,M):
   try:
     return __pyranha.ds.sin_f(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a sin_f method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer a sin_f method."
 
 def cos_E(e,M):
   """
@@ -52,7 +52,7 @@ def cos_E(e,M):
   try:
     return __pyranha.ds.cos_E(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a cos_E method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer a cos_E method."
 
 def sin_E(e,M):
   """
@@ -61,7 +61,7 @@ def sin_E(e,M):
   try:
     return __pyranha.ds.sin_E(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer a sin_E method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer a sin_E method."
 
 def E(e,M):
   """
@@ -70,4 +70,4 @@ def E(e,M):
   try:
     return __pyranha.ds.E(e,M)
   except AttributeError:
-    raise AttributeError, "The series type '" + str(ds) +  "' does not offer an E method."
+    raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an E method."
