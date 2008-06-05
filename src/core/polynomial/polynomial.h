@@ -202,7 +202,7 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend<term_type_,I, allocator_type> container_type;
+			typedef piranha::series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;

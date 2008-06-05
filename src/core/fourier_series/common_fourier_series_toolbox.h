@@ -31,15 +31,15 @@
 namespace piranha
 {
 	template <class Derived>
-	class common_fourier_series_toolbox: public jacobi_anger_toolbox<0,Derived>
+	class common_fourier_series_toolbox: public jacobi_anger_toolbox<0, Derived>
 	{
-			typedef jacobi_anger_toolbox<0,Derived> jacang_ancestor;
+			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
 			std::complex<Derived> complexp() const {
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval(
 					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-					derived_const_cast->m_arguments));
+												  derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				return retval;
 			}

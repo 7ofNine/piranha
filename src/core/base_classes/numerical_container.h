@@ -126,7 +126,7 @@ namespace piranha
 				return m_value;
 			}
 			double display_data() const {
-				return sign(m_value)*std::log10(1+derived_const_cast->template norm<int>(0));
+				return sign(m_value)*std::log10(1 + derived_const_cast->template norm<int>(0));
 			}
 			// Maths.
 			template <class ArgsTuple>

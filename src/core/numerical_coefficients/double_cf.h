@@ -60,7 +60,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double_cf besselJ(int n, const ArgsTuple &) const {
 				double_cf retval;
-				retval.m_value = piranha::besselJ(n,m_value);
+				retval.m_value = piranha::besselJ(n, m_value);
 				return retval;
 			}
 			template <class ArgsTuple>

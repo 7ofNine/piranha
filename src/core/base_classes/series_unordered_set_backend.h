@@ -82,7 +82,7 @@ namespace piranha
 				return m_container.find(t);
 			}
 			iterator insert(const const_iterator &, const term_type &t) {
-				std::pair<iterator,bool> res(m_container.insert(t));
+				std::pair<iterator, bool> res(m_container.insert(t));
 				p_assert(res.second);
 				// TODO: understand here if it is better to return res.first or not.
 				return res.first;

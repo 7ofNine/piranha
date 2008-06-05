@@ -59,7 +59,7 @@ namespace piranha
 					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion will diverge.");
 				}
 				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
-					/ std::log10(norm) + 1 - start)/step_size);
+									  / std::log10(norm) + 1 - start) / step_size);
 				if (retval >= 0) {
 					return retval;
 				} else {

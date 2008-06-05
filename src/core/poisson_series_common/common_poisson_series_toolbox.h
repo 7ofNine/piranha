@@ -38,9 +38,9 @@
 namespace piranha
 {
 	template <class Derived>
-	class common_poisson_series_toolbox: public jacobi_anger_toolbox<1,Derived>
+	class common_poisson_series_toolbox: public jacobi_anger_toolbox<1, Derived>
 	{
-			typedef jacobi_anger_toolbox<1,Derived> jacang_ancestor;
+			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
 			std::complex<Derived> complexp() const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
