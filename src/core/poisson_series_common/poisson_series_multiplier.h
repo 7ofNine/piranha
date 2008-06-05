@@ -120,8 +120,8 @@ namespace piranha
 			}
 			/// Store flavours of the series into own vectors.
 			void store_flavours() {
-				iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
-				iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
+				const_iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
+				const_iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
 				size_t i;
 				for (i = 0; i < ancestor::m_size1; ++i) {
 					m_flavours1[i] = it1->m_key.flavour();
