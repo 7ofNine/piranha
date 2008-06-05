@@ -44,6 +44,16 @@ namespace piranha
 		static const size_t value = 0;
 	};
 
+	template <class T>
+	inline max_fast_int sign(const T &x)
+	{
+		if (x >= 0) {
+			return (max_fast_int)1;
+		} else {
+			return (max_fast_int)(-1);
+		}
+	}
+
 	/// Bessel function of the first kind, integer order.
 	inline double besselJ(const max_fast_int &order, const double &arg)
 	{
