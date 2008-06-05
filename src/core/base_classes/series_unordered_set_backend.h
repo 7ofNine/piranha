@@ -21,6 +21,7 @@
 #ifndef PIRANHA_SERIES_UNORDERED_SET_BACKEND_H
 #define PIRANHA_SERIES_UNORDERED_SET_BACKEND_H
 
+#include <boost/static_assert.hpp>
 #include <memory>
 #include <utility> // For std::pair.
 #include <tr1/unordered_set>
@@ -40,21 +41,24 @@ namespace piranha
 		public:
 			typedef typename container_type::iterator iterator;
 			typedef typename container_type::const_iterator const_iterator;
-			template <int>
+			template <int N>
 			class nth_index
 			{
+					BOOST_STATIC_ASSERT(N == 0);
 				public:
 					typedef series_unordered_set_backend type;
 			};
 			series_unordered_set_backend() {
 				m_container.max_load_factor(settings::load_factor());
 			}
-			template <int>
+			template <int N>
 			series_unordered_set_backend &get() {
+				BOOST_STATIC_ASSERT(N == 0);
 				return *this;
 			}
-			template <int>
+			template <int N>
 			const series_unordered_set_backend &get() const {
+				BOOST_STATIC_ASSERT(N == 0);
 				return *this;
 			}
 			size_t size() const {
@@ -96,6 +100,7 @@ namespace piranha
 			void erase(const const_iterator &it) {
 				m_container.erase(*it);
 			}
+			static const int n_indices = 1;
 		private:
 			container_type	m_container;
 	};

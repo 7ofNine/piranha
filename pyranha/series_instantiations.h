@@ -21,7 +21,9 @@
 #ifndef PYRANHA_SERIES_INSTANTIATIONS_H
 #define PYRANHA_SERIES_INSTANTIATIONS_H
 
+#include <boost/lexical_cast.hpp>
 #include <boost/python/class.hpp>
+#include <boost/python/iterator.hpp>
 #include <boost/python/operators.hpp>
 #include <boost/python/return_internal_reference.hpp>
 #include <complex>
@@ -33,6 +35,32 @@
 
 namespace pyranha
 {
+	template <int N>
+	class expose_series_indices_helper
+	{
+		public:
+			template <class T>
+			static void run(boost::python::class_<T> &inst) {
+				inst.add_property((std::string("index") + boost::lexical_cast<std::string>(N)).c_str(),
+								  boost::python::range(&T::template begin<N>, &T::template end<N>));
+				expose_series_indices_helper < N - 1 >::run(inst);
+			}
+	};
+
+	template <>
+	class expose_series_indices_helper < -1 >
+	{
+		public:
+			template <class T>
+			static void run(boost::python::class_<T> &) {}
+	};
+
+	template <class T>
+	inline void expose_series_indices(boost::python::class_<T> &inst)
+	{
+		expose_series_indices_helper < T::n_indices - 1 >::run(inst);
+	}
+
 	/// Basic series instantiation.
 	template <class T>
 	boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
@@ -42,14 +70,16 @@ namespace pyranha
 		inst.def(boost::python::init<const std::string &>());
 		inst.def(boost::python::init<const piranha::max_fast_int &>());
 		inst.def(boost::python::init<const double &>());
+		// Take care of exposing the series' indices.
+		expose_series_indices(inst);
 		// Some special methods.
 		inst.def("__copy__", &T::copy);
 		inst.def("__repr__", &T::print_to_string);
 		inst.def("__len__", &T::length);
 		inst.def("save_to", &T::save_to, "Save series to file.");
-		typedef typename piranha::eval_type<T>::type (T::*eval_named)(const double &) const;
+		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
 		inst.def("eval", eval_named(&T::eval));
-		typedef double (T::*norm_named)() const;
+		typedef double(T::*norm_named)() const;
 		inst.def("norm", norm_named(&T::norm));
 		inst.def("atoms", &T::atoms);
 		inst.def("swap", &T::swap);
@@ -94,6 +124,9 @@ namespace pyranha
 		inst.def("__pow__", pow_int(&T::pow));
 		typedef T(T::*named_root)(const piranha::max_fast_int &) const;
 		inst.def("root", named_root(&T::root));
+		// Expose the term type.
+		boost::python::class_<typename T::term_type> term_inst((name+"_term").c_str(),
+			(std::string("Term for: ")+description).c_str());
 		return inst;
 	}
 
@@ -141,7 +174,7 @@ namespace pyranha
 		instc.def(boost::python::self / std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
-		typedef T (std::complex<T>::*comp_get)() const;
+		typedef T(std::complex<T>::*comp_get)() const;
 		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
 		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
 		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");

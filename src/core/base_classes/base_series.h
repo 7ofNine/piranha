@@ -211,7 +211,8 @@ namespace piranha
 	const typename container_type::template nth_index<N>::type &nth_index() const { \
 		return m_container.template get<N>(); \
 	} \
-	static const int n_indices = container_type::n_indices;
+	static const int n_indices = container_type::n_indices; \
+	BOOST_STATIC_ASSERT(n_indices > 0);
 }
 
 #include "base_series_io.h"
