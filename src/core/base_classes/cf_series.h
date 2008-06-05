@@ -28,7 +28,6 @@
 #include "base_series.h"
 #include "../integer_typedefs.h" // For ctor macros
 #include "../exceptions.h"
-#include "../settings.h"
 #include "../type_traits.h" // For specialisation of type trait
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -73,45 +72,38 @@ namespace piranha
 	// Useful macro for ctors in coefficient series.
 	// TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
 #define CF_SERIES_CTORS(series_name) \
-	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
+	series_name() {} \
 	template <class ArgsTuple> \
 	explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		cf_ancestor::construct_from_string(s,args_tuple); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const piranha::max_fast_int &n, const ArgsTuple &a) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,a); \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \
 	template <class ArgsTuple> \
 	explicit complex(const complex<piranha::max_fast_int> &cn, const ArgsTuple &a) { \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(cn,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const complex<double> &cx, const ArgsTuple &a) { \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(cx,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const value_type &r, const ArgsTuple &a) { \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		complex_toolbox::construct_from_real(r,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &a) { \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		complex_toolbox::construct_from_real_imag(r, i, a); \
 	}
 

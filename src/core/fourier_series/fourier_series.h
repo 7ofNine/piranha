@@ -22,7 +22,6 @@
 #define PIRANHA_FOURIER_SERIES_H
 
 #include <boost/operators.hpp>
-#include <boost/multi_index_container.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
@@ -32,6 +31,7 @@
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
+#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -71,7 +71,7 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -154,7 +154,7 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef piranha::series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;

@@ -38,8 +38,9 @@ namespace piranha
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+		typedef typename Derived::sorted_iterator sorted_iterator;
 		p_assert((void *)derived_cast != (void *)&s2);
-		const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
+		sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
 		const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
 		for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it) {
 			// No need to check, we are merging from another series.

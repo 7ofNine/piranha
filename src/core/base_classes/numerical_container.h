@@ -21,11 +21,13 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_H
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
+#include <cmath> // For log10.
 #include <iostream>
 #include <string>
 
 #include "../arg_manager.h"
 #include "../integer_typedefs.h"
+#include "../math.h"
 #include "../psym.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
@@ -105,7 +107,7 @@ namespace piranha
 				return std::abs(m_value);
 			}
 			static const size_t max_size = 0;
-			// If value is less than numericalzero  in absolute value it is considered
+			// If value is less than numerical zero in absolute value it is considered
 			// to be zero.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &a) const {
@@ -122,6 +124,9 @@ namespace piranha
 			template <class ArgsTuple>
 			const eval_type &eval(const double &, const ArgsTuple &) const {
 				return m_value;
+			}
+			double display_data() const {
+				return sign(m_value)*std::log10(1+derived_const_cast->template norm<int>(0));
 			}
 			// Maths.
 			template <class ArgsTuple>

@@ -140,32 +140,27 @@ namespace piranha
 #define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::named_series<boost::tuple<args1,args2>,series_name >
 
 #define NAMED_SERIES_CTORS(series_name) \
-	series_name() {nth_index<1>().max_load_factor(piranha::settings::load_factor());} \
+	series_name() {} \
 	explicit series_name(const std::string &filename) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		named_ancestor::construct_from_file(filename); \
 	} \
 	explicit series_name(const piranha::max_fast_int &n) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \
 	} \
 	explicit series_name(const double &x) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \
 	} \
 	explicit series_name(const piranha::max_fast_int &n, const args_tuple_type &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(n,args_tuple); \
 	} \
 	explicit series_name(const double &x, const args_tuple_type &args_tuple) \
 	{ \
-		nth_index<1>().max_load_factor(piranha::settings::load_factor()); \
 		base_ancestor::construct_from_number(x,args_tuple); \
 	}
 }

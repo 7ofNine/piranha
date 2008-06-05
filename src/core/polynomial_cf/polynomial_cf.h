@@ -21,7 +21,6 @@
 #ifndef PIRANHA_POLYNOMIAL_CF_H
 #define PIRANHA_POLYNOMIAL_CF_H
 
-#include <boost/multi_index_container.hpp>
 #include <complex>
 #include <utility>
 
@@ -31,12 +30,12 @@
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/cf_series.h"
 #include "../base_classes/power_series.h"
+#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../polynomial_common/monomial.h"
 #include "../proxies.h"
-#include "../settings.h"
 
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
 #define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
@@ -65,7 +64,7 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
@@ -86,7 +85,6 @@ namespace piranha
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
-				nth_index<1>().max_load_factor(settings::load_factor());
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
 			// Needed getters and setters.
@@ -145,7 +143,7 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container<term_type_, typename I<term_type_>::type, allocator_type> container_type;
+			typedef piranha::series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
@@ -177,7 +175,6 @@ namespace std
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
-				nth_index<1>().max_load_factor(piranha::settings::load_factor());
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
 			// Needed getters and setters.

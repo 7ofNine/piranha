@@ -21,7 +21,6 @@
 #ifndef PIRANHA_POISSON_SERIES_H
 #define PIRANHA_POISSON_SERIES_H
 
-#include <boost/multi_index_container.hpp>
 #include <boost/operators.hpp>
 #include <cmath>
 #include <complex>
@@ -35,6 +34,7 @@
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
+#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../integer_typedefs.h"
 #include "../poisson_series_common/poisson_series_term.h"
@@ -79,8 +79,7 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container < term_type_,
-			typename I1<term_type_>::type, allocator_type > container_type;
+			typedef series_multiindex_backend < term_type_, I1, allocator_type > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -116,7 +115,6 @@ namespace piranha
 			NAMED_SERIES_CTORS(poisson_series);
 			// Ctor from psym.
 			explicit poisson_series(const psym &p) {
-				nth_index<1>().max_load_factor(settings::load_factor());
 				named_ancestor::template construct_from_psym<0>(p);
 			}
 			// Needed getters and setters.
@@ -176,8 +174,7 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef boost::multi_index_container < term_type_,
-			typename I1<term_type_>::type, allocator_type > container_type;
+			typedef piranha::series_multiindex_backend < term_type_, I1, allocator_type > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -232,7 +229,6 @@ namespace std
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);
 			// Ctor from psym.
 			explicit complex(const piranha::psym &p) {
-				nth_index<1>().max_load_factor(piranha::settings::load_factor());
 				named_ancestor::template construct_from_psym<0>(p);
 			}
 			// Needed getters and setters.
