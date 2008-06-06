@@ -50,8 +50,6 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
-			// Start INTERFACE definition.
-			//-------------------------------------------------------
 			// Ctors.
 			/// Default ctor.
 			expo_array(): ancestor::int_array() {}
@@ -74,7 +72,6 @@ namespace piranha
 			/// Multiplication.
 			template <class ResultType>
 			void multiply(const expo_array &e2, ResultType &ret) const
-
 			{
 				const size_type max_w = ancestor::size(), min_w = e2.size();
 				// Resize, if needed.
@@ -91,8 +88,6 @@ namespace piranha
 					ret[i] = (*this)[i];
 				}
 			}
-			// End INTERFACE definition.
-			//-------------------------------------------------------
 	};
 }
 

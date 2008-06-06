@@ -121,6 +121,11 @@ namespace piranha
 				res.template get<0>().canonicalise(args_tuple);
 				res.template get<1>().canonicalise(args_tuple);
 			}
+			// Display data for Poisson series comes from coefficient.
+			double display_data() const {
+				return ancestor::m_cf.display_data();
+			}
+			static const char *display_data_descr;
 		private:
 			// Invert the sign of trigonometric multipliers.
 			template <class ArgsTuple>
@@ -131,5 +136,8 @@ namespace piranha
 				}
 			}
 	};
+
+	template <class Cf, class Trig, char Separator, class Allocator>
+	const char *poisson_series_term<Cf, Trig, Separator, Allocator>::display_data_descr = Cf::display_data_descr;
 }
 #endif

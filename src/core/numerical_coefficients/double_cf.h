@@ -100,6 +100,7 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
+			using complex_toolbox::display_data;
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			template <class ArgsTuple>
