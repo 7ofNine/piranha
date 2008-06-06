@@ -19,6 +19,20 @@
 import PyQt4.QtCore, PyQt4.QtGui
 
 class series_draw_area(PyQt4.QtGui.QGraphicsView):
+	class __term_graphics_item(PyQt4.QtGui.QGraphicsRectItem):
+		def __init__(self,x,y,w,h,pen,brush,parent=None):
+			PyQt4.QtGui.QGraphicsRectItem.__init__(self,x,y,w,h,parent)
+			self.setPen(pen)
+			self.setBrush(brush)
+			self.setAcceptHoverEvents(True)
+		def hoverEnterEvent(self,event):
+			self.__orig_pen = self.pen()
+			self.setPen(PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.yellow))
+			self.setZValue(1)
+		def hoverLeaveEvent(self,event):
+			self.setPen(self.__orig_pen)
+			del self.__orig_pen
+			self.setZValue(0)
 	def __init__(self,parent):
 		PyQt4.QtGui.QGraphicsView.__init__(self,parent)
 		self.__series_name = None
@@ -58,7 +72,7 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			x_brush = x + half_width
 			brush.setStart(x_brush,0)
 			brush.setFinalStop(x_brush,abs_value)
-			self.__series_graphics_scene.addRect(x,0,self.__cwidth,abs_value,self.__pen,brush)
+			self.__series_graphics_scene.addItem(self.__term_graphics_item(x,0,self.__cwidth,abs_value,self.__pen,brush))
 			if abs_value > top_value:
 				top_value = abs_value
 			n = n + 1

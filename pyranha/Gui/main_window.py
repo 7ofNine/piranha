@@ -27,7 +27,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			PyQt4.QtCore.QAbstractItemModel.__init__(self,parent)
 			# NOTE: this value must match the number of data headers and the number
 			# of rows in each record of the database series.
-			self.__n_columns = 5
+			self.__n_columns = 4
 			# This is the interactive name space of the IPython session.
 			self.ip_ns = IPython.ipapi.get().user_ns
 			self.__series_db = self.__build_series_db()
@@ -37,8 +37,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 					id(self.ip_ns[x]),
 					x,
 					str(type(self.ip_ns[x])).rpartition('.')[-1].strip('>\''),
-					len(self.ip_ns[x]),
-					self.ip_ns[x].atoms()
+					len(self.ip_ns[x])
 				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators_type_tuple, self.ip_ns))
 			assert(not retval or self.__n_columns == len(retval[0]))
 			retval.sort()
@@ -48,10 +47,6 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			if self.__series_db != new_db:
 				self.__series_db = new_db
 				self.reset()
-		def check_existence(self,id_,name):
-			tmp_len = len(filter(lambda x: x[0] == id_ and x[1] == name,self.__series_db))
-			assert(tmp_len == 0 or tmp_len == 1)
-			return tmp_len == 1
 		def hasChildren(self,model_index):
 			return not model_index.isValid()
 		def rowCount(self,model_index):
@@ -85,14 +80,13 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 				return PyQt4.QtCore.QVariant("Type")
 			if column == 3:
 				return PyQt4.QtCore.QVariant("Length")
-			if column == 4:
-				return PyQt4.QtCore.QVariant("Atoms")
 			assert(False)
 	def __init__(self):
 		PyQt4.QtGui.QMainWindow.__init__(self,None)
 		self.setupUi(self)
 		# Store original info panel caption.
 		self.__default_info_panel_title = self.series_info_groupbox.title()
+		self.series_atoms_label.setText("")
 		self.__timer = PyQt4.QtCore.QTimer()
 		self.__timer.start(500)
 		self.__series_db = self.__series_db_model(self)
@@ -103,32 +97,28 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		# Connections.
 		self.connect(self.__timer,PyQt4.QtCore.SIGNAL("timeout()"),self.__slot_global_update)
 		self.connect(self.__qapp,PyQt4.QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"),self.__slot_update_on_activation)
-		self.connect(self.series_tree_view,PyQt4.QtCore.SIGNAL("activated(QModelIndex)"),self.__slot_series_tree_item_clicked)
-		self.connect(self.__series_db,PyQt4.QtCore.SIGNAL("modelReset()"),self.__slot_series_db_reset)
+		self.connect(self.series_tree_view,PyQt4.QtCore.SIGNAL("doubleClicked(QModelIndex)"),self.__slot_series_tree_item_dclicked)
 		self.show()
 	def __setup_model(self):
 		self.__proxy_model = PyQt4.QtGui.QSortFilterProxyModel(self)
 		self.__proxy_model.setSourceModel(self.__series_db)
 		self.series_tree_view.setModel(self.__proxy_model)
 		# We do not want to show the series' id.
-		self.series_tree_view.hideColumn(0)
+		#self.series_tree_view.hideColumn(0)
 	def __info_panel_setup(self,series_name):
 		if series_name == None:
 			self.series_info_groupbox.setTitle(self.__default_info_panel_title)
+			self.series_info_groupbox.setEnabled(False)
+			self.series_atoms_label.setText("")
 		else:
-			self.series_info_groupbox.setTitle(series_name)
-	def __slot_series_tree_item_clicked(self,index):
+			self.series_info_groupbox.setTitle(self.__default_info_panel_title+": "+series_name)
+			self.series_info_groupbox.setEnabled(True)
+			self.series_atoms_label.setText(str(self.__series_db.ip_ns[series_name].atoms()))
+	def __slot_series_tree_item_dclicked(self,index):
 		# Fetch series' name from the index.
 		name = str(index.sibling(index.row(),1).data().toString())
 		self.series_graphics_view.set_series(name,self.__series_db.ip_ns[name])
 		self.__info_panel_setup(name)
-	def __slot_series_db_reset(self):
-		name = self.series_graphics_view.series_name()
-		# If series' name is not None and series is not present in the series db, assign None in the series view
-		# and empty the information panel.
-		if name and not self.__series_db.check_existence(id(self.series_graphics_view.series()),name):
-			self.series_graphics_view.set_series(None,None)
-			self.__info_panel_setup(None)
 	def __slot_update_on_activation(self,old,now):
 		if id(self.__qapp.activeWindow()) == id(self):
 			self.__slot_global_update(force=True)

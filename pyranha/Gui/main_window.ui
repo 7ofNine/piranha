@@ -23,50 +23,148 @@
    </property>
    <layout class="QGridLayout" name="gridLayout" >
     <item row="0" column="0" >
-     <widget class="QSplitter" name="splitter_2" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+     <widget class="QTabWidget" name="tabWidget" >
+      <property name="currentIndex" >
+       <number>0</number>
       </property>
-      <widget class="QTreeView" name="series_tree_view" >
-       <property name="alternatingRowColors" >
-        <bool>true</bool>
+      <widget class="QWidget" name="tab" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>831</width>
+         <height>533</height>
+        </rect>
        </property>
-       <property name="rootIsDecorated" >
-        <bool>true</bool>
-       </property>
-       <property name="itemsExpandable" >
-        <bool>false</bool>
-       </property>
-       <property name="sortingEnabled" >
-        <bool>true</bool>
-       </property>
-       <property name="headerHidden" >
-        <bool>false</bool>
-       </property>
+       <attribute name="title" >
+        <string>Series</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2" >
+        <item row="0" column="0" >
+         <widget class="QSplitter" name="splitter_2" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QTreeView" name="series_tree_view" >
+           <property name="alternatingRowColors" >
+            <bool>true</bool>
+           </property>
+           <property name="rootIsDecorated" >
+            <bool>true</bool>
+           </property>
+           <property name="itemsExpandable" >
+            <bool>false</bool>
+           </property>
+           <property name="sortingEnabled" >
+            <bool>true</bool>
+           </property>
+           <property name="headerHidden" >
+            <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QSplitter" name="splitter" >
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <widget class="series_draw_area" name="series_graphics_view" >
+            <property name="minimumSize" >
+             <size>
+              <width>400</width>
+              <height>250</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+           <widget class="QGroupBox" name="series_info_groupbox" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="title" >
+             <string>Info</string>
+            </property>
+            <widget class="QComboBox" name="comboBox" >
+             <property name="geometry" >
+              <rect>
+               <x>280</x>
+               <y>30</y>
+               <width>76</width>
+               <height>27</height>
+              </rect>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label" >
+             <property name="geometry" >
+              <rect>
+               <x>30</x>
+               <y>40</y>
+               <width>111</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text" >
+              <string>Display index</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_2" >
+             <property name="geometry" >
+              <rect>
+               <x>30</x>
+               <y>80</y>
+               <width>101</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text" >
+              <string>Atoms</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="series_atoms_label" >
+             <property name="geometry" >
+              <rect>
+               <x>250</x>
+               <y>80</y>
+               <width>101</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text" >
+              <string>atoms</string>
+             </property>
+             <property name="alignment" >
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+       <zorder>splitter_2</zorder>
+       <zorder>progressBar</zorder>
       </widget>
-      <widget class="QSplitter" name="splitter" >
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
+      <widget class="QWidget" name="tab_2" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>831</width>
+         <height>533</height>
+        </rect>
        </property>
-       <widget class="series_draw_area" name="series_graphics_view" >
-        <property name="minimumSize" >
-         <size>
-          <width>400</width>
-          <height>250</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="series_info_groupbox" >
-        <property name="title" >
-         <string>Information panel</string>
-        </property>
-       </widget>
+       <attribute name="title" >
+        <string>Settings</string>
+       </attribute>
       </widget>
      </widget>
     </item>
