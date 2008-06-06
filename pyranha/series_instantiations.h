@@ -125,8 +125,10 @@ namespace pyranha
 		typedef T(T::*named_root)(const piranha::max_fast_int &) const;
 		inst.def("root", named_root(&T::root));
 		// Expose the term type.
-		boost::python::class_<typename T::term_type> term_inst((name+"_term").c_str(),
+		typedef typename T::term_type term_type;
+		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
 			(std::string("Term for: ")+description).c_str());
+		term_inst.def("display_data",&term_type::display_data,"Data for series visualization.");
 		return inst;
 	}
 

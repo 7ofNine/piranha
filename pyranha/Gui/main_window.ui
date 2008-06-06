@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>851</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,42 +17,67 @@
     <rect>
      <x>0</x>
      <y>24</y>
-     <width>800</width>
-     <height>555</height>
+     <width>851</width>
+     <height>578</height>
     </rect>
    </property>
-   <widget class="QTreeView" name="series_tree_view" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>361</width>
-      <height>491</height>
-     </rect>
-    </property>
-    <property name="alternatingRowColors" >
-     <bool>true</bool>
-    </property>
-    <property name="rootIsDecorated" >
-     <bool>true</bool>
-    </property>
-    <property name="itemsExpandable" >
-     <bool>false</bool>
-    </property>
-    <property name="sortingEnabled" >
-     <bool>true</bool>
-    </property>
-    <property name="headerHidden" >
-     <bool>false</bool>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout" >
+    <item row="0" column="0" >
+     <widget class="QSplitter" name="splitter_2" >
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTreeView" name="series_tree_view" >
+       <property name="alternatingRowColors" >
+        <bool>true</bool>
+       </property>
+       <property name="rootIsDecorated" >
+        <bool>true</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden" >
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QSplitter" name="splitter" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="series_draw_area" name="series_graphics_view" >
+        <property name="minimumSize" >
+         <size>
+          <width>400</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="series_info_groupbox" >
+        <property name="title" >
+         <string>Information panel</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>851</width>
      <height>24</height>
     </rect>
    </property>
@@ -61,13 +86,20 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>579</y>
-     <width>800</width>
+     <y>602</y>
+     <width>851</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>series_draw_area</class>
+   <extends>QGraphicsView</extends>
+   <header>series_draw_area.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
