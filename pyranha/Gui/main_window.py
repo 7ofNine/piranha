@@ -83,15 +83,18 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			assert(False)
 	def __init__(self):
 		PyQt4.QtGui.QMainWindow.__init__(self,None)
+		# Setup various bits of the UI.
 		self.setupUi(self)
 		# Store original info panel caption.
 		self.__default_info_panel_title = self.series_info_groupbox.title()
 		self.series_atoms_label.setText("")
+		# Store pointer to QApplication's instance.
+		self.__qapp = PyQt4.QtGui.qApp
+		# Setup the timer.
 		self.__timer = PyQt4.QtCore.QTimer()
 		self.__timer.start(500)
+		# Create the database.
 		self.__series_db = self.__series_db_model(self)
-		# Pointer to QApplication's instance.
-		self.__qapp = PyQt4.QtGui.qApp
 		# Set model.
 		self.__setup_model()
 		# Connections.
