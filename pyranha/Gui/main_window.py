@@ -88,6 +88,9 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		# Store original info panel caption.
 		self.__default_info_panel_title = self.series_info_groupbox.title()
 		self.series_atoms_label.setText("")
+		self.progress_bar = PyQt4.QtGui.QProgressBar()
+		self.progress_bar.setVisible(False)
+		self.statusBar().addWidget(self.progress_bar)
 		# Store pointer to QApplication's instance.
 		self.__qapp = PyQt4.QtGui.qApp
 		# Setup the timer.
@@ -107,7 +110,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		self.__proxy_model.setSourceModel(self.__series_db)
 		self.series_tree_view.setModel(self.__proxy_model)
 		# We do not want to show the series' id.
-		#self.series_tree_view.hideColumn(0)
+		self.series_tree_view.hideColumn(0)
 	def __info_panel_setup(self,series_name):
 		if series_name == None:
 			self.series_info_groupbox.setTitle(self.__default_info_panel_title)
