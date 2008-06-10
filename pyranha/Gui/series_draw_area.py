@@ -28,7 +28,9 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 				self.setAcceptHoverEvents(True)
 			def hoverEnterEvent(self,event):
 				self.__orig_pen = self.pen()
-				self.setPen(PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.yellow))
+				new_pen = PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.yellow)
+				new_pen.setStyle(PyQt4.QtCore.Qt.DotLine)
+				self.setPen(new_pen)
 				self.setZValue(1)
 			def hoverLeaveEvent(self,event):
 				self.setPen(self.__orig_pen)
@@ -41,12 +43,14 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			self.__series_graphics_scene = scene
 		def run(self):
 			brush_plus = PyQt4.QtGui.QLinearGradient()
-			brush_plus.setColorAt(0,PyQt4.QtCore.Qt.gray)
-			brush_plus.setColorAt(1,PyQt4.QtCore.Qt.darkBlue)
+			brush_plus.setColorAt(0,PyQt4.QtCore.Qt.white)
+			brush_plus.setColorAt(1,PyQt4.QtCore.Qt.darkGreen)
 			brush_minus = PyQt4.QtGui.QLinearGradient()
-			brush_minus.setColorAt(0,PyQt4.QtCore.Qt.gray)
+			brush_minus.setColorAt(0,PyQt4.QtCore.Qt.white)
 			brush_minus.setColorAt(1,PyQt4.QtCore.Qt.darkRed)
-			pen = PyQt4.QtGui.QPen()
+			brush_tuple = (brush_minus, brush_plus)
+			pen = PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.NoPen)
+			path = None
 			self.__n = 0
 			self.__top_value = None
 			brush = None
@@ -54,21 +58,24 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			for i in self.__series.index0:
 				value = i.display_data()
 				abs_value = abs(value)
-				if value >= 0:
-					brush = brush_plus
-				else:
-					brush = brush_minus
+				brush = brush_tuple[int(value >= 0)]
 				x = self.__n * self.__cwidth
 				x_brush = x + half_width
-				brush.setStart(x_brush,0)
+				brush.setStart(x_brush,abs_value*(-2))
 				brush.setFinalStop(x_brush,abs_value)
 				self.__series_graphics_scene.addItem(self.__term_graphics_item(x,0,self.__cwidth,abs_value,pen,brush))
 				if abs_value > self.__top_value:
 					self.__top_value = abs_value
-				# Report progress every 50 items added.
-				if not self.__n % 50:
+				# Report progress every 256 items added.
+				if not (self.__n & (256 - 1)):
+				#if not self.__n % 200:
 					PyQt4.QtCore.QObject.emit(self,PyQt4.QtCore.SIGNAL("step(int)"),self.__n)
+				#if path:
+					#path.lineTo(PyQt4.QtCore.QPointF(x_brush,abs_value))
+				#else:
+					#path = PyQt4.QtGui.QPainterPath(PyQt4.QtCore.QPointF(x_brush,abs_value))
 				self.__n += 1
+			#self.__series_graphics_scene.addItem(PyQt4.QtGui.QGraphicsPathItem(path))
 			self.__series_graphics_scene.moveToThread(PyQt4.QtCore.QCoreApplication.instance().thread())
 		def n(self):
 			return self.__n
@@ -89,8 +96,8 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 	def __slot_population_finished(self):
 		n = self.__populator_thread.n()
 		top_value = self.__populator_thread.top_value()
-		if n >= 50:
-			x_scale_factor = float(self.width())/(self.__cwidth*50)
+		if n >= 100:
+			x_scale_factor = float(self.width())/(self.__cwidth*100)
 		else:
 			x_scale_factor = float(self.width())/(self.__cwidth*n)
 		if top_value != 0:
