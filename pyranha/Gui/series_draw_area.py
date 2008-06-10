@@ -26,10 +26,7 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 				self.setPen(pen)
 				self.setBrush(brush)
 				self.setAcceptHoverEvents(True)
-				self.setAcceptedMouseButtons(PyQt4.QtCore.Qt.LeftButton)
-				self.__orig_brush = brush
 				self.__orig_pen = pen
-				self.__selected = False
 			def hoverEnterEvent(self,event):
 				new_pen = PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.yellow)
 				new_pen.setStyle(PyQt4.QtCore.Qt.DotLine)
@@ -38,22 +35,10 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			def hoverLeaveEvent(self,event):
 				self.setPen(self.__orig_pen)
 				self.setZValue(0)
-			def mousePressEvent(self,event):
-				pass
-			def mouseReleaseEvent(self,event):
-				if self.__selected:
-					self.__deselect()
-				else:
-					self.__select()
-			def __select(self):
-				self.setBrush(PyQt4.QtGui.QBrush(PyQt4.QtCore.Qt.darkCyan))
-				self.__selected = True
-			def __deselect(self):
-				self.setBrush(self.__orig_brush)
-				self.__selected = False
-		def __init__(self,scene,series,cwidth,parent):
+		def __init__(self,cwidth,parent):
 			PyQt4.QtCore.QThread.__init__(self,parent)
 			self.__cwidth = cwidth
+		def setup(self,scene,series):
 			self.__series = series
 			self.__series_graphics_scene = scene
 		def run(self):
@@ -91,7 +76,8 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 		self.setAlignment(PyQt4.QtCore.Qt.AlignLeft | PyQt4.QtCore.Qt.AlignBottom)
 		# Default column width.
 		self.__cwidth = 10
-		self.__populator_thread = None
+		self.__populator_thread = self.__populate_scene_thread(self.__cwidth,self)
+		self.connect(self.__populator_thread,PyQt4.QtCore.SIGNAL("finished()"),self.__slot_population_finished)
 		self.__set_busy(False)
 	def __slot_population_finished(self):
 		n = self.__populator_thread.n()
@@ -105,26 +91,23 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			y_scale_factor -= y_scale_factor/6.
 			self.setMatrix(PyQt4.QtGui.QMatrix(x_scale_factor,0,0,-y_scale_factor,0,0))
 			self.setScene(self.__series_graphics_scene)
-		self.disconnect(self.__populator_thread,PyQt4.QtCore.SIGNAL("finished()"),self.__slot_population_finished)
-		self.disconnect(self.__populator_thread,PyQt4.QtCore.SIGNAL("step(int)"),self.__progress_bar.setValue)
 		self.__progress_bar.setVisible(False)
+		self.disconnect(self.__populator_thread,PyQt4.QtCore.SIGNAL("step(int)"),self.__progress_bar.setValue)
 		self.__set_busy(False)
 	def __populate_scene(self):
 		if not self.__series or len(self.__series) == 0:
 			return
 		self.setScene(None)
 		self.__series_graphics_scene = PyQt4.QtGui.QGraphicsScene()
-		self.__populator_thread = self.__populate_scene_thread(self.__series_graphics_scene,self.__series,
-			self.__cwidth,self)
+		self.__populator_thread.setup(self.__series_graphics_scene,self.__series)
 		self.__series_graphics_scene.moveToThread(self.__populator_thread)
 		main_window = self.__get_main_window()
 		self.__progress_bar = main_window.progress_bar
 		self.__progress_bar.setMinimum(0)
 		self.__progress_bar.setMaximum(len(self.__series))
 		self.__progress_bar.setVisible(True)
-		self.connect(self.__populator_thread,PyQt4.QtCore.SIGNAL("finished()"),self.__slot_population_finished)
-		self.connect(self.__populator_thread,PyQt4.QtCore.SIGNAL("step(int)"),self.__progress_bar.setValue)
 		self.__set_busy(True)
+		self.connect(self.__populator_thread,PyQt4.QtCore.SIGNAL("step(int)"),self.__progress_bar.setValue)
 		self.__populator_thread.start()
 	def set_series(self,name,series):
 		if self.__is_busy():
@@ -133,10 +116,6 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 		self.__series = series
 		self.__series_name = name
 		self.__populate_scene()
-	def series_name(self):
-		return self.__series_name
-	def series(self):
-		return self.__series
 	def __is_busy(self):
 		PyQt4.QtCore.QMutexLocker(self.__mutex)
 		return self.__busy
