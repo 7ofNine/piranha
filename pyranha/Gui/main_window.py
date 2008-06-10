@@ -85,8 +85,6 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		PyQt4.QtGui.QMainWindow.__init__(self,None)
 		# Setup various bits of the UI.
 		self.setupUi(self)
-		# Store original info panel caption.
-		self.__default_info_panel_title = self.series_info_groupbox.title()
 		self.series_atoms_label.setText("")
 		self.progress_bar = PyQt4.QtGui.QProgressBar()
 		self.progress_bar.setVisible(False)
@@ -113,11 +111,9 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		self.series_tree_view.hideColumn(0)
 	def __info_panel_setup(self,series_name):
 		if series_name == None:
-			self.series_info_groupbox.setTitle(self.__default_info_panel_title)
 			self.series_info_groupbox.setEnabled(False)
 			self.series_atoms_label.setText("")
 		else:
-			self.series_info_groupbox.setTitle(self.__default_info_panel_title+": "+series_name)
 			self.series_info_groupbox.setEnabled(True)
 			self.series_atoms_label.setText(str(self.__series_db.ip_ns[series_name].atoms()))
 	def __slot_series_tree_item_dclicked(self,index):

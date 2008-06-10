@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>851</width>
+    <width>1038</width>
     <height>623</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
     <rect>
      <x>0</x>
      <y>24</y>
-     <width>851</width>
+     <width>1038</width>
      <height>578</height>
     </rect>
    </property>
@@ -32,126 +32,274 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>831</width>
+         <width>1018</width>
          <height>533</height>
         </rect>
        </property>
        <attribute name="title" >
         <string>Series</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2" >
-        <item row="0" column="0" >
-         <widget class="QSplitter" name="splitter_2" >
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <widget class="QTreeView" name="series_tree_view" >
-           <property name="alternatingRowColors" >
-            <bool>true</bool>
-           </property>
-           <property name="rootIsDecorated" >
-            <bool>true</bool>
-           </property>
-           <property name="itemsExpandable" >
-            <bool>false</bool>
-           </property>
-           <property name="sortingEnabled" >
-            <bool>true</bool>
-           </property>
-           <property name="headerHidden" >
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QSplitter" name="splitter" >
+       <widget class="QComboBox" name="comboBox" >
+        <property name="geometry" >
+         <rect>
+          <x>580</x>
+          <y>360</y>
+          <width>76</width>
+          <height>27</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label" >
+        <property name="geometry" >
+         <rect>
+          <x>460</x>
+          <y>370</y>
+          <width>111</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Display index</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="series_info_groupbox" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>280</y>
+          <width>421</width>
+          <height>254</height>
+         </rect>
+        </property>
+        <property name="title" >
+         <string>Series Info</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2" >
+         <item rowspan="8" row="0" column="2" >
+          <widget class="Line" name="line" >
            <property name="orientation" >
             <enum>Qt::Vertical</enum>
            </property>
-           <widget class="series_draw_area" name="series_graphics_view" >
-            <property name="minimumSize" >
-             <size>
-              <width>400</width>
-              <height>250</height>
-             </size>
-            </property>
-            <property name="maximumSize" >
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-           <widget class="QGroupBox" name="series_info_groupbox" >
-            <property name="enabled" >
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="title" >
-             <string>Info</string>
-            </property>
-            <widget class="QComboBox" name="comboBox" >
-             <property name="geometry" >
-              <rect>
-               <x>280</x>
-               <y>30</y>
-               <width>76</width>
-               <height>27</height>
-              </rect>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label" >
-             <property name="geometry" >
-              <rect>
-               <x>30</x>
-               <y>40</y>
-               <width>111</width>
-               <height>16</height>
-              </rect>
-             </property>
-             <property name="text" >
-              <string>Display index</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_2" >
-             <property name="geometry" >
-              <rect>
-               <x>30</x>
-               <y>80</y>
-               <width>101</width>
-               <height>16</height>
-              </rect>
-             </property>
-             <property name="text" >
-              <string>Atoms</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="series_atoms_label" >
-             <property name="geometry" >
-              <rect>
-               <x>250</x>
-               <y>80</y>
-               <width>101</width>
-               <height>16</height>
-              </rect>
-             </property>
-             <property name="text" >
-              <string>atoms</string>
-             </property>
-             <property name="alignment" >
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </widget>
           </widget>
-         </widget>
-        </item>
-       </layout>
-       <zorder>splitter_2</zorder>
-       <zorder>progressBar</zorder>
+         </item>
+         <item row="0" column="3" >
+          <widget class="QLabel" name="label_7" >
+           <property name="text" >
+            <string>Symbol list</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_3" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QLabel" name="series_name_label" >
+           <property name="text" >
+            <string>name</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item rowspan="7" row="1" column="3" >
+          <widget class="QListWidget" name="listWidget" >
+           <property name="maximumSize" >
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_6" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QLabel" name="series_type_label" >
+           <property name="text" >
+            <string>type</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" >
+          <widget class="QLabel" name="label_5" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Number of atoms</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QLabel" name="series_atoms_label" >
+           <property name="text" >
+            <string>atoms</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" >
+          <widget class="QLabel" name="label_2" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Length</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" >
+          <widget class="QLabel" name="series_length_label" >
+           <property name="text" >
+            <string>length</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" >
+          <widget class="QLabel" name="label_4" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Number of indices</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" >
+          <widget class="QLabel" name="series_indices_label" >
+           <property name="text" >
+            <string>indices</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0" colspan="2" >
+          <widget class="QPushButton" name="pushButton" >
+           <property name="toolTip" >
+            <string>Inject series into the interactive namespace, possibly overriding an existing series with the same name.</string>
+           </property>
+           <property name="text" >
+            <string>Re-inject</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="2" >
+          <spacer name="verticalSpacer" >
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTreeView" name="series_tree_view" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>10</y>
+          <width>421</width>
+          <height>261</height>
+         </rect>
+        </property>
+        <property name="toolTip" >
+         <string>List of series defined in IPython's interactive namespace.</string>
+        </property>
+        <property name="alternatingRowColors" >
+         <bool>true</bool>
+        </property>
+        <property name="rootIsDecorated" >
+         <bool>true</bool>
+        </property>
+        <property name="itemsExpandable" >
+         <bool>false</bool>
+        </property>
+        <property name="sortingEnabled" >
+         <bool>true</bool>
+        </property>
+        <property name="headerHidden" >
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="series_draw_area" name="series_graphics_view" >
+        <property name="geometry" >
+         <rect>
+          <x>428</x>
+          <y>10</y>
+          <width>571</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>400</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_symbols" >
+       <attribute name="title" >
+        <string>Symbols</string>
+       </attribute>
       </widget>
       <widget class="QWidget" name="tab_2" >
        <property name="geometry" >
@@ -169,13 +317,14 @@
      </widget>
     </item>
    </layout>
+   <zorder>tabWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>851</width>
+     <width>1038</width>
      <height>24</height>
     </rect>
    </property>
@@ -185,7 +334,7 @@
     <rect>
      <x>0</x>
      <y>602</y>
-     <width>851</width>
+     <width>1038</width>
      <height>21</height>
     </rect>
    </property>
