@@ -48,7 +48,6 @@ for __i in __manipulators__:
 
 manipulators_type_tuple = tuple(__type_list)
 
-# Let's add the method to retrieve an index tuple to the series.
 def __series_get_indices_tuple(self):
 	retval = []
 	i = 0
@@ -62,12 +61,17 @@ def __series_get_indices_tuple(self):
 			go = False
 	return tuple(retval)
 
+def __series_short_type(self):
+	return str(type(self)).rpartition('.')[-1].strip('>\'')
+
 for __i in __manipulators__:
 	exec "import %s as __cur_manip" % __i
 	exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % __i.lower())
+	exec("__cur_manip.%s.short_type = __series_short_type" % __i.lower())
 	# Let's try to see if we can get the complex counterpart.
 	try:
 		exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % (__i.lower()+'c'))
+		exec("__cur_manip.%s.short_type = __series_short_type" % (__i.lower()+'c'))
 	except:
 		pass
 

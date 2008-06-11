@@ -19,25 +19,21 @@
 import PyQt4.QtCore, PyQt4.QtGui, IPython.ipapi, pyranha
 from ui_main_window import Ui_main_window
 
-def short_series_type_name(inst):
-	return str(type(inst)).rpartition('.')[-1].strip('>\'')
-
 class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 	class __series_db_model(PyQt4.QtCore.QAbstractItemModel):
 		def __init__(self,parent):
 			PyQt4.QtCore.QAbstractItemModel.__init__(self,parent)
-			# NOTE: this value must match the number of data headers and the number
-			# of rows in each record of the database series.
-			self.__n_columns = 4
-			# This is the interactive name space of the IPython session.
+			# This is the interactive namespace of the IPython session.
 			self.ip_ns = IPython.ipapi.get().user_ns
+			self.__headers = ("Id", "Name", "Type", "Length")
+			self.__n_columns = len(self.__headers)
 			self.__series_db = self.__build_series_db()
 		def __build_series_db(self):
 			retval = map(lambda x:
 				(
 					id(self.ip_ns[x]),
 					x,
-					short_series_type_name(self.ip_ns[x]),
+					self.ip_ns[x].short_type(),
 					len(self.ip_ns[x])
 				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators_type_tuple, self.ip_ns))
 			assert(not retval or self.__n_columns == len(retval[0]))
@@ -68,22 +64,17 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		def data(self,index,role):
 			# Return empty data if the requested index is not valid or we are using it for
 			# something else than the display role.
-			if not index.isValid() or role != PyQt4.QtCore.Qt.DisplayRole:
+			if not index.isValid():
 				return PyQt4.QtCore.QVariant()
-			else:
+			if role == PyQt4.QtCore.Qt.DisplayRole:
 				return PyQt4.QtCore.QVariant(self.__series_db[index.row()][index.column()])
+			if role == PyQt4.QtCore.Qt.ToolTipRole and index.column() == 2:
+				return PyQt4.QtCore.QVariant(self.ip_ns[self.__series_db[index.row()][1]].__doc__)
+			return PyQt4.QtCore.QVariant()
 		def headerData(self,column,orientation,role):
 			if role != PyQt4.QtCore.Qt.DisplayRole:
 				return PyQt4.QtCore.QVariant()
-			if column == 0:
-				return PyQt4.QtCore.QVariant("Id")
-			if column == 1:
-				return PyQt4.QtCore.QVariant("Name")
-			if column == 2:
-				return PyQt4.QtCore.QVariant("Type")
-			if column == 3:
-				return PyQt4.QtCore.QVariant("Length")
-			assert(False)
+			return PyQt4.QtCore.QVariant(self.__headers[column])
 	def __init__(self):
 		PyQt4.QtGui.QMainWindow.__init__(self,None)
 		self.setupUi(self)
@@ -121,7 +112,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		if series_name:
 			self.series_info_groupbox.setEnabled(True)
 			self.series_name_label.setText(series_name)
-			self.series_type_label.setText(short_series_type_name(series))
+			self.series_type_label.setText(series.short_type())
 			self.series_length_label.setText(str(len(series)))
 			self.series_indices_label.setText(str(len(series.indices_tuple())))
 			self.series_atoms_label.setText(str(series.atoms()))
