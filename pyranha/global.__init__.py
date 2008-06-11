@@ -35,7 +35,7 @@ else:
 	print "Default series type could not be established, assigning None."
 	ds = None
 
-# Now let's build the list of manipulator types
+# Let's build the list of manipulator types
 __type_list = []
 for __i in __manipulators__:
 	exec "import %s as __cur_manip" % __i
@@ -47,6 +47,29 @@ for __i in __manipulators__:
 		pass
 
 manipulators_type_tuple = tuple(__type_list)
+
+# Let's add the method to retrieve an index tuple to the series.
+def __series_get_indices_tuple(self):
+	retval = []
+	i = 0
+	go = True
+	while go:
+		try:
+			tmp_index = getattr(self,'index'+str(i))
+			retval.append(tmp_index)
+			i += 1
+		except AttributeError:
+			go = False
+	return tuple(retval)
+
+for __i in __manipulators__:
+	exec "import %s as __cur_manip" % __i
+	exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % __i.lower())
+	# Let's try to see if we can get the complex counterpart.
+	try:
+		exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % (__i.lower()+'c'))
+	except:
+		pass
 
 print "Pyranha is ready."
 

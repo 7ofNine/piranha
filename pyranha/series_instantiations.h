@@ -128,7 +128,6 @@ namespace pyranha
 		typedef typename T::term_type term_type;
 		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
 			(std::string("Term for: ")+description).c_str());
-		term_inst.def("display_data",&term_type::display_data,"Data for series visualization.");
 		return inst;
 	}
 

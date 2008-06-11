@@ -125,10 +125,6 @@ namespace piranha
 			const eval_type &eval(const double &, const ArgsTuple &) const {
 				return m_value;
 			}
-			double display_data() const {
-				return sign(m_value)*std::log10(1 + derived_const_cast->template norm<int>(0));
-			}
-			static const char *display_data_descr;
 			// Maths.
 			template <class ArgsTuple>
 			void invert_sign(const ArgsTuple &) {
@@ -232,10 +228,6 @@ namespace piranha
 			// Data member.
 			T m_value;
 	};
-
-	template <class T, class Derived>
-	const char *numerical_container<T,Derived>::display_data_descr =
-		"Signed base-10 logarithm of coefficient's absolute value + 1";
 
 #define NUMERICAL_CONTAINER_CTORS(derived) \
 	explicit derived(): ancestor::numerical_container() {} \

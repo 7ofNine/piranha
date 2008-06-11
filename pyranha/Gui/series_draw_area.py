@@ -16,7 +16,7 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import PyQt4.QtCore, PyQt4.QtGui
+import PyQt4.QtCore, PyQt4.QtGui, copy
 
 class series_draw_area(PyQt4.QtGui.QGraphicsView):
 	class __populate_scene_thread(PyQt4.QtCore.QThread):
@@ -42,6 +42,7 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 			self.__series = series
 			self.__series_graphics_scene = scene
 		def run(self):
+			self.__series = copy.copy(self.__series)
 			brush_tuple = (PyQt4.QtGui.QBrush(PyQt4.QtCore.Qt.darkRed), PyQt4.QtGui.QBrush(PyQt4.QtCore.Qt.darkGreen))
 			pen = PyQt4.QtGui.QPen(PyQt4.QtCore.Qt.NoPen)
 			self.__n = 0
@@ -95,9 +96,9 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 		self.disconnect(self.__populator_thread,PyQt4.QtCore.SIGNAL("step(int)"),self.__progress_bar.setValue)
 		self.__set_busy(False)
 	def __populate_scene(self):
+		self.setScene(None)
 		if not self.__series or len(self.__series) == 0:
 			return
-		self.setScene(None)
 		self.__series_graphics_scene = PyQt4.QtGui.QGraphicsScene()
 		self.__populator_thread.setup(self.__series_graphics_scene,self.__series)
 		self.__series_graphics_scene.moveToThread(self.__populator_thread)

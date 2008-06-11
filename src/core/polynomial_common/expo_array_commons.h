@@ -221,10 +221,6 @@ namespace piranha
 				}
 				return true;
 			}
-			double display_data() const {
-				return degree();
-			}
-			static const char *display_data_descr;
 		protected:
 			expo_array_commons() {}
 			explicit expo_array_commons(const std::string &s) {
@@ -240,9 +236,6 @@ namespace piranha
 				}
 			}
 	};
-
-	template < class Derived >
-	const char *expo_array_commons< Derived >::display_data_descr = "Monomial degree";
 }
 
 #undef derived_const_cast

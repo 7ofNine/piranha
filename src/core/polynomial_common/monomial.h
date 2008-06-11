@@ -71,15 +71,7 @@ namespace piranha
 				res.template get<0>().m_cf = cf1;
 				res.template get<0>().m_cf.mult_by(cf2, args_tuple);
 			}
-			// Display data for polynomials comes from key.
-			double display_data() const {
-				return ancestor::m_key.display_data();
-			}
-			static const char *display_data_descr;
 	};
-
-	template <class Cf, class Expo, char Separator, class Allocator>
-	const char *monomial<Cf, Expo, Separator, Allocator>::display_data_descr = Expo::display_data_descr;
 }
 
 #endif
