@@ -1,5 +1,5 @@
 - Fix perf. issues in TASSr6 by disabling coded arithmetics for short series
-- Fix unnecessarily long series in binomail expansion for pow.
+- Fix unnecessarily long series in binomail expansion for pow (maybe fixed with exponentiation by squaring?)
 - Use reference counted pointer to psymbols to make them live only as necessary?
 - Unify stream_manager and settings?
 - Move meta-programming in base_series_* into own headers to improve readability.
@@ -21,5 +21,4 @@
 - implement truncation by degree in expo truncator.
 - fix again proxies to be more general. maybe move them inside classes?
 - decide whether it is good or not to have degrees stored inside expo arrays.
-- implement binomial stuff for Fourier series.
 - enable besselJ for polynomials that are single coefficients without bothering about expo limits.
