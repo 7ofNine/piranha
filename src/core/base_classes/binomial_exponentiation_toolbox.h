@@ -70,7 +70,7 @@ namespace piranha
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
 				term_type tmp_term(A.m_cf.pow((max_fast_int)(-1), args_tuple), A.m_key.pow(max_fast_int(-1), args_tuple));
 				Derived Ainv;
-				Ainv.insert(tmp_term, args_tuple, Ainv.template nth_index<0>().end());
+				Ainv.insert(tmp_term, Ainv.template nth_index<0>().end(), args_tuple);
 				// Now let's compute X/A.
 				XoverA.mult_by(Ainv, args_tuple);
 				// Get the expansion limit from the truncator.
@@ -101,7 +101,7 @@ namespace piranha
 					tmp_term.m_key = A.m_key.root(y, args_tuple);
 				}
 				Derived Apowy;
-				Apowy.insert(tmp_term, args_tuple, Apowy.template nth_index<0>().end());
+				Apowy.insert(tmp_term, Apowy.template nth_index<0>().end(), args_tuple);
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;

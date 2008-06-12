@@ -59,7 +59,7 @@ namespace piranha
 				if (!term.is_insertable(args_tuple)) {
 					throw term_not_insertable("Term not insertable in cf_series.");
 				}
-				it_hint = derived_cast->insert(term, args_tuple, it_hint);
+				it_hint = derived_cast->insert(term, it_hint, args_tuple);
 			} catch (const bad_input &bi) {
 				std::cout << bi.what() << std::endl;
 			} catch (const term_not_insertable &tni) {

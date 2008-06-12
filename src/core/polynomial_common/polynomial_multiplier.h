@@ -173,7 +173,7 @@ namespace piranha
 					case false:
 						tmp_term.m_cf = vc_res[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
-						it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 					}
 				}
 				// Call dtors for the coefficients in the allocated space.
@@ -232,7 +232,7 @@ namespace piranha
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
 					tmp_term.m_cf = c_it->m_cf;
 					coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-					it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+					it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 				}
 				__PDEBUG(std::cout << "Done polynomial hash coded\n");
 			}

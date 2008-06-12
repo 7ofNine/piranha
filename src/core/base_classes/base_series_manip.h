@@ -67,9 +67,9 @@ namespace piranha
 	 * This function performs some checks and then calls ll_insert.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple, class SortedIterator>
+	template <bool CanonicalCheck, bool Sign, class Term2, class SortedIterator, class ArgsTuple>
 	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
-			const ArgsTuple &args_tuple, SortedIterator it_hint)
+			SortedIterator it_hint, const ArgsTuple &args_tuple)
 	{
 		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
@@ -116,11 +116,11 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class Term2, class ArgsTuple, class SortedIterator>
+	template <class Term2, class SortedIterator, class ArgsTuple>
 	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
-			const ArgsTuple &args_tuple, SortedIterator it_hint)
+			SortedIterator it_hint, const ArgsTuple &args_tuple)
 	{
-		return insert<true, true>(term, args_tuple, it_hint);
+		return insert<true, true>(term, it_hint, args_tuple);
 	}
 
 	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
@@ -249,7 +249,7 @@ namespace piranha
 			term_type term(*it);
 			term.m_cf.apply_layout(args_tuple, l);
 			term.m_key.apply_layout(args_tuple, l);
-			it_hint = retval.insert(term, args_tuple, it_hint);
+			it_hint = retval.insert(term, it_hint, args_tuple);
 		}
 	}
 
@@ -280,8 +280,8 @@ namespace piranha
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			it_hint = retval.insert(
 						  term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
-						  args_tuple,
-						  it_hint
+						  it_hint,
+						  args_tuple
 					  );
 		}
 	}

@@ -72,7 +72,7 @@ namespace piranha
 				{
 					complex_term_type tmp_term;
 					tmp_term.m_cf.real(it->m_cf.besselJ(0, args_tuple), args_tuple);
-					retval.insert(tmp_term, args_tuple, retval.template nth_index<0>().end());
+					retval.insert(tmp_term, retval.template nth_index<0>().end(), args_tuple);
 				}
 				const size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<max_fast_int> tmp_trig_mults(w);
@@ -98,7 +98,7 @@ namespace piranha
 							tmp_term.m_key.flavour() = false;
 						}
 					}
-					it_hint = retval.insert(tmp_term, args_tuple, it_hint);
+					it_hint = retval.insert(tmp_term, it_hint, args_tuple);
 					// Update the multiplier for cosine terms.
 					cos_multiplier *= std::complex<max_fast_int>(0, 1);
 				}

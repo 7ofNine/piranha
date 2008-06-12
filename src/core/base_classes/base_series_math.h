@@ -44,7 +44,7 @@ namespace piranha
 		const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
 		for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it) {
 			// No need to check, we are merging from another series.
-			it_hint = insert<false, Sign>(*it, args_tuple, it_hint);
+			it_hint = insert<false, Sign>(*it, it_hint, args_tuple);
 		}
 		return *derived_cast;
 	}
@@ -66,7 +66,7 @@ namespace piranha
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.mult_by(x, args_tuple);
-			it_hint = retval.insert(term, args_tuple, it_hint);
+			it_hint = retval.insert(term, it_hint, args_tuple);
 		}
 		return retval;
 	}
@@ -85,7 +85,7 @@ namespace piranha
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.divide_by(x, args_tuple);
-			it_hint = retval.insert(term, args_tuple, it_hint);
+			it_hint = retval.insert(term, it_hint, args_tuple);
 		}
 		return retval;
 	}
@@ -99,7 +99,7 @@ namespace piranha
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &args_tuple)
 	{
 		typename Derived::term_type term(typename Derived::term_type::cf_type(n, args_tuple), typename Derived::term_type::key_type());
-		insert<true, Sign>(term, args_tuple, derived_cast->template nth_index<0>().end());
+		insert<true, Sign>(term, derived_cast->template nth_index<0>().end(), args_tuple);
 		return *derived_cast;
 	}
 
@@ -200,8 +200,8 @@ namespace piranha
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			it->partial(tmp_term1, tmp_term2, pos_tuple, args_tuple);
-			it_hint = retval.insert(tmp_term1, args_tuple, it_hint);
-			it_hint = retval.insert(tmp_term2, args_tuple, it_hint);
+			it_hint = retval.insert(tmp_term1, it_hint, args_tuple);
+			it_hint = retval.insert(tmp_term2, it_hint, args_tuple);
 		}
 		return retval;
 	}
@@ -232,7 +232,7 @@ namespace piranha
 		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
 			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
 			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)),
-						  args_tuple, retval.template nth_index<0>().end());
+						  retval.template nth_index<0>().end(), args_tuple);
 			return true;
 		}
 		return false;
@@ -373,7 +373,7 @@ namespace piranha
 		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
 			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
 			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)),
-						  args_tuple, retval.template nth_index<0>().end());
+						  retval.template nth_index<0>().end(), args_tuple);
 			return true;
 		}
 		return false;

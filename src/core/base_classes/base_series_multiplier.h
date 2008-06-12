@@ -123,7 +123,7 @@ namespace piranha
 				for (hash_iterator it = m_set.begin(); it != it_f; ++it) {
 					term.m_cf = it->m_cf;
 					term.m_key = it->m_key;
-					it_hint = m_retval.template insert<false, true>(term, m_args_tuple, it_hint);
+					it_hint = m_retval.template insert<false, true>(term, it_hint, m_args_tuple);
 				}
 			}
 		protected:

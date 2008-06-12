@@ -38,7 +38,7 @@ namespace piranha
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.pad_right(args_tuple);
-			it_hint = retval.insert(term, args_tuple, it_hint);
+			it_hint = retval.insert(term, it_hint, args_tuple);
 		}
 		derived_cast->swap_terms(retval);
 	}

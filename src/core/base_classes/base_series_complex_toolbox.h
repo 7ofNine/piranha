@@ -64,14 +64,14 @@ namespace piranha
 				for (real_iterator i_it = old_i.template nth_index<0>().begin(); i_it != old_i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
 					tmp.m_cf.imag(i_it->m_cf, args_tuple);
-					it_hint = derived_cast->template insert<true, false>(tmp, args_tuple, it_hint);
+					it_hint = derived_cast->template insert<true, false>(tmp, it_hint, args_tuple);
 				}
 				// Now add the new imaginary part.
 				const real_iterator i_it_f = i.template nth_index<0>().end();
 				for (real_iterator i_it = i.template nth_index<0>().begin(); i_it != i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
 					tmp.m_cf.imag(i_it->m_cf, args_tuple);
-					it_hint = derived_cast->insert(tmp, args_tuple, it_hint);
+					it_hint = derived_cast->insert(tmp, it_hint, args_tuple);
 				}
 				return *derived_cast;
 			}
@@ -126,7 +126,7 @@ namespace piranha
 				real_iterator it_hint = retval.template nth_index<0>().end();
 				for (complex_iterator c_it = derived_const_cast->template nth_index<0>().begin(); c_it != c_it_f; ++c_it) {
 					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->m_cf, args_tuple), c_it->m_key);
-					it_hint = retval.insert(tmp, args_tuple, it_hint);
+					it_hint = retval.insert(tmp, it_hint, args_tuple);
 				}
 				return retval;
 			}
@@ -140,7 +140,7 @@ namespace piranha
 				const real_iterator r_it_f = r.template nth_index<0>().end();
 				complex_iterator it_hint = derived_const_cast->template nth_index<0>().end();
 				for (real_iterator r_it = r.template nth_index<0>().begin(); r_it != r_it_f; ++r_it) {
-					it_hint = derived_cast->insert(*r_it, args_tuple, it_hint);
+					it_hint = derived_cast->insert(*r_it, it_hint, args_tuple);
 				}
 			}
 			template <class ArgsTuple>
@@ -159,7 +159,7 @@ namespace piranha
 				for (real_iterator i_it = i.template nth_index<0>().begin(); i_it != i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
 					tmp.m_cf.imag(i_it->m_cf, args_tuple);
-					it_hint = derived_cast->insert(tmp, args_tuple, it_hint);
+					it_hint = derived_cast->insert(tmp, it_hint, args_tuple);
 				}
 			}
 		private:

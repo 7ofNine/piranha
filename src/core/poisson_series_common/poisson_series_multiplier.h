@@ -215,7 +215,7 @@ namespace piranha
 						tmp_term.m_cf = vc_res_cos[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = true;
-						it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 					}
 				}
 				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
@@ -226,7 +226,7 @@ namespace piranha
 						tmp_term.m_cf = vc_res_sin[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = false;
-						it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 					}
 				}
 				// Call dtors for the coefficients in the allocated space.
@@ -326,7 +326,7 @@ namespace piranha
 						tmp_term.m_cf = c_it->m_cf;
 						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 						tmp_term.m_key.flavour() = true;
-						it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 					}
 				}
 				{
@@ -335,7 +335,7 @@ namespace piranha
 						tmp_term.m_cf = c_it->m_cf;
 						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 						tmp_term.m_key.flavour() = false;
-						it_hint = ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple, it_hint);
+						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
 					}
 				}
 				__PDEBUG(std::cout << "Done Poisson series hash coded\n");

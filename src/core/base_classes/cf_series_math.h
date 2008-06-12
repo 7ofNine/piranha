@@ -38,7 +38,7 @@ namespace piranha
 			term_type term(*it);
 			term.m_cf.invert_sign(args_tuple);
 			// No need to check, we are merging terms from this series.
-			it_hint = retval.template insert<false, true>(term, args_tuple, it_hint);
+			it_hint = retval.template insert<false, true>(term, it_hint, args_tuple);
 		}
 		derived_cast->swap_terms(retval);
 	}

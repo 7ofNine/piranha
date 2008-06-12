@@ -55,10 +55,10 @@ namespace piranha
 			// Evaluation type. Used internally.
 			typedef typename eval_type<Derived>::type eval_type;
 		public:
-			template <bool, bool, class Term2, class ArgsTuple, class SortedIterator>
-			SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
-			template <class Term2, class ArgsTuple, class SortedIterator>
-			SortedIterator insert(const Term2 &, const ArgsTuple &, SortedIterator);
+			template <bool, bool, class Term2, class SortedIterator, class ArgsTuple>
+			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
+			template <class Term2, class SortedIterator, class ArgsTuple>
+			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
 			template <int N, class ArgsTuple, class Iterator>
 			void term_erase(const ArgsTuple &, Iterator);
 			template <class ArgsTuple>

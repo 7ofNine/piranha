@@ -34,7 +34,7 @@ namespace piranha
 		p_assert(derived_const_cast->template nth_index<0>().empty());
 		term_type term;
 		term.m_cf = cf_type(x, args_tuple);
-		insert(term, args_tuple, derived_const_cast->template nth_index<0>().end());
+		insert(term, derived_const_cast->template nth_index<0>().end(), args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -81,10 +81,12 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n, const ArgsTuple &a)
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n,
+		const ArgsTuple &args_tuple)
 	{
 		p_assert(derived_cast->template nth_index<0>().empty());
-		insert(term_type(cf_type(p, n, a), key_type(p, n, a)), a, derived_cast->template nth_index<0>().end());
+		insert(term_type(cf_type(p, n, args_tuple), key_type(p, n, args_tuple)),
+			derived_cast->template nth_index<0>().end(), args_tuple);
 	}
 }
 

@@ -185,7 +185,7 @@ namespace piranha
 				if (!term.is_insertable(m_arguments)) {
 					throw bad_input("Term not insertable in named series.");
 				}
-				it_hint = derived_cast->insert(term, derived_const_cast->m_arguments, it_hint);
+				it_hint = derived_cast->insert(term, it_hint, derived_const_cast->m_arguments);
 			} catch (bad_input &b) {
 				std::cout << b.what() << std::endl;
 			}
