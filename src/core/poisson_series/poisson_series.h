@@ -49,7 +49,7 @@
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr,piranha::trig_args_descr,POISSON_SERIES)
 #define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
 #define POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< POISSON_SERIES >
-#define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, POISSON_SERIES >
+#define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, POISSON_SERIES >
 #define POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
 #define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
 #define POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POISSON_SERIES >
@@ -131,7 +131,7 @@ namespace piranha
 	COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>
 #define COMPLEX_POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >

@@ -184,20 +184,6 @@ namespace piranha
 			T &value() {
 				return m_value;
 			}
-			max_fast_int degree() const {
-				return 0;
-			}
-			max_fast_int min_degree() const {
-				return 0;
-			}
-			template <class Vector>
-			void upload_min_exponents(const Vector &) const {}
-			template <class Vector>
-			void test_min_exponents(const Vector &) const {}
-			template <class Vector, class ArgsTuple>
-			bool test_expo_limits(const Vector &, const ArgsTuple &) const {
-				return true;
-			}
 		protected:
 			template <class U>
 			Derived &assign_self(const U &x) {

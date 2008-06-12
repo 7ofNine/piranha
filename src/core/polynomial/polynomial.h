@@ -44,7 +44,7 @@
 #define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
 #define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
-#define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,POLYNOMIAL >
+#define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,1,POLYNOMIAL >
 #define POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POLYNOMIAL >
 #define POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< POLYNOMIAL >
 
@@ -119,7 +119,7 @@ namespace piranha
 		piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
-#define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,1,COMPLEX_POLYNOMIAL >
 #define COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL >
 #define COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POLYNOMIAL >
 

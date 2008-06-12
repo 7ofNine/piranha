@@ -338,18 +338,6 @@ namespace piranha
 				}
 				return pow(1. / (double)(n), args_tuple);
 			}
-			void upload_min_exponents(std::vector<max_fast_int> &) const {}
-			void test_min_exponents(std::vector<max_fast_int> &) const {}
-			template <class ArgsTuple>
-			bool test_expo_limits(const std::vector<std::pair<size_t, max_fast_int> > &, const ArgsTuple &) const {
-				return true;
-			}
-			max_fast_int degree() const {
-				return 0;
-			}
-			max_fast_int min_degree() const {
-				return 0;
-			}
 		protected:
 			trig_array_commons() {}
 			explicit trig_array_commons(const std::string &s) {

@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_TERM_H
 
 #include <boost/algorithm/string.hpp>
+#include <boost/static_assert.hpp>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -38,6 +39,32 @@
 
 namespace piranha
 {
+	template <int N, class Term>
+	class base_term_get_helper
+	{
+		public:
+			typedef typename Term::cf_type type;
+			static type &run(Term &t) {
+				return t.m_cf;
+			}
+			static const type &run(const Term &t) {
+				return t.m_cf;
+			}
+	};
+
+	template <class Term>
+	class base_term_get_helper<1,Term>
+	{
+		public:
+			typedef typename Term::key_type type;
+			static type &run(Term &t) {
+				return t.m_key;
+			}
+			static const type &run(const Term &t) {
+				return t.m_key;
+			}
+	};
+
 	/// Base term class.
 	/**
 	 * Simple composition of coefficient and key classes.
@@ -90,6 +117,16 @@ namespace piranha
 					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
 			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			template <int N>
+			typename base_term_get_helper<N,base_term>::type &get() {
+				BOOST_STATIC_ASSERT(N == 0 or N == 1);
+				return base_term_get_helper<N,base_term>::run(*this);
+			}
+			template <int N>
+			const typename base_term_get_helper<N,base_term>::type &get() const {
+				BOOST_STATIC_ASSERT(N == 0 or N == 1);
+				return base_term_get_helper<N,base_term>::run(*this);
+			}
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>

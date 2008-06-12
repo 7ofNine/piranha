@@ -35,12 +35,13 @@ namespace piranha
 	/**
 	* This toolbox assumes that the terms of the series in all echelons are sorted in ascending total degree.
 	*/
-	template <int ExpoArgsPosition, class Derived>
+	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
 	class power_series
 	{
 			BOOST_STATIC_ASSERT(ExpoArgsPosition >= 0);
 		public:
 			static const int expo_args_position = ExpoArgsPosition;
+			static const int expo_term_position = ExpoTermPosition;
 			/// Get the degree of the power series.
 			max_fast_int degree() const {
 				if (derived_const_cast->template nth_index<0>().empty()) {
@@ -48,26 +49,23 @@ namespace piranha
 				}
 				typename Derived::const_sorted_iterator it = derived_const_cast->template nth_index<0>().end();
 				--it;
-				return (it->m_cf.degree() + it->m_key.degree());
+				return (it->template get<ExpoTermPosition>().degree());
 			}
 			/// Get the minimum degree of the power series.
 			max_fast_int min_degree() const {
 				if (derived_const_cast->template nth_index<0>().empty()) {
 					return 0;
 				}
-				return derived_const_cast->template nth_index<0>().begin()->m_cf.min_degree() +
-					   derived_const_cast->template nth_index<0>().begin()->m_key.min_degree();
+				return derived_const_cast->template nth_index<0>().begin()->template get<ExpoTermPosition>().min_degree();
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				p_assert(!derived_const_cast->empty());
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
-				it->m_cf.upload_min_exponents(v);
-				it->m_key.upload_min_exponents(v);
+				it->template get<ExpoTermPosition>().upload_min_exponents(v);
 				for (; it != it_f; ++it) {
-					it->m_cf.test_min_exponents(v);
-					it->m_key.test_min_exponents(v);
+					it->template get<ExpoTermPosition>().test_min_exponents(v);
 				}
 			}
 			/// Get a vector containing the minimum exponents of the series.
@@ -81,8 +79,7 @@ namespace piranha
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
-					it->m_cf.test_min_exponents(v);
-					it->m_key.test_min_exponents(v);
+					it->template get<ExpoTermPosition>().test_min_exponents(v);
 				}
 			}
 			// Return true if the minimum exponents are smaller than those specified in the limits vector.
