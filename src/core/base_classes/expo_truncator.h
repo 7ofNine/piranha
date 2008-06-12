@@ -176,9 +176,9 @@ namespace piranha
 					m_positions(base_expo_truncator::positions_limits(
 									m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_args_position>())) {
 				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_args_position ==
-					Multiplier::series_type2::expo_args_position);
+									Multiplier::series_type2::expo_args_position);
 				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_term_position ==
-					Multiplier::series_type2::expo_term_position);
+									Multiplier::series_type2::expo_term_position);
 			}
 			bool accept(const max_fast_int &n) {
 				switch (m_positions.size() == 0) {
@@ -195,7 +195,9 @@ namespace piranha
 				case true:
 					return true;
 				default:
-					return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(m_positions, m_multiplier.m_args_tuple);
+					return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(
+							   m_positions, m_multiplier.m_args_tuple
+						   );
 				}
 			}
 			template <class Cf1, class Cf2, class Key>

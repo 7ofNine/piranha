@@ -53,7 +53,7 @@ namespace piranha
 	};
 
 	template <class Term>
-	class base_term_get_helper<1,Term>
+	class base_term_get_helper<1, Term>
 	{
 		public:
 			typedef typename Term::key_type type;
@@ -118,14 +118,14 @@ namespace piranha
 			/// Ctor from coefficient - key pair.
 			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			template <int N>
-			typename base_term_get_helper<N,base_term>::type &get() {
+			typename base_term_get_helper<N, base_term>::type &get() {
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
-				return base_term_get_helper<N,base_term>::run(*this);
+				return base_term_get_helper<N, base_term>::run(*this);
 			}
 			template <int N>
-			const typename base_term_get_helper<N,base_term>::type &get() const {
+			const typename base_term_get_helper<N, base_term>::type &get() const {
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
-				return base_term_get_helper<N,base_term>::run(*this);
+				return base_term_get_helper<N, base_term>::run(*this);
 			}
 			// I/O.
 			/// Print in plain format.
