@@ -35,11 +35,12 @@ namespace piranha
 	/**
 	* This toolbox assumes that the terms of the series in all echelons are sorted in ascending total degree.
 	*/
-	template <int ExpoPosition, class Derived>
+	template <int ExpoArgsPosition, class Derived>
 	class power_series
 	{
-			BOOST_STATIC_ASSERT(ExpoPosition >= 0);
+			BOOST_STATIC_ASSERT(ExpoArgsPosition >= 0);
 		public:
+			static const int expo_args_position = ExpoArgsPosition;
 			/// Get the degree of the power series.
 			max_fast_int degree() const {
 				if (derived_const_cast->template nth_index<0>().empty()) {
@@ -57,7 +58,6 @@ namespace piranha
 				return derived_const_cast->template nth_index<0>().begin()->m_cf.min_degree() +
 					   derived_const_cast->template nth_index<0>().begin()->m_key.min_degree();
 			}
-			static const int expo_position = ExpoPosition;
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				p_assert(!derived_const_cast->empty());
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
@@ -73,7 +73,7 @@ namespace piranha
 			/// Get a vector containing the minimum exponents of the series.
 			template <class ArgsTuple>
 			std::vector<max_fast_int> min_exponents(const ArgsTuple &args_tuple) const {
-				std::vector<max_fast_int> retval(args_tuple.template get<ExpoPosition>().size());
+				std::vector<max_fast_int> retval(args_tuple.template get<ExpoArgsPosition>().size());
 				upload_min_exponents(retval);
 				return retval;
 			}

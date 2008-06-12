@@ -149,7 +149,7 @@ namespace piranha
 				const std::vector<max_fast_int> min_expos(s.min_exponents(args_tuple));
 				// Secondly, find out the position of the limited exponents.
 				const std::vector<std::pair<size_t, max_fast_int> >
-				pos_lim(positions_limits(args_tuple.template get<PowerSeries::expo_position>()));
+				pos_lim(positions_limits(args_tuple.template get<PowerSeries::expo_args_position>()));
 				const size_t size = pos_lim.size();
 				std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> > retval;
 				retval.first.resize(size);
@@ -174,8 +174,8 @@ namespace piranha
 			expo_truncator(Multiplier &m):
 					m_multiplier(m),
 					m_positions(base_expo_truncator::positions_limits(
-									m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_position>())) {
-				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_position == Multiplier::series_type2::expo_position);
+									m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_args_position>())) {
+				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_args_position == Multiplier::series_type2::expo_args_position);
 			}
 			bool accept(const max_fast_int &n) {
 				switch (m_positions.size() == 0) {
