@@ -141,7 +141,7 @@ namespace piranha
 						out_stream << '\n';
 					}
 					/// Print to string. Used in Pyranha.
-					std::string print_to_string() const {
+					std::string __repr__() const {
 						std::ostringstream stream;
 						print(stream);
 						std::string retval(stream.str());
@@ -210,7 +210,7 @@ namespace piranha
 				}
 			}
 			/// Print list of symbols to string. Used in Pyranha.
-			static std::string print_to_string() {
+			static std::string __repr__() {
 				std::ostringstream stream;
 				print(stream);
 				std::string retval(stream.str());

@@ -59,7 +59,7 @@ namespace piranha
 			}
 			static void clear_all();
 			static void print(std::ostream &stream = std::cout);
-			static std::string print_to_string();
+			static std::string __repr__();
 			static void clear(const std::string &name) {
 				psym_p tmp(psym_manager::get_pointer(name));
 				iterator it = find_argument(tmp);

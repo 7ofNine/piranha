@@ -208,7 +208,7 @@ namespace piranha
 
 	/// Print the series, including header, to screen.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::print_to_string() const
+	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::__repr__() const
 	{
 		std::ostringstream stream;
 		print(stream, -1);

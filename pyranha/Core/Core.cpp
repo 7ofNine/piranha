@@ -137,7 +137,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_<psym_manager>("__psym_manager", "Manager for symbols.", init<>())
 	.def("__iter__", iterator<psym_manager, return_internal_reference<> >()).staticmethod("__iter__")
 	.def("__len__", &psym_manager::length).staticmethod("__len__")
-	.def("__repr__", &psym_manager::print_to_string).staticmethod("__repr__");
+	.def("__repr__", &psym_manager::__repr__).staticmethod("__repr__");
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &>())
@@ -149,12 +149,12 @@ BOOST_PYTHON_MODULE(_Core)
 	.def(init < const std::string &, const double &, const double &, const double &, const double &,
 		 const double & > ())
 	.def("__copy__", &psym::copy)
-	.def("__repr__", &psym::print_to_string);
+	.def("__repr__", &psym::__repr__);
 
 	typedef void (*limit_name)(const std::string &, const max_fast_int &);
 	typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
 	class_<base_expo_truncator>("__expo_truncator", "Exponent truncator.", init<>())
-	.def("__repr__", &base_expo_truncator::print_to_string).staticmethod("__repr__")
+	.def("__repr__", &base_expo_truncator::__repr__).staticmethod("__repr__")
 	.def("clear_all", &base_expo_truncator::clear_all, "Clear list of exponent limits.").staticmethod("clear_all")
 	.def("clear", &base_expo_truncator::clear, "Clear exponent limit for argument named arg1.").staticmethod("clear")
 	.def("limit", limit_name(&base_expo_truncator::limit), "Set exponent limit for symbol named arg1 to integer arg2. "
@@ -162,7 +162,7 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("limit", limit_psym(&base_expo_truncator::limit), "Set exponent limit for psym arg1 to integer arg2.").staticmethod("limit");
 
 	class_<base_norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &base_norm_truncator::print_to_string).staticmethod("__repr__")
+	.def("__repr__", &base_norm_truncator::__repr__).staticmethod("__repr__")
 	.def("set", &base_norm_truncator::set, "Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 "
 		 "and throw an error otherwise.").staticmethod("set");
 }

@@ -74,7 +74,7 @@ namespace pyranha
 		expose_series_indices(inst);
 		// Some special methods.
 		inst.def("__copy__", &T::copy);
-		inst.def("__repr__", &T::print_to_string);
+		inst.def("__repr__", &T::__repr__);
 		inst.def("__len__", &T::length);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;

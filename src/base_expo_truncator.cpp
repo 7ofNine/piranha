@@ -49,7 +49,7 @@ namespace piranha
 		}
 	}
 
-	std::string base_expo_truncator::print_to_string()
+	std::string base_expo_truncator::__repr__()
 	{
 		std::ostringstream stream;
 		print(stream);

@@ -62,7 +62,7 @@ namespace piranha
 			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
-			std::string print_to_string() const;
+			std::string __repr__() const;
 			void save_to(const std::string &) const;
 			void swap(Derived &);
 			double norm() const;
