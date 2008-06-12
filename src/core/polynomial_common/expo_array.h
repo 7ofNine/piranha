@@ -71,8 +71,7 @@ namespace piranha
 			// Math.
 			/// Multiplication.
 			template <class ResultType>
-			void multiply(const expo_array &e2, ResultType &ret) const
-			{
+			void multiply(const expo_array &e2, ResultType &ret) const {
 				const size_type max_w = ancestor::size(), min_w = e2.size();
 				// Resize, if needed.
 				ret.resize(max_w);

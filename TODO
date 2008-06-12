@@ -12,7 +12,6 @@
   http://gmplib.org/manual/Integer-Special-Functions.html#Integer-Special-Functions
 - Drop insert hint for now, modify all calls, then introduce overloaded insert which takes hint and use it
   only where it makes sense.
-- Also, make sure that ArgsTuple is always last argument for consistency.
 - Add line - file info into exceptions string.
 - Coded multiplication with mpz as codes when going out of range?
 - elements_* --> ints_* in int_array for clarity

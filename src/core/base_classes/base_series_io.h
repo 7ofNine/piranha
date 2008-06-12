@@ -82,11 +82,11 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n,
-		const ArgsTuple &args_tuple)
+			const ArgsTuple &args_tuple)
 	{
 		p_assert(derived_cast->template nth_index<0>().empty());
 		insert(term_type(cf_type(p, n, args_tuple), key_type(p, n, args_tuple)),
-			derived_cast->template nth_index<0>().end(), args_tuple);
+			   derived_cast->template nth_index<0>().end(), args_tuple);
 	}
 }
 

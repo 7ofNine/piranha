@@ -204,7 +204,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class Iterator, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(Iterator it,
-		const ArgsTuple &args_tuple)
+			const ArgsTuple &args_tuple)
 	{
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		derived_cast->template nth_index<N>().erase(it);
@@ -213,7 +213,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PinpointIterator, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(PinpointIterator it, cf_type &new_c,
-		const ArgsTuple &args_tuple)
+			const ArgsTuple &args_tuple)
 	{
 		BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value));
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
