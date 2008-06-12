@@ -30,30 +30,34 @@
 namespace piranha
 {
 	template <class T>
-	struct copy_proxy {
-		copy_proxy(): m_element() {}
-		const T &get() const {
-			return m_element;
-		}
-		void assignment(const T &x) {
-			m_element = x;
-		}
-protected:
-		T m_element;
+	class copy_proxy
+	{
+		public:
+			copy_proxy(): m_element() {}
+			const T &get() const {
+				return m_element;
+			}
+			void assignment(const T &x) {
+				m_element = x;
+			}
+		protected:
+			T m_element;
 	};
 
 	template <class T>
-	struct reference_proxy {
-		reference_proxy(): m_element(0) {}
-		const T &get() const {
-			p_assert(m_element != 0);
-			return *m_element;
-		}
-		void assignment(const T &x) {
-			m_element = &x;
-		}
-protected:
-		T const *m_element;
+	class reference_proxy
+	{
+		public:
+			reference_proxy(): m_element(0) {}
+			const T &get() const {
+				p_assert(m_element != 0);
+				return *m_element;
+			}
+			void assignment(const T &x) {
+				m_element = &x;
+			}
+		protected:
+			T const *m_element;
 	};
 
 	/// Proxy for coefficients during series multiplication.
