@@ -66,7 +66,7 @@ namespace piranha
 				term_type A(*derived_const_cast->template nth_index<0>().begin());
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
 				Derived XoverA(*derived_const_cast);
-				XoverA.template term_erase<0>(args_tuple, XoverA.template nth_index<0>().begin());
+				XoverA.template term_erase<0>(XoverA.template nth_index<0>().begin(), args_tuple);
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
 				term_type tmp_term(A.m_cf.pow((max_fast_int)(-1), args_tuple), A.m_key.pow(max_fast_int(-1), args_tuple));
 				Derived Ainv;

@@ -59,8 +59,8 @@ namespace piranha
 			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
 			template <class Term2, class SortedIterator, class ArgsTuple>
 			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
-			template <int N, class ArgsTuple, class Iterator>
-			void term_erase(const ArgsTuple &, Iterator);
+			template <int N, class Iterator, class ArgsTuple>
+			void term_erase(Iterator, const ArgsTuple &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
 			Derived copy() const;
@@ -132,12 +132,12 @@ namespace piranha
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);
-			template <bool, class ArgsTuple, class SortedIterator>
-			SortedIterator ll_insert(const term_type &, const ArgsTuple &, SortedIterator);
-			template <bool, class ArgsTuple, class SortedIterator>
-			SortedIterator term_insert_new(const term_type &, const ArgsTuple &, SortedIterator);
-			template <class ArgsTuple, class PinpointIterator>
-			void term_update(const ArgsTuple &, PinpointIterator, cf_type &);
+			template <bool, class SortedIterator, class ArgsTuple>
+			SortedIterator ll_insert(const term_type &, SortedIterator, const ArgsTuple &);
+			template <bool, class SortedIterator, class ArgsTuple>
+			SortedIterator term_insert_new(const term_type &, SortedIterator, const ArgsTuple &);
+			template <class PinpointIterator, class ArgsTuple>
+			void term_update(PinpointIterator, cf_type &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>

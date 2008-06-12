@@ -104,7 +104,7 @@ namespace piranha
 		case false:
 			insert_term = new_term;
 		}
-		SortedIterator ret_it = ll_insert<Sign>(*insert_term, args_tuple, it_hint);
+		SortedIterator ret_it = ll_insert<Sign>(*insert_term, it_hint, args_tuple);
 		switch (new_term == 0) {
 		case true:
 			break;
@@ -134,9 +134,9 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool Sign, class ArgsTuple, class SortedIterator>
+	template <bool Sign, class SortedIterator, class ArgsTuple>
 	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term,
-			const ArgsTuple &args_tuple, SortedIterator it_hint)
+			SortedIterator it_hint, const ArgsTuple &args_tuple)
 	{
 		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		typedef typename Derived::pinpoint_iterator pinpoint_iterator;
@@ -149,7 +149,7 @@ namespace piranha
 		if (it == derived_const_cast->template nth_index<1>().end()) {
 			// The term is NOT a duplicate, insert in the set. Record where we inserted,
 			// so it can be used in additions and multiplications.
-			ret_it = term_insert_new<Sign>(term, args_tuple, it_hint);
+			ret_it = term_insert_new<Sign>(term, it_hint, args_tuple);
 			stats::insert();
 		} else {
 			// The term is in the set, hence an existing term will be modified.
@@ -166,9 +166,9 @@ namespace piranha
 			}
 			// Check if the resulting coefficient can be ignored (ie it is small).
 			if (new_c.is_ignorable(args_tuple)) {
-				term_erase<1>(args_tuple, it);
+				term_erase<1>(it, args_tuple);
 			} else {
-				term_update(args_tuple, it, new_c);
+				term_update(it, new_c, args_tuple);
 			}
 			// If we are erasing or updating there's no point in giving an hint on where
 			// the action took place, just return the end() iterator.
@@ -180,9 +180,9 @@ namespace piranha
 
 	// Insert a new term into the series
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool Sign, class ArgsTuple, class SortedIterator>
+	template <bool Sign, class SortedIterator, class ArgsTuple>
 	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
-			const ArgsTuple &args_tuple, SortedIterator it_hint)
+			SortedIterator it_hint, const ArgsTuple &args_tuple)
 	{
 		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
@@ -202,18 +202,18 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <int N, class ArgsTuple, class Iterator>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const ArgsTuple &args_tuple,
-			Iterator it)
+	template <int N, class Iterator, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(Iterator it,
+		const ArgsTuple &args_tuple)
 	{
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		derived_cast->template nth_index<N>().erase(it);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple, class PinpointIterator>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(const ArgsTuple &args_tuple,
-			PinpointIterator it, cf_type &new_c)
+	template <class PinpointIterator, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(PinpointIterator it, cf_type &new_c,
+		const ArgsTuple &args_tuple)
 	{
 		BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value));
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
