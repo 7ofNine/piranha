@@ -96,19 +96,15 @@ namespace piranha
 			void calculate_result_min_max() {
 				std::vector<mpz_class> tmp_vec(6);
 				std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
-				// Declare these outside, so we don't create them over and other in the cycle below.
-				mpz_class tmp1, tmp2;
 				for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
-					tmp1 = coded_ancestor::m_min_max1[i].second;
-					tmp2 = coded_ancestor::m_min_max2[i].second;
-					mpz_add(tmp_vec[0].get_mpz_t(), tmp1.get_mpz_t(), tmp2.get_mpz_t());
+					tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
+					tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
+					tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
+					tmp_vec[1] += coded_ancestor::m_min_max2[i].first;
+					tmp_vec[2] = coded_ancestor::m_min_max1[i].first;
+					tmp_vec[3] = coded_ancestor::m_min_max2[i].first;
 					tmp_vec[4] = coded_ancestor::m_min_max1[i].second;
 					tmp_vec[5] = coded_ancestor::m_min_max2[i].second;
-					tmp1 = coded_ancestor::m_min_max1[i].first;
-					tmp2 = coded_ancestor::m_min_max2[i].first;
-					mpz_add(tmp_vec[1].get_mpz_t(), tmp1.get_mpz_t(), tmp2.get_mpz_t());
-					tmp_vec[2] = coded_ancestor::m_min_max1[i].first;
-					tmp_vec[3] = coded_ancestor::m_min_max1[i].first;
 					min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
 					coded_ancestor::m_res_min_max[i].first = *(min_max.first);
 					coded_ancestor::m_res_min_max[i].second = *(min_max.second);
