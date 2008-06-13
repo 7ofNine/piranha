@@ -33,8 +33,8 @@ namespace piranha
 		bool accept(const Result &) const {
 			return true;
 		}
-		template <class Cf1, class Cf2, class Key>
-		bool skip(const Cf1 &, const Key &, const Cf2 &, const Key &) const {
+		template <class Term1, class Term2>
+		bool skip(const Term1 *, const Term2 *) const {
 			return false;
 		}
 		// Limit of a power series development of a power series.

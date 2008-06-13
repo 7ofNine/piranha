@@ -70,13 +70,13 @@ namespace piranha
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.template nth_index<0>().size()),
-					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval), m_cfs1(m_size1), m_cfs2(m_size2),
-					m_keys1(m_size1), m_keys2(m_size2), m_trunc(*derived_cast) {
+					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval), m_terms1(m_size1), m_terms2(m_size2),
+					m_trunc(*derived_cast) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
-				// Cache the series terms into separate vectors for coefficients and keys.
-				cache_series_terms(m_s1, m_cfs1, m_keys1);
-				cache_series_terms(m_s2, m_cfs2, m_keys2);
+				// Cache pointers the terms of the series into vectors.
+				cache_series_terms(m_s1, m_terms1);
+				cache_series_terms(m_s2, m_terms2);
 			}
 		protected:
 			/// Plain multiplication.
@@ -91,24 +91,22 @@ namespace piranha
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
-						if (m_trunc.skip(m_cfs1[i].get(), m_keys1[i].get(), m_cfs2[j].get(), m_keys2[j].get())) {
+						if (m_trunc.skip(m_terms1[i], m_terms2[j])) {
 							break;
 						}
-						term_type1::multiply(m_cfs1[i].get(), m_keys1[i].get(), m_cfs2[j].get(), m_keys2[j].get(), res, m_args_tuple);
+						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
 						insert_multiplication_result<mult_res>::run(res, *this);
 					}
 				}
 			}
 			template <class Series>
 			void cache_series_terms(const Series &s,
-									std::vector<cf_mult_proxy<typename Series::term_type::cf_type> > &cfs,
-									std::vector<key_mult_proxy<typename Series::term_type::key_type> > &keys) {
+									std::vector<typename Series::term_type const *> &terms) {
 				typedef typename Series::const_sorted_iterator const_sorted_iterator;
 				const const_sorted_iterator it_f = s.template nth_index<0>().end();
 				size_t i = 0;
 				for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it) {
-					cfs[i] = it->m_cf;
-					keys[i] = it->m_key;
+					terms[i] = &(*it);
 					++i;
 				}
 			}
@@ -128,25 +126,23 @@ namespace piranha
 			}
 		protected:
 			// References to the series.
-			const Series1                 &m_s1;
-			const Series2                 &m_s2;
+			const Series1                 	&m_s1;
+			const Series2                 	&m_s2;
 			// Reference to the arguments tuple.
-			const ArgsTuple               &m_args_tuple;
+			const ArgsTuple               	&m_args_tuple;
 			// Sizes of the series.
-			const size_t                  m_size1;
-			const size_t                  m_size2;
-			Series1                       &m_retval;
-			// Vectors of input coefficients converted for representation during series multiplication.
-			std::vector<cf_proxy_type1>   m_cfs1;
-			std::vector<cf_proxy_type2>   m_cfs2;
-			// Vectors of input keys converted for representation during series multiplication.
-			std::vector<key_proxy_type>   m_keys1;
-			std::vector<key_proxy_type>   m_keys2;
+			const size_t                  	m_size1;
+			const size_t                  	m_size2;
+			// Reference to the result.
+			Series1                       	&m_retval;
+			// Vectors of pointers to the input terms.
+			std::vector<term_type1 const *>	m_terms1;
+			std::vector<term_type2 const *>	m_terms2;
 			// Container to store the result of the multiplications.
-			mult_set                      m_set;
+			mult_set                      	m_set;
 			// Truncator. This must be the last one defined because it will take *this
 			// as parameter for construction.
-			truncator_type                m_trunc;
+			truncator_type                	m_trunc;
 	};
 }
 

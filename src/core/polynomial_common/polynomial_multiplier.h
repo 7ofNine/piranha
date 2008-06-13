@@ -67,7 +67,8 @@ namespace piranha
 		public:
 			typedef typename ancestor::truncator_type truncator_type;
 			polynomial_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-					ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {}
+					ancestor::base_series_multiplier(s1, s2, retval, args_tuple),
+					m_cfs1(ancestor::m_size1), m_cfs2(ancestor::m_size2) {}
 			/// Perform multiplication and place the result into m_retval.
 			void perform_multiplication() {
 				coded_ancestor::find_input_min_max();
@@ -80,6 +81,7 @@ namespace piranha
 										   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
 					__PDEBUG(std::cout << "Density: " << density << '\n');
 					coded_ancestor::code_keys();
+					cache_coefficients();
 					if (density < 1E-1 or !perform_vector_coded_multiplication()) {
 						__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
 						__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
@@ -147,13 +149,13 @@ namespace piranha
 					for (size_t j = 0; j < ancestor::m_size2; ++j) {
 						// Calculate index of the result.
 						const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
-						if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(), ancestor::m_keys1[i].get(),
-												   ancestor::m_cfs2[j].get(), ancestor::m_keys2[j].get())) {
+						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 							break;
 						}
 						switch (ancestor::m_trunc.accept(res_index)) {
 						case true:
-							vc_res[res_index].addmul(ancestor::m_cfs1[i].get(), ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
+							vc_res[res_index].addmul(m_cfs1[i], m_cfs2[j],
+								ancestor::m_args_tuple);
 							break;
 						case false:
 							;
@@ -195,8 +197,7 @@ namespace piranha
 				for (size_t i = 0; i < ancestor::m_size1; ++i) {
 					const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
 					for (size_t j = 0; j < ancestor::m_size2; ++j) {
-						if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(), ancestor::m_keys1[i].get(),
-												   ancestor::m_cfs2[j].get(), ancestor::m_keys2[j].get())) {
+						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 							break;
 						}
 						const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
@@ -206,15 +207,16 @@ namespace piranha
 							switch (it == cms.end()) {
 							case true: {
 								// Create new temporary term from old cf and new key.
-								tmp_cterm.m_cf = ancestor::m_cfs1[i].get();
+								tmp_cterm.m_cf = m_cfs1[i];
 								tmp_cterm.m_ckey = new_key;
 								// Multiply the old term by the second term.
-								tmp_cterm.m_cf.mult_by(ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
+								tmp_cterm.m_cf.mult_by(m_cfs2[j], ancestor::m_args_tuple);
 								cms.insert(tmp_cterm);
 								break;
 							}
 							case false:
-								it->m_cf.addmul(ancestor::m_cfs1[i].get(), ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
+								it->m_cf.addmul(m_cfs1[i], m_cfs2[j],
+									ancestor::m_args_tuple);
 							}
 						}
 						case false:
@@ -236,9 +238,20 @@ namespace piranha
 				}
 				__PDEBUG(std::cout << "Done polynomial hash coded\n");
 			}
+			void cache_coefficients() {
+				size_t i;
+				for (i = 0; i < ancestor::m_size1; ++i) {
+					m_cfs1[i] = ancestor::m_terms1[i]->m_cf;
+				}
+				for (i = 0; i < ancestor::m_size2; ++i) {
+					m_cfs2[i] = ancestor::m_terms2[i]->m_cf;
+				}
+			}
 		private:
 			// Temporary key used for the decodification in the truncator.
-			typename term_type1::key_type m_tmp_key;
+			typename term_type1::key_type	m_tmp_key;
+			std::vector<cf_type1>			m_cfs1;
+			std::vector<cf_type2>			m_cfs2;
 	};
 }
 

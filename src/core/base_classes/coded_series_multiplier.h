@@ -63,16 +63,16 @@ namespace piranha
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
 				p_assert(derived_const_cast->m_size1 > 0 and derived_const_cast->m_size2 > 0);
-				derived_const_cast->m_keys1[i1].get().upload_ints_to(m_min_max1);
-				derived_const_cast->m_keys2[i2].get().upload_ints_to(m_min_max2);
+				derived_const_cast->m_terms1[i1]->m_key.upload_ints_to(m_min_max1);
+				derived_const_cast->m_terms2[i2]->m_key.upload_ints_to(m_min_max2);
 				// Move to the second terms and cycle on all remaining terms.
 				++i1;
 				++i2;
 				for (; i1 < derived_const_cast->m_size1; ++i1) {
-					derived_cast->m_keys1[i1].get().test_min_max_ints(m_min_max1);
+					derived_cast->m_terms1[i1]->m_key.test_min_max_ints(m_min_max1);
 				}
 				for (; i2 < derived_const_cast->m_size2; ++i2) {
-					derived_cast->m_keys2[i2].get().test_min_max_ints(m_min_max2);
+					derived_cast->m_terms2[i2]->m_key.test_min_max_ints(m_min_max2);
 				}
 				__PDEBUG(std::cout << "Limits are:\n";
 				for (size_t i = 0; i < m_min_max1.size(); ++i) {
@@ -125,10 +125,10 @@ namespace piranha
 			/// Code keys.
 			void code_keys() {
 				for (size_t i = 0; i < derived_const_cast->m_size1; ++i) {
-					derived_const_cast->m_keys1[i].get().code(m_coding_vector, m_ckeys1[i], derived_const_cast->m_args_tuple);
+					derived_const_cast->m_terms1[i]->m_key.code(m_coding_vector, m_ckeys1[i], derived_const_cast->m_args_tuple);
 				}
 				for (size_t i = 0; i < derived_const_cast->m_size2; ++i) {
-					derived_const_cast->m_keys2[i].get().code(m_coding_vector, m_ckeys2[i], derived_const_cast->m_args_tuple);
+					derived_const_cast->m_terms2[i]->m_key.code(m_coding_vector, m_ckeys2[i], derived_const_cast->m_args_tuple);
 				}
 			}
 		protected:

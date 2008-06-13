@@ -69,6 +69,7 @@ namespace piranha
 			typedef typename ancestor::truncator_type truncator_type;
 			poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					ancestor::base_series_multiplier(s1, s2, retval, args_tuple),
+					m_cfs1(ancestor::m_size1), m_cfs2(ancestor::m_size2),
 					m_flavours1(ancestor::m_size1), m_flavours2(ancestor::m_size2) {}
 			/// Perform multiplication and place the result into m_retval.
 			void perform_multiplication() {
@@ -82,7 +83,8 @@ namespace piranha
 										   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
 					__PDEBUG(std::cout << "Density: " << density << '\n');
 					coded_ancestor::code_keys();
-					store_flavours();
+					cache_flavours();
+					cache_coefficients();
 					if (density < 1E-1 or !perform_vector_coded_multiplication()) {
 						__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
 						__PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
@@ -119,17 +121,22 @@ namespace piranha
 				);
 			}
 			/// Store flavours of the series into own vectors.
-			void store_flavours() {
-				const_iterator1 it1 = ancestor::m_s1.template nth_index<0>().begin();
-				const_iterator2 it2 = ancestor::m_s2.template nth_index<0>().begin();
+			void cache_flavours() {
 				size_t i;
 				for (i = 0; i < ancestor::m_size1; ++i) {
-					m_flavours1[i] = it1->m_key.flavour();
-					++it1;
+					m_flavours1[i] = ancestor::m_terms1[i]->m_key.flavour();
 				}
 				for (i = 0; i < ancestor::m_size2; ++i) {
-					m_flavours2[i] = it2->m_key.flavour();
-					++it2;
+					m_flavours2[i] = ancestor::m_terms2[i]->m_key.flavour();
+				}
+			}
+			void cache_coefficients() {
+				size_t i;
+				for (i = 0; i < ancestor::m_size1; ++i) {
+					m_cfs1[i] = ancestor::m_terms1[i]->m_cf;
+				}
+				for (i = 0; i < ancestor::m_size2; ++i) {
+					m_cfs2[i] = ancestor::m_terms2[i]->m_cf;
 				}
 			}
 			bool perform_vector_coded_multiplication() {
@@ -162,17 +169,14 @@ namespace piranha
 				// Perform multiplication.
 				for (size_t i = 0; i < ancestor::m_size1; ++i) {
 					for (size_t j = 0; j < ancestor::m_size2; ++j) {
-						if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(), ancestor::m_keys1[i].get(),
-												   ancestor::m_cfs2[j].get(), ancestor::m_keys2[j].get())) {
+						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 							break;
 						}
 						// TODO: Does it make sense here to define a method for coefficients like:
 						// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
 						// so that we can avoid copying stuff around here and elsewhere?
-						// TODO: don't create a tmp_cf each time, create it outside the loop and assign it here.
-						// For nontrivial coefficients we can save a lot of memory allocations.
-						tmp_cf = ancestor::m_cfs1[i].get();
-						tmp_cf.mult_by(ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
+						tmp_cf = m_cfs1[i];
+						tmp_cf.mult_by(m_cfs2[j], ancestor::m_args_tuple);
 						tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
 						const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
 														index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
@@ -247,15 +251,14 @@ namespace piranha
 				csht cms_cos, cms_sin;
 				for (size_t i = 0; i < ancestor::m_size1; ++i) {
 					for (size_t j = 0; j < ancestor::m_size2; ++j) {
-						if (ancestor::m_trunc.skip(ancestor::m_cfs1[i].get(), ancestor::m_keys1[i].get(),
-												   ancestor::m_cfs2[j].get(), ancestor::m_keys2[j].get())) {
+						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 							break;
 						}
 						// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
 						// generating only one coefficient and change its sign later if needed - after insertion.
-						cterm tmp_term1(ancestor::m_cfs1[i].get(), coded_ancestor::m_ckeys1[i]);
+						cterm tmp_term1(m_cfs1[i], coded_ancestor::m_ckeys1[i]);
 						// Handle the coefficient, with positive signs for now.
-						tmp_term1.m_cf.mult_by(ancestor::m_cfs2[j].get(), ancestor::m_args_tuple);
+						tmp_term1.m_cf.mult_by(m_cfs2[j], ancestor::m_args_tuple);
 						tmp_term1.m_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
 						tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
 						// Create the second term, using the first one's coefficient and the appropriate code.
@@ -341,11 +344,13 @@ namespace piranha
 				__PDEBUG(std::cout << "Done Poisson series hash coded\n");
 			}
 		private:
+			std::vector<cf_type1>	m_cfs1;
+			std::vector<cf_type2>	m_cfs2;
+			// For Poisson series we also need flavours.
+			std::vector<char>		m_flavours1;
+			std::vector<char>		m_flavours2;
 			// Just making sure, eh...
 			BOOST_STATIC_ASSERT(sizeof(char) == sizeof(bool));
-			// For Poisson series we also need flavours.
-			std::vector<char>	m_flavours1;
-			std::vector<char>	m_flavours2;
 	};
 }
 

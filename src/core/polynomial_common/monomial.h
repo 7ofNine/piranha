@@ -60,16 +60,16 @@ namespace piranha
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
 			template <class Cf2, class ArgsTuple>
-			static void multiply(const cf_type &cf1, const expo_type &expo1, const Cf2 &cf2, const expo_type &expo2,
+			static void multiply(const monomial *m1, const monomial<Cf2,Expo,Separator,Allocator> *m2,
 								 multiplication_result &res, const ArgsTuple &args_tuple) {
 				// Perform the multiplication of exponents.
-				expo1.multiply(expo2, res.template get<0>().m_key);
+				m1->m_key.multiply(m2->m_key, res.template get<0>().m_key);
 				// Handle coefficient multiplication.
 				// TODO: maybe provide the semantics to coefficients for something like this:
 				// cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,args_tuple),
 				// so that we can avoid a copy.
-				res.template get<0>().m_cf = cf1;
-				res.template get<0>().m_cf.mult_by(cf2, args_tuple);
+				res.template get<0>().m_cf = m1->m_cf;
+				res.template get<0>().m_cf.mult_by(m2->m_cf, args_tuple);
 			}
 	};
 }
