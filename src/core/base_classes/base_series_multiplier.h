@@ -140,7 +140,7 @@ namespace piranha
 			std::vector<term_type2 const *>	m_terms2;
 			// Container to store the result of the multiplications.
 			mult_set                      	m_set;
-			// Truncator. This must be the last one defined because it will take *this
+			// Truncator. This must be the last one defined because it will use *this
 			// as parameter for construction.
 			truncator_type                	m_trunc;
 	};

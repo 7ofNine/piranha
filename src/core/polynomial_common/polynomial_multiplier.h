@@ -151,7 +151,7 @@ namespace piranha
 						switch (ancestor::m_trunc.accept(res_index)) {
 						case true:
 							vc_res[res_index].addmul(m_cfs1[i], m_cfs2[j],
-								ancestor::m_args_tuple);
+													 ancestor::m_args_tuple);
 							break;
 						case false:
 							;
@@ -212,7 +212,7 @@ namespace piranha
 							}
 							case false:
 								it->m_cf.addmul(m_cfs1[i], m_cfs2[j],
-									ancestor::m_args_tuple);
+												ancestor::m_args_tuple);
 							}
 						}
 						case false:

@@ -93,7 +93,7 @@ namespace piranha
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
 			template <class Cf2, class ArgsTuple>
-			static void multiply(const poisson_series_term *t1, const poisson_series_term<Cf2,trig_type,Separator,Allocator> *t2,
+			static void multiply(const poisson_series_term *t1, const poisson_series_term<Cf2, trig_type, Separator, Allocator> *t2,
 								 multiplication_result &res, const ArgsTuple &args_tuple) {
 				// Perform the trigonometric multiplication.
 				t1->m_key.multiply(t2->m_key, res.template get<0>().m_key, res.template get<1>().m_key);
