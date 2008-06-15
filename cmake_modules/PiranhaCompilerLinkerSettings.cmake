@@ -17,27 +17,30 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
-  SET(GCC_SPECIFIC_FLAGS "-Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
-  # Visibility checks.
-  CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden __VISIBILITY_INLINES_HIDDEN_FLAG)
-  CHECK_CXX_COMPILER_FLAG(-fvisibility=hidden __VISIBILITY_HIDDEN_FLAG)
-  IF(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
-    MESSAGE(STATUS "GCC supports the visibility attributes")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -fvisibility=hidden")
-  ELSE(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
-    MESSAGE(STATUS "GCC does not support the visibility attributes")
-  ENDIF(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
   SET(LINK_FLAGS "")
   IF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
+    # Visibility checks.
+    CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden __VISIBILITY_INLINES_HIDDEN_FLAG)
+    CHECK_CXX_COMPILER_FLAG(-fvisibility=hidden __VISIBILITY_HIDDEN_FLAG)
+    IF(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
+      MESSAGE(STATUS "GCC supports the visibility attributes")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -fvisibility=hidden")
+    ELSE(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
+      MESSAGE(STATUS "GCC does not support the visibility attributes")
+    ENDIF(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
+    # Extra warnings for the GCC compiler.
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
     SET(GNU_COMPILER TRUE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_SPECIFIC_FLAGS}")
   ENDIF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
+  # Hoard requires double variables to be aligned on two-word boundaries.
+  # On 64-bit archs this should be the default.
   IF(ENABLE_HOARD AND NOT ${POINTER_SIZE} EQUAL 8)
     IF(GNU_COMPILER)
       SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -malign-double")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -malign-double")
     ENDIF(GNU_COMPILER)
   ENDIF(ENABLE_HOARD AND NOT ${POINTER_SIZE} EQUAL 8)
+  # Extra flags for TBB and hoard..
   IF(MINGW)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections")
     SET(LINK_FLAGS "${LINK_FLAGS} -Wl,--enable-runtime-pseudo-reloc")
@@ -51,6 +54,7 @@ MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
       ENDIF(BUILD_TBB_MULTITHREADING OR ENABLE_HOARD)
     ENDIF(GNU_COMPILER)
   ENDIF(MINGW)
+  # SSE2 support.
   IF(ENABLE_SSE2)
     IF(GNU_COMPILER)
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
