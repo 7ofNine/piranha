@@ -175,7 +175,7 @@ namespace piranha
 				const size_type w = derived_const_cast->size();
 				// Integer power. Retval has already been set to this, modify integers in-place.
 				for (size_type i = 0; i < w; ++i) {
-					retval[i] *= n;
+					retval[i] *= (typename Derived::value_type)n;
 				}
 				return retval;
 			}

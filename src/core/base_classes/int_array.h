@@ -100,13 +100,7 @@ namespace piranha
 				}
 				// Take care of flavour.
 				m_flavour = v.m_flavour;
-				switch (m_size == v.m_size) {
-					// If the size is equal, do nothing.
-				case true:
-					;
-					// Otherwise deallocate current allocated memory, allocate with the new size
-					// and assign the proper sizes to this.
-				default:
+				if (m_size != v.m_size) {
 					allocator.deallocate(m_ptr, m_size);
 					m_ptr = allocator.allocate(v.m_size);
 					m_size = v.m_size;
@@ -253,7 +247,7 @@ namespace piranha
 				p_assert(cv.size() == (size_t)m_size + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
-					m_ptr[i] = ((tmp % cv[i+1]) / cv[i] + mmv[i].first);
+					m_ptr[i] = (value_type)((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
@@ -263,7 +257,7 @@ namespace piranha
 				resize(size);
 				// TODO: check for assignments out of numerical boundaries.
 				for (size_t i = 0; i < size; ++i) {
-					m_ptr[i] = v[i];
+					m_ptr[i] = (value_type)v[i];
 				}
 			}
 		protected:
@@ -315,11 +309,8 @@ namespace piranha
 			 * The existing elements are copied over.
 			 */
 			void resize(const size_type &new_size) {
-				switch (m_size == new_size) {
-				case true:
+				if (m_size == new_size) {
 					return;
-				case false:
-					;
 				}
 				// Allocate space for the new size.
 				value_type *new_ptr = allocator.allocate(new_size);
@@ -356,8 +347,7 @@ namespace piranha
 			 * Tests only the integer elements of the array, not the flavour.
 			 */
 			bool elements_equal_to(const int_array &v) const {
-				switch (m_size == v.m_size) {
-				case true:
+				if (m_size == v.m_size) {
 					size_type i;
 					for (i = 0;i < m_pack_size;++i) {
 						if (max_cast(m_ptr)[i] != max_cast(v.m_ptr)[i]) {
@@ -370,7 +360,7 @@ namespace piranha
 						}
 					}
 					return true;
-				default:
+				} else {
 					return false;
 				}
 			}

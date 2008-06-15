@@ -97,18 +97,13 @@ namespace piranha
 			}
 		}
 		const term_type *insert_term(0);
-		switch (new_term == 0) {
-		case true:
+		if (new_term == 0) {
 			insert_term = &converted_term.result;
-			break;
-		case false:
+		} else {
 			insert_term = new_term;
 		}
 		SortedIterator ret_it = ll_insert<Sign>(*insert_term, it_hint, args_tuple);
-		switch (new_term == 0) {
-		case true:
-			break;
-		case false:
+		if (new_term != 0) {
 			term_type::allocator.destroy(new_term);
 			term_type::allocator.deallocate(new_term, 1);
 		}

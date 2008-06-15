@@ -40,12 +40,8 @@ namespace piranha
 	inline void *piranha_malloc(const size_t &size)
 	{
 		void *retval = malloc(size);
-		switch (unlikely(retval == NULL)) {
-		case true:
+		if (unlikely(retval == NULL)) {
 			throw std::bad_alloc();
-			break;
-		case false:
-			;
 		}
 		return retval;
 	}

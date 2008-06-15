@@ -22,8 +22,6 @@
 #define PIRANHA_SETTINGS_MANAGER_H
 
 #include <iostream>
-#include <gmp.h>
-#include <gmpxx.h>
 #include <string>
 
 #include "compile_switches.h"
@@ -45,7 +43,7 @@ namespace piranha
 			/**
 			 * Relevant only to those containers with support such setting.
 			 */
-			static const double &load_factor() {
+			static const float &load_factor() {
 				return hash_max_load_factor;
 			}
 			// Getters.
@@ -76,7 +74,7 @@ namespace piranha
 			/**
 			 * @see settings::load_factor().
 			 */
-			static void set_load_factor(const double &value) {
+			static void set_load_factor(float value) {
 				if (value <= 0 || value >= 1) {
 					throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
 				}
@@ -92,45 +90,35 @@ namespace piranha
 				}
 				enable_progress_display = flag;
 			}
-			static unsigned long int mp_default_prec() {
-				return mpf_get_default_prec();
-			}
-			static void set_mp_default_prec(int n) {
-				if (n <= 0) {
-					std::cout << "Please insert a strictly positive value." << std::endl;
-					return;
-				}
-				mpf_set_default_prec(n);
-			}
 		private:
 			/// Startup class.
 			/**
 			 * Startup class is constructed at piranha invocation and sets default parameters.
 			 */
-			class startup_class
+			class __PIRANHA_VISIBLE startup_class
 			{
 				public:
 					startup_class();
 			};
 			/// Load factor for hashed containers.
-			static double                         hash_max_load_factor;
+			static float							hash_max_load_factor;
 			/// Numerical zero.
-			static double                         m_numerical_zero;
+			static double							m_numerical_zero;
 			/// Minimum fast unsigned integer.
-			static const max_fast_uint            min_u;
+			static const max_fast_uint				min_u;
 			/// Maximum fast unsigned integer.
-			static const max_fast_uint            max_u;
+			static const max_fast_uint				max_u;
 			/// Minimum fast integer.
-			static const max_fast_int             min_i;
+			static const max_fast_int				min_i;
 			/// Maximum fast integer.
-			static const max_fast_int             max_i;
+			static const max_fast_int				max_i;
 			/// Path to theories of motion.
-			static std::string                    m_path;
-			static const std::string              m_default_path;
-			static bool                           m_debug;
-			static const std::string              m_version;
-			static bool                           enable_progress_display;
-			static startup_class                  startup;
+			static std::string						m_path;
+			static const std::string				m_default_path;
+			static bool								m_debug;
+			static const std::string				m_version;
+			static bool								enable_progress_display;
+			static startup_class					startup;
 #ifdef _PIRANHA_TBB
 			static const tbb::task_scheduler_init tbb_init;
 #endif
