@@ -16,8 +16,13 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+INCLUDE(CheckCXXCompilerFlag)
+INCLUDE(CheckTypeSize)
+
 MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
   SET(LINK_FLAGS "")
+  CHECK_TYPE_SIZE("void *" POINTER_SIZE)
+  MESSAGE(STATUS "Pointer size is " ${POINTER_SIZE})
   IF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
     # Visibility checks.
     CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden __VISIBILITY_INLINES_HIDDEN_FLAG)

@@ -3,15 +3,13 @@ PROJECT(piranha)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeDependentOption)
-INCLUDE(FindPythonLibs)
+INCLUDE(CPack)
 INCLUDE(FindGMP)
+INCLUDE(FindPythonLibs)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaPythonSetup)
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CPack)
-INCLUDE(CheckTypeSize)
-INCLUDE(CheckCXXCompilerFlag)
 ENABLE_LANGUAGE(CXX)
 INCLUDE_DIRECTORIES("external_headers")
 
@@ -35,16 +33,13 @@ OPTION(ENABLE_DISPLAY_PROGRESS "Enable progress display during long operations."
 SET(MANDATORY_LIBRARIES "")
 SET(PIRANHA_DEFINITIONS "")
 
-CHECK_TYPE_SIZE("void *" POINTER_SIZE)
-MESSAGE(STATUS "Pointer size is " ${POINTER_SIZE})
-
 IF(ENABLE_DISPLAY_PROGRESS)
   SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_DISPLAY_PROGRESS)
 ENDIF(ENABLE_DISPLAY_PROGRESS)
 
 IF(BUILD_TBB_MULTITHREADING)
   IF(WIN32)
-# This is irrelevant at the moment, since TBB does not compile yet in MinGW.
+    # This is irrelevant at the moment, since TBB does not compile yet in MinGW.
     SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -DUSE_WINTHREAD)
   ELSE(WIN32)
     SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -DUSE_PTHREAD)
@@ -65,7 +60,7 @@ SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${LINK_FLAGS})
 # Platform switches
 IF(MINGW)
   SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_WIN32)
-# TODO: generalize this using variables, e.g. %SystemRoot and such?
+  # TODO: generalize this using variables, e.g. %SystemRoot and such?
   SET(LIB_INSTALL_PATH "c:/windows/system32")
 ELSE(MINGW)
   SET(LIB_INSTALL_PATH "lib")
