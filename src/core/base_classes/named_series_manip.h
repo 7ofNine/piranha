@@ -150,7 +150,7 @@ namespace piranha
 				bool found = false;
 				const size_t l_size = l.get_head().size();
 				for (size_t j = 0;j < l_size;++j) {
-					if (l.get_head()[j].first and l.get_head()[j].second == i) {
+					if (l.get_head()[j].first && l.get_head()[j].second == i) {
 						found = true;
 						break;
 					}
@@ -234,14 +234,14 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_flags_init {
 		static void run(TrimFlags &tf, const ArgsTuple &args_tuple) {
-			const size_t size = args_tuple.template get_head().size();
-			tf.template get_head().resize(size);
+			const size_t size = args_tuple.get_head().size();
+			tf.get_head().resize(size);
 			for (size_t i = 0; i < size; ++i) {
-				tf.template get_head()[i] = false;
+				tf.get_head()[i] = false;
 			}
 			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
-				tf.template get_tail(),
-				args_tuple. template get_tail()
+				tf.get_tail(),
+				args_tuple.get_tail()
 			);
 		}
 	};
@@ -259,30 +259,30 @@ namespace piranha
 	template <class TrimFlags>
 	inline bool trim_flags_proceed(const TrimFlags &tf)
 	{
-		const size_t size = tf.template get_head().size();
+		const size_t size = tf.get_head().size();
 		for (size_t i = 0; i < size; ++i) {
 			// If we find a flag that was never turned on, we have something to trim.
-			if (!tf.template get_head()[i]) {
+			if (!tf.get_head()[i]) {
 				return true;
 			}
 		}
-		return trim_flags_proceed(tf.template get_tail());
+		return trim_flags_proceed(tf.get_tail());
 	}
 
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_arguments {
 		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
-			const size_t size = tf.template get_head().size();
-			p_assert(size == args_tuple.template get_head().size());
+			const size_t size = tf.get_head().size();
+			p_assert(size == args_tuple.get_head().size());
 			vector_psym_p new_vector;
 			for (size_t i = 0; i < size; ++i) {
-				if (tf.template get_head()[i]) {
-					new_vector.push_back(args_tuple.template get_head()[i]);
+				if (tf.get_head()[i]) {
+					new_vector.push_back(args_tuple.get_head()[i]);
 				}
 			}
-			new_vector.swap(args_tuple.template get_head());
+			new_vector.swap(args_tuple.get_head());
 			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
-				tf.template get_tail(), args_tuple.template get_tail());
+				tf.get_tail(), args_tuple.get_tail());
 		}
 	};
 

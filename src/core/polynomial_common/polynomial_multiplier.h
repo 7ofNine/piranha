@@ -82,7 +82,7 @@ namespace piranha
 					__PDEBUG(std::cout << "Density: " << density << '\n');
 					coded_ancestor::code_keys();
 					cache_coefficients();
-					if (density < 1E-1 or !perform_vector_coded_multiplication()) {
+					if (density < 1E-1 || !perform_vector_coded_multiplication()) {
 						__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
 						__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
 						perform_hash_coded_multiplication();

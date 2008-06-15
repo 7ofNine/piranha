@@ -143,7 +143,7 @@ namespace piranha
 		if (term.is_ignorable(args_tuple)) {
 			return derived_const_cast->template nth_index<0>().end();
 		}
-		p_assert(term.is_insertable(args_tuple) and !term.needs_padding(args_tuple) and term.is_canonical(args_tuple));
+		p_assert(term.is_insertable(args_tuple) && !term.needs_padding(args_tuple) && term.is_canonical(args_tuple));
 		SortedIterator ret_it;
 		pinpoint_iterator it(find_term<pinpoint_iterator>(term));
 		if (it == derived_const_cast->template nth_index<1>().end()) {

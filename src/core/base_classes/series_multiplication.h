@@ -47,7 +47,7 @@ namespace piranha
 				typedef typename Derived2::term_type term_type2;
 				Derived retval;
 				// Just leave an empty series if this or s2 are zero.
-				if (derived_const_cast->template nth_index<0>().empty() or s2.template nth_index<0>().empty()) {
+				if (derived_const_cast->template nth_index<0>().empty() || s2.template nth_index<0>().empty()) {
 					;
 				}
 				// Optimize if the second series is a pure coefficient series.

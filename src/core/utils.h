@@ -137,7 +137,7 @@ namespace piranha
 			 */
 			static bool is_valid(const std::string &str) {
 				// TODO: replace with switch statement.
-				if (str.empty() or str[0] == '#') {
+				if (str.empty() || str[0] == '#') {
 					return false;
 				}
 				return true;

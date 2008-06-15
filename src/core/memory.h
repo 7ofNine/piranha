@@ -37,7 +37,7 @@ namespace piranha
 	/**
 	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
 	 */
-	inline void *piranha_malloc(const size_t &size) throw(std::bad_alloc)
+	inline void *piranha_malloc(const size_t &size)
 	{
 		void *retval = malloc(size);
 		switch (unlikely(retval == NULL)) {
@@ -55,7 +55,7 @@ namespace piranha
 	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
 	 */
 	template <int Alignment>
-	inline void *piranha_malloc(const size_t &size) throw(std::bad_alloc)
+	inline void *piranha_malloc(const size_t &size)
 	{
 		BOOST_STATIC_ASSERT(Alignment > 0);
 		// Test that Alignment is a multiple of the size of pointers.

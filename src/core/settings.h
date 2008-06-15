@@ -76,8 +76,8 @@ namespace piranha
 			/**
 			 * @see settings::load_factor().
 			 */
-			static void set_load_factor(const double &value) throw(unsuitable) {
-				if (value <= 0 or value >= 1) {
+			static void set_load_factor(const double &value) {
+				if (value <= 0 || value >= 1) {
 					throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
 				}
 				hash_max_load_factor = value;

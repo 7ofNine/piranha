@@ -21,6 +21,7 @@
 #ifndef PIRANHA_DOUBLE_CF_H
 #define PIRANHA_DOUBLE_CF_H
 
+#include <boost/numeric/conversion/converter.hpp>
 #include <cmath>
 #include <complex>
 
@@ -47,7 +48,8 @@ namespace piranha
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf);
 			max_fast_int get_int() const {
-				const max_fast_int retval((max_fast_int)nearbyint(ancestor::m_value));
+				typedef boost::numeric::converter<max_fast_int,double> double_to_int;
+				const max_fast_int retval((max_fast_int)double_to_int::nearbyint(ancestor::m_value));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
 					throw(unsuitable("Cannot convert double coefficient to integer."));
 				}

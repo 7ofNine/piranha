@@ -62,7 +62,7 @@ namespace piranha
 				size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
-				p_assert(derived_const_cast->m_size1 > 0 and derived_const_cast->m_size2 > 0);
+				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
 				derived_const_cast->m_terms1[i1]->m_key.upload_ints_to(m_min_max1);
 				derived_const_cast->m_terms2[i2]->m_key.upload_ints_to(m_min_max2);
 				// Move to the second terms and cycle on all remaining terms.
@@ -100,15 +100,15 @@ namespace piranha
 				p_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
 				// respect the fast integer boundaries.
-				if (ck < traits::max() and hmin > traits::min() and hmin < traits::max() and
-						hmax > traits::min() and hmax < traits::max()) {
+				if (ck < traits::max() && hmin > traits::min() && hmin < traits::max() &&
+						hmax > traits::min() && hmax < traits::max()) {
 					m_cr_is_viable = true;
 					m_h_min = hmin.get_si();
 					m_h_max = hmax.get_si();
 					// Downcast minimum and maximum result values to fast integers.
 					for (size_t i = 0; i < m_size; ++i) {
-						if (m_res_min_max[i].first < traits::min() or m_res_min_max[i].first > traits::max() or
-								m_res_min_max[i].second < traits::min() or m_res_min_max[i].second > traits::max()) {
+						if (m_res_min_max[i].first < traits::min() || m_res_min_max[i].first > traits::max() ||
+								m_res_min_max[i].second < traits::min() || m_res_min_max[i].second > traits::max()) {
 							std::cout << "Warning: results of series multiplication cross " <<
 									  "fast integer limits. Expect errors." << std::endl;
 						}

@@ -110,7 +110,7 @@ namespace piranha
 				out_stream << tmp;
 			}
 			bool is_unity() const {
-				return (derived_const_cast->elements_are_zero() and derived_const_cast->m_flavour);
+				return (derived_const_cast->elements_are_zero() && derived_const_cast->m_flavour);
 			}
 			/// Frequency.
 			/**
@@ -210,11 +210,11 @@ namespace piranha
 			// All multipliers are zero and flavour is sine.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (derived_const_cast->elements_are_zero() and !derived_const_cast->m_flavour);
+				return (derived_const_cast->elements_are_zero() && !derived_const_cast->m_flavour);
 			}
 			/// Equality test.
 			bool operator==(const Derived &t2) const {
-				return (derived_const_cast->m_flavour == t2.m_flavour and derived_const_cast->elements_equal_to(t2));
+				return (derived_const_cast->m_flavour == t2.m_flavour && derived_const_cast->elements_equal_to(t2));
 			}
 			/// Less than.
 			bool operator<(const Derived &t2) const {

@@ -199,7 +199,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &a) const {
-				return (m_cf.is_ignorable(a) or m_key.is_ignorable(a));
+				return (m_cf.is_ignorable(a) || m_key.is_ignorable(a));
 			}
 			/// Check whether a term can be inserted into a series.
 			/**
@@ -210,7 +210,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			bool is_insertable(const ArgsTuple &a) const {
-				return (m_cf.is_insertable(a) and m_key.is_insertable(a));
+				return (m_cf.is_insertable(a) && m_key.is_insertable(a));
 			}
 			/// Check whether a term needs padding for insertion into a series.
 			/**
@@ -221,7 +221,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			bool needs_padding(const ArgsTuple &a) const {
-				return (m_cf.needs_padding(a) or m_key.needs_padding(a));
+				return (m_cf.needs_padding(a) || m_key.needs_padding(a));
 			}
 			/// Pad right all elements of the term.
 			/**

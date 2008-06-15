@@ -109,13 +109,13 @@ namespace piranha
 	{
 		std::string temp;
 		while (utils::get_valid_string(inf, temp)) {
-			if (temp.size() > 2 and temp[0] == '[' and temp[temp.size()-1] == ']') {
+			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') {
 				std::string sec_name = temp;
 				boost::trim_if(sec_name, boost::is_any_of("[]"));
 				std::cout << "New section found: " << sec_name << std::endl;
 				std::vector<std::string> split_v;
 				boost::split(split_v, sec_name, boost::is_any_of("_"));
-				if (split_v.size() == 2 and split_v[1] == "arg") {
+				if (split_v.size() == 2 && split_v[1] == "arg") {
 					read_arg(inf, split_v[0]);
 				} else if (sec_name == "terms") {
 					read_terms(inf);
@@ -143,7 +143,7 @@ namespace piranha
 		std::string temp;
 		while (utils::get_valid_string(inf, temp)) {
 			// If we found a new section, step back the cursor before exiting.
-			if (temp.size() > 2 and temp[0] == '[' and temp[temp.size()-1] == ']') {
+			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') {
 				std::cout << "Finished parsing " << name << " argument." << std::endl;
 				inf.seekg(cur_pos);
 				append_arg(name, psym_manager::get_pointer(psym(temp_name, temp_time_eval)));

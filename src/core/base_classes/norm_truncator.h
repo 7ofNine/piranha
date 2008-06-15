@@ -66,7 +66,7 @@ namespace piranha
 					return 0;
 				}
 			}
-		private:
+		protected:
 			static double m_truncation_level;
 	};
 

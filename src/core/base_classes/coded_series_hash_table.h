@@ -96,11 +96,11 @@ namespace piranha
 						return &m_ht->m_container[m_vector_index].m_terms[m_bucket_index];
 					}
 					bool operator==(const iterator &it2) const {
-						return (m_ht == it2.m_ht and m_vector_index == it2.m_vector_index and
+						return (m_ht == it2.m_ht && m_vector_index == it2.m_vector_index &&
 								m_bucket_index == it2.m_bucket_index);
 					}
 					bool operator!=(const iterator &it2) const {
-						return (m_ht != it2.m_ht or m_vector_index != it2.m_vector_index or
+						return (m_ht != it2.m_ht || m_vector_index != it2.m_vector_index ||
 								m_bucket_index != it2.m_bucket_index);
 					}
 				private:
@@ -117,7 +117,7 @@ namespace piranha
 								++m_bucket_index;
 							}
 							// If we went past the vector size or if we found the next element, break out and return.
-							if (m_vector_index == vector_size or m_ht->m_container[m_vector_index].m_flags[m_bucket_index]) {
+							if (m_vector_index == vector_size || m_ht->m_container[m_vector_index].m_flags[m_bucket_index]) {
 								break;
 							}
 						}
@@ -143,7 +143,7 @@ namespace piranha
 				boost::hash<Ckey> ckey_hash;
 				const size_t h = ckey_hash(ckey);
 				// Check that the size is a power of two.
-				p_assert(m_size > 0 and(m_size & (m_size - 1)) == 0);
+				p_assert(m_size > 0 && (m_size & (m_size - 1)) == 0);
 				// Find h % m_size using logical AND, since we are working with powers of two.
 				const size_t vector_pos = h & (m_size - 1);
 				p_assert(vector_pos < m_size);
@@ -180,7 +180,7 @@ namespace piranha
 				boost::hash<Ckey> ckey_hash;
 				const size_t h = ckey_hash(t.m_ckey);
 				// Check that the size is a power of two.
-				p_assert(m_size > 0 and(m_size & (m_size - 1)) == 0);
+				p_assert(m_size > 0 && (m_size & (m_size - 1)) == 0);
 				// Find h % m_size using logical AND, since we are working with powers of two.
 				const size_t vector_pos = (h & (m_size - 1));
 				p_assert(vector_pos < m_size);

@@ -54,7 +54,7 @@ namespace piranha
 	{
 			typedef typename boost::int_t<Bits>::fast value_type_;
 			typedef typename Allocator::template rebind<value_type_>::other allocator_type;
-			BOOST_STATIC_ASSERT(Bits == 8 or Bits == 16);
+			BOOST_STATIC_ASSERT(Bits == 8 || Bits == 16);
 			BOOST_STATIC_ASSERT(sizeof(max_fast_int) % sizeof(value_type_) == 0);
 			BOOST_STATIC_ASSERT(Pos >= 0);
 		public:

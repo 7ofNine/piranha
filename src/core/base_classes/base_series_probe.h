@@ -26,7 +26,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
 	{
-		return (derived_const_cast->template nth_index<0>().size() == 1 and
+		return (derived_const_cast->template nth_index<0>().size() == 1 &&
 				derived_const_cast->template nth_index<0>().begin()->m_key.is_unity());
 	}
 
