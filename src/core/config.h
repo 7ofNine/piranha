@@ -36,8 +36,6 @@
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 #else
-#warning Only the GNU compiler is officially supported.
-
 // Don't do anything special with (un)likely.
 #define likely(exp)   exp
 #define unlikely(exp) exp
@@ -45,13 +43,9 @@
 
 // Platform switches.
 #ifdef _PIRANHA_WIN32
-#define __ISNAN(x) _isnan(x)
-#define __JNL(n,x) jn(n,x)
 #define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
 #define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
-#define __ISNAN(x) isnan(x)
-#define __JNL(n,x) jnl(n,x)
 #define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
 #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
