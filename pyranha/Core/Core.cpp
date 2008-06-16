@@ -32,7 +32,6 @@
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
-#include "../../src/core/stats.h"
 #include "../../src/core/stream_manager.h"
 #include "../exceptions.h"
 
@@ -127,11 +126,6 @@ BOOST_PYTHON_MODULE(_Core)
 	class_sm.staticmethod("set_format");
 	class_sm.staticmethod("fp_rep");
 	class_sm.staticmethod("set_fp_rep");
-
-	// Stats.
-	class_<stats>("stats", "Piranha-specific statistics.", no_init)
-	.def("pack_ratio", &stats::pack_ratio)
-	.staticmethod("pack_ratio");
 
 	// Psym manager.
 	class_<psym_manager>("__psym_manager", "Manager for symbols.", init<>())

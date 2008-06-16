@@ -24,8 +24,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
 
-#include "../stats.h"
-
 namespace piranha
 {
 	/// Transform term.
@@ -135,7 +133,6 @@ namespace piranha
 		if (it == derived_const_cast->template nth_index<1>().end()) {
 			// The term is NOT a duplicate, insert in the set.
 			term_insert_new<Sign>(term, args_tuple);
-			stats::insert();
 		} else {
 			// The term is in the set, hence an existing term will be modified.
 			// Add or subtract according to request.
@@ -153,7 +150,6 @@ namespace piranha
 			} else {
 				term_update(it, new_c, args_tuple);
 			}
-			stats::pack();
 		}
 	}
 
