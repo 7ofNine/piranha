@@ -35,6 +35,7 @@ MACRO(PIRANHA_COMPILER_LINKER_SETTINGS)
 		ENDIF(__VISIBILITY_INLINES_HIDDEN_FLAG AND __VISIBILITY_HIDDEN_FLAG)
 		# Extra warnings for the GCC compiler.
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
+		ADD_DEFINITIONS(-D_GNU_SOURCE)
 		SET(GNU_COMPILER TRUE)
 	ENDIF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
 	# Hoard requires double variables to be aligned on two-word boundaries.

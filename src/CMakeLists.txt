@@ -4,9 +4,9 @@ IF(BUILD_FORTRAN)
     ${CMAKE_CURRENT_SOURCE_DIR}/tass17/posired7.f)
   SET(SRC_LIST ${SRC_LIST} tass17/posired7.f)
 ENDIF(BUILD_FORTRAN)
-IF(BUILD_PYRANHA_SP)
-  SET(SRC_LIST ${SRC_LIST} symbol_limiter.cpp)
-ENDIF(BUILD_PYRANHA_SP)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp)
+
 # Order is important here: in tass.cpp, for instance, we have destruction of series that depends on
 # psymbol_manager to be present. Hence psymbol.cpp must go after...
 SET(SRC_LIST ${SRC_LIST}

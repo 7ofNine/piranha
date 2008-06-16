@@ -34,8 +34,8 @@ namespace piranha
 	const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::max();
 	const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::min();
 	const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::max();
-	std::string settings::m_path = _PIRANHA_DEFAULT_PATH;
-	const std::string settings::m_default_path = _PIRANHA_DEFAULT_PATH;
+	std::string settings::m_path = "@THEORIES_INSTALL_PATH@";
+	const std::string settings::m_default_path = "@THEORIES_INSTALL_PATH@";
 	bool settings::m_debug = false;
 	const std::string settings::m_version = __PIRANHA_VERSION;
 	bool settings::enable_progress_display = true;
