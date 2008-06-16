@@ -74,8 +74,6 @@ namespace piranha
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, const ArgsTuple &args_tuple)
 	{
-		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
-		// iterator to do that.
 		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
 		p_assert(converted_term.result.is_insertable(args_tuple));
@@ -141,14 +139,12 @@ namespace piranha
 		} else {
 			// The term is in the set, hence an existing term will be modified.
 			// Add or subtract according to request.
-			cf_type new_c;
-			switch (Sign) {
-			case true:
-				new_c = it->m_cf;
+			// TODO: when sequenced indices are in place, we can drop all the modification
+			// stuff. We can just modify coefficients on-the-fly.
+			cf_type new_c(it->m_cf);
+			if (Sign) {
 				new_c.add(term.m_cf, args_tuple);
-				break;
-			case false:
-				new_c = it->m_cf;
+			} else {
 				new_c.subtract(term.m_cf, args_tuple);
 			}
 			// Check if the resulting coefficient can be ignored (ie it is small).
@@ -175,6 +171,8 @@ namespace piranha
 		// TODO: use asserts here? Above an assert is needed too (where?).
 		// TODO: restore the assertion once we switch to sequenced indices.
 		// p_assert(result);
+		// TODO: when sequenced indices are in place, we can drop all the modification
+		// stuff. We can just modify coefficients on-the-fly.
 		if (!Sign) {
 			// This is an O(1) operation, with a re-hash involved.
 			modifier_invert_term_sign<ArgsTuple> m(args_tuple);
