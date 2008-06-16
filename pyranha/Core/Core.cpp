@@ -142,7 +142,7 @@ BOOST_PYTHON_MODULE(_Core)
 	.def(init<const std::string &, const double &, const double &, const double &, const double &>())
 	.def(init < const std::string &, const double &, const double &, const double &, const double &,
 		 const double & > ())
-	.def("__copy__", &psym::copy)
+	.def("__copy__", &psym::__copy__)
 	.def("__repr__", &psym::__repr__);
 
 	typedef void (*limit_name)(const std::string &, const max_fast_int &);

@@ -124,7 +124,7 @@ namespace piranha
 						build_from_array(tmp);
 					}
 					/// Copy function used in Pyranha.
-					psym copy() const {
+					psym __copy__() const {
 						return psym(*this);
 					}
 					/// Print to stream.
