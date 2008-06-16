@@ -2,6 +2,11 @@ PROJECT(piranha)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6)
 
+# This syntax was introduced by CMake 2.6 to handle backwards compatibility.
+IF(COMMAND cmake_policy)
+  CMAKE_POLICY(VERSION 2.6)
+ENDIF(COMMAND cmake_policy)
+
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeDependentOption)
