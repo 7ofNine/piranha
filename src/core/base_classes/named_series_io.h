@@ -170,9 +170,7 @@ namespace piranha
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_terms(std::ifstream &inf)
 	{
 		typedef typename Derived::term_type term_type;
-		typedef typename Derived::sorted_iterator sorted_iterator;
 		std::string temp;
-		sorted_iterator it_hint = derived_cast->template nth_index<0>().end();
 		while (!inf.eof()) {
 			getline(inf, temp, derived_const_cast->separator);
 			boost::trim(temp);
@@ -185,7 +183,7 @@ namespace piranha
 				if (!term.is_insertable(m_arguments)) {
 					throw bad_input("Term not insertable in named series.");
 				}
-				it_hint = derived_cast->insert(term, it_hint, derived_const_cast->m_arguments);
+				derived_cast->insert(term, derived_const_cast->m_arguments);
 			} catch (bad_input &b) {
 				std::cout << b.what() << std::endl;
 			}

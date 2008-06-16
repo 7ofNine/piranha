@@ -68,8 +68,8 @@ namespace piranha
 					tmp_term2.m_cf = complex_cf_type(std::complex<max_fast_int>(0, 1), tmp_series.m_arguments);
 					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
 					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_series.insert(tmp_term1, tmp_series.template nth_index<0>().end(), tmp_series.m_arguments);
-					tmp_series.insert(tmp_term2, tmp_series.template nth_index<0>().end(), tmp_series.m_arguments);
+					tmp_series.insert(tmp_term1, tmp_series.m_arguments);
+					tmp_series.insert(tmp_term2, tmp_series.m_arguments);
 					// Take care of the coefficient-only term, if any.
 					if (int_linear_term.second.first.size() > 0) {
 						std::complex<Derived> tmp_series2;
@@ -79,9 +79,8 @@ namespace piranha
 								int_linear_term.second.first[0].complexp(tmp_series2.m_arguments),
 								typename std::complex<Derived>::term_type::cf_type::term_type::key_type()
 							),
-							tmp_term.m_cf.template nth_index<0>().end(),
 							tmp_series2.m_arguments);
-						tmp_series2.insert(tmp_term, tmp_series2.template nth_index<0>().end(), tmp_series2.m_arguments);
+						tmp_series2.insert(tmp_term, tmp_series2.m_arguments);
 						tmp_series *= tmp_series2;
 					}
 					retval *= tmp_series;

@@ -56,8 +56,6 @@ namespace piranha
 			friend class Truncator<poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> >;
 			typedef typename Series1::const_sorted_iterator const_iterator1;
 			typedef typename Series2::const_sorted_iterator const_iterator2;
-			typedef typename Series1::sorted_iterator iterator1;
-			typedef typename Series2::sorted_iterator iterator2;
 			typedef Series1 series_type1;
 			typedef Series2 series_type2;
 			typedef typename ancestor::term_type1 term_type1;
@@ -211,7 +209,6 @@ namespace piranha
 				__PDEBUG(std::cout << "Done multiplying\n");
 				// Decode and insert the results into return value.
 				term_type1 tmp_term;
-				iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
 				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
 					// Take a shortcut and check for ignorability of the coefficient here.
 					// This way we avoid decodification, and all the series term insertion yadda-yadda.
@@ -222,7 +219,7 @@ namespace piranha
 						tmp_term.m_cf = vc_res_cos[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = true;
-						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
+						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 					}
 				}
 				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
@@ -233,7 +230,7 @@ namespace piranha
 						tmp_term.m_cf = vc_res_sin[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = false;
-						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
+						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 					}
 				}
 				// Call dtors for the coefficients in the allocated space.
@@ -325,14 +322,13 @@ namespace piranha
 				}
 				__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 				term_type1 tmp_term;
-				iterator1 it_hint = ancestor::m_retval.template nth_index<0>().end();
 				{
 					const c_iterator c_it_f = cms_cos.end();
 					for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
 						tmp_term.m_cf = c_it->m_cf;
 						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 						tmp_term.m_key.flavour() = true;
-						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
+						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 					}
 				}
 				{
@@ -341,7 +337,7 @@ namespace piranha
 						tmp_term.m_cf = c_it->m_cf;
 						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 						tmp_term.m_key.flavour() = false;
-						it_hint = ancestor::m_retval.insert(tmp_term, it_hint, ancestor::m_args_tuple);
+						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 					}
 				}
 				__PDEBUG(std::cout << "Done Poisson series hash coded\n");

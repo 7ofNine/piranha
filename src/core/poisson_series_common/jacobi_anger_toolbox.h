@@ -61,7 +61,6 @@ namespace piranha
 		private:
 			template <class Iterator, class ArgsTuple>
 			static std::complex<Derived> jacang_term(const Iterator &it, const ArgsTuple &args_tuple) {
-				typedef typename std::complex<Derived>::const_sorted_iterator const_sorted_iterator;
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
 				// The Jacobi-Anger development is a development into bessel functions of the first kind starting
@@ -72,12 +71,11 @@ namespace piranha
 				{
 					complex_term_type tmp_term;
 					tmp_term.m_cf.real(it->m_cf.besselJ(0, args_tuple), args_tuple);
-					retval.insert(tmp_term, retval.template nth_index<0>().end(), args_tuple);
+					retval.insert(tmp_term, args_tuple);
 				}
 				const size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<max_fast_int> tmp_trig_mults(w);
 				std::complex<max_fast_int> cos_multiplier(0, 2);
-				const_sorted_iterator it_hint = retval.template nth_index<0>().end();
 				for (size_t i = 1; i <= n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.real(it->m_cf.besselJ((max_fast_int)i, args_tuple), args_tuple);
@@ -98,7 +96,7 @@ namespace piranha
 							tmp_term.m_key.flavour() = false;
 						}
 					}
-					it_hint = retval.insert(tmp_term, it_hint, args_tuple);
+					retval.insert(tmp_term, args_tuple);
 					// Update the multiplier for cosine terms.
 					cos_multiplier *= std::complex<max_fast_int>(0, 1);
 				}

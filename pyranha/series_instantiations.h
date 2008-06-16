@@ -73,7 +73,7 @@ namespace pyranha
 		// Take care of exposing the series' indices.
 		expose_series_indices(inst);
 		// Some special methods.
-		inst.def("__copy__", &T::copy);
+		inst.def("__copy__", &T::__copy__);
 		inst.def("__repr__", &T::__repr__);
 		inst.def("__len__", &T::length);
 		inst.def("save_to", &T::save_to, "Save series to file.");

@@ -55,15 +55,15 @@ namespace piranha
 			// Evaluation type. Used internally.
 			typedef typename eval_type<Derived>::type eval_type;
 		public:
-			template <bool, bool, class Term2, class SortedIterator, class ArgsTuple>
-			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
-			template <class Term2, class SortedIterator, class ArgsTuple>
-			SortedIterator insert(const Term2 &, SortedIterator, const ArgsTuple &);
+			template <bool, bool, class Term2, class ArgsTuple>
+			void insert(const Term2 &, const ArgsTuple &);
+			template <class Term2, class ArgsTuple>
+			void insert(const Term2 &, const ArgsTuple &);
 			template <int N, class Iterator, class ArgsTuple>
 			void term_erase(Iterator, const ArgsTuple &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
-			Derived copy() const;
+			Derived __copy__() const;
 			size_t length() const;
 			template <class ArgsTuple>
 			eval_type eval(const double &, const ArgsTuple &) const;
@@ -132,10 +132,10 @@ namespace piranha
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);
-			template <bool, class SortedIterator, class ArgsTuple>
-			SortedIterator ll_insert(const term_type &, SortedIterator, const ArgsTuple &);
-			template <bool, class SortedIterator, class ArgsTuple>
-			SortedIterator term_insert_new(const term_type &, SortedIterator, const ArgsTuple &);
+			template <bool, class ArgsTuple>
+			void ll_insert(const term_type &, const ArgsTuple &);
+			template <bool, class ArgsTuple>
+			void term_insert_new(const term_type &, const ArgsTuple &);
 			template <class PinpointIterator, class ArgsTuple>
 			void term_update(PinpointIterator, cf_type &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>

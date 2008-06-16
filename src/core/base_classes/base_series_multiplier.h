@@ -114,14 +114,12 @@ namespace piranha
 			// fetch the terms from there and put them into retval.
 			void plain_insert_result_into_retval() {
 				typedef typename mult_set::const_iterator hash_iterator;
-				typedef typename Series1::sorted_iterator sorted_iterator;
 				term_type1 term;
-				sorted_iterator it_hint = m_retval.template nth_index<0>().end();
 				const hash_iterator it_f = m_set.end();
 				for (hash_iterator it = m_set.begin(); it != it_f; ++it) {
 					term.m_cf = it->m_cf;
 					term.m_key = it->m_key;
-					it_hint = m_retval.template insert<false, true>(term, it_hint, m_args_tuple);
+					m_retval.template insert<false, true>(term, m_args_tuple);
 				}
 			}
 		protected:

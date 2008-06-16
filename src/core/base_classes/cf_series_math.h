@@ -32,13 +32,12 @@ namespace piranha
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::term_type term_type;
 		Derived retval;
-		const_sorted_iterator it_hint = retval.template nth_index<0>().end();
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.invert_sign(args_tuple);
 			// No need to check, we are merging terms from this series.
-			it_hint = retval.template insert<false, true>(term, it_hint, args_tuple);
+			retval.template insert<false, true>(term, args_tuple);
 		}
 		derived_cast->swap_terms(retval);
 	}

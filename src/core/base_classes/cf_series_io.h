@@ -37,7 +37,6 @@ namespace piranha
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::term_type term_type;
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const char separator = Derived::separator;
 		std::string str(str_);
 		// Remove extra spaces.
@@ -45,8 +44,6 @@ namespace piranha
 		// Split into single terms.
 		std::vector<std::string> vs;
 		boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
-		// Fetch the end of the sorted index as hint.
-		const_sorted_iterator it_hint = derived_const_cast->template nth_index<0>().end();
 		const size_t length = vs.size();
 		for (size_t i = 0; i < length; ++i) {
 			try {
@@ -59,7 +56,7 @@ namespace piranha
 				if (!term.is_insertable(args_tuple)) {
 					throw term_not_insertable("Term not insertable in cf_series.");
 				}
-				it_hint = derived_cast->insert(term, it_hint, args_tuple);
+				derived_cast->insert(term, args_tuple);
 			} catch (const bad_input &bi) {
 				std::cout << bi.what() << std::endl;
 			} catch (const term_not_insertable &tni) {

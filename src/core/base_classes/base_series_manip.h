@@ -67,25 +67,19 @@ namespace piranha
 	 * This function performs some checks and then calls ll_insert.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool CanonicalCheck, bool Sign, class Term2, class SortedIterator, class ArgsTuple>
-	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_,
-			SortedIterator it_hint, const ArgsTuple &args_tuple)
+	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, const ArgsTuple &args_tuple)
 	{
-		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		// We need to do this because when doing insert_new we may need to change sign. We need a non-const sorted
 		// iterator to do that.
 		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
 		p_assert(converted_term.result.is_insertable(args_tuple));
 		term_type *new_term(0);
-		switch (unlikely(converted_term.result.needs_padding(args_tuple))) {
-		case true:
+		if (unlikely(converted_term.result.needs_padding(args_tuple))) {
 			new_term = term_type::allocator.allocate(1);
 			term_type::allocator.construct(new_term, converted_term.result);
 			new_term->pad_right(args_tuple);
-			break;
-		case false:
-			;
 		}
 		if (CanonicalCheck) {
 			if (!converted_term.result.is_canonical(args_tuple)) {
@@ -102,20 +96,18 @@ namespace piranha
 		} else {
 			insert_term = new_term;
 		}
-		SortedIterator ret_it = ll_insert<Sign>(*insert_term, it_hint, args_tuple);
+		ll_insert<Sign>(*insert_term, args_tuple);
 		if (new_term != 0) {
 			term_type::allocator.destroy(new_term);
 			term_type::allocator.deallocate(new_term, 1);
 		}
-		return ret_it;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class Term2, class SortedIterator, class ArgsTuple>
-	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term,
-			SortedIterator it_hint, const ArgsTuple &args_tuple)
+	template <class Term2, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, const ArgsTuple &args_tuple)
 	{
-		return insert<true, true>(term, it_hint, args_tuple);
+		insert<true, true>(term, args_tuple);
 	}
 
 	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
@@ -129,22 +121,18 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool Sign, class SortedIterator, class ArgsTuple>
-	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term,
-			SortedIterator it_hint, const ArgsTuple &args_tuple)
+	template <bool Sign, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
 	{
-		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
 		typedef typename Derived::pinpoint_iterator pinpoint_iterator;
 		if (term.is_ignorable(args_tuple)) {
-			return derived_const_cast->template nth_index<0>().end();
+			return;
 		}
 		p_assert(term.is_insertable(args_tuple) && !term.needs_padding(args_tuple) && term.is_canonical(args_tuple));
-		SortedIterator ret_it;
 		pinpoint_iterator it(find_term<pinpoint_iterator>(term));
 		if (it == derived_const_cast->template nth_index<1>().end()) {
-			// The term is NOT a duplicate, insert in the set. Record where we inserted,
-			// so it can be used in additions and multiplications.
-			ret_it = term_insert_new<Sign>(term, it_hint, args_tuple);
+			// The term is NOT a duplicate, insert in the set.
+			term_insert_new<Sign>(term, args_tuple);
 			stats::insert();
 		} else {
 			// The term is in the set, hence an existing term will be modified.
@@ -165,35 +153,29 @@ namespace piranha
 			} else {
 				term_update(it, new_c, args_tuple);
 			}
-			// If we are erasing or updating there's no point in giving an hint on where
-			// the action took place, just return the end() iterator.
-			ret_it = derived_cast->template nth_index<0>().end();
 			stats::pack();
 		}
-		return ret_it;
 	}
 
 	// Insert a new term into the series
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <bool Sign, class SortedIterator, class ArgsTuple>
-	inline SortedIterator base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
-			SortedIterator it_hint, const ArgsTuple &args_tuple)
+	template <bool Sign, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
+		const ArgsTuple &args_tuple)
 	{
-		BOOST_STATIC_ASSERT((boost::is_same<SortedIterator, typename Derived::sorted_iterator>::value));
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
-		SortedIterator it_new(derived_cast->template nth_index<0>().insert(it_hint, term));
-		// TODO: use asserts here? The problem here is that we are using hinted
-		// insertion, the return value is different from above (but above an assert
-		// is needed too).
-		p_assert(it_new != derived_const_cast->template nth_index<0>().end());
+		// TODO: change the insert function here after switching to sequenced indices.
+		const_sorted_iterator it_new(derived_cast->template nth_index<0>().insert(
+			derived_cast->template nth_index<0>().end(), term));
+		// TODO: use asserts here? Above an assert is needed too (where?).
+		// TODO: restore the assertion once we switch to sequenced indices.
+		// p_assert(result);
 		if (!Sign) {
-			// This is an O(1) operation, since the order in the set is not changed
-			// There is a re-hash involved, it still should be cheaper than
-			// creating a new term though.
+			// This is an O(1) operation, with a re-hash involved.
 			modifier_invert_term_sign<ArgsTuple> m(args_tuple);
 			action_assert(derived_cast->template nth_index<0>().modify(it_new, m));
 		}
-		return it_new;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -235,16 +217,14 @@ namespace piranha
 		const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::sorted_iterator sorted_iterator;
 		typedef typename Derived::term_type term_type;
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		sorted_iterator it_hint = retval.template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
 				it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.apply_layout(args_tuple, l);
 			term.m_key.apply_layout(args_tuple, l);
-			it_hint = retval.insert(term, it_hint, args_tuple);
+			retval.insert(term, args_tuple);
 		}
 	}
 
@@ -266,16 +246,13 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::sorted_iterator sorted_iterator;
 		typedef typename Derived::term_type term_type;
 		typedef typename term_type::cf_type cf_type;
 		typedef typename term_type::key_type key_type;
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		sorted_iterator it_hint = retval.template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
-			it_hint = retval.insert(
+			retval.insert(
 						  term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
-						  it_hint,
 						  args_tuple
 					  );
 		}
