@@ -32,7 +32,6 @@
 
 namespace piranha
 {
-	// This assumes that trigonometric variables are in position 1 of the arguments tuples.
 	template <int TrigPos, class Derived>
 	class jacobi_anger_toolbox
 	{

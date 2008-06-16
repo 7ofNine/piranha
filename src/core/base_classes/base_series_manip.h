@@ -33,12 +33,14 @@ namespace piranha
 	 * Non-specialized version, it will create a copy of the converted term.
 	 */
 	template <class Term2, class Term1>
-	struct term_converter {
-		/// Constructor.
-		template <class ArgsTuple>
-		explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c, a) {}
-		/// Copy of the converted term.
-		const Term1	result;
+	class term_converter
+	{
+		public:
+			/// Constructor.
+			template <class ArgsTuple>
+			explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c, a) {}
+			/// Copy of the converted term.
+			const Term1	result;
 	};
 
 	/// Specialized term converter.
@@ -47,12 +49,14 @@ namespace piranha
 	 * to the convertee is stored inside the class.
 	 */
 	template <class Term2>
-	struct term_converter<Term2, Term2> {
-		/// Constructor.
-		template <class ArgsTuple>
-		explicit term_converter(const Term2 &c, const ArgsTuple &): result(c) {}
-		/// Reference to the converted term.
-		const Term2 &result;
+	class term_converter<Term2, Term2>
+	{
+		public:
+			/// Constructor.
+			template <class ArgsTuple>
+			explicit term_converter(const Term2 &c, const ArgsTuple &): result(c) {}
+			/// Reference to the converted term.
+			const Term2 &result;
 	};
 
 	// TODO: update doc here.
@@ -161,13 +165,13 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
-		const ArgsTuple &args_tuple)
+			const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		// TODO: change the insert function here after switching to sequenced indices.
 		const_sorted_iterator it_new(derived_cast->template nth_index<0>().insert(
-			derived_cast->template nth_index<0>().end(), term));
+										 derived_cast->template nth_index<0>().end(), term));
 		// TODO: use asserts here? Above an assert is needed too (where?).
 		// TODO: restore the assertion once we switch to sequenced indices.
 		// p_assert(result);
@@ -252,9 +256,9 @@ namespace piranha
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			retval.insert(
-						  term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
-						  args_tuple
-					  );
+				term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
+				args_tuple
+			);
 		}
 	}
 }

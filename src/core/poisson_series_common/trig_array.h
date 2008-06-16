@@ -48,14 +48,13 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
-			// Start INTERFACE definition.
-			//-------------------------------------------------------
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array(), trig_commons::trig_array_commons(s) {}
+			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array(),
+					trig_commons::trig_array_commons(s) {}
 			template <class ArgsTuple>
 			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			// Probing.
@@ -108,8 +107,6 @@ namespace piranha
 					ret2[i] = (*this)[i];
 				}
 			}
-			// End INTERFACE definition.
-			//-------------------------------------------------------
 	};
 }
 
