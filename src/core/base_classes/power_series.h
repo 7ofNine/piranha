@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POWER_SERIES_H
 #define PIRANHA_POWER_SERIES_H
 
+#include <algorithm> // For max_element and min_element.
 #include <boost/static_assert.hpp>
 
 #include "../integer_typedefs.h"
@@ -32,13 +33,27 @@
 namespace piranha
 {
 	/// Power series toolbox.
-	/**
-	* This toolbox assumes that the terms of the series in all echelons are sorted in ascending total degree.
-	*/
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
 	class power_series
 	{
 			BOOST_STATIC_ASSERT(ExpoArgsPosition >= 0);
+			template <class Term>
+			class degree_binary_predicate
+			{
+				public:
+					bool operator()(const Term &t1, const Term &t2) const {
+						return (t1.template get<ExpoTermPosition>().degree() < t2.template get<ExpoTermPosition>().degree());
+					}
+			};
+			template <class Term>
+			class min_degree_binary_predicate
+			{
+				public:
+					bool operator()(const Term &t1, const Term &t2) const {
+						return (t1.template get<ExpoTermPosition>().min_degree() <
+							t2.template get<ExpoTermPosition>().min_degree());
+					}
+			};
 		public:
 			static const int expo_args_position = ExpoArgsPosition;
 			static const int expo_term_position = ExpoTermPosition;
@@ -47,16 +62,24 @@ namespace piranha
 				if (derived_const_cast->template nth_index<0>().empty()) {
 					return 0;
 				}
-				typename Derived::const_sorted_iterator it = derived_const_cast->template nth_index<0>().end();
-				--it;
-				return (it->template get<ExpoTermPosition>().degree());
+				const typename Derived::const_sorted_iterator result(std::max_element(
+					derived_const_cast->template nth_index<0>().begin(),
+					derived_const_cast->template nth_index<0>().end(),
+					degree_binary_predicate<typename Derived::term_type>()
+				));
+				return result->template get<ExpoTermPosition>().degree();
 			}
 			/// Get the minimum degree of the power series.
 			max_fast_int min_degree() const {
 				if (derived_const_cast->template nth_index<0>().empty()) {
 					return 0;
 				}
-				return derived_const_cast->template nth_index<0>().begin()->template get<ExpoTermPosition>().min_degree();
+				const typename Derived::const_sorted_iterator result(std::min_element(
+					derived_const_cast->template nth_index<0>().begin(),
+					derived_const_cast->template nth_index<0>().end(),
+					min_degree_binary_predicate<typename Derived::term_type>()
+				));
+				return result->template get<ExpoTermPosition>().min_degree();
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				p_assert(!derived_const_cast->empty());
