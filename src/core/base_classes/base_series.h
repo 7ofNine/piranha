@@ -21,8 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_H
 #define PIRANHA_BASE_SERIES_H
 
-#include <boost/static_assert.hpp>
-
+#include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../p_assert.h"
@@ -95,7 +94,7 @@ namespace piranha
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.
-			BOOST_STATIC_ASSERT(separator != term_type::separator);
+			p_static_check(separator != term_type::separator,"");
 			template <class Number, class ArgsTuple>
 			void construct_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
@@ -212,7 +211,7 @@ namespace piranha
 		return m_container.template get<N>(); \
 	} \
 	static const int n_indices = container_type::n_indices; \
-	BOOST_STATIC_ASSERT(n_indices > 0);
+	p_static_check(n_indices > 0,"");
 }
 
 #include "base_series_io.h"

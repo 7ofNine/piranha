@@ -50,4 +50,12 @@
 #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
+// C++0x support.
+#ifdef _PIRANHA_CPP0X
+#define p_static_check(expr,descr) static_assert(expr,descr)
+#else
+#include <boost/static_assert.hpp>
+#define p_static_check(expr,descr) BOOST_STATIC_ASSERT(expr)
+#endif
+
 #endif
