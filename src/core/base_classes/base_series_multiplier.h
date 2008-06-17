@@ -64,13 +64,14 @@ namespace piranha
 			>
 			mult_set;
 			BOOST_STATIC_ASSERT((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value));
-			typedef cf_mult_proxy<typename term_type1::cf_type> cf_proxy_type1;
-			typedef cf_mult_proxy<typename term_type2::cf_type> cf_proxy_type2;
-			typedef key_mult_proxy<typename term_type1::key_type> key_proxy_type;
+			typedef typename term_type1::template rebind<typename term_type1::cf_type::proxy::type,
+				typename term_type1::key_type::proxy::type>::type term_proxy_type1;
+			typedef typename term_type2::template rebind<typename term_type2::cf_type::proxy::type,
+				typename term_type2::key_type::proxy::type>::type term_proxy_type2;
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.template nth_index<0>().size()),
-					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval), m_terms1(m_size1), m_terms2(m_size2),
+					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval), m_terms1(), m_terms2(),
 					m_trunc(*derived_cast) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
@@ -99,14 +100,14 @@ namespace piranha
 					}
 				}
 			}
-			template <class Series>
-			void cache_series_terms(const Series &s,
-									std::vector<typename Series::term_type const *> &terms) {
+			template <class Series, class Term>
+			void cache_series_terms(const Series &s, std::vector<Term> &terms) {
 				typedef typename Series::const_sorted_iterator const_sorted_iterator;
+				p_assert(terms.empty());
 				const const_sorted_iterator it_f = s.template nth_index<0>().end();
 				size_t i = 0;
 				for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it) {
-					terms[i] = &(*it);
+					terms.push_back(*it);
 					++i;
 				}
 			}
@@ -133,9 +134,9 @@ namespace piranha
 			const size_t                  	m_size2;
 			// Reference to the result.
 			Series1                       	&m_retval;
-			// Vectors of pointers to the input terms.
-			std::vector<term_type1 const *>	m_terms1;
-			std::vector<term_type2 const *>	m_terms2;
+			// Vectors of proxies for the input terms.
+			std::vector<term_proxy_type1>	m_terms1;
+			std::vector<term_proxy_type2>	m_terms2;
 			// Container to store the result of the multiplications.
 			mult_set                      	m_set;
 			// Truncator. This must be the last one defined because it will use *this

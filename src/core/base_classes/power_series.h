@@ -51,7 +51,7 @@ namespace piranha
 				public:
 					bool operator()(const Term &t1, const Term &t2) const {
 						return (t1.template get<ExpoTermPosition>().min_degree() <
-							t2.template get<ExpoTermPosition>().min_degree());
+								t2.template get<ExpoTermPosition>().min_degree());
 					}
 			};
 		public:
@@ -63,10 +63,10 @@ namespace piranha
 					return 0;
 				}
 				const typename Derived::const_sorted_iterator result(std::max_element(
-					derived_const_cast->template nth_index<0>().begin(),
-					derived_const_cast->template nth_index<0>().end(),
-					degree_binary_predicate<typename Derived::term_type>()
-				));
+							derived_const_cast->template nth_index<0>().begin(),
+							derived_const_cast->template nth_index<0>().end(),
+							degree_binary_predicate<typename Derived::term_type>()
+						));
 				return result->template get<ExpoTermPosition>().degree();
 			}
 			/// Get the minimum degree of the power series.
@@ -75,10 +75,10 @@ namespace piranha
 					return 0;
 				}
 				const typename Derived::const_sorted_iterator result(std::min_element(
-					derived_const_cast->template nth_index<0>().begin(),
-					derived_const_cast->template nth_index<0>().end(),
-					min_degree_binary_predicate<typename Derived::term_type>()
-				));
+							derived_const_cast->template nth_index<0>().begin(),
+							derived_const_cast->template nth_index<0>().end(),
+							min_degree_binary_predicate<typename Derived::term_type>()
+						));
 				return result->template get<ExpoTermPosition>().min_degree();
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {

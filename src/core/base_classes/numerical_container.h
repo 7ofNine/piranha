@@ -51,8 +51,11 @@ namespace piranha
 			typedef typename eval_type<Derived>::type eval_type;
 			friend class numerical_container_complex_toolbox<Derived>;
 		public:
-			// Start implementation of basic pseries coefficient interface.
-			//------------
+			class proxy
+			{
+				public:
+					typedef Derived type;
+			};
 			// Ctors.
 			explicit numerical_container(): m_value(0) {}
 			template <class ArgsTuple>

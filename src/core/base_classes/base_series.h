@@ -94,7 +94,7 @@ namespace piranha
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.
-			p_static_check(separator != term_type::separator,"");
+			p_static_check(separator != term_type::separator, "");
 			template <class Number, class ArgsTuple>
 			void construct_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>

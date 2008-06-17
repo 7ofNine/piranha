@@ -45,6 +45,12 @@ namespace piranha
 	class cf_series
 	{
 		public:
+			// Default proxy implementation (equivalent to copying over the coefficient series during multiplication).
+			class proxy
+			{
+				public:
+					typedef Derived type;
+			};
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>

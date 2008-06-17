@@ -85,8 +85,8 @@ namespace piranha
 				return true;
 			}
 			template <class Term1, class Term2>
-			bool skip(const Term1 *t1, const Term2 *t2) const {
-				return (t1->m_cf.norm(m_multiplier.m_args_tuple) * t2->m_cf.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
+			bool skip(const Term1 &t1, const Term2 &t2) const {
+				return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
 			}
 		private:
 			Multiplier    &m_multiplier;

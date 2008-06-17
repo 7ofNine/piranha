@@ -63,16 +63,16 @@ namespace piranha
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
 				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
-				derived_const_cast->m_terms1[i1]->m_key.upload_ints_to(m_min_max1);
-				derived_const_cast->m_terms2[i2]->m_key.upload_ints_to(m_min_max2);
+				derived_const_cast->m_terms1[i1].m_key.upload_ints_to(m_min_max1);
+				derived_const_cast->m_terms2[i2].m_key.upload_ints_to(m_min_max2);
 				// Move to the second terms and cycle on all remaining terms.
 				++i1;
 				++i2;
 				for (; i1 < derived_const_cast->m_size1; ++i1) {
-					derived_cast->m_terms1[i1]->m_key.test_min_max_ints(m_min_max1);
+					derived_cast->m_terms1[i1].m_key.test_min_max_ints(m_min_max1);
 				}
 				for (; i2 < derived_const_cast->m_size2; ++i2) {
-					derived_cast->m_terms2[i2]->m_key.test_min_max_ints(m_min_max2);
+					derived_cast->m_terms2[i2].m_key.test_min_max_ints(m_min_max2);
 				}
 				__PDEBUG(std::cout << "Limits are:\n";
 				for (size_t i = 0; i < m_min_max1.size(); ++i) {
@@ -125,33 +125,33 @@ namespace piranha
 			/// Code keys.
 			void code_keys() {
 				for (size_t i = 0; i < derived_const_cast->m_size1; ++i) {
-					derived_const_cast->m_terms1[i]->m_key.code(m_coding_vector, m_ckeys1[i], derived_const_cast->m_args_tuple);
+					derived_const_cast->m_terms1[i].m_key.code(m_coding_vector, m_ckeys1[i], derived_const_cast->m_args_tuple);
 				}
 				for (size_t i = 0; i < derived_const_cast->m_size2; ++i) {
-					derived_const_cast->m_terms2[i]->m_key.code(m_coding_vector, m_ckeys2[i], derived_const_cast->m_args_tuple);
+					derived_const_cast->m_terms2[i].m_key.code(m_coding_vector, m_ckeys2[i], derived_const_cast->m_args_tuple);
 				}
 			}
 		protected:
 			// Is coded representation viable?
-			bool                                                  m_cr_is_viable;
+			bool													m_cr_is_viable;
 			// Size of the coding vector, min_max vectors, etc.
-			const size_t                                          m_size;
+			const size_t											m_size;
 			// Vectors of minimum and maximum value pairs for the series being multiplied.
-			std::vector<std::pair<max_fast_int, max_fast_int> >    m_min_max1;
-			std::vector<std::pair<max_fast_int, max_fast_int> >    m_min_max2;
+			std::vector<std::pair<max_fast_int, max_fast_int> >		m_min_max1;
+			std::vector<std::pair<max_fast_int, max_fast_int> >		m_min_max2;
 			// Vector of minimum and maximum value pairs for the resulting series.
 			// GMP is used to avoid trespassing the range limits of max_fast_int.
-			std::vector<std::pair<mpz_class, mpz_class> >          m_res_min_max;
+			std::vector<std::pair<mpz_class, mpz_class> >			m_res_min_max;
 			// Version of the above downcast to fast integer type.
-			std::vector<std::pair<max_fast_int, max_fast_int> >    m_fast_res_min_max;
+			std::vector<std::pair<max_fast_int, max_fast_int> >		m_fast_res_min_max;
 			// Coding vector.
-			std::vector<max_fast_int>                             m_coding_vector;
+			std::vector<max_fast_int>								m_coding_vector;
 			// Mininum and maximum values of codes.
-			max_fast_int                                          m_h_min;
-			max_fast_int                                          m_h_max;
+			max_fast_int											m_h_min;
+			max_fast_int											m_h_max;
 			// Coded keys.
-			std::vector<max_fast_int>                             m_ckeys1;
-			std::vector<max_fast_int>                             m_ckeys2;
+			std::vector<max_fast_int>								m_ckeys1;
+			std::vector<max_fast_int>								m_ckeys2;
 	};
 }
 

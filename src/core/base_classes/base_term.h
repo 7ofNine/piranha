@@ -311,6 +311,15 @@ namespace piranha
 	{
 		return t.m_key.hash_value();
 	}
+
+// Rebinder for term of type "term_name".
+#define TERM_REBINDER(term_name) \
+	template <class OtherCf, class OtherKey> \
+	class rebind \
+	{ \
+		public: \
+			typedef term_name<OtherCf,OtherKey,Separator,Allocator> type; \
+	};
 }
 
 #undef __PIRANHA_BASE_TERM_TP_DECL

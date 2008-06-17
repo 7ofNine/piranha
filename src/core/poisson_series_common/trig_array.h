@@ -48,6 +48,16 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
+// 			class proxy
+// 			{
+// 				public:
+// 					typedef proxy type;
+// 					proxy &operator=(const trig_array &t) {
+// 						m_ptr = &t;
+// 					}
+// 				private:
+// 					trig_array *m_ptr;
+// 			};
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}
