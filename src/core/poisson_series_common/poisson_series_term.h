@@ -44,8 +44,6 @@ namespace piranha
 			typedef Trig trig_type;
 			/// Result of the multiplication of two terms.
 			typedef typename boost::tuple<poisson_series_term, poisson_series_term> multiplication_result;
-			/// Operators used during term multiplication.
-			//typedef typename boost::tuples<subtraction,addition> multiplication_key_operators;
 			/// Default constructor.
 			explicit poisson_series_term(): ancestor() {}
 			/// Ctor from string.
