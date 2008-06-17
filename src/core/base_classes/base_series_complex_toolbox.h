@@ -157,9 +157,9 @@ namespace piranha
 		private:
 			template <class Complex, class ArgsTuple>
 			Derived &divide_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
-				if (c.real() == 0 and c.imag() == 0) {
+				if (c.real() == 0 && c.imag() == 0) {
 					throw division_by_zero();
-				} else if (c.real() != 1 or c.imag() != 0) {
+				} else if (c.real() != 1 || c.imag() != 0) {
 					Derived retval(derived_cast->divide_coefficients_by(c, args_tuple));
 					derived_cast->swap_terms(retval);
 				}
@@ -167,10 +167,10 @@ namespace piranha
 			}
 			template <class Complex, class ArgsTuple>
 			Derived &mult_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
-				if (c.real() == 0 and c.imag() == 0) {
+				if (c.real() == 0 && c.imag() == 0) {
 					Derived retval;
 					derived_cast->swap_terms(retval);
-				} else if (c.real() != 1 or c.imag() != 0) {
+				} else if (c.real() != 1 || c.imag() != 0) {
 					Derived retval(derived_cast->multiply_coefficients_by(c, args_tuple));
 					derived_cast->swap_terms(retval);
 				}

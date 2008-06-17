@@ -164,7 +164,7 @@ namespace std
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (m_value.real() == 0 and m_value.imag() == 0);
+				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -179,9 +179,9 @@ namespace std
 				complex retval;
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						throw piranha::division_by_zero();
-					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
@@ -201,9 +201,9 @@ namespace std
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
 				if (y < 0) {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						throw piranha::division_by_zero();
-					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
@@ -215,10 +215,10 @@ namespace std
 					retval.m_value.imag() = 0;
 					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						retval.m_value.real() = 0;
 						retval.m_value.imag() = 0;
-					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {

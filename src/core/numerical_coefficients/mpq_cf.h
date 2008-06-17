@@ -109,7 +109,7 @@ namespace piranha
 			template <class ArgsTuple>
 			mpq_cf pow(const max_fast_int &n, const ArgsTuple &) const {
 				mpq_cf retval;
-				if (m_value == 0 and n < 0) {
+				if (m_value == 0 && n < 0) {
 					throw division_by_zero();
 				}
 				if (n < 0) {
@@ -238,14 +238,14 @@ namespace std
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (m_value.real() == 0 and m_value.imag() == 0);
+				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
 			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
 				complex retval;
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						throw piranha::division_by_zero();
 						// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
 					} else {
@@ -278,9 +278,9 @@ namespace std
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
 				if (y < 0) {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						throw piranha::division_by_zero();
-					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
@@ -292,10 +292,10 @@ namespace std
 					retval.m_value.imag() = 0;
 					// If y > 0, we can accept only 0^y and 1^y.
 				} else {
-					if (m_value.real() == 0 and m_value.imag() == 0) {
+					if (m_value.real() == 0 && m_value.imag() == 0) {
 						retval.m_value.real() = 0;
 						retval.m_value.imag() = 0;
-					} else if (m_value.real() == 1 and m_value.imag() == 0) {
+					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {

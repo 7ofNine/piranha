@@ -102,11 +102,11 @@ namespace piranha
 		protected:
 			template <class Number>
 			Derived &complex_division_helper(const std::complex<Number> &x) {
-				if (x.real() == 0 and x.imag() == 0) {
+				if (x.real() == 0 && x.imag() == 0) {
 					throw division_by_zero();
 				}
 				// Do something only if we are not dividing by one.
-				if (x.real() != 1 or x.imag() != 0) {
+				if (x.real() != 1 || x.imag() != 0) {
 					Derived retval;
 					const typename Derived::value_type::numerical_type abs2 = x.real() * x.real() + x.imag() * x.imag();
 					retval.m_value.real() = derived_const_cast->m_value.real() * x.real() + derived_const_cast->m_value.imag() * x.imag();

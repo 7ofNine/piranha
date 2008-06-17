@@ -90,7 +90,7 @@ namespace piranha
 				std::string tmp("$");
 				for (size_t i = 0;i < w;++i) {
 					if ((*derived_const_cast)[i] != 0) {
-						if ((*derived_const_cast)[i] > 0 and !first_one) {
+						if ((*derived_const_cast)[i] > 0 && !first_one) {
 							tmp.append("+");
 						}
 						if ((*derived_const_cast)[i] == -1) {
@@ -270,10 +270,10 @@ namespace piranha
 				Derived retval;
 				if (n < 0) {
 					// 0^-n.
-					if (int_zero and !derived_const_cast->m_flavour) {
+					if (int_zero && !derived_const_cast->m_flavour) {
 						throw division_by_zero();
 						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
-					} else if (int_zero and derived_const_cast->m_flavour) {
+					} else if (int_zero && derived_const_cast->m_flavour) {
 						;
 						// x^-n -> no go.
 					} else {
@@ -284,10 +284,10 @@ namespace piranha
 					;
 				} else {
 					// 0^n == 0.
-					if (int_zero and !derived_const_cast->m_flavour) {
+					if (int_zero && !derived_const_cast->m_flavour) {
 						retval.m_flavour = false;
 						// 1^y == 1. Don't do nothing because retval is already initialized properly.
-					} else if (int_zero and derived_const_cast->m_flavour) {
+					} else if (int_zero && derived_const_cast->m_flavour) {
 						;
 						// x^n --> no go (it should be handled by natural power routine for series).
 					} else {
@@ -303,10 +303,10 @@ namespace piranha
 				Derived retval;
 				if (y < 0) {
 					// 0^-y.
-					if (int_zero and !derived_const_cast->m_flavour) {
+					if (int_zero && !derived_const_cast->m_flavour) {
 						throw division_by_zero();
 						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
-					} else if (int_zero and derived_const_cast->m_flavour) {
+					} else if (int_zero && derived_const_cast->m_flavour) {
 						;
 						// x^-y -> no go.
 					} else {
@@ -317,10 +317,10 @@ namespace piranha
 					;
 				} else {
 					// 0^y == 0.
-					if (int_zero and !derived_const_cast->m_flavour) {
+					if (int_zero && !derived_const_cast->m_flavour) {
 						retval.m_flavour = false;
 						// 1^y == 1. Don't do nothing because retval is already initialized properly.
-					} else if (int_zero and derived_const_cast->m_flavour) {
+					} else if (int_zero && derived_const_cast->m_flavour) {
 						;
 						// x^y --> no go.
 					} else {

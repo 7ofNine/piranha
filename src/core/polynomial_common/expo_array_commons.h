@@ -139,7 +139,7 @@ namespace piranha
 						break;
 					}
 				}
-				if (!found_linear and !is_unity) {
+				if (!found_linear && !is_unity) {
 					throw unsuitable("Monomial is not linear.");
 				}
 				return candidate;
@@ -157,7 +157,7 @@ namespace piranha
 				// and the interesting exponent is not zero.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
 				// by the coefficient in the partial derivation of the whole term.
-				if (pos_tuple.template get<Derived::position>().first and derived_const_cast->m_ptr[pos] != 0) {
+				if (pos_tuple.template get<Derived::position>().first && derived_const_cast->m_ptr[pos] != 0) {
 					retval.second = *derived_const_cast;
 					retval.first = derived_const_cast->m_ptr[pos];
 					--retval.second[pos];
