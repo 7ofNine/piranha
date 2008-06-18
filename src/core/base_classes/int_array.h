@@ -61,17 +61,21 @@ namespace piranha
 			class reference_proxy
 			{
 				public:
-					reference_proxy(const Derived &d):m_ptr(&d) {}
+					reference_proxy(const Derived &d): m_ptr(&d) {}
 					template <class Vector>
-					void upload_ints_to(Vector &v) const {m_ptr->upload_ints_to(v);}
+					void upload_ints_to(Vector &v) const {
+						m_ptr->upload_ints_to(v);
+					}
 					void test_min_max_ints(std::vector<std::pair<max_fast_int, max_fast_int> > &v) const {
 						m_ptr->test_min_max_ints(v);
 					}
 					template <class CodingVector, class ArgsTuple>
 					void code(const CodingVector &v, max_fast_int &retval, const ArgsTuple &a) const {
-						m_ptr->code(v,retval,a);
+						m_ptr->code(v, retval, a);
 					}
-					size_t size() const {return m_ptr->size();}
+					size_t size() const {
+						return m_ptr->size();
+					}
 					const value_type_ &operator[](const size_t &n) const {
 						return (*m_ptr)[n];
 					}

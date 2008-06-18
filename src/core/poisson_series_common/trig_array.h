@@ -48,16 +48,18 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
-			class proxy:public ancestor::reference_proxy
+			class proxy: public ancestor::reference_proxy
 			{
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
 					typedef proxy type;
-					proxy(const trig_array &t):proxy_ancestor(t) {}
+					proxy(const trig_array &t): proxy_ancestor(t) {}
 					// These are trig_array specific.
-					bool flavour() const {return proxy_ancestor::m_ptr->flavour();}
+					bool flavour() const {
+						return proxy_ancestor::m_ptr->flavour();
+					}
 					void multiply(proxy t2, trig_array &ret1, trig_array &ret2) const {
-						proxy_ancestor::m_ptr->multiply(t2,ret1,ret2);
+						proxy_ancestor::m_ptr->multiply(t2, ret1, ret2);
 					}
 			};
 			// Ctors.

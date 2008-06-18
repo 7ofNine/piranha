@@ -50,15 +50,15 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
-			class proxy:public ancestor::reference_proxy
+			class proxy: public ancestor::reference_proxy
 			{
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
 					typedef proxy type;
-					proxy(const expo_array &e):proxy_ancestor(e) {}
+					proxy(const expo_array &e): proxy_ancestor(e) {}
 					// Expo-array specifics.
 					void multiply(proxy e2, expo_array &ret) const {
-						proxy_ancestor::m_ptr->multiply(e2,ret);
+						proxy_ancestor::m_ptr->multiply(e2, ret);
 					}
 			};
 			// Ctors.

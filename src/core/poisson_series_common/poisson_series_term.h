@@ -97,8 +97,8 @@ namespace piranha
 			 */
 			template <class Term1, class Term2, class ArgsTuple>
 			static void multiply(const Term1 &t1,
-							const Term2 &t2,
-							multiplication_result &res, const ArgsTuple &args_tuple) {
+								 const Term2 &t2,
+								 multiplication_result &res, const ArgsTuple &args_tuple) {
 				// Perform the trigonometric multiplication.
 				t1.m_key.multiply(t2.m_key, res.template get<0>().m_key, res.template get<1>().m_key);
 				// Handle coefficient multiplication. Do the first coefficient, then assign the second one.
