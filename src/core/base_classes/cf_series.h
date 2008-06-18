@@ -77,7 +77,6 @@ namespace piranha
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
 			// Interaction with proxy.
-			Derived &operator=(reference_proxy<Derived>);
 			template <class Series, class ArgsTuple>
 			Derived &mult_by(reference_proxy<Series> , const ArgsTuple &);
 		protected:
@@ -106,7 +105,8 @@ namespace piranha
 	} \
 	series_name(proxy p): base_ancestor::base_series(*p.m_ptr) {} \
 	series_name &operator=(proxy p) { \
-		return cf_ancestor::operator=(p); \
+		*this=(*p.m_ptr); \
+		return *this; \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \
