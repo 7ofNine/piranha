@@ -10,7 +10,6 @@ ENDIF(COMMAND cmake_policy)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeDependentOption)
-INCLUDE(CPack)
 INCLUDE(FindGMP)
 INCLUDE(FindPythonLibs)
 INCLUDE(PiranhaCompilerLinkerSettings)
@@ -129,3 +128,5 @@ ENDIF(BUILD_PYRANHA)
 # Install phase: find and install theories of motion
 FILE(GLOB_RECURSE THEORIES theories_of_motion/*.csv theories_of_motion/*.phl theories_of_motion/*.dat)
 INSTALL(FILES ${THEORIES} DESTINATION ${THEORIES_INSTALL_PATH})
+
+INCLUDE(CPack)
