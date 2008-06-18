@@ -41,6 +41,13 @@ namespace piranha
 		}
 		derived_cast->swap_terms(retval);
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class Series, class ArgsTuple>
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(reference_proxy<Series> p, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->mult_by(*p.m_ptr,args_tuple);
+	}
 }
 
 #endif

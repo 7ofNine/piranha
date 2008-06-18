@@ -44,13 +44,19 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class cf_series
 	{
-		public:
-			// Default proxy implementation (equivalent to copying over the coefficient series during multiplication).
-			class proxy
+		protected:
+			// Proxy implementation to be refined in derived class.
+			// Templated this way to cope with complex multiplication.
+			template <class Series>
+			class reference_proxy
 			{
+					friend class cf_series;
 				public:
-					typedef Derived type;
+					reference_proxy(const Series &d):m_ptr(&d) {}
+				protected:
+					const Series	*m_ptr;
 			};
+		public:
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -70,6 +76,10 @@ namespace piranha
 			void trim_test(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
+			// Interaction with proxy.
+			Derived &operator=(reference_proxy<Derived>);
+			template <class Series, class ArgsTuple>
+			Derived &mult_by(reference_proxy<Series> , const ArgsTuple &);
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);
@@ -93,6 +103,10 @@ namespace piranha
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
 		base_ancestor::construct_from_number(x,a); \
+	} \
+	series_name(proxy p): base_ancestor::base_series(*p.m_ptr) {} \
+	series_name &operator=(proxy p) { \
+		return cf_ancestor::operator=(p); \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \

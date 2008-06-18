@@ -72,6 +72,13 @@ namespace piranha
 	{
 		derived_const_cast->print_terms_plain(stream, args_tuple, -1);
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::operator=(reference_proxy<Derived> p)
+	{
+		*derived_cast = (*p.m_ptr);
+		return *derived_cast;
+	}
 }
 
 #endif

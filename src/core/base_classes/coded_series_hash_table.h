@@ -38,7 +38,8 @@ namespace piranha
 			static const size_t size = (size_t)N;
 			struct term {
 				term() {}
-				term(const Cf &cf, const Ckey &key): m_cf(cf), m_ckey(key) {}
+				template <class Cf2>
+				term(const Cf2 &cf, const Ckey &key): m_cf(cf), m_ckey(key) {}
 				mutable Cf  m_cf;
 				Ckey        m_ckey;
 			};

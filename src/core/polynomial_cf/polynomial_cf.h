@@ -76,6 +76,8 @@ namespace piranha
 			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
+			using POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
+			using POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -83,6 +85,14 @@ namespace piranha
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<polynomial_cf, polynomial_cf, boost::tuples::null_type, Truncator> multiplier_type;
+			class proxy:public cf_ancestor::template reference_proxy<polynomial_cf>
+			{
+					friend class polynomial_cf;
+					typedef typename cf_ancestor::template reference_proxy<polynomial_cf> proxy_ancestor;
+				public:
+					typedef proxy type;
+					proxy(const polynomial_cf &p):proxy_ancestor(p) {}
+			};
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -142,6 +152,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::subtract;
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.
@@ -152,6 +163,14 @@ namespace std
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<complex, complex, boost::tuples::null_type, Truncator> multiplier_type;
+			class proxy:public cf_ancestor::template reference_proxy<complex>
+			{
+					friend class complex;
+					typedef typename cf_ancestor::template reference_proxy<complex> proxy_ancestor;
+				public:
+					typedef proxy type;
+					proxy(const complex &c):proxy_ancestor(c) {}
+			};
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>
