@@ -74,6 +74,9 @@ namespace piranha
 					m_trunc(*derived_cast) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
+				// Reserve in advance the space for term's proxies, so that allocations are mimimized.
+				m_terms1.reserve(m_size1);
+				m_terms2.reserve(m_size2);
 				// Cache pointers the terms of the series into vectors.
 				cache_series_terms(m_s1, m_terms1);
 				cache_series_terms(m_s2, m_terms2);
