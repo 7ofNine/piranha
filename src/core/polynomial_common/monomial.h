@@ -56,12 +56,16 @@ namespace piranha
 			template <class Cf2, class ArgsTuple>
 			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term, const ArgsTuple &a):
 					ancestor(term, a) {}
+			// Same as above with arbitrary coefficients and keys. Typically used when this is a proxy term.
+			template <class Cf2, class Key2>
+			explicit monomial(const monomial<Cf2, Key2, Separator, Allocator> &term):
+					ancestor(term) {}
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
-			template <class Cf2, class ArgsTuple>
-			static void multiply(const monomial &m1, const monomial<Cf2, Expo, Separator, Allocator> &m2,
+			template <class Term1, class Term2, class ArgsTuple>
+			static void multiply(const Term1 &m1, const Term2 &m2,
 								 multiplication_result &res, const ArgsTuple &args_tuple) {
 				// Perform the multiplication of exponents.
 				m1.m_key.multiply(m2.m_key, res.template get<0>().m_key);

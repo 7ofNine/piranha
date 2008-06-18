@@ -110,11 +110,16 @@ namespace piranha
 			}
 			/// Copy ctor.
 			/**
-			 * Construct from base_term with different coefficient. Successful if coefficient can be converted.
+			 * Construct from base_term with different coefficient and key.
 			 */
 			template <class Derived2, class ArgsTuple>
 			explicit base_term(const Derived2 &t, const ArgsTuple &args_tuple):
 					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
+			// Same as above, but without the args_tuple parameter. Intended to be used with proxies
+			// for coefficients and keys.
+			template <class Derived2>
+			explicit base_term(const Derived2 &t):
+					m_cf(t.m_cf), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
 			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			template <int N>

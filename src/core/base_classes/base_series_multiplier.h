@@ -107,7 +107,7 @@ namespace piranha
 				const const_sorted_iterator it_f = s.template nth_index<0>().end();
 				size_t i = 0;
 				for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it) {
-					terms.push_back(*it);
+					terms.push_back(Term(*it));
 					++i;
 				}
 			}

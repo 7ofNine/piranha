@@ -60,6 +60,10 @@ namespace piranha
 			template <class Cf2, class ArgsTuple>
 			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term, const ArgsTuple &a):
 					ancestor(term, a) {}
+			// Same as above with arbitrary coefficients and keys. Typically used when this is a proxy term.
+			template <class Cf2, class Key2>
+			explicit poisson_series_term(const poisson_series_term<Cf2, Key2, Separator, Allocator> &term):
+					ancestor(term) {}
 			/// Smarter numerical evaluation
 			/**
 			 * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
@@ -91,9 +95,9 @@ namespace piranha
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
-			template <class Cf2, class ArgsTuple>
-			static void multiply(const poisson_series_term &t1,
-							const poisson_series_term<Cf2, trig_type, Separator, Allocator> &t2,
+			template <class Term1, class Term2, class ArgsTuple>
+			static void multiply(const Term1 &t1,
+							const Term2 &t2,
 							multiplication_result &res, const ArgsTuple &args_tuple) {
 				// Perform the trigonometric multiplication.
 				t1.m_key.multiply(t2.m_key, res.template get<0>().m_key, res.template get<1>().m_key);

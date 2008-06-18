@@ -50,6 +50,17 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
+			class proxy:public ancestor::reference_proxy
+			{
+					typedef typename ancestor::reference_proxy proxy_ancestor;
+				public:
+					typedef proxy type;
+					proxy(const expo_array &e):proxy_ancestor(e) {}
+					// Expo-array specifics.
+					void multiply(proxy e2, expo_array &ret) const {
+						proxy_ancestor::m_ptr->multiply(e2,ret);
+					}
+			};
 			// Ctors.
 			/// Default ctor.
 			expo_array(): ancestor::int_array() {}
@@ -70,8 +81,8 @@ namespace piranha
 			}
 			// Math.
 			/// Multiplication.
-			template <class ResultType>
-			void multiply(const expo_array &e2, ResultType &ret) const {
+			template <class ExpoArray, class ResultType>
+			void multiply(const ExpoArray &e2, ResultType &ret) const {
 				const size_type max_w = ancestor::size(), min_w = e2.size();
 				// Resize, if needed.
 				ret.resize(max_w);

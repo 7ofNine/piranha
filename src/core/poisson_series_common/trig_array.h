@@ -48,16 +48,18 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
-// 			class proxy
-// 			{
-// 				public:
-// 					typedef proxy type;
-// 					proxy &operator=(const trig_array &t) {
-// 						m_ptr = &t;
-// 					}
-// 				private:
-// 					trig_array *m_ptr;
-// 			};
+			class proxy:public ancestor::reference_proxy
+			{
+					typedef typename ancestor::reference_proxy proxy_ancestor;
+				public:
+					typedef proxy type;
+					proxy(const trig_array &t):proxy_ancestor(t) {}
+					// These are trig_array specific.
+					bool flavour() const {return proxy_ancestor::m_ptr->flavour();}
+					void multiply(proxy t2, trig_array &ret1, trig_array &ret2) const {
+						proxy_ancestor::m_ptr->multiply(t2,ret1,ret2);
+					}
+			};
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}
@@ -93,7 +95,8 @@ namespace piranha
 			 * @param[out] ret1 first return value.
 			 * @param[out] ret2 second return value.
 			 */
-			void multiply(const trig_array &t2, trig_array &ret1, trig_array &ret2) const
+			template <class TrigArray>
+			void multiply(const TrigArray &t2, trig_array &ret1, trig_array &ret2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
 			// critical part, so the optimization should be worth the hassle.
