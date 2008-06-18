@@ -103,7 +103,9 @@ namespace piranha
 	{ \
 		base_ancestor::construct_from_number(x,a); \
 	} \
-	series_name(proxy p): base_ancestor::base_series(*p.m_ptr) {} \
+	series_name(proxy p) { \
+		*this=(*p.m_ptr); \
+	} \
 	series_name &operator=(proxy p) { \
 		*this=(*p.m_ptr); \
 		return *this; \
