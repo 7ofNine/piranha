@@ -96,9 +96,6 @@ namespace piranha
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
 				return complex_division_helper(c);
 			}
-			double display_data() const {
-				return std::log10(1 + derived_const_cast->template norm<int>(0));
-			}
 		protected:
 			template <class Number>
 			Derived &complex_division_helper(const std::complex<Number> &x) {

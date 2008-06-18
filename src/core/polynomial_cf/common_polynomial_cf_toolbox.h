@@ -51,14 +51,7 @@ namespace piranha
 					}
 				}
 			}
-			double display_data() const {
-				return derived_const_cast->min_degree();
-			}
-			static const char *display_data_descr;
 	};
-
-	template <class Derived>
-	const char *common_polynomial_cf_toolbox<Derived>::display_data_descr = "Minimum degree of the polynomial coefficient";
 }
 
 #undef derived_const_cast
