@@ -170,25 +170,19 @@ namespace piranha
 						tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
 						const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
 														index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
-						switch (m_flavours1[i] == m_flavours2[j]) {
-						case true:
-							switch (m_flavours1[i]) {
-							case true:
+						if (m_flavours1[i] == m_flavours2[j]) {
+							if (m_flavours1[i]) {
 								vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
 								vc_res_cos[index_plus].add(tmp_cf, ancestor::m_args_tuple);
-								break;
-							case false:
+							} else {
 								vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
 								vc_res_cos[index_plus].subtract(tmp_cf, ancestor::m_args_tuple);
 							}
-							break;
-						case false:
-							switch (m_flavours1[i]) {
-							case true:
+						} else {
+							if (m_flavours1[i]) {
 								vc_res_sin[index_minus].subtract(tmp_cf, ancestor::m_args_tuple);
 								vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
-								break;
-							case false:
+							} else {
 								vc_res_sin[index_minus].add(tmp_cf, ancestor::m_args_tuple);
 								vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
 							}
@@ -201,10 +195,7 @@ namespace piranha
 				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
 					// Take a shortcut and check for ignorability of the coefficient here.
 					// This way we avoid decodification, and all the series term insertion yadda-yadda.
-					switch (likely(vc_res_cos[i].is_ignorable(ancestor::m_args_tuple))) {
-					case true:
-						break;
-					case false:
+					if (!vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)) {
 						tmp_term.m_cf = vc_res_cos[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = true;
@@ -212,10 +203,7 @@ namespace piranha
 					}
 				}
 				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
-					switch (likely(vc_res_sin[i].is_ignorable(ancestor::m_args_tuple))) {
-					case true:
-						break;
-					case false:
+					if (!vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)) {
 						tmp_term.m_cf = vc_res_sin[i];
 						coded_ancestor::decode(tmp_term.m_key, i);
 						tmp_term.m_key.flavour() = false;
@@ -253,59 +241,41 @@ namespace piranha
 						// Create the second term, using the first one's coefficient and the appropriate code.
 						cterm tmp_term2(tmp_term1.m_cf, coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
 						// Now fix flavours and coefficient signs.
-						switch (m_flavours1[i] == m_flavours2[j]) {
-						case true: {
-							switch (m_flavours1[i]) {
-							case true:
-								break;
-							case false:
+						if (m_flavours1[i] == m_flavours2[j]) {
+							if (!m_flavours1[i]) {
 								tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
 							}
 							// Insert into cosine container.
 							c_iterator it = cms_cos.find(tmp_term1.m_ckey);
-							switch (it == cms_cos.end()) {
-							case true:
+							if (it == cms_cos.end()) {
 								cms_cos.insert(tmp_term1);
-								break;
-							case false:
+							} else {
 								it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
 							}
 							it = cms_cos.find(tmp_term2.m_ckey);
-							switch (it == cms_cos.end()) {
-							case true:
+							if (it == cms_cos.end()) {
 								cms_cos.insert(tmp_term2);
-								break;
-							case false:
+							} else {
 								it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
 							}
 							break;
-						}
-						case false: {
-							switch (m_flavours1[i]) {
-							case true:
+						} else {
+							if (m_flavours1[i]) {
 								tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
-								break;
-							case false:
-								;
 							}
 							// Insert into sine container.
 							c_iterator it = cms_sin.find(tmp_term1.m_ckey);
-							switch (it == cms_sin.end()) {
-							case true:
+							if (it == cms_sin.end()) {
 								cms_sin.insert(tmp_term1);
-								break;
-							case false:
+							} else {
 								it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
 							}
 							it = cms_sin.find(tmp_term2.m_ckey);
-							switch (it == cms_sin.end()) {
-							case true:
+							if (it == cms_sin.end()) {
 								cms_sin.insert(tmp_term2);
-								break;
-							case false:
+							} else {
 								it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
 							}
-						}
 						}
 					}
 				}
