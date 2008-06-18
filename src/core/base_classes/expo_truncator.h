@@ -32,9 +32,11 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../none.h"
 #include "../p_assert.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
+#include "null_truncator.h" // For rebinding macro.
 
 namespace piranha
 {
@@ -168,10 +170,11 @@ namespace piranha
 
 	/// Truncators for polynomials based on the exponent of one or more variables.
 	template <class Multiplier>
-	class expo_truncator: public base_expo_truncator
+	class expo_truncator_: public base_expo_truncator
 	{
 		public:
-			expo_truncator(Multiplier &m):
+			PIRANHA_TRUNCATOR_REBINDER(expo_truncator_);
+			expo_truncator_(Multiplier &m):
 					m_multiplier(m),
 					m_positions(base_expo_truncator::positions_limits(
 									m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_args_position>())) {
@@ -208,6 +211,8 @@ namespace piranha
 			Multiplier                                          &m_multiplier;
 			const std::vector<std::pair<size_t, max_fast_int> >  m_positions;
 	};
+
+	typedef expo_truncator_<none> expo_truncator;
 }
 
 #endif

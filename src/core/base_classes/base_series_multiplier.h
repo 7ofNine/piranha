@@ -40,18 +40,18 @@ namespace piranha
 	/**
 	 * This class is meant to be extended to build specific multipliers.
 	 */
-	template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator, class Derived>
+	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
 	class base_series_multiplier
 	{
 			friend struct base_insert_multiplication_result;
-			friend class Truncator<Derived>;
+			friend class Truncator::template rebind<Derived>::type;
 		protected:
 			// Alias for term type of first input series and return value series.
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
 			// Alias for the truncator type.
-			typedef Truncator<Derived> truncator_type;
+			typedef typename Truncator::template rebind<Derived>::type truncator_type;
 		private:
 			typedef boost::multi_index_container
 			<

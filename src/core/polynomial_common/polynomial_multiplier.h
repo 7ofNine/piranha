@@ -42,7 +42,7 @@ namespace piranha
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	template <class Series1, class Series2, class ArgsTuple, template <class> class Truncator>
+	template <class Series1, class Series2, class ArgsTuple, class Truncator>
 	class polynomial_multiplier:
 				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
 				polynomial_multiplier<Series1, Series2, ArgsTuple, Truncator> > ,
@@ -52,7 +52,7 @@ namespace piranha
 			polynomial_multiplier<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 			typedef coded_series_multiplier<polynomial_multiplier<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 			friend class coded_series_multiplier<polynomial_multiplier<Series1, Series2, ArgsTuple, Truncator> >;
-			friend class Truncator<polynomial_multiplier<Series1, Series2, ArgsTuple, Truncator> >;
+			friend class Truncator::template rebind<polynomial_multiplier>::type;
 			typedef typename Series1::const_sorted_iterator const_iterator1;
 			typedef typename Series2::const_sorted_iterator const_iterator2;
 			typedef Series1 series_type1;

@@ -34,7 +34,7 @@ namespace piranha
 			/// Alias for evaluation type.
 			typedef typename ancestor::eval_type eval_type;
 		public:
-			TERM_REBINDER(monomial);
+			PIRANHA_TERM_REBINDER(monomial);
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for expo type.

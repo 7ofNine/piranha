@@ -170,8 +170,8 @@ namespace piranha
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, template <class> class I, \
-				template <class, class, class, template <class> class> class Multiplier, \
-				template <class> class Truncator, class Allocator
+				template <class, class, class, class> class Multiplier, \
+				class Truncator, class Allocator
 #define E0_SERIES_TP Cf,Key,I,Multiplier,Truncator,Allocator
 #define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
@@ -180,9 +180,9 @@ namespace piranha
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
 						template <class> class I0, template <class> class I1, \
-				template <class, class, class, template <class> class> class Mult0, \
-				template <class, class, class, template <class> class> class Mult1, \
-				template <class> class Trunc0, template <class> class Trunc1, \
+				template <class, class, class, class> class Mult0, \
+				template <class, class, class, class> class Mult1, \
+				class Trunc0, class Trunc1, \
 				class Allocator
 #define E1_SERIES_TP Cf,Key0,Key1,I0,I1,Mult0,Mult1,Trunc0,Trunc1,Allocator
 #define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,I0,Mult0,Trunc0,Allocator>

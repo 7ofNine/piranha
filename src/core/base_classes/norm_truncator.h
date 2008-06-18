@@ -28,7 +28,9 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../none.h"
 #include "../p_assert.h"
+#include "null_truncator.h" // For rebinding macro.
 
 namespace piranha
 {
@@ -72,10 +74,11 @@ namespace piranha
 
 	/// Norm-based truncator.
 	template <class Multiplier>
-	class norm_truncator: public base_norm_truncator
+	class norm_truncator_: public base_norm_truncator
 	{
 		public:
-			norm_truncator(Multiplier &m):
+			PIRANHA_TRUNCATOR_REBINDER(norm_truncator_);
+			norm_truncator_(Multiplier &m):
 					m_multiplier(m),
 					m_delta_threshold(
 						m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
@@ -92,6 +95,8 @@ namespace piranha
 			Multiplier    &m_multiplier;
 			const double  m_delta_threshold;
 	};
+
+	typedef norm_truncator_<none> norm_truncator;
 }
 
 #endif

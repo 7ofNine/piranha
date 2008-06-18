@@ -38,7 +38,7 @@ namespace piranha
 			/// Alias for evaluation type.
 			typedef typename ancestor::eval_type eval_type;
 		public:
-			TERM_REBINDER(poisson_series_term);
+			PIRANHA_TERM_REBINDER(poisson_series_term);
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for trigonometric type.

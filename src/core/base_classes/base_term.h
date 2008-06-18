@@ -318,7 +318,7 @@ namespace piranha
 	}
 
 // Rebinder for term of type "term_name".
-#define TERM_REBINDER(term_name) \
+#define PIRANHA_TERM_REBINDER(term_name) \
 	template <class OtherCf, class OtherKey> \
 	class rebind \
 	{ \
