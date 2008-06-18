@@ -52,7 +52,7 @@ namespace piranha
 			{
 					friend class cf_series;
 				public:
-					reference_proxy(const Series &d):m_ptr(&d) {}
+					reference_proxy(const Series &d): m_ptr(&d) {}
 				protected:
 					const Series	*m_ptr;
 			};

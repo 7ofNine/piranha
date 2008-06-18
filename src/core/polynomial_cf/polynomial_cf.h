@@ -68,6 +68,7 @@ namespace piranha
 			typedef series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename cf_ancestor::template reference_proxy<polynomial_cf> proxy_ancestor;
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -85,13 +86,12 @@ namespace piranha
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<polynomial_cf, polynomial_cf, boost::tuples::null_type, Truncator> multiplier_type;
-			class proxy:public cf_ancestor::template reference_proxy<polynomial_cf>
+			class proxy: public proxy_ancestor
 			{
 					friend class polynomial_cf;
-					typedef typename cf_ancestor::template reference_proxy<polynomial_cf> proxy_ancestor;
 				public:
 					typedef proxy type;
-					proxy(const polynomial_cf &p):proxy_ancestor(p) {}
+					proxy(const polynomial_cf &p): proxy_ancestor(p) {}
 			};
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
@@ -137,6 +137,7 @@ namespace std
 			typedef piranha::series_multiindex_backend<term_type_, I, allocator_type> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
+			typedef typename cf_ancestor::template reference_proxy<complex> proxy_ancestor;
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -163,13 +164,12 @@ namespace std
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef Multiplier<complex, complex, boost::tuples::null_type, Truncator> multiplier_type;
-			class proxy:public cf_ancestor::template reference_proxy<complex>
+			class proxy: public proxy_ancestor
 			{
 					friend class complex;
-					typedef typename cf_ancestor::template reference_proxy<complex> proxy_ancestor;
 				public:
 					typedef proxy type;
-					proxy(const complex &c):proxy_ancestor(c) {}
+					proxy(const complex &c): proxy_ancestor(c) {}
 			};
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
