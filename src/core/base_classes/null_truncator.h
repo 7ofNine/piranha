@@ -26,40 +26,34 @@
 
 namespace piranha
 {
-#define PIRANHA_TRUNCATOR_REBINDER(trunc_name) \
-			template <class OtherMultiplier> \
-			class rebind \
-			{ \
-				public: \
-					typedef trunc_name<OtherMultiplier> type; \
-			};
-
 	/// Truncator which does not truncate.
-	template <class Multiplier>
-	class null_truncator_
+	class null_truncator
 	{
 		public:
-			PIRANHA_TRUNCATOR_REBINDER(null_truncator_);
-			null_truncator_(const Multiplier &) {}
-			template <class Result>
-			bool accept(const Result &) const {
-				return true;
-			}
-			template <class Term1, class Term2>
-			bool skip(const Term1 &, const Term2 &) const {
-				return false;
-			}
-			// Limit of a power series development of a power series.
-			template <class PowerSeries, class ArgsTuple>
-			static size_t power_series_limit(const PowerSeries &, const ArgsTuple &,
-											 const int &start = 0, const int &step_size = 1) {
-				(void)start;
-				(void)step_size;
-				throw unsuitable("Null truncator cannot provide limit for power series.");
-			}
+			template <class Multiplier>
+			class get_type
+			{
+				public:
+					typedef get_type type;
+					get_type(const Multiplier &) {}
+					template <class Result>
+					bool accept(const Result &) const {
+						return true;
+					}
+					template <class Term1, class Term2>
+					bool skip(const Term1 &, const Term2 &) const {
+						return false;
+					}
+					// Limit of a power series development of a power series.
+					template <class PowerSeries, class ArgsTuple>
+					static size_t power_series_limit(const PowerSeries &, const ArgsTuple &,
+													const int &start = 0, const int &step_size = 1) {
+						(void)start;
+						(void)step_size;
+						throw unsuitable("Null truncator cannot provide limit for power series.");
+					}
+			};
 	};
-
-	typedef null_truncator_<none> null_truncator;
 }
 
 #endif

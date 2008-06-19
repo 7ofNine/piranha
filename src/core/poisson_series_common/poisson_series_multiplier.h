@@ -43,270 +43,274 @@ namespace piranha
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	template <class Series1, class Series2, class ArgsTuple, class Truncator>
-	class poisson_series_multiplier:
-				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-				poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> > ,
-				public coded_series_multiplier<poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> >
+	class poisson_series_multiplier
 	{
-			typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-			poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> > ancestor;
-			typedef coded_series_multiplier<poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
-			friend class coded_series_multiplier<poisson_series_multiplier<Series1, Series2, ArgsTuple, Truncator> >;
-			friend class Truncator::template rebind<poisson_series_multiplier>::type;
-			typedef typename Series1::const_sorted_iterator const_iterator1;
-			typedef typename Series2::const_sorted_iterator const_iterator2;
-			typedef Series1 series_type1;
-			typedef Series2 series_type2;
-			typedef typename ancestor::term_type1 term_type1;
-			typedef typename ancestor::term_type2 term_type2;
-			typedef typename term_type1::cf_type cf_type1;
-			typedef typename term_type2::cf_type cf_type2;
-			typedef typename term_type1::key_type key_type;
 		public:
-			typedef typename ancestor::truncator_type truncator_type;
-			poisson_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-					ancestor::base_series_multiplier(s1, s2, retval, args_tuple),
-					m_flavours1(ancestor::m_size1), m_flavours2(ancestor::m_size2) {}
-			/// Perform multiplication and place the result into m_retval.
-			void perform_multiplication() {
-				coded_ancestor::find_input_min_max();
-				calculate_result_min_max();
-				coded_ancestor::determine_viability();
-				if (coded_ancestor::m_cr_is_viable) {
-					// Here we should be ok, since we know that the two sizes are greater than zero and even
-					// if we divide by zero we should get Inf, which is fine for our purposes.
-					const double density = ((double)ancestor::m_size1 * ancestor::m_size2 * 2) /
-										   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
-					__PDEBUG(std::cout << "Density: " << density << '\n');
-					coded_ancestor::code_keys();
-					cache_flavours();
-					if (density < 1E-1 || !perform_vector_coded_multiplication()) {
-						__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
-						__PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
-						perform_hash_coded_multiplication();
-					}
-				} else {
-					__PDEBUG(std::cout << "Going for plain Poisson series multiplication\n");
-					ancestor::perform_plain_multiplication();
-				}
-			}
-		private:
-			void calculate_result_min_max() {
-				std::vector<mpz_class> tmp_vec(8);
-				std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
-				for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
-					tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
-					tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
-					tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
-					tmp_vec[1] += coded_ancestor::m_min_max2[i].first;
-					tmp_vec[2] = coded_ancestor::m_min_max1[i].second;
-					tmp_vec[2] -= coded_ancestor::m_min_max2[i].first;
-					tmp_vec[3] = coded_ancestor::m_min_max1[i].first;
-					tmp_vec[3] -= coded_ancestor::m_min_max2[i].second;
-					tmp_vec[4] = coded_ancestor::m_min_max1[i].first;
-					tmp_vec[5] = coded_ancestor::m_min_max2[i].first;
-					tmp_vec[6] = coded_ancestor::m_min_max1[i].second;
-					tmp_vec[7] = coded_ancestor::m_min_max2[i].second;
-					min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
-					coded_ancestor::m_res_min_max[i].first = *(min_max.first);
-					coded_ancestor::m_res_min_max[i].second = *(min_max.second);
-				}
-				__PDEBUG(
-					std::cout << "Mult limits are:\n";
-				for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
-				std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
-				}
-				);
-			}
-			/// Store flavours of the series into own vectors.
-			void cache_flavours() {
-				size_t i;
-				for (i = 0; i < ancestor::m_size1; ++i) {
-					m_flavours1[i] = ancestor::m_terms1[i].m_key.flavour();
-				}
-				for (i = 0; i < ancestor::m_size2; ++i) {
-					m_flavours2[i] = ancestor::m_terms2[i].m_key.flavour();
-				}
-			}
-			bool perform_vector_coded_multiplication() {
-				cf_type1 *p_vc_res_cos(0), *p_vc_res_sin(0);
-				// Try to allocate the space for vector coded multiplication. We need two arrays of results,
-				// one for cosines, one for sines.
-				// The +1 is needed because we need the number of possible codes between min and max, e.g.:
-				// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
-				const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
-				try {
-					p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes * 2);
-					p_vc_res_sin = p_vc_res_cos + n_codes;
-					// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
-					// we are sure it will be initialized properly. We want to make sure the coefficients are initialized
-					// to zero in order to accumulate Poisson terms during multiplication.
-					for (size_t i = 0; i < n_codes; ++i) {
-						::new(p_vc_res_cos + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
-						::new(p_vc_res_sin + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
-					}
-				} catch (const std::bad_alloc &) {
-					piranha_free(p_vc_res_cos);
-					return false;
-				}
-				__PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");
-				// Define the base pointers for storing the results of multiplication.
-				// Please note that even if here it seems like we are going to write outside allocated memory,
-				// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-				cf_type1 *vc_res_cos =  p_vc_res_cos - coded_ancestor::m_h_min, *vc_res_sin = p_vc_res_sin - coded_ancestor::m_h_min;
-				cf_type1 tmp_cf;
-				// Perform multiplication.
-				for (size_t i = 0; i < ancestor::m_size1; ++i) {
-					for (size_t j = 0; j < ancestor::m_size2; ++j) {
-						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
-							break;
-						}
-						// TODO: Does it make sense here to define a method for coefficients like:
-						// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
-						// so that we can avoid copying stuff around here and elsewhere?
-						tmp_cf = ancestor::m_terms1[i].m_cf;
-						tmp_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-						tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
-						const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
-														index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
-						if (m_flavours1[i] == m_flavours2[j]) {
-							if (m_flavours1[i]) {
-								vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-								vc_res_cos[index_plus].add(tmp_cf, ancestor::m_args_tuple);
-							} else {
-								vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-								vc_res_cos[index_plus].subtract(tmp_cf, ancestor::m_args_tuple);
+			template <class Series1, class Series2, class ArgsTuple, class Truncator>
+			class get_type:
+				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
+			{
+					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+					get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
+					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
+					friend class Truncator::template get_type<get_type>::type;
+					typedef typename Series1::const_sorted_iterator const_iterator1;
+					typedef typename Series2::const_sorted_iterator const_iterator2;
+					typedef Series1 series_type1;
+					typedef Series2 series_type2;
+					typedef typename ancestor::term_type1 term_type1;
+					typedef typename ancestor::term_type2 term_type2;
+					typedef typename term_type1::cf_type cf_type1;
+					typedef typename term_type2::cf_type cf_type2;
+					typedef typename term_type1::key_type key_type;
+				public:
+					typedef typename ancestor::truncator_type truncator_type;
+					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+							ancestor::base_series_multiplier(s1, s2, retval, args_tuple),
+							m_flavours1(ancestor::m_size1), m_flavours2(ancestor::m_size2) {}
+					/// Perform multiplication and place the result into m_retval.
+					void perform_multiplication() {
+						coded_ancestor::find_input_min_max();
+						calculate_result_min_max();
+						coded_ancestor::determine_viability();
+						if (coded_ancestor::m_cr_is_viable) {
+							// Here we should be ok, since we know that the two sizes are greater than zero and even
+							// if we divide by zero we should get Inf, which is fine for our purposes.
+							const double density = ((double)ancestor::m_size1 * ancestor::m_size2 * 2) /
+												(coded_ancestor::m_h_max - coded_ancestor::m_h_min);
+							__PDEBUG(std::cout << "Density: " << density << '\n');
+							coded_ancestor::code_keys();
+							cache_flavours();
+							if (density < 1E-1 || !perform_vector_coded_multiplication()) {
+								__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
+								__PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
+								perform_hash_coded_multiplication();
 							}
 						} else {
-							if (m_flavours1[i]) {
-								vc_res_sin[index_minus].subtract(tmp_cf, ancestor::m_args_tuple);
-								vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
-							} else {
-								vc_res_sin[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-								vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
-							}
+							__PDEBUG(std::cout << "Going for plain Poisson series multiplication\n");
+							ancestor::perform_plain_multiplication();
 						}
 					}
-				}
-				__PDEBUG(std::cout << "Done multiplying\n");
-				// Decode and insert the results into return value.
-				term_type1 tmp_term;
-				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
-					// Take a shortcut and check for ignorability of the coefficient here.
-					// This way we avoid decodification, and all the series term insertion yadda-yadda.
-					if (!vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)) {
-						tmp_term.m_cf = vc_res_cos[i];
-						coded_ancestor::decode(tmp_term.m_key, i);
-						tmp_term.m_key.flavour() = true;
-						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
-					}
-				}
-				for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
-					if (!vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)) {
-						tmp_term.m_cf = vc_res_sin[i];
-						coded_ancestor::decode(tmp_term.m_key, i);
-						tmp_term.m_key.flavour() = false;
-						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
-					}
-				}
-				// Call dtors for the coefficients in the allocated space.
-				// This is necessary for non-trivial coefficients.
-				for (size_t i = 0; i < n_codes; ++i) {
-					(p_vc_res_cos + i)->~cf_type1();
-					(p_vc_res_sin + i)->~cf_type1();
-				}
-				// Free the allocated space.
-				piranha_free(p_vc_res_cos);
-				__PDEBUG(std::cout << "Done Poisson series vector coded\n");
-				return true;
-			}
-			void perform_hash_coded_multiplication() {
-				typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
-				typedef typename csht::term_type cterm;
-				typedef typename csht::iterator c_iterator;
-				csht cms_cos, cms_sin;
-				for (size_t i = 0; i < ancestor::m_size1; ++i) {
-					for (size_t j = 0; j < ancestor::m_size2; ++j) {
-						if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
-							break;
+				private:
+					void calculate_result_min_max() {
+						std::vector<mpz_class> tmp_vec(8);
+						std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
+						for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
+							tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
+							tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
+							tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
+							tmp_vec[1] += coded_ancestor::m_min_max2[i].first;
+							tmp_vec[2] = coded_ancestor::m_min_max1[i].second;
+							tmp_vec[2] -= coded_ancestor::m_min_max2[i].first;
+							tmp_vec[3] = coded_ancestor::m_min_max1[i].first;
+							tmp_vec[3] -= coded_ancestor::m_min_max2[i].second;
+							tmp_vec[4] = coded_ancestor::m_min_max1[i].first;
+							tmp_vec[5] = coded_ancestor::m_min_max2[i].first;
+							tmp_vec[6] = coded_ancestor::m_min_max1[i].second;
+							tmp_vec[7] = coded_ancestor::m_min_max2[i].second;
+							min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
+							coded_ancestor::m_res_min_max[i].first = *(min_max.first);
+							coded_ancestor::m_res_min_max[i].second = *(min_max.second);
 						}
-						// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
-						// generating only one coefficient and change its sign later if needed - after insertion.
-						cterm tmp_term1(ancestor::m_terms1[i].m_cf, coded_ancestor::m_ckeys1[i]);
-						// Handle the coefficient, with positive signs for now.
-						tmp_term1.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-						tmp_term1.m_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
-						tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
-						// Create the second term, using the first one's coefficient and the appropriate code.
-						cterm tmp_term2(tmp_term1.m_cf, coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
-						// Now fix flavours and coefficient signs.
-						if (m_flavours1[i] == m_flavours2[j]) {
-							if (!m_flavours1[i]) {
-								tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
-							}
-							// Insert into cosine container.
-							c_iterator it = cms_cos.find(tmp_term1.m_ckey);
-							if (it == cms_cos.end()) {
-								cms_cos.insert(tmp_term1);
-							} else {
-								it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
-							}
-							it = cms_cos.find(tmp_term2.m_ckey);
-							if (it == cms_cos.end()) {
-								cms_cos.insert(tmp_term2);
-							} else {
-								it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
-							}
-							break;
-						} else {
-							if (m_flavours1[i]) {
-								tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
-							}
-							// Insert into sine container.
-							c_iterator it = cms_sin.find(tmp_term1.m_ckey);
-							if (it == cms_sin.end()) {
-								cms_sin.insert(tmp_term1);
-							} else {
-								it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
-							}
-							it = cms_sin.find(tmp_term2.m_ckey);
-							if (it == cms_sin.end()) {
-								cms_sin.insert(tmp_term2);
-							} else {
-								it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
-							}
+						__PDEBUG(
+							std::cout << "Mult limits are:\n";
+						for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
+						std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+						}
+						);
+					}
+					/// Store flavours of the series into own vectors.
+					void cache_flavours() {
+						size_t i;
+						for (i = 0; i < ancestor::m_size1; ++i) {
+							m_flavours1[i] = ancestor::m_terms1[i].m_key.flavour();
+						}
+						for (i = 0; i < ancestor::m_size2; ++i) {
+							m_flavours2[i] = ancestor::m_terms2[i].m_key.flavour();
 						}
 					}
-				}
-				__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
-				term_type1 tmp_term;
-				{
-					const c_iterator c_it_f = cms_cos.end();
-					for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
-						tmp_term.m_cf = c_it->m_cf;
-						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-						tmp_term.m_key.flavour() = true;
-						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+					bool perform_vector_coded_multiplication() {
+						cf_type1 *p_vc_res_cos(0), *p_vc_res_sin(0);
+						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
+						// one for cosines, one for sines.
+						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
+						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
+						const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
+						try {
+							p_vc_res_cos = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes * 2);
+							p_vc_res_sin = p_vc_res_cos + n_codes;
+							// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
+							// we are sure it will be initialized properly. We want to make sure the coefficients are initialized
+							// to zero in order to accumulate Poisson terms during multiplication.
+							for (size_t i = 0; i < n_codes; ++i) {
+								::new(p_vc_res_cos + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
+								::new(p_vc_res_sin + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
+							}
+						} catch (const std::bad_alloc &) {
+							piranha_free(p_vc_res_cos);
+							return false;
+						}
+						__PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");
+						// Define the base pointers for storing the results of multiplication.
+						// Please note that even if here it seems like we are going to write outside allocated memory,
+						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
+						cf_type1 *vc_res_cos =  p_vc_res_cos - coded_ancestor::m_h_min, *vc_res_sin = p_vc_res_sin - coded_ancestor::m_h_min;
+						cf_type1 tmp_cf;
+						// Perform multiplication.
+						for (size_t i = 0; i < ancestor::m_size1; ++i) {
+							for (size_t j = 0; j < ancestor::m_size2; ++j) {
+								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+									break;
+								}
+								// TODO: Does it make sense here to define a method for coefficients like:
+								// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
+								// so that we can avoid copying stuff around here and elsewhere?
+								tmp_cf = ancestor::m_terms1[i].m_cf;
+								tmp_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
+								tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
+								const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
+																index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
+								if (m_flavours1[i] == m_flavours2[j]) {
+									if (m_flavours1[i]) {
+										vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
+										vc_res_cos[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+									} else {
+										vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
+										vc_res_cos[index_plus].subtract(tmp_cf, ancestor::m_args_tuple);
+									}
+								} else {
+									if (m_flavours1[i]) {
+										vc_res_sin[index_minus].subtract(tmp_cf, ancestor::m_args_tuple);
+										vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+									} else {
+										vc_res_sin[index_minus].add(tmp_cf, ancestor::m_args_tuple);
+										vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+									}
+								}
+							}
+						}
+						__PDEBUG(std::cout << "Done multiplying\n");
+						// Decode and insert the results into return value.
+						term_type1 tmp_term;
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+							// Take a shortcut and check for ignorability of the coefficient here.
+							// This way we avoid decodification, and all the series term insertion yadda-yadda.
+							if (!vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)) {
+								tmp_term.m_cf = vc_res_cos[i];
+								coded_ancestor::decode(tmp_term.m_key, i);
+								tmp_term.m_key.flavour() = true;
+								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+							}
+						}
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+							if (!vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)) {
+								tmp_term.m_cf = vc_res_sin[i];
+								coded_ancestor::decode(tmp_term.m_key, i);
+								tmp_term.m_key.flavour() = false;
+								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+							}
+						}
+						// Call dtors for the coefficients in the allocated space.
+						// This is necessary for non-trivial coefficients.
+						for (size_t i = 0; i < n_codes; ++i) {
+							(p_vc_res_cos + i)->~cf_type1();
+							(p_vc_res_sin + i)->~cf_type1();
+						}
+						// Free the allocated space.
+						piranha_free(p_vc_res_cos);
+						__PDEBUG(std::cout << "Done Poisson series vector coded\n");
+						return true;
 					}
-				}
-				{
-					const c_iterator c_it_f = cms_sin.end();
-					for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) {
-						tmp_term.m_cf = c_it->m_cf;
-						coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-						tmp_term.m_key.flavour() = false;
-						ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+					void perform_hash_coded_multiplication() {
+						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
+						typedef typename csht::term_type cterm;
+						typedef typename csht::iterator c_iterator;
+						csht cms_cos, cms_sin;
+						for (size_t i = 0; i < ancestor::m_size1; ++i) {
+							for (size_t j = 0; j < ancestor::m_size2; ++j) {
+								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+									break;
+								}
+								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
+								// generating only one coefficient and change its sign later if needed - after insertion.
+								cterm tmp_term1(ancestor::m_terms1[i].m_cf, coded_ancestor::m_ckeys1[i]);
+								// Handle the coefficient, with positive signs for now.
+								tmp_term1.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
+								tmp_term1.m_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
+								tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
+								// Create the second term, using the first one's coefficient and the appropriate code.
+								cterm tmp_term2(tmp_term1.m_cf, coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
+								// Now fix flavours and coefficient signs.
+								if (m_flavours1[i] == m_flavours2[j]) {
+									if (!m_flavours1[i]) {
+										tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
+									}
+									// Insert into cosine container.
+									c_iterator it = cms_cos.find(tmp_term1.m_ckey);
+									if (it == cms_cos.end()) {
+										cms_cos.insert(tmp_term1);
+									} else {
+										it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
+									}
+									it = cms_cos.find(tmp_term2.m_ckey);
+									if (it == cms_cos.end()) {
+										cms_cos.insert(tmp_term2);
+									} else {
+										it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
+									}
+									break;
+								} else {
+									if (m_flavours1[i]) {
+										tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
+									}
+									// Insert into sine container.
+									c_iterator it = cms_sin.find(tmp_term1.m_ckey);
+									if (it == cms_sin.end()) {
+										cms_sin.insert(tmp_term1);
+									} else {
+										it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
+									}
+									it = cms_sin.find(tmp_term2.m_ckey);
+									if (it == cms_sin.end()) {
+										cms_sin.insert(tmp_term2);
+									} else {
+										it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
+									}
+								}
+							}
+						}
+						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
+						term_type1 tmp_term;
+						{
+							const c_iterator c_it_f = cms_cos.end();
+							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
+								tmp_term.m_cf = c_it->m_cf;
+								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+								tmp_term.m_key.flavour() = true;
+								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+							}
+						}
+						{
+							const c_iterator c_it_f = cms_sin.end();
+							for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) {
+								tmp_term.m_cf = c_it->m_cf;
+								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+								tmp_term.m_key.flavour() = false;
+								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+							}
+						}
+						__PDEBUG(std::cout << "Done Poisson series hash coded\n");
 					}
-				}
-				__PDEBUG(std::cout << "Done Poisson series hash coded\n");
-			}
-		private:
-			// For Poisson series we also need flavours.
-			std::vector<char>		m_flavours1;
-			std::vector<char>		m_flavours2;
-			// Just making sure, eh...
-			BOOST_STATIC_ASSERT(sizeof(char) == sizeof(bool));
+				private:
+					// For Poisson series we also need flavours.
+					std::vector<char>		m_flavours1;
+					std::vector<char>		m_flavours2;
+					// Just making sure, eh...
+					BOOST_STATIC_ASSERT(sizeof(char) == sizeof(bool));
+			};
 	};
 }
 

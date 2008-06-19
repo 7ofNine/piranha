@@ -44,14 +44,14 @@ namespace piranha
 	class base_series_multiplier
 	{
 			friend struct base_insert_multiplication_result;
-			friend class Truncator::template rebind<Derived>::type;
+			friend class Truncator::template get_type<Derived>::type;
 		protected:
 			// Alias for term type of first input series and return value series.
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
 			// Alias for the truncator type.
-			typedef typename Truncator::template rebind<Derived>::type truncator_type;
+			typedef typename Truncator::template get_type<Derived> truncator_type;
 		private:
 			typedef boost::multi_index_container
 			<

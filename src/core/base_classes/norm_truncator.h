@@ -30,7 +30,6 @@
 #include "../integer_typedefs.h"
 #include "../none.h"
 #include "../p_assert.h"
-#include "null_truncator.h" // For rebinding macro.
 
 namespace piranha
 {
@@ -73,30 +72,33 @@ namespace piranha
 	};
 
 	/// Norm-based truncator.
-	template <class Multiplier>
-	class norm_truncator_: public base_norm_truncator
+	class norm_truncator
 	{
 		public:
-			PIRANHA_TRUNCATOR_REBINDER(norm_truncator_);
-			norm_truncator_(Multiplier &m):
-					m_multiplier(m),
-					m_delta_threshold(
-						m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
-						(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
-			template <class Result>
-			bool accept(const Result &) const {
-				return true;
-			}
-			template <class Term1, class Term2>
-			bool skip(const Term1 &t1, const Term2 &t2) const {
-				return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2 < m_delta_threshold);
-			}
-		private:
-			Multiplier    &m_multiplier;
-			const double  m_delta_threshold;
+			template <class Multiplier>
+			class get_type: public base_norm_truncator
+			{
+				public:
+					typedef get_type type;
+					get_type(Multiplier &m):
+							m_multiplier(m),
+							m_delta_threshold(
+								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
+								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
+					template <class Result>
+					bool accept(const Result &) const {
+						return true;
+					}
+					template <class Term1, class Term2>
+					bool skip(const Term1 &t1, const Term2 &t2) const {
+						return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2 <
+							m_delta_threshold);
+					}
+				private:
+					Multiplier    &m_multiplier;
+					const double  m_delta_threshold;
+			};
 	};
-
-	typedef norm_truncator_<none> norm_truncator;
 }
 
 #endif

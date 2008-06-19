@@ -36,7 +36,6 @@
 #include "../p_assert.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
-#include "null_truncator.h" // For rebinding macro.
 
 namespace piranha
 {
@@ -169,50 +168,53 @@ namespace piranha
 	};
 
 	/// Truncators for polynomials based on the exponent of one or more variables.
-	template <class Multiplier>
-	class expo_truncator_: public base_expo_truncator
+	class expo_truncator
 	{
 		public:
-			PIRANHA_TRUNCATOR_REBINDER(expo_truncator_);
-			expo_truncator_(Multiplier &m):
-					m_multiplier(m),
-					m_positions(base_expo_truncator::positions_limits(
-									m_multiplier.m_args_tuple.template get<Multiplier::series_type1::expo_args_position>())) {
-				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_args_position ==
-									Multiplier::series_type2::expo_args_position);
-				BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_term_position ==
-									Multiplier::series_type2::expo_term_position);
-			}
-			bool accept(const max_fast_int &n) {
-				switch (m_positions.size() == 0) {
-				case true:
-					return true;
-				default:
-					m_multiplier.decode(m_multiplier.m_tmp_key, n);
-					return m_multiplier.m_tmp_key.test_expo_limits(m_positions, m_multiplier.m_args_tuple);
-				}
-			}
-			template <class Term>
-			bool accept(const Term &t) const {
-				switch (m_positions.size() == 0) {
-				case true:
-					return true;
-				default:
-					return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(
-							   m_positions, m_multiplier.m_args_tuple
-						   );
-				}
-			}
-			template <class Term1, class Term2>
-			bool skip(const Term1 &, const Term2 &) const {
-				return false;
-			}
-		private:
-			Multiplier                                          &m_multiplier;
-			const std::vector<std::pair<size_t, max_fast_int> >  m_positions;
+			template <class Multiplier>
+			class get_type: public base_expo_truncator
+			{
+				public:
+					typedef get_type type;
+					get_type(Multiplier &m):
+							m_multiplier(m),
+							m_positions(base_expo_truncator::positions_limits(
+											m_multiplier.m_args_tuple.template
+											get<Multiplier::series_type1::expo_args_position>())) {
+						BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_args_position ==
+											Multiplier::series_type2::expo_args_position);
+						BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_term_position ==
+											Multiplier::series_type2::expo_term_position);
+					}
+					bool accept(const max_fast_int &n) {
+						switch (m_positions.size() == 0) {
+						case true:
+							return true;
+						default:
+							m_multiplier.decode(m_multiplier.m_tmp_key, n);
+							return m_multiplier.m_tmp_key.test_expo_limits(m_positions, m_multiplier.m_args_tuple);
+						}
+					}
+					template <class Term>
+					bool accept(const Term &t) const {
+						switch (m_positions.size() == 0) {
+						case true:
+							return true;
+						default:
+							return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(
+									m_positions, m_multiplier.m_args_tuple
+								);
+						}
+					}
+					template <class Term1, class Term2>
+					bool skip(const Term1 &, const Term2 &) const {
+						return false;
+					}
+				private:
+					Multiplier                                          &m_multiplier;
+					const std::vector<std::pair<size_t, max_fast_int> >  m_positions;
+			};
 	};
-
-	typedef expo_truncator_<none> expo_truncator;
 }
 
 #endif

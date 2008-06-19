@@ -24,7 +24,7 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 #define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, \
-				template <class, class, class, class > class Multiplier, \
+				class Multiplier, \
 				class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
@@ -56,7 +56,7 @@ namespace piranha
 				else if (s2.is_single_cf()) {
 					retval = derived_const_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf, args_tuple);
 				} else {
-					Multiplier<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, args_tuple);
+					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();
 				}
 				return retval;

@@ -86,7 +86,7 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
 			class proxy: public proxy_ancestor
 			{
 					friend class polynomial_cf;
@@ -164,7 +164,7 @@ namespace std
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<complex, complex, piranha::none, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;
 			class proxy: public proxy_ancestor
 			{
 					friend class complex;

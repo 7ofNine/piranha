@@ -99,7 +99,8 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<polynomial, polynomial, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type<polynomial, polynomial,
+				typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(polynomial);
 			// Ctor from psym.
@@ -198,7 +199,8 @@ namespace std
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<complex, complex, typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type<complex, complex,
+				typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
