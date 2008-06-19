@@ -23,9 +23,7 @@
 
 #include <complex>
 
-#include "../core/base_classes/common_indices.h"
 #include "../core/base_classes/expo_truncator.h"
-#include "../core/base_classes/null_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
@@ -42,8 +40,6 @@ namespace piranha
 		double_cf,
 		expo_array<16, 0>,
 		trig_array<16, 1>,
-		key_degree_index,
-		cf_min_degree_index,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		expo_truncator,

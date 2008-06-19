@@ -21,7 +21,6 @@
 #ifndef PIRANHA_DFS_H
 #define PIRANHA_DFS_H
 
-#include "../core/base_classes/common_indices.h"
 #include "../core/base_classes/norm_truncator.h"
 #include "../core/fourier_series/fourier_series.h"
 #include "../core/numerical_coefficients/double_cf.h"
@@ -35,7 +34,6 @@ namespace piranha
 		typedef fourier_series
 		<
 		double_cf, trig_array<16, 0>,
-		norm_index,
 		poisson_series_multiplier,
 		norm_truncator
 		> dfs;

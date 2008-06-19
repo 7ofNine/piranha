@@ -21,123 +21,19 @@
 #ifndef PIRANHA_COMMON_INDICES_H
 #define PIRANHA_COMMON_INDICES_H
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/random_access_index.hpp>
 
 #include "../arg_manager.h"
 
 namespace piranha
 {
-	// Key extractor.
+	/// Random + Key-Hashed index for series.
 	template <class Term>
-	struct key_extractor {
-		typedef const typename Term::key_type &result_type;
-		const typename Term::key_type &operator()(const Term &t) const {
-			return t.m_key;
-		}
-	};
-
-	// Key degree extractor.
-	template <class Term>
-	struct key_degree_extractor {
-		typedef int result_type;
-		int operator()(const Term &t) const {
-			p_assert((arg_manager<Term>::assigned()));
-			return t.m_key.degree();
-		}
-	};
-
-	// Coefficient minimum degree extractor.
-	template <class Term>
-	struct cf_min_degree_extractor {
-		typedef int result_type;
-		double operator()(const Term &t) const {
-			p_assert((arg_manager<Term>::assigned()));
-			return t.m_cf.min_degree();
-		}
-	};
-
-	/// Index based on the minimum degree of the coefficient.
-	template <class Term>
-	struct cf_min_degree_index {
+	struct random_keyhash_index {
 		typedef boost::multi_index::indexed_by
 		<
-		// Unique because the composite key below ensures we cannot have duplicates.
-		boost::multi_index::ordered_unique
-		<
-		boost::multi_index::composite_key
-		<
-		Term,
-		cf_min_degree_extractor<Term>,
-		key_extractor<Term>
-		> ,
-		boost::multi_index::composite_key_compare
-		<
-		std::less<int>,
-		std::less<typename Term::key_type>
-		>
-		> ,
-		boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-		>
-		type;
-	};
-
-	/// Index based on the degree of the key.
-	template <class Term>
-	struct key_degree_index {
-		typedef boost::multi_index::indexed_by
-		<
-		// Unique because the composite key below ensures we cannot have duplicates.
-		boost::multi_index::ordered_unique
-		<
-		boost::multi_index::composite_key
-		<
-		Term,
-		key_degree_extractor<Term>,
-		key_extractor<Term>
-		> ,
-		boost::multi_index::composite_key_compare
-		<
-		std::less<int>,
-		std::less<typename Term::key_type>
-		>
-		> ,
-		boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
-		>
-		type;
-	};
-
-	// Norm extractor. Operates on coefficients.
-	template <class Term>
-	struct norm_extractor {
-		typedef double result_type;
-		double operator()(const Term &t) const {
-			p_assert((arg_manager<Term>::assigned()));
-			return t.m_cf.norm(arg_manager<Term>::get());
-		}
-	};
-
-	/// Norm-based index for series.
-	template <class Term>
-	struct norm_index {
-		typedef boost::multi_index::indexed_by
-		<
-		boost::multi_index::ordered_unique
-		<
-		boost::multi_index::composite_key
-		<
-		Term,
-		norm_extractor<Term>,
-		key_extractor<Term>
-		> ,
-		boost::multi_index::composite_key_compare
-		<
-		std::greater<double>,
-		std::less<typename Term::key_type>
-		>
-		> ,
+		boost::multi_index::random_access<>,
 		boost::multi_index::hashed_unique<boost::multi_index::identity<Term> >
 		>
 		type;

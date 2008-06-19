@@ -38,7 +38,6 @@ namespace piranha
 		<
 		double_cf,
 		expo_array<16, 0>,
-		key_degree_index,
 		polynomial_multiplier,
 		null_truncator
 		> dpoly;

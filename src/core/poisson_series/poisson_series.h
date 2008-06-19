@@ -30,6 +30,7 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
+#include "../base_classes/common_indices.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
@@ -79,7 +80,7 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef series_multiindex_backend < term_type_, I1, allocator_type > container_type;
+			typedef series_multiindex_backend < term_type_, random_keyhash_index, allocator_type > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -124,7 +125,7 @@ namespace piranha
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
-#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,I0,Mult0,Trunc0,Allocator>
+#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,Mult0,Trunc0,Allocator>
 #define COMPLEX_POISSON_SERIES_TERM piranha::poisson_series_term<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
 #define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
@@ -166,7 +167,7 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, I1, allocator_type > container_type;
+			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index, allocator_type > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;

@@ -23,6 +23,7 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
+#include <utility>
 
 namespace piranha
 {
@@ -136,19 +137,14 @@ namespace piranha
 		} else {
 			// The term is in the set, hence an existing term will be modified.
 			// Add or subtract according to request.
-			// TODO: when sequenced indices are in place, we can drop all the modification
-			// stuff. We can just modify coefficients on-the-fly.
-			cf_type new_c(it->m_cf);
 			if (Sign) {
-				new_c.add(term.m_cf, args_tuple);
+				it->m_cf.add(term.m_cf, args_tuple);
 			} else {
-				new_c.subtract(term.m_cf, args_tuple);
+				it->m_cf.subtract(term.m_cf, args_tuple);
 			}
-			// Check if the resulting coefficient can be ignored (ie it is small).
-			if (new_c.is_ignorable(args_tuple)) {
+			// Check if the new coefficient can be ignored.
+			if (it->m_cf.is_ignorable(args_tuple)) {
 				term_erase<1>(it, args_tuple);
-			} else {
-				term_update(it, new_c, args_tuple);
 			}
 		}
 	}
@@ -161,18 +157,10 @@ namespace piranha
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
-		// TODO: change the insert function here after switching to sequenced indices.
-		const_sorted_iterator it_new(derived_cast->template nth_index<0>().insert(
-										 derived_cast->template nth_index<0>().end(), term));
-		// TODO: use asserts here? Above an assert is needed too (where?).
-		// TODO: restore the assertion once we switch to sequenced indices.
-		// p_assert(result);
-		// TODO: when sequenced indices are in place, we can drop all the modification
-		// stuff. We can just modify coefficients on-the-fly.
+		std::pair<const_sorted_iterator,bool> res(derived_cast->template nth_index<0>().push_back(term));
+		p_assert(res.second);
 		if (!Sign) {
-			// This is an O(1) operation, with a re-hash involved.
-			modifier_invert_term_sign<ArgsTuple> m(args_tuple);
-			action_assert(derived_cast->template nth_index<0>().modify(it_new, m));
+			res.first->m_cf.invert_sign(args_tuple);
 		}
 	}
 
@@ -183,18 +171,6 @@ namespace piranha
 	{
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		derived_cast->template nth_index<N>().erase(it);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class PinpointIterator, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_update(PinpointIterator it, cf_type &new_c,
-			const ArgsTuple &args_tuple)
-	{
-		BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value));
-		typename arg_manager<Term>::arg_assigner aa(args_tuple);
-		// Update the existing term.
-		modifier_update_cf m(new_c);
-		action_assert(derived_cast->template nth_index<1>().modify(it, m));
 	}
 
 	/// Swap the terms with another series.

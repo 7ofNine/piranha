@@ -135,56 +135,25 @@ namespace piranha
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
 			void term_insert_new(const term_type &, const ArgsTuple &);
-			template <class PinpointIterator, class ArgsTuple>
-			void term_update(PinpointIterator, cf_type &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			bool common_root_handler(const max_fast_int &, Derived &retval, const ArgsTuple &) const;
-			// Functors.
-			template <class ArgsTuple>
-			class modifier_invert_term_sign
-			{
-				public:
-					modifier_invert_term_sign(const ArgsTuple &args_tuple): a(args_tuple) {}
-					// This (and below) are passed as const to allow modification from const interators
-					// that are often used in standard implementations of data structures.
-					void operator()(const term_type &term) const {
-						term.m_cf.invert_sign(a);
-					}
-				private:
-					const ArgsTuple &a;
-			};
-			class modifier_update_cf
-			{
-				public:
-					modifier_update_cf(cf_type &new_cf): m_new_cf(new_cf) {}
-					void operator()(const term_type &term) {
-						term.m_cf.swap(m_new_cf);
-					}
-				private:
-					cf_type &m_new_cf;
-			};
 	};
 
-#define E0_SERIES_TP_DECL class Cf, class Key, template <class> class I, \
-				class Multiplier, class Truncator, class Allocator
-#define E0_SERIES_TP Cf,Key,I,Multiplier,Truncator,Allocator
+#define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator
+#define E0_SERIES_TP Cf,Key,Multiplier,Truncator,Allocator
 #define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
 #define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
 	Allocator,E0_SERIES(series_name) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
-						template <class> class I0, template <class> class I1, \
-				class Mult0, \
-					class Mult1, \
-						class Trunc0, class Trunc1, \
-								class Allocator
-#define E1_SERIES_TP Cf,Key0,Key1,I0,I1,Mult0,Mult1,Trunc0,Trunc1,Allocator
-#define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,I0,Mult0,Trunc0,Allocator>
+				class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
+#define E1_SERIES_TP Cf,Key0,Key1,Mult0,Mult1,Trunc0,Trunc1,Allocator
+#define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,Mult0,Trunc0,Allocator>
 #define E1_SERIES(series_name) series_name<E1_SERIES_TP>
 #define E1_SERIES_TERM(term_name,cf_name) term_name< cf_name, Key1, '|', Allocator >
 #define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
