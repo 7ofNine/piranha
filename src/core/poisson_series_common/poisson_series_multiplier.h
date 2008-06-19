@@ -67,6 +67,7 @@ namespace piranha
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
 				public:
+					typedef ArgsTuple args_tuple_type;
 					typedef typename ancestor::truncator_type truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 							ancestor::base_series_multiplier(s1, s2, retval, args_tuple),

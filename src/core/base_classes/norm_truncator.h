@@ -21,11 +21,13 @@
 #ifndef PIRANHA_NORM_TRUNCATOR_H
 #define PIRANHA_NORM_TRUNCATOR_H
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <string>
 
 #include "../config.h"
+#include "../is_sorted.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../none.h"
@@ -78,13 +80,40 @@ namespace piranha
 			template <class Multiplier>
 			class get_type: public base_norm_truncator
 			{
+					template <class ArgsTuple>
+					class norm_comparison
+					{
+						public:
+							norm_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
+							template <class Term>
+							bool operator()(const Term &t1, const Term &t2) const {
+								return (t1.norm(m_args_tuple) >= t2.norm(m_args_tuple));
+							}
+						private:
+							const ArgsTuple	&m_args_tuple;
+					};
 				public:
 					typedef get_type type;
 					get_type(Multiplier &m):
 							m_multiplier(m),
 							m_delta_threshold(
 								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
-								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {}
+								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
+					{
+						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
+						if (!is_sorted(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),cmp)) {
+std::cout << "OMG NOT SORTED\n";
+							std::sort(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),cmp);
+						} else {
+std::cout << "OMG SORTED\n";
+						}
+						if (!is_sorted(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),cmp)) {
+std::cout << "OMG NOT SORTED\n";
+							std::sort(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),cmp);
+						} else {
+std::cout << "OMG SORTED\n";
+						}
+					}
 					template <class Result>
 					bool accept(const Result &) const {
 						return true;
