@@ -25,7 +25,7 @@
 #define derived_cast static_cast<Derived *>(this)
 #define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, \
 				class Multiplier, \
-				class Truncator
+					class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 #include "../p_assert.h"

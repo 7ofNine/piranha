@@ -101,8 +101,8 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef typename Multiplier::template get_type<fourier_series, fourier_series,
-				typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
+			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(fourier_series);
 			// Index interface.
@@ -196,8 +196,8 @@ namespace std
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef typename Multiplier::template get_type<complex, complex,
-				typename named_ancestor::args_tuple_type, Truncator> multiplier_type;
+			typedef typename Multiplier::template get_type < complex, complex,
+			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			NAMED_SERIES_CTORS(complex);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 			SERIES_INDEX_INTERFACE;

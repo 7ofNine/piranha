@@ -202,8 +202,8 @@ namespace piranha
 							return true;
 						default:
 							return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(
-									m_positions, m_multiplier.m_args_tuple
-								);
+									   m_positions, m_multiplier.m_args_tuple
+								   );
 						}
 					}
 					template <class Term1, class Term2>

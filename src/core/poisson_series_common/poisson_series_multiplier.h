@@ -48,9 +48,9 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
+						public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+						public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
 					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
 					get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
@@ -80,7 +80,7 @@ namespace piranha
 							// Here we should be ok, since we know that the two sizes are greater than zero and even
 							// if we divide by zero we should get Inf, which is fine for our purposes.
 							const double density = ((double)ancestor::m_size1 * ancestor::m_size2 * 2) /
-												(coded_ancestor::m_h_max - coded_ancestor::m_h_min);
+												   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
 							__PDEBUG(std::cout << "Density: " << density << '\n');
 							coded_ancestor::code_keys();
 							cache_flavours();
