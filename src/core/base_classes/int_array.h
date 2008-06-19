@@ -76,6 +76,10 @@ namespace piranha
 					size_t size() const {
 						return m_ptr->size();
 					}
+					template <class ArgsTuple>
+					double norm(const ArgsTuple &args_tuple) const {
+						return m_ptr->norm(args_tuple);
+					}
 					const value_type_ &operator[](const size_t &n) const {
 						return (*m_ptr)[n];
 					}

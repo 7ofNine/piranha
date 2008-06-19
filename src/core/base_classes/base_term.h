@@ -180,11 +180,15 @@ namespace piranha
 			 * @param[in] t time of evaluation.
 			 * @param[in] a tuple of arguments vectors relative to the elements of the term.
 			 */
-			template <class ArgumentsTuple>
-			eval_type t_eval_brute(const double &t, const ArgumentsTuple &a) const {
+			template <class ArgsTuple>
+			eval_type t_eval_brute(const double &t, const ArgsTuple &a) const {
 				eval_type retval(m_cf.t_eval(t, a));
 				retval *= m_key.t_eval(t, a);
 				return retval;
+			}
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &args_tuple) const {
+				return m_cf.norm(args_tuple) * m_key.norm(args_tuple);
 			}
 			/// Run diagnostic test.
 			/**
