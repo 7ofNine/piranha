@@ -33,6 +33,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../none.h"
 #include "../polynomial_common/monomial.h"
 #include "common_polynomial_cf_toolbox.h"
 
@@ -85,7 +86,7 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<polynomial_cf, polynomial_cf, boost::tuples::null_type, Truncator> multiplier_type;
+			typedef Multiplier<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
 			class proxy: public proxy_ancestor
 			{
 					friend class polynomial_cf;
@@ -163,7 +164,7 @@ namespace std
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
-			typedef Multiplier<complex, complex, boost::tuples::null_type, Truncator> multiplier_type;
+			typedef Multiplier<complex, complex, piranha::none, Truncator> multiplier_type;
 			class proxy: public proxy_ancestor
 			{
 					friend class complex;
