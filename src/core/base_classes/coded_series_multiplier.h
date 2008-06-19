@@ -56,8 +56,10 @@ namespace piranha
 					m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
 					m_min_max1(m_size), m_min_max2(m_size), m_res_min_max(m_size), m_fast_res_min_max(m_size),
 					// Coding vector is larger to accomodate extra element at the end (used during decodification).
-					m_coding_vector(m_size + 1),
-					m_ckeys1(derived_const_cast->m_size1), m_ckeys2(derived_const_cast->m_size2) {}
+					m_coding_vector(m_size + 1) {
+				m_ckeys1.reserve(derived_const_cast->m_size1);
+				m_ckeys2.reserve(derived_const_cast->m_size2);
+			}
 			void find_input_min_max() {
 				size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
@@ -125,10 +127,12 @@ namespace piranha
 			/// Code keys.
 			void code_keys() {
 				for (size_t i = 0; i < derived_const_cast->m_size1; ++i) {
-					derived_const_cast->m_terms1[i].m_key.code(m_coding_vector, m_ckeys1[i], derived_const_cast->m_args_tuple);
+					m_ckeys1.push_back(derived_const_cast->m_terms1[i].m_key.code(m_coding_vector,
+						derived_const_cast->m_args_tuple));
 				}
 				for (size_t i = 0; i < derived_const_cast->m_size2; ++i) {
-					derived_const_cast->m_terms2[i].m_key.code(m_coding_vector, m_ckeys2[i], derived_const_cast->m_args_tuple);
+					m_ckeys2.push_back(derived_const_cast->m_terms2[i].m_key.code(m_coding_vector, 
+						derived_const_cast->m_args_tuple));
 				}
 			}
 		protected:

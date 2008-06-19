@@ -70,8 +70,8 @@ namespace piranha
 						m_ptr->test_min_max_ints(v);
 					}
 					template <class CodingVector, class ArgsTuple>
-					void code(const CodingVector &v, max_fast_int &retval, const ArgsTuple &a) const {
-						m_ptr->code(v, retval, a);
+					max_fast_int code(const CodingVector &v, const ArgsTuple &a) const {
+						return m_ptr->code(v, a);
 					}
 					size_t size() const {
 						return m_ptr->size();
@@ -263,15 +263,16 @@ namespace piranha
 			}
 			/// Codify integers into generalised lexicographic representation.
 			template <class CodingVector, class ArgsTuple>
-			void code(const CodingVector &v, max_fast_int &retval, const ArgsTuple &) const {
+			max_fast_int code(const CodingVector &v, const ArgsTuple &) const {
 				// The +1 is because the coding vector contains one extra element at the end.
 				// The assert is >= instead of == beacuse we may code an array smaller than the
 				// coding vector when multiplying series with different numbers of arguments.
 				p_assert(v.size() >= (size_t)m_size + 1);
-				retval = 0;
+				max_fast_int retval = 0;
 				for (size_type i = 0; i < m_size; ++i) {
 					retval += (v[i] * m_ptr[i]);
 				}
+				return retval;
 			}
 			/// Decode integers from generalised lexicographic representation.
 			template <class CodingVector, class MinMaxVec, class ArgsTuple>
