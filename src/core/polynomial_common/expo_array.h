@@ -60,6 +60,10 @@ namespace piranha
 					void multiply(proxy e2, expo_array &ret) const {
 						proxy_ancestor::m_ptr->multiply(e2, ret);
 					}
+					// TODO; maybe cache this.
+					max_fast_int degree() const {
+						return proxy_ancestor::m_ptr->degree();
+					}
 			};
 			// Ctors.
 			/// Default ctor.
