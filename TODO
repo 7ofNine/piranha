@@ -10,15 +10,18 @@
   Normally a limb contains 32 or 64 bits. The C data type for a limb is mp_limb_t.". Use this
   to evaluate the real size of GMP variables when we will do cache-blocking during multiplications.
   http://gmplib.org/manual/Integer-Special-Functions.html#Integer-Special-Functions
-- Drop insert hint for now, modify all calls, then introduce overloaded insert which takes hint and use it
-  only where it makes sense.
 - Add line - file info into exceptions string.
 - Coded multiplication with mpz as codes when going out of range?
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
 - add truncators to polynomials, if they do not impact performance too much.
 - implement truncation by degree in expo truncator.
-- fix again proxies to be more general. maybe move them inside classes?
-- decide whether it is good or not to have degrees stored inside expo arrays.
 - enable besselJ for polynomials that are single coefficients without bothering about expo limits.
 - there _is_ a mpz_swap function, check if it is useful.
+- understand the relation between ordering and vector coded performance. For polynomials it increases performance
+  a total degree lex order, for poisson series it _seems_ no.
+- use effectively a null_truncator in place of the chosen truncator if this is not effective (i.e., it can be
+  established without doubt that the truncator will _not_ truncate anything). This is doubly useful:
+  1) use null truncator for maximum speed when suitable
+  2) avoid sorting if the truncator won't truncate.
+- find a method to establish how to cache a coefficient vector during multiplication if appropriate.
