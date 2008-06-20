@@ -25,3 +25,6 @@
   1) use null truncator for maximum speed when suitable
   2) avoid sorting if the truncator won't truncate.
 - find a method to establish how to cache a coefficient vector during multiplication if appropriate.
+- optimize for small series --> there's no need to avoid direct insertion in series, since we do
+  not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
+  copies that are performed for longer series.
