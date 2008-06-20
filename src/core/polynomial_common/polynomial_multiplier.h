@@ -65,10 +65,27 @@ namespace piranha
 					typedef typename term_type1::cf_type cf_type1;
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
+					class term_degree_comparison
+					{
+						public:
+							template <class Term>
+							bool operator()(const Term &t1, const Term &t2) const {
+								const max_fast_int d1 = t1.m_key.degree(), d2 = t2.m_key.degree();
+								if (d1 == d2) {
+									return (t1.m_key < t2.m_key);
+								} else {
+									return (d1 < d2);
+								}
+							}
+					};
 				public:
 					typedef typename ancestor::truncator_type truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {}
+							ancestor::base_series_multiplier(s1, s2, retval, args_tuple)
+					{
+// 						std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
+// 						std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_degree_comparison());
+					}
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication() {
 						coded_ancestor::find_input_min_max();
