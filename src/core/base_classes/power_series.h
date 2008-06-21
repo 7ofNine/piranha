@@ -98,6 +98,15 @@ namespace piranha
 				upload_min_exponents(retval);
 				return retval;
 			}
+			template <class ArgsTuple>
+			max_fast_int min_expo_of(const size_t &pos, const ArgsTuple &args_tuple) const {
+				std::vector<max_fast_int> tmp(min_exponents(args_tuple));
+				if (pos >= tmp.size()) {
+					return 0;
+				} else {
+					return tmp[pos];
+				}
+			}
 			void test_min_exponents(std::vector<max_fast_int> &v) const {
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();

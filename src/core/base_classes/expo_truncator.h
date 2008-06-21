@@ -22,7 +22,6 @@
 #define PIRANHA_EXPO_TRUNCATOR_H
 
 #include <algorithm> // To calculate min degree.
-#include <boost/static_assert.hpp>
 #include <cmath> // For std::ceil.
 #include <iostream>
 #include <string>
@@ -174,45 +173,75 @@ namespace piranha
 			template <class Multiplier>
 			class get_type: public base_expo_truncator
 			{
+					static const int expo_term_pos = Multiplier::series_type1::expo_term_position;
+					static const int expo_args_pos = Multiplier::series_type1::expo_args_position;
+					class single_expo_comparison
+					{
+							typedef typename Multiplier::args_tuple_type args_tuple_type;
+						public:
+							single_expo_comparison(const size_t &pos, const args_tuple_type &args_tuple):
+								m_pos(pos),m_args_tuple(args_tuple) {}
+							template <class Term>
+							bool operator()(const Term &t1, const Term &t2) const {
+								return t1.template get<expo_term_pos>().min_expo_of(m_pos,m_args_tuple) <
+									t2.template get<expo_term_pos>().min_expo_of(m_pos,m_args_tuple);
+							}
+						private:
+							const size_t			&m_pos;
+							const args_tuple_type	&m_args_tuple;
+					};
 				public:
 					typedef get_type type;
 					get_type(Multiplier &m):
 							m_multiplier(m),
 							m_positions(base_expo_truncator::positions_limits(
 											m_multiplier.m_args_tuple.template
-											get<Multiplier::series_type1::expo_args_position>())) {
-						BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_args_position ==
-											Multiplier::series_type2::expo_args_position);
-						BOOST_STATIC_ASSERT(Multiplier::series_type1::expo_term_position ==
-											Multiplier::series_type2::expo_term_position);
+											get<expo_args_pos>())),
+							m_size(m_positions.size()) {
+						// Some static checks.
+						p_static_check(Multiplier::series_type1::expo_args_position ==
+											Multiplier::series_type2::expo_args_position, "");
+						p_static_check(Multiplier::series_type1::expo_term_position ==
+											Multiplier::series_type2::expo_term_position, "");
+						if (m_positions.size() == 1) {
+							std::sort(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),
+								single_expo_comparison(m_positions[0].first,m_multiplier.m_args_tuple));
+							std::sort(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),
+								single_expo_comparison(m_positions[0].first,m_multiplier.m_args_tuple));
+						}
 					}
 					bool accept(const max_fast_int &n) {
-						switch (m_positions.size() == 0) {
-						case true:
+						if (m_size <= 1) {
 							return true;
-						default:
+						} else {
 							m_multiplier.decode(m_multiplier.m_tmp_key, n);
 							return m_multiplier.m_tmp_key.test_expo_limits(m_positions, m_multiplier.m_args_tuple);
 						}
 					}
 					template <class Term>
 					bool accept(const Term &t) const {
-						switch (m_positions.size() == 0) {
-						case true:
+						if (m_size <= 1) {
 							return true;
-						default:
-							return t.template get<Multiplier::series_type1::expo_term_position>().test_expo_limits(
+						} else {
+							return t.template get<expo_term_pos>().test_expo_limits(
 									   m_positions, m_multiplier.m_args_tuple
 								   );
 						}
 					}
 					template <class Term1, class Term2>
-					bool skip(const Term1 &, const Term2 &) const {
+					bool skip(const Term1 &t1, const Term2 &t2) const {
+						if (m_size == 1 &&
+							(t1.template get<expo_term_pos>().min_expo_of(m_positions[0].first,m_multiplier.m_args_tuple) +
+							t2.template get<expo_term_pos>().min_expo_of(m_positions[0].first,m_multiplier.m_args_tuple) >
+							m_positions[0].second)) {
+							return true;
+						}
 						return false;
 					}
 				private:
-					Multiplier                                          &m_multiplier;
-					const std::vector<std::pair<size_t, max_fast_int> >  m_positions;
+					Multiplier											&m_multiplier;
+					const std::vector<std::pair<size_t, max_fast_int> >	m_positions;
+					const size_t										m_size;
 			};
 	};
 }

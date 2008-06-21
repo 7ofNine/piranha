@@ -64,6 +64,10 @@ namespace piranha
 					max_fast_int degree() const {
 						return proxy_ancestor::m_ptr->degree();
 					}
+					template <class ArgsTuple>
+					max_fast_int min_expo_of(const int &n, const ArgsTuple &a) const {
+						return proxy_ancestor::m_ptr->min_expo_of(n,a);
+					}
 			};
 			// Ctors.
 			/// Default ctor.

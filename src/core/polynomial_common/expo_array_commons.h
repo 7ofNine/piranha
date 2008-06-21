@@ -23,7 +23,7 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/static_assert.hpp>
-#include <cmath> // For std::pow, most likely temporary.
+#include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <iostream>
 #include <string>
 #include <vector>
@@ -95,7 +95,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {
 				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
-				return eval(0,args_tuple);
+				return std::abs(eval(0,args_tuple));
 			}
 			/// Calculate hash value.
 			size_t hash_value() const {
@@ -113,6 +113,14 @@ namespace piranha
 			// In this case the collection has a single element, hence the minimum degree is the degree itself.
 			max_fast_int min_degree() const {
 				return degree();
+			}
+			template <class ArgsTuple>
+			max_fast_int min_expo_of(const size_t &n, const ArgsTuple &) const {
+				if (n >= derived_const_cast->size()) {
+					return 0;
+				} else {
+					return (*derived_const_cast)[n];
+				}
 			}
 			/// Return the position of the linear argument in the monomial.
 			/**
