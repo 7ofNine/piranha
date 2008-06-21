@@ -21,9 +21,11 @@
 #ifndef PIRANHA_BASE_SERIES_MANIP_H
 #define PIRANHA_BASE_SERIES_MANIP_H
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
 #include <utility>
+
+#include "../arg_manager.h"
+#include "../config.h"
 
 namespace piranha
 {
@@ -117,7 +119,7 @@ namespace piranha
 	template <class PinpointIterator>
 	inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
 	{
-		BOOST_STATIC_ASSERT((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value));
+		p_static_check((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value),"");
 		return derived_cast->template nth_index<1>().find(t);
 	}
 
