@@ -25,7 +25,6 @@
 #include <iostream>
 #include <string>
 
-#include "../arg_manager.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../psym.h"

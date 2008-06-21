@@ -25,6 +25,7 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../p_assert.h"
+#include "../psym.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
 

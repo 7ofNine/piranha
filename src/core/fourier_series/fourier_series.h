@@ -26,7 +26,6 @@
 #include <complex>
 #include <memory> // For default allocator.
 
-#include "../arg_manager.h"
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"

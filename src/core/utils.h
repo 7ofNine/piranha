@@ -26,7 +26,8 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <fstream>
-#include <valarray>
+#include <string>
+#include <vector>
 
 #include "settings.h"
 #include "stream_manager.h"
