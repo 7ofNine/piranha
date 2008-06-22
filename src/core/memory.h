@@ -25,8 +25,6 @@
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
-#include <gmp.h>
-#include <gmpxx.h>
 
 #include "config.h" // For unlikely(), aligned malloc, etc.
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
