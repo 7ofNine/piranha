@@ -180,11 +180,11 @@ namespace piranha
 							typedef typename Multiplier::args_tuple_type args_tuple_type;
 						public:
 							single_expo_comparison(const size_t &pos, const args_tuple_type &args_tuple):
-								m_pos(pos),m_args_tuple(args_tuple) {}
+									m_pos(pos), m_args_tuple(args_tuple) {}
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								return t1.template get<expo_term_pos>().min_expo_of(m_pos,m_args_tuple) <
-									t2.template get<expo_term_pos>().min_expo_of(m_pos,m_args_tuple);
+								return t1.template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple) <
+									   t2.template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple);
 							}
 						private:
 							const size_t			&m_pos;
@@ -200,14 +200,14 @@ namespace piranha
 							m_size(m_positions.size()) {
 						// Some static checks.
 						p_static_check(Multiplier::series_type1::expo_args_position ==
-											Multiplier::series_type2::expo_args_position, "");
+									   Multiplier::series_type2::expo_args_position, "");
 						p_static_check(Multiplier::series_type1::expo_term_position ==
-											Multiplier::series_type2::expo_term_position, "");
+									   Multiplier::series_type2::expo_term_position, "");
 						if (m_positions.size() == 1) {
-							std::sort(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),
-								single_expo_comparison(m_positions[0].first,m_multiplier.m_args_tuple));
-							std::sort(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),
-								single_expo_comparison(m_positions[0].first,m_multiplier.m_args_tuple));
+							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),
+									  single_expo_comparison(m_positions[0].first, m_multiplier.m_args_tuple));
+							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(),
+									  single_expo_comparison(m_positions[0].first, m_multiplier.m_args_tuple));
 						}
 					}
 					bool accept(const max_fast_int &n) {
@@ -231,9 +231,9 @@ namespace piranha
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
 						if (m_size == 1 &&
-							(t1.template get<expo_term_pos>().min_expo_of(m_positions[0].first,m_multiplier.m_args_tuple) +
-							t2.template get<expo_term_pos>().min_expo_of(m_positions[0].first,m_multiplier.m_args_tuple) >
-							m_positions[0].second)) {
+								(t1.template get<expo_term_pos>().min_expo_of(m_positions[0].first, m_multiplier.m_args_tuple) +
+								 t2.template get<expo_term_pos>().min_expo_of(m_positions[0].first, m_multiplier.m_args_tuple) >
+								 m_positions[0].second)) {
 							return true;
 						}
 						return false;

@@ -94,7 +94,7 @@ namespace piranha
 					friend class polynomial_cf;
 				public:
 					typedef proxy type;
-					proxy(const polynomial_cf &p): proxy_ancestor(p),m_min_expos_cached(false) {}
+					proxy(const polynomial_cf &p): proxy_ancestor(p), m_min_expos_cached(false) {}
 					template <class ArgsTuple>
 					max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
 						if (!m_min_expos_cached) {
@@ -187,7 +187,7 @@ namespace std
 					friend class complex;
 				public:
 					typedef proxy type;
-					proxy(const complex &c): proxy_ancestor(c),m_min_expos_cached(false) {}
+					proxy(const complex &c): proxy_ancestor(c), m_min_expos_cached(false) {}
 					template <class ArgsTuple>
 					piranha::max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
 						if (!m_min_expos_cached) {

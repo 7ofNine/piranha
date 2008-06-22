@@ -84,7 +84,7 @@ namespace piranha
 					class norm_comparison
 					{
 						public:
-							norm_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
+							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
 								return (t1.norm(m_args_tuple) >= t2.norm(m_args_tuple));
@@ -98,20 +98,19 @@ namespace piranha
 							m_multiplier(m),
 							m_delta_threshold(
 								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
-								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size()))
-					{
+								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {
 						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
-						if (!is_sorted(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),cmp)) {
-std::cout << "OMG NOT SORTED\n";
-							std::sort(m_multiplier.m_terms1.begin(),m_multiplier.m_terms1.end(),cmp);
+						if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
+							std::cout << "OMG NOT SORTED\n";
+							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
 						} else {
-std::cout << "OMG SORTED\n";
+							std::cout << "OMG SORTED\n";
 						}
-						if (!is_sorted(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),cmp)) {
-std::cout << "OMG NOT SORTED\n";
-							std::sort(m_multiplier.m_terms2.begin(),m_multiplier.m_terms2.end(),cmp);
+						if (!is_sorted(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp)) {
+							std::cout << "OMG NOT SORTED\n";
+							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
 						} else {
-std::cout << "OMG SORTED\n";
+							std::cout << "OMG SORTED\n";
 						}
 					}
 					template <class Result>
