@@ -21,6 +21,8 @@
 #ifndef PIRANHA_MONOMIAL_H
 #define PIRANHA_MONOMIAL_H
 
+#include <boost/tuple/tuple.hpp>
+
 #include "../base_classes/base_term.h"
 
 namespace piranha
