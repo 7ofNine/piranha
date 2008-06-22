@@ -26,11 +26,11 @@
 namespace piranha
 {
 	/// Monomial class.
-	template <class Cf, class Expo, char Separator, class Allocator>
-	class monomial: public base_term<Cf, Expo, Separator, Allocator, monomial<Cf, Expo, Separator, Allocator> >
+	template <class Cf, class Key, char Separator, class Allocator>
+	class monomial: public base_term<Cf, Key, Separator, Allocator, monomial<Cf, Key, Separator, Allocator> >
 	{
 			/// Alias for the ancestor.
-			typedef base_term<Cf, Expo, Separator, Allocator, monomial<Cf, Expo, Separator, Allocator> > ancestor;
+			typedef base_term<Cf, Key, Separator, Allocator, monomial> ancestor;
 			/// Alias for evaluation type.
 			typedef typename ancestor::eval_type eval_type;
 		public:
@@ -38,28 +38,10 @@ namespace piranha
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for expo type.
-			typedef Expo expo_type;
+			typedef Key key_type;
 			/// Result of the multiplication of two monomials.
 			typedef typename boost::tuple<monomial> multiplication_result;
-			/// Default constructor.
-			explicit monomial(): ancestor() {}
-			/// Ctor from string.
-			template <class ArgsTuple>
-			explicit monomial(const std::string &str, const ArgsTuple &args_tuple):
-					ancestor(str, args_tuple) {}
-			/// Constructor from coefficient and exponent part.
-			explicit monomial(const cf_type &c, const expo_type &e): ancestor(c, e) {}
-			/// Generic copy constructor.
-			/**
-			 * Constructs from piranha::monomial with optionally different coefficient type.
-			 */
-			template <class Cf2, class ArgsTuple>
-			explicit monomial(const monomial<Cf2, Expo, Separator, Allocator> &term, const ArgsTuple &a):
-					ancestor(term, a) {}
-			// Same as above with arbitrary coefficients and keys. Typically used when this is a proxy term.
-			template <class Cf2, class Key2>
-			explicit monomial(const monomial<Cf2, Key2, Separator, Allocator> &term):
-					ancestor(term) {}
+			PIRANHA_TERM_CTORS(monomial);
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.
