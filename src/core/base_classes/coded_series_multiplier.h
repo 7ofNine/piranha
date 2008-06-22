@@ -128,11 +128,11 @@ namespace piranha
 			void code_keys() {
 				for (size_t i = 0; i < derived_const_cast->m_size1; ++i) {
 					m_ckeys1.push_back(derived_const_cast->m_terms1[i].m_key.code(m_coding_vector,
-						derived_const_cast->m_args_tuple));
+									   derived_const_cast->m_args_tuple));
 				}
 				for (size_t i = 0; i < derived_const_cast->m_size2; ++i) {
-					m_ckeys2.push_back(derived_const_cast->m_terms2[i].m_key.code(m_coding_vector, 
-						derived_const_cast->m_args_tuple));
+					m_ckeys2.push_back(derived_const_cast->m_terms2[i].m_key.code(m_coding_vector,
+									   derived_const_cast->m_args_tuple));
 				}
 			}
 		protected:

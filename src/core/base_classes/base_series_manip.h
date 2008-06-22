@@ -119,7 +119,7 @@ namespace piranha
 	template <class PinpointIterator>
 	inline PinpointIterator base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
 	{
-		p_static_check((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value),"");
+		p_static_check((boost::is_same<PinpointIterator, typename Derived::pinpoint_iterator>::value), "");
 		return derived_cast->template nth_index<1>().find(t);
 	}
 
@@ -159,7 +159,7 @@ namespace piranha
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typename arg_manager<Term>::arg_assigner aa(args_tuple);
-		std::pair<const_sorted_iterator,bool> res(derived_cast->template nth_index<0>().push_back(term));
+		std::pair<const_sorted_iterator, bool> res(derived_cast->template nth_index<0>().push_back(term));
 		p_assert(res.second);
 		if (!Sign) {
 			res.first->m_cf.invert_sign(args_tuple);
