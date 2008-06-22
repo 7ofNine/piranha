@@ -36,14 +36,14 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
-#include "common_fourier_series_toolbox.h"
 #include "../integer_typedefs.h"
-#include "../poisson_series_common/poisson_series_term.h"
 #include "../ntuple.h"
+#include "common_fourier_series_toolbox.h"
+#include "fourier_series_term.h"
 
-#define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::poisson_series_term)
+#define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::fourier_series_term)
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
-#define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,piranha::fourier_series)
 #define FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< FOURIER_SERIES, Multiplier, Truncator>
 #define FOURIER_SERIES_COMMON_ANCESTOR piranha::common_fourier_series_toolbox< FOURIER_SERIES >
@@ -112,9 +112,9 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::poisson_series_term)
+#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::fourier_series_term)
 #define COMPLEX_FOURIER_SERIES COMPLEX_E0_SERIES(piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::poisson_series_term,piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>

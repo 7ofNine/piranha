@@ -21,6 +21,8 @@
 #ifndef PIRANHA_NAMED_SERIES_MANIP_H
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
+#include <algorithm>
+#include <boost/ref.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <vector>
@@ -306,6 +308,23 @@ namespace piranha
 			derived_cast->trim_terms(trim_flags, tmp, m_arguments);
 			derived_cast->swap_terms(tmp);
 		}
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Cmp>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::sort(const Cmp &cmp)
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::term_type term_type;
+		std::vector<boost::reference_wrapper<const term_type> > v;
+		v.reserve(derived_const_cast->length());
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			v.push_back(boost::cref(*it));
+		}
+		typename arg_manager<term_type>::arg_assigner aa(m_arguments);
+		std::sort(v.begin(),v.end(),cmp);
+		derived_cast->template nth_index<0>().rearrange(v.begin());
 	}
 }
 

@@ -21,24 +21,26 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
+#include <utility>
 
 #include "../../src/manipulators/zpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace pyranha;
-using namespace piranha;
 using namespace boost::python;
+using namespace piranha;
+using namespace piranha::manipulators;
+using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Zpoly)
 {
 	translate_exceptions();
 
-	class_<manipulators::zpoly> inst = series_basic_instantiation<manipulators::zpoly>(std::string("zpoly"),
+	std::pair<class_<zpoly>,class_<zpoly::term_type> > inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
 									   std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(inst);
-	class_<manipulators::zpolyc> instc = series_basic_instantiation<manipulators::zpolyc>(std::string("zpolyc"),
+	common_polynomial_instantiation(inst.first);
+	std::pair<class_<zpolyc>,class_<zpolyc::term_type> > instc = series_basic_instantiation<zpolyc>(std::string("zpolyc"),
 									  std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
+	common_polynomial_instantiation(instc.first);
+	series_complex_instantiation(instc.first, inst.first);
 }

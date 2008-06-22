@@ -25,9 +25,11 @@
 #include <boost/python/class.hpp>
 #include <boost/python/iterator.hpp>
 #include <boost/python/operators.hpp>
+#include <boost/python/pure_virtual.hpp>
 #include <boost/python/return_internal_reference.hpp>
 #include <complex>
 #include <string>
+#include <utility> // For std::pair.
 
 #include "../src/core/integer_typedefs.h"
 #include "../src/core/psym.h"
@@ -61,10 +63,66 @@ namespace pyranha
 		expose_series_indices_helper < T::n_indices - 1 >::run(inst);
 	}
 
+	template <class Term>
+	class term_unary_functor
+	{
+		public:
+			bool operator()(const Term &t) const {
+				return run(t);
+			}
+			virtual bool run(const Term &) const = 0;
+	};
+
+	template <class Term>
+	class term_unary_functor_wrap : public term_unary_functor<Term>,
+		public boost::python::wrapper<term_unary_functor<Term> >
+	{
+		public:
+			bool run(const Term &t) const {
+				return this->get_override("run")(t);
+			}
+	};
+
+	template <class Term>
+	class term_binary_functor
+	{
+		public:
+			bool operator()(const Term &t1, const Term &t2) const {
+				return run(t1, t2);
+			}
+			virtual bool run(const Term &, const Term &) const = 0;
+	};
+
+	template <class Term>
+	class term_binary_functor_wrap : public term_binary_functor<Term>,
+		public boost::python::wrapper<term_binary_functor<Term> >
+	{
+		public:
+			bool run(const Term &t1, const Term &t2) const {
+				return this->get_override("run")(t1, t2);
+			}
+	};
+
 	/// Basic series instantiation.
 	template <class T>
-	boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
+	std::pair<boost::python::class_<T>,boost::python::class_<typename T::term_type> >
+		series_basic_instantiation(const std::string &name, const std::string &description)
 	{
+		// Expose the term type.
+		typedef typename T::term_type term_type;
+		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
+			(std::string("Term for: ")+description).c_str());
+		term_inst.def_readonly("cf",&term_type::m_cf);
+		term_inst.def_readonly("key",&term_type::m_key);
+		// Unary functor.
+		boost::python::class_<term_unary_functor_wrap<term_type>, boost::noncopyable>(
+			(name+"_term_unary_functor").c_str())
+			.def("run", boost::python::pure_virtual(&term_unary_functor<term_type>::run));
+		// Binary functor.
+		boost::python::class_<term_binary_functor_wrap<term_type>, boost::noncopyable>(
+			(name+"_term_binary_functor").c_str())
+			.def("run", boost::python::pure_virtual(&term_binary_functor<term_type>::run));
+		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
 		inst.def(boost::python::init<const std::string &>());
@@ -76,6 +134,7 @@ namespace pyranha
 		inst.def("__copy__", &T::__copy__);
 		inst.def("__repr__", &T::__repr__);
 		inst.def("__len__", &T::length);
+		inst.def("__sort__", &T::template sort<term_binary_functor_wrap<term_type> >);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
 		inst.def("eval", eval_named(&T::eval));
@@ -124,11 +183,7 @@ namespace pyranha
 		inst.def("__pow__", pow_int(&T::pow));
 		typedef T(T::*named_root)(const piranha::max_fast_int &) const;
 		inst.def("root", named_root(&T::root));
-		// Expose the term type.
-		typedef typename T::term_type term_type;
-		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
-			(std::string("Term for: ")+description).c_str());
-		return inst;
+		return std::make_pair(inst,term_inst);
 	}
 
 	template <class T>

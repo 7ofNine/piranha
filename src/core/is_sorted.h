@@ -18,30 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <string>
-#include <utility>
+#ifndef PIRANHA_IS_SORTED_H
+#define PIRANHA_IS_SORTED_H
 
-#include "../../src/manipulators/dfs.h"
-#include "../series_instantiations.h"
-#include "../exceptions.h"
-
-using namespace boost::python;
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
-
-BOOST_PYTHON_MODULE(_Dfs)
+namespace piranha
 {
-	translate_exceptions();
-
-	std::pair<class_<dfs>,class_<dfs::term_type> > inst = series_basic_instantiation<dfs>(std::string("dfs"),
-									 std::string("Fourier series with double precision coefficients."));
-	common_fourier_series_instantiation(inst.first);
-	series_trigonometric_instantiation(inst.first);
-	std::pair<class_<dfsc>,class_<dfsc::term_type> > instc = series_basic_instantiation<dfsc>(std::string("dfsc"),
-									  std::string("Fourier series with complex double precision coefficients."));
-	series_complex_instantiation(instc.first, inst.first);
-	common_fourier_series_instantiation(instc.first);
+	template <class Iterator, class Cmp>
+	inline bool is_sorted(Iterator start, Iterator end, const Cmp &cmp)
+	{
+		const Iterator it_f = end;
+		Iterator it = start;
+		while (it != it_f) {
+			if (!cmp(*it, *(++it))) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
+
+#endif

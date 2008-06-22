@@ -64,6 +64,8 @@ namespace piranha
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
 			std::string __repr__() const;
 			void save_to(const std::string &) const;
+			template <class Cmp>
+			void sort(const Cmp &);
 			void swap(Derived &);
 			double norm() const;
 			// TODO: maybe we can get rid of this with proper friends?

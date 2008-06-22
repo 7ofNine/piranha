@@ -21,24 +21,26 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
+#include <utility>
 
 #include "../../src/manipulators/qpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace pyranha;
-using namespace piranha;
 using namespace boost::python;
+using namespace piranha;
+using namespace piranha::manipulators;
+using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Qpoly)
 {
 	translate_exceptions();
 
-	class_<manipulators::qpoly> inst = series_basic_instantiation<manipulators::qpoly>(std::string("qpoly"),
+	std::pair<class_<qpoly>,class_<qpoly::term_type> > inst = series_basic_instantiation<qpoly>(std::string("qpoly"),
 									   std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(inst);
-	class_<manipulators::qpolyc> instc = series_basic_instantiation<manipulators::qpolyc>(std::string("qpolyc"),
+	common_polynomial_instantiation(inst.first);
+	std::pair<class_<qpolyc>,class_<qpolyc::term_type> > instc = series_basic_instantiation<qpolyc>(std::string("qpolyc"),
 									  std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
+	common_polynomial_instantiation(instc.first);
+	series_complex_instantiation(instc.first, inst.first);
 }

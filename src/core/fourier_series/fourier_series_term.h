@@ -18,65 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_POISSON_SERIES_TERM_H
-#define PIRANHA_POISSON_SERIES_TERM_H
+#ifndef PIRANHA_FOURIER_SERIES_TERM_H
+#define PIRANHA_FOURIER_SERIES_TERM_H
 
 #include <boost/tuple/tuple.hpp>
-#include <string>
 
 #include "../base_classes/base_term.h"
-#include "../ntuple.h"
 
 namespace piranha
 {
 	/// Term class for Fourier series.
 	template <class Cf, class Trig, char Separator, class Allocator>
-	class poisson_series_term: public base_term<Cf, Trig, Separator, Allocator, poisson_series_term<Cf, Trig, Separator, Allocator> >
+	class fourier_series_term:
+		public base_term<Cf, Trig, Separator, Allocator, fourier_series_term<Cf, Trig, Separator, Allocator> >
 	{
 			/// Alias for the ancestor.
-			typedef base_term<Cf, Trig, Separator, Allocator, poisson_series_term<Cf, Trig, Separator, Allocator> > ancestor;
+			typedef base_term<Cf, Trig, Separator, Allocator, fourier_series_term> ancestor;
 			/// Alias for evaluation type.
 			typedef typename ancestor::eval_type eval_type;
 		public:
-			PIRANHA_TERM_REBINDER(poisson_series_term);
+			PIRANHA_TERM_REBINDER(fourier_series_term);
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for trigonometric type.
-			typedef Trig trig_type;
+			typedef Trig key_type;
 			/// Result of the multiplication of two terms.
-			typedef typename boost::tuple<poisson_series_term, poisson_series_term> multiplication_result;
-			/// Default constructor.
-			explicit poisson_series_term(): ancestor() {}
-			/// Ctor from string.
-			template <class ArgsTuple>
-			explicit poisson_series_term(const std::string &str, const ArgsTuple &args_tuple):
-					ancestor(str, args_tuple) {}
-			/// Constructor from coefficient and trigonometric part.
-			explicit poisson_series_term(const cf_type &c, const trig_type &t): ancestor(c, t) {}
-			/// Generic copy constructor.
-			/**
-			 * Constructs from piranha::poisson_series_term with optionally different coefficient type.
-			 */
-			template <class Cf2, class ArgsTuple>
-			explicit poisson_series_term(const poisson_series_term<Cf2, Trig, Separator, Allocator> &term, const ArgsTuple &a):
-					ancestor(term, a) {}
-			// Same as above with arbitrary coefficients and keys. Typically used when this is a proxy term.
-			template <class Cf2, class Key2>
-			explicit poisson_series_term(const poisson_series_term<Cf2, Key2, Separator, Allocator> &term):
-					ancestor(term) {}
-			/// Smarter numerical evaluation
-			/**
-			 * Similar to brute force evaluation, with the difference that sine and cosine of trigonometric arguments are cached
-			 * and re-used over the evaluation of the series. Typically faster by a factor of 2-3, depending on
-			 * the series' characteristics.
-			 * @param[in] te piranha::trig_evaluator object that caches complex exponentials of trigonometric arguments.
-			 */
-			template <class TrigEvaluator>
-			eval_type t_eval(TrigEvaluator &te) const {
-				eval_type retval = ancestor::m_cf.t_eval(te.m_value, te.m_ps->m_arguments);
-				retval *= ancestor::m_key.t_eval(te);
-				return retval;
-			}
+			typedef typename boost::tuple<fourier_series_term, fourier_series_term> multiplication_result;
+			PIRANHA_TERM_CTORS(fourier_series_term);
 			/// Check if the term is canonical.
 			template <class ArgsTuple>
 			bool is_canonical(const ArgsTuple &) const {

@@ -21,24 +21,26 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
+#include <utility>
 
 #include "../../src/manipulators/dpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace pyranha;
-using namespace piranha;
 using namespace boost::python;
+using namespace piranha;
+using namespace piranha::manipulators;
+using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Dpoly)
 {
 	translate_exceptions();
 
-	class_<manipulators::dpoly> inst = series_basic_instantiation<manipulators::dpoly>(std::string("dpoly"),
+	std::pair<class_<dpoly>,class_<dpoly::term_type> > inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
 									   std::string("Multivariate polynomial with double precision coefficients."));
-	common_polynomial_instantiation(inst);
-	class_<manipulators::dpolyc> instc = series_basic_instantiation<manipulators::dpolyc>(std::string("dpolyc"),
+	common_polynomial_instantiation(inst.first);
+	std::pair<class_<dpolyc>,class_<dpolyc::term_type> > instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
 									  std::string("Multivariate polynomial with complex double precision coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
+	common_polynomial_instantiation(instc.first);
+	series_complex_instantiation(instc.first, inst.first);
 }

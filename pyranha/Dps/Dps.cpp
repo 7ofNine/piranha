@@ -21,26 +21,28 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
+#include <utility>
 
 #include "../../src/manipulators/dps.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace pyranha;
-using namespace piranha;
 using namespace boost::python;
+using namespace piranha;
+using namespace piranha::manipulators;
+using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Dps)
 {
 	translate_exceptions();
 
-	class_<manipulators::dps> inst = series_basic_instantiation<manipulators::dps>(std::string("dps"),
+	std::pair<class_<dps>,class_<dps::term_type> > inst = series_basic_instantiation<dps>(std::string("dps"),
 									 std::string("Poisson series with double precision coefficients."));
-	common_poisson_series_instantiation(inst);
-	celmec_instantiation(inst);
-	series_trigonometric_instantiation(inst);
-	class_<manipulators::dpsc> instc = series_basic_instantiation<manipulators::dpsc>(std::string("dpsc"),
+	common_poisson_series_instantiation(inst.first);
+	celmec_instantiation(inst.first);
+	series_trigonometric_instantiation(inst.first);
+	std::pair<class_<dpsc>,class_<dpsc::term_type> > instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
 									   std::string("Poisson series with complex double precision coefficients."));
-	common_poisson_series_instantiation(instc);
-	series_complex_instantiation(instc, inst);
+	common_poisson_series_instantiation(instc.first);
+	series_complex_instantiation(instc.first, inst.first);
 }
