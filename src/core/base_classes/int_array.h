@@ -25,7 +25,6 @@
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/static_assert.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <memory> // For std::allocator.
 #include <utility> // For std::pair.
 #include <vector>
