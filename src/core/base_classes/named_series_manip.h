@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "../config.h" // For (un)likely
+#include "../is_sorted.h"
 #include "../ntuple.h"
 
 namespace piranha
@@ -316,6 +317,11 @@ namespace piranha
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::term_type term_type;
+		// Do something only if we actually need to sort.
+		if (is_sorted(derived_const_cast->template nth_index<0>().begin(),
+			derived_const_cast->template nth_index<0>().end(),cmp)) {
+			return;
+		}
 		std::vector<boost::reference_wrapper<const term_type> > v;
 		v.reserve(derived_const_cast->length());
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
