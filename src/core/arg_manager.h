@@ -34,10 +34,10 @@ namespace piranha
 	/**
 	 * This class is used to manage information about arguments in those context where such information
 	 * is not available. For instance when managing the elements of the multiindex container in a series
-	 * class the functors used to order the terms do not know anything about arguments, since they do not
+	 * class the functors used to order the terms do not know anything about arguments, since arguments do not
 	 * appear inside each term. In those cases, before manipulating a multiindex container, an
 	 * arg_manager::arg_assigner instance should be created, so that proper arguments are made available
-	 * through the arg_manager::cf_args and arg_manager::trig_args methods.
+	 * through the get() method.
 	 */
 	template <class Term>
 	class arg_manager

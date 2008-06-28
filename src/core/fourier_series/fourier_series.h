@@ -37,7 +37,6 @@
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../integer_typedefs.h"
-#include "../ntuple.h"
 #include "common_fourier_series_toolbox.h"
 #include "fourier_series_term.h"
 
@@ -102,7 +101,7 @@ namespace piranha
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
-			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
+			args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(fourier_series);
 			// Index interface.
@@ -197,7 +196,7 @@ namespace std
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
-			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
+			args_tuple_type, Truncator > multiplier_type;
 			NAMED_SERIES_CTORS(complex);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 			SERIES_INDEX_INTERFACE;
