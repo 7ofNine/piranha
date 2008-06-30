@@ -23,7 +23,7 @@ try:
   import numpy as __numpy
   import matplotlib as __matplotlib
 except:
-  print "Warning: many capabilities of Pyranha rely on numpy and matplotlib. Please consider installing these packages."
+  print "Warning: many of Pyranha's capabilities rely on numpy and matplotlib. Please consider installing these packages."
 
 def copy(arg):
   """Standard copy function. Lifted from the copy module."""

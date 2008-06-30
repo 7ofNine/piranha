@@ -63,7 +63,6 @@ namespace piranha
 			void term_erase(Iterator, const ArgsTuple &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
-			Derived __copy__() const;
 			size_t length() const;
 			template <class ArgsTuple>
 			eval_type eval(const double &, const ArgsTuple &) const;
@@ -92,6 +91,8 @@ namespace piranha
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			// Used in pyranha.
+			Derived py_copy() const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.

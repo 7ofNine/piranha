@@ -18,54 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <iostream>
+#ifndef PYRANHA_ARGS_TUPLE_H
+#define PYRANHA_ARGS_TUPLE_H
+
+#include <boost/lexical_cast.hpp>
+#include <boost/python/class.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <sstream>
+#include <string>
 
-#include "core/base_classes/expo_truncator.h"
+#include "../src/core/ntuple.h"
+#include "../src/core/psym.h"
 
-namespace piranha
+namespace pyranha
 {
-	// Static initialization for expo-based truncation.
-	base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
+	inline void args_tuple_py_print_helper(const boost::tuples::null_type &, const std::string) {}
 
-	void base_expo_truncator::clear_all()
-	{
-		m_expo_limits.clear();
-	}
-
-	void base_expo_truncator::print(std::ostream &stream)
-	{
-		if (m_expo_limits.empty()) {
-			stream << "No exponent limits defined.";
-		} else {
-			const iterator it_f = m_expo_limits.end();
-			for (iterator it = m_expo_limits.begin(); it != it_f;) {
-				stream << it->first->name() << ',' << it->second;
-				++it;
-				if (it != it_f) {
-					stream << '\n';
-				}
-			}
-		}
-	}
-
-	std::string base_expo_truncator::py_repr()
-	{
+	template <class ArgsTuple>
+	inline void args_tuple_py_print_helper(const ArgsTuple &args_tuple, std::string &out) {
 		std::ostringstream stream;
-		print(stream);
-		std::string retval(stream.str());
-		return retval;
+		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
+			stream << "[" << i << "] " << args_tuple.get_head()[i]->name() << '\n';
+		}
+		out += stream.str();
+		out += "-\n";
+		args_tuple_py_print_helper(args_tuple.get_tail(),out);
 	}
 
-	base_expo_truncator::iterator base_expo_truncator::find_argument(const psym_p &p)
-	{
-		const iterator it_f = m_expo_limits.end();
-		iterator it(m_expo_limits.begin());
-		for (; it != it_f; ++it) {
-			if (it->first == p) {
-				break;
-			}
-		}
-		return it;
+	template <int N>
+	inline void expose_args_tuples() {
+		boost::python::class_<typename piranha::ntuple<piranha::vector_psym_p,N>::type>
+			args_tuple_inst((std::string("args_tuple")+boost::lexical_cast<std::string>(N)).c_str());
+		expose_args_tuples<N-1>();
 	}
+
+	template <>
+	inline void expose_args_tuples<0>() {}
 }
+
+#endif

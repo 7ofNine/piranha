@@ -43,7 +43,7 @@ namespace pyranha
 		public:
 			template <class T>
 			static void run(boost::python::class_<T> &inst) {
-				inst.add_property((std::string("index") + boost::lexical_cast<std::string>(N)).c_str(),
+				inst.add_property((std::string("__index") + boost::lexical_cast<std::string>(N) + "__").c_str(),
 								  boost::python::range(&T::template begin<N>, &T::template end<N>));
 				expose_series_indices_helper < N - 1 >::run(inst);
 			}
@@ -63,46 +63,6 @@ namespace pyranha
 		expose_series_indices_helper < T::n_indices - 1 >::run(inst);
 	}
 
-	template <class Term>
-	class term_unary_functor
-	{
-		public:
-			bool operator()(const Term &t) const {
-				return run(t);
-			}
-			virtual bool run(const Term &) const = 0;
-	};
-
-	template <class Term>
-	class term_unary_functor_wrap : public term_unary_functor<Term>,
-		public boost::python::wrapper<term_unary_functor<Term> >
-	{
-		public:
-			bool run(const Term &t) const {
-				return this->get_override("run")(t);
-			}
-	};
-
-	template <class Term>
-	class term_binary_functor
-	{
-		public:
-			bool operator()(const Term &t1, const Term &t2) const {
-				return run(t1, t2);
-			}
-			virtual bool run(const Term &, const Term &) const = 0;
-	};
-
-	template <class Term>
-	class term_binary_functor_wrap : public term_binary_functor<Term>,
-		public boost::python::wrapper<term_binary_functor<Term> >
-	{
-		public:
-			bool run(const Term &t1, const Term &t2) const {
-				return this->get_override("run")(t1, t2);
-			}
-	};
-
 	/// Basic series instantiation.
 	template <class T>
 	std::pair<boost::python::class_<T>,boost::python::class_<typename T::term_type> >
@@ -112,16 +72,11 @@ namespace pyranha
 		typedef typename T::term_type term_type;
 		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
 			(std::string("Term for: ")+description).c_str());
-		term_inst.def_readonly("cf",&term_type::m_cf);
-		term_inst.def_readonly("key",&term_type::m_key);
-		// Unary functor.
-		boost::python::class_<term_unary_functor_wrap<term_type>, boost::noncopyable>(
-			(name+"_term_unary_functor").c_str())
-			.def("run", boost::python::pure_virtual(&term_unary_functor<term_type>::run));
-		// Binary functor.
-		boost::python::class_<term_binary_functor_wrap<term_type>, boost::noncopyable>(
-			(name+"_term_binary_functor").c_str())
-			.def("run", boost::python::pure_virtual(&term_binary_functor<term_type>::run));
+		term_inst.def_readonly("cf", &term_type::m_cf);
+		term_inst.def_readonly("key", &term_type::m_key);
+		// Expose arguments' descriptions.
+		boost::python::class_<typename T::py_args_descr> ad_inst("__args_descr__");
+		ad_inst.def("__repr__", &T::py_args_descr::__repr__);
 		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
@@ -131,10 +86,14 @@ namespace pyranha
 		// Take care of exposing the series' indices.
 		expose_series_indices(inst);
 		// Some special methods.
-		inst.def("__copy__", &T::__copy__);
-		inst.def("__repr__", &T::__repr__);
+		inst.def("__copy__", &T::py_copy);
 		inst.def("__len__", &T::length);
-		inst.def("__sort__", &T::template sort<term_binary_functor_wrap<term_type> >);
+		inst.def("__repr__", &T::py_repr);
+		// Pyranha specific special methods.
+		inst.add_property("__arguments__",&T::py_arguments);
+		inst.add_property("args", &T::py_args);
+		inst.def("append", &T::template py_append<term_type>);
+		inst.def("__set_arguments__", &T::py_set_arguments);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
 		inst.def("eval", eval_named(&T::eval));

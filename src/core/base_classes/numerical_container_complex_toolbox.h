@@ -96,6 +96,14 @@ namespace piranha
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
 				return complex_division_helper(c);
 			}
+			// Free interface: this is an interface free from the need to fetch an
+			// external args_tuple to work.
+			value_type real() const {
+				return real(0);
+			}
+			value_type imag() const {
+				return imag(0);
+			}
 		protected:
 			template <class Number>
 			Derived &complex_division_helper(const std::complex<Number> &x) {

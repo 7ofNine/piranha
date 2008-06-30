@@ -26,6 +26,7 @@
 #include <complex>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include "../exceptions.h"
 #include "../psym.h"
@@ -206,7 +207,7 @@ namespace piranha
 
 	/// Print the series, including header, to screen.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::__repr__() const
+	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::py_repr() const
 	{
 		std::ostringstream stream;
 		print(stream, -1);
@@ -230,6 +231,59 @@ namespace piranha
 	named_series<__PIRANHA_NAMED_SERIES_TP>::arguments() const
 	{
 		return m_arguments;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type
+	named_series<__PIRANHA_NAMED_SERIES_TP>::py_arguments() const
+	{
+		return m_arguments;
+	}
+
+	template <class ArgsDescr>
+	class arguments_report_helper
+	{
+		public:
+			template <class ArgsTuple>
+			static void run(const ArgsTuple &args_tuple, std::string &report) {
+				std::ostringstream stream;
+				for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
+					stream << "[" << i << " " << ArgsDescr::head_type::name << "] " <<
+						args_tuple.template get_head()[i]->name() << '\n';
+				}
+				report += stream.str();
+				arguments_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(),report);
+			}
+	};
+
+	template <>
+	class arguments_report_helper<boost::tuples::null_type>
+	{
+		public:
+			template <class ArgsTuple>
+			static void run(const ArgsTuple &, const std::string &) {}
+	};
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	class named_series<__PIRANHA_NAMED_SERIES_TP>::py_args_descr
+	{
+		public:
+			py_args_descr() {}
+			py_args_descr(const args_tuple_type &args_tuple) {
+				arguments_report_helper<arguments_description>::run(args_tuple,m_descr);
+			}
+			std::string __repr__() const {
+				return m_descr;
+			}
+		private:
+			std::string	m_descr;
+	};
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::py_args_descr
+	named_series<__PIRANHA_NAMED_SERIES_TP>::py_args() const
+	{
+		return py_args_descr(m_arguments);
 	}
 }
 

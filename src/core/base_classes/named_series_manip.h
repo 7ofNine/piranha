@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "../config.h" // For (un)likely
+#include "../exceptions.h"
 #include "../is_sorted.h"
 #include "../ntuple.h"
 
@@ -59,6 +60,13 @@ namespace piranha
 		}
 	}
 
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Term2>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_append(const Term2 &t2)
+	{
+		derived_cast->insert(t2,m_arguments);
+	}
+
 	// Meta-programming for appending an argument.
 	template <class ArgsDescr>
 	struct named_series_append_arg {
@@ -70,7 +78,7 @@ namespace piranha
 				// Check that the argument is not already present in this set.
 				for (vector_psym_p::iterator it = args_tuple.get_head().begin(); it != args_tuple.get_head().end(); ++it) {
 					if (arg == (*it)) {
-						std::cout << "Error: " << s << " argument '" << (*it)->name() << "' already present in the set." << std::endl;
+						std::cout << "Error: " << s << " argument '" << (*it)->name() << "' already present in the set.\n";
 						return;
 					}
 				}
@@ -331,6 +339,15 @@ namespace piranha
 		typename arg_manager<term_type>::arg_assigner aa(m_arguments);
 		std::sort(v.begin(),v.end(),cmp);
 		derived_cast->template nth_index<0>().rearrange(v.begin());
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_set_arguments(const args_tuple_type &args_tuple)
+	{
+		if (!derived_const_cast->empty()) {
+			throw unsuitable("Cannot assign arguments to non-empty series.");
+		}
+		m_arguments = args_tuple;
 	}
 }
 

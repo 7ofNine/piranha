@@ -36,7 +36,7 @@ namespace piranha
 		stream << "Truncation level: " << m_truncation_level;
 	}
 
-	std::string base_norm_truncator::__repr__()
+	std::string base_norm_truncator::py_repr()
 	{
 		std::ostringstream stream;
 		print(stream);

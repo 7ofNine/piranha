@@ -43,6 +43,7 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpq_class, mpq_cf> ancestor;
 		public:
+			using ancestor::norm;
 			typedef mpq_class numerical_type;
 			// Ctors. Do not use macro since we need to canonicalize.
 			/// Empty constructor.
@@ -166,11 +167,12 @@ namespace std
 			typedef piranha::numerical_container_complex_toolbox<piranha::mpq_cf> complex_toolbox;
 			friend class piranha::numerical_container_complex_toolbox<piranha::mpq_cf>;
 		public:
-			typedef piranha::mpq_cf value_type;
-			using ancestor::mult_by;
-			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
+			using ancestor::mult_by;
+			using complex_toolbox::mult_by;
+			using ancestor::norm;
+			typedef piranha::mpq_cf value_type;
 			/// Empty constructor.
 			explicit complex(): ancestor::numerical_container() {
 				canonicalize();

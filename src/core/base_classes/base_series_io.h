@@ -72,7 +72,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::__copy__() const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::py_copy() const
 	{
 		return Derived(*derived_const_cast);
 	}

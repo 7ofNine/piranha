@@ -123,10 +123,6 @@ namespace piranha
 						};
 						build_from_array(tmp);
 					}
-					/// Copy function used in Pyranha.
-					psym __copy__() const {
-						return psym(*this);
-					}
 					/// Print to stream.
 					void print(std::ostream &out_stream = std::cout) const {
 						stream_manager::setup_print(out_stream);
@@ -140,13 +136,6 @@ namespace piranha
 						}
 						out_stream << '\n';
 					}
-					/// Print to string. Used in Pyranha.
-					std::string __repr__() const {
-						std::ostringstream stream;
-						print(stream);
-						std::string retval(stream.str());
-						return retval;
-					}
 					/// Time evaluation.
 					double eval(const double &t) const {
 						double retval = 0.;
@@ -159,6 +148,17 @@ namespace piranha
 					}
 					std::string name() const {
 						return m_name;
+					}
+					/// Print to string. Used in Pyranha.
+					std::string py_repr() const {
+						std::ostringstream stream;
+						print(stream);
+						std::string retval(stream.str());
+						return retval;
+					}
+					/// Copy function used in Pyranha.
+					psym py_copy() const {
+						return psym(*this);
 					}
 				private:
 					// Helper for ctor from boost::array.
@@ -210,7 +210,7 @@ namespace piranha
 				}
 			}
 			/// Print list of symbols to string. Used in Pyranha.
-			static std::string __repr__() {
+			static std::string py_repr() {
 				std::ostringstream stream;
 				print(stream);
 				std::string retval(stream.str());

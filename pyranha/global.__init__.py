@@ -43,36 +43,30 @@ for __i in __manipulators__:
 	# Let's try to see if we can get the complex counterpart.
 	try:
 		__type_list.append(getattr(__cur_manip,__i.lower()+'c'))
-	except:
+	except AttributeError:
 		pass
 
 manipulators_type_tuple = tuple(__type_list)
 
-def __series_get_indices_tuple(self):
-	retval = []
-	i = 0
-	go = True
-	while go:
-		try:
-			tmp_index = getattr(self,'index'+str(i))
-			retval.append(tmp_index)
-			i += 1
-		except AttributeError:
-			go = False
-	return tuple(retval)
-
 def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
+def __series_sorted(self, comp = None, key = None, reverse = False):
+	tmp = sorted(self.__index0__, comp, key, reverse)
+	new_series = type(self)()
+	new_series.__set_arguments__(self.__arguments__)
+	for i in tmp: new_series.append(i)
+	return new_series
+
 for __i in __manipulators__:
 	exec "import %s as __cur_manip" % __i
-	exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % __i.lower())
-	exec("__cur_manip.%s.short_type = __series_short_type" % __i.lower())
+	exec("__cur_manip.%s.__short_type__ = __series_short_type" % __i.lower())
+	exec("__cur_manip.%s.sorted = __series_sorted" % __i.lower())
 	# Let's try to see if we can get the complex counterpart.
 	try:
-		exec("__cur_manip.%s.indices_tuple = __series_get_indices_tuple" % (__i.lower()+'c'))
 		exec("__cur_manip.%s.short_type = __series_short_type" % (__i.lower()+'c'))
-	except:
+		exec("__cur_manip.%s.sorted = __series_sorted" % (__i.lower()+'c'))
+	except AttributeError:
 		pass
 
 print "Pyranha is ready."

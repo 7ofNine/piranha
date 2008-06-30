@@ -48,7 +48,7 @@ namespace piranha
 				}
 			}
 			static void print(std::ostream &stream = std::cout);
-			static std::string __repr__();
+			static std::string py_repr();
 			// Returns the length of a development in powers of x that satisfies the condition that the
 			// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 			// times smaller.

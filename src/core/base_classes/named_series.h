@@ -62,7 +62,6 @@ namespace piranha
 			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
-			std::string __repr__() const;
 			void save_to(const std::string &) const;
 			template <class Cmp>
 			void sort(const Cmp &);
@@ -88,6 +87,14 @@ namespace piranha
 			Derived root(const max_fast_int &) const;
 			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
+			// Used in pyranha.
+			class py_args_descr;
+			std::string py_repr() const;
+			args_tuple_type py_arguments() const;
+			py_args_descr py_args() const;
+			template <class Term2>
+			void py_append(const Term2 &);
+			void py_set_arguments(const args_tuple_type &);
 		protected:
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
