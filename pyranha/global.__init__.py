@@ -58,16 +58,32 @@ def __series_sorted(self, comp = None, key = None, reverse = False):
 	for i in tmp: new_series.append(i)
 	return new_series
 
-for __i in __manipulators__:
-	exec "import %s as __cur_manip" % __i
-	exec("__cur_manip.%s.__short_type__ = __series_short_type" % __i.lower())
-	exec("__cur_manip.%s.sorted = __series_sorted" % __i.lower())
-	# Let's try to see if we can get the complex counterpart.
+def __series_filter(self, func):
+	import copy
+	if not func:
+		return copy.copy(self)
+	tmp = filter(func, self.__index0__)
+	new_series = type(self)()
+	new_series.__set_arguments__(self.__arguments__)
+	for i in tmp: new_series.append(i)
+	return new_series
+
+def __enhance_series_class(module_name,method_name,function_name):
+	exec "import %s as __cur_manip" % module_name
+	exec("__cur_manip.%s.%s = %s" % (module_name.lower(),method_name,function_name))
+	# Try to take care of the complex counterpart.
 	try:
-		exec("__cur_manip.%s.short_type = __series_short_type" % (__i.lower()+'c'))
-		exec("__cur_manip.%s.sorted = __series_sorted" % (__i.lower()+'c'))
+		exec("__cur_manip.%s.%s = %s " % ((module_name.lower()+'c'),method_name,function_name))
 	except AttributeError:
 		pass
+
+def __enhance_manipulators():
+	for i in __manipulators__:
+		__enhance_series_class(i, "__short_type__", "__series_short_type")
+		__enhance_series_class(i, "sorted", "__series_sorted")
+		__enhance_series_class(i, "filter", "__series_filter")
+
+__enhance_manipulators()
 
 print "Pyranha is ready."
 
