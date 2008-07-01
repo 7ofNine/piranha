@@ -58,4 +58,6 @@
 #define p_static_check(expr,descr) BOOST_STATIC_ASSERT(expr)
 #endif
 
+#define __PIRANHA_MAX_ECHELON_LEVEL (10)
+
 #endif

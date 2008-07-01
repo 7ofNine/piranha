@@ -30,6 +30,7 @@
 
 #include "../../src/core/base_classes/expo_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
+#include "../../src/core/config.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
 #include "../../src/core/stream_manager.h"
@@ -55,7 +56,7 @@ BOOST_PYTHON_MODULE(_Core)
 {
 	translate_exceptions();
 	numerical_cfs_bindings();
-	expose_args_tuples<10>();
+	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	vector_indexing<double>("double");
 

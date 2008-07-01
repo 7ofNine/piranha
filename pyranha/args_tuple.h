@@ -48,7 +48,8 @@ namespace pyranha
 	template <int N>
 	inline void expose_args_tuples() {
 		boost::python::class_<typename piranha::ntuple<piranha::vector_psym_p,N>::type>
-			args_tuple_inst((std::string("args_tuple")+boost::lexical_cast<std::string>(N)).c_str());
+			args_tuple_inst((std::string("__args_tuple")+boost::lexical_cast<std::string>(N)+"__").c_str(),
+			(std::string("Tuple of ")+boost::lexical_cast<std::string>(N)+" arguments vectors.").c_str());
 		expose_args_tuples<N-1>();
 	}
 

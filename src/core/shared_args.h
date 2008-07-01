@@ -40,7 +40,7 @@ namespace piranha
 	 */
 	class __PIRANHA_VISIBLE shared_args
 	{
-			typedef ntuple<vector_psym_p, 10>::type temp_tuple_type;
+			typedef ntuple<vector_psym_p, __PIRANHA_MAX_ECHELON_LEVEL>::type temp_tuple_type;
 		public:
 			template <class ArgsTuple>
 			static void set(const ArgsTuple &args_tuple) {
