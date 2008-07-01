@@ -82,6 +82,8 @@ namespace piranha
 		public:
 			using POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
 			using POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
+			using POLYNOMIAL_CF_BASE_ANCESTOR::norm;
+			using POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -172,6 +174,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::norm;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.

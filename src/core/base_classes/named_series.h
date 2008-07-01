@@ -95,6 +95,7 @@ namespace piranha
 			template <class Term2>
 			void py_append(const Term2 &);
 			void py_set_arguments(const args_tuple_type &);
+			void py_shared_args_set() const;
 		protected:
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.

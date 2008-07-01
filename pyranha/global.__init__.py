@@ -36,22 +36,25 @@ else:
 	ds = None
 
 # Let's build the list of manipulator types
-__type_list = []
-for __i in __manipulators__:
-	exec "import %s as __cur_manip" % __i
-	__type_list.append(getattr(__cur_manip,__i.lower()))
-	# Let's try to see if we can get the complex counterpart.
-	try:
-		__type_list.append(getattr(__cur_manip,__i.lower()+'c'))
-	except AttributeError:
-		pass
+def __build_manipulators_type_tuple():
+	__type_list = []
+	for i in __manipulators__:
+		exec "import %s as __cur_manip" % i
+		__type_list.append(getattr(__cur_manip,i.lower()))
+		# Let's try to see if we can get the complex counterpart.
+		try:
+			__type_list.append(getattr(__cur_manip,i.lower()+'c'))
+		except AttributeError:
+			pass
+	return tuple(__type_list)
 
-manipulators_type_tuple = tuple(__type_list)
+manipulators_type_tuple = tuple(__build_manipulators_type_tuple())
 
 def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
 def __series_sorted(self, comp = None, key = None, reverse = False):
+	self.__shared_args_set__()
 	tmp = sorted(self.__index0__, comp, key, reverse)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
@@ -62,6 +65,7 @@ def __series_filter(self, func):
 	import copy
 	if not func:
 		return copy.copy(self)
+	self.__shared_args_set__()
 	tmp = filter(func, self.__index0__)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)

@@ -39,13 +39,13 @@ BOOST_PYTHON_MODULE(_Qps)
 	std::pair<class_<qps>,class_<qps::term_type> > inst(
 			series_basic_instantiation<qps>(std::string("qps"),
 			std::string("Poisson series with arbitrary-precision rational coefficients.")));
-	common_poisson_series_instantiation(inst.first);
+	common_poisson_series_instantiation(inst.first,"qps");
 	celmec_instantiation(inst.first);
 	series_trigonometric_instantiation(inst.first);
 
 	std::pair<class_<qpsc>,class_<qpsc::term_type> > instc(
 				series_basic_instantiation<qpsc>(std::string("qpsc"),
 				std::string("Poisson series with complex arbitrary-precision rational coefficients.")));
-	common_poisson_series_instantiation(instc.first);
+	common_poisson_series_instantiation(instc.first,"qpsc");
 	series_complex_instantiation(instc.first, inst.first);
 }

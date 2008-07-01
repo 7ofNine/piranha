@@ -34,6 +34,7 @@
 #include "../src/core/integer_typedefs.h"
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
+#include "cf_key_bindings.h"
 
 namespace pyranha
 {
@@ -68,8 +69,8 @@ namespace pyranha
 	std::pair<boost::python::class_<T>,boost::python::class_<typename T::term_type> >
 		series_basic_instantiation(const std::string &name, const std::string &description)
 	{
-		// Expose the term type.
 		typedef typename T::term_type term_type;
+		// Expose the term type.
 		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
 			(std::string("Term for: ")+description).c_str());
 		term_inst.def_readonly("cf", &term_type::m_cf);
@@ -94,6 +95,7 @@ namespace pyranha
 		inst.add_property("args", &T::py_args);
 		inst.def("append", &T::template py_append<term_type>);
 		inst.def("__set_arguments__", &T::py_set_arguments);
+		inst.def("__shared_args_set__", &T::py_shared_args_set);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
 		inst.def("eval", eval_named(&T::eval));
@@ -194,7 +196,8 @@ namespace pyranha
 		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
 		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
 		instc.def("real", comp_set(&std::complex<T>::real), boost::python::return_internal_reference<1>(), "Set real part.");
-		instc.def("imag", comp_set(&std::complex<T>::imag), boost::python::return_internal_reference<1>(), "Set imaginary part.");
+		instc.def("imag", comp_set(&std::complex<T>::imag),
+			boost::python::return_internal_reference<1>(), "Set imaginary part.");
 	}
 
 	template <class T>
@@ -272,12 +275,14 @@ namespace pyranha
 	}
 
 	template <class T>
-	void common_poisson_series_instantiation(boost::python::class_<T> &inst)
+	void common_poisson_series_instantiation(boost::python::class_<T> &inst, const std::string &name)
 	{
 		series_psym_instantiation(inst);
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
+		// Expose the polynomial coefficient.
+		cf_bindings<typename T::term_type::cf_type>((name+"_cf").c_str(), "");
 	}
 
 	template <class T>

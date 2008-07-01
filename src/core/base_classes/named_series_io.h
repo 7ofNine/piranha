@@ -28,6 +28,8 @@
 #include <sstream>
 #include <string>
 
+#include "../shared_args.h"
+#include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
 
@@ -284,6 +286,12 @@ namespace piranha
 	named_series<__PIRANHA_NAMED_SERIES_TP>::py_args() const
 	{
 		return py_args_descr(m_arguments);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_shared_args_set() const
+	{
+		shared_args::set(m_arguments);
 	}
 }
 

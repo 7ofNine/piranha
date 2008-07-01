@@ -31,6 +31,7 @@
 #include "../exceptions.h"
 #include "../is_sorted.h"
 #include "../ntuple.h"
+#include "../shared_args.h"
 
 namespace piranha
 {
@@ -336,7 +337,7 @@ namespace piranha
 		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			v.push_back(boost::cref(*it));
 		}
-		typename arg_manager<term_type>::arg_assigner aa(m_arguments);
+		shared_args::set(m_arguments);
 		std::sort(v.begin(),v.end(),cmp);
 		derived_cast->template nth_index<0>().rearrange(v.begin());
 	}

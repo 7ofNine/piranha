@@ -46,7 +46,7 @@ namespace piranha
 	{
 		protected:
 			// Proxy implementation to be refined in derived class.
-			// Templated this way to cope with complex multiplication.
+			// Templated this way to cope with complex-by-real multiplication.
 			template <class Series>
 			class reference_proxy
 			{
@@ -79,6 +79,8 @@ namespace piranha
 			// Interaction with proxy.
 			template <class Series, class ArgsTuple>
 			Derived &mult_by(reference_proxy<Series> , const ArgsTuple &);
+			// Free interface.
+			double norm() const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

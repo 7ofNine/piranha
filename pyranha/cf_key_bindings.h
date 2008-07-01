@@ -32,7 +32,7 @@
 namespace pyranha
 {
 	template <class Cf>
-	inline boost::python::class_<Cf> numerical_cf_bindings(const std::string &name, const std::string &description) {
+	inline boost::python::class_<Cf> cf_bindings(const std::string &name, const std::string &description) {
 		boost::python::class_<Cf> cf_inst(name.c_str(),description.c_str());
 		typedef double (Cf::*norm_free)() const;
 		cf_inst.def("norm",norm_free(&Cf::norm),"Norm.");
@@ -41,9 +41,9 @@ namespace pyranha
 	}
 
 	template <class Cf>
-	inline boost::python::class_<std::complex<Cf> > complex_numerical_cf_bindings(const std::string &name,
+	inline boost::python::class_<std::complex<Cf> > complex_cf_bindings(const std::string &name,
 		const std::string &description) {
-		boost::python::class_<std::complex<Cf> > cf_inst(numerical_cf_bindings<std::complex<Cf> >(name,description));
+		boost::python::class_<std::complex<Cf> > cf_inst(cf_bindings<std::complex<Cf> >(name,description));
 		typedef Cf (std::complex<Cf>::*comp_free)() const;
 		cf_inst.def("real",comp_free(&std::complex<Cf>::real),"Real part.");
 		cf_inst.def("imag",comp_free(&std::complex<Cf>::imag),"Imaginary part.");
@@ -51,12 +51,12 @@ namespace pyranha
 	}
 
 	inline void numerical_cfs_bindings() {
-		numerical_cf_bindings<piranha::double_cf>("double_cf","Double precision coefficient.");
-		complex_numerical_cf_bindings<piranha::double_cf>("double_cfc","Complex double precision coefficient.");
-		numerical_cf_bindings<piranha::mpq_cf>("mpq_cf","Arbitrary precision rational coefficient.");
-		complex_numerical_cf_bindings<piranha::mpq_cf>("mpq_cfc","Complex arbitrary precision rational coefficient.");
-		numerical_cf_bindings<piranha::mpz_cf>("mpz_cf","Arbitrary precision integer coefficient.");
-		complex_numerical_cf_bindings<piranha::mpz_cf>("mpz_cfc","Complex arbitrary precision integer coefficient.");
+		cf_bindings<piranha::double_cf>("double_cf","Double precision coefficient.");
+		complex_cf_bindings<piranha::double_cf>("double_cfc","Complex double precision coefficient.");
+		cf_bindings<piranha::mpq_cf>("mpq_cf","Arbitrary precision rational coefficient.");
+		complex_cf_bindings<piranha::mpq_cf>("mpq_cfc","Complex arbitrary precision rational coefficient.");
+		cf_bindings<piranha::mpz_cf>("mpz_cf","Arbitrary precision integer coefficient.");
+		complex_cf_bindings<piranha::mpz_cf>("mpz_cfc","Complex arbitrary precision integer coefficient.");
 	}
 }
 

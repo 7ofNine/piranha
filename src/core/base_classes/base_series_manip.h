@@ -24,7 +24,6 @@
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
 #include <utility>
 
-#include "../arg_manager.h"
 #include "../config.h"
 
 namespace piranha
@@ -128,6 +127,8 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::pinpoint_iterator pinpoint_iterator;
+		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
+		// _this_ point before checking for ignorability.
 		if (term.is_ignorable(args_tuple)) {
 			return;
 		}
@@ -158,7 +159,6 @@ namespace piranha
 			const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		std::pair<const_sorted_iterator, bool> res(derived_cast->template nth_index<0>().push_back(term));
 		p_assert(res.second);
 		if (!Sign) {
@@ -169,9 +169,8 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class Iterator, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(Iterator it,
-			const ArgsTuple &args_tuple)
+			const ArgsTuple &)
 	{
-		typename arg_manager<Term>::arg_assigner aa(args_tuple);
 		derived_cast->template nth_index<N>().erase(it);
 	}
 

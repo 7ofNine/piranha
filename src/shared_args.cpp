@@ -18,42 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CF_SERIES_PROBE_H
-#define PIRANHA_CF_SERIES_PROBE_H
-
-#include "../shared_args.h"
-#include "../p_assert.h"
+#include "core/shared_args.h"
+#include "core/psym.h"
 
 namespace piranha
 {
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_insertable(const ArgsTuple &args_tuple) const
-	{
-		return (derived_const_cast->template nth_index<0>().empty() or
-				derived_const_cast->template nth_index<0>().begin()->is_insertable(args_tuple));
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::needs_padding(const ArgsTuple &args_tuple) const
-	{
-		return (!derived_const_cast->template nth_index<0>().empty() and
-				derived_const_cast->template nth_index<0>().begin()->needs_padding(args_tuple));
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_ignorable(const ArgsTuple &) const
-	{
-		return (derived_const_cast->template nth_index<0>().empty());
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm() const
-	{
-		return derived_const_cast->norm(shared_args::get());
-	}
+	shared_args::temp_tuple_type shared_args::m_args_tuple;
 }
-
-#endif
