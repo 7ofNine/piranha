@@ -343,6 +343,24 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Filter>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
+	{
+		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		Derived retval;
+		retval.m_arguments = m_arguments;
+		shared_args::set(m_arguments);
+		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+			if (f(*it)) {
+				retval.insert(*it,retval.m_arguments);
+			}
+		}
+		retval.trim();
+		return retval;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_set_arguments(const args_tuple_type &args_tuple)
 	{
 		if (!derived_const_cast->empty()) {

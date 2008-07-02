@@ -31,7 +31,6 @@
   not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
   copies that are performed for longer series.
 - TRIM
-- expose filter also in c++
 - vectorization through repetition:
   [cf1] --> [cf2]	[cf1] --> [cf4]
   [cf1] --> [cf3]	[cf1] --> [cf5]

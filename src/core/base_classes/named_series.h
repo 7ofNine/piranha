@@ -65,6 +65,8 @@ namespace piranha
 			void save_to(const std::string &) const;
 			template <class Cmp>
 			void sort(const Cmp &);
+			template <class Filter>
+			Derived filter(const Filter &) const;
 			void swap(Derived &);
 			void trim();
 			double norm() const;
