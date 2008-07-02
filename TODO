@@ -35,3 +35,4 @@
 - vectorization through repetition:
   [cf1] --> [cf2]	[cf1] --> [cf4]
   [cf1] --> [cf3]	[cf1] --> [cf5]
+- rework poly norm as ans(evaluation at zero time)?
