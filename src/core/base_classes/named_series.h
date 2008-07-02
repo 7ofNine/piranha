@@ -66,6 +66,7 @@ namespace piranha
 			template <class Cmp>
 			void sort(const Cmp &);
 			void swap(Derived &);
+			void trim();
 			double norm() const;
 			// TODO: maybe we can get rid of this with proper friends?
 			const args_tuple_type &arguments() const;
@@ -88,14 +89,13 @@ namespace piranha
 			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
 			// Used in pyranha.
-			class py_args_descr;
 			std::string py_repr() const;
-			args_tuple_type py_arguments() const;
-			py_args_descr py_args() const;
 			template <class Term2>
 			void py_append(const Term2 &);
+			std::string py_arguments_description() const;
+			args_tuple_type py_arguments() const;
 			void py_set_arguments(const args_tuple_type &);
-			void py_shared_args_set() const;
+			void py_shared_arguments_set() const;
 		protected:
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
@@ -107,7 +107,6 @@ namespace piranha
 			void append_arg(const psym_p &);
 			template <class Derived2>
 			void merge_args(const Derived2 &);
-			void trim();
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>

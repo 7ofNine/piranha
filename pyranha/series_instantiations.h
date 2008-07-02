@@ -75,9 +75,6 @@ namespace pyranha
 			(std::string("Term for: ")+description).c_str());
 		term_inst.def_readonly("cf", &term_type::m_cf);
 		term_inst.def_readonly("key", &term_type::m_key);
-		// Expose arguments' descriptions.
-		boost::python::class_<typename T::py_args_descr> ad_inst("__args_descr__");
-		ad_inst.def("__repr__", &T::py_args_descr::__repr__);
 		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
@@ -90,12 +87,14 @@ namespace pyranha
 		inst.def("__copy__", &T::py_copy);
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &T::py_repr);
-		// Pyranha specific special methods.
+		// Pyranha-specific special methods.
+		inst.add_property("__arguments_description__",&T::py_arguments_description);
 		inst.add_property("__arguments__",&T::py_arguments);
-		inst.add_property("args", &T::py_args);
-		inst.def("append", &T::template py_append<term_type>);
 		inst.def("__set_arguments__", &T::py_set_arguments);
-		inst.def("__shared_args_set__", &T::py_shared_args_set);
+		inst.def("__shared_arguments_set__", &T::py_shared_arguments_set);
+		typedef void (T::*trim_free)();
+		inst.def("__trim__", trim_free(&T::trim));
+		inst.def("__append__", &T::template py_append<term_type>);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
 		inst.def("eval", eval_named(&T::eval));

@@ -54,38 +54,55 @@ def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
 def __series_sorted(self, comp = None, key = None, reverse = False):
-	self.__shared_args_set__()
+	self.__shared_arguments_set__()
 	tmp = sorted(self.__index0__, comp, key, reverse)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
-	for i in tmp: new_series.append(i)
+	for i in tmp: new_series.__append__(i)
 	return new_series
 
 def __series_filter(self, func):
 	import copy
 	if not func:
 		return copy.copy(self)
-	self.__shared_args_set__()
+	self.__shared_arguments_set__()
 	tmp = filter(func, self.__index0__)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
-	for i in tmp: new_series.append(i)
+	for i in tmp: new_series.__append__(i)
+	new_series.__trim__()
 	return new_series
 
-def __enhance_series_class(module_name,method_name,function_name):
+def __series_arguments(self):
+	import pyranha.Core._Core as _Core
+	import re
+	args_number = re.match('.*__base_args_tuple(..?)__.*',str(type(self.__arguments__))).group(1)
+	exec("retval = _Core.__args_tuple%s__(self)" % args_number)
+	return retval
+
+def __add_method(module_name,method_name,function):
 	exec "import %s as __cur_manip" % module_name
-	exec("__cur_manip.%s.%s = %s" % (module_name.lower(),method_name,function_name))
+	exec("__cur_manip.%s.%s = function" % (module_name.lower(),method_name))
 	# Try to take care of the complex counterpart.
 	try:
-		exec("__cur_manip.%s.%s = %s " % ((module_name.lower()+'c'),method_name,function_name))
+		exec("__cur_manip.%s.%s = function " % ((module_name.lower()+'c'),method_name))
+	except AttributeError:
+		pass
+
+def __add_property(module_name, property_name, fget=None, fset=None, fdel=None, doc=None):
+	exec "import %s as __cur_manip" % module_name
+	exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc)" % (module_name.lower(),property_name))
+	try:
+		exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc) " % ((module_name.lower()+'c'),property_name))
 	except AttributeError:
 		pass
 
 def __enhance_manipulators():
 	for i in __manipulators__:
-		__enhance_series_class(i, "__short_type__", "__series_short_type")
-		__enhance_series_class(i, "sorted", "__series_sorted")
-		__enhance_series_class(i, "filter", "__series_filter")
+		__add_property(i, "__short_type__", __series_short_type)
+		__add_method(i, "sorted", __series_sorted)
+		__add_method(i, "filter", __series_filter)
+		__add_property(i, "arguments", __series_arguments)
 
 __enhance_manipulators()
 

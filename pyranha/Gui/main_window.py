@@ -33,7 +33,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 				(
 					id(self.ip_ns[x]),
 					x,
-					self.ip_ns[x].__short_type__(),
+					self.ip_ns[x].__short_type__,
 					len(self.ip_ns[x])
 				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators_type_tuple, self.ip_ns))
 			assert(not retval or self.__n_columns == len(retval[0]))
@@ -112,7 +112,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 		if series_name:
 			self.series_info_groupbox.setEnabled(True)
 			self.series_name_label.setText(series_name)
-			self.series_type_label.setText(series.__short_type__())
+			self.series_type_label.setText(series.__short_type__)
 			self.series_type_label.setToolTip(str(series.__doc__))
 			self.series_length_label.setText(str(len(series)))
 			self.series_atoms_label.setText(str(series.atoms()))

@@ -18,7 +18,6 @@
 
 from _Core import *
 
-import copy as __copy
 try:
   import numpy as __numpy
   import matplotlib as __matplotlib
@@ -26,8 +25,9 @@ except:
   print "Warning: many of Pyranha's capabilities rely on numpy and matplotlib. Please consider installing these packages."
 
 def copy(arg):
-  """Standard copy function. Lifted from the copy module."""
-  return __copy.copy(arg)
+	"""Standard copy function. Lifted from the copy module."""
+	import copy as __copy
+	return __copy.copy(arg)
 
 psym_manager = _Core.__psym_manager()
 expo_truncator = _Core.__expo_truncator()
@@ -63,3 +63,44 @@ def tc(args, flambda, t0 = 0., t1 = None, step = None):
       retval[j]=abs(result.eval(t)-flambda(*args_list_eval))
       j=j+1
     return time_array,retval;
+
+def __decorate_args_tuples():
+	import _Core
+	n = 1
+	try:
+		while True:
+			base_class_name = "_Core.__base_args_tuple"+str(n)+"__"
+			new_class_name = "__args_tuple"+str(n)+"__"
+			repr_function_name = "__args_tuple"+str(n)+"_repr__"
+			exec(
+				"""class %s(%s):
+						def __init__(self,series):
+							%s.__init__(self,series.__arguments__)
+							self.__args_descr = series.__arguments_description__.split()
+							self.__args_list = series.__arguments__.__repr__().split(\"\\n\")
+							self.__args_list.pop()
+						def __get_tuple__(self):
+							tmp_arg_list = [[int(x.split(None,1)[0]),x.split(None,1)[1]] for x in self.__args_list]
+							retval = []
+							n = 0
+							prev = None
+							for i in tmp_arg_list:
+								if i[0] <= prev:
+									n+=1
+								tmp = [self.__args_descr[n]]
+								tmp += i
+								retval.append(tuple(tmp))
+								prev = i[0]
+							return tuple(retval)
+						def __repr__(self):
+							retval = \"\"
+							for i in self.__get_tuple__():
+								retval += str(i[0])+\" \"+str(i[1])+\" \"+str(i[2])+\"\\n\"
+							return retval"""
+				% (new_class_name, base_class_name, base_class_name))
+			exec("setattr(_Core, new_class_name, %s)" % new_class_name)
+			n += 1
+	except AttributeError:
+		pass
+
+__decorate_args_tuples()

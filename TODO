@@ -19,7 +19,9 @@
 - enable besselJ for polynomials that are single coefficients without bothering about expo limits.
 - there _is_ a mpz_swap function, check if it is useful.
 - understand the relation between ordering and vector coded performance. For polynomials it increases performance
-  a total degree lex order, for poisson series it _seems_ no.
+  a total degree lex order, for poisson series it _seems_ no --> this probably has to do with prefetching, which is destroyed
+  in poisson series because of the additional subtraction on the index of the vector. This can be probably optimized
+  for poisson series somehow.
 - use effectively a null_truncator in place of the chosen truncator if this is not effective (i.e., it can be
   established without doubt that the truncator will _not_ truncate anything). This is doubly useful:
   1) use null truncator for maximum speed when suitable
@@ -28,3 +30,8 @@
 - optimize for small series --> there's no need to avoid direct insertion in series, since we do
   not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
   copies that are performed for longer series.
+- TRIM
+- expose filter also in c++
+- vectorization through repetition:
+  [cf1] --> [cf2]	[cf1] --> [cf4]
+  [cf1] --> [cf3]	[cf1] --> [cf5]
