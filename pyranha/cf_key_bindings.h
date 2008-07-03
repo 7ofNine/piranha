@@ -28,6 +28,7 @@
 #include "../src/core/numerical_coefficients/double_cf.h"
 #include "../src/core/numerical_coefficients/mpq_cf.h"
 #include "../src/core/numerical_coefficients/mpz_cf.h"
+#include "../src/core/poisson_series_common/trig_array.h"
 
 namespace pyranha
 {
@@ -57,6 +58,29 @@ namespace pyranha
 		complex_cf_bindings<piranha::mpq_cf>("mpq_cfc","Complex arbitrary precision rational coefficient.");
 		cf_bindings<piranha::mpz_cf>("mpz_cf","Arbitrary precision integer coefficient.");
 		complex_cf_bindings<piranha::mpz_cf>("mpz_cfc","Complex arbitrary precision integer coefficient.");
+	}
+
+	template <class IntArrayKey>
+	inline boost::python::class_<IntArrayKey> int_array_key_bindings(const std::string &name, const std::string &descr) {
+		boost::python::class_<IntArrayKey> retval(name.c_str(),descr.c_str());
+		retval.def("__getitem__",&IntArrayKey::py_getitem);
+		return retval;
+	}
+
+	template <class TrigArray>
+	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst) {
+		typedef bool (TrigArray::*get_flavour)() const;
+		inst.add_property("flavour", get_flavour(&TrigArray::flavour));
+	}
+
+	inline void keys_bindings() {
+		boost::python::class_<piranha::trig_array<16, 0> >
+			ta_16_0(int_array_key_bindings<piranha::trig_array<16, 0> >("trig_array_16_0",""));
+		trig_array_key_bindings(ta_16_0);
+
+		boost::python::class_<piranha::trig_array<16, 1> >
+			ta_16_1(int_array_key_bindings<piranha::trig_array<16, 1> >("trig_array_16_1",""));
+		trig_array_key_bindings(ta_16_1);
 	}
 }
 

@@ -56,6 +56,7 @@ BOOST_PYTHON_MODULE(_Core)
 {
 	translate_exceptions();
 	numerical_cfs_bindings();
+	keys_bindings();
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	vector_indexing<double>("double");

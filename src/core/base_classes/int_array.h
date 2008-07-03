@@ -29,6 +29,7 @@
 #include <utility> // For std::pair.
 #include <vector>
 
+#include "../exceptions.h" // TODO: remove this when py_getitem is moved in pyranha.
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
 #include "../p_assert.h"
@@ -297,6 +298,16 @@ namespace piranha
 				for (size_t i = 0; i < size; ++i) {
 					m_ptr[i] = (value_type)v[i];
 				}
+			}
+			value_type py_getitem(const int &n_) const {
+				int n = n_;
+				if (n_ < 0) {
+					n = n_ + m_size;
+				}
+				if (n >= m_size or n < 0) {
+					throw unsuitable("Index of integer array is out of range.");
+				}
+				return m_ptr[n];
 			}
 		protected:
 			/// Array-like operator[], const version.
