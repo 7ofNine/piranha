@@ -309,6 +309,9 @@ namespace piranha
 				}
 				return m_ptr[n];
 			}
+			bool py_flavour() const {
+				return m_flavour;
+			}
 		protected:
 			/// Array-like operator[], const version.
 			const value_type &operator[](const size_t &n) const {

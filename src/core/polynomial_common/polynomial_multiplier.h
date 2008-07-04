@@ -133,6 +133,7 @@ namespace piranha
 						);
 					}
 					bool perform_vector_coded_multiplication() {
+						const truncator_type trunc(*this);
 						cf_type1 *p_vc_res(0);
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -161,10 +162,10 @@ namespace piranha
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								// Calculate index of the result.
 								const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
-								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
-								if (ancestor::m_trunc.accept(res_index)) {
+								if (trunc.accept(res_index)) {
 									vc_res[res_index].addmul(ancestor::m_terms1[i].m_cf, ancestor::m_terms2[j].m_cf,
 															 ancestor::m_args_tuple);
 								}
@@ -199,16 +200,17 @@ namespace piranha
 						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
+						const truncator_type trunc(*this);
 						csht cms;
 						cterm tmp_cterm;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
 								const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-								switch (ancestor::m_trunc.accept(new_key)) {
+								switch (trunc.accept(new_key)) {
 								case true: {
 									c_iterator it = cms.find(new_key);
 									switch (it == cms.end()) {

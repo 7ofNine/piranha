@@ -69,8 +69,7 @@ namespace pyranha
 
 	template <class TrigArray>
 	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst) {
-		typedef bool (TrigArray::*get_flavour)() const;
-		inst.add_property("flavour", get_flavour(&TrigArray::flavour));
+		inst.add_property("flavour", &TrigArray::py_flavour);
 	}
 
 	inline void keys_bindings() {

@@ -70,8 +70,7 @@ namespace piranha
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.template nth_index<0>().size()),
-					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval), m_terms1(), m_terms2(),
-					m_trunc(*derived_cast) {
+					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
 				// Reserve in advance the space for term's proxies, so that allocations are mimimized.
@@ -91,14 +90,15 @@ namespace piranha
 			// Perform plain multiplication.
 			void plain_multiplication() {
 				typedef typename term_type1::multiplication_result mult_res;
+				const truncator_type trunc(*derived_cast);
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
-						if (m_trunc.skip(m_terms1[i], m_terms2[j])) {
+						if (trunc.skip(m_terms1[i], m_terms2[j])) {
 							break;
 						}
 						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
-						insert_multiplication_result<mult_res>::run(res, *this);
+						insert_multiplication_result<mult_res>::run(res, *this, trunc);
 					}
 				}
 			}
@@ -141,9 +141,6 @@ namespace piranha
 			std::vector<term_proxy_type2>	m_terms2;
 			// Container to store the result of the multiplications.
 			mult_set                      	m_set;
-			// Truncator. This must be the last one defined because it will use *this
-			// as parameter for construction.
-			truncator_type                	m_trunc;
 	};
 }
 

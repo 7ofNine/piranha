@@ -63,6 +63,9 @@ namespace piranha
 				}
 				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
 									  / std::log10(norm) + 1 - start) / step_size);
+
+std::cout << "Retval = " << retval << '\n';
+
 				if (retval >= 0) {
 					return retval;
 				} else {
@@ -87,7 +90,8 @@ namespace piranha
 							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								return (t1.norm(m_args_tuple) >= t2.norm(m_args_tuple));
+								return (t1.m_cf.norm(m_args_tuple) * t1.m_key.norm(m_args_tuple) >=
+									t2.m_cf.norm(m_args_tuple) * t2.m_key.norm(m_args_tuple));
 							}
 						private:
 							const ArgsTuple	&m_args_tuple;

@@ -43,6 +43,7 @@ namespace piranha
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
+	// TODO: isn't truncator's "accept" used here??
 	class poisson_series_multiplier
 	{
 		public:
@@ -134,6 +135,7 @@ namespace piranha
 						}
 					}
 					bool perform_vector_coded_multiplication() {
+						const truncator_type trunc(*this);
 						cf_type1 *p_vc_res_cos(0), *p_vc_res_sin(0);
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
@@ -163,7 +165,7 @@ namespace piranha
 						// Perform multiplication.
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
 								// TODO: Does it make sense here to define a method for coefficients like:
@@ -229,10 +231,11 @@ namespace piranha
 						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
+						const truncator_type trunc(*this);
 						csht cms_cos, cms_sin;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (ancestor::m_trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
 								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
