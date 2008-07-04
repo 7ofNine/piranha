@@ -265,7 +265,6 @@ namespace piranha
 									} else {
 										it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
 									}
-									break;
 								} else {
 									if (m_flavours1[i]) {
 										tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
