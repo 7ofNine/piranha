@@ -236,6 +236,18 @@ namespace std
 		COMPLEX_FOURIER_SERIES retval(x.pow(n));
 		return retval;
 	}
+
+	template < E0_SERIES_TP_DECL >
+	FOURIER_SERIES cos(const FOURIER_SERIES &x)
+	{
+		return x.cos();
+	}
+
+	template < E0_SERIES_TP_DECL >
+	FOURIER_SERIES sin(const FOURIER_SERIES &x)
+	{
+		return x.sin();
+	}
 }
 
 #endif
