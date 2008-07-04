@@ -32,6 +32,7 @@
 #include "../integer_typedefs.h"
 #include "../none.h"
 #include "../p_assert.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -63,9 +64,6 @@ namespace piranha
 				}
 				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
 									  / std::log10(norm) + 1 - start) / step_size);
-
-std::cout << "Retval = " << retval << '\n';
-
 				if (retval >= 0) {
 					return retval;
 				} else {
@@ -105,16 +103,16 @@ std::cout << "Retval = " << retval << '\n';
 								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {
 						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
 						if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
-							std::cout << "OMG NOT SORTED\n";
+							__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");
 							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
 						} else {
-							std::cout << "OMG SORTED\n";
+							__PDEBUG(std::cout << "Series1 is sorted according to norm.");
 						}
 						if (!is_sorted(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp)) {
-							std::cout << "OMG NOT SORTED\n";
+							__PDEBUG(std::cout << "Series2 is not sorted according to norm. Will sort\n");
 							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
 						} else {
-							std::cout << "OMG SORTED\n";
+							__PDEBUG(std::cout << "Series2 is sorted according to norm.");
 						}
 					}
 					template <class Result>
@@ -123,7 +121,7 @@ std::cout << "Retval = " << retval << '\n';
 					}
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
-						return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2 <
+						return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2. <
 								m_delta_threshold);
 					}
 				private:

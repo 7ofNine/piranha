@@ -78,6 +78,9 @@ namespace piranha
 						coded_ancestor::find_input_min_max();
 						calculate_result_min_max();
 						coded_ancestor::determine_viability();
+						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
+						// coefficients and coded keys.
+						const truncator_type trunc(*this);
 						if (coded_ancestor::m_cr_is_viable) {
 							// Here we should be ok, since we know that the two sizes are greater than zero and even
 							// if we divide by zero we should get Inf, which is fine for our purposes.
@@ -86,14 +89,14 @@ namespace piranha
 							__PDEBUG(std::cout << "Density: " << density << '\n');
 							coded_ancestor::code_keys();
 							cache_flavours();
-							if (density < 1E-1 || !perform_vector_coded_multiplication()) {
+							if (density < 1E-1 || !perform_vector_coded_multiplication(trunc)) {
 								__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
 								__PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
-								perform_hash_coded_multiplication();
+								perform_hash_coded_multiplication(trunc);
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain Poisson series multiplication\n");
-							ancestor::perform_plain_multiplication();
+							ancestor::perform_plain_multiplication(trunc);
 						}
 					}
 				private:
@@ -134,8 +137,8 @@ namespace piranha
 							m_flavours2[i] = ancestor::m_terms2[i].m_key.flavour();
 						}
 					}
-					bool perform_vector_coded_multiplication() {
-						const truncator_type trunc(*this);
+					template <class GenericTruncator>
+					bool perform_vector_coded_multiplication(const GenericTruncator &trunc) {
 						cf_type1 *p_vc_res_cos(0), *p_vc_res_sin(0);
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
@@ -227,11 +230,11 @@ namespace piranha
 						__PDEBUG(std::cout << "Done Poisson series vector coded\n");
 						return true;
 					}
-					void perform_hash_coded_multiplication() {
+					template <class GenericTruncator>
+					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
 						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						const truncator_type trunc(*this);
 						csht cms_cos, cms_sin;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {

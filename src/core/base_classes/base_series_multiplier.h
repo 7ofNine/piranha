@@ -82,15 +82,16 @@ namespace piranha
 			}
 		protected:
 			/// Plain multiplication.
-			void perform_plain_multiplication() {
-				plain_multiplication();
+			template <class GenericTruncator>
+			void perform_plain_multiplication(const GenericTruncator &trunc) {
+				plain_multiplication(trunc);
 				plain_insert_result_into_retval();
 			}
 		private:
 			// Perform plain multiplication.
-			void plain_multiplication() {
+			template <class GenericTruncator>
+			void plain_multiplication(const GenericTruncator &trunc) {
 				typedef typename term_type1::multiplication_result mult_res;
-				const truncator_type trunc(*derived_cast);
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
