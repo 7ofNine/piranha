@@ -21,7 +21,6 @@
 #ifndef PIRANHA_SERIES_MULTIINDEX_BACKEND_H
 #define PIRANHA_SERIES_MULTIINDEX_BACKEND_H
 
-#include <boost/mpl/vector.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <memory>
