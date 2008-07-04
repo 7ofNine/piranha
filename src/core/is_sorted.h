@@ -27,11 +27,18 @@ namespace piranha
 	inline bool is_sorted(Iterator start, Iterator end, const Cmp &cmp)
 	{
 		const Iterator it_f = end;
-		Iterator it = start;
-		while (it != it_f) {
-			if (!cmp(*it, *(++it))) {
-				return false;
+		Iterator cur = start;
+		Iterator next(cur);
+		while (true) {
+			++next;
+			if (next == it_f) {
+				break;
+			} else {
+				if (!cmp(*cur, *next)) {
+					return false;
+				}
 			}
+			cur = next;
 		}
 		return true;
 	}
