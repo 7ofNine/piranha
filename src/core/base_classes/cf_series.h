@@ -108,7 +108,7 @@ namespace piranha
 	series_name(proxy p) { \
 		*this=(*p.m_ptr); \
 	} \
-	series_name &operator=(proxy p) { \
+	series_name &operator=(const proxy &p) { \
 		*this=(*p.m_ptr); \
 		return *this; \
 	}
