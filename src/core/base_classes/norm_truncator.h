@@ -90,7 +90,7 @@ std::cout << "Retval = " << retval << '\n';
 							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								return (t1.m_cf.norm(m_args_tuple) * t1.m_key.norm(m_args_tuple) >=
+								return (t1.m_cf.norm(m_args_tuple) * t1.m_key.norm(m_args_tuple) >
 									t2.m_cf.norm(m_args_tuple) * t2.m_key.norm(m_args_tuple));
 							}
 						private:
