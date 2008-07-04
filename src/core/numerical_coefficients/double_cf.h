@@ -27,7 +27,7 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../math.h" // besselJ.
+#include "../math.h" // For std::pow.
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../base_classes/numerical_container.h"
