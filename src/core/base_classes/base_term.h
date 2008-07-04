@@ -186,10 +186,6 @@ namespace piranha
 				retval *= m_key.t_eval(t, a);
 				return retval;
 			}
-			template <class ArgsTuple>
-			double norm(const ArgsTuple &args_tuple) const {
-				return m_cf.norm(args_tuple) * m_key.norm(args_tuple);
-			}
 			/// Run diagnostic test.
 			/**
 			 * Run a check on the elements of the term based on a tuple of arguments vectors.
