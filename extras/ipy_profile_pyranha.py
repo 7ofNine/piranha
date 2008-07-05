@@ -38,10 +38,18 @@ def main():
 		if i != "Gui":
 			ip.ex("from pyranha.%s import *" % i)
 	ip.ex("from pyranha import ds")
+	import_error_msg = """
+		Warning: many of Pyranha's capabilities rely on numpy and matplotlib.
+		Please consider installing these packages:
+		http://numpy.scipy.org
+		http://matplotlib.sf.net"""
 	try:
 		ip.ex("import numpy")
+	except ImportError:
+		print import_error_msg
+	try:
 		ip.ex("import matplotlib")
-	except:
-		print "Warning: many of Pyranha's capabilities rely on numpy and matplotlib. Please consider installing these packages."
+	except ImportError:
+		print import_error_msg
 
 main()
