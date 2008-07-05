@@ -18,12 +18,6 @@
 
 from _Core import *
 
-try:
-  import numpy as __numpy
-  import matplotlib as __matplotlib
-except:
-  print "Warning: many of Pyranha's capabilities rely on numpy and matplotlib. Please consider installing these packages."
-
 def copy(arg):
 	"""Standard copy function. Lifted from the copy module."""
 	import copy as __copy
@@ -34,35 +28,33 @@ expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
 
 def gui():
-  try:
-    import pyranha.Gui
-    pyranha.Gui.mw.show()
-  except ImportError:
-    print "Gui support was not built."
+	try:
+		import pyranha.Gui
+		pyranha.Gui.mw.show()
+	except ImportError:
+		print "Gui support was not built."
 
-def tc(args, flambda, t0 = 0., t1 = None, step = None):
-  try:
-    args_list = list(args)
-  except TypeError:
-    args_list = [args]
-  if (t1 == None and step != None) or (t1 != None and step == None):
-    raise TypeError, 'You must specify both a final time AND a step size.'
-  if t1 == None:
-    args_list_eval = map(lambda x: x.eval(t0),args_list)
-    return abs(flambda(*args_list).eval(t0)-flambda(*args_list_eval))
-  else:
-    if (t1 <= t0):
-      raise ValueError, 't1 must be strictly greater than t0.'
-    time_array = __numpy.arange(t0,t1,step)
-    retval = __numpy.array([],dtype=float)
-    retval.resize(len(time_array))
-    result = flambda(*args_list);
-    j=0
-    for t in time_array:
-      args_list_eval = map(lambda x: x.eval(t),args_list)
-      retval[j]=abs(result.eval(t)-flambda(*args_list_eval))
-      j=j+1
-    return time_array,retval;
+class tc(object):
+	def __init__(self, args, function, t0, t1, step):
+		import numpy
+		# If args is a tuple, transform it into a list, if args is a single value
+		# build a list from it.
+		if type(args) == type(()):
+			args_list = list(args)
+		else:
+			args_list = [args]
+		if t1 <= t0:
+			raise ValueError, 't1 must be strictly greater than t0.'
+		if step <= 0:
+			raise ValueError, 'Step must be strictly positive.'
+		result = function(*args_list)
+		args_list_eval_funcs = map(lambda x: x.eval,args_list)
+		self.time_array = numpy.arange(t0,t1,step)
+		self.eval_array = numpy.array(map(lambda t: result.eval(t), self.time_array))
+		self.diff_array = numpy.array(map(lambda t: abs(t[1] - function(*map(lambda x: x(t[0]),args_list_eval_funcs))),zip(self.time_array,self.eval_array)))
+	def plot(self):
+		import pylab
+		pylab.semilogy(self.time_array,self.eval_array,self.time_array,self.diff_array)
 
 def __decorate_args_tuples():
 	import _Core
