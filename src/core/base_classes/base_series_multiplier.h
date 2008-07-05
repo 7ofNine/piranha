@@ -50,8 +50,6 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
-			// Alias for the truncator type.
-			typedef typename Truncator::template get_type<Derived> truncator_type;
 		private:
 			typedef boost::multi_index_container
 			<

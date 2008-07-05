@@ -80,7 +80,7 @@ namespace piranha
 					};
 				public:
 					typedef ArgsTuple args_tuple_type;
-					typedef typename ancestor::truncator_type truncator_type;
+					typedef typename Truncator::template get_type<get_type> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {
 // 						std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
@@ -91,6 +91,9 @@ namespace piranha
 						coded_ancestor::find_input_min_max();
 						calculate_result_min_max();
 						coded_ancestor::determine_viability();
+						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
+						// coefficients and coded keys.
+						const truncator_type trunc(*this);
 						if (coded_ancestor::m_cr_is_viable) {
 							// Here we should be ok, since we know that the two sizes are greater than zero and even
 							// if we divide by zero we should get Inf, which is fine for our purposes.
@@ -98,14 +101,14 @@ namespace piranha
 												   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
 							__PDEBUG(std::cout << "Density: " << density << '\n');
 							coded_ancestor::code_keys();
-							if (density < 1E-1 || !perform_vector_coded_multiplication()) {
+							if (density < 1E-1 || !perform_vector_coded_multiplication(trunc)) {
 								__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
 								__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
-								perform_hash_coded_multiplication();
+								perform_hash_coded_multiplication(trunc);
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain polynomial multiplication\n");
-							ancestor::perform_plain_multiplication();
+							ancestor::perform_plain_multiplication(trunc);
 						}
 					}
 				private:
@@ -132,8 +135,8 @@ namespace piranha
 						}
 						);
 					}
-					bool perform_vector_coded_multiplication() {
-						const truncator_type trunc(*this);
+					template <class GenericTruncator>
+					bool perform_vector_coded_multiplication(const GenericTruncator &trunc) {
 						cf_type1 *p_vc_res(0);
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -196,11 +199,11 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
 						return true;
 					}
-					void perform_hash_coded_multiplication() {
+					template <class GenericTruncator>
+					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
 						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						const truncator_type trunc(*this);
 						csht cms;
 						cterm tmp_cterm;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
@@ -248,7 +251,8 @@ namespace piranha
 					}
 				private:
 					// Temporary key used for the decodification in the truncator.
-					typename term_type1::key_type	m_tmp_key;
+					// It is mutable because it is used as temporary decodification area.
+					mutable typename term_type1::key_type	m_tmp_key;
 			};
 	};
 }

@@ -210,7 +210,7 @@ namespace piranha
 									  single_expo_comparison(m_positions[0].first, m_multiplier.m_args_tuple));
 						}
 					}
-					bool accept(const max_fast_int &n) {
+					bool accept(const max_fast_int &n) const {
 						if (m_size <= 1) {
 							return true;
 						} else {
