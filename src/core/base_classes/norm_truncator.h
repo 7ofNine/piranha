@@ -47,6 +47,7 @@ namespace piranha
 				} else {
 					m_truncation_level = std::pow(10., -n);
 				}
+				m_truncation_power = n;
 			}
 			static void print(std::ostream &stream = std::cout);
 			static std::string py_repr();
@@ -57,13 +58,21 @@ namespace piranha
 			static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
 											 const int &start = 0, const int &step_size = 1) {
 				p_assert(step_size >= 1 and start >= 0);
+				if (m_truncation_power == 0) {
+					throw unsuitable("No value set for norm-based truncation, cannot calculate limit of power series expansion.");
+				}
 				const double norm = x.norm(args_tuple);
 				p_assert(norm >= 0);
 				if (norm >= 1) {
 					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion will diverge.");
 				}
+				// Let's prevent log10(0) below.
+				if (norm == 0) {
+					return 0;
+				}
 				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
 									  / std::log10(norm) + 1 - start) / step_size);
+				// This could be negative if starting power is big enough. In this case return 0.
 				if (retval >= 0) {
 					return retval;
 				} else {
@@ -71,7 +80,8 @@ namespace piranha
 				}
 			}
 		protected:
-			static double m_truncation_level;
+			static int		m_truncation_power;
+			static double	m_truncation_level;
 	};
 
 	/// Norm-based truncator.
