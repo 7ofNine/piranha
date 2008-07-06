@@ -43,13 +43,19 @@ def main():
 		Please consider installing these packages:
 		http://numpy.scipy.org
 		http://matplotlib.sf.net"""
+	error_msg = False
 	try:
 		ip.ex("import numpy")
+		print "Numpy was successfully loaded."
 	except ImportError:
-		print import_error_msg
+		if not error_msg: print import_error_msg
+		error_msg = True
 	try:
 		ip.ex("import matplotlib")
+		ip.ex("matplotlib.interactive(True)")
+		print "Matplotlib was successfully loaded. Interactive mode has been activated."
 	except ImportError:
-		print import_error_msg
+		if not error_msg: print import_error_msg
+		error_msg = True
 
 main()
