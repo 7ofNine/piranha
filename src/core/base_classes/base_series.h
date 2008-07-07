@@ -91,8 +91,6 @@ namespace piranha
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
-			// Used in pyranha.
-			Derived py_copy() const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.

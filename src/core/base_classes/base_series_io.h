@@ -71,12 +71,6 @@ namespace piranha
 // TODO: to be implemented.
 	}
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::py_copy() const
-	{
-		return Derived(*derived_const_cast);
-	}
-
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>

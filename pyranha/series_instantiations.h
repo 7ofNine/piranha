@@ -64,6 +64,12 @@ namespace pyranha
 		expose_series_indices_helper < T::n_indices - 1 >::run(inst);
 	}
 
+	template <class Series>
+	inline Series py_series_copy(const Series &s)
+	{
+		return Series(s);
+	}
+
 	/// Basic series instantiation.
 	template <class T>
 	std::pair<boost::python::class_<T>,boost::python::class_<typename T::term_type> >
@@ -84,7 +90,7 @@ namespace pyranha
 		// Take care of exposing the series' indices.
 		expose_series_indices(inst);
 		// Some special methods.
-		inst.def("__copy__", &T::py_copy);
+		inst.def("__copy__", &py_series_copy<T>);
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &T::py_repr);
 		// Pyranha-specific special methods.
