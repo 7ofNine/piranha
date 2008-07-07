@@ -21,6 +21,8 @@
 #ifndef PIRANHA_DFS_H
 #define PIRANHA_DFS_H
 
+#include <complex>
+
 #include "../core/base_classes/norm_truncator.h"
 #include "../core/fourier_series/fourier_series.h"
 #include "../core/numerical_coefficients/double_cf.h"
