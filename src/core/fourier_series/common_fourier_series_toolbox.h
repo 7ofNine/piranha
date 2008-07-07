@@ -36,13 +36,19 @@ namespace piranha
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
 			std::complex<Derived> complexp() const {
-				// TODO: maybe optimize the case in which the Fourier series is a single coefficient?
-				// NOTE: the zero case is already handled in the jacobi_anger() routine.
-				// Expand using Jacobi-Anger's identity.
-				std::complex<Derived> retval(
+				typedef typename std::complex<Derived>::term_type complex_term_type;
+				typedef typename complex_term_type::key_type key_type;
+				std::complex<Derived> retval;
+				if (derived_const_cast->is_single_cf()) {
+					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
+						m_cf.complexp(derived_const_cast->m_arguments),key_type()),
+						derived_const_cast->m_arguments);
+				} else {
+					// Expand using Jacobi-Anger's identity.
 					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-												  derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+													retval, derived_const_cast->m_arguments);
+					retval.m_arguments = derived_const_cast->m_arguments;
+				}
 				return retval;
 			}
 			Derived cos() const {

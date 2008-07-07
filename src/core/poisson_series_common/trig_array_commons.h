@@ -341,32 +341,34 @@ namespace piranha
 			// NOTE: here we are assuming that s is a top-level series.
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
-			template <class PosTuple, class Series, class ArgsTuple>
-			Series sub(const PosTuple &pos_tuple, const Series &s, const ArgsTuple &args_tuple) const {
-				typedef typename Series::term_type term_type;
-				typedef typename term_type::cf_type cf_type;
-				Series retval;
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &s, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				typedef typename SubSeries::term_type sub_term_type;
+				typedef typename sub_term_type::cf_type sub_cf_type;
+				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(term_type(cf_type((max_fast_int)1,args_tuple),*derived_const_cast),args_tuple);
+					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1,args_tuple),*derived_const_cast),args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					Series tmp(s);
+					SubSeries tmp(s);
 					tmp *= static_cast<max_fast_int>((*derived_const_cast)[pos]);
-					const std::complex<Series> tmp_ei(tmp.complexp());
-					const Series tmp_cos(tmp_ei.real()), tmp_sin(tmp_ei.imag());
+					const std::complex<SubSeries> tmp_ei(tmp.complexp());
+					const SubSeries tmp_cos(tmp_ei.real()), tmp_sin(tmp_ei.imag());
 					Derived tmp_ta(*derived_const_cast);
-					Series orig_cos, orig_sin;
+					SubSeries orig_cos, orig_sin;
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
 					// Buld the orig_cos series.
 					tmp_ta.flavour() = true;
-					orig_cos.insert(term_type(cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
+					orig_cos.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
 					// Buld the orig_sin series.
 					tmp_ta.flavour() = false;
-					orig_sin.insert(term_type(cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
+					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
 					if (derived_const_cast->flavour()) {
 						retval = orig_cos;
 						retval.mult_by(tmp_cos,args_tuple);

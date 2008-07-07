@@ -226,8 +226,8 @@ namespace pyranha
 	template <class T, class Series>
 	void series_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T(T::*sub_name)(const std::string &, const T &) const;
-		typedef T(T::*sub_psym)(const piranha::psym &, const T &) const;
+		typedef T(T::*sub_name)(const std::string &, const Series &) const;
+		typedef T(T::*sub_psym)(const piranha::psym &, const Series &) const;
 		inst.def("sub", sub_name(&T::template sub<Series>));
 		inst.def("sub", sub_psym(&T::template sub<Series>));
 	}

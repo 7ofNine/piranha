@@ -126,6 +126,11 @@ namespace piranha
 	} \
 	explicit complex(const value_type &r, const value_type &i) { \
 		complex_toolbox::construct_from_real_imag(r, i); \
+	} \
+	complex &operator=(const value_type &x) { \
+		nth_index<0>().clear(); \
+		complex_toolbox::real(x); \
+		return *this; \
 	}
 
 }

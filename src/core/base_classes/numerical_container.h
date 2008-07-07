@@ -178,13 +178,13 @@ namespace piranha
 				}
 				return derived_const_cast->pow(1. / (double)(n), args_tuple);
 			}
-			template <class PosTuple, class Series, class ArgsTuple>
-			Series sub(const PosTuple &, const Series &, const ArgsTuple &args_tuple) const {
-				Series retval;
-				typename Series::term_type tmp_term;
-				// NOTE: here we are assuming that default ctor for key builds a key
-				// mathematically equivalent to 1.
-				tmp_term.m_cf = *derived_const_cast;
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type term_type;
+				typedef typename term_type::cf_type cf_type;
+				typedef typename term_type::key_type key_type;
+				RetSeries retval;
+				term_type tmp_term(cf_type(*derived_const_cast),key_type());
 				retval.insert(tmp_term,args_tuple);
 				return retval;
 			}

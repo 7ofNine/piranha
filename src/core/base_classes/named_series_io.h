@@ -149,7 +149,7 @@ namespace piranha
 			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') {
 				std::cout << "Finished parsing " << name << " argument." << std::endl;
 				inf.seekg(cur_pos);
-				append_arg(name, psym_manager::get_pointer(psym(temp_name, temp_time_eval)));
+				append_arg(name, psyms::get_pointer(psym(temp_name, temp_time_eval)));
 				return;
 			}
 			std::vector<std::string> split_v;
@@ -223,7 +223,7 @@ namespace piranha
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const psym &psym)
 	{
 		p_assert(derived_const_cast->empty());
-		psym_p p(psym_manager::get_pointer(psym));
+		psym_p p(psyms::get_pointer(psym));
 		append_arg<N>(p);
 		derived_cast->construct_from_psym_p(p, N, m_arguments);
 	}

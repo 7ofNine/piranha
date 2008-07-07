@@ -234,8 +234,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::sub(const PosTuple &pos_tuple, const Derived &s,
+	template <class PosTuple, class Series, class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::sub(const PosTuple &pos_tuple, const Series &s,
 		const ArgsTuple &args_tuple) const {
 		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value),
 			"Positional and arguments' tuples' lengths do not match in base_series::sub.");
@@ -243,8 +243,8 @@ namespace piranha
 		Derived retval;
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
-			Derived tmp(it->m_cf.sub(pos_tuple,s,args_tuple));
-			tmp.mult_by(it->m_key.sub(pos_tuple,s,args_tuple),args_tuple);
+			Derived tmp(it->m_cf.sub<Derived>(pos_tuple,s,args_tuple));
+			tmp.mult_by(it->m_key.sub<Derived>(pos_tuple,s,args_tuple),args_tuple);
 			retval.add(tmp,args_tuple);
 		}
 		return retval;

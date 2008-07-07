@@ -61,7 +61,7 @@ namespace piranha
 			static void print(std::ostream &stream = std::cout);
 			static std::string py_repr();
 			static void clear(const std::string &name) {
-				psym_p tmp(psym_manager::get_pointer(name));
+				psym_p tmp(psyms::get_pointer(name));
 				iterator it = find_argument(tmp);
 				if (it == m_expo_limits.end()) {
 					throw(not_existing(std::string("Symbol ") + "\"" + name + "\" does not have an exponent limit set."));
@@ -133,7 +133,7 @@ namespace piranha
 		private:
 			template <class Argument>
 			static void generic_limit(const Argument &arg, const max_fast_int &n) {
-				psym_p tmp(psym_manager::get_pointer(arg));
+				psym_p tmp(psyms::get_pointer(arg));
 				iterator it = find_argument(tmp);
 				if (it == m_expo_limits.end()) {
 					m_expo_limits.push_back(std::pair<psym_p, max_fast_int>(tmp, n));

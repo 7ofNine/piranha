@@ -69,7 +69,7 @@ namespace piranha
 				return r_a(Derived(e), Derived(M));
 			}
 			static Derived r_a(const std::string &e_name, const std::string &M_name) {
-				return r_a(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return r_a(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived cos_E(const Derived &e_series, const Derived &M_series) {
 				// First let's build 1/2 e.
@@ -98,7 +98,7 @@ namespace piranha
 				return cos_E(Derived(e), Derived(M));
 			}
 			static Derived cos_E(const std::string &e_name, const std::string &M_name) {
-				return cos_E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return cos_E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
@@ -122,7 +122,7 @@ namespace piranha
 				return sin_E(Derived(e), Derived(M));
 			}
 			static Derived sin_E(const std::string &e_name, const std::string &M_name) {
-				return sin_E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return sin_E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived sin_f(const Derived &e_series, const Derived &M_series) {
 				Derived tmp(e_series);
@@ -151,7 +151,7 @@ namespace piranha
 				return sin_f(Derived(e), Derived(M));
 			}
 			static Derived sin_f(const std::string &e_name, const std::string &M_name) {
-				return sin_f(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return sin_f(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived cos_f(const Derived &e_series, const Derived &M_series) {
 				// 2*(1-e**2).
@@ -182,7 +182,7 @@ namespace piranha
 				return cos_f(Derived(e), Derived(M));
 			}
 			static Derived cos_f(const std::string &e_name, const std::string &M_name) {
-				return cos_f(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return cos_f(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived E(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
@@ -203,7 +203,7 @@ namespace piranha
 				return E(Derived(e), Derived(M));
 			}
 			static Derived E(const std::string &e_name, const std::string &M_name) {
-				return E(*psym_manager::get_pointer(e_name), *psym_manager::get_pointer(M_name));
+				return E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 	};
 

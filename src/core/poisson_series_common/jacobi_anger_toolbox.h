@@ -38,12 +38,13 @@ namespace piranha
 			BOOST_STATIC_ASSERT(TrigPos >= 0);
 		protected:
 			template <class Iterator, class ArgsTuple>
-			std::complex<Derived> jacobi_anger(const Iterator &it_avoid, const ArgsTuple &args_tuple) const {
+			void jacobi_anger(const Iterator &it_avoid, std::complex<Derived> &retval, const ArgsTuple &args_tuple) const {
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				BOOST_STATIC_ASSERT((boost::is_same<Iterator, const_sorted_iterator>::value));
-				std::complex<Derived> retval((max_fast_int)1, args_tuple);
+				p_assert(retval.empty());
+				retval = std::complex<Derived>((max_fast_int)1, args_tuple);
 				if (derived_const_cast->empty()) {
-					return retval;
+					return;
 				}
 				// We want to proceed backwards here.
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().begin();
@@ -55,7 +56,6 @@ namespace piranha
 						retval.mult_by(jacang_term(it, args_tuple), args_tuple);
 					}
 				}
-				return retval;
 			}
 		private:
 			template <class Iterator, class ArgsTuple>

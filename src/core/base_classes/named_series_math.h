@@ -205,7 +205,7 @@ namespace piranha
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		pos_tuple_type pos_tuple;
-		psym_p p = psym_manager::get_pointer(arg);
+		psym_p p = psyms::get_pointer(arg);
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
 		Derived retval(derived_const_cast->partial(pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;

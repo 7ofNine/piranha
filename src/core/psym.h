@@ -42,7 +42,7 @@
 
 namespace piranha
 {
-	class __PIRANHA_VISIBLE psym_manager
+	class __PIRANHA_VISIBLE psyms
 	{
 		public:
 			/// Literal symbol class.
@@ -59,7 +59,7 @@ namespace piranha
 			  */
 			class __PIRANHA_VISIBLE psym
 			{
-					friend class psym_manager;
+					friend class psyms;
 				public:
 					// Ctors
 					/// Constructor from two std::string objects
@@ -209,6 +209,9 @@ namespace piranha
 					it->print(stream);
 				}
 			}
+			static psym get(const std::string &name) {
+				return *get_pointer(name);
+			}
 			/// Print list of symbols to string. Used in Pyranha.
 			static std::string py_repr() {
 				std::ostringstream stream;
@@ -243,8 +246,8 @@ namespace piranha
 	};
 
 	/// Typedefs used in series, terms, coefficients and trigonometric parts.
-	typedef psym_manager::psym psym;
-	typedef psym_manager::psym_p psym_p;
+	typedef psyms::psym psym;
+	typedef psyms::psym_p psym_p;
 	typedef std::vector<psym_p> vector_psym_p;
 }
 #endif

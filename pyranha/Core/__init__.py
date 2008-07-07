@@ -23,7 +23,7 @@ def copy(arg):
 	import copy as __copy
 	return __copy.copy(arg)
 
-psym_manager = _Core.__psym_manager()
+psyms = _Core.__psyms()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
 

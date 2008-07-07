@@ -45,4 +45,5 @@ BOOST_PYTHON_MODULE(_Dfs)
 									  std::string("Fourier series with complex double precision coefficients."));
 	series_complex_instantiation(instc.first, inst.first);
 	common_fourier_series_instantiation(instc.first);
+	series_sub_instantiation<dfsc,dfs>(instc.first);
 }

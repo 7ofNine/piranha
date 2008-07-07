@@ -135,10 +135,11 @@ BOOST_PYTHON_MODULE(_Core)
 	class_sm.staticmethod("set_fp_rep");
 
 	// Psym manager.
-	class_<psym_manager>("__psym_manager", "Manager for symbols.", init<>())
-	.def("__iter__", iterator<psym_manager, return_internal_reference<> >()).staticmethod("__iter__")
-	.def("__len__", &psym_manager::length).staticmethod("__len__")
-	.def("__repr__", &psym_manager::py_repr).staticmethod("__repr__");
+	class_<psyms>("__psyms", "Manager for symbols.", init<>())
+	.def("__iter__", iterator<psyms, return_internal_reference<> >()).staticmethod("__iter__")
+	.def("__len__", &psyms::length).staticmethod("__len__")
+	.def("__repr__", &psyms::py_repr).staticmethod("__repr__")
+	.def("get", &psyms::get).staticmethod("get");
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &>())
@@ -150,7 +151,8 @@ BOOST_PYTHON_MODULE(_Core)
 	.def(init < const std::string &, const double &, const double &, const double &, const double &,
 		 const double & > ())
 	.def("__copy__", &psym::py_copy)
-	.def("__repr__", &psym::py_repr);
+	.def("__repr__", &psym::py_repr)
+	.def("eval", &psym::eval);
 
 	typedef void (*limit_name)(const std::string &, const max_fast_int &);
 	typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
