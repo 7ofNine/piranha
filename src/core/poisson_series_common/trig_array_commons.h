@@ -369,13 +369,14 @@ namespace piranha
 					// Buld the orig_sin series.
 					tmp_ta.flavour() = false;
 					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
+					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
-						retval = orig_cos;
+						retval.add(orig_cos,args_tuple);
 						retval.mult_by(tmp_cos,args_tuple);
 						orig_sin.mult_by(tmp_sin,args_tuple);
 						retval.subtract(orig_sin,args_tuple);
 					} else {
-						retval = orig_sin;
+						retval.add(orig_sin,args_tuple);
 						retval.mult_by(tmp_cos,args_tuple);
 						orig_cos.mult_by(tmp_sin,args_tuple);
 						retval.add(orig_cos,args_tuple);

@@ -53,7 +53,7 @@ namespace piranha
 				int_linear_term = get_int_linear_term<const_sorted_iterator, poly_cf_type>();
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
-				jacang_ancestor::jacobi_anger(int_linear_term.first, retval, derived_const_cast->m_arguments));
+				jacang_ancestor::jacobi_anger(int_linear_term.first, retval, derived_const_cast->m_arguments);
 				retval.m_arguments = derived_const_cast->m_arguments;
 				// If the linear term was found, take care of it.
 				if (int_linear_term.first != derived_const_cast->template nth_index<0>().end()) {
