@@ -60,16 +60,35 @@ namespace pyranha
 		complex_cf_bindings<piranha::mpz_cf>("mpz_cfc","Complex arbitrary precision integer coefficient.");
 	}
 
+	// TODO: this will be moved in a common header later.
+	template <class Vector>
+	inline typename Vector::value_type py_vector_getitem(const Vector &v, const piranha::max_fast_int &n_) {
+		int n = n_;
+		const size_t size = v.size();
+		if (n_ < 0) {
+			n = n_ + size;
+		}
+		if (n < 0 || static_cast<size_t>(n) >= size) {
+			PyErr_SetString(PyExc_IndexError, "Index of integer array key is out of range");
+		}
+		return v[n];
+	}
+
 	template <class IntArrayKey>
 	inline boost::python::class_<IntArrayKey> int_array_key_bindings(const std::string &name, const std::string &descr) {
 		boost::python::class_<IntArrayKey> retval(name.c_str(),descr.c_str());
-		retval.def("__getitem__",&IntArrayKey::py_getitem);
+		retval.def("__getitem__",&py_vector_getitem<IntArrayKey>);
 		return retval;
 	}
 
 	template <class TrigArray>
+	inline bool py_trigarray_flavour(const TrigArray &t) {
+		return t.flavour();
+	}
+
+	template <class TrigArray>
 	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst) {
-		inst.add_property("flavour", &TrigArray::py_flavour);
+		inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
 	}
 
 	inline void keys_bindings() {

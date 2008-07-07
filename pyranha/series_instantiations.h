@@ -91,7 +91,7 @@ namespace pyranha
 		inst.add_property("__arguments_description__",&T::py_arguments_description);
 		inst.add_property("__arguments__",&T::py_arguments);
 		inst.def("__set_arguments__", &T::py_set_arguments);
-		inst.def("__shared_arguments_set__", &T::py_shared_arguments_set);
+		inst.def("__set_shared_arguments__", &T::py_shared_arguments_set);
 		typedef void (T::*trim_free)();
 		inst.def("__trim__", trim_free(&T::trim));
 		inst.def("__append__", &T::template py_append<term_type>);
@@ -194,7 +194,8 @@ namespace pyranha
 		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
 		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
 		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
-		instc.def("real", comp_set(&std::complex<T>::real), boost::python::return_internal_reference<1>(), "Set real part.");
+		instc.def("real", comp_set(&std::complex<T>::real),
+			boost::python::return_internal_reference<1>(), "Set real part.");
 		instc.def("imag", comp_set(&std::complex<T>::imag),
 			boost::python::return_internal_reference<1>(), "Set imaginary part.");
 	}

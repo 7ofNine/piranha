@@ -299,32 +299,26 @@ namespace piranha
 					m_ptr[i] = (value_type)v[i];
 				}
 			}
-			value_type py_getitem(const int &n_) const {
-				int n = n_;
-				if (n_ < 0) {
-					n = n_ + m_size;
-				}
-				if (n >= m_size or n < 0) {
-					throw unsuitable("Index of integer array is out of range.");
-				}
-				return m_ptr[n];
-			}
-			bool py_flavour() const {
-				return m_flavour;
-			}
-		protected:
+			// Vector-like interface.
 			/// Array-like operator[], const version.
 			const value_type &operator[](const size_t &n) const {
+				p_assert(n < m_size);
 				return m_ptr[n];
 			}
+			/// Return container size.
+			size_t size() const {
+				return m_size;
+			}
+		protected:
 			/// Array-like operator[], mutable version.
 			value_type &operator[](const size_t &n) {
+				p_assert(n < m_size);
 				return m_ptr[n];
 			}
 			/// Print to stream
 			void print_elements(std::ostream &out_stream) const {
 				stream_manager::setup_print(out_stream);
-				for (size_t i = 0;i < m_size;++i) {
+				for (size_t i = 0; i < m_size; ++i) {
 					// We cast to max_fast_int, which is the largest integer type admitted..
 					out_stream << (max_fast_int)(m_ptr[i]);
 					// Print the separator iff this is not the last element.
@@ -332,10 +326,6 @@ namespace piranha
 						out_stream << separator;
 					}
 				}
-			}
-			/// Return container size.
-			size_t size() const {
-				return m_size;
 			}
 			/// Test for zero elements.
 			/**
@@ -406,6 +396,7 @@ namespace piranha
 							return false;
 						}
 					}
+					// TODO: probably we can use <<= here.
 					for (i = i << pack_shift;i < m_size;++i) {
 						if (m_ptr[i] != v[i]) {
 							return false;

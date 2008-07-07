@@ -30,7 +30,7 @@
 namespace piranha
 {
 	// This assumes that second index is hashed.
-	template < class Term, template <class> class I, class Allocator = std::allocator<char> >
+	template < class Term, template <class> class I, class Allocator = std::allocator<Term> >
 	class series_multiindex_backend
 	{
 			typedef Term term_type;

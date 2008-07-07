@@ -163,6 +163,8 @@ namespace piranha
 	'\n',Allocator,series_name >
 
 // Index interface for series. Exposes begin(), end(), nth_index() and n_indices.
+// TODO: maybe begin() and end(), which are used in pyranha, can be avoided here through
+// a wrapper to be used only in the Python bindings.
 #define SERIES_INDEX_INTERFACE \
 	template <int N> \
 	typename container_type::template nth_index<N>::type::const_iterator begin() const { \

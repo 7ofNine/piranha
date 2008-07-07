@@ -54,7 +54,7 @@ def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
 def __series_sorted(self, comp = None, key = None, reverse = False):
-	self.__shared_arguments_set__()
+	self.__set_shared_arguments__()
 	tmp = sorted(self.__index0__, comp, key, reverse)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
@@ -65,7 +65,7 @@ def __series_filter(self, func):
 	import copy
 	if not func:
 		return copy.copy(self)
-	self.__shared_arguments_set__()
+	self.__set_shared_arguments__()
 	tmp = filter(func, self.__index0__)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
