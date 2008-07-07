@@ -79,7 +79,8 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef series_multiindex_backend < term_type_, random_keyhash_index, allocator_type > container_type;
+			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
+				typename allocator_type::template rebind<term_type_>::other> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -166,7 +167,8 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index, allocator_type > container_type;
+			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
+				typename allocator_type::template rebind<term_type_>::other> container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;

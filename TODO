@@ -34,4 +34,11 @@
 - vectorization through repetition:
   [cf1] --> [cf2]	[cf1] --> [cf4]
   [cf1] --> [cf3]	[cf1] --> [cf5]
-- rework poly norm as ans(evaluation at zero time)?
+- rework poly norm as abs(evaluation at zero time)?
+- Fix allocators.
+- Move everything about the backbone container into base series?
+- Share the implementation of filter in C++ and python using virtual function ovverride?
+- Uniform naming scheme in C++ and python.
+- Use wrappers everywhere for the exposition of functionality in python.
+- tc class --> see if it is effective to perform the evaluations in C++ (possibly using parallelization), then applying the
+  function in python using numpy (supposedly fast) array classes.
