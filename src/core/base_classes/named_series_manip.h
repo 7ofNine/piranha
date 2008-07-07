@@ -372,27 +372,31 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Argument>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_sub(const Argument &arg, const Derived &s) const
+	template <class Argument, class Series>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_sub(const Argument &arg, const Series &s) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
+		Derived tmp(*derived_const_cast);
+		tmp.merge_args(s);
 		pos_tuple_type pos_tuple;
 		psym_p p = psym_manager::get_pointer(arg);
-		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
-		Derived retval(derived_const_cast->sub(pos_tuple,s,m_arguments));
-		retval.m_arguments = m_arguments;
+		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
+		Derived retval(tmp.sub(pos_tuple,s,m_arguments));
+		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &p, const Derived &s) const
+	template <class Series>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &p, const Series &s) const
 	{
 		return generic_sub(p,s);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &psym_name, const Derived &s) const
+	template <class Series>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &psym_name, const Series &s) const
 	{
 		return generic_sub(psym_name,s);
 	}

@@ -223,6 +223,15 @@ namespace pyranha
 		inst.def("partial", partial_psym(&T::partial));
 	}
 
+	template <class T, class Series>
+	void series_sub_instantiation(boost::python::class_<T> &inst)
+	{
+		typedef T(T::*sub_name)(const std::string &, const T &) const;
+		typedef T(T::*sub_psym)(const piranha::psym &, const T &) const;
+		inst.def("sub", sub_name(&T::template sub<Series>));
+		inst.def("sub", sub_psym(&T::template sub<Series>));
+	}
+
 	template <class T>
 	void series_psym_instantiation(boost::python::class_<T> &inst)
 	{
