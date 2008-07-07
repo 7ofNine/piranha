@@ -56,11 +56,8 @@ namespace piranha
 		not_implemented(const std::string &s): base_exception(s) {}
 	};
 
-	struct division_by_zero {
-		division_by_zero() {}
-		std::string what() const {
-			return std::string("Division by zero.");
-		}
+	struct division_by_zero: public base_exception {
+		division_by_zero(): base_exception("Division by zero.") {}
 	};
 }
 
