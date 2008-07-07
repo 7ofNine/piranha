@@ -85,6 +85,7 @@ namespace piranha
 			using FOURIER_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
+			// TODO: do we really need _all_ those double interfaces here? Some can probably be dropped.
 			using named_ancestor::norm;
 			using base_ancestor::norm;
 			using named_ancestor::eval;
@@ -95,6 +96,8 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using named_ancestor::sub;
+			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -190,6 +193,8 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using named_ancestor::sub;
+			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef FOURIER_SERIES value_type;
 			typedef term_type_ term_type;

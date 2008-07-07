@@ -338,6 +338,10 @@ namespace piranha
 				}
 				return pow(1. / (double)(n), args_tuple);
 			}
+			template <class PosTuple, class Series, class ArgsTuple>
+			Series sub(const PosTuple &, const Series &, const ArgsTuple &) const {
+				return Series();
+			}
 		protected:
 			trig_array_commons() {}
 			explicit trig_array_commons(const std::string &s) {

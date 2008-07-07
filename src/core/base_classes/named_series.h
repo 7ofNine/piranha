@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../ntuple.h"
@@ -90,6 +91,8 @@ namespace piranha
 			Derived root(const max_fast_int &) const;
 			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
+			Derived sub(const psym &, const Derived &) const;
+			Derived sub(const std::string &, const Derived &) const;
 			// Used in pyranha.
 			std::string py_repr() const;
 			template <class Term2>
@@ -132,6 +135,8 @@ namespace piranha
 			void merge_incompatible_args(const Derived2 &);
 			template <class Argument>
 			Derived generic_partial(const Argument &) const;
+			template <class Argument>
+			Derived generic_sub(const Argument &, const Derived &) const;
 		protected:
 			// Data members.
 			args_tuple_type                 m_arguments;
@@ -144,6 +149,32 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+
+	// Meta-programming to get a tuple of (presence-flag + positional index) pairs for
+	// a psym, given an arguments_tuple.
+	template <class PosTuple, class ArgsTuple>
+	struct named_series_get_psym_p_positions {
+		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value, "");
+		static void run(const psym_p &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+			// Set to not found.
+			pos_tuple.template get_head().first = false;
+			const size_t w = args_tuple.template get_head().size();
+			for (size_t i = 0; i < w ; ++i) {
+				if (args_tuple.template get_head()[i] == p) {
+					pos_tuple.template get_head().first = true;
+					pos_tuple.template get_head().second = i;
+					break;
+				}
+			}
+			named_series_get_psym_p_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
+			run(p, pos_tuple.template get_tail(), args_tuple.template get_tail());
+		}
+	};
+
+	template <>
+	struct named_series_get_psym_p_positions<boost::tuples::null_type, boost::tuples::null_type> {
+		static void run(const psym_p &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
 
 // Useful macros for named series.
 #define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,E0_SERIES(series_name) >

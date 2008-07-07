@@ -23,6 +23,7 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
 
@@ -183,30 +184,6 @@ namespace piranha
 		retval.trim();
 		return retval;
 	}
-
-	template <class PosTuple, class ArgsTuple>
-	struct named_series_get_psym_p_positions {
-		BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);
-		static void run(const psym_p &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
-			// Set to not found.
-			pos_tuple.template get_head().first = false;
-			const size_t w = args_tuple.template get_head().size();
-			for (size_t i = 0; i < w ; ++i) {
-				if (args_tuple.template get_head()[i] == p) {
-					pos_tuple.template get_head().first = true;
-					pos_tuple.template get_head().second = i;
-					break;
-				}
-			}
-			named_series_get_psym_p_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
-			run(p, pos_tuple.template get_tail(), args_tuple.template get_tail());
-		}
-	};
-
-	template <>
-	struct named_series_get_psym_p_positions<boost::tuples::null_type, boost::tuples::null_type> {
-		static void run(const psym_p &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
-	};
 
 	/// Partial derivative with respect to an argument name.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

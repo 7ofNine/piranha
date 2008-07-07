@@ -25,12 +25,14 @@
 #include <boost/ref.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <string>
 #include <vector>
 
 #include "../config.h" // For (un)likely
 #include "../exceptions.h"
 #include "../is_sorted.h"
 #include "../ntuple.h"
+#include "../psym.h"
 #include "../shared_args.h"
 
 namespace piranha
@@ -367,6 +369,32 @@ namespace piranha
 			throw unsuitable("Cannot assign arguments to non-empty series.");
 		}
 		m_arguments = args_tuple;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Argument>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_sub(const Argument &arg, const Derived &s) const
+	{
+		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
+		pos_tuple_type pos_tuple;
+		psym_p p = psym_manager::get_pointer(arg);
+		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
+		Derived retval(derived_const_cast->sub(pos_tuple,s,m_arguments));
+		retval.m_arguments = m_arguments;
+		retval.trim();
+		return retval;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &p, const Derived &s) const
+	{
+		return generic_sub(p,s);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &psym_name, const Derived &s) const
+	{
+		return generic_sub(psym_name,s);
 	}
 }
 
