@@ -11,7 +11,7 @@
 
 //  See http://www.boost.org/libs/dynamic_bitset/ for documentation.
 //
-//  $Revision: 41369 $ $Date: 2007-11-25 13:07:19 -0500 (Sun, 25 Nov 2007) $ - $Name$
+//  $Revision: 34905 $ $Date: 2006-08-19 13:04:25 +0200 (Sat, 19 Aug 2006) $ - $Name$
 
 #ifndef BOOST_DYNAMIC_BITSET_FWD_HPP
 #define BOOST_DYNAMIC_BITSET_FWD_HPP

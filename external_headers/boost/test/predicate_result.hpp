@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 41369 $
+//  Version     : $Revision: 41312 $
 //
 //  Description : enhanced result for test predicate that include message explaining failure
 // ***************************************************************************

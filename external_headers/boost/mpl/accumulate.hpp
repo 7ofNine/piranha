@@ -12,7 +12,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-01-19 10:20:21 -0500 (Wed, 19 Jan 2005) $
+// $Date: 2005-01-19 16:20:21 +0100 (Wed, 19 Jan 2005) $
 // $Revision: 26742 $
 
 #include <boost/mpl/fold.hpp>

@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2004-10-01 12:32:41 -0400 (Fri, 01 Oct 2004) $
+// $Date: 2004-10-01 18:32:41 +0200 (Fri, 01 Oct 2004) $
 // $Revision: 25513 $
 
 #include <boost/mpl/iterator_tags.hpp>

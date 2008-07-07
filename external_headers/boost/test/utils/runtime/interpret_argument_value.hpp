@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 43798 $
+//  Version     : $Revision: 43799 $
 //
 //  Description : default algorithms for string to specific type convertions
 // ***************************************************************************

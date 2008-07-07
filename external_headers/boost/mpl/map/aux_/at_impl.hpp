@@ -12,7 +12,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-12-05 12:59:21 -0500 (Mon, 05 Dec 2005) $
+// $Date: 2005-12-05 18:59:21 +0100 (Mon, 05 Dec 2005) $
 // $Revision: 31919 $
 
 #include <boost/mpl/at_fwd.hpp>

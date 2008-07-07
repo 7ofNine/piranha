@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 43798 $
+//  Version     : $Revision: 43799 $
 //
 //  Description : implements offline model of program environment 
 // ***************************************************************************

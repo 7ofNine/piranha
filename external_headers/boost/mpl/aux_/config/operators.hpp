@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-06-14 08:42:08 -0400 (Tue, 14 Jun 2005) $
+// $Date: 2005-06-14 14:42:08 +0200 (Tue, 14 Jun 2005) $
 // $Revision: 29558 $
 
 #include <boost/mpl/aux_/config/gcc.hpp>

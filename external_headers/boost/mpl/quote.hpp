@@ -15,8 +15,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2006-05-02 23:27:58 -0400 (Tue, 02 May 2006) $
-// $Revision: 33913 $
+// $Date: 2006-05-03 05:21:36 +0200 (Wed, 03 May 2006) $
+// $Revision: 33912 $
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)
 #   include <boost/mpl/void.hpp>

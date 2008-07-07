@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2004-09-03 21:33:47 -0400 (Fri, 03 Sep 2004) $
+// $Date: 2004-09-04 03:33:47 +0200 (Sat, 04 Sep 2004) $
 // $Revision: 24897 $
 
 #include <boost/mpl/O1_size_fwd.hpp>

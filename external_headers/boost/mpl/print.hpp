@@ -12,8 +12,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2008-03-22 17:45:55 -0400 (Sat, 22 Mar 2008) $
-// $Revision: 43798 $
+// $Date: 2008-03-22 23:53:35 +0100 (Sat, 22 Mar 2008) $
+// $Revision: 43799 $
 
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/identity.hpp>

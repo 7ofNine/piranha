@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: const_mod.hpp 41369 2007-11-25 18:07:19Z bemandawes $
+ * $Id: const_mod.hpp 34428 2006-06-29 23:17:14Z jmaurer $
  *
  * Revision history
  *  2001-02-18  moved to individual header files

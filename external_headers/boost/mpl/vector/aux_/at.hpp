@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2004-12-20 14:35:33 -0500 (Mon, 20 Dec 2004) $
+// $Date: 2004-12-20 20:35:33 +0100 (Mon, 20 Dec 2004) $
 // $Revision: 26560 $
 
 #include <boost/mpl/at_fwd.hpp>

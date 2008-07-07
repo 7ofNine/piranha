@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-01-25 20:58:33 -0500 (Tue, 25 Jan 2005) $
+// $Date: 2005-01-26 02:58:33 +0100 (Wed, 26 Jan 2005) $
 // $Revision: 26850 $
 
 #include <boost/mpl/distance_fwd.hpp>

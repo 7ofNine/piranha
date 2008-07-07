@@ -12,8 +12,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2007-11-25 13:07:19 -0500 (Sun, 25 Nov 2007) $
-// $Revision: 41369 $
+// $Date: 2007-04-02 09:42:41 +0200 (Mon, 02 Apr 2007) $
+// $Revision: 37335 $
 
 #include <boost/mpl/begin_end_fwd.hpp>
 #include <boost/mpl/set/aux_/iterator.hpp>

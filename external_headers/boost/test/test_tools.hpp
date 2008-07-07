@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 42130 $
+//  Version     : $Revision: 46157 $
 //
 //  Description : contains definition for all test tools in test toolbox
 // ***************************************************************************
@@ -44,6 +44,7 @@
 // STL
 #include <cstddef>          // for std::size_t
 #include <iosfwd>
+#include <ios>              // for std::boolalpha
 #include <climits>          // for CHAR_BIT
 
 #include <boost/test/detail/suppress_warnings.hpp>
@@ -298,7 +299,7 @@ namespace test_tools {
 
 typedef unit_test::const_string      const_string;
 
-namespace { bool dummy_cond = false; }
+namespace { bool const dummy_cond = false; }
 
 namespace tt_detail {
 
@@ -373,6 +374,16 @@ struct print_log_value< T[N] > {
     }
 };
 #endif
+
+//____________________________________________________________________________//
+
+template<>
+struct BOOST_TEST_DECL print_log_value<bool> {
+    void    operator()( std::ostream& ostr, bool t )
+    {
+         ostr << std::boolalpha << t;
+    }
+};
 
 //____________________________________________________________________________//
 

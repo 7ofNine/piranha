@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 43798 $
+//  Version     : $Revision: 43799 $
 //
 //  Description : model of actual argument (both typed and abstract interface)
 // ***************************************************************************

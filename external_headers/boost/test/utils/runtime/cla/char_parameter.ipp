@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 43798 $
+//  Version     : $Revision: 43799 $
 //
 //  Description : implements model of parameter with single char name
 // ***************************************************************************

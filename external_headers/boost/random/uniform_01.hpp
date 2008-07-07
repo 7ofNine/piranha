@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: uniform_01.hpp 41369 2007-11-25 18:07:19Z bemandawes $
+ * $Id: uniform_01.hpp 34877 2006-08-11 23:17:07Z jmaurer $
  *
  * Revision history
  *  2001-02-18  moved to individual header files

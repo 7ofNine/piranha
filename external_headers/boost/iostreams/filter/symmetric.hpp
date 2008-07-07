@@ -71,8 +71,9 @@ template< typename SymmetricFilter,
               > >
 class symmetric_filter {
 public:
-    typedef typename char_type_of<SymmetricFilter>::type  char_type;
-    typedef std::basic_string<char_type>                  string_type;
+    typedef typename char_type_of<SymmetricFilter>::type      char_type;
+    typedef BOOST_IOSTREAMS_CHAR_TRAITS(char_type)            traits_type;
+    typedef std::basic_string<char_type, traits_type, Alloc>  string_type;
     struct category
         : dual_use,
           filter_tag,
@@ -152,7 +153,7 @@ public:
     }
 
     template<typename Sink>
-    void close(Sink& snk, BOOST_IOS::openmode which)
+    void close(Sink& snk, BOOST_IOS::openmode)
     {
         if ((state() & f_write) != 0) {
 
@@ -217,7 +218,6 @@ private:
     template<typename Sink>
     bool flush(Sink& snk, mpl::true_)
     {
-        typedef char_traits<char_type> traits_type;
         std::streamsize amt =
             static_cast<std::streamsize>(buf().ptr() - buf().data());
         std::streamsize result =

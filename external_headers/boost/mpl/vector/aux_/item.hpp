@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-05-14 20:39:04 -0400 (Sat, 14 May 2005) $
+// $Date: 2005-05-15 02:39:04 +0200 (Sun, 15 May 2005) $
 // $Revision: 28913 $
 
 #include <boost/mpl/long.hpp>
