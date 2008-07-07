@@ -149,6 +149,9 @@ namespace piranha
 					std::string name() const {
 						return m_name;
 					}
+					const std::vector<double> &time_eval() const {
+						return m_time_eval;
+					}
 					/// Print to string. Used in Pyranha.
 					std::string py_repr() const {
 						std::ostringstream stream;

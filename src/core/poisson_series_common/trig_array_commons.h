@@ -419,7 +419,7 @@ namespace piranha
 			double combined_time_eval(const ArgsTuple &args_tuple) const {
 				BOOST_STATIC_ASSERT(N >= 0);
 				const size_t w = args_tuple.template get<Derived::position>().size();
-				p_assert(w <= derived_const_cast->size());
+				p_assert(w >= derived_const_cast->size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.

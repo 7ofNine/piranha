@@ -29,6 +29,7 @@
 #include "../src/core/numerical_coefficients/mpq_cf.h"
 #include "../src/core/numerical_coefficients/mpz_cf.h"
 #include "../src/core/poisson_series_common/trig_array.h"
+#include "../src/core/shared_args.h"
 
 namespace pyranha
 {
@@ -74,10 +75,16 @@ namespace pyranha
 		return v[n];
 	}
 
+	template <class CfKey>
+	inline double py_cfkey_norm(const CfKey &cfkey) {
+		return cfkey.norm(piranha::shared_args::get());
+	}
+
 	template <class IntArrayKey>
 	inline boost::python::class_<IntArrayKey> int_array_key_bindings(const std::string &name, const std::string &descr) {
 		boost::python::class_<IntArrayKey> retval(name.c_str(),descr.c_str());
-		retval.def("__getitem__",&py_vector_getitem<IntArrayKey>);
+		retval.def("__getitem__", &py_vector_getitem<IntArrayKey>);
+		retval.def("norm", py_cfkey_norm<IntArrayKey>);
 		return retval;
 	}
 
@@ -87,8 +94,20 @@ namespace pyranha
 	}
 
 	template <class TrigArray>
+	inline double py_trigarray_freq(const TrigArray &t) {
+		return t.freq(piranha::shared_args::get());
+	}
+
+	template <class TrigArray>
+	inline double py_trigarray_phase(const TrigArray &t) {
+		return t.phase(piranha::shared_args::get());
+	}
+
+	template <class TrigArray>
 	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst) {
 		inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
+		inst.def("freq", &py_trigarray_freq<TrigArray>);
+		inst.def("phase", &py_trigarray_phase<TrigArray>);
 	}
 
 	inline void keys_bindings() {
