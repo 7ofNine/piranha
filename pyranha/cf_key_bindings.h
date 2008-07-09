@@ -72,7 +72,7 @@ namespace pyranha
 			n = n_ + size;
 		}
 		if (n < 0 || static_cast<size_t>(n) >= size) {
-			PyErr_SetString(PyExc_IndexError, "Index of integer array key is out of range");
+			throw piranha::unsuitable("Index of integer array key is out of range");
 		}
 		return v[n];
 	}
