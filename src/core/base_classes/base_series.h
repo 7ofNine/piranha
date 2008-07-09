@@ -91,6 +91,8 @@ namespace piranha
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.
@@ -128,8 +130,6 @@ namespace piranha
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
-			template <class PosTuple, class Series, class ArgsTuple>
-			Derived sub(const PosTuple &, const Series &, const ArgsTuple &) const;
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);

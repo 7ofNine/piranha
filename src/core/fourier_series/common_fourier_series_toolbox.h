@@ -36,18 +36,24 @@ namespace piranha
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
 			std::complex<Derived> complexp() const {
+				std::complex<Derived> retval(complexp(derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			template <class ArgsTuple>
+			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
-						m_cf.complexp(derived_const_cast->m_arguments),key_type()),
-						derived_const_cast->m_arguments);
+						m_cf.complexp(args_tuple),key_type()),
+						args_tuple);
 				} else {
 					// Expand using Jacobi-Anger's identity.
 					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-													retval, derived_const_cast->m_arguments);
-					retval.m_arguments = derived_const_cast->m_arguments;
+													retval, args_tuple);
 				}
 				return retval;
 			}

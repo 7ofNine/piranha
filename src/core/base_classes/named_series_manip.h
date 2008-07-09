@@ -381,7 +381,7 @@ namespace piranha
 		pos_tuple_type pos_tuple;
 		psym_p p(psyms::get_pointer(arg));
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
-		Derived retval(tmp.sub(pos_tuple,s,tmp.m_arguments));
+		Derived retval(tmp.sub<Derived>(pos_tuple,s,tmp.m_arguments));
 		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;

@@ -357,16 +357,16 @@ namespace piranha
 					p_assert(pos < derived_const_cast->size());
 					SubSeries tmp(s);
 					tmp *= static_cast<max_fast_int>((*derived_const_cast)[pos]);
-					const std::complex<SubSeries> tmp_ei(tmp.complexp());
-					const SubSeries tmp_cos(tmp_ei.real()), tmp_sin(tmp_ei.imag());
+					const std::complex<SubSeries> tmp_ei(tmp.complexp(args_tuple));
+					const SubSeries tmp_cos(tmp_ei.real(args_tuple)), tmp_sin(tmp_ei.imag(args_tuple));
 					Derived tmp_ta(*derived_const_cast);
 					SubSeries orig_cos, orig_sin;
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
-					// Buld the orig_cos series.
+					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
 					orig_cos.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
-					// Buld the orig_sin series.
+					// Build the orig_sin series.
 					tmp_ta.flavour() = false;
 					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
 					p_assert(retval.empty());

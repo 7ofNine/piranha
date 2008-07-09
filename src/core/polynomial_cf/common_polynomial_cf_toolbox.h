@@ -37,15 +37,25 @@ namespace piranha
 	{
 		public:
 			/// Return a single coefficient and a vector of integers representing the polynomial.
-			template <class Cf>
-			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res) const {
+			template <int PolyPos, int TargetPos, class Cf, class ArgsTuple>
+			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
+				const ArgsTuple &args_tuple) const {
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 					const max_fast_int pos = it->m_key.linear_arg_position();
 					if (pos >= 0) {
-						p_assert(pos < (max_fast_int)res.second.size());
-						res.second[(size_t)pos] = it->m_cf.get_int();
+						// Let's find the corresponding symbol in the target vector of arguments.
+						size_t i = 0;
+						for (; i < args_tuple.template get<TargetPos>().size(); ++i) {
+							if (args_tuple.template get<PolyPos>()[static_cast<size_t>(pos)] ==
+								args_tuple.template get<TargetPos>()[i]) {
+								break;
+							}
+						}
+						p_assert(i != args_tuple.template get<TargetPos>().size());
+						p_assert(i < res.second.size());
+						res.second[i] = it->m_cf.get_int();
 					} else {
 						res.first.push_back(it->m_cf);
 					}

@@ -42,3 +42,5 @@
 - Use wrappers everywhere for the exposition of functionality in python.
 - tc class --> see if it is effective to perform the evaluations in C++ (possibly using parallelization), then applying the
   function in python using numpy (supposedly fast) array classes.
+- Watch out for trim! We do not want to ever get it called into the anonymous interface, because it could mess up badly
+  the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.

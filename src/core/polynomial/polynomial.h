@@ -95,6 +95,8 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using named_ancestor::sub;
+			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -121,6 +123,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
 		piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
+#define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,1,COMPLEX_POLYNOMIAL >
 #define COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POLYNOMIAL >
@@ -133,6 +136,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BASE_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_MULT_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR,
@@ -163,19 +167,27 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
 			friend class COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class piranha::base_series_complex_toolbox<POLYNOMIAL>;
+			friend class COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX;
 			// Override power_functions with the ones from the binomial exponentiation toolbox.
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
 		public:
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::real;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::real;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::imag;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::imag;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::construct_from_real;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::construct_from_real;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::construct_from_real_imag;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::subtract;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::subtract;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::divide_by;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator+=;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator+=;
@@ -195,6 +207,8 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using named_ancestor::sub;
+			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef POLYNOMIAL value_type;
 			typedef term_type_ term_type;

@@ -33,6 +33,8 @@
 
 namespace pyranha
 {
+	// TODO: Do _not_ provide a free or py_interface in classes, use wrappers here.
+	// In the wrappers error checks can be performed.
 	template <class Cf>
 	inline boost::python::class_<Cf> cf_bindings(const std::string &name, const std::string &description) {
 		boost::python::class_<Cf> cf_inst(name.c_str(),description.c_str());

@@ -23,10 +23,9 @@
 
 #include <complex>
 
-#include "base_series_complex_toolbox.h"
-#include "named_series.h"
 #include "../integer_typedefs.h"
 #include "../settings.h"
+#include "named_series.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -34,32 +33,31 @@
 namespace piranha
 {
 	template <class RealDerived>
-	class named_series_complex_toolbox : public base_series_complex_toolbox<RealDerived>
+	class named_series_complex_toolbox
 	{
-			typedef base_series_complex_toolbox<RealDerived> ancestor;
 			typedef std::complex<RealDerived> Derived;
 		public:
 			RealDerived real() const {
-				RealDerived retval(ancestor::real(derived_const_cast->m_arguments));
+				RealDerived retval(derived_const_cast->real(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
-				RealDerived retval(ancestor::imag(derived_const_cast->m_arguments));
+				RealDerived retval(derived_const_cast->imag(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived &real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				ancestor::real(r, derived_const_cast->m_arguments);
+				derived_cast->real(r, derived_const_cast->m_arguments);
 				derived_cast->trim();
 				return *derived_cast;
 			}
 			Derived &imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				ancestor::imag(i, derived_const_cast->m_arguments);
+				derived_cast->imag(i, derived_const_cast->m_arguments);
 				derived_cast->trim();
 				return *derived_cast;
 			}
@@ -99,13 +97,13 @@ namespace piranha
 		protected:
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->m_arguments = r.m_arguments;
-				ancestor::construct_from_real(r, derived_cast->m_arguments);
+				derived_cast->construct_from_real(r, derived_cast->m_arguments);
 				derived_cast->trim();
 			}
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i) {
 				derived_cast->m_arguments = r.m_arguments;
 				derived_cast->merge_args(i);
-				ancestor::construct_from_real_imag(r, i, derived_cast->m_arguments);
+				derived_cast->construct_from_real_imag(r, i, derived_cast->m_arguments);
 				derived_cast->trim();
 			}
 	};

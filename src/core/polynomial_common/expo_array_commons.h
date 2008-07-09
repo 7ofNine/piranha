@@ -228,6 +228,32 @@ namespace piranha
 				}
 				return true;
 			}
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &s, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				typedef typename SubSeries::term_type sub_term_type;
+				typedef typename sub_term_type::cf_type sub_cf_type;
+				RetSeries retval;
+				// If the argument is not present here, the return series will have one term consisting
+				// of a unitary coefficient and this very expo_array.
+				if (!pos_tuple.template get<Derived::position>().first) {
+					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1,args_tuple),*derived_const_cast),args_tuple);
+				} else {
+					const size_t pos = pos_tuple.template get<Derived::position>().second;
+					p_assert(pos < derived_const_cast->size());
+					SubSeries tmp(s.pow(static_cast<max_fast_int>((*derived_const_cast)[pos]),args_tuple));
+					Derived tmp_ea(*derived_const_cast);
+					// Let's turn off the exponent associated to the symbol we are substituting.
+					tmp_ea[pos] = 0;
+					SubSeries orig;
+					orig.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ea),args_tuple);
+					p_assert(retval.empty());
+					retval.add(orig,args_tuple);
+					retval.mult_by(tmp,args_tuple);
+				}
+				return retval;
+			}
 		protected:
 			expo_array_commons() {}
 			explicit expo_array_commons(const std::string &s) {
