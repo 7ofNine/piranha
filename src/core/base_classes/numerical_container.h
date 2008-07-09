@@ -184,7 +184,7 @@ namespace piranha
 				typedef typename term_type::cf_type cf_type;
 				typedef typename term_type::key_type key_type;
 				RetSeries retval;
-				term_type tmp_term(cf_type(*derived_const_cast,args_tuple),key_type());
+				term_type tmp_term(cf_type(*derived_const_cast),key_type());
 				retval.insert(tmp_term,args_tuple);
 				return retval;
 			}
