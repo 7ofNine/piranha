@@ -33,11 +33,12 @@
 namespace piranha
 {
 	template <class Derived>
+	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	class common_polynomial_cf_toolbox
 	{
 		public:
 			/// Return a single coefficient and a vector of integers representing the polynomial.
-			template <int PolyPos, int TargetPos, class Cf, class ArgsTuple>
+			template <int TargetPos, class Cf, class ArgsTuple>
 			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
 				const ArgsTuple &args_tuple) const {
 				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
@@ -48,7 +49,7 @@ namespace piranha
 						// Let's find the corresponding symbol in the target vector of arguments.
 						size_t i = 0;
 						for (; i < args_tuple.template get<TargetPos>().size(); ++i) {
-							if (args_tuple.template get<PolyPos>()[static_cast<size_t>(pos)] ==
+							if (args_tuple.template get<0>()[static_cast<size_t>(pos)] ==
 								args_tuple.template get<TargetPos>()[i]) {
 								break;
 							}

@@ -128,7 +128,7 @@ namespace piranha
 					// from the corresponding polynomial.
 					if (it->m_key.is_unity()) {
 						try {
-							it->m_cf.template get_int_linear_combination<0,1>(retval.second,args_tuple);
+							it->m_cf.template get_int_linear_combination<1>(retval.second,args_tuple);
 						} catch (const unsuitable &) {
 							// If we are unable to extract a proper linear combination from the unity term, erase retval
 							// and break out.
