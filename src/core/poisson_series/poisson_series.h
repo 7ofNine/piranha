@@ -106,7 +106,7 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
-			using named_ancestor::sub;
+			using POISSON_SERIES_COMMON_ANCESTOR::sub;
 			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef term_type_ term_type;
@@ -222,7 +222,7 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
-			using named_ancestor::sub;
+			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
 			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef POISSON_SERIES value_type;
