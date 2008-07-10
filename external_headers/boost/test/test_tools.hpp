@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2001-2007.
+//  (C) Copyright Gennadiy Rozental 2001-2008.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 46157 $
+//  Version     : $Revision: 47258 $
 //
 //  Description : contains definition for all test tools in test toolbox
 // ***************************************************************************
@@ -25,6 +25,7 @@
 
 #include <boost/test/utils/wrap_stringstream.hpp>
 #include <boost/test/utils/basic_cstring/io.hpp>
+#include <boost/test/utils/lazy_ostream.hpp>
 
 // Boost
 #include <boost/preprocessor/seq/for_each.hpp>
@@ -47,6 +48,10 @@
 #include <ios>              // for std::boolalpha
 #include <climits>          // for CHAR_BIT
 
+#ifdef BOOST_MSVC
+# pragma warning(disable: 4127) // conditional expression is constant
+#endif
+
 #include <boost/test/detail/suppress_warnings.hpp>
 
 //____________________________________________________________________________//
@@ -66,14 +71,14 @@
 // CT - check type
 // ARGS - arguments list
 
-#define BOOST_TEST_TOOL_IMPL( func, P, check_descr, TL, CT ) \
-    ::boost::test_tools::tt_detail::func(                    \
-        P,                                                   \
-        ::boost::wrap_stringstream().ref() << check_descr,   \
-        BOOST_TEST_L(__FILE__),                              \
-        (std::size_t)__LINE__,                               \
-        ::boost::test_tools::tt_detail::TL,                  \
-        ::boost::test_tools::tt_detail::CT                   \
+#define BOOST_TEST_TOOL_IMPL( func, P, check_descr, TL, CT )            \
+    ::boost::test_tools::tt_detail::func(                               \
+        P,                                                              \
+        ::boost::unit_test::lazy_ostream::instance() << check_descr,    \
+        BOOST_TEST_L(__FILE__),                                         \
+        (std::size_t)__LINE__,                                          \
+        ::boost::test_tools::tt_detail::TL,                             \
+        ::boost::test_tools::tt_detail::CT                              \
 /**/
 
 //____________________________________________________________________________//
@@ -336,6 +341,9 @@ template<typename T>
 struct print_log_value {
     void    operator()( std::ostream& ostr, T const& t )
     {
+        // avoid warning: 'boost::test_tools::<unnamed>::dummy_cond' defined but not used 
+        if (::boost::test_tools::dummy_cond) {}
+
         typedef typename mpl::or_<is_array<T>,is_function<T>,is_abstract<T> >::type couldnt_use_nl;
 
         set_precision( ostr, couldnt_use_nl() );
@@ -358,7 +366,7 @@ struct print_log_value {
 namespace boost { namespace test_tools { namespace tt_detail {      \
 template<>                                                          \
 struct print_log_value<the_type > {                                 \
-    void operator()( std::ostream& ostr, the_type const& t ) {}     \
+    void operator()( std::ostream&, the_type const& ) {}            \
 };                                                                  \
 }}}                                                                 \
 /**/
@@ -460,7 +468,7 @@ operator<<( std::ostream& ostr, print_helper_t<T> const& ph )
 // ************************************************************************** //
 
 BOOST_TEST_DECL 
-void check_impl( predicate_result const& pr, wrap_stringstream& check_descr,
+bool check_impl( predicate_result const& pr, ::boost::unit_test::lazy_ostream const& check_descr,
                  const_string file_name, std::size_t line_num,
                  tool_level tl, check_type ct,
                  std::size_t num_args, ... );
@@ -485,13 +493,14 @@ void check_impl( predicate_result const& pr, wrap_stringstream& check_descr,
 #define IMPL_FRWD( z, n, dummy )                                                    \
 template<typename Pred                                                              \
          BOOST_PP_REPEAT_ ## z( BOOST_PP_ADD( n, 1 ), TEMPL_PARAMS, _ )>            \
-inline void                                                                         \
-check_frwd( Pred P, wrap_stringstream& check_descr,                                 \
+inline bool                                                                         \
+check_frwd( Pred P, unit_test::lazy_ostream const& check_descr,                     \
             const_string file_name, std::size_t line_num,                           \
             tool_level tl, check_type ct                                            \
             BOOST_PP_REPEAT_ ## z( BOOST_PP_ADD( n, 1 ), FUNC_PARAMS, _ )           \
 )                                                                                   \
 {                                                                                   \
+    return                                                                          \
     check_impl( P( BOOST_PP_REPEAT_ ## z( BOOST_PP_ADD( n, 1 ), PRED_PARAMS, _ ) ), \
                 check_descr, file_name, line_num, tl, ct,                           \
                 BOOST_PP_ADD( n, 1 )                                                \

@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2001-2007.
+//  (C) Copyright Gennadiy Rozental 2001-2008.
 //  (C) Copyright Beman Dawes and Ullrich Koethe 1995-2001.
 //  Use, modification, and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
@@ -8,7 +8,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 46513 $
+//  Version     : $Revision: 47156 $
 //
 //  Description : provides execution monitor implementation for all supported
 //  configurations, including Microsoft structured exception based, unix signals
@@ -993,7 +993,7 @@ switch_fp_exceptions( bool on_off )
 int
 execution_monitor::catch_signals( unit_test::callback0<int> const& F )
 {
-    _invalid_parameter_handler old_iph;
+    _invalid_parameter_handler old_iph = _invalid_parameter_handler();
 
     if( !p_catch_system_errors )
         _set_se_translator( &detail::seh_catch_preventer );
