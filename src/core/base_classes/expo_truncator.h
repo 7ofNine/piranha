@@ -75,14 +75,14 @@ namespace piranha
 											 const int &start = 0, const int &step_size = 1) {
 				p_assert(start >= 0 and step_size >= 1);
 				if (s.empty()) {
-					throw unsuitable("Cannot calculate limit of the power series of an empty power series.");
+					throw unsuitable("Cannot calculate the limit of the power series expansion of an empty power series.");
 				}
 				// Let's calculate the minimum exponents of s for which the truncator defines a limit.
 				const std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> >
 				mle(min_limited_exponents(s, args_tuple));
 				const size_t size = mle.first.size();
 				if (size == 0) {
-					throw not_existing("Cannot calculate limit of power series when there are no exponent limits "
+					throw not_existing("Cannot calculate the limit of a power series expansion when there are no exponent limits "
 									   "set for the arguments of the series.");
 				}
 				for (size_t i = 0; i < size; ++i) {
@@ -90,11 +90,11 @@ namespace piranha
 					// screwed, since the degree of the symbol would not increase at every step of the expansion
 					// and we would end up in an infinite loop.
 					if (mle.first[i] <= 0) {
-						throw unsuitable("Cannot calculate limit of power series if one of the limited exponents "
-										 "has negative or zero minimum value.");
+						throw unsuitable("Cannot calculate the limit of a power series expansion if one of the limited exponents "
+										 "of the series has negative or zero minimum value.");
 					}
 					if (mle.second[i] < 0) {
-						throw unsuitable("Cannot calculate limit of power series if there are negative "
+						throw unsuitable("Cannot calculate the limit of a power series expansion if there are negative "
 										 "exponent limits for this series.");
 					}
 				}
