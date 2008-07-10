@@ -128,8 +128,8 @@ namespace piranha
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
-			template <class PosTuple, class SubSeries, class ArgsTuple>
-			Derived sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries base_sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 		private:
 			template <class PinpointIterator>
 			PinpointIterator find_term(const term_type &);

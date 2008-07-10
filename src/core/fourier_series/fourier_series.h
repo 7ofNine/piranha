@@ -96,8 +96,6 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
-			using named_ancestor::sub;
-			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -203,8 +201,6 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
-			using named_ancestor::sub;
-			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef FOURIER_SERIES value_type;
 			typedef term_type_ term_type;

@@ -107,7 +107,6 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
-			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef term_type_ term_type;
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
@@ -183,6 +182,8 @@ namespace std
 			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
 			friend class COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX;
+			friend class COMPLEX_POISSON_SERIES_COMMON_ANCESTOR;
+			// We need also the non-complex one because it needs to access the complex's private space.
 			friend class POISSON_SERIES_COMMON_ANCESTOR;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
@@ -223,7 +224,6 @@ namespace std
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
-			using base_ancestor::sub;
 			// Needed typedefs.
 			typedef POISSON_SERIES value_type;
 			// Needed typedefs.

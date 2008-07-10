@@ -45,4 +45,5 @@ BOOST_PYTHON_MODULE(_Qpoly)
 	common_polynomial_instantiation(instc.first);
 	series_complex_instantiation(instc.first, inst.first);
 	series_sub_instantiation<qpolyc,qpoly>(instc.first);
+	series_sub_instantiation<qpolyc,qpolyc>(instc.first);
 }

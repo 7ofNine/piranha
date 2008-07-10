@@ -44,5 +44,6 @@ BOOST_PYTHON_MODULE(_Dpoly)
 									  std::string("Multivariate polynomial with complex double precision coefficients."));
 	common_polynomial_instantiation(instc.first);
 	series_complex_instantiation(instc.first, inst.first);
+	series_sub_instantiation<dpolyc,dpolyc>(instc.first);
 	series_sub_instantiation<dpolyc,dpoly>(instc.first);
 }

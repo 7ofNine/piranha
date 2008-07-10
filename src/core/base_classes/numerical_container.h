@@ -31,6 +31,7 @@
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
 #include "numerical_container_complex_toolbox.h"
+#include "series_builders.h"
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -180,13 +181,8 @@ namespace piranha
 			}
 			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
 			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &args_tuple) const {
-				typedef typename RetSeries::term_type term_type;
-				typedef typename term_type::cf_type cf_type;
-				typedef typename term_type::key_type key_type;
-				RetSeries retval;
-				term_type tmp_term(cf_type(*derived_const_cast),key_type());
-				retval.insert(tmp_term,args_tuple);
-				return retval;
+				return numerical_cf_series_builder<boost::tuples::length<ArgsTuple>::value - 1>::template run<RetSeries>(
+					*derived_const_cast,args_tuple);
 			}
 			/// Get value.
 			const T &value() const {

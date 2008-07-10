@@ -69,10 +69,12 @@ namespace piranha
 			template <class Filter>
 			Derived filter(const Filter &) const;
 			void swap(Derived &);
+			template <class Derived2>
+			void merge_args(const Derived2 &);
 			void trim();
 			double norm() const;
-			// TODO: maybe we can get rid of this with proper friends?
 			const args_tuple_type &arguments() const;
+			void set_arguments(const args_tuple_type &);
 			eval_type eval(const double &) const;
 			Derived &operator+=(const max_fast_int &);
 			Derived &operator+=(const double &);
@@ -101,7 +103,6 @@ namespace piranha
 			void py_append(const Term2 &);
 			std::string py_arguments_description() const;
 			args_tuple_type py_arguments() const;
-			void py_set_arguments(const args_tuple_type &);
 			void py_shared_arguments_set() const;
 		protected:
 			// TODO: check these protected methods, some of them can be moved into private
@@ -112,8 +113,6 @@ namespace piranha
 			void append_arg(const std::string &, const psym_p &);
 			template <int N>
 			void append_arg(const psym_p &);
-			template <class Derived2>
-			void merge_args(const Derived2 &);
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>

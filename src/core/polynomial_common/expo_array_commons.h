@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 
+#include "../base_classes/series_builders.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../psym.h"
@@ -238,7 +239,7 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1,args_tuple),*derived_const_cast),args_tuple);
+					retval = key_series_builder::template run<RetSeries>(*derived_const_cast,args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
@@ -246,8 +247,7 @@ namespace piranha
 					Derived tmp_ea(*derived_const_cast);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
-					SubSeries orig;
-					orig.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ea),args_tuple);
+					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea,args_tuple));
 					p_assert(retval.empty());
 					retval.add(orig,args_tuple);
 					retval.mult_by(tmp,args_tuple);

@@ -363,15 +363,6 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_set_arguments(const args_tuple_type &args_tuple)
-	{
-		if (!derived_const_cast->empty()) {
-			throw unsuitable("Cannot assign arguments to non-empty series.");
-		}
-		m_arguments = args_tuple;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Argument, class SubSeries>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_sub(const Argument &arg, const SubSeries &s) const
 	{
@@ -381,7 +372,7 @@ namespace piranha
 		pos_tuple_type pos_tuple;
 		psym_p p(psyms::get_pointer(arg));
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
-		Derived retval(tmp.sub(pos_tuple,s,tmp.m_arguments));
+		Derived retval(tmp.template base_sub<Derived>(pos_tuple,s,tmp.m_arguments));
 		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;

@@ -45,4 +45,5 @@ BOOST_PYTHON_MODULE(_Zpoly)
 	common_polynomial_instantiation(instc.first);
 	series_complex_instantiation(instc.first, inst.first);
 	series_sub_instantiation<zpolyc,zpoly>(instc.first);
+	series_sub_instantiation<zpolyc,zpolyc>(instc.first);
 }

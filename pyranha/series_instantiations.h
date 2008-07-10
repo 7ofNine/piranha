@@ -96,7 +96,7 @@ namespace pyranha
 		// Pyranha-specific special methods.
 		inst.add_property("__arguments_description__",&T::py_arguments_description);
 		inst.add_property("__arguments__",&T::py_arguments);
-		inst.def("__set_arguments__", &T::py_set_arguments);
+		inst.def("__set_arguments__", &T::set_arguments);
 		inst.def("__set_shared_arguments__", &T::py_shared_arguments_set);
 		typedef void (T::*trim_free)();
 		inst.def("__trim__", trim_free(&T::trim));

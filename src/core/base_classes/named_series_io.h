@@ -236,6 +236,15 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const args_tuple_type &args_tuple)
+	{
+		if (!derived_const_cast->empty()) {
+			throw unsuitable("Cannot assign arguments to non-empty series.");
+		}
+		m_arguments = args_tuple;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type
 	named_series<__PIRANHA_NAMED_SERIES_TP>::py_arguments() const
 	{

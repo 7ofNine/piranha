@@ -82,11 +82,11 @@ namespace piranha
 						complex_term_type tmp_term;
 						tmp_term.m_cf.insert(
 							typename std::complex<Derived>::term_type::cf_type::term_type(
-								int_linear_term.second.first[0].complexp(tmp_series2.m_arguments),
+								int_linear_term.second.first[0].complexp(tmp_series2.arguments()),
 								typename std::complex<Derived>::term_type::cf_type::term_type::key_type()
 							),
-							tmp_series2.m_arguments);
-						tmp_series2.insert(tmp_term, tmp_series2.m_arguments);
+							tmp_series2.arguments());
+						tmp_series2.insert(tmp_term, tmp_series2.arguments());
 						tmp_series.mult_by(tmp_series2,args_tuple);
 					}
 					retval.mult_by(tmp_series,args_tuple);
@@ -103,7 +103,7 @@ namespace piranha
 				copy.merge_args(tmp);
 				// Now we can call in the complexp method from above.
 				std::complex<Derived> retval(copy.complexp(copy.m_arguments));
-				retval.m_arguments = copy.m_arguments;
+				retval.m_arguments = copy.arguments();
 				retval.trim();
 				return retval;
 			}
@@ -160,9 +160,12 @@ namespace piranha
 			Derived generic_ps_sub(const Argument &arg, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
-				Derived this_copy(*derived_const_cast), s_copy(series), tmp;
+				Derived this_copy(*derived_const_cast);
+				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments these polynomial arguments.
-				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
+				args_tuple_type tmp_args;
+				tmp_args.template get<1>() = derived_const_cast->m_arguments.template get<0>();
+				tmp.set_arguments(tmp_args);
 				// After the next line, s_copy's args layout is compatible with tmp's.
 				s_copy.merge_args(tmp);
 				// After the next line, this_copy's args layout is compatible with s_copy's
@@ -170,7 +173,7 @@ namespace piranha
 				pos_tuple_type pos_tuple;
 				psym_p p(psyms::get_pointer(arg));
 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
-				Derived retval(this_copy.sub<Derived>(pos_tuple,s_copy,this_copy.m_arguments));
+				Derived retval(this_copy.template base_sub<Derived>(pos_tuple,s_copy,this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
 				retval.trim();
 				return retval;

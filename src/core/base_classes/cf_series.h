@@ -76,6 +76,8 @@ namespace piranha
 			void trim_test(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
+			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
+			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 			// Interaction with proxy.
 			template <class Series, class ArgsTuple>
 			Derived &mult_by(reference_proxy<Series> , const ArgsTuple &);
