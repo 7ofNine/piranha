@@ -21,7 +21,7 @@
 #ifndef PIRANHA_EXPO_TRUNCATOR_H
 #define PIRANHA_EXPO_TRUNCATOR_H
 
-#include <algorithm> // To calculate min degree.
+#include <algorithm> // To calculate min degree and for sorting.
 #include <cmath> // For std::ceil.
 #include <iostream>
 #include <string>
@@ -31,7 +31,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../none.h"
 #include "../p_assert.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
@@ -100,7 +99,7 @@ namespace piranha
 				}
 				std::vector<size_t> power_limits(size);
 				for (size_t i = 0; i < size; ++i) {
-					float tmp = ((float)mle.second[i] / mle.first[i] - start) / (float)step_size;
+					const double tmp((static_cast<double>(mle.second[i]) / mle.first[i] - start) / static_cast<double>(step_size));
 					if (tmp >= 0) {
 						power_limits[i] = (size_t)std::ceil(tmp);
 					} else {
@@ -163,7 +162,7 @@ namespace piranha
 			}
 			static iterator find_argument(const psym_p &);
 		protected:
-			static container_type m_expo_limits;
+			static container_type	m_expo_limits;
 	};
 
 	/// Truncators for polynomials based on the exponent of one or more variables.
@@ -203,6 +202,7 @@ namespace piranha
 									   Multiplier::series_type2::expo_args_position, "");
 						p_static_check(Multiplier::series_type1::expo_term_position ==
 									   Multiplier::series_type2::expo_term_position, "");
+						// If just one exponent is limited, sort series according the the min degree of such exponent.
 						if (m_positions.size() == 1) {
 							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),
 									  single_expo_comparison(m_positions[0].first, m_multiplier.m_args_tuple));
