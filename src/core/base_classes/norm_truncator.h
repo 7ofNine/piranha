@@ -24,7 +24,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <string>
 
 #include "../config.h"
 #include "../is_sorted.h"
@@ -50,7 +49,6 @@ namespace piranha
 				m_truncation_power = n;
 			}
 			static void print(std::ostream &stream = std::cout);
-			static std::string py_repr();
 			// Returns the length of a development in powers of x that satisfies the condition that the
 			// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 			// times smaller.

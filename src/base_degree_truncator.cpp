@@ -20,20 +20,26 @@
 
 #include <iostream>
 #include <sstream>
-#include <string>
 
-#include "core/base_classes/norm_truncator.h"
-#include "core/stream_manager.h"
+#include "core/base_classes/degree_truncator.h"
 
 namespace piranha
 {
-	// Initial value for norm-based truncation.
-	int base_norm_truncator::m_truncation_power = 6;
-	double base_norm_truncator::m_truncation_level = std::pow(10., -base_norm_truncator::m_truncation_power);
+	// Static initialization for degree-based truncation.
+	max_fast_int base_degree_truncator::m_degree_limit = 0;
+	bool base_degree_truncator::m_effective = false;
 
-	void base_norm_truncator::print(std::ostream &stream)
+	void base_degree_truncator::clear()
 	{
-		stream_manager::setup_print(stream);
-		stream << "Truncation level: " << m_truncation_level;
+		m_effective = false;
+	}
+
+	void base_degree_truncator::print(std::ostream &stream)
+	{
+		if (m_effective) {
+			stream << "Minimum degree limit: " << m_degree_limit;
+		} else {
+			stream << "No limit set for the minimum degree of series.";
+		}
 	}
 }

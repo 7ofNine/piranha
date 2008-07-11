@@ -25,9 +25,11 @@
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <sstream> // TODO: remove later.
 #include <string>
 #include <vector>
 
+#include "../../src/core/base_classes/degree_truncator.h"
 #include "../../src/core/base_classes/expo_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/config.h"
@@ -49,6 +51,13 @@ namespace pyranha
 	{
 		class_<std::vector<T> >((name + "_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
 	}
+}
+
+template <class T>
+std::string py_print_to_string(const T &origin) {
+	std::ostringstream stream;
+	origin.print(stream);
+	return stream.str();
 }
 
 // Instantiate the pyranha Core module.
@@ -165,7 +174,12 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("limit", limit_psym(&base_expo_truncator::limit), "Set exponent limit for psym arg1 to integer arg2.").staticmethod("limit");
 
 	class_<base_norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &base_norm_truncator::py_repr).staticmethod("__repr__")
+	.def("__repr__", &py_print_to_string<base_norm_truncator>)
 	.def("set", &base_norm_truncator::set, "Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 "
 		 "and throw an error otherwise.").staticmethod("set");
+
+	class_<base_degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
+	.def("__repr__", &py_print_to_string<base_degree_truncator>)
+	.def("set", &base_degree_truncator::set, "Set truncation level of series minimum degree to arg1.").staticmethod("set")
+	.def("clear", &base_degree_truncator::clear, "Clear minimum degree limit.").staticmethod("clear");
 }

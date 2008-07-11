@@ -24,6 +24,7 @@ def copy(arg):
 	return __copy.copy(arg)
 
 psyms = _Core.__psyms()
+degree_truncator = _Core.__degree_truncator()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
 

@@ -100,7 +100,7 @@ ENDIF(ENABLE_HOARD AND WIN32)
 
 # TBB is not supported ATM on Win32.
 IF(BUILD_TBB_MULTITHREADING AND WIN32)
-  MESSAGE(FATAL_ERROR "Intel TBB cannot be compiled in MinGW at the moment.")
+  MESSAGE(FATAL_ERROR "Intel TBB cannot be compiled in MinGW at the present time.")
 ENDIF(BUILD_TBB_MULTITHREADING AND WIN32)
 
 ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
