@@ -175,7 +175,7 @@ namespace piranha
 
 #define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::named_series<boost::tuple<args1,args2>,series_name >
 
-#define NAMED_SERIES_CTORS(series_name) \
+#define NAMED_SERIES_CTORS(series_name,N) \
 	series_name() {} \
 	explicit series_name(const std::string &filename) \
 	{ \
@@ -198,6 +198,9 @@ namespace piranha
 	explicit series_name(const double &x, const args_tuple_type &args_tuple) \
 	{ \
 		base_ancestor::construct_from_number(x,args_tuple); \
+	} \
+	explicit series_name(const piranha::psym &p) { \
+		named_ancestor::template construct_from_psym<N>(p); \
 	}
 }
 

@@ -87,6 +87,7 @@ namespace pyranha
 		inst.def(boost::python::init<const std::string &>());
 		inst.def(boost::python::init<const piranha::max_fast_int &>());
 		inst.def(boost::python::init<const double &>());
+		inst.def(boost::python::init<const piranha::psym &>());
 		// Take care of exposing the series' indices.
 		expose_series_indices(inst);
 		// Some special methods.
@@ -262,12 +263,6 @@ namespace pyranha
 	}
 
 	template <class T>
-	void series_psym_instantiation(boost::python::class_<T> &inst)
-	{
-		inst.def(boost::python::init<const piranha::psym &>());
-	}
-
-	template <class T>
 	void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
 		inst.def("besselJ", &T::besselJ, "Bessel function of the first kind of integer order.");
@@ -312,7 +307,6 @@ namespace pyranha
 	template <class T>
 	void common_polynomial_instantiation(boost::python::class_<T> &inst)
 	{
-		series_psym_instantiation(inst);
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
@@ -321,12 +315,14 @@ namespace pyranha
 	template <class T>
 	void common_poisson_series_instantiation(boost::python::class_<T> &inst, const std::string &name)
 	{
-		series_psym_instantiation(inst);
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
 		// Expose the polynomial coefficient.
-		cf_bindings<typename T::term_type::cf_type>((name+"_cf").c_str(), "");
+		typedef typename T::term_type::cf_type cf_type;
+		cf_bindings<cf_type>((name+"_cf").c_str(), "")
+		.def("degree", &cf_type::degree)
+		.def("min_degree", &cf_type::min_degree);
 	}
 
 	template <class T>

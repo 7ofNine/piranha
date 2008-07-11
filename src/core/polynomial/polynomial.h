@@ -104,11 +104,7 @@ namespace piranha
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(polynomial);
-			// Ctor from psym.
-			explicit polynomial(const psym &p) {
-				named_ancestor::template construct_from_psym<0>(p);
-			}
+			NAMED_SERIES_CTORS(polynomial,0);
 			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
@@ -215,12 +211,8 @@ namespace std
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(complex);
+			NAMED_SERIES_CTORS(complex,0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
-			// Ctor from psym.
-			explicit complex(const piranha::psym &p) {
-				named_ancestor::template construct_from_psym<0>(p);
-			}
 			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;

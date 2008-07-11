@@ -105,7 +105,7 @@ namespace piranha
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(fourier_series);
+			NAMED_SERIES_CTORS(fourier_series,0);
 			// Index interface.
 			SERIES_INDEX_INTERFACE;
 		private:
@@ -210,7 +210,7 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
 			args_tuple_type, Truncator > multiplier_type;
-			NAMED_SERIES_CTORS(complex);
+			NAMED_SERIES_CTORS(complex,0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 			SERIES_INDEX_INTERFACE;
 		private:

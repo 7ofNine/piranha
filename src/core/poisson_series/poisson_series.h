@@ -115,11 +115,7 @@ namespace piranha
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(poisson_series);
-			// Ctor from psym.
-			explicit poisson_series(const psym &p) {
-				named_ancestor::template construct_from_psym<0>(p);
-			}
+			NAMED_SERIES_CTORS(poisson_series,0);
 			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
@@ -234,12 +230,8 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(complex);
+			NAMED_SERIES_CTORS(complex,0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);
-			// Ctor from psym.
-			explicit complex(const piranha::psym &p) {
-				named_ancestor::template construct_from_psym<0>(p);
-			}
 			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
