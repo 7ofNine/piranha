@@ -181,8 +181,8 @@ namespace piranha
 			}
 			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
 			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &args_tuple) const {
-				return numerical_cf_series_builder<boost::tuples::length<ArgsTuple>::value - 1>::template run<RetSeries>(
-					*derived_const_cast,args_tuple);
+				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::template run<RetSeries>(
+					*derived_const_cast, args_tuple);
 			}
 			/// Get value.
 			const T &value() const {

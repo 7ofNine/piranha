@@ -87,9 +87,9 @@ namespace piranha
 							),
 							tmp_series2.arguments());
 						tmp_series2.insert(tmp_term, tmp_series2.arguments());
-						tmp_series.mult_by(tmp_series2,args_tuple);
+						tmp_series.mult_by(tmp_series2, args_tuple);
 					}
-					retval.mult_by(tmp_series,args_tuple);
+					retval.mult_by(tmp_series, args_tuple);
 				}
 				return retval;
 			}
@@ -133,7 +133,7 @@ namespace piranha
 				pos_tuple_type pos_tuple;
 				psym_p p(psyms::get_pointer(arg));
 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
-				Derived retval(this_copy.template base_sub<Derived>(pos_tuple,s_copy,this_copy.m_arguments));
+				Derived retval(this_copy.template base_sub<Derived>(pos_tuple, s_copy, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
 				retval.trim();
 				return retval;
@@ -156,7 +156,7 @@ namespace piranha
 					// from the corresponding polynomial.
 					if (it->m_key.is_unity()) {
 						try {
-							it->m_cf.template get_int_linear_combination<1>(retval.second,args_tuple);
+							it->m_cf.template get_int_linear_combination<1>(retval.second, args_tuple);
 						} catch (const unsuitable &) {
 							// If we are unable to extract a proper linear combination from the unity term, erase retval
 							// and break out.

@@ -259,7 +259,7 @@ namespace piranha
 			static void run(const ArgsTuple &args_tuple, std::string &report) {
 				report += ArgsDescr::head_type::name;
 				report += "\n";
-				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(),report);
+				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(), report);
 			}
 	};
 
@@ -275,7 +275,7 @@ namespace piranha
 	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::py_arguments_description() const
 	{
 		std::string retval;
-		arguments_type_report_helper<arguments_description>::run(m_arguments,retval);
+		arguments_type_report_helper<arguments_description>::run(m_arguments, retval);
 		return retval;
 	}
 

@@ -80,8 +80,8 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
-				typename allocator_type::template rebind<term_type_>::other> container_type;
+			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
+			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -115,7 +115,7 @@ namespace piranha
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(poisson_series,0);
+			NAMED_SERIES_CTORS(poisson_series, 0);
 			SERIES_INDEX_INTERFACE;
 		private:
 			container_type  m_container;
@@ -167,8 +167,8 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
-				typename allocator_type::template rebind<term_type_>::other> container_type;
+			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
+			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
@@ -230,7 +230,7 @@ namespace std
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
-			NAMED_SERIES_CTORS(complex,0);
+			NAMED_SERIES_CTORS(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);
 			SERIES_INDEX_INTERFACE;
 		private:

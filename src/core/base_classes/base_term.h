@@ -327,17 +327,17 @@ namespace piranha
 	};
 
 #define PIRANHA_TERM_CTORS(term_name) \
-			explicit term_name(): ancestor() {} \
-			template <class ArgsTuple> \
-			explicit term_name(const std::string &str, const ArgsTuple &args_tuple): \
-					ancestor(str, args_tuple) {} \
-			explicit term_name(const cf_type &c, const key_type &t): ancestor(c, t) {} \
-			template <class Cf2, class ArgsTuple> \
-			explicit term_name(const term_name<Cf2, key_type, Separator, Allocator> &term, const ArgsTuple &a): \
-					ancestor(term, a) {} \
-			template <class Cf2, class Key2> \
-			explicit term_name(const term_name<Cf2, Key2, Separator, Allocator> &term): \
-					ancestor(term) {}
+	explicit term_name(): ancestor() {} \
+	template <class ArgsTuple> \
+	explicit term_name(const std::string &str, const ArgsTuple &args_tuple): \
+			ancestor(str, args_tuple) {} \
+	explicit term_name(const cf_type &c, const key_type &t): ancestor(c, t) {} \
+	template <class Cf2, class ArgsTuple> \
+	explicit term_name(const term_name<Cf2, key_type, Separator, Allocator> &term, const ArgsTuple &a): \
+			ancestor(term, a) {} \
+	template <class Cf2, class Key2> \
+	explicit term_name(const term_name<Cf2, Key2, Separator, Allocator> &term): \
+			ancestor(term) {}
 }
 
 #undef __PIRANHA_BASE_TERM_TP_DECL

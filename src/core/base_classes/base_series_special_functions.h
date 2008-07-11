@@ -51,7 +51,8 @@ namespace piranha
 				// Get the expansion limit from the truncator.
 				size_t limit;
 				try {
-					limit = Derived::multiplier_type::truncator_type::power_series_limit(*derived_const_cast, args_tuple, order, 2);
+					limit = Derived::multiplier_type::truncator_type::power_series_limit(
+								*derived_const_cast, args_tuple, order, 2);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function of the first kind.\n"
 												 "The reported error is: ")

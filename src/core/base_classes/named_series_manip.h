@@ -67,7 +67,7 @@ namespace piranha
 	template <class Term2>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_append(const Term2 &t2)
 	{
-		derived_cast->insert(t2,m_arguments);
+		derived_cast->insert(t2, m_arguments);
 	}
 
 	// Meta-programming for appending an argument.
@@ -330,7 +330,7 @@ namespace piranha
 		typedef typename Derived::term_type term_type;
 		// Do something only if we actually need to sort.
 		if (is_sorted(derived_const_cast->template nth_index<0>().begin(),
-			derived_const_cast->template nth_index<0>().end(),cmp)) {
+					  derived_const_cast->template nth_index<0>().end(), cmp)) {
 			return;
 		}
 		std::vector<boost::reference_wrapper<const term_type> > v;
@@ -340,7 +340,7 @@ namespace piranha
 			v.push_back(boost::cref(*it));
 		}
 		shared_args::set(m_arguments);
-		std::sort(v.begin(),v.end(),cmp);
+		std::sort(v.begin(), v.end(), cmp);
 		derived_cast->template nth_index<0>().rearrange(v.begin());
 	}
 
@@ -355,7 +355,7 @@ namespace piranha
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 			if (f(*it)) {
-				retval.insert(*it,retval.m_arguments);
+				retval.insert(*it, retval.m_arguments);
 			}
 		}
 		retval.trim();
@@ -372,7 +372,7 @@ namespace piranha
 		pos_tuple_type pos_tuple;
 		psym_p p(psyms::get_pointer(arg));
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
-		Derived retval(tmp.template base_sub<Derived>(pos_tuple,s,tmp.m_arguments));
+		Derived retval(tmp.template base_sub<Derived>(pos_tuple, s, tmp.m_arguments));
 		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;

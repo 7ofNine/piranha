@@ -239,18 +239,18 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval = key_series_builder::template run<RetSeries>(*derived_const_cast,args_tuple);
+					retval = key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					SubSeries tmp(s.pow(static_cast<max_fast_int>((*derived_const_cast)[pos]),args_tuple));
+					SubSeries tmp(s.pow(static_cast<max_fast_int>((*derived_const_cast)[pos]), args_tuple));
 					Derived tmp_ea(*derived_const_cast);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
-					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea,args_tuple));
+					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
 					p_assert(retval.empty());
-					retval.add(orig,args_tuple);
-					retval.mult_by(tmp,args_tuple);
+					retval.add(orig, args_tuple);
+					retval.mult_by(tmp, args_tuple);
 				}
 				return retval;
 			}

@@ -48,12 +48,12 @@ namespace piranha
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
-						m_cf.complexp(args_tuple),key_type()),
-						args_tuple);
+													m_cf.complexp(args_tuple), key_type()),
+								  args_tuple);
 				} else {
 					// Expand using Jacobi-Anger's identity.
 					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-													retval, args_tuple);
+												  retval, args_tuple);
 				}
 				return retval;
 			}

@@ -56,12 +56,12 @@ namespace piranha
 				}
 				const max_fast_int min_degree(s.min_degree());
 				if (min_degree <= 0) {
-						throw unsuitable("Cannot calculate the limit of a power series expansion if the minimum degree "
-										 "of the series is negative or zero.");
+					throw unsuitable("Cannot calculate the limit of a power series expansion if the minimum degree "
+									 "of the series is negative or zero.");
 				}
 				if (m_degree_limit < 0) {
 					throw unsuitable("Cannot calculate the limit of a power series expansion if the minimum degree limit "
-										"is negative.");
+									 "is negative.");
 				}
 				const double tmp((static_cast<double>(m_degree_limit) / min_degree - start) / static_cast<double>(step_size));
 				if (tmp >= 0) {
@@ -103,8 +103,8 @@ namespace piranha
 						p_static_check(Multiplier::series_type1::expo_term_position ==
 									   Multiplier::series_type2::expo_term_position, "");
 						// Sort series according to the minimum degree.
-						std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),min_degree_comparison());
-						std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(),min_degree_comparison());
+						std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
+						std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
 					}
 					template <class T>
 					bool accept(const T &) const {
@@ -113,7 +113,7 @@ namespace piranha
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
 						return (t1.template get<expo_term_pos>().min_degree() + t2.template get<expo_term_pos>().min_degree() >
-								 m_degree_limit);
+								m_degree_limit);
 					}
 				private:
 					Multiplier	&m_multiplier;

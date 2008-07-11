@@ -30,7 +30,7 @@ namespace piranha
 	/// Term class for Fourier series.
 	template <class Cf, class Trig, char Separator, class Allocator>
 	class fourier_series_term:
-		public base_term<Cf, Trig, Separator, Allocator, fourier_series_term<Cf, Trig, Separator, Allocator> >
+				public base_term<Cf, Trig, Separator, Allocator, fourier_series_term<Cf, Trig, Separator, Allocator> >
 	{
 			/// Alias for the ancestor.
 			typedef base_term<Cf, Trig, Separator, Allocator, fourier_series_term> ancestor;

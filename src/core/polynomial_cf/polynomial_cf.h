@@ -68,8 +68,8 @@ namespace piranha
 			typedef Allocator allocator_type;
 			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
-				typename allocator_type::template rebind<term_type_>::other> container_type;
+			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
+			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename cf_ancestor::template reference_proxy<polynomial_cf> proxy_ancestor;
@@ -161,8 +161,8 @@ namespace std
 			typedef Allocator allocator_type;
 			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend<term_type_, piranha::random_keyhash_index,
-				typename allocator_type::template rebind<term_type_>::other> container_type;
+			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
+			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename cf_ancestor::template reference_proxy<complex> proxy_ancestor;

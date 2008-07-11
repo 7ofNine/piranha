@@ -25,7 +25,8 @@
 
 #include "../config.h"
 
-namespace piranha {
+namespace piranha
+{
 	template <int ArgsIndex>
 	class numerical_cf_series_builder
 	{
@@ -38,7 +39,7 @@ namespace piranha {
 				typedef typename term_type::key_type key_type;
 				Series retval;
 				retval.insert(
-					term_type(numerical_cf_series_builder<ArgsIndex - 1>::template run<cf_type>(ncf,args_tuple),key_type()),
+					term_type(numerical_cf_series_builder < ArgsIndex - 1 >::template run<cf_type>(ncf, args_tuple), key_type()),
 					args_tuple
 				);
 				return retval;
@@ -54,7 +55,7 @@ namespace piranha {
 				typedef typename Series::term_type term_type;
 				typedef typename term_type::key_type key_type;
 				Series retval;
-				retval.insert(term_type(ncf,key_type()),args_tuple);
+				retval.insert(term_type(ncf, key_type()), args_tuple);
 				return retval;
 			}
 	};
@@ -70,7 +71,7 @@ namespace piranha {
 				typedef typename term_type::key_type key_type;
 				Series retval;
 				retval.insert(
-					term_type(series_from_key_helper<N-1,Pos>::template run<cf_type>(key,args_tuple),key_type()),
+					term_type(series_from_key_helper < N - 1, Pos >::template run<cf_type>(key, args_tuple), key_type()),
 					args_tuple
 				);
 				return retval;
@@ -78,7 +79,7 @@ namespace piranha {
 	};
 
 	template <int N>
-	class series_from_key_helper<N,N>
+	class series_from_key_helper<N, N>
 	{
 		public:
 			template <class Series, class Key, class ArgsTuple>
@@ -87,7 +88,7 @@ namespace piranha {
 				typedef typename term_type::cf_type cf_type;
 				Series retval;
 				retval.insert(
-					term_type(cf_type(static_cast<max_fast_int>(1),args_tuple),key),
+					term_type(cf_type(static_cast<max_fast_int>(1), args_tuple), key),
 					args_tuple
 				);
 				return retval;
@@ -101,9 +102,9 @@ namespace piranha {
 			static Series run(const Key &key, const ArgsTuple &args_tuple) {
 				p_static_check(boost::tuples::length<ArgsTuple>::value > 0, "Zero-size arguments tuple in builder from key.");
 				p_static_check(boost::tuples::length<ArgsTuple>::value >= Key::position,
-					"Key position in arguments tuple is greater than arguments' tuple size.");
-				return series_from_key_helper<boost::tuples::length<ArgsTuple>::value-1,Key::position>::
-					template run<Series>(key,args_tuple);
+							   "Key position in arguments tuple is greater than arguments' tuple size.");
+				return series_from_key_helper < boost::tuples::length<ArgsTuple>::value - 1, Key::position >::
+					   template run<Series>(key, args_tuple);
 			}
 	};
 }

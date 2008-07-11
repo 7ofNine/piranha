@@ -351,7 +351,7 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1,args_tuple),*derived_const_cast),args_tuple);
+					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1, args_tuple), *derived_const_cast), args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
@@ -365,21 +365,21 @@ namespace piranha
 					tmp_ta[pos] = 0;
 					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
-					orig_cos.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
+					orig_cos.insert(sub_term_type(sub_cf_type((max_fast_int)1, args_tuple), tmp_ta), args_tuple);
 					// Build the orig_sin series.
 					tmp_ta.flavour() = false;
-					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1,args_tuple),tmp_ta),args_tuple);
+					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1, args_tuple), tmp_ta), args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
-						retval.add(orig_cos,args_tuple);
-						retval.mult_by(tmp_cos,args_tuple);
-						orig_sin.mult_by(tmp_sin,args_tuple);
-						retval.subtract(orig_sin,args_tuple);
+						retval.add(orig_cos, args_tuple);
+						retval.mult_by(tmp_cos, args_tuple);
+						orig_sin.mult_by(tmp_sin, args_tuple);
+						retval.subtract(orig_sin, args_tuple);
 					} else {
-						retval.add(orig_sin,args_tuple);
-						retval.mult_by(tmp_cos,args_tuple);
-						orig_cos.mult_by(tmp_sin,args_tuple);
-						retval.add(orig_cos,args_tuple);
+						retval.add(orig_sin, args_tuple);
+						retval.mult_by(tmp_cos, args_tuple);
+						orig_cos.mult_by(tmp_sin, args_tuple);
+						retval.add(orig_cos, args_tuple);
 					}
 				}
 				return retval;
