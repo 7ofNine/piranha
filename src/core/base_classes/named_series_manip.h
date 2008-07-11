@@ -363,8 +363,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Argument, class SubSeries>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_sub(const Argument &arg, const SubSeries &s) const
+	template <class SubSeries>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &arg, const SubSeries &s) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		Derived tmp(*derived_const_cast);
@@ -376,20 +376,6 @@ namespace piranha
 		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class SubSeries>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &p, const SubSeries &s) const
-	{
-		return generic_sub(p,s);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class SubSeries>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &psym_name, const SubSeries &s) const
-	{
-		return generic_sub(psym_name,s);
 	}
 }
 

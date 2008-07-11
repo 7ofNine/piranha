@@ -216,21 +216,49 @@ namespace pyranha
 	}
 
 	template <class T>
+	T py_series_partial_name(const T &series, const std::string &p_name) {
+		return series.partial(piranha::psyms::get(p_name));
+	}
+
+	template <class T>
+	T py_series_partial_psym(const T &series, const piranha::psym &p) {
+		return series.partial(p);
+	}
+
+	template <class T>
 	void series_differential_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T(T::*partial_name)(const std::string &) const;
-		typedef T(T::*partial_psym)(const piranha::psym &) const;
-		inst.def("partial", partial_name(&T::partial));
-		inst.def("partial", partial_psym(&T::partial));
+		inst.def("partial", &py_series_partial_psym<T>);
+		inst.def("partial", &py_series_partial_name<T>);
+	}
+
+	template <class T, class Series>
+	T py_series_sub_psym_psym(const T &series, const piranha::psym &p, const piranha::psym &q) {
+		return series.template sub<Series>(p,Series(q));
+	}
+
+	template <class T, class Series>
+	T py_series_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub) {
+		return series.template sub<Series>(p,sub);
+	}
+
+	template <class T, class Series>
+	T py_series_sub_name_name(const T &series, const std::string &p_name, const std::string &q_name) {
+		return series.template sub<Series>(piranha::psyms::get(p_name),Series(piranha::psyms::get(q_name)));
+	}
+
+	template <class T, class Series>
+	T py_series_sub_name_series(const T &series, const std::string &p_name, const Series &sub) {
+		return series.template sub<Series>(piranha::psyms::get(p_name),sub);
 	}
 
 	template <class T, class Series>
 	void series_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T(T::*sub_name)(const std::string &, const Series &) const;
-		typedef T(T::*sub_psym)(const piranha::psym &, const Series &) const;
-		inst.def("sub", sub_name(&T::template sub<Series>));
-		inst.def("sub", sub_psym(&T::template sub<Series>));
+		inst.def("sub", py_series_sub_name_name<T,Series>);
+		inst.def("sub", py_series_sub_psym_psym<T,Series>);
+		inst.def("sub", py_series_sub_name_series<T,Series>);
+		inst.def("sub", py_series_sub_psym_series<T,Series>);
 	}
 
 	template <class T>

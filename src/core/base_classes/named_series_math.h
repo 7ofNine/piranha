@@ -185,23 +185,9 @@ namespace piranha
 		return retval;
 	}
 
-	/// Partial derivative with respect to an argument name.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const std::string &name) const
-	{
-		return generic_partial(name);
-	}
-
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &p) const
-	{
-		return generic_partial(p);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Argument>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::generic_partial(const Argument &arg) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		pos_tuple_type pos_tuple;

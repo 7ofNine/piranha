@@ -91,12 +91,9 @@ namespace piranha
 			Derived pow(const double &) const;
 			Derived pow(const max_fast_int &) const;
 			Derived root(const max_fast_int &) const;
-			Derived partial(const std::string &) const;
 			Derived partial(const psym &) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
-			template <class SubSeries>
-			Derived sub(const std::string &, const SubSeries &) const;
 			// Used in pyranha.
 			std::string py_repr() const;
 			template <class Term2>
@@ -134,10 +131,6 @@ namespace piranha
 			bool is_args_compatible(const Derived2 &) const;
 			template <class Derived2>
 			void merge_incompatible_args(const Derived2 &);
-			template <class Argument>
-			Derived generic_partial(const Argument &) const;
-			template <class Argument, class SubSeries>
-			Derived generic_sub(const Argument &, const SubSeries &) const;
 		protected:
 			// Data members.
 			args_tuple_type                 m_arguments;

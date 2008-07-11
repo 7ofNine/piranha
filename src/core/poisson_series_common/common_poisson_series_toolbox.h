@@ -113,15 +113,30 @@ namespace piranha
 			Derived sin() const {
 				return complexp().imag();
 			}
-			// We have to specialise those in order to prepare the arguments tuple for the fact
-			// that poly args may be added as trig args.
+			// We have to specialise this in order to prepare the arguments tuple for the fact
+			// that poly args of s may be added as trig args (as s will be used as argument for sines
+			// and/or cosines).
 			template <class SubSeries>
-			Derived sub(const std::string &psym_name, const SubSeries &s) const {
-				return generic_ps_sub(psym_name,s);
-			}
-			template <class SubSeries>
-			Derived sub(const psym &p, const SubSeries &s) const {
-				return generic_ps_sub(p,s);
+			Derived sub(const psym &arg, const SubSeries &series) const {
+				typedef typename Derived::args_tuple_type args_tuple_type;
+				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
+				Derived this_copy(*derived_const_cast);
+				SubSeries s_copy(series), tmp;
+				// Assign as tmp's trig arguments series's polynomial arguments.
+				args_tuple_type tmp_args;
+				tmp_args.template get<1>() = series.arguments().template get<0>();
+				tmp.set_arguments(tmp_args);
+				// After the next line, s_copy's args layout is compatible with tmp's.
+				s_copy.merge_args(tmp);
+				// After the next line, this_copy's args layout is compatible with s_copy's
+				this_copy.merge_args(s_copy);
+				pos_tuple_type pos_tuple;
+				psym_p p(psyms::get_pointer(arg));
+				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
+				Derived retval(this_copy.template base_sub<Derived>(pos_tuple,s_copy,this_copy.m_arguments));
+				retval.m_arguments = this_copy.m_arguments;
+				retval.trim();
+				return retval;
 			}
 		private:
 			template <class Iterator, class PolyCf, class ArgsTuple>
@@ -154,28 +169,6 @@ namespace piranha
 					}
 				}
 				p_assert(retval.second.first.size() <= 1);
-				return retval;
-			}
-			template <class Argument, class SubSeries>
-			Derived generic_ps_sub(const Argument &arg, const SubSeries &series) const {
-				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
-				Derived this_copy(*derived_const_cast);
-				SubSeries s_copy(series), tmp;
-				// Assign as tmp's trig arguments series's polynomial arguments.
-				args_tuple_type tmp_args;
-				tmp_args.template get<1>() = series.arguments().template get<0>();
-				tmp.set_arguments(tmp_args);
-				// After the next line, s_copy's args layout is compatible with tmp's.
-				s_copy.merge_args(tmp);
-				// After the next line, this_copy's args layout is compatible with s_copy's
-				this_copy.merge_args(s_copy);
-				pos_tuple_type pos_tuple;
-				psym_p p(psyms::get_pointer(arg));
-				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
-				Derived retval(this_copy.template base_sub<Derived>(pos_tuple,s_copy,this_copy.m_arguments));
-				retval.m_arguments = this_copy.m_arguments;
-				retval.trim();
 				return retval;
 			}
 	};
