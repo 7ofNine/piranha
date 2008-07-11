@@ -54,7 +54,8 @@ namespace pyranha
 }
 
 template <class T>
-std::string py_print_to_string(const T &origin) {
+std::string py_print_to_string(const T &origin)
+{
 	std::ostringstream stream;
 	origin.print(stream);
 	return stream.str();

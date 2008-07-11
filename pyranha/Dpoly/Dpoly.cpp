@@ -36,14 +36,14 @@ BOOST_PYTHON_MODULE(_Dpoly)
 {
 	translate_exceptions();
 
-	std::pair<class_<dpoly>,class_<dpoly::term_type> > inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
-									   std::string("Multivariate polynomial with double precision coefficients."));
+	std::pair<class_<dpoly>, class_<dpoly::term_type> > inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
+			std::string("Multivariate polynomial with double precision coefficients."));
 	common_polynomial_instantiation(inst.first);
-	series_sub_instantiation<dpoly,dpoly>(inst.first);
-	std::pair<class_<dpolyc>,class_<dpolyc::term_type> > instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
-									  std::string("Multivariate polynomial with complex double precision coefficients."));
+	series_sub_instantiation<dpoly, dpoly>(inst.first);
+	std::pair<class_<dpolyc>, class_<dpolyc::term_type> > instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
+			std::string("Multivariate polynomial with complex double precision coefficients."));
 	common_polynomial_instantiation(instc.first);
 	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<dpolyc,dpolyc>(instc.first);
-	series_sub_instantiation<dpolyc,dpoly>(instc.first);
+	series_sub_instantiation<dpolyc, dpolyc>(instc.first);
+	series_sub_instantiation<dpolyc, dpoly>(instc.first);
 }

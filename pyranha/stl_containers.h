@@ -23,58 +23,55 @@
 
 /// Functions to wrap STL vectors as Python lists.
 template<class T>
-  struct vector_to_list_helpers
-{
-  typedef typename T::value_type V;
-  static V get(const T &x, int i)
-  {
-      if(i < 0) i+=x.size();
-      if(i >= 0 and i < (int)x.size()) return x[i];
-      IndexError();
-      return 0;
-  }
-  static void set(T &x, int i, const V &v)
-  {
-      if(i < 0) i+=x.size();
-      if(i >= 0 and i < (int)x.size()) x[i]=v;
-      else IndexError();
-  }
-  static void del(T &x, int i)
-  {
-      if(i < 0) i+=x.size();
-      if(i >= 0 and i < (int)x.size()) x.erase(x.begin()+i);
-      else IndexError();
-  }
-  static void add(T &x, const V &v)
-  {
-      x.push_back(v);
-  }
-  // This exception will be automatically translated by boost.python.
-  static void IndexError() {throw(std::out_of_range("List index out of range."));}
+struct vector_to_list_helpers {
+	typedef typename T::value_type V;
+	static V get(const T &x, int i) {
+		if (i < 0) i += x.size();
+		if (i >= 0 and i < (int)x.size()) return x[i];
+		IndexError();
+		return 0;
+	}
+	static void set(T &x, int i, const V &v) {
+		if (i < 0) i += x.size();
+		if (i >= 0 and i < (int)x.size()) x[i] = v;
+		else IndexError();
+	}
+	static void del(T &x, int i) {
+		if (i < 0) i += x.size();
+		if (i >= 0 and i < (int)x.size()) x.erase(x.begin() + i);
+		else IndexError();
+	}
+	static void add(T &x, const V &v) {
+		x.push_back(v);
+	}
+	// This exception will be automatically translated by boost.python.
+	static void IndexError() {
+		throw(std::out_of_range("List index out of range."));
+	}
 };
 
 /// Wrap STL vector as read write Python list.
 template <class T>
-  inline void vector_to_list(const std::string &name, const std::string &descr)
+inline void vector_to_list(const std::string &name, const std::string &descr)
 {
-  boost::python::class_<T> inst(name.c_str(),descr.c_str());
-  inst.def("__len__", &T::size);
-  inst.def("clear", &T::clear);
-  inst.def("append", &vector_to_list_helpers<T>::add,
-    boost::python::with_custodian_and_ward<1,2>()); // to let container keep value
-  inst.def("__getitem__", &vector_to_list_helpers<T>::get);
-  inst.def("__setitem__", &vector_to_list_helpers<T>::set,
-    boost::python::with_custodian_and_ward<1,3>()); // to let container keep value
-  inst.def("__delitem__", &vector_to_list_helpers<T>::del);
+	boost::python::class_<T> inst(name.c_str(), descr.c_str());
+	inst.def("__len__", &T::size);
+	inst.def("clear", &T::clear);
+	inst.def("append", &vector_to_list_helpers<T>::add,
+			 boost::python::with_custodian_and_ward<1, 2>()); // to let container keep value
+	inst.def("__getitem__", &vector_to_list_helpers<T>::get);
+	inst.def("__setitem__", &vector_to_list_helpers<T>::set,
+			 boost::python::with_custodian_and_ward<1, 3>()); // to let container keep value
+	inst.def("__delitem__", &vector_to_list_helpers<T>::del);
 }
 
 /// Wrap STL vector as read-only Python list.
 template <class T>
-  inline void vector_to_rolist(const std::string &name, const std::string &descr)
+inline void vector_to_rolist(const std::string &name, const std::string &descr)
 {
-  boost::python::class_<T> inst(name.c_str(),descr.c_str());
-  inst.def("__len__", &T::size);
-  inst.def("__getitem__", &vector_to_list_helpers<T>::get);
+	boost::python::class_<T> inst(name.c_str(), descr.c_str());
+	inst.def("__len__", &T::size);
+	inst.def("__getitem__", &vector_to_list_helpers<T>::get);
 }
 
 #endif

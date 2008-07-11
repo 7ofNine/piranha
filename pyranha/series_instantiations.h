@@ -72,13 +72,13 @@ namespace pyranha
 
 	/// Basic series instantiation.
 	template <class T>
-	std::pair<boost::python::class_<T>,boost::python::class_<typename T::term_type> >
-		series_basic_instantiation(const std::string &name, const std::string &description)
+	std::pair<boost::python::class_<T>, boost::python::class_<typename T::term_type> >
+	series_basic_instantiation(const std::string &name, const std::string &description)
 	{
 		typedef typename T::term_type term_type;
 		// Expose the term type.
-		boost::python::class_<term_type> term_inst((name+"_term").c_str(),
-			(std::string("Term for: ")+description).c_str());
+		boost::python::class_<term_type> term_inst((name + "_term").c_str(),
+				(std::string("Term for: ") + description).c_str());
 		term_inst.def_readonly("cf", &term_type::m_cf);
 		term_inst.def_readonly("key", &term_type::m_key);
 		// Expose the manipulator class.
@@ -95,8 +95,8 @@ namespace pyranha
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &T::py_repr);
 		// Pyranha-specific special methods.
-		inst.add_property("__arguments_description__",&T::py_arguments_description);
-		inst.add_property("__arguments__",&T::py_arguments);
+		inst.add_property("__arguments_description__", &T::py_arguments_description);
+		inst.add_property("__arguments__", &T::py_arguments);
 		inst.def("__set_arguments__", &T::set_arguments);
 		inst.def("__set_shared_arguments__", &T::py_shared_arguments_set);
 		typedef void (T::*trim_free)();
@@ -150,7 +150,7 @@ namespace pyranha
 		inst.def("__pow__", pow_int(&T::pow));
 		typedef T(T::*named_root)(const piranha::max_fast_int &) const;
 		inst.def("root", named_root(&T::root));
-		return std::make_pair(inst,term_inst);
+		return std::make_pair(inst, term_inst);
 	}
 
 	template <class T>
@@ -202,9 +202,9 @@ namespace pyranha
 		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
 		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
 		instc.def("real", comp_set(&std::complex<T>::real),
-			boost::python::return_internal_reference<1>(), "Set real part.");
+				  boost::python::return_internal_reference<1>(), "Set real part.");
 		instc.def("imag", comp_set(&std::complex<T>::imag),
-			boost::python::return_internal_reference<1>(), "Set imaginary part.");
+				  boost::python::return_internal_reference<1>(), "Set imaginary part.");
 	}
 
 	template <class T>
@@ -217,12 +217,14 @@ namespace pyranha
 	}
 
 	template <class T>
-	T py_series_partial_name(const T &series, const std::string &p_name) {
+	T py_series_partial_name(const T &series, const std::string &p_name)
+	{
 		return series.partial(piranha::psyms::get(p_name));
 	}
 
 	template <class T>
-	T py_series_partial_psym(const T &series, const piranha::psym &p) {
+	T py_series_partial_psym(const T &series, const piranha::psym &p)
+	{
 		return series.partial(p);
 	}
 
@@ -234,32 +236,36 @@ namespace pyranha
 	}
 
 	template <class T, class Series>
-	T py_series_sub_psym_psym(const T &series, const piranha::psym &p, const piranha::psym &q) {
-		return series.template sub<Series>(p,Series(q));
+	T py_series_sub_psym_psym(const T &series, const piranha::psym &p, const piranha::psym &q)
+	{
+		return series.template sub<Series>(p, Series(q));
 	}
 
 	template <class T, class Series>
-	T py_series_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub) {
-		return series.template sub<Series>(p,sub);
+	T py_series_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub)
+	{
+		return series.template sub<Series>(p, sub);
 	}
 
 	template <class T, class Series>
-	T py_series_sub_name_name(const T &series, const std::string &p_name, const std::string &q_name) {
-		return series.template sub<Series>(piranha::psyms::get(p_name),Series(piranha::psyms::get(q_name)));
+	T py_series_sub_name_name(const T &series, const std::string &p_name, const std::string &q_name)
+	{
+		return series.template sub<Series>(piranha::psyms::get(p_name), Series(piranha::psyms::get(q_name)));
 	}
 
 	template <class T, class Series>
-	T py_series_sub_name_series(const T &series, const std::string &p_name, const Series &sub) {
-		return series.template sub<Series>(piranha::psyms::get(p_name),sub);
+	T py_series_sub_name_series(const T &series, const std::string &p_name, const Series &sub)
+	{
+		return series.template sub<Series>(piranha::psyms::get(p_name), sub);
 	}
 
 	template <class T, class Series>
 	void series_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("sub", py_series_sub_name_name<T,Series>);
-		inst.def("sub", py_series_sub_psym_psym<T,Series>);
-		inst.def("sub", py_series_sub_name_series<T,Series>);
-		inst.def("sub", py_series_sub_psym_series<T,Series>);
+		inst.def("sub", py_series_sub_name_name<T, Series>);
+		inst.def("sub", py_series_sub_psym_psym<T, Series>);
+		inst.def("sub", py_series_sub_name_series<T, Series>);
+		inst.def("sub", py_series_sub_psym_series<T, Series>);
 	}
 
 	template <class T>
@@ -320,7 +326,7 @@ namespace pyranha
 		power_series_instantiation(inst);
 		// Expose the polynomial coefficient.
 		typedef typename T::term_type::cf_type cf_type;
-		cf_bindings<cf_type>((name+"_cf").c_str(), "")
+		cf_bindings<cf_type>((name + "_cf").c_str(), "")
 		.def("degree", &cf_type::degree)
 		.def("min_degree", &cf_type::min_degree);
 	}

@@ -36,15 +36,15 @@ BOOST_PYTHON_MODULE(_Dps)
 {
 	translate_exceptions();
 
-	std::pair<class_<dps>,class_<dps::term_type> > inst = series_basic_instantiation<dps>(std::string("dps"),
-									 std::string("Poisson series with double precision coefficients."));
-	common_poisson_series_instantiation(inst.first,"dps");
+	std::pair<class_<dps>, class_<dps::term_type> > inst = series_basic_instantiation<dps>(std::string("dps"),
+			std::string("Poisson series with double precision coefficients."));
+	common_poisson_series_instantiation(inst.first, "dps");
 	celmec_instantiation(inst.first);
 	series_trigonometric_instantiation(inst.first);
-	series_sub_instantiation<dps,dps>(inst.first);
-	std::pair<class_<dpsc>,class_<dpsc::term_type> > instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
-									   std::string("Poisson series with complex double precision coefficients."));
-	common_poisson_series_instantiation(instc.first,"dpsc");
+	series_sub_instantiation<dps, dps>(inst.first);
+	std::pair<class_<dpsc>, class_<dpsc::term_type> > instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
+			std::string("Poisson series with complex double precision coefficients."));
+	common_poisson_series_instantiation(instc.first, "dpsc");
 	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<dpsc,dps>(instc.first);
+	series_sub_instantiation<dpsc, dps>(instc.first);
 }

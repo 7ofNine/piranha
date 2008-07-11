@@ -35,31 +35,34 @@ namespace pyranha
 	inline void args_tuple_py_print_helper(const boost::tuples::null_type &, const std::string) {}
 
 	template <class ArgsTuple>
-	inline void args_tuple_py_print_helper(const ArgsTuple &args_tuple, std::string &out) {
+	inline void args_tuple_py_print_helper(const ArgsTuple &args_tuple, std::string &out)
+	{
 		std::ostringstream stream;
 		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
 			stream << i << ' ' << args_tuple.get_head()[i]->name() << '\n';
 		}
 		out += stream.str();
-		args_tuple_py_print_helper(args_tuple.get_tail(),out);
+		args_tuple_py_print_helper(args_tuple.get_tail(), out);
 	}
 
 	template <class ArgsTuple>
-	inline std::string py_args_tuple_repr(const ArgsTuple &args_tuple) {
+	inline std::string py_args_tuple_repr(const ArgsTuple &args_tuple)
+	{
 		std::string retval;
-		args_tuple_py_print_helper(args_tuple,retval);
+		args_tuple_py_print_helper(args_tuple, retval);
 		return retval;
 	}
 
 	template <int N>
-	inline void expose_args_tuples() {
-		typedef typename piranha::ntuple<piranha::vector_psym_p,N>::type args_tuple_type;
+	inline void expose_args_tuples()
+	{
+		typedef typename piranha::ntuple<piranha::vector_psym_p, N>::type args_tuple_type;
 		boost::python::class_<args_tuple_type>
-			args_tuple_inst((std::string("__base_args_tuple")+boost::lexical_cast<std::string>(N)+"__").c_str(),
-			(std::string("Tuple of ")+boost::lexical_cast<std::string>(N)+" arguments vectors.").c_str());
+		args_tuple_inst((std::string("__base_args_tuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
+						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());
 		args_tuple_inst.def(boost::python::init<const args_tuple_type &>());
 		args_tuple_inst.def("__repr__", &py_args_tuple_repr<args_tuple_type>);
-		expose_args_tuples<N-1>();
+		expose_args_tuples < N - 1 > ();
 	}
 
 	template <>
