@@ -71,3 +71,29 @@ def EE(e,M):
 		return __pyranha.ds.E(e,M)
 	except AttributeError:
 		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an E method."
+
+def cos_psi():
+	"""
+	Calculate the expansion of cos(psi) in terms of the classical orbital elements:
+	e, e', l, l', s, s', v, v', O, O',
+	where l is the mean longitude, s = sin(i/2), v the longitude of pericentre, O the longitude of ascending node.
+	psi will be the angular separation of the two secondary bodies, orbiting a massive primary body, whom the orbital
+	elements listed above refer to.
+	"""
+	from pyranha.Core import psym as psym
+	from pyranha import ds as ds
+	from pyranha.Math import cos as cos, sin as sin, root as root
+	e,M,O,s,l,v = map(psym,'eMOslv')
+	ep,Mp,Op,sp,lp,vp = map(psym,["e'","M'","O'","s'","l'","v'"])
+	cos_of = cos(ds(v)-ds(O))*cos_f(e,M).sub(M,ds(l)-ds(v))-sin(ds(v)-ds(O))*sin_f(e,M).sub(M,ds(l)-ds(v))
+	sin_of = sin(ds(v)-ds(O))*cos_f(e,M).sub(M,ds(l)-ds(v))+cos(ds(v)-ds(O))*sin_f(e,M).sub(M,ds(l)-ds(v))
+	x_r = cos(ds(O))*cos_of-sin(ds(O))*sin_of*(1-2*ds(s)**2)
+	y_r = sin(ds(O))*cos_of+cos(ds(O))*sin_of*(1-2*ds(s)**2)
+	z_r = sin_of*2*ds(s)*root(2,1-ds(s)**2)
+	cos_opfp = cos(ds(vp)-ds(Op))*cos_f(ep,Mp).sub(Mp,ds(lp)-ds(vp))-sin(ds(vp)-ds(Op))*sin_f(ep,Mp).sub(Mp,ds(lp)-ds(vp))
+	sin_opfp = sin(ds(vp)-ds(Op))*cos_f(ep,Mp).sub(Mp,ds(lp)-ds(vp))+cos(ds(vp)-ds(Op))*sin_f(ep,Mp).sub(Mp,ds(lp)-ds(vp))
+	x_rp = cos(ds(Op))*cos_opfp-sin(ds(Op))*sin_opfp*(1-2*ds(sp)**2)
+	y_rp = sin(ds(Op))*cos_opfp+cos(ds(Op))*sin_opfp*(1-2*ds(sp)**2)
+	z_rp = sin_opfp*2*ds(sp)*root(2,1-ds(sp)**2)
+	cp = x_r*x_rp+y_r*y_rp+z_r*z_rp
+	return cp
