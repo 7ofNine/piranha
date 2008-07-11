@@ -162,9 +162,9 @@ namespace piranha
 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
-				// Assign as tmp's trig arguments these polynomial arguments.
+				// Assign as tmp's trig arguments series's polynomial arguments.
 				args_tuple_type tmp_args;
-				tmp_args.template get<1>() = derived_const_cast->m_arguments.template get<0>();
+				tmp_args.template get<1>() = series.arguments().template get<0>();
 				tmp.set_arguments(tmp_args);
 				// After the next line, s_copy's args layout is compatible with tmp's.
 				s_copy.merge_args(tmp);
