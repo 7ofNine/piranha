@@ -27,21 +27,23 @@ IF(ENABLE_HOARD)
 ENDIF(ENABLE_HOARD)
 
 IF(BUILD_TBB_MULTITHREADING)
-  SET(SRC_LIST ${SRC_LIST}
-    tbb/cache_aligned_allocator.cpp
-    tbb/concurrent_hash_map.cpp
-    tbb/concurrent_queue.cpp
-    tbb/concurrent_vector.cpp
-    tbb/itt_notify.cpp
-    tbb/mutex.cpp
-    tbb/pipeline.cpp
-    tbb/queuing_mutex.cpp
-    tbb/queuing_rw_mutex.cpp
-    tbb/spin_mutex.cpp
-    tbb/spin_rw_mutex.cpp
-    tbb/task.cpp
-    tbb/tbb_misc.cpp
-  )
+	SET(SRC_LIST ${SRC_LIST}
+		tbb/cache_aligned_allocator.cpp
+		tbb/concurrent_hash_map.cpp
+		tbb/concurrent_queue.cpp
+		tbb/concurrent_vector.cpp
+		tbb/itt_notify.cpp
+		tbb/mutex.cpp
+		tbb/pipeline.cpp
+		tbb/queuing_mutex.cpp
+		tbb/queuing_rw_mutex.cpp
+		tbb/recursive_mutex.cpp
+		tbb/spin_mutex.cpp
+		tbb/spin_rw_mutex.cpp
+		tbb/task.cpp
+		tbb/tbb_misc.cpp
+		tbb/tbb_thread.cpp
+	)
 ENDIF(BUILD_TBB_MULTITHREADING)
 
 IF(BUILD_PYRANHA)

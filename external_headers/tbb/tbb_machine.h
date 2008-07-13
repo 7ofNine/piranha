@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2007 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2008 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks.
 
@@ -29,25 +29,13 @@
 #ifndef __TBB_machine_H
 #define __TBB_machine_H
 
-#if _WIN32||_WIN64
-// define the parts of stdint.h that are needed 
-typedef __int8 int8_t;
-typedef __int16 int16_t;
-typedef __int32 int32_t;
-typedef __int64 int64_t;
-typedef unsigned __int8 uint8_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
-#else
-#include <stdint.h>
-#endif
-
-#include <cstdio>
-#include <assert.h>
 #include "tbb/tbb_stddef.h"
 
 #if _WIN32||_WIN64
+
+#ifdef _MANAGED
+#pragma managed(push, off)
+#endif
 
 #if defined(_M_IX86)
 #include "tbb/machine/windows_ia32.h"
@@ -57,7 +45,11 @@ typedef unsigned __int64 uint64_t;
 #error Unsupported platform
 #endif
 
-#elif __linux__
+#ifdef _MANAGED
+#pragma managed(pop)
+#endif
+
+#elif __linux__ || __FreeBSD__
 
 #if __i386__
 #include "tbb/machine/linux_ia32.h"
@@ -77,28 +69,45 @@ typedef unsigned __int64 uint64_t;
 #include "tbb/machine/mac_ppc.h"
 #endif
 
+#elif _AIX
+
+#include "tbb/machine/ibm_aix51.h"
+
+#elif __sun || __SUNPRO_CC
+
+#define __asm__ asm 
+#define __volatile__ volatile
+#if __i386  || __i386__
+#include "tbb/machine/linux_ia32.h"
+#elif __x86_64__
+#include "tbb/machine/linux_em64t.h"
+#endif
+
 #endif
 
 #if !defined(__TBB_CompareAndSwap4) || !defined(__TBB_CompareAndSwap8) || !defined(__TBB_Yield)
 #error Minimal requirements for tbb_machine.h not satisfied 
 #endif
 
-#if defined(TBB_DO_ASSERT)
-#define WORDSIZE __TBB_WORDSIZE
-#endif
-
 #ifndef __TBB_load_with_acquire
-    //! This definition works for compilers that insert acquire fences for volatile loads, and load T atomically.
+    //! Load with acquire semantics; i.e., no following memory operation can move above the load.
     template<typename T>
-    inline T __TBB_load_with_acquire(T const volatile& location) {
-        return location;
+    inline T __TBB_load_with_acquire(const volatile T& location) {
+        T temp = location;
+#ifdef __TBB_fence_for_acquire 
+        __TBB_fence_for_acquire();
+#endif /* __TBB_fence_for_acquire */
+        return temp;
     }
 #endif
 
 #ifndef __TBB_store_with_release
-    //! This definition works only for compilers that insert release fences for volatile stores, and store T atomically.
+    //! Store with release semantics; i.e., no prior memory operation can move below the store.
     template<typename T, typename V>
-    inline void __TBB_store_with_release(volatile T &location, V const& value) {
+    inline void __TBB_store_with_release(volatile T& location, V value) {
+#ifdef __TBB_fence_for_release
+        __TBB_fence_for_release();
+#endif /* __TBB_fence_for_release */
         location = value; 
     }
 #endif
@@ -134,6 +143,19 @@ public:
             __TBB_Yield();
         }
     }
+
+    // pause for a few times and then return false immediately.
+    bool bounded_pause() {
+        if( count<=LOOPS_BEFORE_YIELD ) {
+            __TBB_Pause(count);
+            // Pause twice as long the next time.
+            count*=2;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     void reset() {
         count = 1;
     }
@@ -141,31 +163,26 @@ public:
 
 template<size_t S, typename T>
 inline intptr_t __TBB_MaskedCompareAndSwap (volatile int32_t *ptr, T value, T comparand ) {
-    volatile T *base = (T *)( (uintptr_t)(__TBB_load_with_acquire(ptr)) & ~(uintptr_t)(0x3) );
+    T *base = (T *)( (uintptr_t)(ptr) & ~(uintptr_t)(0x3) );
 #if __TBB_BIG_ENDIAN
-    uint8_t bitoffset = ( (4-S) - ( (uint8_t *)ptr - (uint8_t *)base) ) * 8;
+    const uint8_t bitoffset = ( (4-S) - ( (uint8_t *)ptr - (uint8_t *)base) ) * 8;
 #else
-    uint8_t bitoffset = ( (uint8_t *)ptr - (uint8_t *)base ) * 8;
+    const uint8_t bitoffset = ( (uint8_t *)ptr - (uint8_t *)base ) * 8;
 #endif
-    uint32_t mask = ( (1<<(S*8) ) - 1)<<bitoffset;
-    uint32_t tmp, result = *(uint32_t *)base;
-    if ( (T)( (result & mask) >> bitoffset) == (uint32_t)comparand ) {
-      tmp = result;
-      uint32_t new_value = ( result & ~mask ) | ( value << bitoffset );
-      result = __TBB_CompareAndSwap4( base, new_value, tmp );
-      if ( result != tmp && ( (T)( (result & mask) >> bitoffset) == comparand ) ) {
-        AtomicBackoff b;
-        do {
-          b.pause();
-          tmp = result;
-          uint32_t new_value = ( result & ~mask ) | ( value << bitoffset );
-          result = __TBB_CompareAndSwap4( base, new_value, tmp );
-        } while ( result != tmp && ( (T)( (result & mask) >> bitoffset) == comparand ) );
-      }
+    const uint32_t mask = ( (1<<(S*8) ) - 1)<<bitoffset;
+    AtomicBackoff b;
+    uint32_t result;
+    for(;;) {
+        result = *(volatile uint32_t *)base;
+        uint32_t old_value = ( result & ~mask ) | ( comparand << bitoffset );
+        uint32_t new_value = ( result & ~mask ) | ( value << bitoffset );
+        // __TBB_CompareAndSwap4 presumed to have full fence. 
+        uint32_t tmp = __TBB_CompareAndSwap4( base, new_value, old_value );
+        if( tmp==old_value || ((tmp^old_value)&mask)!=0 ) 
+            break;
+        b.pause();
     }
-    intptr_t to_return;
-    __TBB_store_with_release(to_return, (T)( (result & mask) >> bitoffset));
-    return to_return;
+    return (T)((result & mask) >> bitoffset);
 }
 
 template<size_t S, typename T>
@@ -203,42 +220,81 @@ inline uint64_t __TBB_CompareAndSwapGeneric <8,uint64_t> (volatile void *ptr, ui
 
 template<size_t S, typename T>
 inline T __TBB_FetchAndAddGeneric (volatile void *ptr, T addend) {
-    T result = __TBB_load_with_acquire(*reinterpret_cast<volatile T *>(ptr));
-    T tmp = result;
-    result = __TBB_CompareAndSwapGeneric<S,T> ( ptr, result+addend, result );
-    if (tmp != result) {
-        AtomicBackoff b;
-        do {
-            b.pause();
-            tmp = result;
-            result = __TBB_CompareAndSwapGeneric<S,T> ( ptr, result+addend, result );
-         } while ( tmp != result);
+    AtomicBackoff b;
+    T result;
+    for(;;) {
+        result = *reinterpret_cast<volatile T *>(ptr);
+        // __TBB_CompareAndSwapGeneric presumed to have full fence. 
+        if( __TBB_CompareAndSwapGeneric<S,T> ( ptr, result+addend, result )==result ) 
+            break;
+        b.pause();
     }
-    intptr_t to_return; 
-    __TBB_store_with_release(to_return, result);
-    return to_return; 
+    return result;
 }
 
 template<size_t S, typename T>
 inline T __TBB_FetchAndStoreGeneric (volatile void *ptr, T value) {
-    T result; 
-    T tmp = __TBB_load_with_acquire(*reinterpret_cast<volatile T *>(ptr));
-    result = __TBB_CompareAndSwapGeneric<S,T> ( ptr, value, tmp );
-    if ( tmp != result ) {
-        AtomicBackoff b;
-        do {
-            b.pause();
-            tmp = result;
-            result = __TBB_CompareAndSwapGeneric<S,T> ( ptr, value, tmp );
-        } while ( tmp != result );
+    AtomicBackoff b;
+    T result;
+    for(;;) {
+        result = *reinterpret_cast<volatile T *>(ptr);
+        // __TBB_CompareAndSwapGeneric presumed to have full fence.
+        if( __TBB_CompareAndSwapGeneric<S,T> ( ptr, value, result )==result ) 
+            break;
+        b.pause();
     }
-    intptr_t to_return; 
-    __TBB_store_with_release(to_return, result);
-    return to_return; 
+    return result;
 }
 
-}
-}
+// Macro __TBB_TypeWithAlignmentAtLeastAsStrict(T) should be a type with alignment at least as 
+// strict as type T.  Type type should have a trivial default constructor and destructor, so that
+// arrays of that type can be declared without initializers.  
+// It is correct (but perhaps a waste of space) if __TBB_TypeWithAlignmentAtLeastAsStrict(T) expands
+// to a type bigger than T.
+// The default definition here works on machines where integers are naturally aligned and the
+// strictest alignment is 16.
+#ifndef __TBB_TypeWithAlignmentAtLeastAsStrict
+
+#if __GNUC__ || __SUNPRO_CC
+struct __TBB_machine_type_with_strictest_alignment {
+    int member[4];
+} __attribute__((aligned(16)));
+#elif _MSC_VER
+__declspec(align(16)) struct __TBB_machine_type_with_strictest_alignment {
+    int member[4];
+};
+#else
+#error Must define __TBB_TypeWithAlignmentAtLeastAsStrict(T) or __TBB_machine_type_with_strictest_alignment
+#endif
+
+template<size_t N> struct type_with_alignment {__TBB_machine_type_with_strictest_alignment member;};
+template<> struct type_with_alignment<1> { char member; };
+template<> struct type_with_alignment<2> { uint16_t member; };
+template<> struct type_with_alignment<4> { uint32_t member; };
+template<> struct type_with_alignment<8> { uint64_t member; };
+
+#if _MSC_VER||defined(__GNUC__)&&__GNUC__==3 && __GNUC_MINOR__<=2  
+//! Work around for bug in GNU 3.2 and MSVC compilers.
+/** Bug is that compiler sometimes returns 0 for __alignof(T) when T has not yet been instantiated.
+    The work-around forces instantiation by forcing computation of sizeof(T) before __alignof(T). */
+template<size_t Size, typename T> 
+struct work_around_alignment_bug {
+#if _MSC_VER
+    static const size_t alignment = __alignof(T);
+#else
+    static const size_t alignment = __alignof__(T);
+#endif
+};
+#define __TBB_TypeWithAlignmentAtLeastAsStrict(T) tbb::internal::type_with_alignment<tbb::internal::work_around_alignment_bug<sizeof(T),T>::alignment>
+#elif __GNUC__ || __SUNPRO_CC
+#define __TBB_TypeWithAlignmentAtLeastAsStrict(T) tbb::internal::type_with_alignment<__alignof__(T)>
+#else
+#define __TBB_TypeWithAlignmentAtLeastAsStrict(T) __TBB_machine_type_with_strictest_alignment
+#endif
+#endif  /* ____TBB_TypeWithAlignmentAtLeastAsStrict */
+
+} // namespace internal
+} // namespace tbb
 
 #ifndef __TBB_CompareAndSwap1
 #define __TBB_CompareAndSwap1 tbb::internal::__TBB_CompareAndSwapGeneric<1,uint8_t>
@@ -429,20 +485,16 @@ inline T __TBB_FetchAndStoreGeneric (volatile void *ptr, T value) {
 #define __TBB_FetchAndDecrementWrelease(P) __TBB_FetchAndAddW(P,(-1))
 #endif
 
+#if __TBB_WORDSIZE==4
+// On 32-bit platforms, "atomic.h" requires definition of __TBB_Store8 and __TBB_Load8
 #ifndef __TBB_Store8
 inline void __TBB_Store8 (volatile void *ptr, int64_t value) {
-    int64_t result = *(int64_t *)ptr;
-    int64_t tmp;
-    tmp = result; 
-    result = __TBB_CompareAndSwap8(ptr,value,result);
-    if ( tmp != result ) {
-      tbb::internal::AtomicBackoff b;
-      do {
+    tbb::internal::AtomicBackoff b;
+    for(;;) {
+        int64_t result = *(int64_t *)ptr;
+        if( __TBB_CompareAndSwap8(ptr,value,result)==result ) break;
         b.pause();
-        tmp = result; 
-        result = __TBB_CompareAndSwap8(ptr,value,result);
-      } while ( tmp != result );
-   }
+    }
 }
 #endif
 
@@ -453,6 +505,7 @@ inline int64_t __TBB_Load8 (const volatile void *ptr) {
     return result;
 }
 #endif
+#endif /* __TBB_WORDSIZE==4 */
 
 #ifndef __TBB_Log2
 inline intptr_t __TBB_Log2( uintptr_t x ) {
@@ -464,23 +517,36 @@ inline intptr_t __TBB_Log2( uintptr_t x ) {
 
 #ifndef __TBB_AtomicOR
 inline void __TBB_AtomicOR( volatile void *operand, uintptr_t addend ) {
-       uintptr_t result, tmp;
-       do {
-          tmp = *(uintptr_t *)operand;
-          result = __TBB_CompareAndSwapW(operand, tmp|addend, tmp);
-       } while (result != tmp);
+    tbb::internal::AtomicBackoff b;
+    for(;;) {
+        uintptr_t tmp = *(volatile uintptr_t *)operand;
+        uintptr_t result = __TBB_CompareAndSwapW(operand, tmp|addend, tmp);
+        if( result==tmp ) break;
+        b.pause();
     }
+}
+#endif
+
+#ifndef __TBB_AtomicAND
+inline void __TBB_AtomicAND( volatile void *operand, uintptr_t addend ) {
+    tbb::internal::AtomicBackoff b;
+    for(;;) {
+        uintptr_t tmp = *(volatile uintptr_t *)operand;
+        uintptr_t result = __TBB_CompareAndSwapW(operand, tmp&addend, tmp);
+        if( result==tmp ) break;
+        b.pause();
+    }
+}
 #endif
 
 #ifndef __TBB_TryLockByte
-inline bool __TBB_TryLockByte( volatile unsigned char &flag ) {
-  volatile void *f = &flag;
-  return ( __TBB_CompareAndSwap1(f,1,0) == 0);
+inline bool __TBB_TryLockByte( unsigned char &flag ) {
+    return __TBB_CompareAndSwap1(&flag,1,0)==0;
 }
 #endif
 
 #ifndef __TBB_LockByte
-inline uintptr_t __TBB_LockByte( volatile unsigned char& flag ) {
+inline uintptr_t __TBB_LockByte( unsigned char& flag ) {
     if ( !__TBB_TryLockByte(flag) ) {
         tbb::internal::AtomicBackoff b;
         do {
@@ -491,5 +557,4 @@ inline uintptr_t __TBB_LockByte( volatile unsigned char& flag ) {
 }
 #endif
 
-#endif
-
+#endif /* __TBB_machine_H */

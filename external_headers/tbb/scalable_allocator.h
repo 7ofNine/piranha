@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2007 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2008 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks.
 
@@ -79,15 +79,6 @@ public:
         typedef scalable_allocator<U> other;
     };
 
-#if _WIN64
-    //! Non-ISO method required by Microsoft's STL containers
-    /** Microsoft's container classes coming with Platform SDK
-        seem to require that allocators supply this method. */
-    void* _Charalloc( size_type size ) {
-        return scalable_malloc( size );
-    }
-#endif /* _WIN64 */
-
     scalable_allocator() throw() {}
     scalable_allocator( const scalable_allocator& ) throw() {}
     template<typename U> scalable_allocator(const scalable_allocator<U>&) throw() {}
@@ -96,7 +87,7 @@ public:
     const_pointer address(const_reference x) const {return &x;}
 
     //! Allocate space for n objects, starting on a cache/sector line.
-    pointer allocate( size_type n, void* hint=0 ) {
+    pointer allocate( size_type n, const void* /*hint*/ =0 ) {
         return static_cast<pointer>( scalable_malloc( n * sizeof(value_type) ) );
     }
 
@@ -134,6 +125,20 @@ template<typename T, typename U>
 inline bool operator!=( const scalable_allocator<T>&, const scalable_allocator<U>& ) {return false;}
 
 } // namespace tbb
+
+#if _MSC_VER
+    #if __TBB_BUILD && !defined(__TBBMALLOC_NO_IMPLICIT_LINKAGE)
+        #define __TBBMALLOC_NO_IMPLICIT_LINKAGE 1
+    #endif
+
+    #if !__TBBMALLOC_NO_IMPLICIT_LINKAGE
+        #ifdef _DEBUG
+            #pragma comment(lib, "tbbmalloc_debug.lib")
+        #else
+            #pragma comment(lib, "tbbmalloc.lib")
+        #endif
+    #endif
+#endif
 
 #endif /* __cplusplus */
 

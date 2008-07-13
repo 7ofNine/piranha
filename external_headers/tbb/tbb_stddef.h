@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2007 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2008 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks.
 
@@ -29,6 +29,24 @@
 #ifndef __TBB_tbb_stddef_H
 #define __TBB_tbb_stddef_H
 
+// Marketing-driven product version
+#define TBB_VERSION_MAJOR 2
+#define TBB_VERSION_MINOR 1
+
+// Engineering-focused interface version
+#define TBB_INTERFACE_VERSION 3011
+#define TBB_INTERFACE_VERSION_MAJOR TBB_INTERFACE_VERSION/1000
+
+// The oldest major interface version still supported
+// To be used in SONAME, manifests, etc.
+#define TBB_COMPATIBLE_INTERFACE_VERSION 2
+
+#define __TBB_STRING_AUX(x) #x
+#define __TBB_STRING(x) __TBB_STRING_AUX(x)
+
+// We do not need defines below for resource processing on windows
+#if !defined RC_INVOKED
+
 // Define groups for Doxygen documentation
 /**
  * @defgroup algorithms         Algorithms
@@ -44,11 +62,42 @@
  * \mainpage Main Page
  *
  * Click the tabs above for information about the
- * <a href="./annotated.html">Classes</a> in the library or the
- * <a href="./modules.html">Modules</a> to which they belong.  The
- * <a href="./files.html">Files</a> tab shows which files contain the library
- * components.
+ * - <a href="./modules.html">Modules</a> (groups of functionality) implemented by the library 
+ * - <a href="./annotated.html">Classes</a> provided by the library
+ * - <a href="./files.html">Files</a> constituting the library.
+ * .
+ * Please note that significant part of TBB functionality is implemented in the form of
+ * template functions, descriptions of which are not accessible on the <a href="./annotated.html">Classes</a>
+ * tab. Use <a href="./modules.html">Modules</a> or <a href="./namespacemembers.html">Namespace/Namespace Members</a>
+ * tabs to find them.
+ *
+ * Additional pieces of information can be found here
+ * - \subpage concepts
+ * .
  */
+
+/** \page concepts TBB concepts
+    
+    A concept is a set of requirements to a type, which are necessary and sufficient
+    for the type to model a particular behavior or a set of behaviors. Some concepts 
+    are specific to a particular algorithm (e.g. algorithm body), while other ones 
+    are common to several algorithms (e.g. range concept). 
+
+    All TBB algorithms make use of different classes implementing various concepts.
+    Implementation classes are supplied by the user as type arguments of template 
+    parameters and/or as objects passed as function call arguments. The library 
+    provides predefined  implementations of some concepts (e.g. several kinds of 
+    \ref range_req "ranges"), while other ones must always be implemented by the user. 
+    
+    TBB defines a set of minimal requirements each concept must conform to. Here is 
+    the list of different concepts hyperlinked to the corresponding requirements specifications:
+    - \subpage range_req
+    - \subpage parallel_do_body_req
+    - \subpage parallel_for_body_req
+    - \subpage parallel_reduce_body_req
+    - \subpage parallel_scan_body_req
+    - \subpage parallel_sort_iter_req
+**/
 
 // Define preprocessor symbols used to determine architecture
 #if _WIN32||_WIN64
@@ -67,14 +116,32 @@
 #       define __TBB_x86_64 1
 #   elif __ia64__
 #       define __TBB_ipf 1
-#   elif __i386__
+#   elif __i386__||__i386  // __i386 is for Sun OS
 #       define __TBB_x86_32 1
 #   else
 #       define __TBB_generic_arch 1
 #   endif
 #endif
 
-#include <cstddef>              /* Need size_t and ptrdiff_t from here. */
+#if _WIN32||_WIN64
+// define the parts of stdint.h that are needed, but put them inside tbb::internal 
+namespace tbb {
+namespace internal {
+    typedef __int8 int8_t;
+    typedef __int16 int16_t;
+    typedef __int32 int32_t;
+    typedef __int64 int64_t;
+    typedef unsigned __int8 uint8_t;
+    typedef unsigned __int16 uint16_t;
+    typedef unsigned __int32 uint32_t;
+    typedef unsigned __int64 uint64_t;
+} // namespace internal
+} // namespace tbb
+#else
+#include <stdint.h>
+#endif
+
+#include <cstddef>      /* Need size_t and ptrdiff_t (the latter on Windows only) from here. */
 
 #if _WIN32||_WIN64
 #define __TBB_tbb_windef_H
@@ -119,7 +186,7 @@ namespace tbb {
 //! The namespace tbb contains all components of the library.
 namespace tbb {
 
-//! Dummy type that distinguishs splitting constructor from copy constructor.
+//! Dummy type that distinguishes splitting constructor from copy constructor.
 /**
  * See description of parallel_for and parallel_reduce for example usages.
  * @ingroup algorithms
@@ -133,6 +200,8 @@ class split {
  */
 namespace internal {
 
+using std::size_t;
+
 //! An unsigned integral type big enough to hold a pointer.
 /** There's no guarantee by the C++ standard that a size_t is really big enough,
     but it happens to be for all platforms of interest. */
@@ -141,12 +210,15 @@ typedef size_t uintptr;
 //! A signed integral type big enough to hold a pointer.
 /** There's no guarantee by the C++ standard that a ptrdiff_t is really big enough,
     but it happens to be for all platforms of interest. */
-typedef ptrdiff_t intptr;
+typedef std::ptrdiff_t intptr;
+
+//! Report a runtime warning.
+void runtime_warning( const char* format, ... );
 
 #if TBB_DO_ASSERT
 //! Set p to invalid pointer value.
 template<typename T>
-inline void poison_pointer( T* volatile & p ) {
+inline void poison_pointer( T* & p ) {
     p = reinterpret_cast<T*>(-1);
 }
 #else
@@ -166,9 +238,32 @@ public:
     no_copy() {}
 };
 
+// Struct to be used as a version tag for inline functions.
+/** Version tag can be necessary to prevent loader on Linux from using the wrong 
+    symbol in debug builds (when inline functions are compiled as out-of-line). **/
+struct version_tag_v3 {};
+
+typedef version_tag_v3 version_tag;
+
 } // internal
 //! @endcond
 
 } // tbb
 
+#if defined(__EXCEPTIONS) || defined(_CPPUNWIND) || defined(__SUNPRO_CC)
+#ifndef __TBB_EXCEPTIONS
+#define __TBB_EXCEPTIONS 1
+#endif /* __TBB_EXCEPTIONS */
+
+#endif
+
+#ifndef __TBB_SCHEDULER_OBSERVER
+#define __TBB_SCHEDULER_OBSERVER 1
+#endif /* __TBB_SCHEDULER_OBSERVER */
+
+#ifndef TBB_PERFORMANCE_WARNINGS
+#define TBB_PERFORMANCE_WARNINGS TBB_DO_ASSERT
+#endif /* TBB_PERFORMANCE_WARNINGS */
+
+#endif /* RC_INVOKED */
 #endif /* __TBB_tbb_stddef_H */
