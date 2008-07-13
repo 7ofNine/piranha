@@ -23,8 +23,9 @@
 
 #ifdef _PIRANHA_TBB
 #include <tbb/blocked_range.h>
-#include "tbb/blocked_range2d.h"
+#include <tbb/blocked_range2d.h>
 #include <tbb/parallel_for.h>
+#include <tbb/spin_mutex.h>
 #include <tbb/task_scheduler_init.h>
 #endif
 

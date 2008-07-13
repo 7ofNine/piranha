@@ -24,6 +24,7 @@
 #include <boost/type_traits/is_same.hpp>
 #include <string>
 
+#include "../config.h"
 #include "../exceptions.h"
 #include "../p_assert.h"
 #include "../settings.h"
@@ -88,7 +89,8 @@ namespace piranha
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
 											  const Number &y, const size_t &n, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
-				BOOST_STATIC_ASSERT((boost::is_same<Term, typename Derived::term_type>::value));
+				p_static_check((boost::is_same<Term, typename Derived::term_type>::value),
+					"Term type mismatch in binomial expansion.");
 				// Start the binomial expansion.
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
