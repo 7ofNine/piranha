@@ -83,11 +83,8 @@ namespace piranha
 					const value_type_ &operator[](const size_t &n) const {
 						return (*m_ptr)[n];
 					}
-					bool operator<(const reference_proxy &p2) const {
-						return m_ptr->operator<(*p2.m_ptr);
-					}
 				protected:
-					const Derived	*m_ptr;
+					const Derived *m_ptr;
 			};
 		public:
 			typedef value_type_ value_type;

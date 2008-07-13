@@ -24,6 +24,7 @@
 #include <utility>
 #include <vector>
 
+#include "../base_classes/cf_series.h"
 #include "../integer_typedefs.h"
 #include "../p_assert.h"
 
@@ -36,7 +37,35 @@ namespace piranha
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	class common_polynomial_cf_toolbox
 	{
+			typedef typename cf_series<Derived>::template reference_proxy<Derived> proxy_ancestor;
 		public:
+			class proxy: public proxy_ancestor
+			{
+				public:
+					typedef proxy type;
+					proxy(const Derived &s): proxy_ancestor(s), m_min_expos_cached(false) {
+						m_min_degree = proxy_ancestor::m_ptr->min_degree();
+					}
+					template <class ArgsTuple>
+					piranha::max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
+						if (!m_min_expos_cached) {
+							m_min_expos = proxy_ancestor::m_ptr->min_exponents(args_tuple);
+							m_min_expos_cached = true;
+						}
+						if (n >= m_min_expos.size()) {
+							return 0;
+						} else {
+							return m_min_expos[n];
+						}
+					}
+					const piranha::max_fast_int &min_degree() const {
+						return m_min_degree;
+					}
+				private:
+					mutable bool								m_min_expos_cached;
+					mutable std::vector<piranha::max_fast_int>	m_min_expos;
+					piranha::max_fast_int						m_min_degree;
+			};
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			template <int TargetPos, class Cf, class ArgsTuple>
 			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,

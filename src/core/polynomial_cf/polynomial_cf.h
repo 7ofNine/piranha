@@ -72,7 +72,6 @@ namespace piranha
 			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
-			typedef typename cf_ancestor::template reference_proxy<polynomial_cf> proxy_ancestor;
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -92,34 +91,7 @@ namespace piranha
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
-			class proxy: public proxy_ancestor
-			{
-					friend class polynomial_cf;
-				public:
-					typedef proxy type;
-					proxy(const polynomial_cf &p): proxy_ancestor(p), m_min_expos_cached(false) {
-						m_min_degree = proxy_ancestor::m_ptr->min_degree();
-					}
-					template <class ArgsTuple>
-					max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
-						if (!m_min_expos_cached) {
-							m_min_expos = proxy_ancestor::m_ptr->min_exponents(args_tuple);
-							m_min_expos_cached = true;
-						}
-						if (n >= m_min_expos.size()) {
-							return 0;
-						} else {
-							return m_min_expos[n];
-						}
-					}
-					const max_fast_int &min_degree() const {
-						return m_min_degree;
-					}
-				private:
-					mutable bool						m_min_expos_cached;
-					mutable std::vector<max_fast_int>	m_min_expos;
-					max_fast_int						m_min_degree;
-			};
+			typedef typename POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -165,7 +137,6 @@ namespace std
 			typename allocator_type::template rebind<term_type_>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
-			typedef typename cf_ancestor::template reference_proxy<complex> proxy_ancestor;
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -194,34 +165,7 @@ namespace std
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;
-			class proxy: public proxy_ancestor
-			{
-					friend class complex;
-				public:
-					typedef proxy type;
-					proxy(const complex &c): proxy_ancestor(c), m_min_expos_cached(false) {
-						m_min_degree = proxy_ancestor::m_ptr->min_degree();
-					}
-					template <class ArgsTuple>
-					piranha::max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
-						if (!m_min_expos_cached) {
-							m_min_expos = proxy_ancestor::m_ptr->min_exponents(args_tuple);
-							m_min_expos_cached = true;
-						}
-						if (n >= m_min_expos.size()) {
-							return 0;
-						} else {
-							return m_min_expos[n];
-						}
-					}
-					const piranha::max_fast_int &min_degree() const {
-						return m_min_degree;
-					}
-				private:
-					mutable bool								m_min_expos_cached;
-					mutable std::vector<piranha::max_fast_int>	m_min_expos;
-					piranha::max_fast_int						m_min_degree;
-			};
+			typedef typename COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>

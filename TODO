@@ -15,7 +15,6 @@
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
 - add truncators to polynomials, if they do not impact performance too much.
-- implement truncation by degree in expo truncator.
 - enable besselJ for polynomials that are single coefficients without bothering about expo limits.
 - there _is_ a mpz_swap function, check if it is useful.
 - understand the relation between ordering and vector coded performance. For polynomials it increases performance
@@ -35,7 +34,6 @@
   [cf1] --> [cf2]	[cf1] --> [cf4]
   [cf1] --> [cf3]	[cf1] --> [cf5]
 - rework poly norm as abs(evaluation at zero time)?
-- Fix allocators.
 - Move everything about the backbone container into base series?
 - Share the implementation of filter in C++ and python using virtual function ovverride?
 - Uniform naming scheme in C++ and python.
@@ -44,4 +42,3 @@
   function in python using numpy (supposedly fast) array classes.
 - Watch out for trim! We do not want to ever get it called into the anonymous interface, because it could mess up badly
   the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.
-- Put the polynomial proxy into common toolbox and check about caching those values.

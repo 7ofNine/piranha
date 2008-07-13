@@ -44,19 +44,20 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class cf_series
 	{
-		protected:
+		public:
 			// Proxy implementation to be refined in derived class.
 			// Templated this way to cope with complex-by-real multiplication.
 			template <class Series>
 			class reference_proxy
 			{
-					friend class cf_series;
 				public:
 					reference_proxy(const Series &d): m_ptr(&d) {}
+					const Series &get_const_reference() const {
+						return *m_ptr;
+					}
 				protected:
-					const Series	*m_ptr;
+					const Series *m_ptr;
 			};
-		public:
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -80,7 +81,7 @@ namespace piranha
 			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 			// Interaction with proxy.
 			template <class Series, class ArgsTuple>
-			Derived &mult_by(reference_proxy<Series> , const ArgsTuple &);
+			Derived &mult_by(const reference_proxy<Series> &, const ArgsTuple &);
 			// Free interface.
 			double norm() const;
 		protected:
@@ -107,11 +108,11 @@ namespace piranha
 	{ \
 		base_ancestor::construct_from_number(x,a); \
 	} \
-	series_name(proxy p) { \
-		*this=(*p.m_ptr); \
+	series_name(const proxy &p) { \
+		*this = p.get_const_reference(); \
 	} \
 	series_name &operator=(const proxy &p) { \
-		*this=(*p.m_ptr); \
+		*this = p.get_const_reference(); \
 		return *this; \
 	}
 
