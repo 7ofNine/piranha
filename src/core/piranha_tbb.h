@@ -22,12 +22,10 @@
 #define PIRANHA_PIRANHA_TBB_H
 
 #ifdef _PIRANHA_TBB
-
 #include <tbb/blocked_range.h>
+#include "tbb/blocked_range2d.h"
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
-
-// To detect version and build information.
-#include "../src/tbb/tbb_version.h"
 #endif
+
 #endif
