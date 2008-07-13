@@ -24,10 +24,11 @@
 #include "core/settings.h"
 #include "core/stream_manager.h"
 #include "core/version.h"
+#include "core/piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
 {
-// Settings manager's static members.
+	// Settings manager's static members.
 	float settings::hash_max_load_factor = (float)(0.3);
 	double settings::m_numerical_zero = 1E-80;
 	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::min();
@@ -58,20 +59,15 @@ namespace piranha
 		std::cout << "_______________________________" << std::endl << std::endl;
 		// Setup cout.
 		stream_manager::setup_print(std::cout);
-#ifdef _PIRANHA_TBB
-		std::cout << "TBB version strings:" << std::endl;
-		std::cout << __TBB_VERSION_STRINGS;
-		std::cout << "TBB:  BUILD_DATE\t\t" << __TBB_DATETIME << std::endl;
-#endif
 	}
 
-/// Set path to theories of motion.
+	/// Set path to theories of motion.
 	void settings::set_path(const std::string &str)
 	{
 		m_path = str;
 	}
 
-/// Get version.
+	/// Get version.
 	const std::string &settings::version()
 	{
 		return m_version;
