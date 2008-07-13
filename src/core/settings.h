@@ -24,7 +24,6 @@
 #include <iostream>
 #include <string>
 
-#include "compile_switches.h"
 #include "config.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
@@ -81,15 +80,6 @@ namespace piranha
 				hash_max_load_factor = value;
 			}
 			static void set_path(const std::string &);
-			static bool display_progress() {
-				return enable_progress_display;
-			}
-			static void set_display_progress(bool flag) {
-				if (!(compile_switches::display_progress)) {
-					std::cout << "Warning: progress bar has not been built." << std::endl;
-				}
-				enable_progress_display = flag;
-			}
 		private:
 			/// Startup class.
 			/**

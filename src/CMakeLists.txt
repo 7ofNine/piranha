@@ -15,7 +15,6 @@ SET(SRC_LIST ${SRC_LIST}
 	settings.cpp
 	stream_manager.cpp
 	psym.cpp
-	compile_switches.cpp
 )
 
 IF(ENABLE_HOARD)
