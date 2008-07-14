@@ -62,7 +62,7 @@ namespace piranha
 				if (derived_const_cast->template nth_index<0>().empty()) {
 					return 0;
 				}
-				const typename Derived::const_sorted_iterator result(std::max_element(
+				const typename Derived::template const_iterator<0>::type result(std::max_element(
 							derived_const_cast->template nth_index<0>().begin(),
 							derived_const_cast->template nth_index<0>().end(),
 							degree_binary_predicate<typename Derived::term_type>()
@@ -74,7 +74,7 @@ namespace piranha
 				if (derived_const_cast->template nth_index<0>().empty()) {
 					return 0;
 				}
-				const typename Derived::const_sorted_iterator result(std::min_element(
+				const typename Derived::template const_iterator<0>::type result(std::min_element(
 							derived_const_cast->template nth_index<0>().begin(),
 							derived_const_cast->template nth_index<0>().end(),
 							min_degree_binary_predicate<typename Derived::term_type>()
@@ -83,7 +83,7 @@ namespace piranha
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				p_assert(!derived_const_cast->empty());
-				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
 				it->template get<ExpoTermPosition>().upload_min_exponents(v);
@@ -108,7 +108,7 @@ namespace piranha
 				}
 			}
 			void test_min_exponents(std::vector<max_fast_int> &v) const {
-				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 					it->template get<ExpoTermPosition>().test_min_exponents(v);

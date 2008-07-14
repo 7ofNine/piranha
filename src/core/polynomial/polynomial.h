@@ -89,10 +89,6 @@ namespace piranha
 			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef POLYNOMIAL_TERM term_type;
-			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
-			typedef typename base_ancestor::sorted_iterator sorted_iterator;
-			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
-			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
@@ -187,10 +183,6 @@ namespace std
 			// Needed typedefs.
 			typedef POLYNOMIAL value_type;
 			typedef COMPLEX_POLYNOMIAL_TERM term_type;
-			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
-			typedef typename base_ancestor::sorted_iterator sorted_iterator;
-			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
-			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.

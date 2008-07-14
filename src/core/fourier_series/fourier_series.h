@@ -90,10 +90,6 @@ namespace piranha
 			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef FOURIER_SERIES_TERM term_type;
-			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
-			typedef typename base_ancestor::sorted_iterator sorted_iterator;
-			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
-			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
@@ -186,10 +182,6 @@ namespace std
 			// Needed typedefs.
 			typedef FOURIER_SERIES value_type;
 			typedef COMPLEX_FOURIER_SERIES_TERM term_type;
-			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
-			typedef typename base_ancestor::sorted_iterator sorted_iterator;
-			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
-			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
 			args_tuple_type, Truncator > multiplier_type;
 			NAMED_SERIES_CTORS(complex, 0);

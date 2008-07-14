@@ -103,7 +103,7 @@ namespace piranha
 			}
 			template <class Series, class Term>
 			void cache_series_terms(const Series &s, std::vector<Term> &terms) {
-				typedef typename Series::const_sorted_iterator const_sorted_iterator;
+				typedef typename Series::template const_iterator<0>::type const_sorted_iterator;
 				p_assert(terms.empty());
 				const const_sorted_iterator it_f = s.template nth_index<0>().end();
 				size_t i = 0;

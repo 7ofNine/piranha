@@ -50,7 +50,7 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
-				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 				typedef typename Derived::term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
@@ -143,7 +143,7 @@ namespace piranha
 			std::pair<Iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > >
 			get_int_linear_term(const ArgsTuple &args_tuple) const {
 				BOOST_STATIC_ASSERT((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value));
-				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 				BOOST_STATIC_ASSERT((boost::is_same<Iterator, const_sorted_iterator>::value));
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				std::pair<const_sorted_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;

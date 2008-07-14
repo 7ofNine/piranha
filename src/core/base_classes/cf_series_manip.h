@@ -28,7 +28,7 @@ namespace piranha
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::term_type term_type;
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 		if (derived_const_cast->template nth_index<0>().empty()) {
 			return;
 		}

@@ -70,11 +70,11 @@ namespace piranha
 			typename allocator_type::template rebind<term_type>::other > container_type;
 			typedef typename container_type::template nth_index<0>::type sorted_index;
 			typedef typename container_type::template nth_index<1>::type pinpoint_index;
-		public:
 			typedef typename sorted_index::const_iterator const_sorted_iterator;
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
+		public:
 			template <int N>
 			class iterator
 			{
