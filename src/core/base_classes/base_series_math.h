@@ -23,6 +23,7 @@
 
 #include <cmath>
 
+#include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
@@ -36,8 +37,7 @@ namespace piranha
 	template <bool Sign, class Derived2, class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived2::const_sorted_iterator const_sorted_iterator2;
+		typedef typename Derived2::template const_iterator<0>::type const_sorted_iterator2;
 		p_assert((void *)derived_cast != (void *)&s2);
 		const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
 		for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it) {
@@ -55,8 +55,6 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::term_type term_type;
 		Derived retval;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
@@ -72,8 +70,6 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::term_type term_type;
 		Derived retval;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
@@ -185,8 +181,8 @@ namespace piranha
 	template <class PosTuple, class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
-		BOOST_STATIC_ASSERT(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value);
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+			"Size mismatch between args tuple and pos tuple in partial derivative.");
 		Derived retval;
 		typename Derived::term_type tmp_term1, tmp_term2;
 		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
@@ -203,10 +199,6 @@ namespace piranha
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_power_handler(const Number &y, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::term_type term_type;
-		typedef typename term_type::cf_type cf_type;
-		typedef typename term_type::key_type key_type;
 		p_assert(retval.empty());
 		// Handle the case of an empty series.
 		if (empty()) {
@@ -340,10 +332,6 @@ namespace piranha
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_root_handler(const max_fast_int &n, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::term_type term_type;
-		typedef typename term_type::cf_type cf_type;
-		typedef typename term_type::key_type key_type;
 		p_assert(retval.empty());
 		if (n == 0) {
 			throw division_by_zero();

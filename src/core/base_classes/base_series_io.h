@@ -42,7 +42,6 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
 			const ArgsTuple &args_tuple, int limit) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		stream_manager::setup_print(stream);
 		size_t j = 0, lim;
 		if (limit < 0) {

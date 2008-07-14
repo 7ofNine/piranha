@@ -125,7 +125,6 @@ namespace piranha
 	template <bool Sign, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
 	{
-		typedef typename Derived::pinpoint_iterator pinpoint_iterator;
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
 		if (term.is_ignorable(args_tuple)) {
@@ -157,7 +156,6 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		std::pair<const_sorted_iterator, bool> res(nth_index<0>().push_back(term));
 		p_assert(res.second);
 		if (!Sign) {
@@ -190,7 +188,6 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(
 		const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin();
 				it != it_f; ++it) {
@@ -205,7 +202,6 @@ namespace piranha
 	template <class TrimFlags>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			it->m_cf.trim_test(tf);
@@ -218,9 +214,6 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename term_type::cf_type cf_type;
-		typedef typename term_type::key_type key_type;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			retval.insert(
@@ -237,7 +230,6 @@ namespace piranha
 	{
 		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value),
 					   "Positional and arguments' tuples' lengths do not match in base_series::sub.");
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		RetSeries retval;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {

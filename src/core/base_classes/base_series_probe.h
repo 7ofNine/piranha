@@ -33,7 +33,6 @@ namespace piranha
 	template <class ArgsTuple>
 	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		double retval = 0;
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
@@ -47,7 +46,6 @@ namespace piranha
 	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
 	base_series<__PIRANHA_BASE_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		eval_type retval(0);
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
@@ -74,7 +72,6 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		size_t retval = 0;
 		const const_sorted_iterator it_f = nth_index<0>().end();
 		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {

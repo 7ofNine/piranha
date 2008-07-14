@@ -21,10 +21,10 @@
 #ifndef PIRANHA_JACOBI_ANGER_TOOLBOX_H
 #define PIRANHA_JACOBI_ANGER_TOOLBOX_H
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
 
+#include "../config.h"
 #include "../integer_typedefs.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -35,12 +35,12 @@ namespace piranha
 	template <int TrigPos, class Derived>
 	class jacobi_anger_toolbox
 	{
-			BOOST_STATIC_ASSERT(TrigPos >= 0);
+			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		protected:
 			template <class Iterator, class ArgsTuple>
 			void jacobi_anger(const Iterator &it_avoid, std::complex<Derived> &retval, const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-				BOOST_STATIC_ASSERT((boost::is_same<Iterator, const_sorted_iterator>::value));
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+				p_static_check((boost::is_same<Iterator, const_sorted_iterator>::value), "");
 				p_assert(retval.empty());
 				retval = std::complex<Derived>((max_fast_int)1, args_tuple);
 				if (derived_const_cast->empty()) {
