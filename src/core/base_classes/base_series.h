@@ -26,6 +26,7 @@
 #include <boost/multi_index/indexed_by.hpp>
 #include <boost/multi_index/random_access_index.hpp>
 #include <boost/multi_index_container.hpp>
+#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -74,6 +75,8 @@ namespace piranha
 			typedef typename sorted_index::iterator sorted_iterator;
 			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
 			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef typename term_type::template rebind < typename cf_type::proxy::type,
+			typename key_type::proxy::type >::type term_proxy_type;
 		public:
 			template <int N>
 			class iterator
@@ -127,6 +130,7 @@ namespace piranha
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			std::vector<term_proxy_type> cache_proxies() const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.

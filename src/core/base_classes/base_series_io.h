@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_IO_H
 #define PIRANHA_BASE_SERIES_IO_H
 
+#include <vector>
+
 #include "../stream_manager.h"
 
 namespace piranha
@@ -94,6 +96,19 @@ namespace piranha
 	base_series<__PIRANHA_BASE_SERIES_TP>::nth_index() const
 	{
 		return m_container.template get<N>();
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline std::vector<typename base_series<__PIRANHA_BASE_SERIES_TP>::term_proxy_type>
+	base_series<__PIRANHA_BASE_SERIES_TP>::cache_proxies() const
+	{
+		std::vector<term_proxy_type> retval;
+		retval.reserve(length());
+		const const_sorted_iterator it_f = nth_index<0>().end();
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+			retval.push_back(term_proxy_type(*it));
+		}
+		return retval;
 	}
 }
 

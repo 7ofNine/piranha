@@ -27,6 +27,7 @@
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <vector>
 
+#include "../config.h"
 #include "../p_assert.h"
 #include "../settings.h"
 #include "base_series_multiplier_mp.h"
@@ -60,7 +61,8 @@ namespace piranha
 			>
 			>
 			mult_set;
-			BOOST_STATIC_ASSERT((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value));
+			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
+				"Key type mismatch in base multiplier.");
 			typedef typename term_type1::template rebind < typename term_type1::cf_type::proxy::type,
 			typename term_type1::key_type::proxy::type >::type term_proxy_type1;
 			typedef typename term_type2::template rebind < typename term_type2::cf_type::proxy::type,
@@ -68,15 +70,10 @@ namespace piranha
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.template nth_index<0>().size()),
-					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval) {
+					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval),
+					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
-				// Reserve in advance the space for term's proxies, so that allocations are mimimized.
-				m_terms1.reserve(m_size1);
-				m_terms2.reserve(m_size2);
-				// Cache pointers the terms of the series into vectors.
-				cache_series_terms(m_s1, m_terms1);
-				cache_series_terms(m_s2, m_terms2);
 			}
 		protected:
 			/// Plain multiplication.
@@ -99,17 +96,6 @@ namespace piranha
 						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
 						insert_multiplication_result<mult_res>::run(res, *this, trunc);
 					}
-				}
-			}
-			template <class Series, class Term>
-			void cache_series_terms(const Series &s, std::vector<Term> &terms) {
-				typedef typename Series::template const_iterator<0>::type const_sorted_iterator;
-				p_assert(terms.empty());
-				const const_sorted_iterator it_f = s.template nth_index<0>().end();
-				size_t i = 0;
-				for (const_sorted_iterator it = s.template nth_index<0>().begin(); it != it_f; ++it) {
-					terms.push_back(Term(*it));
-					++i;
 				}
 			}
 			// After the multiplication has been performed and the result stored in the temporary hash table,
