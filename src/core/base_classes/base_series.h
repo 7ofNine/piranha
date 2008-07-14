@@ -21,6 +21,12 @@
 #ifndef PIRANHA_BASE_SERIES_H
 #define PIRANHA_BASE_SERIES_H
 
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/indexed_by.hpp>
+#include <boost/multi_index/random_access_index.hpp>
+#include <boost/multi_index_container.hpp>
+
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -54,13 +60,43 @@ namespace piranha
 			typedef Allocator allocator_type;
 			// Evaluation type. Used internally.
 			typedef typename eval_type<Derived>::type eval_type;
+			// Term container.
+			typedef boost::multi_index_container < term_type,
+			boost::multi_index::indexed_by
+			<
+			boost::multi_index::random_access<>,
+			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type> >
+			>,
+			typename allocator_type::template rebind<term_type>::other > container_type;
+			typedef typename container_type::template nth_index<0>::type sorted_index;
+			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 		public:
+			typedef typename sorted_index::const_iterator const_sorted_iterator;
+			typedef typename sorted_index::iterator sorted_iterator;
+			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
+			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			template <int N>
+			class iterator
+			{
+				public:
+					typedef typename container_type::template nth_index<N>::type::iterator type;
+			};
+			template <int N>
+			class const_iterator
+			{
+				public:
+					typedef typename container_type::template nth_index<N>::type::const_iterator type;
+			};
+			template <int N>
+			typename container_type::template nth_index<N>::type &nth_index();
+			template <int N>
+			const typename container_type::template nth_index<N>::type &nth_index() const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
-			template <int N, class Iterator, class ArgsTuple>
-			void term_erase(Iterator, const ArgsTuple &);
+			template <int N, class ArgsTuple>
+			void term_erase(const typename iterator<N>::type &, const ArgsTuple &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
 			size_t length() const;
@@ -131,8 +167,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 		private:
-			template <class PinpointIterator>
-			PinpointIterator find_term(const term_type &);
+			typename iterator<1>::type find_term(const term_type &);
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
@@ -143,6 +178,8 @@ namespace piranha
 			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			bool common_root_handler(const max_fast_int &, Derived &retval, const ArgsTuple &) const;
+		private:
+			container_type m_container;
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator
@@ -161,29 +198,6 @@ namespace piranha
 #define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name >
-
-// Index interface for series. Exposes begin(), end(), nth_index() and n_indices.
-// TODO: maybe begin() and end(), which are used in pyranha, can be avoided here through
-// a wrapper to be used only in the Python bindings.
-#define SERIES_INDEX_INTERFACE \
-	template <int N> \
-	typename container_type::template nth_index<N>::type::const_iterator begin() const { \
-		return m_container.template get<N>().begin(); \
-	} \
-	template <int N> \
-	typename container_type::template nth_index<N>::type::const_iterator end() const { \
-		return m_container.template get<N>().end(); \
-	} \
-	template <int N> \
-	typename container_type::template nth_index<N>::type &nth_index() { \
-		return m_container.template get<N>(); \
-	} \
-	template <int N> \
-	const typename container_type::template nth_index<N>::type &nth_index() const { \
-		return m_container.template get<N>(); \
-	} \
-	static const int n_indices = container_type::n_indices; \
-	p_static_check(n_indices > 0,"");
 }
 
 #include "base_series_io.h"

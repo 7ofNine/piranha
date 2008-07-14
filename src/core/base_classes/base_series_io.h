@@ -31,7 +31,7 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		// Make sure we are being called from an empty series.
-		p_assert(derived_const_cast->template nth_index<0>().empty());
+		p_assert(empty());
 		term_type term;
 		term.m_cf = cf_type(x, args_tuple);
 		insert(term, args_tuple);
@@ -46,12 +46,12 @@ namespace piranha
 		stream_manager::setup_print(stream);
 		size_t j = 0, lim;
 		if (limit < 0) {
-			lim = derived_const_cast->template nth_index<0>().size();
+			lim = length();
 		} else {
-			lim = (size_t)limit;
+			lim = static_cast<size_t>(limit);
 		}
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();it != it_f;++it) {
+		const const_sorted_iterator it_f = nth_index<0>().end();
+		for (const_sorted_iterator it = nth_index<0>().begin();it != it_f;++it) {
 			if (j == lim) {
 				break;
 			}
@@ -79,6 +79,22 @@ namespace piranha
 	{
 		p_assert(derived_cast->template nth_index<0>().empty());
 		insert(term_type(cf_type(p, n, args_tuple), key_type(p, n, args_tuple)), args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <int N>
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::container_type::template nth_index<N>::type &
+	base_series<__PIRANHA_BASE_SERIES_TP>::nth_index()
+	{
+		return m_container.template get<N>();
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <int N>
+	inline const typename base_series<__PIRANHA_BASE_SERIES_TP>::container_type::template nth_index<N>::type &
+	base_series<__PIRANHA_BASE_SERIES_TP>::nth_index() const
+	{
+		return m_container.template get<N>();
 	}
 }
 

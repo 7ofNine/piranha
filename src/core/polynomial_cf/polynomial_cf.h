@@ -29,9 +29,7 @@
 #include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/cf_series.h"
-#include "../base_classes/common_indices.h"
 #include "../base_classes/power_series.h"
-#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -62,16 +60,8 @@ namespace piranha
 				public POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
 				public POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
-			typedef POLYNOMIAL_CF_TERM term_type_;
-			typedef typename term_type_::cf_type cf_type;
-			typedef typename term_type_::key_type key_type;
-			typedef Allocator allocator_type;
 			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -85,11 +75,7 @@ namespace piranha
 			using POLYNOMIAL_CF_BASE_ANCESTOR::norm;
 			using POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			// Needed typedefs.
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef POLYNOMIAL_CF_TERM term_type;
 			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
 			typedef typename POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(polynomial_cf);
@@ -97,9 +83,6 @@ namespace piranha
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 
@@ -127,16 +110,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_EXPONENTIATION_ANCESTOR
 	{
-			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type_;
-			typedef typename term_type_::cf_type cf_type;
-			typedef typename term_type_::key_type key_type;
-			typedef Allocator allocator_type;
 			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -159,11 +134,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.
 			typedef POLYNOMIAL_CF value_type;
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type;
 			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;
 			typedef typename COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(complex);
@@ -172,9 +143,6 @@ namespace std
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
 				base_ancestor::construct_from_psym_p(p, n, a);
 			}
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 

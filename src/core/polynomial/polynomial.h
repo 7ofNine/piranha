@@ -30,13 +30,11 @@
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_indices.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
-#include "../base_classes/series_multiindex_backend.h"
 #include "../integer_typedefs.h"
 #include "../polynomial_common/monomial.h"
 
@@ -66,14 +64,8 @@ namespace piranha
 				boost::dividable < POLYNOMIAL, double
 				> > > > >
 	{
-			typedef POLYNOMIAL_TERM term_type_;
-			typedef Allocator allocator_type;
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class POLYNOMIAL_NAMED_ANCESTOR;
 			friend class POLYNOMIAL_BASE_ANCESTOR;
@@ -96,18 +88,15 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef POLYNOMIAL_TERM term_type;
+			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
+			typedef typename base_ancestor::sorted_iterator sorted_iterator;
+			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
+			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(polynomial, 0);
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 
@@ -147,14 +136,8 @@ namespace std
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
 				> > > > > > > > > >
 	{
-			typedef COMPLEX_POLYNOMIAL_TERM term_type_;
-			typedef Allocator allocator_type;
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class COMPLEX_POLYNOMIAL_NAMED_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
@@ -203,19 +186,16 @@ namespace std
 			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef POLYNOMIAL value_type;
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef COMPLEX_POLYNOMIAL_TERM term_type;
+			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
+			typedef typename base_ancestor::sorted_iterator sorted_iterator;
+			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
+			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 

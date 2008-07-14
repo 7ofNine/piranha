@@ -30,12 +30,10 @@
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_indices.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
-#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../integer_typedefs.h"
 #include "../fourier_series/fourier_series_term.h"
@@ -74,16 +72,8 @@ namespace piranha
 				boost::dividable < POISSON_SERIES, double
 				> > > > >
 	{
-			typedef POISSON_SERIES_TERM term_type_;
-			typedef typename term_type_::cf_type cf_type;
-			typedef typename term_type_::key_type key_type;
-			typedef Allocator allocator_type;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class POISSON_SERIES_NAMED_ANCESTOR;
 			friend class POISSON_SERIES_BASE_ANCESTOR;
@@ -108,17 +98,10 @@ namespace piranha
 			using base_ancestor::partial;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
 			// Needed typedefs.
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef POISSON_SERIES_TERM term_type;
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(poisson_series, 0);
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 
@@ -161,16 +144,8 @@ namespace std
 				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
 				> > > > > > > > > >
 	{
-			typedef COMPLEX_POISSON_SERIES_TERM term_type_;
-			typedef typename term_type_::cf_type cf_type;
-			typedef typename term_type_::key_type key_type;
-			typedef Allocator allocator_type;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class COMPLEX_POISSON_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
@@ -223,18 +198,11 @@ namespace std
 			// Needed typedefs.
 			typedef POISSON_SERIES value_type;
 			// Needed typedefs.
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef COMPLEX_POISSON_SERIES_TERM term_type;
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 

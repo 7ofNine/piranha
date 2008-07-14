@@ -30,8 +30,6 @@
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_indices.h"
-#include "../base_classes/series_multiindex_backend.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -66,14 +64,8 @@ namespace piranha
 				boost::dividable < FOURIER_SERIES, double
 				> > > > >
 	{
-			typedef FOURIER_SERIES_TERM term_type_;
-			typedef Allocator allocator_type;
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef series_multiindex_backend < term_type_, random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class FOURIER_SERIES_BASE_ANCESTOR;
@@ -97,19 +89,15 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef FOURIER_SERIES_TERM term_type;
+			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
+			typedef typename base_ancestor::sorted_iterator sorted_iterator;
+			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
+			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			args_tuple_type, Truncator > multiplier_type;
 			// Ctors.
 			NAMED_SERIES_CTORS(fourier_series, 0);
-			// Index interface.
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 
@@ -147,14 +135,8 @@ namespace std
 				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
 				> > > > > > > > > >
 	{
-			typedef COMPLEX_FOURIER_SERIES_TERM term_type_;
-			typedef Allocator allocator_type;
 			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef piranha::series_multiindex_backend < term_type_, piranha::random_keyhash_index,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
 			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_FOURIER_SERIES_BASE_ANCESTOR;
@@ -203,18 +185,15 @@ namespace std
 			using base_ancestor::partial;
 			// Needed typedefs.
 			typedef FOURIER_SERIES value_type;
-			typedef term_type_ term_type;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
+			typedef COMPLEX_FOURIER_SERIES_TERM term_type;
+			typedef typename base_ancestor::const_sorted_iterator const_sorted_iterator;
+			typedef typename base_ancestor::sorted_iterator sorted_iterator;
+			typedef typename base_ancestor::const_pinpoint_iterator const_pinpoint_iterator;
+			typedef typename base_ancestor::pinpoint_iterator pinpoint_iterator;
 			typedef typename Multiplier::template get_type < complex, complex,
 			args_tuple_type, Truncator > multiplier_type;
 			NAMED_SERIES_CTORS(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
-			SERIES_INDEX_INTERFACE;
-		private:
-			container_type  m_container;
 	};
 }
 

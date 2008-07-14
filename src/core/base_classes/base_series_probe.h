@@ -26,8 +26,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
 	{
-		return (derived_const_cast->template nth_index<0>().size() == 1 &&
-				derived_const_cast->template nth_index<0>().begin()->m_key.is_unity());
+		return (nth_index<0>().size() == 1 && nth_index<0>().begin()->m_key.is_unity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -35,9 +34,9 @@ namespace piranha
 	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		const const_sorted_iterator it_f = nth_index<0>().end();
 		double retval = 0;
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
 		}
 		return retval;
@@ -49,9 +48,9 @@ namespace piranha
 	base_series<__PIRANHA_BASE_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+		const const_sorted_iterator it_f = nth_index<0>().end();
 		eval_type retval(0);
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			retval += it->m_cf.eval(t, args_tuple) * it->m_key.eval(t, args_tuple);
 		}
 		return retval;
@@ -61,14 +60,14 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::length() const
 	{
-		return derived_const_cast->template nth_index<0>().size();
+		return nth_index<0>().size();
 	}
 
 	/// Is series empty?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::empty() const
 	{
-		return derived_const_cast->template nth_index<0>().empty();
+		return nth_index<0>().empty();
 	}
 
 	/// Number of atoms in the series.
@@ -77,8 +76,8 @@ namespace piranha
 	{
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		size_t retval = 0;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_sorted_iterator it_f = nth_index<0>().end();
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			retval += it->m_cf.atoms() + it->m_key.atoms();
 		}
 		return retval;

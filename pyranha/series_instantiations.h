@@ -38,30 +38,21 @@
 
 namespace pyranha
 {
-	template <int N>
-	class expose_series_indices_helper
-	{
-		public:
-			template <class T>
-			static void run(boost::python::class_<T> &inst) {
-				inst.add_property((std::string("__index") + boost::lexical_cast<std::string>(N) + "__").c_str(),
-								  boost::python::range(&T::template begin<N>, &T::template end<N>));
-				expose_series_indices_helper < N - 1 >::run(inst);
-			}
-	};
+	template <int N, class Series>
+	typename Series::template const_iterator<N>::type py_series_begin(const Series &s) {
+		return s.template nth_index<N>().begin();
+	}
 
-	template <>
-	class expose_series_indices_helper < -1 >
-	{
-		public:
-			template <class T>
-			static void run(boost::python::class_<T> &) {}
-	};
+	template <int N, class Series>
+	typename Series::template const_iterator<N>::type py_series_end(const Series &s) {
+		return s.template nth_index<N>().end();
+	}
 
 	template <class T>
 	inline void expose_series_indices(boost::python::class_<T> &inst)
 	{
-		expose_series_indices_helper < T::n_indices - 1 >::run(inst);
+		inst.add_property("__index0__", boost::python::range(&py_series_begin<0,T>, &py_series_end<0,T>));
+		inst.add_property("__index1__", boost::python::range(&py_series_begin<1,T>, &py_series_end<1,T>));
 	}
 
 	template <class Series>

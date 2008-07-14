@@ -58,8 +58,8 @@ namespace piranha
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::term_type term_type;
 		Derived retval;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_sorted_iterator it_f = nth_index<0>().end();
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.mult_by(x, args_tuple);
 			retval.insert(term, args_tuple);
@@ -75,8 +75,8 @@ namespace piranha
 		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
 		typedef typename Derived::term_type term_type;
 		Derived retval;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_sorted_iterator it_f = nth_index<0>().end();
+		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.divide_by(x, args_tuple);
 			retval.insert(term, args_tuple);
@@ -221,8 +221,8 @@ namespace piranha
 				return true;
 			}
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
-			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+		} else if (nth_index<0>().size() == 1) {
+			const const_sorted_iterator it = nth_index<0>().begin();
 			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
 			return true;
 		}
@@ -361,8 +361,8 @@ namespace piranha
 				return true;
 			}
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-		} else if (derived_const_cast->template nth_index<0>().size() == 1) {
-			const const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+		} else if (nth_index<0>().size() == 1) {
+			const const_sorted_iterator it = nth_index<0>().begin();
 			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
 			return true;
 		}
@@ -389,7 +389,7 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		return pow(1. / (double)(n), args_tuple);
+		return pow(1. / static_cast<double>(n), args_tuple);
 	}
 }
 
