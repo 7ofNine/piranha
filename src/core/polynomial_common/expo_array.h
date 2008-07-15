@@ -52,6 +52,7 @@ namespace piranha
 			typedef typename ancestor::size_type size_type;
 			class proxy: public ancestor::reference_proxy
 			{
+					friend class expo_array;
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
 					typedef proxy type;
@@ -82,6 +83,7 @@ namespace piranha
 			/// Ctor from psym.
 			template <class ArgsTuple>
 			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit expo_array(const proxy &p) {*this = *p.m_ptr;}
 			// Probing.
 			/// Data footprint.
 			/**

@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "../base_classes/cf_series.h"
+#include "../polynomial_common/common_polynomial_toolbox.h"
 #include "../integer_typedefs.h"
 #include "../p_assert.h"
 
@@ -35,7 +36,7 @@ namespace piranha
 {
 	template <class Derived>
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
-	class common_polynomial_cf_toolbox
+	class common_polynomial_cf_toolbox: public common_polynomial_toolbox<Derived>
 	{
 			typedef typename cf_series<Derived>::template reference_proxy<Derived> proxy_ancestor;
 		public:

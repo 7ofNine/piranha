@@ -28,6 +28,7 @@
 #include <utility>
 #include <vector>
 
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../ntuple.h"
@@ -40,8 +41,21 @@
 
 namespace piranha
 {
+	template <class ArgsTuple>
+	class term_cf_min_degree_comparison
+	{
+		public:
+			term_cf_min_degree_comparison(const ArgsTuple &) {}
+			template <class Term>
+			bool operator()(const Term &t1, const Term &t2) const {
+				return t1.m_cf.min_degree() < t2.m_cf.min_degree();
+			}
+	};
+
 	template <class Derived>
-	class common_poisson_series_toolbox: public jacobi_anger_toolbox<1, Derived>
+	class common_poisson_series_toolbox:
+		public jacobi_anger_toolbox<1, Derived>,
+		public binomial_exponentiation_toolbox<Derived,term_cf_min_degree_comparison>
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:

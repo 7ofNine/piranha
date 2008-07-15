@@ -28,7 +28,6 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
-#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -51,7 +50,6 @@
 #define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, POISSON_SERIES >
 #define POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
 #define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
-#define POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR binomial_exponentiation_toolbox< POISSON_SERIES >
 
 namespace piranha
 {
@@ -62,7 +60,6 @@ namespace piranha
 				public POISSON_SERIES_MULT_ANCESTOR,
 				public POISSON_SERIES_COMMON_ANCESTOR,
 				public POISSON_SERIES_POWER_SERIES_ANCESTOR,
-				public POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				public POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
 				public POISSON_SERIES_CELMEC_ANCESTOR,
 				boost::ring_operators < POISSON_SERIES,
@@ -82,9 +79,9 @@ namespace piranha
 			friend class POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class POISSON_SERIES_CELMEC_ANCESTOR;
 			friend class named_series_complex_toolbox< POISSON_SERIES >;
-			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
-			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
-			using POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
+			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
+			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
+			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
 			using named_ancestor::norm;
 			using base_ancestor::norm;
@@ -116,7 +113,6 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR piranha::binomial_exponentiation_toolbox< COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
 
 namespace std
@@ -128,7 +124,6 @@ namespace std
 				public COMPLEX_POISSON_SERIES_MULT_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_COMMON_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR,
-				public COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
@@ -156,9 +151,9 @@ namespace std
 			friend class COMPLEX_POISSON_SERIES_COMMON_ANCESTOR;
 			// We need also the non-complex one because it needs to access the complex's private space.
 			friend class POISSON_SERIES_COMMON_ANCESTOR;
-			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::real_power;
-			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::negative_integer_power;
-			using COMPLEX_POISSON_SERIES_BINOMIAL_EXPONENTIATION_ANCESTOR::nth_root;
+			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_power;
+			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
+			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::real;
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::real;

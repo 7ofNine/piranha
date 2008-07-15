@@ -21,8 +21,10 @@
 #ifndef PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 #define PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 
+#include <algorithm> // For sorting.
 #include <boost/type_traits/is_same.hpp>
 #include <string>
+#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -34,40 +36,47 @@
 
 namespace piranha
 {
-	template <class Derived>
+	template <class Derived, template <class> class Sorter>
 	class binomial_exponentiation_toolbox
 	{
 		private:
 			enum op_type { power_op, root_op };
-		protected:
+		public:
 			/// Real power.
 			/**
 			* This method is written to work in conjunction with base_series::pow.
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
-				return generic_binomial_power<power_op>(y, args_tuple);
+				return generic_binomial_power<power_op>(
+					get_sorted_proxy_vector<Derived>(args_tuple),y,args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived negative_integer_power(const max_fast_int &y, const ArgsTuple &args_tuple) const {
-				return generic_binomial_power<power_op>(y, args_tuple);
+				return generic_binomial_power<power_op>(
+					get_sorted_proxy_vector<Derived>(args_tuple),y, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
-				p_assert(n != 0 and n != 1);
-				return generic_binomial_power<root_op>(n, args_tuple);
+				p_assert(n != 0 && n != 1);
+				return generic_binomial_power<root_op>(
+					get_sorted_proxy_vector<Derived>(args_tuple), n, args_tuple);
 			}
 		private:
-			template <op_type Op, class Number, class ArgsTuple>
-			Derived generic_binomial_power(const Number &y, const ArgsTuple &args_tuple) const {
+			template <op_type Op, class ProxyTerm, class Number, class ArgsTuple>
+			static Derived generic_binomial_power(const std::vector<ProxyTerm> &v,
+				const Number &y, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already been taken care of
 				// in base_series::pow.
-				p_assert(derived_const_cast->template nth_index<0>().size() > 1);
-				term_type A(*derived_const_cast->template nth_index<0>().begin());
+				p_assert(v.size() > 1);
+				term_type A(v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
-				Derived XoverA(*derived_const_cast);
-				XoverA.template term_erase<0>(XoverA.template nth_index<0>().begin(), args_tuple);
+				Derived XoverA;
+				const size_t size = v.size();
+				for (size_t i = 1; i < size; ++i) {
+					XoverA.insert(term_type(v[i]),args_tuple);
+				}
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
 				term_type tmp_term(A.m_cf.pow((max_fast_int)(-1), args_tuple), A.m_key.pow(max_fast_int(-1), args_tuple));
 				Derived Ainv;
@@ -126,6 +135,17 @@ namespace piranha
 				}
 				// Finally, multiply the result of the summation by A**y.
 				retval.mult_by(Apowy, args_tuple);
+				return retval;
+			}
+			template <class Series, class ArgsTuple>
+			std::vector<typename Series::term_type::template rebind <
+			typename Series::term_type::cf_type::proxy::type,
+			typename Series::term_type::key_type::proxy::type >::type >
+			get_sorted_proxy_vector(const ArgsTuple &args_tuple) const {
+				typedef typename Derived::term_type::template rebind < typename Derived::term_type::cf_type::proxy::type,
+					typename Derived::term_type::key_type::proxy::type >::type term_proxy_type;
+				std::vector<term_proxy_type> retval(derived_const_cast->cache_proxies());
+				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;
 			}
 	};

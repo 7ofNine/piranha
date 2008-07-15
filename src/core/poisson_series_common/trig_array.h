@@ -51,6 +51,7 @@ namespace piranha
 			class proxy: public ancestor::reference_proxy
 			{
 					typedef typename ancestor::reference_proxy proxy_ancestor;
+					friend class trig_array;
 				public:
 					typedef proxy type;
 					proxy(const trig_array &t): proxy_ancestor(t) {}
@@ -71,6 +72,7 @@ namespace piranha
 					trig_commons::trig_array_commons(s) {}
 			template <class ArgsTuple>
 			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit trig_array(const proxy &p) {*this = *p.m_ptr;}
 			// Probing.
 			/// Data footprint.
 			/**

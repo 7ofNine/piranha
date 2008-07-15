@@ -18,13 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
-#define PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
-
-#include <complex>
+#ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
+#define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
-#include "../poisson_series_common/jacobi_anger_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -32,54 +29,20 @@
 namespace piranha
 {
 	template <class ArgsTuple>
-	class term_norm_comparison
+	class term_key_degree_comparison
 	{
 		public:
-			term_norm_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
+			term_key_degree_comparison(const ArgsTuple &) {}
 			template <class Term>
 			bool operator()(const Term &t1, const Term &t2) const {
-				return t1.m_cf.norm(m_args_tuple) > t2.m_cf.norm(m_args_tuple);
+				return t1.m_key.degree() < t2.m_key.degree();
 			}
-		private:
-			const ArgsTuple &m_args_tuple;
 	};
 
 	template <class Derived>
-	class common_fourier_series_toolbox:
-		public jacobi_anger_toolbox<0, Derived>,
-		public binomial_exponentiation_toolbox<Derived,term_norm_comparison>
-	{
-			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
-		public:
-			std::complex<Derived> complexp() const {
-				std::complex<Derived> retval(complexp(derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
-				retval.trim();
-				return retval;
-			}
-			template <class ArgsTuple>
-			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
-				typedef typename std::complex<Derived>::term_type complex_term_type;
-				typedef typename complex_term_type::key_type key_type;
-				std::complex<Derived> retval;
-				if (derived_const_cast->is_single_cf()) {
-					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
-													m_cf.complexp(args_tuple), key_type()),
-								  args_tuple);
-				} else {
-					// Expand using Jacobi-Anger's identity.
-					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-												  retval, args_tuple);
-				}
-				return retval;
-			}
-			Derived cos() const {
-				return complexp().real();
-			}
-			Derived sin() const {
-				return complexp().imag();
-			}
-	};
+	class common_polynomial_toolbox:
+		public binomial_exponentiation_toolbox<Derived,term_key_degree_comparison>
+	{};
 }
 
 #undef derived_const_cast
