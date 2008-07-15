@@ -21,7 +21,6 @@
 #ifndef PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 #define PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
 #include <string>
@@ -29,6 +28,7 @@
 #include <vector>
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
+#include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../ntuple.h"
@@ -156,14 +156,16 @@ namespace piranha
 			template <class Iterator, class PolyCf, class ArgsTuple>
 			std::pair<Iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > >
 			get_int_linear_term(const ArgsTuple &args_tuple) const {
-				BOOST_STATIC_ASSERT((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value));
+				p_static_check((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value),
+					"Coefficient type mismatch in Poisson series toolbox.");
 				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
-				BOOST_STATIC_ASSERT((boost::is_same<Iterator, const_sorted_iterator>::value));
+				p_static_check((boost::is_same<Iterator, const_sorted_iterator>::value),
+					"Iterator type mismatch in Poisson series toolbox.");
 				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
 				std::pair<const_sorted_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
 				retval.first = it_f;
 				// Make space to accomodate all the elements of the linear combination.
-				// We need as much space as the number ofr trig args.
+				// We need as much space as the number of trig args.
 				retval.second.second.resize(args_tuple.template get<1>().size());
 				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
 					// If the term's trigonometric part is unity, let's see if we can extract a linear combination of arguments
