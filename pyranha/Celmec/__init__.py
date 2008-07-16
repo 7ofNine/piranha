@@ -97,3 +97,42 @@ def cos_psi():
 	z_rp = sin_opfp*2*ds(sp)*root(2,1-ds(sp)**2)
 	cp = x_r*x_rp+y_r*y_rp+z_r*z_rp
 	return cp
+
+def vsop_to_dps(input_filename):
+	import re
+	arguments = "[poly_arg]\nname=t\ntime_eval=0;1\n"
+	arguments += "[trig_arg]\nname=l_me\ntime_eval=4.40260884240;26087.9031415742\n"
+	arguments += "[trig_arg]\nname=l_v\ntime_eval=3.17614669689;10213.2855462110\n"
+	arguments += "[trig_arg]\nname=l_e\ntime_eval=1.75347045953;6283.0758499914\n"
+	arguments += "[trig_arg]\nname=l_ma\ntime_eval=6.20347611291;3340.6124266998\n"
+	arguments += "[trig_arg]\nname=l_j\ntime_eval=0.59954649739;529.6909650946\n"
+	arguments += "[trig_arg]\nname=l_s\ntime_eval=0.87401675650;213.2990954380\n"
+	arguments += "[trig_arg]\nname=l_u\ntime_eval=5.48129387159;74.7815985673\n"
+	arguments += "[trig_arg]\nname=l_n\ntime_eval=5.31188628676;38.1330356378\n"
+	arguments += "[trig_arg]\nname=D\ntime_eval=5.19846674103;77713.7714681205\n"
+	arguments += "[trig_arg]\nname=F\ntime_eval=1.62790523337;84334.6615813083\n"
+	arguments += "[trig_arg]\nname=l\ntime_eval=2.35555589827;83286.9142695536\n"
+	arguments += "[trig_arg]\nname=Lm\ntime_eval=3.81034454697;83997.0911355954\n"
+	arguments += "[terms]\n"
+	l = open(input_filename).read().strip().splitlines()
+	retval = []
+	alpha = None
+	t_rng = tuple(range(0,36,3))
+	for i in l:
+		tmp_header = re.match(".*\*T\*\*(\d).*",i)
+		# If we found an header, read alpha and if necessary append new retval.
+		if tmp_header:
+			alpha = tmp_header.group(1)
+			if int(alpha) == 0:
+				retval.append("# "+i+"\n")
+				retval[-1] += arguments
+		else:
+			# Do something only if alpha is not None.
+			if alpha != None:
+				# The multipliers are contained into the columns ranging from 10 to 10 + 12*3.
+				trig_array = ";".join([i[10:46][n:n+3].strip() for n in t_rng])
+				# S and K are the first two double values in the record.
+				S, K = i[46:].strip().split()[0:2]
+				retval[-1] += S + "!" + alpha + "|" + trig_array + ";s\n"
+				retval[-1] += K + "!" + alpha + "|" + trig_array + ";c\n"
+	return retval
