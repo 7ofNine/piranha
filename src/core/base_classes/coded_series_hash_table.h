@@ -22,9 +22,9 @@
 #define PIRANHA_CODED_SERIES_HASH_TABLE_H
 
 #include <boost/functional/hash.hpp>
-#include <boost/static_assert.hpp>
 #include <vector>
 
+#include "../config.h"
 #include "../p_assert.h"
 #include "../settings.h"
 
@@ -33,7 +33,7 @@ namespace piranha
 	template <class Cf, class Ckey, int N>
 	class coded_term_bucket
 	{
-			BOOST_STATIC_ASSERT(N > 0);
+			p_static_check(N > 0, "");
 		public:
 			static const size_t size = (size_t)N;
 			struct term {
@@ -64,8 +64,8 @@ namespace piranha
 			typedef coded_term_bucket<Cf, Ckey, bucket_size> bucket_type;
 			typedef std::vector<bucket_type> container_type;
 			static const size_t initial_vector_size = 32;
-			BOOST_STATIC_ASSERT(initial_vector_size > 0);
-			BOOST_STATIC_ASSERT((initial_vector_size & (initial_vector_size - 1)) == 0);
+			p_static_check(initial_vector_size > 0, "");
+			p_static_check((initial_vector_size & (initial_vector_size - 1)) == 0, "");
 		public:
 			typedef typename bucket_type::term term_type;
 			class iterator
@@ -124,9 +124,9 @@ namespace piranha
 						}
 					}
 				private:
-					const coded_series_hash_table *m_ht;
-					size_t                        m_vector_index;
-					size_t                        m_bucket_index;
+					const coded_series_hash_table	*m_ht;
+					size_t							m_vector_index;
+					size_t							m_bucket_index;
 			};
 			coded_series_hash_table(): m_container(initial_vector_size), m_size(initial_vector_size) {}
 			~coded_series_hash_table() {
@@ -171,6 +171,14 @@ namespace piranha
 					increase_size();
 					__PDEBUG(std::cout << "Resized coded series hash table." << '\n');
 				}
+			}
+			size_t size() const {
+				size_t retval = 0;
+				const iterator it_f(end());
+				for (iterator it = begin(); it != it_f; ++it) {
+					++retval;
+				}
+				return retval;
 			}
 		private:
 			bool attempt_insertion(const term_type &t) {
@@ -221,8 +229,8 @@ namespace piranha
 				m_size = m_container.size();
 			}
 		private:
-			container_type  m_container;
-			size_t          m_size;
+			container_type	m_container;
+			size_t			m_size;
 	};
 }
 

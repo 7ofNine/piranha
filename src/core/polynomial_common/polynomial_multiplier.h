@@ -238,8 +238,7 @@ namespace piranha
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
-						// TODO: rehash on m_retval here (since we know what the size is going to be)?
-						// This would require the generic wrapper around the container of the series.
+						ancestor::m_retval.template nth_index<1>().rehash(cms.size());
 						term_type1 tmp_term;
 						const c_iterator c_it_f = cms.end();
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {

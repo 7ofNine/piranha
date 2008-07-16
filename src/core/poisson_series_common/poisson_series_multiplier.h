@@ -22,7 +22,6 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
-#include <boost/static_assert.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -32,6 +31,7 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/coded_series_hash_table.h"
+#include "../config.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../settings.h" // For debug.
@@ -289,6 +289,7 @@ namespace piranha
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
+						ancestor::m_retval.template nth_index<1>().rehash(cms_cos.size() + cms_sin.size());
 						term_type1 tmp_term;
 						{
 							const c_iterator c_it_f = cms_cos.end();
@@ -315,7 +316,7 @@ namespace piranha
 					std::vector<char>		m_flavours1;
 					std::vector<char>		m_flavours2;
 					// Just making sure, eh...
-					BOOST_STATIC_ASSERT(sizeof(char) == sizeof(bool));
+					p_static_check(sizeof(char) == sizeof(bool), "Bool and char do not have the same size.");
 			};
 	};
 }
