@@ -24,12 +24,11 @@
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
-#include <boost/static_assert.hpp>
 #include <memory> // For std::allocator.
 #include <utility> // For std::pair.
 #include <vector>
 
-#include "../exceptions.h" // TODO: remove this when py_getitem is moved in pyranha.
+#include "../config.h"
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
 #include "../p_assert.h"
@@ -56,9 +55,9 @@ namespace piranha
 			typedef typename Allocator::template rebind<value_type_>::other allocator_type;
 			template <int Bits2, int Pos2, class Allocator2, class Derived2>
 				friend class int_array;
-			BOOST_STATIC_ASSERT(Bits == 8 || Bits == 16);
-			BOOST_STATIC_ASSERT(sizeof(max_fast_int) % sizeof(value_type_) == 0);
-			BOOST_STATIC_ASSERT(Pos >= 0);
+			p_static_check(Bits == 8 || Bits == 16, "");
+			p_static_check(sizeof(max_fast_int) % sizeof(value_type_) == 0, "");
+			p_static_check(Pos >= 0, "");
 		protected:
 			class reference_proxy
 			{
