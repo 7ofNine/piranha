@@ -208,6 +208,11 @@ namespace piranha
 								tmp_term.m_cf = vc_res_cos[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
 								tmp_term.m_key.flavour() = true;
+								// Canonicalise in-place, so that we don't need to make further copies in the
+								// main insertion function.
+								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+									tmp_term.canonicalise(ancestor::m_args_tuple);
+								}
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}
@@ -216,6 +221,9 @@ namespace piranha
 								tmp_term.m_cf = vc_res_sin[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
 								tmp_term.m_key.flavour() = false;
+								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+									tmp_term.canonicalise(ancestor::m_args_tuple);
+								}
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}
@@ -297,6 +305,9 @@ namespace piranha
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.flavour() = true;
+								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+									tmp_term.canonicalise(ancestor::m_args_tuple);
+								}
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}
@@ -306,6 +317,9 @@ namespace piranha
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.flavour() = false;
+								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+									tmp_term.canonicalise(ancestor::m_args_tuple);
+								}
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}

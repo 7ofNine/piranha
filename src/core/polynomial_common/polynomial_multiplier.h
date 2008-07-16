@@ -180,12 +180,12 @@ namespace piranha
 						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							switch (likely(vc_res[i].is_ignorable(ancestor::m_args_tuple))) {
-							case true:
-								break;
-							case false:
+							if (!vc_res[i].is_ignorable(ancestor::m_args_tuple)) {
 								tmp_term.m_cf = vc_res[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
+								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+									tmp_term.canonicalise(ancestor::m_args_tuple);
+								}
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}
@@ -244,6 +244,9 @@ namespace piranha
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
 							tmp_term.m_cf = c_it->m_cf;
 							coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+							if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
+								tmp_term.canonicalise(ancestor::m_args_tuple);
+							}
 							ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded\n");
