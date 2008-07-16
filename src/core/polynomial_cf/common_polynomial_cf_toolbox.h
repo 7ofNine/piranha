@@ -44,7 +44,7 @@ namespace piranha
 			{
 				public:
 					typedef proxy type;
-					proxy(const Derived &s): proxy_ancestor(s), m_min_expos_cached(false) {
+					proxy(const Derived &s): proxy_ancestor(s), m_min_expos_cached(false),m_norm_cached(false) {
 						m_min_degree = proxy_ancestor::m_ptr->min_degree();
 					}
 					template <class ArgsTuple>
@@ -62,10 +62,20 @@ namespace piranha
 					const piranha::max_fast_int &min_degree() const {
 						return m_min_degree;
 					}
+					template <class ArgsTuple>
+					const double &norm(const ArgsTuple &args_tuple) const {
+						if (!m_norm_cached) {
+							m_norm = proxy_ancestor::m_ptr->norm(args_tuple);
+							m_norm_cached = true;
+						}
+						return m_norm;
+					}
 				private:
 					mutable bool								m_min_expos_cached;
+					mutable bool								m_norm_cached;
 					mutable std::vector<piranha::max_fast_int>	m_min_expos;
 					piranha::max_fast_int						m_min_degree;
+					mutable double								m_norm;
 			};
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			template <int TargetPos, class Cf, class ArgsTuple>
