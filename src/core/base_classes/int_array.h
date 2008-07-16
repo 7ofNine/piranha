@@ -54,6 +54,8 @@ namespace piranha
 	{
 			typedef typename boost::int_t<Bits>::fast value_type_;
 			typedef typename Allocator::template rebind<value_type_>::other allocator_type;
+			template <int Bits2, int Pos2, class Allocator2, class Derived2>
+				friend class int_array;
 			BOOST_STATIC_ASSERT(Bits == 8 || Bits == 16);
 			BOOST_STATIC_ASSERT(sizeof(max_fast_int) % sizeof(value_type_) == 0);
 			BOOST_STATIC_ASSERT(Pos >= 0);
@@ -104,6 +106,12 @@ namespace piranha
 			/// Copy ctor.
 			int_array(const int_array &v): m_flavour(v.m_flavour), m_size(v.m_size), m_pack_size(v.m_pack_size),
 					m_ptr(allocator.allocate(m_size)) {
+				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
+			}
+			/// Copy ctor from different position.
+			template <int Pos2, class Derived2>
+			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour), m_size(v.m_size),
+				m_pack_size(v.m_pack_size),m_ptr(allocator.allocate(m_size)) {
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 			}
 			/// Ctor from psym.

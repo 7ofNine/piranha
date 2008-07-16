@@ -159,6 +159,23 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			template <class FourierSeries>
+			FourierSeries to_fs() const {
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+				typedef typename FourierSeries::term_type fourier_term;
+				typename ntuple<vector_psym_p,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
+				FourierSeries retval;
+				retval.set_arguments(args_tuple);
+				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+					if (!it->m_cf.is_single_cf()) {
+						throw unsuitable("Polynomial coefficient cannot be converted to numerical coefficient.");
+					}
+					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.template nth_index<0>().begin()->m_cf),
+						typename fourier_term::key_type(it->m_key)),args_tuple);
+				}
+				return retval;
+			}
 		private:
 			template <class Iterator, class PolyCf, class ArgsTuple>
 			std::pair<Iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > >

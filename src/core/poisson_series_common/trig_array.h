@@ -72,7 +72,11 @@ namespace piranha
 					trig_commons::trig_array_commons(s) {}
 			template <class ArgsTuple>
 			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
-			explicit trig_array(const proxy &p) {*this = *p.m_ptr;}
+			explicit trig_array(const proxy &p) {
+				*this = *p.m_ptr;
+			}
+			template <int Pos2>
+			explicit trig_array(const trig_array<Bits,Pos2,Allocator> &ta): ancestor::int_array(ta) {}
 			// Probing.
 			/// Data footprint.
 			/**
