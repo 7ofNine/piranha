@@ -61,15 +61,28 @@ namespace piranha
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
+				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
 													m_cf.complexp(args_tuple), key_type()),
 								  args_tuple);
 				} else {
+					// Let's find out if there is a constant term.
+					const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
+					const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+					for (; it != it_f; ++it) {
+						if (it->m_key.is_unity()) {
+							break;
+						}
+					}
 					// Expand using Jacobi-Anger's identity.
-					jacang_ancestor::jacobi_anger(derived_const_cast->template nth_index<0>().end(),
-												  retval, args_tuple);
+					jacang_ancestor::jacobi_anger(it, retval, args_tuple);
+					if (it != it_f) {
+						std::complex<Derived> tmp;
+						tmp.insert(complex_term_type(it->m_cf.complexp(args_tuple),key_type()),args_tuple);
+						retval.mult_by(tmp,args_tuple);
+					}
 				}
 				return retval;
 			}
