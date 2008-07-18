@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CODED_SERIES_HASH_TABLE_H
 #define PIRANHA_CODED_SERIES_HASH_TABLE_H
 
+#include <boost/array.hpp>
 #include <boost/functional/hash.hpp>
 #include <vector>
 
@@ -57,50 +58,14 @@ namespace piranha
 			bool  m_flags[N];
 	};
 
-	extern const size_t prime_sizes[] = {
-		53,
-		97,
-		193,
-		389,
-		769,
-		1543,
-		3079,
-		6151,
-		12289,
-		24593,
-		49157,
-		98317,
-		196613,
-		393241,
-		786433,
-		1572869,
-		3145739,
-		6291469,
-		12582917,
-		25165843,
-		50331653,
-		100663319,
-		201326611,
-		402653189,
-		805306457,
-		1610612741,
-		3221225473,
-		6442450939,
-		12884901893,
-		25769803799,
-		51539607551,
-		103079215111,
-		206158430209,
-		412316860441,
-		824633720831
-	};
-
 	template <class Cf, class Ckey>
 	class coded_series_hash_table
 	{
 			static const size_t bucket_size = 9;
 			typedef coded_term_bucket<Cf, Ckey, bucket_size> bucket_type;
 			typedef std::vector<bucket_type> container_type;
+			typedef boost::array<size_t,35> primes_vector_type;
+			static const primes_vector_type prime_sizes;
 		public:
 			typedef typename bucket_type::term term_type;
 			class iterator
@@ -251,6 +216,7 @@ namespace piranha
 						__PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
 						++incr;
 						new_ht.m_container.clear();
+						p_assert(m_prime_size_index + incr < primes_vector_type::static_size);
 						new_ht.m_container.resize(prime_sizes[m_prime_size_index + incr]);
 						new_ht.m_prime_size_index = m_prime_size_index + incr;
 						it = it_i;
@@ -266,6 +232,45 @@ namespace piranha
 			size_t			m_prime_size_index;
 			container_type	m_container;
 	};
+
+	template <class Cf, class Ckey>
+	const typename coded_series_hash_table<Cf,Ckey>::primes_vector_type coded_series_hash_table<Cf,Ckey>::prime_sizes = { {
+		53,
+		97,
+		193,
+		389,
+		769,
+		1543,
+		3079,
+		6151,
+		12289,
+		24593,
+		49157,
+		98317,
+		196613,
+		393241,
+		786433,
+		1572869,
+		3145739,
+		6291469,
+		12582917,
+		25165843,
+		50331653,
+		100663319,
+		201326611,
+		402653189,
+		805306457,
+		1610612741,
+		3221225473,
+		6442450939,
+		12884901893,
+		25769803799,
+		51539607551,
+		103079215111,
+		206158430209,
+		412316860441,
+		824633720831
+	} };
 }
 
 #endif
