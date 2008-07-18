@@ -33,15 +33,15 @@ namespace piranha
 	template <class Cf, class Ckey, int N>
 	class coded_term_bucket
 	{
-			p_static_check(N > 0, "");
+			p_static_check(N > 0, "Size of coded term bucket is not strictly positive.");
 		public:
-			static const size_t size = (size_t)N;
+			static const size_t size = static_cast<size_t>(N);
 			struct term {
 				term() {}
 				template <class Cf2>
 				term(const Cf2 &cf, const Ckey &key): m_cf(cf), m_ckey(key) {}
-				mutable Cf  m_cf;
-				Ckey        m_ckey;
+				mutable Cf	m_cf;
+				Ckey		m_ckey;
 			};
 			coded_term_bucket() {
 				init();
@@ -57,15 +57,50 @@ namespace piranha
 			bool  m_flags[N];
 	};
 
+	extern const size_t prime_sizes[] = {
+		53,
+		97,
+		193,
+		389,
+		769,
+		1543,
+		3079,
+		6151,
+		12289,
+		24593,
+		49157,
+		98317,
+		196613,
+		393241,
+		786433,
+		1572869,
+		3145739,
+		6291469,
+		12582917,
+		25165843,
+		50331653,
+		100663319,
+		201326611,
+		402653189,
+		805306457,
+		1610612741,
+		3221225473,
+		6442450939,
+		12884901893,
+		25769803799,
+		51539607551,
+		103079215111,
+		206158430209,
+		412316860441,
+		824633720831
+	};
+
 	template <class Cf, class Ckey>
 	class coded_series_hash_table
 	{
 			static const size_t bucket_size = 9;
 			typedef coded_term_bucket<Cf, Ckey, bucket_size> bucket_type;
 			typedef std::vector<bucket_type> container_type;
-			static const size_t initial_vector_size = 32;
-			p_static_check(initial_vector_size > 0, "");
-			p_static_check((initial_vector_size & (initial_vector_size - 1)) == 0, "");
 		public:
 			typedef typename bucket_type::term term_type;
 			class iterator
@@ -101,8 +136,7 @@ namespace piranha
 								m_bucket_index == it2.m_bucket_index);
 					}
 					bool operator!=(const iterator &it2) const {
-						return (m_ht != it2.m_ht || m_vector_index != it2.m_vector_index ||
-								m_bucket_index != it2.m_bucket_index);
+						return !(*this == it2);
 					}
 				private:
 					void next() {
@@ -128,7 +162,7 @@ namespace piranha
 					size_t							m_vector_index;
 					size_t							m_bucket_index;
 			};
-			coded_series_hash_table(): m_container(initial_vector_size), m_size(initial_vector_size) {}
+			coded_series_hash_table(): m_prime_size_index(0), m_container(prime_sizes[0]) {}
 			~coded_series_hash_table() {
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_hash_table was: "
 								   << m_container.size() << '\n');
@@ -137,17 +171,15 @@ namespace piranha
 				return iterator(this);
 			}
 			iterator end() const {
-				return iterator(this, m_size, 0);
+				return iterator(this, prime_sizes[m_prime_size_index], 0);
 			}
 			iterator find(const Ckey &ckey) const {
 				// TODO: maybe it is more efficient to call hash_value directly here?
 				boost::hash<Ckey> ckey_hash;
 				const size_t h = ckey_hash(ckey);
-				// Check that the size is a power of two.
-				p_assert(m_size > 0 && (m_size & (m_size - 1)) == 0);
-				// Find h % m_size using logical AND, since we are working with powers of two.
-				const size_t vector_pos = h & (m_size - 1);
-				p_assert(vector_pos < m_size);
+				p_assert(prime_sizes[m_prime_size_index] == m_container.size());
+				const size_t vector_pos(h % prime_sizes[m_prime_size_index]);
+				p_assert(vector_pos < prime_sizes[m_prime_size_index]);
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
@@ -188,11 +220,9 @@ namespace piranha
 				// TODO: maybe it is more efficient to call hash_value directly here?
 				boost::hash<Ckey> ckey_hash;
 				const size_t h = ckey_hash(t.m_ckey);
-				// Check that the size is a power of two.
-				p_assert(m_size > 0 && (m_size & (m_size - 1)) == 0);
-				// Find h % m_size using logical AND, since we are working with powers of two.
-				const size_t vector_pos = (h & (m_size - 1));
-				p_assert(vector_pos < m_size);
+				p_assert(prime_sizes[m_prime_size_index] == m_container.size());
+				const size_t vector_pos(h % prime_sizes[m_prime_size_index]);
+				p_assert(vector_pos < prime_sizes[m_prime_size_index]);
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
@@ -208,29 +238,33 @@ namespace piranha
 				}
 				return false;
 			}
-			// Increase size of the container by a factor of a natural power of 2.
+			// Increase size of the container to the next prime size.
 			void increase_size() {
-				size_t power = 1;
+				size_t incr = 1;
 				coded_series_hash_table new_ht;
-				new_ht.m_container.resize(m_size << power);
-				new_ht.m_size = new_ht.m_container.size();
+				new_ht.m_container.resize(prime_sizes[m_prime_size_index + incr]);
+				new_ht.m_prime_size_index = m_prime_size_index + incr;
 				const iterator it_i = begin(), it_f = end();
-				for (iterator it = it_i; it != it_f; ++it) {
+				iterator it = it_i;
+				while (it != it_f) {
 					if (!new_ht.attempt_insertion(*it)) {
-						++power;
-						new_ht.m_container.resize(0);
-						new_ht.m_container.resize(m_size << power);
-						new_ht.m_size = new_ht.m_container.size();
-						it = it_i;
 						__PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
+						++incr;
+						new_ht.m_container.clear();
+						new_ht.m_container.resize(prime_sizes[m_prime_size_index + incr]);
+						new_ht.m_prime_size_index = m_prime_size_index + incr;
+						it = it_i;
+					} else {
+						++it;
 					}
 				}
 				m_container.swap(new_ht.m_container);
-				m_size = m_container.size();
+				m_prime_size_index = new_ht.m_prime_size_index;
+				p_assert(m_container.size() == prime_sizes[m_prime_size_index]);
 			}
 		private:
+			size_t			m_prime_size_index;
 			container_type	m_container;
-			size_t			m_size;
 	};
 }
 
