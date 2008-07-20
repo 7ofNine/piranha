@@ -9,6 +9,7 @@
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/delimit.hpp>
 #include <boost/spirit/home/support/unused.hpp>
+#include <boost/spirit/home/karma/detail/generate_to.hpp>
 
 namespace boost { namespace spirit { namespace karma
 {
@@ -31,8 +32,8 @@ namespace boost { namespace spirit { namespace karma
             return true;
         }
 
-        template <typename Component>
-        static std::string what(Component const&)
+        template <typename Component, typename Context>
+        static std::string what(Component const& component, Context const& ctx)
         {
             return "eol";
         }

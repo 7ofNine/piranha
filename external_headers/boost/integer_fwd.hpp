@@ -12,8 +12,9 @@
 #include <climits>  // for UCHAR_MAX, etc.
 #include <cstddef>  // for std::size_t
 
-#include <boost/config.hpp>  // for BOOST_NO_INTRINSIC_WCHAR_T
-#include <boost/limits.hpp>  // for std::numeric_limits
+#include <boost/config.hpp>   // for BOOST_NO_INTRINSIC_WCHAR_T
+#include <boost/cstdint.hpp>  // for boost::uintmax_t, intmax_t
+#include <boost/limits.hpp>   // for std::numeric_limits
 
 
 namespace boost
@@ -23,6 +24,13 @@ namespace boost
 //  From <boost/cstdint.hpp>  ------------------------------------------------//
 
 // Only has typedefs or using statements, with #conditionals
+
+// ALERT: the forward declarations of items in <boost/integer.hpp> need items
+// from this header.  That means that <boost/cstdint.hpp> cannot #include this
+// forwarding header, to avoid infinite recursion!  One day, maybe
+// boost::uintmax_t and boost::intmax_t could be segregated into their own
+// header file (which can't #include this header), <boost/integer.hpp> will use
+// that header, and <boost/cstdint.hpp> could refer to <boost/integer.hpp>.
 
 
 //  From <boost/integer_traits.hpp>  -----------------------------------------//
@@ -76,22 +84,46 @@ template <  >
 
 //  From <boost/integer.hpp>  ------------------------------------------------//
 
+template < typename BaseInt >
+    struct fast_integral;
+
 template < typename LeastInt >
     struct int_fast_t;
+
+template < int Bits, typename Signedness >
+    struct sized_integral;
+
+template < int Bits, typename Signedness >
+    struct exact_integral;
+
+template < intmax_t MaxValue >
+    struct maximum_signed_integral;
+
+template < intmax_t MinValue >
+    struct minimum_signed_integral;
+
+template < uintmax_t Value >
+    struct maximum_unsigned_integral;
 
 template< int Bits >
     struct int_t;
 
 template< int Bits >
+    struct int_exact_t;
+
+template< int Bits >
     struct uint_t;
 
-template< long MaxValue >
+template< int Bits >
+    struct uint_exact_t;
+
+template< intmax_t MaxValue >
     struct int_max_value_t;
 
-template< long MinValue >
+template< intmax_t MinValue >
     struct int_min_value_t;
 
-template< unsigned long Value >
+template< uintmax_t Value >
     struct uint_value_t;
 
 
