@@ -24,7 +24,6 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/indexed_by.hpp>
-#include <boost/multi_index/random_access_index.hpp>
 #include <boost/multi_index_container.hpp>
 #include <vector>
 
@@ -65,41 +64,33 @@ namespace piranha
 			typedef boost::multi_index_container < term_type,
 			boost::multi_index::indexed_by
 			<
-			boost::multi_index::random_access<>,
 			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type> >
 			>,
 			typename allocator_type::template rebind<term_type>::other > container_type;
-			typedef typename container_type::template nth_index<0>::type sorted_index;
-			typedef typename container_type::template nth_index<1>::type pinpoint_index;
-			typedef typename sorted_index::const_iterator const_sorted_iterator;
-			typedef typename sorted_index::iterator sorted_iterator;
-			typedef typename pinpoint_index::const_iterator const_pinpoint_iterator;
-			typedef typename pinpoint_index::iterator pinpoint_iterator;
 			typedef typename term_type::template rebind < typename cf_type::proxy::type,
 			typename key_type::proxy::type >::type term_proxy_type;
 		public:
-			template <int N>
 			class iterator
 			{
 				public:
-					typedef typename container_type::template nth_index<N>::type::iterator type;
+					typedef typename container_type::iterator type;
 			};
-			template <int N>
 			class const_iterator
 			{
 				public:
-					typedef typename container_type::template nth_index<N>::type::const_iterator type;
+					typedef typename container_type::const_iterator type;
 			};
-			template <int N>
-			typename container_type::template nth_index<N>::type &nth_index();
-			template <int N>
-			const typename container_type::template nth_index<N>::type &nth_index() const;
+			typename iterator::type begin();
+			typename const_iterator::type begin() const;
+			typename iterator::type end();
+			typename const_iterator::type end() const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
-			template <int N, class ArgsTuple>
-			void term_erase(const typename iterator<N>::type &, const ArgsTuple &);
+			template <class ArgsTuple>
+			void term_erase(const typename iterator::type &, const ArgsTuple &);
+			void rehash(const size_t &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
 			size_t length() const;
@@ -171,7 +162,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 		private:
-			typename iterator<1>::type find_term(const term_type &);
+			typename iterator::type find_term(const term_type &);
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>

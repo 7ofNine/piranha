@@ -64,8 +64,6 @@ namespace piranha
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
 			void save_to(const std::string &) const;
-			template <class Cmp>
-			void sort(const Cmp &);
 			template <class Filter>
 			Derived filter(const Filter &) const;
 			void swap(Derived &);

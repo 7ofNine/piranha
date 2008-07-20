@@ -53,14 +53,6 @@ manipulators_type_tuple = tuple(__build_manipulators_type_tuple())
 def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
-def __series_sorted(self, comp = None, key = None, reverse = False):
-	self.__set_shared_arguments__()
-	tmp = sorted(self.__index0__, comp, key, reverse)
-	new_series = type(self)()
-	new_series.__set_arguments__(self.__arguments__)
-	for i in tmp: new_series.__append__(i)
-	return new_series
-
 def __series_filter(self, func):
 	import copy
 	if not func:
@@ -100,7 +92,6 @@ def __add_property(module_name, property_name, fget=None, fset=None, fdel=None, 
 def __enhance_manipulators():
 	for i in __manipulators__:
 		__add_property(i, "__short_type__", __series_short_type)
-		__add_method(i, "sorted", __series_sorted)
 		__add_method(i, "filter", __series_filter)
 		__add_property(i, "arguments", __series_arguments)
 

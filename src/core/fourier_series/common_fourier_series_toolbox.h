@@ -61,16 +61,16 @@ namespace piranha
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+				typedef typename Derived::const_iterator::type const_iterator;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
-					retval.insert(complex_term_type(derived_const_cast->template nth_index<0>().begin()->
+					retval.insert(complex_term_type(derived_const_cast->begin()->
 													m_cf.complexp(args_tuple), key_type()),
 								  args_tuple);
 				} else {
 					// Let's find out if there is a constant term.
-					const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin();
-					const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
+					const_iterator it = derived_const_cast->begin();
+					const const_iterator it_f = derived_const_cast->end();
 					for (; it != it_f; ++it) {
 						if (it->m_key.is_unity()) {
 							break;

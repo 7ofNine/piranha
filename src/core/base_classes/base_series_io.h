@@ -51,8 +51,8 @@ namespace piranha
 		} else {
 			lim = static_cast<size_t>(limit);
 		}
-		const const_sorted_iterator it_f = nth_index<0>().end();
-		for (const_sorted_iterator it = nth_index<0>().begin();it != it_f;++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin();it != it_f;++it) {
 			if (j == lim) {
 				break;
 			}
@@ -78,24 +78,36 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n,
 			const ArgsTuple &args_tuple)
 	{
-		p_assert(derived_cast->template nth_index<0>().empty());
+		p_assert(derived_cast->template empty());
 		insert(term_type(cf_type(p, n, args_tuple), key_type(p, n, args_tuple)), args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <int N>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::container_type::template nth_index<N>::type &
-	base_series<__PIRANHA_BASE_SERIES_TP>::nth_index()
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator::type
+	base_series<__PIRANHA_BASE_SERIES_TP>::begin()
 	{
-		return m_container.template get<N>();
+		return m_container.begin();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <int N>
-	inline const typename base_series<__PIRANHA_BASE_SERIES_TP>::container_type::template nth_index<N>::type &
-	base_series<__PIRANHA_BASE_SERIES_TP>::nth_index() const
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator::type
+	base_series<__PIRANHA_BASE_SERIES_TP>::begin() const
 	{
-		return m_container.template get<N>();
+		return m_container.begin();
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator::type
+	base_series<__PIRANHA_BASE_SERIES_TP>::end()
+	{
+		return m_container.end();
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator::type
+	base_series<__PIRANHA_BASE_SERIES_TP>::end() const
+	{
+		return m_container.end();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -104,8 +116,8 @@ namespace piranha
 	{
 		std::vector<term_proxy_type> retval;
 		retval.reserve(length());
-		const const_sorted_iterator it_f = nth_index<0>().end();
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			retval.push_back(term_proxy_type(*it));
 		}
 		return retval;

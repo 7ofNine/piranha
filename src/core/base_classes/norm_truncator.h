@@ -108,7 +108,7 @@ namespace piranha
 							m_multiplier(m),
 							m_delta_threshold(
 								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
-								(2*m.m_s1.template nth_index<0>().size()*m.m_s2.template nth_index<0>().size())) {
+								(2*m.m_s1.length()*m.m_s2.length())) {
 						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
 						if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
 							__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");

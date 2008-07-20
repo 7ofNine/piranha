@@ -69,8 +69,8 @@ namespace piranha
 			typename term_type2::key_type::proxy::type >::type term_proxy_type2;
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.template nth_index<0>().size()),
-					m_size2(m_s2.template nth_index<0>().size()), m_retval(retval),
+					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
+					m_size2(m_s2.length()), m_retval(retval),
 					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());

@@ -23,7 +23,6 @@
 
 #include <algorithm>
 #include <boost/ref.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <string>
 #include <vector>
@@ -103,7 +102,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym_p &arg)
 	{
-		p_assert(derived_const_cast->template nth_index<0>().empty());
+		p_assert(derived_const_cast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
 	}
 
@@ -111,8 +110,8 @@ namespace piranha
 	template <int N>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym_p &arg)
 	{
-		BOOST_STATIC_ASSERT(N >= 0);
-		p_assert(derived_const_cast->template nth_index<0>().empty());
+		p_static_check(N >= 0, "Trying to append argument with invalid index.");
+		p_assert(derived_const_cast->empty());
 		// Check that the argument is not already present in this set.
 		for (vector_psym_p::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it) {
 			if (arg == (*it)) {
@@ -323,37 +322,15 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Cmp>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::sort(const Cmp &cmp)
-	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
-		typedef typename Derived::term_type term_type;
-		// Do something only if we actually need to sort.
-		if (is_sorted(derived_const_cast->template nth_index<0>().begin(),
-					  derived_const_cast->template nth_index<0>().end(), cmp)) {
-			return;
-		}
-		std::vector<boost::reference_wrapper<const term_type> > v;
-		v.reserve(derived_const_cast->length());
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
-			v.push_back(boost::cref(*it));
-		}
-		shared_args::set(m_arguments);
-		std::sort(v.begin(), v.end(), cmp);
-		derived_cast->template nth_index<0>().rearrange(v.begin());
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Filter>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
 	{
-		typedef typename Derived::const_sorted_iterator const_sorted_iterator;
+		typedef typename Derived::const_iterator::type const_iterator;
 		Derived retval;
 		retval.m_arguments = m_arguments;
 		shared_args::set(m_arguments);
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it =  derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_iterator it_f = derived_const_cast->end();
+		for (const_iterator it =  derived_const_cast->begin(); it != it_f; ++it) {
 			if (f(*it)) {
 				retval.insert(*it, retval.m_arguments);
 			}

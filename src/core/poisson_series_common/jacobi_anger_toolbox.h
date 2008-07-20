@@ -39,18 +39,15 @@ namespace piranha
 		protected:
 			template <class Iterator, class ArgsTuple>
 			void jacobi_anger(const Iterator &it_avoid, std::complex<Derived> &retval, const ArgsTuple &args_tuple) const {
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
-				p_static_check((boost::is_same<Iterator, const_sorted_iterator>::value), "");
+				typedef typename Derived::const_iterator::type const_iterator;
+				p_static_check((boost::is_same<Iterator, const_iterator>::value), "");
 				p_assert(retval.empty());
-				retval = std::complex<Derived>((max_fast_int)1, args_tuple);
+				retval = std::complex<Derived>(static_cast<max_fast_int>(1), args_tuple);
 				if (derived_const_cast->empty()) {
 					return;
 				}
-				// We want to proceed backwards here.
-				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().begin();
-				const_sorted_iterator it = derived_const_cast->template nth_index<0>().end();
-				while (it != it_f) {
-					--it;
+				const const_iterator it_f = derived_const_cast->end();
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					// Skip the iterator we want to avoid.
 					if (it != it_avoid) {
 						retval.mult_by(jacang_term(it, args_tuple), args_tuple);

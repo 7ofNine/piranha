@@ -29,11 +29,11 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
 	{
-		typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+		typedef typename Derived::const_iterator::type const_iterator;
 		typedef typename Derived::term_type term_type;
 		Derived retval;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_iterator it_f = derived_const_cast->end();
+		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.invert_sign(args_tuple);
 			// No need to check, we are merging terms from this series.

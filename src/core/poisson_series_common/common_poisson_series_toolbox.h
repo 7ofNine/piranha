@@ -71,18 +71,18 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+				typedef typename Derived::const_iterator::type const_iterator;
 				typedef typename Derived::term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
-				std::pair<const_sorted_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
-				int_linear_term(get_int_linear_term<const_sorted_iterator, poly_cf_type>(args_tuple));
+				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
+				int_linear_term(get_int_linear_term<const_iterator, poly_cf_type>(args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
 				jacang_ancestor::jacobi_anger(int_linear_term.first, retval, args_tuple);
 				// If the linear term was found, take care of it.
-				if (int_linear_term.first != derived_const_cast->template nth_index<0>().end()) {
+				if (int_linear_term.first != derived_const_cast->end()) {
 					std::complex<Derived> tmp_series;
 					// Let's build the term to be inserted in tmp_series.
 					complex_term_type tmp_term1;
@@ -161,17 +161,17 @@ namespace piranha
 			}
 			template <class FourierSeries>
 			FourierSeries to_fs() const {
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
+				typedef typename Derived::const_iterator::type const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
 				typename ntuple<vector_psym_p,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
 				retval.set_arguments(args_tuple);
-				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+				const const_iterator it_f = derived_const_cast->end();
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					if (!it->m_cf.is_single_cf()) {
 						throw unsuitable("Polynomial coefficient cannot be converted to numerical coefficient.");
 					}
-					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.template nth_index<0>().begin()->m_cf),
+					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.begin()->m_cf),
 						typename fourier_term::key_type(it->m_key)),args_tuple);
 				}
 				return retval;
@@ -182,16 +182,16 @@ namespace piranha
 			get_int_linear_term(const ArgsTuple &args_tuple) const {
 				p_static_check((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
-				p_static_check((boost::is_same<Iterator, const_sorted_iterator>::value),
+				typedef typename Derived::const_iterator::type const_iterator;
+				p_static_check((boost::is_same<Iterator, const_iterator>::value),
 					"Iterator type mismatch in Poisson series toolbox.");
-				const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-				std::pair<const_sorted_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
+				const const_iterator it_f = derived_const_cast->end();
+				std::pair<const_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
 				retval.first = it_f;
 				// Make space to accomodate all the elements of the linear combination.
 				// We need as much space as the number of trig args.
 				retval.second.second.resize(args_tuple.template get<1>().size());
-				for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					// If the term's trigonometric part is unity, let's see if we can extract a linear combination of arguments
 					// from the corresponding polynomial.
 					if (it->m_key.is_unity()) {

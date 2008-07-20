@@ -35,7 +35,7 @@ int main()
   stype elp3("elp3.fs"), elp3a(elp3);
   for (size_t i = 0; i < 20; ++i)
   {
-    std::cout << (elp3*elp3a).nth_index<0>().size() << std::endl;
+    std::cout << (elp3*elp3a).length() << std::endl;
   }
   return 0;
 }

@@ -36,7 +36,7 @@ int main()
   c+=(max_fast_int)1;
   a*=c;
 
-  std::cout << std::endl << a.nth_index<0>().size() << std::endl;
+  std::cout << std::endl << a.length() << std::endl;
 
   return 0;
 }

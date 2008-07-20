@@ -40,7 +40,7 @@ int main()
   t2 = std::pow(t2,(max_fast_int)12);
   t1 *= t2;
 
-  std::cout << std::endl << t1.nth_index<0>().size() << std::endl;
+  std::cout << std::endl << t1.length() << std::endl;
 
   return 0;
 }

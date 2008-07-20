@@ -37,10 +37,10 @@ namespace piranha
 	template <bool Sign, class Derived2, class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
 	{
-		typedef typename Derived2::template const_iterator<0>::type const_sorted_iterator2;
+		typedef typename Derived2::const_iterator::type const_iterator2;
 		p_assert((void *)derived_cast != (void *)&s2);
-		const const_sorted_iterator2 it_f = s2.template nth_index<0>().end();
-		for (const_sorted_iterator2 it = s2.template nth_index<0>().begin(); it != it_f; ++it) {
+		const const_iterator2 it_f = s2.end();
+		for (const_iterator2 it = s2.begin(); it != it_f; ++it) {
 			// No need to check, we are merging from another series.
 			insert<false, Sign>(*it, args_tuple);
 		}
@@ -56,8 +56,8 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		const const_sorted_iterator it_f = nth_index<0>().end();
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.mult_by(x, args_tuple);
 			retval.insert(term, args_tuple);
@@ -71,8 +71,8 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		const const_sorted_iterator it_f = nth_index<0>().end();
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.divide_by(x, args_tuple);
 			retval.insert(term, args_tuple);
@@ -185,8 +185,8 @@ namespace piranha
 			"Size mismatch between args tuple and pos tuple in partial derivative.");
 		Derived retval;
 		typename Derived::term_type tmp_term1, tmp_term2;
-		const const_sorted_iterator it_f = derived_const_cast->template nth_index<0>().end();
-		for (const_sorted_iterator it = derived_const_cast->template nth_index<0>().begin(); it != it_f; ++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			it->partial(tmp_term1, tmp_term2, pos_tuple, args_tuple);
 			retval.insert(tmp_term1, args_tuple);
 			retval.insert(tmp_term2, args_tuple);
@@ -213,8 +213,8 @@ namespace piranha
 				return true;
 			}
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-		} else if (nth_index<0>().size() == 1) {
-			const const_sorted_iterator it = nth_index<0>().begin();
+		} else if (length() == 1) {
+			const typename const_iterator::type it = begin();
 			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
 			return true;
 		}
@@ -349,8 +349,8 @@ namespace piranha
 				return true;
 			}
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-		} else if (nth_index<0>().size() == 1) {
-			const const_sorted_iterator it = nth_index<0>().begin();
+		} else if (length() == 1) {
+			const typename const_iterator::type it = begin();
 			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
 			return true;
 		}

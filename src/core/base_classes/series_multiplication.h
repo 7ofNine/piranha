@@ -41,20 +41,20 @@ namespace piranha
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
 			template <class Derived2, class ArgsTuple>
 			Derived multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple) const {
-				typedef typename Derived::template const_iterator<0>::type const_sorted_iterator;
-				typedef typename Derived2::template const_iterator<0>::type const_sorted_iterator2;
+				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived2::const_iterator::type const_iterator2;
 				typedef typename Derived::term_type term_type;
 				typedef typename Derived2::term_type term_type2;
 				Derived retval;
 				// Just leave an empty series if this or s2 are zero.
-				if (derived_const_cast->template nth_index<0>().empty() || s2.template nth_index<0>().empty()) {
+				if (derived_const_cast->empty() || s2.empty()) {
 					;
 				}
 				// Optimize if the second series is a pure coefficient series.
 				// TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
 				// TODO: maybe this optimization can be placed somewhere else, in base_series or whatever.
 				else if (s2.is_single_cf()) {
-					retval = derived_const_cast->multiply_coefficients_by(s2.template nth_index<0>().begin()->m_cf, args_tuple);
+					retval = derived_const_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
 				} else {
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();

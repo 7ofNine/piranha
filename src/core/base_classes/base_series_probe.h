@@ -26,16 +26,16 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
 	{
-		return (nth_index<0>().size() == 1 && nth_index<0>().begin()->m_key.is_unity());
+		return (length() == 1 && begin()->m_key.is_unity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
 	{
-		const const_sorted_iterator it_f = nth_index<0>().end();
+		const typename const_iterator::type it_f = end();
 		double retval = 0;
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
 		}
 		return retval;
@@ -46,9 +46,9 @@ namespace piranha
 	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
 	base_series<__PIRANHA_BASE_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
-		const const_sorted_iterator it_f = nth_index<0>().end();
+		const typename const_iterator::type it_f = end();
 		eval_type retval(0);
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.eval(t, args_tuple) * it->m_key.eval(t, args_tuple);
 		}
 		return retval;
@@ -58,14 +58,14 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::length() const
 	{
-		return nth_index<0>().size();
+		return m_container.size();
 	}
 
 	/// Is series empty?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::empty() const
 	{
-		return nth_index<0>().empty();
+		return m_container.empty();
 	}
 
 	/// Number of atoms in the series.
@@ -73,8 +73,8 @@ namespace piranha
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
 		size_t retval = 0;
-		const const_sorted_iterator it_f = nth_index<0>().end();
-		for (const_sorted_iterator it = nth_index<0>().begin(); it != it_f; ++it) {
+		const typename const_iterator::type it_f = end();
+		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.atoms() + it->m_key.atoms();
 		}
 		return retval;

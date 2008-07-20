@@ -38,21 +38,15 @@
 
 namespace pyranha
 {
-	template <int N, class Series>
-	typename Series::template const_iterator<N>::type py_series_begin(const Series &s) {
-		return s.template nth_index<N>().begin();
-	}
-
-	template <int N, class Series>
-	typename Series::template const_iterator<N>::type py_series_end(const Series &s) {
-		return s.template nth_index<N>().end();
-	}
-
-	template <class T>
-	inline void expose_series_indices(boost::python::class_<T> &inst)
+	template <class Series>
+	inline typename Series::const_iterator::type py_series_begin(const Series &s)
 	{
-		inst.add_property("__index0__", boost::python::range(&py_series_begin<0,T>, &py_series_end<0,T>));
-		inst.add_property("__index1__", boost::python::range(&py_series_begin<1,T>, &py_series_end<1,T>));
+		return s.begin();
+	}
+
+	template <class Series>
+	inline typename Series::const_iterator::type py_series_end(const Series &s) {
+		return s.end();
 	}
 
 	template <class Series>
@@ -79,10 +73,9 @@ namespace pyranha
 		inst.def(boost::python::init<const piranha::max_fast_int &>());
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::psym &>());
-		// Take care of exposing the series' indices.
-		expose_series_indices(inst);
 		// Some special methods.
 		inst.def("__copy__", &py_series_copy<T>);
+		inst.def("__iter__", boost::python::range(&py_series_begin<T>, &py_series_end<T>));
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &T::py_repr);
 		// Pyranha-specific special methods.
