@@ -58,7 +58,7 @@ def __series_filter(self, func):
 	if not func:
 		return copy.copy(self)
 	self.__set_shared_arguments__()
-	tmp = filter(func, self.__index0__)
+	tmp = filter(func, self)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
 	for i in tmp: new_series.__append__(i)

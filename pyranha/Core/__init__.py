@@ -36,11 +36,14 @@ def gui():
 		print "Gui support was not built."
 
 class tc(object):
-	def __init__(self, args, function, t0, t1, step):
-		import numpy
+	def __init__(self, args, f, t0, t1, step, res = None):
+		try:
+			import numpy
+		except ImportError:
+			raise ImportError("Numpy is not available")
 		# If args is a tuple, transform it into a list, if args is a single value
 		# build a list from it.
-		if type(args) == type(()):
+		if isinstance(args,type(())):
 			args_list = list(args)
 		else:
 			args_list = [args]
@@ -48,11 +51,14 @@ class tc(object):
 			raise ValueError, 't1 must be strictly greater than t0.'
 		if step <= 0:
 			raise ValueError, 'Step must be strictly positive.'
-		result = function(*args_list)
+		if res != None:
+			r = res
+		else:
+			r = f(*args_list)
 		args_list_eval_funcs = map(lambda x: x.eval,args_list)
 		self.time_array = numpy.arange(t0,t1,step)
-		self.eval_array = numpy.array(map(lambda t: result.eval(t), self.time_array))
-		self.diff_array = numpy.array(map(lambda t: abs(t[1] - function(*map(lambda x: x(t[0]),args_list_eval_funcs))),zip(self.time_array,self.eval_array)))
+		self.eval_array = numpy.array(map(lambda t: r.eval(t), self.time_array))
+		self.diff_array = numpy.array(map(lambda x: abs(x[1] - f(*map(lambda y: y(x[0]),args_list_eval_funcs))),zip(self.time_array,self.eval_array)))
 	def plot(self):
 		import pylab
 		pylab.semilogy(self.time_array,self.eval_array,self.time_array,self.diff_array)
