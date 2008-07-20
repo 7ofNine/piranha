@@ -72,6 +72,47 @@ def __series_arguments(self):
 	exec("retval = _Core.__args_tuple%s__(self)" % args_number)
 	return retval
 
+def __series_plot(self, *args, **kwargs):
+	try:
+		import pylab
+	except ImportError:
+		raise ImportError("Matplotlib is not available.")
+	# Set the shared arguments.
+	self.__set_shared_arguments__()
+	# Let's start parsing the kwargs and plucking the non matplotlib ones.
+	mpl_kw = kwargs
+	try:
+		log = mpl_kw.pop("log")
+	except KeyError:
+		log = False
+	try:
+		cmp = mpl_kw.pop("cmp")
+	except KeyError:
+		cmp = None
+	try:
+		key = mpl_kw.pop("key")
+	except KeyError:
+		key = None
+	try:
+		reverse = mpl_kw.pop("reverse")
+	except KeyError:
+		reverse = False
+	try:
+		f = mpl_kw.pop("f")
+	except KeyError:
+		f = lambda t: t.cf.norm() * t.key.norm()
+	plot_iteratable = None
+	if log:
+		plot_func = pylab.semilogy
+	else:
+		plot_func = pylab.plot
+	if key or cmp:
+		plot_iteratable = sorted(self,cmp,key,reverse)
+	else:
+		plot_iteratable = self
+	plot_iteratable = map(f,plot_iteratable)
+	plot_func(range(len(plot_iteratable)),plot_iteratable,*args,**kwargs)
+
 def __add_method(module_name,method_name,function):
 	exec "import %s as __cur_manip" % module_name
 	exec("__cur_manip.%s.%s = function" % (module_name.lower(),method_name))
@@ -94,6 +135,7 @@ def __enhance_manipulators():
 		__add_property(i, "__short_type__", __series_short_type)
 		__add_method(i, "filter", __series_filter)
 		__add_property(i, "arguments", __series_arguments)
+		__add_method(i, "plot", __series_plot)
 
 __enhance_manipulators()
 
