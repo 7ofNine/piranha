@@ -244,7 +244,7 @@ namespace piranha
 						}
 						return false;
 					}
-					bool is_effective() {
+					bool is_effective() const {
 						return !m_positions.empty();
 					}
 				private:
