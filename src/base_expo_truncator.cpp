@@ -28,7 +28,7 @@ namespace piranha
 	// Static initialization for expo-based truncation.
 	base_expo_truncator::container_type base_expo_truncator::m_expo_limits;
 
-	void base_expo_truncator::clear_all()
+	void base_expo_truncator::unset()
 	{
 		m_expo_limits.clear();
 	}
@@ -47,14 +47,6 @@ namespace piranha
 				}
 			}
 		}
-	}
-
-	std::string base_expo_truncator::py_repr()
-	{
-		std::ostringstream stream;
-		print(stream);
-		std::string retval(stream.str());
-		return retval;
 	}
 
 	base_expo_truncator::iterator base_expo_truncator::find_argument(const psym_p &p)

@@ -50,23 +50,22 @@ namespace piranha
 			typedef std::vector<std::pair<psym_p, max_fast_int> > container_type;
 			typedef container_type::iterator iterator;
 		public:
-			static void limit(const std::string &name, const max_fast_int &n) {
+			static void print(std::ostream &stream = std::cout);
+			static void set(const std::string &name, const max_fast_int &n) {
 				generic_limit(name, n);
 			}
-			static void limit(const psym &p, const max_fast_int &n) {
+			static void set(const psym &p, const max_fast_int &n) {
 				generic_limit(p, n);
 			}
-			static void clear_all();
-			static void print(std::ostream &stream = std::cout);
-			static std::string py_repr();
-			static void clear(const std::string &name) {
-				psym_p tmp(psyms::get_pointer(name));
-				iterator it = find_argument(tmp);
-				if (it == m_expo_limits.end()) {
-					throw(not_existing(std::string("Symbol ") + "\"" + name + "\" does not have an exponent limit set."));
-				} else {
-					m_expo_limits.erase(it);
-				}
+			static void unset();
+			static void unset(const std::string &name) {
+				generic_unset(name);
+			}
+			static void unset(const psym &p) {
+				generic_unset(p);
+			}
+			static bool is_effective() {
+				return !m_expo_limits.empty();
 			}
 			// Limit of a power series development of a power series.
 			template <class PowerSeries, class ArgsTuple>
@@ -140,6 +139,16 @@ namespace piranha
 					it->second = n;
 				}
 			}
+			template <class Argument>
+			static void generic_unset(const Argument &p) {
+				psym_p tmp(psyms::get_pointer(p));
+				iterator it = find_argument(tmp);
+				if (it == m_expo_limits.end()) {
+					throw(not_existing(std::string("Symbol ") + "\"" + tmp->name() + "\" does not have an exponent limit set."));
+				} else {
+					m_expo_limits.erase(it);
+				}
+			}
 			// Returns minimum_exponent - limit pairs.
 			template <class PowerSeries, class ArgsTuple>
 			static std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> >
@@ -162,7 +171,7 @@ namespace piranha
 			}
 			static iterator find_argument(const psym_p &);
 		protected:
-			static container_type	m_expo_limits;
+			static container_type m_expo_limits;
 	};
 
 	/// Truncators for polynomials based on the exponent of one or more variables.

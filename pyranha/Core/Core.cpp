@@ -148,7 +148,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())
 	.def("__iter__", iterator<psyms, return_internal_reference<> >()).staticmethod("__iter__")
 	.def("__len__", &psyms::length).staticmethod("__len__")
-	.def("__repr__", &psyms::py_repr).staticmethod("__repr__")
+	.def("__repr__", &psyms::py_repr)
 	.def("get", &psyms::get).staticmethod("get");
 
 	// Psym.
@@ -166,21 +166,29 @@ BOOST_PYTHON_MODULE(_Core)
 
 	typedef void (*limit_name)(const std::string &, const max_fast_int &);
 	typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
+	typedef void (*unset_void)();
+	typedef void (*unset_name)(const std::string &);
+	typedef void (*unset_psym)(const psym &);
 	class_<base_expo_truncator>("__expo_truncator", "Exponent truncator.", init<>())
-	.def("__repr__", &base_expo_truncator::py_repr).staticmethod("__repr__")
-	.def("clear_all", &base_expo_truncator::clear_all, "Clear list of exponent limits.").staticmethod("clear_all")
-	.def("clear", &base_expo_truncator::clear, "Clear exponent limit for argument named arg1.").staticmethod("clear")
-	.def("limit", limit_name(&base_expo_truncator::limit), "Set exponent limit for symbol named arg1 to integer arg2. "
+	.def("__repr__", &py_print_to_string<base_expo_truncator>)
+	.def("unset", unset_void(&base_expo_truncator::unset), "Clear the list of exponent limits.")
+	.def("unset", unset_name(&base_expo_truncator::unset),
+		"Clear exponent limit for argument named arg1.")
+	.def("unset", unset_psym(&base_expo_truncator::unset),
+		"Clear exponent limit for psym arg1.").staticmethod("unset")
+	.def("set", limit_name(&base_expo_truncator::set), "Set exponent limit for symbol named arg1 to integer arg2. "
 		 "If arg1 does not exist, throw an error")
-	.def("limit", limit_psym(&base_expo_truncator::limit), "Set exponent limit for psym arg1 to integer arg2.").staticmethod("limit");
+	.def("set", limit_psym(&base_expo_truncator::set),
+		"Set exponent limit for psym arg1 to integer arg2.").staticmethod("set");
 
 	class_<base_norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
 	.def("__repr__", &py_print_to_string<base_norm_truncator>)
-	.def("set", &base_norm_truncator::set, "Set truncation level of series norm to 10^-arg1 if arg1 > 0, to 0 if arg1 == 0 "
-		 "and throw an error otherwise.").staticmethod("set");
+	.def("set", &base_norm_truncator::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
+		 "throw an error otherwise.").staticmethod("set")
+	.def("unset", &base_norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	class_<base_degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<base_degree_truncator>)
 	.def("set", &base_degree_truncator::set, "Set truncation level of series minimum degree to arg1.").staticmethod("set")
-	.def("clear", &base_degree_truncator::clear, "Clear minimum degree limit.").staticmethod("clear");
+	.def("unset", &base_degree_truncator::unset, "Clear minimum degree limit.").staticmethod("unset");
 }

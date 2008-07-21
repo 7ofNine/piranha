@@ -39,10 +39,8 @@ namespace piranha
 	{
 		public:
 			static void set(const int &n) {
-				if (n < 0) {
-					throw(unsuitable("Please insert a non-negative integer."));
-				} else if (n == 0) {
-					m_truncation_level = 0;
+				if (n <= 0) {
+					throw(unsuitable("Please insert a positive integer."));
 				} else {
 					m_truncation_level = std::pow(10., -n);
 				}
@@ -76,6 +74,10 @@ namespace piranha
 				} else {
 					return 0;
 				}
+			}
+			static void unset();
+			static bool is_effective() {
+				return m_truncation_power != 0;
 			}
 		protected:
 			static int		m_truncation_power;

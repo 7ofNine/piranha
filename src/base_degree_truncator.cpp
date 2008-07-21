@@ -29,7 +29,7 @@ namespace piranha
 	max_fast_int base_degree_truncator::m_degree_limit = 0;
 	bool base_degree_truncator::m_effective = false;
 
-	void base_degree_truncator::clear()
+	void base_degree_truncator::unset()
 	{
 		m_effective = false;
 	}
@@ -39,7 +39,7 @@ namespace piranha
 		if (m_effective) {
 			stream << "Minimum degree limit: " << m_degree_limit;
 		} else {
-			stream << "No limit set for the minimum degree of series.";
+			stream << "No minimum degree limit set.";
 		}
 	}
 }

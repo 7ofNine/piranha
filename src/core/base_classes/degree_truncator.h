@@ -41,8 +41,11 @@ namespace piranha
 				m_degree_limit = n;
 				m_effective = true;
 			}
-			static void clear();
+			static void unset();
 			static void print(std::ostream &stream = std::cout);
+			static bool is_effective() {
+				return m_effective;
+			}
 			// Limit of a power series development of a power series according to its minimum degree.
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &,

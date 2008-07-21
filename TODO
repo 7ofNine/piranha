@@ -40,7 +40,6 @@
   function in python using numpy (supposedly fast) array classes.
 - Watch out for trim! We do not want to ever get it called into the anonymous interface, because it could mess up badly
   the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.
-- In Jacang, order the terms so that the fastest multiplications are done first. This is best done after having moved the
-  multiindex container in base_series.
 - Eval_type -> generalise
 - power series truncator!!!!
+- maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them.
