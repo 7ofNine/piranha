@@ -111,6 +111,9 @@ namespace piranha
 							m_delta_threshold(
 								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
 								(2*m.m_s1.length()*m.m_s2.length())) {
+						if (!is_effective()) {
+							return;
+						}
 						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
 						if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
 							__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");
@@ -131,8 +134,13 @@ namespace piranha
 					}
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
-						return (t1.m_cf.norm(m_multiplier.m_args_tuple) * t2.m_cf.norm(m_multiplier.m_args_tuple) / 2. <
-								m_delta_threshold);
+						return (
+								t1.m_cf.norm(m_multiplier.m_args_tuple) *
+								t1.m_key.norm(m_multiplier.m_args_tuple) *
+								t2.m_cf.norm(m_multiplier.m_args_tuple) *
+								t2.m_key.norm(m_multiplier.m_args_tuple) / 2. <
+								m_delta_threshold
+						);
 					}
 				private:
 					Multiplier    &m_multiplier;

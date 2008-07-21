@@ -105,9 +105,11 @@ namespace piranha
 									   Multiplier::series_type2::expo_args_position, "");
 						p_static_check(Multiplier::series_type1::expo_term_position ==
 									   Multiplier::series_type2::expo_term_position, "");
-						// Sort series according to the minimum degree.
-						std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
-						std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
+						// Sort series according to the minimum degree, if necessary.
+						if (is_effective()) {
+							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
+							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
+						}
 					}
 					template <class T>
 					bool accept(const T &) const {
