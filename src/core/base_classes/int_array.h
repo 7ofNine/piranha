@@ -77,6 +77,9 @@ namespace piranha
 					size_t size() const {
 						return m_ptr->size();
 					}
+					bool is_unity() const {
+						return m_ptr->is_unity();
+					}
 					template <class ArgsTuple>
 					double norm(const ArgsTuple &args_tuple) const {
 						return m_ptr->norm(args_tuple);

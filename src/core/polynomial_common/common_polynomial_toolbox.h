@@ -22,23 +22,13 @@
 #define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
+#include "../base_classes/common_comparisons.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <class ArgsTuple>
-	class term_key_degree_comparison
-	{
-		public:
-			term_key_degree_comparison(const ArgsTuple &) {}
-			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				return t1.m_key.degree() < t2.m_key.degree();
-			}
-	};
-
 	template <class Derived>
 	class common_polynomial_toolbox:
 		public binomial_exponentiation_toolbox<Derived,term_key_degree_comparison>

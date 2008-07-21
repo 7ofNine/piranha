@@ -70,6 +70,20 @@ namespace piranha
 						}
 						return m_norm;
 					}
+					template <int TargetPos, class Cf, class ArgsTuple>
+					void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
+											const ArgsTuple &args_tuple) const {
+						proxy_ancestor::m_ptr->template get_int_linear_combination<TargetPos>(res,args_tuple);
+					}
+					template <class ArgsTuple>
+					std::vector<max_fast_int> min_exponents(const ArgsTuple &args_tuple) const {
+						return proxy_ancestor::m_ptr->min_exponents(args_tuple);
+					}
+					template <class ArgsTuple>
+					Derived besselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+						return proxy_ancestor::m_ptr->besselJ(order,args_tuple);
+					}
+					static const int expo_args_position = Derived::expo_args_position;
 				private:
 					mutable bool								m_min_expos_cached;
 					mutable bool								m_norm_cached;

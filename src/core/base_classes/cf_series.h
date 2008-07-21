@@ -55,6 +55,9 @@ namespace piranha
 					const Series &get_const_reference() const {
 						return *m_ptr;
 					}
+					bool empty() const {
+						return m_ptr->empty();
+					}
 				protected:
 					const Series *m_ptr;
 			};

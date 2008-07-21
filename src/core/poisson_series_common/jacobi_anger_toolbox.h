@@ -23,6 +23,7 @@
 
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
+#include <vector>
 
 #include "../config.h"
 #include "../integer_typedefs.h"
@@ -37,17 +38,18 @@ namespace piranha
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		protected:
-			template <class Iterator, class ArgsTuple>
-			void jacobi_anger(const Iterator &it_avoid, std::complex<Derived> &retval, const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator::type const_iterator;
-				p_static_check((boost::is_same<Iterator, const_iterator>::value), "");
+			template <class ProxyTerm, class ArgsTuple>
+			static void jacobi_anger(const std::vector<ProxyTerm> &v,
+				const typename std::vector<ProxyTerm>::const_iterator &it_avoid, 
+				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
+				typedef typename std::vector<ProxyTerm>::const_iterator const_iterator;
 				p_assert(retval.empty());
 				retval = std::complex<Derived>(static_cast<max_fast_int>(1), args_tuple);
-				if (derived_const_cast->empty()) {
+				if (v.empty()) {
 					return;
 				}
-				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+				const const_iterator it_f = v.end();
+				for (const_iterator it = v.begin(); it != it_f; ++it) {
 					// Skip the iterator we want to avoid.
 					if (it != it_avoid) {
 						retval.mult_by(jacang_term(it, args_tuple), args_tuple);
@@ -74,7 +76,7 @@ namespace piranha
 				std::complex<max_fast_int> cos_multiplier(0, 2);
 				for (size_t i = 1; i <= n; ++i) {
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real(it->m_cf.besselJ((max_fast_int)i, args_tuple), args_tuple);
+					tmp_term.m_cf.real(it->m_cf.besselJ(static_cast<max_fast_int>(i), args_tuple), args_tuple);
 					it->m_key.upload_ints_to(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
@@ -86,7 +88,7 @@ namespace piranha
 						break;
 					case false:
 						if (i % 2 == 0) {
-							tmp_term.m_cf.mult_by((max_fast_int)2, args_tuple);
+							tmp_term.m_cf.mult_by(static_cast<max_fast_int>(2), args_tuple);
 						} else {
 							tmp_term.m_cf.mult_by(std::complex<max_fast_int>(0, 2), args_tuple);
 							tmp_term.m_key.flavour() = false;

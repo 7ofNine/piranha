@@ -21,9 +21,12 @@
 #ifndef PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
 #define PIRANHA_COMMON_FOURIER_SERIES_TOOLBOX_H
 
+#include <algorithm> // For sorting.
 #include <complex>
+#include <vector>
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
+#include "../base_classes/common_comparisons.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -31,23 +34,10 @@
 
 namespace piranha
 {
-	template <class ArgsTuple>
-	class term_norm_comparison
-	{
-		public:
-			term_norm_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
-			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				return t1.m_cf.norm(m_args_tuple) > t2.m_cf.norm(m_args_tuple);
-			}
-		private:
-			const ArgsTuple &m_args_tuple;
-	};
-
 	template <class Derived>
 	class common_fourier_series_toolbox:
 		public jacobi_anger_toolbox<0, Derived>,
-		public binomial_exponentiation_toolbox<Derived,term_norm_comparison>
+		public binomial_exponentiation_toolbox<Derived,cf_norm_comparison>
 	{
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
@@ -61,24 +51,37 @@ namespace piranha
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
-				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived::term_type term_type;
+				typedef typename term_type::template rebind < typename term_type::cf_type::proxy::type,
+				typename term_type::key_type::proxy::type >::type term_proxy_type;
+				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
 													m_cf.complexp(args_tuple), key_type()),
 								  args_tuple);
 				} else {
-					// Let's find out if there is a constant term.
-					const_iterator it = derived_const_cast->begin();
-					const const_iterator it_f = derived_const_cast->end();
+					// Cache and sort the term proxies list. Sorting is reverse (small --> big norms) because
+					// in jacang is better to do the small terms first.
+					std::vector<term_proxy_type> cache(derived_const_cast->cache_proxies());
+					std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
+					// Let's find out if there is a constant term. If there is one, it will be skipped
+					// and multiplied by the result of the Jacobi-Anger expansion of the other terms later.
+					// We treat it this way because the constant term may be a phase with arbitrary value,
+					// whereas jacang works for coefficients < 1 or so. Since a constant term has all trig
+					// multipliers equal to zero, we can just compute its complex exponential without worrying
+					// about convergence.
+					const_iterator it = cache.begin();
+					const const_iterator it_f = cache.end();
 					for (; it != it_f; ++it) {
 						if (it->m_key.is_unity()) {
 							break;
 						}
 					}
 					// Expand using Jacobi-Anger's identity.
-					jacang_ancestor::jacobi_anger(it, retval, args_tuple);
+					jacang_ancestor::jacobi_anger(cache, it, retval, args_tuple);
 					if (it != it_f) {
+						// Take care of the constant element.
 						std::complex<Derived> tmp;
 						tmp.insert(complex_term_type(it->m_cf.complexp(args_tuple),key_type()),args_tuple);
 						retval.mult_by(tmp,args_tuple);

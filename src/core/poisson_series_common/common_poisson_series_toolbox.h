@@ -21,6 +21,7 @@
 #ifndef PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 #define PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 
+#include <algorithm> // For sorting.
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
 #include <string>
@@ -28,6 +29,7 @@
 #include <vector>
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
+#include "../base_classes/common_comparisons.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -41,24 +43,6 @@
 
 namespace piranha
 {
-	template <class ArgsTuple>
-	class term_cf_min_degree_comparison
-	{
-		public:
-			term_cf_min_degree_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
-			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				const max_fast_int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
-				if (d1 == d2) {
-					return t1.m_cf.norm(m_args_tuple) > t2.m_cf.norm(m_args_tuple);
-				} else {
-					return d1 < d2;
-				}
-			}
-		private:
-			const ArgsTuple &m_args_tuple;
-	};
-
 	template <class Derived>
 	class common_poisson_series_toolbox:
 		public jacobi_anger_toolbox<1, Derived>,
@@ -71,18 +55,24 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
-				typedef typename Derived::const_iterator::type const_iterator;
-				typedef typename Derived::term_type::cf_type::term_type::cf_type poly_cf_type;
+				typedef typename Derived::term_type term_type;
+				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
+				typedef typename term_type::template rebind < typename term_type::cf_type::proxy::type,
+				typename term_type::key_type::proxy::type >::type term_proxy_type;
+				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
+				// Cache and sort the terms.
+				std::vector<term_proxy_type> cache(derived_const_cast->cache_proxies());
+				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
 				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
-				int_linear_term(get_int_linear_term<const_iterator, poly_cf_type>(args_tuple));
+				int_linear_term(get_int_linear_term<term_proxy_type, poly_cf_type>(cache,args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
-				jacang_ancestor::jacobi_anger(int_linear_term.first, retval, args_tuple);
+				jacang_ancestor::jacobi_anger(cache, int_linear_term.first, retval, args_tuple);
 				// If the linear term was found, take care of it.
-				if (int_linear_term.first != derived_const_cast->end()) {
+				if (int_linear_term.first != cache.end()) {
 					std::complex<Derived> tmp_series;
 					// Let's build the term to be inserted in tmp_series.
 					complex_term_type tmp_term1;
@@ -117,7 +107,7 @@ namespace piranha
 			std::complex<Derived> complexp() const {
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
-				// way to do this is using named_series::merge_args with a phony series having zero
+				// way to do this is by using named_series::merge_args with a phony series having zero
 				// polynomial arguments and as trigonometric arguments the polynomial arguments of this.
 				Derived copy(*derived_const_cast), tmp;
 				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
@@ -177,21 +167,20 @@ namespace piranha
 				return retval;
 			}
 		private:
-			template <class Iterator, class PolyCf, class ArgsTuple>
-			std::pair<Iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > >
-			get_int_linear_term(const ArgsTuple &args_tuple) const {
+			template <class ProxyTerm, class PolyCf, class ArgsTuple>
+			std::pair<typename std::vector<ProxyTerm>::const_iterator, std::pair<std::vector<PolyCf>,
+			std::vector<max_fast_int> > >
+			static get_int_linear_term(const std::vector<ProxyTerm> &v, const ArgsTuple &args_tuple) {
 				p_static_check((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
-				typedef typename Derived::const_iterator::type const_iterator;
-				p_static_check((boost::is_same<Iterator, const_iterator>::value),
-					"Iterator type mismatch in Poisson series toolbox.");
-				const const_iterator it_f = derived_const_cast->end();
+				typedef typename std::vector<ProxyTerm>::const_iterator const_iterator;
+				const const_iterator it_f = v.end();
 				std::pair<const_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
 				retval.first = it_f;
 				// Make space to accomodate all the elements of the linear combination.
 				// We need as much space as the number of trig args.
 				retval.second.second.resize(args_tuple.template get<1>().size());
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+				for (const_iterator it = v.begin(); it != it_f; ++it) {
 					// If the term's trigonometric part is unity, let's see if we can extract a linear combination of arguments
 					// from the corresponding polynomial.
 					if (it->m_key.is_unity()) {
