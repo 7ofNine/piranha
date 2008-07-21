@@ -52,6 +52,9 @@ namespace piranha
 						(void)step_size;
 						throw unsuitable("Null truncator cannot provide limit for power series.");
 					}
+					bool is_effective() const {
+						return false;
+					}
 			};
 	};
 }

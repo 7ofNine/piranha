@@ -31,6 +31,7 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/coded_series_hash_table.h"
+#include "../base_classes/null_truncator.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../settings.h" // For debug.
@@ -94,10 +95,19 @@ namespace piranha
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(*this);
+						if (trunc.is_effective()) {
+							ll_perform_multiplication(trunc);
+						} else {
+							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
+						}
+					}
+				private:
+					template <class GenericTruncator>
+					void ll_perform_multiplication(const GenericTruncator &trunc) {
 						if (coded_ancestor::m_cr_is_viable) {
 							// Here we should be ok, since we know that the two sizes are greater than zero and even
 							// if we divide by zero we should get Inf, which is fine for our purposes.
-							const double density = ((double)ancestor::m_size1 * ancestor::m_size2) /
+							const double density = (static_cast<double>(ancestor::m_size1) * ancestor::m_size2) /
 												   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
 							__PDEBUG(std::cout << "Density: " << density << '\n');
 							coded_ancestor::code_keys();
@@ -111,7 +121,6 @@ namespace piranha
 							ancestor::perform_plain_multiplication(trunc);
 						}
 					}
-				private:
 					void calculate_result_min_max() {
 						std::vector<mpz_class> tmp_vec(6);
 						std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
