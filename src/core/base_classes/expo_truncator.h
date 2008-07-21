@@ -64,9 +64,6 @@ namespace piranha
 			static void unset(const psym &p) {
 				generic_unset(p);
 			}
-			static bool is_effective() {
-				return !m_expo_limits.empty();
-			}
 			// Limit of a power series development of a power series.
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &args_tuple,
@@ -246,6 +243,9 @@ namespace piranha
 							return true;
 						}
 						return false;
+					}
+					bool is_effective() {
+						return !m_positions.empty();
 					}
 				private:
 					Multiplier											&m_multiplier;
