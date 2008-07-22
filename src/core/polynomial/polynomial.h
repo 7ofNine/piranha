@@ -84,6 +84,8 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			// This is needed because called from the norm override in poly toolbox.
+			using base_ancestor::eval;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
@@ -174,6 +176,7 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using base_ancestor::eval;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
