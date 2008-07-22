@@ -96,6 +96,7 @@ namespace piranha
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
+							// We want to sort them this way if we are not truncating, to optimize cache memory usage.
 							std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
 							std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_degree_comparison());
 							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
@@ -123,7 +124,8 @@ namespace piranha
 					}
 					void calculate_result_min_max() {
 						std::vector<mpz_class> tmp_vec(6);
-						std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
+						std::pair<typename std::vector<mpz_class>::const_iterator,
+							std::vector<mpz_class>::const_iterator> min_max;
 						for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
 							tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
 							tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
@@ -140,7 +142,8 @@ namespace piranha
 						__PDEBUG(
 							std::cout << "Mult limits are:\n";
 						for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
-						std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+						std::cout << coded_ancestor::m_res_min_max[i].first << ',' <<
+							coded_ancestor::m_res_min_max[i].second << '\n';
 						}
 						);
 					}
@@ -154,8 +157,8 @@ namespace piranha
 						try {
 							p_vc_res = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes);
 							// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
-							// we are sure it will be initialized properly. We want to make sure the coefficients are initialized
-							// to zero in order to accumulate monomials during multiplication.
+							// we are sure it will be initialized properly. We want to make sure the coefficients are 
+							// initialized to zero in order to accumulate monomials during multiplication.
 							for (size_t i = 0; i < n_codes; ++i) {
 								::new(p_vc_res + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
 							}
