@@ -22,7 +22,6 @@
 #define PIRANHA_POLYNOMIAL_CF_H
 
 #include <complex>
-#include <vector>
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
