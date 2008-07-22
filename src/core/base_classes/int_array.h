@@ -95,11 +95,7 @@ namespace piranha
 			typedef uint8 size_type;
 			static const int position = Pos;
 			// Default implementation of proxy type.
-			class proxy
-			{
-				public:
-					typedef Derived type;
-			};
+			typedef Derived proxy;
 			/// Default ctor.
 			/**
 			 * Constructs empty array.
