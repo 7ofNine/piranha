@@ -51,8 +51,8 @@ namespace piranha
 		} else {
 			lim = static_cast<size_t>(limit);
 		}
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin();it != it_f;++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin();it != it_f;++it) {
 			if (j == lim) {
 				break;
 			}
@@ -83,28 +83,28 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator::type
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
 	base_series<__PIRANHA_BASE_SERIES_TP>::begin()
 	{
 		return m_container.begin();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator::type
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
 	base_series<__PIRANHA_BASE_SERIES_TP>::begin() const
 	{
 		return m_container.begin();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator::type
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
 	base_series<__PIRANHA_BASE_SERIES_TP>::end()
 	{
 		return m_container.end();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator::type
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
 	base_series<__PIRANHA_BASE_SERIES_TP>::end() const
 	{
 		return m_container.end();
@@ -116,8 +116,8 @@ namespace piranha
 	{
 		std::vector<term_proxy_type> retval;
 		retval.reserve(length());
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval.push_back(term_proxy_type(*it));
 		}
 		return retval;

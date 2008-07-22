@@ -94,7 +94,7 @@ namespace piranha
 			template <int TargetPos, class Cf, class ArgsTuple>
 			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
 											const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					const max_fast_int pos = it->m_key.linear_arg_position();

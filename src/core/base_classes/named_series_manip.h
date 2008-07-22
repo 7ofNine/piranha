@@ -325,7 +325,7 @@ namespace piranha
 	template <class Filter>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
 	{
-		typedef typename Derived::const_iterator::type const_iterator;
+		typedef typename Derived::const_iterator const_iterator;
 		Derived retval;
 		retval.m_arguments = m_arguments;
 		shared_args::set(m_arguments);

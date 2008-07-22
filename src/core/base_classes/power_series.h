@@ -62,7 +62,7 @@ namespace piranha
 				if (derived_const_cast->empty()) {
 					return 0;
 				}
-				const typename Derived::const_iterator::type result(std::max_element(
+				const typename Derived::const_iterator result(std::max_element(
 							derived_const_cast->begin(),
 							derived_const_cast->end(),
 							degree_binary_predicate<typename Derived::term_type>()
@@ -74,7 +74,7 @@ namespace piranha
 				if (derived_const_cast->empty()) {
 					return 0;
 				}
-				const typename Derived::const_iterator::type result(std::min_element(
+				const typename Derived::const_iterator result(std::min_element(
 							derived_const_cast->begin(),
 							derived_const_cast->end(),
 							min_degree_binary_predicate<typename Derived::term_type>()
@@ -83,7 +83,7 @@ namespace piranha
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				p_assert(!derived_const_cast->empty());
-				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
 				const_iterator it = derived_const_cast->begin();
 				it->template get<ExpoTermPosition>().upload_min_exponents(v);
@@ -108,7 +108,7 @@ namespace piranha
 				}
 			}
 			void test_min_exponents(std::vector<max_fast_int> &v) const {
-				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					it->template get<ExpoTermPosition>().test_min_exponents(v);

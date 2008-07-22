@@ -39,13 +39,13 @@
 namespace pyranha
 {
 	template <class Series>
-	inline typename Series::const_iterator::type py_series_begin(const Series &s)
+	inline typename Series::const_iterator py_series_begin(const Series &s)
 	{
 		return s.begin();
 	}
 
 	template <class Series>
-	inline typename Series::const_iterator::type py_series_end(const Series &s) {
+	inline typename Series::const_iterator py_series_end(const Series &s) {
 		return s.end();
 	}
 

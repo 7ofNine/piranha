@@ -41,8 +41,8 @@ namespace piranha
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
 			template <class Derived2, class ArgsTuple>
 			Derived multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator::type const_iterator;
-				typedef typename Derived2::const_iterator::type const_iterator2;
+				typedef typename Derived::const_iterator const_iterator;
+				typedef typename Derived2::const_iterator const_iterator2;
 				typedef typename Derived::term_type term_type;
 				typedef typename Derived2::term_type term_type2;
 				Derived retval;

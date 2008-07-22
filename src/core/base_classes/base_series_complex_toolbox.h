@@ -54,7 +54,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &imag(const RealDerived &i, const ArgsTuple &args_tuple) {
-				typedef typename RealDerived::const_iterator::type real_iterator;
+				typedef typename RealDerived::const_iterator real_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				complex_term_type tmp;
 				// First let's remove the old imaginary part.
@@ -118,7 +118,7 @@ namespace piranha
 			}
 			template <int N, class ArgsTuple>
 			RealDerived get_comp(const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator::type complex_iterator;
+				typedef typename Derived::const_iterator complex_iterator;
 				RealDerived retval;
 				const complex_iterator c_it_f = derived_const_cast->end();
 				for (complex_iterator c_it = derived_const_cast->begin(); c_it != c_it_f; ++c_it) {
@@ -130,7 +130,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple) {
 				// TODO: maybe this can be named construct_from_other_series and placed into base_series?
-				typedef typename RealDerived::const_iterator::type real_iterator;
+				typedef typename RealDerived::const_iterator real_iterator;
 				// Make sure we are being called from an empty series.
 				p_assert(derived_const_cast->empty());
 				const real_iterator r_it_f = r.end();
@@ -140,7 +140,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i, const ArgsTuple &args_tuple) {
-				typedef typename RealDerived::const_iterator::type real_iterator;
+				typedef typename RealDerived::const_iterator real_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				// Make sure we are being called from an empty series.
 				p_assert(derived_const_cast->empty());

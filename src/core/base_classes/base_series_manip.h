@@ -115,7 +115,7 @@ namespace piranha
 	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
 	/// Find term.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator::type
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
 	base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
 	{
 		return m_container.find(t);
@@ -131,7 +131,7 @@ namespace piranha
 			return;
 		}
 		p_assert(term.is_insertable(args_tuple) && !term.needs_padding(args_tuple) && term.is_canonical(args_tuple));
-		typename iterator::type it(find_term(term));
+		iterator it(find_term(term));
 		if (it == end()) {
 			// The term is NOT a duplicate, insert in the set.
 			term_insert_new<Sign>(term, args_tuple);
@@ -156,7 +156,7 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
-		std::pair<typename const_iterator::type, bool> res(m_container.insert(term));
+		std::pair<const_iterator, bool> res(m_container.insert(term));
 		p_assert(res.second);
 		if (!Sign) {
 			res.first->m_cf.invert_sign(args_tuple);
@@ -165,7 +165,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const typename iterator::type &it,
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const iterator &it,
 			const ArgsTuple &)
 	{
 		m_container.erase(it);
@@ -188,8 +188,8 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(
 		const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
 	{
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin();
+		const const_iterator it_f = end();
+		for (const_iterator it = begin();
 				it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.apply_layout(args_tuple, l);
@@ -202,8 +202,8 @@ namespace piranha
 	template <class TrimFlags>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
 	{
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			it->m_cf.trim_test(tf);
 			it->m_key.trim_test(tf);
 		}
@@ -214,8 +214,8 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval.insert(
 				term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
 				args_tuple
@@ -231,8 +231,8 @@ namespace piranha
 		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value),
 					   "Positional and arguments' tuples' lengths do not match in base_series::sub.");
 		RetSeries retval;
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			RetSeries tmp(it->m_cf.template sub<RetSeries>(pos_tuple, s, args_tuple));
 			tmp.mult_by(it->m_key.template sub<RetSeries>(pos_tuple, s, args_tuple), args_tuple);
 			retval.add(tmp, args_tuple);

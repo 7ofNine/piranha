@@ -150,7 +150,7 @@ namespace piranha
 			}
 			template <class FourierSeries>
 			FourierSeries to_fs() const {
-				typedef typename Derived::const_iterator::type const_iterator;
+				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
 				typename ntuple<vector_psym_p,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;

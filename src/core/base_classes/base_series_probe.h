@@ -33,9 +33,9 @@ namespace piranha
 	template <class ArgsTuple>
 	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
 	{
-		const typename const_iterator::type it_f = end();
+		const const_iterator it_f = end();
 		double retval = 0;
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
 		}
 		return retval;
@@ -46,9 +46,9 @@ namespace piranha
 	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
 	base_series<__PIRANHA_BASE_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
-		const typename const_iterator::type it_f = end();
+		const const_iterator it_f = end();
 		eval_type retval(0);
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			eval_type tmp(it->m_cf.eval(t, args_tuple));
 			tmp *= it->m_key.eval(t, args_tuple);
 			retval += tmp;
@@ -75,8 +75,8 @@ namespace piranha
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
 		size_t retval = 0;
-		const typename const_iterator::type it_f = end();
-		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
+		const const_iterator it_f = end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.atoms() + it->m_key.atoms();
 		}
 		return retval;
