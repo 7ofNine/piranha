@@ -99,16 +99,14 @@ namespace piranha
 					};
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m): m_multiplier(m) {
+					get_type(Multiplier &m, bool initialise = true): m_multiplier(m) {
 						// Some static checks.
 						p_static_check(Multiplier::series_type1::expo_args_position ==
 									   Multiplier::series_type2::expo_args_position, "");
 						p_static_check(Multiplier::series_type1::expo_term_position ==
 									   Multiplier::series_type2::expo_term_position, "");
-						// Sort series according to the minimum degree, if necessary.
-						if (is_effective()) {
-							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
-							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
+						if (initialise) {
+							init();
 						}
 					}
 					template <class T>
@@ -119,6 +117,14 @@ namespace piranha
 					bool skip(const Term1 &t1, const Term2 &t2) const {
 						return (t1.template get<expo_term_pos>().min_degree() + t2.template get<expo_term_pos>().min_degree() >
 								m_degree_limit);
+					}
+				protected:
+					void init() {
+						// Sort series according to the minimum degree, if necessary.
+						if (is_effective()) {
+							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
+							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
+						}
 					}
 				private:
 					Multiplier	&m_multiplier;

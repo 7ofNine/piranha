@@ -106,26 +106,13 @@ namespace piranha
 					};
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m):
+					get_type(Multiplier &m, bool initialise = true):
 							m_multiplier(m),
 							m_delta_threshold(
 								m.m_s1.norm(m.m_args_tuple)*m.m_s2.norm(m.m_args_tuple)*m_truncation_level /
 								(2*m.m_s1.length()*m.m_s2.length())) {
-						if (!is_effective()) {
-							return;
-						}
-						const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
-						if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
-							__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");
-							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
-						} else {
-							__PDEBUG(std::cout << "Series1 is sorted according to norm.");
-						}
-						if (!is_sorted(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp)) {
-							__PDEBUG(std::cout << "Series2 is not sorted according to norm. Will sort\n");
-							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
-						} else {
-							__PDEBUG(std::cout << "Series2 is sorted according to norm.");
+						if (initialise) {
+							init();
 						}
 					}
 					template <class Result>
@@ -141,6 +128,24 @@ namespace piranha
 								t2.m_key.norm(m_multiplier.m_args_tuple) / 2. <
 								m_delta_threshold
 						);
+					}
+				protected:
+					void init() {
+						if (is_effective()) {
+							const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
+							if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
+								__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");
+								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
+							} else {
+								__PDEBUG(std::cout << "Series1 is sorted according to norm.");
+							}
+							if (!is_sorted(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp)) {
+								__PDEBUG(std::cout << "Series2 is not sorted according to norm. Will sort\n");
+								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
+							} else {
+								__PDEBUG(std::cout << "Series2 is sorted according to norm.");
+							}
+						}
 					}
 				private:
 					Multiplier    &m_multiplier;

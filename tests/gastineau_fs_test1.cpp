@@ -31,7 +31,7 @@ typedef dfs stype;
 
 int main()
 {
-  base_norm_truncator::set(0);
+  base_norm_truncator::unset();
   stype elp3("elp3.fs"), elp3a(elp3);
   for (size_t i = 0; i < 20; ++i)
   {

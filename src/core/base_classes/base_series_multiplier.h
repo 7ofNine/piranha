@@ -45,6 +45,7 @@ namespace piranha
 	class base_series_multiplier
 	{
 			friend struct base_insert_multiplication_result;
+			// TODO: see if we can drop this one.
 			friend class Truncator::template get_type<Derived>::type;
 		protected:
 			// Alias for term type of first input series and return value series.
@@ -110,7 +111,7 @@ namespace piranha
 					m_retval.template insert<false, true>(term, m_args_tuple);
 				}
 			}
-		protected:
+		public:
 			// References to the series.
 			const Series1                 	&m_s1;
 			const Series2                 	&m_s2;
@@ -124,7 +125,8 @@ namespace piranha
 			// Vectors of proxies for the input terms.
 			std::vector<term_proxy_type1>	m_terms1;
 			std::vector<term_proxy_type2>	m_terms2;
-			// Container to store the result of the multiplications.
+		private:
+			// Container to store the result of the base multiplication.
 			mult_set                      	m_set;
 	};
 }

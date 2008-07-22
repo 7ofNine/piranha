@@ -29,8 +29,8 @@
 namespace piranha
 {
 	// Initial value for norm-based truncation.
-	int base_norm_truncator::m_truncation_power = 6;
-	double base_norm_truncator::m_truncation_level = std::pow(10., -base_norm_truncator::m_truncation_power);
+	int base_norm_truncator::m_truncation_power = 0;
+	double base_norm_truncator::m_truncation_level = 0;
 
 	void base_norm_truncator::print(std::ostream &stream)
 	{

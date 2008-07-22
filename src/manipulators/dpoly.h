@@ -24,6 +24,7 @@
 #include <complex>
 
 #include "../core/base_classes/null_truncator.h"
+#include "../core/base_classes/power_series_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial/polynomial.h"
@@ -38,7 +39,7 @@ namespace piranha
 		double_cf,
 		expo_array<16, 0>,
 		polynomial_multiplier,
-		null_truncator
+		power_series_truncator
 		> dpoly;
 
 		typedef std::complex<dpoly> dpolyc;
