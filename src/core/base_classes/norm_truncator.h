@@ -60,11 +60,13 @@ namespace piranha
 				const double norm = x.norm(args_tuple);
 				p_assert(norm >= 0);
 				if (norm >= 1) {
-					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion will diverge.");
+					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion "
+						"will diverge.");
 				}
 				// Let's prevent log10(0) below.
 				if (norm == 0) {
-					return 0;
+					throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
+						"is zero.");
 				}
 				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
 									  / std::log10(norm) + 1 - start) / step_size);

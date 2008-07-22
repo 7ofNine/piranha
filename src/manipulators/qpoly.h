@@ -23,7 +23,7 @@
 
 #include <complex>
 
-#include "../core/base_classes/expo_truncator.h"
+#include "../core/base_classes/power_series_truncator.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial/polynomial.h"
@@ -38,7 +38,7 @@ namespace piranha
 		mpq_cf,
 		expo_array<16, 0>,
 		polynomial_multiplier,
-		expo_truncator
+		power_series_truncator
 		> qpoly;
 
 		typedef std::complex<qpoly> qpolyc;

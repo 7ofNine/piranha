@@ -61,14 +61,14 @@ namespace piranha
 					friend class Truncator::template get_type<get_type>::type;
 					typedef typename Series1::const_iterator const_iterator1;
 					typedef typename Series2::const_iterator const_iterator2;
-					typedef Series1 series_type1;
-					typedef Series2 series_type2;
 					typedef typename ancestor::term_type1 term_type1;
 					typedef typename ancestor::term_type2 term_type2;
 					typedef typename term_type1::cf_type cf_type1;
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
 				public:
+					typedef Series1 series_type1;
+					typedef Series2 series_type2;
 					typedef ArgsTuple args_tuple_type;
 					typedef typename Truncator::template get_type<get_type> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):

@@ -22,7 +22,6 @@
 #define PIRANHA_EXPO_ARRAY_COMMONS_H
 
 #include <boost/algorithm/string/split.hpp>
-#include <boost/static_assert.hpp>
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <iostream>
 #include <string>
@@ -62,8 +61,8 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
-				const size_t w = args_tuple.template get<Derived::position>().size();
-				p_assert(w <= derived_const_cast->size());
+				const size_t w = derived_const_cast->size();
+				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 1.;
 				for (size_t i = 0;i < w;++i) {
 					retval *= std::pow(args_tuple.template get<Derived::position>()[i]->eval(t), (*derived_const_cast)[i]);
@@ -95,7 +94,6 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {
-				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
 				return std::abs(eval(0, args_tuple));
 			}
 			/// Calculate hash value.

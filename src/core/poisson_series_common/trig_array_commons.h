@@ -22,13 +22,13 @@
 #define PIRANHA_TRIG_ARRAY_COMMONS_H
 
 #include <boost/algorithm/string/split.hpp>
-#include <boost/static_assert.hpp>
 #include <cmath> // For std::abs.
 #include <complex>
 #include <string>
 #include <utility> // For std::pair.
 #include <vector>
 
+#include "../config.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "trig_evaluator.h"
@@ -150,8 +150,8 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
-				const size_t w = args_tuple.template get<Derived::position>().size();
-				p_assert(w <= derived_const_cast->size());
+				const size_t w = derived_const_cast->size();
+				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					if ((*derived_const_cast)[i] != 0) {
@@ -417,9 +417,9 @@ namespace piranha
 			// NOTICE: is there some caching mechanism that can be used here?
 			template <int N, class ArgsTuple>
 			double combined_time_eval(const ArgsTuple &args_tuple) const {
-				BOOST_STATIC_ASSERT(N >= 0);
-				const size_t w = args_tuple.template get<Derived::position>().size();
-				p_assert(w >= derived_const_cast->size());
+				p_static_check(N >= 0, "");
+				const size_t w = derived_const_cast->size();
+				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.

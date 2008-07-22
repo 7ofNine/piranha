@@ -21,6 +21,8 @@
 #ifndef PIRANHA_POWER_SERIES_TRUNCATOR
 #define PIRANHA_POWER_SERIES_TRUNCATOR
 
+#include <string>
+
 #include "../exceptions.h"
 #include "../p_assert.h"
 #include "degree_truncator.h"
@@ -64,19 +66,30 @@ namespace piranha
 					template <class T, class ArgsTuple>
 					static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
 						const int &start = 0, const int &step_size = 1) {
+						std::string msg("No useful truncation limit for a power series expansion could be "
+							"established by the power series truncator. The reported errors where:\n");
 						try {
 							return expo_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (...) {}
+						catch (const not_existing &ne) {
+							msg += ne.what() + "\n";
+						}
+						catch (const unsuitable &u) {
+							msg += u.what() + "\n";
+						}
 						try {
 							return degree_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (...) {}
+						catch (const unsuitable &u) {
+							msg += u.what() + "\n";
+						}
 						try {
 							return norm_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (...) {}
-						throw unsuitable("No useful truncation limit could be established by the power series truncator.");
+						catch (const unsuitable &u) {
+							msg += u.what() + "\n";
+						}
+						throw unsuitable(msg);
 					}
 					bool is_effective() const {
 						return m_active_truncator != null_t;

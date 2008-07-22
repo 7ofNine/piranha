@@ -23,7 +23,7 @@
 
 #include <complex>
 
-#include "../core/base_classes/expo_truncator.h"
+#include "../core/base_classes/power_series_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
@@ -42,8 +42,8 @@ namespace piranha
 		trig_array<16, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
-		expo_truncator,
-		expo_truncator
+		power_series_truncator,
+		power_series_truncator
 		> dps;
 
 		typedef std::complex<dps> dpsc;
