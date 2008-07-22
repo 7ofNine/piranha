@@ -52,6 +52,10 @@ namespace piranha
 			double norm(const ArgsTuple &) const {
 				return std::abs(m_value.get_d());
 			}
+			template <class ArgsTuple>
+			double eval(const double &, const ArgsTuple &) const {
+				return m_value.get_d();
+			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
 			mpz_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
@@ -71,10 +75,6 @@ namespace piranha
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
-			}
-			template <class ArgsTuple>
-			double eval(const double &, const ArgsTuple &) const {
-				return m_value.get_d();
 			}
 			// Multiply and add.
 			template <class ArgsTuple>
@@ -187,12 +187,13 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to negative integer power.");
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
+							"negative integer power.");
 					}
 				} else {
 					retval.m_value.real() = 1;
 					retval.m_value.imag() = 0;
-					const size_t count = (size_t)n;
+					const size_t count = static_cast<size_t>(n);
 					for (size_t i = 0; i < count; ++i) {
 						retval.m_value *= m_value;
 					}
@@ -209,7 +210,8 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to negative real power.");
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
+							"negative real power.");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -224,7 +226,8 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to positive real power.");
+						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
+							"positive real power.");
 					}
 				}
 				return retval;

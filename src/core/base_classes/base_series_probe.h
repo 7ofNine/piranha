@@ -49,7 +49,9 @@ namespace piranha
 		const typename const_iterator::type it_f = end();
 		eval_type retval(0);
 		for (typename const_iterator::type it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.eval(t, args_tuple) * it->m_key.eval(t, args_tuple);
+			eval_type tmp(it->m_cf.eval(t, args_tuple));
+			tmp *= it->m_key.eval(t, args_tuple);
+			retval += tmp;
 		}
 		return retval;
 	}

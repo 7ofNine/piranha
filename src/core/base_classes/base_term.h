@@ -32,7 +32,6 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../stream_manager.h"
-#include "../type_traits.h"
 
 #define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
 #define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Allocator,Derived
@@ -79,11 +78,6 @@ namespace piranha
 			typedef Key key_type;
 			/// Alias for allocator type.
 			typedef typename Allocator::template rebind<Derived>::other allocator_type;
-			/// Alias for evaluation type.
-			/**
-			 * Evaluation type is determined by the coefficient.
-			 */
-			typedef typename eval_type<cf_type>::type eval_type;
 			/// Empty ctor.
 			/**
 			 * Default-initializes coefficient and key.
@@ -171,20 +165,6 @@ namespace piranha
 			template <class ArgsTuple>
 			void dump(const ArgsTuple &args_tuple) const {
 				print(std::cout, args_tuple);
-			}
-			/// Numerical evaluation, brute force version.
-			/**
-			 * Evaluate numerically the term given the time of evaluation and a tuple of arguments vectors.
-			 * The evaluation is "dumb", in the sense that it is performed term by term without caching and reusing
-			 * any previous calculation. Slow but reliable, hence useful for debugging purposes.
-			 * @param[in] t time of evaluation.
-			 * @param[in] a tuple of arguments vectors relative to the elements of the term.
-			 */
-			template <class ArgsTuple>
-			eval_type t_eval_brute(const double &t, const ArgsTuple &a) const {
-				eval_type retval(m_cf.t_eval(t, a));
-				retval *= m_key.t_eval(t, a);
-				return retval;
 			}
 			/// Run diagnostic test.
 			/**

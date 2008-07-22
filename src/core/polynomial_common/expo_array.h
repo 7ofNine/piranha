@@ -50,6 +50,7 @@ namespace piranha
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
+			typedef double eval_type;
 			class proxy: public ancestor::reference_proxy
 			{
 					friend class expo_array;

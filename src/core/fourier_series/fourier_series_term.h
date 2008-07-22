@@ -32,10 +32,8 @@ namespace piranha
 	class fourier_series_term:
 				public base_term<Cf, Trig, Separator, Allocator, fourier_series_term<Cf, Trig, Separator, Allocator> >
 	{
-			/// Alias for the ancestor.
+			// Alias for the ancestor.
 			typedef base_term<Cf, Trig, Separator, Allocator, fourier_series_term> ancestor;
-			/// Alias for evaluation type.
-			typedef typename ancestor::eval_type eval_type;
 		public:
 			PIRANHA_TERM_REBINDER(fourier_series_term);
 			/// Alias for coefficient type.

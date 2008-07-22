@@ -22,6 +22,7 @@
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
 #include <cmath> // For log10.
+#include <complex>
 #include <iostream>
 #include <string>
 
@@ -39,6 +40,20 @@
 
 namespace piranha
 {
+	template <class T>
+	class numerical_container_eval_type_determiner
+	{
+		public:
+			typedef double type;
+	};
+
+	template <class T>
+	class numerical_container_eval_type_determiner<std::complex<T> >
+	{
+		public:
+			typedef std::complex<double> type;
+	};
+
 	/// Numerical container class.
 	/**
 	 * This class can be used as a base class for coefficients that consist of a
@@ -47,8 +62,6 @@ namespace piranha
 	template <class T, class Derived>
 	class numerical_container
 	{
-			// Alias for evaluation type.
-			typedef typename eval_type<Derived>::type eval_type;
 			friend class numerical_container_complex_toolbox<Derived>;
 		public:
 			class proxy
@@ -56,6 +69,8 @@ namespace piranha
 				public:
 					typedef Derived type;
 			};
+			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
+			typedef T numerical_type;
 			// Ctors.
 			explicit numerical_container(): m_value(0) {}
 			template <class ArgsTuple>
@@ -125,7 +140,7 @@ namespace piranha
 				return false;
 			}
 			template <class ArgsTuple>
-			const eval_type &eval(const double &, const ArgsTuple &) const {
+			const T &eval(const double &, const ArgsTuple &) const {
 				return m_value;
 			}
 			// Maths.

@@ -58,8 +58,6 @@ namespace piranha
 			typedef typename term_type::key_type key_type;
 			// Alias for allocator type.
 			typedef Allocator allocator_type;
-			// Evaluation type. Used internally.
-			typedef typename eval_type<Derived>::type eval_type;
 			// Term container.
 			typedef boost::multi_index_container < term_type,
 			boost::multi_index::indexed_by
@@ -70,6 +68,7 @@ namespace piranha
 			typedef typename term_type::template rebind < typename cf_type::proxy::type,
 			typename key_type::proxy::type >::type term_proxy_type;
 		public:
+			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			class iterator
 			{
 				public:

@@ -44,12 +44,11 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
-			typedef double numerical_type;
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf);
 			max_fast_int get_int() const {
 				typedef boost::numeric::converter<max_fast_int, double> double_to_int;
-				const max_fast_int retval((max_fast_int)double_to_int::nearbyint(ancestor::m_value));
+				const max_fast_int retval(static_cast<max_fast_int>(double_to_int::nearbyint(ancestor::m_value)));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
 					throw(unsuitable("Cannot convert double coefficient to integer."));
 				}

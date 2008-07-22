@@ -77,8 +77,6 @@ namespace piranha
 			// TODO: do we really need _all_ those double interfaces here? Some can probably be dropped.
 			using named_ancestor::norm;
 			using base_ancestor::norm;
-			using named_ancestor::eval;
-			using base_ancestor::eval;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -89,8 +87,8 @@ namespace piranha
 			typedef FOURIER_SERIES_TERM term_type;
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			args_tuple_type, Truncator > multiplier_type;
-			// Ctors.
-			NAMED_SERIES_CTORS(fourier_series, 0);
+			// Boilerplate
+			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
 }
 
@@ -168,8 +166,6 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
 			using named_ancestor::norm;
 			using base_ancestor::norm;
-			using named_ancestor::eval;
-			using base_ancestor::eval;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -181,7 +177,7 @@ namespace std
 			typedef COMPLEX_FOURIER_SERIES_TERM term_type;
 			typedef typename Multiplier::template get_type < complex, complex,
 			args_tuple_type, Truncator > multiplier_type;
-			NAMED_SERIES_CTORS(complex, 0);
+			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 	};
 }

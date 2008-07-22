@@ -68,13 +68,6 @@ namespace piranha
 	{
 		return derived_const_cast->norm(m_arguments);
 	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::eval_type
-	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
-	{
-		return derived_const_cast->eval(t, m_arguments);
-	}
 }
 
 #endif

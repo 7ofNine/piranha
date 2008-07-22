@@ -35,6 +35,7 @@
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
+#include "../type_traits.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -54,12 +55,10 @@ namespace piranha
 	class named_series
 	{
 			typedef ArgsDescr arguments_description;
-			// Evaluation type. Used internally.
-			typedef typename eval_type<Derived>::type eval_type;
 		public:
 			/// Compile-time constant for the number of arguments sets.
 			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
-			BOOST_STATIC_ASSERT(n_arguments_sets > 0);
+			p_static_check(n_arguments_sets > 0, "The number of arguments vector must be strictly positive.");
 			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
@@ -73,7 +72,6 @@ namespace piranha
 			double norm() const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
-			eval_type eval(const double &) const;
 			Derived &operator+=(const max_fast_int &);
 			Derived &operator+=(const double &);
 			Derived &operator+=(const Derived &);
@@ -173,7 +171,7 @@ namespace piranha
 
 #define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::named_series<boost::tuple<args1,args2>,series_name >
 
-#define NAMED_SERIES_CTORS(series_name,N) \
+#define NAMED_SERIES_BOILERPLATE(series_name,N) \
 	series_name() {} \
 	explicit series_name(const std::string &filename) \
 	{ \
@@ -199,6 +197,9 @@ namespace piranha
 	} \
 	explicit series_name(const piranha::psym &p) { \
 		named_ancestor::template construct_from_psym<N>(p); \
+	} \
+	typename piranha::term_eval_type_determiner<term_type>::type eval(const double &t) const { \
+		return base_ancestor::eval(t,named_ancestor::m_arguments); \
 	}
 }
 

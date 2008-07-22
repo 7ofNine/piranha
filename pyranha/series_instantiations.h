@@ -87,8 +87,7 @@ namespace pyranha
 		inst.def("__trim__", trim_free(&T::trim));
 		inst.def("__append__", &T::template py_append<term_type>);
 		inst.def("save_to", &T::save_to, "Save series to file.");
-		typedef typename piranha::eval_type<T>::type(T::*eval_named)(const double &) const;
-		inst.def("eval", eval_named(&T::eval));
+		inst.def("eval", &T::eval);
 		typedef double(T::*norm_named)() const;
 		inst.def("norm", norm_named(&T::norm));
 		inst.def("atoms", &T::atoms);

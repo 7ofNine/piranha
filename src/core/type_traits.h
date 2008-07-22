@@ -25,22 +25,42 @@
 
 namespace piranha
 {
-	/// Evaluation type trait.
-	/**
-	 * Specifies the type of evaluation: default is double.
-	 */
-	template <class T>
-	struct eval_type {
-		typedef double type;
+	// Fwd declaration.
+	template <class Cf, class Key> class tetd_helper;
+
+	template <class Term>
+	class term_eval_type_determiner
+	{
+		public:
+			typedef typename tetd_helper<typename Term::cf_type::eval_type, typename Term::key_type::eval_type>::type type;
 	};
 
-	/// Complex specialization for evaluation type trait.
-	/**
-	 * Evaluation type is the complex counterpart of real evaluation type.
-	 */
-	template <class T>
-	struct eval_type<std::complex<T> > {
-		typedef std::complex<typename eval_type<T>::type> type;
+	template <class CfEval, class KeyEval>
+	class tetd_helper
+	{
+		public:
+			typedef double type;
+	};
+
+	template <>
+	class tetd_helper<double,std::complex<double> >
+	{
+		public:
+			typedef std::complex<double> type;
+	};
+
+	template <>
+	class tetd_helper<std::complex<double>,double>
+	{
+		public:
+			typedef std::complex<double> type;
+	};
+
+	template <>
+	class tetd_helper<std::complex<double>,std::complex<double> >
+	{
+		public:
+			typedef std::complex<double> type;
 	};
 }
 #endif

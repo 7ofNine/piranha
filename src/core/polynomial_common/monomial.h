@@ -31,10 +31,8 @@ namespace piranha
 	template <class Cf, class Key, char Separator, class Allocator>
 	class monomial: public base_term<Cf, Key, Separator, Allocator, monomial<Cf, Key, Separator, Allocator> >
 	{
-			/// Alias for the ancestor.
+			// Alias for the ancestor.
 			typedef base_term<Cf, Key, Separator, Allocator, monomial> ancestor;
-			/// Alias for evaluation type.
-			typedef typename ancestor::eval_type eval_type;
 		public:
 			PIRANHA_TERM_REBINDER(monomial);
 			/// Alias for coefficient type.

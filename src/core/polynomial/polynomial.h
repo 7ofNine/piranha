@@ -79,8 +79,6 @@ namespace piranha
 		public:
 			using named_ancestor::norm;
 			using base_ancestor::norm;
-			using named_ancestor::eval;
-			using base_ancestor::eval;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -91,8 +89,8 @@ namespace piranha
 			typedef POLYNOMIAL_TERM term_type;
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
-			// Ctors.
-			NAMED_SERIES_CTORS(polynomial, 0);
+			// Boilerplate.
+			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
 }
 
@@ -172,8 +170,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
 			using named_ancestor::norm;
 			using base_ancestor::norm;
-			using named_ancestor::eval;
-			using base_ancestor::eval;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -185,8 +181,8 @@ namespace std
 			typedef COMPLEX_POLYNOMIAL_TERM term_type;
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
-			// Ctors.
-			NAMED_SERIES_CTORS(complex, 0);
+			// Boilerplate and additional ctors.
+			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
 	};
 }
