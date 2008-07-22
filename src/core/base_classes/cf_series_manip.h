@@ -36,7 +36,8 @@ namespace piranha
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 			term_type term(*it);
-			term.pad_right(args_tuple);
+			term.m_cf.pad_right(args_tuple);
+			term.m_key.pad_right(args_tuple);
 			retval.insert(term, args_tuple);
 		}
 		derived_cast->swap_terms(retval);

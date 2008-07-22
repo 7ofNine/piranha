@@ -166,59 +166,6 @@ namespace piranha
 			void dump(const ArgsTuple &args_tuple) const {
 				print(std::cout, args_tuple);
 			}
-			/// Run diagnostic test.
-			/**
-			 * Run a check on the elements of the term based on a tuple of arguments vectors.
-			 *
-			 * @param[in] a tuple of arguments vectors against which checkup is performed.
-			 */
-			template <class ArgumentsTuple>
-			bool checkup(const ArgumentsTuple &a) const {
-				return (m_cf.checkup(a) and m_key.checkup(a));
-			}
-			/// Check whether a term can be ignored when inserting it into a series.
-			/**
-			 * Returns true if at least one of the elements of the term is ignorable.
-			 *
-			 * @param[in] a tuple of arguments vectors against which ignorability is tested.
-			 */
-			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &a) const {
-				return (m_cf.is_ignorable(a) || m_key.is_ignorable(a));
-			}
-			/// Check whether a term can be inserted into a series.
-			/**
-			 * Returns true if the number of arguments provided by the arguments tuple for each element of the term
-			 * is compatible for insertion of the term into a series, false otherwise.
-			 *
-			 * @param[in] a tuple of arguments vectors used for the check.
-			 */
-			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &a) const {
-				return (m_cf.is_insertable(a) && m_key.is_insertable(a));
-			}
-			/// Check whether a term needs padding for insertion into a series.
-			/**
-			 * Returns true if term needs right-padding with zeroes before insertion into series,
-			 * false otherwise.
-			 *
-			 * @param[in] a tuple of arguments vectors used for the check for padding.
-			 */
-			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &a) const {
-				return (m_cf.needs_padding(a) || m_key.needs_padding(a));
-			}
-			/// Pad right all elements of the term.
-			/**
-			 * Padding sizes are taken from arguments tuple.
-			 *
-			 * @param[in] a tuple of arguments vectors used for padding.
-			 */
-			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &a) {
-				m_cf.pad_right(a);
-				m_key.pad_right(a);
-			}
 			/// Equality test.
 			/**
 			 * Equality is defined by the equality of the keys.

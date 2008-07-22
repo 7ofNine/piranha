@@ -53,7 +53,7 @@ namespace piranha
 				term_type term(vs[i], args_tuple);
 				// TODO: most likely this throw can be moved inside the main insert function of base_series,
 				// as soon as we make sure that it won't impact performance too much.
-				if (!term.is_insertable(args_tuple)) {
+				if (!term.m_cf.is_insertable(args_tuple) || !term.m_key.is_insertable(args_tuple)) {
 					throw term_not_insertable("Term not insertable in cf_series.");
 				}
 				derived_cast->insert(term, args_tuple);

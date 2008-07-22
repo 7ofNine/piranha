@@ -76,12 +76,15 @@ namespace piranha
 	{
 		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
-		p_assert(converted_term.result.is_insertable(args_tuple));
+		p_assert(converted_term.result.m_cf.is_insertable(args_tuple) &&
+			converted_term.result.m_key.is_insertable(args_tuple));
 		term_type *new_term(0);
-		if (unlikely(converted_term.result.needs_padding(args_tuple))) {
+		if (unlikely(converted_term.result.m_cf.needs_padding(args_tuple) ||
+			converted_term.result.m_key.needs_padding(args_tuple))) {
 			new_term = term_type::allocator.allocate(1);
 			term_type::allocator.construct(new_term, converted_term.result);
-			new_term->pad_right(args_tuple);
+			new_term->m_cf.pad_right(args_tuple);
+			new_term->m_key.pad_right(args_tuple);
 		}
 		if (CanonicalCheck) {
 			if (!converted_term.result.is_canonical(args_tuple)) {
@@ -127,10 +130,11 @@ namespace piranha
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
-		if (term.is_ignorable(args_tuple)) {
+		if (term.m_cf.is_ignorable(args_tuple) || term.m_key.is_ignorable(args_tuple)) {
 			return;
 		}
-		p_assert(term.is_insertable(args_tuple) && !term.needs_padding(args_tuple) && term.is_canonical(args_tuple));
+		p_assert(term.m_cf.is_insertable(args_tuple) && term.m_key.is_insertable(args_tuple) &&
+			!term.m_cf.needs_padding(args_tuple) && !term.m_key.needs_padding(args_tuple) && term.is_canonical(args_tuple));
 		iterator it(find_term(term));
 		if (it == end()) {
 			// The term is NOT a duplicate, insert in the set.
