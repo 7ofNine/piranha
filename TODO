@@ -12,17 +12,11 @@
 - Coded multiplication with mpz as codes when going out of range?
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
-- add truncators to polynomials, if they do not impact performance too much.
-- enable besselJ for polynomials that are single coefficients without bothering about expo limits.
 - there _is_ a mpz_swap function, check if it is useful.
 - understand the relation between ordering and vector coded performance. For polynomials it increases performance
   a total degree lex order, for poisson series it _seems_ no --> this probably has to do with prefetching, which is destroyed
   in poisson series because of the additional subtraction on the index of the vector. This can be probably optimized
   for poisson series somehow.
-- use effectively a null_truncator in place of the chosen truncator if this is not effective (i.e., it can be
-  established without doubt that the truncator will _not_ truncate anything). This is doubly useful:
-  1) use null truncator for maximum speed when suitable
-  2) avoid sorting if the truncator won't truncate.
 - find a method to establish how to cache a coefficient vector during multiplication if appropriate.
 - optimize for small series --> there's no need to avoid direct insertion in series, since we do
   not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
@@ -40,6 +34,5 @@
   function in python using numpy (supposedly fast) array classes.
 - Watch out for trim! We do not want to ever get it called into the anonymous interface, because it could mess up badly
   the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.
-- Eval_type -> generalise
-- power series truncator!!!!
-- maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them.
+- maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them - Yes, but caching may
+  have a non-negligible cost. Must do speed test.
