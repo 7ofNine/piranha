@@ -56,7 +56,7 @@ namespace piranha
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
 					typedef proxy type;
-					proxy(const expo_array &e): proxy_ancestor(e) {}
+					proxy(const expo_array &e): proxy_ancestor(e),m_norm_cached(false) {}
 					// Expo-array specifics.
 					void multiply(proxy e2, expo_array &ret) const {
 						proxy_ancestor::m_ptr->multiply(e2, ret);
@@ -72,6 +72,17 @@ namespace piranha
 					max_fast_int min_expo_of(const int &n, const ArgsTuple &a) const {
 						return proxy_ancestor::m_ptr->min_expo_of(n, a);
 					}
+					template <class ArgsTuple>
+					const double &norm(const ArgsTuple &args_tuple) const {
+						if (!m_norm_cached) {
+							m_norm = proxy_ancestor::m_ptr->norm(args_tuple);
+							m_norm_cached = true;
+						}
+						return m_norm;
+					}
+				private:
+					mutable bool	m_norm_cached;
+					mutable double	m_norm;
 			};
 			// Ctors.
 			/// Default ctor.
