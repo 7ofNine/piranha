@@ -33,14 +33,19 @@
 
 namespace pyranha
 {
+	template <class CfKey>
+	inline double py_cfkey_norm(const CfKey &cfkey)
+	{
+		return cfkey.norm(piranha::shared_args::get());
+	}
+
 	// TODO: Do _not_ provide a free or py_interface in classes, use wrappers here.
 	// In the wrappers error checks can be performed.
 	template <class Cf>
 	inline boost::python::class_<Cf> cf_bindings(const std::string &name, const std::string &description)
 	{
 		boost::python::class_<Cf> cf_inst(name.c_str(), description.c_str());
-		typedef double(Cf::*norm_free)() const;
-		cf_inst.def("norm", norm_free(&Cf::norm), "Norm.");
+		cf_inst.def("norm", &py_cfkey_norm<Cf>, "Norm.");
 		cf_inst.def("atoms", &Cf::atoms, "Number of atoms.");
 		return cf_inst;
 	}
@@ -79,12 +84,6 @@ namespace pyranha
 			throw piranha::unsuitable("Index of integer array key is out of range");
 		}
 		return v[n];
-	}
-
-	template <class CfKey>
-	inline double py_cfkey_norm(const CfKey &cfkey)
-	{
-		return cfkey.norm(piranha::shared_args::get());
 	}
 
 	template <class IntArrayKey>

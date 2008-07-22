@@ -25,10 +25,8 @@
 #include <iostream>
 #include <string>
 
-#include "base_series.h"
 #include "../integer_typedefs.h" // For ctor macros
-#include "../exceptions.h"
-#include "../type_traits.h" // For specialisation of type trait
+#include "base_series.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -85,8 +83,6 @@ namespace piranha
 			// Interaction with proxy.
 			template <class Series, class ArgsTuple>
 			Derived &mult_by(const reference_proxy<Series> &, const ArgsTuple &);
-			// Free interface.
-			double norm() const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

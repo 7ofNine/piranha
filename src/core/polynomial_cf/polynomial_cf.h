@@ -70,8 +70,6 @@ namespace piranha
 		public:
 			using POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
 			using POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
-			using POLYNOMIAL_CF_BASE_ANCESTOR::norm;
-			using POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
 			CF_SERIES_CTORS(polynomial_cf);
@@ -124,8 +122,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::norm;
-			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.

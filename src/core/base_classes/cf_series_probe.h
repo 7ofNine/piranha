@@ -21,7 +21,6 @@
 #ifndef PIRANHA_CF_SERIES_PROBE_H
 #define PIRANHA_CF_SERIES_PROBE_H
 
-#include "../shared_args.h"
 #include "../p_assert.h"
 
 namespace piranha
@@ -47,12 +46,6 @@ namespace piranha
 	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_ignorable(const ArgsTuple &) const
 	{
 		return (derived_const_cast->empty());
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm() const
-	{
-		return derived_const_cast->norm(shared_args::get());
 	}
 }
 
