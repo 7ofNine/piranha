@@ -138,13 +138,9 @@ namespace piranha
 				return retval;
 			}
 			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_type::template rebind <
-			typename Series::term_type::cf_type::proxy::type,
-			typename Series::term_type::key_type::proxy::type >::type >
+			std::vector<typename Series::term_proxy_type>
 			get_sorted_proxy_vector(const ArgsTuple &args_tuple) const {
-				typedef typename Derived::term_type::template rebind < typename Derived::term_type::cf_type::proxy::type,
-					typename Derived::term_type::key_type::proxy::type >::type term_proxy_type;
-				std::vector<term_proxy_type> retval(derived_const_cast->cache_proxies());
+				std::vector<typename Derived::term_proxy_type> retval(derived_const_cast->cache_proxies());
 				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;
 			}

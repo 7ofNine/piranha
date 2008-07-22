@@ -43,7 +43,6 @@ namespace piranha
 			class proxy: public proxy_ancestor
 			{
 				public:
-					typedef proxy type;
 					proxy(const Derived &s): proxy_ancestor(s), m_min_expos_cached(false),m_norm_cached(false) {
 						m_min_degree = proxy_ancestor::m_ptr->min_degree();
 					}

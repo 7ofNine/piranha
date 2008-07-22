@@ -71,7 +71,6 @@ namespace piranha
 	{
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class POISSON_SERIES_NAMED_ANCESTOR;
 			friend class POISSON_SERIES_BASE_ANCESTOR;
 			friend class POISSON_SERIES_MULT_ANCESTOR;
@@ -93,7 +92,6 @@ namespace piranha
 			using base_ancestor::partial;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
 			// Needed typedefs.
-			typedef POISSON_SERIES_TERM term_type;
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
@@ -138,7 +136,7 @@ namespace std
 	{
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			typedef COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			friend class COMPLEX_POISSON_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
@@ -186,9 +184,6 @@ namespace std
 			using base_ancestor::partial;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
 			// Needed typedefs.
-			typedef POISSON_SERIES value_type;
-			// Needed typedefs.
-			typedef COMPLEX_POISSON_SERIES_TERM term_type;
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);

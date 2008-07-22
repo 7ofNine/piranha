@@ -66,7 +66,6 @@ namespace piranha
 	{
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class POLYNOMIAL_NAMED_ANCESTOR;
 			friend class POLYNOMIAL_BASE_ANCESTOR;
 			friend class POLYNOMIAL_MULT_ANCESTOR;
@@ -86,7 +85,6 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef POLYNOMIAL_TERM term_type;
 			typedef typename Multiplier::template get_type < polynomial, polynomial,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Boilerplate.
@@ -132,7 +130,7 @@ namespace std
 	{
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			typedef COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			friend class COMPLEX_POLYNOMIAL_NAMED_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
@@ -177,8 +175,6 @@ namespace std
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef POLYNOMIAL value_type;
-			typedef COMPLEX_POLYNOMIAL_TERM term_type;
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Boilerplate and additional ctors.

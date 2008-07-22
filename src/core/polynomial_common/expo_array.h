@@ -56,7 +56,6 @@ namespace piranha
 					friend class expo_array;
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
-					typedef proxy type;
 					proxy(const expo_array &e): proxy_ancestor(e),m_norm_cached(false) {}
 					// Expo-array specifics.
 					void multiply(proxy e2, expo_array &ret) const {

@@ -54,7 +54,6 @@ namespace piranha
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 					friend class trig_array;
 				public:
-					typedef proxy type;
 					proxy(const trig_array &t): proxy_ancestor(t) {}
 					// These are trig_array specific.
 					bool flavour() const {

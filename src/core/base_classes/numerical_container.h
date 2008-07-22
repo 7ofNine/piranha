@@ -64,11 +64,7 @@ namespace piranha
 	{
 			friend class numerical_container_complex_toolbox<Derived>;
 		public:
-			class proxy
-			{
-				public:
-					typedef Derived type;
-			};
+			typedef Derived proxy;
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
 			typedef T numerical_type;
 			// Ctors.

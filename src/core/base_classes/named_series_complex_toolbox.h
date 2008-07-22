@@ -119,10 +119,10 @@ namespace piranha
 		base_ancestor::construct_from_number(cx,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \
 	} \
-	explicit complex(const value_type &r) { \
+	explicit complex(const typename base_complex_toolbox::value_type &r) { \
 		complex_toolbox::construct_from_real(r); \
 	} \
-	explicit complex(const value_type &r, const value_type &i) { \
+	explicit complex(const typename base_complex_toolbox::value_type &r, const typename base_complex_toolbox::value_type &i) { \
 		complex_toolbox::construct_from_real_imag(r, i); \
 	}
 }

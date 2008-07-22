@@ -111,10 +111,10 @@ namespace piranha
 	{ \
 		base_ancestor::construct_from_number(x,a); \
 	} \
-	series_name(const proxy &p) { \
+	series_name(const typename common_ancestor::proxy &p) { \
 		*this = p.get_const_reference(); \
 	} \
-	series_name &operator=(const proxy &p) { \
+	series_name &operator=(const typename common_ancestor::proxy &p) { \
 		*this = p.get_const_reference(); \
 		return *this; \
 	}
@@ -129,11 +129,11 @@ namespace piranha
 		base_ancestor::construct_from_number(cx,a); \
 	} \
 	template <class ArgsTuple> \
-	explicit complex(const value_type &r, const ArgsTuple &a) { \
+	explicit complex(const typename base_complex_toolbox::value_type &r, const ArgsTuple &a) { \
 		complex_toolbox::construct_from_real(r,a); \
 	} \
 	template <class ArgsTuple> \
-	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &a) { \
+	explicit complex(const typename base_complex_toolbox::value_type &r, const typename base_complex_toolbox::value_type &i, const ArgsTuple &a) { \
 		complex_toolbox::construct_from_real_imag(r, i, a); \
 	}
 

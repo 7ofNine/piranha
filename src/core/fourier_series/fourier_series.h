@@ -63,7 +63,6 @@ namespace piranha
 	{
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
 			friend class FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class FOURIER_SERIES_BASE_ANCESTOR;
 			friend class FOURIER_SERIES_MULT_ANCESTOR;
@@ -84,9 +83,8 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef FOURIER_SERIES_TERM term_type;
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
-			args_tuple_type, Truncator > multiplier_type;
+			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
@@ -128,7 +126,7 @@ namespace std
 	{
 			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef typename named_ancestor::args_tuple_type args_tuple_type;
+			typedef COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			friend class COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_FOURIER_SERIES_BASE_ANCESTOR;
 			friend class COMPLEX_FOURIER_SERIES_MULT_ANCESTOR;
@@ -173,10 +171,8 @@ namespace std
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			// Needed typedefs.
-			typedef FOURIER_SERIES value_type;
-			typedef COMPLEX_FOURIER_SERIES_TERM term_type;
 			typedef typename Multiplier::template get_type < complex, complex,
-			args_tuple_type, Truncator > multiplier_type;
+			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
 	};

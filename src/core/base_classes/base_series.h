@@ -51,23 +51,24 @@ namespace piranha
 	class base_series
 	{
 			// Alias for term type.
-			typedef Term term_type;
+			typedef Term term_type_;
 			// Alias for coefficient type.
-			typedef typename term_type::cf_type cf_type;
+			typedef typename term_type_::cf_type cf_type;
 			// Alias for key type.
-			typedef typename term_type::key_type key_type;
+			typedef typename term_type_::key_type key_type;
 			// Alias for allocator type.
 			typedef Allocator allocator_type;
 			// Term container.
-			typedef boost::multi_index_container < term_type,
+			typedef boost::multi_index_container < term_type_,
 			boost::multi_index::indexed_by
 			<
-			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type> >
+			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type_> >
 			>,
-			typename allocator_type::template rebind<term_type>::other > container_type;
-			typedef typename term_type::template rebind < typename cf_type::proxy::type,
-			typename key_type::proxy::type >::type term_proxy_type;
+			typename allocator_type::template rebind<term_type_>::other > container_type;
 		public:
+			typedef term_type_ term_type;
+			typedef typename term_type::template rebind < typename cf_type::proxy,
+			typename key_type::proxy >::type term_proxy_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			class iterator
 			{

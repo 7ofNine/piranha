@@ -52,8 +52,7 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				typedef typename Derived::term_type term_type;
-				typedef typename term_type::template rebind < typename term_type::cf_type::proxy::type,
-				typename term_type::key_type::proxy::type >::type term_proxy_type;
+				typedef typename Derived::term_proxy_type term_proxy_type;
 				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {

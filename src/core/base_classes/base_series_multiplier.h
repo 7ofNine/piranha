@@ -64,10 +64,8 @@ namespace piranha
 			mult_set;
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
-			typedef typename term_type1::template rebind < typename term_type1::cf_type::proxy::type,
-			typename term_type1::key_type::proxy::type >::type term_proxy_type1;
-			typedef typename term_type2::template rebind < typename term_type2::cf_type::proxy::type,
-			typename term_type2::key_type::proxy::type >::type term_proxy_type2;
+			typedef typename Series1::term_proxy_type term_proxy_type1;
+			typedef typename Series2::term_proxy_type term_proxy_type2;
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),

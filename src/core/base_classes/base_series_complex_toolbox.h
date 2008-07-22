@@ -37,6 +37,7 @@ namespace piranha
 	{
 			typedef std::complex<RealDerived> Derived;
 		public:
+			typedef RealDerived value_type;
 			template <class ArgsTuple>
 			RealDerived real(const ArgsTuple &args_tuple) const {
 				return get_comp<0>(args_tuple);

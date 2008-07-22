@@ -58,8 +58,7 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
-				typedef typename term_type::template rebind < typename term_type::cf_type::proxy::type,
-				typename term_type::key_type::proxy::type >::type term_proxy_type;
+				typedef typename Derived::term_proxy_type term_proxy_type;
 				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
 				// Cache and sort the terms.
 				std::vector<term_proxy_type> cache(derived_const_cast->cache_proxies());

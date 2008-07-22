@@ -59,6 +59,7 @@ namespace piranha
 	{
 			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
+			typedef POLYNOMIAL_CF_COMMON_ANCESTOR common_ancestor;
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -72,9 +73,7 @@ namespace piranha
 			using POLYNOMIAL_CF_BASE_ANCESTOR::norm;
 			using POLYNOMIAL_CF_CF_ANCESTOR::norm;
 			// Needed typedefs.
-			typedef POLYNOMIAL_CF_TERM term_type;
 			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
-			typedef typename POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -89,7 +88,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>
 #define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::power_series<0, 1, COMPLEX_POLYNOMIAL_CF >
-#define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POLYNOMIAL_CF >
+#define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF >
 #define COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR piranha::common_polynomial_cf_toolbox< COMPLEX_POLYNOMIAL_CF >
 
@@ -102,11 +101,13 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX,
+				public COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR
 	{
 			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
+			typedef COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR common_ancestor;
+			typedef COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
@@ -116,24 +117,21 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
 		public:
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::add;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::subtract;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::subtract;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::norm;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::norm;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			// Needed typedefs.
-			typedef POLYNOMIAL_CF value_type;
-			typedef COMPLEX_POLYNOMIAL_CF_TERM term_type;
 			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;
-			typedef typename COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::proxy proxy;
 			CF_SERIES_CTORS(complex);
-			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX);
+			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
 				base_ancestor::construct_from_psym_p(p, n, a);

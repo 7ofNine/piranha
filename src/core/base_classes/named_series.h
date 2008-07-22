@@ -187,18 +187,18 @@ namespace piranha
 		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \
 	} \
-	explicit series_name(const piranha::max_fast_int &n, const args_tuple_type &args_tuple) \
+	explicit series_name(const piranha::max_fast_int &n, const typename named_ancestor::args_tuple_type &args_tuple) \
 	{ \
 		base_ancestor::construct_from_number(n,args_tuple); \
 	} \
-	explicit series_name(const double &x, const args_tuple_type &args_tuple) \
+	explicit series_name(const double &x, const typename named_ancestor::args_tuple_type &args_tuple) \
 	{ \
 		base_ancestor::construct_from_number(x,args_tuple); \
 	} \
 	explicit series_name(const piranha::psym &p) { \
 		named_ancestor::template construct_from_psym<N>(p); \
 	} \
-	typename piranha::term_eval_type_determiner<term_type>::type eval(const double &t) const { \
+	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
 		return base_ancestor::eval(t,named_ancestor::m_arguments); \
 	}
 }
