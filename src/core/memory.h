@@ -21,7 +21,6 @@
 #ifndef PIRANHA_MEMORY_H
 #define PIRANHA_MEMORY_H
 
-#include <boost/static_assert.hpp>
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
@@ -44,6 +43,17 @@ namespace piranha
 		return retval;
 	}
 
+	template <int Alignment>
+	inline void memory_alignment_checks() {
+		p_static_check(Alignment > 0, "Memory alignment must be strictly positive.");
+		// Test that Alignment is a multiple of the size of pointers.
+		p_static_check(Alignment % sizeof(void *) == 0, "Memory alignment must be a multiple of sizeof(void *).");
+		// Test that Alignment is at least as big as the size of pointers.
+		p_static_check(Alignment >= sizeof(void *), "Memory alignment must be equal to or greater than sizeof(void *).");
+		// Test that Alignment is a power of 2.
+		p_static_check(lg<Alignment>::value > 0, "Memory alignment must be a multiple of 2.");
+	}
+
 	/// Low level memory allocation function supporting alignment specification.
 	/**
 	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
@@ -51,20 +61,15 @@ namespace piranha
 	template <int Alignment>
 	inline void *piranha_malloc(const size_t &size)
 	{
-		BOOST_STATIC_ASSERT(Alignment > 0);
-		// Test that Alignment is a multiple of the size of pointers.
-		BOOST_STATIC_ASSERT(Alignment % sizeof(void *) == 0);
-		// Test that Alignment is at least as big as the size of pointers.
-		BOOST_STATIC_ASSERT(Alignment >= sizeof(void *));
-		// Test that Alignment is a power of 2.
-		BOOST_STATIC_ASSERT(lg<Alignment>::value > 0);
+		memory_alignment_checks<Alignment>();
 		void *ptr;
-		switch (unlikely(__ALIGNED_MALLOC(&ptr, Alignment, size) == 0)) {
-		case true:
+#ifdef _PIRANHA_WIN32
+		ptr = _aligned_malloc(size,Alignment);
+		if (unlikely(ptr == NULL)) {
+#else
+		if (unlikely(posix_memalign(&ptr,Alignment,size) != 0)) {
+#endif
 			throw std::bad_alloc();
-			break;
-		case false:
-			;
 		}
 		return ptr;
 	}
@@ -76,6 +81,17 @@ namespace piranha
 	inline void piranha_free(void *ptr)
 	{
 		free(ptr);
+	}
+
+	// To be used in conjunction with the aligning piranha_malloc.
+	template <int Alignment>
+	inline void piranha_free(void *ptr) {
+		memory_alignment_checks<Alignment>();
+#ifdef _PIRANHA_WIN32
+		_aligned_free(ptr);
+#else
+		free(ptr);
+#endif
 	}
 }
 

@@ -43,10 +43,10 @@
 
 // Platform switches.
 #ifdef _PIRANHA_WIN32
-#define __ALIGNED_MALLOC(p,a,s) p=malloc(s)
+#include <malloc.h> // _aligned_malloc
 #define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
-#define __ALIGNED_MALLOC(p,a,s) posix_memalign(p,a,s)
+#include <cstdlib> // posix_memalign
 #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
