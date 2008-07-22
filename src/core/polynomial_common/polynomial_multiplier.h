@@ -83,10 +83,7 @@ namespace piranha
 					typedef ArgsTuple args_tuple_type;
 					typedef typename Truncator::template get_type<get_type> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {
-// 						std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
-// 						std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_degree_comparison());
-					}
+							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {}
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication() {
 						coded_ancestor::find_input_min_max();
@@ -98,6 +95,8 @@ namespace piranha
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
+							std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
+							std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_degree_comparison());
 							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
 						}
 					}

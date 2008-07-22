@@ -80,6 +80,9 @@ namespace piranha
 						}
 						return m_norm;
 					}
+					bool operator<(const proxy &p) const {
+						return *proxy_ancestor::m_ptr < *p.m_ptr;
+					}
 				private:
 					mutable bool	m_norm_cached;
 					mutable double	m_norm;
