@@ -21,6 +21,8 @@
 #ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 #define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
 
+#include <cmath>
+
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
 
@@ -32,7 +34,13 @@ namespace piranha
 	template <class Derived>
 	class common_polynomial_toolbox:
 		public binomial_exponentiation_toolbox<Derived,term_key_degree_comparison>
-	{};
+	{
+		public:
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &args_tuple) const {
+				return std::abs(derived_const_cast->eval(0,args_tuple));
+			}
+	};
 }
 
 #undef derived_const_cast
