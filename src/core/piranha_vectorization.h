@@ -22,9 +22,11 @@
 #define PIRANHA_VECTORIZATION_H
 
 #ifdef _PIRANHA_SSE2
+#ifdef __GNUC__
 #include <emmintrin.h>
+#else
+#error No SSE2 support available for this compiler
+#endif // __GNUC__
+#endif // _PIRANHA_SSE2
 
-
-
-#endif
-#endif
+#endif // PIRANHA_VECTORIZATION_H

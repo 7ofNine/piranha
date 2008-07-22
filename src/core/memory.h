@@ -56,7 +56,8 @@ namespace piranha
 
 	/// Low level memory allocation function supporting alignment specification.
 	/**
-	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
+	 * Thin wrapper around a platform-specific memory aligning function, will throw an
+	 * instance of std::bad_alloc if allocation fails.
 	 */
 	template <int Alignment>
 	inline void *piranha_malloc(const size_t &size)

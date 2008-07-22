@@ -34,6 +34,7 @@
 #include "../base_classes/null_truncator.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
+#include "../piranha_vectorization.h"
 #include "../settings.h" // For debug.
 
 namespace piranha
