@@ -71,23 +71,20 @@ namespace piranha
 						try {
 							return expo_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (const not_existing &ne) {
-							msg += ne.what() + "\n";
-						}
-						catch (const unsuitable &u) {
-							msg += u.what() + "\n";
+						catch (const base_exception &b) {
+							msg += b.what() + "\n";
 						}
 						try {
 							return degree_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (const unsuitable &u) {
-							msg += u.what() + "\n";
+						catch (const base_exception &b) {
+							msg += b.what() + "\n";
 						}
 						try {
 							return norm_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}
-						catch (const unsuitable &u) {
-							msg += u.what() + "\n";
+						catch (const base_exception &b) {
+							msg += b.what() + "\n";
 						}
 						throw unsuitable(msg);
 					}

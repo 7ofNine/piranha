@@ -204,16 +204,16 @@ namespace piranha
 		if (empty()) {
 			if (y < 0) {
 				throw division_by_zero();
-				// 0**0 == 1.
 			} else if (y == 0) {
+				// 0**0 == 1.
 				retval = Derived((max_fast_int)1, args_tuple);
 				return true;
-				// 0**n == 0, with n > 0.
 			} else {
+				// 0**n == 0, with n > 0.
 				return true;
 			}
-			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 		} else if (length() == 1) {
+			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
 			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
 			return true;
@@ -227,14 +227,12 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		if (!common_power_handler(n, retval, args_tuple)) {
-			if (n >= 0) {
-				Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
-				retval.swap_terms(tmp);
-			} else {
-				Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
-				retval.swap_terms(tmp);
-			}
+		if (n >= 0) {
+			Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+			retval.swap_terms(tmp);
+		} else if (!common_power_handler(n, retval, args_tuple)) {
+			Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+			retval.swap_terms(tmp);
 		}
 		return retval;
 	}
@@ -344,12 +342,12 @@ namespace piranha
 		if (empty()) {
 			if (n < 0) {
 				throw division_by_zero();
-				// 0**n == 0, with n > 0.
 			} else {
+				// 0**n == 0, with n > 0.
 				return true;
 			}
-			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 		} else if (length() == 1) {
+			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
 			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
 			return true;

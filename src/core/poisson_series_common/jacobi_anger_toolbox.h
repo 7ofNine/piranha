@@ -23,6 +23,7 @@
 
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
+#include <string>
 #include <vector>
 
 #include "../config.h"
@@ -64,7 +65,13 @@ namespace piranha
 				// The Jacobi-Anger development is a development into bessel functions of the first kind starting
 				// from zero and increasing in unity steps, hence the power_series_limit function can be used
 				// straightforwardly.
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(it->m_cf, args_tuple);
+				size_t n;
+				try {
+					n = Derived::multiplier_type::truncator_type::power_series_limit(it->m_cf, args_tuple);
+				} catch (const base_exception &b) {
+					throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
+						"The reported error was:\n")+b.what());
+				}
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
