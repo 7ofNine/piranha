@@ -89,11 +89,6 @@ namespace piranha
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(*this);
-						if (ancestor::m_terms1.size() < 10 && ancestor::m_terms2.size() < 10) {
-							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
-							ancestor::perform_plain_multiplication(trunc);
-							return;
-						}
 						coded_ancestor::find_input_min_max();
 						calculate_result_min_max();
 						coded_ancestor::determine_viability();
@@ -109,7 +104,10 @@ namespace piranha
 				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
-						if (coded_ancestor::m_cr_is_viable) {
+						if (ancestor::m_terms1.size() < 10 && ancestor::m_terms2.size() < 10) {
+							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
+							ancestor::perform_plain_multiplication(trunc);
+						} else if (coded_ancestor::m_cr_is_viable) {
 							// Here we should be ok, since we know that the two sizes are greater than zero and even
 							// if we divide by zero we should get Inf, which is fine for our purposes.
 							const double density = (static_cast<double>(ancestor::m_size1) * ancestor::m_size2) /
