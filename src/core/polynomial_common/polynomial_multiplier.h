@@ -86,12 +86,17 @@ namespace piranha
 							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {}
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication() {
-						coded_ancestor::find_input_min_max();
-						calculate_result_min_max();
-						coded_ancestor::determine_viability();
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(*this);
+						if (ancestor::m_terms1.size() < 10 && ancestor::m_terms2.size() < 10) {
+							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
+							ancestor::perform_plain_multiplication(trunc);
+							return;
+						}
+						coded_ancestor::find_input_min_max();
+						calculate_result_min_max();
+						coded_ancestor::determine_viability();
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {

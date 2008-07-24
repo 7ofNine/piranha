@@ -28,23 +28,10 @@ namespace piranha
 	class base_insert_multiplication_result
 	{
 		protected:
-			template <class SingleRes, class BaseMultiplier, class Truncator>
-			static void insert_single_res(const SingleRes &res, BaseMultiplier &m, const Truncator &trunc) {
-				const typename BaseMultiplier::mult_set::const_iterator it = m.m_set.find(res);
-				switch (trunc.accept(res)) {
-				case true:
-					switch (it == m.m_set.end()) {
-						// Not duplicate, insert it.
-					case true:
-						m.m_set.insert(res);
-						break;
-						// Duplicate, modify existing.
-					case false:
-						it->m_cf.add(res.m_cf, m.m_args_tuple);
-					}
-					break;
-				case false:
-					;
+			template <class SingleRes, class Series, class Truncator, class ArgsTuple>
+			static void insert_single_res(const SingleRes &res, Series &s, const Truncator &trunc, const ArgsTuple &args_tuple) {
+				if (trunc.accept(res)) {
+					s.insert(res,args_tuple);
 				}
 			}
 	};
@@ -54,10 +41,10 @@ namespace piranha
 	class insert_multiplication_result: public base_insert_multiplication_result
 	{
 		public:
-			template <class BaseMultiplier, class Truncator>
-			static void run(const ResultTuple &mult_res, BaseMultiplier &m, const Truncator &trunc) {
-				insert_single_res(mult_res.get_head(), m, trunc);
-				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), m, trunc);
+			template <class Series, class Truncator, class ArgsTuple>
+			static void run(const ResultTuple &mult_res, Series &s, const Truncator &trunc, const ArgsTuple &args_tuple) {
+				insert_single_res(mult_res.get_head(), s, trunc, args_tuple);
+				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, trunc, args_tuple);
 			}
 	};
 
@@ -65,8 +52,8 @@ namespace piranha
 	class insert_multiplication_result<boost::tuples::null_type>
 	{
 		public:
-			template <class BaseMultiplier, class Truncator>
-			static void run(const boost::tuples::null_type &, BaseMultiplier &, const Truncator &) {}
+			template <class Series, class Truncator, class ArgsTuple>
+			static void run(const boost::tuples::null_type &, Series &, const Truncator &, const ArgsTuple &) {}
 	};
 }
 

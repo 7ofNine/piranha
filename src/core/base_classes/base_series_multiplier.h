@@ -21,9 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_MULTIPLIER_H
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/identity.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <vector>
 
@@ -74,17 +71,9 @@ namespace piranha
 				// Set proper load factor for hash set.
 				m_set.max_load_factor(settings::load_factor());
 			}
-		protected:
-			/// Plain multiplication.
-			template <class GenericTruncator>
-			void perform_plain_multiplication(const GenericTruncator &trunc) {
-				plain_multiplication(trunc);
-				plain_insert_result_into_retval();
-			}
-		private:
 			// Perform plain multiplication.
 			template <class GenericTruncator>
-			void plain_multiplication(const GenericTruncator &trunc) {
+			void perform_plain_multiplication(const GenericTruncator &trunc) {
 				typedef typename term_type1::multiplication_result mult_res;
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
@@ -93,20 +82,8 @@ namespace piranha
 							break;
 						}
 						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
-						insert_multiplication_result<mult_res>::run(res, *this, trunc);
+						insert_multiplication_result<mult_res>::run(res, m_retval, trunc, m_args_tuple);
 					}
-				}
-			}
-			// After the multiplication has been performed and the result stored in the temporary hash table,
-			// fetch the terms from there and put them into retval.
-			void plain_insert_result_into_retval() {
-				typedef typename mult_set::const_iterator hash_iterator;
-				term_type1 term;
-				const hash_iterator it_f = m_set.end();
-				for (hash_iterator it = m_set.begin(); it != it_f; ++it) {
-					term.m_cf = it->m_cf;
-					term.m_key = it->m_key;
-					m_retval.template insert<false, true>(term, m_args_tuple);
 				}
 			}
 		public:
