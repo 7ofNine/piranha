@@ -22,11 +22,6 @@
   not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
   copies that are performed for longer series.
 - TRIM
-- vectorization through repetition:
-  [cf1] --> [cf2]	[cf1] --> [cf4]
-  [cf1] --> [cf3]	[cf1] --> [cf5]
-- rework poly norm as abs(evaluation at zero time)?
-- Move everything about the backbone container into base series?
 - Share the implementation of filter in C++ and python using virtual function ovverride?
 - Uniform naming scheme in C++ and python.
 - Use wrappers everywhere for the exposition of functionality in python.
@@ -36,3 +31,4 @@
   the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.
 - maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them - Yes, but caching may
   have a non-negligible cost. Must do speed test.
+- caching for lightweight coefficients in multipliers.
