@@ -21,10 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_H
 #define PIRANHA_BASE_SERIES_H
 
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/identity.hpp>
-#include <boost/multi_index/indexed_by.hpp>
-#include <boost/multi_index_container.hpp>
+#include <boost/unordered_set.hpp>
+#include <functional> // For std::equal_to.
 #include <vector>
 
 #include "../config.h"
@@ -57,14 +55,10 @@ namespace piranha
 			// Alias for key type.
 			typedef typename term_type_::key_type key_type;
 			// Alias for allocator type.
-			typedef Allocator allocator_type;
+			typedef typename Allocator::template rebind<term_type_>::other allocator_type;
 			// Term container.
-			typedef boost::multi_index_container < term_type_,
-			boost::multi_index::indexed_by
-			<
-			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type_> >
-			>,
-			typename allocator_type::template rebind<term_type_>::other > container_type;
+			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
+				container_type;
 		public:
 			typedef term_type_ term_type;
 			typedef typename term_type::template rebind < typename cf_type::proxy,
@@ -76,6 +70,7 @@ namespace piranha
 			const_iterator begin() const;
 			iterator end();
 			const_iterator end() const;
+			iterator find_term(const term_type &);
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
@@ -154,7 +149,6 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
 		private:
-			iterator find_term(const term_type &);
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
