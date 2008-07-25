@@ -25,6 +25,7 @@
 #include <boost/python/class.hpp>
 #include <string>
 
+#include "../src/core/exceptions.h"
 #include "../src/core/numerical_coefficients/double_cf.h"
 #include "../src/core/numerical_coefficients/mpq_cf.h"
 #include "../src/core/numerical_coefficients/mpz_cf.h"
@@ -36,6 +37,10 @@ namespace pyranha
 	template <class CfKey>
 	inline double py_cfkey_norm(const CfKey &cfkey)
 	{
+		if (!cfkey.is_insertable(piranha::shared_args::get())) {
+			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the norm "
+				"of this coefficient/key.");
+		}
 		return cfkey.norm(piranha::shared_args::get());
 	}
 
@@ -56,6 +61,7 @@ namespace pyranha
 	{
 		boost::python::class_<std::complex<Cf> > cf_inst(cf_bindings<std::complex<Cf> >(name, description));
 		typedef Cf(std::complex<Cf>::*comp_free)() const;
+		// TODO: ditch this free interface, use wrappers.
 		cf_inst.def("real", comp_free(&std::complex<Cf>::real), "Real part.");
 		cf_inst.def("imag", comp_free(&std::complex<Cf>::imag), "Imaginary part.");
 		return cf_inst;
@@ -104,12 +110,20 @@ namespace pyranha
 	template <class TrigArray>
 	inline double py_trigarray_freq(const TrigArray &t)
 	{
+		if (!t.is_insertable(piranha::shared_args::get())) {
+			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the frequency "
+				"of this trigonometric array.");
+		}
 		return t.freq(piranha::shared_args::get());
 	}
 
 	template <class TrigArray>
 	inline double py_trigarray_phase(const TrigArray &t)
 	{
+		if (!t.is_insertable(piranha::shared_args::get())) {
+			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the phase "
+				"of this trigonometric array.");
+		}
 		return t.phase(piranha::shared_args::get());
 	}
 
