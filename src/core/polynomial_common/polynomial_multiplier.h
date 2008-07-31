@@ -22,6 +22,7 @@
 #define PIRANHA_POLYNOMIAL_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/scoped_array.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -33,7 +34,7 @@
 #include "../base_classes/coded_series_hash_table.h"
 #include "../base_classes/null_truncator.h"
 #include "../integer_typedefs.h"
-#include "../memory.h"
+#include "../p_assert.h"
 #include "../settings.h" // For debug.
 
 namespace piranha
@@ -151,28 +152,22 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					bool perform_vector_coded_multiplication(const GenericTruncator &trunc) {
-						cf_type1 *p_vc_res(0);
+						boost::scoped_array<cf_type1> p_vc_res(0);
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
-						const size_t n_codes = (size_t)(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
+						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
+						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
 						try {
-							p_vc_res = (cf_type1 *)piranha_malloc(sizeof(cf_type1) * n_codes);
-							// Reset memory area. Use positional new so that if cf is a class with non-trivial ctors,
-							// we are sure it will be initialized properly. We want to make sure the coefficients are 
-							// initialized to zero in order to accumulate monomials during multiplication.
-							for (size_t i = 0; i < n_codes; ++i) {
-								::new(p_vc_res + i) cf_type1((max_fast_int)0, ancestor::m_args_tuple);
-							}
+							p_vc_res.reset(new cf_type1[n_codes]);
 						} catch (const std::bad_alloc &) {
-							piranha_free(p_vc_res);
 							return false;
 						}
 						__PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
 						// Define the base pointers for storing the results of multiplication.
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-						cf_type1 *vc_res =  p_vc_res - coded_ancestor::m_h_min;
+						cf_type1 *vc_res =  p_vc_res.get() - coded_ancestor::m_h_min;
 						// Perform multiplication.
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							const max_fast_int index1 = coded_ancestor::m_ckeys1[i];
@@ -203,13 +198,6 @@ namespace piranha
 								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
 							}
 						}
-						// Call dtors for the coefficients in the allocated space.
-						// This is necessary for non-trivial coefficients.
-						for (size_t i = 0; i < n_codes; ++i) {
-							(p_vc_res + i)->~cf_type1();
-						}
-						// Free the allocated space.
-						piranha_free(p_vc_res);
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
 						return true;
 					}
@@ -268,7 +256,7 @@ namespace piranha
 				public:
 					// Temporary key used for the decodification in the truncator.
 					// It is mutable because it is used as temporary decodification area.
-					mutable typename term_type1::key_type	m_tmp_key;
+					mutable typename term_type1::key_type m_tmp_key;
 			};
 	};
 }
