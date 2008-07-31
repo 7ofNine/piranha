@@ -148,7 +148,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())
 	.def("__iter__", iterator<psyms, return_internal_reference<> >()).staticmethod("__iter__")
 	.def("__len__", &psyms::length).staticmethod("__len__")
-	.def("__repr__", &psyms::py_repr)
+	.def("__repr__", &py_print_to_string<psyms>)
 	.def("get", &psyms::get).staticmethod("get");
 
 	// Psym.
