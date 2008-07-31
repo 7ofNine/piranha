@@ -92,8 +92,6 @@ namespace piranha
 			Derived sub(const psym &, const SubSeries &) const;
 			// Used in pyranha.
 			std::string py_repr() const;
-			template <class Term2>
-			void py_append(const Term2 &);
 			std::string py_arguments_description() const;
 			args_tuple_type py_arguments() const;
 			void py_shared_arguments_set() const;

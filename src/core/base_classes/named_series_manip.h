@@ -62,13 +62,6 @@ namespace piranha
 		}
 	}
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Term2>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_append(const Term2 &t2)
-	{
-		derived_cast->insert(t2, m_arguments);
-	}
-
 	// Meta-programming for appending an argument.
 	template <class ArgsDescr>
 	struct named_series_append_arg {

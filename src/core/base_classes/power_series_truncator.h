@@ -67,7 +67,7 @@ namespace piranha
 					static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
 						const int &start = 0, const int &step_size = 1) {
 						std::string msg("No useful truncation limit for a power series expansion could be "
-							"established by the power series truncator. The reported errors where:\n");
+							"established by the power series truncator. The reported errors were:\n");
 						try {
 							return expo_ancestor::power_series_limit(x,args_tuple,start,step_size);
 						}

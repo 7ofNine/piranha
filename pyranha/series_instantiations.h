@@ -55,6 +55,11 @@ namespace pyranha
 		return Series(s);
 	}
 
+	template <class Series, class Term>
+	inline void py_series_append(Series &s, const Term &t) {
+		s.insert(t,s.arguments());
+	}
+
 	/// Basic series instantiation.
 	template <class T>
 	std::pair<boost::python::class_<T>, boost::python::class_<typename T::term_type> >
@@ -85,7 +90,7 @@ namespace pyranha
 		inst.def("__set_shared_arguments__", &T::py_shared_arguments_set);
 		typedef void (T::*trim_free)();
 		inst.def("__trim__", trim_free(&T::trim));
-		inst.def("__append__", &T::template py_append<term_type>);
+		inst.def("__append__", &py_series_append<T,term_type>);
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename T::eval_type (T::*eval_free)(const double &) const;
 		inst.def("eval", eval_free(&T::eval));
