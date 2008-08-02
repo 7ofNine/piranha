@@ -111,9 +111,8 @@ namespace piranha
 							if (m_bucket_index == bucket_size - 1) {
 								m_bucket_index = 0;
 								++m_vector_index;
-							}
-							// Otherwise just go to the next element of the bucket.
-							else {
+							} else {
+								// Otherwise just go to the next element of the bucket.
 								++m_bucket_index;
 							}
 							// If we went past the vector size or if we found the next element, break out and return.
@@ -151,10 +150,9 @@ namespace piranha
 					// it means that t was not found.
 					if (!m_container[vector_pos].m_flags[i]) {
 						return end();
-					}
-					// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
-					// If it does not match, let's move to the next bucket element.
-					else if (m_container[vector_pos].m_terms[i].m_ckey == ckey) {
+					} else if (m_container[vector_pos].m_terms[i].m_ckey == ckey) {
+						// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
+						// If it does not match, let's move to the next bucket element.
 						return iterator(this, vector_pos, i);
 					}
 				}
@@ -213,6 +211,9 @@ namespace piranha
 				iterator it = it_i;
 				while (it != it_f) {
 					if (!new_ht.attempt_insertion(*it)) {
+						// TODO: here maybe we can use swapping instead of copying. The only problem is that
+						// resizing can fail. In that case, we should swap back everything, if possible, and re-attempt
+						// the resize with a bigger value.
 						__PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
 						++incr;
 						new_ht.m_container.clear();

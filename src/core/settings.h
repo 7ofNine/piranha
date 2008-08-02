@@ -110,7 +110,7 @@ namespace piranha
 			static bool								enable_progress_display;
 			static startup_class					startup;
 #ifdef _PIRANHA_TBB
-			static const tbb::task_scheduler_init tbb_init;
+			static const tbb::task_scheduler_init	tbb_init;
 #endif
 	};
 }
