@@ -207,16 +207,6 @@ namespace piranha
 		outf.close();
 	}
 
-	/// Print the series, including header, to screen.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::py_repr() const
-	{
-		std::ostringstream stream;
-		print(stream, -1);
-		std::string retval(stream.str());
-		return retval;
-	}
-
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>

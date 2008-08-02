@@ -30,7 +30,9 @@
 #include "../src/core/numerical_coefficients/mpq_cf.h"
 #include "../src/core/numerical_coefficients/mpz_cf.h"
 #include "../src/core/poisson_series_common/trig_array.h"
+#include "../src/core/polynomial_common/expo_array.h"
 #include "../src/core/shared_args.h"
+#include "commons.h"
 
 namespace pyranha
 {
@@ -50,6 +52,8 @@ namespace pyranha
 	inline boost::python::class_<Cf> cf_bindings(const std::string &name, const std::string &description)
 	{
 		boost::python::class_<Cf> cf_inst(name.c_str(), description.c_str());
+		cf_inst.def(boost::python::init<const Cf &>());
+		cf_inst.def("__copy__",&py_copy<Cf>);
 		cf_inst.def("norm", &py_cfkey_norm<Cf>, "Norm.");
 		cf_inst.def("atoms", &Cf::atoms, "Number of atoms.");
 		return cf_inst;
@@ -75,21 +79,6 @@ namespace pyranha
 		complex_cf_bindings<piranha::mpq_cf>("mpq_cfc", "Complex arbitrary precision rational coefficient.");
 		cf_bindings<piranha::mpz_cf>("mpz_cf", "Arbitrary precision integer coefficient.");
 		complex_cf_bindings<piranha::mpz_cf>("mpz_cfc", "Complex arbitrary precision integer coefficient.");
-	}
-
-	// TODO: this will be moved in a common header later.
-	template <class Vector>
-	inline typename Vector::value_type py_vector_getitem(const Vector &v, const piranha::max_fast_int &n_)
-	{
-		int n = n_;
-		const size_t size = v.size();
-		if (n_ < 0) {
-			n = n_ + size;
-		}
-		if (n < 0 || static_cast<size_t>(n) >= size) {
-			throw piranha::unsuitable("Index of integer array key is out of range");
-		}
-		return v[n];
 	}
 
 	template <class IntArrayKey>
@@ -135,6 +124,12 @@ namespace pyranha
 		inst.def("phase", &py_trigarray_phase<TrigArray>);
 	}
 
+	template <class ExpoArray>
+	inline void expo_array_key_bindings(boost::python::class_<ExpoArray> &inst)
+	{
+		inst.def("degree", &ExpoArray::degree);
+	}
+
 	inline void keys_bindings()
 	{
 		boost::python::class_<piranha::trig_array<16, 0> >
@@ -144,6 +139,10 @@ namespace pyranha
 		boost::python::class_<piranha::trig_array<16, 1> >
 		ta_16_1(int_array_key_bindings<piranha::trig_array<16, 1> >("trig_array_16_1", ""));
 		trig_array_key_bindings(ta_16_1);
+
+		boost::python::class_<piranha::expo_array<16, 0> >
+		ea_16_0(int_array_key_bindings<piranha::expo_array<16, 0> >("expo_array_16_0", ""));
+		expo_array_key_bindings(ea_16_0);
 	}
 }
 

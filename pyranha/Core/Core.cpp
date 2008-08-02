@@ -25,7 +25,6 @@
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <sstream> // TODO: remove later.
 #include <string>
 #include <vector>
 
@@ -38,6 +37,7 @@
 #include "../../src/core/stream_manager.h"
 #include "../args_tuple.h"
 #include "../cf_key_bindings.h"
+#include "../commons.h"
 #include "../exceptions.h"
 
 using namespace boost::python;
@@ -51,14 +51,6 @@ namespace pyranha
 	{
 		class_<std::vector<T> >((name + "_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
 	}
-}
-
-template <class T>
-std::string py_print_to_string(const T &origin)
-{
-	std::ostringstream stream;
-	origin.print(stream);
-	return stream.str();
 }
 
 // Instantiate the pyranha Core module.

@@ -53,17 +53,39 @@ manipulators_type_tuple = tuple(__build_manipulators_type_tuple())
 def __series_short_type(self):
 	return str(type(self)).rpartition('.')[-1].strip('>\'')
 
-def __series_filter(self, func):
-	import copy
-	if not func:
-		return copy.copy(self)
+def __series_filter(self, *args):
 	self.__set_shared_arguments__()
-	tmp = filter(func, self)
 	new_series = type(self)()
 	new_series.__set_arguments__(self.__arguments__)
-	for i in tmp: new_series.__append__(i)
+	map(lambda t: new_series.__append__(t),__base_series_filter(self,*args))
 	new_series.__trim__()
 	return new_series
+
+def __base_series_filter(series,*args):
+	import copy
+	try:
+		getattr(series,"__iter__")
+	except AttributeError:
+		# Input is not iteratable, i.e. it is a numerical coefficient. Retval will be a copy of input.
+		return copy.copy(series)
+	args_list = list(args)
+	func = None
+	if args_list:
+		func = args_list[0]
+		if func != None and not callable(func):
+			raise ValueError("Please provide functions or None as arguments for filter().")
+	else:
+		# List of functions is exhausted, nothing to filter. Just use a copy of series as return value.
+		return copy.copy(series)
+	args_list.pop(0)
+	retval = type(series)()
+	for i in series:
+		j = type(i)()
+		j.key = i.key
+		j.cf = __base_series_filter(i.cf,*args_list)
+		if func == None or func(j):
+			retval.__append__(j)
+	return retval
 
 def __series_arguments(self):
 	import pyranha.Core._Core as _Core

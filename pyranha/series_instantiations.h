@@ -33,33 +33,13 @@
 
 #include "../src/core/integer_typedefs.h"
 #include "../src/core/psym.h"
+#include "../src/core/shared_args.h"
 #include "../src/core/type_traits.h"
 #include "cf_key_bindings.h"
+#include "commons.h"
 
 namespace pyranha
 {
-	template <class Series>
-	inline typename Series::const_iterator py_series_begin(const Series &s)
-	{
-		return s.begin();
-	}
-
-	template <class Series>
-	inline typename Series::const_iterator py_series_end(const Series &s) {
-		return s.end();
-	}
-
-	template <class Series>
-	inline Series py_series_copy(const Series &s)
-	{
-		return Series(s);
-	}
-
-	template <class Series, class Term>
-	inline void py_series_append(Series &s, const Term &t) {
-		s.insert(t,s.arguments());
-	}
-
 	/// Basic series instantiation.
 	template <class T>
 	std::pair<boost::python::class_<T>, boost::python::class_<typename T::term_type> >
@@ -67,10 +47,7 @@ namespace pyranha
 	{
 		typedef typename T::term_type term_type;
 		// Expose the term type.
-		boost::python::class_<term_type> term_inst((name + "_term").c_str(),
-				(std::string("Term for: ") + description).c_str());
-		term_inst.def_readonly("cf", &term_type::m_cf);
-		term_inst.def_readonly("key", &term_type::m_key);
+		boost::python::class_<term_type> term_inst(py_series_term<term_type>(name,description));
 		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
@@ -79,10 +56,10 @@ namespace pyranha
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
-		inst.def("__copy__", &py_series_copy<T>);
+		inst.def("__copy__", &py_copy<T>);
 		inst.def("__iter__", boost::python::range(&py_series_begin<T>, &py_series_end<T>));
 		inst.def("__len__", &T::length);
-		inst.def("__repr__", &T::py_repr);
+		inst.def("__repr__", &py_print_to_string<T>);
 		// Pyranha-specific special methods.
 		inst.add_property("__arguments_description__", &T::py_arguments_description);
 		inst.add_property("__arguments__", &T::py_arguments);
@@ -317,7 +294,10 @@ namespace pyranha
 		typedef typename T::term_type::cf_type cf_type;
 		cf_bindings<cf_type>((name + "_cf").c_str(), "")
 		.def("degree", &cf_type::degree)
-		.def("min_degree", &cf_type::min_degree);
+		.def("min_degree", &cf_type::min_degree)
+		.def("__iter__", boost::python::range(&py_series_begin<cf_type>, &py_series_end<cf_type>))
+		.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
+		py_series_term<typename cf_type::term_type>(name + "_cf",name);
 	}
 
 	template <class T>

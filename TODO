@@ -32,3 +32,10 @@
 - maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them - Yes, but caching may
   have a non-negligible cost. Must do speed test.
 - caching for lightweight coefficients in multipliers.
+- speed test for hash coded implementation.
+- equality of series.
+- addmul for coefficient series. This probably requires moving the ignorability check higher in the insert function stack.
+- series splicing?
+- uniform the naming of E/EE.
+- book-keeping allocator
+- limit for multiplication time?
