@@ -46,6 +46,16 @@ namespace pyranha
 		return cfkey.norm(piranha::shared_args::get());
 	}
 
+	template <class CfKey>
+	inline typename CfKey::eval_type py_cfkey_eval(const CfKey &cfkey, const double &t)
+	{
+		if (!cfkey.is_insertable(piranha::shared_args::get())) {
+			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the time evaluation "
+				"of this coefficient/key.");
+		}
+		return cfkey.eval(t,piranha::shared_args::get());
+	}
+
 	// TODO: Do _not_ provide a free or py_interface in classes, use wrappers here.
 	// In the wrappers error checks can be performed.
 	template <class Cf>
@@ -55,6 +65,7 @@ namespace pyranha
 		cf_inst.def(boost::python::init<const Cf &>());
 		cf_inst.def("__copy__",&py_copy<Cf>);
 		cf_inst.def("norm", &py_cfkey_norm<Cf>, "Norm.");
+		cf_inst.def("eval", &py_cfkey_eval<Cf>, "Time evaluation.");
 		cf_inst.def("atoms", &Cf::atoms, "Number of atoms.");
 		return cf_inst;
 	}
@@ -128,6 +139,7 @@ namespace pyranha
 	inline void expo_array_key_bindings(boost::python::class_<ExpoArray> &inst)
 	{
 		inst.def("degree", &ExpoArray::degree);
+		inst.def("min_degree", &ExpoArray::min_degree);
 	}
 
 	inline void keys_bindings()
