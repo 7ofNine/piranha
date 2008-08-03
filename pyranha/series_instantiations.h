@@ -180,8 +180,6 @@ namespace pyranha
 		inst.def("complexp", named_complexp(&T::complexp));
 		inst.def("cos", &T::cos);
 		inst.def("sin", &T::sin);
-		typedef T (T::*named)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
-		inst.def("Pnm", named(&T::Pnm), "");
 	}
 
 	template <class T>
@@ -239,9 +237,13 @@ namespace pyranha
 	template <class T>
 	void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T (T::*named)(const piranha::max_fast_int &) const;
-		inst.def("besselJ", named(&T::besselJ), "Bessel function of the first kind of integer order.");
-		inst.def("dbesselJ", named(&T::dbesselJ), "Partial derivative of Bessel function of the first kind of integer order.");
+		typedef T (T::*named_1)(const piranha::max_fast_int &) const;
+		inst.def("besselJ", named_1(&T::besselJ), "Bessel function of the first kind of integer order.");
+		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind of integer order.");
+		typedef T (T::*named_2)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
+		typedef T (T::*named_3)(const piranha::max_fast_int &, const piranha::max_fast_int &, const T &) const;
+		inst.def("Pnm", named_2(&T::Pnm), "");
+		inst.def("Pnm", named_3(&T::Pnm), "");
 	}
 
 #define __celmec_inst(arg) \

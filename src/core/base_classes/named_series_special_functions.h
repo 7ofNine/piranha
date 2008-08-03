@@ -56,6 +56,12 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			Derived Pnm(const max_fast_int &n, const max_fast_int &m, const Derived &self_qc) const {
+				Derived retval(derived_const_cast->Pnm(n, m, self_qc, derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
 	};
 }
 

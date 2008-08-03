@@ -81,14 +81,16 @@ def dbesselJ(order,arg):
   except AttributeError:
     raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
 
-def Pnm(n,m,arg):
-  """
-  Associated Legendre function of the cosine of arg.
-  """
-  try:
-    return arg.Pnm(n,m)
-  except AttributeError:
-    return _Math.Pnm(n,m,arg)
+def Pnm(n,m,arg,*extra_arg):
+	"""
+	Associated Legendre function.
+	"""
+	if len(list(extra_arg)) > 1:
+		raise TypeError("Please provide at most one extra argument.")
+	try:
+		return arg.Pnm(n,m,*extra_arg)
+	except AttributeError:
+		return _Math.Pnm(n,m,arg)
 
 def partial(arg,name):
   """

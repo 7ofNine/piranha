@@ -158,12 +158,14 @@ namespace piranha
 				retval.divide_by((max_fast_int)2, args_tuple);
 				return retval;
 			}
-			/// Legendre function of the first kind - Pnm(cos(theta)).
+			/// Legendre function of the first kind: Pnm(self).
 			/**
-			* This implementation uses recurrence relations.
+			* This implementation uses recurrence relations. self_qc is the quadratic conjugate of self, i.e.,
+			* sqrt(1-self**2).
 			*/
 			template <class ArgsTuple>
-			Derived Pnm(const max_fast_int &n_, const max_fast_int &m_, const ArgsTuple &args_tuple) const {
+			Derived Pnm(const max_fast_int &n_, const max_fast_int &m_, const Derived &self_qc,
+				const ArgsTuple &args_tuple) const {
 				// This is P00 right now.
 				Derived retval(static_cast<max_fast_int>(1),args_tuple);
 				max_fast_int n(n_), m(std::abs(m_));
@@ -179,13 +181,11 @@ namespace piranha
 				}
 				p_assert(n >= m && n >= 0 && m >= 0);
 				Derived P00(retval), old_Pnm, tmp1;
-				const std::complex<Derived> expi_theta(derived_const_cast->complexp(args_tuple));
-				const Derived cos_theta(expi_theta.real(args_tuple)), sin_theta(expi_theta.imag(args_tuple));
 				max_fast_int i = 0;
 				// Recursion to get from P_00 to P_mm.
 				for (; i < m; ++i) {
 					retval.mult_by(-(i*2+1),args_tuple);
-					retval.mult_by(sin_theta,args_tuple);
+					retval.mult_by(self_qc,args_tuple);
 				}
 				p_assert(i == m);
 				// Recursion to get from P_mm to P_nm (n>m).
@@ -196,7 +196,7 @@ namespace piranha
 					old_Pnm = retval;
 					retval.mult_by(i*2+1,args_tuple);
 					retval.divide_by(-m+i+1,args_tuple);
-					retval.mult_by(cos_theta,args_tuple);
+					retval.mult_by(*derived_const_cast,args_tuple);
 					retval.add(tmp1,args_tuple);
 				}
 				if (m_ < 0) {
@@ -206,6 +206,16 @@ namespace piranha
 					retval.mult_by(cs_phase(m),args_tuple);
 				}
 				return retval;
+			}
+			template <class ArgsTuple>
+			Derived Pnm(const max_fast_int &n, const max_fast_int &m, const ArgsTuple &args_tuple) const {
+				// Let's build sqrt(1-self**2).
+				Derived tmp(*derived_const_cast);
+				tmp.mult_by(tmp,args_tuple);
+				tmp.mult_by(static_cast<max_fast_int>(-1),args_tuple);
+				tmp.add(Derived(static_cast<max_fast_int>(1),args_tuple),args_tuple);
+				Derived x_qc(tmp.root(2,args_tuple));
+				return Derived(derived_const_cast->Pnm(n,m,x_qc,args_tuple));
 			}
 	};
 }

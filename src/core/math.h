@@ -81,7 +81,7 @@ namespace piranha
 	/// Associated Legendre function of the cosine of the argument.
 	inline double Pnm(const int &n, const int &m, const double &arg)
 	{
-		return boost::math::legendre_p(n, m, std::cos(arg));
+		return boost::math::legendre_p(n, m, arg);
 	}
 }
 

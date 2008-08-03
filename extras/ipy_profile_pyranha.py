@@ -24,6 +24,7 @@ ip = IPython.ipapi.get()
 def main():
 	o = ip.options
 	o.system_verbose = 0
+	ip.ex("import math")
 	ip.ex("import pyranha")
 	import pyranha
 	for i in pyranha.__manipulators__:

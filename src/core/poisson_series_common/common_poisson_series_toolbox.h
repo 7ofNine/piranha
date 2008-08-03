@@ -169,15 +169,6 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			Derived Pnm(const max_fast_int &n, const max_fast_int &m) const {
-				Derived copy(*derived_const_cast), tmp;
-				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
-				copy.merge_args(tmp);
-				Derived retval(copy.Pnm(n,m,copy.m_arguments));
-				retval.m_arguments = copy.m_arguments;
-				retval.trim();
-				return retval;
-			}
 			template <class FourierSeries>
 			FourierSeries to_fs() const {
 				typedef typename Derived::const_iterator const_iterator;
