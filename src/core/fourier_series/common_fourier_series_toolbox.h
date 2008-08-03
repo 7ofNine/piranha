@@ -34,10 +34,33 @@
 
 namespace piranha
 {
+	template <class ArgsTuple>
+	class fs_binomial_sorter
+	{
+		public:
+			fs_binomial_sorter(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
+			template <class Term>
+			bool operator()(const Term &t1, const Term &t2) const {
+				const double n1(t1.m_cf.norm(m_args_tuple)), n2(t2.m_cf.norm(m_args_tuple));
+				if (n1 != n2) {
+					return (n1 > n2);
+				} else {
+					if (t1.m_key.is_unity()) {
+						return true;
+					} else if (t2.m_key.is_unity()) {
+						return false;
+					}
+					return (t1.m_key < t2.m_key);
+				}
+			}
+		private:
+			const ArgsTuple &m_args_tuple;
+	};
+
 	template <class Derived>
 	class common_fourier_series_toolbox:
 		public jacobi_anger_toolbox<0, Derived>,
-		public binomial_exponentiation_toolbox<Derived,cf_norm_comparison>
+		public binomial_exponentiation_toolbox<Derived,fs_binomial_sorter>
 	{
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:

@@ -43,10 +43,31 @@
 
 namespace piranha
 {
+	template <class ArgsTuple>
+	class ps_binomial_sorter
+	{
+		public:
+			ps_binomial_sorter(const ArgsTuple &) {}
+			template <class Term>
+			bool operator()(const Term &t1, const Term &t2) const {
+				const max_fast_int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
+				if (d1 == d2) {
+					if (t1.m_key.is_unity()) {
+						return true;
+					} else if (t2.m_key.is_unity()) {
+						return false;
+					}
+					return (t1.m_key < t2.m_key);
+				} else {
+					return d1 < d2;
+				}
+			}
+	};
+
 	template <class Derived>
 	class common_poisson_series_toolbox:
 		public jacobi_anger_toolbox<1, Derived>,
-		public binomial_exponentiation_toolbox<Derived,term_cf_min_degree_comparison>
+		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
