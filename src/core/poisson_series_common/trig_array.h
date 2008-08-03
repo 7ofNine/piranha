@@ -59,8 +59,11 @@ namespace piranha
 					bool flavour() const {
 						return proxy_ancestor::m_ptr->flavour();
 					}
-					void multiply(proxy t2, trig_array &ret1, trig_array &ret2) const {
+					void multiply(const proxy &t2, trig_array &ret1, trig_array &ret2) const {
 						proxy_ancestor::m_ptr->multiply(t2, ret1, ret2);
+					}
+					bool operator<(const proxy &t2) const {
+						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
 					}
 			};
 			// Ctors.

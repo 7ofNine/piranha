@@ -163,7 +163,7 @@ namespace pyranha
 		instc.def(boost::python::self / std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
-		typedef T(std::complex<T>::*comp_get)() const;
+		typedef T (std::complex<T>::*comp_get)() const;
 		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
 		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
 		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
@@ -180,6 +180,8 @@ namespace pyranha
 		inst.def("complexp", named_complexp(&T::complexp));
 		inst.def("cos", &T::cos);
 		inst.def("sin", &T::sin);
+		typedef T (T::*named)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
+		inst.def("Pnm", named(&T::Pnm), "");
 	}
 
 	template <class T>
@@ -237,8 +239,9 @@ namespace pyranha
 	template <class T>
 	void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("besselJ", &T::besselJ, "Bessel function of the first kind of integer order.");
-		inst.def("dbesselJ", &T::dbesselJ, "Partial derivative of Bessel function of the first kind of integer order.");
+		typedef T (T::*named)(const piranha::max_fast_int &) const;
+		inst.def("besselJ", named(&T::besselJ), "Bessel function of the first kind of integer order.");
+		inst.def("dbesselJ", named(&T::dbesselJ), "Partial derivative of Bessel function of the first kind of integer order.");
 	}
 
 #define __celmec_inst(arg) \

@@ -28,6 +28,7 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
+#include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -48,7 +49,8 @@
 #define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
 #define POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< POISSON_SERIES >
 #define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, POISSON_SERIES >
-#define POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
+#define POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< POISSON_SERIES >
+#define POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
 #define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
 
 namespace piranha
@@ -60,7 +62,8 @@ namespace piranha
 				public POISSON_SERIES_MULT_ANCESTOR,
 				public POISSON_SERIES_COMMON_ANCESTOR,
 				public POISSON_SERIES_POWER_SERIES_ANCESTOR,
-				public POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
+				public POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
+				public POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				public POISSON_SERIES_CELMEC_ANCESTOR,
 				boost::ring_operators < POISSON_SERIES,
 				boost::ring_operators < POISSON_SERIES, max_fast_int,
@@ -75,12 +78,16 @@ namespace piranha
 			friend class POISSON_SERIES_BASE_ANCESTOR;
 			friend class POISSON_SERIES_MULT_ANCESTOR;
 			friend class POISSON_SERIES_COMMON_ANCESTOR;
-			friend class POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class POISSON_SERIES_CELMEC_ANCESTOR;
 			friend class named_series_complex_toolbox< POISSON_SERIES >;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 		public:
 			using named_ancestor::norm;
 			using base_ancestor::norm;
@@ -91,6 +98,10 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
+			using POISSON_SERIES_COMMON_ANCESTOR::Pnm;
+			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			// Needed typedefs.
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
@@ -108,7 +119,8 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, COMPLEX_POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POISSON_SERIES >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POISSON_SERIES >
 
 namespace std
 {
@@ -119,7 +131,8 @@ namespace std
 				public COMPLEX_POISSON_SERIES_MULT_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_COMMON_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR,
-				public COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
+				public COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
@@ -141,7 +154,7 @@ namespace std
 			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
-			friend class COMPLEX_POISSON_SERIES_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX;
 			friend class COMPLEX_POISSON_SERIES_COMMON_ANCESTOR;
 			// We need also the non-complex one because it needs to access the complex's private space.
@@ -149,6 +162,9 @@ namespace std
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::nth_root;
+			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 		public:
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::real;
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::real;
@@ -183,6 +199,9 @@ namespace std
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
+			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			// Needed typedefs.
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.

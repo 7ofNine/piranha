@@ -25,6 +25,8 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../math.h"
+#include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -154,6 +156,55 @@ namespace piranha
 					retval.add(tmp, args_tuple);
 				}
 				retval.divide_by((max_fast_int)2, args_tuple);
+				return retval;
+			}
+			/// Legendre function of the first kind - Pnm(cos(theta)).
+			/**
+			* This implementation uses recurrence relations.
+			*/
+			template <class ArgsTuple>
+			Derived Pnm(const max_fast_int &n_, const max_fast_int &m_, const ArgsTuple &args_tuple) const {
+				// This is P00 right now.
+				Derived retval(static_cast<max_fast_int>(1),args_tuple);
+				max_fast_int n(n_), m(std::abs(m_));
+				if (n_ < 0) {
+					n = -n_-1;
+				}
+				if (n == 0 && m == 0) {
+					return retval;
+				}
+				if (m > n) {
+					retval = Derived();
+					return retval;
+				}
+				p_assert(n >= m && n >= 0 && m >= 0);
+				Derived P00(retval), old_Pnm, tmp1;
+				const std::complex<Derived> expi_theta(derived_const_cast->complexp(args_tuple));
+				const Derived cos_theta(expi_theta.real(args_tuple)), sin_theta(expi_theta.imag(args_tuple));
+				max_fast_int i = 0;
+				// Recursion to get from P_00 to P_mm.
+				for (; i < m; ++i) {
+					retval.mult_by(i*2-1,args_tuple);
+					retval.mult_by(sin_theta,args_tuple);
+				}
+				p_assert(i == m);
+				// Recursion to get from P_mm to P_nm (n>m).
+				for (; i < n; ++i) {
+					old_Pnm.mult_by(-m-i,args_tuple);
+					old_Pnm.divide_by(-m+i+1,args_tuple);
+					tmp1 = old_Pnm;
+					old_Pnm = retval;
+					retval.mult_by(i*2+1,args_tuple);
+					retval.divide_by(-m+i+1,args_tuple);
+					retval.mult_by(cos_theta,args_tuple);
+					retval.add(tmp1,args_tuple);
+				}
+				if (m_ < 0) {
+					for (max_fast_int j = n + m; j >= n - m + 1; --j) {
+						retval.divide_by(j,args_tuple);
+					}
+					retval.mult_by(cs_phase(m),args_tuple);
+				}
 				return retval;
 			}
 	};

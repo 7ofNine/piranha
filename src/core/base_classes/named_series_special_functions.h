@@ -22,7 +22,6 @@
 #define PIRANHA_NAMED_SERIES_SPECIAL_FUNCTIONS_H
 
 #include "../integer_typedefs.h"
-#include "base_series_special_functions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -30,24 +29,29 @@
 namespace piranha
 {
 	template <class Derived>
-	class named_series_special_functions: public base_series_special_functions<Derived>
+	class named_series_special_functions
 	{
-			typedef base_series_special_functions<Derived> ancestor;
 		public:
 			Derived besselJ(const max_fast_int &order) const {
-				Derived retval(ancestor::besselJ(order, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->besselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived dbesselJ(const max_fast_int &order) const {
-				Derived retval(ancestor::dbesselJ(order, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->dbesselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived besselJ_div(const max_fast_int &order) const {
-				Derived retval(ancestor::besselJ_div(order, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->besselJ_div(order, derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			Derived Pnm(const max_fast_int &n, const max_fast_int &m) const {
+				Derived retval(derived_const_cast->Pnm(n, m, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

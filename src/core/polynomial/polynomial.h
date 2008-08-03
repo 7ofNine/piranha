@@ -28,6 +28,7 @@
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
+#include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/common_args_descriptions.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -45,7 +46,8 @@
 #define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
 #define POLYNOMIAL_COMMON_ANCESTOR piranha::common_polynomial_toolbox< POLYNOMIAL >
 #define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,1,POLYNOMIAL >
-#define POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR named_series_special_functions< POLYNOMIAL >
+#define POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< POLYNOMIAL >
+#define POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POLYNOMIAL >
 
 namespace piranha
 {
@@ -56,7 +58,8 @@ namespace piranha
 				public POLYNOMIAL_POWER_SERIES_ANCESTOR,
 				public POLYNOMIAL_MULT_ANCESTOR,
 				public POLYNOMIAL_COMMON_ANCESTOR,
-				public POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
+				public POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
+				public POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < POLYNOMIAL,
 				boost::ring_operators < POLYNOMIAL, max_fast_int,
 				boost::ring_operators < POLYNOMIAL, double,
@@ -69,12 +72,14 @@ namespace piranha
 			friend class POLYNOMIAL_NAMED_ANCESTOR;
 			friend class POLYNOMIAL_BASE_ANCESTOR;
 			friend class POLYNOMIAL_MULT_ANCESTOR;
-			friend class POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class named_series_complex_toolbox<POLYNOMIAL>;
 			// Override power functions with the ones from the common polynomial toolbox.
 			using POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::nth_root;
+			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 		public:
 			using named_ancestor::norm;
 			using POLYNOMIAL_COMMON_ANCESTOR::norm;
@@ -84,6 +89,8 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			// This is needed because called from the norm override in poly toolbox.
 			using base_ancestor::eval;
 			// Needed typedefs.
@@ -104,7 +111,8 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_COMMON_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL >
 #define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,1,COMPLEX_POLYNOMIAL >
-#define COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POLYNOMIAL >
 
 namespace std
 {
@@ -117,7 +125,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_COMMON_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
@@ -137,12 +146,14 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
-			friend class COMPLEX_POLYNOMIAL_SPECIAL_FUNCTIONS_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX;
 			// Override power_functions with the ones from the common polynomial toolbox.
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::nth_root;
+			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 		public:
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::real;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::real;
@@ -177,6 +188,8 @@ namespace std
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using base_ancestor::eval;
+			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;

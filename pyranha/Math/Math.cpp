@@ -34,4 +34,5 @@ BOOST_PYTHON_MODULE(_Math)
 	translate_exceptions();
 	def("besselJ", &besselJ, "Bessel function of the first kind of integer order.");
 	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
+	def("Pnm", &Pnm, "Associated Legendre function of the cosine of the argument.");
 }

@@ -22,7 +22,9 @@
 #define PIRANHA_MATH_H
 
 #include <boost/math/special_functions/bessel.hpp>
+#include <boost/math/special_functions/legendre.hpp>
 #include <boost/static_assert.hpp>
+#include <cmath>
 
 #include "integer_typedefs.h"
 
@@ -48,9 +50,19 @@ namespace piranha
 	inline max_fast_int sign(const T &x)
 	{
 		if (x >= 0) {
-			return (max_fast_int)1;
+			return static_cast<max_fast_int>(1);
 		} else {
-			return (max_fast_int)(-1);
+			return static_cast<max_fast_int>(-1);
+		}
+	}
+
+	/// Condon-Shortley phase.
+	inline max_fast_int cs_phase(const max_fast_int &n)
+	{
+		if (n & 1) {
+			return static_cast<max_fast_int>(-1);
+		} else {
+			return static_cast<max_fast_int>(1);
 		}
 	}
 
@@ -64,6 +76,12 @@ namespace piranha
 	inline double besselI(const max_fast_int &order, const double &arg)
 	{
 		return boost::math::cyl_bessel_i(order, arg);
+	}
+
+	/// Associated Legendre function of the cosine of the argument.
+	inline double Pnm(const int &n, const int &m, const double &arg)
+	{
+		return boost::math::legendre_p(n, m, std::cos(arg));
 	}
 }
 
