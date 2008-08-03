@@ -184,7 +184,7 @@ namespace piranha
 				max_fast_int i = 0;
 				// Recursion to get from P_00 to P_mm.
 				for (; i < m; ++i) {
-					retval.mult_by(i*2-1,args_tuple);
+					retval.mult_by(-(i*2+1),args_tuple);
 					retval.mult_by(sin_theta,args_tuple);
 				}
 				p_assert(i == m);
