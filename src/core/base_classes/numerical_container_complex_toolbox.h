@@ -48,7 +48,8 @@ namespace piranha
 				derived_cast->m_value = c;
 			}
 			explicit numerical_container_complex_toolbox(const value_type &r) {
-				derived_cast->m_value.real() = r.value();
+				//derived_cast->m_value.real() = r.value();
+				derived_cast->m_value = typename Derived::numerical_type(r.value());
 			}
 			explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i) {
 				derived_cast->m_value.real() = r.value();
@@ -117,10 +118,9 @@ namespace piranha
 				if (x.real() != 1 || x.imag() != 0) {
 					Derived retval;
 					const typename Derived::value_type::numerical_type abs2 = x.real() * x.real() + x.imag() * x.imag();
-					retval.m_value.real() = derived_const_cast->m_value.real() * x.real() + derived_const_cast->m_value.imag() * x.imag();
-					retval.m_value.imag() = derived_const_cast->m_value.imag() * x.real() - derived_const_cast->m_value.real() * x.imag();
-					retval.m_value.real() /= abs2;
-					retval.m_value.imag() /= abs2;
+					retval.m_value = Derived::numerical_type(derived_const_cast->m_value.real() * x.real() + derived_const_cast->m_value.imag() * x.imag(),
+						derived_const_cast->m_value.imag() * x.real() - derived_const_cast->m_value.real() * x.imag());
+					retval.m_value /= abs2;
 					derived_cast->m_value = retval.m_value;
 				}
 				return *derived_cast;
