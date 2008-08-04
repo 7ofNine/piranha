@@ -123,7 +123,7 @@ namespace piranha
 				(void)args_tuple;
 				// Construct only if the positions match.
 				if (n == Pos) {
-					p_assert(args_tuple.template get<Pos>().size() == 1 and
+					p_assert(args_tuple.template get<Pos>().size() == 1 &&
 							 args_tuple.template get<Pos>()[0] == p);
 					resize(1);
 					m_ptr[0] = 1;

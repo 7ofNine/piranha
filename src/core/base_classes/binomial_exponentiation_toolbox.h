@@ -108,8 +108,9 @@ namespace piranha
 					tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
 					tmp_term.m_key = A.m_key.pow(y, args_tuple);
 				} else {
-					tmp_term.m_cf = A.m_cf.root(y, args_tuple);
-					tmp_term.m_key = A.m_key.root(y, args_tuple);
+					// NOTE: here we should be sure about y being an integer, hence the static cast.
+					tmp_term.m_cf = A.m_cf.root(static_cast<max_fast_int>(y), args_tuple);
+					tmp_term.m_key = A.m_key.root(static_cast<max_fast_int>(y), args_tuple);
 				}
 				Derived Apowy;
 				Apowy.insert(tmp_term, args_tuple);

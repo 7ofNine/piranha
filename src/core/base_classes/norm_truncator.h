@@ -53,7 +53,7 @@ namespace piranha
 			template <class T, class ArgsTuple>
 			static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
 											 const int &start = 0, const int &step_size = 1) {
-				p_assert(step_size >= 1 and start >= 0);
+				p_assert(step_size >= 1 && start >= 0);
 				if (m_truncation_power == 0) {
 					throw unsuitable("No value set for norm-based truncation, cannot calculate limit of power series expansion.");
 				}
@@ -68,8 +68,8 @@ namespace piranha
 					throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
 						"is zero.");
 				}
-				max_fast_int retval = (max_fast_int)std::ceil((max_fast_int)std::ceil(std::log10(m_truncation_level)
-									  / std::log10(norm) + 1 - start) / step_size);
+				max_fast_int retval = static_cast<max_fast_int>(std::ceil(static_cast<double>(static_cast<max_fast_int>(std::ceil(std::log10(m_truncation_level)
+									  / std::log10(norm) + 1 - start)) / step_size)));
 				// This could be negative if starting power is big enough. In this case return 0.
 				if (retval >= 0) {
 					return retval;
