@@ -29,6 +29,8 @@
 #include <boost/limits.hpp>             // for std::numeric_limits
 #include <boost/utility/enable_if.hpp>  // for boost::enable_if_c
 
+#include <boost/detail/extended_integer.hpp>  // for BOOST_HAS_XINT, etc.
+
 #include <climits>  // for UCHAR_MAX, USHRT_MAX, UINT_MAX, ULONG_MAX, etc.
 
 namespace boost
@@ -64,15 +66,9 @@ namespace detail
   //     3=unsigned/int, 4=(unsigned) short, 5=(un)signed char
   //  no specializations for 0: requests for a type > (unsigned) (long) long are
   //     in error
-#ifdef BOOST_HAS_LONG_LONG
-  template<> struct int_least_helper<1, signed>
-   { typedef long_long_type least; };
-  template<> struct int_least_helper<1, unsigned>
-   { typedef ulong_long_type least; };
-#elif defined(BOOST_HAS_MS_INT64)
-  template<> struct int_least_helper<1, signed> { typedef __int64 least; };
-  template<> struct int_least_helper<1, unsigned>
-   { typedef unsigned __int64 least; };
+#if BOOST_HAS_XINT
+  template<> struct int_least_helper<1,   signed>  { typedef  xint_t least; };
+  template<> struct int_least_helper<1, unsigned>  { typedef uxint_t least; };
 #endif
   template<> struct int_least_helper<2, signed> { typedef long least; };
   template<> struct int_least_helper<2, unsigned>
@@ -90,7 +86,7 @@ namespace detail
   //  category bounds
   enum
   {
-#if defined(BOOST_HAS_LONG_LONG) || defined(BOOST_HAS_MS_INT64)
+#if BOOST_HAS_XINT
       lowest_integral_rank  = 1,
 #else
       lowest_integral_rank  = 2,
@@ -103,14 +99,13 @@ namespace detail
   struct int_rank_helper
   {
       BOOST_STATIC_CONSTANT( int, mantissa = BitsIncludingSign - 1 );
-      BOOST_STATIC_CONSTANT( int, rank = (BitsIncludingSign > 0) * (
-#ifdef BOOST_HAS_LONG_LONG
-       (mantissa <= std::numeric_limits< long_long_type >::digits) +
-#elif defined(BOOST_HAS_MS_INT64)
-       (mantissa <= std::numeric_limits< __int64 >::digits) +
+#if BOOST_HAS_XINT
+      BOOST_STATIC_CONSTANT( int, extended_ = (mantissa <= std::numeric_limits<
+       xint_t >::digits) );
 #else
-       1 +
+      BOOST_STATIC_CONSTANT( int, extended_ = 1 );
 #endif
+      BOOST_STATIC_CONSTANT( int, rank = (BitsIncludingSign > 0) * (extended_ +
        (mantissa <= std::numeric_limits< long >::digits) +
        (mantissa <= std::numeric_limits< int >::digits) +
        (mantissa <= std::numeric_limits< short >::digits) +
@@ -120,14 +115,13 @@ namespace detail
   template < int Bits >
   struct uint_rank_helper
   {
-      BOOST_STATIC_CONSTANT( int, rank = (Bits >= 0) * (
-#ifdef BOOST_HAS_LONG_LONG
-       (Bits <= std::numeric_limits< ulong_long_type >::digits) +
-#elif defined(BOOST_HAS_MS_INT64)
-       (Bits <= std::numeric_limits< unsigned __int64 >::digits) +
+#if BOOST_HAS_XINT
+      BOOST_STATIC_CONSTANT( int, extended_ = (Bits <= std::numeric_limits<
+       uxint_t >::digits) );
 #else
-       1 +
+      BOOST_STATIC_CONSTANT( int, extended_ = 1 );
 #endif
+      BOOST_STATIC_CONSTANT( int, rank = (Bits >= 0) * (extended_ +
        (Bits <= std::numeric_limits< unsigned long >::digits) +
        (Bits <= std::numeric_limits< unsigned int >::digits) +
        (Bits <= std::numeric_limits< unsigned short >::digits) +
@@ -148,12 +142,9 @@ namespace detail
   struct uint_exact_rank_helper<std::numeric_limits< Type >::digits> \
   { BOOST_STATIC_CONSTANT( int, rank = Rank ); }
 
-#if defined(BOOST_HAS_LONG_LONG) && ((ULLONG_MAX > ULONG_MAX) || (ULONGLONG_MAX > ULONG_MAX))
-  BOOST_PRIVATE_INT_EXACT_BUILDER( long_long_type, 1 );
-  BOOST_PRIVATE_UINT_EXACT_BUILDER( ulong_long_type, 1 );
-#elif defined(BOOST_HAS_MS_INT64) && (0xFFFFFFFFFFFFFFFF > ULONG_MAX)
-  BOOST_PRIVATE_INT_EXACT_BUILDER( __int64, 1 );
-  BOOST_PRIVATE_UINT_EXACT_BUILDER( unsigned __int64, 1 );
+#if BOOST_HAS_XINT && (BOOST_UXINT_MAX > ULONG_MAX)
+  BOOST_PRIVATE_INT_EXACT_BUILDER( xint_t, 1 );
+  BOOST_PRIVATE_UINT_EXACT_BUILDER( uxint_t, 1 );
 #endif
 #if ULONG_MAX > UINT_MAX
   BOOST_PRIVATE_INT_EXACT_BUILDER( long, 2 );
@@ -177,52 +168,49 @@ namespace detail
   template < intmax_t MaxValue >
   struct int_max_rank_helper
   {
-      BOOST_STATIC_CONSTANT( int, rank = (MaxValue > 0) * (
-#ifdef BOOST_HAS_LONG_LONG
-       (MaxValue <= integer_traits< long_long_type >::const_max) +
-#elif defined(BOOST_HAS_MS_INT64)
-       (MaxValue <= integer_traits< __int64 >::const_max) +
+#if BOOST_HAS_XINT
+      BOOST_STATIC_CONSTANT( int, extended_ = (MaxValue <=
+       boost::integer_traits< xint_t >::const_max) );
 #else
-       1 +
+      BOOST_STATIC_CONSTANT( int, extended_ = 1 );
 #endif
-       (MaxValue <= integer_traits< long >::const_max) +
-       (MaxValue <= integer_traits< int >::const_max) +
-       (MaxValue <= integer_traits< short >::const_max) +
-       (MaxValue <= integer_traits< signed char >::const_max)) );
+      BOOST_STATIC_CONSTANT( int, rank = (MaxValue > 0) * (extended_ +
+       (MaxValue <= boost::integer_traits< long >::const_max) +
+       (MaxValue <= boost::integer_traits< int >::const_max) +
+       (MaxValue <= boost::integer_traits< short >::const_max) +
+       (MaxValue <= boost::integer_traits< signed char >::const_max)) );
   };
 
   template < intmax_t MinValue >
   struct int_min_rank_helper
   {
-      BOOST_STATIC_CONSTANT( int, rank = (MinValue < 0) * (
-#ifdef BOOST_HAS_LONG_LONG
-       (MinValue >= integer_traits< long_long_type >::const_min) +
-#elif defined(BOOST_HAS_MS_INT64)
-       (MinValue >= integer_traits< __int64 >::const_min) +
+#if BOOST_HAS_XINT
+      BOOST_STATIC_CONSTANT( int, extended_ = (MinValue >=
+       boost::integer_traits< xint_t >::const_min) );
 #else
-       1 +
+      BOOST_STATIC_CONSTANT( int, extended_ = 1 );
 #endif
-       (MinValue >= integer_traits< long >::const_min) +
-       (MinValue >= integer_traits< int >::const_min) +
-       (MinValue >= integer_traits< short >::const_min) +
-       (MinValue >= integer_traits< signed char >::const_min)) );
+      BOOST_STATIC_CONSTANT( int, rank = (MinValue < 0) * (extended_ +
+       (MinValue >= boost::integer_traits< long >::const_min) +
+       (MinValue >= boost::integer_traits< int >::const_min) +
+       (MinValue >= boost::integer_traits< short >::const_min) +
+       (MinValue >= boost::integer_traits< signed char >::const_min)) );
   };
 
   template < uintmax_t Value >
   struct uint_max_rank_helper
   {
-      BOOST_STATIC_CONSTANT( int, rank =
-#ifdef BOOST_HAS_LONG_LONG
-       (Value <= integer_traits< ulong_long_type >::const_max) +
-#elif defined(BOOST_HAS_MS_INT64)
-       (Value <= integer_traits< unsigned __int64 >::const_max) +
+#if BOOST_HAS_XINT
+      BOOST_STATIC_CONSTANT( int, extended_ = (Value <= boost::integer_traits<
+       uxint_t >::const_max) );
 #else
-       1 +
+      BOOST_STATIC_CONSTANT( int, extended_ = 1 );
 #endif
-       (Value <= integer_traits< unsigned long >::const_max) +
-       (Value <= integer_traits< unsigned int >::const_max) +
-       (Value <= integer_traits< unsigned short >::const_max) +
-       (Value <= integer_traits< unsigned char >::const_max) );
+      BOOST_STATIC_CONSTANT( int, rank = extended_ +
+       (Value <= boost::integer_traits< unsigned long >::const_max) +
+       (Value <= boost::integer_traits< unsigned int >::const_max) +
+       (Value <= boost::integer_traits< unsigned short >::const_max) +
+       (Value <= boost::integer_traits< unsigned char >::const_max) );
   };
 
   //  convert rank to type, Boost.MPL-style

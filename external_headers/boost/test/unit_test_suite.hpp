@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 47154 $
+//  Version     : $Revision: 47787 $
 //
 //  Description : defines Unit Test Framework public API
 // ***************************************************************************
@@ -17,6 +17,7 @@
 
 // Boost.Test
 #include <boost/test/unit_test_suite_impl.hpp>
+#include <boost/test/test_case_template.hpp>
 #include <boost/test/framework.hpp>
 
 //____________________________________________________________________________//

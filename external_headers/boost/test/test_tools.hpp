@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 47258 $
+//  Version     : $Revision: 47787 $
 //
 //  Description : contains definition for all test tools in test toolbox
 // ***************************************************************************
@@ -18,6 +18,7 @@
 // Boost.Test
 #include <boost/test/predicate_result.hpp>
 #include <boost/test/unit_test_log.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 
 #include <boost/test/detail/config.hpp>
 #include <boost/test/detail/global_typedef.hpp>
@@ -34,6 +35,7 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/arithmetic/add.hpp>
+
 #include <boost/limits.hpp>
 
 #include <boost/type_traits/is_array.hpp>
@@ -306,35 +308,8 @@ typedef unit_test::const_string      const_string;
 
 namespace { bool const dummy_cond = false; }
 
-namespace tt_detail {
-
 // ************************************************************************** //
-// **************              tools classification            ************** //
-// ************************************************************************** //
-
-enum check_type {
-    CHECK_PRED, 
-    CHECK_MSG,
-    CHECK_EQUAL,
-    CHECK_NE,
-    CHECK_LT,
-    CHECK_LE,
-    CHECK_GT,
-    CHECK_GE,
-    CHECK_CLOSE,
-    CHECK_CLOSE_FRACTION,
-    CHECK_SMALL,
-    CHECK_BITWISE_EQUAL,
-    CHECK_PRED_WITH_ARGS,
-    CHECK_EQUAL_COLL
-};
-
-enum tool_level {
-    WARN, CHECK, REQUIRE, PASS
-};
-
-// ************************************************************************** //
-// **************               log print helper               ************** //
+// **************                print_log_value               ************** //
 // ************************************************************************** //
 
 template<typename T>
@@ -362,13 +337,13 @@ struct print_log_value {
 
 //____________________________________________________________________________//
 
-#define BOOST_TEST_DONT_PRINT_LOG_VALUE( the_type )                 \
-namespace boost { namespace test_tools { namespace tt_detail {      \
-template<>                                                          \
-struct print_log_value<the_type > {                                 \
-    void operator()( std::ostream&, the_type const& ) {}            \
-};                                                                  \
-}}}                                                                 \
+#define BOOST_TEST_DONT_PRINT_LOG_VALUE( the_type )         \
+namespace boost { namespace test_tools {                    \
+template<>                                                  \
+struct print_log_value<the_type > {                         \
+    void operator()( std::ostream&, the_type const& ) {}    \
+};                                                          \
+}}                                                          \
 /**/
 
 //____________________________________________________________________________//
@@ -422,6 +397,39 @@ struct BOOST_TEST_DECL print_log_value<wchar_t const*> {
 };
 
 //____________________________________________________________________________//
+
+namespace tt_detail {
+
+// ************************************************************************** //
+// **************              tools classification            ************** //
+// ************************************************************************** //
+
+enum check_type {
+    CHECK_PRED, 
+    CHECK_MSG,
+    CHECK_EQUAL,
+    CHECK_NE,
+    CHECK_LT,
+    CHECK_LE,
+    CHECK_GT,
+    CHECK_GE,
+    CHECK_CLOSE,
+    CHECK_CLOSE_FRACTION,
+    CHECK_SMALL,
+    CHECK_BITWISE_EQUAL,
+    CHECK_PRED_WITH_ARGS,
+    CHECK_EQUAL_COLL
+};
+
+enum tool_level {
+    WARN, CHECK, REQUIRE, PASS
+};
+
+// ************************************************************************** //
+// **************                 print_helper                 ************** //
+// ************************************************************************** //
+// Adds level of indirection to the output operation, allowing us to customize 
+// it for types that do not support operator << directly or for any other reason
 
 template<typename T>
 struct print_helper_t {
@@ -485,9 +493,8 @@ bool check_impl( predicate_result const& pr, ::boost::unit_test::lazy_ostream co
 
 #define ARG_INFO( z, m, dummy )                                                     \
     , BOOST_JOIN( BOOST_JOIN( arg, m ), _descr )                                    \
-    , (boost::wrap_stringstream().ref()                                             \
-        << ::boost::test_tools::tt_detail::                                         \
-            print_helper( BOOST_JOIN( arg, m ) )).str().c_str()                     \
+    , &(const unit_test::lazy_ostream&)(unit_test::lazy_ostream::instance()         \
+        << ::boost::test_tools::tt_detail::print_helper( BOOST_JOIN( arg, m ) ))    \
 /**/
 
 #define IMPL_FRWD( z, n, dummy )                                                    \
