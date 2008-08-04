@@ -44,7 +44,7 @@
 // Platform switches.
 #ifdef _PIRANHA_WIN32
 #include <malloc.h> // _aligned_malloc
-#ifdef _PIRANHA_API
+#ifdef _PIRANHA_DLL_API
 #define __PIRANHA_VISIBLE __declspec(dllexport)
 #else
 #define __PIRANHA_VISIBLE __declspec(dllimport)

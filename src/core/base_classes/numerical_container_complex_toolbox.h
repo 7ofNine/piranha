@@ -118,7 +118,8 @@ namespace piranha
 				if (x.real() != 1 || x.imag() != 0) {
 					Derived retval;
 					const typename Derived::value_type::numerical_type abs2 = x.real() * x.real() + x.imag() * x.imag();
-					retval.m_value = Derived::numerical_type(derived_const_cast->m_value.real() * x.real() + derived_const_cast->m_value.imag() * x.imag(),
+					retval.m_value = typename Derived::numerical_type(derived_const_cast->m_value.real() * x.real() +
+						derived_const_cast->m_value.imag() * x.imag(),
 						derived_const_cast->m_value.imag() * x.real() - derived_const_cast->m_value.real() * x.imag());
 					retval.m_value /= abs2;
 					derived_cast->m_value = retval.m_value;

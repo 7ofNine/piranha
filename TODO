@@ -41,3 +41,4 @@
 - limit for multiplication time?
 - Move "using base_*" into private space of top-level series?
 - Generalise conversion to/from series with arguments sets left/right shifting
+- Check those complex changes and the static cast on root(y).
