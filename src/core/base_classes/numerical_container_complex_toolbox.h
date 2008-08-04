@@ -73,7 +73,10 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void imag(const value_type &i, const ArgsTuple &) {
-				derived_cast->m_value.imag() = i.value();
+				// TODO: this code works in gcc, but it is not standard.
+				// derived_cast->m_value.imag() = i.value();
+				derived_cast->m_value = typename Derived::numerical_type(derived_const_cast->m_value.real(),
+					typename value_type::numerical_type(i.value()));
 			}
 			// Maths.
 			template <class ArgsTuple>

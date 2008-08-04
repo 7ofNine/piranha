@@ -41,9 +41,7 @@ namespace piranha
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
 	class base_series_multiplier
 	{
-			friend struct base_insert_multiplication_result;
-			// TODO: see if we can drop this one.
-			friend class Truncator::template get_type<Derived>::type;
+			friend class base_insert_multiplication_result;
 		protected:
 			// Alias for term type of first input series and return value series.
 			typedef typename Series1::term_type term_type1;
