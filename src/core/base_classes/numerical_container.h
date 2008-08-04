@@ -203,11 +203,6 @@ namespace piranha
 			T &value() {
 				return m_value;
 			}
-			// Free interface: this is an interface free from the need to fetch an
-			// external args_tuple to work.
-			double norm() const {
-				return derived_const_cast->norm(0);
-			}
 		protected:
 			template <class U>
 			Derived &assign_self(const U &x) {

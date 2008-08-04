@@ -43,7 +43,6 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mpz_class, mpz_cf> ancestor;
 		public:
-			using ancestor::norm;
 			typedef mpz_class numerical_type;
 			// Ctors
 			NUMERICAL_CONTAINER_CTORS(mpz_cf);
@@ -144,7 +143,6 @@ namespace std
 			using complex_toolbox::divide_by;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
-			using ancestor::norm;
 			typedef piranha::mpz_cf value_type;
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
