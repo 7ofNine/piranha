@@ -92,6 +92,15 @@ def Pnm(n,m,arg,*extra_arg):
 	except AttributeError:
 		return _Math.Pnm(n,m,arg)
 
+def Pn(n,arg):
+	"""
+	Legendre polynomial.
+	"""
+	try:
+		return arg.Pn(n)
+	except AttributeError:
+		return _Math.Pn(n,arg)
+
 def partial(arg,name):
   """
   Calculate partial derivative of arg with respect to argument name.

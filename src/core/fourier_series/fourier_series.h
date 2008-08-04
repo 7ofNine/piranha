@@ -75,9 +75,10 @@ namespace piranha
 			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 		public:
 			// TODO: do we really need _all_ those double interfaces here? Some can probably be dropped.
 			using named_ancestor::norm;
@@ -88,9 +89,10 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
-			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
+			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
+			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
@@ -151,6 +153,7 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
+			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 		public:
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::real;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::real;
@@ -187,6 +190,7 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
+			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;

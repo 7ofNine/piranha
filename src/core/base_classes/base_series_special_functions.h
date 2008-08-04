@@ -217,6 +217,10 @@ namespace piranha
 				Derived x_qc(tmp.root(2,args_tuple));
 				return Derived(derived_const_cast->Pnm(n,m,x_qc,args_tuple));
 			}
+			template <class ArgsTuple>
+			Derived Pn(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+				return derived_const_cast->Pnm(n,0,Derived(),args_tuple);
+			}
 	};
 }
 

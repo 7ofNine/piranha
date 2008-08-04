@@ -78,10 +78,15 @@ namespace piranha
 		return boost::math::cyl_bessel_i(order, arg);
 	}
 
-	/// Associated Legendre function of the cosine of the argument.
+	/// Associated Legendre function Pnm.
 	inline double Pnm(const int &n, const int &m, const double &arg)
 	{
 		return boost::math::legendre_p(n, m, arg);
+	}
+
+	/// Legendre polynomial Pn.
+	inline double Pn(const int &n, const double &arg) {
+		return boost::math::legendre_p(n, arg);
 	}
 }
 

@@ -244,6 +244,7 @@ namespace pyranha
 		typedef T (T::*named_3)(const piranha::max_fast_int &, const piranha::max_fast_int &, const T &) const;
 		inst.def("Pnm", named_2(&T::Pnm), "");
 		inst.def("Pnm", named_3(&T::Pnm), "");
+		inst.def("Pn", named_1(&T::Pn), "");
 	}
 
 #define __celmec_inst(arg) \
