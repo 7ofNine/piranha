@@ -48,7 +48,7 @@ namespace piranha
 				try {
 					retval = boost::lexical_cast<T>(s);
 				} catch (boost::bad_lexical_cast &) {
-					std::cout << "Error in lexical_converter, returning default cted object." << std::endl;
+					std::cout << "Error in lexical_converter, returning default-constructed object." << '\n';
 					retval = T();
 				}
 				return retval;

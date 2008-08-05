@@ -139,14 +139,13 @@ namespace std
 			typedef piranha::numerical_container_complex_toolbox<piranha::mpz_cf> complex_toolbox;
 			friend class piranha::numerical_container_complex_toolbox<piranha::mpz_cf>;
 		public:
-			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
 			typedef piranha::mpz_cf value_type;
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
-			// Override division to catch divide by zero.
+			// Override numerical container's division to catch divide by zero.
 			template <class ArgsTuple>
 			complex &divide_by(const piranha::max_fast_int &n, const ArgsTuple &a) {
 				if (n == 0) {
