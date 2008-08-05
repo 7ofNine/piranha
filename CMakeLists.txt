@@ -12,6 +12,7 @@ INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeDependentOption)
 INCLUDE(FindGMP)
 INCLUDE(FindPythonLibs)
+INCLUDE(PiranhaCPackSetup)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaPythonSetup)
 ENABLE_LANGUAGE(CXX)
@@ -76,7 +77,11 @@ ENDIF(ENABLE_SSE2)
 # Common stuff
 SET(CMAKE_BUILD_TYPE "Release")
 # Find out motion theories files to be installed
-SET(THEORIES_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/share/piranha/theories")
+IF(UNIX)
+	SET(THEORIES_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/share/piranha/theories")
+ELSE(UNIX)
+	SET(THEORIES_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/theories")
+ENDIF(UNIX)
 IF(ENABLE_ASSERTS)
 	SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_ENABLE_ASSERTS)
 ENDIF(ENABLE_ASSERTS)
@@ -109,6 +114,20 @@ IF(BUILD_PYRANHA)
 	# Mandatory linking.
 	SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
 	ADD_SUBDIRECTORY(pyranha)
+	IF(WIN32)
+		SET(WIN_PYRANHA_PKG_FILES
+			Console.exe
+			ConsoleHook.dll
+			FreeImage.dll
+			FreeImagePlus.dll
+			console.chm
+			console.xml
+			gmp.dll
+			msvcp71.dll
+			msvcr71.dll
+		)
+		INSTALL(FILES ${WIN_PYRANHA_PKG_FILES} DESTINATION .)
+	ENDIF(WIN32)
 ENDIF(BUILD_PYRANHA)
 
 # Install phase: find and install theories of motion
