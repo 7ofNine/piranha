@@ -125,6 +125,7 @@ IF(BUILD_PYRANHA)
 			package/msvcp71.dll
 			package/msvcr71.dll
 			extras/ipy_profile_pyranha.py
+			extras/matplotlibrc
 		)
 		INSTALL(FILES ${WIN_PYRANHA_PKG_FILES} DESTINATION .)
 	ENDIF(WIN32)
