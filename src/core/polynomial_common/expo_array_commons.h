@@ -218,11 +218,8 @@ namespace piranha
 				const size_t size = v.size();
 				for (size_t i = 0; i < size; ++i) {
 					p_assert(v[i].first < derived_const_cast->m_size);
-					switch ((*derived_const_cast)[v[i].first] > v[i].second) {
-					case true:
+					if ((*derived_const_cast)[v[i].first] > v[i].second) {
 						return false;
-					case false:
-						;
 					}
 				}
 				return true;
