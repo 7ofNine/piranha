@@ -15,6 +15,7 @@ INCLUDE(FindPythonLibs)
 INCLUDE(PiranhaCPackSetup)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaPythonSetup)
+INCLUDE(PiranhaVersionSetup)
 ENABLE_LANGUAGE(CXX)
 INCLUDE_DIRECTORIES("external_headers")
 
