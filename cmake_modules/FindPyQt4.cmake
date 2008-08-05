@@ -28,43 +28,43 @@
 # - PYQT4_WRAP_RC
 
 IF(PYUIC4BINARY AND PYRCC4BINARY)
-  # Already in cache, be silent
-  set(PyQt4_FIND_QUIETLY TRUE)
+	# Already in cache, be silent
+	SET(PyQt4_FIND_QUIETLY TRUE)
 ENDIF(PYUIC4BINARY AND PYRCC4BINARY)
 
 FIND_PROGRAM(PYUIC4BINARY pyuic4)
 FIND_PROGRAM(PYRCC4BINARY pyrcc4)
 
 MACRO(PYQT4_WRAP_UI outfiles)
-  FOREACH(it ${ARGN})
-    GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
-    GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
-    SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.py)
-    ADD_CUSTOM_TARGET(${it} ALL
-      DEPENDS ${outfile}
-    )
-    ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYUIC4BINARY} ${infile} -o ${outfile}
-      MAIN_DEPENDENCY ${infile}
-    )
-    SET(${outfiles} ${${outfiles}} ${outfile})
-  ENDFOREACH(it)
+	FOREACH(it ${ARGN})
+		GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
+		GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
+		SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/ui_${outfile}.py)
+		ADD_CUSTOM_TARGET(${it} ALL
+			DEPENDS ${outfile}
+		)
+		ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+			COMMAND ${PYUIC4BINARY} ${infile} -o ${outfile}
+			MAIN_DEPENDENCY ${infile}
+		)
+		SET(${outfiles} ${${outfiles}} ${outfile})
+	ENDFOREACH(it)
 ENDMACRO (PYQT4_WRAP_UI)
 
 MACRO(PYQT4_WRAP_RC outfiles)
-  FOREACH(it ${ARGN})
-    GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
-    GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
-    SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/${outfile}_rc.py)
-    ADD_CUSTOM_TARGET(${it} ALL
-      DEPENDS ${outfile}
-    )
-    ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYRCC4BINARY} ${infile} -o ${outfile}
-      MAIN_DEPENDENCY ${infile}
-    )
-    SET(${outfiles} ${${outfiles}} ${outfile})
-  ENDFOREACH(it)
+	FOREACH(it ${ARGN})
+		GET_FILENAME_COMPONENT(outfile ${it} NAME_WE)
+		GET_FILENAME_COMPONENT(infile ${it} ABSOLUTE)
+		SET(outfile ${CMAKE_CURRENT_BINARY_DIR}/${outfile}_rc.py)
+		ADD_CUSTOM_TARGET(${it} ALL
+			DEPENDS ${outfile}
+		)
+		ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+			COMMAND ${PYRCC4BINARY} ${infile} -o ${outfile}
+			MAIN_DEPENDENCY ${infile}
+		)
+		SET(${outfiles} ${${outfiles}} ${outfile})
+	ENDFOREACH(it)
 ENDMACRO (PYQT4_WRAP_RC)
 
 IF(EXISTS ${PYUIC4BINARY} AND EXISTS ${PYRCC4BINARY})
@@ -72,11 +72,11 @@ IF(EXISTS ${PYUIC4BINARY} AND EXISTS ${PYRCC4BINARY})
 ENDIF(EXISTS ${PYUIC4BINARY} AND EXISTS ${PYRCC4BINARY})
 
 IF(PyQt4_FOUND)
-  IF(NOT PyQt4_FIND_QUIETLY)
-    MESSAGE(STATUS "Found PyQt4: ${PYUIC4BINARY}, ${PYRCC4BINARY}")
-  ENDIF(NOT PyQt4_FIND_QUIETLY)
+	IF(NOT PyQt4_FIND_QUIETLY)
+		MESSAGE(STATUS "Found PyQt4: ${PYUIC4BINARY}, ${PYRCC4BINARY}")
+	ENDIF(NOT PyQt4_FIND_QUIETLY)
 ELSE(PyQt4_FOUND)
-  IF(PyQt4_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could NOT find PyQt4")
-  ENDIF(PyQt4_FIND_REQUIRED)
+	IF(PyQt4_FIND_REQUIRED)
+		MESSAGE(FATAL_ERROR "Could NOT find PyQt4")
+	ENDIF(PyQt4_FIND_REQUIRED)
 ENDIF(PyQt4_FOUND)

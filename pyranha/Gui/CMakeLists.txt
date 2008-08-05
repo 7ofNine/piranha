@@ -1,6 +1,5 @@
 INCLUDE(FindPyQt4)
 
-FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(PyQt4 REQUIRED)
 
 SET(ui_list main_window.ui)
