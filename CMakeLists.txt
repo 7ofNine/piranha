@@ -1,6 +1,6 @@
 PROJECT(piranha)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 
 # This syntax was introduced by CMake 2.6 to handle backwards compatibility.
 IF(COMMAND cmake_policy)
@@ -57,8 +57,7 @@ IF(WIN32)
 	IF(NOT MINGW)
 		SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)
 	ENDIF(NOT MINGW)
-	# TODO: generalize this using variables, e.g. %SystemRoot and such?
-	SET(LIB_INSTALL_PATH "c:/windows/system32")
+	SET(LIB_INSTALL_PATH .)
 ELSE(WIN32)
 	SET(LIB_INSTALL_PATH "lib")
 ENDIF(WIN32)
