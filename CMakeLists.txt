@@ -12,10 +12,11 @@ INCLUDE(CheckIncludeFiles)
 INCLUDE(CMakeDependentOption)
 INCLUDE(FindGMP)
 INCLUDE(FindPythonLibs)
-INCLUDE(PiranhaCPackSetup)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaPythonSetup)
 INCLUDE(PiranhaVersionSetup)
+# Place this after having determined the version number.
+INCLUDE(PiranhaCPackSetup)
 ENABLE_LANGUAGE(CXX)
 INCLUDE_DIRECTORIES("external_headers")
 
