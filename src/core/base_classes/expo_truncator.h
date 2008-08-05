@@ -68,7 +68,7 @@ namespace piranha
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &args_tuple,
 											 const int &start = 0, const int &step_size = 1) {
-				p_assert(start >= 0 and step_size >= 1);
+				p_assert(start >= 0 && step_size >= 1);
 				if (s.empty()) {
 					throw unsuitable("Cannot calculate the limit of the power series expansion of an empty power series.");
 				}

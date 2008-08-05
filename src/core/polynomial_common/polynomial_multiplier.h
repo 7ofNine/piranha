@@ -57,7 +57,6 @@ namespace piranha
 					get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
-					friend class Truncator::template get_type<get_type>::type;
 					typedef typename Series1::const_iterator const_iterator1;
 					typedef typename Series2::const_iterator const_iterator2;
 					typedef typename ancestor::term_type1 term_type1;
