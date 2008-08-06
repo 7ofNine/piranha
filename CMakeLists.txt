@@ -135,8 +135,12 @@ IF(BUILD_PYRANHA)
 	ENDIF(WIN32)
 ENDIF(BUILD_PYRANHA)
 
-# Install phase: find and install theories of motion
-FILE(GLOB_RECURSE THEORIES theories_of_motion/*.csv theories_of_motion/*.phl theories_of_motion/*.dat)
-INSTALL(FILES ${THEORIES} DESTINATION ${THEORIES_INSTALL_PATH})
+# Install phase: install theories of motion.
+SET(THEORIES_FILES
+	theories_of_motion/elp1.dps
+	theories_of_motion/elp2.dfs
+	theories_of_motion/elp3.dfs
+)
+INSTALL(FILES ${THEORIES_FILES} DESTINATION ${THEORIES_INSTALL_PATH})
 
 INCLUDE(CPack)
