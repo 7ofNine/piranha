@@ -25,6 +25,7 @@
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/static_assert.hpp>
 #include <cmath>
+#include <complex>
 
 #include "integer_typedefs.h"
 
@@ -85,8 +86,17 @@ namespace piranha
 	}
 
 	/// Legendre polynomial Pn.
-	inline double Pn(const int &n, const double &arg) {
+	inline double Pn(const int &n, const double &arg)
+	{
 		return boost::math::legendre_p(n, arg);
+	}
+
+	/// Non-normalised spherical harmonic.
+	inline std::complex<double> Ynm(const int &n, const int &m, const double &theta, const double &phi)
+	{
+		std::complex<double> retval(std::polar(1.,phi*m));
+		retval *= Pnm(n,m,std::cos(theta));
+		return retval;
 	}
 }
 

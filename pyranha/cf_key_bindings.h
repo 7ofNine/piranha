@@ -63,6 +63,7 @@ namespace pyranha
 	{
 		boost::python::class_<Cf> cf_inst(name.c_str(), description.c_str());
 		cf_inst.def(boost::python::init<const Cf &>());
+		cf_inst.def("__abs__", &py_cfkey_norm<Cf>);
 		cf_inst.def("__copy__",&py_copy<Cf>);
 		cf_inst.def("norm", &py_cfkey_norm<Cf>, "Norm.");
 		cf_inst.def("eval", &py_cfkey_eval<Cf>, "Time evaluation.");

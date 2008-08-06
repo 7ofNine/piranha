@@ -85,14 +85,16 @@ namespace piranha
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Ynm;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
+			using FOURIER_SERIES_COMMON_ANCESTOR::Ynm;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;

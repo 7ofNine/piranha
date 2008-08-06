@@ -101,6 +101,15 @@ def Pn(n,arg):
 	except AttributeError:
 		return _Math.Pn(n,arg)
 
+def Ynm(n,m,theta,phi):
+	"""
+	Non-normalised spherical harmonic.
+	"""
+	try:
+		return theta.Ynm(n,m,theta,phi)
+	except AttributeError:
+		return _Math.Ynm(n,m,theta,phi)
+
 def partial(arg,name):
   """
   Calculate partial derivative of arg with respect to argument name.

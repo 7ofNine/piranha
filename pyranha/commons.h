@@ -65,7 +65,8 @@ namespace pyranha
 	}
 
 	template <class Series>
-	inline typename Series::const_iterator py_series_end(const Series &s) {
+	inline typename Series::const_iterator py_series_end(const Series &s)
+	{
 		return s.end();
 	}
 
@@ -82,6 +83,30 @@ namespace pyranha
 		term_inst.def_readwrite("cf", &Term::m_cf);
 		term_inst.def_readwrite("key", &Term::m_key);
 		return term_inst;
+	}
+
+	template <class Series>
+	inline Series py_series_get_real(const std::complex<Series> &c)
+	{
+		return c.real();
+	}
+
+	template <class Series>
+	inline void py_series_set_real(std::complex<Series> &c, const Series &r)
+	{
+		c.real(r);
+	}
+
+	template <class Series>
+	inline Series py_series_get_imag(const std::complex<Series> &c)
+	{
+		return c.imag();
+	}
+
+	template <class Series>
+	inline void py_series_set_imag(std::complex<Series> &c, const Series &i)
+	{
+		c.imag(i);
 	}
 }
 

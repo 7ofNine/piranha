@@ -56,6 +56,8 @@ namespace pyranha
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
+		typedef double (T::*norm_named)() const;
+		inst.def("__abs__", norm_named(&T::norm));
 		inst.def("__copy__", &py_copy<T>);
 		inst.def("__iter__", boost::python::range(&py_series_begin<T>, &py_series_end<T>));
 		inst.def("__len__", &T::length);
@@ -71,7 +73,6 @@ namespace pyranha
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename T::eval_type (T::*eval_free)(const double &) const;
 		inst.def("eval", eval_free(&T::eval));
-		typedef double (T::*norm_named)() const;
 		inst.def("norm", norm_named(&T::norm));
 		inst.def("atoms", &T::atoms);
 		inst.def("swap", &T::swap);
@@ -163,14 +164,8 @@ namespace pyranha
 		instc.def(boost::python::self / std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
-		typedef T (std::complex<T>::*comp_get)() const;
-		typedef std::complex<T> &(std::complex<T>::*comp_set)(const T &);
-		instc.def("real", comp_get(&std::complex<T>::real), "Get real part.");
-		instc.def("imag", comp_get(&std::complex<T>::imag), "Get imaginary part.");
-		instc.def("real", comp_set(&std::complex<T>::real),
-				  boost::python::return_internal_reference<1>(), "Set real part.");
-		instc.def("imag", comp_set(&std::complex<T>::imag),
-				  boost::python::return_internal_reference<1>(), "Set imaginary part.");
+		instc.add_property("real", &py_series_get_real<T>, &py_series_set_real<T>);
+		instc.add_property("imag", &py_series_get_imag<T>, &py_series_set_imag<T>);
 	}
 
 	template <class T>
@@ -180,6 +175,9 @@ namespace pyranha
 		inst.def("complexp", named_complexp(&T::complexp));
 		inst.def("cos", &T::cos);
 		inst.def("sin", &T::sin);
+		typedef std::complex<T> (*Ynm_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+			const T &, const T &);
+		inst.def("Ynm", Ynm_named(&T::Ynm)).staticmethod("Ynm");
 	}
 
 	template <class T>

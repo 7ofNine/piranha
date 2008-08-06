@@ -36,4 +36,5 @@ BOOST_PYTHON_MODULE(_Math)
 	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
+	def("Ynm", &Ynm, "Spherical harmonic (not normalised).");
 }

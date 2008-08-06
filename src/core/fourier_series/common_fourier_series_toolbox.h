@@ -117,6 +117,15 @@ namespace piranha
 			Derived sin() const {
 				return complexp().imag();
 			}
+			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
+				const Derived &theta_, const Derived &phi) {
+				Derived theta(theta_);
+				theta.merge_args(phi);
+				std::complex<Derived> retval(Derived::Ynm(n,m,theta,phi,theta.arguments()));
+				retval.m_arguments = theta.arguments();
+				retval.trim();
+				return retval;
+			}
 	};
 }
 

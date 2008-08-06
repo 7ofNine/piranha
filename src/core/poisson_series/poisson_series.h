@@ -99,11 +99,13 @@ namespace piranha
 			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Ynm;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
+			using POISSON_SERIES_COMMON_ANCESTOR::Ynm;
 			// Needed typedefs.
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);

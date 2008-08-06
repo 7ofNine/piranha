@@ -169,6 +169,27 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
+				const Derived &theta_, const Derived &phi_) {
+				typedef typename Derived::args_tuple_type args_tuple_type;
+				// First we must make sure that both theta and phi have their trig arguments merged with polynomial
+				// ones, since we are going to calculate sin/cos.
+				Derived theta(theta_), phi(phi_), tmp;
+				args_tuple_type tmp_args;
+				tmp_args.template get<1>() = theta.arguments().template get<0>();
+				tmp.set_arguments(tmp_args);
+				theta.merge_args(tmp);
+				tmp_args.template get<1>() = phi.arguments().template get<0>();
+				tmp.set_arguments(tmp_args);
+				phi.merge_args(tmp);
+				// Second, we merge together theta's and phi's arguments.
+				theta.merge_args(phi);
+				// Now we can proceed to the bulk of Ynm.
+				std::complex<Derived> retval(Derived::Ynm(n,m,theta,phi,theta.arguments()));
+				retval.m_arguments = theta.arguments();
+				retval.trim();
+				return retval;
+			}
 			template <class FourierSeries>
 			FourierSeries to_fs() const {
 				typedef typename Derived::const_iterator const_iterator;
