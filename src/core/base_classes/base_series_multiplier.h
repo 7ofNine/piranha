@@ -86,21 +86,21 @@ namespace piranha
 			}
 		public:
 			// References to the series.
-			const Series1                 	&m_s1;
-			const Series2                 	&m_s2;
+			const Series1					&m_s1;
+			const Series2					&m_s2;
 			// Reference to the arguments tuple.
-			const ArgsTuple               	&m_args_tuple;
+			const ArgsTuple					&m_args_tuple;
 			// Sizes of the series.
-			const size_t                  	m_size1;
-			const size_t                  	m_size2;
+			const size_t					m_size1;
+			const size_t					m_size2;
 			// Reference to the result.
-			Series1                       	&m_retval;
+			Series1							&m_retval;
 			// Vectors of proxies for the input terms.
 			std::vector<term_proxy_type1>	m_terms1;
 			std::vector<term_proxy_type2>	m_terms2;
 		private:
 			// Container to store the result of the base multiplication.
-			mult_set                      	m_set;
+			mult_set						m_set;
 	};
 }
 
