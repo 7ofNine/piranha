@@ -18,29 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_ATOMIC_COUNTER_GCC_41_H
-#define PIRANHA_ATOMIC_COUNTER_GCC_41_H
+#ifndef PIRANHA_ATOMIC_COUNTER_GENERIC_H
+#define PIRANHA_ATOMIC_COUNTER_GENERIC_H
+
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "base_classes/base_atomic_counter.h"
 
 namespace piranha
 {
 	template <class IntType>
-	class atomic_counter_gcc_41: public base_atomic_counter<IntType, atomic_counter_gcc_41<IntType> >
+	class atomic_counter_generic: public base_atomic_counter<IntType,atomic_counter_generic<IntType> >
 	{
-			typedef base_atomic_counter<IntType, atomic_counter_gcc_41<IntType> > ancestor;
+			typedef base_atomic_counter<IntType,atomic_counter_generic<IntType> > ancestor;
 		public:
-			atomic_counter_gcc_41():ancestor::base_atomic_counter() {}
+			atomic_counter_generic():ancestor::base_atomic_counter(),m_mutex() {}
 			template <class IntType2>
-			atomic_counter_gcc_41 &operator+=(const IntType2 &n) {
-				__sync_add_and_fetch(&(this->m_value),static_cast<IntType>(n));
+			atomic_counter_generic &operator+=(const IntType2 &n) {
+				boost::lock_guard<boost::mutex> lock(m_mutex);
+				this->m_value += n;
 				return *this;
 			}
 			template <class IntType2>
-			atomic_counter_gcc_41 &operator-=(const IntType2 &n) {
-				__sync_sub_and_fetch(&(this->m_value),static_cast<IntType>(n));
+			atomic_counter_generic &operator-=(const IntType2 &n) {
+				boost::lock_guard<boost::mutex> lock(m_mutex);
+				this->m_value -= n;
 				return *this;
 			}
+		private:
+			boost::mutex m_mutex;
 	};
 }
 

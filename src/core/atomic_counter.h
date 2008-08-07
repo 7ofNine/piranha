@@ -35,6 +35,9 @@
 #define atomic_counter atomic_counter_generic
 
 #endif // GCC_VERSION
-#endif // __GNUC__
+#else // __GNUC__
 
+#define atomic_counter atomic_counter_generic
+
+#endif // __GNUC__
 #endif

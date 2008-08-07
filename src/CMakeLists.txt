@@ -11,7 +11,23 @@ SET(SRC_LIST ${SRC_LIST}
 	settings.cpp
 	stream_manager.cpp
 	psym.cpp
+	boost_thread/tss_null.cpp
 )
+
+IF(WIN32)
+	SET(SRC_LIST ${SRC_LIST}
+		boost_thread/win32/exceptions.cpp
+		boost_thread/win32/thread.cpp
+		boost_thread/win32/tss_dll.cpp
+		tss_pe.cpp
+	)
+ELSE(WIN32)
+	SET(SRC_LIST ${SRC_LIST}
+		boost_thread/pthread/exceptions.cpp
+		boost_thread/pthread/once.cpp
+		boost_thread/pthread/thread.cpp
+	)
+ENDIF(WIN32)
 
 IF(BUILD_TBB_MULTITHREADING)
 	SET(SRC_LIST ${SRC_LIST}

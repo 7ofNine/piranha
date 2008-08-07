@@ -18,29 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_ATOMIC_COUNTER_GCC_41_H
-#define PIRANHA_ATOMIC_COUNTER_GCC_41_H
-
-#include "base_classes/base_atomic_counter.h"
+#ifndef PIRANHA_BASE_ATOMIC_COUNTER_H
+#define PIRANHA_BASE_ATOMIC_COUNTER_H
 
 namespace piranha
 {
-	template <class IntType>
-	class atomic_counter_gcc_41: public base_atomic_counter<IntType, atomic_counter_gcc_41<IntType> >
+	template <class IntType, class Derived>
+	class base_atomic_counter
 	{
-			typedef base_atomic_counter<IntType, atomic_counter_gcc_41<IntType> > ancestor;
 		public:
-			atomic_counter_gcc_41():ancestor::base_atomic_counter() {}
-			template <class IntType2>
-			atomic_counter_gcc_41 &operator+=(const IntType2 &n) {
-				__sync_add_and_fetch(&(this->m_value),static_cast<IntType>(n));
-				return *this;
+			base_atomic_counter():m_value(0) {}
+			IntType value() const {
+				return m_value;
 			}
-			template <class IntType2>
-			atomic_counter_gcc_41 &operator-=(const IntType2 &n) {
-				__sync_sub_and_fetch(&(this->m_value),static_cast<IntType>(n));
-				return *this;
-			}
+		protected:
+			IntType m_value;
 	};
 }
 
