@@ -150,7 +150,7 @@ namespace piranha
 				m_alloc.deallocate(p,n);
 				m_counter -= n * sizeof(T);
 			}
-			size_type max_size() {
+			size_type max_size() const {
 				return boost::integer_traits<size_type>::const_max/sizeof(T);
 			}
 			void construct(pointer p, const T &val) {
