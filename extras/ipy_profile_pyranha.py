@@ -60,6 +60,7 @@ def main():
 		error_msg = True
 
 def do_load(self, arg):
+	"""Load series from filename 'arg'. Type of series will be inferred - if possible - from the file's extension."""
 	s = arg.split(".")
 	var_name = s.pop(0)
 	if not s:
