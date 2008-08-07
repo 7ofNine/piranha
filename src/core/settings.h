@@ -27,6 +27,7 @@
 #include "config.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
+#include "memory.h"
 #include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
@@ -38,6 +39,9 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
+			static size_t used_memory() {
+				return base_counting_allocator::count();
+			}
 			/// Return maximum load factor for hashed containers.
 			/**
 			 * Relevant only to those containers with support such setting.

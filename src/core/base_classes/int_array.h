@@ -31,6 +31,7 @@
 #include "../config.h"
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
+#include "../memory.h"
 #include "../p_assert.h"
 
 // Cast argument to piranha::max_fast_int pointer.
@@ -52,7 +53,7 @@ namespace piranha
 	class int_array
 	{
 			typedef typename boost::int_t<Bits>::fast value_type_;
-			typedef typename Allocator::template rebind<value_type_>::other allocator_type;
+			typedef counting_allocator<value_type_,Allocator> allocator_type;
 			template <int Bits2, int Pos2, class Allocator2, class Derived2>
 				friend class int_array;
 			p_static_check(Bits == 8 || Bits == 16, "");
@@ -448,7 +449,7 @@ namespace piranha
 			size_type               m_pack_size;
 			/// Pointer to the first value of the array.
 			value_type              *m_ptr;
-			/// Array allocator.
+			/// Allocator.
 			static allocator_type   allocator;
 			/// Pack multiplier.
 			/**

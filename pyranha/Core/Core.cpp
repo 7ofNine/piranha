@@ -70,6 +70,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.def("debug", debug_get(&settings::debug), return_value_policy<copy_const_reference>(),
 				   "Get value of the debug flag.");
 	class_setm.def("debug", debug_set(&settings::debug), "Set value of the debug flag.").staticmethod("debug");
+	class_setm.def("used_memory", &settings::used_memory, "Amount of used memory in bytes.").staticmethod("used_memory");
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),

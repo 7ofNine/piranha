@@ -21,11 +21,13 @@
 #ifndef PIRANHA_MEMORY_H
 #define PIRANHA_MEMORY_H
 
+#include <boost/integer_traits.hpp> // For max allocatable number of objects.
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
 
-#include "config.h" // For unlikely(), aligned malloc, etc.
+#include "atomic_counter.h" // For counting allocator.
+#include "config.h" // For unlikely(), aligned malloc, visibility, etc.
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
 
 namespace piranha
@@ -93,6 +95,82 @@ namespace piranha
 #else
 		free(ptr);
 #endif
+	}
+
+	class __PIRANHA_VISIBLE base_counting_allocator
+	{
+		public:
+			static size_t count() {
+				return m_counter.value();
+			}
+		protected:
+			static atomic_counter<size_t> m_counter;
+	};
+
+	/// An allocator that decorates another allocator by adding a counting mechanism for the allocated bytes.
+	template<class T, class Allocator>
+	class counting_allocator: public base_counting_allocator
+	{
+			typedef typename Allocator::template rebind<T>::other alloc;
+		public:
+			typedef size_t size_type;
+			typedef ptrdiff_t difference_type;
+			typedef T * pointer;
+			typedef const T * const_pointer;
+			typedef T & reference;
+			typedef const T const_reference;
+			typedef T value_type;
+			template <class U>
+			struct rebind {
+				typedef counting_allocator<U,Allocator> other;
+			};
+			counting_allocator():m_alloc() {}
+			counting_allocator(const counting_allocator &):m_alloc() {}
+			template <class U>
+			counting_allocator(const counting_allocator<U,Allocator> &):m_alloc() {}
+			~counting_allocator() {}
+			pointer address(reference x) {
+				return m_alloc.address(x);
+			}
+			const_pointer address(const_reference x) const {
+				return m_alloc.address(x);
+			}
+			pointer allocate(const size_type &n, const void *hint = 0) {
+				if (unlikely(n > max_size())) {
+					throw std::bad_alloc();
+				}
+				pointer retval = m_alloc.allocate(n,hint);
+				if (!retval) {
+					throw std::bad_alloc();
+				}
+				m_counter += n * sizeof(T);
+				return retval;
+			}
+			void deallocate(pointer p, const size_type &n) {
+				m_alloc.deallocate(p,n);
+				m_counter -= n * sizeof(T);
+			}
+			size_type max_size() {
+				return boost::integer_traits<size_type>::const_max/sizeof(T);
+			}
+			void construct(pointer p, const T &val) {
+				m_alloc.construct(p,val);
+			}
+			void destroy(pointer p) {
+				m_alloc.destroy(p);
+			}
+		private:
+			alloc m_alloc;
+	};
+
+	template<class T, class Allocator>
+	inline bool operator==(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &) {
+		return true;
+	}
+
+	template<class T, class Allocator>
+	inline bool operator!=(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &) {
+		return false;
 	}
 }
 

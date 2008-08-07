@@ -7,6 +7,7 @@ SET(SRC_LIST ${SRC_LIST}
 	base_degree_truncator.cpp
 	base_expo_truncator.cpp
 	base_norm_truncator.cpp
+	memory.cpp
 	settings.cpp
 	stream_manager.cpp
 	psym.cpp

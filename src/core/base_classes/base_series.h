@@ -28,6 +28,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../memory.h"
 #include "../p_assert.h"
 #include "../psym.h"
 #include "../type_traits.h"
@@ -55,7 +56,7 @@ namespace piranha
 			// Alias for key type.
 			typedef typename term_type_::key_type key_type;
 			// Alias for allocator type.
-			typedef typename Allocator::template rebind<term_type_>::other allocator_type;
+			typedef counting_allocator<term_type_,Allocator> allocator_type;
 			// Term container.
 			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
 				container_type;
