@@ -118,7 +118,7 @@ namespace piranha
 			typedef T * pointer;
 			typedef const T * const_pointer;
 			typedef T & reference;
-			typedef const T const_reference;
+			typedef const T & const_reference;
 			typedef T value_type;
 			template <class U>
 			struct rebind {
@@ -129,7 +129,7 @@ namespace piranha
 			template <class U>
 			counting_allocator(const counting_allocator<U,Allocator> &):m_alloc() {}
 			~counting_allocator() {}
-			pointer address(reference x) {
+			pointer address(reference x) const {
 				return m_alloc.address(x);
 			}
 			const_pointer address(const_reference x) const {
