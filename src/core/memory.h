@@ -136,13 +136,7 @@ namespace piranha
 				return m_alloc.address(x);
 			}
 			pointer allocate(const size_type &n, const void *hint = 0) {
-				if (unlikely(n > max_size())) {
-					throw std::bad_alloc();
-				}
 				pointer retval = m_alloc.allocate(n,hint);
-				if (!retval) {
-					throw std::bad_alloc();
-				}
 				m_counter += n * sizeof(T);
 				return retval;
 			}
