@@ -115,7 +115,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			self.series_type_label.setText(series.__short_type__)
 			self.series_type_label.setToolTip(str(series.__doc__))
 			self.series_length_label.setText(str(len(series)))
-			self.series_atoms_label.setText(str(series.atoms()))
+			self.series_atoms_label.setText(str(series.atoms))
 		else:
 			self.series_info_groupbox.setEnabled(False)
 			self.series_name_label.setText("")

@@ -73,8 +73,8 @@ namespace pyranha
 		inst.def("save_to", &T::save_to, "Save series to file.");
 		typedef typename T::eval_type (T::*eval_free)(const double &) const;
 		inst.def("eval", eval_free(&T::eval));
-		inst.def("norm", norm_named(&T::norm));
-		inst.def("atoms", &T::atoms);
+		inst.add_property("norm", norm_named(&T::norm));
+		inst.add_property("atoms", &T::atoms);
 		inst.def("swap", &T::swap);
 		// NOTICE: the order seems important here, if we place *=int before *=double we
 		// will get just *=double in Python. Go figure...
@@ -276,8 +276,8 @@ namespace pyranha
 	template <class T>
 	void power_series_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("degree", &T::degree, "Get the degree of the power series.");
-		inst.def("min_degree", &T::min_degree, "Get the minimum degree of the power series.");
+		inst.add_property("degree", &T::degree, "Get the degree of the power series.");
+		inst.add_property("min_degree", &T::min_degree, "Get the minimum degree of the power series.");
 	}
 
 	template <class T>
@@ -296,11 +296,10 @@ namespace pyranha
 		power_series_instantiation(inst);
 		// Expose the polynomial coefficient.
 		typedef typename T::term_type::cf_type cf_type;
-		cf_bindings<cf_type>((name + "_cf").c_str(), "")
-		.def("degree", &cf_type::degree)
-		.def("min_degree", &cf_type::min_degree)
-		.def("__iter__", boost::python::range(&py_series_begin<cf_type>, &py_series_end<cf_type>))
-		.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
+		boost::python::class_<cf_type> poly_cf_inst(cf_bindings<cf_type>((name + "_cf").c_str(), ""));
+		power_series_instantiation(poly_cf_inst);
+		poly_cf_inst.def("__iter__", boost::python::range(&py_series_begin<cf_type>, &py_series_end<cf_type>));
+		poly_cf_inst.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
 		py_series_term<typename cf_type::term_type>(name + "_cf",name);
 	}
 

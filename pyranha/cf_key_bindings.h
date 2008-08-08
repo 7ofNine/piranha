@@ -65,9 +65,9 @@ namespace pyranha
 		cf_inst.def(boost::python::init<const Cf &>());
 		cf_inst.def("__abs__", &py_cfkey_norm<Cf>);
 		cf_inst.def("__copy__",&py_copy<Cf>);
-		cf_inst.def("norm", &py_cfkey_norm<Cf>, "Norm.");
+		cf_inst.add_property("norm", &py_cfkey_norm<Cf>, "Norm.");
 		cf_inst.def("eval", &py_cfkey_eval<Cf>, "Time evaluation.");
-		cf_inst.def("atoms", &Cf::atoms, "Number of atoms.");
+		cf_inst.add_property("atoms", &Cf::atoms, "Number of atoms.");
 		return cf_inst;
 	}
 
@@ -98,7 +98,7 @@ namespace pyranha
 	{
 		boost::python::class_<IntArrayKey> retval(name.c_str(), descr.c_str());
 		retval.def("__getitem__", &py_vector_getitem<IntArrayKey>);
-		retval.def("norm", py_cfkey_norm<IntArrayKey>);
+		retval.add_property("norm", py_cfkey_norm<IntArrayKey>);
 		return retval;
 	}
 
@@ -132,15 +132,15 @@ namespace pyranha
 	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst)
 	{
 		inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
-		inst.def("freq", &py_trigarray_freq<TrigArray>);
-		inst.def("phase", &py_trigarray_phase<TrigArray>);
+		inst.add_property("freq", &py_trigarray_freq<TrigArray>);
+		inst.add_property("phase", &py_trigarray_phase<TrigArray>);
 	}
 
 	template <class ExpoArray>
 	inline void expo_array_key_bindings(boost::python::class_<ExpoArray> &inst)
 	{
-		inst.def("degree", &ExpoArray::degree);
-		inst.def("min_degree", &ExpoArray::min_degree);
+		inst.add_property("degree", &ExpoArray::degree);
+		inst.add_property("min_degree", &ExpoArray::min_degree);
 	}
 
 	inline void keys_bindings()

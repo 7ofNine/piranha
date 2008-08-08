@@ -122,7 +122,7 @@ def __series_plot(self, *args, **kwargs):
 	try:
 		f = mpl_kw.pop("f")
 	except KeyError:
-		f = lambda t: t.cf.norm() * t.key.norm()
+		f = lambda t: t.cf.norm * t.key.norm
 	plot_iteratable = None
 	if log:
 		plot_func = pylab.semilogy
