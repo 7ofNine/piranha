@@ -95,6 +95,7 @@ def __series_arguments(self):
 	return retval
 
 def __series_plot(self, *args, **kwargs):
+	"""Plot series' terms."""
 	try:
 		import pylab
 	except ImportError:
@@ -122,6 +123,8 @@ def __series_plot(self, *args, **kwargs):
 	try:
 		f = mpl_kw.pop("f")
 	except KeyError:
+		# If f has not been specified in the arguments' list, use as f the key function, if
+		# it is other than None. Otherwise use as f the norm of the term.
 		if key == None:
 			f = lambda t: t.cf.norm * t.key.norm
 		else:
