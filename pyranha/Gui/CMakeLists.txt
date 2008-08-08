@@ -13,7 +13,7 @@ MESSAGE(STATUS "pyranha_ui is " ${pyranha_ui})
 MESSAGE(STATUS "pyranha_rc is " ${pyranha_rc})
 
 SET(IPYTHON_GUI_TOOLKIT "-q4thread")
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/package/template.console.xml ${CMAKE_SOURCE_DIR}/package/console.xml)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/windows_package/template.console.xml ${CMAKE_SOURCE_DIR}/windows_package/console.xml)
 
 #INSTALL(FILES __init__.py panel_widget.py ${pyranha_ui} ${pyranha_rc} DESTINATION ${PYRANHA_INSTALL_PATH}/Gui/)
 INSTALL(FILES __init__.py ${pyranha_py} ${pyranha_ui} DESTINATION ${PYRANHA_INSTALL_PATH}/Gui/)

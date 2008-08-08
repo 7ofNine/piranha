@@ -112,30 +112,36 @@ IF(BUILD_TESTS)
 	ADD_SUBDIRECTORY(tests)
 ENDIF(BUILD_TESTS)
 
-# pyranha: piranha's python bindings
+# Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
+	IF(WIN32)
+		SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/windows_package)
+		SET(WIN_PKG_FILES
+			${WIN_PKG_ROOT}/Console.exe
+			${WIN_PKG_ROOT}/ConsoleHook.dll
+			${WIN_PKG_ROOT}/FreeImage.dll
+			${WIN_PKG_ROOT}/FreeImagePlus.dll
+			${WIN_PKG_ROOT}/console.chm
+			${WIN_PKG_ROOT}/console.xml
+			${WIN_PKG_ROOT}/gmp.dll
+			${WIN_PKG_ROOT}/msvcp71.dll
+			${WIN_PKG_ROOT}/msvcr71.dll
+			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+		)
+		INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
+		SET(WIN_MSVC_DLL_PATH ${CMAKE_SOURCE_DIR}/windows_package/Microsoft.VC90.CRT)
+		SET(WIN_MSVC_DLL_FILES
+			${WIN_MSVC_DLL_PATH}/Microsoft.VC90.CRT.manifest
+			${WIN_MSVC_DLL_PATH}/msvcm90.dll
+			${WIN_MSVC_DLL_PATH}/msvcp90.dll
+			${WIN_MSVC_DLL_PATH}/msvcr90.dll
+		)
+		INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION Microsoft.VC90.CRT)
+	ENDIF(WIN32)
 	# Mandatory linking.
 	SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
 	ADD_SUBDIRECTORY(pyranha)
-	IF(WIN32)
-		SET(WIN_PYRANHA_PKG_FILES
-			package/Console.exe
-			package/ConsoleHook.dll
-			package/FreeImage.dll
-			package/FreeImagePlus.dll
-			package/console.chm
-			package/console.xml
-			package/gmp.dll
-			package/msvcp71.dll
-			package/msvcr71.dll
-			package/msvcm90.dll
-			package/msvcp90.dll
-			package/msvcr90.dll
-			extras/ipy_profile_pyranha.py
-			extras/matplotlibrc
-		)
-		INSTALL(FILES ${WIN_PYRANHA_PKG_FILES} DESTINATION .)
-	ENDIF(WIN32)
 ENDIF(BUILD_PYRANHA)
 
 # Install phase: install theories of motion.
