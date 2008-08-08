@@ -25,6 +25,7 @@
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
+#include <memory>
 
 #include "atomic_counter.h" // For counting allocator.
 #include "config.h" // For unlikely(), aligned malloc, visibility, etc.
@@ -166,6 +167,9 @@ namespace piranha
 	inline bool operator!=(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &) {
 		return false;
 	}
+
+	template <class T>
+	class std_counting_allocator: public counting_allocator<T,std::allocator<char> > {};
 }
 
 #endif

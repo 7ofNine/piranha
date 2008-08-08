@@ -22,7 +22,6 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
-#include <boost/scoped_array.hpp>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -35,6 +34,7 @@
 #include "../base_classes/null_truncator.h"
 #include "../config.h"
 #include "../integer_typedefs.h"
+#include "../memory.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug.
 
@@ -153,8 +153,7 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					bool perform_vector_coded_multiplication(const GenericTruncator &trunc) {
-						boost::scoped_array<cf_type1> p_vc_res_cos(0);
-						cf_type1 *p_vc_res_sin(0);
+						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -162,8 +161,7 @@ namespace piranha
 						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
 						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
 						try {
-							p_vc_res_cos.reset(new cf_type1[n_codes * 2]);
-							p_vc_res_sin = p_vc_res_cos.get() + n_codes;
+							vc.resize(n_codes << 1);
 						} catch (const std::bad_alloc &) {
 							return false;
 						}
@@ -171,8 +169,8 @@ namespace piranha
 						// Define the base pointers for storing the results of multiplication.
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
-						cf_type1 *vc_res_cos =  p_vc_res_cos.get() - coded_ancestor::m_h_min,
-							*vc_res_sin = p_vc_res_sin - coded_ancestor::m_h_min;
+						cf_type1 *vc_res_cos =  &vc[0] - coded_ancestor::m_h_min,
+							*vc_res_sin = &vc[0] + n_codes - coded_ancestor::m_h_min;
 						cf_type1 tmp_cf;
 						// Perform multiplication.
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
