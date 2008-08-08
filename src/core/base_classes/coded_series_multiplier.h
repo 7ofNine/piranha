@@ -102,15 +102,15 @@ namespace piranha
 				p_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
 				// respect the fast integer boundaries.
-				if (ck < traits::max() && hmin > traits::min() && hmin < traits::max() &&
-						hmax > traits::min() && hmax < traits::max()) {
+				if (ck < traits::const_max && hmin > traits::const_min && hmin < traits::const_max &&
+						hmax > traits::const_min && hmax < traits::const_max) {
 					m_cr_is_viable = true;
 					m_h_min = hmin.get_si();
 					m_h_max = hmax.get_si();
 					// Downcast minimum and maximum result values to fast integers.
 					for (size_t i = 0; i < m_size; ++i) {
-						if (m_res_min_max[i].first < traits::min() || m_res_min_max[i].first > traits::max() ||
-								m_res_min_max[i].second < traits::min() || m_res_min_max[i].second > traits::max()) {
+						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
+								m_res_min_max[i].second < traits::const_min || m_res_min_max[i].second > traits::const_max) {
 							std::cout << "Warning: results of series multiplication cross " <<
 									  "fast integer limits. Expect errors." << std::endl;
 						}

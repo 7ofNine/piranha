@@ -295,7 +295,7 @@ namespace piranha
 			}
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
 				const size_t size = v.size();
-				p_assert(boost::integer_traits<size_type>::max() > size);
+				p_assert(boost::integer_traits<size_type>::const_max > size);
 				// TODO: check where this function is used to see if this resize can be avoided.
 				resize(size);
 				// TODO: check for assignments out of numerical boundaries.
@@ -362,7 +362,7 @@ namespace piranha
 				value_type *new_ptr = allocator.allocate(new_size);
 				const size_type new_pack_size = (new_size >> pack_shift);
 				// Copy to the minimum of the new sizes.
-				packed_copy(new_ptr, m_ptr, std::min(m_size, new_size), std::min(m_pack_size, new_pack_size));
+				packed_copy(new_ptr, m_ptr, std::min<size_type>(m_size, new_size), std::min<size_type>(m_pack_size, new_pack_size));
 				// Zero the remaining elements, if any.
 				for (size_type i = m_size;i < new_size;++i) {
 					new_ptr[i] = 0;

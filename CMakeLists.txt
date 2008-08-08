@@ -36,7 +36,7 @@ OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 OPTION(ENABLE_SSE2 "Enable usage of SSE2 instructions (requires a SSE2-enabled CPU) - EXPERIMENTAL." OFF)
 
 SET(MANDATORY_LIBRARIES "")
-SET(PIRANHA_DEFINITIONS "")
+SET(PIRANHA_DEFINITIONS "-DBOOST_THREAD_BUILD_LIB")
 
 IF(BUILD_MULTITHREADING)
 	IF(WIN32)
@@ -128,6 +128,9 @@ IF(BUILD_PYRANHA)
 			package/gmp.dll
 			package/msvcp71.dll
 			package/msvcr71.dll
+			package/msvcm90.dll
+			package/msvcp90.dll
+			package/msvcr90.dll
 			extras/ipy_profile_pyranha.py
 			extras/matplotlibrc
 		)
