@@ -73,7 +73,7 @@ namespace piranha
 				return pow_helper(y);
 			}
 			template <class ArgsTuple>
-			std::complex<double_cf> complexp(const ArgsTuple &) const;
+			std::complex<double_cf> ei(const ArgsTuple &) const;
 		private:
 			template <class Number>
 			double_cf pow_helper(const Number &y) const {
@@ -126,7 +126,7 @@ namespace piranha
 	// Place it here, since double_cf is not a template class and hence this definition
 	// relies on the complex specialization for double_cf being already available.
 	template <class ArgsTuple>
-	inline std::complex<double_cf> double_cf::complexp(const ArgsTuple &) const
+	inline std::complex<double_cf> double_cf::ei(const ArgsTuple &) const
 	{
 		std::complex<double_cf> retval;
 		retval.m_value = std::polar(1., m_value);

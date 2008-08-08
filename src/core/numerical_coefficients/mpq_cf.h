@@ -151,7 +151,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			std::complex<mpq_cf> complexp(const ArgsTuple &) const;
+			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
 }
 
@@ -314,7 +314,7 @@ namespace std
 namespace piranha
 {
 	template <class ArgsTuple>
-	inline std::complex<mpq_cf> mpq_cf::complexp(const ArgsTuple &) const
+	inline std::complex<mpq_cf> mpq_cf::ei(const ArgsTuple &) const
 	{
 		throw unsuitable("Rational coefficient is unsuitable for complex exponentiation.");
 	}

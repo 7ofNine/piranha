@@ -18,68 +18,84 @@
 
 from _Math import *
 
-import pyranha as __pyranha
-import math as __math
+def complex(real,imag_ = None):
+	"""
+	Wrapper around standard builtin "complex". If arg provides a complex() method, it will be called, otherwise
+	builtin complex will be called.
+	"""
+	try:
+		retval = real.complex()
+		if imag_ != None:
+			retval.imag = imag_
+		return retval
+	except AttributeError:
+		if imag_ == None:
+			imag = 0
+		else:
+			imag = imag_
+		return (real + imag*1j)
 
-def complex(arg):
-  """
-  Wrapper around standard builtin "complex". If arg provides a complex() method, it will be called, otherwise
-  builtin complex will be called.
-  """
-  try:
-    return arg.complex()
-  except AttributeError:
-    return complex(arg)
+def ei(arg):
+	"""
+	Complex exponential of arg.
+	"""
+	import math
+	try:
+		return arg.ei()
+	except AttributeError:
+		return complex(math.cos(arg),math.sin(arg))
 
 def cos(arg):
-  """
-  Wrapper around standard cosine function. If arg provides a cos() method, it will be called, otherwise
-  math.cos() will be called.
-  """
-  try:
-    return arg.cos()
-  except AttributeError:
-    return __math.cos(arg)
+	"""
+	Wrapper around standard cosine function. If arg provides a cos() method, it will be called, otherwise
+	math.cos() will be called.
+	"""
+	import math
+	try:
+		return arg.cos()
+	except AttributeError:
+		return math.cos(arg)
 
 def sin(arg):
-  """
-  Wrapper around standard sine function. If arg provides a sin() method, it will be called, otherwise
-  math.sin() will be called.
-  """
-  try:
-    return arg.sin()
-  except AttributeError:
-    return __math.sin(arg)
+	"""
+	Wrapper around standard sine function. If arg provides a sin() method, it will be called, otherwise
+	math.sin() will be called.
+	"""
+	import math
+	try:
+		return arg.sin()
+	except AttributeError:
+		return math.sin(arg)
 
 def root(n,arg):
-  """
-  Wrapper around root. If arg provides a root() method, it will be called, otherwise
-  the standard ** operator will be called.
-  """
-  try:
-    return arg.root(n)
-  except AttributeError:
-    return arg**(1./n)
+	"""
+	Wrapper around root. If arg provides a root() method, it will be called, otherwise
+	the standard ** operator will be called.
+	"""
+	try:
+		return arg.root(n)
+	except AttributeError:
+		return arg**(1./n)
 
 def besselJ(order,arg):
-  """
-  Wrapper around _Math.besselJ. If arg provides a besselJ() method, it will be called, otherwise
-  _Math.besselJ will be called.
-  """
-  try:
-    return arg.besselJ(order)
-  except AttributeError:
-    return _Math.besselJ(order,arg)
+	"""
+	Wrapper around _Math.besselJ. If arg provides a besselJ() method, it will be called, otherwise
+	_Math.besselJ will be called.
+	"""
+	try:
+		return arg.besselJ(order)
+	except AttributeError:
+		return _Math.besselJ(order,arg)
 
 def dbesselJ(order,arg):
-  """
-  Partial derivative of Bessel function of the first kind of integer order. It will call the dbesselJ() method
-  of arg, if available.
-  """
-  try:
-    return arg.dbesselJ(order)
-  except AttributeError:
-    raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
+	"""
+	Partial derivative of Bessel function of the first kind of integer order. It will call the dbesselJ() method
+	of arg, if available.
+	"""
+	try:
+		return arg.dbesselJ(order)
+	except AttributeError:
+		raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
 
 def Pnm(n,m,arg,*extra_arg):
 	"""
@@ -111,13 +127,13 @@ def Ynm(n,m,theta,phi):
 		return _Math.Ynm(n,m,theta,phi)
 
 def partial(arg,name):
-  """
-  Calculate partial derivative of arg with respect to argument name.
-
-  Internally the partial() method of arg is called. If such method is not available, an AttributeError
-  exception will be raised.
-  """
-  try:
-    return arg.partial(name)
-  except AttributeError:
-    raise AttributeError, "The partial() method is not available for this argument type."
+	"""
+	Calculate partial derivative of arg with respect to argument name.
+	
+	Internally the partial() method of arg is called. If such method is not available, an AttributeError
+	exception will be raised.
+	"""
+	try:
+		return arg.partial(name)
+	except AttributeError:
+		raise AttributeError, "The partial() method is not available for this argument type."

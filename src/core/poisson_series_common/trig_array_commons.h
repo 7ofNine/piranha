@@ -179,7 +179,7 @@ namespace piranha
 				std::complex<double> retval(1.);
 				for (size_t i = 0;i < w;++i) {
 					if ((*derived_const_cast)[i] != 0) {
-						retval *= te.request_complexp(i, (*derived_const_cast)[i]);
+						retval *= te.request_ei(i, (*derived_const_cast)[i]);
 					}
 				}
 				switch (derived_const_cast->m_flavour) {
@@ -357,7 +357,7 @@ namespace piranha
 					p_assert(pos < derived_const_cast->size());
 					SubSeries tmp(s);
 					tmp *= static_cast<max_fast_int>((*derived_const_cast)[pos]);
-					const std::complex<SubSeries> tmp_ei(tmp.complexp(args_tuple));
+					const std::complex<SubSeries> tmp_ei(tmp.ei(args_tuple));
 					const SubSeries tmp_cos(tmp_ei.real(args_tuple)), tmp_sin(tmp_ei.imag(args_tuple));
 					Derived tmp_ta(*derived_const_cast);
 					SubSeries orig_cos, orig_sin;

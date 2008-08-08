@@ -43,3 +43,6 @@
 - Check those complex changes and the static cast on root(y).
 - Use this-> instead of ancestor:: everywhere?
 - Place boost::operators in some shared toolbox?
+- "GUI support was not built." or PyQt4 is not available
+- Compile with -D_PIRANHA_DEBUG as default?
+- memory limit: with max fast int it can only be half-1 the size of max memory, which could be a bit limiting on 32 bit.

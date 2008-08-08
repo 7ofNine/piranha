@@ -74,7 +74,7 @@ namespace piranha
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
-			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
@@ -113,7 +113,7 @@ namespace piranha
 						complex_term_type tmp_term;
 						tmp_term.m_cf.insert(
 							typename std::complex<Derived>::term_type::cf_type::term_type(
-								int_linear_term.second.first[0].complexp(tmp_series2.arguments()),
+								int_linear_term.second.first[0].ei(tmp_series2.arguments()),
 								typename std::complex<Derived>::term_type::cf_type::term_type::key_type()
 							),
 							tmp_series2.arguments());
@@ -124,7 +124,7 @@ namespace piranha
 				}
 				return retval;
 			}
-			std::complex<Derived> complexp() const {
+			std::complex<Derived> ei() const {
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
 				// way to do this is by using named_series::merge_args with a phony series having zero
@@ -132,17 +132,17 @@ namespace piranha
 				Derived copy(*derived_const_cast), tmp;
 				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
 				copy.merge_args(tmp);
-				// Now we can call in the complexp method from above.
-				std::complex<Derived> retval(copy.complexp(copy.m_arguments));
+				// Now we can call in the ei method from above.
+				std::complex<Derived> retval(copy.ei(copy.m_arguments));
 				retval.m_arguments = copy.arguments();
 				retval.trim();
 				return retval;
 			}
 			Derived cos() const {
-				return complexp().real();
+				return ei().real();
 			}
 			Derived sin() const {
-				return complexp().imag();
+				return ei().imag();
 			}
 			// We have to specialise this in order to prepare the arguments tuple for the fact
 			// that poly args of s may be added as trig args (as s will be used as argument for sines

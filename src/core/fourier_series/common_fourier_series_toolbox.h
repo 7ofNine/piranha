@@ -64,14 +64,14 @@ namespace piranha
 	{
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
-			std::complex<Derived> complexp() const {
-				std::complex<Derived> retval(complexp(derived_const_cast->m_arguments));
+			std::complex<Derived> ei() const {
+				std::complex<Derived> retval(ei(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			template <class ArgsTuple>
-			std::complex<Derived> complexp(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				typedef typename Derived::term_type term_type;
@@ -80,7 +80,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
-													m_cf.complexp(args_tuple), key_type()),
+													m_cf.ei(args_tuple), key_type()),
 								  args_tuple);
 				} else {
 					// Cache and sort the term proxies list. Sorting is reverse (small --> big norms) because
@@ -105,17 +105,17 @@ namespace piranha
 					if (it != it_f) {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
-						tmp.insert(complex_term_type(it->m_cf.complexp(args_tuple),key_type()),args_tuple);
+						tmp.insert(complex_term_type(it->m_cf.ei(args_tuple),key_type()),args_tuple);
 						retval.mult_by(tmp,args_tuple);
 					}
 				}
 				return retval;
 			}
 			Derived cos() const {
-				return complexp().real();
+				return ei().real();
 			}
 			Derived sin() const {
-				return complexp().imag();
+				return ei().imag();
 			}
 			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
 				const Derived &theta_, const Derived &phi) {

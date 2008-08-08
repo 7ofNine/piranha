@@ -224,11 +224,11 @@ namespace piranha
 			template <class ArgsTuple>
 			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
 				const Derived &theta, const Derived &phi, const ArgsTuple &args_tuple) {
-				const std::complex<Derived> complexp_theta(theta.complexp(args_tuple));
+				const std::complex<Derived> ei_theta(theta.ei(args_tuple));
 				Derived m_phi(phi);
 				m_phi.mult_by(m,args_tuple);
-				std::complex<Derived> retval(m_phi.complexp(args_tuple));
-				retval.mult_by(complexp_theta.real(args_tuple).Pnm(n,m,complexp_theta.imag(args_tuple),args_tuple),args_tuple);
+				std::complex<Derived> retval(m_phi.ei(args_tuple));
+				retval.mult_by(ei_theta.real(args_tuple).Pnm(n,m,ei_theta.imag(args_tuple),args_tuple),args_tuple);
 				return retval;
 			}
 	};

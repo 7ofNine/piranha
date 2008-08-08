@@ -171,8 +171,8 @@ namespace pyranha
 	template <class T>
 	void series_trigonometric_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef std::complex<T> (T::*named_complexp)() const;
-		inst.def("complexp", named_complexp(&T::complexp));
+		typedef std::complex<T> (T::*named_ei)() const;
+		inst.def("ei", named_ei(&T::ei));
 		inst.def("cos", &T::cos);
 		inst.def("sin", &T::sin);
 		typedef std::complex<T> (*Ynm_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
