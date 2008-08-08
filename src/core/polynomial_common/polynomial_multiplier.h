@@ -202,7 +202,7 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_hash_table<cf_type1, max_fast_int> csht;
+						typedef coded_series_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
 						csht cms;

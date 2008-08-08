@@ -58,12 +58,13 @@ namespace piranha
 			bool  m_flags[N];
 	};
 
-	template <class Cf, class Ckey>
+	template <class Cf, class Ckey, class Allocator>
 	class coded_series_hash_table
 	{
 			static const size_t bucket_size = 9;
 			typedef coded_term_bucket<Cf, Ckey, bucket_size> bucket_type;
-			typedef std::vector<bucket_type> container_type;
+			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
+			typedef std::vector<bucket_type,allocator_type> container_type;
 			typedef boost::array<size_t,35> primes_vector_type;
 			static const primes_vector_type prime_sizes;
 		public:
@@ -234,8 +235,9 @@ namespace piranha
 			container_type	m_container;
 	};
 
-	template <class Cf, class Ckey>
-	const typename coded_series_hash_table<Cf,Ckey>::primes_vector_type coded_series_hash_table<Cf,Ckey>::prime_sizes = { {
+	template <class Cf, class Ckey, class Allocator>
+	const typename coded_series_hash_table<Cf,Ckey,Allocator>::primes_vector_type
+		coded_series_hash_table<Cf,Ckey,Allocator>::prime_sizes = { {
 		53,
 		97,
 		193,
