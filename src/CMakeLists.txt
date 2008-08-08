@@ -19,7 +19,7 @@ IF(WIN32)
 		boost_thread/win32/exceptions.cpp
 		boost_thread/win32/thread.cpp
 		boost_thread/win32/tss_dll.cpp
-		tss_pe.cpp
+		boost_thread/win32/tss_pe.cpp
 	)
 ELSE(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
