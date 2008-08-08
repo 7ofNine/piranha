@@ -125,7 +125,7 @@ namespace piranha
 			static const std::string				m_version;
 			static bool								enable_progress_display;
 			static startup_class					startup;
-#ifdef _PIRANHA_TBB
+#ifdef _PIRANHA_MT
 			static const tbb::task_scheduler_init	tbb_init;
 #endif
 	};

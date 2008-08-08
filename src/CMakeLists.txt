@@ -29,7 +29,7 @@ ELSE(WIN32)
 	)
 ENDIF(WIN32)
 
-IF(BUILD_TBB_MULTITHREADING)
+IF(BUILD_MULTITHREADING)
 	SET(SRC_LIST ${SRC_LIST}
 		tbb/cache_aligned_allocator.cpp
 		tbb/concurrent_hash_map.cpp
@@ -47,7 +47,7 @@ IF(BUILD_TBB_MULTITHREADING)
 		tbb/tbb_misc.cpp
 		tbb/tbb_thread.cpp
 	)
-ENDIF(BUILD_TBB_MULTITHREADING)
+ENDIF(BUILD_MULTITHREADING)
 
 IF(BUILD_PYRANHA)
 	SET(SHARED_SRC_LIST

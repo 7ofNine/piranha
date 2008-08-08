@@ -64,7 +64,7 @@ namespace piranha
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	bool settings::enable_progress_display = true;
 	settings::startup_class settings::startup;
-#ifdef _PIRANHA_TBB
+#ifdef _PIRANHA_MT
 	const tbb::task_scheduler_init settings::tbb_init;
 #endif
 

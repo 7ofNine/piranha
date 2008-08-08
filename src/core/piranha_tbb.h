@@ -21,7 +21,7 @@
 #ifndef PIRANHA_PIRANHA_TBB_H
 #define PIRANHA_PIRANHA_TBB_H
 
-#ifdef _PIRANHA_TBB
+#ifdef _PIRANHA_MT
 #include <tbb/blocked_range.h>
 #include <tbb/blocked_range2d.h>
 #include <tbb/parallel_for.h>

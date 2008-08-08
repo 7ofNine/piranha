@@ -36,13 +36,17 @@ namespace piranha
 			atomic_counter_generic():ancestor::base_atomic_counter(),m_mutex() {}
 			template <class IntType2>
 			atomic_counter_generic &operator+=(const IntType2 &n) {
+#ifdef _PIRANHA_MT
 				boost::lock_guard<boost::mutex> lock(m_mutex);
+#endif
 				this->m_value += n;
 				return *this;
 			}
 			template <class IntType2>
 			atomic_counter_generic &operator-=(const IntType2 &n) {
+#ifdef _PIRANHA_MT
 				boost::lock_guard<boost::mutex> lock(m_mutex);
+#endif
 				this->m_value -= n;
 				return *this;
 			}
