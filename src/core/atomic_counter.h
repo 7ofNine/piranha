@@ -37,6 +37,7 @@
 #endif // GCC_VERSION
 #else // __GNUC__
 
+#include "atomic_counter_generic.h"
 #define atomic_counter atomic_counter_generic
 
 #endif // __GNUC__

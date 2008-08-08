@@ -40,7 +40,7 @@ namespace piranha
 	static inline void *gmp_realloc_func(void *ptr, size_t old_size, size_t new_size) {
 		std_counting_allocator<char> a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
-		memcpy(retval, static_cast<void const *>(ptr), std::min(old_size,new_size));
+		memcpy(retval, static_cast<void const *>(ptr), std::min<size_t>(old_size,new_size));
 		a.deallocate(static_cast<char *>(ptr),old_size);
 		return retval;
 	}
@@ -54,10 +54,10 @@ namespace piranha
 	max_fast_int settings::m_memory_limit = 1000000000; // ~ 1GByte
 	float settings::hash_max_load_factor = (float)(0.3);
 	double settings::m_numerical_zero = 1E-80;
-	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::min();
-	const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::max();
-	const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::min();
-	const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::max();
+	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::const_min;
+	const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::const_max;
+	const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::const_min;
+	const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::const_max;
 	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 	std::string settings::m_path = settings::m_default_path;
 	bool settings::m_debug = false;
