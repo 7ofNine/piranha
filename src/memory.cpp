@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include "core/atomic_counter.h"
-#include "core/memory.h"
+#include "core/base_classes/base_counting_allocator.h"
 
 namespace piranha
 {

@@ -18,50 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_EXCEPTIONS_H
-#define PIRANHA_EXCEPTIONS_H
+#ifndef PIRANHA_BASE_COUNTING_ALLOCATOR_H
+#define PIRANHA_BASE_COUNTING_ALLOCATOR_H
 
-#include <string>
+#include "../atomic_counter.h"
 
 namespace piranha
 {
-	class base_exception
+	class __PIRANHA_VISIBLE base_counting_allocator
 	{
 		public:
-			base_exception(const std::string &s): m_what(s) {}
-			const std::string &what() const {
-				return m_what;
+			static size_t count() {
+				return m_counter.value();
 			}
-		private:
-			const std::string m_what;
-	};
-
-	struct bad_input: public base_exception {
-		bad_input(const std::string &s): base_exception(s) {}
-	};
-
-	struct term_not_insertable: public base_exception {
-		term_not_insertable(const std::string &s): base_exception(s) {}
-	};
-
-	struct unsuitable: public base_exception {
-		unsuitable(const std::string &s): base_exception(s) {}
-	};
-
-	struct not_existing: public base_exception {
-		not_existing(const std::string &s): base_exception(s) {}
-	};
-
-	struct not_implemented: public base_exception {
-		not_implemented(const std::string &s): base_exception(s) {}
-	};
-
-	struct division_by_zero: public base_exception {
-		division_by_zero(): base_exception("Division by zero.") {}
-	};
-
-	struct out_of_memory: public base_exception {
-		out_of_memory(): base_exception("Out of memory") {}
+		protected:
+			static atomic_counter<size_t> m_counter;
 	};
 }
 

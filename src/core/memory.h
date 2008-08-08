@@ -28,8 +28,11 @@
 #include <memory>
 
 #include "atomic_counter.h" // For counting allocator.
+#include "base_classes/base_counting_allocator.h"
 #include "config.h" // For unlikely(), aligned malloc, visibility, etc.
+#include "exceptions.h"
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
+#include "settings.h"
 
 namespace piranha
 {
@@ -98,17 +101,7 @@ namespace piranha
 #endif
 	}
 
-	class __PIRANHA_VISIBLE base_counting_allocator
-	{
-		public:
-			static size_t count() {
-				return m_counter.value();
-			}
-		protected:
-			static atomic_counter<size_t> m_counter;
-	};
-
-	/// An allocator that decorates another allocator by adding a counting mechanism for the allocated bytes.
+	/// An allocator that decorates another allocator by adding a counting mechanism for the number of allocated bytes.
 	template<class T, class Allocator>
 	class counting_allocator: public base_counting_allocator
 	{
@@ -137,8 +130,13 @@ namespace piranha
 				return m_alloc.address(x);
 			}
 			pointer allocate(const size_type &n, const void *hint = 0) {
+				const size_t add = n * sizeof(T), cur = m_counter.value();
+				const max_fast_int l = settings::memory_limit();
+				if (l >= 0 && cur + add > static_cast<size_t>(l)) {
+					throw out_of_memory();
+				}
 				pointer retval = m_alloc.allocate(n,hint);
-				m_counter += n * sizeof(T);
+				m_counter += add;
 				return retval;
 			}
 			void deallocate(pointer p, const size_type &n) {

@@ -64,13 +64,15 @@ BOOST_PYTHON_MODULE(_Core)
 	vector_indexing<double>("double");
 
 	// Settings.
-	typedef const bool &(*debug_get)();
-	typedef void (*debug_set)(const bool &);
-	class_<settings> class_setm("settings", "Settings for Pyranha.", init<>());
-	class_setm.def("debug", debug_get(&settings::debug), return_value_policy<copy_const_reference>(),
-				   "Get value of the debug flag.");
-	class_setm.def("debug", debug_set(&settings::debug), "Set value of the debug flag.").staticmethod("debug");
-	class_setm.def("used_memory", &settings::used_memory, "Amount of used memory in bytes.").staticmethod("used_memory");
+	typedef bool (*bool_get)();
+	typedef void (*bool_set)(const bool &);
+	typedef max_fast_int (*max_fast_int_get)();
+	typedef void (*max_fast_int_set)(const max_fast_int &);
+	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
+	class_setm.add_static_property("debug", bool_get(&settings::debug), bool_set(&settings::debug));
+	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
+	class_setm.add_static_property("memory_limit", max_fast_int_get(&settings::memory_limit),
+		max_fast_int_set(&settings::memory_limit));
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),

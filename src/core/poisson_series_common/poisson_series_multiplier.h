@@ -33,6 +33,7 @@
 #include "../base_classes/coded_series_hash_table.h"
 #include "../base_classes/null_truncator.h"
 #include "../config.h"
+#include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../p_assert.h"
@@ -163,6 +164,10 @@ namespace piranha
 						try {
 							vc.resize(n_codes << 1);
 						} catch (const std::bad_alloc &) {
+							__PDEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
+							return false;
+						} catch (const out_of_memory &) {
+							__PDEBUG(std::cout << "Memory limit reached for vector coded.\n");
 							return false;
 						}
 						__PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");

@@ -18,16 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SETTINGS_MANAGER_H
-#define PIRANHA_SETTINGS_MANAGER_H
+#ifndef PIRANHA_SETTINGS_H
+#define PIRANHA_SETTINGS_H
 
 #include <iostream>
 #include <string>
 
+#include "base_classes/base_counting_allocator.h"
 #include "config.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
-#include "memory.h"
 #include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
@@ -41,6 +41,16 @@ namespace piranha
 		public:
 			static size_t used_memory() {
 				return base_counting_allocator::count();
+			}
+			static max_fast_int memory_limit() {
+				return m_memory_limit;
+			}
+			static void memory_limit(const max_fast_int &limit) {
+				if (limit < 0) {
+					m_memory_limit = -1;
+				} else {
+					m_memory_limit = limit;
+				}
 			}
 			/// Return maximum load factor for hashed containers.
 			/**
@@ -59,7 +69,7 @@ namespace piranha
 				return m_path;
 			}
 			/// Get debug flag.
-			static const bool &debug() {
+			static bool debug() {
 				return m_debug;
 			}
 			/// Set debug flag.
@@ -94,6 +104,8 @@ namespace piranha
 				public:
 					startup_class();
 			};
+			/// Memory limit in bytes.
+			static max_fast_int						m_memory_limit;
 			/// Load factor for hashed containers.
 			static float							hash_max_load_factor;
 			/// Numerical zero.

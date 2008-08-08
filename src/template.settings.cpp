@@ -18,8 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <algorithm>
 #include <boost/integer_traits.hpp>
+#include <cstring>
+#include <gmp.h>
 
+#include "core/config.h"
+#include "core/integer_typedefs.h"
 #include "core/memory.h"
 #include "core/settings.h"
 #include "core/stream_manager.h"
@@ -27,7 +32,26 @@
 
 namespace piranha
 {
+	static inline void *gmp_alloc_func(size_t size) {
+		std_counting_allocator<char> a;
+		return static_cast<void *>(a.allocate(size));
+	}
+
+	static inline void *gmp_realloc_func(void *ptr, size_t old_size, size_t new_size) {
+		std_counting_allocator<char> a;
+		void *retval = static_cast<void *>(a.allocate(new_size));
+		memcpy(retval, static_cast<void const *>(ptr), std::min(old_size,new_size));
+		a.deallocate(static_cast<char *>(ptr),old_size);
+		return retval;
+	}
+
+	static inline void gmp_free_func(void *ptr, size_t size) {
+		std_counting_allocator<char> a;
+		a.deallocate(static_cast<char *>(ptr),size);
+	}
+
 	// Settings manager's static members.
+	max_fast_int settings::m_memory_limit = 1000000000; // ~ 1GByte
 	float settings::hash_max_load_factor = (float)(0.3);
 	double settings::m_numerical_zero = 1E-80;
 	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::min();
@@ -46,6 +70,7 @@ namespace piranha
 
 	settings::startup_class::startup_class()
 	{
+		p_static_check(sizeof(char) == 1, "Wrong char size.");
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
@@ -59,6 +84,8 @@ namespace piranha
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.
 		stream_manager::setup_print(std::cout);
+		// Setup GMP's memory allocation functions.
+		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
 	}
 
 	/// Set path to theories of motion.
