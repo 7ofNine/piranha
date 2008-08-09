@@ -21,7 +21,9 @@
 #ifndef PIRANHA_BASE_SERIES_MATH_H
 #define PIRANHA_BASE_SERIES_MATH_H
 
+#include <boost/lexical_cast.hpp>
 #include <cmath>
+#include <string>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -174,25 +176,47 @@ namespace piranha
 		return divide_by_number(x, args_tuple);
 	}
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class PosTuple, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_partial(const Derived &in, Derived &out,
+		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+			"Size mismatch between args tuple and pos tuple in partial derivative.");
+		p_assert(out.empty());
+		term_type tmp_term1, tmp_term2;
+		const const_iterator it_f = in.end();
+		for (const_iterator it = in.begin(); it != it_f; ++it) {
+			it->partial(tmp_term1, tmp_term2, pos_tuple, args_tuple);
+			out.insert(tmp_term1, args_tuple);
+			out.insert(tmp_term2, args_tuple);
+		}
+	}
+
 	/// Partial derivative.
 	/**
 	 * Calls partial() on all terms of the series, and inserts the resulting terms into return value.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(max_fast_int n,
+		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
-		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
-			"Size mismatch between args tuple and pos tuple in partial derivative.");
-		Derived retval;
-		typename Derived::term_type tmp_term1, tmp_term2;
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			it->partial(tmp_term1, tmp_term2, pos_tuple, args_tuple);
-			retval.insert(tmp_term1, args_tuple);
-			retval.insert(tmp_term2, args_tuple);
+		if (n < 0) {
+			throw unsuitable("For an n-th partial derivative, n must be non-negative.");
+		}
+		Derived retval(*derived_const_cast);
+		for (; n > 0; --n) {
+			Derived tmp;
+			ll_partial(retval,tmp,pos_tuple,args_tuple);
+			tmp.swap_terms(retval);
 		}
 		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class PosTuple, class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
+		return partial(1,pos_tuple,args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -376,6 +400,7 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
 			const ArgsTuple &args_tuple) const
 	{
+		p_assert(n > 0);
 		return pow(1. / static_cast<double>(n), args_tuple);
 	}
 }

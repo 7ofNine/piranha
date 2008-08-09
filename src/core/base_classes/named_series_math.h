@@ -187,13 +187,13 @@ namespace piranha
 
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg, const max_fast_int &n) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		pos_tuple_type pos_tuple;
 		psym_p p = psyms::get_pointer(arg);
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
-		Derived retval(derived_const_cast->partial(pos_tuple, m_arguments));
+		Derived retval(derived_const_cast->partial(n, pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;

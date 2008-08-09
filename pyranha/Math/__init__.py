@@ -126,14 +126,29 @@ def Ynm(n,m,theta,phi):
 	except AttributeError:
 		return _Math.Ynm(n,m,theta,phi)
 
-def partial(arg,name):
+def partial(arg,name,n=1):
 	"""
-	Calculate partial derivative of arg with respect to argument name.
+	Calculate the n-th partial derivative of arg with respect to argument name.
 	
 	Internally the partial() method of arg is called. If such method is not available, an AttributeError
 	exception will be raised.
 	"""
 	try:
-		return arg.partial(name)
+		return arg.partial(name,n)
 	except AttributeError:
 		raise AttributeError, "The partial() method is not available for this argument type."
+
+def einpi2(n):
+	"""
+	Complex exponential of n*pi/2.
+	"""
+	if n & 1:
+		if (n - 1) & 3:
+			return complex(0,-1)
+		else:
+			return complex(0,1)
+	else:
+		if n & 3:
+			return complex(-1,0)
+		else:
+			return complex(1,0)

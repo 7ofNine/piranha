@@ -69,6 +69,24 @@ namespace piranha
 		}
 	}
 
+	/// Calculate complex exponential of n*pi/2.
+	inline std::complex<max_fast_int> einpi2(const max_fast_int &n)
+	{
+		if (n & 1) {
+			if ((n-1) & 3) {
+				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(-1));
+			} else {
+				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(1));
+			}
+		} else {
+			if (n & 3) {
+				return std::complex<max_fast_int>(static_cast<max_fast_int>(-1),static_cast<max_fast_int>(0));
+			} else {
+				return std::complex<max_fast_int>(static_cast<max_fast_int>(1),static_cast<max_fast_int>(0));
+			}
+		}
+	}
+
 	/// Bessel function of the first kind, integer order.
 	inline double besselJ(const max_fast_int &order, const double &arg)
 	{

@@ -108,6 +108,8 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
+			Derived partial(max_fast_int, const PosTuple &, const ArgsTuple &) const;
+			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
 			std::vector<term_proxy_type> cache_proxies() const;
 		protected:
@@ -156,6 +158,8 @@ namespace piranha
 			void term_insert_new(const term_type &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
+			template <class PosTuple, class ArgsTuple>
+			static void ll_partial(const Derived &, Derived &, const PosTuple &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 			template <class ArgsTuple>

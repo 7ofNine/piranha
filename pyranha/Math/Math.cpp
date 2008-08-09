@@ -42,4 +42,5 @@ BOOST_PYTHON_MODULE(_Math)
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
+	def("cs_phase", &cs_phase, "Condon-Shortley phase (-1**m).");
 }

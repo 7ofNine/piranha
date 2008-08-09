@@ -181,22 +181,36 @@ namespace pyranha
 	}
 
 	template <class T>
-	T py_series_partial_name(const T &series, const std::string &p_name)
+	T py_series_partial_name_1(const T &series, const std::string &p_name)
 	{
 		return series.partial(piranha::psyms::get(p_name));
 	}
 
 	template <class T>
-	T py_series_partial_psym(const T &series, const piranha::psym &p)
+	T py_series_partial_psym_1(const T &series, const piranha::psym &p)
 	{
 		return series.partial(p);
 	}
 
 	template <class T>
+	T py_series_partial_name_n(const T &series, const std::string &p_name, const piranha::max_fast_int &n)
+	{
+		return series.partial(piranha::psyms::get(p_name),n);
+	}
+
+	template <class T>
+	T py_series_partial_psym_n(const T &series, const piranha::psym &p, const piranha::max_fast_int &n)
+	{
+		return series.partial(p,n);
+	}
+
+	template <class T>
 	void series_differential_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("partial", &py_series_partial_psym<T>);
-		inst.def("partial", &py_series_partial_name<T>);
+		inst.def("partial", &py_series_partial_psym_1<T>);
+		inst.def("partial", &py_series_partial_psym_n<T>);
+		inst.def("partial", &py_series_partial_name_1<T>);
+		inst.def("partial", &py_series_partial_name_n<T>);
 	}
 
 	template <class T, class Series>
