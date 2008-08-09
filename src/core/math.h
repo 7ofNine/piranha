@@ -22,11 +22,13 @@
 #define PIRANHA_MATH_H
 
 #include <boost/math/special_functions/bessel.hpp>
+#include <boost/math/special_functions/factorials.hpp>
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/static_assert.hpp>
 #include <cmath>
 #include <complex>
 
+#include "exceptions.h"
 #include "integer_typedefs.h"
 
 namespace piranha
@@ -97,6 +99,23 @@ namespace piranha
 		std::complex<double> retval(std::polar(1.,phi*m));
 		retval *= Pnm(n,m,std::cos(theta));
 		return retval;
+	}
+
+	template <class T>
+	static inline void factorial_check(const T &x) {
+		if (x < 0) {
+			throw unsuitable("Please use a non-negative integer as argument for factorials.");
+		}
+	}
+
+	inline double factorial(const int &i) {
+		factorial_check(i);
+		return boost::math::factorial<double>(static_cast<unsigned>(i));
+	}
+
+	inline double double_factorial(const int &i) {
+		factorial_check(i);
+		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
 	}
 }
 

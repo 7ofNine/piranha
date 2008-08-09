@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/math/special_functions/gamma.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/module.hpp>
 #include <complex>
@@ -37,4 +38,8 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
 	def("Ynm", &Ynm, "Spherical harmonic (not normalised).");
+	def("factorial", &piranha::factorial, "Factorial.");
+	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
+	typedef double (*double_gamma)(double);
+	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
 }
