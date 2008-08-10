@@ -23,6 +23,8 @@
 
 #include <boost/cstdint.hpp>
 
+#include "config.h"
+
 namespace piranha
 {
 	/// Integer selector.
@@ -32,11 +34,8 @@ namespace piranha
 	 * other than 32bit or 64bit it won't define any type.
 	 */
 	template <int SizeOfPointer>
-	struct int_selector {};
-
-	// Specialization for 32bit archs.
-	template <>
-	struct int_selector<4> {
+	struct int_selector {
+		p_static_check(SizeOfPointer == 4);
 		typedef boost::int32_t  max_fast_int;
 		typedef boost::uint32_t max_fast_uint;
 	};

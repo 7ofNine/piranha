@@ -70,7 +70,7 @@ namespace piranha
 				std::vector<max_fast_int> ebs_sequence;
 				// First we find the first available value in the EBS sequence.
 				const iterator it_f = m_container.end();
-				__PDEBUG(std::cout << "Pushing " << orig_n << '\n');
+				__PDEBUG(std::cout << "Int power cache pushing " << orig_n << '\n');
 				ebs_sequence.push_back(orig_n);
 				do {
 					// n == -1 may not have been provided in the ctor. If we reached this point, it means
@@ -88,7 +88,7 @@ namespace piranha
 					} else {
 						n >>= 1;
 					}
-					__PDEBUG(std::cout << "Pushing " << n << '\n');
+					__PDEBUG(std::cout << "Int power cache pushing " << n << '\n');
 					ebs_sequence.push_back(n);
 				} while (m_container.find(n) == it_f);
 				// At this point n is the lowest known integer of our EBS sequence. It is a kind of seed value.
@@ -99,6 +99,7 @@ namespace piranha
 					// Check that we are not going to pop too much.
 					p_assert(ebs_sequence.size() >= 2);
 					max_fast_int tmp = ebs_sequence.back();
+					__PDEBUG(std::cout << "Int power cache popping " << ebs_sequence.back() << '\n');
 					ebs_sequence.pop_back();
 					index = ebs_sequence.back();
 					p_assert((Sign && index > tmp) || (!Sign && index < tmp));
