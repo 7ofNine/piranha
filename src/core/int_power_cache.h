@@ -60,7 +60,7 @@ namespace piranha
 			}
 		private:
 			void init(const T &x_1) {
-				m_container[0] = T(1);
+				m_container[0] = T(static_cast<max_fast_int>(1));
 				m_container[1] = x_1;
 			}
 			template <bool Sign>

@@ -35,7 +35,7 @@ namespace piranha
 	 */
 	template <int SizeOfPointer>
 	struct int_selector {
-		p_static_check(SizeOfPointer == 4);
+		p_static_check(SizeOfPointer == 4, "Unknown pointer size.");
 		typedef boost::int32_t  max_fast_int;
 		typedef boost::uint32_t max_fast_uint;
 	};
