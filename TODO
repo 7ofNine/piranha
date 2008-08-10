@@ -49,3 +49,5 @@
 - Remove psym interface from celmec functions.
 - Another interface for Ynm, this time with theta as a complex thingie representing the complex exponential of colatitude.
 - Drop all typename Derived::term_type
+- %pload and %pget for series loading and symbol getting
+- check that truncators do not sort if not necessary.

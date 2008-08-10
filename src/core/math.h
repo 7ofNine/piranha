@@ -35,7 +35,7 @@ namespace piranha
 {
 	/// Meta-programmed functor for the calculation of base-2 logarithm.
 	/**
-	 * Result is retrieved through the lg::value const member function.
+	 * Result is retrieved through the lg::value const static member.
 	 */
 	template <int N>
 	struct lg {

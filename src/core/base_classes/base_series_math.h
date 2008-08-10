@@ -303,7 +303,7 @@ namespace piranha
 		Derived retval;
 		switch (n) {
 		case 0: {
-			retval = Derived((max_fast_int)1, args_tuple);
+			retval = Derived(static_cast<max_fast_int>(1), args_tuple);
 			break;
 		}
 		case 1: {
@@ -329,7 +329,7 @@ namespace piranha
 			break;
 		}
 		default: {
-			retval = Derived((max_fast_int)1, args_tuple);
+			retval = Derived(static_cast<max_fast_int>(1), args_tuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
 				Derived tmp(*derived_const_cast);
