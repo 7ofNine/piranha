@@ -133,7 +133,8 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise rational coefficient different from unity to negative real power.");
+						throw unsuitable("Cannot raise rational coefficient different from unity to "
+							"negative real power.");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -145,7 +146,8 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise rational coefficient different from unity to positive real power.");
+						throw unsuitable("Cannot raise rational coefficient different from unity to "
+							"positive real power.");
 					}
 				}
 				return retval;
@@ -250,11 +252,17 @@ namespace std
 					} else {
 						// Invert the source.
 						retval.m_value = m_value;
-						const mpq_class div = m_value.real() * m_value.real() + m_value.imag() * m_value.imag();
-						retval.m_value.real() /= div;
-						retval.m_value.imag() /= div;
+						// div is the module of m_value.
+						mpq_class div(m_value.real());
+						div *= m_value.real();
+						{
+							mpq_class tmp(m_value.imag());
+							tmp *= m_value.imag();
+							div += tmp;
+						}
+						retval.m_value /= div;
 						retval.m_value.imag() *= -1;
-						const size_t count = (size_t)(-n) - 1;
+						const size_t count = static_cast<size_t>(-n) - 1;
 						complex<mpq_class> tmp;
 						if (count != 0) {
 							tmp = retval.m_value;
@@ -266,7 +274,7 @@ namespace std
 				} else {
 					retval.m_value.real() = 1;
 					retval.m_value.imag() = 0;
-					const size_t count = (size_t)n;
+					const size_t count = static_cast<size_t>(n);
 					for (size_t i = 0; i < count; ++i) {
 						retval.m_value *= m_value;
 					}
