@@ -49,12 +49,11 @@ namespace piranha
 				// Just leave an empty series if this or s2 are zero.
 				if (derived_const_cast->empty() || s2.empty()) {
 					;
-				}
-				// Optimize if the second series is a pure coefficient series.
-				// TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
-				// TODO: maybe this optimization can be placed somewhere else, in base_series or whatever.
-				else if (s2.is_single_cf()) {
-					retval = derived_const_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
+				//} else if (s2.is_single_cf()) {
+					// Optimize if the second series is a pure coefficient series.
+					// TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
+					// TODO: maybe this optimization can be placed somewhere else, in base_series or whatever.
+				//	retval = derived_const_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
 				} else {
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();
