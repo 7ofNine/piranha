@@ -184,7 +184,8 @@ namespace std
 			}
 			/// Constructor from integer.
 			template <class ArgsTuple>
-			explicit complex(const piranha::max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+			explicit complex(const piranha::max_fast_int &val, const ArgsTuple &a):
+				ancestor::numerical_container(val, a) {
 				canonicalize();
 			}
 			/// Constructor from double.
@@ -194,23 +195,28 @@ namespace std
 			}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
+			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a):
+				ancestor::numerical_container(p, n, a) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(c) {
+			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):
+				complex_toolbox::numerical_container_complex_toolbox(c) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			explicit complex(const std::complex<double> &c, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(c) {
+			explicit complex(const std::complex<double> &c, const ArgsTuple &):
+				complex_toolbox::numerical_container_complex_toolbox(c) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {
+			explicit complex(const value_type &r, const ArgsTuple &):
+				complex_toolbox::numerical_container_complex_toolbox(r) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r, i) {
+			explicit complex(const value_type &r, const value_type &i, const ArgsTuple &):
+				complex_toolbox::numerical_container_complex_toolbox(r, i) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
@@ -291,7 +297,8 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex rational coefficient different from unity to negative real power.");
+						throw piranha::unsuitable("Cannot raise complex rational coefficient "
+							"different from unity to negative real power.");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -306,7 +313,8 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex rational coefficient different from unity to positive real power.");
+						throw piranha::unsuitable("Cannot raise complex rational coefficient "
+							"different from unity to positive real power.");
 					}
 				}
 				return retval;
