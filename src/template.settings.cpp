@@ -71,6 +71,7 @@ namespace piranha
 	settings::startup_class::startup_class()
 	{
 		p_static_check(sizeof(char) == 1, "Wrong char size.");
+		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";

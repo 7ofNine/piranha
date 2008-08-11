@@ -333,8 +333,6 @@ namespace piranha
 					// For Poisson series we also need flavours.
 					std::vector<char>		m_flavours1;
 					std::vector<char>		m_flavours2;
-					// Just making sure, eh...
-					p_static_check(sizeof(char) == sizeof(bool), "Bool and char do not have the same size.");
 			};
 	};
 }
