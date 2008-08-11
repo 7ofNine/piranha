@@ -21,6 +21,7 @@
 #ifndef PIRANHA_MATH_H
 #define PIRANHA_MATH_H
 
+#include <algorithm>
 #include <boost/math/special_functions/bessel.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/math/special_functions/legendre.hpp>
@@ -28,8 +29,10 @@
 #include <cmath>
 #include <complex>
 
+#include "config.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
+#include "p_assert.h"
 
 namespace piranha
 {
@@ -39,7 +42,7 @@ namespace piranha
 	 */
 	template <int N>
 	struct lg {
-		BOOST_STATIC_ASSERT(N > 0 && (N % 2) == 0);
+		p_static_check(N > 0 && (N % 2) == 0, "N is not a power of 2.");
 		/// Value of the base-2 logarithm of N.
 		static const size_t value = lg < (N >> 1) >::value + 1;
 	};
@@ -67,6 +70,25 @@ namespace piranha
 		} else {
 			return static_cast<max_fast_int>(1);
 		}
+	}
+
+	template <class T>
+	static inline void factorial_check(const T &x) {
+		if (x < 0) {
+			throw unsuitable("Please use a non-negative integer as argument for factorials.");
+		}
+	}
+
+	/// Factorial.
+	inline double factorial(const int &i) {
+		factorial_check(i);
+		return boost::math::factorial<double>(static_cast<unsigned>(i));
+	}
+
+	/// Double factorial.
+	inline double double_factorial(const int &i) {
+		factorial_check(i);
+		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
 	}
 
 	/// Calculate complex exponential of n*pi/2.
@@ -119,21 +141,43 @@ namespace piranha
 		return retval;
 	}
 
-	template <class T>
-	static inline void factorial_check(const T &x) {
-		if (x < 0) {
-			throw unsuitable("Please use a non-negative integer as argument for factorials.");
+	/// Non-normalised rotated spherical harmonic.
+	inline std::complex<double> Ynm(const int &n_, const int &m_, const double &theta, const double &phi,
+		const double &alpha, const double &beta, const double &gamma)
+	{
+		// Let's fix negative n and/or m.
+		int n(n_), m(std::abs(m_));
+		std::complex<double> retval(1.,0.);
+		if (n_ < 0) {
+			n = -n_-1;
 		}
-	}
-
-	inline double factorial(const int &i) {
-		factorial_check(i);
-		return boost::math::factorial<double>(static_cast<unsigned>(i));
-	}
-
-	inline double double_factorial(const int &i) {
-		factorial_check(i);
-		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
+		if (n == 0 && m == 0) {
+			return retval;
+		}
+		retval = std::complex<double>(0.,0.);
+		if (m > n) {
+			return retval;
+		}
+		p_assert(n >= m && n >= 0 && m >= 0);
+		std::complex<double> factor(std::polar(1.,-gamma*m));
+		factor *= einpi2(-m);
+		factor *= factorial(n+m);
+		for (int k = -n; k <=n; ++k) {
+			std::complex<double> tmp = std::polar(1.,phi*k) * std::polar(1.,-alpha*k);
+			tmp *= einpi2(k);
+			tmp *= Pnm(n,k,std::cos(theta));
+			tmp *= factorial(n-k);
+			double tmp2 = 0;
+			for (int t = std::max<int>(0,k-m); t <= std::min<int>(n-m,n+k); ++t) {
+				double tmp3 = std::pow(std::sin(beta/2.),m-k+2*t) * std::pow(std::cos(beta/2.),2*n-m+k-2*t);
+				tmp3 *= cs_phase(t);
+				tmp3 /= factorial(t)*factorial(n+k-t)*factorial(n-m-t)*factorial(m-k+t);
+				tmp2 += tmp3;
+			}
+			tmp *= tmp2;
+			retval += tmp;
+		}
+		return retval * factor;
 	}
 }
 

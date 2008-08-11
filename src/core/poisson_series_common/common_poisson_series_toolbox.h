@@ -37,6 +37,7 @@
 #include "../p_assert.h"
 #include "../psym.h"
 #include "jacobi_anger_toolbox.h"
+#include "wigner_rotation_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -67,10 +68,12 @@ namespace piranha
 	template <class Derived>
 	class common_poisson_series_toolbox:
 		public jacobi_anger_toolbox<1, Derived>,
-		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>
+		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>,
+		public wigner_rotation_toolbox<Derived>
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
+			using wigner_rotation_toolbox<Derived>::Ynm;
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>

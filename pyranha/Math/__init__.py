@@ -117,14 +117,24 @@ def Pn(n,arg):
 	except AttributeError:
 		return _Math.Pn(n,arg)
 
-def Ynm(n,m,theta,phi):
+def Ynm(n,m,theta,phi, alpha = None, beta = None, gamma = None):
 	"""
-	Non-normalised spherical harmonic.
+	Non-normalised spherical harmonic. If at least one of alpha, beta or gamma is provided, the spherical harmonic
+	will be rotated under the 3-1-3 Euler angles alpha, beta and gamma.
 	"""
-	try:
-		return theta.Ynm(n,m,theta,phi)
-	except AttributeError:
-		return _Math.Ynm(n,m,theta,phi)
+	if alpha != None or beta != None or gamma != None:
+		a = alpha or type(theta)(0)
+		b = beta or type(theta)(0)
+		g = gamma or type(theta)(0)
+		try:
+			return type(theta).Ynm(n,m,theta,phi,a,b,g)
+		except AttributeError:
+			return _Math.Ynm(n,m,theta,phi,a,b,g)
+	else:
+		try:
+			return type(theta).Ynm(n,m,theta,phi)
+		except AttributeError:
+			return _Math.Ynm(n,m,theta,phi)
 
 def partial(arg,name,n=1):
 	"""

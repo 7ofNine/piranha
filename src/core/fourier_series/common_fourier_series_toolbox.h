@@ -28,6 +28,7 @@
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
+#include "../poisson_series_common/wigner_rotation_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -60,10 +61,12 @@ namespace piranha
 	template <class Derived>
 	class common_fourier_series_toolbox:
 		public jacobi_anger_toolbox<0, Derived>,
-		public binomial_exponentiation_toolbox<Derived,fs_binomial_sorter>
+		public binomial_exponentiation_toolbox<Derived,fs_binomial_sorter>,
+		public wigner_rotation_toolbox<Derived>
 	{
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
+			using wigner_rotation_toolbox<Derived>::Ynm;
 			std::complex<Derived> ei() const {
 				std::complex<Derived> retval(ei(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
