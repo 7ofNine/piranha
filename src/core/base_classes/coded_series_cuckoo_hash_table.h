@@ -81,8 +81,9 @@ namespace piranha
 					}
 				private:
 					void next() {
-						const size_t vector_size = sizes[m_ht->m_sizes_index];
+						const size_t vector_size = m_ht->m_container.size();
 						size_t tmp_index = m_index + 1;
+						// TODO: use do-while?
 						while (tmp_index < vector_size && !m_ht->m_flags[tmp_index]) {
 							++tmp_index;
 						}
@@ -92,37 +93,38 @@ namespace piranha
 					const coded_series_cuckoo_hash_table	*m_ht;
 					size_t									m_index;
 			};
-			coded_series_cuckoo_hash_table(): m_length(0), m_sizes_index(0), m_container(sizes[0]), m_flags(sizes[0]) {}
+			coded_series_cuckoo_hash_table(): m_length(0), m_sizes_index(0),
+				m_container(sizes[0]), m_flags(sizes[0]) {}
 			~coded_series_cuckoo_hash_table() {
-				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was: "
+				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
 								   << m_container.size() << '\n');
 			}
 			iterator begin() const {
 				return iterator(this);
 			}
 			iterator end() const {
-				p_assert(sizes[m_sizes_index] == m_container.size());
-				return iterator(this, sizes[m_sizes_index]);
+				p_assert(sizes[m_sizes_index] <= m_container.size());
+				return iterator(this, m_container.size());
 			}
 			iterator find(const Ckey &ckey) const {
-				p_assert(sizes[m_sizes_index] == m_container.size());
-				const size_t v_size = sizes[m_sizes_index], h1 = hash1(ckey), pos1 = h1 % v_size;
+				p_assert(sizes[m_sizes_index] <= m_container.size());
+				const size_t pos1 = position1(ckey);
 				// TODO: replace with bit twiddling to reduce branching?
 				if (m_flags[pos1] && m_container[pos1].m_ckey == ckey) {
 					return iterator(this,pos1);
 				}
-				const size_t pos2 = hash2(ckey) % v_size;
+				const size_t pos2 = position2(ckey);
 				if (m_flags[pos2] && m_container[pos2].m_ckey == ckey) {
 					return iterator(this,pos2);
 				}
-				return end();
+				return find_among_bad_terms(ckey);
 			}
 			size_t size() const {
 				return m_length;
 			}
 			void insert(const term_type &t) {
 				if (((m_length + 1) << 1) >= sizes[m_sizes_index]) {
-					__PDEBUG(std::cout << "Load factor exceeded, resizing." << '\n');
+					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
 					increase_size();
 				}
 				term_type tmp_term;
@@ -137,6 +139,15 @@ namespace piranha
 				}
 			}
 		private:
+			iterator find_among_bad_terms(const Ckey &ckey) const {
+				const size_t size = m_container.size();
+				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
+					if (m_flags[i] && m_container[i].m_ckey == ckey) {
+						return iterator(this,i);
+					}
+				}
+				return end();
+			}
 			void increase_size() {
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.m_sizes_index = m_sizes_index + 1;
@@ -149,7 +160,7 @@ namespace piranha
 					if (!new_ht.attempt_insertion(*it,tmp_term)) {
 						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize." << '\n');
 						++new_ht.m_sizes_index;
-						__PDEBUG(std::cout << "New size: " << sizes[new_ht.m_sizes_index] << '\n');
+						__PDEBUG(std::cout << "Next size: " << sizes[new_ht.m_sizes_index] << '\n');
 						new_ht.m_container.clear();
 						new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
 						new_ht.m_flags.clear();
@@ -166,37 +177,63 @@ namespace piranha
 				m_sizes_index = new_ht.m_sizes_index;
 			}
 			bool attempt_insertion(const term_type &t, term_type &tmp_term) {
-				const size_t vector_size = sizes[m_sizes_index], h = static_cast<size_t>(t.m_ckey),
-					pos = h % vector_size;
+				size_t pos = position1(t.m_ckey);
 				if (m_flags[pos]) {
-					// Current term is kicked out into tmp_term, t takes its place
+					// Current term is kicked out into tmp_term, t takes its place.
 					tmp_term = m_container[pos];
 					m_container[pos] = t;
 					size_t counter = 0;
-					while (swap_and_displace(tmp_term,pos,vector_size)) {
+					while (swap_and_displace(tmp_term,pos)) {
 						++counter;
-						if (counter > 19) {
-							__PDEBUG(std::cout << "Cuckoo loop detected, will increase size and rebuild.\n");
-							return false;
+						if (counter > 20) {
+							__PDEBUG(std::cout << "Cuckoo loop detected, will mark term as bad.\n");
+							return append_as_bad_term(tmp_term);
 						}
 					}
+//std::cout << "broke out at counter " << counter << '\n';
+					// The swapping worked.
 				} else {
 					m_flags[pos] = true;
 					m_container[pos] = t;
+					++m_length;
 				}
-				++m_length;
 				return true;
+			}
+			bool append_as_bad_term(const term_type &t) {
+				// Maybe there is a non-occupied bad slot we can re-use?
+				const size_t size = m_container.size();
+				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
+					if (!m_flags[i]) {
+						// TODO: use swapping?
+						m_container[i] = t;
+						m_flags[i] = true;
+						++m_length;
+						return true;
+					}
+				}
+				// We did not find a non-occupied bad slot, create one if we are below the limit and copy the
+				// term, otherwise give up and return false.
+				if ((m_container.size() - sizes[m_sizes_index]) < 5) {
+					m_container.push_back(term_type());
+					// TODO: use swapping?
+					m_container.back() = t;
+					m_flags.push_back(true);
+					++m_length;
+					return true;
+				}
+				__PDEBUG(std::cout << "There are already too many bad terms, failing insertion.\n");
+				return false;
 			}
 			// Place tmp_term into its location other than orig_location, displacing, if necessary. an existing
 			// term. If displacement takes place, retval will be true and the content of tmp_term
 			// will be the displaced one. Otherwise return false.
-			bool swap_and_displace(term_type &tmp_term, const size_t &orig_location, const size_t &vector_size) {
+			bool swap_and_displace(term_type &tmp_term, size_t &orig_location) {
 				//__PDEBUG(std::cout << "Performing swap & displace." << '\n');
-				const size_t pos1 = hash1(tmp_term.m_ckey) % vector_size;
+				const size_t pos1 = position1(tmp_term.m_ckey);
 				size_t new_pos;
 				if (orig_location == pos1) {
 					// Original location was pos1, we want to move to pos2.
-					new_pos = hash2(tmp_term.m_ckey) % vector_size;;
+					new_pos = position2(tmp_term.m_ckey);
 				} else {
 					// Original location was pos2, we want to move to pos1.
 					new_pos = pos1;
@@ -205,25 +242,45 @@ namespace piranha
 					// We have to displace an existing term.
 #define SWAP(a, b) (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)))
 					m_container[new_pos].m_cf.swap(tmp_term.m_cf);
-					SWAP(m_container[new_pos].m_ckey,tmp_term.m_ckey);
+					std::swap(m_container[new_pos].m_ckey,tmp_term.m_ckey);
+					orig_location = new_pos;
 					return true;
 #undef SWAP
 				} else {
 					// Destination is not taken, occupy it.
+					// TODO: use some swapping here too?
 					m_container[new_pos] = tmp_term;
 					m_flags[new_pos] = true;
 					return false;
 				}
 			}
-			static size_t hash1(const Ckey &ckey) {
+			size_t position1(const Ckey &ckey) const {
 				//return static_cast<size_t>(ckey & __MASK);
-				return static_cast<size_t>(ckey);
+				return static_cast<size_t>(ckey) % sizes[m_sizes_index];
 			}
-			static size_t hash2(const Ckey &ckey) {
+// 			size_t position2(const Ckey &ckey) const {
 				//return static_cast<size_t>((ckey >> 32) & __MASK);
 				//return (static_cast<size_t>(ckey) + 0x9e3779b9 + (ckey<<6) + (ckey>>2));
-				return ~hash1(ckey);
+				//return ~hash1(ckey);
+				//return position1((ckey + 4294967295) ^ (sizes[m_sizes_index] >> 1));
+// 				return (static_cast<size_t>(ckey)*2654435761) % sizes[m_sizes_index];
+				//return ckey+ckey*ckey;
+// 			}
+			size_t position2(const Ckey &ckey) const {
+				size_t seed = static_cast<size_t>(ckey);
+				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+				return seed % sizes[m_sizes_index];
+
+				size_t key = (~ckey) + (ckey << 21); // key = (key << 21) - key - 1;
+				key = key ^ (key >> 24);
+				key = (key + (key << 3)) + (key << 8); // key * 265
+				key = key ^ (key >> 14);
+				key = (key + (key << 2)) + (key << 4); // key * 21
+				key = key ^ (key >> 28);
+				key = key + (key << 31);
+				return key % sizes[m_sizes_index];
 			}
+
 		private:
 			size_t				m_length;
 			size_t				m_sizes_index;
