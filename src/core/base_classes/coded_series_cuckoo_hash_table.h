@@ -38,6 +38,12 @@ namespace piranha
 				public:
 					term_type_():m_cf(),m_ckey() {}
 					term_type_(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
+					void swap(term_type_ &t) {
+#define SWAP(a, b) (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)))
+						m_cf.swap(t.m_cf);
+						SWAP(m_ckey,t.m_ckey);
+#undef SWAP
+					}
 					mutable Cf	m_cf;
 					Ckey		m_ckey;
 			};
@@ -82,11 +88,10 @@ namespace piranha
 				private:
 					void next() {
 						const size_t vector_size = m_ht->m_container.size();
-						size_t tmp_index = m_index + 1;
-						// TODO: use do-while?
-						while (tmp_index < vector_size && !m_ht->m_flags[tmp_index]) {
+						size_t tmp_index = m_index;
+						do {
 							++tmp_index;
-						}
+						} while (tmp_index < vector_size && !m_ht->m_flags[tmp_index]);
 						m_index = tmp_index;
 					}
 				private:
@@ -191,7 +196,6 @@ namespace piranha
 						}
 					}
 //std::cout << "broke out at counter " << counter << '\n';
-					// The swapping worked.
 				} else {
 					m_flags[pos] = true;
 					m_container[pos] = t;
@@ -199,13 +203,12 @@ namespace piranha
 				}
 				return true;
 			}
-			bool append_as_bad_term(const term_type &t) {
+			bool append_as_bad_term(term_type &t) {
 				// Maybe there is a non-occupied bad slot we can re-use?
 				const size_t size = m_container.size();
 				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
 					if (!m_flags[i]) {
-						// TODO: use swapping?
-						m_container[i] = t;
+						m_container[i].swap(t);
 						m_flags[i] = true;
 						++m_length;
 						return true;
@@ -215,8 +218,7 @@ namespace piranha
 				// term, otherwise give up and return false.
 				if ((m_container.size() - sizes[m_sizes_index]) < 5) {
 					m_container.push_back(term_type());
-					// TODO: use swapping?
-					m_container.back() = t;
+					m_container.back().swap(t);
 					m_flags.push_back(true);
 					++m_length;
 					return true;
@@ -240,45 +242,32 @@ namespace piranha
 				}
 				if (m_flags[new_pos]) {
 					// We have to displace an existing term.
-#define SWAP(a, b) (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)))
-					m_container[new_pos].m_cf.swap(tmp_term.m_cf);
-					std::swap(m_container[new_pos].m_ckey,tmp_term.m_ckey);
+					m_container[new_pos].swap(tmp_term);
 					orig_location = new_pos;
 					return true;
-#undef SWAP
 				} else {
 					// Destination is not taken, occupy it.
-					// TODO: use some swapping here too?
-					m_container[new_pos] = tmp_term;
+					m_container[new_pos].swap(tmp_term);
 					m_flags[new_pos] = true;
 					return false;
 				}
 			}
 			size_t position1(const Ckey &ckey) const {
-				//return static_cast<size_t>(ckey & __MASK);
 				return static_cast<size_t>(ckey) % sizes[m_sizes_index];
 			}
-// 			size_t position2(const Ckey &ckey) const {
-				//return static_cast<size_t>((ckey >> 32) & __MASK);
-				//return (static_cast<size_t>(ckey) + 0x9e3779b9 + (ckey<<6) + (ckey>>2));
-				//return ~hash1(ckey);
-				//return position1((ckey + 4294967295) ^ (sizes[m_sizes_index] >> 1));
-// 				return (static_cast<size_t>(ckey)*2654435761) % sizes[m_sizes_index];
-				//return ckey+ckey*ckey;
-// 			}
 			size_t position2(const Ckey &ckey) const {
 				size_t seed = static_cast<size_t>(ckey);
 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 				return seed % sizes[m_sizes_index];
-
-				size_t key = (~ckey) + (ckey << 21); // key = (key << 21) - key - 1;
-				key = key ^ (key >> 24);
-				key = (key + (key << 3)) + (key << 8); // key * 265
-				key = key ^ (key >> 14);
-				key = (key + (key << 2)) + (key << 4); // key * 21
-				key = key ^ (key >> 28);
-				key = key + (key << 31);
-				return key % sizes[m_sizes_index];
+				// This is Jenkins' hash.
+// 				size_t key = (~ckey) + (ckey << 21); // key = (key << 21) - key - 1;
+// 				key = key ^ (key >> 24);
+// 				key = (key + (key << 3)) + (key << 8); // key * 265
+// 				key = key ^ (key >> 14);
+// 				key = (key + (key << 2)) + (key << 4); // key * 21
+// 				key = key ^ (key >> 28);
+// 				key = key + (key << 31);
+// 				return key % sizes[m_sizes_index];
 			}
 
 		private:
