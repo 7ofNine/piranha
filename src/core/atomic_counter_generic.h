@@ -21,8 +21,10 @@
 #ifndef PIRANHA_ATOMIC_COUNTER_GENERIC_H
 #define PIRANHA_ATOMIC_COUNTER_GENERIC_H
 
+#ifdef _PIRANHA_MT
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
+#endif
 
 #include "base_classes/base_atomic_counter.h"
 
@@ -33,7 +35,11 @@ namespace piranha
 	{
 			typedef base_atomic_counter<IntType,atomic_counter_generic<IntType> > ancestor;
 		public:
-			atomic_counter_generic():ancestor::base_atomic_counter(),m_mutex() {}
+			atomic_counter_generic():ancestor::base_atomic_counter()
+#ifdef _PIRANHA_MT
+				,m_mutex()
+#endif
+			{}
 			template <class IntType2>
 			atomic_counter_generic &operator+=(const IntType2 &n) {
 #ifdef _PIRANHA_MT
@@ -50,8 +56,10 @@ namespace piranha
 				this->m_value -= n;
 				return *this;
 			}
+#ifdef _PIRANHA_MT
 		private:
 			boost::mutex m_mutex;
+#endif
 	};
 }
 

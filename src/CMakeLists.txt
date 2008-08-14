@@ -11,25 +11,25 @@ SET(SRC_LIST ${SRC_LIST}
 	settings.cpp
 	stream_manager.cpp
 	psym.cpp
-	boost_thread/tss_null.cpp
 )
 
-IF(WIN32)
-	SET(SRC_LIST ${SRC_LIST}
-		boost_thread/win32/exceptions.cpp
-		boost_thread/win32/thread.cpp
-		boost_thread/win32/tss_dll.cpp
-		boost_thread/win32/tss_pe.cpp
-	)
-ELSE(WIN32)
-	SET(SRC_LIST ${SRC_LIST}
-		boost_thread/pthread/exceptions.cpp
-		boost_thread/pthread/once.cpp
-		boost_thread/pthread/thread.cpp
-	)
-ENDIF(WIN32)
-
 IF(BUILD_MULTITHREADING)
+	ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
+	SET(SRC_LIST ${SRC_LIST} boost_thread/tss_null.cpp)
+	IF(WIN32)
+		SET(SRC_LIST ${SRC_LIST}
+			boost_thread/win32/exceptions.cpp
+			boost_thread/win32/thread.cpp
+			boost_thread/win32/tss_dll.cpp
+			boost_thread/win32/tss_pe.cpp
+		)
+	ELSE(WIN32)
+		SET(SRC_LIST ${SRC_LIST}
+			boost_thread/pthread/exceptions.cpp
+			boost_thread/pthread/once.cpp
+			boost_thread/pthread/thread.cpp
+		)
+	ENDIF(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
 		tbb/cache_aligned_allocator.cpp
 		tbb/concurrent_hash_map.cpp
