@@ -72,7 +72,10 @@ namespace piranha
 			typedef std::vector<bucket_type,allocator_type> container_type;
 			typedef std::vector<flag_bucket_type,allocator_type> flag_container_type;
 			typedef boost::array<size_t,63> sizes_vector_type;
+			typedef boost::array<double,10> mults_vector_type;
 			static const sizes_vector_type sizes;
+			static const mults_vector_type mults;
+			static const size_t mults_size = mults_vector_type::static_size;
 		public:
 			typedef term_type_ term_type;
 			class iterator
@@ -132,7 +135,7 @@ namespace piranha
 					size_t									m_vindex;
 					size_t									m_bindex;
 			};
-			coded_series_cuckoo_hash_table(): m_length(0), m_sizes_index(2),
+			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
 				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
@@ -175,6 +178,10 @@ namespace piranha
 				}
 				term_type tmp_term;
 				if (!attempt_insertion(t,tmp_term)) {
+// 					if (m_mults_index < mults_size - 1) {
+// 
+// 					}
+
 					// If we fail insertion, we must increase size.
 					increase_size();
 					// We still have to insert the displaced term that was left out from the failed attempt.
@@ -317,17 +324,22 @@ namespace piranha
 				orig_location = new_pos;
 				return true;
 			}
+			size_t m_hash(const Ckey &ckey, const double &mult) const {
+				size_t x = static_cast<size_t>(mult);
+				x *= static_cast<size_t>(ckey);
+				x >>= (sizeof(max_fast_int) * 8 - m_sizes_index);
+				p_assert(x < sizes[m_sizes_index]);
+				return x;
+			}
 			size_t position1(const Ckey &ckey) const {
-				return static_cast<size_t>(ckey) & (sizes[m_sizes_index] - 1);
-
-				size_t retval = static_cast<size_t>(ckey);
-				retval *= (retval + sizes[m_sizes_index]);
-				return retval & (sizes[m_sizes_index] - 1);
+				return m_hash(ckey,mults[m_mults_index]);
+// 				return static_cast<size_t>(ckey) & (sizes[m_sizes_index] - 1);
 			}
 			size_t position2(const Ckey &ckey) const {
-				size_t seed = static_cast<size_t>(ckey);
-				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-				return seed & (sizes[m_sizes_index] - 1);
+				return m_hash(ckey,mults[m_mults_index + 1]);
+// 				size_t seed = static_cast<size_t>(ckey);
+// 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+// 				return seed & (sizes[m_sizes_index] - 1);
 
 // 				size_t seed = static_cast<size_t>(ckey);
 // 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -345,8 +357,9 @@ namespace piranha
 			}
 
 		private:
+			uint8				m_sizes_index;
+			uint8				m_mults_index;
 			size_t				m_length;
-			size_t				m_sizes_index;
 			container_type		m_container;
 			flag_container_type	m_flags;
 	};
@@ -421,6 +434,28 @@ namespace piranha
 		4611686018427387904
 #endif
 	} };
+
+#ifdef _PIRANHA_64BIT
+#define MAX (18446744073709551616.)
+#else
+#define MAX (4294967296.)
+#endif
+
+	template <class Cf, class Ckey, class Allocator>
+	const typename coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults_vector_type
+		coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults = { {
+		.7320508075688772 * MAX,
+		.2360679774997898 * MAX,
+		.6457513110645907 * MAX,
+		.3166247903553998 * MAX,
+		.6055512754639891 * MAX,
+		.1231056256176606 * MAX,
+		.3588989435406740 * MAX,
+		.7958315233127191 * MAX,
+		.3851648071345037 * MAX,
+		.5677643628300215 * MAX
+	} };
+#undef MAX
 }
 
 #endif
