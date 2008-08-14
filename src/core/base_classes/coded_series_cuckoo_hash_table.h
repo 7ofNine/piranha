@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
 #define PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
 
+#include <algorithm> // For std::max.
 #include <boost/array.hpp>
 #include <vector>
 
@@ -69,11 +70,18 @@ namespace piranha
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
 			typedef std::vector<flag_bucket_type,allocator_type> flag_container_type;
+#ifdef _PIRANHA_64BIT
+			// Here it is 63 instead of 64 to shut off a warning by GCC. Probably it does not matter
+			// much (as of 2008 anyway :).
 			typedef boost::array<size_t,63> sizes_vector_type;
+#else
+			typedef boost::array<size_t,32> sizes_vector_type;
+#endif
 			typedef boost::array<double,10> mults_vector_type;
 			static const sizes_vector_type sizes;
 			static const mults_vector_type mults;
 			static const size_t mults_size = mults_vector_type::static_size;
+			static const size_t sizes_size = sizes_vector_type::static_size;
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
 		public:
 			typedef term_type_ term_type;
@@ -136,6 +144,12 @@ namespace piranha
 			};
 			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
 				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
+			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
+				const uint8 index = find_upper_pow2_index(size / bsize);
+				m_sizes_index = std::max<uint8>(static_cast<uint8>(2),index);
+				m_container.resize(sizes[m_sizes_index]);
+				m_flags.resize(sizes[m_sizes_index]);
+			}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(
 				size_t i = 0;
@@ -202,6 +216,15 @@ namespace piranha
 				m_flags.swap(other.m_flags);
 			}
 		private:
+			static uint8 find_upper_pow2_index(const size_t &size) {
+				uint8 retval = 0;
+				for (; retval < sizes_size; ++retval) {
+					if (sizes[retval] >= size) {
+						break;
+					}
+				}
+				return retval;
+			}
 // 			iterator find_among_bad_terms(const Ckey &ckey) const {
 // 				const size_t size = m_container.size();
 // 				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
