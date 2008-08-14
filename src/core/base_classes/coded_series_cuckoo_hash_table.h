@@ -71,7 +71,7 @@ namespace piranha
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
 			typedef std::vector<flag_bucket_type,allocator_type> flag_container_type;
-			typedef boost::array<size_t,37> sizes_vector_type;
+			typedef boost::array<size_t,63> sizes_vector_type;
 			static const sizes_vector_type sizes;
 		public:
 			typedef term_type_ term_type;
@@ -132,8 +132,8 @@ namespace piranha
 					size_t									m_vindex;
 					size_t									m_bindex;
 			};
-			coded_series_cuckoo_hash_table(): m_length(0), m_sizes_index(0),
-				m_container(sizes[0]), m_flags(sizes[0]) {}
+			coded_series_cuckoo_hash_table(): m_length(0), m_sizes_index(2),
+				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
 								   << m_container.size() << '\n');
@@ -318,16 +318,16 @@ namespace piranha
 				return true;
 			}
 			size_t position1(const Ckey &ckey) const {
-				return static_cast<size_t>(ckey) % sizes[m_sizes_index];
+				return static_cast<size_t>(ckey) & (sizes[m_sizes_index] - 1);
 
 				size_t retval = static_cast<size_t>(ckey);
 				retval *= (retval + sizes[m_sizes_index]);
-				return retval % sizes[m_sizes_index];
+				return retval & (sizes[m_sizes_index] - 1);
 			}
 			size_t position2(const Ckey &ckey) const {
 				size_t seed = static_cast<size_t>(ckey);
 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-				return seed % sizes[m_sizes_index];
+				return seed & (sizes[m_sizes_index] - 1);
 
 // 				size_t seed = static_cast<size_t>(ckey);
 // 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -354,45 +354,71 @@ namespace piranha
 	template <class Cf, class Ckey, class Allocator>
 	const typename coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::sizes_vector_type
 		coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::sizes = { {
-		11,
-		23,
-		53,
-		97,
-		193,
-		389,
-		769,
-		1543,
-		3079,
-		6151,
-		12289,
-		24593,
-		49157,
-		98317,
-		196613,
-		393241,
-		786433,
-		1572869,
-		3145739,
-		6291469,
-		12582917,
-		25165843,
-		50331653,
-		100663319,
-		201326611,
-		402653189,
-		805306457,
-		1610612741,
-		3221225473
+		1,
+		2,
+		4,
+		8,
+		16,
+		32,
+		64,
+		128,
+		256,
+		512,
+		1024,
+		2048,
+		4096,
+		8192,
+		16384,
+		32768,
+		65536,
+		131072,
+		262144,
+		524288,
+		1048576,
+		2097152,
+		4194304,
+		8388608,
+		16777216,
+		33554432,
+		67108864,
+		134217728,
+		268435456,
+		536870912,
+		1073741824,
+		2147483648
 #ifdef _PIRANHA_64BIT
 		,
-		6442450939,
-		12884901893,
-		25769803799,
-		51539607551,
-		103079215111,
-		206158430209,
-		412316860441,
-		824633720831
+		4294967296,
+		8589934592,
+		17179869184,
+		34359738368,
+		68719476736,
+		137438953472,
+		274877906944,
+		549755813888,
+		1099511627776,
+		2199023255552,
+		4398046511104,
+		8796093022208,
+		17592186044416,
+		35184372088832,
+		70368744177664,
+		140737488355328,
+		281474976710656,
+		562949953421312,
+		1125899906842624,
+		2251799813685248,
+		4503599627370496,
+		9007199254740992,
+		18014398509481984,
+		36028797018963968,
+		72057594037927936,
+		144115188075855872,
+		288230376151711744,
+		576460752303423488,
+		1152921504606846976,
+		2305843009213693952,
+		4611686018427387904
 #endif
 	} };
 }
