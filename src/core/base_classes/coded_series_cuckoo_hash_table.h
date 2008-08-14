@@ -76,6 +76,7 @@ namespace piranha
 			static const sizes_vector_type sizes;
 			static const mults_vector_type mults;
 			static const size_t mults_size = mults_vector_type::static_size;
+			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
 		public:
 			typedef term_type_ term_type;
 			class iterator
@@ -138,8 +139,16 @@ namespace piranha
 			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
 				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
 			~coded_series_cuckoo_hash_table() {
-				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
-								   << m_container.size() << '\n');
+// 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
+// 								   << m_container.size() << '\n');
+				__PDEBUG(
+				size_t i = 0;
+				for (iterator it = begin(); it != end(); ++it) {
+					++i;
+				}
+				p_assert(i == size());
+				std::cout << "No problems. Final vector size: "<< m_container.size() << '\n';
+				)
 			}
 			iterator begin() const {
 				return iterator(this);
@@ -171,25 +180,31 @@ namespace piranha
 				return m_length;
 			}
 			void insert(const term_type &t) {
-				//if (((m_length + 1) << 1) >= sizes[m_sizes_index] * bsize) {
-				if (((double)m_length + 1) / (sizes[m_sizes_index] * bsize) >= .5) {
+				if ((static_cast<double>(m_length) + 1) >=
+					settings::load_factor() * (sizes[m_sizes_index] * bsize)) {
 					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
 					increase_size();
 				}
 				term_type tmp_term;
 				if (!attempt_insertion(t,tmp_term)) {
-// 					if (m_mults_index < mults_size - 1) {
-// 
-// 					}
-
-					// If we fail insertion, we must increase size.
-					increase_size();
+					if (!rehash()) {
+						// If re-hash was not successful, resize the table.
+						increase_size();
+					}
 					// We still have to insert the displaced term that was left out from the failed attempt.
 					// This is stored in the temporary term. We have a recursion going on here, it should
 					// not matter much because most likely it is overpowered by the resize above. Probably
 					// it could be turned into an iteration with some effort?
 					insert(tmp_term);
 				}
+			}
+			void swap(coded_series_cuckoo_hash_table &other) {
+				// TODO: use SWAP?
+				std::swap(m_mults_index,other.m_mults_index);
+				std::swap(m_sizes_index,other.m_sizes_index);
+				std::swap(m_length,other.m_length);
+				m_container.swap(other.m_container);
+				m_flags.swap(other.m_flags);
 			}
 		private:
 // 			iterator find_among_bad_terms(const Ckey &ckey) const {
@@ -211,6 +226,7 @@ namespace piranha
 				const iterator it_f = end();
 				while (it != it_f) {
 					if (!new_ht.attempt_insertion(*it,tmp_term)) {
+						// TODO: here we should check with other hash functions before giving up and increasing size.
 						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize." << '\n');
 						++new_ht.m_sizes_index;
 						__PDEBUG(std::cout << "Next size: " << sizes[new_ht.m_sizes_index] << '\n');
@@ -224,10 +240,35 @@ namespace piranha
 						++it;
 					}
 				}
-				m_container.swap(new_ht.m_container);
-				m_flags.swap(new_ht.m_flags);
-				m_length = new_ht.m_length;
-				m_sizes_index = new_ht.m_sizes_index;
+				swap(new_ht);
+			}
+			bool rehash() {
+				for (uint8 new_mults_index = m_mults_index + 2; new_mults_index < mults_size; new_mults_index += 2) {
+					coded_series_cuckoo_hash_table new_ht;
+					new_ht.m_mults_index = new_mults_index;
+					new_ht.m_sizes_index = m_sizes_index;
+					new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
+					new_ht.m_flags.resize(sizes[new_ht.m_sizes_index]);
+					term_type tmp_term;
+					const iterator it_f = end();
+					for (iterator it = begin(); it != it_f; ++it) {
+						if (!new_ht.attempt_insertion(*it,tmp_term)) {
+							__PDEBUG(std::cout << "Cuckoo hash table insertion failure during rehash, "
+								"will try next mult.\n");
+							break;
+						}
+					}
+					if (new_ht.size() == size()) {
+						__PDEBUG(std::cout << "Rehash successful after " << ((new_mults_index - m_mults_index)/2) <<
+							" tries\n";)
+						// This means that we were able to insert all terms. Swap and return true.
+						swap(new_ht);
+						return true;
+					}
+					__PDEBUG(std::cout << "Rehash stopped at " << new_ht.size() << " out of " << size() << ".\n");
+				}
+				__PDEBUG(std::cout << "Mults exhausted, rehash failed.\n")
+				return false;
 			}
 			bool attempt_insertion(const term_type &t, term_type &tmp_term) {
 				size_t pos = position1(t.m_ckey);
@@ -306,6 +347,7 @@ namespace piranha
 						// Place found, rejoice!
 						m_container[new_pos].t[i].swap(tmp_term);
 						m_flags[new_pos].f[i] = true;
+						++m_length;
 						return false;
 					}
 				}
@@ -333,27 +375,9 @@ namespace piranha
 			}
 			size_t position1(const Ckey &ckey) const {
 				return m_hash(ckey,mults[m_mults_index]);
-// 				return static_cast<size_t>(ckey) & (sizes[m_sizes_index] - 1);
 			}
 			size_t position2(const Ckey &ckey) const {
 				return m_hash(ckey,mults[m_mults_index + 1]);
-// 				size_t seed = static_cast<size_t>(ckey);
-// 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-// 				return seed & (sizes[m_sizes_index] - 1);
-
-// 				size_t seed = static_cast<size_t>(ckey);
-// 				seed ^= seed + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-// 				return (seed * (seed + sizes[m_sizes_index])) % sizes[m_sizes_index];
-
-				// This is Jenkins' hash.
-// 				size_t key = (~ckey) + (ckey << 21); // key = (key << 21) - key - 1;
-// 				key = key ^ (key >> 24);
-// 				key = (key + (key << 3)) + (key << 8); // key * 265
-// 				key = key ^ (key >> 14);
-// 				key = (key + (key << 2)) + (key << 4); // key * 21
-// 				key = key ^ (key >> 28);
-// 				key = key + (key << 31);
-// 				return key % sizes[m_sizes_index];
 			}
 
 		private:
