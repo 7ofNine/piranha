@@ -71,9 +71,7 @@ namespace piranha
 			typedef std::vector<bucket_type,allocator_type> container_type;
 			typedef std::vector<flag_bucket_type,allocator_type> flag_container_type;
 #ifdef _PIRANHA_64BIT
-			// Here it is 63 instead of 64 to shut off a warning by GCC. Probably it does not matter
-			// much (as of 2008 anyway :).
-			typedef boost::array<size_t,63> sizes_vector_type;
+			typedef boost::array<size_t,64> sizes_vector_type;
 #else
 			typedef boost::array<size_t,32> sizes_vector_type;
 #endif
@@ -145,8 +143,7 @@ namespace piranha
 			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
 				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
-				const uint8 index = find_upper_pow2_index(size / bsize);
-				m_sizes_index = std::max<uint8>(static_cast<uint8>(2),index);
+				m_sizes_index = find_upper_pow2_index(size / bsize);
 				m_container.resize(sizes[m_sizes_index]);
 				m_flags.resize(sizes[m_sizes_index]);
 			}
@@ -170,14 +167,13 @@ namespace piranha
 			iterator find(const Ckey &ckey) const {
 				p_assert(sizes[m_sizes_index] <= m_container.size());
 				p_assert(sizes[m_sizes_index] <= m_flags.size());
-				const size_t pos1 = position1(ckey);
+				const size_t pos1 = position1(ckey), pos2 = position2(ckey);
 				// TODO: replace with bit twiddling to reduce branching?
 				for (size_t i = 0; i < bsize; ++i) {
 					if (m_flags[pos1].f[i] && m_container[pos1].t[i].m_ckey == ckey) {
 						return iterator(this,pos1,i);
 					}
 				}
-				const size_t pos2 = position2(ckey);
 				for (size_t i = 0; i < bsize; ++i) {
 					if (m_flags[pos2].f[i] && m_container[pos2].t[i].m_ckey == ckey) {
 						return iterator(this,pos2,i);
@@ -217,13 +213,12 @@ namespace piranha
 			}
 		private:
 			static uint8 find_upper_pow2_index(const size_t &size) {
-				uint8 retval = 0;
-				for (; retval < sizes_size; ++retval) {
+				for (uint8 retval = 0; retval < sizes_size; ++retval) {
 					if (sizes[retval] >= size) {
-						break;
+						return std::max<uint8>(static_cast<uint8>(2),retval);
 					}
 				}
-				return retval;
+				return static_cast<uint8>(2);
 			}
 // 			iterator find_among_bad_terms(const Ckey &ckey) const {
 // 				const size_t size = m_container.size();
@@ -301,6 +296,7 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
+				// TODO: consider other eviction strategies.
 				size_t dindex;
 				if (bsize == 1) {
 					// If we have single-term bucket, result will always be 0.
@@ -371,6 +367,7 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
+				// TODO: consider other eviction strategies.
 				size_t dindex;
 				if (bsize == 1) {
 					// If we have single-term bucket, result will always be 0.
@@ -387,7 +384,7 @@ namespace piranha
 			size_t m_hash(const Ckey &ckey, const double &mult) const {
 				size_t x = static_cast<size_t>(mult);
 				x *= static_cast<size_t>(ckey);
-				x >>= (sizeof(max_fast_int) * 8 - m_sizes_index);
+				x >>= ((sizeof(max_fast_int) << 3) - m_sizes_index);
 				p_assert(x < sizes[m_sizes_index]);
 				return x;
 			}
@@ -473,7 +470,8 @@ namespace piranha
 		576460752303423488,
 		1152921504606846976,
 		2305843009213693952,
-		4611686018427387904
+		4611686018427387904,
+		9223372036854775808u
 #endif
 	} };
 
