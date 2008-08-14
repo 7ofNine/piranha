@@ -40,10 +40,8 @@ namespace piranha
 					term_type_():m_cf(),m_ckey() {}
 					term_type_(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
 					void swap(term_type_ &t) {
-#define SWAP(a, b) (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)))
 						m_cf.swap(t.m_cf);
-						SWAP(m_ckey,t.m_ckey);
-#undef SWAP
+						int_swap(m_ckey,t.m_ckey);
 					}
 					mutable Cf	m_cf;
 					Ckey		m_ckey;
@@ -139,8 +137,6 @@ namespace piranha
 			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
 				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
 			~coded_series_cuckoo_hash_table() {
-// 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_cuckoo_hash_table was "
-// 								   << m_container.size() << '\n');
 				__PDEBUG(
 				size_t i = 0;
 				for (iterator it = begin(); it != end(); ++it) {
@@ -188,7 +184,7 @@ namespace piranha
 				term_type tmp_term;
 				if (!attempt_insertion(t,tmp_term)) {
 					if (!rehash()) {
-						// If re-hash was not successful, resize the table.
+						// If rehash was not successful, resize the table.
 						increase_size();
 					}
 					// We still have to insert the displaced term that was left out from the failed attempt.
@@ -199,10 +195,9 @@ namespace piranha
 				}
 			}
 			void swap(coded_series_cuckoo_hash_table &other) {
-				// TODO: use SWAP?
-				std::swap(m_mults_index,other.m_mults_index);
-				std::swap(m_sizes_index,other.m_sizes_index);
-				std::swap(m_length,other.m_length);
+				int_swap(m_mults_index,other.m_mults_index);
+				int_swap(m_sizes_index,other.m_sizes_index);
+				int_swap(m_length,other.m_length);
 				m_container.swap(other.m_container);
 				m_flags.swap(other.m_flags);
 			}
@@ -297,8 +292,8 @@ namespace piranha
 				while (swap_and_displace(tmp_term,pos)) {
 					++counter;
 					if (counter > 10) {
-						__PDEBUG(std::cout << "Cuckoo loop detected, returning false: " <<
-							(((double)m_length + 1) / (sizes[m_sizes_index] * bsize)) << '\n');
+						__PDEBUG(std::cout << "Cuckoo loop detected, returning false. Load factor is: " <<
+							((static_cast<double>(m_length) + 1) / (sizes[m_sizes_index] * bsize)) << '\n');
 						return false;
 					}
 				}
