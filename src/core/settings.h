@@ -53,11 +53,8 @@ namespace piranha
 				}
 			}
 			/// Return maximum load factor for hashed containers.
-			/**
-			 * Relevant only to those containers with support such setting.
-			 */
-			static const float &load_factor() {
-				return hash_max_load_factor;
+			static const double &load_factor() {
+				return m_hash_max_load_factor;
 			}
 			// Getters.
 			/// Get numerical zero.
@@ -87,11 +84,11 @@ namespace piranha
 			/**
 			 * @see settings::load_factor().
 			 */
-			static void set_load_factor(float value) {
+			static void load_factor(const double &value) {
 				if (value <= 0 || value >= 1) {
 					throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
 				}
-				hash_max_load_factor = value;
+				m_hash_max_load_factor = value;
 			}
 			static void set_path(const std::string &);
 		private:
@@ -107,7 +104,7 @@ namespace piranha
 			/// Memory limit in bytes.
 			static max_fast_int						m_memory_limit;
 			/// Load factor for hashed containers.
-			static float							hash_max_load_factor;
+			static double							m_hash_max_load_factor;
 			/// Numerical zero.
 			static double							m_numerical_zero;
 			/// Minimum fast unsigned integer.
