@@ -79,6 +79,11 @@ namespace piranha
 			double eval(const double &, const ArgsTuple &) const {
 				return m_value.get_d();
 			}
+			// Override swapping.
+			void swap(mpq_cf &other) {
+				mpz_swap(mpq_numref(m_value.get_mpq_t()),mpq_numref(other.m_value.get_mpq_t()));
+				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(other.m_value.get_mpq_t()));
+			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
 			mpq_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
@@ -226,6 +231,13 @@ namespace std
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
+			}
+			// Override swapping.
+			void swap(complex &other) {
+				mpz_swap(mpq_numref(m_value.real().get_mpq_t()),mpq_numref(other.m_value.real().get_mpq_t()));
+				mpz_swap(mpq_denref(m_value.real().get_mpq_t()),mpq_denref(other.m_value.real().get_mpq_t()));
+				mpz_swap(mpq_numref(m_value.imag().get_mpq_t()),mpq_numref(other.m_value.imag().get_mpq_t()));
+				mpz_swap(mpq_denref(m_value.imag().get_mpq_t()),mpq_denref(other.m_value.imag().get_mpq_t()));
 			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>

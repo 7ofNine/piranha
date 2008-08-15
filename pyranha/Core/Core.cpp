@@ -53,6 +53,14 @@ namespace pyranha
 	}
 }
 
+static inline double load_factor_get() {
+	return settings::load_factor();
+}
+
+static inline void load_factor_set(const double &x) {
+	settings::load_factor(x);
+}
+
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
@@ -73,6 +81,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
 	class_setm.add_static_property("memory_limit", max_fast_int_get(&settings::memory_limit),
 		max_fast_int_set(&settings::memory_limit));
+	class_setm.add_static_property("load_factor", &load_factor_get,&load_factor_set);
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
