@@ -70,7 +70,7 @@ namespace piranha
 #else
 			typedef boost::array<size_t,32> sizes_vector_type;
 #endif
-			typedef boost::array<double,10> mults_vector_type;
+			typedef boost::array<double,4> mults_vector_type;
 			static const sizes_vector_type sizes;
 			static const mults_vector_type mults;
 			static const size_t mults_size = mults_vector_type::static_size;
@@ -135,11 +135,15 @@ namespace piranha
 					size_t									m_vindex;
 					size_t									m_bindex;
 			};
-			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
-				m_container(sizes[m_sizes_index]) {}
+			coded_series_cuckoo_hash_table(): m_sizes_index(0), m_mults_index(0), m_length(0) {
+				m_container.resize(sizes[2]);
+				m_sizes_index = 2;
+			}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
-				m_sizes_index = find_upper_pow2_index(size / bsize);
-				m_container.resize(sizes[m_sizes_index]);
+				const uint8 sizes_index = find_upper_pow2_index(size / bsize);
+				p_assert(sizes_index >= 2);
+				m_container.resize(sizes[sizes_index]);
+				m_sizes_index = sizes_index;
 			}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(
@@ -150,16 +154,18 @@ namespace piranha
 				p_assert(i == size());
 				std::cout << "No problems. Final vector size: "<< m_container.size() << '\n';
 				)
+				p_assert(sizes[m_sizes_index] == m_container.size());
 			}
 			iterator begin() const {
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return iterator(this);
 			}
 			iterator end() const {
-				p_assert(sizes[m_sizes_index] <= m_container.size());
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return iterator(this, m_container.size(), 0);
 			}
 			iterator find(const Ckey &ckey) const {
-				p_assert(sizes[m_sizes_index] <= m_container.size());
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				const size_t pos1 = position1(ckey), pos2 = position2(ckey);
 				// TODO: replace with bit twiddling to reduce branching?
 				for (size_t i = 0; i < bsize; ++i) {
@@ -175,6 +181,7 @@ namespace piranha
 				return end();
 			}
 			size_t size() const {
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return m_length;
 			}
 			void insert(const term_type &t) {
@@ -195,12 +202,14 @@ namespace piranha
 					// it could be turned into an iteration with some effort?
 					insert(tmp_term);
 				}
+				p_assert(sizes[m_sizes_index] == m_container.size());
 			}
 			void swap(coded_series_cuckoo_hash_table &other) {
 				int_swap(m_mults_index,other.m_mults_index);
 				int_swap(m_sizes_index,other.m_sizes_index);
 				int_swap(m_length,other.m_length);
 				m_container.swap(other.m_container);
+				p_assert(sizes[m_sizes_index] == m_container.size());
 			}
 		private:
 			static uint8 find_upper_pow2_index(const size_t &size) {
@@ -213,8 +222,8 @@ namespace piranha
 			}
 			void increase_size() {
 				coded_series_cuckoo_hash_table new_ht;
+				new_ht.m_container.resize(sizes[m_sizes_index + 1]);
 				new_ht.m_sizes_index = m_sizes_index + 1;
-				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
 				term_type tmp_term;
 				iterator it = begin();
 				const iterator it_f = end();
@@ -222,10 +231,15 @@ namespace piranha
 					if (!new_ht.attempt_insertion(*it,tmp_term)) {
 						// TODO: here we should check with other hash functions before giving up and increasing size.
 						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize." << '\n');
-						++new_ht.m_sizes_index;
-						__PDEBUG(std::cout << "Next size: " << sizes[new_ht.m_sizes_index] << '\n');
+						const size_t new_index = new_ht.m_sizes_index + 1;
+						__PDEBUG(std::cout << "Next size: " << sizes[new_index] << '\n');
+						// We do things in this order because if resizing fails due to insufficient memory,
+						// then we must be sure that the size index is consistent with the initial size (otherwise
+						// assertions can fail in the dtor, for example, or elsewhere).
 						new_ht.m_container.clear();
-						new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
+						new_ht.m_sizes_index = 0;
+						new_ht.m_container.resize(sizes[new_index]);
+						new_ht.m_sizes_index = new_index;
 						new_ht.m_length = 0;
 						it = begin();
 					} else {
@@ -233,13 +247,14 @@ namespace piranha
 					}
 				}
 				swap(new_ht);
+				p_assert(sizes[m_sizes_index] == m_container.size());
 			}
 			bool rehash() {
 				for (uint8 new_mults_index = m_mults_index + 2; new_mults_index < mults_size; new_mults_index += 2) {
 					coded_series_cuckoo_hash_table new_ht;
 					new_ht.m_mults_index = new_mults_index;
+					new_ht.m_container.resize(sizes[m_sizes_index]);
 					new_ht.m_sizes_index = m_sizes_index;
-					new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
 					term_type tmp_term;
 					const iterator it_f = end();
 					for (iterator it = begin(); it != it_f; ++it) {
@@ -254,11 +269,13 @@ namespace piranha
 							" tries\n";)
 						// This means that we were able to insert all terms. Swap and return true.
 						swap(new_ht);
+						p_assert(sizes[m_sizes_index] == m_container.size());
 						return true;
 					}
 					__PDEBUG(std::cout << "Rehash stopped at " << new_ht.size() << " out of " << size() << ".\n");
 				}
 				__PDEBUG(std::cout << "Mults exhausted, rehash failed.\n")
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return false;
 			}
 			bool attempt_insertion(const term_type &t, term_type &tmp_term) {
@@ -269,6 +286,7 @@ namespace piranha
 						m_container[pos].f[i] = true;
 						m_container[pos].t[i] = t;
 						++m_length;
+						p_assert(sizes[m_sizes_index] == m_container.size());
 						return true;
 					}
 				}
@@ -290,9 +308,11 @@ namespace piranha
 					if (counter > 10) {
 						__PDEBUG(std::cout << "Cuckoo loop detected, returning false. Load factor is: " <<
 							((static_cast<double>(m_length) + 1) / (sizes[m_sizes_index] * bsize)) << '\n');
+						p_assert(sizes[m_sizes_index] == m_container.size());
 						return false;
 					}
 				}
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return true;
 			}
 			// Place tmp_term into its location other than orig_location, displacing, if necessary. an existing
@@ -316,6 +336,7 @@ namespace piranha
 						m_container[new_pos].t[i].swap(tmp_term);
 						m_container[new_pos].f[i] = true;
 						++m_length;
+						p_assert(sizes[m_sizes_index] == m_container.size());
 						return false;
 					}
 				}
@@ -332,6 +353,7 @@ namespace piranha
 				// Displace the selected term.
 				m_container[new_pos].t[dindex].swap(tmp_term);
 				orig_location = new_pos;
+				p_assert(sizes[m_sizes_index] == m_container.size());
 				return true;
 			}
 			size_t m_hash(const Ckey &ckey, const double &mult) const {
@@ -439,13 +461,13 @@ namespace piranha
 		.7320508075688772 * MAX,
 		.2360679774997898 * MAX,
 		.6457513110645907 * MAX,
-		.3166247903553998 * MAX,
+		.3166247903553998 * MAX/*,
 		.6055512754639891 * MAX,
 		.1231056256176606 * MAX,
 		.3588989435406740 * MAX,
 		.7958315233127191 * MAX,
 		.3851648071345037 * MAX,
-		.5677643628300215 * MAX
+		.5677643628300215 * MAX*/
 	} };
 #undef MAX
 }
