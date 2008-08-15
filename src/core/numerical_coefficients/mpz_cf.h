@@ -55,6 +55,10 @@ namespace piranha
 			double eval(const double &, const ArgsTuple &) const {
 				return m_value.get_d();
 			}
+			// Override swapping for increased efficiency.
+			void swap(mpz_cf &other) {
+				mpz_swap(m_value.get_mpz_t(),other.m_value.get_mpz_t());
+			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
 			mpz_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
@@ -159,6 +163,11 @@ namespace std
 					throw piranha::division_by_zero();
 				}
 				return ancestor::divide_by(x, a);
+			}
+			// Override swapping for increased efficiency.
+			void swap(complex &other) {
+				mpz_swap(m_value.real().get_mpz_t(),other.m_value.real().get_mpz_t());
+				mpz_swap(m_value.imag().get_mpz_t(),other.m_value.imag().get_mpz_t());
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
