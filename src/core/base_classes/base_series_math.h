@@ -332,18 +332,18 @@ namespace piranha
 			retval = Derived(static_cast<max_fast_int>(1), args_tuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
-				Derived tmp(*derived_const_cast);
-				size_t i = n;
-				while (i) {
-					if (i & 1) {
-						retval.mult_by(tmp, args_tuple);
-						--i;
-					}
-					i /= 2;
-					if (i != 0) {
-						tmp.mult_by(tmp, args_tuple);
-					}
+			Derived tmp(*derived_const_cast);
+			size_t i = n;
+			while (i) {
+				if (i & 1) {
+					retval.mult_by(tmp, args_tuple);
+					--i;
 				}
+				i /= 2;
+				if (i != 0) {
+					tmp.mult_by(tmp, args_tuple);
+				}
+			}
 			}
 		}
 		}
