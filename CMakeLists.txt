@@ -18,6 +18,7 @@ INCLUDE(PiranhaVersionSetup)
 # Place this after having determined the version number.
 INCLUDE(PiranhaCPackSetup)
 ENABLE_LANGUAGE(CXX)
+ENABLE_TESTING()
 INCLUDE_DIRECTORIES("external_headers")
 
 # Main build options

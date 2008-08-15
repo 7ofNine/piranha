@@ -32,15 +32,14 @@ using namespace piranha;
 
 int main()
 {
-  dpoly t1("pearce_sparse1.dpoly");
-  dpoly t2("pearce_sparse2.dpoly");
-  dpoly u1(t1);
-  dpoly u2(t2);
-  t1 = std::pow(t1,(max_fast_int)12);
-  t2 = std::pow(t2,(max_fast_int)12);
-  t1 *= t2;
-
-  std::cout << std::endl << t1.length() << std::endl;
-
-  return 0;
+	dpoly x(psym("x")), y(psym("y")), z(psym("z")), t(psym("t")), u(psym("u"));
+	max_fast_int one(1), two(2), three(3), five(5), twelve(12);
+	dpoly f = (x + y + z*z*two + t*t*t*three + u.pow(five)*five + one).pow(twelve);
+	dpoly g = (u + t + z*z*two + y*y*y*three + x.pow(five)*five + one).pow(twelve);
+	f *= g;
+	std::cout << f.length() << '\n';
+	if (f.length() != 5821335) {
+		return 1;
+	}
+	return 0;
 }

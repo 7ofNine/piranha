@@ -34,5 +34,8 @@ int main()
 	ps res(ps::r_a(ps(e),ps(M)));
 	std::cout << res.length() << '\n';
 	std::cout << res.atoms() << '\n';
+	if (res.length() != 401 || res.atoms() != 80805) {
+		return 1;
+	}
 	return 0;
 }
