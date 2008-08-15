@@ -52,3 +52,4 @@
 - %pload and %pget for series loading and symbol getting
 - check that truncators do not sort if not necessary.
 - for hash coded structure, use directly the counting allocator internally.
+- simplify atomic counters by using a plain counter in the non-threaded case.
