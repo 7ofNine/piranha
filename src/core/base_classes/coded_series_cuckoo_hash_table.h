@@ -52,24 +52,19 @@ namespace piranha
 					p_static_check(N > 0 && (N == 1 || lg<N>::value > 0), "Invalid bucket size in cuckoo hash.");
 				public:
 					static const size_t size = static_cast<size_t>(N);
-					class flag_bucket_ {
-						public:
-							flag_bucket_() {
-								for (size_t i = 0; i < size; ++i) {
-									f[i] = false;
-								}
-							}
-							bool f[size];
-					};
-					term_type_ t[size];
+					bucket_type_() {
+						for (size_t i = 0; i < size; ++i) {
+							f[i] = false;
+						}
+					}
+					term_type_	t[size];
+					bool 		f[size];
 			};
 			// Bucket size = 4.
 			typedef bucket_type_<4> bucket_type;
 			static const size_t bsize = bucket_type::size;
-			typedef typename bucket_type::flag_bucket_ flag_bucket_type;
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
-			typedef std::vector<flag_bucket_type,allocator_type> flag_container_type;
 #ifdef _PIRANHA_64BIT
 			typedef boost::array<size_t,64> sizes_vector_type;
 #else
@@ -89,7 +84,7 @@ namespace piranha
 					explicit iterator(const coded_series_cuckoo_hash_table *ht): m_ht(ht), m_vindex(0), m_bindex(0) {
 						// Go to the first occupied term if the table is not empty and the first
 						// term is not occupied.
-						if (m_ht->m_container.size() > 0 && !m_ht->m_flags[0].f[0]) {
+						if (m_ht->m_container.size() > 0 && !m_ht->m_container[0].f[0]) {
 							next();
 						}
 					}
@@ -105,13 +100,13 @@ namespace piranha
 					const term_type &operator*() const {
 						p_assert(m_vindex < m_ht->m_container.size());
 						p_assert(m_bindex < bsize);
-						p_assert(m_ht->m_flags[m_vindex].f[m_bindex]);
+						p_assert(m_ht->m_container[m_vindex].f[m_bindex]);
 						return m_ht->m_container[m_vindex].t[m_bindex];
 					}
 					const term_type *operator->() const {
 						p_assert(m_vindex < m_ht->m_container.size());
 						p_assert(m_bindex < bsize);
-						p_assert(m_ht->m_flags[m_vindex].f[m_bindex]);
+						p_assert(m_ht->m_container[m_vindex].f[m_bindex]);
 						return &m_ht->m_container[m_vindex].t[m_bindex];
 					}
 					bool operator==(const iterator &it2) const {
@@ -131,7 +126,7 @@ namespace piranha
 							} else {
 								++tmp_bindex;
 							}
-						} while (tmp_vindex < vector_size && !m_ht->m_flags[tmp_vindex].f[tmp_bindex]);
+						} while (tmp_vindex < vector_size && !m_ht->m_container[tmp_vindex].f[tmp_bindex]);
 						m_vindex = tmp_vindex;
 						m_bindex = tmp_bindex;
 					}
@@ -141,11 +136,10 @@ namespace piranha
 					size_t									m_bindex;
 			};
 			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0),
-				m_container(sizes[m_sizes_index]), m_flags(sizes[m_sizes_index]) {}
+				m_container(sizes[m_sizes_index]) {}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
 				m_sizes_index = find_upper_pow2_index(size / bsize);
 				m_container.resize(sizes[m_sizes_index]);
-				m_flags.resize(sizes[m_sizes_index]);
 			}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(
@@ -166,16 +160,15 @@ namespace piranha
 			}
 			iterator find(const Ckey &ckey) const {
 				p_assert(sizes[m_sizes_index] <= m_container.size());
-				p_assert(sizes[m_sizes_index] <= m_flags.size());
 				const size_t pos1 = position1(ckey), pos2 = position2(ckey);
 				// TODO: replace with bit twiddling to reduce branching?
 				for (size_t i = 0; i < bsize; ++i) {
-					if (m_flags[pos1].f[i] && m_container[pos1].t[i].m_ckey == ckey) {
+					if (m_container[pos1].f[i] && m_container[pos1].t[i].m_ckey == ckey) {
 						return iterator(this,pos1,i);
 					}
 				}
 				for (size_t i = 0; i < bsize; ++i) {
-					if (m_flags[pos2].f[i] && m_container[pos2].t[i].m_ckey == ckey) {
+					if (m_container[pos2].f[i] && m_container[pos2].t[i].m_ckey == ckey) {
 						return iterator(this,pos2,i);
 					}
 				}
@@ -208,7 +201,6 @@ namespace piranha
 				int_swap(m_sizes_index,other.m_sizes_index);
 				int_swap(m_length,other.m_length);
 				m_container.swap(other.m_container);
-				m_flags.swap(other.m_flags);
 			}
 		private:
 			static uint8 find_upper_pow2_index(const size_t &size) {
@@ -223,7 +215,6 @@ namespace piranha
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.m_sizes_index = m_sizes_index + 1;
 				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
-				new_ht.m_flags.resize(sizes[new_ht.m_sizes_index]);
 				term_type tmp_term;
 				iterator it = begin();
 				const iterator it_f = end();
@@ -235,8 +226,6 @@ namespace piranha
 						__PDEBUG(std::cout << "Next size: " << sizes[new_ht.m_sizes_index] << '\n');
 						new_ht.m_container.clear();
 						new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
-						new_ht.m_flags.clear();
-						new_ht.m_flags.resize(sizes[new_ht.m_sizes_index]);
 						new_ht.m_length = 0;
 						it = begin();
 					} else {
@@ -251,7 +240,6 @@ namespace piranha
 					new_ht.m_mults_index = new_mults_index;
 					new_ht.m_sizes_index = m_sizes_index;
 					new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
-					new_ht.m_flags.resize(sizes[new_ht.m_sizes_index]);
 					term_type tmp_term;
 					const iterator it_f = end();
 					for (iterator it = begin(); it != it_f; ++it) {
@@ -277,8 +265,8 @@ namespace piranha
 				size_t pos = position1(t.m_ckey);
 				for (size_t i = 0; i < bsize; ++i) {
 					// There's space in the bucket, rejoice!
-					if (!m_flags[pos].f[i]) {
-						m_flags[pos].f[i] = true;
+					if (!m_container[pos].f[i]) {
+						m_container[pos].f[i] = true;
 						m_container[pos].t[i] = t;
 						++m_length;
 						return true;
@@ -323,10 +311,10 @@ namespace piranha
 					new_pos = pos1;
 				}
 				for (size_t i = 0; i < bsize; ++i) {
-					if (!m_flags[new_pos].f[i]) {
+					if (!m_container[new_pos].f[i]) {
 						// Place found, rejoice!
 						m_container[new_pos].t[i].swap(tmp_term);
-						m_flags[new_pos].f[i] = true;
+						m_container[new_pos].f[i] = true;
 						++m_length;
 						return false;
 					}
@@ -365,7 +353,6 @@ namespace piranha
 			uint8				m_mults_index;
 			size_t				m_length;
 			container_type		m_container;
-			flag_container_type	m_flags;
 	};
 
 	template <class Cf, class Ckey, class Allocator>
