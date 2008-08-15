@@ -179,7 +179,6 @@ namespace piranha
 						return iterator(this,pos2,i);
 					}
 				}
-				//return find_among_bad_terms(ckey);
 				return end();
 			}
 			size_t size() const {
@@ -220,15 +219,6 @@ namespace piranha
 				}
 				return static_cast<uint8>(2);
 			}
-// 			iterator find_among_bad_terms(const Ckey &ckey) const {
-// 				const size_t size = m_container.size();
-// 				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
-// 					if (m_flags[i] && m_container[i].m_ckey == ckey) {
-// 						return iterator(this,i);
-// 					}
-// 				}
-// 				return end();
-// 			}
 			void increase_size() {
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.m_sizes_index = m_sizes_index + 1;
@@ -296,7 +286,6 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				// TODO: consider other eviction strategies.
 				size_t dindex;
 				if (bsize == 1) {
 					// If we have single-term bucket, result will always be 0.
@@ -318,29 +307,6 @@ namespace piranha
 				}
 				return true;
 			}
-// 			bool append_as_bad_term(term_type &t) {
-// 				// Maybe there is a non-occupied bad slot we can re-use?
-// 				const size_t size = m_container.size();
-// 				for (size_t i = sizes[m_sizes_index]; i < size; ++i) {
-// 					if (!m_flags[i]) {
-// 						m_container[i].swap(t);
-// 						m_flags[i] = true;
-// 						++m_length;
-// 						return true;
-// 					}
-// 				}
-// 				// We did not find a non-occupied bad slot, create one if we are below the limit and copy the
-// 				// term, otherwise give up and return false.
-// 				if ((m_container.size() - sizes[m_sizes_index]) < 5) {
-// 					m_container.push_back(term_type());
-// 					m_container.back().swap(t);
-// 					m_flags.push_back(true);
-// 					++m_length;
-// 					return true;
-// 				}
-// 				__PDEBUG(std::cout << "There are already too many bad terms, failing insertion.\n");
-// 				return false;
-// 			}
 			// Place tmp_term into its location other than orig_location, displacing, if necessary. an existing
 			// term. If displacement takes place, retval will be true and the content of tmp_term
 			// will be the displaced one. Otherwise return false.
@@ -367,7 +333,6 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				// TODO: consider other eviction strategies.
 				size_t dindex;
 				if (bsize == 1) {
 					// If we have single-term bucket, result will always be 0.
@@ -395,7 +360,6 @@ namespace piranha
 			size_t position2(const Ckey &ckey) const {
 				return m_hash(ckey,mults[m_mults_index + 1]);
 			}
-
 		private:
 			uint8				m_sizes_index;
 			uint8				m_mults_index;
