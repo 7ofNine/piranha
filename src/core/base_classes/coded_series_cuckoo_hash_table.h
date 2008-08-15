@@ -382,10 +382,11 @@ namespace piranha
 				return true;
 			}
 			size_t m_hash(const Ckey &ckey, const double &mult) const {
+				const size_t tmp = m_sizes_index;
 				size_t x = static_cast<size_t>(mult);
 				x *= static_cast<size_t>(ckey);
-				x >>= ((sizeof(max_fast_int) << 3) - m_sizes_index);
-				p_assert(x < sizes[m_sizes_index]);
+				x >>= ((sizeof(max_fast_int) << 3) - tmp);
+				p_assert(x < sizes[tmp]);
 				return x;
 			}
 			size_t position1(const Ckey &ckey) const {
