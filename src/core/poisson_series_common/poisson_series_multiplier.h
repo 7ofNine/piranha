@@ -30,7 +30,7 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
-#include "../base_classes/coded_series_hash_table.h"
+#include "../base_classes/coded_series_cuckoo_hash_table.h"
 #include "../base_classes/null_truncator.h"
 #include "../config.h"
 #include "../exceptions.h"
@@ -188,7 +188,7 @@ namespace piranha
 								// so that we can avoid copying stuff around here and elsewhere?
 								tmp_cf = ancestor::m_terms1[i].m_cf;
 								tmp_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-								tmp_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
+								tmp_cf.divide_by(static_cast<max_fast_int>(2), ancestor::m_args_tuple);
 								const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
 																index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
 								if (m_flavours1[i] == m_flavours2[j]) {
@@ -244,10 +244,11 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						csht cms_cos, cms_sin;
+						const size_t size_hint = (ancestor::m_size1 * ancestor::m_size2) / 10;
+						csht cms_cos(size_hint), cms_sin(size_hint);
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
@@ -258,7 +259,7 @@ namespace piranha
 								cterm tmp_term1(ancestor::m_terms1[i].m_cf, coded_ancestor::m_ckeys1[i]);
 								// Handle the coefficient, with positive signs for now.
 								tmp_term1.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-								tmp_term1.m_cf.divide_by((max_fast_int)2, ancestor::m_args_tuple);
+								tmp_term1.m_cf.divide_by(static_cast<max_fast_int>(2), ancestor::m_args_tuple);
 								tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
 								// Create the second term, using the first one's coefficient and the appropriate code.
 								cterm tmp_term2(tmp_term1.m_cf, coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
