@@ -30,7 +30,6 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
-#include "../base_classes/coded_series_hash_table.h"
 #include "../base_classes/coded_series_cuckoo_hash_table.h"
 #include "../base_classes/null_truncator.h"
 #include "../config.h"
@@ -118,8 +117,10 @@ namespace piranha
 					}
 					void calculate_result_min_max() {
 						std::vector<mpz_class> tmp_vec(8);
-						std::pair<typename std::vector<mpz_class>::const_iterator, std::vector<mpz_class>::const_iterator> min_max;
-						for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
+						std::pair<typename std::vector<mpz_class>::const_iterator,
+							std::vector<mpz_class>::const_iterator> min_max;
+						const size_t size = coded_ancestor::m_size;
+						for (size_t i = 0; i < size; ++i) {
 							tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
 							tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
 							tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
@@ -179,6 +180,9 @@ namespace piranha
 							*vc_res_sin = &vc[0] + n_codes - coded_ancestor::m_h_min;
 						cf_type1 tmp_cf;
 						// Perform multiplication.
+						// TODO: for better cache behaviour and to reduce branching, maybe we can split up input series
+						// into cosine / sine parts and multiply them separately. Also, we can do separately
+						// index minus and index plus.
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
@@ -245,11 +249,11 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						//const size_t size_hint = (ancestor::m_size1 * ancestor::m_size2) / 10;
-						csht cms_cos, cms_sin;
+						const size_t size_hint = (ancestor::m_size1 * ancestor::m_size2) / 10;
+						csht cms_cos(size_hint), cms_sin(size_hint);
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
