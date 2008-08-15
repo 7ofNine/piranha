@@ -30,6 +30,7 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
+#include "../base_classes/coded_series_hash_table.h"
 #include "../base_classes/coded_series_cuckoo_hash_table.h"
 #include "../base_classes/null_truncator.h"
 #include "../config.h"
@@ -244,11 +245,11 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_series_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						const size_t size_hint = (ancestor::m_size1 * ancestor::m_size2) / 10;
-						csht cms_cos(size_hint), cms_sin(size_hint);
+						//const size_t size_hint = (ancestor::m_size1 * ancestor::m_size2) / 10;
+						csht cms_cos, cms_sin;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
