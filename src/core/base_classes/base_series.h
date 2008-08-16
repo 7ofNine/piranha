@@ -72,6 +72,7 @@ namespace piranha
 			iterator end();
 			const_iterator end() const;
 			iterator find_term(const term_type &);
+			const_iterator find_term(const term_type &) const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
@@ -87,6 +88,8 @@ namespace piranha
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;
+			bool operator==(const Derived &) const;
+			bool operator!=(const Derived &) const;
 			template <class ArgsTuple>
 			Derived &add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>

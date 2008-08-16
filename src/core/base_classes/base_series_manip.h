@@ -125,6 +125,13 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
+	base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t) const
+	{
+		return m_container.find(t);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
 	{

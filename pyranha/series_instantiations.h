@@ -78,6 +78,9 @@ namespace pyranha
 		inst.def("swap", &T::swap);
 		// NOTICE: the order seems important here, if we place *=int before *=double we
 		// will get just *=double in Python. Go figure...
+		// Equality.
+		inst.def(boost::python::self == boost::python::self);
+		inst.def(boost::python::self != boost::python::self);
 		// Addition and subtraction.
 		inst.def(boost::python::self += piranha::max_fast_int());
 		inst.def(boost::python::self += double());

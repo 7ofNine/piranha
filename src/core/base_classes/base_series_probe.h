@@ -81,6 +81,30 @@ namespace piranha
 		}
 		return retval;
 	}
+
+	/// Test for equality.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const Derived &other) const
+	{
+		if (length() != other.length()) {
+			return false;
+		}
+		const const_iterator it_f = end(), it_f_other = other.end();
+		for (const_iterator it = begin(); it != it_f; ++it) {
+			const_iterator it_other(other.find_term(*it));
+			if (it_other == it_f_other || it_other->m_cf != it->m_cf) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/// Test for equality.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const Derived &other) const
+	{
+		return !(*this == other);
+	}
 }
 
 #endif

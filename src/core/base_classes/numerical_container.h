@@ -139,6 +139,12 @@ namespace piranha
 			const T &eval(const double &, const ArgsTuple &) const {
 				return m_value;
 			}
+			bool operator==(const Derived &other) const {
+				return (m_value == other.m_value);
+			}
+			bool operator!=(const Derived &other) const {
+				return !(*this == other);
+			}
 			// Maths.
 			template <class ArgsTuple>
 			void invert_sign(const ArgsTuple &) {
