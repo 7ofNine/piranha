@@ -18,19 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/zpoly.h"
+#include "../src/manipulators/dpoly.h"
 
 // Calculate:
 // ((x+y)**2)*10000
 
 using namespace piranha::manipulators;
-typedef zpoly poly;
+typedef dpoly poly;
 using namespace piranha;
 
 int main()
 {
-	settings::debug(true);
-	settings::memory_limit(1000000000);
 	poly x(psym("x")), y(psym("y"));
 	poly res((x+y).pow(max_fast_int(2)).pow(max_fast_int(10000)));
 	if (res.length() != 20001) {
