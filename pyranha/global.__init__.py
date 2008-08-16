@@ -63,7 +63,9 @@ def __series_filter(self, *args):
 
 def __base_series_filter(series,*args):
 	import copy
-	if not hasattr(series,"__iter__"):
+	try:
+		iter(series)
+	except TypeError:
 		# Input is not iteratable, i.e. it is a numerical coefficient. Retval will be a copy of input.
 		return copy.copy(series)
 	args_list = list(args)
@@ -71,7 +73,7 @@ def __base_series_filter(series,*args):
 	if args_list:
 		func = args_list[0]
 		if func != None and not callable(func):
-			raise ValueError("Please provide functions or None as arguments for filter().")
+			raise ValueError("Please provide a callable or None as arguments for filter().")
 	else:
 		# List of functions is exhausted, nothing to filter. Just use a copy of series as return value.
 		return copy.copy(series)
