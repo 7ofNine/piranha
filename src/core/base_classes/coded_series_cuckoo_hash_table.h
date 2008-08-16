@@ -356,19 +356,18 @@ namespace piranha
 				p_assert(sizes[m_sizes_index] == m_container.size());
 				return true;
 			}
-			size_t m_hash(const Ckey &ckey, const double &mult) const {
-				const size_t tmp = m_sizes_index;
+			static size_t m_hash(const Ckey &ckey, const double &mult, const size_t &sizes_index) {
 				size_t x = static_cast<size_t>(mult);
 				x *= static_cast<size_t>(ckey);
-				x >>= ((sizeof(max_fast_int) << 3) - tmp);
-				p_assert(x < sizes[tmp]);
+				x >>= ((sizeof(max_fast_int) << 3) - sizes_index);
+				p_assert(x < sizes[sizes_index]);
 				return x;
 			}
 			size_t position1(const Ckey &ckey) const {
-				return m_hash(ckey,mults[m_mults_index]);
+				return m_hash(ckey,mults[m_mults_index],m_sizes_index);
 			}
 			size_t position2(const Ckey &ckey) const {
-				return m_hash(ckey,mults[m_mults_index + 1]);
+				return m_hash(ckey,mults[m_mults_index + 1],m_sizes_index);
 			}
 		private:
 			uint8				m_sizes_index;
@@ -460,6 +459,8 @@ namespace piranha
 		coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults = { {
 		.7320508075688772 * MAX,
 		.2360679774997898 * MAX,
+// 		.6180339887498949 * MAX,
+// 		.4658204617032757 * MAX,
 		.6457513110645907 * MAX,
 		.3166247903553998 * MAX/*,
 		.6055512754639891 * MAX,
