@@ -63,9 +63,7 @@ def __series_filter(self, *args):
 
 def __base_series_filter(series,*args):
 	import copy
-	try:
-		getattr(series,"__iter__")
-	except AttributeError:
+	if not hasattr(series,"__iter__"):
 		# Input is not iteratable, i.e. it is a numerical coefficient. Retval will be a copy of input.
 		return copy.copy(series)
 	args_list = list(args)
