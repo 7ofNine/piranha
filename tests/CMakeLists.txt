@@ -12,7 +12,10 @@ TARGET_LINK_LIBRARIES(pearce_sparse_poly_test1 ${MANDATORY_LIBRARIES} piranha_st
 # TARGET_LINK_LIBRARIES(pearce_sparse_poly_test2 ${MANDATORY_LIBRARIES} piranha_static)
 ADD_EXECUTABLE(ra_test ra_test.cpp)
 TARGET_LINK_LIBRARIES(ra_test ${MANDATORY_LIBRARIES} piranha_static)
+ADD_EXECUTABLE(binomial_20000 binomial_20000.cpp)
+TARGET_LINK_LIBRARIES(binomial_20000 ${MANDATORY_LIBRARIES} piranha_static)
 
 # Add tests.
 ADD_TEST(ra ra_test)
 ADD_TEST(pearce1 pearce_sparse_poly_test1)
+ADD_TEST(binomial_20000 binomial_20000)
