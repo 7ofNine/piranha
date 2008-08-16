@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005-2008.
+//  (C) Copyright Gennadiy Rozental 2005-2007.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 47258 $
+//  Version     : $Revision: 41369 $
 //
 //  Description : contains forward eclarations for Boost.Test data types
 // ***************************************************************************
@@ -38,7 +38,6 @@ class  unit_test_log_formatter;
 struct log_entry_data;
 struct log_checkpoint_data;
 
-class lazy_ostream;
 
 } // namespace unit_test
 

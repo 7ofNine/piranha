@@ -12,7 +12,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2004-12-14 23:34:44 +0100 (Tue, 14 Dec 2004) $
+// $Date: 2004-12-14 17:34:44 -0500 (Tue, 14 Dec 2004) $
 // $Revision: 26508 $
 
 #include <boost/mpl/key_type_fwd.hpp>

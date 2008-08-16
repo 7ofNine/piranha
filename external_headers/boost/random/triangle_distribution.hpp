@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: triangle_distribution.hpp 37032 2007-02-21 20:29:57Z jmaurer $
+ * $Id: triangle_distribution.hpp 41369 2007-11-25 18:07:19Z bemandawes $
  *
  * Revision history
  *  2001-02-18  moved to individual header files

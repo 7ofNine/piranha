@@ -14,7 +14,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2005-10-04 20:01:35 +0200 (Tue, 04 Oct 2005) $
+// $Date: 2005-10-04 14:01:35 -0400 (Tue, 04 Oct 2005) $
 // $Revision: 31196 $
 
 #   include <boost/mpl/aux_/config/ctps.hpp>

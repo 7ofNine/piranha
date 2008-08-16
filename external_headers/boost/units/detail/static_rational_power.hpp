@@ -2,7 +2,7 @@
 // unit/quantity manipulation and conversion
 //
 // Copyright (C) 2003-2008 Matthias Christian Schabel
-// Copyright (C) 2007-2008 Steven Watanabe
+// Copyright (C) 2008 Steven Watanabe
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -63,8 +63,7 @@ struct static_rational_power_impl<R, one>
     typedef one type;
     static one call(const one&)
     {
-        one result;
-        return(result);
+        return(one());
     }
 };
 
@@ -74,8 +73,7 @@ struct static_rational_power_impl<static_rational<N, 1>, one>
     typedef one type;
     static one call(const one&)
     {
-        one result;
-        return(result);
+        return(one());
     }
 };
 
@@ -158,8 +156,7 @@ struct static_int_power_sign_impl<N, false>
         typedef typename impl::type type;
         static type call(const Y& y)
         {
-            one result;
-            return(impl::call(y, result));
+            return(impl::call(y, one()));
         }
     };
 };
@@ -174,8 +171,7 @@ struct static_int_power_sign_impl<N, true>
         typedef typename divide_typeof_helper<one, typename impl::type>::type type;
         static type call(const Y& y)
         {
-            one result;
-            return(result/impl::call(y, result));
+            return(one()/impl::call(y, one()));
         }
     };
 };

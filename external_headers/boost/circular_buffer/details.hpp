@@ -1,6 +1,6 @@
 // Helper classes and functions for the circular buffer.
 
-// Copyright (c) 2003-2008 Jan Gaspar
+// Copyright (c) 2003-2007 Jan Gaspar
 
 // Use, modification, and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -64,6 +64,16 @@ struct nonconst_traits {
 
     // Non-const traits
     typedef nonconst_traits<Traits> nonconst_self;
+};
+
+/*!
+    \struct helper_pointer
+    \brief Helper pointer used in the iterator.
+*/
+template <class Traits>
+struct helper_pointer {
+    bool m_end;
+    typename Traits::pointer m_it;
 };
 
 /*!
@@ -278,11 +288,16 @@ public:
     pointer operator -> () const { return &(operator*()); }
 
     //! Difference operator.
-    template <class Traits0>
-    difference_type operator - (const iterator<Buff, Traits0>& it) const {
+    difference_type operator - (const iterator& it) const {
         BOOST_CB_ASSERT(is_valid(m_buff));    // check for uninitialized or invalidated iterator
         BOOST_CB_ASSERT(it.is_valid(m_buff)); // check for uninitialized or invalidated iterator
-        return linearize_pointer(*this) - linearize_pointer(it);
+        helper_pointer<Traits> lhs = create_helper_pointer(*this);
+        helper_pointer<Traits> rhs = create_helper_pointer(it);
+        if (less(rhs, lhs) && lhs.m_it <= rhs.m_it)
+            return (lhs.m_it - rhs.m_it) + static_cast<difference_type>(m_buff->capacity());
+        if (less(lhs, rhs) && lhs.m_it >= rhs.m_it)
+            return (lhs.m_it - rhs.m_it) - static_cast<difference_type>(m_buff->capacity());
+        return lhs.m_it - rhs.m_it;
     }
 
     //! Increment operator (prefix).
@@ -340,7 +355,7 @@ public:
     iterator& operator -= (difference_type n) {
         BOOST_CB_ASSERT(is_valid(m_buff)); // check for uninitialized or invalidated iterator
         if (n > 0) {
-            BOOST_CB_ASSERT(*this - m_buff->begin() >= n); // check for too large n
+            BOOST_CB_ASSERT(m_buff->begin() - *this <= -n); // check for too large n
             m_it = m_buff->sub(m_it == 0 ? m_buff->m_last : m_it, n);
         } else if (n < 0) {
             *this += -n;
@@ -377,12 +392,12 @@ public:
     bool operator < (const iterator<Buff, Traits0>& it) const {
         BOOST_CB_ASSERT(is_valid(m_buff));    // check for uninitialized or invalidated iterator
         BOOST_CB_ASSERT(it.is_valid(m_buff)); // check for uninitialized or invalidated iterator
-        return linearize_pointer(*this) < linearize_pointer(it);
+        return less(create_helper_pointer(*this), create_helper_pointer(it));
     }
 
     //! Greater.
     template <class Traits0>
-    bool operator > (const iterator<Buff, Traits0>& it) const { return it < *this; }
+    bool operator > (const iterator<Buff, Traits0>& it) const  { return it < *this; }
 
     //! Less or equal.
     template <class Traits0>
@@ -395,12 +410,41 @@ public:
 private:
 // Helpers
 
-    //! Get a pointer which would point to the same element as the iterator in case the circular buffer is linearized.
+    //! Create helper pointer.
     template <class Traits0>
-    typename Traits0::pointer linearize_pointer(const iterator<Buff, Traits0>& it) const {
-        return it.m_it == 0 ? m_buff->m_buff + m_buff->size() :
-            (it.m_it < m_buff->m_first ? it.m_it + (m_buff->m_end - m_buff->m_first)
-                : m_buff->m_buff + (it.m_it - m_buff->m_first));
+    helper_pointer<Traits0> create_helper_pointer(const iterator<Buff, Traits0>& it) const {
+        helper_pointer<Traits0> helper;
+        helper.m_end = (it.m_it == 0);
+        helper.m_it = helper.m_end ? m_buff->m_last : it.m_it;
+        return helper;
+    }
+
+    //! Less.
+    template <class InternalIterator0, class InternalIterator1>
+    bool less(const InternalIterator0& lhs, const InternalIterator1& rhs) const {
+        difference_type ldiff = lhs.m_it - m_buff->m_first;
+        difference_type rdiff = rhs.m_it - m_buff->m_first;
+        if (ldiff < 0) {
+            if (rdiff < 0)
+                return lhs.m_it < rhs.m_it;
+            else if (rdiff == 0)
+                return rhs.m_end;
+        } else if (ldiff == 0) {
+            if (rdiff < 0)
+                return !lhs.m_end;
+            else if (rdiff == 0)
+                return !lhs.m_end && rhs.m_end;
+            else
+                return !lhs.m_end;
+        } else { // ldiff > 0
+            if (rdiff < 0)
+                return true;
+            else if (rdiff == 0)
+                return rhs.m_end;
+            else
+                return lhs.m_it < rhs.m_it;
+        }
+        return false;
     }
 };
 

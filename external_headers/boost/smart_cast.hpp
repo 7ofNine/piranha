@@ -36,7 +36,6 @@
 
 #include <exception>
 #include <typeinfo>
-#include <cstddef> // NULL
 
 #include <boost/config.hpp>
 #include <boost/static_assert.hpp>

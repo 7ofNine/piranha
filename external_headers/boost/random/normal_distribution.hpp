@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: normal_distribution.hpp 37704 2007-05-17 08:37:54Z jmaurer $
+ * $Id: normal_distribution.hpp 41369 2007-11-25 18:07:19Z bemandawes $
  *
  * Revision history
  *  2001-02-18  moved to individual header files

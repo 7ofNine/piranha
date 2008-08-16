@@ -65,12 +65,12 @@ namespace boost { namespace spirit { namespace karma
             return fusion::any(component.elements, f);
         }
 
-        template <typename Component, typename Context>
-        static std::string what(Component const& component, Context const& ctx)
+        template <typename Component>
+        static std::string what(Component const& component)
         {
             std::string result = "alternatives[";
             fusion::for_each(component.elements,
-                spirit::detail::what_function<Context>(result), ctx);
+                spirit::detail::what_function(result));
             result += "]";
             return result;
         }

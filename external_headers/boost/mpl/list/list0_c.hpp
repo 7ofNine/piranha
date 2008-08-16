@@ -11,7 +11,7 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2004-11-28 08:18:24 +0100 (Sun, 28 Nov 2004) $
+// $Date: 2004-11-28 02:18:24 -0500 (Sun, 28 Nov 2004) $
 // $Revision: 26337 $
 
 #include <boost/mpl/list/list0.hpp>

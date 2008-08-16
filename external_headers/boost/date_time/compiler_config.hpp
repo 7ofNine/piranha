@@ -5,7 +5,7 @@
  * Subject to the Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2008-07-13 02:15:30 +0200 (Sun, 13 Jul 2008) $
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
  #include "boost/detail/workaround.hpp"
@@ -90,7 +90,7 @@ namespace std {
  * 
  * For code that will be placed in the date_time .dll, 
  * it must be properly prefixed with BOOST_DATE_TIME_DECL.
- * The corresponding .cpp file must have BOOST_DATE_TIME_SOURCE
+ * The corresponding .cpp file must have BOOST_DATE_TIME_SOURCES
  * defined before including its header. For examples see:
  * greg_month.hpp & greg_month.cpp
  * 

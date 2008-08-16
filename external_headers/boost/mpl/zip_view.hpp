@@ -12,8 +12,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2008-06-23 04:31:22 +0200 (Mon, 23 Jun 2008) $
-// $Revision: 46620 $
+// $Date: 2008-07-21 04:00:06 -0400 (Mon, 21 Jul 2008) $
+// $Revision: 47650 $
 
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/begin_end.hpp>

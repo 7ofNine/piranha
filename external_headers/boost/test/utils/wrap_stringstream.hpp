@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2002-2008.
+//  (C) Copyright Gennadiy Rozental 2002-2007.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 47258 $
+//  Version     : $Revision: 41369 $
 //
 //  Description : wraps strstream and stringstream (depends with one is present)
 //                to provide the unified interface
@@ -114,7 +114,9 @@ operator<<( basic_wrap_stringstream<CharT>& targ, basic_wrap_stringstream<CharT>
 
 //____________________________________________________________________________//
 
-#if BOOST_TEST_USE_STD_LOCALE 
+#if !defined(BOOST_NO_STD_LOCALE) &&                                    \
+    (!defined(BOOST_MSVC) || BOOST_WORKAROUND(BOOST_MSVC, >= 1310))  && \
+    !defined(__MWERKS__) && !BOOST_WORKAROUND(__GNUC__, < 3)
 
 template <typename CharT>
 inline basic_wrap_stringstream<CharT>&

@@ -11,8 +11,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2008-06-21 04:55:14 +0200 (Sat, 21 Jun 2008) $
-// $Revision: 46570 $
+// $Date: 2008-07-21 04:00:06 -0400 (Mon, 21 Jul 2008) $
+// $Revision: 47650 $
 
 #include <boost/mpl/front_fwd.hpp>
 #include <boost/mpl/vector/aux_/at.hpp>

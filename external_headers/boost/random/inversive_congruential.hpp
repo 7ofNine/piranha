@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: inversive_congruential.hpp 34430 2006-06-30 06:38:11Z troyer $
+ * $Id: inversive_congruential.hpp 41369 2007-11-25 18:07:19Z bemandawes $
  *
  * Revision history
  *  2001-02-18  moved to individual header files

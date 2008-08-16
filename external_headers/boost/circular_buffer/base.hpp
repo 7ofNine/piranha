@@ -1,6 +1,6 @@
 // Implementation of the base circular buffer.
 
-// Copyright (c) 2003-2008 Jan Gaspar
+// Copyright (c) 2003-2007 Jan Gaspar
 
 // Use, modification, and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -619,7 +619,7 @@ public:
         \warning In general invoking any method which modifies the internal state of the <code>circular_buffer</code>
                  may delinearize the internal buffer and invalidate the returned pointer.
         \sa <code>array_one()</code> and <code>array_two()</code> for the other option how to pass data into a legacy
-            C API; <code>is_linearized()</code>, <code>rotate(const_iterator)</code>
+            C API.
     */
     pointer linearize() {
         if (empty())
@@ -665,73 +665,6 @@ public:
         invalidate_iterators_except(end());
 #endif
         return m_buff;
-    }
-
-    //! Is the <code>circular_buffer</code> linearized?
-    /*!
-        \return <code>true</code> if the internal buffer is linearized into a continuous array (i.e. the
-                <code>circular_buffer</code> meets a condition
-                <code>\&(*this)[0] \< \&(*this)[1] \< ... \< \&(*this)[size() - 1]</code>);
-                <code>false</code> otherwise.
-        \throws Nothing.
-        \par Exception Safety
-             No-throw.
-        \par Iterator Invalidation
-             Does not invalidate any iterators.
-        \par Complexity
-             Constant (in the size of the <code>circular_buffer</code>).
-        \sa <code>linearize()</code>, <code>array_one()</code>, <code>array_two()</code>
-    */
-    bool is_linearized() const { return m_first < m_last || m_last == m_buff; }
-
-    //! Rotate elements in the <code>circular_buffer</code>.
-    /*!
-        A more effective implementation of
-        <code><a href="http://www.sgi.com/tech/stl/rotate.html">std::rotate</a></code>.
-        \pre <code>new_begin</code> is a valid iterator pointing to the <code>circular_buffer</code> <b>except</b> its
-             end.
-        \post Before calling the method suppose:<br><br>
-              <code>m == std::distance(new_begin, end())</code><br><code>n == std::distance(begin(), new_begin)</code>
-              <br><code>val_0 == *new_begin, val_1 == *(new_begin + 1), ... val_m == *(new_begin + m)</code><br>
-              <code>val_r1 == *(new_begin - 1), val_r2 == *(new_begin - 2), ... val_rn == *(new_begin - n)</code><br>
-              <br>then after call to the method:<br><br>
-              <code>val_0 == (*this)[0] \&\& val_1 == (*this)[1] \&\& ... \&\& val_m == (*this)[m - 1] \&\& val_r1 ==
-              (*this)[m + n - 1] \&\& val_r2 == (*this)[m + n - 2] \&\& ... \&\& val_rn == (*this)[m]</code>
-        \param new_begin The new beginning.
-        \throws Whatever <code>T::T(const T&)</code> throws.
-        \throws Whatever <code>T::operator = (const T&)</code> throws.
-        \par Exception Safety
-             Basic; no-throw if the <code>circular_buffer</code> is full or <code>new_begin</code> points to
-             <code>begin()</code> or if the operations in the <i>Throws</i> section do not throw anything.
-        \par Iterator Invalidation
-             If <code>m \< n</code> invalidates iterators pointing to the last <code>m</code> elements
-             (<b>including</b> <code>new_begin</code>, but not iterators equal to <code>end()</code>) else invalidates
-             iterators pointing to the first <code>n</code> elements; does not invalidate any iterators if the
-             <code>circular_buffer</code> is full.
-        \par Complexity
-             Linear (in <code>std::min(m, n)</code>); constant if the <code>circular_buffer</code> is full.
-        \sa <code><a href="http://www.sgi.com/tech/stl/rotate.html">std::rotate</a></code>
-    */
-    void rotate(const_iterator new_begin) {
-        BOOST_CB_ASSERT(new_begin.is_valid(this)); // check for uninitialized or invalidated iterator
-        BOOST_CB_ASSERT(new_begin.m_it != 0);      // check for iterator pointing to end()
-        if (full()) {
-            m_first = m_last = const_cast<pointer>(new_begin.m_it);
-        } else {
-            difference_type m = end() - new_begin;
-            difference_type n = new_begin - begin();
-            if (m < n) {
-                for (; m > 0; --m) {
-                    push_front(back());
-                    pop_back();
-                }
-            } else {
-                for (; n > 0; --n) {
-                    push_back(front());
-                    pop_front();
-                }
-            }
-        }
     }
 
 // Size and capacity
@@ -988,10 +921,6 @@ public:
                  <code>\link push_back() push_back(const_reference)\endlink</code> or
                  <code>\link insert(iterator, param_value_type) insert(iterator, value_type)\endlink</code>) nothing
                  will be inserted and the size (as well as capacity) remains zero.
-        \note You can explicitly set the capacity by calling the <code>set_capacity(capacity_type)</code> method or you
-              can use the other constructor with the capacity specified.
-        \sa <code>circular_buffer(capacity_type, const allocator_type& alloc)</code>,
-            <code>set_capacity(capacity_type)</code>
     */
     explicit circular_buffer(const allocator_type& alloc = allocator_type())
     : m_buff(0), m_end(0), m_first(0), m_last(0), m_size(0), m_alloc(alloc) {}
@@ -1008,8 +937,7 @@ public:
     */
     explicit circular_buffer(capacity_type capacity, const allocator_type& alloc = allocator_type())
     : m_size(0), m_alloc(alloc) {
-        initialize_buffer(capacity);
-        m_first = m_last = m_buff;
+        initialize(capacity);
     }
 
     /*! \brief Create a full <code>circular_buffer</code> with the specified capacity and filled with <code>n</code>
@@ -1027,8 +955,7 @@ public:
     */
     circular_buffer(size_type n, param_value_type item, const allocator_type& alloc = allocator_type())
     : m_size(n), m_alloc(alloc) {
-        initialize_buffer(n, item);
-        m_first = m_last = m_buff;
+        initialize(n, item);
     }
 
     /*! \brief Create a <code>circular_buffer</code> with the specified capacity and filled with <code>n</code>
@@ -1050,9 +977,7 @@ public:
         const allocator_type& alloc = allocator_type())
     : m_size(n), m_alloc(alloc) {
         BOOST_CB_ASSERT(capacity >= size()); // check for capacity lower than size
-        initialize_buffer(capacity, item);
-        m_first = m_buff;
-        m_last = capacity == n ? m_buff : m_buff + n;
+        initialize(capacity, item);
     }
 
     //! The copy constructor.
@@ -1068,17 +993,14 @@ public:
     */
     circular_buffer(const circular_buffer<T, Alloc>& cb)
     : m_size(cb.size()), m_alloc(cb.get_allocator()) {
-        initialize_buffer(cb.capacity());
-        m_first = m_buff;
+        m_first = m_last = m_buff = allocate(cb.capacity());
         BOOST_TRY {
-            m_last = cb_details::uninitialized_copy_with_alloc(cb.begin(), cb.end(), m_buff, m_alloc);
+            m_end = cb_details::uninitialized_copy_with_alloc(cb.begin(), cb.end(), m_buff, m_alloc);
         } BOOST_CATCH(...) {
             deallocate(m_buff, cb.capacity());
             BOOST_RETHROW
         }
         BOOST_CATCH_END
-        if (m_last == m_end)
-            m_last = m_buff;
     }
 
 #if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
@@ -1376,7 +1298,6 @@ public:
               <code>0</code>, nothing will be inserted.
         \param item The element to be inserted.
         \throws Whatever <code>T::T(const T&)</code> throws.
-        \throws Whatever <code>T::operator = (const T&)</code> throws.
         \par Exception Safety
              Basic; no-throw if the operation in the <i>Throws</i> section does not throw anything.
         \par Iterator Invalidation
@@ -1407,7 +1328,6 @@ public:
               <code>0</code>, nothing will be inserted.
         \param item The element to be inserted.
         \throws Whatever <code>T::T(const T&)</code> throws.
-        \throws Whatever <code>T::operator = (const T&)</code> throws.
         \par Exception Safety
              Basic; no-throw if the operation in the <i>Throws</i> section does not throw anything.
         \par Iterator Invalidation
@@ -2078,15 +1998,15 @@ private:
 #endif
     }
 
-    //! Initialize the internal buffer.
-    void initialize_buffer(capacity_type capacity) {
-        m_buff = allocate(capacity);
+    //! Initialize the circular buffer.
+    void initialize(capacity_type capacity) {
+        m_first = m_last = m_buff = allocate(capacity);
         m_end = m_buff + capacity;
     }
 
-    //! Initialize the internal buffer.
-    void initialize_buffer(capacity_type capacity, param_value_type item) {
-        initialize_buffer(capacity);
+    //! Initialize the circular buffer.
+    void initialize(capacity_type capacity, param_value_type item) {
+        initialize(capacity);
         BOOST_TRY {
             cb_details::uninitialized_fill_n_with_alloc(m_buff, size(), item, m_alloc);
         } BOOST_CATCH(...) {
@@ -2100,8 +2020,7 @@ private:
     template <class IntegralType>
     void initialize(IntegralType n, IntegralType item, const true_type&) {
         m_size = static_cast<size_type>(n);
-        initialize_buffer(size(), item);
-        m_first = m_last = m_buff;
+        initialize(size(), item);
     }
 
     //! Specialized initialize method.
@@ -2138,9 +2057,7 @@ private:
     void initialize(capacity_type capacity, IntegralType n, IntegralType item, const true_type&) {
         BOOST_CB_ASSERT(capacity >= static_cast<size_type>(n)); // check for capacity lower than n
         m_size = static_cast<size_type>(n);
-        initialize_buffer(capacity, item);
-        m_first = m_buff;
-        m_last = capacity == size() ? m_buff : m_buff + size();
+        initialize(capacity, item);
     }
 
     //! Specialized initialize method.
@@ -2160,8 +2077,7 @@ private:
         InputIterator first,
         InputIterator last,
         const std::input_iterator_tag&) {
-        initialize_buffer(capacity);
-        m_first = m_last = m_buff;
+        initialize(capacity);
         m_size = 0;
         if (capacity == 0)
             return;
@@ -2187,29 +2103,28 @@ private:
         initialize(capacity, first, last, std::distance(first, last));
     }
 
-    //! Initialize the circular buffer.
+    //! Helper initialize method.
     template <class ForwardIterator>
     void initialize(capacity_type capacity,
         ForwardIterator first,
         ForwardIterator last,
         size_type distance) {
-        initialize_buffer(capacity);
-        m_first = m_buff;
+        initialize(capacity);
         if (distance > capacity) {
             std::advance(first, distance - capacity);
             m_size = capacity;
         } else {
             m_size = distance;
+            if (distance != capacity)
+                m_last = m_buff + size();
         }
         BOOST_TRY {
-            m_last = cb_details::uninitialized_copy_with_alloc(first, last, m_buff, m_alloc);
+            cb_details::uninitialized_copy_with_alloc(first, last, m_buff, m_alloc);
         } BOOST_CATCH(...) {
             deallocate(m_buff, capacity);
             BOOST_RETHROW
         }
         BOOST_CATCH_END
-        if (m_last == m_end)
-            m_last = m_buff;
     }
 
     //! Reset the circular buffer.

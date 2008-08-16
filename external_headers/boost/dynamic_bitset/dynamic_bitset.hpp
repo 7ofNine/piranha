@@ -1,13 +1,18 @@
-// -----------------------------------------------------------
+// --------------------------------------------------
 //
-//   Copyright (c) 2001-2002 Chuck Allison and Jeremy Siek
-//           Copyright (c) 2003-2006 Gennaro Prota
+// (C) Copyright Chuck Allison and Jeremy Siek 2001 - 2002.
+// (C) Copyright Gennaro Prota                 2003 - 2006.
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
 // -----------------------------------------------------------
+
+//  See http://www.boost.org/libs/dynamic_bitset/ for documentation.
+//
+//  $Revision: 47666 $ $Date: 2008-07-21 19:46:39 -0400 (Mon, 21 Jul 2008) $ - $Name$
+
 
 #ifndef BOOST_DYNAMIC_BITSET_DYNAMIC_BITSET_HPP
 #define BOOST_DYNAMIC_BITSET_DYNAMIC_BITSET_HPP
@@ -1067,22 +1072,28 @@ to_ulong() const
   // beyond the "allowed" positions
   typedef unsigned long result_type;
 
-  const size_type max_size =
-            (std::min)(m_num_bits, static_cast<size_type>(ulong_width));
+  /*
+   if find_next() did its job correctly we don't need the if
+   below, because all bits we care about are in the first block
 
-  const size_type last_block = block_index( max_size - 1 );
+   if (bits_per_block >= ulong_width)
+     return static_cast<result_type>(m_bits[0]);
+  */
 
+  size_type last_block = block_index(
+                (std::min)( m_num_bits, (size_type)ulong_width ) - 1 );
   result_type result = 0;
   for (size_type i = 0; i <= last_block; ++i) {
 
-    const size_type offset = i * bits_per_block;
-    assert( offset < static_cast<size_type>(ulong_width));
+    assert((size_type)bits_per_block * i < (size_type)ulong_width);
 
-    result |= (static_cast<result_type>(m_bits[i]) << offset);
+    unsigned long piece = m_bits[i];
+    result |= (piece << (bits_per_block * i));
   }
 
   return result;
 }
+
 
 template <typename Block, typename Allocator>
 inline typename dynamic_bitset<Block, Allocator>::size_type

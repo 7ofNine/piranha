@@ -8,8 +8,6 @@
 //  See http://www.boost.org/libs/utility/operators.htm for documentation.
 
 //  Revision History
-//  03 Apr 08 Make sure "convertible to bool" is sufficient
-//            for T::operator<, etc. (Daniel Frey)
 //  24 May 07 Changed empty_base to depend on T, see
 //            http://svn.boost.org/trac/boost/ticket/979
 //  21 Oct 02 Modified implementation of operators to allow compilers with a
@@ -126,34 +124,34 @@ namespace boost
 template <class T, class U, class B = ::boost::detail::empty_base<T> >
 struct less_than_comparable2 : B
 {
-     friend bool operator<=(const T& x, const U& y) { return !static_cast<bool>(x > y); }
-     friend bool operator>=(const T& x, const U& y) { return !static_cast<bool>(x < y); }
+     friend bool operator<=(const T& x, const U& y) { return !(x > y); }
+     friend bool operator>=(const T& x, const U& y) { return !(x < y); }
      friend bool operator>(const U& x, const T& y)  { return y < x; }
      friend bool operator<(const U& x, const T& y)  { return y > x; }
-     friend bool operator<=(const U& x, const T& y) { return !static_cast<bool>(y < x); }
-     friend bool operator>=(const U& x, const T& y) { return !static_cast<bool>(y > x); }
+     friend bool operator<=(const U& x, const T& y) { return !(y < x); }
+     friend bool operator>=(const U& x, const T& y) { return !(y > x); }
 };
 
 template <class T, class B = ::boost::detail::empty_base<T> >
 struct less_than_comparable1 : B
 {
      friend bool operator>(const T& x, const T& y)  { return y < x; }
-     friend bool operator<=(const T& x, const T& y) { return !static_cast<bool>(y < x); }
-     friend bool operator>=(const T& x, const T& y) { return !static_cast<bool>(x < y); }
+     friend bool operator<=(const T& x, const T& y) { return !(y < x); }
+     friend bool operator>=(const T& x, const T& y) { return !(x < y); }
 };
 
 template <class T, class U, class B = ::boost::detail::empty_base<T> >
 struct equality_comparable2 : B
 {
      friend bool operator==(const U& y, const T& x) { return x == y; }
-     friend bool operator!=(const U& y, const T& x) { return !static_cast<bool>(x == y); }
-     friend bool operator!=(const T& y, const U& x) { return !static_cast<bool>(y == x); }
+     friend bool operator!=(const U& y, const T& x) { return !(x == y); }
+     friend bool operator!=(const T& y, const U& x) { return !(y == x); }
 };
 
 template <class T, class B = ::boost::detail::empty_base<T> >
 struct equality_comparable1 : B
 {
-     friend bool operator!=(const T& x, const T& y) { return !static_cast<bool>(x == y); }
+     friend bool operator!=(const T& x, const T& y) { return !(x == y); }
 };
 
 // A macro which produces "name_2left" from "name".
@@ -358,7 +356,7 @@ struct equivalent2 : B
 {
   friend bool operator==(const T& x, const U& y)
   {
-    return !static_cast<bool>(x < y) && !static_cast<bool>(x > y);
+    return !(x < y) && !(x > y);
   }
 };
 
@@ -367,7 +365,7 @@ struct equivalent1 : B
 {
   friend bool operator==(const T&x, const T&y)
   {
-    return !static_cast<bool>(x < y) && !static_cast<bool>(y < x);
+    return !(x < y) && !(y < x);
   }
 };
 
@@ -375,17 +373,17 @@ template <class T, class U, class B = ::boost::detail::empty_base<T> >
 struct partially_ordered2 : B
 {
   friend bool operator<=(const T& x, const U& y)
-    { return static_cast<bool>(x < y) || static_cast<bool>(x == y); }
+    { return (x < y) || (x == y); }
   friend bool operator>=(const T& x, const U& y)
-    { return static_cast<bool>(x > y) || static_cast<bool>(x == y); }
+    { return (x > y) || (x == y); }
   friend bool operator>(const U& x, const T& y)
     { return y < x; }
   friend bool operator<(const U& x, const T& y)
     { return y > x; }
   friend bool operator<=(const U& x, const T& y)
-    { return static_cast<bool>(y > x) || static_cast<bool>(y == x); }
+    { return (y > x) || (y == x); }
   friend bool operator>=(const U& x, const T& y)
-    { return static_cast<bool>(y < x) || static_cast<bool>(y == x); }
+    { return (y < x) || (y == x); }
 };
 
 template <class T, class B = ::boost::detail::empty_base<T> >
@@ -394,9 +392,9 @@ struct partially_ordered1 : B
   friend bool operator>(const T& x, const T& y)
     { return y < x; }
   friend bool operator<=(const T& x, const T& y)
-    { return static_cast<bool>(x < y) || static_cast<bool>(x == y); }
+    { return (x < y) || (x == y); }
   friend bool operator>=(const T& x, const T& y)
-    { return static_cast<bool>(y < x) || static_cast<bool>(x == y); }
+    { return (y < x) || (x == y); }
 };
 
 //  Combined operator classes (contributed by Daryle Walker) ----------------//

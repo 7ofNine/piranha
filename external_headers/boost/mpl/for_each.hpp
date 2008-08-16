@@ -11,8 +11,8 @@
 // See http://www.boost.org/libs/mpl for documentation.
 
 // $Source$
-// $Date: 2008-06-20 06:43:41 +0200 (Fri, 20 Jun 2008) $
-// $Revision: 46546 $
+// $Date: 2008-07-21 04:00:06 -0400 (Mon, 21 Jul 2008) $
+// $Revision: 47650 $
 
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/begin_end.hpp>

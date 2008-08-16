@@ -13,7 +13,7 @@
 //
 // ------------------------------------------------------
 //
-// $Id: integer_log2.hpp 34906 2006-08-19 11:05:56Z gennaro_prota $
+// $Id: integer_log2.hpp 41369 2007-11-25 18:07:19Z bemandawes $
 
 
 #ifndef BOOST_INTEGER_LOG2_HPP_GP_20030301

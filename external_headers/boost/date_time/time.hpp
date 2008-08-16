@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2008-08-03 12:09:21 +0200 (Sun, 03 Aug 2008) $
+ * $Date: 2008-02-27 15:00:24 -0500 (Wed, 27 Feb 2008) $
  */
 
 
@@ -77,14 +77,14 @@ namespace date_time {
     /*! Optional bool parameter will return time zone as an offset 
      * (ie "+07:00"). Empty string is returned for classes that do 
      * not use a time_zone */
-    std::string zone_name(bool /*as_offset*/=false) const
+    std::string zone_name(bool as_offset=false) const
     {
       return time_system::zone_name(time_);
     }
     /*! Optional bool parameter will return time zone as an offset 
      * (ie "+07:00"). Empty string is returned for classes that do 
      * not use a time_zone */
-    std::string zone_abbrev(bool /*as_offset*/=false) const
+    std::string zone_abbrev(bool as_offset=false) const
     {
       return time_system::zone_name(time_);
     }
