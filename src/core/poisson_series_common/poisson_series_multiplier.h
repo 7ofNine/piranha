@@ -98,15 +98,9 @@ namespace piranha
 							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
 							ancestor::perform_plain_multiplication(trunc);
 						} else if (coded_ancestor::m_cr_is_viable) {
-							// Here we should be ok, since we know that the two sizes are greater than zero and even
-							// if we divide by zero we should get Inf, which is fine for our purposes.
-							const double density = (static_cast<double>(ancestor::m_size1) * ancestor::m_size2 * 2) /
-												   (coded_ancestor::m_h_max - coded_ancestor::m_h_min);
-							__PDEBUG(std::cout << "Density: " << density << '\n');
 							coded_ancestor::code_keys();
 							cache_flavours();
-							if (density < 1E-1 || !perform_vector_coded_multiplication(trunc)) {
-								__PDEBUG(if (density < 1E-1) std::cout << "Low density\n");
+							if (coded_ancestor::is_sparse() || !perform_vector_coded_multiplication(trunc)) {
 								__PDEBUG(std::cout << "Going for hash coded Poisson series multiplication\n");
 								perform_hash_coded_multiplication(trunc);
 							}

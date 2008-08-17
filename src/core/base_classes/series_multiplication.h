@@ -28,6 +28,7 @@
 					class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
+#include "../settings.h"
 #include "../p_assert.h"
 
 namespace piranha
@@ -46,6 +47,7 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				typedef typename Derived2::term_type term_type2;
 				Derived retval;
+				__PDEBUG(std::cout << "Input mult_lengths: " << derived_const_cast->length() << ',' << s2.length() << '\n');
 				// Just leave an empty series if this or s2 are zero.
 				if (derived_const_cast->empty() || s2.empty()) {
 					;

@@ -135,6 +135,32 @@ namespace piranha
 									   derived_const_cast->m_args_tuple));
 				}
 			}
+			bool is_sparse() const {
+				// Magic value established empirically. Possibly subject to tuning in the future.
+				static const double limit = 1E-2;
+				// We don't want this to be called if we haven't established the suitability
+				// of the coded representation first.
+				p_assert(m_cr_is_viable);
+				// Let's compute the sizes of the coded representations for the input series. We
+				// know the limits from previous analysis.
+				max_fast_int h1min = 0, h1max = 0, h2min = 0, h2max = 0, ck1 = 1, ck2 = 1;
+				for (size_t i = 0; i < m_size; ++i) {
+					h1min += ck1 * m_min_max1[i].first;
+					h1max += ck1 * m_min_max1[i].second;
+					ck1 *= (m_min_max1[i].second - m_min_max1[i].first + 1);
+					h2min += ck2 * m_min_max2[i].first;
+					h2max += ck2 * m_min_max2[i].second;
+					ck2 *= (m_min_max2[i].second - m_min_max2[i].first + 1);
+				}
+				p_assert(h1max - h1min + 1 != 0 && h2max - h2min + 1 != 0);
+				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
+				// Finally, let's compute the densities.
+				const double density1 = static_cast<double>(derived_const_cast->m_size1) / (h1max - h1min + 1),
+					density2 = static_cast<double>(derived_const_cast->m_size2) / (h2max - h2min + 1),
+					mean_density = (density1 + density2) / 2;
+				__PDEBUG(if (mean_density < limit) std::cout << "Low density: " << mean_density << '\n');
+				return (mean_density < limit);
+			}
 		protected:
 			// Is coded representation viable?
 			bool													m_cr_is_viable;

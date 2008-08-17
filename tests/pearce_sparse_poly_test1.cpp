@@ -32,6 +32,7 @@ using namespace piranha;
 
 int main()
 {
+settings::debug(true);
 	dpoly x(psym("x")), y(psym("y")), z(psym("z")), t(psym("t")), u(psym("u"));
 	max_fast_int one(1), two(2), three(3), five(5), twelve(12);
 	dpoly f = (x + y + z*z*two + t*t*t*three + u.pow(five)*five + one).pow(twelve);
