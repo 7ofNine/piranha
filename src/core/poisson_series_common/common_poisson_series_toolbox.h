@@ -37,7 +37,6 @@
 #include "../p_assert.h"
 #include "../psym.h"
 #include "jacobi_anger_toolbox.h"
-#include "wigner_rotation_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -68,12 +67,10 @@ namespace piranha
 	template <class Derived>
 	class common_poisson_series_toolbox:
 		public jacobi_anger_toolbox<1, Derived>,
-		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>,
-		public wigner_rotation_toolbox<Derived>
+		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
-			using wigner_rotation_toolbox<Derived>::Ynm;
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
@@ -169,27 +166,6 @@ namespace piranha
 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
 				Derived retval(this_copy.template base_sub<Derived>(pos_tuple, s_copy, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
-				retval.trim();
-				return retval;
-			}
-			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
-				const Derived &theta_, const Derived &phi_) {
-				typedef typename Derived::args_tuple_type args_tuple_type;
-				// First we must make sure that both theta and phi have their trig arguments merged with polynomial
-				// ones, since we are going to calculate sin/cos.
-				Derived theta(theta_), phi(phi_), tmp;
-				args_tuple_type tmp_args;
-				tmp_args.template get<1>() = theta.arguments().template get<0>();
-				tmp.set_arguments(tmp_args);
-				theta.merge_args(tmp);
-				tmp_args.template get<1>() = phi.arguments().template get<0>();
-				tmp.set_arguments(tmp_args);
-				phi.merge_args(tmp);
-				// Second, we merge together theta's and phi's arguments.
-				theta.merge_args(phi);
-				// Now we can proceed to the bulk of Ynm.
-				std::complex<Derived> retval(Derived::Ynm(n,m,theta,phi,theta.arguments()));
-				retval.m_arguments = theta.arguments();
 				retval.trim();
 				return retval;
 			}

@@ -153,6 +153,13 @@ namespace piranha
 		return retval;
 	}
 
+	inline std::complex<double> Ynm(const int &n, const int &m, const std::complex<double> &ei_theta, const double &phi)
+	{
+		std::complex<double> retval(std::polar(1.,phi*m));
+		retval *= Pnm(n,m,ei_theta.real());
+		return retval;
+	}
+
 	/// Non-normalised rotated spherical harmonic.
 	inline std::complex<double> Ynm(const int &n_, const int &m_, const double &theta, const double &phi,
 		const double &alpha, const double &beta, const double &gamma)
@@ -192,8 +199,15 @@ namespace piranha
 		return retval * factor;
 	}
 
+	inline std::complex<double> Ynm(const int &n_, const int &m_, const std::complex<double> &ei_theta, const double &phi,
+		const double &alpha, const double &beta, const double &gamma)
+	{
+		return Ynm(n_,m_,ei_theta.real(),phi,alpha,beta,gamma);
+	}
+
 	/// Binomial coefficient.
-	inline double choose(const max_fast_int &n, const max_fast_int &k) {
+	inline double choose(const max_fast_int &n, const max_fast_int &k)
+	{
 		if (n < 0 || k < 0 || k > n) {
 			throw unsuitable("Invalid input values for binomial coefficient.");
 		}

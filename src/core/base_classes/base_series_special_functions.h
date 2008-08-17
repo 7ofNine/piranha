@@ -137,7 +137,7 @@ namespace piranha
 												 "The reported error is: ")
 									 + u.what());
 				}
-				// Now we buid the starting point of the power series expansion of Jn/x.
+				// Now we build the starting point of the power series expansion of Jn/x.
 				Derived retval(*derived_const_cast);
 				retval.divide_by((max_fast_int)2, args_tuple);
 				// This will be used later.
@@ -150,85 +150,12 @@ namespace piranha
 				// Now let's proceed to the bulk of the power series expansion for Jn/x.
 				Derived tmp(retval);
 				for (size_t i = 1; i <= limit; ++i) {
-					tmp.mult_by((max_fast_int) - 1, args_tuple);
+					tmp.mult_by((max_fast_int)(-1), args_tuple);
 					tmp.divide_by((max_fast_int)(i*(i + order)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}
 				retval.divide_by((max_fast_int)2, args_tuple);
-				return retval;
-			}
-			/// Legendre function of the first kind: Pnm(self).
-			/**
-			* This implementation uses recurrence relations. self_qc is the quadratic conjugate of self, i.e.,
-			* sqrt(1-self**2).
-			*/
-			template <class ArgsTuple>
-			Derived Pnm(const max_fast_int &n_, const max_fast_int &m_, const Derived &self_qc,
-				const ArgsTuple &args_tuple) const {
-				// This is P00 right now.
-				Derived retval(static_cast<max_fast_int>(1),args_tuple);
-				max_fast_int n(n_), m(std::abs(m_));
-				if (n_ < 0) {
-					n = -n_-1;
-				}
-				if (n == 0 && m == 0) {
-					return retval;
-				}
-				if (m > n) {
-					retval = Derived();
-					return retval;
-				}
-				p_assert(n >= m && n >= 0 && m >= 0);
-				Derived P00(retval), old_Pnm, tmp1;
-				max_fast_int i = 0;
-				// Recursion to get from P_00 to P_mm.
-				for (; i < m; ++i) {
-					retval.mult_by(-(i*2+1),args_tuple);
-					retval.mult_by(self_qc,args_tuple);
-				}
-				p_assert(i == m);
-				// Recursion to get from P_mm to P_nm (n>m).
-				for (; i < n; ++i) {
-					old_Pnm.mult_by(-m-i,args_tuple);
-					old_Pnm.divide_by(-m+i+1,args_tuple);
-					tmp1 = old_Pnm;
-					old_Pnm = retval;
-					retval.mult_by(i*2+1,args_tuple);
-					retval.divide_by(-m+i+1,args_tuple);
-					retval.mult_by(*derived_const_cast,args_tuple);
-					retval.add(tmp1,args_tuple);
-				}
-				if (m_ < 0) {
-					for (max_fast_int j = n + m; j >= n - m + 1; --j) {
-						retval.divide_by(j,args_tuple);
-					}
-					retval.mult_by(cs_phase(m),args_tuple);
-				}
-				return retval;
-			}
-			template <class ArgsTuple>
-			Derived Pnm(const max_fast_int &n, const max_fast_int &m, const ArgsTuple &args_tuple) const {
-				// Let's build sqrt(1-self**2).
-				Derived tmp(*derived_const_cast);
-				tmp.mult_by(tmp,args_tuple);
-				tmp.mult_by(static_cast<max_fast_int>(-1),args_tuple);
-				tmp.add(Derived(static_cast<max_fast_int>(1),args_tuple),args_tuple);
-				Derived x_qc(tmp.root(2,args_tuple));
-				return Derived(derived_const_cast->Pnm(n,m,x_qc,args_tuple));
-			}
-			template <class ArgsTuple>
-			Derived Pn(const max_fast_int &n, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->Pnm(n,0,Derived(),args_tuple);
-			}
-			template <class ArgsTuple>
-			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
-				const Derived &theta, const Derived &phi, const ArgsTuple &args_tuple) {
-				const std::complex<Derived> ei_theta(theta.ei(args_tuple));
-				Derived m_phi(phi);
-				m_phi.mult_by(m,args_tuple);
-				std::complex<Derived> retval(m_phi.ei(args_tuple));
-				retval.mult_by(ei_theta.real(args_tuple).Pnm(n,m,ei_theta.imag(args_tuple),args_tuple),args_tuple);
 				return retval;
 			}
 	};

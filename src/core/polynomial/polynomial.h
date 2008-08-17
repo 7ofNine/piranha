@@ -88,13 +88,11 @@ namespace piranha
 			using named_ancestor::partial;
 			using base_ancestor::partial;
 			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
-			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
+			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
 			// This is needed because called from the norm override in poly toolbox.
 			using base_ancestor::eval;
 			// Needed typedefs.
@@ -191,13 +189,11 @@ namespace std
 			using base_ancestor::partial;
 			using base_ancestor::eval;
 			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
 			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
+			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pnm;
-			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::Pn;
+			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;

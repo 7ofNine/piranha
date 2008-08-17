@@ -38,10 +38,15 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
 	typedef std::complex<double> (*Ynm_plain)(const int &, const int &, const double &, const double &);
+	typedef std::complex<double> (*Ynm_ei_plain)(const int &, const int &, const std::complex<double> &, const double &);
 	typedef std::complex<double> (*Ynm_rot)(const int &, const int &, const double &, const double &,
 		const double &, const double &, const double &);
+	typedef std::complex<double> (*Ynm_ei_rot)(const int &, const int &, const std::complex<double> &, const double &,
+		const double &, const double &, const double &);
 	def("Ynm", Ynm_plain(&Ynm), "Spherical harmonic (not normalised).");
+	def("Ynm", Ynm_ei_plain(&Ynm), "Spherical harmonic (not normalised).");
 	def("Ynm", Ynm_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
+	def("Ynm", Ynm_ei_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("factorial", &piranha::factorial, "Factorial.");
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
 	typedef double (*double_gamma)(double);

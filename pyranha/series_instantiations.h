@@ -257,12 +257,15 @@ namespace pyranha
 	{
 		typedef T (T::*named_1)(const piranha::max_fast_int &) const;
 		inst.def("besselJ", named_1(&T::besselJ), "Bessel function of the first kind of integer order.");
-		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind of integer order.");
+		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind "
+			"of integer order.");
+		inst.def("besselJ_div", named_1(&T::besselJ_div), "Bessel function of the first kind of integer order "
+			"divided by its argument.");
 		typedef T (T::*named_2)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
 		typedef T (T::*named_3)(const piranha::max_fast_int &, const piranha::max_fast_int &, const T &) const;
 		inst.def("Pnm", named_2(&T::Pnm), "");
 		inst.def("Pnm", named_3(&T::Pnm), "");
-		inst.def("Pn", named_1(&T::Pn), "");
+		inst.def("Pn", &T::Pn, "");
 	}
 
 #define __celmec_inst(arg) \
