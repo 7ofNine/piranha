@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/math/special_functions/bessel.hpp>
+#include <boost/math/special_functions/binomial.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/math/special_functions/legendre.hpp>
 #include <boost/static_assert.hpp>
@@ -189,6 +190,15 @@ namespace piranha
 			retval += tmp;
 		}
 		return retval * factor;
+	}
+
+	/// Binomial coefficient.
+	inline double choose(const max_fast_int &n, const max_fast_int &k) {
+		if (n < 0 || k < 0 || k > n) {
+			throw unsuitable("Invalid input values for binomial coefficient.");
+		}
+		return boost::math::binomial_coefficient<double>(
+			static_cast<unsigned>(n),static_cast<unsigned>(k));
 	}
 }
 
