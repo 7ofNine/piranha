@@ -216,26 +216,19 @@ namespace piranha
 									break;
 								}
 								const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-								switch (trunc.accept(new_key)) {
-								case true: {
+								if (trunc.accept(new_key)) {
 									c_iterator it = cms.find(new_key);
-									switch (it == cms.end()) {
-									case true: {
+									if (it == cms.end()) {
 										// Create new temporary term from old cf and new key.
 										tmp_cterm.m_cf = ancestor::m_terms1[i].m_cf;
 										tmp_cterm.m_ckey = new_key;
 										// Multiply the old term by the second term.
 										tmp_cterm.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
 										cms.insert(tmp_cterm);
-										break;
-									}
-									case false:
+									} else {
 										it->m_cf.addmul(ancestor::m_terms1[i].m_cf, ancestor::m_terms2[j].m_cf,
 														ancestor::m_args_tuple);
 									}
-								}
-								case false:
-									;
 								}
 							}
 						}
