@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
+#include <algorithm>
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <gmp.h>
 #include <gmpxx.h>
@@ -59,6 +60,13 @@ namespace piranha
 					m_coding_vector(m_size + 1) {
 				m_ckeys1.reserve(derived_const_cast->m_size1);
 				m_ckeys2.reserve(derived_const_cast->m_size2);
+			}
+			~coded_series_multiplier() {
+				__PDEBUG(
+				if (m_cr_is_viable) {
+					std::cout << "On destruction the density was: " <<
+						(static_cast<double>(derived_const_cast->m_retval.length())/(m_h_max - m_h_min + 1)) << '\n';
+				})
 			}
 			void find_input_min_max() {
 				size_t i1 = 0, i2 = 0;
@@ -137,29 +145,21 @@ namespace piranha
 			}
 			bool is_sparse() const {
 				// Magic value established empirically. Possibly subject to tuning in the future.
-				static const double limit = 1E-2;
+				static const double limit = 1E-3;
 				// We don't want this to be called if we haven't established the suitability
 				// of the coded representation first.
 				p_assert(m_cr_is_viable);
-				// Let's compute the sizes of the coded representations for the input series. We
-				// know the limits from previous analysis.
-				max_fast_int h1min = 0, h1max = 0, h2min = 0, h2max = 0, ck1 = 1, ck2 = 1;
-				for (size_t i = 0; i < m_size; ++i) {
-					h1min += ck1 * m_min_max1[i].first;
-					h1max += ck1 * m_min_max1[i].second;
-					ck1 *= (m_min_max1[i].second - m_min_max1[i].first + 1);
-					h2min += ck2 * m_min_max2[i].first;
-					h2max += ck2 * m_min_max2[i].second;
-					ck2 *= (m_min_max2[i].second - m_min_max2[i].first + 1);
-				}
-				p_assert(h1max - h1min + 1 != 0 && h2max - h2min + 1 != 0);
 				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
-				// Finally, let's compute the densities.
-				const double density1 = static_cast<double>(derived_const_cast->m_size1) / (h1max - h1min + 1),
-					density2 = static_cast<double>(derived_const_cast->m_size2) / (h2max - h2min + 1),
-					mean_density = (density1 + density2) / 2;
-				__PDEBUG(if (mean_density < limit) std::cout << "Low density: " << mean_density << '\n');
-				return (mean_density < limit);
+				// Let's compute the densities.
+				const max_fast_int h_tot = m_h_max - m_h_min + 1;
+				const double density1 = static_cast<double>(derived_const_cast->m_size1) / h_tot,
+					density2 = static_cast<double>(derived_const_cast->m_size2) / h_tot,
+					max_density = std::max<double>(density1,density2);
+				__PDEBUG(std::cout << "Density 1: " << density1 << '\n');
+				__PDEBUG(std::cout << "Density 2: " << density2 << '\n');
+				__PDEBUG(std::cout << "Max density: " << max_density << '\n');
+				__PDEBUG(if (max_density < limit) std::cout << "Low density: " << max_density << '\n');
+				return (max_density < limit);
 			}
 		protected:
 			// Is coded representation viable?
