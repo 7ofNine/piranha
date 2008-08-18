@@ -53,12 +53,19 @@ namespace pyranha
 	}
 }
 
-static inline double load_factor_get() {
+static inline double load_factor_get()
+{
 	return settings::load_factor();
 }
 
-static inline void load_factor_set(const double &x) {
+static inline void load_factor_set(const double &x)
+{
 	settings::load_factor(x);
+}
+
+static inline psym psyms_get(const psyms &, const std::string &name)
+{
+	return psyms::get(name);
 }
 
 // Instantiate the pyranha Core module.
@@ -153,7 +160,7 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("__iter__", iterator<psyms, return_internal_reference<> >())
 	.def("__len__", &psyms::length).staticmethod("__len__")
 	.def("__repr__", &py_print_to_string<psyms>)
-	.def("get", &psyms::get).staticmethod("get");
+	.def("__getitem__", &psyms_get);
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &>())

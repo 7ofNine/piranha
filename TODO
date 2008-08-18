@@ -54,3 +54,4 @@
 - simplify atomic counters by using a plain counter in the non-threaded case.
 - handle properly the single coefficient case in series multiplication. It can give quite good performance improvement,
   especially for poisson series
+- re-introduce size-hint during hash code, using density infromation

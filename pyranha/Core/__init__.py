@@ -73,7 +73,7 @@ class tc(object):
 		try:
 			import numpy
 		except ImportError:
-			raise ImportError("Numpy is not available")
+			raise ImportError("Numpy is not available.")
 		# If args is a tuple, transform it into a list, if args is a single value
 		# build a list from it.
 		if isinstance(args,type(())):
