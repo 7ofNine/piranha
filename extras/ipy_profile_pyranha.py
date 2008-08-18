@@ -59,19 +59,4 @@ def main():
 		if not error_msg: print import_error_msg
 		error_msg = True
 
-def do_load(self, arg):
-	"""Load series from filename 'arg'. Type of series will be inferred - if possible - from the file's extension."""
-	s = arg.split(".")
-	var_name = s.pop(0)
-	if not s:
-		raise ValueError("Could not establish an extension for the filename \"" + arg + "\".")
-		return
-	ext_name = s.pop()
-	try:
-		self.api.ex("%s = %s(\"%s\")" % (var_name,ext_name,arg))
-	except NameError:
-		raise NameError("Series type \"" + ext_name + "\" is unknown.")
-
-ip.expose_magic('load', do_load)
-
 main()

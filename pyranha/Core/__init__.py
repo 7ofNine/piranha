@@ -23,7 +23,38 @@ def copy(arg):
 	import copy as __copy
 	return __copy.copy(arg)
 
+def __create_psyms(self, names):
+	try:
+		import IPython.ipapi
+	except ImportError:
+		raise ImportError("IPython not available.")
+	ip = IPython.ipapi.get()
+	for i in names.split():
+		ip.ex("%s = psym(\"%s\")" % (i,i))
+
+setattr(_Core.__psyms,"__call__",__create_psyms)
 psyms = _Core.__psyms()
+
+def load(*args):
+	"""Load series from list of filenames. Type of series will be inferred - if possible - from the files' extensions."""
+	try:
+		import IPython.ipapi
+	except ImportError:
+		raise ImportError("IPython not available.")
+	ip = IPython.ipapi.get()
+	args_list = list(args)
+	for i in args_list:
+		s = i.split(".")
+		var_name = s.pop(0)
+		if not s:
+			raise ValueError("Could not establish an extension for the filename \"" + arg + "\".")
+			return
+		ext_name = s.pop()
+		try:
+			ip.ex("%s = %s(\"%s\")" % (var_name,ext_name,i))
+		except NameError:
+			raise NameError("Series type \"" + ext_name + "\" is unknown.")
+
 degree_truncator = _Core.__degree_truncator()
 expo_truncator = _Core.__expo_truncator()
 norm_truncator = _Core.__norm_truncator()
