@@ -33,20 +33,12 @@ namespace piranha
 			atomic_counter_gcc_41():ancestor::base_atomic_counter() {}
 			template <class IntType2>
 			atomic_counter_gcc_41 &operator+=(const IntType2 &n) {
-#ifdef _PIRANHA_MT
 				__sync_add_and_fetch(&(this->m_value),static_cast<IntType>(n));
-#else
-				this->m_value += n;
-#endif
 				return *this;
 			}
 			template <class IntType2>
 			atomic_counter_gcc_41 &operator-=(const IntType2 &n) {
-#ifdef _PIRANHA_MT
 				__sync_sub_and_fetch(&(this->m_value),static_cast<IntType>(n));
-#else
-				this->m_value -= n;
-#endif
 				return *this;
 			}
 	};

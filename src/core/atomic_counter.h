@@ -23,22 +23,45 @@
 
 #include "config.h"
 
+#ifdef _PIRANHA_MT
 #ifdef __GNUC__
 #if GCC_VERSION >= 401000
 
 #include "atomic_counter_gcc_41.h"
-#define atomic_counter atomic_counter_gcc_41
+
+namespace piranha
+{
+	typedef atomic_counter_gcc_41<size_t> unsigned_atomic_counter;
+}
 
 #else // GCC_VERSION
 
 #include "atomic_counter_generic.h"
-#define atomic_counter atomic_counter_generic
+
+namespace piranha
+{
+	typedef atomic_counter_generic<size_t> unsigned_atomic_counter;
+}
 
 #endif // GCC_VERSION
 #else // __GNUC__
 
 #include "atomic_counter_generic.h"
-#define atomic_counter atomic_counter_generic
+
+namespace piranha
+{
+	typedef atomic_counter_generic<size_t> unsigned_atomic_counter;
+}
 
 #endif // __GNUC__
+#else // _PIRANHA_MT
+
+namespace piranha
+{
+	// If multi-thread support was not enable use a plain size_t as counter.
+	typedef size_t unsigned_atomic_counter;
+}
+
+#endif // _PIRANHA_MT
+
 #endif

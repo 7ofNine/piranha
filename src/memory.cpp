@@ -23,5 +23,5 @@
 
 namespace piranha
 {
-	atomic_counter<size_t> base_counting_allocator::m_counter;
+	unsigned_atomic_counter base_counting_allocator::m_counter;
 }

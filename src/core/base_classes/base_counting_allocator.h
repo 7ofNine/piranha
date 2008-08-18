@@ -29,10 +29,10 @@ namespace piranha
 	{
 		public:
 			static size_t count() {
-				return m_counter.value();
+				return static_cast<size_t>(m_counter);
 			}
 		protected:
-			static atomic_counter<size_t> m_counter;
+			static unsigned_atomic_counter m_counter;
 	};
 }
 

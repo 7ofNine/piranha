@@ -28,7 +28,7 @@ namespace piranha
 	{
 		public:
 			base_atomic_counter():m_value(0) {}
-			IntType value() const {
+			operator IntType() const {
 				return m_value;
 			}
 		protected:
