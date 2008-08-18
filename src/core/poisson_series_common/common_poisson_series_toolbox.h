@@ -71,6 +71,7 @@ namespace piranha
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
+			// TODO: move this into private?
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>

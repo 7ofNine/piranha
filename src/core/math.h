@@ -103,6 +103,16 @@ namespace piranha
 		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
 	}
 
+	/// Binomial coefficient.
+	inline double choose(const max_fast_int &n, const max_fast_int &k)
+	{
+		if (n < 0 || k < 0 || k > n) {
+			throw unsuitable("Invalid input values for binomial coefficient.");
+		}
+		return boost::math::binomial_coefficient<double>(
+			static_cast<unsigned>(n),static_cast<unsigned>(k));
+	}
+
 	/// Calculate complex exponential of n*pi/2.
 	inline std::complex<max_fast_int> einpi2(const max_fast_int &n)
 	{
@@ -145,24 +155,23 @@ namespace piranha
 		return boost::math::legendre_p(n, arg);
 	}
 
-	/// Non-normalised spherical harmonic.
-	inline std::complex<double> Ynm(const int &n, const int &m, const double &theta, const double &phi)
+	inline std::complex<double> Ynm(const int &n, const int &m, const double &theta, const std::complex<double> &ei_phi,
+		const std::complex<double> &)
 	{
-		std::complex<double> retval(std::polar(1.,phi*m));
+		std::complex<double> retval(std::pow(ei_phi,m));
 		retval *= Pnm(n,m,std::cos(theta));
 		return retval;
 	}
 
-	inline std::complex<double> Ynm(const int &n, const int &m, const std::complex<double> &ei_theta, const double &phi)
+	/// Non-normalised spherical harmonic.
+	inline std::complex<double> Ynm(const int &n, const int &m, const double &theta, const double &phi)
 	{
-		std::complex<double> retval(std::polar(1.,phi*m));
-		retval *= Pnm(n,m,ei_theta.real());
-		return retval;
+		return Ynm(n,m,theta,std::polar(1.,phi),std::complex<double>());
 	}
 
 	/// Non-normalised rotated spherical harmonic.
-	inline std::complex<double> Ynm(const int &n_, const int &m_, const double &theta, const double &phi,
-		const double &alpha, const double &beta, const double &gamma)
+	inline std::complex<double> Ynm(const int &n_, const int &m_, const double &theta, const std::complex<double> &ei_phi,
+		const std::complex<double> &, const double &alpha, const double &beta, const double &gamma)
 	{
 		// Let's fix negative n and/or m.
 		int n(n_), m(std::abs(m_));
@@ -182,7 +191,7 @@ namespace piranha
 		factor *= einpi2(-m);
 		factor *= factorial(n+m);
 		for (int k = -n; k <=n; ++k) {
-			std::complex<double> tmp = std::polar(1.,phi*k) * std::polar(1.,-alpha*k);
+			std::complex<double> tmp = std::pow(ei_phi,k) * std::polar(1.,-alpha*k);
 			tmp *= einpi2(k);
 			tmp *= Pnm(n,k,std::cos(theta));
 			tmp *= factorial(n-k);
@@ -199,20 +208,10 @@ namespace piranha
 		return retval * factor;
 	}
 
-	inline std::complex<double> Ynm(const int &n_, const int &m_, const std::complex<double> &ei_theta, const double &phi,
+	inline std::complex<double> Ynm(const int &n, const int &m, const double &theta, const double &phi,
 		const double &alpha, const double &beta, const double &gamma)
 	{
-		return Ynm(n_,m_,ei_theta.real(),phi,alpha,beta,gamma);
-	}
-
-	/// Binomial coefficient.
-	inline double choose(const max_fast_int &n, const max_fast_int &k)
-	{
-		if (n < 0 || k < 0 || k > n) {
-			throw unsuitable("Invalid input values for binomial coefficient.");
-		}
-		return boost::math::binomial_coefficient<double>(
-			static_cast<unsigned>(n),static_cast<unsigned>(k));
+		return Ynm(n,m,theta,std::polar(1.,phi),std::complex<double>(),alpha,beta,gamma);
 	}
 }
 

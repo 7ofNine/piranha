@@ -38,19 +38,20 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
 	typedef std::complex<double> (*Ynm_plain)(const int &, const int &, const double &, const double &);
-	typedef std::complex<double> (*Ynm_ei_plain)(const int &, const int &, const std::complex<double> &, const double &);
+	typedef std::complex<double> (*Ynm_ei_plain)(const int &, const int &, const double &,
+		const std::complex<double> &, const std::complex<double> &);
 	typedef std::complex<double> (*Ynm_rot)(const int &, const int &, const double &, const double &,
 		const double &, const double &, const double &);
-	typedef std::complex<double> (*Ynm_ei_rot)(const int &, const int &, const std::complex<double> &, const double &,
-		const double &, const double &, const double &);
+	typedef std::complex<double> (*Ynm_ei_rot)(const int &, const int &, const double &,
+		const std::complex<double> &, const std::complex<double> &, const double &, const double &, const double &);
 	def("Ynm", Ynm_plain(&Ynm), "Spherical harmonic (not normalised).");
 	def("Ynm", Ynm_ei_plain(&Ynm), "Spherical harmonic (not normalised).");
 	def("Ynm", Ynm_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("Ynm", Ynm_ei_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("factorial", &piranha::factorial, "Factorial.");
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
+	def("choose", &choose, "Binomial coefficient.");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
-	def("cs_phase", &cs_phase, "Condon-Shortley phase (-1**m).");
-	def("choose", &choose, "Binomial coefficient.");
+	def("cs_phase", &cs_phase, "Condon-Shortley phase = -1**m.");
 }

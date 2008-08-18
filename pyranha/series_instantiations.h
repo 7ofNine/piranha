@@ -180,10 +180,17 @@ namespace pyranha
 		inst.def("sin", &T::sin);
 		typedef std::complex<T> (*Ynm_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
 			const T &, const T &);
+		typedef std::complex<T> (*Ynm_ei_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+			const T &, const std::complex<T> &, const std::complex<T> &);
 		typedef std::complex<T> (*Ynm_wigner)(const piranha::max_fast_int &, const piranha::max_fast_int &,
 			const T &, const T &, const T &, const T &, const T &);
+		typedef std::complex<T> (*Ynm_ei_wigner)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+			const T &, const std::complex<T> &, const std::complex<T> &, const T &, const T &, const T &);
 		inst.def("Ynm", Ynm_named(&T::Ynm));
-		inst.def("Ynm", Ynm_wigner(&T::Ynm)).staticmethod("Ynm");
+		inst.def("Ynm", Ynm_ei_named(&T::Ynm));
+		inst.def("Ynm", Ynm_wigner(&T::Ynm));
+		inst.def("Ynm", Ynm_ei_wigner(&T::Ynm));
+		inst.staticmethod("Ynm");
 	}
 
 	template <class T>

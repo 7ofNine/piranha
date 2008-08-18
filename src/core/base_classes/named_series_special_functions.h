@@ -122,14 +122,25 @@ namespace piranha
 			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
 				const Derived &theta, const Derived &phi) {
 				const std::complex<Derived> ei_theta(theta.ei());
-				Derived m_phi(phi);
-				m_phi *= m;
-				std::complex<Derived> retval(m_phi.ei());
+				std::complex<Derived> retval((phi * m).ei());
+				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
+				return retval;
+			}
+			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
+				const Derived &theta, const std::complex<Derived> &ei_phi, const std::complex<Derived> &emi_phi) {
+				const std::complex<Derived> ei_theta(theta.ei());
+				std::complex<Derived> retval;
+				if (m >= 0) {
+					retval = ei_phi.pow(m);
+				} else {
+					retval = emi_phi.pow(m);
+				}
 				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
 				return retval;
 			}
 			static std::complex<Derived> Ynm(const max_fast_int &n_, const max_fast_int &m_, const Derived &theta,
-				const Derived &phi, const Derived &alpha, const Derived &beta, const Derived &gamma) {
+				const std::complex<Derived> &ei_phi, const std::complex<Derived> &emi_phi,
+				const Derived &alpha, const Derived &beta, const Derived &gamma) {
 				// Let's fix negative n and/or m.
 				max_fast_int n(n_), m(std::abs(m_));
 				std::complex<Derived> retval(std::complex<max_fast_int>(static_cast<max_fast_int>(1),
@@ -154,7 +165,7 @@ namespace piranha
 				typedef int_power_cache<Derived> real_cache_type;
 				typedef int_power_cache<std::complex<Derived> > complex_cache_type;
 				complex_cache_type
-					cp(phi.ei(),(phi*static_cast<max_fast_int>(-1)).ei()),
+					cp(ei_phi,emi_phi),
 					ca(alpha.ei(),(alpha*static_cast<max_fast_int>(-1)).ei());
 				real_cache_type
 					ccb2(eib2.real()),
@@ -184,6 +195,10 @@ namespace piranha
 				}
 				retval *= final_factor;
 				return retval;
+			}
+			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m, const Derived &theta,
+				const Derived &phi, const Derived &alpha, const Derived &beta, const Derived &gamma) {
+				return Ynm(n,m,theta,phi.ei(),(phi * static_cast<max_fast_int>(-1)).ei(),alpha,beta,gamma);
 			}
 		private:
 			template <class T>
