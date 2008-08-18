@@ -57,7 +57,7 @@ namespace piranha
 					m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
 					m_min_max1(m_size), m_min_max2(m_size), m_res_min_max(m_size), m_fast_res_min_max(m_size),
 					// Coding vector is larger to accomodate extra element at the end (used during decodification).
-					m_coding_vector(m_size + 1) {
+					m_coding_vector(m_size + 1),m_density1(0.),m_density2(0.) {
 				m_ckeys1.reserve(derived_const_cast->m_size1);
 				m_ckeys2.reserve(derived_const_cast->m_size2);
 			}
@@ -115,6 +115,8 @@ namespace piranha
 					m_cr_is_viable = true;
 					m_h_min = hmin.get_si();
 					m_h_max = hmax.get_si();
+					m_h_tot = m_h_max - m_h_min + 1;
+					p_assert(m_h_tot >= 1);
 					// Downcast minimum and maximum result values to fast integers.
 					for (size_t i = 0; i < m_size; ++i) {
 						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
@@ -130,6 +132,9 @@ namespace piranha
 					std::cout << m_coding_vector[i] << '\t';
 					}
 					std::cout << "+\t" << m_coding_vector[m_size] << '\n';)
+					// Let's compute the densities.
+					m_density1 = static_cast<double>(derived_const_cast->m_size1) / m_h_tot;
+					m_density2 = static_cast<double>(derived_const_cast->m_size2) / m_h_tot;
 				}
 			}
 			/// Code keys.
@@ -149,14 +154,9 @@ namespace piranha
 				// We don't want this to be called if we haven't established the suitability
 				// of the coded representation first.
 				p_assert(m_cr_is_viable);
-				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
-				// Let's compute the densities.
-				const max_fast_int h_tot = m_h_max - m_h_min + 1;
-				const double density1 = static_cast<double>(derived_const_cast->m_size1) / h_tot,
-					density2 = static_cast<double>(derived_const_cast->m_size2) / h_tot,
-					max_density = std::max<double>(density1,density2);
-				__PDEBUG(std::cout << "Density 1: " << density1 << '\n');
-				__PDEBUG(std::cout << "Density 2: " << density2 << '\n');
+				const double max_density = std::max<double>(m_density1,m_density2);
+				__PDEBUG(std::cout << "Density 1: " << m_density1 << '\n');
+				__PDEBUG(std::cout << "Density 2: " << m_density2 << '\n');
 				__PDEBUG(std::cout << "Max density: " << max_density << '\n');
 				__PDEBUG(if (max_density < limit) std::cout << "Low density: " << max_density << '\n');
 				return (max_density < limit);
@@ -176,12 +176,16 @@ namespace piranha
 			std::vector<std::pair<max_fast_int, max_fast_int> >		m_fast_res_min_max;
 			// Coding vector.
 			std::vector<max_fast_int>								m_coding_vector;
-			// Mininum and maximum values of codes.
+			// Mininum and maximum values of codes, and total number of codes.
 			max_fast_int											m_h_min;
 			max_fast_int											m_h_max;
+			max_fast_int											m_h_tot;
 			// Coded keys.
 			std::vector<max_fast_int>								m_ckeys1;
 			std::vector<max_fast_int>								m_ckeys2;
+			// Densities of input series wrt the resulting series' codification.
+			double													m_density1;
+			double													m_density2;
 	};
 }
 

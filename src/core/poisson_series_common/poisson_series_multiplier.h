@@ -246,6 +246,7 @@ namespace piranha
 						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
+						// TODO: size hinting, in conjunction with the work above to separate sines form cosines, etc.
 						csht cms_cos, cms_sin;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {

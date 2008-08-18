@@ -23,9 +23,11 @@
 
 #include <algorithm> // For std::max.
 #include <boost/array.hpp>
+#include <exception> // For std::bad_alloc.
 #include <vector>
 
 #include "../config.h"
+#include "../exceptions.h" // For out_of_memory.
 #include "../math.h"
 #include "../memory.h"
 #include "../p_assert.h"
@@ -140,10 +142,25 @@ namespace piranha
 				m_sizes_index = 2;
 			}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
-				const uint8 sizes_index = find_upper_pow2_index(size / bsize);
+				uint8 sizes_index = find_upper_pow2_index(size / bsize);
 				p_assert(sizes_index >= 2);
-				m_container.resize(sizes[sizes_index]);
-				m_sizes_index = sizes_index;
+				while (true) {
+					try {
+						m_container.resize(sizes[sizes_index]);
+						m_sizes_index = sizes_index;
+						break;
+					} catch (const out_of_memory &) {
+						--sizes_index;
+						if (sizes_index < 2) {
+							throw out_of_memory("Not enough available memory to allocate a cuckoo hash table of size 4.");
+						}
+					} catch (const std::bad_alloc &) {
+						--sizes_index;
+						if (sizes_index < 2) {
+							throw out_of_memory("Not enough physical memory to allocate a cuckoo hash table of size 4.");
+						}
+					}
+				}
 			}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(

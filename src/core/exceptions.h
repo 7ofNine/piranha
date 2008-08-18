@@ -32,8 +32,8 @@ namespace piranha
 			const std::string &what() const {
 				return m_what;
 			}
-		private:
-			const std::string m_what;
+		protected:
+			std::string m_what;
 	};
 
 	struct bad_input: public base_exception {
@@ -61,7 +61,11 @@ namespace piranha
 	};
 
 	struct out_of_memory: public base_exception {
-		out_of_memory(): base_exception("Out of memory") {}
+		out_of_memory(const char *msg = 0): base_exception("Out of memory.") {
+			if (msg) {
+				m_what += std::string(" ") + msg;
+			}
+		}
 	};
 }
 

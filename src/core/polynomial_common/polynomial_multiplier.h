@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POLYNOMIAL_MULTIPLIER_H
 #define PIRANHA_POLYNOMIAL_MULTIPLIER_H
 
+#include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <exception>
 #include <gmp.h>
@@ -204,7 +205,9 @@ namespace piranha
 						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						csht cms;
+						// Let's find a sensible size hint.
+						const size_t size_hint = std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot;
+						csht cms(size_hint);
 						cterm tmp_cterm;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
