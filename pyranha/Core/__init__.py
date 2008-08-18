@@ -24,6 +24,7 @@ def copy(arg):
 	return __copy.copy(arg)
 
 def __create_psyms(self, names):
+	"""Create symbols from a string of space-separated names."""
 	try:
 		import IPython.ipapi
 	except ImportError:

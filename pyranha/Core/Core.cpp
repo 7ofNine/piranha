@@ -150,7 +150,7 @@ BOOST_PYTHON_MODULE(_Core)
 
 	// Psym manager.
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())
-	.def("__iter__", iterator<psyms, return_internal_reference<> >()).staticmethod("__iter__")
+	.def("__iter__", iterator<psyms, return_internal_reference<> >())
 	.def("__len__", &psyms::length).staticmethod("__len__")
 	.def("__repr__", &py_print_to_string<psyms>)
 	.def("get", &psyms::get).staticmethod("get");
@@ -166,7 +166,8 @@ BOOST_PYTHON_MODULE(_Core)
 		 const double & > ())
 	.def("__copy__", &psym::py_copy)
 	.def("__repr__", &psym::py_repr)
-	.def("eval", &psym::eval);
+	.def("eval", &psym::eval)
+	.add_property("name", &psym::name);
 
 	typedef void (*limit_name)(const std::string &, const max_fast_int &);
 	typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
