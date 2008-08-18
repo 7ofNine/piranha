@@ -81,13 +81,13 @@ BOOST_PYTHON_MODULE(_Core)
 	// Settings.
 	typedef bool (*bool_get)();
 	typedef void (*bool_set)(const bool &);
-	typedef max_fast_int (*max_fast_int_get)();
-	typedef void (*max_fast_int_set)(const max_fast_int &);
+	typedef size_t (*size_t_get)();
+	typedef void (*size_t_set)(const size_t &);
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
 	class_setm.add_static_property("debug", bool_get(&settings::debug), bool_set(&settings::debug));
 	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
-	class_setm.add_static_property("memory_limit", max_fast_int_get(&settings::memory_limit),
-		max_fast_int_set(&settings::memory_limit));
+	class_setm.add_static_property("memory_limit", size_t_get(&settings::memory_limit),
+		size_t_set(&settings::memory_limit));
 	class_setm.add_static_property("load_factor", &load_factor_get,&load_factor_set);
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");

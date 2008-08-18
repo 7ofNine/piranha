@@ -44,14 +44,12 @@
 - Place boost::operators in some shared toolbox?
 - "GUI support was not built." or PyQt4 is not available
 - Compile with -D_PIRANHA_DEBUG as default?
-- memory limit: with max fast int it can only be half-1 the size of max memory, which could be a bit limiting on 32 bit.
 - Remove psym interface from celmec functions.
 - Another interface for Ynm, this time with theta as a complex thingie representing the complex exponential of colatitude.
 - Drop all typename Derived::term_type
 - %pload and %pget for series loading and symbol getting
 - check that truncators do not sort if not necessary.
 - for hash coded structure, use directly the counting allocator internally.
-- simplify atomic counters by using a plain counter in the non-threaded case.
 - handle properly the single coefficient case in series multiplication. It can give quite good performance improvement,
   especially for poisson series
 - re-introduce size-hint during hash code, using density infromation

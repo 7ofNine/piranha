@@ -42,15 +42,11 @@ namespace piranha
 			static size_t used_memory() {
 				return base_counting_allocator::count();
 			}
-			static max_fast_int memory_limit() {
+			static size_t memory_limit() {
 				return m_memory_limit;
 			}
-			static void memory_limit(const max_fast_int &limit) {
-				if (limit < 0) {
-					m_memory_limit = -1;
-				} else {
-					m_memory_limit = limit;
-				}
+			static void memory_limit(const size_t &limit) {
+				m_memory_limit = limit;
 			}
 			/// Return maximum load factor for hashed containers.
 			static const double &load_factor() {
@@ -102,7 +98,7 @@ namespace piranha
 					startup_class();
 			};
 			/// Memory limit in bytes.
-			static max_fast_int						m_memory_limit;
+			static size_t							m_memory_limit;
 			/// Load factor for hashed containers.
 			static double							m_hash_max_load_factor;
 			/// Numerical zero.

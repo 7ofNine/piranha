@@ -51,7 +51,7 @@ namespace piranha
 	}
 
 	// Settings manager's static members.
-	max_fast_int settings::m_memory_limit = 1500000000; // ~ 1GByte
+	size_t settings::m_memory_limit = 1500000000u; // ~ 1GByte
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
 	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::const_min;
