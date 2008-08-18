@@ -63,10 +63,10 @@ namespace pyranha
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
 		// Pyranha-specific special methods.
-		inst.add_property("__arguments_description__", &T::py_arguments_description);
-		inst.add_property("__arguments__", &T::py_arguments);
+		inst.add_property("__arguments_description__", &py_series_arguments_description<T>);
+		inst.add_property("__arguments__", &py_series_arguments<T>);
 		inst.def("__set_arguments__", &T::set_arguments);
-		inst.def("__set_shared_arguments__", &T::py_shared_arguments_set);
+		inst.def("__set_shared_arguments__", &py_series_set_shared_arguments<T>);
 		typedef void (T::*trim_free)();
 		inst.def("__trim__", trim_free(&T::trim));
 		inst.def("__append__", &py_series_append<T,term_type>);

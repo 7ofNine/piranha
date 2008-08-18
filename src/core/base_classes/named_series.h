@@ -54,8 +54,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	class named_series
 	{
-			typedef ArgsDescr arguments_description;
 		public:
+			typedef ArgsDescr arguments_description;
 			/// Compile-time constant for the number of arguments sets.
 			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
 			p_static_check(n_arguments_sets > 0, "The number of arguments vector must be strictly positive.");
@@ -90,10 +90,6 @@ namespace piranha
 			Derived partial(const psym &, const max_fast_int &n = 1) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
-			// Used in pyranha.
-			std::string py_arguments_description() const;
-			args_tuple_type py_arguments() const;
-			void py_shared_arguments_set() const;
 		protected:
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.

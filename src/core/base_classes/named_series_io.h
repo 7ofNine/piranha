@@ -233,47 +233,6 @@ namespace piranha
 		}
 		m_arguments = args_tuple;
 	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type
-	named_series<__PIRANHA_NAMED_SERIES_TP>::py_arguments() const
-	{
-		return m_arguments;
-	}
-
-	template <class ArgsDescr>
-	class arguments_type_report_helper
-	{
-		public:
-			template <class ArgsTuple>
-			static void run(const ArgsTuple &args_tuple, std::string &report) {
-				report += ArgsDescr::head_type::name;
-				report += "\n";
-				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(), report);
-			}
-	};
-
-	template <>
-	class arguments_type_report_helper<boost::tuples::null_type>
-	{
-		public:
-			template <class ArgsTuple>
-			static void run(const ArgsTuple &, const std::string &) {}
-	};
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::string named_series<__PIRANHA_NAMED_SERIES_TP>::py_arguments_description() const
-	{
-		std::string retval;
-		arguments_type_report_helper<arguments_description>::run(m_arguments, retval);
-		return retval;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::py_shared_arguments_set() const
-	{
-		shared_args::set(m_arguments);
-	}
 }
 
 #endif

@@ -22,10 +22,12 @@
 #define PYRANHA_COMMONS_H
 
 #include <boost/python/class.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <sstream>
 #include <string>
 
 #include "../src/core/exceptions.h"
+#include "../src/core/shared_args.h"
 
 namespace pyranha
 {
@@ -107,6 +109,46 @@ namespace pyranha
 	inline void py_series_set_imag(std::complex<Series> &c, const Series &i)
 	{
 		c.imag(i);
+	}
+
+	template <class ArgsDescr>
+	class arguments_type_report_helper
+	{
+		public:
+			template <class ArgsTuple>
+			static void run(const ArgsTuple &args_tuple, std::string &report) {
+				report += ArgsDescr::head_type::name;
+				report += "\n";
+				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(), report);
+			}
+	};
+
+	template <>
+	class arguments_type_report_helper<boost::tuples::null_type>
+	{
+		public:
+			template <class ArgsTuple>
+			static void run(const ArgsTuple &, const std::string &) {}
+	};
+
+	template <class Series>
+	inline std::string py_series_arguments_description(const Series &s)
+	{
+		std::string retval;
+		arguments_type_report_helper<typename Series::arguments_description>::run(s.arguments(), retval);
+		return retval;
+	}
+
+	template <class Series>
+	inline typename Series::args_tuple_type py_series_arguments(const Series &s)
+	{
+		return s.arguments();
+	}
+
+	template <class Series>
+	inline void py_series_set_shared_arguments(const Series &s)
+	{
+		piranha::shared_args::set(s.arguments());
 	}
 }
 
