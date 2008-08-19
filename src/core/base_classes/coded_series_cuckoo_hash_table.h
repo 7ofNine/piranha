@@ -22,7 +22,6 @@
 #define PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
 
 #include <algorithm> // For std::max.
-#include <boost/array.hpp>
 #include <exception> // For std::bad_alloc.
 #include <vector>
 
@@ -67,16 +66,15 @@ namespace piranha
 			static const size_t bsize = bucket_type::size;
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
+			static const double mults[4];
+			static const size_t mults_size = 4;
 #ifdef _PIRANHA_64BIT
-			typedef boost::array<size_t,64> sizes_vector_type;
+			static const size_t sizes[64];
+			static const size_t sizes_size = 64;
 #else
-			typedef boost::array<size_t,32> sizes_vector_type;
+			static const size_t sizes[32];
+			static const size_t sizes_size = 32;
 #endif
-			typedef boost::array<double,4> mults_vector_type;
-			static const sizes_vector_type sizes;
-			static const mults_vector_type mults;
-			static const size_t mults_size = mults_vector_type::static_size;
-			static const size_t sizes_size = sizes_vector_type::static_size;
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
 		public:
 			typedef term_type_ term_type;
@@ -394,8 +392,7 @@ namespace piranha
 	};
 
 	template <class Cf, class Ckey, class Allocator>
-	const typename coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::sizes_vector_type
-		coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::sizes = { {
+	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::sizes[] = {
 		1,
 		2,
 		4,
@@ -463,7 +460,7 @@ namespace piranha
 		4611686018427387904,
 		9223372036854775808u
 #endif
-	} };
+	};
 
 #ifdef _PIRANHA_64BIT
 #define MAX (18446744073709551616.)
@@ -472,8 +469,7 @@ namespace piranha
 #endif
 
 	template <class Cf, class Ckey, class Allocator>
-	const typename coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults_vector_type
-		coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults = { {
+	const double coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
 		.7320508075688772 * MAX,
 		.2360679774997898 * MAX,
 // 		.6180339887498949 * MAX,
@@ -486,7 +482,7 @@ namespace piranha
 		.7958315233127191 * MAX,
 		.3851648071345037 * MAX,
 		.5677643628300215 * MAX*/
-	} };
+	};
 #undef MAX
 }
 
