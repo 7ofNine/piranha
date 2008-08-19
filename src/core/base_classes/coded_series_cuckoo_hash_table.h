@@ -66,7 +66,7 @@ namespace piranha
 			static const size_t bsize = bucket_type::size;
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
-			static const double mults[4];
+			static const size_t mults[4];
 			static const size_t mults_size = 4;
 #ifdef _PIRANHA_64BIT
 			static const size_t sizes[64];
@@ -181,7 +181,7 @@ namespace piranha
 			}
 			iterator find(const Ckey &ckey) const {
 				p_assert(sizes[m_sizes_index] == m_container.size());
-				const size_t pos1 = position1(ckey), pos2 = position2(ckey);
+				const size_t h = static_cast<size_t>(ckey), pos1 = position1(h), pos2 = position2(h);
 				// TODO: replace with bit twiddling to reduce branching?
 				for (size_t i = 0; i < bsize; ++i) {
 					if (m_container[pos1].f[i] && m_container[pos1].t[i].m_ckey == ckey) {
@@ -294,7 +294,8 @@ namespace piranha
 				return false;
 			}
 			bool attempt_insertion(const term_type &t, term_type &tmp_term) {
-				size_t pos = position1(t.m_ckey);
+				const size_t h = static_cast<size_t>(t.m_ckey);
+				size_t pos = position1(h);
 				for (size_t i = 0; i < bsize; ++i) {
 					// There's space in the bucket, rejoice!
 					if (!m_container[pos].f[i]) {
@@ -336,11 +337,11 @@ namespace piranha
 			bool swap_and_displace(term_type &tmp_term, size_t &orig_location) {
 				//__PDEBUG(std::cout << "Performing swap & displace." << '\n');
 				// First thing we need to know if the original location was given by hash1 or hash2.
-				const size_t pos1 = position1(tmp_term.m_ckey);
+				const size_t h = static_cast<size_t>(tmp_term.m_ckey), pos1 = position1(h), pos2 = position2(h);
 				size_t new_pos;
 				if (orig_location == pos1) {
 					// Original location was pos1, we want to move to pos2.
-					new_pos = position2(tmp_term.m_ckey);
+					new_pos = pos2;
 				} else {
 					// Original location was pos2, we want to move to pos1.
 					new_pos = pos1;
@@ -371,18 +372,15 @@ namespace piranha
 				p_assert(sizes[m_sizes_index] == m_container.size());
 				return true;
 			}
-			static size_t m_hash(const Ckey &ckey, const double &mult, const size_t &sizes_index) {
-				size_t x = static_cast<size_t>(mult);
-				x *= static_cast<size_t>(ckey);
-				x >>= ((sizeof(max_fast_int) << 3) - sizes_index);
-				p_assert(x < sizes[sizes_index]);
-				return x;
+			static size_t m_hash(const size_t &h, const size_t &mult, const size_t &sizes_index) {
+				p_assert(mult * h < sizes[sizes_index]);
+				return (mult * h) >> ((sizeof(max_fast_int) << 3) - sizes_index);
 			}
-			size_t position1(const Ckey &ckey) const {
-				return m_hash(ckey,mults[m_mults_index],m_sizes_index);
+			size_t position1(const size_t &h) const {
+				return m_hash(h,mults[m_mults_index],m_sizes_index);
 			}
-			size_t position2(const Ckey &ckey) const {
-				return m_hash(ckey,mults[m_mults_index + 1],m_sizes_index);
+			size_t position2(const size_t &h) const {
+				return m_hash(h,mults[m_mults_index + 1],m_sizes_index);
 			}
 		private:
 			uint8				m_sizes_index;
@@ -469,13 +467,13 @@ namespace piranha
 #endif
 
 	template <class Cf, class Ckey, class Allocator>
-	const double coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
-		.7320508075688772 * MAX,
-		.2360679774997898 * MAX,
+	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
+		static_cast<size_t>(.7320508075688772 * MAX),
+		static_cast<size_t>(.2360679774997898 * MAX),
 // 		.6180339887498949 * MAX,
 // 		.4658204617032757 * MAX,
-		.6457513110645907 * MAX,
-		.3166247903553998 * MAX/*,
+		static_cast<size_t>(.6457513110645907 * MAX),
+		static_cast<size_t>(.3166247903553998 * MAX)/*,
 		.6055512754639891 * MAX,
 		.1231056256176606 * MAX,
 		.3588989435406740 * MAX,
