@@ -337,15 +337,8 @@ namespace piranha
 			bool swap_and_displace(term_type &tmp_term, size_t &orig_location) {
 				//__PDEBUG(std::cout << "Performing swap & displace." << '\n');
 				// First thing we need to know if the original location was given by hash1 or hash2.
-				const size_t h = static_cast<size_t>(tmp_term.m_ckey), pos1 = position1(h), pos2 = position2(h);
-				size_t new_pos;
-				if (orig_location == pos1) {
-					// Original location was pos1, we want to move to pos2.
-					new_pos = pos2;
-				} else {
-					// Original location was pos2, we want to move to pos1.
-					new_pos = pos1;
-				}
+				const size_t h = static_cast<size_t>(tmp_term.m_ckey), pos1 = position1(h), pos2 = position2(h),
+					new_pos = (orig_location == pos1) ? pos2 : pos1;
 				for (size_t i = 0; i < bsize; ++i) {
 					if (!m_container[new_pos].f[i]) {
 						// Place found, rejoice!
