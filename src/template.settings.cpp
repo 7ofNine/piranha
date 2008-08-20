@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include <algorithm>
-#include <boost/integer_traits.hpp>
 #include <cstring>
 #include <gmp.h>
 
@@ -54,10 +53,6 @@ namespace piranha
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
-	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::const_min;
-	const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::const_max;
-	const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::const_min;
-	const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::const_max;
 	// TODO: this one must be initialised to a better value in windows.
 	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 	std::string settings::m_path = settings::m_default_path;
