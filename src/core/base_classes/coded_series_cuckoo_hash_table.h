@@ -308,14 +308,7 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				size_t dindex;
-				if (bsize == 1) {
-					// If we have single-term bucket, result will always be 0.
-					dindex = 0;
-				} else {
-					// We know bucket size is power of 2 when it is not 1, use bit twiddling for mod.
-					dindex = (pos & (bsize - 1));
-				}
+				const size_t dindex = (bsize == 1) ? 0 : (pos & (bsize - 1));
 				tmp_term = m_container[pos].t[dindex];
 				m_container[pos].t[dindex] = t;
 				size_t counter = 0;
@@ -351,14 +344,7 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				size_t dindex;
-				if (bsize == 1) {
-					// If we have single-term bucket, result will always be 0.
-					dindex = 0;
-				} else {
-					// We know bucket size is power of 2 when it is not 1, use bit twiddling for mod.
-					dindex = (new_pos & (bsize - 1));
-				}
+				const size_t dindex = (bsize == 1) ? 0 : (new_pos & (bsize - 1));
 				// Displace the selected term.
 				m_container[new_pos].t[dindex].swap(tmp_term);
 				orig_location = new_pos;
