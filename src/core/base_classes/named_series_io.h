@@ -25,7 +25,6 @@
 #include <boost/tuple/tuple.hpp>
 #include <complex>
 #include <iostream>
-#include <sstream>
 #include <string>
 
 #include "../shared_args.h"
