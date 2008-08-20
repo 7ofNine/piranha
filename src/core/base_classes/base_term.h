@@ -143,22 +143,6 @@ namespace piranha
 //         out_stream << "$" << m_key.phase(tv) << "$" << "&" << "$" << m_key.freq(tv) << "$" << "&";
 //         m_key.print_latex(out_stream,args_tuple);
 			}
-			/// Print to stream.
-			template <class ArgsTuple>
-			void print(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				switch (settings::format()) {
-				case settings::plain:
-					print_plain(out_stream, args_tuple);
-					break;
-				case settings::latex:
-					print_latex(out_stream, args_tuple);
-				}
-			}
-			/// Print to screen.
-			template <class ArgsTuple>
-			void dump(const ArgsTuple &args_tuple) const {
-				print(std::cout, args_tuple);
-			}
 			/// Equality test.
 			/**
 			 * Equality is defined by the equality of the keys.
@@ -183,7 +167,7 @@ namespace piranha
 			/// Calculate partial derivative.
 			/**
 			 * The two resulting terms are placed into res1 and res2. It is assumed that the partial derivative
-			 * of a key results in an integer and another key, stored in a std::pair.
+			 * of a key results in an integer-key pair.
 			 */
 			template <class PosTuple, class ArgsTuple>
 			void partial(Derived &res1, Derived &res2,
@@ -206,15 +190,11 @@ namespace piranha
 			};
 			// Data members.
 			/// Coefficient.
-			/**
-			 * Marked as mutable for speedy operations under certain time-critical operations in hashed containers.
-			 * PLEASE NOTE: do _not_ abuse mutability.
-			 */
-			mutable cf_type   m_cf;
+			mutable cf_type			m_cf;
 			/// Key.
-			key_type          m_key;
+			key_type				m_key;
 			/// Rebound allocator for term type.
-			static allocator_type allocator;
+			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.
 			static const char separator = Separator;
 	};
