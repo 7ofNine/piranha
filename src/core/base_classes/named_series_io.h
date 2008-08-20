@@ -32,6 +32,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -74,17 +75,16 @@ namespace piranha
 
 	/// Print series to stream.
 	/**
-	 * Print first "limit" terms. If limit is negative, print all terms. The output format is read
-	 * from the piranha::stream_manager class.
+	 * Print first "limit" terms. If limit is negative, print all terms.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &out_stream, int limit) const
 	{
-		switch (stream_manager::format()) {
-		case stream_manager::plain:
+		switch (settings::format()) {
+		case settings::plain:
 			print_plain(out_stream, limit);
 			break;
-		case stream_manager::latex:
+		case settings::latex:
 			print_latex(out_stream, limit);
 		}
 	}

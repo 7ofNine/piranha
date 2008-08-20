@@ -39,6 +39,14 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
+			enum out_format {
+				plain,
+				latex
+			};
+			enum fp_representation {
+				scientific,
+				decimal
+			};
 			static size_t used_memory() {
 				return base_counting_allocator::count();
 			}
@@ -87,6 +95,22 @@ namespace piranha
 				m_hash_max_load_factor = value;
 			}
 			static void set_path(const std::string &);
+			// Getters and setters for I/O.
+			static size_t digits();
+			static void digits(const max_fast_int &n) {
+				if (n < static_cast<max_fast_int>(m_min_digits) || n > static_cast<max_fast_int>(m_max_digits)) {
+					throw unsuitable("Invalid number of digits.");
+				} else {
+					m_digits = static_cast<size_t>(n);
+				}
+			}
+			static size_t min_digits();
+			static size_t max_digits();
+			static void setup_stream(std::ostream &);
+			static out_format format();
+			static void format(out_format);
+			static fp_representation fp_repr();
+			static void fp_repr(fp_representation);
 		private:
 			/// Startup class.
 			/**
@@ -118,6 +142,16 @@ namespace piranha
 			static const std::string				m_version;
 			static bool								enable_progress_display;
 			static startup_class					startup;
+			/// Minimum number of digits for output streams.
+			static const size_t						m_min_digits = 0;
+			/// Maximum number of digits for output streams.
+			static const size_t						m_max_digits = 50;
+			/// Number of digits to display in output stream.
+			static size_t							m_digits;
+			/// Format for output.
+			static out_format						m_format;
+			/// Floating point representation.
+			static fp_representation				m_fp_repr;
 #ifdef _PIRANHA_MT
 			static const tbb::task_scheduler_init	tbb_init;
 #endif

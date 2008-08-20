@@ -24,10 +24,10 @@
 #include <gmp.h>
 
 #include "core/config.h"
+#include "core/exceptions.h"
 #include "core/integer_typedefs.h"
 #include "core/memory.h"
 #include "core/settings.h"
-#include "core/stream_manager.h"
 #include "core/piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
@@ -50,20 +50,24 @@ namespace piranha
 		a.deallocate(static_cast<char *>(ptr),size);
 	}
 
-	// Settings manager's static members.
-	size_t settings::m_memory_limit = 1500000000u; // ~ 1GByte
+	// Settings' static members.
+	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
 	const max_fast_uint settings::min_u = boost::integer_traits<max_fast_uint>::const_min;
 	const max_fast_uint settings::max_u = boost::integer_traits<max_fast_uint>::const_max;
 	const max_fast_int settings::min_i = boost::integer_traits<max_fast_int>::const_min;
 	const max_fast_int settings::max_i = boost::integer_traits<max_fast_int>::const_max;
+	// TODO: this one must be initialised to a better value in windows.
 	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 	std::string settings::m_path = settings::m_default_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	bool settings::enable_progress_display = true;
 	settings::startup_class settings::startup;
+	size_t settings::m_digits = 15;
+	settings::out_format settings::m_format = settings::plain;
+	settings::fp_representation settings::m_fp_repr = settings::scientific;
 #ifdef _PIRANHA_MT
 	const tbb::task_scheduler_init settings::tbb_init;
 #endif
@@ -76,7 +80,7 @@ namespace piranha
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
 		std::cout << "Default parameters initialized:\n";
-		std::cout << "Print precision = " << stream_manager::digits() << '\n';
+		std::cout << "Print precision = " << settings::digits() << '\n';
 		std::cout << "Numerical zero = " << numerical_zero() << '\n';
 		std::cout << "Fast unsigned int range = " << "[0," << max_u << ']' << '\n';
 		std::cout << "Fast signed int range = " << '[' << min_i << ',' << max_i << ']' << '\n';
@@ -84,7 +88,7 @@ namespace piranha
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.
-		stream_manager::setup_print(std::cout);
+		settings::setup_stream(std::cout);
 		// Setup GMP's memory allocation functions.
 		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
 	}
@@ -99,5 +103,53 @@ namespace piranha
 	const std::string &settings::version()
 	{
 		return m_version;
+	}
+
+	size_t settings::digits()
+	{
+		return m_digits;
+	}
+
+	size_t settings::min_digits()
+	{
+		return m_min_digits;
+	}
+
+	size_t settings::max_digits()
+	{
+		return m_max_digits;
+	}
+
+	void settings::fp_repr(fp_representation fpr)
+	{
+		m_fp_repr = fpr;
+	}
+
+	settings::fp_representation settings::fp_repr()
+	{
+		return m_fp_repr;
+	}
+
+	void settings::setup_stream(std::ostream &out_stream)
+	{
+		out_stream << std::setprecision(m_digits);
+		switch (m_fp_repr) {
+		case scientific:
+			out_stream << std::scientific;
+			break;
+		case decimal:
+			out_stream << std::fixed;
+			break;
+		}
+	}
+
+	settings::out_format settings::format()
+	{
+		return m_format;
+	}
+
+	void settings::format(out_format fmt)
+	{
+		m_format = fmt;
 	}
 }

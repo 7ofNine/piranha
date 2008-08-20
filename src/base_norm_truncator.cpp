@@ -23,7 +23,7 @@
 #include <string>
 
 #include "core/base_classes/norm_truncator.h"
-#include "core/stream_manager.h"
+#include "core/settings.h"
 #include "core/p_assert.h"
 
 namespace piranha
@@ -36,7 +36,7 @@ namespace piranha
 	{
 		p_assert(m_truncation_power >= 0);
 		if (m_truncation_power > 0) {
-			stream_manager::setup_print(stream);
+			settings::setup_stream(stream);
 			stream << "Truncation level: " << m_truncation_level;
 		} else {
 			stream << "No truncation level set.";

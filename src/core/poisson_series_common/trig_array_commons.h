@@ -78,7 +78,6 @@ namespace piranha
 			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
 				const size_t w = v.size();
 				p_assert(w <= derived_const_cast->size())
-				stream_manager::setup_print(out_stream);
 				switch (derived_const_cast->m_flavour) {
 				case true:
 					out_stream << "c&";

@@ -30,7 +30,6 @@
 #include <vector>
 
 #include "settings.h"
-#include "stream_manager.h"
 
 namespace piranha
 {

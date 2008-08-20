@@ -84,13 +84,11 @@ namespace piranha
 			// I/O.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
-				stream_manager::setup_print(out_stream);
 				out_stream << m_value;
 			}
 			template <class ArgsTuple>
 			void print_latex(std::ostream &out_stream, const ArgsTuple &) const {
 // TODO: rework this.
-//         stream_manager::setup_print(out_stream);
 //         out_stream << "$" << m_value << "$";
 			}
 			// Manipulation

@@ -31,7 +31,7 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../stream_manager.h"
+#include "../settings.h"
 
 #define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
 #define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Allocator,Derived
@@ -130,8 +130,6 @@ namespace piranha
 			/// Print in plain format.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				// Setup formatting.
-				stream_manager::setup_print(out_stream);
 				m_cf.print_plain(out_stream, args_tuple);
 				out_stream << separator;
 				m_key.print_plain(out_stream, args_tuple);
@@ -139,8 +137,6 @@ namespace piranha
 			/// Print in latex format.
 			template <class ArgsTuple>
 			void print_latex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				// Setup formatting
-				stream_manager::setup_print(out_stream);
 // TODO: redo this to work in a more general way.
 //         m_cf.print_latex(out_stream,args_tuple);
 //         out_stream << "&";
@@ -148,16 +144,13 @@ namespace piranha
 //         m_key.print_latex(out_stream,args_tuple);
 			}
 			/// Print to stream.
-			/**
-			 * Print format is set in piranha::stream_manager.
-			 */
 			template <class ArgsTuple>
 			void print(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				switch (stream_manager::format()) {
-				case stream_manager::plain:
+				switch (settings::format()) {
+				case settings::plain:
 					print_plain(out_stream, args_tuple);
 					break;
-				case stream_manager::latex:
+				case settings::latex:
 					print_latex(out_stream, args_tuple);
 				}
 			}

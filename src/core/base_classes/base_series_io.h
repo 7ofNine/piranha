@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include "../stream_manager.h"
+#include "../settings.h"
 
 namespace piranha
 {
@@ -44,7 +44,7 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
 			const ArgsTuple &args_tuple, int limit) const
 	{
-		stream_manager::setup_print(stream);
+		settings::setup_stream(stream);
 		size_t j = 0, lim;
 		if (limit < 0) {
 			lim = length();

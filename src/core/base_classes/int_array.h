@@ -321,7 +321,6 @@ namespace piranha
 			}
 			/// Print to stream
 			void print_elements(std::ostream &out_stream) const {
-				stream_manager::setup_print(out_stream);
 				for (size_t i = 0; i < m_size; ++i) {
 					// We cast to max_fast_int, which is the largest integer type admitted..
 					out_stream << (max_fast_int)(m_ptr[i]);

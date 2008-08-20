@@ -37,7 +37,7 @@
 #include "config.h"
 #include "exceptions.h"
 #include "p_assert.h"
-#include "stream_manager.h"
+#include "settings.h"
 #include "utils.h"
 
 namespace piranha
@@ -125,7 +125,7 @@ namespace piranha
 					}
 					/// Print to stream.
 					void print(std::ostream &out_stream = std::cout) const {
-						stream_manager::setup_print(out_stream);
+						settings::setup_stream(std::cout);
 						out_stream << "name=" << m_name << '\n';
 						out_stream << "time_eval=";
 						for (size_t j = 0; j < m_time_eval.size(); ++j) {
@@ -151,17 +151,6 @@ namespace piranha
 					}
 					const std::vector<double> &time_eval() const {
 						return m_time_eval;
-					}
-					/// Print to string. Used in Pyranha.
-					std::string py_repr() const {
-						std::ostringstream stream;
-						print(stream);
-						std::string retval(stream.str());
-						return retval;
-					}
-					/// Copy function used in Pyranha.
-					psym py_copy() const {
-						return psym(*this);
 					}
 				private:
 					// Helper for ctor from boost::array.
@@ -206,7 +195,6 @@ namespace piranha
 			}
 			/// Print list of symbols.
 			static void print(std::ostream &stream = std::cout) {
-				stream_manager::setup_print(stream);
 				const psym_p it_f = set.end();
 				for (psym_p it = set.begin(); it != it_f; ++it) {
 					it->print(stream);
@@ -215,14 +203,7 @@ namespace piranha
 			static psym get(const std::string &name) {
 				return *get_pointer(name);
 			}
-			/// Print list of symbols to string. Used in Pyranha.
-			static std::string py_repr() {
-				std::ostringstream stream;
-				print(stream);
-				std::string retval(stream.str());
-				return retval;
-			}
-			// Needed in Pyranha to mimic standard container.
+			// Needed to mimic standard container.
 			static size_t length() {
 				return set.size();
 			}

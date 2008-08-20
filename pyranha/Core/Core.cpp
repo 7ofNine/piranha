@@ -34,7 +34,6 @@
 #include "../../src/core/config.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
-#include "../../src/core/stream_manager.h"
 #include "../args_tuple.h"
 #include "../cf_key_bindings.h"
 #include "../commons.h"
@@ -53,16 +52,13 @@ namespace pyranha
 	}
 }
 
+// We need this wrapper because we return a reference, and this messes up the exporting of property.
 static inline double load_factor_get()
 {
 	return settings::load_factor();
 }
 
-static inline void load_factor_set(const double &x)
-{
-	settings::load_factor(x);
-}
-
+// Wrapper needed to emulate non-static property.
 static inline psym psyms_get(const psyms &, const std::string &name)
 {
 	return psyms::get(name);
@@ -79,16 +75,37 @@ BOOST_PYTHON_MODULE(_Core)
 	vector_indexing<double>("double");
 
 	// Settings.
+	enum_<settings::out_format>("out_format")
+	.value("plain", settings::plain)
+	.value("latex", settings::latex)
+	.export_values();
+
+	enum_<settings::fp_representation>("fp_representation")
+	.value("scientific", settings::scientific)
+	.value("decimal", settings::decimal)
+	.export_values();
+
 	typedef bool (*bool_get)();
 	typedef void (*bool_set)(const bool &);
 	typedef size_t (*size_t_get)();
 	typedef void (*size_t_set)(const size_t &);
+	typedef double (*double_get)();
+	typedef void (*double_set)(const double &);
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
 	class_setm.add_static_property("debug", bool_get(&settings::debug), bool_set(&settings::debug));
 	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
 	class_setm.add_static_property("memory_limit", size_t_get(&settings::memory_limit),
 		size_t_set(&settings::memory_limit));
-	class_setm.add_static_property("load_factor", &load_factor_get,&load_factor_set);
+	class_setm.add_static_property("load_factor", &load_factor_get, double_set(&settings::load_factor));
+	typedef void (*digits_set)(const max_fast_int &);
+	class_setm.add_static_property("digits", size_t_get(&settings::digits), digits_set(&settings::digits));
+	typedef settings::out_format (*format_get)();
+	typedef void (*format_set)(settings::out_format);
+	class_setm.add_static_property("format", format_get(&settings::format), format_set(&settings::format));
+	typedef settings::fp_representation (*fp_repr_get)();
+	typedef void (*fp_repr_set)(settings::fp_representation);
+	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
+
 //   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
 //     "Get value of the debug flag").staticmethod("debug");
 //   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
@@ -125,36 +142,6 @@ BOOST_PYTHON_MODULE(_Core)
 //   class_setm.staticmethod("mp_default_prec");
 //   class_setm.staticmethod("set_mp_default_prec");
 
-	// Stream manager.
-	enum_<stream_manager::out_format>("out_format")
-	.value("plain", stream_manager::plain)
-	.value("latex", stream_manager::latex)
-	.export_values();
-
-	enum_<stream_manager::fp_representation>("fp_representation")
-	.value("scientific", stream_manager::scientific)
-	.value("decimal", stream_manager::decimal)
-	.export_values();
-
-	class_<stream_manager> class_sm("stream_manager", "Set up stream output.", no_init);
-	class_sm.def("digits", &stream_manager::digits, "Get number of digits used in output.");
-	class_sm.def("min_digits", &stream_manager::min_digits, "Get minimum number of digits used in output.");
-	class_sm.def("max_digits", &stream_manager::max_digits, "Get maximum number of digits used in output.");
-	class_sm.def("set_digits", &stream_manager::set_digits, "Set number of digits used in output.");
-	class_sm.def("format", &stream_manager::format, "Get stream output format.");
-	class_sm.def("set_format", &stream_manager::set_format, "Set stream output format.");
-	class_sm.def("set_fp_rep", &stream_manager::set_fp_rep,
-				 "Set floating-point representation.");
-	class_sm.def("fp_rep", &stream_manager::fp_rep, "Get floating-point representation.");
-	class_sm.staticmethod("digits");
-	class_sm.staticmethod("min_digits");
-	class_sm.staticmethod("max_digits");
-	class_sm.staticmethod("set_digits");
-	class_sm.staticmethod("format");
-	class_sm.staticmethod("set_format");
-	class_sm.staticmethod("fp_rep");
-	class_sm.staticmethod("set_fp_rep");
-
 	// Psym manager.
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())
 	.def("__iter__", iterator<psyms, return_internal_reference<> >())
@@ -171,8 +158,8 @@ BOOST_PYTHON_MODULE(_Core)
 	.def(init<const std::string &, const double &, const double &, const double &, const double &>())
 	.def(init < const std::string &, const double &, const double &, const double &, const double &,
 		 const double & > ())
-	.def("__copy__", &psym::py_copy)
-	.def("__repr__", &psym::py_repr)
+	.def("__copy__", &py_copy<psym>)
+	.def("__repr__", &py_print_to_string<psym>)
 	.def("eval", &psym::eval)
 	.add_property("name", &psym::name);
 
