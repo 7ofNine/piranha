@@ -90,7 +90,7 @@ namespace piranha
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If n is not the first multiplier and it is positive we are going to print the sign too.
-						if (i != 0 and n > 0) {
+						if (i != 0 && n > 0) {
 							out_stream << '+';
 						}
 						// Take care of printing the multiplier.
