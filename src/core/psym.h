@@ -165,10 +165,10 @@ namespace piranha
 					}
 				private:
 					// Data members.
-					const std::string             m_name;
+					const std::string				m_name;
 					// Mutable because we want to be able to freely change it in the psym manager.
-					mutable std::vector<double>   m_time_eval;
-					static const std::string      separator;
+					mutable std::vector<double>		m_time_eval;
+					static const std::string		separator;
 			};
 		private:
 			typedef boost::multi_index_container
