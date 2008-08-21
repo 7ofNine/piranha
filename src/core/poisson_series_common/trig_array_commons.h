@@ -85,9 +85,9 @@ namespace piranha
 				case false:
 					out_stream << "sin(";
 				}
+				bool printed_something = false;
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
 					const max_fast_int n = derived_const_cast->m_ptr[i];
-					bool printed_something = false;
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If we already printed something and n is positive we are going to print the sign too.
