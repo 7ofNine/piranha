@@ -322,10 +322,10 @@ namespace piranha
 			/// Print to stream
 			void print_elements(std::ostream &out_stream) const {
 				for (size_t i = 0; i < m_size; ++i) {
-					// We cast to max_fast_int, which is the largest integer type admitted..
-					out_stream << (max_fast_int)(m_ptr[i]);
+					// We cast to max_fast_int, which is the largest integer type admitted.
+					out_stream << static_cast<max_fast_int>(m_ptr[i]);
 					// Print the separator iff this is not the last element.
-					if (i != (size_t)(m_size - 1)) {
+					if (i != static_cast<size_t>(m_size - 1)) {
 						out_stream << separator;
 					}
 				}
