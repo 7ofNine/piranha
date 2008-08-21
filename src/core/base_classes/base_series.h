@@ -89,7 +89,11 @@ namespace piranha
 			bool is_single_cf() const;
 			size_t atoms() const;
 			bool operator==(const Derived &) const;
+			bool operator==(const max_fast_int &) const;
+			bool operator==(const double &) const;
 			bool operator!=(const Derived &) const;
+			bool operator!=(const max_fast_int &) const;
+			bool operator!=(const double &) const;
 			template <class ArgsTuple>
 			Derived &add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
@@ -127,7 +131,11 @@ namespace piranha
 			void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>
 			void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
+			template <class ArgsTuple>
+			void print_terms_pretty(std::ostream &, const ArgsTuple &, int limit) const;
 			void swap_terms(Derived &);
+			template <class Number>
+			bool generic_numerical_comparison(const Number &) const;
 			template <class ArgsTuple, class Layout>
 			void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
 			template <bool, class Derived2, class ArgsTuple>

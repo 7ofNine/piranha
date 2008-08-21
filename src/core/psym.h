@@ -47,7 +47,8 @@ namespace piranha
 		public:
 			/// Literal symbol class.
 			/**
-			  * This class is used represent symbolic arguments. It features a string representing the symbol's name and a numerical vector
+			  * This class is used represent symbolic arguments. It features a string representing the symbol's name and a
+			  * numerical vector
 			  * which is used to evaluate the symbol in time in a polynomial fashion. For instance, if the numerical vector
 			  * has a size of three and its elements are named \f$ \alpha \f$, \f$ \beta \f$ and \f$ \gamma \f$,
 			  * it means that the symbol is evaluated as
@@ -55,7 +56,6 @@ namespace piranha
 			  * \alpha + \beta t + \gamma t^2,
 			  * \f]
 			  * where \f$ t \f$ is time.
-			  * @see piranha::base_pseries::m_arguments tuple of arguments of a Poisson series.
 			  */
 			class __PIRANHA_VISIBLE psym
 			{
@@ -125,7 +125,7 @@ namespace piranha
 					}
 					/// Print to stream.
 					void print(std::ostream &out_stream = std::cout) const {
-						settings::setup_stream(std::cout);
+						settings::setup_stream(out_stream);
 						out_stream << "name=" << m_name << '\n';
 						out_stream << "time_eval=";
 						for (size_t j = 0; j < m_time_eval.size(); ++j) {

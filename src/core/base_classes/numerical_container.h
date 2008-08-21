@@ -87,6 +87,10 @@ namespace piranha
 				out_stream << m_value;
 			}
 			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				print_plain(out_stream,args_tuple);
+			}
+			template <class ArgsTuple>
 			void print_latex(std::ostream &out_stream, const ArgsTuple &) const {
 // TODO: rework this.
 //         out_stream << "$" << m_value << "$";
@@ -140,8 +144,11 @@ namespace piranha
 			bool operator==(const Derived &other) const {
 				return (m_value == other.m_value);
 			}
-			bool operator!=(const Derived &other) const {
-				return !(*this == other);
+			bool operator==(const max_fast_int &n) const {
+				return (m_value == n);
+			}
+			bool operator==(const double &x) const {
+				return (m_value == x);
 			}
 			// Maths.
 			template <class ArgsTuple>

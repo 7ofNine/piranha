@@ -25,6 +25,7 @@
 
 #include "base_series.h"
 #include "../exceptions.h"
+#include "../integer_typedefs.h"
 #include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -73,6 +74,18 @@ namespace piranha
 					derived_cast->insert(tmp, args_tuple);
 				}
 				return *derived_cast;
+			}
+			bool operator==(const std::complex<max_fast_int> &cn) const {
+				return derived_const_cast->generic_numerical_comparison(cn);
+			}
+			bool operator==(const std::complex<double> &cx) const {
+				return derived_const_cast->generic_numerical_comparison(cx);
+			}
+			bool operator!=(const std::complex<max_fast_int> &cn) const {
+				return !(*this == cn);
+			}
+			bool operator!=(const std::complex<double> &cx) const {
+				return !(*this == cx);
 			}
 			template <class ArgsTuple>
 			Derived &add(const RealDerived &r, const ArgsTuple &args_tuple) {

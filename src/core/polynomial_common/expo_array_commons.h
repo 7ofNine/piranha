@@ -56,6 +56,27 @@ namespace piranha
 				(void)args_tuple;
 				derived_const_cast->print_elements(out_stream);
 			}
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
+				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
+					const max_fast_int n = derived_const_cast->m_ptr[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// Take care of printing the name of the exponent.
+						out_stream << args_tuple.template get<Derived::position>()[i]->name();
+						// Print the pow operator only if exponent is not unitary.
+						if (n != 1) {
+							out_stream << "**" << n;
+						}
+						// Print the multiplication operator by the next exponent only if this is not
+						// the last one.
+						if (i + 1 != derived_const_cast->m_size) {
+							out_stream << '*';
+						}
+					}
+				}
+			}
 			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
 				// TODO: implement.
 			}

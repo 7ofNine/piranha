@@ -79,7 +79,11 @@ namespace pyranha
 		// NOTICE: the order seems important here, if we place *=int before *=double we
 		// will get just *=double in Python. Go figure...
 		// Equality.
+		inst.def(boost::python::self == piranha::max_fast_int());
+		inst.def(boost::python::self == double());
 		inst.def(boost::python::self == boost::python::self);
+		inst.def(boost::python::self != piranha::max_fast_int());
+		inst.def(boost::python::self != double());
 		inst.def(boost::python::self != boost::python::self);
 		// Addition and subtraction.
 		inst.def(boost::python::self += piranha::max_fast_int());
@@ -132,6 +136,10 @@ namespace pyranha
 		instc.def(boost::python::init<const T &>());
 		instc.def(boost::python::init<const T &, const T &>());
 		inst.def("complex", &T::complex, "Return complex counterpart.");
+		instc.def(boost::python::self == std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self == std::complex<double>());
+		instc.def(boost::python::self != std::complex<piranha::max_fast_int>());
+		instc.def(boost::python::self != std::complex<double>());
 		// Addition and subtraction.
 		instc.def(boost::python::self += std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self += std::complex<double>());

@@ -134,6 +134,22 @@ namespace piranha
 				out_stream << separator;
 				m_key.print_plain(out_stream, args_tuple);
 			}
+			/// Print in pretty format.
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				if (m_key.is_unity()) {
+					m_cf.print_pretty(out_stream,args_tuple);
+				} else if (m_cf == static_cast<max_fast_int>(1)) {
+					m_key.print_pretty(out_stream,args_tuple);
+				} else if (m_cf == static_cast<max_fast_int>(-1)) {
+					out_stream << '-';
+					m_key.print_pretty(out_stream,args_tuple);
+				} else {
+					m_cf.print_pretty(out_stream, args_tuple);
+					out_stream << '*';
+					m_key.print_pretty(out_stream, args_tuple);
+				}
+			}
 			/// Print in latex format.
 			template <class ArgsTuple>
 			void print_latex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {

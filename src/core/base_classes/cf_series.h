@@ -62,6 +62,8 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
+			void print_pretty(std::ostream &, const ArgsTuple &) const;
+			template <class ArgsTuple>
 			bool is_insertable(const ArgsTuple &) const;
 			template <class ArgsTuple>
 			bool needs_padding(const ArgsTuple &) const;

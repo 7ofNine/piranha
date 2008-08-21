@@ -42,6 +42,7 @@ namespace piranha
 		public:
 			enum out_format {
 				plain,
+				pretty,
 				latex
 			};
 			enum fp_representation {

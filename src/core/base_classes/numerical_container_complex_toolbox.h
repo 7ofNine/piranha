@@ -55,6 +55,14 @@ namespace piranha
 				derived_cast->m_value.real() = r.value();
 				derived_cast->m_value.imag() = i.value();
 			}
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &) const {
+				out_stream << '(' << derived_const_cast->m_value.real();
+				if (derived_const_cast->m_value.imag() >= 0) {
+					out_stream << '+';
+				}
+				out_stream << derived_const_cast->m_value.imag() << "j)";
+			}
 			// Getters and setters.
 			template <class ArgsTuple>
 			value_type real(const ArgsTuple &) const {
@@ -100,6 +108,19 @@ namespace piranha
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
 				return complex_division_helper(c);
 			}
+			bool operator==(const max_fast_int &n) const {
+				return generic_real_comparison(n);
+			}
+			bool operator==(const double &x) const {
+				return generic_real_comparison(x);
+			}
+			bool operator==(const std::complex<max_fast_int> &cn) const {
+				return generic_complex_comparison(cn);
+			}
+			bool operator==(const std::complex<double> &cx) const {
+				return generic_complex_comparison(cx);
+			}
+			// TODO: remove this.
 			// Free interface: this is an interface free from the need to fetch an
 			// external args_tuple to work.
 			value_type real() const {
@@ -126,6 +147,16 @@ namespace piranha
 				}
 				return *derived_cast;
 			}
+		private:
+			template <class Number>
+			bool generic_real_comparison(const Number &x) const {
+				return (derived_const_cast->m_value.real() == x && derived_const_cast->m_value.imag() == 0);
+			}
+			template <class Number>
+			bool generic_complex_comparison(const std::complex<Number> &c) const {
+				return (derived_const_cast->m_value.real() == c.real() &&
+					derived_const_cast->m_value.imag() == c.imag());
+			}
 	};
 
 #define COMPLEX_NUMERICAL_CONTAINER_CTORS \
@@ -139,7 +170,9 @@ namespace piranha
 	explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {} \
 	template <class ArgsTuple> \
 	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): \
-			complex_toolbox::numerical_container_complex_toolbox(r, i) {}
+			complex_toolbox::numerical_container_complex_toolbox(r, i) {} \
+	using complex_toolbox::operator==; \
+	using complex_toolbox::print_pretty;
 }
 
 #undef derived_const_cast

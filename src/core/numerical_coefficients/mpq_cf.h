@@ -176,6 +176,8 @@ namespace std
 			using complex_toolbox::divide_by;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
+			using complex_toolbox::operator==;
+			using complex_toolbox::print_pretty;
 			typedef piranha::mpq_cf value_type;
 			/// Empty constructor.
 			explicit complex(): ancestor::numerical_container() {

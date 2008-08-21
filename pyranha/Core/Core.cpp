@@ -77,6 +77,7 @@ BOOST_PYTHON_MODULE(_Core)
 	// Settings.
 	enum_<settings::out_format>("out_format")
 	.value("plain", settings::plain)
+	.value("pretty", settings::pretty)
 	.value("latex", settings::latex)
 	.export_values();
 

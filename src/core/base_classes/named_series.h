@@ -111,6 +111,7 @@ namespace piranha
 			Derived &divide_number_helper(const Number &);
 		private:
 			void print_plain(std::ostream &, int) const;
+			void print_pretty(std::ostream &, int) const;
 			void print_latex(std::ostream &, int) const;
 			void read_from_file(std::ifstream &, const std::string &);
 			void read_sections(std::ifstream &);

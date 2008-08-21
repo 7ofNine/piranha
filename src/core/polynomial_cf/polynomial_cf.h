@@ -124,6 +124,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
 			using common_ancestor::norm;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;

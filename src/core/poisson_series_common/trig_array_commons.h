@@ -75,6 +75,37 @@ namespace piranha
 					out_stream << "s";
 				}
 			}
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->m_size);
+				switch (derived_const_cast->m_flavour) {
+				case true:
+					out_stream << "cos(";
+					break;
+				case false:
+					out_stream << "sin(";
+				}
+				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
+					const max_fast_int n = derived_const_cast->m_ptr[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// If n is not the first multiplier and it is positive we are going to print the sign too.
+						if (i != 0 and n > 0) {
+							out_stream << '+';
+						}
+						// Take care of printing the multiplier.
+						if (n == 1) {
+							;
+						} else if (n == -1) {
+							out_stream << '-';
+						} else {
+							out_stream << n << '*';
+						}
+						out_stream << args_tuple.template get<Derived::position>()[i]->name();
+					}
+				}
+				out_stream << ')';
+			}
 			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
 				const size_t w = v.size();
 				p_assert(w <= derived_const_cast->size())

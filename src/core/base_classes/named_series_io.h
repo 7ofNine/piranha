@@ -67,6 +67,12 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_pretty(std::ostream &stream, int) const
+	{
+		derived_const_cast->print_terms_pretty(stream, m_arguments, 0);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_latex(std::ostream &, int) const
 	{
 		// TODO: implement.
@@ -82,6 +88,9 @@ namespace piranha
 		switch (settings::format()) {
 		case settings::plain:
 			print_plain(out_stream, limit);
+			break;
+		case settings::pretty:
+			print_pretty(out_stream, limit);
 			break;
 		case settings::latex:
 			print_latex(out_stream, limit);

@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_IO_H
 #define PIRANHA_BASE_SERIES_IO_H
 
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include "../settings.h"
@@ -61,6 +63,32 @@ namespace piranha
 				stream << separator;
 			}
 			++j;
+		}
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream,
+			const ArgsTuple &args_tuple, int) const
+	{
+		settings::setup_stream(stream);
+		if (empty()) {
+			stream << '0';
+		} else {
+			const const_iterator it_f = end(), it_i = begin();
+			for (const_iterator it = it_i; it != it_f; ++it) {
+				std::ostringstream tmp_stream;
+				settings::setup_stream(tmp_stream);
+				it->print_pretty(tmp_stream,args_tuple);
+				std::string tmp(tmp_stream.str());
+				// If this is not the first term, we need to add the "+" sign if appropriate.
+				if (it != it_i && !tmp.empty() && tmp[0] != '-') {
+					tmp.insert(tmp.begin(),'+');
+				}
+				if (!tmp.empty()) {
+					stream << tmp;
+				}
+			}
 		}
 	}
 

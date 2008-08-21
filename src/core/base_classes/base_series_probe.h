@@ -21,6 +21,10 @@
 #ifndef PIRANHA_BASE_SERIES_PROBE_H
 #define PIRANHA_BASE_SERIES_PROBE_H
 
+#include <cmath> // For std::abs.
+
+#include "../integer_typedefs.h"
+
 namespace piranha
 {
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -92,18 +96,55 @@ namespace piranha
 		const const_iterator it_f = end(), it_f_other = other.end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
 			const_iterator it_other(other.find_term(*it));
-			if (it_other == it_f_other || it_other->m_cf != it->m_cf) {
+			if (it_other == it_f_other || !(it_other->m_cf == it->m_cf)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	/// Test for equality.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Number>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
+	{
+		// Use abs() to cope with complex numbers.
+		if (std::abs(x) == 0) {
+			return empty();
+		}
+		if (!is_single_cf()) {
+			return false;
+		}
+		return (begin()->m_cf == x);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const max_fast_int &n) const
+	{
+		return generic_numerical_comparison(n);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const double &x) const
+	{
+		return generic_numerical_comparison(x);
+	}
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const Derived &other) const
 	{
 		return !(*this == other);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const max_fast_int &n) const
+	{
+		return !(*this == n);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const double &x) const
+	{
+		return !(*this == x);
 	}
 }
 
