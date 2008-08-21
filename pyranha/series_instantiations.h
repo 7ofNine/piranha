@@ -59,7 +59,7 @@ namespace pyranha
 		typedef double (T::*norm_named)() const;
 		inst.def("__abs__", norm_named(&T::norm));
 		inst.def("__copy__", &py_copy<T>);
-		inst.def("__iter__", boost::python::range(&py_series_begin<T>, &py_series_end<T>));
+		inst.def("__iter__", boost::python::iterator<T>());
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
 		// Pyranha-specific special methods.
@@ -336,7 +336,7 @@ namespace pyranha
 		typedef typename T::term_type::cf_type cf_type;
 		boost::python::class_<cf_type> poly_cf_inst(cf_bindings<cf_type>((name + "_cf").c_str(), ""));
 		power_series_instantiation(poly_cf_inst);
-		poly_cf_inst.def("__iter__", boost::python::range(&py_series_begin<cf_type>, &py_series_end<cf_type>));
+		poly_cf_inst.def("__iter__", boost::python::iterator<cf_type>());
 		poly_cf_inst.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
 		py_series_term<typename cf_type::term_type>(name + "_cf",name);
 	}

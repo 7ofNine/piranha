@@ -60,18 +60,6 @@ namespace pyranha
 		return stream.str();
 	}
 
-	template <class Series>
-	inline typename Series::const_iterator py_series_begin(const Series &s)
-	{
-		return s.begin();
-	}
-
-	template <class Series>
-	inline typename Series::const_iterator py_series_end(const Series &s)
-	{
-		return s.end();
-	}
-
 	template <class Series, class Term>
 	inline void py_series_append(Series &s, const Term &t) {
 		s.insert(t,piranha::shared_args::get());
