@@ -29,6 +29,8 @@ MACRO(PIRANHA_PYTHON_SETUP)
 		STRING(REGEX MATCH libpython[0-9]\\.?[0-9] PYTHON_LIBRARY_VERSION_DOT ${PYTHON_LIBRARY})
 		STRING(REGEX REPLACE libpython "" PYTHON_LIBRARY_VERSION_DOT ${PYTHON_LIBRARY_VERSION_DOT})
 		STRING(REGEX REPLACE \\. "" PYTHON_LIBRARY_VERSION ${PYTHON_LIBRARY_VERSION_DOT})
+		# In certain systems the Python lib is in /usr/lib(64), in others under /usr/lib/python2.5/config/.
+		# We try here to catch both cases.
 		STRING(REGEX REPLACE "(python${PYTHON_LIBRARY_VERSION_DOT}/config/)?libpython.*"
 			"python${PYTHON_LIBRARY_VERSION_DOT}/site-packages/" PYTHON_MODULES_PATH ${PYTHON_LIBRARY})
 	ELSE(UNIX)
