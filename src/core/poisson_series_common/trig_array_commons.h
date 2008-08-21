@@ -87,10 +87,11 @@ namespace piranha
 				}
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
 					const max_fast_int n = derived_const_cast->m_ptr[i];
+					bool printed_something = false;
 					// Don't print anything if n is zero.
 					if (n != 0) {
-						// If n is not the first multiplier and it is positive we are going to print the sign too.
-						if (i != 0 && n > 0) {
+						// If we already printed something and n is positive we are going to print the sign too.
+						if (printed_something && n > 0) {
 							out_stream << '+';
 						}
 						// Take care of printing the multiplier.
@@ -102,6 +103,7 @@ namespace piranha
 							out_stream << n << '*';
 						}
 						out_stream << args_tuple.template get<Derived::position>()[i]->name();
+						printed_something = true;
 					}
 				}
 				out_stream << ')';
