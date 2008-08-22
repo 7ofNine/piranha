@@ -53,3 +53,5 @@
 - handle properly the single coefficient case in series multiplication. It can give quite good performance improvement,
   especially for poisson series
 - re-introduce size-hint during hash code, using density infromation
+- direct calculation of special functions and celmec expansions
+- use union in int_array to avoid all those runtime casts?
