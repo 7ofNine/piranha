@@ -203,13 +203,13 @@ namespace piranha
 				if ((static_cast<double>(m_length) + 1) >=
 					settings::load_factor() * (sizes[m_sizes_index] * bsize)) {
 					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
-					increase_size();
+					grow();
 				}
 				term_type tmp_term;
 				if (!attempt_insertion(t,tmp_term)) {
 					if (!rehash()) {
 						// If rehash was not successful, resize the table.
-						increase_size();
+						grow();
 					}
 					// We still have to insert the displaced term that was left out from the failed attempt.
 					// This is stored in the temporary term. We have a recursion going on here, it should
@@ -235,7 +235,7 @@ namespace piranha
 				}
 				return static_cast<uint8>(2);
 			}
-			void increase_size() {
+			void grow() {
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.m_container.resize(sizes[m_sizes_index + 1]);
 				new_ht.m_sizes_index = m_sizes_index + 1;
