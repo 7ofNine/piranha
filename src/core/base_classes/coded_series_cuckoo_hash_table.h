@@ -352,13 +352,14 @@ namespace piranha
 				return true;
 			}
 			static size_t m_hash(const size_t &h, const size_t &mult, const size_t &sizes_index) {
-				p_assert(mult * h < sizes[sizes_index]);
 				return (mult * h) >> ((sizeof(max_fast_int) << 3) - sizes_index);
 			}
 			size_t position1(const size_t &h) const {
+				p_assert(m_hash(h,mults[m_mults_index],m_sizes_index) < sizes[m_sizes_index]);
 				return m_hash(h,mults[m_mults_index],m_sizes_index);
 			}
 			size_t position2(const size_t &h) const {
+				p_assert(m_hash(h,mults[m_mults_index + 1],m_sizes_index) < sizes[m_sizes_index]);
 				return m_hash(h,mults[m_mults_index + 1],m_sizes_index);
 			}
 		private:
