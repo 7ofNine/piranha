@@ -68,7 +68,7 @@ def EE(e,M):
 	Calculate the elliptic expansion of E in terms of e and M.
 	"""
 	try:
-		return __pyranha.ds.E(e,M)
+		return __pyranha.ds.EE(e,M)
 	except AttributeError:
 		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an E method."
 

@@ -300,13 +300,13 @@ namespace pyranha
 		const char *sin_f_docstring = "Elliptic expansion of sin(f).";
 		const char *cos_E_docstring = "Elliptic expansion of cos(E).";
 		const char *sin_E_docstring = "Elliptic expansion of sin(E).";
-		const char *E_docstring = "Elliptic expansion of E (solution of Kepler's equation).";
+		const char *EE_docstring = "Elliptic expansion of E (solution of Kepler's equation).";
 		__celmec_inst(r_a);
 		__celmec_inst(cos_f);
 		__celmec_inst(sin_f);
 		__celmec_inst(cos_E);
 		__celmec_inst(sin_E);
-		__celmec_inst(E);
+		__celmec_inst(EE);
 	}
 
 #undef __celmec_inst

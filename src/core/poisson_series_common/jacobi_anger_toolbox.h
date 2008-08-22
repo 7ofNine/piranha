@@ -107,7 +107,6 @@ namespace piranha
 				}
 				return retval;
 			}
-
 	};
 }
 

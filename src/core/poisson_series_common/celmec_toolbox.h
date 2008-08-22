@@ -179,7 +179,7 @@ namespace piranha
 			static Derived cos_f(const std::string &e_name, const std::string &M_name) {
 				return cos_f(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
-			static Derived E(const Derived &e_series, const Derived &M_series) {
+			static Derived EE(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
 				Derived tmp;
@@ -193,11 +193,11 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
-			static Derived E(const psym &e, const psym &M) {
-				return E(Derived(e), Derived(M));
+			static Derived EE(const psym &e, const psym &M) {
+				return EE(Derived(e), Derived(M));
 			}
-			static Derived E(const std::string &e_name, const std::string &M_name) {
-				return E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
+			static Derived EE(const std::string &e_name, const std::string &M_name) {
+				return EE(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 	};
 
@@ -233,9 +233,9 @@ namespace piranha
 	}
 
 	template <class Series>
-	Series E(const Series &e_series, const Series &M_series)
+	Series EE(const Series &e_series, const Series &M_series)
 	{
-		return Series::E(e_series, M_series);
+		return Series::EE(e_series, M_series);
 	}
 }
 

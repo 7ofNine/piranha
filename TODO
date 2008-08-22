@@ -35,7 +35,6 @@
 - speed test for hash coded implementation.
 - addmul for coefficient series. This probably requires moving the ignorability check higher in the insert function stack.
 - series splicing?
-- uniform the naming of E/EE.
 - limit for multiplication time?
 - Move "using base_*" into private space of top-level series?
 - Generalise conversion to/from series with arguments sets left/right shifting
