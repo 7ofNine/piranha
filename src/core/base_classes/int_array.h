@@ -21,6 +21,7 @@
 #ifndef PIRANHA_INT_ARRAY_H
 #define PIRANHA_INT_ARRAY_H
 
+#include <algorithm> // For std::min/max.
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
@@ -319,7 +320,7 @@ namespace piranha
 				p_assert(n < m_size);
 				return m_ptr[n];
 			}
-			/// Print to stream
+			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const {
 				for (size_t i = 0; i < m_size; ++i) {
 					// We cast to max_fast_int, which is the largest integer type admitted.
@@ -361,7 +362,8 @@ namespace piranha
 				value_type *new_ptr = allocator.allocate(new_size);
 				const size_type new_pack_size = (new_size >> pack_shift);
 				// Copy to the minimum of the new sizes.
-				packed_copy(new_ptr, m_ptr, std::min<size_type>(m_size, new_size), std::min<size_type>(m_pack_size, new_pack_size));
+				packed_copy(new_ptr, m_ptr, std::min<size_type>(m_size, new_size),
+					std::min<size_type>(m_pack_size, new_pack_size));
 				// Zero the remaining elements, if any.
 				for (size_type i = m_size;i < new_size;++i) {
 					new_ptr[i] = 0;

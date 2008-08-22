@@ -39,7 +39,8 @@ namespace piranha
 				typedef typename term_type::key_type key_type;
 				Series retval;
 				retval.insert(
-					term_type(numerical_cf_series_builder < ArgsIndex - 1 >::template run<cf_type>(ncf, args_tuple), key_type()),
+					term_type(numerical_cf_series_builder < ArgsIndex - 1 >::template run<cf_type>(ncf, args_tuple),
+						key_type()),
 					args_tuple
 				);
 				return retval;
@@ -100,7 +101,8 @@ namespace piranha
 		public:
 			template <class Series, class Key, class ArgsTuple>
 			static Series run(const Key &key, const ArgsTuple &args_tuple) {
-				p_static_check(boost::tuples::length<ArgsTuple>::value > 0, "Zero-size arguments tuple in builder from key.");
+				p_static_check(boost::tuples::length<ArgsTuple>::value > 0, "Zero-size arguments tuple in builder "
+					"from key.");
 				p_static_check(boost::tuples::length<ArgsTuple>::value >= Key::position,
 							   "Key position in arguments tuple is greater than arguments' tuple size.");
 				return series_from_key_helper < boost::tuples::length<ArgsTuple>::value - 1, Key::position >::

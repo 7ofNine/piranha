@@ -70,7 +70,7 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			// TODO: move this into private?
+			// This remains public because it is used in substitution.
 			template <class ArgsTuple>
 			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
