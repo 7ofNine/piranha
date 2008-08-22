@@ -309,7 +309,8 @@ namespace piranha
 						;
 						// x^-n -> no go.
 					} else {
-						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer exponentiation.");
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer "
+							"exponentiation.");
 					}
 					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 				} else if (n == 0) {
@@ -323,7 +324,8 @@ namespace piranha
 						;
 						// x^n --> no go (it should be handled by natural power routine for series).
 					} else {
-						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer exponentiation.");
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer"
+							"exponentiation.");
 					}
 				}
 				return retval;
@@ -342,7 +344,8 @@ namespace piranha
 						;
 						// x^-y -> no go.
 					} else {
-						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real exponentiation.");
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real "
+							"exponentiation.");
 					}
 					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 				} else if (y == 0) {
@@ -356,7 +359,8 @@ namespace piranha
 						;
 						// x^y --> no go.
 					} else {
-						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real exponentiation.");
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real "
+							"exponentiation.");
 					}
 				}
 				return retval;
@@ -368,7 +372,7 @@ namespace piranha
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return pow(1. / (double)(n), args_tuple);
+				return pow(1. / static_cast<double>(n), args_tuple);
 			}
 			// NOTE: here we are assuming that s is a top-level series.
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
@@ -383,12 +387,13 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(ret_term_type(ret_cf_type((max_fast_int)1, args_tuple), *derived_const_cast), args_tuple);
+					retval.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple),
+						*derived_const_cast), args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
 					SubSeries tmp(s);
-					tmp *= static_cast<max_fast_int>((*derived_const_cast)[pos]);
+					tmp.mult_by(static_cast<max_fast_int>((*derived_const_cast)[pos]),args_tuple);
 					const std::complex<SubSeries> tmp_ei(tmp.ei(args_tuple));
 					const SubSeries tmp_cos(tmp_ei.real(args_tuple)), tmp_sin(tmp_ei.imag(args_tuple));
 					Derived tmp_ta(*derived_const_cast);
@@ -397,10 +402,12 @@ namespace piranha
 					tmp_ta[pos] = 0;
 					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
-					orig_cos.insert(sub_term_type(sub_cf_type((max_fast_int)1, args_tuple), tmp_ta), args_tuple);
+					orig_cos.insert(sub_term_type(sub_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
+						args_tuple);
 					// Build the orig_sin series.
 					tmp_ta.flavour() = false;
-					orig_sin.insert(sub_term_type(sub_cf_type((max_fast_int)1, args_tuple), tmp_ta), args_tuple);
+					orig_sin.insert(sub_term_type(sub_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
+						args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
 						retval.add(orig_cos, args_tuple);
