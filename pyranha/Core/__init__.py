@@ -66,7 +66,7 @@ def gui():
 		import pyranha.Gui
 		pyranha.Gui.mw.show()
 	except ImportError:
-		print "Gui support was not built."
+		print "Gui support is not available or PyQt4 is not installed."
 
 class tc(object):
 	def __init__(self, args, f, t0, t1, step, res = None):
