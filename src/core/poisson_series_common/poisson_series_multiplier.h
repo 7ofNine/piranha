@@ -134,7 +134,8 @@ namespace piranha
 						__PDEBUG(
 							std::cout << "Mult limits are:\n";
 						for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
-						std::cout << coded_ancestor::m_res_min_max[i].first << ',' << coded_ancestor::m_res_min_max[i].second << '\n';
+						std::cout << coded_ancestor::m_res_min_max[i].first << ',' <<
+							coded_ancestor::m_res_min_max[i].second << '\n';
 						}
 						);
 					}
@@ -189,7 +190,8 @@ namespace piranha
 								tmp_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
 								tmp_cf.divide_by(static_cast<max_fast_int>(2), ancestor::m_args_tuple);
 								const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
-																index_minus = coded_ancestor::m_ckeys1[i] - coded_ancestor::m_ckeys2[j];
+																index_minus = coded_ancestor::m_ckeys1[i] -
+																coded_ancestor::m_ckeys2[j];
 								if (m_flavours1[i] == m_flavours2[j]) {
 									if (m_flavours1[i]) {
 										vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
@@ -246,15 +248,16 @@ namespace piranha
 						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
-						// TODO: size hinting, in conjunction with the work above to separate sines form cosines, etc.
+						// TODO: size hinting, in conjunction with the work above to separate sines from cosines, etc.
 						csht cms_cos, cms_sin;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
-								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys and cfs instead of terms,
-								// generating only one coefficient and change its sign later if needed - after insertion.
+								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
+								// and cfs instead of terms, generating only one coefficient and change its sign later if
+								// needed - after insertion.
 								cterm tmp_term1(ancestor::m_terms1[i].m_cf, coded_ancestor::m_ckeys1[i]);
 								// Handle the coefficient, with positive signs for now.
 								tmp_term1.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);

@@ -116,7 +116,8 @@ namespace piranha
 			}
 			// Return true if the minimum exponents are smaller than those specified in the limits vector.
 			template <class ArgsTuple>
-			bool test_expo_limits(const std::vector<std::pair<size_t, max_fast_int> > &v, const ArgsTuple &args_tuple) const {
+			bool test_expo_limits(const std::vector<std::pair<size_t, max_fast_int> > &v,
+				const ArgsTuple &args_tuple) const {
 				const std::vector<max_fast_int> min_expo(min_exponents(args_tuple));
 				const size_t size = v.size();
 				for (size_t i = 0; i < size; ++i) {
