@@ -254,7 +254,7 @@ namespace piranha
 						__PDEBUG(std::cout << "Next size: " << sizes[new_index] << '\n');
 						// We do things in this order because if resizing fails due to insufficient memory,
 						// then we must be sure that the size index is consistent with the initial size (otherwise
-						// assertions can fail in the dtor, for example, or elsewhere).
+						// assertions can fail in the dtor, for example).
 						new_ht.m_container.clear();
 						new_ht.m_sizes_index = 0;
 						new_ht.m_container.resize(sizes[new_index]);
@@ -332,7 +332,6 @@ namespace piranha
 			// term. If displacement takes place, retval will be true and the content of tmp_term
 			// will be the displaced one. Otherwise return false.
 			bool swap_and_displace(term_type &tmp_term, size_t &orig_location) {
-				//__PDEBUG(std::cout << "Performing swap & displace." << '\n');
 				// First thing we need to know if the original location was given by hash1 or hash2.
 				const size_t h = static_cast<size_t>(tmp_term.m_ckey), pos1 = position1(h),
 					new_pos = (orig_location == pos1) ? position2(h) : pos1;
@@ -346,7 +345,7 @@ namespace piranha
 						return false;
 					}
 				}
-				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
+				// No space was found in the alternative bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
 				const size_t dindex = (bsize == 1) ? 0 : (new_pos & (bsize - 1));
 				// Displace the selected term.
