@@ -106,42 +106,7 @@ BOOST_PYTHON_MODULE(_Core)
 	typedef settings::fp_representation (*fp_repr_get)();
 	typedef void (*fp_repr_set)(settings::fp_representation);
 	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
-
-//   class_setm.def("debug",debug_get(&settings_manager::debug),return_value_policy<copy_const_reference>(),
-//     "Get value of the debug flag").staticmethod("debug");
-//   class_setm.def("load_factor", &settings_manager::load_factor,return_value_policy<copy_const_reference>(),
-//     "Get value of maximum load factor for hashed containers.");
-//   class_setm.def("numerical_zero", &settings_manager::numerical_zero,return_value_policy<copy_const_reference>(),
-//     "Get value of numerical zero.");
-//   class_setm.def("theories_path", &settings_manager::theories_path,return_value_policy<copy_const_reference>(),
-//     "Get search path for theories of motion's data files.");
-//   class_setm.def("default_theories_path", &settings_manager::default_theories_path,return_value_policy<copy_const_reference>(),
-//     "Get default search path for theories of motion's data files.");
-//   class_setm.def("version", &settings_manager::version,
-//     "Get Piranha's version.", return_value_policy<copy_const_reference>());
-//   class_setm.def("display_progress", &settings_manager::display_progress,
-//     "Display progress bar?");
-//   class_setm.def("set_display_progress", &settings_manager::set_display_progress,
-//     "Set to true to enable the display of progress bar.");
-//   class_setm.def("mp_default_prec", &settings_manager::mp_default_prec,
-//     "Get least default precision of mp floating point in bits.");
-//   class_setm.def("set_mp_default_prec", &settings_manager::set_mp_default_prec,
-//     "Set least default precision of mp floating point in bits.");
-//   class_setm.def("set_load_factor", &settings_manager::set_load_factor,
-//     "Set value of maximum load factor for hashed containers.");
-//   class_setm.def("set_theories_path", &settings_manager::set_theories_path,
-//     "Set search path for theories of motion's data files.");
-//   class_setm.staticmethod("load_factor");
-//   class_setm.staticmethod("set_load_factor");
-//   class_setm.staticmethod("numerical_zero");
-//   class_setm.staticmethod("theories_path");
-//   class_setm.staticmethod("default_theories_path");
-//   class_setm.staticmethod("set_theories_path");
-//   class_setm.staticmethod("version");
-//   class_setm.staticmethod("display_progress");
-//   class_setm.staticmethod("set_display_progress");
-//   class_setm.staticmethod("mp_default_prec");
-//   class_setm.staticmethod("set_mp_default_prec");
+	class_setm.add_static_property("pi_simplify", bool_get(&settings::pi_simplify), bool_set(&settings::pi_simplify));
 
 	// Psym manager.
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())

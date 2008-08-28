@@ -35,6 +35,7 @@ namespace piranha
 
 #else // Not GCC or GCC < 4.1.
 
+// TODO: for MSVC, use its atomic builtins instead of the generic counter.
 #include "atomic_counter_generic.h"
 
 namespace piranha

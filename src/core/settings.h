@@ -113,6 +113,8 @@ namespace piranha
 			static void format(out_format);
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
+			static void pi_simplify(const bool &);
+			static bool pi_simplify();
 		private:
 			/// Startup class.
 			/**
@@ -154,6 +156,8 @@ namespace piranha
 			static out_format						m_format;
 			/// Floating point representation.
 			static fp_representation				m_fp_repr;
+			/// Simplify pi symbol in Fourier and Poisson series.
+			static bool								m_pi_simplify;
 #ifdef _PIRANHA_MT
 			static const tbb::task_scheduler_init	tbb_init;
 #endif
