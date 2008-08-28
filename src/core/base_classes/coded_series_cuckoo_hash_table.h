@@ -23,6 +23,7 @@
 
 #include <algorithm> // For std::max.
 #include <exception> // For std::bad_alloc.
+#include <utility> // For std::pair.
 #include <vector>
 
 #include "../config.h"
@@ -66,15 +67,14 @@ namespace piranha
 			static const size_t bsize = bucket_type::size;
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 			typedef std::vector<bucket_type,allocator_type> container_type;
-			static const size_t mults[4];
 			static const size_t mults_size = 4;
+			static const size_t mults[mults_size];
 #ifdef _PIRANHA_64BIT
-			static const size_t sizes[64];
 			static const size_t sizes_size = 64;
 #else
-			static const size_t sizes[32];
 			static const size_t sizes_size = 32;
 #endif
+			static const size_t sizes[sizes_size];
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
 		public:
 			typedef term_type_ term_type;
@@ -449,7 +449,6 @@ namespace piranha
 #else
 #define MAX (4294967296.)
 #endif
-
 	template <class Cf, class Ckey, class Allocator>
 	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
 		static_cast<size_t>(.7320508075688772 * MAX),
