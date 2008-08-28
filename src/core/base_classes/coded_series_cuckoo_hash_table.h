@@ -135,6 +135,7 @@ namespace piranha
 					size_t									m_vindex;
 					size_t									m_bindex;
 			};
+			typedef iterator const_iterator;
 			coded_series_cuckoo_hash_table(): m_sizes_index(0), m_mults_index(0), m_length(0) {
 				m_container.resize(sizes[2]);
 				m_sizes_index = 2;
@@ -198,6 +199,9 @@ namespace piranha
 			size_t size() const {
 				p_assert(sizes[m_sizes_index] == m_container.size());
 				return m_length;
+			}
+			bool empty() const {
+				return (m_length == 0);
 			}
 			void insert(const term_type &t) {
 				if ((static_cast<double>(m_length) + 1) >=
