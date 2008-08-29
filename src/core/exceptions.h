@@ -67,6 +67,10 @@ namespace piranha
 			}
 		}
 	};
+
+	struct assertion_failure: public base_exception {
+		assertion_failure(const std::string &s): base_exception(s) {}
+	};
 }
 
 #endif

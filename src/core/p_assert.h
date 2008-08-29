@@ -22,16 +22,18 @@
 #define PIRANHA_P_ASSERT_H
 
 #include <iostream>
+#include <sstream>
 
 #include "config.h" // For "unlikely()".
+#include "exceptions.h"
 
 #define hard_assert(result) \
 	if (unlikely((result)==false)) \
 	{ \
-		std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-		exit(1); \
+		std::ostringstream tmp;\
+		tmp << "Assertion failed at: " << __FILE__ << ", " << __LINE__ << ".\n"; \
+		throw piranha::assertion_failure(tmp.str()); \
 	}
-
 #if defined _ENABLE_ASSERTS
 
 #define p_assert(result) hard_assert(result)

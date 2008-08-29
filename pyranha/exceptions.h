@@ -47,6 +47,7 @@ namespace pyranha
 		register_exception<piranha::unsuitable>();
 		register_exception<piranha::division_by_zero>();
 		register_exception<piranha::out_of_memory>();
+		register_exception<piranha::assertion_failure>();
 	}
 }
 
