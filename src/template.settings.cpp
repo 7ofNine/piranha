@@ -54,13 +54,7 @@ namespace piranha
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
-	// TODO: this one must be initialised to a better value in windows.
-	const std::string settings::m_default_path = 
-#ifdef _PIRANHA_WIN32
-		std::string(getenv("%ProgramFiles%")+std::string("/@THEORIES_INSTALL_PATH@"));
-#else
-		"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
-#endif
+	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 	std::string settings::m_path = settings::m_default_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
@@ -78,6 +72,15 @@ namespace piranha
 	{
 		p_static_check(sizeof(char) == 1, "Wrong char size.");
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
+#ifdef _PIRANHA_WIN32
+		// In windows we are going to change the path to use environment variables.
+		if (getenv("%ProgramFiles%") != 0) {
+			m_default_path = std::string(getenv("%ProgramFiles%"))+std::string("/@THEORIES_INSTALL_PATH@");
+		} else {
+			std::cout << "The %ProgramFiles% environment variable is not set.\n";
+			m_default_path = ".";
+		}
+#endif
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
