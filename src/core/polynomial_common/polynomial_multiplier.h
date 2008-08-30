@@ -202,11 +202,13 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int,
+							std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
-						const size_t size_hint = std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot;
+						const size_t size_hint = static_cast<size_t>(
+							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
 						csht cms(size_hint);
 						cterm tmp_cterm;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {

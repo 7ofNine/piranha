@@ -58,5 +58,6 @@ def main():
 	except ImportError:
 		if not error_msg: print import_error_msg
 		error_msg = True
+	ip.ex("settings.format = pretty")
 
 main()
