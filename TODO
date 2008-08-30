@@ -53,3 +53,5 @@
 - direct calculation of special functions and celmec expansions
 - use union in int_array to avoid all those runtime casts?
 - Try murmurhash.
+- Take care of allocation of zero-size memory areas?
+- Fix static libs, test, etc. in Win32.

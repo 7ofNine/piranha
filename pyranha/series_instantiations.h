@@ -314,8 +314,8 @@ namespace pyranha
 	template <class T>
 	void power_series_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.add_property("degree", &T::degree, "Get the degree of the power series.");
-		inst.add_property("min_degree", &T::min_degree, "Get the minimum degree of the power series.");
+		inst.add_property("degree", &T::degree, "Degree of the power series.");
+		inst.add_property("min_degree", &T::min_degree, "Minimum degree of the power series.");
 	}
 
 	template <class T>
