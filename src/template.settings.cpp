@@ -74,11 +74,11 @@ namespace piranha
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 #ifdef _PIRANHA_WIN32
 		// In windows we are going to change the path to use environment variables.
-		if (getenv("%ProgramFiles%") != 0) {
-			m_default_path = std::string(getenv("%ProgramFiles%"))+std::string("/@THEORIES_INSTALL_PATH@");
+		if (getenv("ProgramFiles") != 0) {
+			m_path = std::string(getenv("ProgramFiles"))+std::string("/@THEORIES_INSTALL_PATH@");
 		} else {
-			std::cout << "The %ProgramFiles% environment variable is not set.\n";
-			m_default_path = ".";
+			std::cout << "The 'ProgramFiles' environment variable is not set.\n";
+			m_path = ".";
 		}
 #endif
 		// Startup report.
