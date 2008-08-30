@@ -71,7 +71,7 @@ namespace piranha
 	const std::string settings::m_default_path =
 #ifdef _PIRANHA_WIN32
 		boost::algorithm::replace_all_copy(
-			get_env_variable("ProgramFiles")+std::string("/@THEORIES_INSTALL_PATH@"),
+			get_env_variable("ProgramFiles")+std::string("/Piranha @PIRANHA_VERSION@/@THEORIES_INSTALL_PATH@"),
 			std::string("\\"),
 			std::string("/")
 		);
