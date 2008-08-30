@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <cstdlib> // For getenv in win32.
 #include <gmp.h>
 
 #include "core/config.h"
@@ -54,7 +55,12 @@ namespace piranha
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
 	// TODO: this one must be initialised to a better value in windows.
-	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
+	const std::string settings::m_default_path = 
+#ifdef _PIRANHA_WIN32
+		std::string(getenv("%ProgramFiles%")+std::string("/@THEORIES_INSTALL_PATH@"));
+#else
+		"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
+#endif
 	std::string settings::m_path = settings::m_default_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
