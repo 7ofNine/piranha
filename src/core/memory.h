@@ -32,6 +32,7 @@
 #include "config.h" // For unlikely(), aligned malloc, visibility, etc.
 #include "exceptions.h"
 #include "math.h" // For lg to detect that memory alignment is a power of 2.
+#include "portable_memalign.h"
 #include "settings.h"
 
 namespace piranha
@@ -70,11 +71,14 @@ namespace piranha
 	{
 		memory_alignment_checks<Alignment>();
 		void *ptr;
-#ifdef _PIRANHA_WIN32
+#if defined(_MSC_VER)
 		ptr = _aligned_malloc(size,Alignment);
 		if (unlikely(ptr == NULL)) {
-#else
+#elif defined (_GNUC_) && ( !defined (_PIRANHA_MINGW) )
 		if (unlikely(posix_memalign(&ptr,Alignment,size) != 0)) {
+#else
+		ptr = portable_memalign<Alignment>(size);
+		if (unlikely(ptr == NULL)) {
 #endif
 			throw std::bad_alloc();
 		}
@@ -94,10 +98,12 @@ namespace piranha
 	template <int Alignment>
 	inline void piranha_free(void *ptr) {
 		memory_alignment_checks<Alignment>();
-#ifdef _PIRANHA_WIN32
+#if defined(_MSC_VER)
 		_aligned_free(ptr);
-#else
+#elif defined (_GNUC_) && ( !defined (_PIRANHA_MINGW) )
 		free(ptr);
+#else
+		portable_aligned_free(ptr);
 #endif
 	}
 
