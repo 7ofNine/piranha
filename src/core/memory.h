@@ -59,6 +59,9 @@ namespace piranha
 		p_static_check(Alignment >= sizeof(void *), "Memory alignment must be equal to or greater than sizeof(void *).");
 		// Test that Alignment is a power of 2.
 		p_static_check(lg<Alignment>::value > 0, "Memory alignment must be a multiple of 2.");
+		// Test that Alignment is no greater than 128 (2**7). This is done beacuse portable memalign
+		// uses a uint8 to store the alignment info.
+		p_static_check(Alignment <= 128, "Memory alignment value is too big (>128)");
 	}
 
 	/// Low level memory allocation function supporting alignment specification.
