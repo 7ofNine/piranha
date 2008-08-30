@@ -19,8 +19,9 @@
  ***************************************************************************/
 
 #include <algorithm>
+#include <boost/algorithm/string/replace.hpp> // For replacing "\" with "/" in Windows.
 #include <cstring>
-#include <cstdlib> // For getenv in win32.
+#include <cstdlib> // For getenv in Windows.
 #include <gmp.h>
 
 #include "core/config.h"
@@ -32,12 +33,14 @@
 
 namespace piranha
 {
-	static inline void *gmp_alloc_func(size_t size) {
+	static inline void *gmp_alloc_func(size_t size)
+	{
 		std_counting_allocator<char> a;
 		return static_cast<void *>(a.allocate(size));
 	}
 
-	static inline void *gmp_realloc_func(void *ptr, size_t old_size, size_t new_size) {
+	static inline void *gmp_realloc_func(void *ptr, size_t old_size, size_t new_size)
+	{
 		std_counting_allocator<char> a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
 		memcpy(retval, static_cast<void const *>(ptr), std::min<size_t>(old_size,new_size));
@@ -45,16 +48,36 @@ namespace piranha
 		return retval;
 	}
 
-	static inline void gmp_free_func(void *ptr, size_t size) {
+	static inline void gmp_free_func(void *ptr, size_t size)
+	{
 		std_counting_allocator<char> a;
 		a.deallocate(static_cast<char *>(ptr),size);
+	}
+
+	static inline std::string get_env_variable(const char *str)
+	{
+		if (getenv(str) != 0) {
+			return std::string(getenv(str));
+		} else {
+			std::cout << "The environment variable '" << str << "' is not set.\n";
+			return std::string();
+		}
 	}
 
 	// Settings' static members.
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 0.5;
 	double settings::m_numerical_zero = 1E-80;
-	const std::string settings::m_default_path = "@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
+	const std::string settings::m_default_path =
+#ifdef _PIRANHA_WIN32
+		boost::algorithm::replace_all_copy(
+			get_env_variable("ProgramFiles")+std::string("/@THEORIES_INSTALL_PATH@"),
+			std::string("\\"),
+			std::string("/")
+		);
+#else
+		"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
+#endif
 	std::string settings::m_path = settings::m_default_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
@@ -72,15 +95,6 @@ namespace piranha
 	{
 		p_static_check(sizeof(char) == 1, "Wrong char size.");
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
-#ifdef _PIRANHA_WIN32
-		// In windows we are going to change the path to use environment variables.
-		if (getenv("ProgramFiles") != 0) {
-			m_path = std::string(getenv("ProgramFiles"))+std::string("/@THEORIES_INSTALL_PATH@");
-		} else {
-			std::cout << "The 'ProgramFiles' environment variable is not set.\n";
-			m_path = ".";
-		}
-#endif
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
