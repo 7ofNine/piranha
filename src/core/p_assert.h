@@ -34,7 +34,7 @@
 		tmp << "Assertion failed at: " << __FILE__ << ", " << __LINE__ << ".\n"; \
 		throw piranha::assertion_failure(tmp.str()); \
 	}
-#if defined _ENABLE_ASSERTS
+#if defined _PIRANHA_ENABLE_ASSERTS
 
 #define p_assert(result) hard_assert(result)
 
