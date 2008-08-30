@@ -22,6 +22,7 @@
 #define PIRANHA_MEMORY_H
 
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
+#include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
 #include <cstdlib> // For malloc.
 #include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
@@ -115,14 +116,15 @@ namespace piranha
 	class counting_allocator: public base_counting_allocator
 	{
 			typedef typename Allocator::template rebind<T>::other alloc;
+			p_static_check((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
 		public:
-			typedef size_t size_type;
-			typedef ptrdiff_t difference_type;
-			typedef T * pointer;
-			typedef const T * const_pointer;
-			typedef T & reference;
-			typedef const T & const_reference;
-			typedef T value_type;
+			typedef typename alloc::size_type size_type;
+			typedef typename alloc::difference_type difference_type;
+			typedef typename alloc::pointer pointer;
+			typedef typename alloc::const_pointer const_pointer;
+			typedef typename alloc::reference reference;
+			typedef typename alloc::const_reference const_reference;
+			typedef typename alloc::value_type value_type;
 			template <class U>
 			struct rebind {
 				typedef counting_allocator<U,Allocator> other;
@@ -139,7 +141,7 @@ namespace piranha
 				return m_alloc.address(x);
 			}
 			pointer allocate(const size_type &n, const void *hint = 0) {
-				const size_t add = n * sizeof(T), cur = static_cast<size_t>(m_counter), l = settings::memory_limit();
+				const size_t add = n * sizeof(value_type), cur = static_cast<size_t>(m_counter), l = settings::memory_limit();
 				// Cast to double so that we resolve the case in which cur+add overflows size_t.
 				if (static_cast<double>(cur) + add > l) {
 					throw out_of_memory();
@@ -150,12 +152,12 @@ namespace piranha
 			}
 			void deallocate(pointer p, const size_type &n) {
 				m_alloc.deallocate(p,n);
-				m_counter -= n * sizeof(T);
+				m_counter -= n * sizeof(value_type);
 			}
 			size_type max_size() const {
-				return boost::integer_traits<size_type>::const_max/sizeof(T);
+				return boost::integer_traits<size_type>::const_max/sizeof(value_type);
 			}
-			void construct(pointer p, const T &val) {
+			void construct(pointer p, const value_type &val) {
 				m_alloc.construct(p,val);
 			}
 			void destroy(pointer p) {
