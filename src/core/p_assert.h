@@ -27,30 +27,16 @@
 #include "config.h" // For "unlikely()".
 #include "exceptions.h"
 
-#define hard_assert(result) \
-	if (unlikely((result)==false)) \
+#if defined _PIRANHA_ENABLE_ASSERTS
+#define p_assert(result) \
+	if (unlikely(!(result))) \
 	{ \
 		std::ostringstream tmp;\
 		tmp << "Assertion failed at: " << __FILE__ << ", " << __LINE__ << ".\n"; \
 		throw piranha::assertion_failure(tmp.str()); \
 	}
-#if defined _PIRANHA_ENABLE_ASSERTS
-
-#define p_assert(result) hard_assert(result)
-
-#define action_assert(action) \
-	if (unlikely((action)==false)) \
-	{ \
-		std::cout << __FILE__ << ':' << __LINE__ << " Assert failed" << std::endl; \
-		std::cout << "Press a key to exit." << std::endl; \
-		{ char c; std::cin >> c; } \
-		std::exit(1); \
-	}
-
 #else
-
 #define p_assert(__arg)
+#endif // _PIRANHA_ENABLE_ASSERTS
 
-#define action_assert(action) action
-#endif // _ENABLE_ASSERTS
 #endif
