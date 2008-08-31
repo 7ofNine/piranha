@@ -115,7 +115,10 @@ namespace std
 			template <class Number>
 			complex pow_helper(const Number &y) const {
 				complex retval;
-				retval.m_value = std::pow(ancestor::m_value, y);
+				// COMPILER_BUG: Ubuntu hardy's GCC 4.2 compiler craps out if
+				// assiging directly retval.m_value = std::pow().
+				std::complex<double> tmp(std::pow(ancestor::m_value, y));
+				retval.m_value = tmp;
 				return retval;
 			}
 	};
