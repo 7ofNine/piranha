@@ -67,10 +67,11 @@ namespace piranha
 			typedef bucket_type_<4> bucket_type;
 			static const size_t mults_size = 10;
 			static const size_t max_rehash_tries = 1;
+			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
-			static const size_t sizes_size = 64;
+				64;
 #else
-			static const size_t sizes_size = 32;
+				32;
 #endif
 			static const size_t mults[mults_size];
 			static const size_t sizes[sizes_size];
@@ -460,10 +461,11 @@ namespace piranha
 	};
 
 #ifdef _PIRANHA_64BIT
-#define MAX (18446744073709551616.)
+#define MAX (18446744073709551615.)
 #else
-#define MAX (4294967296.)
+#define MAX (4294967295.)
 #endif
+	// These are the decimal parts of the square roots of prime numbers.
 	template <class Cf, class Ckey, class Allocator>
 	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
 		static_cast<size_t>(.7320508075688772 * MAX),
