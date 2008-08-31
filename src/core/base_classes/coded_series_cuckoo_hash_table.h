@@ -62,20 +62,22 @@ namespace piranha
 					term_type_	t[size];
 					bool 		f[size];
 			};
+			// Configuration options.
 			// Bucket size = 4.
 			typedef bucket_type_<4> bucket_type;
-			static const size_t bsize = bucket_type::size;
-			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
-			typedef std::vector<bucket_type,allocator_type> container_type;
-			static const size_t mults_size = 4;
-			static const size_t mults[mults_size];
+			static const size_t mults_size = 10;
+			static const size_t max_rehash_tries = 1;
 #ifdef _PIRANHA_64BIT
 			static const size_t sizes_size = 64;
 #else
 			static const size_t sizes_size = 32;
 #endif
+			static const size_t mults[mults_size];
 			static const size_t sizes[sizes_size];
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
+			static const size_t bsize = bucket_type::size;
+			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
+			typedef std::vector<bucket_type,allocator_type> container_type;
 		public:
 			typedef term_type_ term_type;
 			class iterator
@@ -243,6 +245,8 @@ namespace piranha
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.m_container.resize(sizes[m_sizes_index + 1]);
 				new_ht.m_sizes_index = m_sizes_index + 1;
+				// Assign current mults to the new table.
+				new_ht.m_mults_index = m_mults_index;
 				term_type tmp_term;
 				iterator it = begin();
 				const iterator it_f = end();
@@ -269,29 +273,35 @@ namespace piranha
 				p_assert(sizes[m_sizes_index] == m_container.size());
 			}
 			bool rehash() {
-				for (uint8 new_mults_index = m_mults_index + 2; new_mults_index < mults_size; new_mults_index += 2) {
-					coded_series_cuckoo_hash_table new_ht;
-					new_ht.m_mults_index = new_mults_index;
-					new_ht.m_container.resize(sizes[m_sizes_index]);
-					new_ht.m_sizes_index = m_sizes_index;
+				coded_series_cuckoo_hash_table new_ht;
+				new_ht.m_mults_index = m_mults_index;
+				new_ht.m_container.resize(sizes[m_sizes_index]);
+				new_ht.m_sizes_index = m_sizes_index;
+				for (size_t i = 0; i < max_rehash_tries; ++i) {
 					term_type tmp_term;
+					bool success = true;
+					new_ht.next_mults();
 					const iterator it_f = end();
 					for (iterator it = begin(); it != it_f; ++it) {
 						if (!new_ht.attempt_insertion(*it,tmp_term)) {
 							__PDEBUG(std::cout << "Cuckoo hash table insertion failure during rehash, "
 								"will try next mult.\n");
+							success = false;
 							break;
 						}
 					}
-					if (new_ht.size() == size()) {
-						__PDEBUG(std::cout << "Rehash successful after " << ((new_mults_index - m_mults_index)/2) <<
-							" tries\n";)
+					if (success) {
+						__PDEBUG(std::cout << "Rehash successful after " << (i + 1) << " tries.\n");
 						// This means that we were able to insert all terms. Swap and return true.
 						swap(new_ht);
 						p_assert(sizes[m_sizes_index] == m_container.size());
 						return true;
 					}
 					__PDEBUG(std::cout << "Rehash stopped at " << new_ht.size() << " out of " << size() << ".\n");
+					// Let's reset new_ht.
+					new_ht.m_container.clear();
+					new_ht.m_container.resize(sizes[m_sizes_index]);
+					new_ht.m_length = 0;
 				}
 				__PDEBUG(std::cout << "Mults exhausted, rehash failed.\n")
 				p_assert(sizes[m_sizes_index] == m_container.size());
@@ -364,6 +374,12 @@ namespace piranha
 			size_t position2(const size_t &h) const {
 				p_assert(m_hash(h,mults[m_mults_index + 1],m_sizes_index) < sizes[m_sizes_index]);
 				return m_hash(h,mults[m_mults_index + 1],m_sizes_index);
+			}
+			void next_mults() {
+				m_mults_index += 2;
+				if (m_mults_index == mults_size) {
+					m_mults_index = 0;
+				}
 			}
 		private:
 			uint8				m_sizes_index;
@@ -452,16 +468,16 @@ namespace piranha
 	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
 		static_cast<size_t>(.7320508075688772 * MAX),
 		static_cast<size_t>(.2360679774997898 * MAX),
+		static_cast<size_t>(.6457513110645907 * MAX),
+		static_cast<size_t>(.3166247903553998 * MAX),
+		static_cast<size_t>(.6055512754639891 * MAX),
+		static_cast<size_t>(.1231056256176606 * MAX),
+		static_cast<size_t>(.3588989435406740 * MAX),
+		static_cast<size_t>(.7958315233127191 * MAX),
+		static_cast<size_t>(.3851648071345037 * MAX),
+		static_cast<size_t>(.5677643628300215 * MAX)
 // 		.6180339887498949 * MAX,
 // 		.4658204617032757 * MAX,
-		static_cast<size_t>(.6457513110645907 * MAX),
-		static_cast<size_t>(.3166247903553998 * MAX)/*,
-		.6055512754639891 * MAX,
-		.1231056256176606 * MAX,
-		.3588989435406740 * MAX,
-		.7958315233127191 * MAX,
-		.3851648071345037 * MAX,
-		.5677643628300215 * MAX*/
 	};
 #undef MAX
 }
