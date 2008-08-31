@@ -116,7 +116,8 @@ namespace piranha
 			}
 			/// Ctor from psym.
 			/**
-			 * If the position mathches input integer n, then set the flavour to true, resize to one element and set it to one.
+			 * If the position matches input integer n, then set the flavour to true,
+			 * resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
 			int_array(const psym_p &p, const int &n, const ArgsTuple &args_tuple):
