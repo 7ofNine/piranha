@@ -69,7 +69,7 @@ namespace piranha
 			typedef bucket_type_<4> bucket_type;
 			static const size_t mults_size = 10;
 			static const size_t max_rehash_tries = 1;
-			static const uint8 min_size_index = 1;
+			static const size_t min_size_index = 1;
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
 				64;
