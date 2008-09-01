@@ -31,7 +31,10 @@ def __create_psyms(self, names):
 		raise ImportError("IPython not available.")
 	ip = IPython.ipapi.get()
 	for i in names.split():
-		ip.ex("%s = psym(\"%s\")" % (i,i))
+		try:
+			ip.ex("%s = psyms[\"%s\"]" % (i,i))
+		except UserWarning:
+			ip.ex("%s = psym(\"%s\")" % (i,i))
 
 setattr(_Core.__psyms,"__call__",__create_psyms)
 psyms = _Core.__psyms()
