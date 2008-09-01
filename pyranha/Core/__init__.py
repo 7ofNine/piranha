@@ -24,7 +24,10 @@ def copy(arg):
 	return __copy.copy(arg)
 
 def __create_psyms(self, names):
-	"""Create symbols from a string of space-separated names."""
+	"""
+	Create psyms from a string of space-separated names. If a name is already assigned to a psym,
+	create a copy of the psym with the same properties of its homonymous.
+	"""
 	try:
 		import IPython.ipapi
 	except ImportError:
@@ -32,8 +35,10 @@ def __create_psyms(self, names):
 	ip = IPython.ipapi.get()
 	for i in names.split():
 		try:
+			# Try to fetch the psym from the psym manager.
 			ip.ex("%s = psyms[\"%s\"]" % (i,i))
 		except UserWarning:
+			# If we failed, create a new psym.
 			ip.ex("%s = psym(\"%s\")" % (i,i))
 
 setattr(_Core.__psyms,"__call__",__create_psyms)

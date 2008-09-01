@@ -69,7 +69,7 @@ def sin(arg):
 
 def root(n,arg):
 	"""
-	Wrapper around root. If arg provides a root() method, it will be called, otherwise
+	n-th root of argument arg. If arg provides a root() method, it will be called, otherwise
 	the standard ** operator will be called.
 	"""
 	try:
@@ -79,8 +79,8 @@ def root(n,arg):
 
 def besselJ(order,arg):
 	"""
-	Wrapper around _Math.besselJ. If arg provides a besselJ() method, it will be called, otherwise
-	_Math.besselJ will be called.
+	Bessel function of the first kind of integer order of argument arg.
+	If arg provides a besselJ() method, it will be called, otherwise _Math.besselJ will be called.
 	"""
 	try:
 		return arg.besselJ(order)
@@ -89,17 +89,21 @@ def besselJ(order,arg):
 
 def dbesselJ(order,arg):
 	"""
-	Partial derivative of Bessel function of the first kind of integer order. It will call the dbesselJ() method
-	of arg, if available.
+	Partial derivative of Bessel function of the first kind of integer order of argument arg.
+	It will call the dbesselJ() method of arg, if available, otherwise an AttributeError exception
+	will be raised.
 	"""
 	try:
 		return arg.dbesselJ(order)
 	except AttributeError:
-		raise AttributeError, "The dbesselJ() method is not available for this argument type, returning None."
+		raise AttributeError("The dbesselJ() method is not available for this argument type, returning None.")
 
 def Pnm(n,m,arg,*extra_arg):
 	"""
-	Associated Legendre function.
+	Associated Legendre function of integer degree n and order m of argument arg. The optional argument extra_arg
+	can be used to provide a value for sqrt(1-arg**2), which will be used for the calculation of
+	Pnm using recurrence relations. If extra_arg is not provided, the function will try to calculate
+	sqrt(1-arg**2) on its own.
 	"""
 	if len(list(extra_arg)) > 1:
 		raise TypeError("Please provide at most one extra argument.")
@@ -110,7 +114,7 @@ def Pnm(n,m,arg,*extra_arg):
 
 def Pn(n,arg):
 	"""
-	Legendre polynomial.
+	Legendre polynomial of integer degree n of argument arg.
 	"""
 	try:
 		return arg.Pn(n)
@@ -119,8 +123,13 @@ def Pn(n,arg):
 
 def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = None):
 	"""
-	Non-normalised spherical harmonic. If at least one of alpha, beta or gamma is provided, the spherical harmonic
-	will be rotated under the 3-1-3 Euler angles alpha, beta and gamma.
+	Non-normalised spherical harmonic of integer degree n and order m of the colatitude theta and longitude phi.
+	
+	If at least one of alpha, beta or gamma is provided, the spherical harmonic will be rotated under
+	the 3-1-3 Euler angles alpha, beta and gamma using Wigner's theorem for the rotation of spherical harmonics.
+	
+	If emi_phi is provided, it will be used internally as exp(-i*phi) and phi will be assumed to mean exp(i*phi),
+	otherwise the routine will assume that phi is the longitude and it will try to calculate exp(-i*phi) on its own.
 	"""
 	if type(n) != int or type(m) != int:
 		raise ValueError("n and m must be integers.")
@@ -162,7 +171,7 @@ def partial(arg,name,n=1):
 	try:
 		return arg.partial(name,n)
 	except AttributeError:
-		raise AttributeError, "The partial() method is not available for this argument type."
+		raise AttributeError("The partial() method is not available for this argument type.")
 
 def einpi2(n):
 	"""
