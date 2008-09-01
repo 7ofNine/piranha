@@ -45,7 +45,10 @@ setattr(_Core.__psyms,"__call__",__create_psyms)
 psyms = _Core.__psyms()
 
 def load(*args):
-	"""Load series from list of filenames. Type of series will be inferred - if possible - from the files' extensions."""
+	"""
+	Load series from list of filenames arguments.
+	Type of series will be inferred - if possible - from the files' extensions.
+	"""
 	try:
 		import IPython.ipapi
 	except ImportError:
