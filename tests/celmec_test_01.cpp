@@ -20,7 +20,7 @@
 
 #include "../src/manipulators/qps.h"
 
-// Exercise celmec expansions, trigonometric functions and substitution.
+// Exercise celmec expansions, trigonometric functions, substitution and pow.
 
 using namespace piranha::manipulators;
 typedef qps ps;
