@@ -73,17 +73,6 @@ namespace piranha
 		}
 	}
 
-	/// Swap two integers without using extra storage.
-	/**
-	 * The two integers must not be in the same memory location.
-	 */
-	template <class Integer>
-	inline void int_swap(Integer &a, Integer &b)
-	{
-		p_assert(&a != &b);
-		(((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)));
-	}
-
 	template <class T>
 	static inline void factorial_check(const T &x) {
 		if (x < 0) {

@@ -46,7 +46,7 @@ namespace piranha
 					term_type_(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
 					void swap(term_type_ &t) {
 						m_cf.swap(t.m_cf);
-						int_swap(m_ckey,t.m_ckey);
+						std::swap(m_ckey,t.m_ckey);
 					}
 					mutable Cf	m_cf;
 					Ckey		m_ckey;
@@ -229,9 +229,9 @@ namespace piranha
 				}
 			}
 			void swap(coded_series_cuckoo_hash_table &other) {
-				int_swap(m_mults_index,other.m_mults_index);
-				int_swap(m_sizes_index,other.m_sizes_index);
-				int_swap(m_length,other.m_length);
+				std::swap(m_mults_index,other.m_mults_index);
+				std::swap(m_sizes_index,other.m_sizes_index);
+				std::swap(m_length,other.m_length);
 				std::swap(m_container,other.m_container);
 			}
 		private:
