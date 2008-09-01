@@ -22,6 +22,7 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/integer_traits.hpp> // For integer limits.
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -155,9 +156,17 @@ namespace piranha
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
-						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
+						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
 						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
 						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
+						// For Poisson series vector coded we need twice the space given by n_codes, because of the
+						// sine-cosine split. Hence we must make an additional check to make sure that n_codes << 1
+						// won't overflow.
+						if (n_codes > (boost::integer_traits<size_t>::const_max >> 1)) {
+							__PDEBUG(std::cout << "Tha amount of memory required by vector coded cannot be represented "
+								"on this architecture.\n");
+							return false;
+						}
 						try {
 							vc.resize(n_codes << 1);
 						} catch (const std::bad_alloc &) {
@@ -173,40 +182,44 @@ namespace piranha
 						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
 						cf_type1 *vc_res_cos =  &vc[0] - coded_ancestor::m_h_min,
 							*vc_res_sin = &vc[0] + n_codes - coded_ancestor::m_h_min;
+						const size_t s1 = ancestor::m_size1, s2 = ancestor::m_size2;
+						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
+						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
+						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
+						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
+						const char *f1 = &m_flavours1[0], *f2 = &m_flavours2[0];
 						cf_type1 tmp_cf;
 						// Perform multiplication.
 						// TODO: for better cache behaviour and to reduce branching, maybe we can split up input series
 						// into cosine / sine parts and multiply them separately. Also, we can do separately
 						// index minus and index plus.
-						for (size_t i = 0; i < ancestor::m_size1; ++i) {
-							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+						for (size_t i = 0; i < s1; ++i) {
+							for (size_t j = 0; j < s2; ++j) {
+								if (trunc.skip(t1[i], t2[j])) {
 									break;
 								}
 								// TODO: Does it make sense here to define a method for coefficients like:
 								// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
 								// so that we can avoid copying stuff around here and elsewhere?
-								tmp_cf = ancestor::m_terms1[i].m_cf;
-								tmp_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-								tmp_cf.divide_by(static_cast<max_fast_int>(2), ancestor::m_args_tuple);
-								const max_fast_int index_plus = coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j],
-																index_minus = coded_ancestor::m_ckeys1[i] -
-																coded_ancestor::m_ckeys2[j];
-								if (m_flavours1[i] == m_flavours2[j]) {
-									if (m_flavours1[i]) {
-										vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-										vc_res_cos[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+								tmp_cf = t1[i].m_cf;
+								tmp_cf.mult_by(t2[j].m_cf, args_tuple);
+								tmp_cf.divide_by(static_cast<max_fast_int>(2), args_tuple);
+								const max_fast_int index_plus = ck1[i] + ck2[j], index_minus = ck1[i] - ck2[j];
+								if (f1[i] == f2[j]) {
+									if (f1[i]) {
+										vc_res_cos[index_minus].add(tmp_cf, args_tuple);
+										vc_res_cos[index_plus].add(tmp_cf, args_tuple);
 									} else {
-										vc_res_cos[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-										vc_res_cos[index_plus].subtract(tmp_cf, ancestor::m_args_tuple);
+										vc_res_cos[index_minus].add(tmp_cf, args_tuple);
+										vc_res_cos[index_plus].subtract(tmp_cf, args_tuple);
 									}
 								} else {
-									if (m_flavours1[i]) {
-										vc_res_sin[index_minus].subtract(tmp_cf, ancestor::m_args_tuple);
-										vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+									if (f1[i]) {
+										vc_res_sin[index_minus].subtract(tmp_cf, args_tuple);
+										vc_res_sin[index_plus].add(tmp_cf, args_tuple);
 									} else {
-										vc_res_sin[index_minus].add(tmp_cf, ancestor::m_args_tuple);
-										vc_res_sin[index_plus].add(tmp_cf, ancestor::m_args_tuple);
+										vc_res_sin[index_minus].add(tmp_cf, args_tuple);
+										vc_res_sin[index_plus].add(tmp_cf, args_tuple);
 									}
 								}
 							}
@@ -214,30 +227,31 @@ namespace piranha
 						__PDEBUG(std::cout << "Done multiplying\n");
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+						const max_fast_int i_f = coded_ancestor::m_h_max;
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							if (!vc_res_cos[i].is_ignorable(ancestor::m_args_tuple)) {
+							if (!vc_res_cos[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_cos[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
 								tmp_term.m_key.flavour() = true;
 								// Canonicalise in-place, so that we don't need to make further copies in the
 								// main insertion function.
-								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-									tmp_term.canonicalise(ancestor::m_args_tuple);
+								if (!tmp_term.is_canonical(args_tuple)) {
+									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+								ancestor::m_retval.insert(tmp_term, args_tuple);
 							}
 						}
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
-							if (!vc_res_sin[i].is_ignorable(ancestor::m_args_tuple)) {
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+							if (!vc_res_sin[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_sin[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
 								tmp_term.m_key.flavour() = false;
-								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-									tmp_term.canonicalise(ancestor::m_args_tuple);
+								if (!tmp_term.is_canonical(args_tuple)) {
+									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+								ancestor::m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series vector coded\n");
@@ -245,60 +259,67 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int,
+							std_counting_allocator<char> > csht;
 						typedef typename csht::term_type cterm;
 						typedef typename csht::iterator c_iterator;
 						// TODO: size hinting, in conjunction with the work above to separate sines from cosines, etc.
 						csht cms_cos, cms_sin;
-						for (size_t i = 0; i < ancestor::m_size1; ++i) {
-							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+						const size_t s1 = ancestor::m_size1, s2 = ancestor::m_size2;
+						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
+						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
+						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
+						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
+						const char *f1 = &m_flavours1[0], *f2 = &m_flavours2[0];
+						for (size_t i = 0; i < s1; ++i) {
+							for (size_t j = 0; j < s2; ++j) {
+								if (trunc.skip(t1[i], t2[j])) {
 									break;
 								}
 								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
 								// and cfs instead of terms, generating only one coefficient and change its sign later if
 								// needed - after insertion.
-								cterm tmp_term1(ancestor::m_terms1[i].m_cf, coded_ancestor::m_ckeys1[i]);
+								cterm tmp_term1(t1[i].m_cf, ck1[i]);
 								// Handle the coefficient, with positive signs for now.
-								tmp_term1.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
-								tmp_term1.m_cf.divide_by(static_cast<max_fast_int>(2), ancestor::m_args_tuple);
-								tmp_term1.m_ckey -= coded_ancestor::m_ckeys2[j];
+								tmp_term1.m_cf.mult_by(t2[j].m_cf, args_tuple);
+								tmp_term1.m_cf.divide_by(static_cast<max_fast_int>(2), args_tuple);
+								tmp_term1.m_ckey -= ck2[j];
 								// Create the second term, using the first one's coefficient and the appropriate code.
-								cterm tmp_term2(tmp_term1.m_cf, coded_ancestor::m_ckeys1[i] + coded_ancestor::m_ckeys2[j]);
+								cterm tmp_term2(tmp_term1.m_cf, ck1[i] + ck2[j]);
 								// Now fix flavours and coefficient signs.
-								if (m_flavours1[i] == m_flavours2[j]) {
-									if (!m_flavours1[i]) {
-										tmp_term2.m_cf.invert_sign(ancestor::m_args_tuple);
+								if (f1[i] == f2[j]) {
+									if (!f1[i]) {
+										tmp_term2.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into cosine container.
 									c_iterator it = cms_cos.find(tmp_term1.m_ckey);
 									if (it == cms_cos.end()) {
 										cms_cos.insert(tmp_term1);
 									} else {
-										it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
+										it->m_cf.add(tmp_term1.m_cf, args_tuple);
 									}
 									it = cms_cos.find(tmp_term2.m_ckey);
 									if (it == cms_cos.end()) {
 										cms_cos.insert(tmp_term2);
 									} else {
-										it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
+										it->m_cf.add(tmp_term2.m_cf, args_tuple);
 									}
 								} else {
-									if (m_flavours1[i]) {
-										tmp_term1.m_cf.invert_sign(ancestor::m_args_tuple);
+									if (f1[i]) {
+										tmp_term1.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into sine container.
 									c_iterator it = cms_sin.find(tmp_term1.m_ckey);
 									if (it == cms_sin.end()) {
 										cms_sin.insert(tmp_term1);
 									} else {
-										it->m_cf.add(tmp_term1.m_cf, ancestor::m_args_tuple);
+										it->m_cf.add(tmp_term1.m_cf, args_tuple);
 									}
 									it = cms_sin.find(tmp_term2.m_ckey);
 									if (it == cms_sin.end()) {
 										cms_sin.insert(tmp_term2);
 									} else {
-										it->m_cf.add(tmp_term2.m_cf, ancestor::m_args_tuple);
+										it->m_cf.add(tmp_term2.m_cf, args_tuple);
 									}
 								}
 							}
@@ -312,10 +333,10 @@ namespace piranha
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.flavour() = true;
-								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-									tmp_term.canonicalise(ancestor::m_args_tuple);
+								if (!tmp_term.is_canonical(args_tuple)) {
+									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+								ancestor::m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						{
@@ -324,10 +345,10 @@ namespace piranha
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.flavour() = false;
-								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-									tmp_term.canonicalise(ancestor::m_args_tuple);
+								if (!tmp_term.is_canonical(args_tuple)) {
+									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+								ancestor::m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series hash coded\n");

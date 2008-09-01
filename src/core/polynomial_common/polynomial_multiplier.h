@@ -46,6 +46,7 @@ namespace piranha
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
+	// TODO: cache members, series, etc. when performing the multiplications.
 	class polynomial_multiplier
 	{
 		public:
