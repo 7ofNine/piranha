@@ -24,6 +24,8 @@
 #include <algorithm> // For std::max and std::swap.
 #include <exception> // For std::bad_alloc.
 #include <utility> // For std::pair.
+#include <sstream> // For building correct error message.
+#include <string>
 #include <vector>
 
 #include "../config.h"
@@ -67,6 +69,7 @@ namespace piranha
 			typedef bucket_type_<4> bucket_type;
 			static const size_t mults_size = 10;
 			static const size_t max_rehash_tries = 1;
+			static const uint8 min_size_index = 2;
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
 				64;
@@ -120,7 +123,7 @@ namespace piranha
 				private:
 					void next() {
 						const size_t vector_size = sizes[m_ht->m_sizes_index];
-						bucket_type *container = m_ht->m_container;
+						const bucket_type *container = m_ht->m_container;
 						size_t tmp_vindex = m_vindex, tmp_bindex = m_bindex;
 						do {
 							if (tmp_bindex == bsize - 1) {
@@ -139,25 +142,31 @@ namespace piranha
 					size_t									m_bindex;
 			};
 			typedef iterator const_iterator;
-			coded_series_cuckoo_hash_table(): m_sizes_index(2), m_mults_index(0), m_length(0) {
+			coded_series_cuckoo_hash_table(): m_sizes_index(min_size_index), m_mults_index(0), m_length(0) {
 				init();
 			}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
 				m_sizes_index = find_upper_pow2_index(size / bsize);
-				p_assert(m_sizes_index >= 2);
+				p_assert(m_sizes_index >= min_size_index);
 				while (true) {
 					try {
 						init();
 						break;
 					} catch (const out_of_memory &) {
 						--m_sizes_index;
-						if (m_sizes_index < 2) {
-							throw out_of_memory("Not enough available memory to allocate a cuckoo hash table of size 4.");
+						if (m_sizes_index < min_size_index) {
+							std::ostringstream stream;
+							stream << "Not enough available memory to allocate a cuckoo hash table of size " <<
+								sizes[min_size_index] << '.';
+							throw out_of_memory(stream.str().c_str());
 						}
 					} catch (const std::bad_alloc &) {
 						--m_sizes_index;
-						if (m_sizes_index < 2) {
-							throw out_of_memory("Not enough physical memory to allocate a cuckoo hash table of size 4.");
+						if (m_sizes_index < min_size_index) {
+							std::ostringstream stream;
+							stream << "Not enough physical memory to allocate a cuckoo hash table of size " <<
+								sizes[min_size_index] << '.';
+							throw out_of_memory(stream.str().c_str());
 						}
 					}
 				}
@@ -255,12 +264,15 @@ namespace piranha
 			static uint8 find_upper_pow2_index(const size_t &size) {
 				for (uint8 retval = 0; retval < sizes_size; ++retval) {
 					if (sizes[retval] >= size) {
-						return std::max<uint8>(static_cast<uint8>(2),retval);
+						return std::max<uint8>(min_size_index,retval);
 					}
 				}
-				return static_cast<uint8>(2);
+				return min_size_index;
 			}
 			void grow() {
+				if (size_t(m_sizes_index + 1) == sizes_size) {
+					throw out_of_memory("Cuckoo hash table: growth exceeds the limits imposed for this architecture.");
+				}
 				coded_series_cuckoo_hash_table new_ht;
 				new_ht.resize(m_sizes_index + 1);
 				// Assign current mults to the new table.
