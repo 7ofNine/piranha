@@ -129,6 +129,27 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/console.xml
 			${WIN_PKG_ROOT}/msvcp71.dll
 			${WIN_PKG_ROOT}/msvcr71.dll
+			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+		)
+		IF(MINGW)
+			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/libgmp-3.dll ${WIN_PKG_ROOT}/libgmpxx-4.dll)
+		ELSE(MINGW)
+			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/gmp.dll)
+		ENDIF(MINGW)
+		IF(NOT MINGW)
+			SET(WIN_MSVC_DLL_PATH ${CMAKE_SOURCE_DIR}/windows_package/Microsoft.VC90.CRT)
+			SET(WIN_MSVC_DLL_FILES
+				${WIN_MSVC_DLL_PATH}/Microsoft.VC90.CRT.manifest
+				${WIN_MSVC_DLL_PATH}/msvcm90.dll
+				${WIN_MSVC_DLL_PATH}/msvcp90.dll
+				${WIN_MSVC_DLL_PATH}/msvcr90.dll
+			)
+			INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION Microsoft.VC90.CRT)
+		ENDIF(NOT MINGW)
+		INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
+		# Now let's setup npp.
+		INSTALL(FILES
 			${WIN_PKG_ROOT}/npp/config.model.xml
 			${WIN_PKG_ROOT}/npp/notepad++.exe
 			${WIN_PKG_ROOT}/npp/doLocalConf.xml
@@ -140,10 +161,28 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/npp/license.txt
 			${WIN_PKG_ROOT}/npp/SciLexer.dll
 			${WIN_PKG_ROOT}/npp/contextMenu.xml
+			DESTINATION npp
+		)
+		INSTALL(FILES
+			${WIN_PKG_ROOT}/npp/plugins/mimeTools.dll
+			${WIN_PKG_ROOT}/npp/plugins/docMonitor.dll
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX.dll
+			${WIN_PKG_ROOT}/npp/plugins/NppExport.dll
+			${WIN_PKG_ROOT}/npp/plugins/NppExec.dll
+			${WIN_PKG_ROOT}/npp/plugins/LightExplorer.dll
+			${WIN_PKG_ROOT}/npp/plugins/SpellChecker.dll
+			${WIN_PKG_ROOT}/npp/plugins/ComparePlugin.dll
+			${WIN_PKG_ROOT}/npp/plugins/FTP_synchronizeA.dll
+			DESTINATION npp/plugins
+		)
+		INSTALL(FILES
 			${WIN_PKG_ROOT}/npp/plugins/doc/NppExec.txt
 			${WIN_PKG_ROOT}/npp/plugins/doc/NPPTextFXdemo.TXT
 			${WIN_PKG_ROOT}/npp/plugins/doc/NppExec_TechInfo.txt
 			${WIN_PKG_ROOT}/npp/plugins/doc/FTP_synchonize.ReadMe.txt
+			DESTINATION npp/plugins/doc
+		)
+		INSTALL(FILES
 			${WIN_PKG_ROOT}/npp/plugins/APIs/lisp.xml
 			${WIN_PKG_ROOT}/npp/plugins/APIs/cpp.xml
 			${WIN_PKG_ROOT}/npp/plugins/APIs/xml.xml
@@ -165,40 +204,17 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/npp/plugins/APIs/php.xml
 			${WIN_PKG_ROOT}/npp/plugins/APIs/fortran.xml
 			${WIN_PKG_ROOT}/npp/plugins/APIs/perl.xml
-			${WIN_PKG_ROOT}/npp/plugins/mimeTools.dll
-			${WIN_PKG_ROOT}/npp/plugins/docMonitor.dll
-			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX.dll
-			${WIN_PKG_ROOT}/npp/plugins/NppExport.dll
-			${WIN_PKG_ROOT}/npp/plugins/NppExec.dll
-			${WIN_PKG_ROOT}/npp/plugins/LightExplorer.dll
-			${WIN_PKG_ROOT}/npp/plugins/SpellChecker.dll
-			${WIN_PKG_ROOT}/npp/plugins/ComparePlugin.dll
-			${WIN_PKG_ROOT}/npp/plugins/FTP_synchronizeA.dll
+			DESTINATION npp/plugins/APIs
+		)
+		INSTALL(FILES
 			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/libTidy.dll
 			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/TIDYCFG.INI
 			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/AsciiToEBCDIC.bin
 			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/W3C-HTMLValidator.htm
 			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/W3C-CSSValidator.htm
 			${WIN_PKG_ROOT}/npp/LINEDRAW.TTF
-			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
-			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+			DESTINATION npp/plugins/NPPTextFX
 		)
-		IF(MINGW)
-			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/libgmp-3.dll ${WIN_PKG_ROOT}/libgmpxx-4.dll)
-		ELSE(MINGW)
-			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/gmp.dll)
-		ENDIF(MINGW)
-		INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
-		IF(NOT MINGW)
-			SET(WIN_MSVC_DLL_PATH ${CMAKE_SOURCE_DIR}/windows_package/Microsoft.VC90.CRT)
-			SET(WIN_MSVC_DLL_FILES
-				${WIN_MSVC_DLL_PATH}/Microsoft.VC90.CRT.manifest
-				${WIN_MSVC_DLL_PATH}/msvcm90.dll
-				${WIN_MSVC_DLL_PATH}/msvcp90.dll
-				${WIN_MSVC_DLL_PATH}/msvcr90.dll
-			)
-			INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION Microsoft.VC90.CRT)
-		ENDIF(NOT MINGW)
 	ENDIF(WIN32)
 	# Mandatory linking.
 	SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
