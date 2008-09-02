@@ -38,6 +38,8 @@ IF(CPACK_GENERATOR MATCHES "NSIS")
 	# Apparently this escaping madness is necessary due to an NSIS bug.
 	SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\piranha.tuxfamily.org")
 	SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\piranha.tuxfamily.org")
+	# Do not allow modifying install path for now, we would mess up theories path.
+	SET(CPACK_NSIS_MODIFY_PATH OFF)
 	# Add shortcuts to the Start Menu.
 	SET(CPACK_NSIS_CREATE_ICONS_EXTRA
 		"
