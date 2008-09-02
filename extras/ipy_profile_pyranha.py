@@ -66,9 +66,9 @@ def piranha_editor(self, filename, linenum=None):
 	try:
 		editor = os.environ["EDITOR"]
 	except KeyError:
-		editor = "npp\\notepad++.exe"
+		editor = 'npp\\notepad++.exe'
 	# Marker for at which line to open the file (for existing objects)
-	if linenum is None or editor=='notepad':
+	if linenum is None or editor=='notepad' or editor=='npp\\notepad++.exe':
 		linemark = ''
 	else:
 		linemark = '+%d' % int(linenum)
