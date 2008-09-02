@@ -60,4 +60,24 @@ def main():
 		error_msg = True
 	ip.ex("settings.format = pretty")
 
+def piranha_editor(self, filename, linenum=None):
+	import os
+	# Try to fetch the "EDITOR" environment variable, otherwise use the provided npp editor.
+	try:
+		editor = os.environ["EDITOR"]
+	except KeyError:
+		editor = "npp\\notepad++.exe"
+	# Marker for at which line to open the file (for existing objects)
+	if linenum is None or editor=='notepad':
+		linemark = ''
+	else:
+		linemark = '+%d' % int(linenum)
+	# Enclose in quotes if necessary and legal
+	if ' ' in editor and os.path.isfile(editor) and editor[0] != '"':
+		editor = '"%s"' % editor
+	# Call the actual editor
+	os.system('%s %s %s' % (editor,linemark,filename))
+
+ip.set_hook('editor', piranha_editor)
+
 main()

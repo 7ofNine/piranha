@@ -131,6 +131,63 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/msvcr71.dll
 			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
 			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+			${WIN_PKG_ROOT}/npp
+			${WIN_PKG_ROOT}/npp/config.model.xml
+			${WIN_PKG_ROOT}/npp/notepad++.exe
+			${WIN_PKG_ROOT}/npp/doLocalConf.xml
+			${WIN_PKG_ROOT}/npp/shortcuts.xml
+			${WIN_PKG_ROOT}/npp/stylers.model.xml
+			${WIN_PKG_ROOT}/npp/langs.model.xml
+			${WIN_PKG_ROOT}/npp/readme.txt
+			${WIN_PKG_ROOT}/npp/change.log
+			${WIN_PKG_ROOT}/npp/license.txt
+			${WIN_PKG_ROOT}/npp/SciLexer.dll
+			${WIN_PKG_ROOT}/npp/contextMenu.xml
+			${WIN_PKG_ROOT}/npp/plugins
+			${WIN_PKG_ROOT}/npp/plugins/doc
+			${WIN_PKG_ROOT}/npp/plugins/doc/NppExec.txt
+			${WIN_PKG_ROOT}/npp/plugins/doc/NPPTextFXdemo.TXT
+			${WIN_PKG_ROOT}/npp/plugins/doc/NppExec_TechInfo.txt
+			${WIN_PKG_ROOT}/npp/plugins/doc/FTP_synchonize.ReadMe.txt
+			${WIN_PKG_ROOT}/npp/plugins/APIs
+			${WIN_PKG_ROOT}/npp/plugins/APIs/lisp.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/cpp.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/xml.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/css.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/c.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/actionscript.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/html.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/pascal.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/sql.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/tex.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/cs.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/python.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/nsis.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/rc.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/vb.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/java.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/vhdl.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/javascript.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/php.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/fortran.xml
+			${WIN_PKG_ROOT}/npp/plugins/APIs/perl.xml
+			${WIN_PKG_ROOT}/npp/plugins/Config
+			${WIN_PKG_ROOT}/npp/plugins/mimeTools.dll
+			${WIN_PKG_ROOT}/npp/plugins/docMonitor.dll
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX.dll
+			${WIN_PKG_ROOT}/npp/plugins/NppExport.dll
+			${WIN_PKG_ROOT}/npp/plugins/NppExec.dll
+			${WIN_PKG_ROOT}/npp/plugins/LightExplorer.dll
+			${WIN_PKG_ROOT}/npp/plugins/SpellChecker.dll
+			${WIN_PKG_ROOT}/npp/plugins/ComparePlugin.dll
+			${WIN_PKG_ROOT}/npp/plugins/FTP_synchronizeA.dll
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/libTidy.dll
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/TIDYCFG.INI
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/AsciiToEBCDIC.bin
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/W3C-HTMLValidator.htm
+			${WIN_PKG_ROOT}/npp/plugins/NPPTextFX/W3C-CSSValidator.htm
+			${WIN_PKG_ROOT}/npp/LINEDRAW.TTF
 		)
 		IF(MINGW)
 			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/libgmp-3.dll ${WIN_PKG_ROOT}/libgmpxx-4.dll)
