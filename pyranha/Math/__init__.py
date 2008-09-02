@@ -161,15 +161,15 @@ def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = Non
 			except AttributeError:
 				return _Math.Ynm(n,m,theta,ei_phi,emi_phi)
 
-def partial(arg,name,n=1):
+def partial(arg,p,n=1):
 	"""
-	Calculate the n-th partial derivative of arg with respect to argument name.
+	Calculate the n-th partial derivative of arg with respect to psym p.
 	
 	Internally the partial() method of arg is called. If such method is not available, an AttributeError
 	exception will be raised.
 	"""
 	try:
-		return arg.partial(name,n)
+		return arg.partial(p,n)
 	except AttributeError:
 		raise AttributeError("The partial() method is not available for this argument type.")
 
