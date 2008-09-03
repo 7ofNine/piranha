@@ -148,7 +148,7 @@ namespace piranha
 			bool operator==(const max_fast_int &n) const {
 				T tmp(m_value - n);
 				return (tmp <= settings::numerical_zero() &&
-                       tmp >= -settings::numerical_zero());
+					tmp >= -settings::numerical_zero());
 			}
 			bool operator==(const double &x) const {
 				return (m_value == x);

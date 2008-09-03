@@ -153,15 +153,15 @@ namespace piranha
 			bool generic_real_comparison(const Number &x) const {
 				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
-                       derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
-                       derived_const_cast->m_value.imag() >= -settings::numerical_zero());
+					derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
+					derived_const_cast->m_value.imag() >= -settings::numerical_zero());
 			}
 			template <class Number>
 			bool generic_complex_comparison(const std::complex<Number> &c) const {
 				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
-				      tmp_imag(derived_const_cast->m_value.imag() - c.imag());
+					tmp_imag(derived_const_cast->m_value.imag() - c.imag());
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
-				       tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
+					tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
 			}
 	};
 
