@@ -29,6 +29,7 @@
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../psym.h"
+#include "../settings.h"
 #include "../utils.h" // Lexical converter.
 #include "../type_traits.h"
 #include "numerical_container_complex_toolbox.h"
@@ -145,7 +146,9 @@ namespace piranha
 				return (m_value == other.m_value);
 			}
 			bool operator==(const max_fast_int &n) const {
-				return (m_value == n);
+				T tmp(m_value - n);
+				return (tmp <= settings::numerical_zero() &&
+                       tmp >= -settings::numerical_zero());
 			}
 			bool operator==(const double &x) const {
 				return (m_value == x);

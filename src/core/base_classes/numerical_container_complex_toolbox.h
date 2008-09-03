@@ -26,6 +26,7 @@
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../settings.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -150,12 +151,17 @@ namespace piranha
 		private:
 			template <class Number>
 			bool generic_real_comparison(const Number &x) const {
-				return (derived_const_cast->m_value.real() == x && derived_const_cast->m_value.imag() == 0);
+				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
+				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
+                       derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
+                       derived_const_cast->m_value.imag() >= -settings::numerical_zero());
 			}
 			template <class Number>
 			bool generic_complex_comparison(const std::complex<Number> &c) const {
-				return (derived_const_cast->m_value.real() == c.real() &&
-					derived_const_cast->m_value.imag() == c.imag());
+				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
+				      tmp_imag(derived_const_cast->m_value.imag() - c.imag());
+				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
+				       tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
 			}
 	};
 
