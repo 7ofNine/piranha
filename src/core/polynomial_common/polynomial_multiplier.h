@@ -218,13 +218,13 @@ namespace piranha
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
-								const max_fast_int new_key = key1 + coded_ancestor::m_ckeys2[j];
-								if (trunc.accept(new_key)) {
-									c_iterator it = cms.find(new_key);
+								tmp_cterm.m_ckey = key1;
+								tmp_cterm.m_ckey += coded_ancestor::m_ckeys2[j];
+								if (trunc.accept(tmp_cterm.m_ckey)) {
+									c_iterator it = cms.find(tmp_cterm);
 									if (it == cms.end()) {
-										// Create new temporary term from old cf and new key.
+										// Assign to the temporary term the old cf (new_key is already assigned).
 										tmp_cterm.m_cf = ancestor::m_terms1[i].m_cf;
-										tmp_cterm.m_ckey = new_key;
 										// Multiply the old term by the second term.
 										tmp_cterm.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
 										cms.insert(tmp_cterm);

@@ -49,6 +49,9 @@ namespace piranha
 						m_cf.swap(t.m_cf);
 						std::swap(m_ckey,t.m_ckey);
 					}
+					bool operator==(const term_type_ &t) const {
+						return (m_ckey == t.m_ckey);
+					}
 					mutable Cf	m_cf;
 					Ckey		m_ckey;
 			};
@@ -209,17 +212,17 @@ namespace piranha
 			iterator end() const {
 				return iterator(this, sizes[m_sizes_index], 0);
 			}
-			iterator find(const Ckey &ckey) const {
-				const size_t h = static_cast<size_t>(ckey), pos1 = position1(h), pos2 = position2(h);
+			iterator find(const term_type &t) const {
+				const size_t h = static_cast<size_t>(t.m_ckey), pos1 = position1(h), pos2 = position2(h);
 				bucket_type *container = m_container;
 				// TODO: replace with bit twiddling to reduce branching?
 				for (size_t i = 0; i < bucket_size; ++i) {
-					if (container[pos1].f[i] && container[pos1].t[i].m_ckey == ckey) {
+					if (container[pos1].f[i] && container[pos1].t[i] == t) {
 						return iterator(this,pos1,i);
 					}
 				}
 				for (size_t i = 0; i < bucket_size; ++i) {
-					if (container[pos2].f[i] && container[pos2].t[i].m_ckey == ckey) {
+					if (container[pos2].f[i] && container[pos2].t[i] == t) {
 						return iterator(this,pos2,i);
 					}
 				}
@@ -232,7 +235,8 @@ namespace piranha
 				return (m_length == 0);
 			}
 			void insert(const term_type &t) {
-				if ((static_cast<double>(m_length) + 1) >= settings::load_factor() * (sizes[m_sizes_index] * bucket_size)) {
+				if ((static_cast<double>(m_length) + 1) >=
+					settings::load_factor() * (sizes[m_sizes_index] * bucket_size)) {
 					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
 					grow();
 				}

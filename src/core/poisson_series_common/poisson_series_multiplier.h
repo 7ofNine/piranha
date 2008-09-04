@@ -292,13 +292,13 @@ namespace piranha
 										tmp_term2.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into cosine container.
-									c_iterator it = cms_cos.find(tmp_term1.m_ckey);
+									c_iterator it = cms_cos.find(tmp_term1);
 									if (it == cms_cos.end()) {
 										cms_cos.insert(tmp_term1);
 									} else {
 										it->m_cf.add(tmp_term1.m_cf, args_tuple);
 									}
-									it = cms_cos.find(tmp_term2.m_ckey);
+									it = cms_cos.find(tmp_term2);
 									if (it == cms_cos.end()) {
 										cms_cos.insert(tmp_term2);
 									} else {
@@ -309,13 +309,13 @@ namespace piranha
 										tmp_term1.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into sine container.
-									c_iterator it = cms_sin.find(tmp_term1.m_ckey);
+									c_iterator it = cms_sin.find(tmp_term1);
 									if (it == cms_sin.end()) {
 										cms_sin.insert(tmp_term1);
 									} else {
 										it->m_cf.add(tmp_term1.m_cf, args_tuple);
 									}
-									it = cms_sin.find(tmp_term2.m_ckey);
+									it = cms_sin.find(tmp_term2);
 									if (it == cms_sin.end()) {
 										cms_sin.insert(tmp_term2);
 									} else {
