@@ -22,6 +22,7 @@
 #define PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
 
 #include <algorithm> // For std::max and std::swap.
+#include <boost/integer_traits.hpp> // For maximum values of size_t.
 #include <exception> // For std::bad_alloc.
 #include <utility> // For std::pair.
 #include <sstream> // For building correct error message.
@@ -473,28 +474,23 @@ namespace piranha
 #endif
 	};
 
-#ifdef _PIRANHA_64BIT
-#define MAX (18446744073709551615.)
-#else
-#define MAX (4294967295.)
-#endif
-	// These are the decimal parts of the square roots of prime numbers.
+	// These are the decimal parts of the square roots of prime numbers multiplied by the
+	// maximum value representable by size_t.
 	template <class Cf, class Ckey, class Allocator>
 	const size_t coded_series_cuckoo_hash_table<Cf,Ckey,Allocator>::mults[] = {
-		static_cast<size_t>(.7320508075688772 * MAX),
-		static_cast<size_t>(.2360679774997898 * MAX),
-		static_cast<size_t>(.6457513110645907 * MAX),
-		static_cast<size_t>(.3166247903553998 * MAX),
-		static_cast<size_t>(.6055512754639891 * MAX),
-		static_cast<size_t>(.1231056256176606 * MAX),
-		static_cast<size_t>(.3588989435406740 * MAX),
-		static_cast<size_t>(.7958315233127191 * MAX),
-		static_cast<size_t>(.3851648071345037 * MAX),
-		static_cast<size_t>(.5677643628300215 * MAX)
+		static_cast<size_t>(.7320508075688772 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.2360679774997898 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.6457513110645907 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.3166247903553998 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.6055512754639891 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.1231056256176606 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.3588989435406740 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.7958315233127191 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.3851648071345037 * boost::integer_traits<size_t>::const_max),
+		static_cast<size_t>(.5677643628300215 * boost::integer_traits<size_t>::const_max)
 // 		.6180339887498949 * MAX,
 // 		.4658204617032757 * MAX,
 	};
-#undef MAX
 }
 
 #endif
