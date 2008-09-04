@@ -63,9 +63,10 @@ namespace piranha
 			// Configuration options.
 			// Bucket size = 4.
 			typedef bucket_type_<4> bucket_type;
-			static const size_t mults_size = 10;
-			static const size_t max_rehash_tries = 1;
-			static const size_t min_size_index = 1;
+			static const size_t mults_size = 			10;
+			static const size_t max_rehash_tries =		1;
+			static const size_t min_size_index =		1;
+			static const size_t cuckoo_loop_threshold =	10;
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
 				64;
@@ -313,7 +314,8 @@ namespace piranha
 				const iterator it_f = end();
 				while (it != it_f) {
 					if (!new_ht.attempt_insertion(*it,tmp_term)) {
-						// TODO: here should we check with other hash functions before giving up and increasing size?
+						// NOTE: here should we check with other hash functions before
+						// giving up and increasing size?
 						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize." << '\n');
 						const size_t new_index = new_ht.m_sizes_index + 1;
 						__PDEBUG(std::cout << "Next size: " << sizes[new_index] << '\n');
@@ -363,6 +365,9 @@ namespace piranha
 					// There's space in the bucket, rejoice!
 					if (!container[pos].f[i]) {
 						container[pos].f[i] = true;
+						// NOTE: would it make sense here _not_ to default-initialise elements of the
+						// bucket during construction and then use allocator::construct here instead of
+						// assignment? Mhmh...
 						container[pos].t[i] = t;
 						++m_length;
 						return true;
@@ -370,13 +375,13 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				const size_t dindex = (bsize == 1) ? 0 : (pos & (bsize - 1));
+				const size_t dindex = pos & (bsize - 1);
 				tmp_term = container[pos].t[dindex];
 				container[pos].t[dindex] = t;
 				size_t counter = 0;
 				while (swap_and_displace(tmp_term,pos)) {
 					++counter;
-					if (counter > 10) {
+					if (counter > cuckoo_loop_threshold) {
 						__PDEBUG(std::cout << "Cuckoo loop detected, returning false. Load factor is: " <<
 							((static_cast<double>(m_length) + 1) / (sizes[m_sizes_index] * bsize)) << '\n');
 						return false;
@@ -403,7 +408,7 @@ namespace piranha
 				}
 				// No space was found in the alternative bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				const size_t dindex = (bsize == 1) ? 0 : (new_pos & (bsize - 1));
+				const size_t dindex = new_pos & (bsize - 1);
 				// Displace the selected term.
 				container[new_pos].t[dindex].swap(tmp_term);
 				orig_location = new_pos;

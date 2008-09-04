@@ -95,8 +95,10 @@ namespace piranha
 
 	settings::startup_class::startup_class()
 	{
+		// Some static checks.
 		p_static_check(sizeof(char) == 1, "Wrong char size.");
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
+		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
