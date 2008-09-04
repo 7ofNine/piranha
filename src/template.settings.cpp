@@ -70,7 +70,7 @@ namespace piranha
 	double settings::m_numerical_zero = 1E-80;
 	const std::string settings::m_default_path =
 #ifdef _PIRANHA_WIN32
-		// TODO: this is a bit hackish, but it works. The alternative would be to use
+		// NOTE: this is a bit hackish, but it works. The alternative would be to use
 		// boost::filesystem but it looks like overkill, since it would be used just here.
 		boost::algorithm::replace_all_copy(
 			get_env_variable("ProgramFiles")+std::string("/Piranha @PIRANHA_VERSION@/@THEORIES_INSTALL_PATH@"),
