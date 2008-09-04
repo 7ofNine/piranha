@@ -154,12 +154,12 @@ namespace piranha
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 				return *this;
 			}
-			/// Do I need padding in order to be inserted in series?
+			/// Do I need padding in order to be compatible with args_tuple?
 			template <class ArgsTuple>
 			bool needs_padding(const ArgsTuple &args_tuple) const {
 				return (m_size < args_tuple.template get<Pos>().size());
 			}
-			/// Am I insertable in a series?
+			/// Am I insertion-compatible with args_tuple?
 			template <class ArgsTuple>
 			bool is_insertable(const ArgsTuple &args_tuple) const {
 				return (m_size <= args_tuple.template get<Pos>().size());
@@ -169,13 +169,11 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			bool checkup(const ArgsTuple &args_tuple) const {
-				switch (args_tuple.template get<Pos>().size() != m_size) {
-				case true:
-					std::cout << "Size mismatch in int_array." << std::endl;
-					return false;
-				default:
+				if (args_tuple.template get<Pos>().size() == m_size) {
 					return true;
 				}
+				std::cout << "Size mismatch in int_array." << std::endl;
+				return false;
 			}
 			/// Pad right.
 			template <class ArgsTuple>
