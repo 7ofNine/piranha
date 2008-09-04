@@ -173,13 +173,7 @@ namespace piranha
 				m_length(c.m_length),
 				m_container(allocator_type().allocate(sizes[m_sizes_index])) {
 				// Memory has been allocated, now copy over from c.
-				allocator_type a;
-				bucket_type *container = m_container;
-				const bucket_type *container_other = c.m_container;
-				const size_t size = sizes[m_sizes_index];
-				for (size_t i = 0; i < size; ++i) {
-					a.construct(container + i, container_other[i]);
-				}
+				assign_from_other(c);
 			}
 			coded_series_cuckoo_hash_table &operator=(const coded_series_cuckoo_hash_table &c) {
 				// Handle self-assignment.
@@ -193,14 +187,8 @@ namespace piranha
 				m_mults_index = c.m_mults_index;
 				m_length = c.m_length;
 				// Finally, allocate the needed space and copy over from c.
-				allocator_type a;
-				const size_t size = sizes[m_sizes_index];
-				m_container = a.allocate(size);
-				bucket_type *container = m_container;
-				const bucket_type *container_other = c.m_container;
-				for (size_t i = 0; i < size; ++i) {
-					a.construct(container + i, container_other[i]);
-				}
+				m_container = allocator_type().allocate(sizes[m_sizes_index]);
+				assign_from_other(c);
 				return *this;
 			}
 			~coded_series_cuckoo_hash_table() {
@@ -267,7 +255,7 @@ namespace piranha
 				std::swap(m_container,other.m_container);
 			}
 		private:
-			// Allocate and construct buckets according to the size specified by m_sizes_index.
+			// Allocate and default-construct buckets according to the size specified by m_sizes_index.
 			void init() {
 				allocator_type a;
 				m_container = a.allocate(sizes[m_sizes_index]);
@@ -292,6 +280,17 @@ namespace piranha
 				m_sizes_index = new_sizes_index;
 				m_length = 0;
 				init();
+			}
+			// Construct buckets into m_container from other hash table c.
+			void assign_from_other(const coded_series_cuckoo_hash_table &c) {
+				p_assert(m_sizes_index == c.m_sizes_index);
+				allocator_type a;
+				bucket_type *container = m_container;
+				const bucket_type *container_other = c.m_container;
+				const size_t size = sizes[m_sizes_index];
+				for (size_t i = 0; i < size; ++i) {
+					a.construct(container + i, container_other[i]);
+				}
 			}
 			static uint8 find_upper_pow2_index(const size_t &size) {
 				for (uint8 retval = 0; retval < sizes_size; ++retval) {

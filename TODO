@@ -56,3 +56,4 @@
 - Take care of allocation of zero-size memory areas?
 - Boost's aligned storage type traits for sse?
 - Write tests also in python.
+- Provide interface to int and long int instead of just max_fast_int?
