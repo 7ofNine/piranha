@@ -46,10 +46,11 @@ namespace piranha
 {
 	/// Dynamically-sized integer array.
 	/**
-	 * Parametrized to an integer sized Bits, which can be Signed or not. It contains also
+	 * Parametrized to a signed integer sized Bits, It contains also
 	 * a flavour boolean flag, which can be used in trigonometric parts
 	 * of Poisson series.
 	 */
+	// TODO: probably it is best to drop the static allocator here, and construct it on-demand.
 	template <__PIRANHA_INT_ARRAY_TP_DECL>
 	class int_array
 	{
