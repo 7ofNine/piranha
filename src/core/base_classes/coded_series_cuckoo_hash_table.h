@@ -61,22 +61,22 @@ namespace piranha
 					bool 		f[size];
 			};
 			// Configuration options.
-			// Bucket size = 4.
-			typedef bucket_type_<4> bucket_type;
+			static const size_t bucket_size =			4;
 			static const size_t mults_size = 			10;
 			static const size_t max_rehash_tries =		1;
 			static const size_t min_size_index =		1;
 			static const size_t cuckoo_loop_threshold =	10;
+			// Configuration options stop here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
 				64;
 #else
 				32;
 #endif
+			typedef bucket_type_<bucket_size> bucket_type;
 			static const size_t mults[mults_size];
 			static const size_t sizes[sizes_size];
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
-			static const size_t bsize = bucket_type::size;
 			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
 		public:
 			typedef term_type_ term_type;
@@ -84,15 +84,15 @@ namespace piranha
 			{
 					friend class coded_series_cuckoo_hash_table;
 					explicit iterator(const coded_series_cuckoo_hash_table *ht): m_ht(ht), m_vindex(0), m_bindex(0) {
-						// Go to the first occupied term if the table is not empty and the first
-						// term is not occupied.
-						if (sizes[m_ht->m_sizes_index] > 0 && !m_ht->m_container[0].f[0]) {
+						p_assert(sizes[m_ht->m_sizes_index] > 0);
+						// Go to the first occupied slot if the first one isn't.
+						if (!m_ht->m_container[0].f[0]) {
 							next();
 						}
 					}
 					explicit iterator(const coded_series_cuckoo_hash_table *ht, const size_t &vpos, const size_t &bpos):
 						m_ht(ht), m_vindex(vpos), m_bindex(bpos) {
-						p_assert(m_bindex < bsize);
+						p_assert(m_bindex < bucket_size);
 					}
 				public:
 					iterator &operator++() {
@@ -101,13 +101,13 @@ namespace piranha
 					}
 					const term_type &operator*() const {
 						p_assert(m_vindex < sizes[m_ht->m_sizes_index]);
-						p_assert(m_bindex < bsize);
+						p_assert(m_bindex < bucket_size);
 						p_assert(m_ht->m_container[m_vindex].f[m_bindex]);
 						return m_ht->m_container[m_vindex].t[m_bindex];
 					}
 					const term_type *operator->() const {
 						p_assert(m_vindex < sizes[m_ht->m_sizes_index]);
-						p_assert(m_bindex < bsize);
+						p_assert(m_bindex < bucket_size);
 						p_assert(m_ht->m_container[m_vindex].f[m_bindex]);
 						return &m_ht->m_container[m_vindex].t[m_bindex];
 					}
@@ -123,7 +123,7 @@ namespace piranha
 						const bucket_type *container = m_ht->m_container;
 						size_t tmp_vindex = m_vindex, tmp_bindex = m_bindex;
 						do {
-							if (tmp_bindex == bsize - 1) {
+							if (tmp_bindex == bucket_size - 1) {
 								tmp_bindex = 0;
 								++tmp_vindex;
 							} else {
@@ -143,7 +143,7 @@ namespace piranha
 				init();
 			}
 			coded_series_cuckoo_hash_table(const size_t &size): m_mults_index(0), m_length(0) {
-				m_sizes_index = find_upper_pow2_index(size / bsize);
+				m_sizes_index = find_upper_pow2_index(size / bucket_size);
 				p_assert(m_sizes_index >= min_size_index);
 				while (true) {
 					try {
@@ -213,12 +213,12 @@ namespace piranha
 				const size_t h = static_cast<size_t>(ckey), pos1 = position1(h), pos2 = position2(h);
 				bucket_type *container = m_container;
 				// TODO: replace with bit twiddling to reduce branching?
-				for (size_t i = 0; i < bsize; ++i) {
+				for (size_t i = 0; i < bucket_size; ++i) {
 					if (container[pos1].f[i] && container[pos1].t[i].m_ckey == ckey) {
 						return iterator(this,pos1,i);
 					}
 				}
-				for (size_t i = 0; i < bsize; ++i) {
+				for (size_t i = 0; i < bucket_size; ++i) {
 					if (container[pos2].f[i] && container[pos2].t[i].m_ckey == ckey) {
 						return iterator(this,pos2,i);
 					}
@@ -232,7 +232,7 @@ namespace piranha
 				return (m_length == 0);
 			}
 			void insert(const term_type &t) {
-				if ((static_cast<double>(m_length) + 1) >= settings::load_factor() * (sizes[m_sizes_index] * bsize)) {
+				if ((static_cast<double>(m_length) + 1) >= settings::load_factor() * (sizes[m_sizes_index] * bucket_size)) {
 					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
 					grow();
 				}
@@ -361,7 +361,7 @@ namespace piranha
 				const size_t h = static_cast<size_t>(t.m_ckey);
 				size_t pos = position1(h);
 				bucket_type *container = m_container;
-				for (size_t i = 0; i < bsize; ++i) {
+				for (size_t i = 0; i < bucket_size; ++i) {
 					// There's space in the bucket, rejoice!
 					if (!container[pos].f[i]) {
 						container[pos].f[i] = true;
@@ -375,7 +375,7 @@ namespace piranha
 				}
 				// No space was found in the first-choice bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				const size_t dindex = pos & (bsize - 1);
+				const size_t dindex = pos & (bucket_size - 1);
 				tmp_term = container[pos].t[dindex];
 				container[pos].t[dindex] = t;
 				size_t counter = 0;
@@ -383,7 +383,7 @@ namespace piranha
 					++counter;
 					if (counter > cuckoo_loop_threshold) {
 						__PDEBUG(std::cout << "Cuckoo loop detected, returning false. Load factor is: " <<
-							((static_cast<double>(m_length) + 1) / (sizes[m_sizes_index] * bsize)) << '\n');
+							((static_cast<double>(m_length) + 1) / (sizes[m_sizes_index] * bucket_size)) << '\n');
 						return false;
 					}
 				}
@@ -397,7 +397,7 @@ namespace piranha
 				const size_t h = static_cast<size_t>(tmp_term.m_ckey), pos1 = position1(h),
 					new_pos = (orig_location == pos1) ? position2(h) : pos1;
 				bucket_type *container = m_container;
-				for (size_t i = 0; i < bsize; ++i) {
+				for (size_t i = 0; i < bucket_size; ++i) {
 					if (!container[new_pos].f[i]) {
 						// Place found, rejoice!
 						container[new_pos].t[i].swap(tmp_term);
@@ -408,7 +408,7 @@ namespace piranha
 				}
 				// No space was found in the alternative bucket. Choose randomly(?) the index of the element
 				// in the bucket that will be displaced.
-				const size_t dindex = new_pos & (bsize - 1);
+				const size_t dindex = new_pos & (bucket_size - 1);
 				// Displace the selected term.
 				container[new_pos].t[dindex].swap(tmp_term);
 				orig_location = new_pos;
