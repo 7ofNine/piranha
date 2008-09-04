@@ -57,11 +57,6 @@ namespace piranha
 					p_static_check(N > 0 && (N == 1 || lg<N>::value > 0), "Invalid bucket size in cuckoo hash.");
 				public:
 					static const size_t size = static_cast<size_t>(N);
-					bucket_type_() {
-						for (size_t i = 0; i < size; ++i) {
-							f[i] = false;
-						}
-					}
 					term_type_	t[size];
 					bool 		f[size];
 			};
@@ -171,6 +166,42 @@ namespace piranha
 						}
 					}
 				}
+			}
+			coded_series_cuckoo_hash_table(const coded_series_cuckoo_hash_table &c):
+				m_sizes_index(c.m_sizes_index),
+				m_mults_index(c.m_mults_index),
+				m_length(c.m_length),
+				m_container(allocator_type().allocate(sizes[m_sizes_index])) {
+				// Memory has been allocated, now copy over from c.
+				allocator_type a;
+				bucket_type *container = m_container;
+				const bucket_type *container_other = c.m_container;
+				const size_t size = sizes[m_sizes_index];
+				for (size_t i = 0; i < size; ++i) {
+					a.construct(container + i, container_other[i]);
+				}
+			}
+			coded_series_cuckoo_hash_table &operator=(const coded_series_cuckoo_hash_table &c) {
+				// Handle self-assignment.
+				if (this == &c) {
+					return *this;
+				}
+				// First let's auto-destroy.
+				destroy();
+				// Then assign the data members.
+				m_sizes_index = c.m_sizes_index;
+				m_mults_index = c.m_mults_index;
+				m_length = c.m_length;
+				// Finally, allocate the needed space and copy over from c.
+				allocator_type a;
+				const size_t size = sizes[m_sizes_index];
+				m_container = a.allocate(size);
+				bucket_type *container = m_container;
+				const bucket_type *container_other = c.m_container;
+				for (size_t i = 0; i < size; ++i) {
+					a.construct(container + i, container_other[i]);
+				}
+				return *this;
 			}
 			~coded_series_cuckoo_hash_table() {
 				__PDEBUG(
