@@ -150,6 +150,8 @@ namespace piranha
 			}
 		private:
 			template <class Number>
+			// TODO: these are too costly, we should be able to compare directly m_value in
+			// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
 			bool generic_real_comparison(const Number &x) const {
 				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&

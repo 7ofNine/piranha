@@ -146,6 +146,8 @@ namespace piranha
 				return (m_value == other.m_value);
 			}
 			bool operator==(const max_fast_int &n) const {
+				// TODO: this is too costly, we should be able to compare directly m_value in
+				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
 				T tmp(m_value - n);
 				return (tmp <= settings::numerical_zero() &&
 					tmp >= -settings::numerical_zero());
