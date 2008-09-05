@@ -18,27 +18,24 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
-#define PIRANHA_CODED_SERIES_CUCKOO_HASH_TABLE_H
-
-#include <algorithm> // For std::max and std::swap.
-#include <boost/integer_traits.hpp> // For maximum values of size_t.
-#include <exception> // For std::bad_alloc.
-#include <utility> // For std::pair.
-#include <sstream> // For building correct error message.
-#include <string>
-#include <vector>
-
-#include "../config.h" // For p_static_check.
-#include "../exceptions.h" // For out_of_memory.
-#include "../math.h"
-#include "../memory.h"
-#include "../p_assert.h"
-#include "../settings.h"
+#ifndef PIRANHA_COMMON_FUNCTORS_H
+#define PIRANHA_COMMON_FUNCTORS_H
 
 namespace piranha
 {
+	template <class T>
+	struct member_hash_value {
+		size_t operator()(const T &x) const {
+			return x.hash_value();
+		}
+	};
 
+	template <class T>
+	struct member_swap {
+		void operator()(T &a, T &b) const {
+			a.swap(b);
+		}
+	};
 }
 
 #endif

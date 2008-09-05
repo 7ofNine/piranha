@@ -24,6 +24,7 @@
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <exception>
+#include <functional> // For std::equal_to.
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -31,9 +32,9 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
-#include "../base_classes/coded_series_cuckoo_hash_table.h"
 #include "../base_classes/null_truncator.h"
-#include "../config.h"
+#include "../common_functors.h"
+#include "../cuckoo_hash_set.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -158,7 +159,8 @@ namespace piranha
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
 						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
-						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
+						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max -
+							coded_ancestor::m_h_min + 1);
 						// For Poisson series vector coded we need twice the space given by n_codes, because of the
 						// sine-cosine split. Hence we must make an additional check to make sure that n_codes << 1
 						// won't overflow.
@@ -179,7 +181,8 @@ namespace piranha
 						__PDEBUG(std::cout << "Going for vector coded Poisson series multiplication\n");
 						// Define the base pointers for storing the results of multiplication.
 						// Please note that even if here it seems like we are going to write outside allocated memory,
-						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
+						// the indices from the analysis of the coded series will prevent out-of-boundaries
+						// reads/writes.
 						cf_type1 *vc_res_cos =  &vc[0] - coded_ancestor::m_h_min,
 							*vc_res_sin = &vc[0] + n_codes - coded_ancestor::m_h_min;
 						const size_t s1 = ancestor::m_size1, s2 = ancestor::m_size2;
@@ -259,9 +262,9 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int,
-							std_counting_allocator<char> > csht;
-						typedef typename csht::term_type cterm;
+						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
+						typedef cuckoo_hash_set<cterm, member_hash_value<cterm>, std::equal_to<cterm>,
+							std_counting_allocator<char>, member_swap<cterm> > csht;
 						typedef typename csht::iterator c_iterator;
 						// TODO: size hinting, in conjunction with the work above to separate sines from cosines, etc.
 						csht cms_cos, cms_sin;
@@ -277,8 +280,8 @@ namespace piranha
 									break;
 								}
 								// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
-								// and cfs instead of terms, generating only one coefficient and change its sign later if
-								// needed - after insertion.
+								// and cfs instead of terms, generating only one coefficient and change its sign later
+								// if needed - after insertion.
 								cterm tmp_term1(t1[i].m_cf, ck1[i]);
 								// Handle the coefficient, with positive signs for now.
 								tmp_term1.m_cf.mult_by(t2[j].m_cf, args_tuple);

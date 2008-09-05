@@ -24,6 +24,7 @@
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <exception>
+#include <functional> // For std::equal_to.
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -31,8 +32,9 @@
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
-#include "../base_classes/coded_series_cuckoo_hash_table.h"
 #include "../base_classes/null_truncator.h"
+#include "../common_functors.h"
+#include "../cuckoo_hash_set.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -166,7 +168,8 @@ namespace piranha
 						__PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
 						// Define the base pointers for storing the results of multiplication.
 						// Please note that even if here it seems like we are going to write outside allocated memory,
-						// the indices from the analysis of the coded series will prevent out-of-boundaries reads/writes.
+						// the indices from the analysis of the coded series will prevent out-of-boundaries
+						// reads/writes.
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
 						// Perform multiplication.
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
@@ -203,9 +206,9 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
-						typedef coded_series_cuckoo_hash_table<cf_type1, max_fast_int,
-							std_counting_allocator<char> > csht;
-						typedef typename csht::term_type cterm;
+						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
+						typedef cuckoo_hash_set<cterm, member_hash_value<cterm>, std::equal_to<cterm>,
+							std_counting_allocator<char>, member_swap<cterm> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const size_t size_hint = static_cast<size_t>(

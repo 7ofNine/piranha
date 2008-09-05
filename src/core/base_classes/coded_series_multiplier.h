@@ -21,8 +21,9 @@
 #ifndef PIRANHA_CODED_SERIES_MULTIPLIER_H
 #define PIRANHA_CODED_SERIES_MULTIPLIER_H
 
-#include <algorithm>
+#include <algorithm> // For std::swap.
 #include <boost/integer_traits.hpp> // For integer limits.
+#include <boost/functional/hash.hpp>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -51,6 +52,24 @@ namespace piranha
 			void decode(Key &key, const max_fast_int &n) const {
 				key.decode(n, m_coding_vector, m_h_min, m_fast_res_min_max, derived_const_cast->m_args_tuple);
 			}
+			template <class Cf, class Ckey>
+			class coded_term_type {
+				public:
+					coded_term_type():m_cf(),m_ckey() {}
+					coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
+					void swap(coded_term_type &t) {
+						m_cf.swap(t.m_cf);
+						std::swap(m_ckey,t.m_ckey);
+					}
+					bool operator==(const coded_term_type &t) const {
+						return (m_ckey == t.m_ckey);
+					}
+					size_t hash_value() const {
+						return boost::hash<Ckey>()(m_ckey);
+					}
+					mutable Cf	m_cf;
+					Ckey		m_ckey;
+			};
 		protected:
 			coded_series_multiplier():
 					m_cr_is_viable(false),
