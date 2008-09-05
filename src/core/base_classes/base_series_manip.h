@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_SERIES_MANIP_H
 
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
-#include <utility>
 
 #include "../config.h"
 
@@ -96,13 +95,13 @@ namespace piranha
 			}
 		}
 		const term_type *insert_term(0);
-		if (new_term == 0) {
-			insert_term = &converted_term.result;
-		} else {
+		if (new_term) {
 			insert_term = new_term;
+		} else {
+			insert_term = &converted_term.result;
 		}
 		ll_insert<Sign>(*insert_term, args_tuple);
-		if (new_term != 0) {
+		if (new_term) {
 			term_type::allocator.destroy(new_term);
 			term_type::allocator.deallocate(new_term, 1);
 		}
@@ -167,10 +166,11 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
-		std::pair<const_iterator, bool> res(m_container.insert(term));
-		p_assert(res.second);
+		m_container.insert(term);
 		if (!Sign) {
-			res.first->m_cf.invert_sign(args_tuple);
+			const iterator pos = m_container.find(term);
+			p_assert(pos != end());
+			pos->m_cf.invert_sign(args_tuple);
 		}
 	}
 
@@ -249,12 +249,6 @@ namespace piranha
 			retval.add(tmp, args_tuple);
 		}
 		return retval;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::rehash(const size_t &size)
-	{
-		m_container.rehash(size);
 	}
 }
 

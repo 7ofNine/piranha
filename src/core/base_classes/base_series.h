@@ -79,7 +79,6 @@ namespace piranha
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void term_erase(const iterator &, const ArgsTuple &);
-			void rehash(const size_t &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
 			size_t length() const;
