@@ -71,6 +71,7 @@ namespace piranha
 			static const size_t max_rehash_tries =		1;
 			static const size_t min_size_index =		1;
 			static const size_t cuckoo_loop_threshold =	10;
+			static const size_t shrink_trigger = 		10;
 			// Configuration options stop here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
@@ -82,6 +83,8 @@ namespace piranha
 			static const size_t mults[mults_size];
 			static const size_t sizes[sizes_size];
 			p_static_check(mults_size % 2 == 0, "Mults size must be a multiple of 2.");
+			p_static_check(shrink_trigger > 1, "Shrink trigger must be strictly greater than 1.");
+			p_static_check(min_size_index > 0, "Min size index must be at least 1.");
 		public:
 			// Public typedefs.
 			typedef T value_type;
@@ -268,6 +271,16 @@ namespace piranha
 					insert(tmp_key);
 				}
 			}
+			void erase(const iterator &it) {
+				p_assert(it.m_ht == this);
+				m_container[it.m_vindex].f[it.m_bindex] = false;
+				m_container[it.m_vindex].t[it.m_bindex] = key_type();
+				--m_length;
+				if (static_cast<double>(m_length) < (settings::load_factor() *
+					(sizes[m_sizes_index] * bucket_size)) / shrink_trigger) {
+					attempt_shrink();
+				}
+			}
 			void swap(cuckoo_hash_set &other) {
 				std::swap(m_mults_index,other.m_mults_index);
 				std::swap(m_sizes_index,other.m_sizes_index);
@@ -335,13 +348,32 @@ namespace piranha
 					if (!new_ht.attempt_insertion(*it,tmp_key)) {
 						// NOTE: here should we check with other hash functions before
 						// giving up and increasing size?
-						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize." << '\n');
+						__PDEBUG(std::cout << "Cuckoo hash table resize triggered during resize.\n");
 						const size_t new_index = new_ht.m_sizes_index + 1;
 						__PDEBUG(std::cout << "Next size: " << sizes[new_index] << '\n');
 						new_ht.resize(new_index);
 						it = begin();
 					} else {
 						++it;
+					}
+				}
+				swap(new_ht);
+			}
+			void attempt_shrink() {
+				if (m_sizes_index == min_size_index) {
+					__PDEBUG(std::cout << "Cuckoo hash table is already minimum size, won't shrink.\n");
+					return;
+				}
+				cuckoo_hash_set new_ht;
+				new_ht.resize(m_sizes_index - 1);
+				// Assign current mults to the new table.
+				new_ht.m_mults_index = m_mults_index;
+				key_type tmp_key;
+				const iterator it_f = end();
+				for (iterator it = begin(); it != it_f; ++it) {
+					if (!new_ht.attempt_insertion(*it,tmp_key)) {
+						__PDEBUG(std::cout << "Unable to rebuild cuckoo hash set during shrinking, giving up.\n");
+						return;
 					}
 				}
 				swap(new_ht);
