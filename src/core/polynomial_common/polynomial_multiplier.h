@@ -216,12 +216,11 @@ namespace piranha
 						csht cms(size_hint);
 						cterm tmp_cterm;
 						for (size_t i = 0; i < ancestor::m_size1; ++i) {
-							const max_fast_int key1 = coded_ancestor::m_ckeys1[i];
 							for (size_t j = 0; j < ancestor::m_size2; ++j) {
 								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
 									break;
 								}
-								tmp_cterm.m_ckey = key1;
+								tmp_cterm.m_ckey = coded_ancestor::m_ckeys1[i];
 								tmp_cterm.m_ckey += coded_ancestor::m_ckeys2[j];
 								if (trunc.accept(tmp_cterm.m_ckey)) {
 									c_iterator it = cms.find(tmp_cterm);
