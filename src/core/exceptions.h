@@ -21,6 +21,7 @@
 #ifndef PIRANHA_EXCEPTIONS_H
 #define PIRANHA_EXCEPTIONS_H
 
+#include <iostream>
 #include <string>
 
 namespace piranha
@@ -69,7 +70,9 @@ namespace piranha
 	};
 
 	struct assertion_failure: public base_exception {
-		assertion_failure(const std::string &s): base_exception(s) {}
+		assertion_failure(const std::string &s): base_exception(s) {
+			std::cout << m_what << '\n';
+		}
 	};
 }
 
