@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MANIP_H
 
 #include <boost/type_traits/is_same.hpp> // For iterator type detection.
+#include <utility>
 
 #include "../config.h"
 
@@ -166,11 +167,10 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
-		m_container.insert(term);
+		std::pair<const_iterator, bool> res(m_container.insert(term));
+		p_assert(res.second);
 		if (!Sign) {
-			const iterator pos = m_container.find(term);
-			p_assert(pos != end());
-			pos->m_cf.invert_sign(args_tuple);
+			res.first->m_cf.invert_sign(args_tuple);
 		}
 	}
 
@@ -249,6 +249,12 @@ namespace piranha
 			retval.add(tmp, args_tuple);
 		}
 		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::rehash(const size_t &size)
+	{
+		m_container.rehash(size);
 	}
 }
 
