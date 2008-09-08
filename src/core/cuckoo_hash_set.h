@@ -157,7 +157,7 @@ namespace piranha
 				init();
 			}
 			cuckoo_hash_set(const size_t &size): m_mults_index(0), m_length(0) {
-				m_sizes_index = find_upper_pow2_index(size / bucket_size);
+				m_sizes_index = find_upper_size_index(size / bucket_size);
 				p_assert(m_sizes_index >= min_size_index);
 				while (true) {
 					try {
@@ -318,7 +318,7 @@ namespace piranha
 					a.construct(container + i, container_other[i]);
 				}
 			}
-			static uint8 find_upper_pow2_index(const size_t &size) {
+			static uint8 find_upper_size_index(const size_t &size) {
 				for (uint8 retval = 0; retval < sizes_size; ++retval) {
 					if (sizes[retval] >= size) {
 						return std::max<uint8>(min_size_index,retval);
@@ -402,8 +402,7 @@ namespace piranha
 				return false;
 			}
 			bool attempt_insertion(const key_type &k, key_type &tmp_key) {
-				const size_t h = hasher()(k);
-				size_t pos = position1(h);
+				size_t pos = position1(hasher()(k));
 				bucket_type *container = m_container;
 				for (size_t i = 0; i < bucket_size; ++i) {
 					// There's space in the bucket, rejoice!
@@ -567,8 +566,6 @@ namespace piranha
 		static_cast<size_t>(.7958315233127191 * boost::integer_traits<size_t>::const_max),
 		static_cast<size_t>(.3851648071345037 * boost::integer_traits<size_t>::const_max),
 		static_cast<size_t>(.5677643628300215 * boost::integer_traits<size_t>::const_max)
-// 		.6180339887498949 * MAX,
-// 		.4658204617032757 * MAX,
 	};
 }
 
