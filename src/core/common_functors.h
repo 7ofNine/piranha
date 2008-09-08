@@ -21,6 +21,8 @@
 #ifndef PIRANHA_COMMON_FUNCTORS_H
 #define PIRANHA_COMMON_FUNCTORS_H
 
+#include <algorithm>
+
 namespace piranha
 {
 	template <class T>
@@ -34,6 +36,14 @@ namespace piranha
 	struct member_swap {
 		void operator()(T &a, T &b) const {
 			a.swap(b);
+		}
+	};
+
+	template <class T>
+	struct std_swap
+	{
+		void operator()(T &a, T &b) const {
+			std::swap(a,b);
 		}
 	};
 }
