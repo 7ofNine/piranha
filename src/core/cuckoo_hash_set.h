@@ -31,6 +31,7 @@
 #include <sstream> // For building correct error message.
 #include <string>
 
+#include "common_functors.h"
 #include "config.h" // For p_static_check.
 #include "exceptions.h" // For out_of_memory.
 #include "math.h"
@@ -40,16 +41,8 @@
 
 namespace piranha
 {
-	template <class T>
-	struct std_swapper
-	{
-		void operator()(T &a, T &b) const {
-			std::swap(a,b);
-		}
-	};
-
 	template <class T, class HashFunction = boost::hash<T>, class EqualKey = std::equal_to<T>,
-	class Allocator = std::allocator<char>, class SwapFunction = std_swapper<T> >
+	class Allocator = std::allocator<char>, class SwapFunction = std_swap<T> >
 	class cuckoo_hash_set
 	{
 			template <int N>
