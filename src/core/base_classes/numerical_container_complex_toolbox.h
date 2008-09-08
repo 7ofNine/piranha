@@ -150,20 +150,28 @@ namespace piranha
 			}
 		private:
 			template <class Number>
-			// TODO: these are too costly, we should be able to compare directly m_value in
-			// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
 			bool generic_real_comparison(const Number &x) const {
+#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
+				// TODO: these are too costly, we should be able to compare directly m_value in
+				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
 				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
 					derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
 					derived_const_cast->m_value.imag() >= -settings::numerical_zero());
+#else
+				return (derived_const_cast->m_value.real() == x && derived_const_cast->m_value.imag() == 0);
+#endif
 			}
 			template <class Number>
 			bool generic_complex_comparison(const std::complex<Number> &c) const {
+#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
 				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
 					tmp_imag(derived_const_cast->m_value.imag() - c.imag());
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
 					tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
+#else
+				return (derived_const_cast->m_value.real() == c.real() && derived_const_cast->m_value.imag() == c.imag());
+#endif
 			}
 	};
 

@@ -26,6 +26,7 @@
 #include <iostream>
 #include <string>
 
+#include "../config.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../psym.h"
@@ -146,11 +147,15 @@ namespace piranha
 				return (m_value == other.m_value);
 			}
 			bool operator==(const max_fast_int &n) const {
+#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
 				// TODO: this is too costly, we should be able to compare directly m_value in
 				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
 				T tmp(m_value - n);
 				return (tmp <= settings::numerical_zero() &&
 					tmp >= -settings::numerical_zero());
+#else
+				return (m_value == n);
+#endif
 			}
 			bool operator==(const double &x) const {
 				return (m_value == x);
