@@ -72,6 +72,8 @@ def root(n,arg):
 	n-th root of argument arg. If arg provides a root() method, it will be called, otherwise
 	the standard ** operator will be called.
 	"""
+	if type(n) != int:
+		raise ValueError("n must be an integer.")
 	try:
 		return arg.root(n)
 	except AttributeError:
@@ -82,6 +84,8 @@ def besselJ(order,arg):
 	Bessel function of the first kind of integer order of argument arg.
 	If arg provides a besselJ() method, it will be called, otherwise _Math.besselJ will be called.
 	"""
+	if type(n) != int:
+		raise ValueError("order must be an integer.")
 	try:
 		return arg.besselJ(order)
 	except AttributeError:
@@ -93,6 +97,8 @@ def dbesselJ(order,arg):
 	It will call the dbesselJ() method of arg, if available, otherwise an AttributeError exception
 	will be raised.
 	"""
+	if type(order) != int:
+		raise ValueError("order must be an integer.")
 	try:
 		return arg.dbesselJ(order)
 	except AttributeError:
@@ -105,6 +111,8 @@ def Pnm(n,m,arg,*extra_arg):
 	Pnm using recurrence relations. If extra_arg is not provided, the function will try to calculate
 	sqrt(1-arg**2) on its own.
 	"""
+	if type(n) != int or type(m) != int:
+		raise ValueError("n and m must be integers.")
 	if len(list(extra_arg)) > 1:
 		raise TypeError("Please provide at most one extra argument.")
 	try:
@@ -116,6 +124,8 @@ def Pn(n,arg):
 	"""
 	Legendre polynomial of integer degree n of argument arg.
 	"""
+	if type(n) != int:
+		raise ValueError("n must be an integer.")
 	try:
 		return arg.Pn(n)
 	except AttributeError:
@@ -168,6 +178,8 @@ def partial(arg,p,n=1):
 	Internally the partial() method of arg is called. If such method is not available, an AttributeError
 	exception will be raised.
 	"""
+	if type(n) != int:
+		raise ValueError("n must be an integer.")
 	try:
 		return arg.partial(p,n)
 	except AttributeError:
@@ -177,6 +189,8 @@ def einpi2(n):
 	"""
 	Complex exponential of n*pi/2.
 	"""
+	if type(n) != int:
+		raise ValueError("n must be an integer.")
 	if n & 1:
 		if (n - 1) & 3:
 			return complex(0,-1)
