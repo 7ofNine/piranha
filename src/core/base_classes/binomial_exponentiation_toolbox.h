@@ -39,7 +39,6 @@ namespace piranha
 	template <class Derived, template <class> class Sorter>
 	class binomial_exponentiation_toolbox
 	{
-		private:
 			enum op_type { power_op, root_op };
 		public:
 			/// Real power.
@@ -67,8 +66,8 @@ namespace piranha
 			static Derived generic_binomial_power(const std::vector<ProxyTerm> &v,
 				const Number &y, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
-				// Here we know that the cases of single term, empty series and natural power have already been taken care of
-				// in base_series::pow.
+				// Here we know that the cases of single term, empty series and natural power have already
+				// been taken care of in base_series::pow.
 				p_assert(v.size() > 1);
 				term_type A(v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
