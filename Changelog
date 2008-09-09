@@ -1,0 +1,7 @@
+2008.09.09 f3c5775372c143904a2ccea88c19335ef5cab731
+
+* Improve performance of series comparison in MinGW > 3.4.
+* Update gmp libs with versions built with TMD's MinGW/GCC 4.3.
+* Fix a problem with GUI and plots not appearing in Windows.
+* Fix pretty printing in MinGW (and possibly for the GCC 3.4.x compilers).
+
