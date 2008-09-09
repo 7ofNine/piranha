@@ -57,5 +57,4 @@
 - Boost's aligned storage type traits for sse?
 - Write tests also in python.
 - Provide interface to int and long int instead of just max_fast_int?
-- Think about re-introducing rehash once we complete the switch to cuckoo. We could also keep a count of the
-  elements during vector coded if it does not impact perf. too much, and use rehash there too.
+- Dispatch complicated functions of single-cf series to the coefficient. This way we can use faster implementations.
