@@ -554,6 +554,10 @@ namespace piranha
 
 	// These are the decimal parts of the square roots of prime numbers multiplied by the
 	// maximum value representable by size_t.
+	// NOTE: here it is probably better to have all the double values below not below .5,
+	// so that we are going to "randomise" almost all the bits of the result. Now these
+	// work fine, so that it is probably better to wait for a stats framework of some kind
+	// before attempting changes.
 	template <class T, class HashFunction, class EqualKey, class Allocator, class SwapFunction>
 	const size_t cuckoo_hash_set<T,HashFunction,EqualKey,Allocator,SwapFunction>::mults[] = {
 		static_cast<size_t>(.7320508075688772 * boost::integer_traits<size_t>::const_max),
