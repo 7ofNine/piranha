@@ -1,7 +1,6 @@
 - Fix perf. issues in TASSr6 by disabling coded arithmetics for short series
 - Fix unnecessarily long series in binomial expansion for pow (maybe fixed with exponentiation by squaring?)
 - Use reference counted pointer to psymbols to make them live only as necessary?
-- Unify stream_manager and settings?
 - Move meta-programming in base_series_* into own headers to improve readability.
 - Poisson and poly multiplier: truncator calls also when inserting terms for generality.
 - GMP limb: " A limb means the part of a multi-precision number that fits in a single word.
@@ -17,10 +16,11 @@
   a total degree lex order, for poisson series it _seems_ no --> this probably has to do with prefetching, which is destroyed
   in poisson series because of the additional subtraction on the index of the vector. This can be probably optimized
   for poisson series somehow.
-- find a method to establish how to cache a coefficient vector during multiplication if appropriate.
+- find a method to establish how to cache a coefficient vector during multiplication if appropriate -->
+  caching for lightweight coefficients in multipliers.
 - optimize for small series --> there's no need to avoid direct insertion in series, since we do
-  not have sorte indices anymore. For small series, also avoid all the re-sorting and possible coefficient
-  copies that are performed for longer series.
+  not have sorted indices anymore. For small series, also avoid all the re-sorting and possible coefficient
+  copies that are performed for longer series?
 - TRIM
 - Share the implementation of filter in C++ and python using virtual function ovverride?
 - Uniform naming scheme in C++ and python.
@@ -31,7 +31,6 @@
   the relation with the provided args_tuple. Make sure that the named interface is _never_ used inside the anonymous one.
 - maybe proxies should take an args_tuple in the ctor. This way we can avoid the cached* flags in them - Yes, but caching may
   have a non-negligible cost. Must do speed test.
-- caching for lightweight coefficients in multipliers.
 - speed test for hash coded implementation.
 - addmul for coefficient series. This probably requires moving the ignorability check higher in the insert function stack.
 - series splicing?
@@ -42,19 +41,21 @@
 - Use this-> instead of ancestor:: everywhere?
 - Place boost::operators in some shared toolbox?
 - Compile with -D_PIRANHA_DEBUG as default?
-- Remove psym interface from celmec functions.
-- Another interface for Ynm, this time with theta as a complex thingie representing the complex exponential of colatitude.
+- Another interface for Ynm, this time with theta as a complex thingie representing the complex exponential of colatitude?
 - Drop all typename Derived::term_type
 - check that truncators do not sort if not necessary.
 - for hash coded structure, use directly the counting allocator internally.
-- handle properly the single coefficient case in series multiplication. It can give quite good performance improvement,
-  especially for poisson series
-- re-introduce size-hint during hash code, using density infromation
-- direct calculation of special functions and celmec expansions
+- re-introduce size-hint during hash code, using density infromation (maybe done)
+- direct calculation of special functions and celmec expansions - psym interface from celmec functions should be dropped
+  maybe and auto-detect series that consist of a single symbol --> use faster approach there.
 - use union in int_array to avoid all those runtime casts?
 - Try murmurhash.
 - Take care of allocation of zero-size memory areas?
 - Boost's aligned storage type traits for sse?
 - Write tests also in python.
 - Provide interface to int and long int instead of just max_fast_int?
-- Dispatch complicated functions of single-cf series to the coefficient. This way we can use faster implementations.
+- Dispatch complicated functions of single-cf series to the coefficient. This way we can re-use faster implementations
+  (e.g., polynomial coefficients in Poisson series).
+- Unify insert functions, possibly dropping the dangerous "check" bool param (but check performance first). Also, probably
+  the insert range flavour can be used extensively in complex toolboxes.
+- Drop ctor from generic cf and key for terms in favour of explicit constructor from proxies?

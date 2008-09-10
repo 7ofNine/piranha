@@ -77,8 +77,11 @@ namespace piranha
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
+			template <class Iterator, class ArgsTuple>
+			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void term_erase(const iterator &, const ArgsTuple &);
+			void clear_terms();
 			void rehash(const size_t &);
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
@@ -144,12 +147,14 @@ namespace piranha
 			void trim_test_terms(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
+			template <int, class T, class ArgsTuple>
+			void mult_div_coefficients_by(const T &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
-			Derived multiply_coefficients_by(const T &, const ArgsTuple &) const;
+			void multiply_coefficients_by(const T &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &mult_by_real(const Number &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
-			Derived divide_coefficients_by(const T &, const ArgsTuple &) const;
+			void divide_coefficients_by(const T &, const ArgsTuple &);
 			template <bool, class Number, class ArgsTuple>
 			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>

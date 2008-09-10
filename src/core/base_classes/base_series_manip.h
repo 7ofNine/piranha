@@ -115,6 +115,15 @@ namespace piranha
 		insert<true, true>(term, args_tuple);
 	}
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Iterator, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert_range(const Iterator &begin,
+		const Iterator &end, const ArgsTuple &args_tuple) {
+		for (Iterator it = begin; it != end; ++it) {
+			insert(*it,args_tuple);
+		}
+	}
+
 	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
 	/// Find term.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -249,6 +258,12 @@ namespace piranha
 			retval.add(tmp, args_tuple);
 		}
 		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::clear_terms()
+	{
+		m_container.clear();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

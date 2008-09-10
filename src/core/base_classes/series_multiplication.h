@@ -28,6 +28,8 @@
 					class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
+#include <iostream>
+
 #include "../settings.h"
 #include "../p_assert.h"
 
@@ -41,27 +43,35 @@ namespace piranha
 			// Preconditions:
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
 			template <class Derived2, class ArgsTuple>
-			Derived multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple) const {
+			void multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple) {
 				typedef typename Derived::const_iterator const_iterator;
-				typedef typename Derived2::const_iterator const_iterator2;
 				typedef typename Derived::term_type term_type;
-				typedef typename Derived2::term_type term_type2;
-				Derived retval;
-				__PDEBUG(std::cout << "Input mult_lengths: " << derived_const_cast->length() << ',' << s2.length() << '\n');
-				// Just leave an empty series if this or s2 are zero.
-				if (derived_const_cast->empty() || s2.empty()) {
-					;
+				__PDEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
+					<< s2.length() << '\n');
+				// Don't do anything if this is empty.
+				if (derived_const_cast->empty()) {
+					return;
 				}
-				// Optimize if the second series is a pure coefficient series.
-				// TODO: test the effectiveness of this by multiplying with single cf series in the first and second place.
-				// TODO: maybe this optimization can be placed somewhere else, in base_series or whatever.
-				else if (s2.is_single_cf()) {
-					retval = derived_const_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
+				// If the other series is empty, clear the container and return.
+				if (s2.empty()) {
+					derived_cast->clear_terms();
+					return;
+				}
+				// Optimize the cases of single coefficient series.
+				if (s2.is_single_cf()) {
+					derived_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
+				} else if (derived_const_cast->is_single_cf()) {
+					Derived tmp;
+					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
+					tmp.multiply_coefficients_by(derived_const_cast->begin()->m_cf, args_tuple);
+					derived_cast->swap_terms(tmp);
 				} else {
-					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, args_tuple);
+					Derived retval;
+					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
+						m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();
+					derived_cast->swap_terms(retval);
 				}
-				return retval;
 			}
 	};
 }

@@ -49,38 +49,64 @@ namespace piranha
 		return *derived_cast;
 	}
 
-	// Multiply all the coefficients of the series by a generic quantity x, and place the result into retval.
-	// In case the coefficient is another series, the corresponding arguments must have been merged previously,
-	// otherwise an assertion will fail when inserting terms.
-	// TODO: optimization: multiply in-line, then check for ignorability and, if necessary, erase term.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class T, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x,
-			const ArgsTuple &args_tuple) const
+	template <int N>
+	struct mult_div_coefficients_helper
 	{
-		Derived retval;
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			term_type term(*it);
-			term.m_cf.mult_by(x, args_tuple);
-			retval.insert(term, args_tuple);
+		p_static_check(N == 0, "N must be either 0 or 1.");
+		template <class Cf, class T, class ArgsTuple>
+		static void run(Cf &cf, const T &x, const ArgsTuple &args_tuple) {
+			cf.mult_by(x,args_tuple);
 		}
-		return retval;
+	};
+
+	template <>
+	struct mult_div_coefficients_helper<1>
+	{
+		template <class Cf, class T, class ArgsTuple>
+		static void run(Cf &cf, const T &x, const ArgsTuple &args_tuple) {
+			cf.divide_by(x,args_tuple);
+		}
+	};
+
+	// Multiply (N = 0) or divide (N = 1) all the coefficients of the series by a generic quantity x.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <int N, class T, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::mult_div_coefficients_by(const T &x,
+			const ArgsTuple &args_tuple)
+	{
+		const const_iterator it_f = end();
+		bool needs_rebuilding = false;
+		const_iterator it = begin();
+		for (; it != it_f; ++it) {
+			mult_div_coefficients_helper<N>::run(it->m_cf,x,args_tuple);
+			// If a term becomes ignorable once its coefficient has been multiplied/divided,
+			// set the needs_rebuilding flag to true, increase the iterator and break out.
+			if (it->m_cf.is_ignorable(args_tuple)) {
+				needs_rebuilding = true;
+				++it;
+				break;
+			}
+		}
+		// In case we broke out the cycle above, take care of multiplying/dividing the remaining
+		// terms without checking for ignorability.
+		for (; it != it_f; ++it) {
+			mult_div_coefficients_helper<N>::run(it->m_cf,x,args_tuple);
+		}
+		// Rebuild if needed.
+		if (needs_rebuilding) {
+			Derived new_series;
+			for (it = begin(); it != it_f; ++it) {
+				new_series.insert(*it,args_tuple);
+			}
+			swap_terms(new_series);
+		}
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x,
-			const ArgsTuple &args_tuple) const
-	{
-		Derived retval;
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			term_type term(*it);
-			term.m_cf.divide_by(x, args_tuple);
-			retval.insert(term, args_tuple);
-		}
-		return retval;
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x,
+			const ArgsTuple &args_tuple) {
+		mult_div_coefficients_by<0>(x,args_tuple);
 	}
 
 	/// Merge series with a number.
@@ -89,9 +115,11 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Number, class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &args_tuple)
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n,
+		const ArgsTuple &args_tuple)
 	{
-		typename Derived::term_type term(typename Derived::term_type::cf_type(n, args_tuple), typename Derived::term_type::key_type());
+		typename Derived::term_type term(typename Derived::term_type::cf_type(n, args_tuple),
+			typename Derived::term_type::key_type());
 		insert<true, Sign>(term, args_tuple);
 		return *derived_cast;
 	}
@@ -118,8 +146,7 @@ namespace piranha
 			Derived retval;
 			swap_terms(retval);
 		} else if (x != 1) {
-			Derived retval(multiply_coefficients_by(x, args_tuple));
-			swap_terms(retval);
+			multiply_coefficients_by(x, args_tuple);
 		}
 		return *derived_cast;
 	}
@@ -142,10 +169,15 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const Derived &s2, const ArgsTuple &args_tuple)
 	{
-		Derived retval(derived_cast->multiply_by_series(s2, args_tuple));
-		// Grab the terms accumulated into return value.
-		swap_terms(retval);
+		derived_cast->multiply_by_series(s2, args_tuple);
 		return *derived_cast;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class T, class ArgsTuple>
+	inline void base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x,
+			const ArgsTuple &args_tuple) {
+		mult_div_coefficients_by<1>(x,args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -157,8 +189,7 @@ namespace piranha
 		} else if (x == 0) {
 			throw division_by_zero();
 		}
-		Derived retval(divide_coefficients_by(x, args_tuple));
-		swap_terms(retval);
+		divide_coefficients_by(x, args_tuple);
 		return *derived_cast;
 	}
 
@@ -215,7 +246,8 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple,
+		const ArgsTuple &args_tuple) const {
 		return partial(1,pos_tuple,args_tuple);
 	}
 
@@ -285,7 +317,8 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const max_fast_int &n, const ArgsTuple &) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const max_fast_int &n,
+		const ArgsTuple &) const
 	{
 		(void)n;
 		p_assert(n < 0);
