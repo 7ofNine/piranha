@@ -147,12 +147,8 @@ namespace piranha
 			void trim_test_terms(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
-			template <int, class T, class ArgsTuple>
-			void mult_div_coefficients_by(const T &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
 			void multiply_coefficients_by(const T &, const ArgsTuple &);
-			template <class Number, class ArgsTuple>
-			Derived &mult_by_real(const Number &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
 			void divide_coefficients_by(const T &, const ArgsTuple &);
 			template <bool, class Number, class ArgsTuple>
@@ -172,6 +168,10 @@ namespace piranha
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
 			void term_insert_new(const term_type &, const ArgsTuple &);
+			template <int, class T, class ArgsTuple>
+			void mult_div_coefficients_by(const T &, const ArgsTuple &);
+			template <class Number, class ArgsTuple>
+			Derived &multiply_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class PosTuple, class ArgsTuple>
