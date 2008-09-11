@@ -122,6 +122,10 @@ namespace piranha
 							ancestor::perform_plain_multiplication(trunc);
 						}
 					}
+					// TODO: better rename result_min_max here and everywhere. It is not really the min/max
+					// values for the result, because the min/max values of the input series are also taken
+					// into account to establish the codification parameters for the input series _and_
+					// the resulting series.
 					void calculate_result_min_max() {
 						std::vector<mpz_class> tmp_vec(6);
 						std::pair<typename std::vector<mpz_class>::const_iterator,
