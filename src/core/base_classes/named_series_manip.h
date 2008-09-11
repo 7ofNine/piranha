@@ -106,7 +106,8 @@ namespace piranha
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
 		p_assert(derived_const_cast->empty());
 		// Check that the argument is not already present in this set.
-		for (vector_psym_p::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it) {
+		for (vector_psym_p::iterator it = m_arguments.template get<N>().begin();
+			it != m_arguments.template get<N>().end(); ++it) {
 			if (arg == (*it)) {
 				std::cout << "Error: argument '" << (*it)->name() << "' already present in the set." << std::endl;
 				return;
@@ -150,7 +151,8 @@ namespace piranha
 					}
 				}
 			}
-			// Now we must take care of those elements of a1 that are not represented in the layout (i.e., they are not in a2)
+			// Now we must take care of those elements of a1 that are not represented in
+			// the layout (i.e., they are not in a2)
 			for (size_t i = 0;i < size1;++i) {
 				// Look for element index i in the layout.
 				bool found = false;
