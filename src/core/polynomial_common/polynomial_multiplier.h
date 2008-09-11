@@ -48,7 +48,6 @@ namespace piranha
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	// TODO: cache members, series, etc. when performing the multiplications.
 	class polynomial_multiplier
 	{
 		public:
@@ -170,19 +169,23 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
+						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
+						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
+						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
+						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
+						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
 						// Perform multiplication.
-						for (size_t i = 0; i < ancestor::m_size1; ++i) {
-							const max_fast_int index1 = coded_ancestor::m_ckeys1[i];
-							for (size_t j = 0; j < ancestor::m_size2; ++j) {
+						for (size_t i = 0; i < size1; ++i) {
+							const max_fast_int index1 = ck1[i];
+							for (size_t j = 0; j < size2; ++j) {
 								// Calculate index of the result.
-								const max_fast_int res_index = index1 + coded_ancestor::m_ckeys2[j];
-								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+								const max_fast_int res_index = index1 + ck2[j];
+								if (trunc.skip(t1[i], t2[j])) {
 									break;
 								}
 								if (trunc.accept(res_index)) {
-									vc_res[res_index].addmul(ancestor::m_terms1[i].m_cf, ancestor::m_terms2[j].m_cf,
-															 ancestor::m_args_tuple);
+									vc_res[res_index].addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
 								}
 							}
 						}
@@ -192,13 +195,13 @@ namespace piranha
 						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							if (!vc_res[i].is_ignorable(ancestor::m_args_tuple)) {
+							if (!vc_res[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
-								if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-									tmp_term.canonicalise(ancestor::m_args_tuple);
+								if (!tmp_term.is_canonical(args_tuple)) {
+									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+								ancestor::m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
@@ -213,26 +216,30 @@ namespace piranha
 						// Let's find a sensible size hint.
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
+						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
+						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
+						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
+						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
+						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						csht cms(size_hint);
 						cterm tmp_cterm;
-						for (size_t i = 0; i < ancestor::m_size1; ++i) {
-							for (size_t j = 0; j < ancestor::m_size2; ++j) {
-								if (trunc.skip(ancestor::m_terms1[i], ancestor::m_terms2[j])) {
+						for (size_t i = 0; i < size1; ++i) {
+							for (size_t j = 0; j < size2; ++j) {
+								if (trunc.skip(t1[i], t2[j])) {
 									break;
 								}
-								tmp_cterm.m_ckey = coded_ancestor::m_ckeys1[i];
-								tmp_cterm.m_ckey += coded_ancestor::m_ckeys2[j];
+								tmp_cterm.m_ckey = ck1[i];
+								tmp_cterm.m_ckey += ck2[j];
 								if (trunc.accept(tmp_cterm.m_ckey)) {
 									c_iterator it = cms.find(tmp_cterm);
 									if (it == cms.end()) {
 										// Assign to the temporary term the old cf (new_key is already assigned).
-										tmp_cterm.m_cf = ancestor::m_terms1[i].m_cf;
+										tmp_cterm.m_cf = t1[i].m_cf;
 										// Multiply the old term by the second term.
-										tmp_cterm.m_cf.mult_by(ancestor::m_terms2[j].m_cf, ancestor::m_args_tuple);
+										tmp_cterm.m_cf.mult_by(t2[j].m_cf, args_tuple);
 										cms.insert(tmp_cterm);
 									} else {
-										it->m_cf.addmul(ancestor::m_terms1[i].m_cf, ancestor::m_terms2[j].m_cf,
-														ancestor::m_args_tuple);
+										it->m_cf.addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
 									}
 								}
 							}
@@ -245,10 +252,10 @@ namespace piranha
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
 							tmp_term.m_cf = c_it->m_cf;
 							coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-							if (!tmp_term.is_canonical(ancestor::m_args_tuple)) {
-								tmp_term.canonicalise(ancestor::m_args_tuple);
+							if (!tmp_term.is_canonical(args_tuple)) {
+								tmp_term.canonicalise(args_tuple);
 							}
-							ancestor::m_retval.insert(tmp_term, ancestor::m_args_tuple);
+							ancestor::m_retval.insert(tmp_term, args_tuple);
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded\n");
 					}
