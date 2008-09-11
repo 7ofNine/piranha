@@ -59,3 +59,4 @@
 - Unify insert functions, possibly dropping the dangerous "check" bool param (but check performance first). Also, probably
   the insert range flavour can be used extensively in complex toolboxes.
 - Drop ctor from generic cf and key for terms in favour of explicit constructor from proxies?
+- Should "a.real = 10" be allowed in pyranha?

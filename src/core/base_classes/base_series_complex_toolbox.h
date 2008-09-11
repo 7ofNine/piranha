@@ -117,14 +117,13 @@ namespace piranha
 				return divide_by_complex(cx, args_tuple);
 			}
 		protected:
+			// Use N = 0 for real, N != 0 for imag.
 			template <int N, class Real, class ArgsTuple>
 			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &args_tuple) {
-				switch (N) {
-				case 0:
-					return c.real(args_tuple);
-					break;
-				default:
+				if (N) {
 					return c.imag(args_tuple);
+				} else {
+					return c.real(args_tuple);
 				}
 			}
 			template <int N, class ArgsTuple>
@@ -140,14 +139,9 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple) {
-				// TODO: maybe this can be named construct_from_other_series and placed into base_series?
-				typedef typename RealDerived::const_iterator real_iterator;
 				// Make sure we are being called from an empty series.
 				p_assert(derived_const_cast->empty());
-				const real_iterator r_it_f = r.end();
-				for (real_iterator r_it = r.begin(); r_it != r_it_f; ++r_it) {
-					derived_cast->insert(*r_it, args_tuple);
-				}
+				derived_cast->insert_range(r.begin(),r.end(),args_tuple);
 			}
 			template <class ArgsTuple>
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i, const ArgsTuple &args_tuple) {
@@ -179,8 +173,7 @@ namespace piranha
 			template <class Complex, class ArgsTuple>
 			Derived &mult_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
 				if (c.real() == 0 && c.imag() == 0) {
-					Derived retval;
-					derived_cast->swap_terms(retval);
+					derived_cast->clear_terms();
 				} else if (c.real() != 1 || c.imag() != 0) {
 					derived_cast->multiply_coefficients_by(c, args_tuple);
 				}
