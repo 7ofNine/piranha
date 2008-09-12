@@ -31,7 +31,9 @@
 
 namespace piranha
 {
-	// Uses exponentiation by squaring (EBS) internally.
+	// Uses exponentiation by squaring (EBS) internally. Computed values are stored in a hash
+	// map and re-used to calculate new values. To use it, simply construct and request the
+	// value with operator[].
 	template <class T>
 	class int_power_cache
 	{
@@ -118,7 +120,7 @@ namespace piranha
 				return m_container[index];
 			}
 		private:
-			container_type	m_container;
+			container_type m_container;
 	};
 }
 
