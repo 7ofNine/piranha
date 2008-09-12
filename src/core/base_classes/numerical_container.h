@@ -69,10 +69,15 @@ namespace piranha
 			typedef Derived proxy;
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
 			typedef T numerical_type;
+			template <class, class SubCachesCons>
+			struct sub_cache_selector {
+				typedef SubCachesCons type;
+			};
 			// Ctors.
 			explicit numerical_container(): m_value(0) {}
 			template <class ArgsTuple>
-			explicit numerical_container(const std::string &s, const ArgsTuple &): m_value(utils::lexical_converter<T>(s)) {}
+			explicit numerical_container(const std::string &s, const ArgsTuple &):
+				m_value(utils::lexical_converter<T>(s)) {}
 			template <class ArgsTuple>
 			explicit numerical_container(const max_fast_int &n, const ArgsTuple &): m_value(n) {}
 			template <class ArgsTuple>

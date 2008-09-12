@@ -21,10 +21,13 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
+#include <boost/tuple/tuple.hpp> // For sub cache selection.
+#include <complex> // For std::complex<SubSeries>.
 #include <memory> // For standard allocator.
 #include <string>
 
 #include "../base_classes/int_array.h"
+#include "../int_power_cache.h"
 #include "trig_array_commons.h"
 
 #define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator
@@ -66,6 +69,10 @@ namespace piranha
 						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
 					}
 			};
+			template <class SubSeries, class SubCachesCons>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<int_power_cache<std::complex<SubSeries> >,SubCachesCons> type;
+			};
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}
@@ -100,8 +107,8 @@ namespace piranha
 			 * \f]
 			 * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
 			 * and in the second one always goes \f$ \alpha + \beta \f$ one.
-			 * Please also note that no assumptions are made with respect to return values' content (e.g., it is not guaranteed
-			 * that return values are empty).
+			 * Please also note that no assumptions are made with respect to return values' content
+			 * (e.g., it is not guaranteed that return values are empty).
 			 * @param[in] t2 factor.
 			 * @param[out] ret1 first return value.
 			 * @param[out] ret2 second return value.

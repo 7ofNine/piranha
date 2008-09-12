@@ -21,6 +21,7 @@
 #ifndef PIRANHA_CF_SERIES_H
 #define PIRANHA_CF_SERIES_H
 
+#include <boost/tuple/tuple.hpp> // For sub cache.
 #include <complex>
 #include <iostream>
 #include <string>
@@ -58,6 +59,12 @@ namespace piranha
 					}
 				protected:
 					const Series *m_ptr;
+			};
+			template <class SubSeries, class SubCachesCons>
+			struct sub_cache_selector {
+				typedef typename Derived::term_type::cf_type::
+					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
+					template sub_cache_selector<SubSeries,SubCachesCons>::type>::type type;
 			};
 			template <class ArgsTuple>
 			void print_plain(std::ostream &, const ArgsTuple &) const;

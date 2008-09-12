@@ -21,11 +21,13 @@
 #ifndef PIRANHA_EXPO_ARRAY_H
 #define PIRANHA_EXPO_ARRAY_H
 
+#include <boost/tuple/tuple.hpp>
 #include <memory> // For standard allocator.
 #include <string>
 #include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../int_power_cache.h"
 #include "../psym.h"
 #include "expo_array_commons.h"
 
@@ -86,6 +88,10 @@ namespace piranha
 				private:
 					mutable bool	m_norm_cached;
 					mutable double	m_norm;
+			};
+			template <class SubSeries, class SubCachesCons>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<int_power_cache<SubSeries>,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.
