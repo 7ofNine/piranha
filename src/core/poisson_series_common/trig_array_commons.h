@@ -336,29 +336,29 @@ namespace piranha
 				const bool int_zero = derived_const_cast->elements_are_zero();
 				Derived retval;
 				if (y < 0) {
-					// 0^-y.
 					if (int_zero && !derived_const_cast->m_flavour) {
+						// 0^-y.
 						throw division_by_zero();
-						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
 					} else if (int_zero && derived_const_cast->m_flavour) {
+						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
 						;
-						// x^-y -> no go.
 					} else {
+						// x^-y -> no go.
 						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real "
 							"exponentiation.");
 					}
-					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 				} else if (y == 0) {
+					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 					;
 				} else {
-					// 0^y == 0.
 					if (int_zero && !derived_const_cast->m_flavour) {
+						// 0^y == 0.
 						retval.m_flavour = false;
-						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 					} else if (int_zero && derived_const_cast->m_flavour) {
+						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 						;
-						// x^y --> no go.
 					} else {
+						// x^y --> no go.
 						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real "
 							"exponentiation.");
 					}
