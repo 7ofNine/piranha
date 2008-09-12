@@ -60,3 +60,6 @@
   the insert range flavour can be used extensively in complex toolboxes.
 - Drop ctor from generic cf and key for terms in favour of explicit constructor from proxies?
 - Should "a.real = 10" be allowed in pyranha?
+- rehash --> prepare_for_size and fast insert that won't check for duplicate item? This may be useful to cut down
+  the insertion time after series multiplication finishes, and requires our own hash table implementation. Fast insertion
+  should be protected and then friendship should be made with the multiplier.
