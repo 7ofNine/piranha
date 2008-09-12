@@ -463,7 +463,8 @@ namespace piranha
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.
 					if (args_tuple.template get<Derived::position>()[i]->time_eval().size() > N) {
-						retval += (*derived_const_cast)[i] * args_tuple.template get<Derived::position>()[i]->time_eval()[N];
+						retval += (*derived_const_cast)[i] *
+							args_tuple.template get<Derived::position>()[i]->time_eval()[N];
 					}
 				}
 				return retval;
