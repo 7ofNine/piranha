@@ -67,22 +67,18 @@ namespace piranha
 				if (derived_const_cast->size() != 0) {
 					out_stream << derived_const_cast->separator;
 				}
-				switch (derived_const_cast->m_flavour) {
-				case true:
+				if (derived_const_cast->m_flavour) {
 					out_stream << "c";
-					break;
-				case false:
+				} else {
 					out_stream << "s";
 				}
 			}
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->m_size);
-				switch (derived_const_cast->m_flavour) {
-				case true:
+				if (derived_const_cast->m_flavour) {
 					out_stream << "cos(";
-					break;
-				case false:
+				} else {
 					out_stream << "sin(";
 				}
 				bool printed_something = false;
@@ -190,10 +186,9 @@ namespace piranha
 						retval += (*derived_const_cast)[i] * args_tuple.template get<Derived::position>()[i]->eval(t);
 					}
 				}
-				switch (derived_const_cast->m_flavour) {
-				case true:
+				if (derived_const_cast->m_flavour) {
 					return std::cos(retval);
-				default:
+				} else {
 					return std::sin(retval);
 				}
 			}
@@ -214,10 +209,9 @@ namespace piranha
 						retval *= te.request_ei(i, (*derived_const_cast)[i]);
 					}
 				}
-				switch (derived_const_cast->m_flavour) {
-				case true:
+				if (derived_const_cast->m_flavour) {
 					return retval.real();
-				default:
+				} else {
 					return retval.imag();
 				}
 			}
@@ -301,29 +295,29 @@ namespace piranha
 				const bool int_zero = derived_const_cast->elements_are_zero();
 				Derived retval;
 				if (n < 0) {
-					// 0^-n.
 					if (int_zero && !derived_const_cast->m_flavour) {
+						// 0^-n.
 						throw division_by_zero();
-						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
 					} else if (int_zero && derived_const_cast->m_flavour) {
+						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
 						;
-						// x^-n -> no go.
 					} else {
+						// x^-n -> no go.
 						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer "
 							"exponentiation.");
 					}
-					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 				} else if (n == 0) {
+					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 					;
 				} else {
-					// 0^n == 0.
 					if (int_zero && !derived_const_cast->m_flavour) {
+						// 0^n == 0.
 						retval.m_flavour = false;
-						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 					} else if (int_zero && derived_const_cast->m_flavour) {
+						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 						;
-						// x^n --> no go (it should be handled by natural power routine for series).
 					} else {
+						// x^n --> no go (it should be handled by natural power routine for series).
 						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer"
 							"exponentiation.");
 					}
