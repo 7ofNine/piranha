@@ -26,14 +26,16 @@
 namespace piranha
 {
 	template <class T>
-	struct member_hash_value {
+	struct member_hash_value
+	{
 		size_t operator()(const T &x) const {
 			return x.hash_value();
 		}
 	};
 
 	template <class T>
-	struct member_swap {
+	struct member_swap
+	{
 		void operator()(T &a, T &b) const {
 			a.swap(b);
 		}
@@ -44,6 +46,18 @@ namespace piranha
 	{
 		void operator()(T &a, T &b) const {
 			std::swap(a,b);
+		}
+	};
+
+	template <class T>
+	struct named_series_arithmetics
+	{
+		template <class Number>
+		T pow(const T &orig, const Number &x) const {
+			return orig.pow(x);
+		}
+		void multiply(T &orig, const T &other) const {
+			orig *= other;
 		}
 	};
 }

@@ -25,6 +25,7 @@
 #include <cmath>
 #include <complex>
 
+#include "../common_functors.h"
 #include "../int_power_cache.h"
 #include "../integer_typedefs.h"
 #include "../math.h"
@@ -162,8 +163,9 @@ namespace piranha
 					eib2((beta/static_cast<max_fast_int>(2)).ei());
 				const Derived cos_t(eit.real()), sin_t(eit.imag());
 				std::complex<Derived> final_factor((gamma*(-m)).ei());
-				typedef int_power_cache<Derived> real_cache_type;
-				typedef int_power_cache<std::complex<Derived> > complex_cache_type;
+				typedef int_power_cache<Derived,named_series_arithmetics<Derived> > real_cache_type;
+				typedef int_power_cache<std::complex<Derived>,
+					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
 				complex_cache_type
 					cp(ei_phi,emi_phi),
 					ca(alpha.ei(),(alpha*static_cast<max_fast_int>(-1)).ei());

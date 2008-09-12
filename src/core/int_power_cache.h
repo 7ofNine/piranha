@@ -25,6 +25,7 @@
 #include <cmath>
 #include <vector>
 
+#include "common_functors.h"
 #include "integer_typedefs.h"
 #include "p_assert.h"
 #include "settings.h"
@@ -34,16 +35,21 @@ namespace piranha
 	// Uses exponentiation by squaring (EBS) internally. Computed values are stored in a hash
 	// map and re-used to calculate new values. To use it, simply construct and request the
 	// value with operator[].
-	template <class T>
+	template <class T, class ArithmeticFunctor = named_series_arithmetics<T> >
 	class int_power_cache
 	{
 			typedef boost::unordered_map<max_fast_int,T> container_type;
 			typedef typename container_type::iterator iterator;
+			typedef ArithmeticFunctor arith_functor_type;
 		public:
-			int_power_cache(const T &x_1):m_container() {
+			int_power_cache(const T &x_1, const arith_functor_type &f = arith_functor_type()):
+				m_container(),
+				m_arith_functor(f) {
 				init(x_1);
 			}
-			int_power_cache(const T &x_1, const T &inv_x):m_container() {
+			int_power_cache(const T &x_1, const T &inv_x, const arith_functor_type &f = arith_functor_type()):
+				m_container(),
+				m_arith_functor(f) {
 				init(x_1);
 				m_container[-1] = inv_x;
 			}
@@ -78,7 +84,7 @@ namespace piranha
 					// n == -1 may not have been provided in the ctor. If we reached this point, it means
 					// that our negative EBS sequence has come to the end.
 					if (n == -1) {
-						m_container[-1] = m_container[1].pow(static_cast<max_fast_int>(-1));
+						m_container[-1] = m_arith_functor.pow(m_container[1],static_cast<max_fast_int>(-1));
 						break;
 					}
 					if (n & 1) {
@@ -108,19 +114,20 @@ namespace piranha
 					m_container[index] = m_container[tmp];
 					if (std::abs(index - tmp) == 1) {
 						if (Sign) {
-							m_container[index] *= m_container[1];
+							m_arith_functor.multiply(m_container[index], m_container[1]);
 						} else {
-							m_container[index] *= m_container[-1];
+							m_arith_functor.multiply(m_container[index], m_container[-1]);
 						}
 					} else {
 						p_assert(index % tmp == 0 && std::abs(index / tmp) == 2)
-						m_container[index] *= m_container[tmp];
+						m_arith_functor.multiply(m_container[index], m_container[tmp]);
 					}
 				}
 				return m_container[index];
 			}
 		private:
-			container_type m_container;
+			container_type				m_container;
+			const arith_functor_type	m_arith_functor;
 	};
 }
 
