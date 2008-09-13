@@ -75,10 +75,11 @@ namespace piranha
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
-	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p, const SubSeries &s, const ArgsTuple &a) const
+	template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
+		const SubSeries &s, SubCaches &sub_caches, const ArgsTuple &a) const
 	{
-		return derived_const_cast->template base_sub<RetSeries>(p, s, a);
+		return derived_const_cast->template base_sub<RetSeries>(p, s, sub_caches, a);
 	}
 }
 
