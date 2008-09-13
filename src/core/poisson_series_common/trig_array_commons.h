@@ -371,8 +371,9 @@ namespace piranha
 			// NOTE: here we are assuming that s is a top-level series.
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
-			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &s, const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &,
+				SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				typedef typename SubSeries::term_type sub_term_type;
@@ -386,9 +387,8 @@ namespace piranha
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					SubSeries tmp(s);
-					tmp.mult_by(static_cast<max_fast_int>((*derived_const_cast)[pos]),args_tuple);
-					const std::complex<SubSeries> tmp_ei(tmp.ei(args_tuple));
+					const std::complex<SubSeries> &tmp_ei = sub_caches.
+						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
 					const SubSeries tmp_cos(tmp_ei.real(args_tuple)), tmp_sin(tmp_ei.imag(args_tuple));
 					Derived tmp_ta(*derived_const_cast);
 					SubSeries orig_cos, orig_sin;
