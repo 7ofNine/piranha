@@ -21,7 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_MANIP_H
 #define PIRANHA_BASE_SERIES_MANIP_H
 
-#include <boost/type_traits/is_same.hpp> // For iterator type detection.
 #include <utility>
 
 #include "../config.h"
