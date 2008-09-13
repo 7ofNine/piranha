@@ -261,8 +261,8 @@ namespace piranha
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					SubSeries tmp(sub_caches.
-						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])]);
+					const SubSeries &tmp = sub_caches.
+						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
 					Derived tmp_ea(*derived_const_cast);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
