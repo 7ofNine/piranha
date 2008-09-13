@@ -23,6 +23,8 @@
 
 #include <algorithm>
 
+#include "p_assert.h"
+
 namespace piranha
 {
 	template <class T>
@@ -59,6 +61,23 @@ namespace piranha
 		void multiply(T &orig, const T &other) const {
 			orig *= other;
 		}
+	};
+
+	template <class T, class ArgsTuple>
+	struct base_series_arithmetics
+	{
+		base_series_arithmetics():m_args_tuple(0)
+		{}
+		template <class Number>
+		T pow(const T &orig, const Number &x) const {
+			p_assert(m_args_tuple);
+			return orig.pow(x,*m_args_tuple);
+		}
+		void multiply(T &orig, const T &other) const {
+			p_assert(m_args_tuple);
+			orig.mult_by(other,*m_args_tuple);
+		}
+		mutable ArgsTuple const *m_args_tuple;
 	};
 }
 

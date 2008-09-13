@@ -246,8 +246,9 @@ namespace piranha
 				}
 				return true;
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &s, const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &, SubCaches &sub_caches,
+				const ArgsTuple &args_tuple) const {
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				typedef typename SubSeries::term_type sub_term_type;
@@ -260,12 +261,14 @@ namespace piranha
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					SubSeries tmp(s.pow(static_cast<max_fast_int>((*derived_const_cast)[pos]), args_tuple));
+					SubSeries tmp(sub_caches.
+						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])]);
 					Derived tmp_ea(*derived_const_cast);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
 					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
 					p_assert(retval.empty());
+					// NOTICE: series multadd here?
 					retval.add(orig, args_tuple);
 					retval.mult_by(tmp, args_tuple);
 				}

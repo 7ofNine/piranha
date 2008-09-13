@@ -161,8 +161,8 @@ namespace piranha
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
-			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
-			RetSeries base_sub(const PosTuple &, const SubSeries &, const ArgsTuple &) const;
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries base_sub(const PosTuple &, const SubSeries &, SubCaches &, const ArgsTuple &) const;
 		private:
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);

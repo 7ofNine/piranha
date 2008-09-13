@@ -27,6 +27,7 @@
 #include <string>
 
 #include "../base_classes/int_array.h"
+#include "../common_functors.h"
 #include "../int_power_cache.h"
 #include "trig_array_commons.h"
 
@@ -69,9 +70,10 @@ namespace piranha
 						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
 					}
 			};
-			template <class SubSeries, class SubCachesCons>
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
-				typedef boost::tuples::cons<int_power_cache<std::complex<SubSeries> >,SubCachesCons> type;
+				typedef boost::tuples::cons<int_power_cache<std::complex<SubSeries>,
+					base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.

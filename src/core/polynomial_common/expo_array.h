@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../common_functors.h"
 #include "../int_power_cache.h"
 #include "../psym.h"
 #include "expo_array_commons.h"
@@ -49,12 +50,26 @@ namespace piranha
 			friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
 			typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
 			typedef int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
+			template <class SubSeries, class ArgsTuple>
+			class sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
+			{
+					typedef int_power_cache<SubSeries,
+						base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+				public:
+					sub_cache():ancestor::int_power_cache() {}
+					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
+						this->m_arith_functor.m_args_tuple = args_tuple;
+						this->m_container[0] = SubSeries(static_cast<max_fast_int>(1),*args_tuple);
+						this->m_container[1] = s;
+					}
+			};
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
 			class proxy: public ancestor::reference_proxy
 			{
+					// TODO: replace proxy_ancestor:: calls with this->.
 					friend class expo_array;
 					typedef typename ancestor::reference_proxy proxy_ancestor;
 				public:
@@ -89,9 +104,9 @@ namespace piranha
 					mutable bool	m_norm_cached;
 					mutable double	m_norm;
 			};
-			template <class SubSeries, class SubCachesCons>
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
-				typedef boost::tuples::cons<int_power_cache<SubSeries>,SubCachesCons> type;
+				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.

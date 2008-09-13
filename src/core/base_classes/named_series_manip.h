@@ -334,22 +334,42 @@ namespace piranha
 		return retval;
 	}
 
+	template <class SubCaches, class SubSeries, class ArgsTuple>
+	struct init_sub_caches
+	{
+		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *args_tuple) {
+			sub_caches.template get_head().setup(s,args_tuple);
+			init_sub_caches<typename SubCaches::tail_type,SubSeries,ArgsTuple>::
+				run(sub_caches.template get_tail(),s,args_tuple);
+		}
+	};
+
+	template <class SubSeries, class ArgsTuple>
+	struct init_sub_caches<boost::tuples::null_type,SubSeries, ArgsTuple>
+	{
+		static void run(const boost::tuples::null_type &, const SubSeries &, const ArgsTuple *) {}
+	};
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &arg, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-			template sub_cache_selector<SubSeries,boost::tuples::null_type>::type>::type foo;
+			template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
+			::type,args_tuple_type>::type sub_caches_type;
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
-		p_static_check(boost::tuples::length<foo>::value == boost::tuples::length<pos_tuple_type>::value,
+		sub_caches_type sub_caches;
+		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 		Derived tmp(*derived_const_cast);
 		tmp.merge_args(s);
+		// Init sub caches using s and tmp.m_arguments.
+		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s,&tmp.m_arguments);
 		pos_tuple_type pos_tuple;
 		psym_p p(psyms::get_pointer(arg));
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
-		Derived retval(tmp.template base_sub<Derived>(pos_tuple, s, tmp.m_arguments));
+		Derived retval(tmp.template base_sub<Derived>(pos_tuple, s, sub_caches, tmp.m_arguments));
 		retval.m_arguments = tmp.m_arguments;
 		retval.trim();
 		return retval;

@@ -69,7 +69,7 @@ namespace piranha
 			typedef Derived proxy;
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
 			typedef T numerical_type;
-			template <class, class SubCachesCons>
+			template <class, class SubCachesCons, class>
 			struct sub_cache_selector {
 				typedef SubCachesCons type;
 			};
@@ -216,8 +216,9 @@ namespace piranha
 				}
 				return derived_const_cast->pow(1. / (double)(n), args_tuple);
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class ArgsTuple>
-			RetSeries sub(const PosTuple &, const SubSeries &, const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &, const SubSeries &, SubCaches &,
+				const ArgsTuple &args_tuple) const {
 				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::template run<RetSeries>(
 					*derived_const_cast, args_tuple);
 			}
