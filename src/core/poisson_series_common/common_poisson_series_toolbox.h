@@ -71,7 +71,7 @@ namespace piranha
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
 		public:
-			// TODO: move this into private?
+			// NOTICE: move this into private?
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
@@ -152,6 +152,18 @@ namespace piranha
 			Derived sub(const psym &arg, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename Derived::term_type::cf_type::
+					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
+					template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
+					::type,args_tuple_type>::type sub_caches_type;
+				p_static_check(boost::tuples::length<sub_caches_type>::value ==
+					boost::tuples::length<pos_tuple_type>::value,
+					"Size mismatch for position and cache tuples in Poisson series substitution.");
+
+
+p_static_check(!(boost::is_same<typename boost::tuples::element<0,sub_caches_type>::type,
+	typename boost::tuples::element<1,sub_caches_type>::type>::value),"");
+
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments series's polynomial arguments.
@@ -162,10 +174,16 @@ namespace piranha
 				s_copy.merge_args(tmp);
 				// After the next line, this_copy's args layout is compatible with s_copy's
 				this_copy.merge_args(s_copy);
+				// Init sub caches using s and this_copy.m_arguments.
+				sub_caches_type sub_caches;
+				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,series,
+					&this_copy.m_arguments);
 				pos_tuple_type pos_tuple;
 				psym_p p(psyms::get_pointer(arg));
-				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
-				Derived retval(this_copy.template base_sub<Derived>(pos_tuple, s_copy, this_copy.m_arguments));
+				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
+					this_copy.m_arguments);
+				Derived retval(this_copy.template base_sub<Derived>(pos_tuple, s_copy,
+					sub_caches, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
 				retval.trim();
 				return retval;
