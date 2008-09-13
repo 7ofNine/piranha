@@ -396,6 +396,7 @@ namespace piranha
 					tmp_ta[pos] = 0;
 					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
+					// NOTICE: use key builder here instead?
 					orig_cos.insert(sub_term_type(sub_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
 						args_tuple);
 					// Build the orig_sin series.
