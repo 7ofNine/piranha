@@ -210,7 +210,8 @@ p_static_check(!(boost::is_same<typename boost::tuples::element<0,sub_caches_typ
 			std::pair<typename std::vector<ProxyTerm>::const_iterator, std::pair<std::vector<PolyCf>,
 			std::vector<max_fast_int> > >
 			static get_int_linear_term(const std::vector<ProxyTerm> &v, const ArgsTuple &args_tuple) {
-				p_static_check((boost::is_same<PolyCf, typename Derived::term_type::cf_type::term_type::cf_type>::value),
+				p_static_check((boost::is_same<PolyCf,
+					typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
 				typedef typename std::vector<ProxyTerm>::const_iterator const_iterator;
 				const const_iterator it_f = v.end();
@@ -220,8 +221,8 @@ p_static_check(!(boost::is_same<typename boost::tuples::element<0,sub_caches_typ
 				// We need as much space as the number of trig args.
 				retval.second.second.resize(args_tuple.template get<1>().size());
 				for (const_iterator it = v.begin(); it != it_f; ++it) {
-					// If the term's trigonometric part is unity, let's see if we can extract a linear combination of arguments
-					// from the corresponding polynomial.
+					// If the term's trigonometric part is unity, let's see if we can extract a
+					// linear combination of arguments from the corresponding polynomial.
 					if (it->m_key.is_unity()) {
 						try {
 							it->m_cf.template get_int_linear_combination<1>(retval.second, args_tuple);
