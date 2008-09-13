@@ -21,11 +21,14 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
+#include <boost/tuple/tuple.hpp> // For sub cache selection.
 #include <complex> // For std::complex<SubSeries>.
 #include <memory> // For standard allocator.
 #include <string>
 
 #include "../base_classes/int_array.h"
+#include "../common_functors.h"
+#include "../int_power_cache.h"
 #include "trig_array_commons.h"
 
 #define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator
@@ -46,6 +49,23 @@ namespace piranha
 			friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
 			typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
 			typedef int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
+			template <class SubSeries, class ArgsTuple>
+			class sub_cache: public int_power_cache<std::complex<SubSeries>,
+				base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
+			{
+					typedef int_power_cache<std::complex<SubSeries>,
+						base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
+				public:
+					sub_cache():ancestor::int_power_cache() {}
+					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
+						this->m_arith_functor.m_args_tuple = args_tuple;
+						this->m_container[0] = std::complex<SubSeries>(static_cast<max_fast_int>(1),*args_tuple);
+						this->m_container[1] = s.ei(*args_tuple);
+						SubSeries tmp(s);
+						tmp.mult_by(max_fast_int(-1),*args_tuple);
+						this->m_container[-1] = tmp.ei(*args_tuple);
+					}
+			};
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
@@ -66,6 +86,10 @@ namespace piranha
 					bool operator<(const proxy &t2) const {
 						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
 					}
+			};
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.

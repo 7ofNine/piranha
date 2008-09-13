@@ -25,8 +25,6 @@
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
-#include "../common_functors.h"
-#include "../int_power_cache.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -38,21 +36,6 @@ namespace piranha
 		public binomial_exponentiation_toolbox<Derived,term_key_degree_comparison>
 	{
 		public:
-			// NOTICE: this will become a plain cache (i.e., not an EBS one) once
-			// multinomial exponentiation for polynomials is implemented.
-			template <class ArgsTuple>
-			class sub_cache: public int_power_cache<Derived, base_series_arithmetics<Derived,ArgsTuple> >
-			{
-					typedef int_power_cache<Derived,
-						base_series_arithmetics<Derived,ArgsTuple> > ancestor;
-				public:
-					sub_cache():ancestor::int_power_cache() {}
-					void setup(const Derived &s, const ArgsTuple *args_tuple) {
-						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = Derived(static_cast<max_fast_int>(1),*args_tuple);
-						this->m_container[1] = s;
-					}
-			};
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {
 				return std::abs(derived_const_cast->eval(0,args_tuple));

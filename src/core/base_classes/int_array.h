@@ -25,7 +25,6 @@
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
-#include <boost/tuple/tuple.hpp> // For sub cache selection.
 #include <memory> // For std::allocator.
 #include <utility> // For std::pair.
 #include <vector>
@@ -100,12 +99,6 @@ namespace piranha
 			static const int position = Pos;
 			// Default implementation of proxy type.
 			typedef Derived proxy;
-			// Substitution cache selector.
-			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct sub_cache_selector {
-				typedef boost::tuples::cons<
-					typename SubSeries::template sub_cache<ArgsTuple>,SubCachesCons> type;
-			};
 			/// Default ctor.
 			/**
 			 * Constructs empty array.

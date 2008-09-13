@@ -27,8 +27,6 @@
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
-#include "../common_functors.h"
-#include "../int_power_cache.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -66,23 +64,6 @@ namespace piranha
 	{
 			typedef jacobi_anger_toolbox<0, Derived> jacang_ancestor;
 		public:
-			template <class ArgsTuple>
-			class sub_cache: public int_power_cache<std::complex<Derived>,
-				base_series_arithmetics<std::complex<Derived>,ArgsTuple> >
-			{
-					typedef int_power_cache<std::complex<Derived>,
-						base_series_arithmetics<std::complex<Derived>,ArgsTuple> > ancestor;
-				public:
-					sub_cache():ancestor::int_power_cache() {}
-					void setup(const Derived &s, const ArgsTuple *args_tuple) {
-						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = std::complex<Derived>(static_cast<max_fast_int>(1),*args_tuple);
-						this->m_container[1] = s.ei(*args_tuple);
-						Derived tmp(s);
-						tmp.mult_by(max_fast_int(-1),*args_tuple);
-						this->m_container[-1] = tmp.ei(*args_tuple);
-					}
-			};
 			std::complex<Derived> ei() const {
 				std::complex<Derived> retval(ei(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;

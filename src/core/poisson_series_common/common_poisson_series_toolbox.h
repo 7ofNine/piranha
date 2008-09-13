@@ -159,11 +159,6 @@ namespace piranha
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series substitution.");
-
-
-p_static_check(!(boost::is_same<typename boost::tuples::element<0,sub_caches_type>::type,
-	typename boost::tuples::element<1,sub_caches_type>::type>::value),"");
-
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments series's polynomial arguments.
