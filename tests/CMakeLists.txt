@@ -14,8 +14,11 @@ ADD_EXECUTABLE(celmec_test_01 celmec_test_01.cpp)
 TARGET_LINK_LIBRARIES(celmec_test_01 ${MANDATORY_LIBRARIES} piranha_static)
 ADD_EXECUTABLE(binomial_20000 binomial_20000.cpp)
 TARGET_LINK_LIBRARIES(binomial_20000 ${MANDATORY_LIBRARIES} piranha_static)
+ADD_EXECUTABLE(sub_tests sub_tests.cpp)
+TARGET_LINK_LIBRARIES(sub_tests ${MANDATORY_LIBRARIES} piranha_static)
 
 # Add tests.
 ADD_TEST(pearce1 pearce_sparse_poly_test1)
 ADD_TEST(binomial_20000 binomial_20000)
 ADD_TEST(celmec_test_01 celmec_test_01)
+ADD_TEST(sub_tests sub_tests)
