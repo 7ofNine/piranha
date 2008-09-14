@@ -42,8 +42,8 @@ namespace piranha
 			typedef std::vector<T,counting_allocator<T,Allocator> > bucket_type;
 			typedef std::vector<bucket_type,counting_allocator<T,Allocator> > vector_type;
 			// Configuration options.
-			static const size_t min_size_index =		1;
-			static const size_t shrink_trigger = 		10;
+			static const size_t min_size_index =	1;
+			static const size_t shrink_trigger = 	10;
 			// Configuration options stop here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
@@ -203,6 +203,15 @@ namespace piranha
 					settings::load_factor() * sizes[m_sizes_index] && m_sizes_index > min_size_index) {
 					change_size(m_sizes_index - 1);
 				}
+			}
+			bool empty() const {
+				return (m_length == 0);
+			}
+			void clear() {
+				chained_hash_set new_ht;
+				new_ht.m_sizes_index = min_size_index;
+				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
+				swap(new_ht);
 			}
 		private:
 			static size_t get_position(const size_t &h, const size_t &size) {
