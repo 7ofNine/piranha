@@ -21,13 +21,13 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
-#include <boost/tuple/tuple.hpp> // For sub cache selection.
 #include <complex> // For std::complex<SubSeries>.
 #include <memory> // For standard allocator.
 #include <string>
 
 #include "../base_classes/int_array.h"
 #include "../common_functors.h"
+#include "../exceptions.h"
 #include "../int_power_cache.h"
 #include "trig_array_commons.h"
 
@@ -56,16 +56,46 @@ namespace piranha
 			{
 					typedef int_power_cache<std::complex<SubSeries>,
 						base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
+					enum status {
+						zero,
+						one,
+						full
+					};
 				public:
-					sub_cache():ancestor::int_power_cache() {}
+					sub_cache():ancestor::int_power_cache(),m_status(zero) {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
 						this->m_container[0] = std::complex<SubSeries>(static_cast<max_fast_int>(1),*args_tuple);
-						this->m_container[1] = s.ei(*args_tuple);
-						SubSeries tmp(s);
-						tmp.mult_by(max_fast_int(-1),*args_tuple);
-						this->m_container[-1] = tmp.ei(*args_tuple);
+						try {
+							std::complex<SubSeries> tmp1 = s.ei(*args_tuple);
+							this->m_container[1] = tmp1;
+							m_status = one;
+							SubSeries tmp2(s);
+							tmp2.mult_by(max_fast_int(-1),*args_tuple);
+							std::complex<SubSeries> tmp3 = tmp2.ei(*args_tuple);
+							this->m_container[-1] = tmp3;
+							m_status = full;
+						} catch (const unsuitable &) {}
 					}
+					const std::complex<SubSeries> &operator[](const max_fast_int &n) {
+						switch (m_status) {
+							case zero:
+								if (n != 0) {
+									throw unsuitable("The substitution cache was unable to compute the complex "
+										"exponential of the series used for substitution.");
+								}
+							case one:
+								if (n < 0) {
+									throw unsuitable("The substitution cache was unable to compute the inverse "
+										"complex exponential of the series used for substitution.");
+								}
+							default:
+								;
+						}
+						return ancestor::operator[](n);
+					}
+				private:
+					status m_status;
 			};
 		public:
 			typedef typename ancestor::value_type value_type;

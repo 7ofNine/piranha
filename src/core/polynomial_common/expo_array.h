@@ -21,7 +21,6 @@
 #ifndef PIRANHA_EXPO_ARRAY_H
 #define PIRANHA_EXPO_ARRAY_H
 
-#include <boost/tuple/tuple.hpp>
 #include <memory> // For standard allocator.
 #include <string>
 #include <vector>

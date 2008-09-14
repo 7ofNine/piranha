@@ -25,6 +25,7 @@
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/tuple/tuple.hpp> // For sub cache selection.
 #include <memory> // For std::allocator.
 #include <utility> // For std::pair.
 #include <vector>
