@@ -127,7 +127,6 @@ namespace piranha
 			chained_hash_set(): m_sizes_index(min_size_index), m_length(0), m_container(sizes[m_sizes_index])
 			{}
 			chained_hash_set(const size_t &hint):
-				p_assert(settings::load_factor() > 0);
 				m_sizes_index(find_upper_size_index(hint/settings::load_factor())),
 				m_length(0),
 				m_container(sizes[m_sizes_index])
@@ -184,7 +183,7 @@ namespace piranha
 					__PDEBUG(std::cout << "Invalid resize requested, doing nothing.\n");
 					return;
 				}
-				change_size(new_index);
+				change_size(new_sizes_index);
 			}
 			void erase(const iterator &it) {
 				p_assert(it.m_ht == this);
@@ -201,7 +200,7 @@ namespace piranha
 				bucket.pop_back();
 				--m_length;
 				if (static_cast<double>(m_length) * shrink_trigger <
-					settings::load_factor() * sizes[m_sizes_index] && m_sizes_index > min_sizes_index) {
+					settings::load_factor() * sizes[m_sizes_index] && m_sizes_index > min_size_index) {
 					change_size(m_sizes_index - 1);
 				}
 			}
