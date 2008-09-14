@@ -127,6 +127,7 @@ namespace piranha
 			chained_hash_set(): m_sizes_index(min_size_index), m_length(0), m_container(sizes[m_sizes_index])
 			{}
 			chained_hash_set(const size_t &hint):
+				p_assert(settings::load_factor() > 0);
 				m_sizes_index(find_upper_size_index(hint/settings::load_factor())),
 				m_length(0),
 				m_container(sizes[m_sizes_index])
@@ -155,6 +156,7 @@ namespace piranha
 				return end();
 			}
 			iterator insert(const key_type &key) {
+				p_assert(settings::load_factor() > 0);
 				if (static_cast<double>(m_length + 1) > settings::load_factor() * sizes[m_sizes_index]) {
 					grow();
 				}
