@@ -177,6 +177,34 @@ namespace piranha
 			size_t size() const {
 				return m_length;
 			}
+			// Increase size to at least new_size buckets.
+			void resize(const size_t &new_size) {
+				const uint8 new_sizes_index = find_upper_size_index(new_size);
+				if (new_sizes_index <= m_sizes_index) {
+					__PDEBUG(std::cout << "Invalid resize requested, doing nothing.\n");
+					return;
+				}
+				change_size(new_index);
+			}
+			void erase(const iterator &it) {
+				p_assert(it.m_ht == this);
+				bucket_type &bucket = m_container[it.m_vector_index];
+				const size_t bucket_size = bucket.size();
+				p_assert(bucket_size > 0);
+				p_assert(it.m_bucket_index < bucket_size);
+				if (it.m_bucket_index + 1 != bucket_size) {
+					// If the element is not at the last slot of the bucket,
+					// swap it with the last element.
+					swapper()(bucket[it.m_bucket_index], bucket[bucket_size - 1]);
+				}
+				// Erase the last element of the bucket.
+				bucket.pop_back();
+				--m_length;
+				if (static_cast<double>(m_length) * shrink_trigger <
+					settings::load_factor() * sizes[m_sizes_index] && m_sizes_index > min_sizes_index) {
+					change_size(m_sizes_index - 1);
+				}
+			}
 		private:
 			static size_t get_position(const size_t &h, const size_t &size) {
 				return (h & (size - 1));
@@ -189,17 +217,22 @@ namespace piranha
 				}
 				return min_size_index;
 			}
-			// Increase the size of the container.
-			void grow() {
+			void change_size(const uint8 &new_index) {
+				p_assert(new_index >= min_size_index);
 				chained_hash_set new_ht;
-				new_ht.m_sizes_index = m_sizes_index + 1;
+				new_ht.m_sizes_index = new_index;
 				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
 				const iterator it_f = end();
 				for (iterator it = begin(); it != it_f; ++it) {
 					new_ht.insert(*it);
 				}
 				swap(new_ht);
-				__PDEBUG(std::cout << "Chained hash set size increased to: " << sizes[m_sizes_index] << '\n');
+				__PDEBUG(std::cout << "Chained hash set changed to: " << sizes[m_sizes_index] << '\n');
+			}
+			// Increase the size of the container to the next size.
+			void grow() {
+				p_assert(m_sizes_index < sizes_size - 1);
+				change_size(m_sizes_index + 1);
 			}
 		private:
 			uint8				m_sizes_index;
