@@ -1,3 +1,11 @@
+2008.09.14 d297592e56e7d12d5fac2924ee949d57b4cd2efc
+
+* Speedup series substitution by using a caching mechanism.
+* Reduce size of binary packages by enabling stripping.
+* Improve performance when multiplying series by a number.
+* Optimize series multiplication when one of or both the series consist of a single coefficient.
+* Improve error checking for special functions in Pyranha.
+
 2008.09.09 f3c5775372c143904a2ccea88c19335ef5cab731
 
 * Improve performance of series comparison in MinGW > 3.4.
