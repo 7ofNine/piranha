@@ -94,6 +94,11 @@ namespace piranha
 					const Derived *m_ptr;
 			};
 		public:
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<typename Derived::template sub_cache<SubSeries,ArgsTuple>,
+					SubCachesCons> type;
+			};
 			typedef value_type_ value_type;
 			typedef uint8 size_type;
 			static const int position = Pos;

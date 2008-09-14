@@ -50,6 +50,7 @@ namespace piranha
 			friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
 			typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
 			typedef int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
+			friend class int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
@@ -103,10 +104,6 @@ namespace piranha
 				private:
 					mutable bool	m_norm_cached;
 					mutable double	m_norm;
-			};
-			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct sub_cache_selector {
-				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.

@@ -49,6 +49,7 @@ namespace piranha
 			friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
 			typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
 			typedef int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
+			friend class int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<std::complex<SubSeries>,
 				base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
@@ -86,10 +87,6 @@ namespace piranha
 					bool operator<(const proxy &t2) const {
 						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
 					}
-			};
-			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct sub_cache_selector {
-				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.
