@@ -25,7 +25,6 @@
 #include <functional> // For std::equal_to.
 #include <vector>
 
-#include "../chained_hash_set.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -58,11 +57,9 @@ namespace piranha
 			typedef typename term_type_::key_type key_type;
 			// Alias for allocator type.
 			typedef counting_allocator<term_type_,Allocator> allocator_type;
-// 			// Term container.
-// 			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
-// 				container_type;
-			typedef chained_hash_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type,
-				member_swap<term_type_> > container_type;
+			// Term container.
+			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
+				container_type;
 		public:
 			typedef term_type_ term_type;
 			typedef typename term_type::template rebind < typename cf_type::proxy,

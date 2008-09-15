@@ -175,10 +175,10 @@ namespace piranha
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
-		const_iterator res(m_container.insert(term));
-		p_assert(res != end());
+		std::pair<const_iterator, bool> res(m_container.insert(term));
+		p_assert(res.second);
 		if (!Sign) {
-			res->m_cf.invert_sign(args_tuple);
+			res.first->m_cf.invert_sign(args_tuple);
 		}
 	}
 
@@ -269,7 +269,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::rehash(const size_t &size)
 	{
-		m_container.resize(size);
+		m_container.rehash(size);
 	}
 }
 
