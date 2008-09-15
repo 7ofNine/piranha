@@ -161,6 +161,12 @@ namespace piranha
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 				return *this;
 			}
+			void swap(int_array &other) {
+				std::swap(m_flavour,other.m_flavour);
+				std::swap(m_size,other.m_size);
+				std::swap(m_pack_size,other.m_pack_size);
+				std::swap(m_ptr,other.m_ptr);
+			}
 			/// Do I need padding in order to be compatible with args_tuple?
 			template <class ArgsTuple>
 			bool needs_padding(const ArgsTuple &args_tuple) const {

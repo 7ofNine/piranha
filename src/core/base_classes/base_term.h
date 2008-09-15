@@ -126,6 +126,10 @@ namespace piranha
 				BOOST_STATIC_ASSERT(N == 0 || N == 1);
 				return base_term_get_helper<N, base_term>::run(*this);
 			}
+			void swap(base_term &other) {
+				m_cf.swap(other.m_cf);
+				m_key.swap(other.m_key);
+			}
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>
