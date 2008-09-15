@@ -141,7 +141,8 @@ namespace piranha
 				return m_alloc.address(x);
 			}
 			pointer allocate(const size_type &n, const void *hint = 0) {
-				const size_t add = n * sizeof(value_type), cur = static_cast<size_t>(m_counter), l = settings::memory_limit();
+				const size_t add = n * sizeof(value_type), cur = static_cast<size_t>(m_counter),
+					l = settings::memory_limit();
 				// Cast to double so that we resolve the case in which cur+add overflows size_t.
 				if (static_cast<double>(cur) + add > l) {
 					throw out_of_memory();
