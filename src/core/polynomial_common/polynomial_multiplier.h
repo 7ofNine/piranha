@@ -250,7 +250,7 @@ namespace piranha
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
-						ancestor::m_retval.rehash(cms.size());
+						ancestor::m_retval.rehash(cms.size() / settings::load_factor() + 1);
 						term_type1 tmp_term;
 						const c_iterator c_it_f = cms.end();
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {

@@ -328,7 +328,7 @@ namespace piranha
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
-						ancestor::m_retval.rehash(cms_cos.size() + cms_sin.size());
+						ancestor::m_retval.rehash((cms_cos.size() + cms_sin.size()) / settings::load_factor() + 1);
 						term_type1 tmp_term;
 						{
 							const c_iterator c_it_f = cms_cos.end();
