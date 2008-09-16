@@ -69,7 +69,7 @@ namespace piranha
 			class reference_proxy
 			{
 				public:
-					reference_proxy(const int_array &a): m_ptr(&a) {}
+					reference_proxy(const Derived &d): m_ptr(&d) {}
 					template <class Vector>
 					void upload_ints_to(Vector &v) const {
 						m_ptr->upload_ints_to(v);
@@ -95,7 +95,7 @@ namespace piranha
 						return m_ptr->operator[](n);
 					}
 				protected:
-					const int_array *m_ptr;
+					const Derived *m_ptr;
 			};
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -106,6 +106,7 @@ namespace piranha
 			typedef value_type_ value_type;
 			typedef uint8 size_type;
 			static const int position = Pos;
+			static const char separator = ';';
 			// Default implementation of proxy type.
 			typedef Derived proxy;
 			/// Default ctor.
@@ -444,7 +445,7 @@ namespace piranha
 				for (i = 0;i < pack_size;++i) {
 					max_cast(new_ptr)[i] = max_cast(old_ptr)[i];
 				}
-				for (i = i << pack_shift;i < size;++i) {
+				for (i <<= pack_shift; i < size; ++i) {
 					new_ptr[i] = old_ptr[i];
 				}
 			}
@@ -469,15 +470,13 @@ namespace piranha
 			 * Defined by the integer division between the number of bits of piranha::max_fast_int and the number
 			 * of bits of int_array::value_type.
 			 */
-			static const size_type  pack_mult = sizeof(max_fast_int) / sizeof(value_type);
+			static const size_type pack_mult = sizeof(max_fast_int) / sizeof(value_type);
 			/// Pack shifting.
 			/**
 			 * Defined as the base-2 logarithm of int_array::pack_mult. If int_array::pack_mult is not a power of two,
 			 * a compilation error is produced.
 			 */
 			static const size_type  pack_shift = lg<pack_mult>::value;
-		public:
-			static const char separator = ';';
 	};
 };
 
