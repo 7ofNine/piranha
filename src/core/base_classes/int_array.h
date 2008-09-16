@@ -51,7 +51,6 @@ namespace piranha
 	 * a flavour boolean flag, which can be used in trigonometric parts
 	 * of Poisson series.
 	 */
-	// TODO: probably it is best to drop the static allocator here, and construct it on-demand.
 	template <__PIRANHA_INT_ARRAY_TP_DECL>
 	class int_array
 	{
@@ -350,12 +349,12 @@ namespace piranha
 			 */
 			bool elements_are_zero() const {
 				size_t i;
-				for (i = 0;i < m_pack_size;++i) {
+				for (i = 0; i < m_pack_size; ++i) {
 					if (max_cast(m_ptr)[i] != 0) {
 						return false;
 					}
 				}
-				for (i = i << pack_shift;i < m_size;++i) {
+				for (i <<= pack_shift; i < m_size; ++i) {
 					if (m_ptr[i] != 0) {
 						return false;
 					}
@@ -395,10 +394,10 @@ namespace piranha
 			size_t elements_hasher() const {
 				size_t retval = 0;
 				size_type i;
-				for (i = 0;i < m_pack_size;++i) {
+				for (i = 0; i < m_pack_size; ++i) {
 					boost::hash_combine(retval, max_cast(m_ptr)[i]);
 				}
-				for (i = i << pack_shift;i < m_size;++i) {
+				for (i <<= pack_shift; i < m_size; ++i) {
 					boost::hash_combine(retval, m_ptr[i]);
 				}
 				return retval;
@@ -410,13 +409,12 @@ namespace piranha
 			bool elements_equal_to(const int_array &v) const {
 				if (m_size == v.m_size) {
 					size_type i;
-					for (i = 0;i < m_pack_size;++i) {
+					for (i = 0; i < m_pack_size; ++i) {
 						if (max_cast(m_ptr)[i] != max_cast(v.m_ptr)[i]) {
 							return false;
 						}
 					}
-					// TODO: probably we can use <<= here.
-					for (i = i << pack_shift;i < m_size;++i) {
+					for (i <<= pack_shift; i < m_size; ++i) {
 						if (m_ptr[i] != v[i]) {
 							return false;
 						}
