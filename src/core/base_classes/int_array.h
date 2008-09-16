@@ -109,16 +109,16 @@ namespace piranha
 			/**
 			 * Constructs empty array.
 			 */
-			int_array(): m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator.allocate(0)) {}
+			int_array(): m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator_type().allocate(0)) {}
 			/// Copy ctor.
 			int_array(const int_array &v): m_flavour(v.m_flavour), m_size(v.m_size), m_pack_size(v.m_pack_size),
-					m_ptr(allocator.allocate(m_size)) {
+					m_ptr(allocator_type().allocate(m_size)) {
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 			}
 			/// Copy ctor from different position.
 			template <int Pos2, class Derived2>
 			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour), m_size(v.m_size),
-				m_pack_size(v.m_pack_size),m_ptr(allocator.allocate(m_size)) {
+				m_pack_size(v.m_pack_size),m_ptr(allocator_type().allocate(m_size)) {
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 			}
 			/// Ctor from psym.
@@ -128,7 +128,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			int_array(const psym_p &p, const int &n, const ArgsTuple &args_tuple):
-					m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator.allocate(0)) {
+					m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator_type().allocate(0)) {
 				(void)p;
 				(void)args_tuple;
 				// Construct only if the positions match.
@@ -141,7 +141,7 @@ namespace piranha
 			}
 			/// Dtor.
 			~int_array() {
-				allocator.deallocate(m_ptr, m_size);
+				allocator_type().deallocate(m_ptr, m_size);
 			}
 			/// Assignment operator.
 			int_array &operator=(const int_array &v) {
@@ -151,9 +151,10 @@ namespace piranha
 				}
 				// Take care of flavour.
 				m_flavour = v.m_flavour;
+				allocator_type a;
 				if (m_size != v.m_size) {
-					allocator.deallocate(m_ptr, m_size);
-					m_ptr = allocator.allocate(v.m_size);
+					a.deallocate(m_ptr, m_size);
+					m_ptr = a.allocate(v.m_size);
 					m_size = v.m_size;
 					m_pack_size = v.m_pack_size;
 				}
@@ -371,7 +372,8 @@ namespace piranha
 					return;
 				}
 				// Allocate space for the new size.
-				value_type *new_ptr = allocator.allocate(new_size);
+				allocator_type a;
+				value_type *new_ptr = a.allocate(new_size);
 				const size_type new_pack_size = (new_size >> pack_shift);
 				// Copy to the minimum of the new sizes.
 				packed_copy(new_ptr, m_ptr, std::min<size_type>(m_size, new_size),
@@ -381,7 +383,7 @@ namespace piranha
 					new_ptr[i] = 0;
 				}
 				// Destroy old pointer and assign new data members.
-				allocator.deallocate(m_ptr, m_size);
+				a.deallocate(m_ptr, m_size);
 				m_ptr = new_ptr;
 				m_size = new_size;
 				m_pack_size = new_pack_size;
@@ -462,8 +464,6 @@ namespace piranha
 			size_type               m_pack_size;
 			/// Pointer to the first value of the array.
 			value_type              *m_ptr;
-			/// Allocator.
-			static allocator_type   allocator;
 			/// Pack multiplier.
 			/**
 			 * Defined by the integer division between the number of bits of piranha::max_fast_int and the number
@@ -479,9 +479,6 @@ namespace piranha
 		public:
 			static const char separator = ';';
 	};
-
-	template <__PIRANHA_INT_ARRAY_TP_DECL>
-	typename int_array<__PIRANHA_INT_ARRAY_TP>::allocator_type int_array<__PIRANHA_INT_ARRAY_TP>::allocator;
 };
 
 #undef max_cast
