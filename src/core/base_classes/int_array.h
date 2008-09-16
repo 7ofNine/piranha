@@ -54,18 +54,22 @@ namespace piranha
 	template <__PIRANHA_INT_ARRAY_TP_DECL>
 	class int_array
 	{
+			p_static_check(Bits == 8 || Bits == 16, "");
 			typedef typename boost::int_t<Bits>::fast value_type_;
+			p_static_check(sizeof(max_fast_int) % sizeof(value_type_) == 0, "");
 			typedef counting_allocator<value_type_,Allocator> allocator_type;
 			template <int Bits2, int Pos2, class Allocator2, class Derived2>
 				friend class int_array;
-			p_static_check(Bits == 8 || Bits == 16, "");
-			p_static_check(sizeof(max_fast_int) % sizeof(value_type_) == 0, "");
-			p_static_check(Pos >= 0, "");
+			p_static_check(Pos >= 0, "Invalid position for int_array.");
+			union container_type {
+				value_type_ 	*v;
+				max_fast_int	*p;
+			};
 		protected:
 			class reference_proxy
 			{
 				public:
-					reference_proxy(const Derived &d): m_ptr(&d) {}
+					reference_proxy(const int_array &a): m_ptr(&a) {}
 					template <class Vector>
 					void upload_ints_to(Vector &v) const {
 						m_ptr->upload_ints_to(v);
@@ -91,7 +95,7 @@ namespace piranha
 						return m_ptr->operator[](n);
 					}
 				protected:
-					const Derived *m_ptr;
+					const int_array *m_ptr;
 			};
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -114,8 +118,8 @@ namespace piranha
 			 * Position can be different.
 			 */
 			template <int Pos2, class Derived2>
-			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour), m_size(v.m_size),
-				m_pack_size(v.m_pack_size),m_ptr(allocator_type().allocate(m_size)) {
+			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour),
+				m_size(v.m_size), m_pack_size(v.m_pack_size),m_ptr(allocator_type().allocate(m_size)) {
 				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
 			}
 			/// Ctor from psym.
