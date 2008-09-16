@@ -88,7 +88,7 @@ namespace piranha
 						return m_ptr->norm(args_tuple);
 					}
 					const value_type_ &operator[](const size_t &n) const {
-						return (*m_ptr)[n];
+						return m_ptr->operator[](n);
 					}
 				protected:
 					const Derived *m_ptr;
@@ -110,11 +110,9 @@ namespace piranha
 			 */
 			int_array(): m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator_type().allocate(0)) {}
 			/// Copy ctor.
-			int_array(const int_array &v): m_flavour(v.m_flavour), m_size(v.m_size), m_pack_size(v.m_pack_size),
-					m_ptr(allocator_type().allocate(m_size)) {
-				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
-			}
-			/// Copy ctor from different position.
+			/**
+			 * Position can be different.
+			 */
 			template <int Pos2, class Derived2>
 			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour), m_size(v.m_size),
 				m_pack_size(v.m_pack_size),m_ptr(allocator_type().allocate(m_size)) {
@@ -200,17 +198,17 @@ namespace piranha
 				const size_t l_size = l.template get<Pos>().size();
 				// The layout must have at least all arguments in this.
 				p_assert(l_size >= m_size);
+				// TODO: we are going to do 2 memory allocations here. Probably
+				// this can be reduced to 1.
 				// Memorize the old vector.
 				const Derived old(*derived_const_cast);
 				// Make space.
 				resize(l_size);
 				for (size_t i = 0;i < l_size;++i) {
-					switch (l.template get<Pos>()[i].first) {
-					case true:
+					if (l.template get<Pos>()[i].first) {
 						p_assert(l.template get<Pos>()[i].second < old.m_size);
 						m_ptr[i] = old[l.template get<Pos>()[i].second];
-						break;
-					case false:
+					} else {
 						m_ptr[i] = 0;
 					}
 				}
