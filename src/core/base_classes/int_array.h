@@ -115,9 +115,11 @@ namespace piranha
 			 */
 			int_array(): m_flavour(true), m_size(0), m_pack_size(0), m_ptr(allocator_type().allocate(0)) {}
 			/// Copy ctor.
-			/**
-			 * Position can be different.
-			 */
+			int_array(const int_array &v): m_flavour(v.m_flavour), m_size(v.m_size), m_pack_size(v.m_pack_size),
+				m_ptr(allocator_type().allocate(m_size)) {
+				packed_copy(m_ptr, v.m_ptr, m_size, m_pack_size);
+			}
+			/// Copy ctor. Position can be different.
 			template <int Pos2, class Derived2>
 			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour),
 				m_size(v.m_size), m_pack_size(v.m_pack_size),m_ptr(allocator_type().allocate(m_size)) {
