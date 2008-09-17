@@ -83,7 +83,7 @@ namespace piranha
 				}
 				bool printed_something = false;
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
-					const max_fast_int n = derived_const_cast->m_ptr[i];
+					const max_fast_int n = derived_const_cast->m_container.v[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If we already printed something and n is positive we are going to print the sign too.
@@ -283,7 +283,7 @@ namespace piranha
 					// Change the flavour of the resulting key.
 					retval.second.m_flavour = (!derived_const_cast->m_flavour);
 					p_assert(pos < derived_const_cast->size());
-					retval.first = derived_const_cast->m_ptr[pos];
+					retval.first = derived_const_cast->m_container.v[pos];
 					if (derived_const_cast->m_flavour) {
 						retval.first = -retval.first;
 					}

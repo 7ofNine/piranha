@@ -443,7 +443,8 @@ namespace piranha
 				}
 				return retval;
 			}
-			void init_copy(const int_array &other) {
+			template <class IntArray>
+			void init_copy(const IntArray &other) {
 				const size_type p_size = packed_size(m_size);
 				m_container.p = allocator_type().allocate(p_size);
 				packed_copy(m_container.p, other.m_container.p, p_size);

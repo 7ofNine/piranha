@@ -61,7 +61,7 @@ namespace piranha
 				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
 				bool printed_something = false;
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
-					const max_fast_int n = derived_const_cast->m_ptr[i];
+					const max_fast_int n = derived_const_cast->m_container.v[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// Prepend the multiplication operator only if we already printed something.
@@ -185,9 +185,9 @@ namespace piranha
 				// and the interesting exponent is not zero.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
 				// by the coefficient in the partial derivation of the whole term.
-				if (pos_tuple.template get<Derived::position>().first && derived_const_cast->m_ptr[pos] != 0) {
+				if (pos_tuple.template get<Derived::position>().first && derived_const_cast->m_container.v[pos] != 0) {
 					retval.second = *derived_const_cast;
-					retval.first = derived_const_cast->m_ptr[pos];
+					retval.first = derived_const_cast->m_container.v[pos];
 					--retval.second[pos];
 				}
 				return retval;
