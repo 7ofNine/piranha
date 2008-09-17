@@ -62,4 +62,6 @@
 - Should "a.real = 10" be allowed in pyranha?
 - rehash --> prepare_for_size and fast insert that won't check for duplicate item? This may be useful to cut down
   the insertion time after series multiplication finishes, and requires our own hash table implementation. Fast insertion
-  should be protected and then friendship should be made with the multiplier.
+  should be protected and then friendship should be made with the multiplier --> this does not seem to work, alas.
+- rework the type-determination thing (tetd_helper and stuff) to be less ugly.
+- interop with int and long int instead of max_fast_int.

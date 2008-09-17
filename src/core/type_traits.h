@@ -21,6 +21,7 @@
 #ifndef PIRANHA_TYPE_TRAITS_H
 #define PIRANHA_TYPE_TRAITS_H
 
+#include <boost/type_traits/integral_constant.hpp>
 #include <complex>
 
 namespace piranha
@@ -62,5 +63,8 @@ namespace piranha
 		public:
 			typedef std::complex<double> type;
 	};
+
+	template <class>
+	struct is_lightweight: boost::false_type {};
 }
 #endif

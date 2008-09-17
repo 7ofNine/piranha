@@ -22,15 +22,17 @@
 #define PIRANHA_DOUBLE_CF_H
 
 #include <boost/numeric/conversion/converter.hpp>
+#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
 #include <cmath>
 #include <complex>
 
+#include "../base_classes/numerical_container.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../math.h" // For std::pow.
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
-#include "../base_classes/numerical_container.h"
+#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -135,6 +137,13 @@ namespace piranha
 		retval.m_value = std::polar(1., m_value);
 		return retval;
 	}
+
+	// Specialise lightweight type trait for double coefficients.
+	template <>
+	struct is_lightweight<double_cf>: boost::true_type {};
+
+	template <>
+	struct is_lightweight<std::complex<double_cf> >: boost::true_type {};
 }
 
 #endif

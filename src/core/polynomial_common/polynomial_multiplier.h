@@ -113,7 +113,13 @@ namespace piranha
 							ancestor::perform_plain_multiplication(trunc);
 						} else if (coded_ancestor::m_cr_is_viable) {
 							coded_ancestor::code_keys();
-							if (coded_ancestor::is_sparse() || !perform_vector_coded_multiplication(trunc)) {
+							bool vec_res;
+							if (coded_ancestor::is_sparse()) {
+								vec_res = false;
+							} else {
+								vec_res = perform_vector_coded_multiplication(trunc);
+							}
+							if (!vec_res) {
 								__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
 								perform_hash_coded_multiplication(trunc);
 							}

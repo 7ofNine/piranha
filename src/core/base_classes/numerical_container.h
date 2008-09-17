@@ -21,7 +21,6 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_H
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
-#include <cmath> // For log10.
 #include <complex>
 #include <iostream>
 #include <string>
@@ -32,7 +31,6 @@
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // Lexical converter.
-#include "../type_traits.h"
 #include "numerical_container_complex_toolbox.h"
 #include "series_builders.h"
 
@@ -219,8 +217,8 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, const SubSeries &, SubCaches &,
 				const ArgsTuple &args_tuple) const {
-				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::template run<RetSeries>(
-					*derived_const_cast, args_tuple);
+				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::
+					template run<RetSeries>(*derived_const_cast, args_tuple);
 			}
 			/// Get value.
 			const T &value() const {
