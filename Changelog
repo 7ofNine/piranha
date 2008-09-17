@@ -1,3 +1,7 @@
+2008.09.17 ef3eec65f09b9b4d2ddaddd36cf42c36215e76f5
+
+* Fix typo in the Pyranha routine for the calculation of besselJ.
+
 2008.09.14 d297592e56e7d12d5fac2924ee949d57b4cd2efc
 
 * Speedup series substitution by using a caching mechanism.
