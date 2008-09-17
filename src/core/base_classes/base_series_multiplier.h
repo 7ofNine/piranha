@@ -48,15 +48,6 @@ namespace piranha
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
 		private:
-			typedef boost::multi_index_container
-			<
-			term_type1,
-			boost::multi_index::indexed_by
-			<
-			boost::multi_index::hashed_unique<boost::multi_index::identity<term_type1> >
-			>
-			>
-			mult_set;
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
 			typedef typename Series1::term_proxy_type term_proxy_type1;
@@ -65,10 +56,7 @@ namespace piranha
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 					m_size2(m_s2.length()), m_retval(retval),
-					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {
-				// Set proper load factor for hash set.
-				m_set.max_load_factor(settings::load_factor());
-			}
+					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {}
 			// Perform plain multiplication.
 			template <class GenericTruncator>
 			void perform_plain_multiplication(const GenericTruncator &trunc) {
@@ -98,9 +86,6 @@ namespace piranha
 			// Vectors of proxies for the input terms.
 			std::vector<term_proxy_type1>	m_terms1;
 			std::vector<term_proxy_type2>	m_terms2;
-		private:
-			// Container to store the result of the base multiplication.
-			mult_set						m_set;
 	};
 }
 
