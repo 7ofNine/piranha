@@ -247,7 +247,7 @@ namespace piranha
 			}
 			void insert(const key_type &k) {
 				if ((static_cast<double>(m_length) + 1) >=
-					settings::load_factor() * (sizes[m_sizes_index] * bucket_size)) {
+					settings::load_factor() * sizes[m_sizes_index] * bucket_size) {
 					__PDEBUG(std::cout << "Max load factor exceeded, resizing." << '\n');
 					grow();
 				}
@@ -269,8 +269,8 @@ namespace piranha
 				m_container[it.m_vindex].f[it.m_bindex] = false;
 				m_container[it.m_vindex].t[it.m_bindex] = key_type();
 				--m_length;
-				if (static_cast<double>(m_length) < (settings::load_factor() *
-					(sizes[m_sizes_index] * bucket_size)) / shrink_trigger) {
+				if (static_cast<double>(m_length) * shrink_trigger < settings::load_factor() *
+					sizes[m_sizes_index] * bucket_size) {
 					attempt_shrink();
 				}
 			}

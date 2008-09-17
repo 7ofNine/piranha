@@ -42,12 +42,12 @@ namespace piranha
 			typedef std::vector<T,counting_allocator<T,Allocator> > bucket_type;
 			typedef std::vector<bucket_type,counting_allocator<T,Allocator> > vector_type;
 			// Configuration options.
-			static const size_t min_size_index =		1;
-			static const size_t shrink_trigger = 		10;
+			static const size_t min_size_index =	1;
+			static const size_t shrink_trigger = 	10;
 			// Configuration options stop here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
-				64;
+				40;
 #else
 				32;
 #endif
@@ -155,6 +155,7 @@ namespace piranha
 				return end();
 			}
 			iterator insert(const key_type &key) {
+				p_assert(settings::load_factor() > 0);
 				if (static_cast<double>(m_length + 1) > settings::load_factor() * sizes[m_sizes_index]) {
 					grow();
 				}
@@ -175,9 +176,46 @@ namespace piranha
 			size_t size() const {
 				return m_length;
 			}
+			// Increase size to at least new_size buckets.
+			void resize(const size_t &new_size) {
+				const uint8 new_sizes_index = find_upper_size_index(new_size);
+				if (new_sizes_index <= m_sizes_index) {
+					__PDEBUG(std::cout << "Invalid resize requested, doing nothing.\n");
+					return;
+				}
+				change_size(new_sizes_index);
+			}
+			void erase(const iterator &it) {
+				p_assert(it.m_ht == this);
+				bucket_type &bucket = m_container[it.m_vector_index];
+				const size_t bucket_size = bucket.size();
+				p_assert(bucket_size > 0);
+				p_assert(it.m_bucket_index < bucket_size);
+				if (it.m_bucket_index + 1 != bucket_size) {
+					// If the element is not at the last slot of the bucket,
+					// swap it with the last element.
+					swapper()(bucket[it.m_bucket_index], bucket[bucket_size - 1]);
+				}
+				// Erase the last element of the bucket.
+				bucket.pop_back();
+				--m_length;
+				if (static_cast<double>(m_length) * shrink_trigger <
+					settings::load_factor() * sizes[m_sizes_index] && m_sizes_index > min_size_index) {
+					change_size(m_sizes_index - 1);
+				}
+			}
+			bool empty() const {
+				return (m_length == 0);
+			}
+			void clear() {
+				chained_hash_set new_ht;
+				new_ht.m_sizes_index = min_size_index;
+				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
+				swap(new_ht);
+			}
 		private:
 			static size_t get_position(const size_t &h, const size_t &size) {
-				return (h & (size - 1));
+				return (h % size);
 			}
 			static uint8 find_upper_size_index(const size_t &size) {
 				for (uint8 retval = 0; retval < sizes_size; ++retval) {
@@ -187,17 +225,22 @@ namespace piranha
 				}
 				return min_size_index;
 			}
-			// Increase the size of the container.
-			void grow() {
+			void change_size(const uint8 &new_index) {
+				p_assert(new_index >= min_size_index);
 				chained_hash_set new_ht;
-				new_ht.m_sizes_index = m_sizes_index + 1;
+				new_ht.m_sizes_index = new_index;
 				new_ht.m_container.resize(sizes[new_ht.m_sizes_index]);
 				const iterator it_f = end();
 				for (iterator it = begin(); it != it_f; ++it) {
 					new_ht.insert(*it);
 				}
 				swap(new_ht);
-				__PDEBUG(std::cout << "Chained hash set size increased to: " << sizes[m_sizes_index] << '\n');
+				__PDEBUG(std::cout << "Chained hash set changed to: " << sizes[m_sizes_index] << '\n');
+			}
+			// Increase the size of the container to the next size.
+			void grow() {
+				p_assert(m_sizes_index < sizes_size - 1);
+				change_size(m_sizes_index + 1);
 			}
 		private:
 			uint8				m_sizes_index;
@@ -208,71 +251,47 @@ namespace piranha
 	template <class T, class HashFunction, class EqualKey, class Allocator, class SwapFunction>
 	const size_t chained_hash_set<T,HashFunction,EqualKey,Allocator,SwapFunction>::sizes[] = {
 		1,
-		2,
-		4,
-		8,
-		16,
-		32,
-		64,
-		128,
-		256,
-		512,
-		1024,
-		2048,
-		4096,
-		8192,
-		16384,
-		32768,
-		65536,
-		131072,
-		262144,
-		524288,
-		1048576,
-		2097152,
-		4194304,
-		8388608,
-		16777216,
-		33554432,
-		67108864,
-		134217728,
-		268435456,
-		536870912,
-		1073741824,
-		2147483648u
+		3,
+		5,
+		11,
+		23,
+		53,
+		97,
+		193,
+		389,
+		769,
+		1543,
+		3079,
+		6151,
+		12289,
+		24593,
+		49157,
+		98317,
+		196613,
+		393241,
+		786433,
+		1572869,
+		3145739,
+		6291469,
+		12582917,
+		25165843,
+		50331653,
+		100663319,
+		201326611,
+		402653189,
+		805306457,
+		1610612741,
+		3221225473
 #ifdef _PIRANHA_64BIT
 		,
-		4294967296,
-		8589934592,
-		17179869184,
-		34359738368,
-		68719476736,
-		137438953472,
-		274877906944,
-		549755813888,
-		1099511627776,
-		2199023255552,
-		4398046511104,
-		8796093022208,
-		17592186044416,
-		35184372088832,
-		70368744177664,
-		140737488355328,
-		281474976710656,
-		562949953421312,
-		1125899906842624,
-		2251799813685248,
-		4503599627370496,
-		9007199254740992,
-		18014398509481984,
-		36028797018963968,
-		72057594037927936,
-		144115188075855872,
-		288230376151711744,
-		576460752303423488,
-		1152921504606846976,
-		2305843009213693952,
-		4611686018427387904,
-		9223372036854775808u
+		6442450939,
+		12884901893,
+		25769803799,
+		51539607551,
+		103079215111,
+		206158430209,
+		412316860441,
+		824633720831
 #endif
 	};
 }

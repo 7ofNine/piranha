@@ -62,7 +62,7 @@ namespace piranha
 						full
 					};
 				public:
-					sub_cache():ancestor::int_power_cache(),m_status(zero) {}
+					sub_cache():ancestor::int_power_cache(),m_status(zero),m_errmsg() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
 						this->m_container[0] = std::complex<SubSeries>(static_cast<max_fast_int>(1),*args_tuple);
@@ -75,19 +75,23 @@ namespace piranha
 							std::complex<SubSeries> tmp3 = tmp2.ei(*args_tuple);
 							this->m_container[-1] = tmp3;
 							m_status = full;
-						} catch (const unsuitable &) {}
+						} catch (const unsuitable &u) {
+							m_errmsg = u.what();
+						}
 					}
 					const std::complex<SubSeries> &operator[](const max_fast_int &n) {
 						switch (m_status) {
 							case zero:
 								if (n != 0) {
-									throw unsuitable("The substitution cache was unable to compute the complex "
-										"exponential of the series used for substitution.");
+									throw unsuitable(std::string("The substitution cache was unable to "
+										"compute the complex exponential of the series used for substitution. "
+										"The reported error was:\n") + m_errmsg);
 								}
 							case one:
 								if (n < 0) {
-									throw unsuitable("The substitution cache was unable to compute the inverse "
-										"complex exponential of the series used for substitution.");
+									throw unsuitable(std::string("The substitution cache was unable to "
+										"compute the inverse complex exponential of the series used for substitution. "
+										"The reported error was:\n") + m_errmsg);
 								}
 							default:
 								;
@@ -95,7 +99,8 @@ namespace piranha
 						return ancestor::operator[](n);
 					}
 				private:
-					status m_status;
+					status 		m_status;
+					std::string	m_errmsg;
 			};
 		public:
 			typedef typename ancestor::value_type value_type;
