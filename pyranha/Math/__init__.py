@@ -84,7 +84,7 @@ def besselJ(order,arg):
 	Bessel function of the first kind of integer order of argument arg.
 	If arg provides a besselJ() method, it will be called, otherwise _Math.besselJ will be called.
 	"""
-	if type(n) != int:
+	if type(order) != int:
 		raise ValueError("order must be an integer.")
 	try:
 		return arg.besselJ(order)
