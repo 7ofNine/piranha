@@ -338,9 +338,9 @@ namespace piranha
 	struct init_sub_caches
 	{
 		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *args_tuple) {
-			sub_caches.template get_head().setup(s,args_tuple);
+			sub_caches.get_head().setup(s,args_tuple);
 			init_sub_caches<typename SubCaches::tail_type,SubSeries,ArgsTuple>::
-				run(sub_caches.template get_tail(),s,args_tuple);
+				run(sub_caches.get_tail(),s,args_tuple);
 		}
 	};
 
