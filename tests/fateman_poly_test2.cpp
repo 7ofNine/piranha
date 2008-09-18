@@ -31,7 +31,8 @@ typedef dpoly poly;
 int main()
 {
 settings::debug(true);
-  poly a("fateman_test.dpoly"), b(a);
+  psym x("x"), y("y"), z("z"), t("t");
+  poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(max_fast_int(1)) , b(a);
   a = std::pow(a,(max_fast_int)20);
   poly c(a);
   c+=(max_fast_int)1;
