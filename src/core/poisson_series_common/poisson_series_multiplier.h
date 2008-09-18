@@ -231,6 +231,13 @@ namespace piranha
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
 						const max_fast_int i_f = coded_ancestor::m_h_max;
+						size_t size_cos = 0, size_sin = 0;
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+							size_cos += (!vc_res_cos[i].is_ignorable(args_tuple));
+							size_sin += (!vc_res_sin[i].is_ignorable(args_tuple));
+						}
+						ancestor::m_retval.rehash(static_cast<size_t>((size_cos + size_sin) /
+							settings::load_factor()) + 1);
 						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.

@@ -241,13 +241,14 @@ namespace piranha
 						}
 						__PDEBUG(std::cout << "Done multiplying\n");
 						size_t size = 0;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+						const max_fast_int i_f = coded_ancestor::m_h_max;
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
 							size += (!vc_res[i].is_ignorable(args_tuple));
 						}
 						ancestor::m_retval.rehash(static_cast<size_t>(size / settings::load_factor()) + 1);
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res[i].is_ignorable(args_tuple)) {
