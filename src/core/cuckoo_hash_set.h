@@ -432,7 +432,7 @@ namespace piranha
 				}
 				return true;
 			}
-			// Place tmp_key into its location other than orig_location, displacing, if necessary. an existing
+			// Place tmp_key into its location other than orig_location, displacing, if necessary, an existing
 			// key. If displacement takes place, retval will be true and the content of tmp_key
 			// will be the displaced one. Otherwise return false.
 			bool swap_and_displace(key_type &tmp_key, size_t &orig_location) {
