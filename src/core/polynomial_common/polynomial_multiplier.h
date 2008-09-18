@@ -40,6 +40,7 @@
 #include "../memory.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug.
+#include "../type_traits.h"
 
 namespace piranha
 {
@@ -68,17 +69,14 @@ namespace piranha
 					typedef typename term_type1::cf_type cf_type1;
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
-					class term_degree_comparison
+					class term_comparison
 					{
 						public:
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								const max_fast_int d1 = t1.m_key.degree(), d2 = t2.m_key.degree();
-								if (d1 == d2) {
-									return (t1.m_key < t2.m_key);
-								} else {
-									return (d1 < d2);
-								}
+								// NOTE: strangely enough, this seems to work worse on long series
+								// than on short series. And reverse is true with plain lex.
+								return (t1.m_key.revlex_comparison(t2.m_key));
 							}
 					};
 				public:
@@ -99,13 +97,29 @@ namespace piranha
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
-							// We want to sort them this way if we are not truncating, to optimize cache memory usage.
-							std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_degree_comparison());
-							std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_degree_comparison());
+							// We want to sort them this way if we are not truncating and
+							// coefficients are lightweight, in order to optimize cache memory usage
+							if (is_lightweight<cf_type1>::value) {
+								std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_comparison());
+								std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_comparison());
+							}
 							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
 						}
 					}
 				private:
+					template <class Cf>
+					struct cf_from_term {
+						template <class Term>
+						static const Cf &get(const Term &t) {
+							return t.m_cf;
+						}
+					};
+					template <class Cf>
+					struct cf_direct {
+						static const Cf &get(const Cf &c) {
+							return c;
+						}
+					};
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
 						if (ancestor::m_terms1.size() < 10 && ancestor::m_terms2.size() < 10) {
@@ -117,7 +131,31 @@ namespace piranha
 							if (coded_ancestor::is_sparse()) {
 								vec_res = false;
 							} else {
-								vec_res = perform_vector_coded_multiplication(trunc);
+								const typename Series1::term_proxy_type *t1 = &this->m_terms1[0];
+								const typename Series2::term_proxy_type *t2 = &this->m_terms2[0];
+								if (trunc.is_effective() || !is_lightweight<cf_type1>::value) {
+									// If the truncator is effective (i.e., it sorted the terms according
+									// to its own logic) or the coefficient is not lightweight, simply use
+									// the coefficients from the cached terms in the ancestor.
+									vec_res = perform_vector_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
+								} else {
+									// If the truncator did not sort it means that above we sorted the terms
+									// to optimise cache memory usage. And if the coefficient is
+									// lightweight, it is worth to furtherly cache the coefficients.
+									std::vector<cf_type1> cf1_cache;
+									std::vector<cf_type2> cf2_cache;
+									const size_t size1 = this->m_size1, size2 = this->m_size2;
+									cf1_cache.reserve(size1);
+									cf2_cache.reserve(size2);
+									for (size_t i = 0; i < size1; ++i) {
+										cf1_cache.push_back(t1[i].m_cf);
+									}
+									for (size_t i = 0; i < size2; ++i) {
+										cf2_cache.push_back(t2[i].m_cf);
+									}
+									vec_res = perform_vector_coded_multiplication<cf_direct>(
+										&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+								}
 							}
 							if (!vec_res) {
 								__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
@@ -157,8 +195,12 @@ namespace piranha
 						}
 						);
 					}
-					template <class GenericTruncator>
-					bool perform_vector_coded_multiplication(const GenericTruncator &trunc) {
+					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Term1, class Term2, class GenericTruncator>
+					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
+						typedef CfGetter<cf_type1> get1;
+						typedef CfGetter<cf_type2> get2;
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -181,8 +223,6 @@ namespace piranha
 						// reads/writes.
 						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
-						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
 						// Perform multiplication.
@@ -195,11 +235,16 @@ namespace piranha
 									break;
 								}
 								if (trunc.accept(res_index)) {
-									vc_res[res_index].addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
+									vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
 								}
 							}
 						}
 						__PDEBUG(std::cout << "Done multiplying\n");
+						size_t size = 0;
+						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {
+							size += (!vc_res[i].is_ignorable(args_tuple));
+						}
+						ancestor::m_retval.rehash(static_cast<size_t>(size / settings::load_factor()) + 1);
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
 						for (max_fast_int i = coded_ancestor::m_h_min; i <= coded_ancestor::m_h_max; ++i) {

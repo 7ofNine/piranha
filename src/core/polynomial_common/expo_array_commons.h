@@ -106,10 +106,6 @@ namespace piranha
 			bool operator==(const Derived &e2) const {
 				return derived_const_cast->elements_equal_to(e2);
 			}
-			/// Less than.
-			bool operator<(const Derived &e2) const {
-				return derived_const_cast->elements_lex_comparison(e2);
-			}
 			/// Norm.
 			/**
 			 * The norm of an exponent array is defined as the evaluation at t=0.

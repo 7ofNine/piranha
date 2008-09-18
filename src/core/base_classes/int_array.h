@@ -330,6 +330,29 @@ namespace piranha
 			size_t size() const {
 				return m_size;
 			}
+			bool revlex_comparison(const Derived &a2) const {
+				p_assert(m_size == a2.m_size);
+				value_type *ptr = m_container.v;
+				for (size_t i = m_size; i > 0; --i) {
+					if (ptr[i - 1] < a2[i - 1]) {
+						return true;
+					} else if (ptr[i - 1] > a2[i - 1]) {
+						return false;
+					}
+				}
+				return false;
+			}
+			bool lex_comparison(const Derived &a2) const {
+				p_assert(m_size == a2.m_size);
+				for (size_t i = 0; i < m_size; ++i) {
+					if (m_container.v[i] < a2[i]) {
+						return true;
+					} else if (m_container.v[i] > a2[i]) {
+						return false;
+					}
+				}
+				return false;
+			}
 		protected:
 			/// Array-like operator[], mutable version.
 			value_type &operator[](const size_t &n) {
@@ -414,17 +437,6 @@ namespace piranha
 					return false;
 				}
 				return true;
-			}
-			bool elements_lex_comparison(const Derived &a2) const {
-				p_assert(m_size == a2.m_size);
-				for (size_t i = 0; i < m_size; ++i) {
-					if (m_container.v[i] < a2[i]) {
-						return true;
-					} else if (m_container.v[i] > a2[i]) {
-						return false;
-					}
-				}
-				return false;
 			}
 		private:
 			static size_type packed_size(const size_type &s) {

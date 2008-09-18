@@ -249,7 +249,7 @@ namespace piranha
 				} else if (derived_const_cast->m_flavour > t2.m_flavour) {
 					return false;
 				}
-				return derived_const_cast->elements_lex_comparison(t2);
+				return derived_const_cast->lex_comparison(t2);
 			}
 			/// Calculate hash_value.
 			/**

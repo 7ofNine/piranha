@@ -21,6 +21,7 @@
 #ifndef PIRANHA_MPZ_CF_H
 #define PIRANHA_MPZ_CF_H
 
+#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
 #include <cmath>
 #include <complex>
 #include <gmp.h>
@@ -31,6 +32,7 @@
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../settings.h"
+#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -239,6 +241,16 @@ namespace std
 				return retval;
 			}
 	};
+}
+
+namespace piranha
+{
+	// Specialise lightweight type trait for mpz coefficients.
+	template <>
+	struct is_lightweight<mpz_cf>: boost::true_type {};
+
+	template <>
+	struct is_lightweight<std::complex<mpz_cf> >: boost::true_type {};
 }
 
 #endif

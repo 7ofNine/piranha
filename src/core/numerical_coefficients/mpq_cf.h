@@ -21,6 +21,7 @@
 #ifndef PIRANHA_MPQ_CF_H
 #define PIRANHA_MPQ_CF_H
 
+#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
 #include <complex>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -29,6 +30,7 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../settings.h"
+#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -348,6 +350,13 @@ namespace piranha
 	{
 		throw unsuitable("Rational coefficient is unsuitable for complex exponentiation.");
 	}
+
+	// Specialise lightweight type trait for mpq coefficients.
+	template <>
+	struct is_lightweight<mpq_cf>: boost::true_type {};
+
+	template <>
+	struct is_lightweight<std::complex<mpq_cf> >: boost::true_type {};
 }
 
 #endif

@@ -45,6 +45,10 @@ namespace piranha
 				if (n1 != n2) {
 					return (n1 > n2);
 				} else {
+					// NOTICE: the idea is that for leading terms with equal
+					// norm we choose the ones that have
+					// unity trig vector, so that we increase the chance of
+					// being able to perform the expansion.
 					if (t1.m_key.is_unity()) {
 						return true;
 					} else if (t2.m_key.is_unity()) {

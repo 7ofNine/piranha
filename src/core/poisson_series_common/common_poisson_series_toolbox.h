@@ -52,6 +52,10 @@ namespace piranha
 			bool operator()(const Term &t1, const Term &t2) const {
 				const max_fast_int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
 				if (d1 == d2) {
+					// NOTICE: the idea is that for leading terms with equal
+					// min_degree we choose the ones that have
+					// unity trig vector, so that we increase the chance of
+					// being able to perform the expansion.
 					if (t1.m_key.is_unity()) {
 						return true;
 					} else if (t2.m_key.is_unity()) {
@@ -59,7 +63,7 @@ namespace piranha
 					}
 					return (t1.m_key < t2.m_key);
 				} else {
-					return d1 < d2;
+					return (d1 < d2);
 				}
 			}
 	};

@@ -65,3 +65,4 @@
   should be protected and then friendship should be made with the multiplier --> this does not seem to work, alas.
 - rework the type-determination thing (tetd_helper and stuff) to be less ugly.
 - interop with int and long int instead of max_fast_int.
+- FIX save to file.
