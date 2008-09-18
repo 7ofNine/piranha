@@ -127,10 +127,7 @@ namespace piranha
 			static std::vector<std::string> unknown_data;
 	};
 
-	// Initialization of static members.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	const int named_series<__PIRANHA_NAMED_SERIES_TP>::n_arguments_sets;
-
+	// Initialization of static member.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
