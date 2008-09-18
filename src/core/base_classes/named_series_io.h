@@ -211,7 +211,7 @@ namespace piranha
 			outf.close();
 			return;
 		}
-		print(outf);
+		print_plain(outf,-1);
 		outf.close();
 	}
 
