@@ -40,9 +40,39 @@ def __create_psyms(self, names):
 		except UserWarning:
 			# If we failed, create a new psym.
 			ip.ex("%s = psym(\"%s\")" % (i,i))
+		except SyntaxError:
+			print "The name '" + i + "' is not valid Python syntax, skipping."
 
 setattr(_Core.__psyms,"__call__",__create_psyms)
 psyms = _Core.__psyms()
+
+def series(names,series_t = None):
+	"""
+	Create series from a string of space-separated names. If the optional parameter series_t is None,
+	Pyranha's default series type (ds) will be used. Otherwise the type series_t is used for
+	series creation.
+	"""
+	try:
+		import IPython.ipapi
+	except ImportError:
+		raise ImportError("IPython not available.")
+	if series_t == None:
+		s_type = "ds"
+	else:
+		try:
+			s_type = series_t().__short_type__
+		except:
+			raise ValueError("Type " + series_t.__repr__() + " is not recognized as a valid series type.")
+	ip = IPython.ipapi.get()
+	for i in names.split():
+		try:
+			# Try to fetch the psym from the psym manager.
+			ip.ex("%s = %s(psyms[\"%s\"])" % (i,s_type,i))
+		except UserWarning:
+			# If we failed, create a new psym.
+			ip.ex("%s = %s(psym(\"%s\"))" % (i,s_type,i))
+		except SyntaxError:
+			print "The name '" + i + "' is not valid Python syntax, skipping."
 
 def load(*args):
 	"""
