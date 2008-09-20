@@ -56,13 +56,13 @@ def series(names,series_t = None):
 		import IPython.ipapi
 	except ImportError:
 		raise ImportError("IPython not available.")
+	import pyranha
 	if series_t == None:
 		s_type = "ds"
 	else:
-		try:
-			s_type = series_t().__short_type__
-		except:
+		if series_t not in pyranha.manipulators_type_tuple:
 			raise ValueError("Type " + series_t.__repr__() + " is not recognized as a valid series type.")
+		s_type = series_t().__short_type__
 	ip = IPython.ipapi.get()
 	for i in names.split():
 		try:
