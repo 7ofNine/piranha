@@ -251,6 +251,9 @@ namespace piranha
 	};
 
 	template <class T, class Allocator>
+	const size_t coded_series_hash_table<T,Allocator>::min_size_index;
+
+	template <class T, class Allocator>
 	const size_t coded_series_hash_table<T,Allocator>::sizes[] = {
 		1,
 		3,

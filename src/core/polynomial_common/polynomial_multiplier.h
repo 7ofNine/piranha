@@ -307,34 +307,45 @@ namespace piranha
 						static const size_t block_size = 200;
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 						// TODO: remember to check retvals.
-						for (size_t n1 = 0; n1 < size1 / block_size; ++n1) {
+						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
+							const size_t i_start = n1 * block_size;
 							// regulars1 * regulars2
-							for (size_t n2 = 0; n2 < size2 / block_size; ++n2) {
-								for (size_t i = n1 * block_size; i < n1 * block_size + block_size; ++i) {
-									for (size_t j = n2 * block_size; j < n2 * block_size + block_size; ++j) {
-										hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+								for (size_t i = i_start; i < i_start + block_size; ++i) {
+									const size_t j_start = n2 * block_size;
+									for (size_t j = j_start; j < j_start + block_size; ++j) {
+										if (!hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+											break;
+										}
 									}
 								}
 							}
 							// regulars1 * rem2
-							for (size_t i = n1 * block_size; i < n1 * block_size + block_size; ++i) {
-								for (size_t j = (size2 / block_size) * block_size; j < size2; ++j) {
-									hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+							for (size_t i = i_start; i < i_start + block_size; ++i) {
+								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+									if (!hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+										break;
+									}
 								}
 							}
 						}
 						// rem1 * regulars2
-						for (size_t n2 = 0; n2 < size2 / block_size; ++n2) {
-							for (size_t i = (size1 / block_size) * block_size; i < size1; ++i) {
-								for (size_t j = n2 * block_size; j < n2 * block_size + block_size; ++j) {
-									hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+								const size_t j_start = n2 * block_size;
+								for (size_t j = j_start; j < j_start + block_size; ++j) {
+									if (!hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+										break;
+									}
 								}
 							}
 						}
 						// rem1 * rem2.
-						for (size_t i = (size1 / block_size) * block_size; i < size1; ++i) {
-							for (size_t j = (size2 / block_size) * block_size; j < size2; ++j) {
-								hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+								if (!hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+									break;
+								}
 							}
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
