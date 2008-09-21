@@ -263,6 +263,31 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
 						return true;
 					}
+					template <class Term1, class Term2, class Cterm, class Ckey, class Trunc, class HashSet>
+					static bool hash_mult(
+						const size_t &i, const size_t &j,
+						const Term1 *t1, const Term2 *t2, Cterm &tmp_cterm, const Ckey *ck1,
+						const Ckey *ck2, const Trunc &trunc, HashSet &cms, const ArgsTuple &args_tuple) {
+						typedef typename HashSet::iterator c_iterator;
+						if (trunc.skip(t1[i], t2[j])) {
+							return false;
+						}
+						tmp_cterm.m_ckey = ck1[i];
+						tmp_cterm.m_ckey += ck2[j];
+						if (trunc.accept(tmp_cterm.m_ckey)) {
+							c_iterator it = cms.find(tmp_cterm);
+							if (it == cms.end()) {
+								// Assign to the temporary term the old cf (new_key is already assigned).
+								tmp_cterm.m_cf = t1[i].m_cf;
+								// Multiply the old term by the second term.
+								tmp_cterm.m_cf.mult_by(t2[j].m_cf, args_tuple);
+								cms.insert(tmp_cterm);
+							} else {
+								it->m_cf.addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
+							}
+						}
+						return true;
+					}
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
@@ -278,25 +303,38 @@ namespace piranha
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						csht cms(size_hint);
 						cterm tmp_cterm;
-						for (size_t i = 0; i < size1; ++i) {
-							for (size_t j = 0; j < size2; ++j) {
-								if (trunc.skip(t1[i], t2[j])) {
-									break;
-								}
-								tmp_cterm.m_ckey = ck1[i];
-								tmp_cterm.m_ckey += ck2[j];
-								if (trunc.accept(tmp_cterm.m_ckey)) {
-									c_iterator it = cms.find(tmp_cterm);
-									if (it == cms.end()) {
-										// Assign to the temporary term the old cf (new_key is already assigned).
-										tmp_cterm.m_cf = t1[i].m_cf;
-										// Multiply the old term by the second term.
-										tmp_cterm.m_cf.mult_by(t2[j].m_cf, args_tuple);
-										cms.insert(tmp_cterm);
-									} else {
-										it->m_cf.addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
+						// Configuration option for block size.
+						static const size_t block_size = 200;
+						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+						// TODO: remember to check retvals.
+						for (size_t n1 = 0; n1 < size1 / block_size; ++n1) {
+							// regulars1 * regulars2
+							for (size_t n2 = 0; n2 < size2 / block_size; ++n2) {
+								for (size_t i = n1 * block_size; i < n1 * block_size + block_size; ++i) {
+									for (size_t j = n2 * block_size; j < n2 * block_size + block_size; ++j) {
+										hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
 									}
 								}
+							}
+							// regulars1 * rem2
+							for (size_t i = n1 * block_size; i < n1 * block_size + block_size; ++i) {
+								for (size_t j = (size2 / block_size) * block_size; j < size2; ++j) {
+									hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+								}
+							}
+						}
+						// rem1 * regulars2
+						for (size_t n2 = 0; n2 < size2 / block_size; ++n2) {
+							for (size_t i = (size1 / block_size) * block_size; i < size1; ++i) {
+								for (size_t j = n2 * block_size; j < n2 * block_size + block_size; ++j) {
+									hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
+								}
+							}
+						}
+						// rem1 * rem2.
+						for (size_t i = (size1 / block_size) * block_size; i < size1; ++i) {
+							for (size_t j = (size2 / block_size) * block_size; j < size2; ++j) {
+								hash_mult(i,j,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
