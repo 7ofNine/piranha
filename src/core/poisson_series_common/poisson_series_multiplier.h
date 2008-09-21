@@ -33,8 +33,8 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/null_truncator.h"
+#include "../coded_series_hash_table.h"
 #include "../common_functors.h"
-#include "../cuckoo_hash_set.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -270,8 +270,7 @@ namespace piranha
 					template <class GenericTruncator>
 					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
-						typedef cuckoo_hash_set<cterm, member_hash_value<cterm>, std::equal_to<cterm>,
-							std_counting_allocator<char>, member_swap<cterm> > csht;
+						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// TODO: size hinting, in conjunction with the work above to separate sines from cosines, etc.
 						csht cms_cos, cms_sin;
