@@ -306,7 +306,6 @@ namespace piranha
 						// Configuration option for block size.
 						static const size_t block_size = 200;
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
-						// TODO: remember to check retvals.
 						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
 							const size_t i_start = n1 * block_size;
 							// regulars1 * regulars2
