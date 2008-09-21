@@ -266,35 +266,40 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
 						return true;
 					}
-					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2, class Term1, class Term2,
-						class Cterm, class Ckey, class Trunc, class HashSet>
-					static bool hash_mult(
-						const size_t &i, const size_t &j,
-						const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 *t1, const Term2 *t2, Cterm &tmp_cterm, const Ckey *ck1,
-						const Ckey *ck2, const Trunc &trunc, HashSet &cms, const ArgsTuple &args_tuple) {
-						typedef CfGetter<cf_type1> get1;
-						typedef CfGetter<cf_type2> get2;
-						typedef typename HashSet::iterator c_iterator;
-						if (trunc.skip(t1[i], t2[j])) {
-							return false;
-						}
-						tmp_cterm.m_ckey = ck1[i];
-						tmp_cterm.m_ckey += ck2[j];
-						if (trunc.accept(tmp_cterm.m_ckey)) {
-							c_iterator it = cms.find(tmp_cterm);
-							if (it == cms.end()) {
-								// Assign to the temporary term the old cf (new_key is already assigned).
-								tmp_cterm.m_cf = get1::get(tc1[i]);
-								// Multiply the old term by the second term.
-								tmp_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-								cms.insert(tmp_cterm);
-							} else {
-								it->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+					template <class Cterm>
+					struct hash_multiplier {
+						hash_multiplier(Cterm &cterm):m_cterm(cterm) {}
+						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+							class Term1, class Term2, class Ckey, class Trunc, class HashSet>
+						bool run(
+							const size_t &i, const size_t &j,
+							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Ckey *ck2, const Trunc &trunc, HashSet &cms, const ArgsTuple &args_tuple) {
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
+							typedef typename HashSet::iterator c_iterator;
+							if (trunc.skip(t1[i], t2[j])) {
+								return false;
 							}
+							m_cterm.m_ckey = ck1[i];
+							m_cterm.m_ckey += ck2[j];
+							if (trunc.accept(m_cterm.m_ckey)) {
+								c_iterator it = cms.find(m_cterm);
+								if (it == cms.end()) {
+									// Assign to the temporary term the old cf (new_key is already assigned).
+									m_cterm.m_cf = get1::get(tc1[i]);
+									// Multiply the old term by the second term.
+									m_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
+									cms.insert(m_cterm);
+								} else {
+									it->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+								}
+							}
+							return true;
 						}
-						return true;
-					}
+						Cterm &m_cterm;
+					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
@@ -310,6 +315,7 @@ namespace piranha
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						csht cms(size_hint);
 						cterm tmp_cterm;
+						hash_multiplier<cterm> hm(tmp_cterm);
 						// Configuration option for block size.
 						static const size_t block_size = 200;
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
@@ -320,7 +326,7 @@ namespace piranha
 								for (size_t i = i_start; i < i_start + block_size; ++i) {
 									const size_t j_start = n2 * block_size;
 									for (size_t j = j_start; j < j_start + block_size; ++j) {
-										if (!hash_mult<CfGetter>(i,j,tc1,tc2,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+										if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
 											break;
 										}
 									}
@@ -329,7 +335,7 @@ namespace piranha
 							// regulars1 * rem2
 							for (size_t i = i_start; i < i_start + block_size; ++i) {
 								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-									if (!hash_mult<CfGetter>(i,j,tc1,tc2,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+									if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
 										break;
 									}
 								}
@@ -340,7 +346,7 @@ namespace piranha
 							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
 								const size_t j_start = n2 * block_size;
 								for (size_t j = j_start; j < j_start + block_size; ++j) {
-									if (!hash_mult<CfGetter>(i,j,tc1,tc2,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+									if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
 										break;
 									}
 								}
@@ -349,7 +355,7 @@ namespace piranha
 						// rem1 * rem2.
 						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
 							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-								if (!hash_mult<CfGetter>(i,j,tc1,tc2,t1,t2,tmp_cterm,ck1,ck2,trunc,cms,args_tuple)) {
+								if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
 									break;
 								}
 							}
