@@ -79,6 +79,8 @@ namespace piranha
 								return (t1.m_key.revlex_comparison(t2.m_key));
 							}
 					};
+					// Configuration option for block size during cache-blocking.
+					static const size_t block_size = 200;
 				public:
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
@@ -301,6 +303,55 @@ namespace piranha
 						Cterm &m_cterm;
 					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
+					static void blocked_multiplication(const size_t &size1, const size_t &size2,
+						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 *t1, const Term2 *t2,
+						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result &res, Multiplier &m,
+						const ArgsTuple &args_tuple) {
+						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
+							const size_t i_start = n1 * block_size;
+							// regulars1 * regulars2
+							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+								for (size_t i = i_start; i < i_start + block_size; ++i) {
+									const size_t j_start = n2 * block_size;
+									for (size_t j = j_start; j < j_start + block_size; ++j) {
+										if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+											break;
+										}
+									}
+								}
+							}
+							// regulars1 * rem2
+							for (size_t i = i_start; i < i_start + block_size; ++i) {
+								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+										break;
+									}
+								}
+							}
+						}
+						// rem1 * regulars2
+						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+								const size_t j_start = n2 * block_size;
+								for (size_t j = j_start; j < j_start + block_size; ++j) {
+									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+										break;
+									}
+								}
+							}
+						}
+						// rem1 * rem2.
+						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+									break;
+								}
+							}
+						}
+					}
+					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
@@ -316,50 +367,7 @@ namespace piranha
 						csht cms(size_hint);
 						cterm tmp_cterm;
 						hash_multiplier<cterm> hm(tmp_cterm);
-						// Configuration option for block size.
-						static const size_t block_size = 200;
-						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
-						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
-							const size_t i_start = n1 * block_size;
-							// regulars1 * regulars2
-							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-								for (size_t i = i_start; i < i_start + block_size; ++i) {
-									const size_t j_start = n2 * block_size;
-									for (size_t j = j_start; j < j_start + block_size; ++j) {
-										if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
-											break;
-										}
-									}
-								}
-							}
-							// regulars1 * rem2
-							for (size_t i = i_start; i < i_start + block_size; ++i) {
-								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-									if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
-										break;
-									}
-								}
-							}
-						}
-						// rem1 * regulars2
-						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-								const size_t j_start = n2 * block_size;
-								for (size_t j = j_start; j < j_start + block_size; ++j) {
-									if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
-										break;
-									}
-								}
-							}
-						}
-						// rem1 * rem2.
-						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-								if (!hm.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,args_tuple)) {
-									break;
-								}
-							}
-						}
+						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,hm,args_tuple);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						ancestor::m_retval.rehash(static_cast<size_t>(cms.size() / settings::load_factor()) + 1);
