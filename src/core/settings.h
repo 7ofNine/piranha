@@ -141,7 +141,7 @@ namespace piranha
 			static const max_fast_int				max_i = boost::integer_traits<max_fast_int>::const_max;
 			/// Path to theories of motion.
 			static std::string						m_path;
-			static const std::string				m_default_path;
+			static std::string						m_default_path;
 			static bool								m_debug;
 			static const std::string				m_version;
 			static bool								enable_progress_display;

@@ -67,31 +67,20 @@ namespace piranha
 	// Settings' static members.
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 0.5;
-	double settings::m_numerical_zero = 1E-80;
-	const std::string settings::m_default_path =
-#ifdef _PIRANHA_WIN32
-		// NOTE: this is a bit hackish, but it works. The alternative would be to use
-		// boost::filesystem but it looks like overkill, since it would be used just here.
-		boost::algorithm::replace_all_copy(
-			get_env_variable("ProgramFiles")+std::string("/Piranha @PIRANHA_VERSION@/@THEORIES_INSTALL_PATH@"),
-			std::string("\\"),
-			std::string("/")
-		);
-#else
-		"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
-#endif
-	std::string settings::m_path = settings::m_default_path;
+	double settings::m_numerical_zero;
+	std::string settings::m_default_path;
+	std::string settings::m_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	bool settings::enable_progress_display = true;
-	settings::startup_class settings::startup;
-	size_t settings::m_digits = 15;
+	size_t settings::m_digits;
 	settings::out_format settings::m_format = settings::plain;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
 	bool settings::m_pi_simplify = false;
 #ifdef _PIRANHA_MT
 	const tbb::task_scheduler_init settings::tbb_init;
 #endif
+	settings::startup_class settings::startup;
 
 	settings::startup_class::startup_class()
 	{
@@ -100,15 +89,27 @@ namespace piranha
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		p_static_check(sizeof(size_t) == sizeof(void *), "size_t and void * are not the same size.");
+		// Init values.
+		m_numerical_zero = 1E-80;
+		m_digits = 15;
+		m_default_path =
+#ifdef _PIRANHA_WIN32
+			// NOTE: this is a bit hackish, but it works. The alternative would be to use
+			// boost::filesystem but it looks like overkill, since it would be used just here.
+			boost::algorithm::replace_all_copy(
+				get_env_variable("ProgramFiles")+std::string("/Piranha @PIRANHA_VERSION@/@THEORIES_INSTALL_PATH@"),
+				std::string("\\"),
+				std::string("/")
+			);
+#else
+			"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
+#endif
+		m_path = m_default_path;
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
-		std::cout << "Default parameters initialized:\n";
-		std::cout << "Print precision = " << settings::digits() << '\n';
-		std::cout << "Numerical zero = " << numerical_zero() << '\n';
 		std::cout << "Fast unsigned int range = " << "[0," << max_u << ']' << '\n';
 		std::cout << "Fast signed int range = " << '[' << min_i << ',' << max_i << ']' << '\n';
-		std::cout << "Default path = " << m_default_path << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.
