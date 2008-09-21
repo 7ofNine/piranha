@@ -46,7 +46,7 @@ namespace piranha
 					bool	f[N];
 			};
 			// Configuration options.
-			static const size_t bucket_size		= 9;
+			static const size_t bucket_size		= 6;
 			static const size_t min_size_index	= 0;
 			// Configuration options end here.
 			static const size_t sizes_size =
@@ -150,7 +150,6 @@ namespace piranha
 					if (!bucket.f[i]) {
 						return end();
 					} else if (bucket.t[i] == key) {
-std::cout << "Going to modify in vector_pos " << vector_pos << '\n';
 						// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
 						// If it does not match, let's move to the next bucket element.
 						return iterator(this, vector_pos, i);
@@ -200,7 +199,6 @@ std::cout << "Going to modify in vector_pos " << vector_pos << '\n';
 			}
 			bool attempt_insertion(const key_type &key) {
 				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
-std::cout << "Want to insert into vector_pos: " << vector_pos << '\n';
 				p_assert(vector_pos < sizes[m_size_index]);
 				bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
