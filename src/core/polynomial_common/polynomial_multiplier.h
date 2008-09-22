@@ -74,8 +74,6 @@ namespace piranha
 						public:
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								// NOTE: strangely enough, this seems to work worse on long series
-								// than on short series. And reverse is true with plain lex.
 								return (t1.m_key.revlex_comparison(t2.m_key));
 							}
 					};
@@ -200,6 +198,27 @@ namespace piranha
 						}
 						);
 					}
+					struct vector_multiplier {
+						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+							class Term1, class Term2, class Ckey, class Trunc, class ResVec>
+						bool run(
+							const size_t &i, const size_t &j,
+							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res, const ArgsTuple &args_tuple) {
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
+							// Calculate index of the result.
+							const max_fast_int res_index = ck1[i] + ck2[j];
+							if (trunc.skip(t1[i], t2[j])) {
+								return false;
+							}
+							if (trunc.accept(res_index)) {
+								vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+							}
+							return true;
+						}
+					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
@@ -231,19 +250,8 @@ namespace piranha
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
 						// Perform multiplication.
-						for (size_t i = 0; i < size1; ++i) {
-							const max_fast_int index1 = ck1[i];
-							for (size_t j = 0; j < size2; ++j) {
-								// Calculate index of the result.
-								const max_fast_int res_index = index1 + ck2[j];
-								if (trunc.skip(t1[i], t2[j])) {
-									break;
-								}
-								if (trunc.accept(res_index)) {
-									vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
-								}
-							}
-						}
+						vector_multiplier vm;
+						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						size_t size = 0;
 						const max_fast_int i_f = coded_ancestor::m_h_max;
@@ -277,7 +285,7 @@ namespace piranha
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, HashSet &cms, const ArgsTuple &args_tuple) {
+							const Ckey *ck2, const Trunc &trunc, HashSet *cms, const ArgsTuple &args_tuple) {
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
 							typedef typename HashSet::iterator c_iterator;
@@ -287,13 +295,13 @@ namespace piranha
 							m_cterm.m_ckey = ck1[i];
 							m_cterm.m_ckey += ck2[j];
 							if (trunc.accept(m_cterm.m_ckey)) {
-								c_iterator it = cms.find(m_cterm);
-								if (it == cms.end()) {
+								c_iterator it = cms->find(m_cterm);
+								if (it == cms->end()) {
 									// Assign to the temporary term the old cf (new_key is already assigned).
 									m_cterm.m_cf = get1::get(tc1[i]);
 									// Multiply the old term by the second term.
 									m_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-									cms.insert(m_cterm);
+									cms->insert(m_cterm);
 								} else {
 									it->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
 								}
@@ -306,7 +314,7 @@ namespace piranha
 						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
 					static void blocked_multiplication(const size_t &size1, const size_t &size2,
 						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 *t1, const Term2 *t2,
-						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result &res, Multiplier &m,
+						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
 						const ArgsTuple &args_tuple) {
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
@@ -367,7 +375,7 @@ namespace piranha
 						csht cms(size_hint);
 						cterm tmp_cterm;
 						hash_multiplier<cterm> hm(tmp_cterm);
-						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,cms,hm,args_tuple);
+						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,hm,args_tuple);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						ancestor::m_retval.rehash(static_cast<size_t>(cms.size() / settings::load_factor()) + 1);
