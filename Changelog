@@ -1,3 +1,11 @@
+2008.09.22 2ff02f1abc22e980940d7941e15f5986460ed609
+
+* Fix a couple of potential issues with static data initialization.
+* Implement an IPyranha function, called "series", for easy creation of series.
+* Fix saving of series to file.
+* Improve cache memory usage during polynomial multiplication.
+* Compile fixes for MSVC 9.
+
 2008.09.17 ef3eec65f09b9b4d2ddaddd36cf42c36215e76f5
 
 * Fix typo in the Pyranha routine for the calculation of besselJ.
