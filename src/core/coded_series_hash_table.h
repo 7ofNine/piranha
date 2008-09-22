@@ -22,7 +22,6 @@
 #define PIRANHA_CODED_SERIES_HASH_TABLE_H
 
 #include <algorithm>
-#include <boost/functional/hash.hpp>
 
 #include "config.h"
 #include "p_assert.h"
@@ -220,7 +219,7 @@ namespace piranha
 			void increase_size() {
 				coded_series_hash_table new_ht;
 				new_ht.destroy();
-				new_ht.m_size_index = m_size_index + 1;
+				new_ht.m_size_index = m_size_index + 2;
 				new_ht.init();
 				const iterator it_i = begin(), it_f = end();
 				iterator it = it_i;
