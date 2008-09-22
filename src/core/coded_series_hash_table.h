@@ -45,12 +45,12 @@ namespace piranha
 					bool	f[N];
 			};
 			// Configuration options.
-			static const size_t bucket_size		= 6;
+			static const size_t bucket_size		= 9;
 			static const size_t min_size_index	= 0;
 			// Configuration options end here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
-				40;
+				64;
 #else
 				32;
 #endif
@@ -139,7 +139,7 @@ namespace piranha
 				return iterator(this, sizes[m_size_index], 0);
 			}
 			iterator find(const key_type &key) const {
-				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
+				const size_t vector_pos = key.hash_value() & (sizes[m_size_index] - 1);
 				p_assert(vector_pos < sizes[m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
@@ -197,7 +197,7 @@ namespace piranha
 				a.deallocate(m_container, size);
 			}
 			bool attempt_insertion(const key_type &key) {
-				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
+				const size_t vector_pos = key.hash_value() & (sizes[m_size_index] - 1);
 				p_assert(vector_pos < sizes[m_size_index]);
 				bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
@@ -255,47 +255,71 @@ namespace piranha
 	template <class T, class Allocator>
 	const size_t coded_series_hash_table<T,Allocator>::sizes[] = {
 		1,
-		3,
-		5,
-		11,
-		23,
-		53,
-		97,
-		193,
-		389,
-		769,
-		1543,
-		3079,
-		6151,
-		12289,
-		24593,
-		49157,
-		98317,
-		196613,
-		393241,
-		786433,
-		1572869,
-		3145739,
-		6291469,
-		12582917,
-		25165843,
-		50331653,
-		100663319,
-		201326611,
-		402653189,
-		805306457,
-		1610612741,
-		3221225473
+		2,
+		4,
+		8,
+		16,
+		32,
+		64,
+		128,
+		256,
+		512,
+		1024,
+		2048,
+		4096,
+		8192,
+		16384,
+		32768,
+		65536,
+		131072,
+		262144,
+		524288,
+		1048576,
+		2097152,
+		4194304,
+		8388608,
+		16777216,
+		33554432,
+		67108864,
+		134217728,
+		268435456,
+		536870912,
+		1073741824,
+		2147483648u
 #ifdef _PIRANHA_64BIT
 		,
-		6442450939,
-		12884901893,
-		25769803799,
-		51539607551,
-		103079215111,
-		206158430209,
-		412316860441,
-		824633720831
+		4294967296,
+		8589934592,
+		17179869184,
+		34359738368,
+		68719476736,
+		137438953472,
+		274877906944,
+		549755813888,
+		1099511627776,
+		2199023255552,
+		4398046511104,
+		8796093022208,
+		17592186044416,
+		35184372088832,
+		70368744177664,
+		140737488355328,
+		281474976710656,
+		562949953421312,
+		1125899906842624,
+		2251799813685248,
+		4503599627370496,
+		9007199254740992,
+		18014398509481984,
+		36028797018963968,
+		72057594037927936,
+		144115188075855872,
+		288230376151711744,
+		576460752303423488,
+		1152921504606846976,
+		2305843009213693952,
+		4611686018427387904,
+		9223372036854775808u
 #endif
 	};
 }
