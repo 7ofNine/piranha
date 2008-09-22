@@ -34,7 +34,6 @@
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/null_truncator.h"
 #include "../coded_series_hash_table.h"
-#include "../common_functors.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
