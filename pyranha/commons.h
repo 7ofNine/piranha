@@ -138,6 +138,24 @@ namespace pyranha
 	{
 		piranha::shared_args::set(s.arguments());
 	}
+
+	template <class NamedSeries>
+	inline size_t psl0(const NamedSeries &s) {
+		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
+								s, s.arguments(), 0, 1);
+	}
+
+	template <class NamedSeries>
+	inline size_t psl1(const NamedSeries &s, const int &n) {
+		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
+								s, s.arguments(), n, 1);
+	}
+
+	template <class NamedSeries>
+	inline size_t psl2(const NamedSeries &s, const int &n, const int &step) {
+		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
+								s, s.arguments(), n, step);
+	}
 }
 
 #endif
