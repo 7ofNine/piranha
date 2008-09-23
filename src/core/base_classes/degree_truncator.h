@@ -50,7 +50,9 @@ namespace piranha
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &,
 											 const int &start = 0, const int &step_size = 1) {
-				p_assert(start >= 0 && step_size >= 1);
+				if (start < 0 || step_size < 1) {
+					throw unsuitable("Please use a non-negative starting degree and a step size of at least 1.");
+				}
 				if (!m_effective) {
 					throw unsuitable("Cannot calculate the limit of a power series expansion if no degree limit has been set.");
 				}
