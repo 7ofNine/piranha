@@ -66,7 +66,7 @@ namespace piranha
 
 	// Settings' static members.
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
-	double settings::m_hash_max_load_factor = 0.5;
+	double settings::m_hash_max_load_factor = 1;
 	double settings::m_numerical_zero;
 	std::string settings::m_default_path;
 	std::string settings::m_path;

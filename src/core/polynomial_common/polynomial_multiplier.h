@@ -77,7 +77,7 @@ namespace piranha
 							}
 					};
 					// Configuration option for block size during cache-blocking.
-					static const size_t block_size = 200;
+					static const size_t block_size = 512;
 				public:
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
