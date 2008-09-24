@@ -61,4 +61,3 @@
   the insertion time after series multiplication finishes, and requires our own hash table implementation. Fast insertion
   should be protected and then friendship should be made with the multiplier --> this does not seem to work, alas.
 - rework the type-determination thing (tetd_helper and stuff) to be less ugly.
-
