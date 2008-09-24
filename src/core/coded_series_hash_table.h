@@ -138,10 +138,10 @@ namespace piranha
 			iterator end() const {
 				return iterator(this, sizes[m_size_index], 0);
 			}
-			iterator find(const key_type &key) {
+			iterator find(const key_type &key) const {
 				const size_t vector_pos = key.hash_value() & (sizes[m_size_index] - 1);
 				p_assert(vector_pos < sizes[m_size_index]);
-				bucket_type &bucket = m_container[vector_pos];
+				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
@@ -151,8 +151,7 @@ namespace piranha
 					} else if (bucket.t[i] == key) {
 						// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
 						// If it does not match, let's move to the next bucket element.
-						bucket.t[i].swap(bucket.t[0]);
-						return iterator(this, vector_pos, 0);
+						return iterator(this, vector_pos, i);
 					}
 				}
 				// All the elements of the bucket were taken, we examined them but found no match.
