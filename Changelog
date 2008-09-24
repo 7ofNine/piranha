@@ -1,3 +1,9 @@
+2008.09.24 94866fbac8361dbd24f9824b959334d4288b2c18
+
+* Provide an example of Python script using Pyranha.
+* Update GMP libraries for Windows package to 4.2.4 and compile them with P6 support.
+* Expose in Pyranha a function to calculate the limit of power series expansions of series.
+
 2008.09.22 2ff02f1abc22e980940d7941e15f5986460ed609
 
 * Fix a couple of potential issues with static data initialization.

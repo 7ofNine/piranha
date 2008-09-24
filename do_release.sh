@@ -1,6 +1,6 @@
 #! /bin/sh
 
-CURRENT_RELEASE=`git log --pretty=oneline HEAD^1..HEAD|awk '{print $1}'`
+CURRENT_RELEASE=`git log --pretty=oneline HEAD^1..HEAD | head -n 1 | awk '{print $1}'`
 PREVIOUS_RELEASE=`cat current_release`
 cp Changelog Changelog.tmp
 echo "`date +%Y.%m.%d` ${CURRENT_RELEASE}" > Changelog
