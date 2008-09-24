@@ -83,11 +83,13 @@ ENDIF(ENABLE_SSE2)
 
 # Common stuff
 SET(CMAKE_BUILD_TYPE "Release")
-# Find out motion theories files to be installed
+# Find out theories files to be installed
 IF(UNIX)
 	SET(THEORIES_INSTALL_PATH "share/piranha/theories")
+	SET(EXAMPLES_INSTALL_PATH "share/piranha/examples")
 ELSE(UNIX)
 	SET(THEORIES_INSTALL_PATH "theories")
+	SET(EXAMPLES_INSTALL_PATH "examples")
 ENDIF(UNIX)
 IF(ENABLE_ASSERTS)
 	SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_ENABLE_ASSERTS)
@@ -221,12 +223,23 @@ IF(BUILD_PYRANHA)
 	ADD_SUBDIRECTORY(pyranha)
 ENDIF(BUILD_PYRANHA)
 
-# Install phase: install theories of motion.
+# Install theories of motion and examples.
 SET(THEORIES_FILES
 	theories_of_motion/elp1.dps
 	theories_of_motion/elp2.dfs
 	theories_of_motion/elp3.dfs
 )
-INSTALL(FILES ${THEORIES_FILES} DESTINATION ${THEORIES_INSTALL_PATH})
+
+SET(EXAMPLES_FILES
+	pyranha/examples/alt_besselJ.py
+)
+
+INSTALL(FILES ${THEORIES_FILES} DESTINATION "${THEORIES_INSTALL_PATH}")
+INSTALL(FILES ${EXAMPLES_FILES} DESTINATION "${EXAMPLES_INSTALL_PATH}")
+IF(WIN32)
+	CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/COPYING" "${CMAKE_SOURCE_DIR}/windows_package/license.txt")
+	CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/Changelog" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt")
+	INSTALL(FILES "${CMAKE_SOURCE_DIR}/windows_package/license.txt" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt" DESTINATION .)
+ENDIF(WIN32)
 
 INCLUDE(CPack)
