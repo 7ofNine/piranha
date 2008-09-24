@@ -45,6 +45,7 @@ IF(CPACK_GENERATOR MATCHES "NSIS")
 		CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Pyranha.lnk\\\" \\\"$INSTDIR\\\\Console.exe\\\"
 		CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Examples.lnk\\\" \\\"$INSTDIR\\\\examples\\\"
 		CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\License.lnk\\\" \\\"$INSTDIR\\\\license.txt\\\"
+		CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Changelog.lnk\\\" \\\"$INSTDIR\\\\changelog.txt\\\"
 		"
 	)
 	# Delete shortcuts when uninstalling.
@@ -53,6 +54,7 @@ IF(CPACK_GENERATOR MATCHES "NSIS")
 		Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Pyranha.lnk\\\"
 		Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Examples.lnk\\\"
 		Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\License.lnk\\\"
+		Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Changelog.lnk\\\"
 		"
 	)
 ENDIF(CPACK_GENERATOR MATCHES "NSIS")
