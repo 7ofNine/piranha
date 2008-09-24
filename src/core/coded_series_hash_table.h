@@ -138,10 +138,10 @@ namespace piranha
 			iterator end() const {
 				return iterator(this, sizes[m_size_index], 0);
 			}
-			iterator find(const key_type &key) const {
+			iterator find(const key_type &key) {
 				const size_t vector_pos = key.hash_value() & (sizes[m_size_index] - 1);
 				p_assert(vector_pos < sizes[m_size_index]);
-				const bucket_type &bucket = m_container[vector_pos];
+				bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
@@ -151,7 +151,8 @@ namespace piranha
 					} else if (bucket.t[i] == key) {
 						// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
 						// If it does not match, let's move to the next bucket element.
-						return iterator(this, vector_pos, i);
+						bucket.t[i].swap(bucket.t[0]);
+						return iterator(this, vector_pos, 0);
 					}
 				}
 				// All the elements of the bucket were taken, we examined them but found no match.
@@ -217,6 +218,8 @@ namespace piranha
 			}
 			// Increase size of the container to the next prime size.
 			void increase_size() {
+				__PDEBUG(std::cout << "Increase size requested at load factor: " <<
+					((double)m_length / sizes[m_size_index]) << '\n');
 				coded_series_hash_table new_ht;
 				new_ht.destroy();
 				new_ht.m_size_index = m_size_index + 2;
