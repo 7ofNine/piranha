@@ -76,6 +76,7 @@ namespace piranha
 	size_t settings::m_digits;
 	settings::out_format settings::m_format = settings::plain;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
+	const size_t settings::cache_size;
 #ifdef _PIRANHA_MT
 	const tbb::task_scheduler_init settings::tbb_init;
 #endif

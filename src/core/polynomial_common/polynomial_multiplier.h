@@ -38,7 +38,7 @@
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../p_assert.h"
-#include "../settings.h" // For debug.
+#include "../settings.h" // For debug and cache size.
 #include "../type_traits.h"
 
 namespace piranha
