@@ -33,13 +33,13 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/null_truncator.h"
-#include "../common_functors.h"
-#include "../cuckoo_hash_set.h"
+#include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../math.h" // For static maths.
 #include "../memory.h"
 #include "../p_assert.h"
-#include "../settings.h" // For debug.
+#include "../settings.h" // For debug and cache size.
 #include "../type_traits.h"
 
 namespace piranha
@@ -74,8 +74,6 @@ namespace piranha
 						public:
 							template <class Term>
 							bool operator()(const Term &t1, const Term &t2) const {
-								// NOTE: strangely enough, this seems to work worse on long series
-								// than on short series. And reverse is true with plain lex.
 								return (t1.m_key.revlex_comparison(t2.m_key));
 							}
 					};
@@ -97,6 +95,8 @@ namespace piranha
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
+							// NOTE: maybe here it is worth to sort them anyway, given the fact
+							// that ascending codes should still be beneficial for cache usage.
 							// We want to sort them this way if we are not truncating and
 							// coefficients are lightweight, in order to optimize cache memory usage
 							if (is_lightweight<cf_type1>::value) {
@@ -127,39 +127,40 @@ namespace piranha
 							ancestor::perform_plain_multiplication(trunc);
 						} else if (coded_ancestor::m_cr_is_viable) {
 							coded_ancestor::code_keys();
+							const typename Series1::term_proxy_type *t1 = &this->m_terms1[0];
+							const typename Series2::term_proxy_type *t2 = &this->m_terms2[0];
+							std::vector<cf_type1> cf1_cache;
+							std::vector<cf_type2> cf2_cache;
+							if (is_lightweight<cf_type1>::value) {
+								// Cache the values if the truncator is ineffective and cf_type1 is lightweight.
+								const size_t size1 = this->m_size1, size2 = this->m_size2;
+								cf1_cache.reserve(size1);
+								cf2_cache.reserve(size2);
+								for (size_t i = 0; i < size1; ++i) {
+									cf1_cache.push_back(t1[i].m_cf);
+								}
+								for (size_t i = 0; i < size2; ++i) {
+									cf2_cache.push_back(t2[i].m_cf);
+								}
+							}
 							bool vec_res;
 							if (coded_ancestor::is_sparse()) {
 								vec_res = false;
 							} else {
-								const typename Series1::term_proxy_type *t1 = &this->m_terms1[0];
-								const typename Series2::term_proxy_type *t2 = &this->m_terms2[0];
-								if (trunc.is_effective() || !is_lightweight<cf_type1>::value) {
-									// If the truncator is effective (i.e., it sorted the terms according
-									// to its own logic) or the coefficient is not lightweight, simply use
-									// the coefficients from the cached terms in the ancestor.
-									vec_res = perform_vector_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
-								} else {
-									// If the truncator did not sort it means that above we sorted the terms
-									// to optimise cache memory usage. And if the coefficient is
-									// lightweight, it is worth to furtherly cache the coefficients.
-									std::vector<cf_type1> cf1_cache;
-									std::vector<cf_type2> cf2_cache;
-									const size_t size1 = this->m_size1, size2 = this->m_size2;
-									cf1_cache.reserve(size1);
-									cf2_cache.reserve(size2);
-									for (size_t i = 0; i < size1; ++i) {
-										cf1_cache.push_back(t1[i].m_cf);
-									}
-									for (size_t i = 0; i < size2; ++i) {
-										cf2_cache.push_back(t2[i].m_cf);
-									}
+								if (is_lightweight<cf_type1>::value) {
 									vec_res = perform_vector_coded_multiplication<cf_direct>(
 										&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+								} else {
+									vec_res = perform_vector_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
 								}
 							}
 							if (!vec_res) {
 								__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
-								perform_hash_coded_multiplication(trunc);
+								if (is_lightweight<cf_type1>::value) {
+									perform_hash_coded_multiplication<cf_direct>(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+								} else {
+									perform_hash_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
+								}
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain polynomial multiplication\n");
@@ -195,6 +196,77 @@ namespace piranha
 						}
 						);
 					}
+					template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
+					static void blocked_multiplication(const size_t &size1, const size_t &size2,
+						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 *t1, const Term2 *t2,
+						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
+						const ArgsTuple &args_tuple) {
+						p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
+						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
+							const size_t i_start = n1 * block_size;
+							// regulars1 * regulars2
+							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+								for (size_t i = i_start; i < i_start + block_size; ++i) {
+									const size_t j_start = n2 * block_size;
+									for (size_t j = j_start; j < j_start + block_size; ++j) {
+										if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+											break;
+										}
+									}
+								}
+							}
+							// regulars1 * rem2
+							for (size_t i = i_start; i < i_start + block_size; ++i) {
+								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+										break;
+									}
+								}
+							}
+						}
+						// rem1 * regulars2
+						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+								const size_t j_start = n2 * block_size;
+								for (size_t j = j_start; j < j_start + block_size; ++j) {
+									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+										break;
+									}
+								}
+							}
+						}
+						// rem1 * rem2.
+						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+									break;
+								}
+							}
+						}
+					}
+					struct vector_multiplier {
+						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+							class Term1, class Term2, class Ckey, class Trunc, class ResVec>
+						bool run(
+							const size_t &i, const size_t &j,
+							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res, const ArgsTuple &args_tuple) {
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
+							// Calculate index of the result.
+							const max_fast_int res_index = ck1[i] + ck2[j];
+							if (trunc.skip(t1[i], t2[j])) {
+								return false;
+							}
+							if (trunc.accept(res_index)) {
+								vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+							}
+							return true;
+						}
+					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
@@ -225,20 +297,15 @@ namespace piranha
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
+						// Find out a suitable block size.
+						static const size_t block_size =
+							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
-						for (size_t i = 0; i < size1; ++i) {
-							const max_fast_int index1 = ck1[i];
-							for (size_t j = 0; j < size2; ++j) {
-								// Calculate index of the result.
-								const max_fast_int res_index = index1 + ck2[j];
-								if (trunc.skip(t1[i], t2[j])) {
-									break;
-								}
-								if (trunc.accept(res_index)) {
-									vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
-								}
-							}
-						}
+						vector_multiplier vm;
+						blocked_multiplication<block_size,CfGetter>(
+							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple
+						);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						size_t size = 0;
 						const max_fast_int i_f = coded_ancestor::m_h_max;
@@ -263,43 +330,63 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded\n");
 						return true;
 					}
-					template <class GenericTruncator>
-					void perform_hash_coded_multiplication(const GenericTruncator &trunc) {
+					template <class Cterm>
+					struct hash_multiplier {
+						hash_multiplier(Cterm &cterm):m_cterm(cterm) {}
+						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+							class Term1, class Term2, class Ckey, class Trunc, class HashSet>
+						bool run(
+							const size_t &i, const size_t &j,
+							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Ckey *ck2, const Trunc &trunc, HashSet *cms, const ArgsTuple &args_tuple) {
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
+							typedef typename HashSet::iterator c_iterator;
+							if (trunc.skip(t1[i], t2[j])) {
+								return false;
+							}
+							m_cterm.m_ckey = ck1[i];
+							m_cterm.m_ckey += ck2[j];
+							if (trunc.accept(m_cterm.m_ckey)) {
+								std::pair<bool,c_iterator> res = cms->find(m_cterm);
+								if (res.first) {
+									res.second->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+								} else {
+									// Assign to the temporary term the old cf (new_key is already assigned).
+									m_cterm.m_cf = get1::get(tc1[i]);
+									// Multiply the old term by the second term.
+									m_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
+									cms->insert(m_cterm,res.second);
+								}
+							}
+							return true;
+						}
+						Cterm &m_cterm;
+					};
+					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Term1, class Term2, class GenericTruncator>
+					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
-						typedef cuckoo_hash_set<cterm, member_hash_value<cterm>, std::equal_to<cterm>,
-							std_counting_allocator<char>, member_swap<cterm> > csht;
+						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
 						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						const typename Series1::term_proxy_type *t1 = &ancestor::m_terms1[0];
-						const typename Series2::term_proxy_type *t2 = &ancestor::m_terms2[0];
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						csht cms(size_hint);
+						// Find out a suitable block size.
+						static const size_t block_size =
+							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						cterm tmp_cterm;
-						for (size_t i = 0; i < size1; ++i) {
-							for (size_t j = 0; j < size2; ++j) {
-								if (trunc.skip(t1[i], t2[j])) {
-									break;
-								}
-								tmp_cterm.m_ckey = ck1[i];
-								tmp_cterm.m_ckey += ck2[j];
-								if (trunc.accept(tmp_cterm.m_ckey)) {
-									c_iterator it = cms.find(tmp_cterm);
-									if (it == cms.end()) {
-										// Assign to the temporary term the old cf (new_key is already assigned).
-										tmp_cterm.m_cf = t1[i].m_cf;
-										// Multiply the old term by the second term.
-										tmp_cterm.m_cf.mult_by(t2[j].m_cf, args_tuple);
-										cms.insert(tmp_cterm);
-									} else {
-										it->m_cf.addmul(t1[i].m_cf, t2[j].m_cf, args_tuple);
-									}
-								}
-							}
-						}
+						hash_multiplier<cterm> hm(tmp_cterm);
+						blocked_multiplication<block_size,CfGetter>(
+							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,hm,args_tuple
+						);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						ancestor::m_retval.rehash(static_cast<size_t>(cms.size() / settings::load_factor()) + 1);

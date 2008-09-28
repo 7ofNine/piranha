@@ -53,6 +53,44 @@ namespace piranha
 		static const size_t value = 0;
 	};
 
+	// Integer base-2 logarithm. Like lg, but won't error out if N is not a power of 2.
+	template <int N>
+	struct ilg {
+		p_static_check(N > 0, "N must be positive.");
+		static const size_t value = ilg < (N >> 1) >::value + 1;
+	};
+
+	template <>
+	struct ilg<1> {
+		static const size_t value = 0;
+	};
+
+	template <long int Xk, long int N, bool Stop, long int Xkm1 = 0>
+	struct isqrt_impl {
+		static const long int Xkp1 = (Xk * Xk + N)/(Xk * 2);
+		static const long int value = isqrt_impl<Xkp1,N, Xk - Xkp1 <= 0, Xk>::value;
+	};
+
+	template <long int Xk, long int N, long int Xkm1>
+	struct isqrt_impl<Xk, N, true, Xkm1> {
+		static const long int value = (Xkm1 < Xk) ? Xkm1 : Xk;
+	};
+
+	// Integer square root. See http://en.wikipedia.org/wiki/Integer_square_root for implementation
+	// (Newton's method).
+	template <long int N>
+	struct isqrt {
+		p_static_check(N > 0, "Invalid value for isqrt.");
+		static const long int value_ = isqrt_impl<N,N,false>::value;
+		p_static_check(value_ >= 0, "Invalid result for isqrt.");
+		static const size_t value = static_cast<size_t>(value_);
+	};
+
+	template <>
+	struct isqrt<0> {
+		static const size_t value = 0;
+	};
+
 	template <class T>
 	inline max_fast_int sign(const T &x)
 	{
@@ -106,7 +144,7 @@ namespace piranha
 	inline std::complex<max_fast_int> einpi2(const max_fast_int &n)
 	{
 		if (n & 1) {
-			if ((n-1) & 3) {
+			if ((n - 1) & 3) {
 				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(-1));
 			} else {
 				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(1));

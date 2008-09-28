@@ -29,6 +29,7 @@
 #include "config.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
+#include "math.h" // For static base-2 logarithm.
 #include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
@@ -113,8 +114,12 @@ namespace piranha
 			static void format(out_format);
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
-			static void pi_simplify(const bool &);
-			static bool pi_simplify();
+			/// Cache size in kilobytes.
+			/**
+			 * Determined at compile-time.
+			 */
+			static const size_t cache_size = _PIRANHA_CACHE_SIZE;
+			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 		private:
 			/// Startup class.
 			/**
@@ -156,8 +161,6 @@ namespace piranha
 			static out_format						m_format;
 			/// Floating point representation.
 			static fp_representation				m_fp_repr;
-			/// Simplify pi symbol in Fourier and Poisson series.
-			static bool								m_pi_simplify;
 #ifdef _PIRANHA_MT
 			static const tbb::task_scheduler_init	tbb_init;
 #endif

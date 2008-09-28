@@ -66,7 +66,7 @@ namespace piranha
 
 	// Settings' static members.
 	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
-	double settings::m_hash_max_load_factor = 0.5;
+	double settings::m_hash_max_load_factor = 1;
 	double settings::m_numerical_zero;
 	std::string settings::m_default_path;
 	std::string settings::m_path;
@@ -76,7 +76,7 @@ namespace piranha
 	size_t settings::m_digits;
 	settings::out_format settings::m_format = settings::plain;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
-	bool settings::m_pi_simplify = false;
+	const size_t settings::cache_size;
 #ifdef _PIRANHA_MT
 	const tbb::task_scheduler_init settings::tbb_init;
 #endif
@@ -176,15 +176,5 @@ namespace piranha
 	void settings::format(out_format fmt)
 	{
 		m_format = fmt;
-	}
-
-	bool settings::pi_simplify()
-	{
-		return m_pi_simplify;
-	}
-
-	void settings::pi_simplify(const bool &flag)
-	{
-		m_pi_simplify = flag;
 	}
 }

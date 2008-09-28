@@ -39,6 +39,31 @@ OPTION(ENABLE_SSE2 "Enable usage of SSE2 instructions (requires a SSE2-enabled C
 SET(MANDATORY_LIBRARIES "")
 SET(PIRANHA_DEFINITIONS "")
 
+# Let's see if we can determine cache size.
+# This is a default value in case we are not able to identify it.
+SET(DEFAULT_CACHE_SIZE 512)
+SET(DETECTED_CACHE_SIZE ${DEFAULT_CACHE_SIZE})
+# First try the Linux route.
+IF(UNIX)
+	FIND_FILE(CPUINFO_FILE proc/cpuinfo PATH /)
+	MARK_AS_ADVANCED(CPUINFO_FILE)
+	IF(CPUINFO_FILE)
+		EXECUTE_PROCESS(COMMAND sh ${CMAKE_SOURCE_DIR}/tools/linux_detect_cache_size.sh OUTPUT_VARIABLE DETECTED_CACHE_SIZE
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	ELSE(CPUINFO_FILE)
+		MESSAGE(STATUS "/proc/cpuinfo not available, choosing default cache size.")
+	ENDIF(CPUINFO_FILE)
+	IF(NOT DETECTED_CACHE_SIZE)
+		MESSAGE(STATUS "Something went wrong while detecting the cache size from /proc/cpuinfo, choosing default cache size.")
+		SET(DETECTED_CACHE_SIZE ${DEFAULT_CACHE_SIZE})
+	ENDIF(NOT DETECTED_CACHE_SIZE)
+	MESSAGE(STATUS "Cache size will be set to: ${DETECTED_CACHE_SIZE} kb")
+ENDIF(UNIX)
+SET(CACHE_SIZE ${DETECTED_CACHE_SIZE} CACHE STRING "Cache size in kilobytes.")
+# TODO: Windows, other Unices.
+SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_CACHE_SIZE=${CACHE_SIZE})
+MARK_AS_ADVANCED(CACHE_SIZE)
+
 IF(BUILD_MULTITHREADING)
 	IF(WIN32)
 		# This is irrelevant at the moment, since TBB does not compile yet in MinGW.

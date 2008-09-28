@@ -61,7 +61,7 @@ def series(names,series_t = None):
 		s_type = "ds"
 	else:
 		if series_t not in pyranha.manipulators_type_tuple:
-			raise ValueError("Type " + series_t.__repr__() + " is not recognized as a valid series type.")
+			raise TypeError(str(type(series_t)) + " is not recognized as a valid series type.")
 		s_type = series_t().__short_type__
 	ip = IPython.ipapi.get()
 	for i in names.split():
