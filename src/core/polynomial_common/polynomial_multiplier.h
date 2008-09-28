@@ -36,6 +36,7 @@
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../math.h" // For static maths.
 #include "../memory.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug and cache size.
@@ -76,8 +77,6 @@ namespace piranha
 								return (t1.m_key.revlex_comparison(t2.m_key));
 							}
 					};
-					// Configuration option for block size during cache-blocking.
-					static const size_t block_size = 512;
 				public:
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
@@ -197,12 +196,13 @@ namespace piranha
 						}
 						);
 					}
-					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+					template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
 					static void blocked_multiplication(const size_t &size1, const size_t &size2,
 						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 *t1, const Term2 *t2,
 						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
 						const ArgsTuple &args_tuple) {
+						p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
 							const size_t i_start = n1 * block_size;
@@ -297,9 +297,15 @@ namespace piranha
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
+						// Find out a suitable block size.
+						static const size_t block_size =
+							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
 						vector_multiplier vm;
-						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple);
+						blocked_multiplication<block_size,CfGetter>(
+							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple
+						);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						size_t size = 0;
 						const max_fast_int i_f = coded_ancestor::m_h_max;
@@ -372,9 +378,15 @@ namespace piranha
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						csht cms(size_hint);
+						// Find out a suitable block size.
+						static const size_t block_size =
+							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						cterm tmp_cterm;
 						hash_multiplier<cterm> hm(tmp_cterm);
-						blocked_multiplication<CfGetter>(size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,hm,args_tuple);
+						blocked_multiplication<block_size,CfGetter>(
+							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,hm,args_tuple
+						);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						ancestor::m_retval.rehash(static_cast<size_t>(cms.size() / settings::load_factor()) + 1);

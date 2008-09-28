@@ -114,6 +114,10 @@ namespace piranha
 			static void format(out_format);
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
+			/// Cache size in kilobytes.
+			/**
+			 * Determined at compile-time.
+			 */
 			static const size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 		private:
