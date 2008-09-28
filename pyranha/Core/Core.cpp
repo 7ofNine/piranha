@@ -106,7 +106,6 @@ BOOST_PYTHON_MODULE(_Core)
 	typedef settings::fp_representation (*fp_repr_get)();
 	typedef void (*fp_repr_set)(settings::fp_representation);
 	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
-	class_setm.add_static_property("pi_simplify", bool_get(&settings::pi_simplify), bool_set(&settings::pi_simplify));
 
 	// Psym manager.
 	class_<psyms>("__psyms", "Manager for symbols.", init<>())
