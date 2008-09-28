@@ -42,6 +42,10 @@ int main()
 	ps e_s(e), M_s(M);
 	retval += (qps::EE(e,M).cos().sub(e,e_s-max_fast_int(1)).sub(e,e_s+max_fast_int(1)) != qps::cos_E(e,M));
 
+	// Another identity.
+	retval += (qps::r_a(e,M) * qps::sin_f(e,M) !=
+		(-e_s*e_s + max_fast_int(1)).root(max_fast_int(2)) * qps::sin_E(e,M));
+
 	// Testing pow.
 	retval += (ps::r_a(ps(e),ps(M)).pow(max_fast_int(3)).root(max_fast_int(3)) != ps::r_a(ps(e),ps(M)));
 
