@@ -349,15 +349,15 @@ namespace piranha
 							m_cterm.m_ckey = ck1[i];
 							m_cterm.m_ckey += ck2[j];
 							if (trunc.accept(m_cterm.m_ckey)) {
-								c_iterator it = cms->find(m_cterm);
-								if (it == cms->end()) {
+								std::pair<bool,c_iterator> res = cms->find(m_cterm);
+								if (res.first) {
+									res.second->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+								} else {
 									// Assign to the temporary term the old cf (new_key is already assigned).
 									m_cterm.m_cf = get1::get(tc1[i]);
 									// Multiply the old term by the second term.
 									m_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-									cms->insert(m_cterm);
-								} else {
-									it->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+									cms->insert(m_cterm,res.second);
 								}
 							}
 							return true;

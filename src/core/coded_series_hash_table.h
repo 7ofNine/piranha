@@ -22,6 +22,7 @@
 #define PIRANHA_CODED_SERIES_HASH_TABLE_H
 
 #include <algorithm>
+#include <utility> // For std::pair.
 
 #include "config.h"
 #include "p_assert.h"
@@ -138,7 +139,7 @@ namespace piranha
 			iterator end() const {
 				return iterator(this, sizes[m_size_index], 0);
 			}
-			iterator find(const key_type &key) const {
+			std::pair<bool,iterator> find(const key_type &key) const {
 				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
 				p_assert(vector_pos < sizes[m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
@@ -147,22 +148,26 @@ namespace piranha
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
 					// it means that key was not found.
 					if (!bucket.f[i]) {
-						return end();
+						return std::make_pair(false,iterator(this, vector_pos, i));
 					} else if (bucket.t[i] == key) {
-						// If we found an occupied bucket slot, examine the key to see whether it matches or not with t's.
+						// If we found an occupied bucket slot, examine the key to see whether it matches or not
+						// with t's.
 						// If it does not match, let's move to the next bucket element.
-						return iterator(this, vector_pos, i);
+						return std::make_pair(true,iterator(this, vector_pos, i));
 					}
 				}
 				// All the elements of the bucket were taken, we examined them but found no match.
-				return end();
+				return std::make_pair(false,iterator(this, vector_pos, bucket_size));
 			}
-			void insert(const key_type &key) {
-				while (!attempt_insertion(key)) {
-					// Increase size until insertion succeeds.
-					__PDEBUG(std::cout << "Started resizing coded series hash table." << '\n');
-					increase_size();
-					__PDEBUG(std::cout << "Resized coded series hash table." << '\n');
+			void insert(const key_type &key, const iterator &it) {
+				if (!attempt_insertion(key,it)) {
+					iterator tmp = it;
+					do {
+						__PDEBUG(std::cout << "Started resizing coded series hash table." << '\n');
+						increase_size();
+						tmp = find(key).second;
+						__PDEBUG(std::cout << "Resized coded series hash table." << '\n');
+					} while (!attempt_insertion(key,tmp));
 				}
 			}
 			size_t size() const {
@@ -196,24 +201,19 @@ namespace piranha
 				}
 				a.deallocate(m_container, size);
 			}
-			bool attempt_insertion(const key_type &key) {
-				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
-				p_assert(vector_pos < sizes[m_size_index]);
-				bucket_type &bucket = m_container[vector_pos];
-				// Now examine all elements in the bucket.
-				for (size_t i = 0; i < bucket_size; ++i) {
-					// If the slot in the bucket is not taken (which means there are no more elements to examine),
-					// it means that we found a place for t.
-					if (!bucket.f[i]) {
-						// Set the flag to occupied.
-						bucket.f[i] = true;
-						// Let's copy t to the correct position.
-						bucket.t[i] = key;
-						++m_length;
-						return true;
-					}
+			bool attempt_insertion(const key_type &key, const iterator &it) {
+				const size_t bucket_index = it.m_bucket_index;
+				if (bucket_index == bucket_size) {
+					return false;
 				}
-				return false;
+				p_assert(bucket_index < bucket_size);
+				p_assert(it.m_vector_index < sizes[m_size_index]);
+				bucket_type &bucket = m_container[it.m_vector_index];
+				p_assert(!bucket.f[bucket_index]);
+				bucket.f[bucket_index] = true;
+				bucket.t[bucket_index] = key;
+				++m_length;
+				return true;
 			}
 			// Increase size of the container to the next prime size.
 			void increase_size() {
@@ -226,7 +226,9 @@ namespace piranha
 				const iterator it_i = begin(), it_f = end();
 				iterator it = it_i;
 				while (it != it_f) {
-					if (!new_ht.attempt_insertion(*it)) {
+					std::pair<bool,iterator> res = new_ht.find(*it);
+					p_assert(!res.first);
+					if (!new_ht.attempt_insertion(*it,res.second)) {
 						// NOTICE: here maybe we can use swapping instead of copying. The only problem is that
 						// resizing can fail. In that case, we should swap back everything, if possible, and re-attempt
 						// the resize with a bigger value.

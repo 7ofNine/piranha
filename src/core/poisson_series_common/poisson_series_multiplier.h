@@ -300,34 +300,34 @@ namespace piranha
 										tmp_term2.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into cosine container.
-									c_iterator it = cms_cos.find(tmp_term1);
-									if (it == cms_cos.end()) {
-										cms_cos.insert(tmp_term1);
+									std::pair<bool,c_iterator> res = cms_cos.find(tmp_term1);
+									if (res.first) {
+										res.second->m_cf.add(tmp_term1.m_cf, args_tuple);
 									} else {
-										it->m_cf.add(tmp_term1.m_cf, args_tuple);
+										cms_cos.insert(tmp_term1,res.second);
 									}
-									it = cms_cos.find(tmp_term2);
-									if (it == cms_cos.end()) {
-										cms_cos.insert(tmp_term2);
+									res = cms_cos.find(tmp_term2);
+									if (res.first) {
+										res.second->m_cf.add(tmp_term2.m_cf, args_tuple);
 									} else {
-										it->m_cf.add(tmp_term2.m_cf, args_tuple);
+										cms_cos.insert(tmp_term2,res.second);
 									}
 								} else {
 									if (f1[i]) {
 										tmp_term1.m_cf.invert_sign(args_tuple);
 									}
 									// Insert into sine container.
-									c_iterator it = cms_sin.find(tmp_term1);
-									if (it == cms_sin.end()) {
-										cms_sin.insert(tmp_term1);
+									std::pair<bool,c_iterator> res = cms_sin.find(tmp_term1);
+									if (res.first) {
+										res.second->m_cf.add(tmp_term1.m_cf, args_tuple);
 									} else {
-										it->m_cf.add(tmp_term1.m_cf, args_tuple);
+										cms_sin.insert(tmp_term1,res.second);
 									}
-									it = cms_sin.find(tmp_term2);
-									if (it == cms_sin.end()) {
-										cms_sin.insert(tmp_term2);
+									res = cms_sin.find(tmp_term2);
+									if (res.first) {
+										res.second->m_cf.add(tmp_term2.m_cf, args_tuple);
 									} else {
-										it->m_cf.add(tmp_term2.m_cf, args_tuple);
+										cms_sin.insert(tmp_term2,res.second);
 									}
 								}
 							}
