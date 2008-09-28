@@ -149,7 +149,8 @@ namespace piranha
 					// it means that key was not found.
 					if (!bucket.f[i]) {
 						return std::make_pair(false,iterator(this, vector_pos, i));
-					} else if (bucket.t[i] == key) {
+					}
+					if (bucket.t[i] == key) {
 						// If we found an occupied bucket slot, examine the key to see whether it matches or not
 						// with t's.
 						// If it does not match, let's move to the next bucket element.
