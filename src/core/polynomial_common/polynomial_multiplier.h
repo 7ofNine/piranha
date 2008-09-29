@@ -132,7 +132,7 @@ namespace piranha
 							std::vector<cf_type1> cf1_cache;
 							std::vector<cf_type2> cf2_cache;
 							if (is_lightweight<cf_type1>::value) {
-								// Cache the values if the truncator is ineffective and cf_type1 is lightweight.
+								// Cache the values if cf_type1 is lightweight.
 								const size_t size1 = this->m_size1, size2 = this->m_size2;
 								cf1_cache.reserve(size1);
 								cf2_cache.reserve(size2);

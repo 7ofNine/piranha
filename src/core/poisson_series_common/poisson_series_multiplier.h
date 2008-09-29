@@ -48,6 +48,7 @@ namespace piranha
 	 * like piranha::base_series_multiplier.
 	 */
 	// TODO: isn't truncator's "accept" used here??
+	// TODO: caching, reordering (?), blocking, vector maybe, etc.
 	class poisson_series_multiplier
 	{
 		public:
