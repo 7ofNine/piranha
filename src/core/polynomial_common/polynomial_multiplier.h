@@ -205,12 +205,12 @@ namespace piranha
 						p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
 						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
-							const size_t i_start = n1 * block_size;
+							const size_t i_start = n1 * block_size, i_end = i_start + block_size;
 							// regulars1 * regulars2
 							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-								for (size_t i = i_start; i < i_start + block_size; ++i) {
-									const size_t j_start = n2 * block_size;
-									for (size_t j = j_start; j < j_start + block_size; ++j) {
+								const size_t j_start = n2 * block_size, j_end = j_start + block_size;
+								for (size_t i = i_start; i < i_end; ++i) {
+									for (size_t j = j_start; j < j_end; ++j) {
 										if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 											break;
 										}
@@ -218,7 +218,7 @@ namespace piranha
 								}
 							}
 							// regulars1 * rem2
-							for (size_t i = i_start; i < i_start + block_size; ++i) {
+							for (size_t i = i_start; i < i_end; ++i) {
 								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
 									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 										break;
@@ -228,9 +228,9 @@ namespace piranha
 						}
 						// rem1 * regulars2
 						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+							const size_t j_start = n2 * block_size, j_end = j_start + block_size;
 							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-								const size_t j_start = n2 * block_size;
-								for (size_t j = j_start; j < j_start + block_size; ++j) {
+								for (size_t j = j_start; j < j_end; ++j) {
 									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 										break;
 									}
@@ -256,11 +256,11 @@ namespace piranha
 							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res, const ArgsTuple &args_tuple) {
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
-							// Calculate index of the result.
-							const max_fast_int res_index = ck1[i] + ck2[j];
 							if (trunc.skip(t1[i], t2[j])) {
 								return false;
 							}
+							// Calculate index of the result.
+							const max_fast_int res_index = ck1[i] + ck2[j];
 							if (trunc.accept(res_index)) {
 								vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
 							}
@@ -278,7 +278,8 @@ namespace piranha
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
 						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
-						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1);
+						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max -
+							coded_ancestor::m_h_min + 1);
 						try {
 							vc.resize(n_codes);
 						} catch (const std::bad_alloc &) {
