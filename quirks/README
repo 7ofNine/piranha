@@ -1,1 +1,7 @@
-- complex: modified std::complex header for MSVC Express 9 (2008)
+- Shut off GCC warnings:
+	boost_math_toolkit_gamma_disable_gcc_warning_unused_parameter.diff
+	tbb_partitioner_fix_unused_parameters.diff
+- ICC fix for boost.thread:
+	icc_fix_shared_ptr.diff
+- TBB don't use version info:
+	tbb_shut_of_version_info.diff
