@@ -40,7 +40,7 @@
 #include "../memory.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug and cache size.
-#include "../type_traits.h"
+#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -131,6 +131,10 @@ namespace piranha
 							const typename Series2::term_proxy_type *t2 = &this->m_terms2[0];
 							std::vector<cf_type1> cf1_cache;
 							std::vector<cf_type2> cf2_cache;
+							// NOTICE: this check is really compile-time, so we could probably avoid
+							// having this "if" in favour of a meta-programmed chooser. However, the compiler
+							// here probably just ditches this part while optimizing, so maybe it is really
+							// not much worthwhile.
 							if (is_lightweight<cf_type1>::value) {
 								// Cache the values if cf_type1 is lightweight.
 								const size_t size1 = this->m_size1, size2 = this->m_size2;
