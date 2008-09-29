@@ -80,12 +80,10 @@ static const DynamicLinkDescriptor ITT_HandlerTable[] = {
 // LIBITTNOTIFY_NAME is the name of the ITT notification library 
 # if _WIN32||_WIN64
 #  define LIBITTNOTIFY_NAME "libittnotify.dll"
-# elif __linux__ || __FreeBSD__ || __sun
+# elif __linux__
 #  define LIBITTNOTIFY_NAME "libittnotify.so"
-# elif __APPLE__
-#  define LIBITTNOTIFY_NAME "libittnotify.dylib"
 # else
-#  error Unknown OS
+#  error Intel(R) Threading Tools not provided for this OS
 # endif
 
 /** Caller is responsible for ensuring this routine is called exactly once. */
@@ -134,7 +132,7 @@ void dummy_sync_releasing( volatile void* ptr ) {
 //! Executed on very first call throught ITT_Handler_sync_cancel
 void dummy_sync_cancel( volatile void* ptr ) {
     DoOneTimeInitializations();
-    __TBB_ASSERT( ITT_Handler_sync_releasing!=&dummy_sync_cancel, NULL );
+    __TBB_ASSERT( ITT_Handler_sync_cancel!=&dummy_sync_cancel, NULL );
     if (ITT_Handler_sync_cancel)
         (*ITT_Handler_sync_cancel) (ptr);
 }
@@ -160,6 +158,11 @@ void itt_store_pointer_with_release_v3( void* dst, void* src ) {
 void* itt_load_pointer_with_acquire_v3( const void* src ) {
     void* result = __TBB_load_with_acquire(*static_cast<void*const*>(src));
     ITT_NOTIFY(sync_acquired, const_cast<void*>(src));
+    return result;
+}
+
+void* itt_load_pointer_v3( const void* src ) {
+    void* result = *static_cast<void*const*>(src);
     return result;
 }
 

@@ -36,7 +36,7 @@ class affinity_partitioner;
 
 //! @cond INTERNAL
 namespace internal {
-size_t get_initial_auto_partitioner_divisor();
+size_t __TBB_EXPORTED_FUNC get_initial_auto_partitioner_divisor();
 
 //! Defines entry points into tbb run-time library;
 /** The entry points are the constructor and destructor. */
@@ -53,16 +53,16 @@ class affinity_partitioner_base_v3: no_copy {
     ~affinity_partitioner_base_v3() {resize(0);}
     //! Resize my_array.
     /** Retains values if resulting size is the same. */
-    void resize( unsigned factor );
+    void __TBB_EXPORTED_METHOD resize( unsigned factor );
     friend class affinity_partition_type;
 };
 
 //! Provides default methods for partition objects without affinity.
 class partition_type_base {
 public:
-    void set_affinity( task &t ) {}
-    void note_affinity( task::affinity_id id ) {}
-    task* continue_after_execute_range( task& t ) {return NULL;}
+    void set_affinity( task & ) {}
+    void note_affinity( task::affinity_id ) {}
+    task* continue_after_execute_range( task& ) {return NULL;}
     bool decide_whether_to_delay() {return false;}
     void spawn_or_delay( bool, task& a, task& b ) {
         a.spawn(b);
@@ -92,8 +92,8 @@ private:
 
     class partition_type: public internal::partition_type_base {
     public:
-        bool should_execute_range(const task &t) {return false;}
-        partition_type( const simple_partitioner& sp ) {}
+        bool should_execute_range(const task &) {return false;}
+        partition_type( const simple_partitioner& ) {}
         partition_type( const partition_type&, split ) {}
     };
 };
@@ -120,7 +120,7 @@ public:
                 num_chunks = VICTIM_CHUNKS;
             return num_chunks==1;
         }
-        partition_type( const auto_partitioner& ap ) : num_chunks(internal::get_initial_auto_partitioner_divisor()) {}
+        partition_type( const auto_partitioner& ) : num_chunks(internal::get_initial_auto_partitioner_divisor()) {}
         partition_type( partition_type& pt, split ) {
             num_chunks = pt.num_chunks /= 2u;
         }

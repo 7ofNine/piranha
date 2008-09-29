@@ -31,7 +31,9 @@
 
 #include <stdexcept>
 #include <iterator>
-#include <utility>      // Need std::pair from here
+#include <utility>      // Need std::pair
+#include <cstring>      // Need std::memset
+#include <string>
 #include "tbb_stddef.h"
 #include "cache_aligned_allocator.h"
 #include "tbb_allocator.h"
@@ -44,11 +46,14 @@
 
 namespace tbb {
 
-template<typename Key, typename T, typename HashCompare, typename A = tbb_allocator<std::pair<Key, T> > >
+template<typename T> struct tbb_hash_compare;
+template<typename Key, typename T, typename HashCompare = tbb_hash_compare<Key>, typename A = tbb_allocator<std::pair<Key, T> > >
 class concurrent_hash_map;
 
 //! @cond INTERNAL
 namespace internal {
+    //! Type of a hash code.
+    typedef size_t hashcode_t;
     //! base class of concurrent_hash_map
     class hash_map_base {
     public:
@@ -58,7 +63,7 @@ namespace internal {
         typedef spin_rw_mutex segment_mutex_t;
 
         //! Type of a hash code.
-        typedef size_t hashcode_t;
+        typedef internal::hashcode_t hashcode_t;
         //! Log2 of n_segment
         static const size_t n_segment_bits = 6;
         //! Number of segments 
@@ -83,7 +88,7 @@ namespace internal {
 
         //! True if my_logical_size>=my_physical_size.
         /** Used to support Intel(R) Thread Checker. */
-        bool internal_grow_predicate() const;
+        bool __TBB_EXPORTED_METHOD internal_grow_predicate() const;
     };
 
     //! Meets requirements of a forward iterator for STL */
@@ -98,6 +103,7 @@ namespace internal {
     {
         typedef typename Container::node node;
         typedef typename Container::chain chain;
+        typedef typename Container::segment segment;
 
         //! concurrent_hash_map over which we are iterating.
         Container* my_table;
@@ -129,8 +135,9 @@ namespace internal {
         void advance_to_next_node() {
             size_t i = my_array_index+1;
             do {
-                while( i<my_table->my_segment[my_segment_index].my_physical_size ) {
-                    my_node = my_table->my_segment[my_segment_index].my_array[i].node_list;
+                segment &s = my_table->my_segment[my_segment_index];
+                while( i<s.my_physical_size ) {
+                    my_node = s.my_array[i].node_list;
                     if( my_node ) goto done;
                     ++i;
                 }
@@ -188,8 +195,10 @@ namespace internal {
     {
         if( segment_index<my_table->n_segment ) {
             if( !my_node ) {
-                chain* first_chain = my_table->my_segment[segment_index].my_array;
-                if( first_chain ) my_node = first_chain[my_array_index].node_list;
+                segment &s = my_table->my_segment[segment_index];
+                chain* first_chain = s.my_array;
+                if( first_chain && my_array_index < s.my_physical_size)
+                    my_node = first_chain[my_array_index].node_list;
             }
             if( !my_node ) advance_to_next_node();
         }
@@ -246,6 +255,8 @@ namespace internal {
             my_grainsize(r.my_grainsize)
         {
             r.my_end = my_begin = r.my_midpoint;
+            __TBB_ASSERT( my_begin!=my_end, "Splitting despite the range is not divisible" );
+            __TBB_ASSERT( r.my_begin!=r.my_end, "Splitting despite the range is not divisible" );
             set_midpoint();
             r.set_midpoint();
         }
@@ -275,22 +286,62 @@ namespace internal {
     template<typename Iterator>
     void hash_map_range<Iterator>::set_midpoint() const {
         size_t n = my_end.my_segment_index-my_begin.my_segment_index;
-        if( n>1 || (n==1 && my_end.my_array_index>0) ) {
+        if( n > 1 || (n == 1 && my_end.my_array_index > my_grainsize/2) ) {
             // Split by groups of segments
-            my_midpoint = Iterator(*my_begin.my_table,(my_end.my_segment_index+my_begin.my_segment_index)/2u);
+            my_midpoint = Iterator(*my_begin.my_table,(my_end.my_segment_index+my_begin.my_segment_index+1)/2u);
         } else {
             // Split by groups of nodes
             size_t m = my_end.my_array_index-my_begin.my_array_index;
+            if( n ) m += my_begin.my_table->my_segment[my_begin.my_segment_index].my_physical_size;
             if( m>my_grainsize ) {
-                my_midpoint = Iterator(*my_begin.my_table,my_begin.my_segment_index,m/2u);
+                my_midpoint = Iterator(*my_begin.my_table,my_begin.my_segment_index,my_begin.my_array_index + m/2u);
             } else {
                 my_midpoint = my_end;
             }
         }
-        __TBB_ASSERT( my_midpoint.my_segment_index<=my_begin.my_table->n_segment, NULL );
+        __TBB_ASSERT( my_begin.my_segment_index < my_midpoint.my_segment_index
+            || (my_begin.my_segment_index == my_midpoint.my_segment_index
+            && my_begin.my_array_index <= my_midpoint.my_array_index),
+            "my_begin is after my_midpoint" );
+        __TBB_ASSERT( my_midpoint.my_segment_index < my_end.my_segment_index
+            || (my_midpoint.my_segment_index == my_end.my_segment_index
+            && my_midpoint.my_array_index <= my_end.my_array_index),
+            "my_midpoint is after my_end" );
+        __TBB_ASSERT( my_begin != my_midpoint || my_begin == my_end,
+            "[my_begin, my_midpoint) range should not be empty" );
     }  
+    //! Hash multiplier
+    static const hashcode_t hash_multiplier = sizeof(hashcode_t)==4? 2654435769U : 11400714819323198485ULL;
+    //! Hasher functions
+    template<typename T>
+    inline static hashcode_t hasher( const T& t ) {
+        return static_cast<hashcode_t>( t ) * hash_multiplier;
+    }
+    template<typename P>
+    inline static hashcode_t hasher( P* ptr ) {
+        hashcode_t const h = reinterpret_cast<hashcode_t>( ptr );
+        return (h >> 3) ^ h;
+    }
+    template<typename E, typename S, typename A>
+    inline static hashcode_t hasher( const std::basic_string<E,S,A>& s ) {
+        hashcode_t h = 0;
+        for( const E* c = s.c_str(); *c; c++ )
+            h = static_cast<hashcode_t>(*c) ^ (h * hash_multiplier);
+        return h;
+    }
+    template<typename F, typename S>
+    inline static hashcode_t hasher( const std::pair<F,S>& p ) {
+        return hasher(p.first) ^ hasher(p.second);
+    }
 } // namespace internal
 //! @endcond
+
+//! hash_compare - default argument
+template<typename T>
+struct tbb_hash_compare {
+    static internal::hashcode_t hash( const T& t ) { return internal::hasher(t); }
+    static bool equal( const T& a, const T& b ) { return a == b; }
+};
 
 //! Unordered map from Key to T.
 /** concurrent_hash_map is associative container with concurrent access.
@@ -352,7 +403,7 @@ public:
 
     //! Combines data access, locking, and garbage collection.
     class const_accessor {
-        friend class concurrent_hash_map;
+        friend class concurrent_hash_map<Key,T,HashCompare,A>;
         friend class accessor;
         void operator=( const accessor& ) const; // Deny access
         const_accessor( const accessor& );       // Deny access
@@ -629,7 +680,7 @@ private:
             chain* array = cache_aligned_allocator<chain>().allocate( n );
             // storing earlier might help overcome false positives of in deducing "bool grow" in concurrent threads
             __TBB_store_with_release(my_physical_size, n);
-            memset( array, 0, n*sizeof(chain) );
+            std::memset( array, 0, n*sizeof(chain) );
             my_array = array;
         }
     };
@@ -678,7 +729,7 @@ private:
     //! Perform initialization on behalf of a constructor
     void initialize() {
         my_segment = cache_aligned_allocator<segment>().allocate(n_segment);
-        memset( my_segment, 0, sizeof(segment)*n_segment );
+        std::memset( my_segment, 0, sizeof(segment)*n_segment );
      }
 
     //! Copy "source" to *this, where *this must start out empty.
@@ -801,7 +852,7 @@ template<typename Key, typename T, typename HashCompare, typename A>
 bool concurrent_hash_map<Key,T,HashCompare,A>::erase( const Key &key ) {
     hashcode_t h = my_hash_compare.hash( key );
     segment& s = get_segment( h );
-    node* b;
+    node* b=NULL; // explicitly initialized to prevent compiler warnings
     {
         bool chain_locked_for_write = false;
         segment_mutex_t::scoped_lock segment_lock( s.my_mutex, /*write=*/false );

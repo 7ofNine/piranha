@@ -1082,17 +1082,19 @@ class GenericScheduler: public scheduler {
 #endif /* STATISTICS */
 
     //! Try to enter the arena
-    /** On return, guaranteess that task pool has been acquired. */
+    /** On return, guarantees that task pool has been acquired. */
     void try_enter_arena();
 
     //! Leave the arena
     void leave_arena( bool compress );
 
+    //! Locks the local task pool
     void acquire_task_pool() const;
 
+    //! Unlocks the local task pool
     void release_task_pool() const;
 
-    //! Get task from ready pool.
+    //! Get a task from the local pool.
     /** Called only by the thread that owns *this.
         Gets task only if there is one at depth d or deeper in the pool.
         If successful, unlinks the task and returns a pointer to it.
@@ -1111,6 +1113,7 @@ class GenericScheduler: public scheduler {
         return t.prefix().extra_state==es_task_proxy;
     }
 
+    //! Extracts task pointer from task_proxy, and frees the proxy.
     /** Return NULL if underlying task was claimed by mailbox. */
     task* strip_proxy( task_proxy* result );
 
@@ -1425,7 +1428,7 @@ inline void GenericScheduler::mark_pool_full() {
     // on every task pool release, even when stealing does not occur.  Since TBB allows parallelism, 
     // but never promises parallelism, the missed wakeup is not a correctness problem.
     Gate::state_t snapshot = arena->prefix().gate.get_state();
-    if( snapshot!=SNAPSHOT_FULL && snapshot!=SNAPSHOT_PERMANENTLY_OPEN ) 
+    if( snapshot!=SNAPSHOT_FULL ) 
         arena->prefix().gate.try_update( SNAPSHOT_FULL, SNAPSHOT_PERMANENTLY_OPEN, true );
 }
 
@@ -2020,7 +2023,7 @@ inline task* GenericScheduler::get_mailbox_task() {
         intptr tat = __TBB_load_with_acquire(t->task_and_tag);
         __TBB_ASSERT( tat==task_proxy::mailbox_bit || tat==(tat|3)&&tat!=3, NULL );
         if( tat!=task_proxy::mailbox_bit && __TBB_CompareAndSwapW( &t->task_and_tag, task_proxy::pool_bit, tat )==tat ) {
-            // Sucessfully grabbed the task, and left pool seeker with job of freeing the proxy.
+            // Successfully grabbed the task, and left pool seeker with job of freeing the proxy.
             ITT_NOTIFY( sync_acquired, inbox.outbox() );
             result = (task*)(tat & ~3);
             result->prefix().owner = this;
@@ -2583,7 +2586,7 @@ GenericScheduler* GenericScheduler::create_worker( WorkerDescriptor& w ) {
     HANDLE cur_process = GetCurrentProcess();
     BOOL bRes = DuplicateHandle(cur_process, GetCurrentThread(), cur_process, &w.thread_handle, 0, FALSE, DUPLICATE_SAME_ACCESS);
     if( !bRes ) {
-        printf("ERROR: DuplicateHandle failed with status 0x%08X", GetLastError());
+        fprintf(stderr, "ERROR: DuplicateHandle failed with status 0x%08X", GetLastError());
         w.thread_handle = INVALID_HANDLE_VALUE;
     }
 #else /* USE_PTHREAD */
@@ -2901,7 +2904,7 @@ size_t get_initial_auto_partitioner_divisor() {
     Arena* arena = TheArena;
     __TBB_ASSERT( arena, "thread did not activate a task_scheduler_init object?" );
     const size_t X_FACTOR = 4;
-    return X_FACTOR * arena->prefix().number_of_workers+1;
+    return X_FACTOR * (arena->prefix().number_of_workers+1);
 }
 
 //------------------------------------------------------------------------

@@ -29,6 +29,7 @@ IF(BUILD_MULTITHREADING)
 			boost_thread/pthread/thread.cpp
 		)
 	ENDIF(WIN32)
+	INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src")
 	SET(SRC_LIST ${SRC_LIST}
 		tbb/cache_aligned_allocator.cpp
 		tbb/concurrent_hash_map.cpp
