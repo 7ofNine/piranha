@@ -50,7 +50,8 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Ynm", Ynm_ei_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("factorial", &piranha::factorial, "Factorial.");
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
-	def("choose", &choose, "Binomial coefficient.");
+	def("choose", &choose, "Binomial coefficient with integer inputs. "
+		"arg1 can be negative, arg2 must be a valid positive value.");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
 	def("cs_phase", &cs_phase, "Condon-Shortley phase = -1**m.");
