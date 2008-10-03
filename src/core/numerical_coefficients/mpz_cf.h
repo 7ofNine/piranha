@@ -97,7 +97,8 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise integer coefficient different from unity to negative integer power.");
+						throw unsuitable("Cannot raise integer coefficient different from unity to "
+							"negative integer power.");
 					}
 				} else {
 					mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)n);
@@ -128,6 +129,23 @@ namespace piranha
 					} else {
 						throw unsuitable("Cannot raise integer coefficient different from unity to positive real power.");
 					}
+				}
+				return retval;
+			}
+			template <class ArgsTuple>
+			mpz_cf root(const max_fast_int &n_, const ArgsTuple &) const {
+				mpz_cf retval;
+				if (n_ == 0) {
+					throw division_by_zero();
+				} else if (n_ == 1) {
+					retval = *this;
+					return retval;
+				} else if (n_ < 0) {
+					throw unsuitable("Integer coefficients different from unity cannot be arguments of negative root.");
+				}
+				const size_t n = static_cast<size_t>(n_);
+				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
+					throw unsuitable("Integer coefficient is not an exact nth root.");
 				}
 				return retval;
 			}

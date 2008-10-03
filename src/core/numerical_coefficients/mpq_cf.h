@@ -160,6 +160,31 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
+			mpq_cf root(const max_fast_int &n_, const ArgsTuple &) const {
+				mpq_cf retval;
+				if (n_ == 0) {
+					throw division_by_zero();
+				} else if (n_ == 1) {
+					retval = *this;
+					return retval;
+				}
+				const size_t n = (n_ > 0) ? n_ : -n_;
+				if (!mpz_root(mpq_numref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),n) ||
+					!mpz_root(mpq_denref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),n)) {
+					throw unsuitable("Rational coefficient is not an exact nth root.");
+				}
+				// Better to canonicalise, for peace of mind.
+				retval.m_value.canonicalize();
+				if (n_ < 0) {
+					// Let's guard against division by zero below.
+					if (retval.m_value == 0) {
+						throw division_by_zero();
+					}
+					mpq_inv(retval.m_value.get_mpq_t(), mpq_class(retval.m_value).get_mpq_t());
+				}
+				return retval;
+			}
+			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
 }

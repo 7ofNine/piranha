@@ -23,6 +23,8 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
+#include <gmp.h>
+#include <gmpxx.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -216,13 +218,26 @@ namespace piranha
 				return Derived(*derived_const_cast);
 			}
 			template <class ArgsTuple>
-			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+			Derived root(const max_fast_int &n, const ArgsTuple &) const {
+				Derived retval = *derived_const_cast;
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
-					return Derived(*derived_const_cast);
+					return retval;
 				}
-				return pow(1. / (double)(n), args_tuple);
+				const size_t size = derived_const_cast->size();
+				const mpz_class d = n;
+				mpz_class rem;
+				std::vector<mpz_class> qs(size);
+				for (size_t i = 0; i < size; ++i) {
+					mpz_tdiv_qr(qs[i].get_mpz_t(),rem.get_mpz_t(),
+						mpz_class((*derived_const_cast)[i]).get_mpz_t(),d.get_mpz_t());
+					if (rem != 0) {
+						throw unsuitable("Exponent is not suitable for the calculation of nth root.");
+					}
+					retval[i] = mpz_get_si(qs[i].get_mpz_t());
+				}
+				return retval;
 			}
 			void upload_min_exponents(std::vector<max_fast_int> &v) const {
 				derived_const_cast->upload_ints_to(v);
