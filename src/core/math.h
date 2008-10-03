@@ -131,13 +131,15 @@ namespace piranha
 	}
 
 	/// Binomial coefficient.
-	inline double choose(const max_fast_int &n, const max_fast_int &k)
+	inline double choose(const long int &n_, const long int &k)
 	{
-		if (n < 0 || k < 0 || k > n) {
-			throw unsuitable("Invalid input values for binomial coefficient.");
+		const long int multiplier = (n_ >= 0) ? 1 : cs_phase(k), n = (n_ >= 0) ? n_ : k - n_ - 1;
+		if (k < 0 || k > n) {
+			throw unsuitable("Invalid k for binomial coefficient.");
 		}
+		p_assert(n >= 0);
 		return boost::math::binomial_coefficient<double>(
-			static_cast<unsigned>(n),static_cast<unsigned>(k));
+			static_cast<unsigned>(n),static_cast<unsigned>(k)) * multiplier;
 	}
 
 	/// Calculate complex exponential of n*pi/2.
