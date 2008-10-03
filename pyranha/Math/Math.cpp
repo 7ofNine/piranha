@@ -54,5 +54,5 @@ BOOST_PYTHON_MODULE(_Math)
 		"arg1 can be negative, arg2 must be a valid positive value.");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
-	def("cs_phase", &cs_phase, "Condon-Shortley phase = -1**m.");
+	def("cs_phase", &cs_phase, "Condon-Shortley phase = (-1)**arg1.");
 }
