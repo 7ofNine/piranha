@@ -208,6 +208,28 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::choose(
+		const max_fast_int &n_, const max_fast_int &k, const ArgsTuple &args_tuple)
+	{
+		const long int n = (n_ >= 0) ? n_ : k - n_ - 1;
+		if (k < 0 || k > n) {
+			throw unsuitable("Invalid k for binomial coefficient.");
+		}
+		// Starting point is 1.
+		Derived retval;
+		retval.insert(term_type(cf_type(max_fast_int(1),args_tuple),key_type()),args_tuple);
+		for (max_fast_int i = 1; i <= k; ++i) {
+			retval.mult_by(n - k + i, args_tuple);
+			retval.divide_by(i, args_tuple);
+		}
+		if (n_ < 0) {
+			retval.mult_by(cs_phase(k), args_tuple);
+		}
+		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_partial(const Derived &in, Derived &out,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {

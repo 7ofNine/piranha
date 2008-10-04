@@ -120,6 +120,10 @@ namespace pyranha
 		inst.def(boost::python::self /= double());
 		inst.def(boost::python::self / piranha::max_fast_int());
 		inst.def(boost::python::self / double());
+		// Binomial coefficient.
+		typedef T (*named_choose)(const piranha::max_fast_int &, const piranha::max_fast_int &);
+		inst.def("choose", named_choose(&T::choose), "Choose function: (arg1 over arg2). "
+			"arg1 is an arbitrary integer, arg2 must be a suitable non-negative integer.").staticmethod("choose");
 		// Exponentiation.
 		typedef T(T::*pow_double)(const double &) const;
 		typedef T(T::*pow_int)(const piranha::max_fast_int &) const;

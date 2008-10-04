@@ -87,6 +87,8 @@ namespace piranha
 		public:
 			using named_ancestor::norm;
 			using base_ancestor::norm;
+			using named_ancestor::choose;
+			using base_ancestor::choose;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -191,6 +193,8 @@ namespace std
 			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator/=;
 			using named_ancestor::norm;
 			using base_ancestor::norm;
+			using named_ancestor::choose;
+			using base_ancestor::choose;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
