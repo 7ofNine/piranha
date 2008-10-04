@@ -80,13 +80,6 @@ namespace piranha
 				m_ckeys1.reserve(derived_const_cast->m_size1);
 				m_ckeys2.reserve(derived_const_cast->m_size2);
 			}
-			~coded_series_multiplier() {
-				__PDEBUG(
-				if (m_cr_is_viable) {
-					std::cout << "On destruction the density was: " <<
-						(static_cast<double>(derived_const_cast->m_retval.length())/(m_h_max - m_h_min + 1)) << '\n';
-				})
-			}
 			void find_input_min_max() {
 				size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
@@ -122,7 +115,7 @@ namespace piranha
 					m_coding_vector[i] = ck.get_si();
 					ck *= (m_res_min_max[i].second - m_res_min_max[i].first + 1);
 				}
-				__PDEBUG(std::cout << "hmax-hmin=" << hmax - hmin << '\n');
+				__PDEBUG(std::cout << "h_tot = " << (hmax - hmin + 1) << '\n');
 				// We want to fill an extra slot of the coding vector (wrt to the nominal size,
 				// corresponding to the arguments number for the key). This is handy for decodification.
 				m_coding_vector[m_size] = ck.get_si();
@@ -139,7 +132,7 @@ namespace piranha
 					// Downcast minimum and maximum result values to fast integers.
 					for (size_t i = 0; i < m_size; ++i) {
 						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
-								m_res_min_max[i].second < traits::const_min || m_res_min_max[i].second > traits::const_max) {
+							m_res_min_max[i].second < traits::const_min || m_res_min_max[i].second > traits::const_max) {
 							std::cout << "Warning: results of series multiplication cross " <<
 									  "fast integer limits. Expect errors." << std::endl;
 						}
