@@ -68,36 +68,38 @@ namespace piranha
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &args_tuple,
 											 const int &start = 0, const int &step_size = 1) {
-				if (start < 0 || step_size < 1) {
-					throw unsuitable("Please use a non-negative starting degree and a step size of at least 1.");
+				if (step_size < 1) {
+					throw unsuitable("Please use a step size of at least 1.");
 				}
 				if (s.empty()) {
-					throw unsuitable("Cannot calculate the limit of the power series expansion of an empty power series.");
+					throw unsuitable("Cannot calculate the limit of the power series expansion of "
+						"an empty power series.");
 				}
 				// Let's calculate the minimum exponents of s for which the truncator defines a limit.
 				const std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> >
 				mle(min_limited_exponents(s, args_tuple));
 				const size_t size = mle.first.size();
 				if (size == 0) {
-					throw not_existing("Cannot calculate the limit of a power series expansion when there are no exponent limits "
-									   "set for the arguments of the series.");
+					throw not_existing("Cannot calculate the limit of a power series expansion when there are "
+						"no exponent limits set for the arguments of the series.");
 				}
 				for (size_t i = 0; i < size; ++i) {
 					// If the minimum degree of the symbol whose exponent we want to limit is zero or less, we are
 					// screwed, since the degree of the symbol would not increase at every step of the expansion
 					// and we would end up in an infinite loop.
 					if (mle.first[i] <= 0) {
-						throw unsuitable("Cannot calculate the limit of a power series expansion if one of the limited exponents "
-										 "of the series has negative or zero minimum value.");
+						throw unsuitable("Cannot calculate the limit of a power series expansion if one of the "
+							"limited exponents of the series has negative or zero minimum value.");
 					}
 					if (mle.second[i] < 0) {
-						throw unsuitable("Cannot calculate the limit of a power series expansion if there are negative "
-										 "exponent limits for this series.");
+						throw unsuitable("Cannot calculate the limit of a power series expansion "
+							"if there are negative exponent limits for this series.");
 					}
 				}
 				std::vector<size_t> power_limits(size);
 				for (size_t i = 0; i < size; ++i) {
-					const double tmp((static_cast<double>(mle.second[i]) / mle.first[i] - start) / static_cast<double>(step_size));
+					const double tmp((static_cast<double>(mle.second[i]) / mle.first[i] - start) /
+						static_cast<double>(step_size));
 					if (tmp >= 0) {
 						power_limits[i] = (size_t)std::ceil(tmp);
 					} else {

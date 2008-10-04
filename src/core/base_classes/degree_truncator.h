@@ -47,17 +47,21 @@ namespace piranha
 				return m_effective;
 			}
 			// Limit of a power series development of a power series according to its minimum degree.
+			// NOTE: if start is negative, it is assumed that negative powers of the input series
+			// have a minimum degree which is proportional to the input series' and with its sign changed.
 			template <class PowerSeries, class ArgsTuple>
 			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &,
 											 const int &start = 0, const int &step_size = 1) {
-				if (start < 0 || step_size < 1) {
-					throw unsuitable("Please use a non-negative starting degree and a step size of at least 1.");
+				if (step_size < 1) {
+					throw unsuitable("Please use a step size of at least 1.");
 				}
 				if (!m_effective) {
-					throw unsuitable("Cannot calculate the limit of a power series expansion if no degree limit has been set.");
+					throw unsuitable("Cannot calculate the limit of a power series expansion "
+						"if no degree limit has been set.");
 				}
 				if (s.empty()) {
-					throw unsuitable("Cannot calculate the limit of the power series expansion of an empty power series.");
+					throw unsuitable("Cannot calculate the limit of the power series expansion of "
+						"an empty power series.");
 				}
 				const max_fast_int min_degree(s.min_degree());
 				if (min_degree <= 0) {
@@ -65,10 +69,11 @@ namespace piranha
 									 "of the series is negative or zero.");
 				}
 				if (m_degree_limit < 0) {
-					throw unsuitable("Cannot calculate the limit of a power series expansion if the minimum degree limit "
-									 "is negative.");
+					throw unsuitable("Cannot calculate the limit of a power series expansion "
+						"if the minimum degree limit is negative.");
 				}
-				const double tmp((static_cast<double>(m_degree_limit) / min_degree - start) / static_cast<double>(step_size));
+				const double tmp((static_cast<double>(m_degree_limit) / min_degree - start) /
+					static_cast<double>(step_size));
 				if (tmp >= 0) {
 					return static_cast<size_t>(std::ceil(tmp));
 				} else {

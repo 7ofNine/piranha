@@ -54,17 +54,18 @@ namespace piranha
 			static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
 											 const int &start = 0, const int &step_size = 1) {
 				// NOTE: share this check in some kind of base truncator class?
-				if (start < 0 || step_size < 1) {
-					throw unsuitable("Please use a non-negative starting degree and a step size of at least 1.");
+				if (step_size < 1) {
+					throw unsuitable("Please use a step size of at least 1.");
 				}
 				if (m_truncation_power == 0) {
-					throw unsuitable("No value set for norm-based truncation, cannot calculate limit of power series expansion.");
+					throw unsuitable("No value set for norm-based truncation, "
+						"cannot calculate limit of power series expansion.");
 				}
 				const double norm = x.norm(args_tuple);
 				p_assert(norm >= 0);
 				if (norm >= 1) {
-					throw unsuitable("The norm of the argument of the power series expansion is >= 1: the expansion "
-						"will diverge.");
+					throw unsuitable("The norm of the argument of the power series expansion is >= 1: "
+						"the norm truncator is unable to give an estimate of the power series limit.");
 				}
 				// Let's prevent log10(0) below.
 				if (norm == 0) {
