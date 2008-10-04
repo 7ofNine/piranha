@@ -213,7 +213,7 @@ namespace piranha
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::choose(
 		const max_fast_int &n_, const max_fast_int &k, const ArgsTuple &args_tuple)
 	{
-		const long int n = (n_ >= 0) ? n_ : k - n_ - 1;
+		const max_fast_int n = (n_ >= 0) ? n_ : k - n_ - 1;
 		if (k < 0 || k > n) {
 			throw unsuitable("Invalid k for binomial coefficient.");
 		}
