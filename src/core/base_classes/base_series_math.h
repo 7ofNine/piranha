@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_SERIES_MATH_H
 
 #include <boost/lexical_cast.hpp>
-#include <cmath>
 #include <string>
 
 #include "../config.h"
@@ -111,7 +110,8 @@ namespace piranha
 
 	/// Merge series with a number.
 	/**
-	 * Term is constructed from coefficient constructed from number and default key, and then inserted into the series.
+	 * Term is constructed from coefficient constructed from number and default key,
+	 * and then inserted into the series.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Number, class ArgsTuple>
@@ -182,7 +182,8 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by_number(const Number &x, const ArgsTuple &args_tuple)
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by_number(const Number &x,
+		const ArgsTuple &args_tuple)
 	{
 		if (x == 1) {
 			return *derived_cast;

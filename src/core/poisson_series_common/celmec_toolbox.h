@@ -105,7 +105,7 @@ namespace piranha
 				for (size_t i = 1; i <= (n + 1); ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
-					expansion_term = expansion_term.besselJ_div((max_fast_int)i);
+					expansion_term = expansion_term.besselJ_div_m((max_fast_int)i,1);
 					Derived trig(M_series);
 					trig *= (max_fast_int)i;
 					trig = trig.sin();
@@ -161,7 +161,7 @@ namespace piranha
 				for (size_t i = 1; i <= (n + 1); ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
-					expansion_term = expansion_term.besselJ_div((max_fast_int)i);
+					expansion_term = expansion_term.besselJ_div_m((max_fast_int)i,1);
 					expansion_term *= (max_fast_int)i;
 					Derived trig(M_series);
 					trig *= (max_fast_int)i;

@@ -253,12 +253,12 @@ namespace pyranha
 	inline void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
 		typedef T (T::*named_1)(const piranha::max_fast_int &) const;
+		typedef T (T::*named_2)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
 		inst.def("besselJ", named_1(&T::besselJ), "Bessel function of the first kind of integer order arg2.");
 		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind "
 			"of integer order arg2.");
-		inst.def("besselJ_div", named_1(&T::besselJ_div), "Bessel function of the first kind of integer order arg2 "
-			"divided by its argument.");
-		typedef T (T::*named_2)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
+		inst.def("besselJ_div_m", named_2(&T::besselJ_div_m),
+			"Bessel function of the first kind of integer order arg2 divided by its argument**arg3.");
 		typedef T (T::*named_3)(const piranha::max_fast_int &, const piranha::max_fast_int &, const T &) const;
 		const char *Pnm_descr = "Associated Legendre function of integer degree arg2 and order arg3.";
 		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);

@@ -54,9 +54,9 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			/// Bessel function of the first kind of integer order divided by its argument.
-			Derived besselJ_div(const max_fast_int &order) const {
-				Derived retval(derived_const_cast->besselJ_div(order, derived_const_cast->m_arguments));
+			/// Bessel function of the first kind of integer order divided by its argument**m.
+			Derived besselJ_div_m(const max_fast_int &order, const max_fast_int &m) const {
+				Derived retval(derived_const_cast->besselJ_div_m(order, m, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

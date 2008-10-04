@@ -91,8 +91,8 @@ namespace piranha
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
-			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
+			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < fourier_series, fourier_series,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;
@@ -193,8 +193,8 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
-			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
+			using COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type < complex, complex,
 			typename named_ancestor::args_tuple_type, Truncator > multiplier_type;

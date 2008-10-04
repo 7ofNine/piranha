@@ -56,9 +56,8 @@ namespace piranha
 					limit = Derived::multiplier_type::truncator_type::power_series_limit(
 								*derived_const_cast, args_tuple, order, 2);
 				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function of the first kind.\n"
-												 "The reported error is: ")
-									 + u.what());
+					throw unsuitable(std::string("Series is unsuitable as argument of "
+						"Bessel function of the first kind.\nThe reported error is: ") + u.what());
 				}
 				// Now we buid the starting point of the power series expansion of Jn.
 				Derived retval(*derived_const_cast);
@@ -120,42 +119,54 @@ namespace piranha
 				}
 				return retval;
 			}
-			/// Bessel function of the first kind of integer order divided by its argument.
+			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived besselJ_div(const max_fast_int &order, const ArgsTuple &args_tuple) const {
-				if (order < 1) {
-					throw unsuitable("Bessel function of the first kind divided by its argument is implemented only for "
-									 "strictly positive orders.");
+			Derived besselJ_div_m(const max_fast_int &order_, const max_fast_int &m,
+				const ArgsTuple &args_tuple) const {
+				typedef typename Derived::term_type term_type;
+				typedef typename term_type::cf_type cf_type;
+				typedef typename term_type::key_type key_type;
+				if (m < 0) {
+					throw unsuitable("Please use a non-negative value for m.");
 				}
+				// Let's take care of negative order.
+				const size_t order = (order_ >= 0) ? order_ : -order_;
 				// Get the expansion limit from the truncator.
 				size_t limit;
 				try {
 					limit = Derived::multiplier_type::truncator_type::power_series_limit(*derived_const_cast,
-							args_tuple, order - 1, 2);
+							args_tuple, order - m, 2);
 				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function of the first kind.\n"
-												 "The reported error is: ")
-									 + u.what());
+					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function "
+						"of the first kind divided by its argument raised to unsigned integer power.\n"
+						"The reported error is: ") + u.what());
 				}
-				// Now we build the starting point of the power series expansion of Jn/x.
+				// Now we build the starting point of the power series expansion of Jn/x**m.
 				Derived retval(*derived_const_cast);
-				retval.divide_by((max_fast_int)2, args_tuple);
+				retval.divide_by(max_fast_int(2), args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.pow((max_fast_int)order - 1, args_tuple);
+				retval = retval.pow((max_fast_int)order - m, args_tuple);
 				for (size_t i = 0; i < (size_t)order; ++i) {
 					retval.divide_by((max_fast_int)(i + 1), args_tuple);
 				}
-				// Now let's proceed to the bulk of the power series expansion for Jn/x.
+				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
 				for (size_t i = 1; i <= limit; ++i) {
-					tmp.mult_by((max_fast_int)(-1), args_tuple);
-					tmp.divide_by((max_fast_int)(i*(i + order)), args_tuple);
+					tmp.mult_by(max_fast_int(-1), args_tuple);
+					tmp.divide_by(max_fast_int(i*(i + order)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}
-				retval.divide_by((max_fast_int)2, args_tuple);
+				// This is the external divisor by 2**m.
+				Derived m2_;
+				m2_.insert(term_type(cf_type(max_fast_int(2),args_tuple),key_type()),args_tuple);
+				Derived m2 = m2_.pow(-m,args_tuple);
+				retval.mult_by(m2, args_tuple);
+				if (order_ < 0) {
+					retval.mult_by(cs_phase(order_), args_tuple);
+				}
 				return retval;
 			}
 	};

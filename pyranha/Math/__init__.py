@@ -104,6 +104,20 @@ def dbesselJ(order,arg):
 	except AttributeError:
 		raise AttributeError("The dbesselJ() method is not available for this argument type, returning None.")
 
+def besselJ_div_m(order,arg,m = 1):
+	"""
+	Bessel function of the first kind of integer order of argument arg divided by arg**m.
+	If arg provides a besselJ_div_m() method, it will be called, otherwise _Math.besselJ will be called.
+	"""
+	if type(order) != int or type(m) != int:
+		raise ValueError("order and m must be integers.")
+	if m < 0:
+		raise ValueError("m must be non-negative.")
+	try:
+		return arg.besselJ_div_m(order,m)
+	except AttributeError:
+		return _Math.besselJ(order,arg) / arg**m
+
 def Pnm(n,m,arg,*extra_arg):
 	"""
 	Associated Legendre function of integer degree n and order m of argument arg. The optional argument extra_arg

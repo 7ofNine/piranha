@@ -100,8 +100,8 @@ namespace piranha
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
-			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
+			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// Needed typedefs.
 			typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
@@ -206,8 +206,8 @@ namespace std
 			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
-			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div;
+			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
+			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// Needed typedefs.
 			typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
