@@ -67,7 +67,9 @@ namespace piranha
 
 	template <long int Xk, long int N, bool Stop, long int Xkm1 = 0>
 	struct isqrt_impl {
-		static const long int Xkp1 = (Xk * Xk + N)/(Xk * 2);
+		// We should be safe here, since N == Xk initially and then Xk will
+		// decrease at every iteration for every meaningful value of cache size.
+		static const long int Xkp1 = (Xk + N/Xk) / 2;
 		static const long int value = isqrt_impl<Xkp1,N, Xk - Xkp1 <= 0, Xk>::value;
 	};
 
