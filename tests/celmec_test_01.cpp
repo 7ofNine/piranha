@@ -49,5 +49,9 @@ int main()
 	// Testing pow.
 	retval += (ps::r_a(ps(e),ps(M)).pow(max_fast_int(3)).root(max_fast_int(3)) != ps::r_a(ps(e),ps(M)));
 
+	// Trigonometric identity.
+	retval += ((ps::cos_E(ps(e),ps(M)).pow(max_fast_int(2)) + ps::sin_E(ps(e),ps(M)).pow(max_fast_int(2)))
+		!= max_fast_int(1));
+
 	return retval;
 }
