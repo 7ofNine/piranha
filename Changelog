@@ -1,3 +1,12 @@
+2008.10.05 4f6daa58d091e7dd36f8f7185919945273de740f
+
+* Replaced besselJ_div with a more generic besselJ_div_m and expose it in Pyranha.
+* Allow negative starting degrees in psl().
+* choose() now accepts negative values for n.
+* Make the routines for the calculation of nth roots a bit smarter.
+* Merged branch with code for better cache memory usage.
+* Better error handling for the series() function.
+
 2008.09.24 94866fbac8361dbd24f9824b959334d4288b2c18
 
 * Provide an example of Python script using Pyranha.
