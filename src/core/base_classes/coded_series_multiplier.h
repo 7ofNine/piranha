@@ -162,7 +162,7 @@ namespace piranha
 			}
 			bool is_sparse() const {
 				// Magic value established empirically. Possibly subject to tuning in the future.
-				static const double limit = 1E-3;
+				static const double limit = 1E-4;
 				// We don't want this to be called if we haven't established the suitability
 				// of the coded representation first.
 				p_assert(m_cr_is_viable);
