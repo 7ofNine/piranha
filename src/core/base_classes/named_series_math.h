@@ -164,6 +164,12 @@ namespace piranha
 		return Derived::choose(n,k,args_tuple_type());
 	}
 
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::factorial(const max_fast_int &n)
+	{
+		return Derived::factorial(n,args_tuple_type());
+	}
+
 	// TODO: why derived_const_cast->m_arguments instead of m_arguments??
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const

@@ -81,6 +81,8 @@ namespace piranha
 		public:
 			using named_ancestor::norm;
 			using POLYNOMIAL_COMMON_ANCESTOR::norm;
+			using named_ancestor::factorial;
+			using base_ancestor::factorial;
 			using named_ancestor::choose;
 			using base_ancestor::choose;
 			using named_ancestor::pow;
@@ -187,6 +189,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
 			using named_ancestor::norm;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm;
+			using named_ancestor::factorial;
+			using base_ancestor::factorial;
 			using named_ancestor::choose;
 			using base_ancestor::choose;
 			using named_ancestor::pow;

@@ -112,6 +112,8 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			static Derived factorial(const max_fast_int &, const ArgsTuple &);
+			template <class ArgsTuple>
 			static Derived choose(const max_fast_int &, const max_fast_int &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived pow(const max_fast_int &, const ArgsTuple &) const;

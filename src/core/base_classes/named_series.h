@@ -84,6 +84,7 @@ namespace piranha
 			Derived &operator*=(const Derived &);
 			Derived &operator/=(const max_fast_int &);
 			Derived &operator/=(const double &);
+			static Derived factorial(const max_fast_int &);
 			static Derived choose(const max_fast_int &, const max_fast_int &);
 			Derived pow(const double &) const;
 			Derived pow(const max_fast_int &) const;

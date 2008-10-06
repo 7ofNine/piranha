@@ -231,6 +231,21 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::factorial(const max_fast_int &n, const ArgsTuple &args_tuple)
+	{
+		if (n < 0) {
+			throw unsuitable("Negative argument for factorial.");
+		}
+		Derived retval;
+		retval.insert(term_type(cf_type(max_fast_int(1),args_tuple),key_type()),args_tuple);
+		for (max_fast_int i = 2; i <= n; ++i) {
+			retval.mult_by(i,args_tuple);
+		}
+		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_partial(const Derived &in, Derived &out,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
