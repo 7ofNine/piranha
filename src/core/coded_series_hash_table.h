@@ -204,7 +204,7 @@ namespace piranha
 			}
 			bool attempt_insertion(const key_type &key, const iterator &it) {
 				const size_t bucket_index = it.m_bucket_index;
-				if (bucket_index == bucket_size) {
+				if (unlikely(bucket_index == bucket_size)) {
 					return false;
 				}
 				p_assert(bucket_index < bucket_size);
@@ -227,7 +227,7 @@ namespace piranha
 				const iterator it_i = begin(), it_f = end();
 				iterator it = it_i;
 				while (it != it_f) {
-					std::pair<bool,iterator> res = new_ht.find(*it);
+					const std::pair<bool,iterator> res = new_ht.find(*it);
 					p_assert(!res.first);
 					if (!new_ht.attempt_insertion(*it,res.second)) {
 						// NOTICE: here maybe we can use swapping instead of copying. The only problem is that

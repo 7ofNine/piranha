@@ -354,7 +354,7 @@ namespace piranha
 							m_cterm.m_ckey = ck1[i];
 							m_cterm.m_ckey += ck2[j];
 							if (trunc.accept(m_cterm.m_ckey)) {
-								std::pair<bool,c_iterator> res = cms->find(m_cterm);
+								const std::pair<bool,c_iterator> res = cms->find(m_cterm);
 								if (res.first) {
 									res.second->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
 								} else {
