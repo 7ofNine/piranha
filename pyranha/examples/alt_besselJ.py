@@ -47,11 +47,11 @@ def alt_besselJ(o,x):
 	for m in range(0,l+1):
 		tmp = (x / 2)**(2 * m + n)
 		tmp *= (-1)**m
-		# Here we use the static factorial functions of the series' type to avoid
+		# Here we use the unbound factorial functions of the series' type to avoid
 		# losing precision when working with multi-precision coefficients.
-		tmp *= (x.factorial(m) * x.factorial(m + n))**-1
+		tmp *= (type(x).factorial(m) * type(x).factorial(m + n))**-1
 		retval += tmp
-	# If we corrected the order's sign we must multiply by (-1)**n.
+	# If we corrected the order's sign we must also multiply by (-1)**n.
 	if o < 0:
 		retval *= (-1)**n
 	return retval

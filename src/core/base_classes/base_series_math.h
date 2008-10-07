@@ -218,8 +218,7 @@ namespace piranha
 			throw unsuitable("Invalid k for binomial coefficient.");
 		}
 		// Starting point is 1.
-		Derived retval;
-		retval.insert(term_type(cf_type(max_fast_int(1),args_tuple),key_type()),args_tuple);
+		Derived retval(max_fast_int(1),args_tuple);
 		for (max_fast_int i = 1; i <= k; ++i) {
 			retval.mult_by(n - k + i, args_tuple);
 			retval.divide_by(i, args_tuple);
@@ -237,8 +236,7 @@ namespace piranha
 		if (n < 0) {
 			throw unsuitable("Negative argument for factorial.");
 		}
-		Derived retval;
-		retval.insert(term_type(cf_type(max_fast_int(1),args_tuple),key_type()),args_tuple);
+		Derived retval(max_fast_int(1),args_tuple);
 		for (max_fast_int i = 2; i <= n; ++i) {
 			retval.mult_by(i,args_tuple);
 		}
