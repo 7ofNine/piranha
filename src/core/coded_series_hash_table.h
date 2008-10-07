@@ -80,13 +80,13 @@ namespace piranha
 						return *this;
 					}
 					const key_type &operator*() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_index]);
+						p_assert(m_vector_index < sizes[m_ht->m_size_index] + 1);
 						p_assert(m_bucket_index < bucket_size);
 						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					const key_type *operator->() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_index]);
+						p_assert(m_vector_index < sizes[m_ht->m_size_index] + 1);
 						p_assert(m_bucket_index < bucket_size);
 						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
@@ -100,7 +100,7 @@ namespace piranha
 					}
 				private:
 					void next() {
-						const size_t vector_size = sizes[m_ht->m_size_index];
+						const size_t vector_size = sizes[m_ht->m_size_index] + 1;
 						while (true) {
 							// Go to the next bucket if we are at the last element of the current one.
 							if (m_bucket_index == bucket_size - 1) {
@@ -137,10 +137,10 @@ namespace piranha
 				return iterator(this);
 			}
 			iterator end() const {
-				return iterator(this, sizes[m_size_index], 0);
+				return iterator(this, sizes[m_size_index] + 1, 0);
 			}
 			std::pair<bool,iterator> find(const key_type &key) const {
-				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
+				const size_t vector_size = sizes[m_size_index], vector_pos = key.hash_value() % vector_size;
 				p_assert(vector_pos < sizes[m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
@@ -157,8 +157,18 @@ namespace piranha
 						return std::make_pair(true,iterator(this, vector_pos, i));
 					}
 				}
-				// All the elements of the bucket were taken, we examined them but found no match.
-				return std::make_pair(false,iterator(this, vector_pos, bucket_size));
+				// Examined all the elements in the destination bucket. Examine the extra bucket.
+				const bucket_type &extra_bucket = m_container[vector_size];
+				for (size_t i = 0; i < bucket_size; ++i) {
+					if (!extra_bucket.f[i]) {
+						return std::make_pair(false,iterator(this, vector_size, i));
+					}
+					if (extra_bucket.t[i] == key) {
+						return std::make_pair(true,iterator(this, vector_size, i));
+					}
+				}
+				// All the elements of the extra bucket were taken, we examined them but found no match.
+				return std::make_pair(false,iterator(this, vector_size, bucket_size));
 			}
 			void insert(const key_type &key, const iterator &it) {
 				if (!attempt_insertion(key,it)) {
@@ -185,7 +195,7 @@ namespace piranha
 			}
 			// Allocate and default-construct according to m_size_index.
 			void init() {
-				const size_t size = sizes[m_size_index];
+				const size_t size = sizes[m_size_index] + 1;
 				const bucket_type bucket;
 				allocator_type a;
 				m_container = a.allocate(size);
@@ -195,7 +205,7 @@ namespace piranha
 			}
 			// Destroy and deallocate.
 			void destroy() {
-				const size_t size = sizes[m_size_index];
+				const size_t size = sizes[m_size_index] + 1;
 				allocator_type a;
 				for (size_t i = 0; i < size; ++i) {
 					a.destroy(m_container + i);
@@ -208,7 +218,7 @@ namespace piranha
 					return false;
 				}
 				p_assert(bucket_index < bucket_size);
-				p_assert(it.m_vector_index < sizes[m_size_index]);
+				p_assert(it.m_vector_index < sizes[m_size_index] + 1);
 				bucket_type &bucket = m_container[it.m_vector_index];
 				p_assert(!bucket.f[bucket_index]);
 				bucket.f[bucket_index] = true;
