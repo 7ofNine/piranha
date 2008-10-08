@@ -23,7 +23,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
-#include <boost/integer_traits.hpp> // For integer limits.
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -49,8 +48,7 @@ namespace piranha
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	// TODO: isn't truncator's "accept" used here??
-	// TODO: caching, reordering (?), blocking, vector maybe, etc.
+	// NOTE: isn't truncator's "accept" used here?
 	class poisson_series_multiplier
 	{
 		public:
@@ -205,7 +203,7 @@ namespace piranha
 						}
 						);
 					}
-					/// Store flavours of the series into own vectors.
+					// Store flavours of the series into own vectors.
 					void cache_flavours() {
 						size_t i;
 						for (i = 0; i < ancestor::m_size1; ++i) {
@@ -282,7 +280,7 @@ namespace piranha
 							// Cache values.
 							cf_type1 *vc_res_cos = vc_res_pair->first, *vc_res_sin = vc_res_pair->second;
 							const char *f1 = m_f1, *f2 = m_f2;
-							// TODO: Does it make sense here to define a method for coefficients like:
+							// NOTE: Does it make sense here to define a method for coefficients like:
 							// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
 							// so that we can avoid copying stuff around here and elsewhere?
 							cf_type1 tmp_cf = get1::get(tc1[i]);
@@ -315,7 +313,7 @@ namespace piranha
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
-						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
+						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -323,16 +321,9 @@ namespace piranha
 						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
 						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max -
 							coded_ancestor::m_h_min + 1);
-						// For Poisson series vector coded we need twice the space given by n_codes, because of the
-						// sine-cosine split. Hence we must make an additional check to make sure that n_codes << 1
-						// won't overflow.
-						if (n_codes > (boost::integer_traits<size_t>::const_max >> 1)) {
-							__PDEBUG(std::cout << "The amount of memory required by vector coded cannot be represented "
-								"on this architecture.\n");
-							return false;
-						}
 						try {
-							vc.resize(n_codes << 1);
+							vc_cos.resize(n_codes);
+							vc_sin.resize(n_codes);
 						} catch (const std::bad_alloc &) {
 							__PDEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
 							return false;
@@ -348,8 +339,8 @@ namespace piranha
 						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
 						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
 						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						std::pair<cf_type1 *, cf_type1 *> res(&vc[0] - coded_ancestor::m_h_min,
-							&vc[0] + n_codes - coded_ancestor::m_h_min);
+						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - coded_ancestor::m_h_min,
+							&vc_sin[0] - coded_ancestor::m_h_min);
 						// Find out a suitable block size.
 						static const size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
