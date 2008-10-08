@@ -24,7 +24,6 @@
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <exception>
-#include <functional> // For std::equal_to.
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -69,6 +68,7 @@ namespace piranha
 					typedef typename term_type1::cf_type cf_type1;
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
+					// TODO: share in ancestor with poisson series multiplier?
 					class term_comparison
 					{
 						public:
@@ -275,8 +275,6 @@ namespace piranha
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
-						typedef CfGetter<cf_type1> get1;
-						typedef CfGetter<cf_type2> get2;
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:

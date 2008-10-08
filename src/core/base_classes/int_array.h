@@ -94,6 +94,12 @@ namespace piranha
 					const value_type_ &operator[](const size_t &n) const {
 						return m_ptr->operator[](n);
 					}
+					bool revlex_comparison(const reference_proxy &p) const {
+						return m_ptr->revlex_comparison(*p.m_ptr);
+					}
+					bool lex_comparison(const reference_proxy &p) const {
+						return m_ptr->lex_comparison(*p.m_ptr);
+					}
 				protected:
 					const Derived *m_ptr;
 			};

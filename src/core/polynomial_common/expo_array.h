@@ -97,12 +97,6 @@ namespace piranha
 						}
 						return m_norm;
 					}
-					bool revlex_comparison(const proxy &p) const {
-						return this->m_ptr->revlex_comparison(*p.m_ptr);
-					}
-					bool lex_comparison(const proxy &p) const {
-						return this->m_ptr->lex_comparison(*p.m_ptr);
-					}
 				private:
 					mutable bool	m_norm_cached;
 					mutable double	m_norm;
