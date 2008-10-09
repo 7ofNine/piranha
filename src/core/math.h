@@ -162,10 +162,20 @@ namespace piranha
 		}
 	}
 
-	/// Bessel function of the first kind, integer order.
+	/// Bessel function of the first kind, integer order, real double-precision argument.
 	inline double besselJ(const max_fast_int &order, const double &arg)
 	{
 		return boost::math::cyl_bessel_j(order, arg);
+	}
+
+	/// Bessel function of the first kind, integer order, complex double-precision argument.
+	inline std::complex<double> besselJ(const max_fast_int &order, const std::complex<double> &arg)
+	{
+		if (arg.imag() != 0) {
+			throw unsuitable("Only complex values with null imaginary part can be used as arguments "
+				"for besselJ.");
+		}
+		return std::complex<double>(boost::math::cyl_bessel_j(order, arg.real()));
 	}
 
 	/// Modified Bessel function of the first kind, integer order.

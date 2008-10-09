@@ -50,6 +50,13 @@ namespace piranha
 						multiplier = -1;
 					}
 				}
+				Derived retval;
+				if (derived_const_cast->is_single_cf()) {
+					typedef typename Derived::term_type term_type;
+					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order,args_tuple),
+						typename term_type::key_type()),args_tuple);
+					return retval;
+				}
 				// Get the expansion limit from the truncator.
 				size_t limit;
 				try {
@@ -60,7 +67,7 @@ namespace piranha
 						"Bessel function of the first kind.\nThe reported error is: ") + u.what());
 				}
 				// Now we buid the starting point of the power series expansion of Jn.
-				Derived retval(*derived_const_cast);
+				retval = *derived_const_cast;
 				retval.divide_by((max_fast_int)2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);

@@ -33,7 +33,12 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE(_Math)
 {
 	translate_exceptions();
-	def("besselJ", &besselJ, "Bessel function of the first kind of integer order.");
+	typedef std::complex<double> (*jn_complex)(const max_fast_int &, const std::complex<double> &);
+	typedef double (*jn_real)(const max_fast_int &, const double &);
+	def("besselJ", jn_real(&besselJ),
+		"Bessel function of the first kind of integer order and real double-precision argument.");
+	def("besselJ", jn_complex(&besselJ),
+		"Bessel function of the first kind of integer order and complex double-precision argument.");
 	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
