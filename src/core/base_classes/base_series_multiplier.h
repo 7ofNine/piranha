@@ -50,13 +50,11 @@ namespace piranha
 		private:
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
-			typedef typename Series1::term_proxy_type term_proxy_type1;
-			typedef typename Series2::term_proxy_type term_proxy_type2;
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 					m_size2(m_s2.length()), m_retval(retval),
-					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {}
+					m_terms1(m_s1.cache_pointers()),m_terms2(m_s2.cache_pointers()) {}
 			// Perform plain multiplication.
 			template <class GenericTruncator>
 			void perform_plain_multiplication(const GenericTruncator &trunc) {
@@ -64,10 +62,10 @@ namespace piranha
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
-						if (trunc.skip(m_terms1[i], m_terms2[j])) {
+						if (trunc.skip(*m_terms1[i], *m_terms2[j])) {
 							break;
 						}
-						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
+						term_type1::multiply(*m_terms1[i], *m_terms2[j], res, m_args_tuple);
 						insert_multiplication_result<mult_res>::run(res, m_retval, trunc, m_args_tuple);
 					}
 				}
@@ -83,9 +81,9 @@ namespace piranha
 			const size_t					m_size2;
 			// Reference to the result.
 			Series1							&m_retval;
-			// Vectors of proxies for the input terms.
-			std::vector<term_proxy_type1>	m_terms1;
-			std::vector<term_proxy_type2>	m_terms2;
+			// Vectors of pointers the input terms.
+			std::vector<term_type1 const *>	m_terms1;
+			std::vector<term_type2 const *>	m_terms2;
 	};
 }
 

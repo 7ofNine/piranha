@@ -39,11 +39,11 @@ namespace piranha
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		protected:
-			template <class ProxyTerm, class ArgsTuple>
-			static void jacobi_anger(const std::vector<ProxyTerm> &v,
-				const typename std::vector<ProxyTerm>::const_iterator &it_avoid, 
+			template <class Term, class ArgsTuple>
+			static void jacobi_anger(const std::vector<Term const *> &v,
+				const typename std::vector<Term const *>::const_iterator &it_avoid, 
 				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
-				typedef typename std::vector<ProxyTerm>::const_iterator const_iterator;
+				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				p_assert(retval.empty());
 				retval = std::complex<Derived>(static_cast<max_fast_int>(1), args_tuple);
 				if (v.empty()) {
@@ -67,7 +67,7 @@ namespace piranha
 				// straightforwardly.
 				size_t n;
 				try {
-					n = Derived::multiplier_type::truncator_type::power_series_limit(it->m_cf, args_tuple);
+					n = Derived::multiplier_type::truncator_type::power_series_limit((*it)->m_cf, args_tuple);
 				} catch (const base_exception &b) {
 					throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
 						"The reported error was:\n")+b.what());
@@ -75,7 +75,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real(it->m_cf.besselJ(0, args_tuple), args_tuple);
+					tmp_term.m_cf.real((*it)->m_cf.besselJ(0, args_tuple), args_tuple);
 					retval.insert(tmp_term, args_tuple);
 				}
 				const size_t w = args_tuple.template get<TrigPos>().size();
@@ -83,13 +83,13 @@ namespace piranha
 				std::complex<max_fast_int> cos_multiplier(0, 2);
 				for (size_t i = 1; i <= n; ++i) {
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real(it->m_cf.besselJ(static_cast<max_fast_int>(i), args_tuple), args_tuple);
-					it->m_key.upload_ints_to(tmp_trig_mults);
+					tmp_term.m_cf.real((*it)->m_cf.besselJ(static_cast<max_fast_int>(i), args_tuple), args_tuple);
+					(*it)->m_key.upload_ints_to(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
 					}
 					tmp_term.m_key.assign_int_vector(tmp_trig_mults);
-					switch (it->m_key.flavour()) {
+					switch ((*it)->m_key.flavour()) {
 					case true:
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
 						break;

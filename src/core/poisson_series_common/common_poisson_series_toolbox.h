@@ -49,19 +49,19 @@ namespace piranha
 		public:
 			ps_binomial_sorter(const ArgsTuple &) {}
 			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				const max_fast_int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
+			bool operator()(const Term *t1, const Term *t2) const {
+				const max_fast_int d1 = t1->m_cf.min_degree(), d2 = t2->m_cf.min_degree();
 				if (d1 == d2) {
 					// NOTICE: the idea is that for leading terms with equal
 					// min_degree we choose the ones that have
 					// unity trig vector, so that we increase the chance of
 					// being able to perform the expansion.
-					if (t1.m_key.is_unity()) {
+					if (t1->m_key.is_unity()) {
 						return true;
-					} else if (t2.m_key.is_unity()) {
+					} else if (t2->m_key.is_unity()) {
 						return false;
 					}
-					return (t1.m_key < t2.m_key);
+					return (t1->m_key < t2->m_key);
 				} else {
 					return (d1 < d2);
 				}
@@ -84,15 +84,14 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
-				typedef typename Derived::term_proxy_type term_proxy_type;
-				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
+				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				// Cache and sort the terms.
-				std::vector<term_proxy_type> cache(derived_const_cast->cache_proxies());
+				std::vector<term_type const *> cache(derived_const_cast->cache_pointers());
 				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
 				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
-				int_linear_term(get_int_linear_term<term_proxy_type, poly_cf_type>(cache,args_tuple));
+				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
 				jacang_ancestor::jacobi_anger(cache, int_linear_term.first, retval, args_tuple);
@@ -205,14 +204,14 @@ namespace piranha
 				return retval;
 			}
 		private:
-			template <class ProxyTerm, class PolyCf, class ArgsTuple>
-			std::pair<typename std::vector<ProxyTerm>::const_iterator, std::pair<std::vector<PolyCf>,
+			template <class Term, class PolyCf, class ArgsTuple>
+			std::pair<typename std::vector<Term const *>::const_iterator, std::pair<std::vector<PolyCf>,
 			std::vector<max_fast_int> > >
-			static get_int_linear_term(const std::vector<ProxyTerm> &v, const ArgsTuple &args_tuple) {
+			static get_int_linear_term(const std::vector<const Term *> &v, const ArgsTuple &args_tuple) {
 				p_static_check((boost::is_same<PolyCf,
 					typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
-				typedef typename std::vector<ProxyTerm>::const_iterator const_iterator;
+				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				const const_iterator it_f = v.end();
 				std::pair<const_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
 				retval.first = it_f;
@@ -222,9 +221,9 @@ namespace piranha
 				for (const_iterator it = v.begin(); it != it_f; ++it) {
 					// If the term's trigonometric part is unity, let's see if we can extract a
 					// linear combination of arguments from the corresponding polynomial.
-					if (it->m_key.is_unity()) {
+					if ((*it)->m_key.is_unity()) {
 						try {
-							it->m_cf.template get_int_linear_combination<1>(retval.second, args_tuple);
+							(*it)->m_cf.template get_int_linear_combination<1>(retval.second, args_tuple);
 						} catch (const unsuitable &) {
 							// If we are unable to extract a proper linear combination from the unity term, erase retval
 							// and break out.

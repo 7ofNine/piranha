@@ -29,7 +29,6 @@
 
 #include "../config.h" // For (un)likely
 #include "../exceptions.h"
-#include "../is_sorted.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../shared_args.h"

@@ -145,7 +145,8 @@ namespace piranha
 				psym_p tmp(psyms::get_pointer(p));
 				iterator it = find_argument(tmp);
 				if (it == m_expo_limits.end()) {
-					throw(not_existing(std::string("Symbol ") + "\"" + tmp->name() + "\" does not have an exponent limit set."));
+					throw(not_existing(std::string("Symbol ") + "\"" + tmp->name() +
+						"\" does not have an exponent limit set."));
 				} else {
 					m_expo_limits.erase(it);
 				}
@@ -191,9 +192,9 @@ namespace piranha
 							single_expo_comparison(const size_t &pos, const args_tuple_type &args_tuple):
 									m_pos(pos), m_args_tuple(args_tuple) {}
 							template <class Term>
-							bool operator()(const Term &t1, const Term &t2) const {
-								return t1.template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple) <
-									   t2.template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple);
+							bool operator()(const Term *t1, const Term *t2) const {
+								return t1->template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple) <
+									   t2->template get<expo_term_pos>().min_expo_of(m_pos, m_args_tuple);
 							}
 						private:
 							const size_t			&m_pos;

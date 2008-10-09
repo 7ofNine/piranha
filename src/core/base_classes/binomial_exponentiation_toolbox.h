@@ -48,33 +48,33 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
 				return generic_binomial_power<power_op>(
-					get_sorted_proxy_vector<Derived>(args_tuple),y,args_tuple);
+					get_sorted_pointer_vector<Derived>(args_tuple),y,args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived negative_integer_power(const max_fast_int &y, const ArgsTuple &args_tuple) const {
 				return generic_binomial_power<power_op>(
-					get_sorted_proxy_vector<Derived>(args_tuple),y, args_tuple);
+					get_sorted_pointer_vector<Derived>(args_tuple),y, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
 				p_assert(n != 0 && n != 1);
 				return generic_binomial_power<root_op>(
-					get_sorted_proxy_vector<Derived>(args_tuple), n, args_tuple);
+					get_sorted_pointer_vector<Derived>(args_tuple), n, args_tuple);
 			}
 		private:
-			template <op_type Op, class ProxyTerm, class Number, class ArgsTuple>
-			static Derived generic_binomial_power(const std::vector<ProxyTerm> &v,
+			template <op_type Op, class Term, class Number, class ArgsTuple>
+			static Derived generic_binomial_power(const std::vector<Term const *> &v,
 				const Number &y, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already
 				// been taken care of in base_series::pow.
 				p_assert(v.size() > 1);
-				term_type A(v[0]);
+				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
 				Derived XoverA;
 				const size_t size = v.size();
 				for (size_t i = 1; i < size; ++i) {
-					XoverA.insert(term_type(v[i]),args_tuple);
+					XoverA.insert(term_type(*v[i]),args_tuple);
 				}
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
 				term_type tmp_term(A.m_cf.pow((max_fast_int)(-1), args_tuple), A.m_key.pow(max_fast_int(-1), args_tuple));
@@ -138,9 +138,9 @@ namespace piranha
 				return retval;
 			}
 			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_proxy_type>
-			get_sorted_proxy_vector(const ArgsTuple &args_tuple) const {
-				std::vector<typename Derived::term_proxy_type> retval(derived_const_cast->cache_proxies());
+			std::vector<typename Series::term_type const *>
+			get_sorted_pointer_vector(const ArgsTuple &args_tuple) const {
+				std::vector<typename Derived::term_type const *> retval(derived_const_cast->cache_pointers());
 				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;
 			}

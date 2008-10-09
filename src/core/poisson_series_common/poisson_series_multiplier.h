@@ -74,8 +74,8 @@ namespace piranha
 					{
 						public:
 							template <class Term>
-							bool operator()(const Term &t1, const Term &t2) const {
-								return (t1.m_key.revlex_comparison(t2.m_key));
+							bool operator()(const Term *t1, const Term *t2) const {
+								return (t1->m_key.revlex_comparison(t2->m_key));
 							}
 					};
 				public:
@@ -110,8 +110,8 @@ namespace piranha
 					template <class Cf>
 					struct cf_from_term {
 						template <class Term>
-						static const Cf &get(const Term &t) {
-							return t.m_cf;
+						static const Cf &get(const Term *t) {
+							return t->m_cf;
 						}
 					};
 					template <class Cf>
@@ -129,8 +129,8 @@ namespace piranha
 							coded_ancestor::code_keys();
 							// We also need flavours here.
 							cache_flavours();
-							const typename Series1::term_proxy_type *t1 = &this->m_terms1[0];
-							const typename Series2::term_proxy_type *t2 = &this->m_terms2[0];
+							const typename Series1::term_type **t1 = &this->m_terms1[0];
+							const typename Series2::term_type **t2 = &this->m_terms2[0];
 							std::vector<cf_type1> cf1_cache;
 							std::vector<cf_type2> cf2_cache;
 							// NOTICE: this check is really compile-time, so we could probably avoid
@@ -143,10 +143,10 @@ namespace piranha
 								cf1_cache.reserve(size1);
 								cf2_cache.reserve(size2);
 								for (size_t i = 0; i < size1; ++i) {
-									cf1_cache.push_back(t1[i].m_cf);
+									cf1_cache.push_back(t1[i]->m_cf);
 								}
 								for (size_t i = 0; i < size2; ++i) {
-									cf2_cache.push_back(t2[i].m_cf);
+									cf2_cache.push_back(t2[i]->m_cf);
 								}
 							}
 							bool vec_res;
@@ -207,16 +207,16 @@ namespace piranha
 					void cache_flavours() {
 						size_t i;
 						for (i = 0; i < ancestor::m_size1; ++i) {
-							m_flavours1[i] = ancestor::m_terms1[i].m_key.flavour();
+							m_flavours1[i] = ancestor::m_terms1[i]->m_key.flavour();
 						}
 						for (i = 0; i < ancestor::m_size2; ++i) {
-							m_flavours2[i] = ancestor::m_terms2[i].m_key.flavour();
+							m_flavours2[i] = ancestor::m_terms2[i]->m_key.flavour();
 						}
 					}
 					template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
 					static void blocked_multiplication(const size_t &size1, const size_t &size2,
-						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 *t1, const Term2 *t2,
+						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
 						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
 						const ArgsTuple &args_tuple) {
 						p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
@@ -270,11 +270,11 @@ namespace piranha
 						bool run(
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
 							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res_pair, const ArgsTuple &args_tuple) {
-							typedef CfGetter<typename cf_type1::proxy> get1;
-							typedef CfGetter<typename cf_type2::proxy> get2;
-							if (trunc.skip(t1[i], t2[j])) {
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
+							if (trunc.skip(*t1[i], *t2[j])) {
 								return false;
 							}
 							// Cache values.
@@ -312,7 +312,7 @@ namespace piranha
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
@@ -399,12 +399,12 @@ namespace piranha
 						bool run(
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-							const Term1 *t1, const Term2 *t2, const Ckey *ck1,
+							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
 							const Ckey *ck2, const Trunc &trunc, HashSetPair *cms_pair, const ArgsTuple &args_tuple) {
-							typedef CfGetter<typename cf_type1::proxy> get1;
-							typedef CfGetter<typename cf_type2::proxy> get2;
+							typedef CfGetter<cf_type1> get1;
+							typedef CfGetter<cf_type2> get2;
 							typedef typename HashSetPair::first_type::iterator c_iterator;
-							if (trunc.skip(t1[i], t2[j])) {
+							if (trunc.skip(*t1[i], *t2[j])) {
 								return false;
 							}
 							// Cache values.
@@ -465,7 +465,7 @@ namespace piranha
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 *t1, const Term2 *t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
 						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
