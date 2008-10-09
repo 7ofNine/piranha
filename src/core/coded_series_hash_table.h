@@ -46,10 +46,10 @@ namespace piranha
 					bool	f[N];
 			};
 			// Configuration options.
-			static const size_t bucket_size		= 4;
+			static const size_t bucket_size		= 6;
 			static const size_t min_size_index	= 0;
 			// Number of extra buckets.
-			static const size_t neb				= 128;
+			static const size_t neb				= 20;
 			// Configuration options end here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
