@@ -101,8 +101,9 @@ namespace piranha
 				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
-						if (this->m_terms1.size() < 10 && this->m_terms2.size() < 10) {
-							__PDEBUG(std::cout << "Small series, going for plain poisson series multiplication\n");
+						if (!is_lightweight<cf_type1>::value || (this->m_terms1.size() < 10 && this->m_terms2.size() < 10)) {
+							__PDEBUG(std::cout << "Heavy coefficient or small series, "
+								"going for plain poisson series multiplication\n");
 							this->perform_plain_multiplication(trunc);
 						} else if (this->m_cr_is_viable) {
 							this->code_keys();
@@ -325,21 +326,22 @@ namespace piranha
 					struct hash_multiplier {
 						hash_multiplier(const char *f1, const char *f2):m_f1(f1),m_f2(f2) {}
 						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
-							class Term1, class Term2, class Ckey, class Trunc, class HashSetPair>
+							class Term1, class Term2, class Ckey, class Trunc, class HashSet>
 						bool run(
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, HashSetPair *cms_pair, const ArgsTuple &args_tuple) {
+							const Ckey *ck2, const Trunc &trunc, std::pair<HashSet &,HashSet &> *cms_pair,
+							const ArgsTuple &args_tuple) {
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
-							typedef typename HashSetPair::first_type::iterator c_iterator;
+							typedef typename HashSet::iterator c_iterator;
 							if (trunc.skip(*t1[i], *t2[j])) {
 								return false;
 							}
 							// Cache values.
 							const char *f1 = m_f1, *f2 = m_f2;
-							typename HashSetPair::first_type cms_cos = cms_pair->first, cms_sin = cms_pair->second;
+							HashSet &cms_cos = cms_pair->first, &cms_sin = cms_pair->second;
 							// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
 							// and cfs instead of terms, generating only one coefficient and change its sign later
 							// if needed - after insertion.
@@ -402,7 +404,8 @@ namespace piranha
 						// Let's find a sensible size hint.
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
-						std::pair<csht,csht> res(size_hint,size_hint);
+						csht cms_cos(size_hint), cms_sin(size_hint);
+						std::pair<csht &, csht &> res(cms_cos,cms_sin);
 						const size_t size1 = this->m_size1, size2 = this->m_size2;
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
@@ -415,7 +418,6 @@ namespace piranha
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,hm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
-						const csht &cms_cos = res.first, &cms_sin = res.second;
 						this->m_retval.rehash(static_cast<size_t>((cms_cos.size() + cms_sin.size()) /
 							settings::load_factor()) + 1);
 						term_type1 tmp_term;

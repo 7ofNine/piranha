@@ -61,7 +61,7 @@ namespace piranha
 			 * Uses Boost's math toolkit.
 			 */
 			template <class ArgsTuple>
-			double_cf besselJ(int n, const ArgsTuple &) const {
+			double_cf besselJ(const max_fast_int &n, const ArgsTuple &) const {
 				double_cf retval;
 				retval.m_value = piranha::besselJ(n, m_value);
 				return retval;
@@ -112,6 +112,12 @@ namespace std
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				return pow_helper(y);
+			}
+			template <class ArgsTuple>
+			complex besselJ(const piranha::max_fast_int &n, const ArgsTuple &) {
+				complex retval;
+				retval.m_value = piranha::besselJ(n,m_value);
+				return retval;
 			}
 		private:
 			template <class Number>
