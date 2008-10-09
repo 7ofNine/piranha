@@ -194,56 +194,6 @@ namespace piranha
 							m_flavours2[i] = ancestor::m_terms2[i]->m_key.flavour();
 						}
 					}
-					template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
-						class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
-					static void blocked_multiplication(const size_t &size1, const size_t &size2,
-						const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
-						const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
-						const ArgsTuple &args_tuple) {
-						p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
-						const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
-						for (size_t n1 = 0; n1 < nblocks1; ++n1) {
-							const size_t i_start = n1 * block_size, i_end = i_start + block_size;
-							// regulars1 * regulars2
-							for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-								const size_t j_start = n2 * block_size, j_end = j_start + block_size;
-								for (size_t i = i_start; i < i_end; ++i) {
-									for (size_t j = j_start; j < j_end; ++j) {
-										if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
-											break;
-										}
-									}
-								}
-							}
-							// regulars1 * rem2
-							for (size_t i = i_start; i < i_end; ++i) {
-								for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
-										break;
-									}
-								}
-							}
-						}
-						// rem1 * regulars2
-						for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-							const size_t j_start = n2 * block_size, j_end = j_start + block_size;
-							for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-								for (size_t j = j_start; j < j_end; ++j) {
-									if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
-										break;
-									}
-								}
-							}
-						}
-						// rem1 * rem2.
-						for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-							for (size_t j = nblocks2 * block_size; j < size2; ++j) {
-								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
-									break;
-								}
-							}
-						}
-					}
 					struct vector_multiplier {
 						vector_multiplier(const char *f1, const char *f2):m_f1(f1),m_f2(f2) {}
 						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
@@ -328,7 +278,7 @@ namespace piranha
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
 						vector_multiplier vm(&m_flavours1[0],&m_flavours2[0]);
-						blocked_multiplication<block_size,CfGetter>(
+						ancestor::template blocked_multiplication<block_size,CfGetter>(
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,vm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done multiplying\n");
@@ -462,7 +412,7 @@ namespace piranha
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						hash_multiplier<cterm> hm(&m_flavours1[0],&m_flavours2[0]);
-						blocked_multiplication<block_size,CfGetter>(
+						ancestor::template blocked_multiplication<block_size,CfGetter>(
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,hm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
