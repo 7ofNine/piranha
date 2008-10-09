@@ -42,8 +42,8 @@ namespace piranha
 		public:
 			cf_norm_comparison_reverse(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
 			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				return t1.m_cf.norm(m_args_tuple) < t2.m_cf.norm(m_args_tuple);
+			bool operator()(const Term *t1, const Term *t2) const {
+				return t1->m_cf.norm(m_args_tuple) < t2->m_cf.norm(m_args_tuple);
 			}
 		private:
 			const ArgsTuple &m_args_tuple;
@@ -73,8 +73,8 @@ namespace piranha
 		public:
 			term_key_degree_comparison(const ArgsTuple &) {}
 			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				return t1.m_key.degree() < t2.m_key.degree();
+			bool operator()(const Term *t1, const Term *t2) const {
+				return t1->m_key.degree() < t2->m_key.degree();
 			}
 	};
 }

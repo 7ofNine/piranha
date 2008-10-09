@@ -109,11 +109,6 @@ namespace piranha
 			template <class Derived2, class ArgsTuple>
 			explicit base_term(const Derived2 &t, const ArgsTuple &args_tuple):
 					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
-			// Same as above, but without the args_tuple parameter. Intended to be used with proxies
-			// for coefficients and keys.
-			template <class Derived2>
-			explicit base_term(const Derived2 &t):
-					m_cf(t.m_cf), m_key(t.m_key) {}
 			/// Ctor from coefficient - key pair.
 			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			template <int N>
@@ -236,15 +231,6 @@ namespace piranha
 	{
 		return t.m_key.hash_value();
 	}
-
-// Rebinder for term of type "term_name".
-#define PIRANHA_TERM_REBINDER(term_name) \
-	template <class OtherCf, class OtherKey> \
-	class rebind \
-	{ \
-		public: \
-			typedef term_name<OtherCf,OtherKey,Separator,Allocator> type; \
-	};
 
 #define PIRANHA_TERM_CTORS(term_name) \
 	explicit term_name(): ancestor() {} \

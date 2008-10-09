@@ -18,6 +18,8 @@ ADD_EXECUTABLE(sub_tests sub_tests.cpp)
 TARGET_LINK_LIBRARIES(sub_tests ${MANDATORY_LIBRARIES} piranha_static)
 ADD_EXECUTABLE(sf_tests_01 sf_tests_01.cpp)
 TARGET_LINK_LIBRARIES(sf_tests_01 ${MANDATORY_LIBRARIES} piranha_static)
+ADD_EXECUTABLE(dfs_mult_01 dfs_mult_01.cpp)
+TARGET_LINK_LIBRARIES(dfs_mult_01 ${MANDATORY_LIBRARIES} piranha_static)
 
 # Add tests.
 ADD_TEST(pearce1 pearce_sparse_poly_test1)
@@ -25,3 +27,4 @@ ADD_TEST(binomial_20000 binomial_20000)
 ADD_TEST(celmec_test_01 celmec_test_01)
 ADD_TEST(sub_tests sub_tests)
 ADD_TEST(sf_tests_01 sf_tests_01)
+ADD_TEST(dfs_mult_01 dfs_mult_01)

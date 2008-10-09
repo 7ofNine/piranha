@@ -40,8 +40,8 @@ namespace piranha
 		public:
 			fs_binomial_sorter(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
 			template <class Term>
-			bool operator()(const Term &t1, const Term &t2) const {
-				const double n1(t1.m_cf.norm(m_args_tuple)), n2(t2.m_cf.norm(m_args_tuple));
+			bool operator()(const Term *t1, const Term *t2) const {
+				const double n1(t1->m_cf.norm(m_args_tuple)), n2(t2->m_cf.norm(m_args_tuple));
 				if (n1 != n2) {
 					return (n1 > n2);
 				} else {
@@ -49,12 +49,12 @@ namespace piranha
 					// norm we choose the ones that have
 					// unity trig vector, so that we increase the chance of
 					// being able to perform the expansion.
-					if (t1.m_key.is_unity()) {
+					if (t1->m_key.is_unity()) {
 						return true;
-					} else if (t2.m_key.is_unity()) {
+					} else if (t2->m_key.is_unity()) {
 						return false;
 					}
-					return (t1.m_key < t2.m_key);
+					return (t1->m_key < t2->m_key);
 				}
 			}
 		private:
@@ -80,17 +80,16 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				typedef typename Derived::term_type term_type;
-				typedef typename Derived::term_proxy_type term_proxy_type;
-				typedef typename std::vector<term_proxy_type>::const_iterator const_iterator;
+				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
 													m_cf.ei(args_tuple), key_type()),
 								  args_tuple);
 				} else {
-					// Cache and sort the term proxies list. Sorting is reverse (small --> big norms) because
+					// Cache and sort the term pointers list. Sorting is reverse (small --> big norms) because
 					// in jacang is better to do the small terms first.
-					std::vector<term_proxy_type> cache(derived_const_cast->cache_proxies());
+					std::vector<term_type const *> cache(derived_const_cast->cache_pointers());
 					std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 					// Let's find out if there is a constant term. If there is one, it will be skipped
 					// and multiplied by the result of the Jacobi-Anger expansion of the other terms later.
@@ -101,7 +100,7 @@ namespace piranha
 					const_iterator it = cache.begin();
 					const const_iterator it_f = cache.end();
 					for (; it != it_f; ++it) {
-						if (it->m_key.is_unity()) {
+						if ((*it)->m_key.is_unity()) {
 							break;
 						}
 					}
@@ -110,7 +109,7 @@ namespace piranha
 					if (it != it_f) {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
-						tmp.insert(complex_term_type(it->m_cf.ei(args_tuple),key_type()),args_tuple);
+						tmp.insert(complex_term_type((*it)->m_cf.ei(args_tuple),key_type()),args_tuple);
 						retval.mult_by(tmp,args_tuple);
 					}
 				}

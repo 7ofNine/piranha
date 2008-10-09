@@ -99,9 +99,9 @@ namespace piranha
 					{
 						public:
 							template <class Term>
-							bool operator()(const Term &t1, const Term &t2) const {
-								return t1.template get<expo_term_pos>().min_degree() <
-									   t2.template get<expo_term_pos>().min_degree();
+							bool operator()(const Term *t1, const Term *t2) const {
+								return t1->template get<expo_term_pos>().min_degree() <
+									   t2->template get<expo_term_pos>().min_degree();
 							}
 					};
 				public:

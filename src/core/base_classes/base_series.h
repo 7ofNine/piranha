@@ -62,8 +62,6 @@ namespace piranha
 				container_type;
 		public:
 			typedef term_type_ term_type;
-			typedef typename term_type::template rebind < typename cf_type::proxy,
-			typename key_type::proxy >::type term_proxy_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			typedef typename container_type::iterator iterator;
 			typedef typename container_type::const_iterator const_iterator;
@@ -125,7 +123,7 @@ namespace piranha
 			Derived partial(max_fast_int, const PosTuple &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
-			std::vector<term_proxy_type> cache_proxies() const;
+			std::vector<term_type const *> cache_pointers() const;
 		protected:
 			static const char separator = Separator;
 			// Check that the separators do not conflict.

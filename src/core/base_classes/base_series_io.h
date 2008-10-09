@@ -139,14 +139,14 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline std::vector<typename base_series<__PIRANHA_BASE_SERIES_TP>::term_proxy_type>
-	base_series<__PIRANHA_BASE_SERIES_TP>::cache_proxies() const
+	inline std::vector<typename base_series<__PIRANHA_BASE_SERIES_TP>::term_type const *>
+	base_series<__PIRANHA_BASE_SERIES_TP>::cache_pointers() const
 	{
-		std::vector<term_proxy_type> retval;
+		std::vector<term_type const *> retval;
 		retval.reserve(length());
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval.push_back(term_proxy_type(*it));
+			retval.push_back(&(*it));
 		}
 		return retval;
 	}

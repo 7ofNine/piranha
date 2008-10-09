@@ -28,7 +28,6 @@
 #include <vector>
 
 #include "../p_assert.h"
-#include "../proxies.h"
 #include "../settings.h"
 #include "base_series_multiplier.h"
 

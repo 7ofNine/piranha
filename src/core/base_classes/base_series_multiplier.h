@@ -47,16 +47,85 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
+			class key_revlex_comparison
+			{
+				public:
+					template <class Term>
+					bool operator()(const Term *t1, const Term *t2) const {
+						return (t1->m_key.revlex_comparison(t2->m_key));
+					}
+			};
+			template <class Cf>
+			struct cf_from_term {
+				template <class Term>
+				static const Cf &get(const Term *t) {
+					return t->m_cf;
+				}
+			};
+			template <class Cf>
+			struct cf_direct {
+				static const Cf &get(const Cf &c) {
+					return c;
+				}
+			};
+			template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+				class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
+			static void blocked_multiplication(const size_t &size1, const size_t &size2,
+				const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
+				const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
+				const ArgsTuple &args_tuple) {
+				p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
+				const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+				for (size_t n1 = 0; n1 < nblocks1; ++n1) {
+					const size_t i_start = n1 * block_size, i_end = i_start + block_size;
+					// regulars1 * regulars2
+					for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+						const size_t j_start = n2 * block_size, j_end = j_start + block_size;
+						for (size_t i = i_start; i < i_end; ++i) {
+							for (size_t j = j_start; j < j_end; ++j) {
+								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+									break;
+								}
+							}
+						}
+					}
+					// regulars1 * rem2
+					for (size_t i = i_start; i < i_end; ++i) {
+						for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+								break;
+							}
+						}
+					}
+				}
+				// rem1 * regulars2
+				for (size_t n2 = 0; n2 < nblocks2; ++n2) {
+					const size_t j_start = n2 * block_size, j_end = j_start + block_size;
+					for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+						for (size_t j = j_start; j < j_end; ++j) {
+							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+								break;
+							}
+						}
+					}
+				}
+				// rem1 * rem2.
+				for (size_t i = nblocks1 * block_size; i < size1; ++i) {
+					for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+						if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+							break;
+						}
+					}
+				}
+			}
 		private:
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
-			typedef typename Series1::term_proxy_type term_proxy_type1;
-			typedef typename Series2::term_proxy_type term_proxy_type2;
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 					m_size2(m_s2.length()), m_retval(retval),
-					m_terms1(m_s1.cache_proxies()),m_terms2(m_s2.cache_proxies()) {}
+					m_terms1(m_s1.cache_pointers()),m_terms2(m_s2.cache_pointers()) {}
 			// Perform plain multiplication.
 			template <class GenericTruncator>
 			void perform_plain_multiplication(const GenericTruncator &trunc) {
@@ -64,10 +133,10 @@ namespace piranha
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
-						if (trunc.skip(m_terms1[i], m_terms2[j])) {
+						if (trunc.skip(*m_terms1[i], *m_terms2[j])) {
 							break;
 						}
-						term_type1::multiply(m_terms1[i], m_terms2[j], res, m_args_tuple);
+						term_type1::multiply(*m_terms1[i], *m_terms2[j], res, m_args_tuple);
 						insert_multiplication_result<mult_res>::run(res, m_retval, trunc, m_args_tuple);
 					}
 				}
@@ -83,9 +152,9 @@ namespace piranha
 			const size_t					m_size2;
 			// Reference to the result.
 			Series1							&m_retval;
-			// Vectors of proxies for the input terms.
-			std::vector<term_proxy_type1>	m_terms1;
-			std::vector<term_proxy_type2>	m_terms2;
+			// Vectors of pointers the input terms.
+			std::vector<term_type1 const *>	m_terms1;
+			std::vector<term_type2 const *>	m_terms2;
 	};
 }
 

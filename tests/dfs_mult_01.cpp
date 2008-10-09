@@ -18,30 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CF_SERIES_MATH_H
-#define PIRANHA_CF_SERIES_MATH_H
+#include <iostream>
 
-#include "../integer_typedefs.h"
+#include "../src/manipulators/dfs.h"
 
-namespace piranha
+using namespace piranha;
+using namespace piranha::manipulators;
+
+typedef dfs stype;
+
+// Double-precision fs multiplication test.
+
+int main()
 {
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
-	{
-		// TODO: improve performance on this.
-		typedef typename Derived::const_iterator const_iterator;
-		typedef typename Derived::term_type term_type;
-		Derived retval;
-		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-			term_type term(*it);
-			term.m_cf.invert_sign(args_tuple);
-			// No need to check, we are merging terms from this series.
-			retval.template insert<false, true>(term, args_tuple);
-		}
-		derived_cast->swap_terms(retval);
-	}
+	settings::debug(true);
+	stype elp3("elp3.dfs");
+	elp3 *= elp3;
+	std::cout << (elp3*elp3).length() << std::endl;
+	return 0;
 }
-
-#endif

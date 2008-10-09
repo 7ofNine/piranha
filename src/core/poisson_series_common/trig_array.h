@@ -106,23 +106,6 @@ namespace piranha
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
-			class proxy: public ancestor::reference_proxy
-			{
-					typedef typename ancestor::reference_proxy proxy_ancestor;
-					friend class trig_array;
-				public:
-					proxy(const trig_array &t): proxy_ancestor(t) {}
-					// These are trig_array specific.
-					bool flavour() const {
-						return proxy_ancestor::m_ptr->flavour();
-					}
-					void multiply(const proxy &t2, trig_array &ret1, trig_array &ret2) const {
-						proxy_ancestor::m_ptr->multiply(t2, ret1, ret2);
-					}
-					bool operator<(const proxy &t2) const {
-						return proxy_ancestor::m_ptr->operator<(*t2.m_ptr);
-					}
-			};
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}
@@ -132,9 +115,6 @@ namespace piranha
 					trig_commons::trig_array_commons(s) {}
 			template <class ArgsTuple>
 			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
-			explicit trig_array(const proxy &p) {
-				*this = *p.m_ptr;
-			}
 			template <int Pos2>
 			explicit trig_array(const trig_array<Bits,Pos2,Allocator> &ta): ancestor::int_array(ta) {}
 			// Probing.

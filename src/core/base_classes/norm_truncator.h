@@ -26,7 +26,6 @@
 #include <iostream>
 
 #include "../config.h"
-#include "../is_sorted.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../none.h"
@@ -104,9 +103,9 @@ namespace piranha
 						public:
 							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
 							template <class Term>
-							bool operator()(const Term &t1, const Term &t2) const {
-								return (t1.m_cf.norm(m_args_tuple) * t1.m_key.norm(m_args_tuple) >
-										t2.m_cf.norm(m_args_tuple) * t2.m_key.norm(m_args_tuple));
+							bool operator()(const Term *t1, const Term *t2) const {
+								return (t1->m_cf.norm(m_args_tuple) * t1->m_key.norm(m_args_tuple) >
+										t2->m_cf.norm(m_args_tuple) * t2->m_key.norm(m_args_tuple));
 							}
 						private:
 							const ArgsTuple	&m_args_tuple;
@@ -140,18 +139,8 @@ namespace piranha
 					void init() {
 						if (is_effective()) {
 							const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
-							if (!is_sorted(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp)) {
-								__PDEBUG(std::cout << "Series1 is not sorted according to norm. Will sort\n");
-								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
-							} else {
-								__PDEBUG(std::cout << "Series1 is sorted according to norm.");
-							}
-							if (!is_sorted(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp)) {
-								__PDEBUG(std::cout << "Series2 is not sorted according to norm. Will sort\n");
-								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
-							} else {
-								__PDEBUG(std::cout << "Series2 is sorted according to norm.");
-							}
+							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
+							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
 						}
 					}
 				private:
