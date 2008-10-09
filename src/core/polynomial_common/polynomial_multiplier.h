@@ -101,8 +101,8 @@ namespace piranha
 				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
-						if (this->m_terms1.size() < 10 && this->m_terms2.size() < 10) {
-							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
+						if (!is_lightweight<cf_type1>::value || (this->m_terms1.size() < 10 && this->m_terms2.size() < 10)) {
+							__PDEBUG(std::cout << "Heavy coefficient series, going for plain polynomial multiplication\n");
 							this->perform_plain_multiplication(trunc);
 						} else if (this->m_cr_is_viable) {
 							this->code_keys();
