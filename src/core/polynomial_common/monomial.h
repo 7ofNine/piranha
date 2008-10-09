@@ -34,7 +34,6 @@ namespace piranha
 			// Alias for the ancestor.
 			typedef base_term<Cf, Key, Separator, Allocator, monomial> ancestor;
 		public:
-			PIRANHA_TERM_REBINDER(monomial);
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for expo type.

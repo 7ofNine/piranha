@@ -38,58 +38,7 @@ namespace piranha
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	class common_polynomial_cf_toolbox: public common_polynomial_toolbox<Derived>
 	{
-			typedef typename cf_series<Derived>::template reference_proxy<Derived> proxy_ancestor;
 		public:
-			class proxy: public proxy_ancestor
-			{
-				public:
-					proxy(const Derived &s): proxy_ancestor(s), m_min_expos_cached(false),m_norm_cached(false) {
-						m_min_degree = proxy_ancestor::m_ptr->min_degree();
-					}
-					template <class ArgsTuple>
-					piranha::max_fast_int min_expo_of(const size_t &n, const ArgsTuple &args_tuple) const {
-						if (!m_min_expos_cached) {
-							m_min_expos = proxy_ancestor::m_ptr->min_exponents(args_tuple);
-							m_min_expos_cached = true;
-						}
-						if (n >= m_min_expos.size()) {
-							return 0;
-						} else {
-							return m_min_expos[n];
-						}
-					}
-					const piranha::max_fast_int &min_degree() const {
-						return m_min_degree;
-					}
-					template <class ArgsTuple>
-					const double &norm(const ArgsTuple &args_tuple) const {
-						if (!m_norm_cached) {
-							m_norm = proxy_ancestor::m_ptr->norm(args_tuple);
-							m_norm_cached = true;
-						}
-						return m_norm;
-					}
-					template <int TargetPos, class Cf, class ArgsTuple>
-					void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
-											const ArgsTuple &args_tuple) const {
-						proxy_ancestor::m_ptr->template get_int_linear_combination<TargetPos>(res,args_tuple);
-					}
-					template <class ArgsTuple>
-					std::vector<max_fast_int> min_exponents(const ArgsTuple &args_tuple) const {
-						return proxy_ancestor::m_ptr->min_exponents(args_tuple);
-					}
-					template <class ArgsTuple>
-					Derived besselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
-						return proxy_ancestor::m_ptr->besselJ(order,args_tuple);
-					}
-					static const int expo_args_position = Derived::expo_args_position;
-				private:
-					mutable bool								m_min_expos_cached;
-					mutable bool								m_norm_cached;
-					mutable std::vector<piranha::max_fast_int>	m_min_expos;
-					piranha::max_fast_int						m_min_degree;
-					mutable double								m_norm;
-			};
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			template <int TargetPos, class Cf, class ArgsTuple>
 			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,

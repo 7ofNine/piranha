@@ -44,22 +44,6 @@ namespace piranha
 	class cf_series
 	{
 		public:
-			// Proxy implementation to be refined in derived class.
-			// Templated this way to cope with complex-by-real multiplication.
-			template <class Series>
-			class reference_proxy
-			{
-				public:
-					reference_proxy(const Series &d): m_ptr(&d) {}
-					const Series &get_const_reference() const {
-						return *m_ptr;
-					}
-					bool empty() const {
-						return m_ptr->empty();
-					}
-				protected:
-					const Series *m_ptr;
-			};
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
 				typedef typename Derived::term_type::cf_type::
@@ -89,9 +73,6 @@ namespace piranha
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
 			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, const SubSeries &, SubCaches &, const ArgsTuple &) const;
-			// Interaction with proxy.
-			template <class Series, class ArgsTuple>
-			Derived &mult_by(const reference_proxy<Series> &, const ArgsTuple &);
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);
@@ -115,13 +96,6 @@ namespace piranha
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
 		base_ancestor::construct_from_number(x,a); \
-	} \
-	series_name(const typename common_ancestor::proxy &p) { \
-		*this = p.get_const_reference(); \
-	} \
-	series_name &operator=(const typename common_ancestor::proxy &p) { \
-		*this = p.get_const_reference(); \
-		return *this; \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \

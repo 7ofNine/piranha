@@ -65,44 +65,6 @@ namespace piranha
 			typedef uint8 size_type_;
 			static const size_type_ pack_capacity = sizeof(packed_type) / sizeof(value_type_);
 			static const size_type_ pack_shift = lg<pack_capacity>::value;
-		protected:
-			class reference_proxy
-			{
-				public:
-					reference_proxy(const Derived &d): m_ptr(&d) {}
-					template <class Vector>
-					void upload_ints_to(Vector &v) const {
-						m_ptr->upload_ints_to(v);
-					}
-					void test_min_max_ints(std::vector<std::pair<max_fast_int, max_fast_int> > &v) const {
-						m_ptr->test_min_max_ints(v);
-					}
-					template <class CodingVector, class ArgsTuple>
-					max_fast_int code(const CodingVector &v, const ArgsTuple &a) const {
-						return m_ptr->code(v, a);
-					}
-					size_t size() const {
-						return m_ptr->size();
-					}
-					bool is_unity() const {
-						return m_ptr->is_unity();
-					}
-					template <class ArgsTuple>
-					double norm(const ArgsTuple &args_tuple) const {
-						return m_ptr->norm(args_tuple);
-					}
-					const value_type_ &operator[](const size_t &n) const {
-						return m_ptr->operator[](n);
-					}
-					bool revlex_comparison(const reference_proxy &p) const {
-						return m_ptr->revlex_comparison(*p.m_ptr);
-					}
-					bool lex_comparison(const reference_proxy &p) const {
-						return m_ptr->lex_comparison(*p.m_ptr);
-					}
-				protected:
-					const Derived *m_ptr;
-			};
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
@@ -113,8 +75,6 @@ namespace piranha
 			typedef size_type_ size_type;
 			static const int position = Pos;
 			static const char separator = ';';
-			// Default implementation of proxy type.
-			typedef Derived proxy;
 			/// Default ctor.
 			/**
 			 * Constructs an empty array.

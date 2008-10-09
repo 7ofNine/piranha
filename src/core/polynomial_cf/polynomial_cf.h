@@ -67,8 +67,6 @@ namespace piranha
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
 		public:
-			using POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
-			using POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using common_ancestor::norm;
 			// Needed typedefs.
 			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
@@ -121,7 +119,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::subtract;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;

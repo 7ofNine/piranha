@@ -67,40 +67,6 @@ namespace piranha
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
-			class proxy: public ancestor::reference_proxy
-			{
-					// TODO: replace proxy_ancestor:: calls with this->.
-					friend class expo_array;
-					typedef typename ancestor::reference_proxy proxy_ancestor;
-				public:
-					proxy(const expo_array &e): proxy_ancestor(e),m_norm_cached(false) {}
-					// Expo-array specifics.
-					void multiply(proxy e2, expo_array &ret) const {
-						proxy_ancestor::m_ptr->multiply(e2, ret);
-					}
-					// TODO; maybe cache this.
-					max_fast_int degree() const {
-						return proxy_ancestor::m_ptr->degree();
-					}
-					max_fast_int min_degree() const {
-						return proxy_ancestor::m_ptr->min_degree();
-					}
-					template <class ArgsTuple>
-					max_fast_int min_expo_of(const int &n, const ArgsTuple &a) const {
-						return proxy_ancestor::m_ptr->min_expo_of(n, a);
-					}
-					template <class ArgsTuple>
-					const double &norm(const ArgsTuple &args_tuple) const {
-						if (!m_norm_cached) {
-							m_norm = proxy_ancestor::m_ptr->norm(args_tuple);
-							m_norm_cached = true;
-						}
-						return m_norm;
-					}
-				private:
-					mutable bool	m_norm_cached;
-					mutable double	m_norm;
-			};
 			// Ctors.
 			/// Default ctor.
 			expo_array(): ancestor::int_array() {}
@@ -111,7 +77,6 @@ namespace piranha
 			/// Ctor from psym.
 			template <class ArgsTuple>
 			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
-			explicit expo_array(const proxy &p) {*this = *p.m_ptr;}
 			// Probing.
 			/// Data footprint.
 			/**

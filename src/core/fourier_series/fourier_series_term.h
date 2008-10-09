@@ -35,7 +35,6 @@ namespace piranha
 			// Alias for the ancestor.
 			typedef base_term<Cf, Trig, Separator, Allocator, fourier_series_term> ancestor;
 		public:
-			PIRANHA_TERM_REBINDER(fourier_series_term);
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for trigonometric type.
