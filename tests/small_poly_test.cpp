@@ -26,17 +26,18 @@
 
 using namespace piranha;
 using namespace piranha::manipulators;
+typedef dpoly poly;
 
 int main()
 {
-  dpoly a_("small_poly_test.dpoly"), b_(a_);
-  for (size_t i = 0; i < 10000; ++i)
-  {
-    dpoly a(a_), b(b_);
-    a = std::pow(a,(max_fast_int)20);
-    dpoly c(a);
-    c+=(max_fast_int)1;
-    a*=c;
-  }
-  return 0;
+	poly a_("small_poly_test.dpoly"), b_(a_);
+	for (size_t i = 0; i < 10000; ++i)
+	{
+		poly a(a_), b(b_);
+		a = std::pow(a,(max_fast_int)20);
+		poly c(a);
+		c+=(max_fast_int)1;
+		a*=c;
+	}
+	return 0;
 }
