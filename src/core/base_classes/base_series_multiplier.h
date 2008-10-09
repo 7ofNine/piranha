@@ -47,6 +47,27 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
+			class key_revlex_comparison
+			{
+				public:
+					template <class Term>
+					bool operator()(const Term *t1, const Term *t2) const {
+						return (t1->m_key.revlex_comparison(t2->m_key));
+					}
+			};
+			template <class Cf>
+			struct cf_from_term {
+				template <class Term>
+				static const Cf &get(const Term *t) {
+					return t->m_cf;
+				}
+			};
+			template <class Cf>
+			struct cf_direct {
+				static const Cf &get(const Cf &c) {
+					return c;
+				}
+			};
 		private:
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");

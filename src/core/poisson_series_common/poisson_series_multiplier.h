@@ -69,15 +69,6 @@ namespace piranha
 					typedef typename term_type1::cf_type cf_type1;
 					typedef typename term_type2::cf_type cf_type2;
 					typedef typename term_type1::key_type key_type;
-					// TODO: share in ancestor?
-					class term_comparison
-					{
-						public:
-							template <class Term>
-							bool operator()(const Term *t1, const Term *t2) const {
-								return (t1->m_key.revlex_comparison(t2->m_key));
-							}
-					};
 				public:
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
@@ -91,46 +82,34 @@ namespace piranha
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(*this);
-						coded_ancestor::find_input_min_max();
+						this->find_input_min_max();
 						calculate_result_min_max();
-						coded_ancestor::determine_viability();
+						this->determine_viability();
 						// Use the selected truncator only if it really truncates, otherwise use the
 						// null truncator.
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
 							if (is_lightweight<cf_type1>::value) {
-								std::sort(ancestor::m_terms1.begin(),ancestor::m_terms1.end(),term_comparison());
-								std::sort(ancestor::m_terms2.begin(),ancestor::m_terms2.end(),term_comparison());
+								typedef typename ancestor::key_revlex_comparison key_revlex_comparison;
+								std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
+								std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
 							}
 							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
 						}
 					}
 				private:
-					template <class Cf>
-					struct cf_from_term {
-						template <class Term>
-						static const Cf &get(const Term *t) {
-							return t->m_cf;
-						}
-					};
-					template <class Cf>
-					struct cf_direct {
-						static const Cf &get(const Cf &c) {
-							return c;
-						}
-					};
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
-						if (ancestor::m_terms1.size() < 10 && ancestor::m_terms2.size() < 10) {
+						if (this->m_terms1.size() < 10 && this->m_terms2.size() < 10) {
 							__PDEBUG(std::cout << "Small series, going for plain poisson series multiplication\n");
-							ancestor::perform_plain_multiplication(trunc);
-						} else if (coded_ancestor::m_cr_is_viable) {
-							coded_ancestor::code_keys();
+							this->perform_plain_multiplication(trunc);
+						} else if (this->m_cr_is_viable) {
+							this->code_keys();
 							// We also need flavours here.
 							cache_flavours();
-							const typename Series1::term_type **t1 = &this->m_terms1[0];
-							const typename Series2::term_type **t2 = &this->m_terms2[0];
+							const term_type1 **t1 = &this->m_terms1[0];
+							const term_type2 **t2 = &this->m_terms2[0];
 							std::vector<cf_type1> cf1_cache;
 							std::vector<cf_type2> cf2_cache;
 							// NOTICE: this check is really compile-time, so we could probably avoid
@@ -150,27 +129,29 @@ namespace piranha
 								}
 							}
 							bool vec_res;
-							if (coded_ancestor::is_sparse()) {
+							if (this->is_sparse()) {
 								vec_res = false;
 							} else {
 								if (is_lightweight<cf_type1>::value) {
-									vec_res = perform_vector_coded_multiplication<cf_direct>(
+									vec_res = perform_vector_coded_multiplication<ancestor::template cf_direct>(
 										&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 								} else {
-									vec_res = perform_vector_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
+									vec_res = perform_vector_coded_multiplication<ancestor::template cf_from_term>(
+										t1,t2,t1,t2,trunc);
 								}
 							}
 							if (!vec_res) {
 								__PDEBUG(std::cout << "Going for hash coded poisson series multiplication\n");
 								if (is_lightweight<cf_type1>::value) {
-									perform_hash_coded_multiplication<cf_direct>(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+									perform_hash_coded_multiplication<ancestor::template cf_direct>(
+										&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 								} else {
-									perform_hash_coded_multiplication<cf_from_term>(t1,t2,t1,t2,trunc);
+									perform_hash_coded_multiplication<ancestor::template cf_from_term>(t1,t2,t1,t2,trunc);
 								}
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain poisson series multiplication\n");
-							ancestor::perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication(trunc);
 						}
 					}
 					void calculate_result_min_max() {
