@@ -104,7 +104,7 @@ namespace piranha
 						if (this->m_terms1.size() < 10 && this->m_terms2.size() < 10) {
 							__PDEBUG(std::cout << "Small series, going for plain polynomial multiplication\n");
 							this->perform_plain_multiplication(trunc);
-						} else if (coded_ancestor::m_cr_is_viable) {
+						} else if (this->m_cr_is_viable) {
 							this->code_keys();
 							const term_type1 **t1 = &this->m_terms1[0];
 							const term_type2 **t2 = &this->m_terms2[0];
@@ -127,7 +127,7 @@ namespace piranha
 								}
 							}
 							bool vec_res;
-							if (coded_ancestor::is_sparse()) {
+							if (this->is_sparse()) {
 								vec_res = false;
 							} else {
 								if (is_lightweight<cf_type1>::value) {
@@ -149,7 +149,7 @@ namespace piranha
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain polynomial multiplication\n");
-							ancestor::perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication(trunc);
 						}
 					}
 					// TODO: better rename result_min_max here and everywhere. It is not really the min/max
@@ -160,24 +160,24 @@ namespace piranha
 						std::vector<mpz_class> tmp_vec(6);
 						std::pair<typename std::vector<mpz_class>::const_iterator,
 							std::vector<mpz_class>::const_iterator> min_max;
-						for (size_t i = 0; i < coded_ancestor::m_size; ++i) {
-							tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
-							tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
-							tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
-							tmp_vec[1] += coded_ancestor::m_min_max2[i].first;
-							tmp_vec[2] = coded_ancestor::m_min_max1[i].first;
-							tmp_vec[3] = coded_ancestor::m_min_max2[i].first;
-							tmp_vec[4] = coded_ancestor::m_min_max1[i].second;
-							tmp_vec[5] = coded_ancestor::m_min_max2[i].second;
+						for (size_t i = 0; i < this->m_size; ++i) {
+							tmp_vec[0] = this->m_min_max1[i].second;
+							tmp_vec[0] += this->m_min_max2[i].second;
+							tmp_vec[1] = this->m_min_max1[i].first;
+							tmp_vec[1] += this->m_min_max2[i].first;
+							tmp_vec[2] = this->m_min_max1[i].first;
+							tmp_vec[3] = this->m_min_max2[i].first;
+							tmp_vec[4] = this->m_min_max1[i].second;
+							tmp_vec[5] = this->m_min_max2[i].second;
 							min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
-							coded_ancestor::m_res_min_max[i].first = *(min_max.first);
-							coded_ancestor::m_res_min_max[i].second = *(min_max.second);
+							this->m_res_min_max[i].first = *(min_max.first);
+							this->m_res_min_max[i].second = *(min_max.second);
 						}
 						__PDEBUG(
 							std::cout << "Mult limits are:\n";
-						for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
-						std::cout << coded_ancestor::m_res_min_max[i].first << ',' <<
-							coded_ancestor::m_res_min_max[i].second << '\n';
+						for (size_t i = 0; i < this->m_res_min_max.size(); ++i) {
+						std::cout << this->m_res_min_max[i].first << ',' <<
+							this->m_res_min_max[i].second << '\n';
 						}
 						);
 					}
@@ -210,9 +210,8 @@ namespace piranha
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
-						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
-						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max -
-							coded_ancestor::m_h_min + 1);
+						p_assert(this->m_h_max - this->m_h_min + 1 >= 0);
+						const size_t n_codes = static_cast<size_t>(this->m_h_max - this->m_h_min + 1);
 						try {
 							vc.resize(n_codes);
 						} catch (const std::bad_alloc &) {
@@ -227,10 +226,10 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
-						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
-						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
-						cf_type1 *vc_res =  &vc[0] - coded_ancestor::m_h_min;
+						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
+						const args_tuple_type &args_tuple = this->m_args_tuple;
+						cf_type1 *vc_res =  &vc[0] - this->m_h_min;
 						// Find out a suitable block size.
 						static const size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
@@ -242,14 +241,14 @@ namespace piranha
 						);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						size_t size = 0;
-						const max_fast_int i_f = coded_ancestor::m_h_max;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+						const max_fast_int i_f = this->m_h_max;
+						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							size += (!vc_res[i].is_ignorable(args_tuple));
 						}
 						this->m_retval.rehash(static_cast<size_t>(size / settings::load_factor()) + 1);
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res[i].is_ignorable(args_tuple)) {
@@ -308,9 +307,9 @@ namespace piranha
 						// Let's find a sensible size hint.
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
-						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
-						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
+						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
+						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
 						static const size_t block_size =

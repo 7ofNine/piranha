@@ -158,40 +158,40 @@ namespace piranha
 						std::vector<mpz_class> tmp_vec(8);
 						std::pair<typename std::vector<mpz_class>::const_iterator,
 							std::vector<mpz_class>::const_iterator> min_max;
-						const size_t size = coded_ancestor::m_size;
+						const size_t size = this->m_size;
 						for (size_t i = 0; i < size; ++i) {
-							tmp_vec[0] = coded_ancestor::m_min_max1[i].second;
-							tmp_vec[0] += coded_ancestor::m_min_max2[i].second;
-							tmp_vec[1] = coded_ancestor::m_min_max1[i].first;
-							tmp_vec[1] += coded_ancestor::m_min_max2[i].first;
-							tmp_vec[2] = coded_ancestor::m_min_max1[i].second;
-							tmp_vec[2] -= coded_ancestor::m_min_max2[i].first;
-							tmp_vec[3] = coded_ancestor::m_min_max1[i].first;
-							tmp_vec[3] -= coded_ancestor::m_min_max2[i].second;
-							tmp_vec[4] = coded_ancestor::m_min_max1[i].first;
-							tmp_vec[5] = coded_ancestor::m_min_max2[i].first;
-							tmp_vec[6] = coded_ancestor::m_min_max1[i].second;
-							tmp_vec[7] = coded_ancestor::m_min_max2[i].second;
+							tmp_vec[0] = this->m_min_max1[i].second;
+							tmp_vec[0] += this->m_min_max2[i].second;
+							tmp_vec[1] = this->m_min_max1[i].first;
+							tmp_vec[1] += this->m_min_max2[i].first;
+							tmp_vec[2] = this->m_min_max1[i].second;
+							tmp_vec[2] -= this->m_min_max2[i].first;
+							tmp_vec[3] = this->m_min_max1[i].first;
+							tmp_vec[3] -= this->m_min_max2[i].second;
+							tmp_vec[4] = this->m_min_max1[i].first;
+							tmp_vec[5] = this->m_min_max2[i].first;
+							tmp_vec[6] = this->m_min_max1[i].second;
+							tmp_vec[7] = this->m_min_max2[i].second;
 							min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
-							coded_ancestor::m_res_min_max[i].first = *(min_max.first);
-							coded_ancestor::m_res_min_max[i].second = *(min_max.second);
+							this->m_res_min_max[i].first = *(min_max.first);
+							this->m_res_min_max[i].second = *(min_max.second);
 						}
 						__PDEBUG(
 							std::cout << "Mult limits are:\n";
-						for (size_t i = 0; i < coded_ancestor::m_res_min_max.size(); ++i) {
-						std::cout << coded_ancestor::m_res_min_max[i].first << ',' <<
-							coded_ancestor::m_res_min_max[i].second << '\n';
+						for (size_t i = 0; i < this->m_res_min_max.size(); ++i) {
+						std::cout << this->m_res_min_max[i].first << ',' <<
+							this->m_res_min_max[i].second << '\n';
 						}
 						);
 					}
 					// Store flavours of the series into own vectors.
 					void cache_flavours() {
 						size_t i;
-						for (i = 0; i < ancestor::m_size1; ++i) {
-							m_flavours1[i] = ancestor::m_terms1[i]->m_key.flavour();
+						for (i = 0; i < this->m_size1; ++i) {
+							m_flavours1[i] = this->m_terms1[i]->m_key.flavour();
 						}
-						for (i = 0; i < ancestor::m_size2; ++i) {
-							m_flavours2[i] = ancestor::m_terms2[i]->m_key.flavour();
+						for (i = 0; i < this->m_size2; ++i) {
+							m_flavours2[i] = this->m_terms2[i]->m_key.flavour();
 						}
 					}
 					struct vector_multiplier {
@@ -249,9 +249,9 @@ namespace piranha
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
-						p_assert(coded_ancestor::m_h_max - coded_ancestor::m_h_min + 1 >= 0);
-						const size_t n_codes = static_cast<size_t>(coded_ancestor::m_h_max -
-							coded_ancestor::m_h_min + 1);
+						p_assert(this->m_h_max - this->m_h_min + 1 >= 0);
+						const size_t n_codes = static_cast<size_t>(this->m_h_max -
+							this->m_h_min + 1);
 						try {
 							vc_cos.resize(n_codes);
 							vc_sin.resize(n_codes);
@@ -267,11 +267,10 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
-						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
-						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
-						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
-						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - coded_ancestor::m_h_min,
-							&vc_sin[0] - coded_ancestor::m_h_min);
+						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const args_tuple_type &args_tuple = this->m_args_tuple;
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
+						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_h_min, &vc_sin[0] - this->m_h_min);
 						// Find out a suitable block size.
 						static const size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
@@ -285,15 +284,15 @@ namespace piranha
 						// Decode and insert the results into return value.
 						const cf_type1 *vc_res_cos = res.first, *vc_res_sin = res.second;
 						term_type1 tmp_term;
-						const max_fast_int i_f = coded_ancestor::m_h_max;
+						const max_fast_int i_f = this->m_h_max;
 						size_t size_cos = 0, size_sin = 0;
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							size_cos += (!vc_res_cos[i].is_ignorable(args_tuple));
 							size_sin += (!vc_res_sin[i].is_ignorable(args_tuple));
 						}
-						ancestor::m_retval.rehash(static_cast<size_t>((size_cos + size_sin) /
+						this->m_retval.rehash(static_cast<size_t>((size_cos + size_sin) /
 							settings::load_factor()) + 1);
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res_cos[i].is_ignorable(args_tuple)) {
@@ -305,10 +304,10 @@ namespace piranha
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, args_tuple);
+								this->m_retval.insert(tmp_term, args_tuple);
 							}
 						}
-						for (max_fast_int i = coded_ancestor::m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							if (!vc_res_sin[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_sin[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
@@ -316,7 +315,7 @@ namespace piranha
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, args_tuple);
+								this->m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series vector coded\n");
@@ -404,9 +403,9 @@ namespace piranha
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
 						std::pair<csht,csht> res(size_hint,size_hint);
-						const size_t size1 = ancestor::m_size1, size2 = ancestor::m_size2;
-						const args_tuple_type &args_tuple(ancestor::m_args_tuple);
-						const max_fast_int *ck1 = &coded_ancestor::m_ckeys1[0], *ck2 = &coded_ancestor::m_ckeys2[0];
+						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const args_tuple_type &args_tuple = this->m_args_tuple;
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						// Find out a suitable block size.
 						static const size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
@@ -417,7 +416,7 @@ namespace piranha
 						);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 						const csht &cms_cos = res.first, &cms_sin = res.second;
-						ancestor::m_retval.rehash(static_cast<size_t>((cms_cos.size() + cms_sin.size()) /
+						this->m_retval.rehash(static_cast<size_t>((cms_cos.size() + cms_sin.size()) /
 							settings::load_factor()) + 1);
 						term_type1 tmp_term;
 						{
@@ -429,7 +428,7 @@ namespace piranha
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, args_tuple);
+								this->m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						{
@@ -441,7 +440,7 @@ namespace piranha
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
-								ancestor::m_retval.insert(tmp_term, args_tuple);
+								this->m_retval.insert(tmp_term, args_tuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series hash coded\n");
