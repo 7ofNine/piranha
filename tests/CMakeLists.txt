@@ -20,6 +20,8 @@ ADD_EXECUTABLE(sf_tests_01 sf_tests_01.cpp)
 TARGET_LINK_LIBRARIES(sf_tests_01 ${MANDATORY_LIBRARIES} piranha_static)
 ADD_EXECUTABLE(dfs_mult_01 dfs_mult_01.cpp)
 TARGET_LINK_LIBRARIES(dfs_mult_01 ${MANDATORY_LIBRARIES} piranha_static)
+ADD_EXECUTABLE(dfs_mult_02 dfs_mult_02.cpp)
+TARGET_LINK_LIBRARIES(dfs_mult_02 ${MANDATORY_LIBRARIES} piranha_static)
 
 # Add tests.
 ADD_TEST(pearce1 pearce_sparse_poly_test1)
