@@ -120,6 +120,7 @@ namespace piranha
 			 */
 			static const size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
+			static bool blocker;
 		private:
 			/// Startup class.
 			/**
