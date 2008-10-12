@@ -45,6 +45,10 @@ namespace piranha
 					T		t[N];
 					bool	f[N];
 			};
+			enum size_policy {
+				pow2	= 0,
+				prime	= 1,
+			};
 			// Configuration options.
 			static const size_t bucket_size		= 6;
 			static const size_t min_size_index	= 0;
@@ -55,7 +59,7 @@ namespace piranha
 #else
 				32;
 #endif
-			static const size_t sizes[sizes_size];
+			static const size_t sizes[2][sizes_size];
 			typedef bucket_type_<bucket_size> bucket_type;;
 			typedef bucket_type *container_type;
 			p_static_check(bucket_size > 0, "Size of bucket is not strictly positive.");
@@ -80,13 +84,13 @@ namespace piranha
 						return *this;
 					}
 					const key_type &operator*() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_index]);
+						p_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
 						p_assert(m_bucket_index < bucket_size);
 						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					const key_type *operator->() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_index]);
+						p_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
 						p_assert(m_bucket_index < bucket_size);
 						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
@@ -100,7 +104,7 @@ namespace piranha
 					}
 				private:
 					void next() {
-						const size_t vector_size = sizes[m_ht->m_size_index];
+						const size_t vector_size = sizes[m_ht->m_size_policy][m_ht->m_size_index];
 						while (true) {
 							// Go to the next bucket if we are at the last element of the current one.
 							if (m_bucket_index == bucket_size - 1) {
@@ -121,27 +125,27 @@ namespace piranha
 					size_t							m_vector_index;
 					size_t							m_bucket_index;
 			};
-			coded_series_hash_table(): m_size_index(min_size_index),m_length(0) {
+			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0) {
 				init();
 			}
 			coded_series_hash_table(const size_t &size_hint):
-				m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0) {
+				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0) {
 				init();
 			}
 			~coded_series_hash_table() {
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_hash_table was: "
-								   << sizes[m_size_index] << '\n');
+								   << sizes[m_size_policy][m_size_index] << '\n');
 				destroy();
 			}
 			iterator begin() const {
 				return iterator(this);
 			}
 			iterator end() const {
-				return iterator(this, sizes[m_size_index], 0);
+				return iterator(this, sizes[m_size_policy][m_size_index], 0);
 			}
 			std::pair<bool,iterator> find(const key_type &key) const {
-				const size_t vector_pos = key.hash_value() % sizes[m_size_index];
-				p_assert(vector_pos < sizes[m_size_index]);
+				const size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
+				p_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
@@ -175,9 +179,19 @@ namespace piranha
 				return m_length;
 			}
 		private:
-			static size_t find_upper_size_index(const size_t &size) {
+			static size_t get_position(const size_t &hash, const size_t &size_index, const size_policy &sp) {
+				switch (sp) {
+					case pow2:
+						return (hash & (sizes[pow2][size_index] - 1));
+					case prime:
+						return (hash % sizes[prime][size_index]);
+				}
+				p_assert(false);
+				return 0;
+			}
+			size_t find_upper_size_index(const size_t &size) const {
 				for (size_t retval = 0; retval < sizes_size; ++retval) {
-					if (sizes[retval] >= size) {
+					if (sizes[m_size_policy][retval] >= size) {
 						return std::max<size_t>(min_size_index,retval);
 					}
 				}
@@ -185,7 +199,7 @@ namespace piranha
 			}
 			// Allocate and default-construct according to m_size_index.
 			void init() {
-				const size_t size = sizes[m_size_index];
+				const size_t size = sizes[m_size_policy][m_size_index];
 				const bucket_type bucket;
 				allocator_type a;
 				m_container = a.allocate(size);
@@ -195,7 +209,7 @@ namespace piranha
 			}
 			// Destroy and deallocate.
 			void destroy() {
-				const size_t size = sizes[m_size_index];
+				const size_t size = sizes[m_size_policy][m_size_index];
 				allocator_type a;
 				for (size_t i = 0; i < size; ++i) {
 					a.destroy(m_container + i);
@@ -208,7 +222,7 @@ namespace piranha
 					return false;
 				}
 				p_assert(bucket_index < bucket_size);
-				p_assert(it.m_vector_index < sizes[m_size_index]);
+				p_assert(it.m_vector_index < sizes[m_size_policy][m_size_index]);
 				bucket_type &bucket = m_container[it.m_vector_index];
 				p_assert(!bucket.f[bucket_index]);
 				bucket.f[bucket_index] = true;
@@ -216,16 +230,24 @@ namespace piranha
 				++m_length;
 				return true;
 			}
-			// Increase size of the container to the next prime size.
+			// Increase size of the container to the next size.
 			void increase_size() {
-				__PDEBUG(std::cout << "Increase size requested at load factor: " <<
-					((double)m_length / sizes[m_size_index]) << '\n');
+				const double load_factor = static_cast<double>(m_length) / sizes[m_size_policy][m_size_index];
+				__PDEBUG(std::cout << "Increase size requested at load factor: " << load_factor << '\n');
 				coded_series_hash_table new_ht;
 				new_ht.destroy();
+				// If load factor is too small and we are on pow2 sizes,
+				// we want to switch to prime sizes.
+				static const double min_load_factor = .1;
+				if (new_ht.m_size_policy == pow2 && load_factor < min_load_factor) {
+					__PDEBUG(std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n");
+					new_ht.m_size_policy = prime;
+				}
 				new_ht.m_size_index = m_size_index + 2;
 				new_ht.init();
 				const iterator it_i = begin(), it_f = end();
 				iterator it = it_i;
+				size_t count = 0;
 				while (it != it_f) {
 					const std::pair<bool,iterator> res = new_ht.find(*it);
 					p_assert(!res.first);
@@ -237,18 +259,30 @@ namespace piranha
 						// TODO: add check for excessive size here. It must be here to avoid problems
 						// with exception throwing.
 						new_ht.destroy();
+						// If we are able to rebuild less than a fraction of the initial hash table
+						// and we are working in pow2 sizes, switch to prime sizes.
+						static const double rebuild_thresh = .5;
+						if (new_ht.m_size_policy == pow2 && static_cast<double>(count) / m_length < rebuild_thresh) {
+							__PDEBUG(std::cout << "Rebuilding failed too early, switching to prime sizes.\n");
+							new_ht.m_size_policy = prime;
+						}
 						++new_ht.m_size_index;
 						new_ht.init();
 						it = it_i;
+						count = 0;
 					} else {
 						++it;
+						++count;
 					}
 				}
+				// Rebuilding complete, swap data members.
 				std::swap(m_container,new_ht.m_container);
 				std::swap(m_size_index,new_ht.m_size_index);
 				std::swap(m_length,new_ht.m_length);
+				std::swap(m_size_policy,new_ht.m_size_policy);
 			}
 		private:
+			size_policy		m_size_policy;
 			size_t			m_size_index;
 			size_t			m_length;
 			container_type	m_container;
@@ -261,7 +295,51 @@ namespace piranha
 	const size_t coded_series_hash_table<T,Allocator>::bucket_size;
 
 	template <class T, class Allocator>
-	const size_t coded_series_hash_table<T,Allocator>::sizes[] = {
+	const size_t coded_series_hash_table<T,Allocator>::sizes[2][sizes_size] = { {
+		1u,
+		2u,
+		4u,
+		8u,
+		16u,
+		32u,
+		64u,
+		128u,
+		256u,
+		512u,
+		1024u,
+		2048u,
+		4096u,
+		8192u,
+		16384u,
+		32768u,
+		65536u,
+		131072u,
+		262144u,
+		524288u,
+		1048576u,
+		2097152u,
+		4194304u,
+		8388608u,
+		16777216u,
+		33554432u,
+		67108864u,
+		134217728u,
+		268435456u,
+		536870912u,
+		1073741824u,
+		2147483648u
+#ifdef _PIRANHA_64BIT
+		,
+		4294967296u,
+		8589934592u,
+		17179869184u,
+		34359738368u,
+		68719476736u,
+		137438953472u,
+		274877906944u,
+		549755813888u
+#endif
+	}, {
 		1u,
 		3u,
 		5u,
@@ -305,7 +383,7 @@ namespace piranha
 		412316860441u,
 		824633720831u
 #endif
-	};
+	} };
 }
 
 #endif
