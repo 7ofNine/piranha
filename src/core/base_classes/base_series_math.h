@@ -214,11 +214,12 @@ namespace piranha
 		const max_fast_int &n_, const max_fast_int &k, const ArgsTuple &args_tuple)
 	{
 		const max_fast_int n = (n_ >= 0) ? n_ : k - n_ - 1;
+		Derived retval;
 		if (k < 0 || k > n) {
-			throw unsuitable("Invalid k for binomial coefficient.");
+			return retval;
 		}
 		// Starting point is 1.
-		Derived retval(max_fast_int(1),args_tuple);
+		retval = Derived(max_fast_int(1),args_tuple);
 		for (max_fast_int i = 1; i <= k; ++i) {
 			retval.mult_by(n - k + i, args_tuple);
 			retval.divide_by(i, args_tuple);

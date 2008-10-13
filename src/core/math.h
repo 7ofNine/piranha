@@ -137,7 +137,7 @@ namespace piranha
 	{
 		const long int multiplier = (n_ >= 0) ? 1 : cs_phase(k), n = (n_ >= 0) ? n_ : k - n_ - 1;
 		if (k < 0 || k > n) {
-			throw unsuitable("Invalid k for binomial coefficient.");
+			return 0.;
 		}
 		p_assert(n >= 0);
 		return boost::math::binomial_coefficient<double>(
