@@ -1,3 +1,15 @@
+2008.10.14 090e5e352c8b1380cd8fbda97113d97a53221173
+
+* Eliminate the need for proxies, now that blocked multiplication is in place.
+* Use cache blocking also for Fourier/Poisson series multiplication.
+* Improve sparse series multiplication by employing extra buckets at the end of the hash set.
+* Fix binomial coefficients to work also for negative k and k > n.
+* Fix loading of complex poisson series from file.
+* Introduce double size policy for sparse multiplication.
+* Series with heavy coefficients (i.e., Poisson series) should now use less memory during multiplication.
+* Added another testcase, this time exercising some identities involving special functions.
+* Various improvements to the alt_besselJ pyranha example.
+
 2008.10.06 053e2e350352cef0785d07270ce8e5a2ee23c1dc
 
 * Added a factorial function for series.
