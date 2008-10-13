@@ -55,6 +55,7 @@ namespace piranha
 					typedef typename Derived::term_type term_type;
 					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order,args_tuple),
 						typename term_type::key_type()),args_tuple);
+					retval.mult_by(multiplier,args_tuple);
 					return retval;
 				}
 				// Get the expansion limit from the truncator.
