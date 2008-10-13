@@ -40,6 +40,13 @@ namespace piranha
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
 			Derived besselJ(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
+				Derived retval;
+				if (derived_const_cast->is_single_cf()) {
+					typedef typename Derived::term_type term_type;
+					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_,args_tuple),
+						typename term_type::key_type()),args_tuple);
+					return retval;
+				}
 				size_t order;
 				max_fast_int multiplier = 1;
 				if (order_ >= 0) {
@@ -49,14 +56,6 @@ namespace piranha
 					if ((order & 1) != 0) {
 						multiplier = -1;
 					}
-				}
-				Derived retval;
-				if (derived_const_cast->is_single_cf()) {
-					typedef typename Derived::term_type term_type;
-					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order,args_tuple),
-						typename term_type::key_type()),args_tuple);
-					retval.mult_by(multiplier,args_tuple);
-					return retval;
 				}
 				// Get the expansion limit from the truncator.
 				size_t limit;

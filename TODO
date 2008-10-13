@@ -63,3 +63,4 @@
 - rework the type-determination thing (tetd_helper and stuff) to be less ugly.
 - watch out: when building base series from pod we may be doing term insertion somewhere instead of using the ctor.
   Search and de-uglify if needed.
+- many tests for known equalities involving special functions!
