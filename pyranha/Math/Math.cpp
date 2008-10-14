@@ -37,8 +37,6 @@ BOOST_PYTHON_MODULE(_Math)
 	typedef double (*jn_real)(const max_fast_int &, const double &);
 	def("besselJ", jn_real(&besselJ),
 		"Bessel function of the first kind of integer order and real double-precision argument.");
-	def("besselJ", jn_complex(&besselJ),
-		"Bessel function of the first kind of integer order and complex double-precision argument.");
 	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
 	def("Pnm", &Pnm, "Associated Legendre function.");
 	def("Pn", &Pn, "Legendre polynomial.");
