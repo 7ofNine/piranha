@@ -133,9 +133,6 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type cf_type;
 				typedef typename term_type::key_type key_type;
-				if (m < 0) {
-					throw unsuitable("Please use a non-negative value for m.");
-				}
 				// Let's take care of negative order.
 				const size_t order = (order_ >= 0) ? order_ : -order_;
 				// Get the expansion limit from the truncator.
@@ -166,10 +163,8 @@ namespace piranha
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}
-				// This is the external divisor by 2**m.
-				Derived m2_;
-				m2_.insert(term_type(cf_type(max_fast_int(2),args_tuple),key_type()),args_tuple);
-				Derived m2 = m2_.pow(-m,args_tuple);
+				// m2 will be the external divisor by 2**m.
+				Derived m2 = Derived(max_fast_int(2),args_tuple).pow(-m,args_tuple);
 				retval.mult_by(m2, args_tuple);
 				if (order_ < 0) {
 					retval.mult_by(cs_phase(order_), args_tuple);

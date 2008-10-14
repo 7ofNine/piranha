@@ -111,8 +111,6 @@ def besselJ_div_m(order,arg,m = 1):
 	"""
 	if type(order) != int or type(m) != int:
 		raise ValueError("order and m must be integers.")
-	if m < 0:
-		raise ValueError("m must be non-negative.")
 	try:
 		return arg.besselJ_div_m(order,m)
 	except AttributeError:
