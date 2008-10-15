@@ -28,7 +28,6 @@ using namespace piranha;
 
 int main()
 {
-	// Expansion to order 400 of r/a in terms of e and M.
 	int retval = 0;
 	psym x_("x");
 	const ps x(x_);
@@ -38,6 +37,16 @@ int main()
 	retval += (x.pow(max_fast_int(-3)).root(max_fast_int(-3)) != x);
 	retval += (x.sin() * x.sin() + x.cos() * x.cos() != max_fast_int(1));
 	retval += (x.pow(max_fast_int(10)) * x.besselJ_div_m(max_fast_int(-6),max_fast_int(10)) != x.besselJ(max_fast_int(-6)));
-
+	retval += (x.besselJ_div_m(max_fast_int(-3),max_fast_int(-3)) != x.besselJ(max_fast_int(-3)) * x.pow(max_fast_int(3)));
+	retval += (ps().besselJ(max_fast_int(0)) != max_fast_int(1) || ps().besselJ(max_fast_int(1)) != max_fast_int(0));
+	// Test Bessel's differential equation.
+	const max_fast_int order = -5;
+	const ps y = x.besselJ(order);
+	retval += (
+		x.pow(max_fast_int(2))*y.partial(x_,max_fast_int(2))+x*y.partial(x_)+
+		(x.pow(max_fast_int(2))-ps(order*order))*y != max_fast_int(0)
+	);
+	// Relation between Jn and its derivatives.
+	retval += (x.dbesselJ(5) * max_fast_int(2) != x.besselJ(4) - x.besselJ(6));
 	return retval;
 }

@@ -41,22 +41,21 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived besselJ(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
 				Derived retval;
+				// Special case of empty series. It must be handled here before the truncator is called.
+				if (derived_const_cast->empty()) {
+					if (!order_) {
+						retval = Derived(max_fast_int(1),args_tuple);
+					}
+					return retval;
+				}
+				// Dispatch besselJ to coefficient if series consists of a single coefficient.
 				if (derived_const_cast->is_single_cf()) {
 					typedef typename Derived::term_type term_type;
 					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_,args_tuple),
 						typename term_type::key_type()),args_tuple);
 					return retval;
 				}
-				size_t order;
-				max_fast_int multiplier = 1;
-				if (order_ >= 0) {
-					order = order_;
-				} else {
-					order = static_cast<size_t>(-order_);
-					if ((order & 1) != 0) {
-						multiplier = -1;
-					}
-				}
+				const max_fast_int order = (order_ >= 0) ? order_ : -order_;
 				// Get the expansion limit from the truncator.
 				size_t limit;
 				try {
@@ -68,26 +67,27 @@ namespace piranha
 				}
 				// Now we buid the starting point of the power series expansion of Jn.
 				retval = *derived_const_cast;
-				retval.divide_by((max_fast_int)2, args_tuple);
+				retval.divide_by(max_fast_int(2), args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.pow((max_fast_int)order, args_tuple);
-				for (size_t i = 0; i < order; ++i) {
-					retval.divide_by((max_fast_int)(i + 1), args_tuple);
-				}
+				retval = retval.pow(order, args_tuple);
+				retval.mult_by(Derived::factorial(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i <= limit; ++i) {
-					tmp.mult_by((max_fast_int) - 1, args_tuple);
-					tmp.divide_by((max_fast_int)(i*(i + order)), args_tuple);
+					tmp.mult_by(max_fast_int(-1), args_tuple);
+					tmp.divide_by(max_fast_int(i*(i + order)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}
-				retval.mult_by(multiplier, args_tuple);
+				if (order_ < 0) {
+					retval.mult_by(cs_phase(order_), args_tuple);
+				}
 				return retval;
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
+			// TODO: polish and make it less restrictive. Use factorial().
 			template <class ArgsTuple>
 			Derived dbesselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
 				if (order < 1) {
@@ -106,7 +106,7 @@ namespace piranha
 				}
 				// Now we buid the starting point of the power series expansion of Jn.
 				Derived retval(*derived_const_cast);
-				retval.divide_by((max_fast_int)2, args_tuple);
+				retval.divide_by(max_fast_int(2), args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
@@ -130,11 +130,19 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived besselJ_div_m(const max_fast_int &order_, const max_fast_int &m,
 				const ArgsTuple &args_tuple) const {
-				typedef typename Derived::term_type term_type;
-				typedef typename term_type::cf_type cf_type;
-				typedef typename term_type::key_type key_type;
+				Derived retval;
 				// Let's take care of negative order.
-				const size_t order = (order_ >= 0) ? order_ : -order_;
+				const max_fast_int order = (order_ >= 0) ? order_ : -order_;
+				// Special case of empty series.
+				if (derived_const_cast->empty()) {
+					if (order < m) {
+						throw division_by_zero();
+					} else if (order == m) {
+						retval = Derived(max_fast_int(2),args_tuple).pow(max_fast_int(-order),args_tuple);
+						retval.mult_by(Derived::factorial(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
+					}
+					return retval;
+				}
 				// Get the expansion limit from the truncator.
 				size_t limit;
 				try {
@@ -146,15 +154,13 @@ namespace piranha
 						"The reported error is: ") + u.what());
 				}
 				// Now we build the starting point of the power series expansion of Jn/x**m.
-				Derived retval(*derived_const_cast);
+				retval = *derived_const_cast;
 				retval.divide_by(max_fast_int(2), args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
 				retval = retval.pow((max_fast_int)order - m, args_tuple);
-				for (size_t i = 0; i < (size_t)order; ++i) {
-					retval.divide_by((max_fast_int)(i + 1), args_tuple);
-				}
+				retval.mult_by(Derived::factorial(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
 				for (size_t i = 1; i <= limit; ++i) {
