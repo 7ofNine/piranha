@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "../src/manipulators/qps.h"
 #include "../src/manipulators/zpoly.h"
 
 // Exercise substitution.
@@ -27,6 +28,13 @@ using namespace piranha;
 
 int main()
 {
+	{
+		// This one fails if we do not handle correctly args_tuple inside substitution.
+		qps e(psym("e")), ph(psym("ph")), th(psym("th"));
+		base_degree_truncator::set(10);
+		(e*th.cos()+max_fast_int(1)).pow(max_fast_int(-1)).sub(psyms::get("th"),ph.pow(max_fast_int(2)));
+	}
+
 	psym x("x"), y("y"), z("z");
 	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(max_fast_int(40));
 	return !(g.sub(x,zpoly(x)+max_fast_int(1)).sub(x,zpoly(x)-max_fast_int(1)) == g);
