@@ -77,19 +77,11 @@ namespace piranha
 			/// Ctor from psym.
 			template <class ArgsTuple>
 			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
-			// Probing.
-			/// Data footprint.
-			/**
-			 * Returns the memory occupied by the data members.
-			 */
-			size_t data_footprint() const {
-				return (ancestor::size()*sizeof(value_type));
-			}
 			// Math.
 			/// Multiplication.
 			template <class ExpoArray, class ResultType>
 			void multiply(const ExpoArray &e2, ResultType &ret) const {
-				const size_type max_w = ancestor::size(), min_w = e2.size();
+				const size_type max_w = this->size(), min_w = e2.size();
 				// Resize, if needed.
 				ret.resize(max_w);
 				// Assert widths, *this should always come from a polynomial, and its width should hence be
