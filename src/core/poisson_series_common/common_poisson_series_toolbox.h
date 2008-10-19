@@ -172,9 +172,14 @@ namespace piranha
 				s_copy.merge_args(tmp);
 				// After the next line, this_copy's args layout is compatible with s_copy's
 				this_copy.merge_args(s_copy);
+				// Finally, have s_copy have compatible arguments with this_copy. This is needed because
+				// we will be using this_copy's arguments as args_tuple in all base functions used from now
+				// on, including functions taking s_copy as arguments and which do not know anything about
+				// this_copy.
+				s_copy.merge_args(this_copy);
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
-				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,series,
+				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
 					&this_copy.m_arguments);
 				pos_tuple_type pos_tuple;
 				psym_p p(psyms::get_pointer(arg));
