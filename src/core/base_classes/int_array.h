@@ -42,7 +42,7 @@ namespace piranha
 {
 	/// Dynamically-sized integer array.
 	/**
-	 * Parametrized to a signed integer sized Bits, It contains also
+	 * Parametrized to a signed integer sized Bits, it contains also
 	 * a flavour boolean flag, which can be used in trigonometric parts
 	 * of Poisson series.
 	 */
@@ -273,7 +273,7 @@ namespace piranha
 				p_assert(cv.size() == static_cast<size_t>(m_size) + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
-					m_container.v[i] = (value_type)((tmp % cv[i+1]) / cv[i] + mmv[i].first);
+					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
 			void assign_int_vector(const std::vector<max_fast_int> &v) {
