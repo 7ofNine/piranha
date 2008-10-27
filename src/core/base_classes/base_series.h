@@ -125,6 +125,15 @@ namespace piranha
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
 			std::vector<term_type const *> cache_pointers() const;
 		protected:
+			// Standard substitution functor. Will call sub() on coefficients and keys.
+			struct sub_functor {
+				template <class RetSeries, class Element, class PosTuple, class SubSeries, class SubCaches,
+					class ArgsTuple>
+				static RetSeries run(const Element &e, const PosTuple &pos_tuple, const SubSeries &s,
+					SubCaches &sub_caches, const ArgsTuple &args_tuple) {
+					return e.template sub<RetSeries>(pos_tuple, s, sub_caches, args_tuple);
+				}
+			};
 			static const char separator = Separator;
 			// Check that the separators do not conflict.
 			p_static_check(separator != term_type::separator, "");
@@ -163,7 +172,8 @@ namespace piranha
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			template <class RetSeries, class SubFunctor, class PosTuple, class SubSeries,
+				class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, const SubSeries &, SubCaches &, const ArgsTuple &) const;
 		private:
 			template <bool, class ArgsTuple>

@@ -211,7 +211,7 @@ namespace piranha
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return derived_const_cast->pow(1. / (double)(n), args_tuple);
+				return derived_const_cast->pow(1. / static_cast<double>(n), args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived besselJ(const max_fast_int &, const ArgsTuple &) const {
@@ -222,6 +222,11 @@ namespace piranha
 				const ArgsTuple &args_tuple) const {
 				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::
 					template run<RetSeries>(*derived_const_cast, args_tuple);
+			}
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &p, const SubSeries &s, SubCaches &sc,
+				const ArgsTuple &a) const {
+				return sub(p,s,sc,a);
 			}
 			/// Get value.
 			const T &value() const {

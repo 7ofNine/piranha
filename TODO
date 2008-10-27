@@ -64,3 +64,5 @@
 - watch out: when building base series from pod we may be doing term insertion somewhere instead of using the ctor.
   Search and de-uglify if needed.
 - many tests for known equalities involving special functions!
+- inv() routine for complex?
+- conjugate, and rework abs maybe for complex series

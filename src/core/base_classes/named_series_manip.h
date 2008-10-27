@@ -358,18 +358,21 @@ namespace piranha
 			template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
 			::type,args_tuple_type>::type sub_caches_type;
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
-		sub_caches_type sub_caches;
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
-		Derived tmp(*derived_const_cast);
-		tmp.merge_args(s);
-		// Init sub caches using s and tmp.m_arguments.
-		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s,&tmp.m_arguments);
+		sub_caches_type sub_caches;
+		Derived this_copy(*derived_const_cast);
+		SubSeries s_copy(s);
+		this_copy.merge_args(s_copy);
+		s_copy.merge_args(this_copy);
+		// Init sub caches using s_copy and this_copy.m_arguments.
+		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,&this_copy.m_arguments);
 		pos_tuple_type pos_tuple;
 		psym_p p(psyms::get_pointer(arg));
-		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, tmp.m_arguments);
-		Derived retval(tmp.template base_sub<Derived>(pos_tuple, s, sub_caches, tmp.m_arguments));
-		retval.m_arguments = tmp.m_arguments;
+		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
+		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(
+			pos_tuple, s_copy, sub_caches, this_copy.m_arguments));
+		retval.m_arguments = this_copy.m_arguments;
 		retval.trim();
 		return retval;
 	}

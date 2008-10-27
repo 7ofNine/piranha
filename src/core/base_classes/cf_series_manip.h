@@ -79,7 +79,7 @@ namespace piranha
 	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
 		const SubSeries &s, SubCaches &sub_caches, const ArgsTuple &a) const
 	{
-		return derived_const_cast->template base_sub<RetSeries>(p, s, sub_caches, a);
+		return derived_const_cast->template base_sub<RetSeries,typename Derived::sub_functor>(p, s, sub_caches, a);
 	}
 }
 

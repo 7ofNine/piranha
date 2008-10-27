@@ -428,7 +428,7 @@ namespace piranha
 				// TODO: do it everywhere!
 				const size_t w = sd.size();
 				if (w == 0) {
-					// Set flavour to true, so that trig_array is logically equivalent to the unity.
+					// Set flavour to true, so that trig_array is logically equivalent to unity.
 					derived_cast->m_flavour = true;
 					return;
 				}
