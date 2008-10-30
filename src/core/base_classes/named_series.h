@@ -89,6 +89,7 @@ namespace piranha
 			Derived pow(const double &) const;
 			Derived pow(const max_fast_int &) const;
 			Derived root(const max_fast_int &) const;
+			Derived inv() const;
 			Derived partial(const psym &, const max_fast_int &n = 1) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;

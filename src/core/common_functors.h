@@ -54,9 +54,8 @@ namespace piranha
 	template <class T>
 	struct named_series_arithmetics
 	{
-		template <class Number>
-		T pow(const T &orig, const Number &x) const {
-			return orig.pow(x);
+		T inv(const T &orig) const {
+			return orig.inv();
 		}
 		void multiply(T &orig, const T &other) const {
 			orig *= other;
@@ -68,10 +67,9 @@ namespace piranha
 	{
 		base_series_arithmetics():m_args_tuple(0)
 		{}
-		template <class Number>
-		T pow(const T &orig, const Number &x) const {
+		T inv(const T &orig) const {
 			p_assert(m_args_tuple);
-			return orig.pow(x,*m_args_tuple);
+			return orig.inv_(*m_args_tuple);
 		}
 		void multiply(T &orig, const T &other) const {
 			p_assert(m_args_tuple);

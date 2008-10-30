@@ -61,6 +61,18 @@ namespace piranha
 				derived_cast->trim();
 				return *derived_cast;
 			}
+			RealDerived abs() const {
+				RealDerived retval = derived_const_cast->abs_(derived_const_cast->m_arguments);
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			Derived conjugate() const {
+				Derived retval = derived_const_cast->conjugate_(derived_const_cast->m_arguments);
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
 			Derived &operator+=(const std::complex<max_fast_int> &cn) {
 				return derived_cast->template merge_number_helper<true>(cn);
 			}
@@ -93,6 +105,12 @@ namespace piranha
 			}
 			Derived &operator/=(const std::complex<double> &cx) {
 				return derived_cast->divide_number_helper(cx);
+			}
+			Derived inv() const {
+				Derived retval = derived_const_cast->inv_(derived_const_cast->m_arguments);
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
 			}
 		protected:
 			void construct_from_real(const RealDerived &r) {

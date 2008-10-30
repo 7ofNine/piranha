@@ -368,7 +368,8 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_power(const size_t &n, const ArgsTuple &args_tuple) const
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::natural_power(const size_t &n,
+		const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
 		switch (n) {
@@ -464,7 +465,7 @@ namespace piranha
 		return retval;
 	}
 
-	// By default use real power.
+	// As default will use real power.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
@@ -472,6 +473,14 @@ namespace piranha
 	{
 		p_assert(n > 0);
 		return pow(1. / static_cast<double>(n), args_tuple);
+	}
+
+	// Series inversion will use exponentiation to -1 as default.
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::inv_(const ArgsTuple &args_tuple) const
+	{
+		return pow(max_fast_int(-1),args_tuple);
 	}
 }
 

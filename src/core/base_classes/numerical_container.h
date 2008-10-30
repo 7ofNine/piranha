@@ -205,6 +205,10 @@ namespace piranha
 				return Derived((max_fast_int)0, args_tuple);
 			}
 			template <class ArgsTuple>
+			Derived inv_(const ArgsTuple &args_tuple) const {
+				return derived_const_cast->pow(max_fast_int(-1),args_tuple);
+			}
+			template <class ArgsTuple>
 			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();

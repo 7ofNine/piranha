@@ -170,7 +170,8 @@ namespace piranha
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
 					tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
 #else
-				return (derived_const_cast->m_value.real() == c.real() && derived_const_cast->m_value.imag() == c.imag());
+				return (derived_const_cast->m_value.real() == c.real() &&
+					derived_const_cast->m_value.imag() == c.imag());
 #endif
 			}
 	};

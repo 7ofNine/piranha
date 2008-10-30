@@ -199,6 +199,8 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::inv;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::inv_;
 			using base_ancestor::eval;
 			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;

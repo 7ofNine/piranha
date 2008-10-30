@@ -77,7 +77,7 @@ namespace piranha
 					XoverA.insert(term_type(*v[i]),args_tuple);
 				}
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.m_cf.pow((max_fast_int)(-1), args_tuple), A.m_key.pow(max_fast_int(-1), args_tuple));
+				term_type tmp_term(A.m_cf.inv_(args_tuple), A.m_key.inv_(args_tuple));
 				Derived Ainv;
 				Ainv.insert(tmp_term, args_tuple);
 				// Now let's compute X/A.

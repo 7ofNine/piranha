@@ -56,8 +56,6 @@ namespace pyranha
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
-		typedef double (T::*norm_named)() const;
-		inst.def("__abs__", norm_named(&T::norm), "Norm.");
 		inst.def("__copy__", &py_copy<T>);
 		inst.def("__iter__", boost::python::iterator<T>());
 		inst.def("__len__", &T::length);
@@ -76,8 +74,9 @@ namespace pyranha
 		inst.def("save_to", &T::save_to, "Save to file.");
 		typedef typename T::eval_type (T::*eval_free)(const double &) const;
 		inst.def("eval", eval_free(&T::eval), "Evaluate at time arg2.");
+		typedef double (T::*norm_named)() const;
 		inst.add_property("norm", norm_named(&T::norm), "Norm.");
-		inst.add_property("atoms", &T::atoms, "Get the number of atoms composing the series.");
+		inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
 		// NOTICE: the order seems important here, if we place *=int before *=double we
 		// will get just *=double in Python. Go figure...
@@ -120,6 +119,8 @@ namespace pyranha
 		inst.def(boost::python::self /= double());
 		inst.def(boost::python::self / piranha::max_fast_int());
 		inst.def(boost::python::self / double());
+		// Inversion.
+		inst.def("inv", &T::inv, "Series inversion.");
 		// Factorial and binomial coefficient.
 		typedef T (*named_factorial)(const piranha::max_fast_int &);
 		inst.def("factorial", named_factorial(&T::factorial), "Factorial function.").staticmethod("factorial");
@@ -187,6 +188,10 @@ namespace pyranha
 		// Real and imaginary parts assignment and extraction.
 		instc.add_property("real", &py_series_get_real<T>, &py_series_set_real<T>, "Get/set real part.");
 		instc.add_property("imag", &py_series_get_imag<T>, &py_series_set_imag<T>, "Get/set imaginary part.");
+		// Absolute value.
+		instc.def("__abs__", &std::complex<T>::abs, "Absolute value.");
+		// Conjugate.
+		instc.def("conjugate", &std::complex<T>::conjugate, "Complex conjugate.");
 	}
 
 	template <class T>

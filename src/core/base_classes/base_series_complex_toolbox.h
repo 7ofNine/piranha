@@ -75,6 +75,23 @@ namespace piranha
 				}
 				return *derived_cast;
 			}
+			template <class ArgsTuple>
+			RealDerived abs_(const ArgsTuple &args_tuple) const {
+				RealDerived retval = real(args_tuple), tmp = imag(args_tuple);
+				retval.mult_by(retval,args_tuple);
+				tmp.mult_by(tmp,args_tuple);
+				retval.add(tmp,args_tuple);
+				return retval;
+			}
+			template <class ArgsTuple>
+			Derived conjugate_(const ArgsTuple &args_tuple) const {
+				Derived retval;
+				retval.add(real(args_tuple),args_tuple);
+				RealDerived tmp = imag(args_tuple);
+				tmp.mult_by(max_fast_int(-1),args_tuple);
+				retval.imag(tmp,args_tuple);
+				return retval;
+			}
 			bool operator==(const std::complex<max_fast_int> &cn) const {
 				return derived_const_cast->generic_numerical_comparison(cn);
 			}
@@ -115,6 +132,14 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return divide_by_complex(cx, args_tuple);
+			}
+			// Specialise inversion to use conjugate * inverse of absolute value. This is useful
+			// when the complex series is a complex exponential of something.
+			template <class ArgsTuple>
+			Derived inv_(const ArgsTuple &args_tuple) const {
+				Derived retval = conjugate_(args_tuple);
+				retval.mult_by(abs_(args_tuple).inv_(args_tuple),args_tuple);
+				return retval;
 			}
 		protected:
 			// Use N = 0 for real, N != 0 for imag.

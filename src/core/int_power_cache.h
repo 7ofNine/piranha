@@ -85,7 +85,7 @@ namespace piranha
 					// n == -1 may not have been provided in the ctor. If we reached this point, it means
 					// that our negative EBS sequence has come to the end.
 					if (n == -1) {
-						m_container[-1] = m_arith_functor.pow(m_container[1],static_cast<max_fast_int>(-1));
+						m_container[-1] = m_arith_functor.inv(m_container[1]);
 						break;
 					}
 					if (n & 1) {

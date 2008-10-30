@@ -205,6 +205,8 @@ namespace std
 			using base_ancestor::root;
 			using named_ancestor::partial;
 			using base_ancestor::partial;
+			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::inv;
+			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::inv_;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
 			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;

@@ -264,6 +264,7 @@ namespace piranha
 				iterator it = it_i;
 				size_t count = 0;
 				while (it != it_f) {
+					// TODO: faster unchecked insertion here.
 					const std::pair<bool,iterator> res = new_ht.find(*it);
 					p_assert(!res.first);
 					if (!new_ht.attempt_insertion(*it,res.second)) {
