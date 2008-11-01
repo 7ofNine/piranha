@@ -77,6 +77,15 @@ namespace piranha
 		}
 		mutable ArgsTuple const *m_args_tuple;
 	};
+
+	struct ei_sub_functor {
+		template <class RetSeries, class Element, class PosTuple, class SubSeries, class SubCaches,
+			class ArgsTuple>
+		static RetSeries run(const Element &e, const PosTuple &pos_tuple, const SubSeries &s,
+			SubCaches &sub_caches, const ArgsTuple &args_tuple) {
+			return e.template ei_sub<RetSeries>(pos_tuple, s, sub_caches, args_tuple);
+		}
+	};
 }
 
 #endif

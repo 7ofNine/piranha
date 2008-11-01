@@ -238,22 +238,21 @@ namespace pyranha
 	}
 
 	template <class T, class Series>
-	static inline T py_series_sub_psym_psym(const T &series, const piranha::psym &p, const piranha::psym &q)
-	{
-		return series.template sub<Series>(p, Series(q));
-	}
-
-	template <class T, class Series>
 	static inline T py_series_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub)
 	{
 		return series.template sub<Series>(p, sub);
 	}
 
 	template <class T, class Series>
+	static inline T py_series_ei_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub)
+	{
+		return series.template ei_sub<Series>(p, sub);
+	}
+
+	template <class T, class Series>
 	inline void series_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("sub", py_series_sub_psym_psym<T, Series>, "Substitute psym arg2 with psym arg3.");
-		inst.def("sub", py_series_sub_psym_series<T, Series>, "Substitute psym arg2 with series arg3.");
+		inst.def("sub", &py_series_sub_psym_series<T, Series>, "Substitute psym arg2 with series arg3.");
 	}
 
 	template <class T>

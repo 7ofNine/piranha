@@ -70,6 +70,10 @@ namespace piranha
 			struct sub_cache_selector {
 				typedef SubCachesCons type;
 			};
+			template <class, class SubCachesCons, class>
+			struct ei_sub_cache_selector {
+				typedef SubCachesCons type;
+			};
 			// Ctors.
 			explicit numerical_container(): m_value(0) {}
 			template <class ArgsTuple>
@@ -230,7 +234,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &p, const SubSeries &s, SubCaches &sc,
 				const ArgsTuple &a) const {
-				return sub(p,s,sc,a);
+				return sub<RetSeries>(p,s,sc,a);
 			}
 			/// Get value.
 			const T &value() const {

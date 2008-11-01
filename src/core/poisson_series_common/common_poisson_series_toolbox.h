@@ -30,6 +30,7 @@
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
+#include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -74,14 +75,6 @@ namespace piranha
 		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>
 	{
 			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
-			struct ei_sub_functor {
-				template <class RetSeries, class Element, class PosTuple, class SubSeries, class SubCaches,
-					class ArgsTuple>
-				static RetSeries run(const Element &e, const PosTuple &pos_tuple, const SubSeries &s,
-					SubCaches &sub_caches, const ArgsTuple &args_tuple) {
-					return e.template ei_sub<RetSeries>(pos_tuple, s, sub_caches, args_tuple);
-				}
-			};
 		public:
 			// NOTICE: move this into private?
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
@@ -199,34 +192,34 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-// 			template <class SubSeries>
-// 			Derived ei_sub(const psym &arg, const SubSeries &series) const {
-// 				typedef typename Derived::args_tuple_type args_tuple_type;
-// 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
-// 				typedef typename Derived::term_type::cf_type::
-// 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-// 					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
-// 					::type,args_tuple_type>::type sub_caches_type;
-// 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
-// 					boost::tuples::length<pos_tuple_type>::value,
-// 					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
-// 				Derived this_copy(*derived_const_cast);
-// 				SubSeries s_copy(series);
-// 				this_copy.merge_args(s_copy);
-// 				s_copy.merge_args(this_copy);
-// 				sub_caches_type sub_caches;
-// 				init_ei_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
-// 					&this_copy.m_arguments);
-// 				pos_tuple_type pos_tuple;
-// 				psym_p p(psyms::get_pointer(arg));
-// 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
-// 					this_copy.m_arguments);
-// 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple, s_copy,
-// 					sub_caches, this_copy.m_arguments));
-// 				retval.m_arguments = this_copy.m_arguments;
-// 				retval.trim();
-// 				return retval;
-// 			}
+			template <class SubSeries>
+			Derived ei_sub(const psym &arg, const SubSeries &series) const {
+				typedef typename Derived::args_tuple_type args_tuple_type;
+				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename Derived::term_type::cf_type::
+					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
+					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
+					::type,args_tuple_type>::type sub_caches_type;
+				p_static_check(boost::tuples::length<sub_caches_type>::value ==
+					boost::tuples::length<pos_tuple_type>::value,
+					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
+				Derived this_copy(*derived_const_cast);
+				SubSeries s_copy(series);
+				this_copy.merge_args(s_copy);
+				s_copy.merge_args(this_copy);
+				sub_caches_type sub_caches;
+				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
+					&this_copy.m_arguments);
+				pos_tuple_type pos_tuple;
+				psym_p p(psyms::get_pointer(arg));
+				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
+					this_copy.m_arguments);
+				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple, s_copy,
+					sub_caches, this_copy.m_arguments));
+				retval.m_arguments = this_copy.m_arguments;
+				retval.trim();
+				return retval;
+			}
 			template <class FourierSeries>
 			FourierSeries to_fs() const {
 				typedef typename Derived::const_iterator const_iterator;

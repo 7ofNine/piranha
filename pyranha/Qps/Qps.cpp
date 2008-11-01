@@ -43,6 +43,7 @@ BOOST_PYTHON_MODULE(_Qps)
 	celmec_instantiation(inst.first);
 	series_trigonometric_instantiation(inst.first);
 	series_sub_instantiation<qps, qps>(inst.first);
+	inst.first.def("ei_sub", py_series_ei_sub_psym_series<qps, std::complex<qps> >);
 	std::pair<class_<qpsc>, class_<qpsc::term_type> > instc(
 		series_basic_instantiation<qpsc>(std::string("qpsc"),
 										 std::string("Poisson series with complex arbitrary-precision rational coefficients.")));

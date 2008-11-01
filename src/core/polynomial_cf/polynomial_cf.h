@@ -62,6 +62,7 @@ namespace piranha
 			friend class POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class POLYNOMIAL_CF_MULT_ANCESTOR;
+			friend class POLYNOMIAL_CF_COMMON_ANCESTOR;
 			// Specify we will use the real_power from the common polynomial cf toolbox.
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
@@ -107,6 +108,7 @@ namespace std
 			friend class COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR;
 			friend class COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR;
+			friend class COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR;
 			friend class piranha::base_series_complex_toolbox<POLYNOMIAL_CF>;
 			// Specify we will use the real_power from the common polynomial cf toolbox.
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;

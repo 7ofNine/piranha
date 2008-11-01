@@ -25,9 +25,10 @@
 #include <vector>
 
 #include "../base_classes/cf_series.h"
-#include "../polynomial_common/common_polynomial_toolbox.h"
+#include "../common_functors.h"
 #include "../integer_typedefs.h"
 #include "../p_assert.h"
+#include "../polynomial_common/common_polynomial_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -39,6 +40,12 @@ namespace piranha
 	class common_polynomial_cf_toolbox: public common_polynomial_toolbox<Derived>
 	{
 		public:
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct ei_sub_cache_selector {
+				typedef typename Derived::term_type::cf_type::
+					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
+					template ei_sub_cache_selector<SubSeries,SubCachesCons,ArgsTuple>::type,ArgsTuple>::type type;
+			};
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			template <int TargetPos, class Cf, class ArgsTuple>
 			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
@@ -63,6 +70,15 @@ namespace piranha
 						res.first.push_back(it->m_cf);
 					}
 				}
+			}
+			template <class RetSeries, class PosTuple, class SubSeries,
+				class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &p, const SubSeries &s,
+				SubCaches &sc, const ArgsTuple &args_tuple) const
+			{
+				return derived_const_cast->template base_sub<RetSeries,ei_sub_functor>(
+					p,s,sc,args_tuple
+				);
 			}
 	};
 }

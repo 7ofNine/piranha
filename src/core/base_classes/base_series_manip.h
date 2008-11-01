@@ -248,7 +248,7 @@ namespace piranha
 			SubCaches &sub_caches, const ArgsTuple &args_tuple) const
 	{
 		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value),
-					   "Positional and arguments' tuples' lengths do not match in base_series::sub.");
+					   "Positional and arguments' tuples' lengths do not match.");
 		RetSeries retval;
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {

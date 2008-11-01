@@ -63,10 +63,22 @@ namespace piranha
 						this->m_container[1] = s;
 					}
 			};
+			// This is just a stub.
+			template <class SubSeries, class ArgsTuple>
+			class ei_sub_cache
+			{
+				public:
+					void setup(const SubSeries &, const ArgsTuple *) {}
+			};
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct ei_sub_cache_selector {
+				typedef boost::tuples::cons<ei_sub_cache<SubSeries,ArgsTuple>,
+					SubCachesCons> type;
+			};
 			// Ctors.
 			/// Default ctor.
 			expo_array(): ancestor::int_array() {}

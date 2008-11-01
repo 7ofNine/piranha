@@ -89,7 +89,8 @@ namespace piranha
 				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 1.;
 				for (size_t i = 0;i < w;++i) {
-					retval *= std::pow(args_tuple.template get<Derived::position>()[i]->eval(t), (*derived_const_cast)[i]);
+					retval *= std::pow(args_tuple.template get<Derived::position>()[i]->eval(t),
+						(*derived_const_cast)[i]);
 				}
 				return retval;
 			}
@@ -284,6 +285,11 @@ namespace piranha
 					retval.mult_by(tmp, args_tuple);
 				}
 				return retval;
+			}
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &, const SubSeries &, SubCaches &,
+				const ArgsTuple &args_tuple) const {
+				return key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 			}
 		protected:
 			expo_array_commons() {}

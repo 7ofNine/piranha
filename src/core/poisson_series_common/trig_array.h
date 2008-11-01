@@ -96,16 +96,33 @@ namespace piranha
 							default:
 								;
 						}
-						return ancestor::operator[](n);
+						return this->operator[](n);
 					}
 				private:
 					status 		m_status;
 					std::string	m_errmsg;
 			};
+			template <class SubSeries, class ArgsTuple>
+			class ei_sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
+			{
+					typedef int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+				public:
+					ei_sub_cache():ancestor::int_power_cache() {}
+					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
+						this->m_arith_functor.m_args_tuple = args_tuple;
+						this->m_container[0] = SubSeries(static_cast<max_fast_int>(1),*args_tuple);
+						this->m_container[1] = s;
+					}
+			};
 		public:
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct ei_sub_cache_selector {
+				typedef boost::tuples::cons<ei_sub_cache<SubSeries,ArgsTuple>,
+					SubCachesCons> type;
+			};
 			// Ctors.
 			/// Default ctor.
 			trig_array(): ancestor::int_array() {}

@@ -368,7 +368,6 @@ namespace piranha
 				}
 				return pow(1. / static_cast<double>(n), args_tuple);
 			}
-			// NOTE: here we are assuming that s is a top-level series.
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
 			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
@@ -413,6 +412,47 @@ namespace piranha
 						retval.add(orig_sin, args_tuple);
 						retval.mult_by(tmp_cos, args_tuple);
 						orig_cos.mult_by(tmp_sin, args_tuple);
+						retval.add(orig_cos, args_tuple);
+					}
+				}
+				return retval;
+			}
+			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &pos_tuple, const SubSeries &,
+				SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				typedef typename SubSeries::term_type sub_term_type;
+				typedef typename sub_term_type::cf_type sub_cf_type;
+				RetSeries retval;
+				// If the argument is not present here, the return series will have one term consisting
+				// of a unitary coefficient and this very trig_array.
+				if (!pos_tuple.template get<Derived::position>().first) {
+					retval.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple),
+						*derived_const_cast), args_tuple);
+				} else {
+					const size_t pos = pos_tuple.template get<Derived::position>().second;
+					p_assert(pos < derived_const_cast->size());
+					const SubSeries &tmp_ei = sub_caches.
+						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
+					Derived tmp_ta(*derived_const_cast);
+					RetSeries orig_cos, orig_sin;
+					tmp_ta[pos] = 0;
+					orig_cos.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
+						args_tuple);
+					tmp_ta.flavour() = false;
+					orig_sin.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
+						args_tuple);
+					p_assert(retval.empty());
+					if (derived_const_cast->flavour()) {
+						retval.add(orig_cos, args_tuple);
+						retval.mult_by(tmp_ei.real(args_tuple), args_tuple);
+						orig_sin.mult_by(tmp_ei.imag(args_tuple), args_tuple);
+						retval.subtract(orig_sin, args_tuple);
+					} else {
+						retval.add(orig_sin, args_tuple);
+						retval.mult_by(tmp_ei.real(args_tuple), args_tuple);
+						orig_cos.mult_by(tmp_ei.imag(args_tuple), args_tuple);
 						retval.add(orig_cos, args_tuple);
 					}
 				}
