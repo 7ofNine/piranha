@@ -96,7 +96,7 @@ namespace piranha
 							default:
 								;
 						}
-						return this->operator[](n);
+						return ancestor::operator[](n);
 					}
 				private:
 					status 		m_status;
