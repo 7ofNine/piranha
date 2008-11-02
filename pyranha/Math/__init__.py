@@ -152,6 +152,9 @@ def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = Non
 	
 	If emi_phi is provided, it will be used internally as exp(-i*phi) and phi will be assumed to mean exp(i*phi),
 	otherwise the routine will assume that phi is the longitude and it will try to calculate exp(-i*phi) on its own.
+
+	Other than n and m, which must always be integers, the arguments of this functions must be of homogeneous type
+	(i.e., all series or all numbers).
 	"""
 	if type(n) != int or type(m) != int:
 		raise ValueError("n and m must be integers.")

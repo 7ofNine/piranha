@@ -43,11 +43,13 @@ BOOST_PYTHON_MODULE(_Dps)
 	celmec_instantiation(inst.first);
 	series_trigonometric_instantiation(inst.first);
 	series_sub_instantiation<dps, dps>(inst.first);
+	series_ei_sub_instantiation<dps, dpsc>(inst.first);
 	inst.first.def("to_dfs", &dps::to_fs<dfs>, "Convert to dfs.");
 	std::pair<class_<dpsc>, class_<dpsc::term_type> > instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
 			std::string("Poisson series with complex double precision coefficients."));
 	common_poisson_series_instantiation(instc.first, "dpsc");
 	series_complex_instantiation(instc.first, inst.first);
 	series_sub_instantiation<dpsc, dps>(instc.first);
+	series_ei_sub_instantiation<dpsc, dpsc>(inst.first);
 	instc.first.def("to_dfsc", &dpsc::to_fs<dfsc>, "Convert to dfsc.");
 }

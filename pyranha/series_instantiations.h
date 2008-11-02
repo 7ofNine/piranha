@@ -255,6 +255,13 @@ namespace pyranha
 		inst.def("sub", &py_series_sub_psym_series<T, Series>, "Substitute psym arg2 with series arg3.");
 	}
 
+	template <class T, class Series>
+	inline void series_ei_sub_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("ei_sub", &py_series_ei_sub_psym_series<T, Series>, "Substitute complex exponential of psym "
+			"arg2 with series arg3 in trigonometric keys.");
+	}
+
 	template <class T>
 	inline void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
