@@ -21,6 +21,7 @@
 #ifndef PYRANHA_COMMONS_H
 #define PYRANHA_COMMONS_H
 
+#include <boost/lexical_cast.hpp>
 #include <boost/python/class.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <sstream>
@@ -106,6 +107,8 @@ namespace pyranha
 			template <class ArgsTuple>
 			static void run(const ArgsTuple &args_tuple, std::string &report) {
 				report += ArgsDescr::head_type::name;
+				report += ":";
+				report += boost::lexical_cast<std::string>(args_tuple.get_head().size());
 				report += "\n";
 				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(), report);
 			}

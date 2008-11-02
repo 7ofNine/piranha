@@ -149,22 +149,15 @@ def __decorate_args_tuples():
 				"""class %s(%s):
 						def __init__(self,series):
 							%s.__init__(self,series.__arguments__)
-							self.__args_descr = series.__arguments_description__.split()
+							self.__args_descr = series.__arguments_description__.split(\"\\n\")
 							self.__args_list = series.__arguments__.__repr__().split(\"\\n\")
+							self.__args_descr.pop()
 							self.__args_list.pop()
 						def __get_tuple__(self):
-							tmp_arg_list = [[int(x.split(None,1)[0]),x.split(None,1)[1]] for x in self.__args_list]
-							retval = []
-							n = 0
-							prev = None
-							for i in tmp_arg_list:
-								if i[0] <= prev:
-									n+=1
-								tmp = [self.__args_descr[n]]
-								tmp += i
-								retval.append(tuple(tmp))
-								prev = i[0]
-							return tuple(retval)
+							tmp = []
+							for i in self.__args_descr:
+								tmp.extend([i.split(":")[0]]*int(i.split(":")[1]))
+							return tuple([(i[0],i[1].split()[0],i[1].split()[1]) for i in zip(tmp,self.__args_list)])
 						def __repr__(self):
 							retval = \"\"
 							for i in self.__get_tuple__():
