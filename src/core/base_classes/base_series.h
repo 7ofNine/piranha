@@ -129,11 +129,11 @@ namespace piranha
 		protected:
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
-				template <class RetSeries, class Element, class PosTuple, class SubSeries, class SubCaches,
+				template <class RetSeries, class Element, class PosTuple, class SubCaches,
 					class ArgsTuple>
-				static RetSeries run(const Element &e, const PosTuple &pos_tuple, const SubSeries &s,
+				static RetSeries run(const Element &e, const PosTuple &pos_tuple,
 					SubCaches &sub_caches, const ArgsTuple &args_tuple) {
-					return e.template sub<RetSeries>(pos_tuple, s, sub_caches, args_tuple);
+					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
 				}
 			};
 			static const char separator = Separator;
@@ -174,9 +174,8 @@ namespace piranha
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
-			template <class RetSeries, class SubFunctor, class PosTuple, class SubSeries,
-				class SubCaches, class ArgsTuple>
-			RetSeries base_sub(const PosTuple &, const SubSeries &, SubCaches &, const ArgsTuple &) const;
+			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
 		private:
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);

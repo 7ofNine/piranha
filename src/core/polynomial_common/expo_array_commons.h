@@ -258,13 +258,11 @@ namespace piranha
 				}
 				return true;
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &, SubCaches &sub_caches,
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches,
 				const ArgsTuple &args_tuple) const {
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
-				typedef typename SubSeries::term_type sub_term_type;
-				typedef typename sub_term_type::cf_type sub_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
@@ -273,8 +271,6 @@ namespace piranha
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					p_assert(pos < derived_const_cast->size());
-					const SubSeries &tmp = sub_caches.
-						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
 					Derived tmp_ea(*derived_const_cast);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
@@ -282,12 +278,14 @@ namespace piranha
 					p_assert(retval.empty());
 					// NOTICE: series multadd here?
 					retval.add(orig, args_tuple);
-					retval.mult_by(tmp, args_tuple);
+					retval.mult_by(sub_caches.template get<Derived::position>()
+						[static_cast<max_fast_int>((*derived_const_cast)[pos])],
+					args_tuple);
 				}
 				return retval;
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &, const SubSeries &, SubCaches &,
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &, SubCaches &,
 				const ArgsTuple &args_tuple) const {
 				return key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 			}

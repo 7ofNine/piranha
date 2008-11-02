@@ -225,16 +225,14 @@ namespace piranha
 			Derived besselJ(const max_fast_int &, const ArgsTuple &) const {
 				throw unsuitable("besselJ is not implemented for this coefficient type.");
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &, const SubSeries &, SubCaches &,
-				const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const {
 				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::
 					template run<RetSeries>(*derived_const_cast, args_tuple);
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, const SubSeries &s, SubCaches &sc,
-				const ArgsTuple &a) const {
-				return sub<RetSeries>(p,s,sc,a);
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const {
+				return sub<RetSeries>(p,s,a);
 			}
 			/// Get value.
 			const T &value() const {

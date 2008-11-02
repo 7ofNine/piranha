@@ -71,13 +71,11 @@ namespace piranha
 					}
 				}
 			}
-			template <class RetSeries, class PosTuple, class SubSeries,
-				class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, const SubSeries &s,
-				SubCaches &sc, const ArgsTuple &args_tuple) const
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &args_tuple) const
 			{
 				return derived_const_cast->template base_sub<RetSeries,ei_sub_functor>(
-					p,s,sc,args_tuple
+					p,s,args_tuple
 				);
 			}
 	};

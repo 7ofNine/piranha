@@ -79,11 +79,11 @@ namespace piranha
 	};
 
 	struct ei_sub_functor {
-		template <class RetSeries, class Element, class PosTuple, class SubSeries, class SubCaches,
+		template <class RetSeries, class Element, class PosTuple, class SubCaches,
 			class ArgsTuple>
-		static RetSeries run(const Element &e, const PosTuple &pos_tuple, const SubSeries &s,
+		static RetSeries run(const Element &e, const PosTuple &pos_tuple,
 			SubCaches &sub_caches, const ArgsTuple &args_tuple) {
-			return e.template ei_sub<RetSeries>(pos_tuple, s, sub_caches, args_tuple);
+			return e.template ei_sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
 		}
 	};
 }

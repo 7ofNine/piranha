@@ -28,6 +28,7 @@
 #include <utility> // For std::pair.
 #include <vector>
 
+#include "../base_classes/series_builders.h"
 #include "../config.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -275,8 +276,8 @@ namespace piranha
 			std::pair<int, Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
 				std::pair<int, Derived> retval(0, Derived());
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
-				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
-				// by the coefficient in the partial derivation of the whole term.
+				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
+				// multiplied by the coefficient in the partial derivation of the whole term.
 				if (pos_tuple.template get<Derived::position>().first) {
 					retval.second = *derived_const_cast;
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
@@ -370,60 +371,55 @@ namespace piranha
 			}
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, const SubSeries &,
-				SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
-				typedef typename SubSeries::term_type sub_term_type;
-				typedef typename sub_term_type::cf_type sub_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple),
-						*derived_const_cast), args_tuple);
+					retval = key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
+					const max_fast_int power = static_cast<max_fast_int>((*derived_const_cast)[pos]);
 					p_assert(pos < derived_const_cast->size());
-					const std::complex<SubSeries> &tmp_ei = sub_caches.
-						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
-					const SubSeries tmp_cos(tmp_ei.real(args_tuple)), tmp_sin(tmp_ei.imag(args_tuple));
 					Derived tmp_ta(*derived_const_cast);
-					SubSeries orig_cos, orig_sin;
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
 					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
-					// NOTICE: use key builder here instead?
-					orig_cos.insert(sub_term_type(sub_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
-						args_tuple);
+					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					// Build the orig_sin series.
 					tmp_ta.flavour() = false;
-					orig_sin.insert(sub_term_type(sub_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
-						args_tuple);
+					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
 						retval.add(orig_cos, args_tuple);
-						retval.mult_by(tmp_cos, args_tuple);
-						orig_sin.mult_by(tmp_sin, args_tuple);
+						retval.mult_by(
+							sub_caches.template get<Derived::position>()[power].real(args_tuple),
+						args_tuple);
+						orig_sin.mult_by(
+							sub_caches.template get<Derived::position>()[power].imag(args_tuple),
+						args_tuple);
 						retval.subtract(orig_sin, args_tuple);
 					} else {
 						retval.add(orig_sin, args_tuple);
-						retval.mult_by(tmp_cos, args_tuple);
-						orig_cos.mult_by(tmp_sin, args_tuple);
+						retval.mult_by(
+							sub_caches.template get<Derived::position>()[power].real(args_tuple),
+						args_tuple);
+						orig_cos.mult_by(
+							sub_caches.template get<Derived::position>()[power].imag(args_tuple),
+						args_tuple);
 						retval.add(orig_cos, args_tuple);
 					}
 				}
 				return retval;
 			}
-			template <class RetSeries, class PosTuple, class SubSeries, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &pos_tuple, const SubSeries &,
-				SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
-				typedef typename SubSeries::term_type sub_term_type;
-				typedef typename sub_term_type::cf_type sub_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
@@ -432,9 +428,8 @@ namespace piranha
 						*derived_const_cast), args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
+					const max_fast_int power = static_cast<max_fast_int>((*derived_const_cast)[pos]);
 					p_assert(pos < derived_const_cast->size());
-					const SubSeries &tmp_ei = sub_caches.
-						template get<Derived::position>()[static_cast<max_fast_int>((*derived_const_cast)[pos])];
 					Derived tmp_ta(*derived_const_cast);
 					RetSeries orig_cos, orig_sin;
 					tmp_ta[pos] = 0;
@@ -446,13 +441,21 @@ namespace piranha
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
 						retval.add(orig_cos, args_tuple);
-						retval.mult_by(tmp_ei.real(args_tuple), args_tuple);
-						orig_sin.mult_by(tmp_ei.imag(args_tuple), args_tuple);
+						retval.mult_by(
+							sub_caches.template get<Derived::position>()[power].real(args_tuple),
+						args_tuple);
+						orig_sin.mult_by(
+							sub_caches.template get<Derived::position>()[power].imag(args_tuple),
+						args_tuple);
 						retval.subtract(orig_sin, args_tuple);
 					} else {
 						retval.add(orig_sin, args_tuple);
-						retval.mult_by(tmp_ei.real(args_tuple), args_tuple);
-						orig_cos.mult_by(tmp_ei.imag(args_tuple), args_tuple);
+						retval.mult_by(
+							sub_caches.template get<Derived::position>()[power].real(args_tuple),
+						args_tuple);
+						orig_cos.mult_by(
+							sub_caches.template get<Derived::position>()[power].imag(args_tuple),
+						args_tuple);
 						retval.add(orig_cos, args_tuple);
 					}
 				}
@@ -483,7 +486,8 @@ namespace piranha
 				} else if (*sd.back().c_str() == 'c') {
 					derived_cast->m_flavour = true;
 				} else {
-					std::cout << "Warning: undefined flavour '" << sd.back() << "', defaulting to cosine." << std::endl;
+					std::cout << "Warning: undefined flavour '" << sd.back() <<
+						"', defaulting to cosine." << std::endl;
 					derived_cast->m_flavour = true;
 				}
 			}

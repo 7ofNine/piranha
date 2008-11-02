@@ -186,7 +186,7 @@ namespace piranha
 				psym_p p(psyms::get_pointer(arg));
 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
 					this_copy.m_arguments);
-				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, s_copy,
+				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
 				retval.trim();
@@ -214,7 +214,7 @@ namespace piranha
 				psym_p p(psyms::get_pointer(arg));
 				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
 					this_copy.m_arguments);
-				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple, s_copy,
+				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
 				retval.trim();
