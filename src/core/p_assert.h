@@ -33,6 +33,9 @@
 	{ \
 		std::ostringstream tmp;\
 		tmp << "Assertion failed at: " << __FILE__ << ", " << __LINE__ << ".\n"; \
+		tmp << "Assertion failures should not happen and denote a bug.\n"; \
+		tmp << "Please help us correct the problem by sending a bug report to piranha-psm@googlegroups.com\n"; \
+		tmp << "providing as many details as possible. Thanks!\n"; \
 		throw piranha::assertion_failure(tmp.str()); \
 	}
 #else
