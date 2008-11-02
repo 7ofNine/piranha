@@ -387,6 +387,9 @@ namespace piranha
 					Derived tmp_ta(*derived_const_cast);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
+					// NOTE: important: we need key builders here because we may be building RetSeries
+					// whose key is _not_ a trig_array, in principle, so we cannot build a term consisting
+					// of a trig_array and unity coefficient and simply insert it.
 					// Build the orig_cos series.
 					tmp_ta.flavour() = true;
 					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
@@ -411,6 +414,8 @@ namespace piranha
 						orig_cos.mult_by(
 							sub_caches.template get<Derived::position>()[power].imag(args_tuple),
 						args_tuple);
+						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
+						// Below too...
 						retval.add(orig_cos, args_tuple);
 					}
 				}
@@ -421,23 +426,18 @@ namespace piranha
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				// If the argument is not present here, the return series will have one term consisting
-				// of a unitary coefficient and this very trig_array.
 				if (!pos_tuple.template get<Derived::position>().first) {
-					retval.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple),
-						*derived_const_cast), args_tuple);
+					retval = key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
 					const max_fast_int power = static_cast<max_fast_int>((*derived_const_cast)[pos]);
 					p_assert(pos < derived_const_cast->size());
 					Derived tmp_ta(*derived_const_cast);
-					RetSeries orig_cos, orig_sin;
 					tmp_ta[pos] = 0;
-					orig_cos.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
-						args_tuple);
+					tmp_ta.flavour() = true;
+					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					tmp_ta.flavour() = false;
-					orig_sin.insert(ret_term_type(ret_cf_type(static_cast<max_fast_int>(1), args_tuple), tmp_ta),
-						args_tuple);
+					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
 						retval.add(orig_cos, args_tuple);
