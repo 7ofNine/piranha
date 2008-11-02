@@ -173,11 +173,11 @@ namespace piranha
 					ccb2(eib2.real()),
 					csb2(eib2.imag());
 				final_factor *= einpi2(-m);
-				mult_by_factorial(final_factor,n+m);
+				final_factor *= final_factor.factorial(n+m);
 				for (max_fast_int k = -n; k <= n; ++k) {
 					std::complex<Derived> tmp(ca[-k]);
 					tmp *= einpi2(k);
-					mult_by_factorial(tmp,n-k);
+					tmp *= tmp.factorial(n-k);
 					tmp *= cp[k];
 					tmp *= cos_t.Pnm(n,k,sin_t);
 					Derived tmp2;
@@ -186,10 +186,10 @@ namespace piranha
 						Derived tmp3(ccb2[n*2-m+k-t*2]);
 						tmp3 *= csb2[m-k+t*2];
 						tmp3 *= cs_phase(t);
-						div_by_factorial(tmp3,t);
-						div_by_factorial(tmp3,n+k-t);
-						div_by_factorial(tmp3,n-m-t);
-						div_by_factorial(tmp3,m-k+t);
+						tmp3 *= tmp3.factorial(t).inv();
+						tmp3 *= tmp3.factorial(n+k-t).inv();
+						tmp3 *= tmp3.factorial(n-m-t).inv();
+						tmp3 *= tmp3.factorial(m-k+t).inv();
 						tmp2 += tmp3;
 					}
 					tmp *= tmp2;
@@ -201,21 +201,6 @@ namespace piranha
 			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m, const Derived &theta,
 				const Derived &phi, const Derived &alpha, const Derived &beta, const Derived &gamma) {
 				return Ynm(n,m,theta,phi.ei(),(phi * static_cast<max_fast_int>(-1)).ei(),alpha,beta,gamma);
-			}
-		private:
-			template <class T>
-			static void mult_by_factorial(T &x, const max_fast_int &n) {
-				p_assert(n >= 0);
-				for (max_fast_int i = 2; i <= n; ++i) {
-					x *= i;
-				}
-			}
-			template <class T>
-			static void div_by_factorial(T &x, const max_fast_int &n) {
-				p_assert(n >= 0);
-				for (max_fast_int i = 2; i <= n; ++i) {
-					x /= i;
-				}
 			}
 	};
 }
