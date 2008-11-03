@@ -45,7 +45,7 @@
 #include <boost/mpl/greater.hpp>
 #include <boost/mpl/equal_to.hpp>
 
-#include <cmath>
+#include <boost/config/no_tr1/cmath.hpp>
 #include <algorithm>
 
 #ifdef BOOST_MATH_INSTRUMENT
@@ -1417,7 +1417,7 @@ inline typename tools::promote_args<T1, T2>::type
 }
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type 
-   tgamma_ratio(T1 a, T2 b, const Policy&)
+   tgamma_ratio(T1 a, T2 b, const Policy& )
 {
    typedef typename tools::promote_args<T1, T2>::type result_type;
    typedef typename policies::evaluation<result_type, Policy>::type value_type;

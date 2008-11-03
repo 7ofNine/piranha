@@ -35,7 +35,11 @@ int main()
 		(e*th.cos()+max_fast_int(1)).pow(max_fast_int(-1)).sub(psyms::get("th"),ph.pow(max_fast_int(2)));
 	}
 
+	int retval = 0;
 	psym x("x"), y("y"), z("z");
 	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(max_fast_int(40));
-	return !(g.sub(x,zpoly(x)+max_fast_int(1)).sub(x,zpoly(x)-max_fast_int(1)) == g);
+	retval += !(g.sub(x,zpoly(x)+max_fast_int(1)).sub(x,zpoly(x)-max_fast_int(1)) == g);
+	retval += (qps(x).cos().ei_sub(x,qpsc(std::complex<max_fast_int>(1,0))) != max_fast_int(1));
+	retval += (qps(x).sin().ei_sub(x,qpsc(std::complex<max_fast_int>(1,0))) != max_fast_int(0));
+	return retval;
 }
