@@ -63,3 +63,4 @@
   Search and de-uglify if needed.
 - many tests for known equalities involving special functions!
 - change names: base function become with suffix "_" and polynomials become laurent series.
+
