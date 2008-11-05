@@ -50,6 +50,6 @@ BOOST_PYTHON_MODULE(_Dps)
 	common_poisson_series_instantiation(instc.first, "dpsc");
 	series_complex_instantiation(instc.first, inst.first);
 	series_sub_instantiation<dpsc, dps>(instc.first);
-	series_ei_sub_instantiation<dpsc, dpsc>(inst.first);
+	series_ei_sub_instantiation<dpsc, dpsc>(instc.first);
 	instc.first.def("to_dfsc", &dpsc::to_fs<dfsc>, "Convert to dfsc.");
 }
