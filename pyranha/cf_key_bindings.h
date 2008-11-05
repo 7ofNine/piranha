@@ -50,8 +50,8 @@ namespace pyranha
 	inline typename CfKey::eval_type py_cfkey_eval(const CfKey &cfkey, const double &t)
 	{
 		if (!cfkey.is_insertable(piranha::shared_args::get())) {
-			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the time evaluation "
-				"of this coefficient/key.");
+			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation "
+				"of the time evaluation of this coefficient/key.");
 		}
 		return cfkey.eval(t,piranha::shared_args::get());
 	}
@@ -98,7 +98,8 @@ namespace pyranha
 	{
 		boost::python::class_<IntArrayKey> retval(name.c_str(), descr.c_str());
 		retval.def("__getitem__", &py_vector_getitem<IntArrayKey>);
-		retval.add_property("norm", py_cfkey_norm<IntArrayKey>);
+		retval.add_property("norm", py_cfkey_norm<IntArrayKey>, "Norm.");
+		retval.def("eval", &py_cfkey_eval<IntArrayKey>, "Time evaluation.");
 		return retval;
 	}
 
