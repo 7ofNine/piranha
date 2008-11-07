@@ -25,7 +25,7 @@
         <GUIConfig name="Auto-detection">yes</GUIConfig>
         <GUIConfig name="CheckHistoryFiles">no</GUIConfig>
         <GUIConfig name="TrayIcon">no</GUIConfig>
-        <GUIConfig name="RememberLastSession">no</GUIConfig>
+        <GUIConfig name="RememberLastSession">yes</GUIConfig>
         <!--
 			New Document default settings :
 				format = 0/1/2 -> win/unix/mac

@@ -50,6 +50,7 @@
 		<KeyWord name="color" />
 		<KeyWord name="cols" />
 		<KeyWord name="colspan" />
+		<KeyWord name="comment" />
 		<KeyWord name="compact" />
 		<KeyWord name="content" />
 		<KeyWord name="coords" />
@@ -70,6 +71,7 @@
 		<KeyWord name="dl" />
 		<KeyWord name="dt" />
 		<KeyWord name="em" />
+		<KeyWord name="embed" />
 		<KeyWord name="enctype" />
 		<KeyWord name="event" />
 		<KeyWord name="face" />
