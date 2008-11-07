@@ -1,12 +1,3 @@
-2008.11.05 a4b3750a03392467e72038afcf4586d3af995214
-
-* Expose the evaluation of keys in Pyranha.
-* Implement complex exponential substitution.
-* Updated boost to 1.37.0.
-* Fix erroneous reporting of argument types.
-* Add conjugate() and abs() methods for complex series, and inv() for series inversion.
-* Fix two potential bugs in symbol substitution for Poisson series.
-
 2008.10.14 090e5e352c8b1380cd8fbda97113d97a53221173
 
 * Eliminate the need for proxies, now that blocked multiplication is in place.
