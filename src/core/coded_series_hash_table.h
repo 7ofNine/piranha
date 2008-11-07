@@ -50,7 +50,7 @@ namespace piranha
 				prime	= 1,
 			};
 			// Configuration options.
-			static const size_t bucket_size		= 6;
+			static const size_t bucket_size		= 12;
 			static const size_t min_size_index	= 0;
 			// Number of extra buckets.
 			static const size_t neb				= 20;
@@ -245,6 +245,35 @@ namespace piranha
 				++m_length;
 				return true;
 			}
+			// Insertion routine that won't check for equal key.
+			bool unchecked_insertion(const key_type &key) {
+				const size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
+				p_assert(vector_pos < sizes[m_size_policy][m_size_index]);
+				bucket_type &bucket = m_container[vector_pos];
+				// Now check for an available slot in the bucket.
+				for (size_t i = 0; i < bucket_size; ++i) {
+					// If the slot in the bucket is not taken we can place the key here.
+					if (!bucket.f[i]) {
+						bucket.f[i] = true;
+						bucket.t[i] = key;
+						return true;
+					}
+				}
+				// Examined all the elements in the destination bucket. Examine the extra buckets.
+				const size_t vector_size = sizes[m_size_policy][m_size_index];
+				bucket_type *extra_bucket = m_container + vector_size;
+				for (size_t b = 0; b < neb; ++b) {
+					for (size_t i = 0; i < bucket_size; ++i) {
+						if (!extra_bucket[b].f[i]) {
+							extra_bucket[b].f[i] = true;
+							extra_bucket[b].t[i] = key;
+							return true;
+						}
+					}
+				}
+				// All the elements of the extra buckets were taken and we could not perform insertion.
+				return false;
+			}
 			// Increase size of the container to the next size.
 			void increase_size() {
 				const double load_factor = static_cast<double>(m_length) / sizes[m_size_policy][m_size_index];
@@ -264,10 +293,7 @@ namespace piranha
 				iterator it = it_i;
 				size_t count = 0;
 				while (it != it_f) {
-					// TODO: faster unchecked insertion here.
-					const std::pair<bool,iterator> res = new_ht.find(*it);
-					p_assert(!res.first);
-					if (!new_ht.attempt_insertion(*it,res.second)) {
+					if (!new_ht.unchecked_insertion(*it)) {
 						// NOTICE: here maybe we can use swapping instead of copying. The only problem is that
 						// resizing can fail. In that case, we should swap back everything, if possible, and re-attempt
 						// the resize with a bigger value.
