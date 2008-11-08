@@ -280,17 +280,12 @@ namespace pyranha
 	}
 
 #define __celmec_inst(arg) \
-	inst.def(#arg,from_series(&T::arg),arg##_docstring) \
-	.def(#arg,from_psym(&T::arg),arg##_docstring) \
-	.def(#arg,from_name(&T::arg),arg##_docstring) \
+	inst.def(#arg,&T::arg,arg##_docstring) \
 	.staticmethod(#arg);
 
 	template <class T>
 	inline void celmec_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T(*from_series)(const T &, const T &);
-		typedef T(*from_psym)(const piranha::psym &, const piranha::psym &);
-		typedef T(*from_name)(const std::string &, const std::string &);
 		const char *r_a_docstring = "Elliptic expansion of r / a in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *cos_f_docstring = "Elliptic expansion of cos(f) in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *sin_f_docstring = "Elliptic expansion of sin(f) in terms of eccentricity arg2 and mean anomaly arg3.";
@@ -298,12 +293,15 @@ namespace pyranha
 		const char *sin_E_docstring = "Elliptic expansion of sin(E) in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *EE_docstring = "Elliptic expansion of E (solution of Kepler's equation) "
 			"in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *eipE_docstring = "Elliptic expansion of exp(i*p*E) in terms of eccentricity arg2 and mean anomaly arg3, "
+			"with p = arg4.";
 		__celmec_inst(r_a);
 		__celmec_inst(cos_f);
 		__celmec_inst(sin_f);
 		__celmec_inst(cos_E);
 		__celmec_inst(sin_E);
 		__celmec_inst(EE);
+		__celmec_inst(eipE);
 	}
 
 #undef __celmec_inst

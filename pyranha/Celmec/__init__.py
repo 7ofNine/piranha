@@ -72,6 +72,15 @@ def EE(e,M):
 	except AttributeError:
 		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an E method."
 
+def eipE(e,M,p = 1):
+	"""
+	Calculate the elliptic expansion of exp[i*p*E] in terms of e and M.
+	"""
+	try:
+		return __pyranha.ds.eipE(e,M,p)
+	except AttributeError:
+		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an eipE method."
+
 def cos_psi():
 	"""
 	Calculate the expansion of cos(psi) in terms of the classical orbital elements:

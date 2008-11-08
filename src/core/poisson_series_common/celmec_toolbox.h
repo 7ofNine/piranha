@@ -163,47 +163,82 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
-// 			static std::complex<Derived> eiE(const Derived &e, const Derived &M, const max_fast_int p = 0) {
-// 				// S1
-// 				std::complex<Derived> S1;
-// 				if (p > 0) {
-// 					for (max_fast_int n = 1; n < p; ++n) {
-// 						std::complex<Derived> tmp = (M * n).ei();
-// 						tmp *= (e * n).besselJ(p - n);
-// 						tmp /= n;
-// 						tmp *= cs_phase(p - n);
-// 						S1 += tmp;
-// 					}
-// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
-// 						e.m_arguments,0,2);
-// 					for (max_fast_int n = p; n <= limit; ++n) {
-// 						std::complex<Derived> tmp = (M * n).ei();
-// 						tmp *= (e * n).besselJ(n - p);
-// 						tmp /= n;
-// 						S1 += tmp;
-// 					}
-// 				} else {
-// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
-// 						e.m_arguments,1 - p,2);
-// 					for (max_fast_int n = 1; n <= limit; ++n) {
-// 						std::complex<Derived> tmp = (M * n).ei();
-// 						tmp *= (e * n).besselJ(n - p);
-// 						tmp /= n;
-// 					}
-// 				}
-// 				S1 *= p;
-// 				// S2
-// 				std::complex<Derived> S2;
-// 				if (p > 0) {
-// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
-// 						e.m_arguments,1 + p,2);
-// 					for (max_fast_int n = 1; n < limit; ++n) {
-// 
-// 					}
-// 				} else {
-// 
-// 				}
-// 			}
+			static std::complex<Derived> eipE(const Derived &e, const Derived &M, const max_fast_int &p) {
+				// S1
+				std::complex<Derived> S1;
+				if (p > 0) {
+					for (max_fast_int n = 1; n < p; ++n) {
+						std::complex<Derived> tmp = (M * n).ei();
+						tmp *= (e * n).besselJ(p - n);
+						tmp /= n;
+						tmp *= cs_phase(p - n);
+						S1 += tmp;
+					}
+					const max_fast_int iter = e.psi();
+					for (max_fast_int n = p; n < p + iter; ++n) {
+						std::complex<Derived> tmp = (M * n).ei();
+						tmp *= (e * n).besselJ(n - p);
+						tmp /= n;
+						S1 += tmp;
+					}
+				} else {
+					const max_fast_int iter = e.psi(1 - p);
+					for (max_fast_int n = 1; n <= iter; ++n) {
+						std::complex<Derived> tmp = (M * n).ei();
+						tmp *= (e * n).besselJ(n - p);
+						tmp /= n;
+						S1 += tmp;
+					}
+				}
+				S1 *= p;
+				// S2
+				std::complex<Derived> S2;
+				if (p > 0) {
+					const max_fast_int iter = e.psi(1 + p);
+					for (max_fast_int n = 1; n <= iter; ++n) {
+						std::complex<Derived> tmp = (M * -n).ei();
+						tmp *= (e * -n).besselJ(n + p);
+						tmp *= cs_phase(n + p);
+						tmp /= n;
+						S2 += tmp;
+					}
+				} else {
+					for (max_fast_int n = 1; n < -p; ++n) {
+						std::complex<Derived> tmp = (M * -n).ei();
+						tmp *= (e * -n).besselJ(-n - p);
+						tmp /= n;
+						S2 += tmp;
+					}
+					const max_fast_int iter = e.psi();
+					for (max_fast_int n = -p; n < -p + iter; ++n) {
+						std::complex<Derived> tmp = (M * -n).ei();
+						tmp *= (e * -n).besselJ(n + p);
+						tmp *= cs_phase(n + p);
+						tmp /= n;
+						S2 += tmp;
+					}
+				}
+				S2 *= -p;
+				// c0
+				Derived c0;
+				switch (p) {
+					case 0:
+						c0 = Derived(max_fast_int(1));
+						break;
+					case 1:
+						c0 = Derived(e / max_fast_int(-2));
+						break;
+					case -1:
+						c0 = Derived(e / max_fast_int(-2));
+						break;
+					default:
+						;
+				}
+				// Compose the various parts and return.
+				S1 += S2;
+				S1 += c0;
+				return S1;
+			}
 	};
 }
 
