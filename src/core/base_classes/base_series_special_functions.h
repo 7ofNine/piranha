@@ -57,14 +57,14 @@ namespace piranha
 				}
 				const max_fast_int order = (order_ >= 0) ? order_ : -order_;
 				// Get the expansion limit from the truncator.
-				size_t limit;
+				size_t limit_;
 				try {
-					limit = Derived::multiplier_type::truncator_type::power_series_limit(
-								*derived_const_cast, args_tuple, order, 2);
+					limit_ = derived_const_cast->psi_(order, 2, args_tuple);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable as argument of "
 						"Bessel function of the first kind.\nThe reported error is: ") + u.what());
 				}
+				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
 				retval = *derived_const_cast;
 				retval.divide_by(max_fast_int(2), args_tuple);
@@ -72,10 +72,10 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
 				retval = retval.pow(order, args_tuple);
-				retval.mult_by(Derived::factorial(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
+				retval.mult_by(Derived::factorial(order,args_tuple).inv_(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
-				for (size_t i = 1; i <= limit; ++i) {
+				for (size_t i = 1; i < limit; ++i) {
 					tmp.mult_by(max_fast_int(-1), args_tuple);
 					tmp.divide_by(max_fast_int(i*(i + order)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
@@ -95,15 +95,15 @@ namespace piranha
 									 "strictly positive orders.");
 				}
 				// Get the expansion limit from the truncator.
-				size_t limit;
+				size_t limit_;
 				try {
-					limit = Derived::multiplier_type::truncator_type::power_series_limit(*derived_const_cast,
-							args_tuple, order - 1, 2);
+					limit_ = derived_const_cast->psi_(order - 1, 2, args_tuple);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable as argument of the derivative of "
 												 "Bessel function of the first kind.\nThe reported error is: ")
 									 + u.what());
 				}
+				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
 				Derived retval(*derived_const_cast);
 				retval.divide_by(max_fast_int(2), args_tuple);
@@ -118,7 +118,7 @@ namespace piranha
 				retval.divide_by((max_fast_int)2, args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
-				for (size_t i = 1; i <= limit; ++i) {
+				for (size_t i = 1; i < limit; ++i) {
 					tmp.mult_by((max_fast_int)(-1)*(max_fast_int)(order + 2*i), args_tuple);
 					tmp.divide_by((max_fast_int)(i*(i + order))*(max_fast_int)(order + 2*(i - 1)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
@@ -144,15 +144,15 @@ namespace piranha
 					return retval;
 				}
 				// Get the expansion limit from the truncator.
-				size_t limit;
+				size_t limit_;
 				try {
-					limit = Derived::multiplier_type::truncator_type::power_series_limit(*derived_const_cast,
-							args_tuple, order - m, 2);
+					limit_ = derived_const_cast->psi_(order - m, 2, args_tuple);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function "
 						"of the first kind divided by its argument raised to unsigned integer power.\n"
 						"The reported error is: ") + u.what());
 				}
+				const size_t limit = limit_;
 				// Now we build the starting point of the power series expansion of Jn/x**m.
 				retval = *derived_const_cast;
 				retval.divide_by(max_fast_int(2), args_tuple);
@@ -160,10 +160,10 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
 				retval = retval.pow((max_fast_int)order - m, args_tuple);
-				retval.mult_by(Derived::factorial(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
+				retval.mult_by(Derived::factorial(order,args_tuple).inv_(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
-				for (size_t i = 1; i <= limit; ++i) {
+				for (size_t i = 1; i < limit; ++i) {
 					tmp.mult_by(max_fast_int(-1), args_tuple);
 					tmp.divide_by(max_fast_int(i*(i + order)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);

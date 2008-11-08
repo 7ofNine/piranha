@@ -141,12 +141,12 @@ def __series_plot(self, *args, **kwargs):
 	plot_iteratable = map(f,plot_iteratable)
 	plot_func(range(len(plot_iteratable)),plot_iteratable,*args,**kwargs)
 
-def __series_psl(self, n = 0, s = 1):
+def __series_psi(self, n = 0, s = 1):
 	"""
 	Return the limit of the power series expansion compatible with the truncator currently in use by the series.
 	The optional arguments are the starting degree (n) and the step size (s) of the power series expansion.
 	"""
-	return self.__psl__(n,s)
+	return self.__psi__(n,s)
 
 def __add_method(module_name,method_name,function):
 	exec "import %s as __cur_manip" % module_name
@@ -171,7 +171,7 @@ def __enhance_manipulators():
 		__add_method(i, "filter", __series_filter)
 		__add_property(i, "arguments", __series_arguments)
 		__add_method(i, "plot", __series_plot)
-		__add_method(i, "psl", __series_psl)
+		__add_method(i, "psi", __series_psi)
 
 __enhance_manipulators()
 

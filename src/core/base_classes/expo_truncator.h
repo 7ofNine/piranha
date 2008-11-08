@@ -64,10 +64,10 @@ namespace piranha
 			static void unset(const psym &p) {
 				generic_unset(p);
 			}
-			// Limit of a power series development of a power series.
+			// Number of iterations of a power series development of a power series.
 			template <class PowerSeries, class ArgsTuple>
-			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &args_tuple,
-											 const int &start = 0, const int &step_size = 1) {
+			static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
+				const ArgsTuple &args_tuple) {
 				if (step_size < 1) {
 					throw unsuitable("Please use a step size of at least 1.");
 				}
@@ -108,7 +108,7 @@ namespace piranha
 					}
 				}
 				// The biggest limit is the one that defines the length of the power series expansion.
-				size_t retval = *(std::max_element(power_limits.begin(), power_limits.end()));
+				size_t retval = *(std::max_element(power_limits.begin(), power_limits.end())) + 1;
 				__PDEBUG(std::cout << "Calculated limit for power series of power series: " << retval << '\n');
 				return retval;
 			}

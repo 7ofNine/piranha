@@ -46,12 +46,12 @@ namespace piranha
 			static bool is_effective() {
 				return m_effective;
 			}
-			// Limit of a power series development of a power series according to its minimum degree.
+			// Number of a iterations of a power series development of a power series.
 			// NOTE: if start is negative, it is assumed that negative powers of the input series
 			// have a minimum degree which is proportional to the input series' and with its sign changed.
 			template <class PowerSeries, class ArgsTuple>
-			static size_t power_series_limit(const PowerSeries &s, const ArgsTuple &,
-											 const int &start = 0, const int &step_size = 1) {
+			static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
+				const ArgsTuple &) {
 				if (step_size < 1) {
 					throw unsuitable("Please use a step size of at least 1.");
 				}
@@ -72,8 +72,8 @@ namespace piranha
 					throw unsuitable("Cannot calculate the limit of a power series expansion "
 						"if the minimum degree limit is negative.");
 				}
-				const double tmp((static_cast<double>(m_degree_limit) / min_degree - start) /
-					static_cast<double>(step_size));
+				const double tmp  = (static_cast<double>(m_degree_limit) / min_degree - start) /
+					static_cast<double>(step_size) + 1;
 				if (tmp >= 0) {
 					return static_cast<size_t>(std::ceil(tmp));
 				} else {
@@ -122,7 +122,8 @@ namespace piranha
 					}
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
-						return (t1.template get<expo_term_pos>().min_degree() + t2.template get<expo_term_pos>().min_degree() >
+						return (t1.template get<expo_term_pos>().min_degree() +
+								t2.template get<expo_term_pos>().min_degree() >
 								m_degree_limit);
 					}
 				protected:

@@ -68,6 +68,12 @@ namespace piranha
 	{
 		return derived_const_cast->norm(m_arguments);
 	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const max_fast_int &start, const max_fast_int &step) const
+	{
+		return derived_const_cast->psi_(start,step,m_arguments);
+	}
 }
 
 #endif

@@ -46,7 +46,7 @@ namespace piranha
 				retval += (max_fast_int)1;
 				// Let's find out the upper limit of the r_a development, according to the truncation limits
 				// set in the truncator.
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				const size_t n = e_series.psi();
 				Derived tmp;
 				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
@@ -68,9 +68,9 @@ namespace piranha
 				// First let's build 1/2 e.
 				Derived retval(e_series);
 				retval /= (max_fast_int)2;
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				const size_t n = e_series.psi();
 				Derived tmp;
-				for (size_t i = 1; i <= (n + 1); ++i) {
+				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
 					expansion_term = expansion_term.dbesselJ((max_fast_int)i);
@@ -87,10 +87,9 @@ namespace piranha
 				return retval;
 			}
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				const size_t n = e_series.psi();
 				Derived retval;
-				// Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
-				for (size_t i = 1; i <= (n + 1); ++i) {
+				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
 					expansion_term = expansion_term.besselJ_div_m((max_fast_int)i,1);
@@ -110,9 +109,10 @@ namespace piranha
 				tmp = tmp.root(2);
 				tmp *= (max_fast_int)2;
 				Derived retval;
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
-				// Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
-				for (size_t i = 1; i <= (n + 1); ++i) {
+				const size_t n = e_series.psi();
+				// Regarding range here: we must perform n iterations for the power series, so starting
+				// from i = 1 we must reach n included.
+				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
 					expansion_term = expansion_term.dbesselJ((max_fast_int)i);
@@ -132,9 +132,9 @@ namespace piranha
 				tmp = (max_fast_int)1 - tmp;
 				tmp *= (max_fast_int)2;
 				Derived retval;
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
-				// Here we reach n+1 because the exponent starts from power 0, while i starts from 1.
-				for (size_t i = 1; i <= (n + 1); ++i) {
+				const size_t n = e_series.psi();
+				// See above.
+				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
 					expansion_term *= (max_fast_int)i;
 					expansion_term = expansion_term.besselJ_div_m((max_fast_int)i,1);
@@ -151,7 +151,7 @@ namespace piranha
 			}
 			static Derived EE(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
-				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
+				const size_t n = e_series.psi(1);
 				Derived tmp;
 				for (size_t i = 1; i <= n; ++i) {
 					Derived expansion_term((e_series * (max_fast_int)i).besselJ((max_fast_int)i));
@@ -163,6 +163,47 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
+// 			static std::complex<Derived> eiE(const Derived &e, const Derived &M, const max_fast_int p = 0) {
+// 				// S1
+// 				std::complex<Derived> S1;
+// 				if (p > 0) {
+// 					for (max_fast_int n = 1; n < p; ++n) {
+// 						std::complex<Derived> tmp = (M * n).ei();
+// 						tmp *= (e * n).besselJ(p - n);
+// 						tmp /= n;
+// 						tmp *= cs_phase(p - n);
+// 						S1 += tmp;
+// 					}
+// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
+// 						e.m_arguments,0,2);
+// 					for (max_fast_int n = p; n <= limit; ++n) {
+// 						std::complex<Derived> tmp = (M * n).ei();
+// 						tmp *= (e * n).besselJ(n - p);
+// 						tmp /= n;
+// 						S1 += tmp;
+// 					}
+// 				} else {
+// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
+// 						e.m_arguments,1 - p,2);
+// 					for (max_fast_int n = 1; n <= limit; ++n) {
+// 						std::complex<Derived> tmp = (M * n).ei();
+// 						tmp *= (e * n).besselJ(n - p);
+// 						tmp /= n;
+// 					}
+// 				}
+// 				S1 *= p;
+// 				// S2
+// 				std::complex<Derived> S2;
+// 				if (p > 0) {
+// 					const max_fast_int limit = Derived::multiplier_type::truncator_type::power_series_limit(e,
+// 						e.m_arguments,1 + p,2);
+// 					for (max_fast_int n = 1; n < limit; ++n) {
+// 
+// 					}
+// 				} else {
+// 
+// 				}
+// 			}
 	};
 }
 

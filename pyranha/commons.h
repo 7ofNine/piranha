@@ -143,21 +143,18 @@ namespace pyranha
 	}
 
 	template <class NamedSeries>
-	inline size_t psl0(const NamedSeries &s) {
-		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
-								s, s.arguments(), 0, 1);
+	inline size_t psi0(const NamedSeries &s) {
+		return s.psi(0, 1);
 	}
 
 	template <class NamedSeries>
-	inline size_t psl1(const NamedSeries &s, const int &n) {
-		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
-								s, s.arguments(), n, 1);
+	inline size_t psi1(const NamedSeries &s, const int &n) {
+		return s.psi(n, 1);
 	}
 
 	template <class NamedSeries>
-	inline size_t psl2(const NamedSeries &s, const int &n, const int &step) {
-		return NamedSeries::multiplier_type::truncator_type::power_series_limit(
-								s, s.arguments(), n, step);
+	inline size_t psi2(const NamedSeries &s, const int &n, const int &step) {
+		return s.psi(n, step);
 	}
 }
 

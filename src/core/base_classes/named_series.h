@@ -70,6 +70,7 @@ namespace piranha
 			void merge_args(const Derived2 &);
 			void trim();
 			double norm() const;
+			size_t psi(const max_fast_int &start = 0, const max_fast_int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
 			Derived &operator+=(const max_fast_int &);

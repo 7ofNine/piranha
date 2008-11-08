@@ -40,11 +40,10 @@ def alt_besselJ(o,x):
 	# http://en.wikipedia.org/wiki/Bessel_function
 	# We initalise the return value to be of the same type as x and to be constructed from 0.
 	retval = type(x)(0)
-	# Now we are going to iterate over the limit provided by the psl() method of x. Looking at the Bessel function
+	# Now we are going to iterate over the limit provided by the psi() method of x. Looking at the Bessel function
 	# definition through power series, the starting degree will be n and the step will be 2.
-	l = x.psl(n,2)
-	# Below here the range's right limit is l+1 because range(x,y) == [x,x+1,...,y-1] by definition.
-	for m in range(0,l+1):
+	l = x.psi(n,2)
+	for m in range(0,l):
 		tmp = (x / 2)**(2 * m + n)
 		tmp *= (-1)**m
 		# Here we use the unbound factorial functions of the series' type to avoid

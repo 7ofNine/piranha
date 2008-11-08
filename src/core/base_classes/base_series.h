@@ -89,6 +89,8 @@ namespace piranha
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;
+			template <class ArgsTuple>
+			size_t psi_(const max_fast_int &, const max_fast_int &, const ArgsTuple &) const;
 			bool operator==(const Derived &) const;
 			bool operator==(const max_fast_int &) const;
 			bool operator==(const double &) const;

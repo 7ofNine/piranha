@@ -64,24 +64,24 @@ namespace piranha
 						}
 					}
 					template <class T, class ArgsTuple>
-					static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
-						const int &start = 0, const int &step_size = 1) {
+					static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+						const ArgsTuple &args_tuple) {
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");
 						try {
-							return expo_ancestor::power_series_limit(x,args_tuple,start,step_size);
+							return expo_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
 						catch (const base_exception &b) {
 							msg += b.what() + "\n";
 						}
 						try {
-							return degree_ancestor::power_series_limit(x,args_tuple,start,step_size);
+							return degree_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
 						catch (const base_exception &b) {
 							msg += b.what() + "\n";
 						}
 						try {
-							return norm_ancestor::power_series_limit(x,args_tuple,start,step_size);
+							return norm_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
 						catch (const base_exception &b) {
 							msg += b.what() + "\n";

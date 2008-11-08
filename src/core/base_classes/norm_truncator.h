@@ -50,8 +50,8 @@ namespace piranha
 			// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 			// times smaller.
 			template <class T, class ArgsTuple>
-			static size_t power_series_limit(const T &x, const ArgsTuple &args_tuple,
-											 const int &start = 0, const int &step_size = 1) {
+			static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+				const ArgsTuple &args_tuple) {
 				// NOTE: share this check in some kind of base truncator class?
 				if (step_size < 1) {
 					throw unsuitable("Please use a step size of at least 1.");
@@ -73,7 +73,7 @@ namespace piranha
 				}
 				max_fast_int retval = static_cast<max_fast_int>(std::ceil(static_cast<double>(
 						static_cast<max_fast_int>(std::ceil(std::log10(m_truncation_level) /
-						std::log10(norm) + 1 - start)) / step_size)));
+						std::log10(norm) + 1 - start)) / step_size))) + 1;
 				// This could be negative if starting power is big enough. In this case return 0.
 				if (retval >= 0) {
 					return retval;

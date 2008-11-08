@@ -63,15 +63,16 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
 				// The Jacobi-Anger development is a development into bessel functions of the first kind starting
-				// from zero and increasing in unity steps, hence the power_series_limit function can be used
+				// from zero and increasing in unity steps, hence the psi function can be used
 				// straightforwardly.
-				size_t n;
+				size_t n_;
 				try {
-					n = Derived::multiplier_type::truncator_type::power_series_limit((*it)->m_cf, args_tuple);
+					n_ = (*it)->m_cf.psi_(0,1,args_tuple);
 				} catch (const base_exception &b) {
 					throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
 						"The reported error was:\n")+b.what());
 				}
+				const size_t n = n_;
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
@@ -81,7 +82,7 @@ namespace piranha
 				const size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<max_fast_int> tmp_trig_mults(w);
 				std::complex<max_fast_int> cos_multiplier(0, 2);
-				for (size_t i = 1; i <= n; ++i) {
+				for (size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.real((*it)->m_cf.besselJ(static_cast<max_fast_int>(i), args_tuple), args_tuple);
 					(*it)->m_key.upload_ints_to(tmp_trig_mults);

@@ -40,17 +40,17 @@ int main()
 	// Identity.
 	base_degree_truncator::set(20);
 	ps e_s(e), M_s(M);
-	retval += (qps::EE(e,M).cos().sub(e,e_s-max_fast_int(1)).sub(e,e_s+max_fast_int(1)) != qps::cos_E(e,M));
+	retval += (qps::EE(e_s,M_s).cos().sub(e,e_s-max_fast_int(1)).sub(e,e_s+max_fast_int(1)) != qps::cos_E(e_s,M_s));
 
 	// Another identity.
-	retval += (qps::r_a(e,M) * qps::sin_f(e,M) !=
-		(-e_s*e_s + max_fast_int(1)).root(max_fast_int(2)) * qps::sin_E(e,M));
+	retval += (qps::r_a(e_s,M_s) * qps::sin_f(e_s,M_s) !=
+		(-e_s*e_s + max_fast_int(1)).root(max_fast_int(2)) * qps::sin_E(e_s,M_s));
 
 	// Testing pow.
-	retval += (ps::r_a(ps(e),ps(M)).pow(max_fast_int(3)).root(max_fast_int(3)) != ps::r_a(ps(e),ps(M)));
+	retval += (ps::r_a(e_s,M_s).pow(max_fast_int(3)).root(max_fast_int(3)) != ps::r_a(e_s,M_s));
 
 	// Trigonometric identity.
-	retval += ((ps::cos_E(ps(e),ps(M)).pow(max_fast_int(2)) + ps::sin_E(ps(e),ps(M)).pow(max_fast_int(2)))
+	retval += ((ps::cos_E(e_s,M_s).pow(max_fast_int(2)) + ps::sin_E(e_s,M_s).pow(max_fast_int(2)))
 		!= max_fast_int(1));
 
 	return retval;

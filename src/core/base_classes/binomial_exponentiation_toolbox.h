@@ -85,7 +85,7 @@ namespace piranha
 				// Get the expansion limit from the truncator.
 				size_t n;
 				try {
-					n = Derived::multiplier_type::truncator_type::power_series_limit(XoverA, args_tuple);
+					n = XoverA.psi_(0, 1, args_tuple);
 				} catch (const unsuitable &u) {
 					throw unsuitable(std::string("Series is unsuitable for exponentiation through binomial expansion."
 												 "\nThe reported error is: ")
@@ -119,14 +119,14 @@ namespace piranha
 				Derived tmp((max_fast_int)1, args_tuple);
 				retval.add(tmp, args_tuple);
 				if (Op == power_op) {
-					for (size_t i = 1; i <= n; ++i) {
+					for (size_t i = 1; i < n; ++i) {
 						tmp.mult_by(y - (max_fast_int)(i) + (max_fast_int)1, args_tuple);
 						tmp.divide_by((max_fast_int)i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
 					}
 				} else {
-					for (size_t i = 1; i <= n; ++i) {
+					for (size_t i = 1; i < n; ++i) {
 						tmp.mult_by((max_fast_int)1 - (max_fast_int)(i*y) + y, args_tuple);
 						tmp.divide_by((max_fast_int)y*(max_fast_int)i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);

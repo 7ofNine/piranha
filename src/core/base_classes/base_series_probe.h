@@ -86,6 +86,14 @@ namespace piranha
 		return retval;
 	}
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::psi_(const max_fast_int &start, const max_fast_int &step,
+		const ArgsTuple &args_tuple) const {
+		return Derived::multiplier_type::truncator_type::power_series_iterations(*derived_const_cast,
+			start,step,args_tuple);
+	}
+
 	/// Test for equality.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const Derived &other) const
