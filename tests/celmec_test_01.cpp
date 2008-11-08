@@ -53,5 +53,15 @@ int main()
 	retval += ((ps::cos_E(e_s,M_s).pow(max_fast_int(2)) + ps::sin_E(e_s,M_s).pow(max_fast_int(2)))
 		!= max_fast_int(1));
 
+	// r_a ** -2 == a_r ** 2 and vice-versa.
+	retval += (ps::a_r(e_s,M_s).pow(max_fast_int(2)) != ps::r_a(e_s,M_s).pow(max_fast_int(-2)));
+	retval += (ps::r_a(e_s,M_s).pow(max_fast_int(2)) != ps::a_r(e_s,M_s).pow(max_fast_int(-2)));
+
+	// eipE tests.
+	retval += (ps::eipE(e_s,M_s,5).abs() != max_fast_int(1));
+	retval += (ps::eipE(e_s,M_s,5) * ps::eipE(e_s,M_s,-5) != max_fast_int(1));
+	retval += (ps::eipE(e_s,M_s,1).pow(max_fast_int(6)) != ps::eipE(e_s,M_s,6));
+	retval += (ps::eipE(e_s,M_s,1).inv().pow(max_fast_int(6)) != ps::eipE(e_s,M_s,-6));
+
 	return retval;
 }

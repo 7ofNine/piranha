@@ -287,6 +287,7 @@ namespace pyranha
 	inline void celmec_instantiation(boost::python::class_<T> &inst)
 	{
 		const char *r_a_docstring = "Elliptic expansion of r / a in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *a_r_docstring = "Elliptic expansion of a / r in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *cos_f_docstring = "Elliptic expansion of cos(f) in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *sin_f_docstring = "Elliptic expansion of sin(f) in terms of eccentricity arg2 and mean anomaly arg3.";
 		const char *cos_E_docstring = "Elliptic expansion of cos(E) in terms of eccentricity arg2 and mean anomaly arg3.";
@@ -296,6 +297,7 @@ namespace pyranha
 		const char *eipE_docstring = "Elliptic expansion of exp(i*p*E) in terms of eccentricity arg2 and mean anomaly arg3, "
 			"with p = arg4.";
 		__celmec_inst(r_a);
+		__celmec_inst(a_r);
 		__celmec_inst(cos_f);
 		__celmec_inst(sin_f);
 		__celmec_inst(cos_E);

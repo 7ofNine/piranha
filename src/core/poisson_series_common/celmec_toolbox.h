@@ -64,6 +64,18 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
+			static Derived a_r(const Derived &e, const Derived &M) {
+				Derived retval;
+				const max_fast_int iter = e.psi(1);
+				for (max_fast_int n = 1; n <= iter; ++n) {
+					Derived tmp = (M * n).cos();
+					tmp *= (e * n).besselJ(n);
+					retval += tmp;
+				}
+				retval *= max_fast_int(2);
+				retval += max_fast_int(1);
+				return retval;
+			}
 			static Derived cos_E(const Derived &e_series, const Derived &M_series) {
 				// First let's build 1/2 e.
 				Derived retval(e_series);

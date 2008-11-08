@@ -27,6 +27,15 @@ def r_a(e,M):
 	except AttributeError:
 		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an r_a method."
 
+def a_r(e,M):
+	"""
+	Calculate the elliptic expansion of a/r in terms of e and M.
+	"""
+	try:
+		return __pyranha.ds.a_r(e,M)
+	except AttributeError:
+		raise AttributeError, "The series type '" + str(__pyranha.ds) +  "' does not offer an a_r method."
+
 def cos_f(e,M):
 	"""
 	Calculate the elliptic expansion of cos(f) in terms of e and M.
