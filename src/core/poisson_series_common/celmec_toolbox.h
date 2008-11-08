@@ -64,12 +64,6 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
-			static Derived r_a(const psym &e, const psym &M) {
-				return r_a(Derived(e), Derived(M));
-			}
-			static Derived r_a(const std::string &e_name, const std::string &M_name) {
-				return r_a(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
-			}
 			static Derived cos_E(const Derived &e_series, const Derived &M_series) {
 				// First let's build 1/2 e.
 				Derived retval(e_series);
@@ -92,12 +86,6 @@ namespace piranha
 				retval *= (max_fast_int)(-1);
 				return retval;
 			}
-			static Derived cos_E(const psym &e, const psym &M) {
-				return cos_E(Derived(e), Derived(M));
-			}
-			static Derived cos_E(const std::string &e_name, const std::string &M_name) {
-				return cos_E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
-			}
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
 				Derived retval;
@@ -114,12 +102,6 @@ namespace piranha
 				}
 				retval *= (max_fast_int)(2);
 				return retval;
-			}
-			static Derived sin_E(const psym &e, const psym &M) {
-				return sin_E(Derived(e), Derived(M));
-			}
-			static Derived sin_E(const std::string &e_name, const std::string &M_name) {
-				return sin_E(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived sin_f(const Derived &e_series, const Derived &M_series) {
 				Derived tmp(e_series);
@@ -142,12 +124,6 @@ namespace piranha
 				}
 				retval *= tmp;
 				return retval;
-			}
-			static Derived sin_f(const psym &e, const psym &M) {
-				return sin_f(Derived(e), Derived(M));
-			}
-			static Derived sin_f(const std::string &e_name, const std::string &M_name) {
-				return sin_f(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
 			}
 			static Derived cos_f(const Derived &e_series, const Derived &M_series) {
 				// 2*(1-e**2).
@@ -173,12 +149,6 @@ namespace piranha
 				retval -= e_series;
 				return retval;
 			}
-			static Derived cos_f(const psym &e, const psym &M) {
-				return cos_f(Derived(e), Derived(M));
-			}
-			static Derived cos_f(const std::string &e_name, const std::string &M_name) {
-				return cos_f(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
-			}
 			static Derived EE(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
 				const size_t n = Derived::multiplier_type::truncator_type::power_series_limit(e_series, e_series.m_arguments);
@@ -193,50 +163,7 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
-			static Derived EE(const psym &e, const psym &M) {
-				return EE(Derived(e), Derived(M));
-			}
-			static Derived EE(const std::string &e_name, const std::string &M_name) {
-				return EE(*psyms::get_pointer(e_name), *psyms::get_pointer(M_name));
-			}
 	};
-
-	// Provide also external functions.
-	template <class Series>
-	Series r_a(const Series &e_series, const Series &M_series)
-	{
-		return Series::r_a(e_series, M_series);
-	}
-
-	template <class Series>
-	Series cos_E(const Series &e_series, const Series &M_series)
-	{
-		return Series::cos_E(e_series, M_series);
-	}
-
-	template <class Series>
-	Series sin_E(const Series &e_series, const Series &M_series)
-	{
-		return Series::sin_E(e_series, M_series);
-	}
-
-	template <class Series>
-	Series cos_f(const Series &e_series, const Series &M_series)
-	{
-		return Series::cos_f(e_series, M_series);
-	}
-
-	template <class Series>
-	Series sin_f(const Series &e_series, const Series &M_series)
-	{
-		return Series::sin_f(e_series, M_series);
-	}
-
-	template <class Series>
-	Series EE(const Series &e_series, const Series &M_series)
-	{
-		return Series::EE(e_series, M_series);
-	}
 }
 
 #endif
