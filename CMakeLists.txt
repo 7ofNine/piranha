@@ -8,7 +8,6 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
-INCLUDE(CheckIncludeFiles)
 INCLUDE(CheckTypeSize)
 INCLUDE(CMakeDependentOption)
 INCLUDE(FindGMP)

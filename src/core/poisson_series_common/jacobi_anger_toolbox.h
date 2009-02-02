@@ -62,15 +62,21 @@ namespace piranha
 			static std::complex<Derived> jacang_term(const Iterator &it, const ArgsTuple &args_tuple) {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
-				// The Jacobi-Anger development is a development into bessel functions of the first kind starting
+				// The Jacobi-Anger development is a development into Bessel functions of the first kind starting
 				// from zero and increasing in unity steps, hence the psi function can be used
 				// straightforwardly.
 				size_t n_;
-				try {
-					n_ = (*it)->m_cf.psi_(0,1,args_tuple);
-				} catch (const base_exception &b) {
-					throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
-						"The reported error was:\n")+b.what());
+				{
+					std::complex<Derived> tmp;
+					complex_term_type tmp_term;
+					tmp_term.m_cf.real((*it)->m_cf, args_tuple);
+					tmp.insert(tmp_term, args_tuple);
+					try {
+						n_ = tmp.psi_(0,1,args_tuple);
+					} catch (const base_exception &b) {
+						throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
+							"The reported error was:\n")+b.what());
+					}
 				}
 				const size_t n = n_;
 				std::complex<Derived> retval;
@@ -90,11 +96,9 @@ namespace piranha
 						tmp_trig_mults[j] *= i;
 					}
 					tmp_term.m_key.assign_int_vector(tmp_trig_mults);
-					switch ((*it)->m_key.flavour()) {
-					case true:
+					if ((*it)->m_key.flavour()) {
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
-						break;
-					case false:
+					} else {
 						if (i % 2 == 0) {
 							tmp_term.m_cf.mult_by(static_cast<max_fast_int>(2), args_tuple);
 						} else {

@@ -63,4 +63,6 @@
   Search and de-uglify if needed.
 - many tests for known equalities involving special functions!
 - change names: base function become with suffix "_" and polynomials become laurent series.
-- use boost tokenizer to parse input files
+- use boost tokenizer to parse input files?
+- re-organize dir structure
+- exception inherit from base
