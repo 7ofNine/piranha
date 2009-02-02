@@ -14,7 +14,6 @@ SET(SRC_LIST ${SRC_LIST}
 
 IF(BUILD_MULTITHREADING)
 	ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
-	SET(SRC_LIST ${SRC_LIST} boost_thread/tss_null.cpp)
 	IF(WIN32)
 		SET(SRC_LIST ${SRC_LIST}
 			boost_thread/win32/exceptions.cpp
@@ -29,24 +28,6 @@ IF(BUILD_MULTITHREADING)
 			boost_thread/pthread/thread.cpp
 		)
 	ENDIF(WIN32)
-	INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src")
-	SET(SRC_LIST ${SRC_LIST}
-		tbb/cache_aligned_allocator.cpp
-		tbb/concurrent_hash_map.cpp
-		tbb/concurrent_queue.cpp
-		tbb/concurrent_vector.cpp
-		tbb/itt_notify.cpp
-		tbb/mutex.cpp
-		tbb/pipeline.cpp
-		tbb/queuing_mutex.cpp
-		tbb/queuing_rw_mutex.cpp
-		tbb/recursive_mutex.cpp
-		tbb/spin_mutex.cpp
-		tbb/spin_rw_mutex.cpp
-		tbb/task.cpp
-		tbb/tbb_misc.cpp
-		tbb/tbb_thread.cpp
-	)
 ENDIF(BUILD_MULTITHREADING)
 
 IF(BUILD_PYRANHA)
