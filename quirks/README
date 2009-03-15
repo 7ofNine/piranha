@@ -1,5 +1,4 @@
 - Shut off GCC warnings:
-	boost_math_toolkit_gamma_disable_gcc_warning_unused_parameter.diff
-	tbb_partitioner_fix_unused_parameters.diff
+	boost_disable_gcc_warning_unused_parameter.diff
 - ICC fix for boost.thread:
 	icc_fix_shared_ptr.diff
