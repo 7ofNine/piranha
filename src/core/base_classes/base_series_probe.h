@@ -60,7 +60,7 @@ namespace piranha
 		return retval;
 	}
 
-	/// Return the number of elements of the series.
+	/// Return the number of terms of the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::length() const
 	{
@@ -84,14 +84,6 @@ namespace piranha
 			retval += it->m_cf.atoms() + it->m_key.atoms();
 		}
 		return retval;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::psi_(const max_fast_int &start, const max_fast_int &step,
-		const ArgsTuple &args_tuple) const {
-		return Derived::multiplier_type::truncator_type::power_series_iterations(*derived_const_cast,
-			start,step,args_tuple);
 	}
 
 	/// Test for equality.

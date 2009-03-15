@@ -38,6 +38,12 @@ namespace piranha
 	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
 	class series_multiplication
 	{
+		public:
+			template <class ArgsTuple>
+			size_t psi_(const max_fast_int &start, const max_fast_int &step, const ArgsTuple &args_tuple) const {
+				return Multiplier::template get_type<Derived, Derived, ArgsTuple, Truncator>::truncator_type::power_series_iterations(*derived_const_cast,
+					start,step,args_tuple);
+			}
 		protected:
 			// Multiply term-by-term with another series, and place the result into retval.
 			// Preconditions:

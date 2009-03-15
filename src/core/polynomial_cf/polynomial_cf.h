@@ -69,8 +69,6 @@ namespace piranha
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
 		public:
 			using common_ancestor::norm;
-			// Needed typedefs.
-			typedef typename Multiplier::template get_type<polynomial_cf, polynomial_cf, none, Truncator> multiplier_type;
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -127,8 +125,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::inv_;
 			using common_ancestor::norm;
-			// Needed typedefs.
-			typedef typename Multiplier::template get_type<complex, complex, piranha::none, Truncator> multiplier_type;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>
