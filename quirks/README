@@ -3,5 +3,3 @@
 	tbb_partitioner_fix_unused_parameters.diff
 - ICC fix for boost.thread:
 	icc_fix_shared_ptr.diff
-- TBB don't use version info:
-	tbb_shut_of_version_info.diff
