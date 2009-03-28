@@ -127,7 +127,7 @@ namespace piranha
 				return m_container[index];
 			}
 		protected:
-			container_type				m_container;
+			container_type			m_container;
 			const arith_functor_type	m_arith_functor;
 	};
 }

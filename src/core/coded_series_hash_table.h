@@ -42,7 +42,7 @@ namespace piranha
 							f[i] = false;
 						}
 					}
-					T		t[N];
+					T	t[N];
 					bool	f[N];
 			};
 			enum size_policy {
@@ -53,7 +53,7 @@ namespace piranha
 			static const size_t bucket_size		= 12;
 			static const size_t min_size_index	= 0;
 			// Number of extra buckets.
-			static const size_t neb				= 20;
+			static const size_t neb			= 20;
 			// Configuration options end here.
 			static const size_t sizes_size =
 #ifdef _PIRANHA_64BIT
@@ -124,8 +124,8 @@ namespace piranha
 					}
 				private:
 					const coded_series_hash_table	*m_ht;
-					size_t							m_vector_index;
-					size_t							m_bucket_index;
+					size_t				m_vector_index;
+					size_t				m_bucket_index;
 			};
 			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0) {
 				init();

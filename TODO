@@ -43,7 +43,6 @@
 - for hash coded structure, use directly the counting allocator internally.
 - direct calculation of special functions and celmec expansions - psym interface from celmec functions should be dropped
   maybe and auto-detect series that consist of a single symbol --> use faster approach there.
-- Try murmurhash.
 - Take care of allocation of zero-size memory areas?
 - Boost's aligned storage type traits for sse?
 - Write tests also in python.
@@ -66,3 +65,5 @@
 - use boost tokenizer to parse input files?
 - re-organize dir structure
 - exception inherit from base
+- re-work norm truncator to work with absolute-value norm (instead of relative norm) and maybe simply truncating terms smaller
+  than the limit.
