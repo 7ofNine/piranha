@@ -39,7 +39,7 @@ namespace piranha
 		public:
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived besselJ(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
+			Derived besselJ_(const max_fast_int &order_, const ArgsTuple &args_tuple) const {
 				Derived retval;
 				// Special case of empty series. It must be handled here before the truncator is called.
 				if (derived_const_cast->empty()) {
@@ -51,7 +51,7 @@ namespace piranha
 				// Dispatch besselJ to coefficient if series consists of a single coefficient.
 				if (derived_const_cast->is_single_cf()) {
 					typedef typename Derived::term_type term_type;
-					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_,args_tuple),
+					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ_(order_,args_tuple),
 						typename term_type::key_type()),args_tuple);
 					return retval;
 				}
@@ -89,7 +89,7 @@ namespace piranha
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			// TODO: polish and make it less restrictive. Use factorial().
 			template <class ArgsTuple>
-			Derived dbesselJ(const max_fast_int &order, const ArgsTuple &args_tuple) const {
+			Derived dbesselJ_(const max_fast_int &order, const ArgsTuple &args_tuple) const {
 				if (order < 1) {
 					throw unsuitable("Partial derivative of Bessel function of the first kind is implemented only for "
 									 "strictly positive orders.");
@@ -128,7 +128,7 @@ namespace piranha
 			}
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived besselJ_div_m(const max_fast_int &order_, const max_fast_int &m,
+			Derived besselJ_div_m_(const max_fast_int &order_, const max_fast_int &m,
 				const ArgsTuple &args_tuple) const {
 				Derived retval;
 				// Let's take care of negative order.

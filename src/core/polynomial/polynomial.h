@@ -84,12 +84,6 @@ namespace piranha
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
-			using POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// This is needed because called from the norm override in poly toolbox.
 			using base_ancestor::eval;
 			// Boilerplate.
@@ -185,12 +179,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::inv_;
 			using base_ancestor::eval;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
-			using COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
-			using COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			// Boilerplate and additional ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);

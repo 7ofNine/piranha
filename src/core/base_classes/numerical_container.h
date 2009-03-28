@@ -222,7 +222,7 @@ namespace piranha
 				return derived_const_cast->pow(1. / static_cast<double>(n), args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived besselJ(const max_fast_int &, const ArgsTuple &) const {
+			Derived besselJ_(const max_fast_int &, const ArgsTuple &) const {
 				throw unsuitable("besselJ is not implemented for this coefficient type.");
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
