@@ -273,7 +273,7 @@ namespace piranha
 			 * Result is a pair consisting of an integer and a trigonometric array.
 			 */
 			template <class PosTuple, class ArgsTuple>
-			std::pair<int, Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
+			std::pair<int, Derived> partial_(const PosTuple &pos_tuple, const ArgsTuple &) const {
 				std::pair<int, Derived> retval(0, Derived());
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be

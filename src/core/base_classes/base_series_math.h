@@ -266,7 +266,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(max_fast_int n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial_(max_fast_int n,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		if (n < 0) {
@@ -283,9 +283,9 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial(const PosTuple &pos_tuple,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial_(const PosTuple &pos_tuple,
 		const ArgsTuple &args_tuple) const {
-		return partial(1,pos_tuple,args_tuple);
+		return partial_(1,pos_tuple,args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

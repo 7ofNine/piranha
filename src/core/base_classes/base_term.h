@@ -187,9 +187,9 @@ namespace piranha
 			template <class PosTuple, class ArgsTuple>
 			void partial(Derived &res1, Derived &res2,
 						 const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
-				res1.m_cf = m_cf.partial(pos_tuple, args_tuple);
+				res1.m_cf = m_cf.partial_(pos_tuple, args_tuple);
 				res1.m_key = m_key;
-				std::pair<max_fast_int, key_type> key_partial_result(m_key.partial(pos_tuple, args_tuple));
+				std::pair<max_fast_int, key_type> key_partial_result(m_key.partial_(pos_tuple, args_tuple));
 				res2.m_key = key_partial_result.second;
 				res2.m_cf = m_cf;
 				res2.m_cf.mult_by(key_partial_result.first, args_tuple);

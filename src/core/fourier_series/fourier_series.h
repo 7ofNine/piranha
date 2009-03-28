@@ -80,8 +80,6 @@ namespace piranha
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			using named_ancestor::partial;
-			using base_ancestor::partial;
 			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
@@ -175,8 +173,6 @@ namespace std
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			using named_ancestor::partial;
-			using base_ancestor::partial;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::inv_;
 			using COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;

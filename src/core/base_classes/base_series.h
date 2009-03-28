@@ -120,9 +120,9 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived root(const max_fast_int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
-			Derived partial(max_fast_int, const PosTuple &, const ArgsTuple &) const;
+			Derived partial_(max_fast_int, const PosTuple &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
-			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			Derived partial_(const PosTuple &, const ArgsTuple &) const;
 			std::vector<term_type const *> cache_pointers() const;
 			template <class ArgsTuple>
 			Derived inv_(const ArgsTuple &) const;

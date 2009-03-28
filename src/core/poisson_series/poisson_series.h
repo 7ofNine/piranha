@@ -89,8 +89,6 @@ namespace piranha
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			using named_ancestor::partial;
-			using base_ancestor::partial;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
 			using POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
 			using POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ;
@@ -191,8 +189,6 @@ namespace std
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			using named_ancestor::partial;
-			using base_ancestor::partial;
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::inv_;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
@@ -202,8 +198,6 @@ namespace std
 			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::dbesselJ;
 			using COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
 			using COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR::besselJ_div_m;
-			// Needed typedefs.
-			//typedef typename Mult1::template get_type<complex, complex, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			// Ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX);

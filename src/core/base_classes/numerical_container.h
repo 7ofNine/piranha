@@ -205,7 +205,7 @@ namespace piranha
 				m_value += x1.m_value * x2.value();
 			}
 			template <class PosTuple, class ArgsTuple>
-			Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const {
+			Derived partial_(const PosTuple &, const ArgsTuple &args_tuple) const {
 				return Derived((max_fast_int)0, args_tuple);
 			}
 			template <class ArgsTuple>
