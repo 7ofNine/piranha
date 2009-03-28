@@ -161,13 +161,13 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::choose(const max_fast_int &n, const max_fast_int &k)
 	{
-		return Derived::choose(n,k,args_tuple_type());
+		return Derived::choose_(n,k,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::factorial(const max_fast_int &n)
 	{
-		return Derived::factorial(n,args_tuple_type());
+		return Derived::factorial_(n,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

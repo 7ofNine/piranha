@@ -210,7 +210,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::choose(
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::choose_(
 		const max_fast_int &n_, const max_fast_int &k, const ArgsTuple &args_tuple)
 	{
 		const max_fast_int n = (n_ >= 0) ? n_ : k - n_ - 1;
@@ -232,7 +232,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::factorial(const max_fast_int &n, const ArgsTuple &args_tuple)
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::factorial_(const max_fast_int &n, const ArgsTuple &args_tuple)
 	{
 		if (n < 0) {
 			throw unsuitable("Negative argument for factorial.");

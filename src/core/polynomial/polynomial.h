@@ -80,10 +80,6 @@ namespace piranha
 			using POLYNOMIAL_COMMON_ANCESTOR::nth_root;
 		public:
 			using POLYNOMIAL_COMMON_ANCESTOR::norm_;
-			using named_ancestor::factorial;
-			using base_ancestor::factorial;
-			using named_ancestor::choose;
-			using base_ancestor::choose;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
@@ -184,10 +180,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm_;
-			using named_ancestor::factorial;
-			using base_ancestor::factorial;
-			using named_ancestor::choose;
-			using base_ancestor::choose;
 			using named_ancestor::pow;
 			using base_ancestor::pow;
 			using named_ancestor::root;
