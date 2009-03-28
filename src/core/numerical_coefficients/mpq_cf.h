@@ -74,7 +74,7 @@ namespace piranha
 			}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm_(const ArgsTuple &) const {
 				return std::abs(m_value.get_d());
 			}
 			template <class ArgsTuple>
@@ -254,7 +254,7 @@ namespace std
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm_(const ArgsTuple &) const {
 				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
 			}
 			template <class ArgsTuple>

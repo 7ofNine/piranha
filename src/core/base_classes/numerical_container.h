@@ -127,7 +127,7 @@ namespace piranha
 				return true;
 			}
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm_(const ArgsTuple &) const {
 				return std::abs(m_value);
 			}
 			static const size_t max_size = 0;
@@ -135,7 +135,7 @@ namespace piranha
 			// to be zero.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &a) const {
-				return (static_cast<Derived const *>(this)->norm(a) < settings::numerical_zero());
+				return (static_cast<Derived const *>(this)->norm_(a) < settings::numerical_zero());
 			}
 			template <class ArgsTuple>
 			bool is_insertable(const ArgsTuple &) const {

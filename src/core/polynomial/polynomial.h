@@ -79,8 +79,7 @@ namespace piranha
 			using POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::nth_root;
 		public:
-			using named_ancestor::norm;
-			using POLYNOMIAL_COMMON_ANCESTOR::norm;
+			using POLYNOMIAL_COMMON_ANCESTOR::norm_;
 			using named_ancestor::factorial;
 			using base_ancestor::factorial;
 			using named_ancestor::choose;
@@ -184,8 +183,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
-			using named_ancestor::norm;
-			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm;
+			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm_;
 			using named_ancestor::factorial;
 			using base_ancestor::factorial;
 			using named_ancestor::choose;

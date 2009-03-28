@@ -43,7 +43,7 @@ namespace pyranha
 			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the norm "
 				"of this coefficient/key.");
 		}
-		return cfkey.norm(piranha::shared_args::get());
+		return cfkey.norm_(piranha::shared_args::get());
 	}
 
 	template <class CfKey>

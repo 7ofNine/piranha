@@ -77,8 +77,6 @@ namespace piranha
 			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
 			// TODO: do we really need _all_ those double interfaces here? Some can probably be dropped.
-			using named_ancestor::norm;
-			using base_ancestor::norm;
 			using named_ancestor::factorial;
 			using base_ancestor::factorial;
 			using named_ancestor::choose;
@@ -178,8 +176,6 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
-			using named_ancestor::norm;
-			using base_ancestor::norm;
 			using named_ancestor::factorial;
 			using base_ancestor::factorial;
 			using named_ancestor::choose;

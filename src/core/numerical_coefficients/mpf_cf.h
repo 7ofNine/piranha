@@ -62,7 +62,7 @@ namespace piranha
 			explicit mpf_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm_(const ArgsTuple &) const {
 				return std::abs(g_value().get_d());
 			}
 			template <class ArgsTuple>
@@ -155,7 +155,7 @@ public:
 		}
 		// Probing.
 		template <class ArgsTuple>
-		double norm(const ArgsTuple &) const {
+		double norm_(const ArgsTuple &) const {
 			// NOTICE: the success of this probably depends upon std::complex implementation...
 			return std::abs(g_value()).get_d();
 		}

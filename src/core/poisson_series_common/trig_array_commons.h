@@ -166,7 +166,7 @@ namespace piranha
 			 * The norm of a trigonometric part is always one.
 			 */
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &args_tuple) const {
+			double norm_(const ArgsTuple &args_tuple) const {
 				p_assert(args_tuple.template get<Derived::position>().size() >= derived_const_cast->size());
 				(void)args_tuple;
 				return 1;

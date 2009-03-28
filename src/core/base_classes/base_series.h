@@ -82,7 +82,7 @@ namespace piranha
 			void clear_terms();
 			void rehash(const size_t &);
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const;
+			double norm_(const ArgsTuple &) const;
 			size_t length() const;
 			template <class ArgsTuple>
 			eval_type eval(const double &, const ArgsTuple &) const;

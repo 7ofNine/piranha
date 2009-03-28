@@ -114,7 +114,7 @@ namespace piranha
 			 * The norm of an exponent array is defined as the evaluation at t=0.
 			 */
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &args_tuple) const {
+			double norm_(const ArgsTuple &args_tuple) const {
 				return std::abs(eval(0, args_tuple));
 			}
 			/// Calculate hash value.

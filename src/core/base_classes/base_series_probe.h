@@ -35,12 +35,12 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
+	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm_(const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		double retval = 0;
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
+			retval += it->m_cf.norm_(args_tuple) * it->m_key.norm_(args_tuple);
 		}
 		return retval;
 	}
