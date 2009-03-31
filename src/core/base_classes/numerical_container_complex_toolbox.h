@@ -34,11 +34,11 @@
 namespace piranha
 {
 	/// Toolbox for complex-specific methods of piranha::numerical_container.
-	template <class realDerived>
+	template <class RealDerived>
 	class numerical_container_complex_toolbox
 	{
-			typedef std::complex<realDerived> Derived;
-			typedef realDerived value_type;
+			typedef std::complex<RealDerived> Derived;
+			typedef RealDerived value_type;
 		public:
 			// Ctors.
 			numerical_container_complex_toolbox() {}
@@ -66,23 +66,23 @@ namespace piranha
 			}
 			// Getters and setters.
 			template <class ArgsTuple>
-			value_type real(const ArgsTuple &) const {
+			value_type real_(const ArgsTuple &) const {
 				value_type retval;
 				retval.m_value = derived_const_cast->value().real();
 				return retval;
 			}
 			template <class ArgsTuple>
-			value_type imag(const ArgsTuple &) const {
+			value_type imag_(const ArgsTuple &) const {
 				value_type retval;
 				retval.m_value = derived_const_cast->value().imag();
 				return retval;
 			}
 			template <class ArgsTuple>
-			void real(const value_type &r, const ArgsTuple &) {
+			void real_(const value_type &r, const ArgsTuple &) {
 				derived_cast->m_value = r.value();
 			}
 			template <class ArgsTuple>
-			void imag(const value_type &i, const ArgsTuple &) {
+			void imag_(const value_type &i, const ArgsTuple &) {
 				// TODO: this code works in gcc, but it is not standard.
 				// derived_cast->m_value.imag() = i.value();
 				derived_cast->m_value = typename Derived::numerical_type(derived_const_cast->m_value.real(),
@@ -109,6 +109,14 @@ namespace piranha
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
 				return complex_division_helper(c);
 			}
+			// We must rewrite all comparisons, otherwise there will be conflicts with those defined in
+			// numerical container.
+			bool operator==(const Derived &x) const {
+				return (derived_const_cast->m_value == x.m_value);
+			}
+			bool operator==(const RealDerived &x) const {
+				return (derived_const_cast->m_value.real() == x.m_value && derived_const_cast->m_value.imag() == 0);
+			}
 			bool operator==(const max_fast_int &n) const {
 				return generic_real_comparison(n);
 			}
@@ -120,15 +128,6 @@ namespace piranha
 			}
 			bool operator==(const std::complex<double> &cx) const {
 				return generic_complex_comparison(cx);
-			}
-			// TODO: remove this.
-			// Free interface: this is an interface free from the need to fetch an
-			// external args_tuple to work.
-			value_type real() const {
-				return real(0);
-			}
-			value_type imag() const {
-				return imag(0);
 			}
 		protected:
 			template <class Number>
@@ -154,7 +153,7 @@ namespace piranha
 #if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
 				// TODO: these are too costly, we should be able to compare directly m_value in
 				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
-				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
+				const typename RealDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
 					derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
 					derived_const_cast->m_value.imag() >= -settings::numerical_zero());
@@ -165,7 +164,7 @@ namespace piranha
 			template <class Number>
 			bool generic_complex_comparison(const std::complex<Number> &c) const {
 #if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
-				const typename realDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
+				const typename RealDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
 					tmp_imag(derived_const_cast->m_value.imag() - c.imag());
 				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
 					tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());

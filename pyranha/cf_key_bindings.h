@@ -53,7 +53,7 @@ namespace pyranha
 			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation "
 				"of the time evaluation of this coefficient/key.");
 		}
-		return cfkey.eval(t,piranha::shared_args::get());
+		return cfkey.eval_(t,piranha::shared_args::get());
 	}
 
 	// TODO: Do _not_ provide a free or py_interface in classes, use wrappers here.
@@ -76,10 +76,6 @@ namespace pyranha
 			const std::string &description)
 	{
 		boost::python::class_<std::complex<Cf> > cf_inst(cf_bindings<std::complex<Cf> >(name, description));
-		typedef Cf(std::complex<Cf>::*comp_free)() const;
-		// TODO: ditch this free interface, use wrappers.
-		cf_inst.def("real", comp_free(&std::complex<Cf>::real), "Real part.");
-		cf_inst.def("imag", comp_free(&std::complex<Cf>::imag), "Imaginary part.");
 		return cf_inst;
 	}
 

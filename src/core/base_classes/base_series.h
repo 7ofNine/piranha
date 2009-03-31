@@ -85,7 +85,7 @@ namespace piranha
 			double norm_(const ArgsTuple &) const;
 			size_t length() const;
 			template <class ArgsTuple>
-			eval_type eval(const double &, const ArgsTuple &) const;
+			eval_type eval_(const double &, const ArgsTuple &) const;
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;

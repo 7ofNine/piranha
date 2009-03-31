@@ -146,7 +146,7 @@ namespace piranha
 				return false;
 			}
 			template <class ArgsTuple>
-			const T &eval(const double &, const ArgsTuple &) const {
+			const T &eval_(const double &, const ArgsTuple &) const {
 				return m_value;
 			}
 			bool operator==(const Derived &other) const {

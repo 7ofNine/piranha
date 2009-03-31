@@ -194,7 +194,7 @@ namespace piranha
 		named_ancestor::template construct_from_psym<N>(p); \
 	} \
 	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
-		return base_ancestor::eval(t,named_ancestor::m_arguments); \
+		return base_ancestor::eval_(t,named_ancestor::m_arguments); \
 	}
 }
 

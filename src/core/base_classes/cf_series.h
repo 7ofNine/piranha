@@ -109,11 +109,11 @@ namespace piranha
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const typename base_complex_toolbox::value_type &r, const ArgsTuple &a) { \
-		complex_toolbox::construct_from_real(r,a); \
+		complex_toolbox::construct_from_real_(r,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const typename base_complex_toolbox::value_type &r, const typename base_complex_toolbox::value_type &i, const ArgsTuple &a) { \
-		complex_toolbox::construct_from_real_imag(r, i, a); \
+		complex_toolbox::construct_from_real_imag_(r, i, a); \
 	}
 
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>

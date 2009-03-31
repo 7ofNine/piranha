@@ -38,26 +38,26 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 		public:
 			RealDerived real() const {
-				RealDerived retval(derived_const_cast->real(derived_const_cast->m_arguments));
+				RealDerived retval(derived_const_cast->real_(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
-				RealDerived retval(derived_const_cast->imag(derived_const_cast->m_arguments));
+				RealDerived retval(derived_const_cast->imag_(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			Derived &real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				derived_cast->real(r, derived_const_cast->m_arguments);
+				derived_cast->real_(r, derived_const_cast->m_arguments);
 				derived_cast->trim();
 				return *derived_cast;
 			}
 			Derived &imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				derived_cast->imag(i, derived_const_cast->m_arguments);
+				derived_cast->imag_(i, derived_const_cast->m_arguments);
 				derived_cast->trim();
 				return *derived_cast;
 			}
@@ -115,13 +115,13 @@ namespace piranha
 		protected:
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->m_arguments = r.m_arguments;
-				derived_cast->construct_from_real(r, derived_cast->m_arguments);
+				derived_cast->construct_from_real_(r, derived_cast->m_arguments);
 				derived_cast->trim();
 			}
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i) {
 				derived_cast->m_arguments = r.m_arguments;
 				derived_cast->merge_args(i);
-				derived_cast->construct_from_real_imag(r, i, derived_cast->m_arguments);
+				derived_cast->construct_from_real_imag_(r, i, derived_cast->m_arguments);
 				derived_cast->trim();
 			}
 	};

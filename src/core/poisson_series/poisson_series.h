@@ -90,8 +90,6 @@ namespace piranha
 			using named_ancestor::root;
 			using base_ancestor::root;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
-			// Needed typedefs.
-			//typedef typename Mult1::template get_type<poisson_series, poisson_series, typename named_ancestor::args_tuple_type, Trunc1> multiplier_type;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
 }
@@ -151,14 +149,6 @@ namespace std
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
-			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::real;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::real;
-			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::imag;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::imag;
-			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::construct_from_real;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real;
-			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::construct_from_real_imag;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::add;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::subtract;

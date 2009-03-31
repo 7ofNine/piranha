@@ -84,8 +84,6 @@ namespace piranha
 			using base_ancestor::pow;
 			using named_ancestor::root;
 			using base_ancestor::root;
-			// This is needed because called from the norm override in poly toolbox.
-			using base_ancestor::eval;
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
@@ -143,14 +141,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::nth_root;
 		public:
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::real;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::real;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::imag;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::imag;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::construct_from_real;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::construct_from_real;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::construct_from_real_imag;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::construct_from_real_imag;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::subtract;
@@ -178,7 +168,6 @@ namespace std
 			using base_ancestor::root;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::inv_;
-			using base_ancestor::eval;
 			// Boilerplate and additional ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);
