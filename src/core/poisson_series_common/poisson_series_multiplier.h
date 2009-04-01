@@ -331,7 +331,7 @@ namespace piranha
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, std::pair<HashSet &,HashSet &> *cms_pair,
+							const Ckey *ck2, const Trunc &trunc, std::pair<HashSet *,HashSet *> *cms_pair,
 							const ArgsTuple &args_tuple) {
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
@@ -341,7 +341,7 @@ namespace piranha
 							}
 							// Cache values.
 							const char *f1 = m_f1, *f2 = m_f2;
-							HashSet &cms_cos = cms_pair->first, &cms_sin = cms_pair->second;
+							HashSet &cms_cos = *cms_pair->first, &cms_sin = *cms_pair->second;
 							// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
 							// and cfs instead of terms, generating only one coefficient and change its sign later
 							// if needed - after insertion.
@@ -405,7 +405,7 @@ namespace piranha
 						const size_t size_hint = static_cast<size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
 						csht cms_cos(size_hint), cms_sin(size_hint);
-						std::pair<csht &, csht &> res(cms_cos,cms_sin);
+						std::pair<csht *, csht *> res(&cms_cos,&cms_sin);
 						const size_t size1 = this->m_size1, size2 = this->m_size2;
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];

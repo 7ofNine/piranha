@@ -80,7 +80,8 @@ namespace piranha
 			template <class Number>
 			double_cf pow_helper(const Number &y) const {
 				double_cf retval;
-				retval.m_value = std::pow(ancestor::m_value, y);
+				// TODO: remove the double(y) thing once we rework pow().
+				retval.m_value = std::pow(ancestor::m_value, double(y));
 				return retval;
 			}
 	};
