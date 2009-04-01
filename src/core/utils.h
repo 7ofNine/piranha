@@ -24,6 +24,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -130,13 +131,24 @@ namespace piranha
 				}
 				return retval;
 			}
+			/// Check if a double-precision number is an integer.
+			static bool is_integer(const double &x) {
+				try {
+					const int tmp = boost::numeric_cast<int>(x);
+					if (x == tmp) {
+						return true;
+					}
+				} catch (const boost::bad_numeric_cast &) {
+					// This means that x is overflowing int's range.
+				}
+				return false;
+			}
 		private:
 			/// Check whether a string is valid.
 			/**
 			 * Invalid strings are empty or commented.
 			 */
 			static bool is_valid(const std::string &str) {
-				// TODO: replace with switch statement.
 				if (str.empty() || str[0] == '#') {
 					return false;
 				}

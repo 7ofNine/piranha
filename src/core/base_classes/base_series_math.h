@@ -288,6 +288,10 @@ namespace piranha
 		return partial_(1,pos_tuple,args_tuple);
 	}
 
+	// When raising to power y, handle the following cases:
+	// - series is empty,
+	// - series is made of a single term.
+	// Return true if one of the above is true, false otherwise.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_power_handler(const Number &y, Derived &retval,
@@ -421,6 +425,11 @@ namespace piranha
 		return retval;
 	}
 
+	// Handle the following cases:
+	// - n is 0,
+	// - n is 1,
+	// - series is empty,
+	// - series is made of a single term.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_root_handler(const max_fast_int &n, Derived &retval,
