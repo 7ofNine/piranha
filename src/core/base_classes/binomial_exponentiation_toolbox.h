@@ -43,7 +43,7 @@ namespace piranha
 		public:
 			/// Real power.
 			/**
-			* This method is written to work in conjunction with base_series::pow.
+			* This method is written to work in conjunction with base_series::pow_.
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
@@ -51,12 +51,12 @@ namespace piranha
 					get_sorted_pointer_vector<Derived>(args_tuple),y,args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived negative_integer_power(const max_fast_int &y, const ArgsTuple &args_tuple) const {
+			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const {
 				return generic_binomial_power<power_op>(
 					get_sorted_pointer_vector<Derived>(args_tuple),y, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived nth_root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+			Derived nth_root(const int &n, const ArgsTuple &args_tuple) const {
 				p_assert(n != 0 && n != 1);
 				return generic_binomial_power<root_op>(
 					get_sorted_pointer_vector<Derived>(args_tuple), n, args_tuple);
@@ -67,7 +67,7 @@ namespace piranha
 				const Number &y, const ArgsTuple &args_tuple) {
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already
-				// been taken care of in base_series::pow.
+				// been taken care of in base_series::pow_.
 				p_assert(v.size() > 1);
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
@@ -104,12 +104,12 @@ namespace piranha
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
 				if (Op == power_op) {
-					tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
-					tmp_term.m_key = A.m_key.pow(y, args_tuple);
+					tmp_term.m_cf = A.m_cf.pow_(y, args_tuple);
+					tmp_term.m_key = A.m_key.pow_(y, args_tuple);
 				} else {
 					// NOTE: here we should be sure about y being an integer, hence the static cast.
-					tmp_term.m_cf = A.m_cf.root(static_cast<max_fast_int>(y), args_tuple);
-					tmp_term.m_key = A.m_key.root(static_cast<max_fast_int>(y), args_tuple);
+					tmp_term.m_cf = A.m_cf.root_(static_cast<int>(y), args_tuple);
+					tmp_term.m_key = A.m_key.root_(static_cast<int>(y), args_tuple);
 				}
 				Derived Apowy;
 				Apowy.insert(tmp_term, args_tuple);

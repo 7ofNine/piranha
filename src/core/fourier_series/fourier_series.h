@@ -76,10 +76,6 @@ namespace piranha
 			using FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
-			using named_ancestor::pow;
-			using base_ancestor::pow;
-			using named_ancestor::root;
-			using base_ancestor::root;
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
@@ -155,11 +151,6 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
-			using named_ancestor::pow;
-			using base_ancestor::pow;
-			using named_ancestor::root;
-			using base_ancestor::root;
-			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::inv_;
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);

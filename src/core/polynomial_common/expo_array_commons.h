@@ -196,7 +196,7 @@ namespace piranha
 			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
 			 */
 			template <class ArgsTuple>
-			Derived pow(const max_fast_int &n, const ArgsTuple &) const {
+			Derived pow_(const int &n, const ArgsTuple &) const {
 				typedef typename Derived::size_type size_type;
 				Derived retval(*derived_const_cast);
 				const size_type w = derived_const_cast->size();
@@ -211,7 +211,7 @@ namespace piranha
 			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
 			 */
 			template <class ArgsTuple>
-			Derived pow(const double &, const ArgsTuple &) const {
+			Derived pow_(const double &, const ArgsTuple &) const {
 				// Real power is ok only if expo_array is unity.
 				if (!is_unity()) {
 					throw unsuitable("Cannot raise non-unity exponent array to real power.");
@@ -219,7 +219,7 @@ namespace piranha
 				return Derived(*derived_const_cast);
 			}
 			template <class ArgsTuple>
-			Derived root(const max_fast_int &n, const ArgsTuple &) const {
+			Derived root_(const int &n, const ArgsTuple &) const {
 				Derived retval = *derived_const_cast;
 				if (n == 0) {
 					throw division_by_zero();

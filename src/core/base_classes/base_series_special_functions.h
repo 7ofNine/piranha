@@ -71,7 +71,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.pow(order, args_tuple);
+				retval = retval.pow_(order, args_tuple);
 				retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
@@ -110,7 +110,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.pow(order - 1, args_tuple);
+				retval = retval.pow_(order - 1, args_tuple);
 				for (size_t i = 0; i < (size_t)order; ++i) {
 					retval.divide_by((max_fast_int)(i + 1), args_tuple);
 				}
@@ -138,8 +138,8 @@ namespace piranha
 					if (order < m) {
 						throw division_by_zero();
 					} else if (order == m) {
-						retval = Derived(max_fast_int(2),args_tuple).pow(max_fast_int(-order),args_tuple);
-						retval.mult_by(Derived::factorial_(order,args_tuple).pow(max_fast_int(-1),args_tuple),args_tuple);
+						retval = Derived(max_fast_int(2),args_tuple).pow_(-order,args_tuple);
+						retval.mult_by(Derived::factorial_(order,args_tuple).pow_(-1,args_tuple),args_tuple);
 					}
 					return retval;
 				}
@@ -159,7 +159,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
-				retval = retval.pow((max_fast_int)order - m, args_tuple);
+				retval = retval.pow_(order - m, args_tuple);
 				retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
@@ -170,7 +170,7 @@ namespace piranha
 					retval.add(tmp, args_tuple);
 				}
 				// m2 will be the external divisor by 2**m.
-				Derived m2 = Derived(max_fast_int(2),args_tuple).pow(-m,args_tuple);
+				Derived m2 = Derived(max_fast_int(2),args_tuple).pow_(-m,args_tuple);
 				retval.mult_by(m2, args_tuple);
 				if (order_ < 0) {
 					retval.mult_by(cs_phase(order_), args_tuple);

@@ -114,7 +114,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			mpq_cf pow(const max_fast_int &n, const ArgsTuple &) const {
+			mpq_cf pow_(const int &n, const ArgsTuple &) const {
 				mpq_cf retval;
 				if (m_value == 0 && n < 0) {
 					throw division_by_zero();
@@ -131,7 +131,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			mpq_cf pow(const double &y, const ArgsTuple &) const {
+			mpq_cf pow_(const double &y, const ArgsTuple &) const {
 				mpq_cf retval;
 				// If negative, only 1^-something is reasonable.
 				if (y < 0) {
@@ -160,7 +160,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			mpq_cf root(const max_fast_int &n_, const ArgsTuple &) const {
+			mpq_cf root_(const int &n_, const ArgsTuple &) const {
 				mpq_cf retval;
 				if (n_ == 0) {
 					throw division_by_zero();
@@ -289,7 +289,7 @@ namespace std
 				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
-			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
+			complex pow_(const int &n, const ArgsTuple &) const {
 				complex retval;
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
@@ -329,7 +329,7 @@ namespace std
 				return retval;
 			}
 			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
+			complex pow_(const double &y, const ArgsTuple &) const {
 				complex retval;
 				if (y < 0) {
 					if (m_value.real() == 0 && m_value.imag() == 0) {

@@ -210,16 +210,16 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived inv_(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow(max_fast_int(-1),args_tuple);
+				return derived_const_cast->pow_(-1,args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+			Derived root_(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return derived_const_cast->pow(1. / static_cast<double>(n), args_tuple);
+				return derived_const_cast->pow_(1. / static_cast<double>(n), args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived besselJ_(const max_fast_int &, const ArgsTuple &) const {

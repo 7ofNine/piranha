@@ -85,10 +85,6 @@ namespace piranha
 			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;
 		public:
-			using named_ancestor::pow;
-			using base_ancestor::pow;
-			using named_ancestor::root;
-			using base_ancestor::root;
 			using POISSON_SERIES_COMMON_ANCESTOR::sub;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
@@ -169,11 +165,6 @@ namespace std
 			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator/=;
-			using named_ancestor::pow;
-			using base_ancestor::pow;
-			using named_ancestor::root;
-			using base_ancestor::root;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::inv;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::inv_;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::sub;
 			// Ctors.

@@ -67,23 +67,13 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			double_cf pow(const max_fast_int &n, const ArgsTuple &) const {
-				return pow_helper(n);
-			}
-			template <class ArgsTuple>
-			double_cf pow(const double &y, const ArgsTuple &) const {
-				return pow_helper(y);
+			double_cf pow_(const double &y, const ArgsTuple &) const {
+				double_cf retval;
+				retval.m_value = std::pow(ancestor::m_value, y);
+				return retval;
 			}
 			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
-		private:
-			template <class Number>
-			double_cf pow_helper(const Number &y) const {
-				double_cf retval;
-				// TODO: remove the double(y) thing once we rework pow().
-				retval.m_value = std::pow(ancestor::m_value, double(y));
-				return retval;
-			}
 	};
 }
 
@@ -107,27 +97,18 @@ namespace std
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			template <class ArgsTuple>
-			complex pow(const piranha::max_fast_int &n, const ArgsTuple &) const {
-				return pow_helper(n);
-			}
-			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
-				return pow_helper(y);
-			}
-			template <class ArgsTuple>
-			complex besselJ_(const piranha::max_fast_int &n, const ArgsTuple &) {
-				complex retval;
-				retval.m_value = piranha::besselJ(n,m_value);
-				return retval;
-			}
-		private:
-			template <class Number>
-			complex pow_helper(const Number &y) const {
+			complex pow_(const double &y, const ArgsTuple &) const {
 				complex retval;
 				// COMPILER_BUG: Ubuntu hardy's GCC 4.2 compiler craps out if
 				// assiging directly retval.m_value = std::pow().
 				std::complex<double> tmp(std::pow(ancestor::m_value, y));
 				retval.m_value = tmp;
+				return retval;
+			}
+			template <class ArgsTuple>
+			complex besselJ_(const piranha::max_fast_int &n, const ArgsTuple &) {
+				complex retval;
+				retval.m_value = piranha::besselJ(n,m_value);
 				return retval;
 			}
 	};

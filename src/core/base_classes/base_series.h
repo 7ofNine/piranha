@@ -114,11 +114,9 @@ namespace piranha
 			template <class ArgsTuple>
 			static Derived choose_(const max_fast_int &, const max_fast_int &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived pow(const max_fast_int &, const ArgsTuple &) const;
+			Derived pow_(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived pow(const double &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived root(const max_fast_int &, const ArgsTuple &) const;
+			Derived root_(const int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial_(max_fast_int, const PosTuple &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
@@ -169,11 +167,11 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived natural_power(const size_t &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived negative_integer_power(const max_fast_int &, const ArgsTuple &) const;
+			Derived negative_integer_power(const int &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived nth_root(const max_fast_int &, const ArgsTuple &) const;
+			Derived nth_root(const int &, const ArgsTuple &) const;
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
 		private:
@@ -189,10 +187,10 @@ namespace piranha
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class PosTuple, class ArgsTuple>
 			static void ll_partial(const Derived &, Derived &, const PosTuple &, const ArgsTuple &);
-			template <class Number, class ArgsTuple>
-			bool common_power_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			bool common_root_handler(const max_fast_int &, Derived &retval, const ArgsTuple &) const;
+			bool common_power_handler(const double &, Derived &retval, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			bool common_root_handler(const int &, Derived &retval, const ArgsTuple &) const;
 		private:
 			container_type m_container;
 	};

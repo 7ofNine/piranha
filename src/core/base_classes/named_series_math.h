@@ -173,25 +173,16 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
 	{
-		Derived retval(derived_const_cast->pow(x, m_arguments));
+		Derived retval(derived_const_cast->pow_(x, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const max_fast_int &n) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::root(const int &n) const
 	{
-		Derived retval(derived_const_cast->pow(n, m_arguments));
-		retval.m_arguments = m_arguments;
-		retval.trim();
-		return retval;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::root(const max_fast_int &n) const
-	{
-		Derived retval(derived_const_cast->root(n, m_arguments));
+		Derived retval(derived_const_cast->root_(n, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;

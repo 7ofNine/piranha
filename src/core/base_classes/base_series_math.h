@@ -30,6 +30,7 @@
 #include "../math.h"
 #include "../p_assert.h"
 #include "../settings.h"
+#include "../utils.h" // For is_integer().
 
 namespace piranha
 {
@@ -293,8 +294,8 @@ namespace piranha
 	// - series is made of a single term.
 	// Return true if one of the above is true, false otherwise.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class Number, class ArgsTuple>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_power_handler(const Number &y, Derived &retval,
+	template <class ArgsTuple>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_power_handler(const double &y, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
 		p_assert(retval.empty());
@@ -310,41 +311,38 @@ namespace piranha
 				// 0**n == 0, with n > 0.
 				return true;
 			}
-		} else if (length() == 1) {
+		}
+		if (length() == 1) {
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
+			retval.insert(term_type(it->m_cf.pow_(y, args_tuple), it->m_key.pow_(y, args_tuple)), args_tuple);
 			return true;
 		}
 		return false;
 	}
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::pow(const max_fast_int &n,
-			const ArgsTuple &args_tuple) const
-	{
-		Derived retval;
-		if (n >= 0) {
-			Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
-			retval.swap_terms(tmp);
-		} else if (!common_power_handler(n, retval, args_tuple)) {
-			Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
-			retval.swap_terms(tmp);
-		}
-		return retval;
-	}
-
 	/// Real exponentiation.
+	// Internally it will check if y is a real or an integer number.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::pow(const double &y,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::pow_(const double &y,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
 		if (!common_power_handler(y, retval, args_tuple)) {
-			Derived tmp(derived_const_cast->real_power(y, args_tuple));
-			retval.swap_terms(tmp);
+			if (utils::is_integer(y)) {
+				const int n = (int)(y);
+				if (n >= 0) {
+					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+					retval.swap_terms(tmp);
+				} else {
+					Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+					retval.swap_terms(tmp);
+				}
+			} else {
+				Derived tmp(derived_const_cast->real_power(y, args_tuple));
+				retval.swap_terms(tmp);
+			}
 		}
 		return retval;
 	}
@@ -358,7 +356,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const max_fast_int &n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const int &n,
 		const ArgsTuple &) const
 	{
 		(void)n;
@@ -432,7 +430,7 @@ namespace piranha
 	// - series is made of a single term.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_root_handler(const max_fast_int &n, Derived &retval,
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::common_root_handler(const int &n, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
 		p_assert(retval.empty());
@@ -454,7 +452,7 @@ namespace piranha
 		} else if (length() == 1) {
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
+			retval.insert(term_type(it->m_cf.root_(n, args_tuple), it->m_key.root_(n, args_tuple)), args_tuple);
 			return true;
 		}
 		return false;
@@ -463,7 +461,7 @@ namespace piranha
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::root(const max_fast_int &n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::root_(const int &n,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -477,11 +475,11 @@ namespace piranha
 	// As default will use real power.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const max_fast_int &n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::nth_root(const int &n,
 			const ArgsTuple &args_tuple) const
 	{
 		p_assert(n > 0);
-		return pow(1. / static_cast<double>(n), args_tuple);
+		return pow_(1. / static_cast<double>(n), args_tuple);
 	}
 
 	// Series inversion will use exponentiation to -1 as default.
@@ -489,7 +487,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::inv_(const ArgsTuple &args_tuple) const
 	{
-		return pow(max_fast_int(-1),args_tuple);
+		return pow_(-1,args_tuple);
 	}
 }
 

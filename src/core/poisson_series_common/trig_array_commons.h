@@ -292,7 +292,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			Derived pow(const max_fast_int &n, const ArgsTuple &) const {
+			Derived pow_(const int &n, const ArgsTuple &) const {
 				const bool int_zero = derived_const_cast->elements_are_zero();
 				Derived retval;
 				if (n < 0) {
@@ -327,7 +327,7 @@ namespace piranha
 			}
 			/// Real exponentiation.
 			template <class ArgsTuple>
-			Derived pow(const double &y, const ArgsTuple &) const {
+			Derived pow_(const double &y, const ArgsTuple &) const {
 				const bool int_zero = derived_const_cast->elements_are_zero();
 				Derived retval;
 				if (y < 0) {
@@ -361,13 +361,13 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			Derived root(const max_fast_int &n, const ArgsTuple &args_tuple) const {
+			Derived root_(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return pow(1. / static_cast<double>(n), args_tuple);
+				return pow_(1. / static_cast<double>(n), args_tuple);
 			}
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
