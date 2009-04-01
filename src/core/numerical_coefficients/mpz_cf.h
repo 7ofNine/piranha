@@ -33,6 +33,7 @@
 #include "../math.h"
 #include "../settings.h"
 #include "../type_traits.h" // For lightweight attribute.
+#include "../utils.h" // For is_integer().
 
 namespace piranha
 {
@@ -86,9 +87,33 @@ namespace piranha
 			void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &) {
 				mpz_addmul(m_value.get_mpz_t(), x1.m_value.get_mpz_t(), x2.m_value.get_mpz_t());
 			}
-			// To shield against GMP exceptions, we need to filter out some cases here.
 			template <class ArgsTuple>
-			mpz_cf pow_(const int &n, const ArgsTuple &) const {
+			mpz_cf pow_(const double &y, const ArgsTuple &) const {
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+				}	return pow_double(y);
+			}
+			template <class ArgsTuple>
+			mpz_cf root_(const int &n_, const ArgsTuple &) const {
+				mpz_cf retval;
+				if (n_ == 0) {
+					throw division_by_zero();
+				} else if (n_ == 1) {
+					retval = *this;
+					return retval;
+				} else if (n_ < 0) {
+					throw unsuitable("Integer coefficients different from unity cannot be arguments of negative root.");
+				}
+				const size_t n = static_cast<size_t>(n_);
+				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
+					throw unsuitable("Integer coefficient is not an exact nth root.");
+				}
+				return retval;
+			}
+		private:
+			// To shield against GMP exceptions, we need to filter out some cases here.
+			mpz_cf pow_int(const int &n) const {
 				mpz_cf retval;
 				// If negative, only 1^-something is reasonable.
 				if (n < 0) {
@@ -105,8 +130,7 @@ namespace piranha
 				}
 				return retval;
 			}
-			template <class ArgsTuple>
-			mpz_cf pow_(const double &y, const ArgsTuple &) const {
+			mpz_cf pow_double(const double &y) const {
 				mpz_cf retval;
 				// If negative, only 1^-something is reasonable.
 				if (y < 0) {
@@ -129,23 +153,6 @@ namespace piranha
 					} else {
 						throw unsuitable("Cannot raise integer coefficient different from unity to positive real power.");
 					}
-				}
-				return retval;
-			}
-			template <class ArgsTuple>
-			mpz_cf root_(const int &n_, const ArgsTuple &) const {
-				mpz_cf retval;
-				if (n_ == 0) {
-					throw division_by_zero();
-				} else if (n_ == 1) {
-					retval = *this;
-					return retval;
-				} else if (n_ < 0) {
-					throw unsuitable("Integer coefficients different from unity cannot be arguments of negative root.");
-				}
-				const size_t n = static_cast<size_t>(n_);
-				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
-					throw unsuitable("Integer coefficient is not an exact nth root.");
 				}
 				return retval;
 			}
@@ -203,7 +210,14 @@ namespace std
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			template <class ArgsTuple>
-			complex pow_(const int &n, const ArgsTuple &) const {
+			complex pow_(const double &y, const ArgsTuple &) const {
+				if (piranha::utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+				}	return pow_double(y);
+			}
+		private:
+			complex pow_int(const int &n) const {
 				complex retval;
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
@@ -226,8 +240,7 @@ namespace std
 				}
 				return retval;
 			}
-			template <class ArgsTuple>
-			complex pow_(const double &y, const ArgsTuple &) const {
+			complex pow_double(const double &y) const {
 				complex retval;
 				if (y < 0) {
 					if (m_value.real() == 0 && m_value.imag() == 0) {

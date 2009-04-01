@@ -34,6 +34,7 @@
 #include "../integer_typedefs.h"
 #include "../psym.h"
 #include "../settings.h"
+#include "../utils.h" // For is_integer().
 
 #define derived_const_cast (static_cast<Derived const *>(this))
 #define derived_cast (static_cast<Derived *>(this))
@@ -191,32 +192,13 @@ namespace piranha
 				}
 				return retval;
 			}
-			/// Integer exponentiation.
-			/**
-			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
-			 */
 			template <class ArgsTuple>
-			Derived pow_(const int &n, const ArgsTuple &) const {
-				typedef typename Derived::size_type size_type;
-				Derived retval(*derived_const_cast);
-				const size_type w = derived_const_cast->size();
-				// Integer power. Retval has already been set to this, modify integers in-place.
-				for (size_type i = 0; i < w; ++i) {
-					retval[i] *= (typename Derived::value_type)n;
+			Derived pow_(const double &y, const ArgsTuple &) const {
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+					return pow_double(y);
 				}
-				return retval;
-			}
-			/// Real exponentiation.
-			/**
-			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
-			 */
-			template <class ArgsTuple>
-			Derived pow_(const double &, const ArgsTuple &) const {
-				// Real power is ok only if expo_array is unity.
-				if (!is_unity()) {
-					throw unsuitable("Cannot raise non-unity exponent array to real power.");
-				}
-				return Derived(*derived_const_cast);
 			}
 			template <class ArgsTuple>
 			Derived root_(const int &n, const ArgsTuple &) const {
@@ -302,6 +284,32 @@ namespace piranha
 				for (size_t i = 0;i < w;++i) {
 					(*derived_cast)[i] = utils::lexical_converter<value_type>(sd[i]);
 				}
+			}
+		private:
+			/// Integer exponentiation.
+			/**
+			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+			 */
+			Derived pow_int(const int &n) const {
+				typedef typename Derived::size_type size_type;
+				Derived retval(*derived_const_cast);
+				const size_type w = derived_const_cast->size();
+				// Integer power. Retval has already been set to this, modify integers in-place.
+				for (size_type i = 0; i < w; ++i) {
+					retval[i] *= (typename Derived::value_type)n;
+				}
+				return retval;
+			}
+			/// Real exponentiation.
+			/**
+			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+			 */
+			Derived pow_double(const double &) const {
+				// Real power is ok only if expo_array is unity.
+				if (!is_unity()) {
+					throw unsuitable("Cannot raise non-unity exponent array to real power.");
+				}
+				return Derived(*derived_const_cast);
 			}
 	};
 }

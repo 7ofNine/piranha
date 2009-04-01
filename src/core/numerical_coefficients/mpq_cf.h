@@ -31,6 +31,7 @@
 #include "../integer_typedefs.h"
 #include "../settings.h"
 #include "../type_traits.h" // For lightweight attribute.
+#include "../utils.h" // For is_integer.
 
 namespace piranha
 {
@@ -114,50 +115,11 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			mpq_cf pow_(const int &n, const ArgsTuple &) const {
-				mpq_cf retval;
-				if (m_value == 0 && n < 0) {
-					throw division_by_zero();
-				}
-				if (n < 0) {
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-n));
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-n));
-					// We need to canonicalize, since negative numbers may have gone to the denominator.
-					retval.m_value.canonicalize();
-				} else {
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)n);
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)n);
-				}
-				return retval;
-			}
-			template <class ArgsTuple>
 			mpq_cf pow_(const double &y, const ArgsTuple &) const {
-				mpq_cf retval;
-				// If negative, only 1^-something is reasonable.
-				if (y < 0) {
-					if (m_value == 0) {
-						throw division_by_zero();
-					} else if (m_value == 1) {
-						retval.m_value = 1;
-					} else {
-						throw unsuitable("Cannot raise rational coefficient different from unity to "
-							"negative real power.");
-					}
-					// If y == 0, then x**0 == 1 for every x.
-				} else if (y == 0) {
-					retval.m_value = 1;
-					// If y > 0, we can accept only 0^y and 1^y.
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
 				} else {
-					if (m_value == 0) {
-						retval.m_value = 0;
-					} else if (m_value == 1) {
-						retval.m_value = 1;
-					} else {
-						throw unsuitable("Cannot raise rational coefficient different from unity to "
-							"positive real power.");
-					}
-				}
-				return retval;
+				}	return pow_double(y);
 			}
 			template <class ArgsTuple>
 			mpq_cf root_(const int &n_, const ArgsTuple &) const {
@@ -186,6 +148,51 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
+		private:
+			mpq_cf pow_int(const int &n) const {
+				mpq_cf retval;
+				if (m_value == 0 && n < 0) {
+					throw division_by_zero();
+				}
+				if (n < 0) {
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)(-n));
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)(-n));
+					// We need to canonicalize, since negative numbers may have gone to the denominator.
+					retval.m_value.canonicalize();
+				} else {
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (size_t)n);
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (size_t)n);
+				}
+				return retval;
+			}
+			mpq_cf pow_double(const double &y) const {
+				mpq_cf retval;
+				// If negative, only 1^-something is reasonable.
+				if (y < 0) {
+					if (m_value == 0) {
+						throw division_by_zero();
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise rational coefficient different from unity to "
+							"negative real power.");
+					}
+					// If y == 0, then x**0 == 1 for every x.
+				} else if (y == 0) {
+					retval.m_value = 1;
+					// If y > 0, we can accept only 0^y and 1^y.
+				} else {
+					if (m_value == 0) {
+						retval.m_value = 0;
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						throw unsuitable("Cannot raise rational coefficient different from unity to "
+							"positive real power.");
+					}
+				}
+				return retval;
+			}
 	};
 }
 
@@ -289,7 +296,18 @@ namespace std
 				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
-			complex pow_(const int &n, const ArgsTuple &) const {
+			complex pow_(const double &y, const ArgsTuple &) const {
+				if (piranha::utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+				}	return pow_double(y);
+			}
+		private:
+			void canonicalize() {
+				m_value.real().canonicalize();
+				m_value.imag().canonicalize();
+			}
+			complex pow_int(const int &n) const {
 				complex retval;
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
@@ -328,8 +346,7 @@ namespace std
 				}
 				return retval;
 			}
-			template <class ArgsTuple>
-			complex pow_(const double &y, const ArgsTuple &) const {
+			complex pow_double(const double &y) const {
 				complex retval;
 				if (y < 0) {
 					if (m_value.real() == 0 && m_value.imag() == 0) {
@@ -359,11 +376,6 @@ namespace std
 					}
 				}
 				return retval;
-			}
-		private:
-			void canonicalize() {
-				m_value.real().canonicalize();
-				m_value.imag().canonicalize();
 			}
 	};
 }
