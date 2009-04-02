@@ -120,8 +120,8 @@ namespace piranha
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
-					tmp.mult_by((-1.) * (order + 2 * i), args_tuple);
-					tmp.divide_by(((double)i * (i + order)) * (order + 2 * (i - 1)), args_tuple);
+					tmp.mult_by((-1) * (order + 2 * (double)i), args_tuple);
+					tmp.divide_by(((double)i * ((double)i + order)) * (order + 2 * ((double)i - 1)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 // settings::format(settings::pretty);
