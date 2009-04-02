@@ -64,13 +64,6 @@ namespace piranha
 			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
-			mpz_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
-				if (n == 0) {
-					throw division_by_zero();
-				}
-				return ancestor::divide_by(n, a);
-			}
-			template <class ArgsTuple>
 			mpz_cf &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {
 					throw division_by_zero();
@@ -177,13 +170,6 @@ namespace std
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			// Override numerical container's division to catch divide by zero.
-			template <class ArgsTuple>
-			complex &divide_by(const piranha::max_fast_int &n, const ArgsTuple &a) {
-				if (n == 0) {
-					throw piranha::division_by_zero();
-				}
-				return ancestor::divide_by(n, a);
-			}
 			template <class ArgsTuple>
 			complex &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {

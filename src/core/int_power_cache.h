@@ -24,7 +24,6 @@
 #include <boost/unordered_map.hpp>
 #include <vector>
 
-#include "integer_typedefs.h"
 #include "p_assert.h"
 #include "settings.h"
 
@@ -37,7 +36,7 @@ namespace piranha
 	class int_power_cache
 	{
 		protected:
-			typedef boost::unordered_map<max_fast_int,T> container_type;
+			typedef boost::unordered_map<int,T> container_type;
 			typedef typename container_type::iterator iterator;
 			typedef ArithmeticFunctor arith_functor_type;
 			int_power_cache():m_container(),m_arith_functor()
@@ -54,7 +53,7 @@ namespace piranha
 				init(x_1);
 				m_container[-1] = inv_x;
 			}
-			const T &operator[](const max_fast_int &n) {
+			const T &operator[](const int &n) {
 				iterator it = m_container.find(n);
 				if (it == m_container.end()) {
 					p_assert(n != 0 && n != 1);
@@ -69,14 +68,14 @@ namespace piranha
 			}
 		private:
 			void init(const T &x_1) {
-				m_container[0] = T(static_cast<max_fast_int>(1));
+				m_container[0] = T(1);
 				m_container[1] = x_1;
 			}
 			template <bool Sign>
-			T &insert_new(max_fast_int n) {
+			T &insert_new(int n) {
 				p_assert((Sign && n > 0) || (!Sign && n < 0));
-				const max_fast_int orig_n = n;
-				std::vector<max_fast_int> ebs_sequence;
+				const int orig_n = n;
+				std::vector<int> ebs_sequence;
 				// First we find the first available value in the EBS sequence.
 				const iterator it_f = m_container.end();
 				__PDEBUG(std::cout << "Int power cache pushing " << orig_n << '\n');
@@ -103,11 +102,11 @@ namespace piranha
 				// At this point n is the lowest known integer of our EBS sequence. It is a kind of seed value.
 				// We are now going to pop back the sequence and multiply by the last popped element or x_1
 				// at each iteration.
-				max_fast_int index = ebs_sequence.back();
+				int index = ebs_sequence.back();
 				while (index != orig_n) {
 					// Check that we are not going to pop too much.
 					p_assert(ebs_sequence.size() >= 2);
-					max_fast_int tmp = ebs_sequence.back();
+					int tmp = ebs_sequence.back();
 					__PDEBUG(std::cout << "Int power cache popping " << ebs_sequence.back() << '\n');
 					ebs_sequence.pop_back();
 					index = ebs_sequence.back();

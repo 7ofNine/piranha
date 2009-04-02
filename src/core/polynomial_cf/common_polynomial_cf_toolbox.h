@@ -26,7 +26,6 @@
 
 #include "../base_classes/cf_series.h"
 #include "../common_functors.h"
-#include "../integer_typedefs.h"
 #include "../p_assert.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 
@@ -48,12 +47,12 @@ namespace piranha
 			};
 			/// Return a single coefficient and a vector of integers representing the polynomial.
 			template <int TargetPos, class Cf, class ArgsTuple>
-			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<max_fast_int> > &res,
+			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<int> > &res,
 											const ArgsTuple &args_tuple) const {
 				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					const max_fast_int pos = it->m_key.linear_arg_position();
+					const int pos = it->m_key.linear_arg_position();
 					if (pos >= 0) {
 						// Let's find the corresponding symbol in the target vector of arguments.
 						size_t i = 0;

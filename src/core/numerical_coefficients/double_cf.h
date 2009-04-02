@@ -28,7 +28,6 @@
 
 #include "../base_classes/numerical_container.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../math.h" // For std::pow.
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
@@ -48,9 +47,9 @@ namespace piranha
 		public:
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf);
-			max_fast_int get_int() const {
-				typedef boost::numeric::converter<max_fast_int, double> double_to_int;
-				const max_fast_int retval(static_cast<max_fast_int>(double_to_int::nearbyint(ancestor::m_value)));
+			int get_int() const {
+				typedef boost::numeric::converter<int, double> double_to_int;
+				const int retval(static_cast<int>(double_to_int::nearbyint(ancestor::m_value)));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
 					throw(unsuitable("Cannot convert double coefficient to integer."));
 				}
@@ -61,7 +60,7 @@ namespace piranha
 			 * Uses Boost's math toolkit.
 			 */
 			template <class ArgsTuple>
-			double_cf besselJ_(const max_fast_int &n, const ArgsTuple &) const {
+			double_cf besselJ_(const int &n, const ArgsTuple &) const {
 				double_cf retval;
 				retval.m_value = piranha::besselJ(n, m_value);
 				return retval;
@@ -106,7 +105,7 @@ namespace std
 				return retval;
 			}
 			template <class ArgsTuple>
-			complex besselJ_(const piranha::max_fast_int &n, const ArgsTuple &) {
+			complex besselJ_(const int &n, const ArgsTuple &) {
 				complex retval;
 				retval.m_value = piranha::besselJ(n,m_value);
 				return retval;

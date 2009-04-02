@@ -35,7 +35,6 @@
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
-#include "../integer_typedefs.h"
 #include "../polynomial_common/monomial.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 
@@ -61,11 +60,9 @@ namespace piranha
 				public POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
 				public POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < POLYNOMIAL,
-				boost::ring_operators < POLYNOMIAL, max_fast_int,
 				boost::ring_operators < POLYNOMIAL, double,
-				boost::dividable < POLYNOMIAL, max_fast_int,
 				boost::dividable < POLYNOMIAL, double
-				> > > > >
+				> > >
 	{
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
@@ -112,16 +109,12 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
-				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
-				boost::dividable < COMPLEX_POLYNOMIAL, piranha::max_fast_int,
 				boost::dividable < COMPLEX_POLYNOMIAL, double,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, POLYNOMIAL,
-				boost::ring_operators < COMPLEX_POLYNOMIAL, complex<piranha::max_fast_int>,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, complex<double>,
-				boost::dividable < COMPLEX_POLYNOMIAL, complex<piranha::max_fast_int>,
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
-				> > > > > > > > > >
+				> > > > > >
 	{
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
@@ -169,23 +162,9 @@ namespace std
 namespace std
 {
 	template < E0_SERIES_TP_DECL >
-	POLYNOMIAL pow(const POLYNOMIAL &x, const piranha::max_fast_int &n)
-	{
-		POLYNOMIAL retval(x.pow(n));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
 	POLYNOMIAL pow(const POLYNOMIAL &x, const double &y)
 	{
 		POLYNOMIAL retval(x.pow(y));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
-	COMPLEX_POLYNOMIAL pow(const COMPLEX_POLYNOMIAL &x, const piranha::max_fast_int &n)
-	{
-		COMPLEX_POLYNOMIAL retval(x.pow(n));
 		return retval;
 	}
 

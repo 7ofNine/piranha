@@ -32,7 +32,6 @@
 
 #include "config.h"
 #include "exceptions.h"
-#include "integer_typedefs.h"
 #include "p_assert.h"
 
 namespace piranha
@@ -94,22 +93,22 @@ namespace piranha
 	};
 
 	template <class T>
-	inline max_fast_int sign(const T &x)
+	inline int sign(const T &x)
 	{
 		if (x >= 0) {
-			return static_cast<max_fast_int>(1);
+			return 1;
 		} else {
-			return static_cast<max_fast_int>(-1);
+			return -1;
 		}
 	}
 
 	/// Condon-Shortley phase.
-	inline max_fast_int cs_phase(const max_fast_int &n)
+	inline int cs_phase(const int &n)
 	{
 		if (n & 1) {
-			return static_cast<max_fast_int>(-1);
+			return -1;
 		} else {
-			return static_cast<max_fast_int>(1);
+			return 1;
 		}
 	}
 
@@ -145,31 +144,31 @@ namespace piranha
 	}
 
 	/// Calculate complex exponential of n*pi/2.
-	inline std::complex<max_fast_int> einpi2(const max_fast_int &n)
+	inline std::complex<double> einpi2(const int &n)
 	{
 		if (n & 1) {
 			if ((n - 1) & 3) {
-				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(-1));
+				return std::complex<double>(0,-1);
 			} else {
-				return std::complex<max_fast_int>(static_cast<max_fast_int>(0),static_cast<max_fast_int>(1));
+				return std::complex<double>(0,1);
 			}
 		} else {
 			if (n & 3) {
-				return std::complex<max_fast_int>(static_cast<max_fast_int>(-1),static_cast<max_fast_int>(0));
+				return std::complex<double>(-1,0);
 			} else {
-				return std::complex<max_fast_int>(static_cast<max_fast_int>(1),static_cast<max_fast_int>(0));
+				return std::complex<double>(1,0);
 			}
 		}
 	}
 
 	/// Bessel function of the first kind, integer order, real double-precision argument.
-	inline double besselJ(const max_fast_int &order, const double &arg)
+	inline double besselJ(const int &order, const double &arg)
 	{
 		return boost::math::cyl_bessel_j(order, arg);
 	}
 
 	/// Bessel function of the first kind, integer order, complex double-precision argument.
-	inline std::complex<double> besselJ(const max_fast_int &order, const std::complex<double> &arg)
+	inline std::complex<double> besselJ(const int &order, const std::complex<double> &arg)
 	{
 		if (arg.imag() != 0) {
 			throw unsuitable("Only complex values with null imaginary part can be used as arguments "
@@ -179,7 +178,7 @@ namespace piranha
 	}
 
 	/// Modified Bessel function of the first kind, integer order.
-	inline double besselI(const max_fast_int &order, const double &arg)
+	inline double besselI(const int &order, const double &arg)
 	{
 		return boost::math::cyl_bessel_i(order, arg);
 	}

@@ -33,7 +33,6 @@
 #include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../ntuple.h"
 #include "../p_assert.h"
 #include "../psym.h"
@@ -51,7 +50,7 @@ namespace piranha
 			ps_binomial_sorter(const ArgsTuple &) {}
 			template <class Term>
 			bool operator()(const Term *t1, const Term *t2) const {
-				const max_fast_int d1 = t1->m_cf.min_degree(), d2 = t2->m_cf.min_degree();
+				const int d1 = t1->m_cf.min_degree(), d2 = t2->m_cf.min_degree();
 				if (d1 == d2) {
 					// NOTICE: the idea is that for leading terms with equal
 					// min_degree we choose the ones that have
@@ -91,7 +90,7 @@ namespace piranha
 				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
-				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<max_fast_int> > >
+				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<int> > >
 				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
@@ -102,10 +101,10 @@ namespace piranha
 					// Let's build the term to be inserted in tmp_series.
 					complex_term_type tmp_term1;
 					complex_term_type tmp_term2;
-					tmp_term1.m_cf = complex_cf_type(std::complex<max_fast_int>(1, 0), args_tuple);
+					tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), args_tuple);
 					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
 					tmp_term1.m_key.flavour() = true;
-					tmp_term2.m_cf = complex_cf_type(std::complex<max_fast_int>(0, 1), args_tuple);
+					tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), args_tuple);
 					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
 					tmp_term2.m_key.flavour() = false;
 					tmp_series.insert(tmp_term1, args_tuple);
@@ -240,14 +239,14 @@ namespace piranha
 		private:
 			template <class Term, class PolyCf, class ArgsTuple>
 			std::pair<typename std::vector<Term const *>::const_iterator, std::pair<std::vector<PolyCf>,
-			std::vector<max_fast_int> > >
+			std::vector<int> > >
 			static get_int_linear_term(const std::vector<const Term *> &v, const ArgsTuple &args_tuple) {
 				p_static_check((boost::is_same<PolyCf,
 					typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				const const_iterator it_f = v.end();
-				std::pair<const_iterator, std::pair<std::vector<PolyCf>, std::vector<max_fast_int> > > retval;
+				std::pair<const_iterator, std::pair<std::vector<PolyCf>, std::vector<int> > > retval;
 				retval.first = it_f;
 				// Make space to accomodate all the elements of the linear combination.
 				// We need as much space as the number of trig args.

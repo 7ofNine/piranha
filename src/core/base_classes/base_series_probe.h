@@ -23,8 +23,6 @@
 
 #include <cmath> // For std::abs.
 
-#include "../integer_typedefs.h"
-
 namespace piranha
 {
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -118,12 +116,6 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const max_fast_int &n) const
-	{
-		return generic_numerical_comparison(n);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const double &x) const
 	{
 		return generic_numerical_comparison(x);
@@ -133,12 +125,6 @@ namespace piranha
 	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const Derived &other) const
 	{
 		return !(*this == other);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const max_fast_int &n) const
-	{
-		return !(*this == n);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

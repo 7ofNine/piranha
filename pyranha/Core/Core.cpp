@@ -98,7 +98,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("memory_limit", size_t_get(&settings::memory_limit),
 		size_t_set(&settings::memory_limit));
 	class_setm.add_static_property("load_factor", &load_factor_get, double_set(&settings::load_factor));
-	typedef void (*digits_set)(const max_fast_int &);
+	typedef void (*digits_set)(const int &);
 	class_setm.add_static_property("digits", size_t_get(&settings::digits), digits_set(&settings::digits));
 	typedef settings::out_format (*format_get)();
 	typedef void (*format_set)(settings::out_format);
@@ -128,8 +128,8 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("eval", &psym::eval)
 	.add_property("name", &psym::name);
 
-	typedef void (*limit_name)(const std::string &, const max_fast_int &);
-	typedef void (*limit_psym)(const piranha::psym &, const max_fast_int &);
+	typedef void (*limit_name)(const std::string &, const int &);
+	typedef void (*limit_psym)(const piranha::psym &, const int &);
 	typedef void (*unset_void)();
 	typedef void (*unset_name)(const std::string &);
 	typedef void (*unset_psym)(const psym &);

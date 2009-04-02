@@ -27,7 +27,6 @@
 
 #include "../common_functors.h"
 #include "../int_power_cache.h"
-#include "../integer_typedefs.h"
 #include "../math.h"
 #include "../p_assert.h"
 
@@ -41,21 +40,21 @@ namespace piranha
 	{
 		public:
 			/// Bessel function of the first kind.
-			Derived besselJ(const max_fast_int &order) const {
+			Derived besselJ(const int &order) const {
 				Derived retval(derived_const_cast->besselJ_(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
-			Derived dbesselJ(const max_fast_int &order) const {
+			Derived dbesselJ(const int &order) const {
 				Derived retval(derived_const_cast->dbesselJ_(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			/// Bessel function of the first kind of integer order divided by its argument**m.
-			Derived besselJ_div_m(const max_fast_int &order, const max_fast_int &m) const {
+			Derived besselJ_div_m(const int &order, const int &m) const {
 				Derived retval(derived_const_cast->besselJ_div_m_(order, m, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
@@ -67,10 +66,10 @@ namespace piranha
 			* sqrt(1-self**2).
 			*/
 			// This recursion appears on Wikipedia.
-			Derived Pnm(const max_fast_int &n_, const max_fast_int &m_, const Derived &self_qc) const {
+			Derived Pnm(const int &n_, const int &m_, const Derived &self_qc) const {
 				// This is P00 right now.
-				Derived retval(static_cast<max_fast_int>(1));
-				max_fast_int n(n_), m(std::abs(m_));
+				Derived retval(1);
+				int n(n_), m(std::abs(m_));
 				if (n_ < 0) {
 					n = -n_-1;
 				}
@@ -83,7 +82,7 @@ namespace piranha
 				}
 				p_assert(n >= m && n >= 0 && m >= 0);
 				Derived P00(retval), old_Pnm, tmp1;
-				max_fast_int i = 0;
+				int i = 0;
 				// Recursion to get from P_00 to P_mm.
 				for (; i < m; ++i) {
 					retval *= -(i*2+1);
@@ -102,32 +101,32 @@ namespace piranha
 					retval += tmp1;
 				}
 				if (m_ < 0) {
-					for (max_fast_int j = n + m; j >= n - m + 1; --j) {
+					for (int j = n + m; j >= n - m + 1; --j) {
 						retval /= j;
 					}
 					retval *= cs_phase(m);
 				}
 				return retval;
 			}
-			Derived Pnm(const max_fast_int &n, const max_fast_int &m) const {
+			Derived Pnm(const int &n, const int &m) const {
 				// Let's build sqrt(1-self**2).
 				Derived tmp(*derived_const_cast);
 				tmp *= tmp;
-				tmp *= static_cast<max_fast_int>(-1);
-				tmp += Derived(static_cast<max_fast_int>(1));
-				return Pnm(n,m,tmp.root(static_cast<max_fast_int>(2)));
+				tmp *= -1;
+				tmp += Derived(1);
+				return Pnm(n,m,tmp.root(2));
 			}
-			Derived Pn(const max_fast_int &n) const {
+			Derived Pn(const int &n) const {
 				return Pnm(n,0,Derived());
 			}
-			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
+			static std::complex<Derived> Ynm(const int &n, const int &m,
 				const Derived &theta, const Derived &phi) {
 				const std::complex<Derived> ei_theta(theta.ei());
 				std::complex<Derived> retval((phi * m).ei());
 				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
 				return retval;
 			}
-			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m,
+			static std::complex<Derived> Ynm(const int &n, const int &m,
 				const Derived &theta, const std::complex<Derived> &ei_phi, const std::complex<Derived> &emi_phi) {
 				const std::complex<Derived> ei_theta(theta.ei());
 				std::complex<Derived> retval;
@@ -139,13 +138,12 @@ namespace piranha
 				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
 				return retval;
 			}
-			static std::complex<Derived> Ynm(const max_fast_int &n_, const max_fast_int &m_, const Derived &theta,
+			static std::complex<Derived> Ynm(const int &n_, const int &m_, const Derived &theta,
 				const std::complex<Derived> &ei_phi, const std::complex<Derived> &emi_phi,
 				const Derived &alpha, const Derived &beta, const Derived &gamma) {
 				// Let's fix negative n and/or m.
-				max_fast_int n(n_), m(std::abs(m_));
-				std::complex<Derived> retval(std::complex<max_fast_int>(static_cast<max_fast_int>(1),
-					static_cast<max_fast_int>(0)));
+				int n(n_), m(std::abs(m_));
+				std::complex<Derived> retval(std::complex<double>(1,0));
 				if (n_ < 0) {
 					n = -n_-1;
 				}
@@ -160,7 +158,7 @@ namespace piranha
 				// Let's prepare the quantities needed for the calculations.
 				const std::complex<Derived>
 					eit(theta.ei()),
-					eib2((beta/static_cast<max_fast_int>(2)).ei());
+					eib2((beta/2).ei());
 				const Derived cos_t(eit.real()), sin_t(eit.imag());
 				std::complex<Derived> final_factor((gamma*(-m)).ei());
 				typedef int_power_cache<Derived,named_series_arithmetics<Derived> > real_cache_type;
@@ -168,21 +166,21 @@ namespace piranha
 					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
 				complex_cache_type
 					cp(ei_phi,emi_phi),
-					ca(alpha.ei(),(alpha*static_cast<max_fast_int>(-1)).ei());
+					ca(alpha.ei(),(alpha *-1).ei());
 				real_cache_type
 					ccb2(eib2.real()),
 					csb2(eib2.imag());
 				final_factor *= einpi2(-m);
 				final_factor *= final_factor.factorial(n+m);
-				for (max_fast_int k = -n; k <= n; ++k) {
+				for (int k = -n; k <= n; ++k) {
 					std::complex<Derived> tmp(ca[-k]);
 					tmp *= einpi2(k);
 					tmp *= tmp.factorial(n-k);
 					tmp *= cp[k];
 					tmp *= cos_t.Pnm(n,k,sin_t);
 					Derived tmp2;
-					for (max_fast_int t = std::max<max_fast_int>(static_cast<max_fast_int>(0),k-m);
-						t <= std::min<max_fast_int>(n-m,n+k); ++t) {
+					for (int t = std::max<int>(0,k-m);
+						t <= std::min<int>(n-m,n+k); ++t) {
 						Derived tmp3(ccb2[n*2-m+k-t*2]);
 						tmp3 *= csb2[m-k+t*2];
 						tmp3 *= cs_phase(t);
@@ -198,9 +196,9 @@ namespace piranha
 				retval *= final_factor;
 				return retval;
 			}
-			static std::complex<Derived> Ynm(const max_fast_int &n, const max_fast_int &m, const Derived &theta,
+			static std::complex<Derived> Ynm(const int &n, const int &m, const Derived &theta,
 				const Derived &phi, const Derived &alpha, const Derived &beta, const Derived &gamma) {
-				return Ynm(n,m,theta,phi.ei(),(phi * static_cast<max_fast_int>(-1)).ei(),alpha,beta,gamma);
+				return Ynm(n,m,theta,phi.ei(),(phi * -1).ei(),alpha,beta,gamma);
 			}
 	};
 }

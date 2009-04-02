@@ -116,19 +116,19 @@ namespace piranha
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
-				Derived tmp((max_fast_int)1, args_tuple);
+				Derived tmp(1, args_tuple);
 				retval.add(tmp, args_tuple);
 				if (Op == power_op) {
 					for (size_t i = 1; i < n; ++i) {
-						tmp.mult_by(y - (max_fast_int)(i) + (max_fast_int)1, args_tuple);
-						tmp.divide_by((max_fast_int)i, args_tuple);
+						tmp.mult_by(y - i + 1, args_tuple);
+						tmp.divide_by(i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
 					}
 				} else {
 					for (size_t i = 1; i < n; ++i) {
-						tmp.mult_by((max_fast_int)1 - (max_fast_int)(i*y) + y, args_tuple);
-						tmp.divide_by((max_fast_int)y*(max_fast_int)i, args_tuple);
+						tmp.mult_by(1 - i * y + y, args_tuple);
+						tmp.divide_by(y * i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
 					}

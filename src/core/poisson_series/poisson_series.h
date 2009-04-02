@@ -35,7 +35,6 @@
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
-#include "../integer_typedefs.h"
 #include "../fourier_series/fourier_series_term.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
 #include "../poisson_series_common/celmec_toolbox.h"
@@ -66,11 +65,9 @@ namespace piranha
 				public POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				public POISSON_SERIES_CELMEC_ANCESTOR,
 				boost::ring_operators < POISSON_SERIES,
-				boost::ring_operators < POISSON_SERIES, max_fast_int,
 				boost::ring_operators < POISSON_SERIES, double,
-				boost::dividable < POISSON_SERIES, max_fast_int,
 				boost::dividable < POISSON_SERIES, double
-				> > > > >
+				> > >
 	{
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
@@ -118,16 +115,12 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
-				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, double,
-				boost::dividable < COMPLEX_POISSON_SERIES, piranha::max_fast_int,
 				boost::dividable < COMPLEX_POISSON_SERIES, double,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, POISSON_SERIES,
-				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<piranha::max_fast_int>,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<double>,
-				boost::dividable < COMPLEX_POISSON_SERIES, complex<piranha::max_fast_int>,
 				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
-				> > > > > > > > > >
+				> > > > > >
 	{
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
@@ -198,23 +191,9 @@ namespace std
 	}
 
 	template <E1_SERIES_TP_DECL>
-	POISSON_SERIES pow(const POISSON_SERIES &x, const piranha::max_fast_int &n)
-	{
-		POISSON_SERIES retval(x.pow(n));
-		return retval;
-	}
-
-	template <E1_SERIES_TP_DECL>
 	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const double &y)
 	{
 		COMPLEX_POISSON_SERIES retval(x.pow(y));
-		return retval;
-	}
-
-	template <E1_SERIES_TP_DECL>
-	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const piranha::max_fast_int &n)
-	{
-		COMPLEX_POISSON_SERIES retval(x.pow(n));
 		return retval;
 	}
 }

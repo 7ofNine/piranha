@@ -38,7 +38,7 @@ namespace pyranha
 	}
 
 	template <class Vector>
-	inline typename Vector::value_type py_vector_getitem(const Vector &v, const piranha::max_fast_int &n_)
+	inline typename Vector::value_type py_vector_getitem(const Vector &v, const int &n_)
 	{
 		int n = n_;
 		const size_t size = v.size();

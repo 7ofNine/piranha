@@ -27,7 +27,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../p_assert.h"
 #include "../psym.h"
@@ -90,35 +89,29 @@ namespace piranha
 			bool is_single_cf() const;
 			size_t atoms() const;
 			bool operator==(const Derived &) const;
-			bool operator==(const max_fast_int &) const;
 			bool operator==(const double &) const;
 			bool operator!=(const Derived &) const;
-			bool operator!=(const max_fast_int &) const;
 			bool operator!=(const double &) const;
 			template <class ArgsTuple>
 			Derived &add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &subtract(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived &mult_by(const max_fast_int &, const ArgsTuple &);
-			template <class ArgsTuple>
 			Derived &mult_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &mult_by(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived &divide_by(const max_fast_int &, const ArgsTuple &);
-			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
-			static Derived factorial_(const max_fast_int &, const ArgsTuple &);
+			static Derived factorial_(const int &, const ArgsTuple &);
 			template <class ArgsTuple>
-			static Derived choose_(const max_fast_int &, const max_fast_int &, const ArgsTuple &);
+			static Derived choose_(const int &, const int &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived pow_(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived root_(const int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
-			Derived partial_(max_fast_int, const PosTuple &, const ArgsTuple &) const;
+			Derived partial_(int, const PosTuple &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial_(const PosTuple &, const ArgsTuple &) const;
 			std::vector<term_type const *> cache_pointers() const;

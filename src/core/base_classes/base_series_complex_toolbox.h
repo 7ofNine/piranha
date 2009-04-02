@@ -25,7 +25,6 @@
 
 #include "base_series.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -88,18 +87,12 @@ namespace piranha
 				Derived retval;
 				retval.add(real_(args_tuple),args_tuple);
 				RealDerived tmp = imag_(args_tuple);
-				tmp.mult_by(max_fast_int(-1),args_tuple);
+				tmp.mult_by(-1,args_tuple);
 				retval.imag_(tmp,args_tuple);
 				return retval;
 			}
-			bool operator==(const std::complex<max_fast_int> &cn) const {
-				return derived_const_cast->generic_numerical_comparison(cn);
-			}
 			bool operator==(const std::complex<double> &cx) const {
 				return derived_const_cast->generic_numerical_comparison(cx);
-			}
-			bool operator!=(const std::complex<max_fast_int> &cn) const {
-				return !(*this == cn);
 			}
 			bool operator!=(const std::complex<double> &cx) const {
 				return !(*this == cx);
@@ -113,10 +106,6 @@ namespace piranha
 				return derived_cast->template merge_terms<false>(r, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
-				return mult_by_complex(cn, args_tuple);
-			}
-			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return mult_by_complex(cx, args_tuple);
 			}
@@ -124,10 +113,6 @@ namespace piranha
 			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
 				derived_cast->multiply_by_series(r, args_tuple);
 				return *derived_cast;
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<max_fast_int> &cn, const ArgsTuple &args_tuple) {
-				return divide_by_complex(cn, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {

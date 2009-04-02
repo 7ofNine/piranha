@@ -100,8 +100,8 @@ namespace piranha
 			static void set_path(const std::string &);
 			// Getters and setters for I/O.
 			static size_t digits();
-			static void digits(const max_fast_int &n) {
-				if (n < static_cast<max_fast_int>(m_min_digits) || n > static_cast<max_fast_int>(m_max_digits)) {
+			static void digits(const int &n) {
+				if (n < static_cast<int>(m_min_digits) || n > static_cast<int>(m_max_digits)) {
 					throw unsuitable("Invalid number of digits.");
 				} else {
 					m_digits = static_cast<size_t>(n);
@@ -137,14 +137,6 @@ namespace piranha
 			static double							m_hash_max_load_factor;
 			/// Numerical zero.
 			static double							m_numerical_zero;
-			/// Minimum fast unsigned integer.
-			static const max_fast_uint				min_u = boost::integer_traits<max_fast_uint>::const_min;
-			/// Maximum fast unsigned integer.
-			static const max_fast_uint				max_u = boost::integer_traits<max_fast_uint>::const_max;
-			/// Minimum fast integer.
-			static const max_fast_int				min_i = boost::integer_traits<max_fast_int>::const_min;
-			/// Maximum fast integer.
-			static const max_fast_int				max_i = boost::integer_traits<max_fast_int>::const_max;
 			/// Path to theories of motion.
 			static std::string						m_path;
 			static std::string						m_default_path;

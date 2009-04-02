@@ -31,7 +31,7 @@ int main()
 {
 settings::debug(true);
 	poly x(psym("x")), y(psym("y"));
-	poly res((x+y).pow(max_fast_int(2)).pow(max_fast_int(10000)));
+	poly res((x+y).pow(2).pow(10000));
 	if (res.length() != 20001) {
 		return 1;
 	}

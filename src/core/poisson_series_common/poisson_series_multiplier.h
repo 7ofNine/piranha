@@ -217,7 +217,7 @@ namespace piranha
 							// so that we can avoid copying stuff around here and elsewhere?
 							cf_type1 tmp_cf = get1::get(tc1[i]);
 							tmp_cf.mult_by(get2::get(tc2[j]), args_tuple);
-							tmp_cf.divide_by(static_cast<max_fast_int>(2), args_tuple);
+							tmp_cf.divide_by(2, args_tuple);
 							const max_fast_int index_plus = ck1[i] + ck2[j], index_minus = ck1[i] - ck2[j];
 							if (f1[i] == f2[j]) {
 								if (f1[i]) {
@@ -349,7 +349,7 @@ namespace piranha
 							Cterm tmp_term1(get1::get(tc1[i]), ck1[i]);
 							// Handle the coefficient, with positive signs for now.
 							tmp_term1.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-							tmp_term1.m_cf.divide_by(static_cast<max_fast_int>(2), args_tuple);
+							tmp_term1.m_cf.divide_by(2, args_tuple);
 							tmp_term1.m_ckey -= ck2[j];
 							// Create the second term, using the first one's coefficient and the appropriate code.
 							Cterm tmp_term2(tmp_term1.m_cf, ck1[i] + ck2[j]);

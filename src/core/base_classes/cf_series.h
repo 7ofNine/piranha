@@ -26,7 +26,6 @@
 #include <iostream>
 #include <string>
 
-#include "../integer_typedefs.h" // For ctor macros
 #include "base_series.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -88,21 +87,12 @@ namespace piranha
 		cf_ancestor::construct_from_string(s,args_tuple); \
 	} \
 	template <class ArgsTuple> \
-	explicit series_name(const piranha::max_fast_int &n, const ArgsTuple &a) \
-	{ \
-		base_ancestor::construct_from_number(n,a); \
-	} \
-	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
 		base_ancestor::construct_from_number(x,a); \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \
-	template <class ArgsTuple> \
-	explicit complex(const complex<piranha::max_fast_int> &cn, const ArgsTuple &a) { \
-		base_ancestor::construct_from_number(cn,a); \
-	} \
 	template <class ArgsTuple> \
 	explicit complex(const complex<double> &cx, const ArgsTuple &a) { \
 		base_ancestor::construct_from_number(cx,a); \

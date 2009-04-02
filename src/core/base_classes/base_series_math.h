@@ -26,7 +26,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../math.h"
 #include "../p_assert.h"
 #include "../settings.h"
@@ -154,13 +153,6 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const max_fast_int &n, const ArgsTuple &args_tuple)
-	{
-		return multiply_by_number(n, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return multiply_by_number(x, args_tuple);
@@ -197,13 +189,6 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const max_fast_int &n, const ArgsTuple &args_tuple)
-	{
-		return divide_by_number(n, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return divide_by_number(x, args_tuple);
@@ -212,16 +197,16 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::choose_(
-		const max_fast_int &n_, const max_fast_int &k, const ArgsTuple &args_tuple)
+		const int &n_, const int &k, const ArgsTuple &args_tuple)
 	{
-		const max_fast_int n = (n_ >= 0) ? n_ : k - n_ - 1;
+		const int n = (n_ >= 0) ? n_ : k - n_ - 1;
 		Derived retval;
 		if (k < 0 || k > n) {
 			return retval;
 		}
 		// Starting point is 1.
-		retval = Derived(max_fast_int(1),args_tuple);
-		for (max_fast_int i = 1; i <= k; ++i) {
+		retval = Derived(1,args_tuple);
+		for (int i = 1; i <= k; ++i) {
 			retval.mult_by(n - k + i, args_tuple);
 			retval.divide_by(i, args_tuple);
 		}
@@ -233,13 +218,13 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::factorial_(const max_fast_int &n, const ArgsTuple &args_tuple)
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::factorial_(const int &n, const ArgsTuple &args_tuple)
 	{
 		if (n < 0) {
 			throw unsuitable("Negative argument for factorial.");
 		}
-		Derived retval(max_fast_int(1),args_tuple);
-		for (max_fast_int i = 2; i <= n; ++i) {
+		Derived retval(1,args_tuple);
+		for (int i = 2; i <= n; ++i) {
 			retval.mult_by(i,args_tuple);
 		}
 		return retval;
@@ -267,7 +252,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial_(max_fast_int n,
+	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::partial_(int n,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		if (n < 0) {
@@ -305,7 +290,7 @@ namespace piranha
 				throw division_by_zero();
 			} else if (y == 0) {
 				// 0**0 == 1.
-				retval = Derived((max_fast_int)1, args_tuple);
+				retval = Derived(1, args_tuple);
 				return true;
 			} else {
 				// 0**n == 0, with n > 0.
@@ -376,7 +361,7 @@ namespace piranha
 		Derived retval;
 		switch (n) {
 		case 0: {
-			retval = Derived(static_cast<max_fast_int>(1), args_tuple);
+			retval = Derived(1, args_tuple);
 			break;
 		}
 		case 1: {
@@ -402,7 +387,7 @@ namespace piranha
 			break;
 		}
 		default: {
-			retval = Derived(static_cast<max_fast_int>(1), args_tuple);
+			retval = Derived(1, args_tuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
 			Derived tmp(*derived_const_cast);

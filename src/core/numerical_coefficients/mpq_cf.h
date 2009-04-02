@@ -58,11 +58,6 @@ namespace piranha
 				// We need to canonicalize when reading from string.
 				m_value.canonicalize();
 			}
-			/// Constructor from integer.
-			template <class ArgsTuple>
-			explicit mpq_cf(const max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
-				m_value.canonicalize();
-			}
 			/// Constructor from double.
 			template <class ArgsTuple>
 			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
@@ -89,13 +84,6 @@ namespace piranha
 			}
 			// Override division to catch divide by zero.
 			template <class ArgsTuple>
-			mpq_cf &divide_by(const max_fast_int &n, const ArgsTuple &a) {
-				if (n == 0) {
-					throw division_by_zero();
-				}
-				return ancestor::divide_by(n, a);
-			}
-			template <class ArgsTuple>
 			mpq_cf &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {
 					throw division_by_zero();
@@ -107,8 +95,8 @@ namespace piranha
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
 			}
-			max_fast_int get_int() const {
-				max_fast_int retval = m_value.get_num().get_si();
+			int get_int() const {
+				int retval = m_value.get_num().get_si();
 				if (m_value.get_den() != 1) {
 					throw(unsuitable("Cannot convert rational coefficient to integer."));
 				}
@@ -223,12 +211,6 @@ namespace std
 				// We need to canonicalize when reading from string.
 				canonicalize();
 			}
-			/// Constructor from integer.
-			template <class ArgsTuple>
-			explicit complex(const piranha::max_fast_int &val, const ArgsTuple &a):
-				ancestor::numerical_container(val, a) {
-				canonicalize();
-			}
 			/// Constructor from double.
 			template <class ArgsTuple>
 			explicit complex(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
@@ -238,11 +220,6 @@ namespace std
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a):
 				ancestor::numerical_container(p, n, a) {
-				canonicalize();
-			}
-			template <class ArgsTuple>
-			explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &):
-				complex_toolbox::numerical_container_complex_toolbox(c) {
 				canonicalize();
 			}
 			template <class ArgsTuple>
@@ -276,13 +253,6 @@ namespace std
 				mpz_swap(mpq_denref(m_value.imag().get_mpq_t()),mpq_denref(other.m_value.imag().get_mpq_t()));
 			}
 			// Override division to catch divide by zero.
-			template <class ArgsTuple>
-			complex &divide_by(const piranha::max_fast_int &n, const ArgsTuple &a) {
-				if (n == 0) {
-					throw piranha::division_by_zero();
-				}
-				return ancestor::divide_by(n, a);
-			}
 			template <class ArgsTuple>
 			complex &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {

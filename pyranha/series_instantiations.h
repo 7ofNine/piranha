@@ -31,7 +31,6 @@
 #include <string>
 #include <utility> // For std::pair.
 
-#include "../src/core/integer_typedefs.h"
 #include "../src/core/psym.h"
 #include "../src/core/shared_args.h"
 #include "../src/core/type_traits.h"
@@ -52,7 +51,6 @@ namespace pyranha
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
 		inst.def(boost::python::init<const std::string &>());
-		inst.def(boost::python::init<const piranha::max_fast_int &>());
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
@@ -81,50 +79,37 @@ namespace pyranha
 		// NOTICE: the order seems important here, if we place *=int before *=double we
 		// will get just *=double in Python. Go figure...
 		// Equality.
-		inst.def(boost::python::self == piranha::max_fast_int());
 		inst.def(boost::python::self == double());
 		inst.def(boost::python::self == boost::python::self);
-		inst.def(boost::python::self != piranha::max_fast_int());
 		inst.def(boost::python::self != double());
 		inst.def(boost::python::self != boost::python::self);
 		// Addition and subtraction.
-		inst.def(boost::python::self += piranha::max_fast_int());
 		inst.def(boost::python::self += double());
 		inst.def(boost::python::self += boost::python::self);
-		inst.def(boost::python::self + piranha::max_fast_int());
-		inst.def(piranha::max_fast_int() + boost::python::self);
 		inst.def(boost::python::self + double());
 		inst.def(double() + boost::python::self);
 		inst.def(boost::python::self + boost::python::self);
-		inst.def(boost::python::self -= piranha::max_fast_int());
 		inst.def(boost::python::self -= double());
 		inst.def(boost::python::self -= boost::python::self);
-		inst.def(boost::python::self - piranha::max_fast_int());
-		inst.def(piranha::max_fast_int() - boost::python::self);
 		inst.def(boost::python::self - double());
 		inst.def(double() - boost::python::self);
 		inst.def(boost::python::self - boost::python::self);
 		inst.def(-boost::python::self);
 		// Multiplication.
-		inst.def(boost::python::self *= piranha::max_fast_int());
 		inst.def(boost::python::self *= double());
 		inst.def(boost::python::self *= boost::python::self);
-		inst.def(boost::python::self*piranha::max_fast_int());
-		inst.def(piranha::max_fast_int()*boost::python::self);
 		inst.def(boost::python::self*double());
 		inst.def(double()*boost::python::self);
 		inst.def(boost::python::self*boost::python::self);
 		// Division.
-		inst.def(boost::python::self /= piranha::max_fast_int());
 		inst.def(boost::python::self /= double());
-		inst.def(boost::python::self / piranha::max_fast_int());
 		inst.def(boost::python::self / double());
 		// Inversion.
 		inst.def("inv", &T::inv, "Series inversion.");
 		// Factorial and binomial coefficient.
-		typedef T (*named_factorial)(const piranha::max_fast_int &);
+		typedef T (*named_factorial)(const int &);
 		inst.def("factorial", named_factorial(&T::factorial), "Factorial function.").staticmethod("factorial");
-		typedef T (*named_choose)(const piranha::max_fast_int &, const piranha::max_fast_int &);
+		typedef T (*named_choose)(const int &, const int &);
 		inst.def("choose", named_choose(&T::choose), "Choose function: (arg1 over arg2). "
 			"arg1 is an arbitrary integer, arg2 must be a suitable non-negative integer.").staticmethod("choose");
 		// Exponentiation.
@@ -138,48 +123,34 @@ namespace pyranha
 		boost::python::class_<T> &inst)
 	{
 		// Ctors.
-		instc.def(boost::python::init<const std::complex<piranha::max_fast_int> &>());
 		instc.def(boost::python::init<const std::complex<double> &>());
 		instc.def(boost::python::init<const T &>());
 		instc.def(boost::python::init<const T &, const T &>());
 		inst.def("complex", &T::complex, "Return complex counterpart.");
-		instc.def(boost::python::self == std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self == std::complex<double>());
-		instc.def(boost::python::self != std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self != std::complex<double>());
 		// Addition and subtraction.
-		instc.def(boost::python::self += std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self += std::complex<double>());
 		instc.def(boost::python::self += T());
-		instc.def(boost::python::self + piranha::max_fast_int());
-		instc.def(std::complex<piranha::max_fast_int>() + boost::python::self);
 		instc.def(boost::python::self + std::complex<double>());
 		instc.def(std::complex<double>() + boost::python::self);
 		instc.def(boost::python::self + T());
 		instc.def(T() + boost::python::self);
-		instc.def(boost::python::self -= std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self -= std::complex<double>());
 		instc.def(boost::python::self -= T());
-		instc.def(boost::python::self - piranha::max_fast_int());
-		instc.def(std::complex<piranha::max_fast_int>() - boost::python::self);
 		instc.def(boost::python::self - std::complex<double>());
 		instc.def(std::complex<double>() - boost::python::self);
 		instc.def(boost::python::self - T());
 		instc.def(T() - boost::python::self);
 		// Multiplication.
-		instc.def(boost::python::self *= std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self *= std::complex<double>());
 		instc.def(boost::python::self *= T());
-		instc.def(boost::python::self * piranha::max_fast_int());
-		instc.def(std::complex<piranha::max_fast_int>() * boost::python::self);
 		instc.def(boost::python::self * std::complex<double>());
 		instc.def(std::complex<double>() * boost::python::self);
 		instc.def(boost::python::self * T());
 		instc.def(T() * boost::python::self);
 		// Division.
-		instc.def(boost::python::self /= std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self /= std::complex<double>());
-		instc.def(boost::python::self / std::complex<piranha::max_fast_int>());
 		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
 		instc.add_property("real", &py_series_get_real<T>, &py_series_set_real<T>, "Get/set real part.");
@@ -197,13 +168,13 @@ namespace pyranha
 		inst.def("ei", named_ei(&T::ei), "Complex exponential.");
 		inst.def("cos", &T::cos, "Cosine.");
 		inst.def("sin", &T::sin, "Sine.");
-		typedef std::complex<T> (*Ynm_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+		typedef std::complex<T> (*Ynm_named)(const int &, const int &,
 			const T &, const T &);
-		typedef std::complex<T> (*Ynm_ei_named)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+		typedef std::complex<T> (*Ynm_ei_named)(const int &, const int &,
 			const T &, const std::complex<T> &, const std::complex<T> &);
-		typedef std::complex<T> (*Ynm_wigner)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+		typedef std::complex<T> (*Ynm_wigner)(const int &, const int &,
 			const T &, const T &, const T &, const T &, const T &);
-		typedef std::complex<T> (*Ynm_ei_wigner)(const piranha::max_fast_int &, const piranha::max_fast_int &,
+		typedef std::complex<T> (*Ynm_ei_wigner)(const int &, const int &,
 			const T &, const std::complex<T> &, const std::complex<T> &, const T &, const T &, const T &);
 		const char *Ynm_descr = "Non-normalised spherical harmonic.";
 		inst.def("Ynm", Ynm_named(&T::Ynm), Ynm_descr);
@@ -220,7 +191,7 @@ namespace pyranha
 	}
 
 	template <class T>
-	static inline T py_series_partial_psym_n(const T &series, const piranha::psym &p, const piranha::max_fast_int &n)
+	static inline T py_series_partial_psym_n(const T &series, const piranha::psym &p, const int &n)
 	{
 		return series.partial(p,n);
 	}
@@ -261,14 +232,14 @@ namespace pyranha
 	template <class T>
 	inline void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T (T::*named_1)(const piranha::max_fast_int &) const;
-		typedef T (T::*named_2)(const piranha::max_fast_int &, const piranha::max_fast_int &) const;
+		typedef T (T::*named_1)(const int &) const;
+		typedef T (T::*named_2)(const int &, const int &) const;
 		inst.def("besselJ", named_1(&T::besselJ), "Bessel function of the first kind of integer order arg2.");
 		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind "
 			"of integer order arg2.");
 		inst.def("besselJ_div_m", named_2(&T::besselJ_div_m),
 			"Bessel function of the first kind of integer order arg2 divided by its argument**arg3.");
-		typedef T (T::*named_3)(const piranha::max_fast_int &, const piranha::max_fast_int &, const T &) const;
+		typedef T (T::*named_3)(const int &, const int &, const T &) const;
 		const char *Pnm_descr = "Associated Legendre function of integer degree arg2 and order arg3.";
 		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);
 		inst.def("Pnm", named_3(&T::Pnm), Pnm_descr);

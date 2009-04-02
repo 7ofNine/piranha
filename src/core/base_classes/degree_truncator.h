@@ -27,7 +27,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug messages.
 
@@ -37,7 +36,7 @@ namespace piranha
 	class __PIRANHA_VISIBLE base_degree_truncator
 	{
 		public:
-			static void set(const max_fast_int &n) {
+			static void set(const int &n) {
 				m_degree_limit = n;
 				m_effective = true;
 			}
@@ -63,7 +62,7 @@ namespace piranha
 					throw unsuitable("Cannot calculate the limit of the power series expansion of "
 						"an empty power series.");
 				}
-				const max_fast_int min_degree(s.min_degree());
+				const int min_degree(s.min_degree());
 				if (min_degree <= 0) {
 					throw unsuitable("Cannot calculate the limit of a power series expansion if the minimum degree "
 									 "of the series is negative or zero.");
@@ -82,7 +81,7 @@ namespace piranha
 				}
 			}
 		protected:
-			static max_fast_int	m_degree_limit;
+			static int	m_degree_limit;
 			static bool			m_effective;
 	};
 

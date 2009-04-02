@@ -89,7 +89,7 @@ namespace piranha
 				typedef typename term_type::cf_type cf_type;
 				Series retval;
 				retval.insert(
-					term_type(cf_type(static_cast<max_fast_int>(1), args_tuple), key),
+					term_type(cf_type(1, args_tuple), key),
 					args_tuple
 				);
 				return retval;

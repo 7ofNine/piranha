@@ -23,7 +23,6 @@
 
 #include <complex>
 
-#include "../integer_typedefs.h"
 #include "../settings.h"
 #include "named_series.h"
 
@@ -73,17 +72,11 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			Derived &operator+=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->template merge_number_helper<true>(cn);
-			}
 			Derived &operator+=(const std::complex<double> &cx) {
 				return derived_cast->template merge_number_helper<true>(cx);
 			}
 			Derived &operator+=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<true>(r);
-			}
-			Derived &operator-=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->template merge_number_helper<false>(cn);
 			}
 			Derived &operator-=(const std::complex<double> &cx) {
 				return derived_cast->template merge_number_helper<false>(cx);
@@ -91,17 +84,11 @@ namespace piranha
 			Derived &operator-=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<false>(r);
 			}
-			Derived &operator*=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->mult_number_helper(cn);
-			}
 			Derived &operator*=(const std::complex<double> &cx) {
 				return derived_cast->mult_number_helper(cx);
 			}
 			Derived &operator*=(const RealDerived &r) {
 				return derived_cast->mult_by_series(r);
-			}
-			Derived &operator/=(const std::complex<max_fast_int> &cn) {
-				return derived_cast->divide_number_helper(cn);
 			}
 			Derived &operator/=(const std::complex<double> &cx) {
 				return derived_cast->divide_number_helper(cx);
@@ -123,10 +110,6 @@ namespace piranha
 #define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_E0_SERIES(series_name) >
 
 #define COMPLEX_NAMED_SERIES_CTORS(complex_toolbox) \
-	explicit complex(const complex<piranha::max_fast_int> &cn) { \
-		base_ancestor::construct_from_number(cn,named_ancestor::m_arguments); \
-		named_ancestor::trim(); \
-	} \
 	explicit complex(const complex<double> &cx) { \
 		base_ancestor::construct_from_number(cx,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \

@@ -36,32 +36,43 @@ int main()
 	std::cout << res.length() << '\n';
 	std::cout << res.atoms() << '\n';
 	retval += (res.length() != 401 || res.atoms() != 80805);
+std::cout << retval << '\n';
 
 	// Identity.
 	base_degree_truncator::set(20);
 	ps e_s(e), M_s(M);
-	retval += (qps::EE(e_s,M_s).cos().sub(e,e_s-max_fast_int(1)).sub(e,e_s+max_fast_int(1)) != qps::cos_E(e_s,M_s));
+	retval += (qps::EE(e_s,M_s).cos().sub(e,e_s-1).sub(e,e_s+1) != qps::cos_E(e_s,M_s));
+std::cout << retval << '\n';
 
 	// Another identity.
 	retval += (qps::r_a(e_s,M_s) * qps::sin_f(e_s,M_s) !=
-		(-e_s*e_s + max_fast_int(1)).root(max_fast_int(2)) * qps::sin_E(e_s,M_s));
+		(-e_s*e_s + 1).root(2) * qps::sin_E(e_s,M_s));
+std::cout << retval << '\n';
 
 	// Testing pow.
-	retval += (ps::r_a(e_s,M_s).pow(max_fast_int(3)).root(max_fast_int(3)) != ps::r_a(e_s,M_s));
+	retval += (ps::r_a(e_s,M_s).pow(3).root(3) != ps::r_a(e_s,M_s));
+std::cout << retval << '\n';
 
 	// Trigonometric identity.
-	retval += ((ps::cos_E(e_s,M_s).pow(max_fast_int(2)) + ps::sin_E(e_s,M_s).pow(max_fast_int(2)))
-		!= max_fast_int(1));
+	retval += ((ps::cos_E(e_s,M_s).pow(2) + ps::sin_E(e_s,M_s).pow(2))
+		!= 1);
+std::cout << retval << '\n';
 
 	// r_a ** -2 == a_r ** 2 and vice-versa.
-	retval += (ps::a_r(e_s,M_s).pow(max_fast_int(2)) != ps::r_a(e_s,M_s).pow(max_fast_int(-2)));
-	retval += (ps::r_a(e_s,M_s).pow(max_fast_int(2)) != ps::a_r(e_s,M_s).pow(max_fast_int(-2)));
+	retval += (ps::a_r(e_s,M_s).pow(2) != ps::r_a(e_s,M_s).pow(-2));
+std::cout << retval << '\n';
+	retval += (ps::r_a(e_s,M_s).pow(2) != ps::a_r(e_s,M_s).pow(-2));
+std::cout << retval << '\n';
 
 	// eipE tests.
-	retval += (ps::eipE(e_s,M_s,5).abs() != max_fast_int(1));
-	retval += (ps::eipE(e_s,M_s,5) * ps::eipE(e_s,M_s,-5) != max_fast_int(1));
-	retval += (ps::eipE(e_s,M_s,1).pow(max_fast_int(6)) != ps::eipE(e_s,M_s,6));
-	retval += (ps::eipE(e_s,M_s,1).inv().pow(max_fast_int(6)) != ps::eipE(e_s,M_s,-6));
+	retval += (ps::eipE(e_s,M_s,5).abs() != 1);
+std::cout << retval << '\n';
+	retval += (ps::eipE(e_s,M_s,5) * ps::eipE(e_s,M_s,-5) != 1);
+std::cout << retval << '\n';
+	retval += (ps::eipE(e_s,M_s,1).pow(6) != ps::eipE(e_s,M_s,6));
+std::cout << retval << '\n';
+	retval += (ps::eipE(e_s,M_s,1).inv().pow(6) != ps::eipE(e_s,M_s,-6));
+std::cout << retval << '\n';
 
 	return retval;
 }

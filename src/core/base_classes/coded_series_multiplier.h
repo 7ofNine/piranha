@@ -29,6 +29,7 @@
 #include <utility> // For std::pair.
 #include <vector>
 
+#include "../integer_typedefs.h"
 #include "../p_assert.h"
 #include "../settings.h" // For debug messages.
 
@@ -175,29 +176,29 @@ namespace piranha
 			}
 		protected:
 			// Is coded representation viable?
-			bool													m_cr_is_viable;
+			bool							m_cr_is_viable;
 			// Size of the coding vector, min_max vectors, etc.
-			const size_t											m_size;
+			const size_t						m_size;
 			// Vectors of minimum and maximum value pairs for the series being multiplied.
-			std::vector<std::pair<max_fast_int, max_fast_int> >		m_min_max1;
-			std::vector<std::pair<max_fast_int, max_fast_int> >		m_min_max2;
+			std::vector<std::pair<int, int> >			m_min_max1;
+			std::vector<std::pair<int, int> >			m_min_max2;
 			// Vector of minimum and maximum value pairs for the resulting series.
 			// GMP is used to avoid trespassing the range limits of max_fast_int.
-			std::vector<std::pair<mpz_class, mpz_class> >			m_res_min_max;
-			// Version of the above downcast to fast integer type.
-			std::vector<std::pair<max_fast_int, max_fast_int> >		m_fast_res_min_max;
+			std::vector<std::pair<mpz_class, mpz_class> >		m_res_min_max;
+			// Version of the above downcast to int.
+			std::vector<std::pair<int, int> >			m_fast_res_min_max;
 			// Coding vector.
-			std::vector<max_fast_int>								m_coding_vector;
+			std::vector<max_fast_int>				m_coding_vector;
 			// Mininum and maximum values of codes, and total number of codes.
-			max_fast_int											m_h_min;
-			max_fast_int											m_h_max;
-			max_fast_int											m_h_tot;
+			max_fast_int						m_h_min;
+			max_fast_int						m_h_max;
+			max_fast_int						m_h_tot;
 			// Coded keys.
-			std::vector<max_fast_int>								m_ckeys1;
-			std::vector<max_fast_int>								m_ckeys2;
+			std::vector<max_fast_int>				m_ckeys1;
+			std::vector<max_fast_int>				m_ckeys2;
 			// Densities of input series wrt the resulting series' codification.
-			double													m_density1;
-			double													m_density2;
+			double							m_density1;
+			double							m_density2;
 	};
 }
 

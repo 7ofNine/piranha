@@ -32,21 +32,21 @@ int main()
 	psym x_("x");
 	const ps x(x_);
 	base_degree_truncator::set(80);
-	retval += (x.besselJ(max_fast_int(3)) != -x.besselJ(max_fast_int(-3)));
-	retval += (x.root(max_fast_int(1)) != x);
-	retval += (x.pow(max_fast_int(-3)).root(max_fast_int(-3)) != x);
-	retval += (x.sin() * x.sin() + x.cos() * x.cos() != max_fast_int(1));
-	retval += (x.pow(max_fast_int(10)) * x.besselJ_div_m(max_fast_int(-6),max_fast_int(10)) != x.besselJ(max_fast_int(-6)));
-	retval += (x.besselJ_div_m(max_fast_int(-3),max_fast_int(-3)) != x.besselJ(max_fast_int(-3)) * x.pow(max_fast_int(3)));
-	retval += (ps().besselJ(max_fast_int(0)) != max_fast_int(1) || ps().besselJ(max_fast_int(1)) != max_fast_int(0));
+	retval += (x.besselJ(3) != -x.besselJ(-3));
+	retval += (x.root(1) != x);
+	retval += (x.pow(-3).root(-3) != x);
+	retval += (x.sin() * x.sin() + x.cos() * x.cos() != 1);
+	retval += (x.pow(10) * x.besselJ_div_m(-6,10) != x.besselJ(-6));
+	retval += (x.besselJ_div_m(-3,-3) != x.besselJ(-3) * x.pow(3));
+	retval += (ps().besselJ(0) != 1 || ps().besselJ(1) != 0);
 	// Test Bessel's differential equation.
-	const max_fast_int order = -5;
+	const int order = -5;
 	const ps y = x.besselJ(order);
 	retval += (
-		x.pow(max_fast_int(2))*y.partial(x_,max_fast_int(2))+x*y.partial(x_)+
-		(x.pow(max_fast_int(2))-ps(order*order))*y != max_fast_int(0)
+		x.pow(2)*y.partial(x_,2)+x*y.partial(x_)+
+		(x.pow(2)-ps(order*order))*y != 0
 	);
 	// Relation between Jn and its derivatives.
-	retval += (x.dbesselJ(5) * max_fast_int(2) != x.besselJ(4) - x.besselJ(6));
+	retval += (x.dbesselJ(5) * 2 != x.besselJ(4) - x.besselJ(6));
 	return retval;
 }

@@ -22,7 +22,6 @@
 #define PIRANHA_NAMED_SERIES_MATH_H
 
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -67,12 +66,6 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const max_fast_int &n)
-	{
-		return merge_number_helper<true>(n);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const double &x)
 	{
 		return merge_number_helper<true>(x);
@@ -82,12 +75,6 @@ namespace piranha
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
 	{
 		return merge_with_series<true>(s2);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const max_fast_int &n)
-	{
-		return merge_number_helper<false>(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -106,7 +93,7 @@ namespace piranha
 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::operator-() const
 	{
 		Derived retval(*derived_const_cast);
-		retval *= (max_fast_int)(-1);
+		retval *= -1;
 		return retval;
 	}
 
@@ -117,12 +104,6 @@ namespace piranha
 		derived_cast->mult_by(x, m_arguments);
 		trim();
 		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const max_fast_int &n)
-	{
-		return mult_number_helper(n);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -147,25 +128,19 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const max_fast_int &n)
-	{
-		return divide_number_helper(n);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
 	{
 		return divide_number_helper(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::choose(const max_fast_int &n, const max_fast_int &k)
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::choose(const int &n, const int &k)
 	{
 		return Derived::choose_(n,k,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::factorial(const max_fast_int &n)
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::factorial(const int &n)
 	{
 		return Derived::factorial_(n,args_tuple_type());
 	}
@@ -199,7 +174,7 @@ namespace piranha
 
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg, const max_fast_int &n) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg, const int &n) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		pos_tuple_type pos_tuple;

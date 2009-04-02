@@ -34,7 +34,6 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
-#include "../integer_typedefs.h"
 #include "common_fourier_series_toolbox.h"
 #include "fourier_series_term.h"
 
@@ -58,11 +57,9 @@ namespace piranha
 				public FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
 				public FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < FOURIER_SERIES,
-				boost::ring_operators < FOURIER_SERIES, max_fast_int,
 				boost::ring_operators < FOURIER_SERIES, double,
-				boost::dividable < FOURIER_SERIES, max_fast_int,
 				boost::dividable < FOURIER_SERIES, double
-				> > > > >
+				> > >
 	{
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
@@ -106,16 +103,12 @@ namespace std
 				public COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES,
-				boost::ring_operators < COMPLEX_FOURIER_SERIES, piranha::max_fast_int,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,
-				boost::dividable < COMPLEX_FOURIER_SERIES, piranha::max_fast_int,
 				boost::dividable < COMPLEX_FOURIER_SERIES, double,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, FOURIER_SERIES,
-				boost::ring_operators < COMPLEX_FOURIER_SERIES, complex<piranha::max_fast_int>,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, complex<double>,
-				boost::dividable < COMPLEX_FOURIER_SERIES, complex<piranha::max_fast_int>,
 				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
-				> > > > > > > > > >
+				> > > > > >
 	{
 			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
@@ -169,23 +162,9 @@ namespace std
 	}
 
 	template < E0_SERIES_TP_DECL >
-	FOURIER_SERIES pow(const FOURIER_SERIES &x, const piranha::max_fast_int &n)
-	{
-		FOURIER_SERIES retval(x.pow(n));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
 	COMPLEX_FOURIER_SERIES pow(const COMPLEX_FOURIER_SERIES &x, const double &y)
 	{
 		COMPLEX_FOURIER_SERIES retval(x.pow(y));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
-	COMPLEX_FOURIER_SERIES pow(const COMPLEX_FOURIER_SERIES &x, const piranha::max_fast_int &n)
-	{
-		COMPLEX_FOURIER_SERIES retval(x.pow(n));
 		return retval;
 	}
 

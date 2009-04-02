@@ -34,9 +34,8 @@ int main()
 {
 settings::debug(true);
 	dpoly x(psym("x")), y(psym("y")), z(psym("z")), t(psym("t")), u(psym("u"));
-	max_fast_int one(1), two(2), three(3), five(5), twelve(12);
-	dpoly f = (x + y + z*z*two + t*t*t*three + u.pow(five)*five + one).pow(twelve);
-	dpoly g = (u + t + z*z*two + y*y*y*three + x.pow(five)*five + one).pow(twelve);
+	dpoly f = (x + y + z*z*2 + t*t*t*3 + u.pow(5)*5 + 1).pow(12);
+	dpoly g = (u + t + z*z*2 + y*y*y*3 + x.pow(5)*5 + 1).pow(12);
 	f *= g;
 	std::cout << f.length() << '\n';
 	if (f.length() != 5821335) {

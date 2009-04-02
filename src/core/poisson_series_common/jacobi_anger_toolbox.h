@@ -27,7 +27,6 @@
 #include <vector>
 
 #include "../config.h"
-#include "../integer_typedefs.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -45,7 +44,7 @@ namespace piranha
 				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				p_assert(retval.empty());
-				retval = std::complex<Derived>(static_cast<max_fast_int>(1), args_tuple);
+				retval = std::complex<Derived>(1, args_tuple);
 				if (v.empty()) {
 					return;
 				}
@@ -86,11 +85,11 @@ namespace piranha
 					retval.insert(tmp_term, args_tuple);
 				}
 				const size_t w = args_tuple.template get<TrigPos>().size();
-				std::vector<max_fast_int> tmp_trig_mults(w);
-				std::complex<max_fast_int> cos_multiplier(0, 2);
+				std::vector<int> tmp_trig_mults(w);
+				std::complex<double> cos_multiplier(0, 2);
 				for (size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real_((*it)->m_cf.besselJ_(static_cast<max_fast_int>(i), args_tuple), args_tuple);
+					tmp_term.m_cf.real_((*it)->m_cf.besselJ_(i, args_tuple), args_tuple);
 					(*it)->m_key.upload_ints_to(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
@@ -100,15 +99,15 @@ namespace piranha
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
 					} else {
 						if (i % 2 == 0) {
-							tmp_term.m_cf.mult_by(static_cast<max_fast_int>(2), args_tuple);
+							tmp_term.m_cf.mult_by(2, args_tuple);
 						} else {
-							tmp_term.m_cf.mult_by(std::complex<max_fast_int>(0, 2), args_tuple);
+							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), args_tuple);
 							tmp_term.m_key.flavour() = false;
 						}
 					}
 					retval.insert(tmp_term, args_tuple);
 					// Update the multiplier for cosine terms.
-					cos_multiplier *= std::complex<max_fast_int>(0, 1);
+					cos_multiplier *= std::complex<double>(0, 1);
 				}
 				return retval;
 			}

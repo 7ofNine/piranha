@@ -27,7 +27,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../none.h"
 #include "../p_assert.h"
 #include "../settings.h"
@@ -71,8 +70,8 @@ namespace piranha
 					throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
 						"is zero.");
 				}
-				max_fast_int retval = static_cast<max_fast_int>(std::ceil(static_cast<double>(
-						static_cast<max_fast_int>(std::ceil(std::log10(m_truncation_level) /
+				int retval = static_cast<int>(std::ceil(static_cast<double>(
+						static_cast<int>(std::ceil(std::log10(m_truncation_level) /
 						std::log10(norm) + 1 - start)) / step_size))) + 1;
 				// This could be negative if starting power is big enough. In this case return 0.
 				if (retval >= 0) {

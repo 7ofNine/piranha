@@ -70,7 +70,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const max_fast_int &start, const max_fast_int &step) const
+	inline size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);
 	}

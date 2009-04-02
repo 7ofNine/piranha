@@ -56,7 +56,7 @@ namespace piranha
 			term_cf_min_degree_comparison(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
 			template <class Term>
 			bool operator()(const Term &t1, const Term &t2) const {
-				const max_fast_int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
+				const int d1 = t1.m_cf.min_degree(), d2 = t2.m_cf.min_degree();
 				if (d1 == d2) {
 					return t1.m_cf.norm_(m_args_tuple) > t2.m_cf.norm_(m_args_tuple);
 				} else {

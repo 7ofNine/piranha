@@ -72,7 +72,7 @@ namespace piranha
 				// so that we can avoid a copy.
 				res.template get<0>().m_cf = t1.m_cf;
 				res.template get<0>().m_cf.mult_by(t2.m_cf, args_tuple);
-				res.template get<0>().m_cf.divide_by((max_fast_int)2, args_tuple);
+				res.template get<0>().m_cf.divide_by(2, args_tuple);
 				res.template get<1>().m_cf = res.template get<0>().m_cf;
 				// Now adjust the signs according to werner's formulas.
 				if (t1.m_key.flavour() == t2.m_key.flavour()) {

@@ -85,7 +85,7 @@ namespace piranha
 				}
 				bool printed_something = false;
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
-					const max_fast_int n = derived_const_cast->m_container.v[i];
+					const int n = derived_const_cast->m_container.v[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If we already printed something and n is positive we are going to print the sign too.
@@ -323,7 +323,7 @@ namespace piranha
 					retval = key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
-					const max_fast_int power = static_cast<max_fast_int>((*derived_const_cast)[pos]);
+					const int power = static_cast<int>((*derived_const_cast)[pos]);
 					p_assert(pos < derived_const_cast->size());
 					Derived tmp_ta(*derived_const_cast);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
@@ -371,7 +371,7 @@ namespace piranha
 					retval = key_series_builder::template run<RetSeries>(*derived_const_cast, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<Derived::position>().second;
-					const max_fast_int power = static_cast<max_fast_int>((*derived_const_cast)[pos]);
+					const int power = static_cast<int>((*derived_const_cast)[pos]);
 					p_assert(pos < derived_const_cast->size());
 					Derived tmp_ta(*derived_const_cast);
 					tmp_ta[pos] = 0;

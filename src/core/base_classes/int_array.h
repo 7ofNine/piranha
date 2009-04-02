@@ -26,6 +26,7 @@
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/tuple/tuple.hpp> // For sub cache selection.
+#include <stdint.h>
 #include <utility> // For std::pair.
 #include <vector>
 
@@ -62,7 +63,7 @@ namespace piranha
 				value_type_ 	*v;
 				packed_type		*p;
 			};
-			typedef uint8 size_type_;
+			typedef uint8_t size_type_;
 			static const size_type_ pack_capacity = sizeof(packed_type) / sizeof(value_type_);
 			static const size_type_ pack_shift = lg<pack_capacity>::value;
 		public:
@@ -199,7 +200,7 @@ namespace piranha
 			Derived trim(const TrimFlags &tf, const ArgsTuple &) const {
 				Derived retval;
 				retval.m_flavour = m_flavour;
-				std::vector<max_fast_int> tmp;
+				std::vector<int> tmp;
 				p_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (tf.template get<position>()[i]) {
@@ -220,14 +221,14 @@ namespace piranha
 				return derived_const_cast->pow_(-1,args_tuple);
 			}
 			/// Upload integers to vector of integers.
-			void upload_ints_to(std::vector<max_fast_int> &v) const {
+			void upload_ints_to(std::vector<int> &v) const {
 				p_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					v[i] = m_container.v[i];
 				}
 			}
 			/// Upload integers to vector of integer pairs.
-			void upload_ints_to(std::vector<std::pair<max_fast_int, max_fast_int> > &v) const {
+			void upload_ints_to(std::vector<std::pair<int, int> > &v) const {
 				p_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					v[i].first = m_container.v[i];
@@ -235,7 +236,7 @@ namespace piranha
 				}
 			}
 			/// Upload to v those integers which are less than the corresponding elements of v.
-			void test_min_ints(std::vector<max_fast_int> &v) const {
+			void test_min_ints(std::vector<int> &v) const {
 				p_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (m_container.v[i] < v[i]) {
@@ -244,7 +245,7 @@ namespace piranha
 				}
 			}
 			/// Upload to v.first/second those integers which are less than/greater than the corresponding elements of v.
-			void test_min_max_ints(std::vector<std::pair<max_fast_int, max_fast_int> > &v) const {
+			void test_min_max_ints(std::vector<std::pair<int, int> > &v) const {
 				p_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (m_container.v[i] < v[i].first) {
@@ -280,7 +281,7 @@ namespace piranha
 					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
-			void assign_int_vector(const std::vector<max_fast_int> &v) {
+			void assign_int_vector(const std::vector<int> &v) {
 				const size_t size = v.size();
 				p_assert(boost::integer_traits<size_type>::const_max > size);
 				// TODO: check where this function is used to see if this resize can be avoided.
@@ -333,7 +334,7 @@ namespace piranha
 			void print_elements(std::ostream &out_stream) const {
 				for (size_t i = 0; i < m_size; ++i) {
 					// We cast to max_fast_int, which is the largest integer type admitted.
-					out_stream << static_cast<max_fast_int>(m_container.v[i]);
+					out_stream << static_cast<int>(m_container.v[i]);
 					// Print the separator iff this is not the last element.
 					if (i != static_cast<size_t>(m_size - 1)) {
 						out_stream << separator;

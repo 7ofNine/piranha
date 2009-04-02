@@ -26,7 +26,6 @@
 #include <string>
 
 #include "../config.h"
-#include "../integer_typedefs.h"
 #include "../math.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -79,8 +78,6 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit numerical_container(const std::string &s, const ArgsTuple &):
 				m_value(utils::lexical_converter<T>(s)) {}
-			template <class ArgsTuple>
-			explicit numerical_container(const max_fast_int &n, const ArgsTuple &): m_value(n) {}
 			template <class ArgsTuple>
 			explicit numerical_container(const double &x, const ArgsTuple &): m_value(x) {}
 			/// Ctor from psym.
@@ -152,17 +149,6 @@ namespace piranha
 			bool operator==(const Derived &other) const {
 				return (m_value == other.m_value);
 			}
-			bool operator==(const max_fast_int &n) const {
-#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
-				// TODO: this is too costly, we should be able to compare directly m_value in
-				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
-				T tmp(m_value - n);
-				return (tmp <= settings::numerical_zero() &&
-					tmp >= -settings::numerical_zero());
-#else
-				return (m_value == n);
-#endif
-			}
 			bool operator==(const double &x) const {
 				return (m_value == x);
 			}
@@ -180,20 +166,12 @@ namespace piranha
 				return subtract_generic(val2.value());
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const max_fast_int &n, const ArgsTuple &) {
-				return mult_by_generic(n);
-			}
-			template <class ArgsTuple>
 			Derived &mult_by(const double &x, const ArgsTuple &) {
 				return mult_by_generic(x);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const Derived &x, const ArgsTuple &) {
 				return mult_by_generic(x.value());
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const max_fast_int &n, const ArgsTuple &) {
-				return divide_by_generic(n);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const double &x, const ArgsTuple &) {
@@ -206,7 +184,7 @@ namespace piranha
 			}
 			template <class PosTuple, class ArgsTuple>
 			Derived partial_(const PosTuple &, const ArgsTuple &args_tuple) const {
-				return Derived((max_fast_int)0, args_tuple);
+				return Derived(0, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived inv_(const ArgsTuple &args_tuple) const {
@@ -222,7 +200,7 @@ namespace piranha
 				return derived_const_cast->pow_(1. / static_cast<double>(n), args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived besselJ_(const max_fast_int &, const ArgsTuple &) const {
+			Derived besselJ_(const int &, const ArgsTuple &) const {
 				throw unsuitable("besselJ is not implemented for this coefficient type.");
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
@@ -277,8 +255,6 @@ namespace piranha
 	explicit derived(): ancestor::numerical_container() {} \
 	template <class ArgsTuple> \
 	explicit derived(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {} \
-	template <class ArgsTuple> \
-	explicit derived(const piranha::max_fast_int &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
 	template <class ArgsTuple> \
 	explicit derived(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
 	template <class ArgsTuple> \

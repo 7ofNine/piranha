@@ -31,7 +31,6 @@
 
 #include "../base_classes/series_builders.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // For is_integer().
@@ -64,7 +63,7 @@ namespace piranha
 				p_assert(args_tuple.template get<Derived::position>().size() <= derived_const_cast->size());
 				bool printed_something = false;
 				for (size_t i = 0; i < derived_const_cast->m_size; ++i) {
-					const max_fast_int n = derived_const_cast->m_container.v[i];
+					const int n = derived_const_cast->m_container.v[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// Prepend the multiplication operator only if we already printed something.
@@ -123,8 +122,8 @@ namespace piranha
 				return derived_const_cast->elements_hasher();
 			}
 			/// Return the total degree of the exponents array.
-			max_fast_int degree() const {
-				max_fast_int retval = 0;
+			int degree() const {
+				int retval = 0;
 				for (typename Derived::size_type i = 0; i < derived_const_cast->m_size; ++i) {
 					retval += (*derived_const_cast)[i];
 				}
@@ -132,11 +131,11 @@ namespace piranha
 			}
 			// This is the min total degree of a collection.
 			// In this case the collection has a single element, hence the minimum degree is the degree itself.
-			max_fast_int min_degree() const {
+			int min_degree() const {
 				return degree();
 			}
 			template <class ArgsTuple>
-			max_fast_int min_expo_of(const size_t &n, const ArgsTuple &) const {
+			int min_expo_of(const size_t &n, const ArgsTuple &) const {
 				if (n >= derived_const_cast->size()) {
 					return 0;
 				} else {
@@ -147,10 +146,10 @@ namespace piranha
 			/**
 			 * It will throw if the monomial is not linear or zero degree.
 			 */
-			max_fast_int linear_arg_position() const {
+			int linear_arg_position() const {
 				bool found_linear = false;
 				bool is_unity = true;
-				max_fast_int candidate = -1;
+				int candidate = -1;
 				for (typename Derived::size_type i = 0; i < derived_const_cast->m_size; ++i) {
 					if ((*derived_const_cast)[i] == 1) {
 						is_unity = false;
@@ -222,15 +221,15 @@ namespace piranha
 				}
 				return retval;
 			}
-			void upload_min_exponents(std::vector<max_fast_int> &v) const {
+			void upload_min_exponents(std::vector<int> &v) const {
 				derived_const_cast->upload_ints_to(v);
 			}
-			void test_min_exponents(std::vector <max_fast_int> &v) const {
+			void test_min_exponents(std::vector <int> &v) const {
 				derived_const_cast->test_min_ints(v);
 			}
 			// Return true if the exponents are smaller than those specified in the limits vector.
 			template <class ArgsTuple>
-			bool test_expo_limits(const std::vector<std::pair<size_t, max_fast_int> > &v, const ArgsTuple &) const {
+			bool test_expo_limits(const std::vector<std::pair<size_t, int> > &v, const ArgsTuple &) const {
 				const size_t size = v.size();
 				for (size_t i = 0; i < size; ++i) {
 					p_assert(v[i].first < derived_const_cast->m_size);
@@ -261,7 +260,7 @@ namespace piranha
 					// NOTICE: series multadd here?
 					retval.add(orig, args_tuple);
 					retval.mult_by(sub_caches.template get<Derived::position>()
-						[static_cast<max_fast_int>((*derived_const_cast)[pos])],
+						[(*derived_const_cast)[pos]],
 					args_tuple);
 				}
 				return retval;

@@ -65,13 +65,13 @@ namespace piranha
 					sub_cache():ancestor::int_power_cache(),m_status(zero),m_errmsg() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = std::complex<SubSeries>(static_cast<max_fast_int>(1),*args_tuple);
+						this->m_container[0] = std::complex<SubSeries>(1,*args_tuple);
 						try {
 							std::complex<SubSeries> tmp1 = s.ei(*args_tuple);
 							this->m_container[1] = tmp1;
 							m_status = one;
 							SubSeries tmp2(s);
-							tmp2.mult_by(max_fast_int(-1),*args_tuple);
+							tmp2.mult_by(-1,*args_tuple);
 							std::complex<SubSeries> tmp3 = tmp2.ei(*args_tuple);
 							this->m_container[-1] = tmp3;
 							m_status = full;
@@ -79,7 +79,7 @@ namespace piranha
 							m_errmsg = u.what();
 						}
 					}
-					const std::complex<SubSeries> &operator[](const max_fast_int &n) {
+					const std::complex<SubSeries> &operator[](const int &n) {
 						switch (m_status) {
 							case zero:
 								if (n != 0) {
@@ -110,7 +110,7 @@ namespace piranha
 					ei_sub_cache():ancestor::int_power_cache() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = SubSeries(static_cast<max_fast_int>(1),*args_tuple);
+						this->m_container[0] = SubSeries(1,*args_tuple);
 						this->m_container[1] = s;
 					}
 			};

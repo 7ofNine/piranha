@@ -25,7 +25,6 @@
 #include <complex>
 
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../settings.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -42,9 +41,6 @@ namespace piranha
 		public:
 			// Ctors.
 			numerical_container_complex_toolbox() {}
-			explicit numerical_container_complex_toolbox(const std::complex<max_fast_int> &c) {
-				derived_cast->m_value = c;
-			}
 			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
 				derived_cast->m_value = c;
 			}
@@ -94,16 +90,8 @@ namespace piranha
 				return derived_cast->mult_by_generic(x.value());
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				return derived_cast->mult_by_generic(c);
-			}
-			template <class ArgsTuple>
 			Derived &mult_by(const std::complex<double> &c, const ArgsTuple &) {
 				return derived_cast->mult_by_generic(c);
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<max_fast_int> &c, const ArgsTuple &) {
-				return complex_division_helper(c);
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
@@ -117,14 +105,8 @@ namespace piranha
 			bool operator==(const RealDerived &x) const {
 				return (derived_const_cast->m_value.real() == x.m_value && derived_const_cast->m_value.imag() == 0);
 			}
-			bool operator==(const max_fast_int &n) const {
-				return generic_real_comparison(n);
-			}
 			bool operator==(const double &x) const {
 				return generic_real_comparison(x);
-			}
-			bool operator==(const std::complex<max_fast_int> &cn) const {
-				return generic_complex_comparison(cn);
 			}
 			bool operator==(const std::complex<double> &cx) const {
 				return generic_complex_comparison(cx);
@@ -176,9 +158,6 @@ namespace piranha
 	};
 
 #define COMPLEX_NUMERICAL_CONTAINER_CTORS \
-	template <class ArgsTuple> \
-	explicit complex(const std::complex<piranha::max_fast_int> &c, const ArgsTuple &): \
-			complex_toolbox::numerical_container_complex_toolbox(c) {} \
 	template <class ArgsTuple> \
 	explicit complex(const std::complex<double> &c, const ArgsTuple &): \
 			complex_toolbox::numerical_container_complex_toolbox(c) {} \

@@ -30,7 +30,6 @@
 #include <vector>
 
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../settings.h"
 
 #define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
@@ -138,9 +137,9 @@ namespace piranha
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				if (m_key.is_unity()) {
 					m_cf.print_pretty(out_stream,args_tuple);
-				} else if (m_cf == static_cast<max_fast_int>(1)) {
+				} else if (m_cf == 1) {
 					m_key.print_pretty(out_stream,args_tuple);
-				} else if (m_cf == static_cast<max_fast_int>(-1)) {
+				} else if (m_cf == -1) {
 					out_stream << '-';
 					m_key.print_pretty(out_stream,args_tuple);
 				} else {
@@ -189,7 +188,7 @@ namespace piranha
 						 const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
 				res1.m_cf = m_cf.partial_(pos_tuple, args_tuple);
 				res1.m_key = m_key;
-				std::pair<max_fast_int, key_type> key_partial_result(m_key.partial_(pos_tuple, args_tuple));
+				std::pair<int, key_type> key_partial_result(m_key.partial_(pos_tuple, args_tuple));
 				res2.m_key = key_partial_result.second;
 				res2.m_cf = m_cf;
 				res2.m_cf.mult_by(key_partial_result.first, args_tuple);

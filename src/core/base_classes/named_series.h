@@ -31,7 +31,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -70,27 +69,23 @@ namespace piranha
 			void merge_args(const Derived2 &);
 			void trim();
 			double norm() const;
-			size_t psi(const max_fast_int &start = 0, const max_fast_int &step = 1) const;
+			size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
-			Derived &operator+=(const max_fast_int &);
 			Derived &operator+=(const double &);
 			Derived &operator+=(const Derived &);
-			Derived &operator-=(const max_fast_int &);
 			Derived &operator-=(const double &);
 			Derived &operator-=(const Derived &);
 			Derived operator-() const;
-			Derived &operator*=(const max_fast_int &);
 			Derived &operator*=(const double &);
 			Derived &operator*=(const Derived &);
-			Derived &operator/=(const max_fast_int &);
 			Derived &operator/=(const double &);
-			static Derived factorial(const max_fast_int &);
-			static Derived choose(const max_fast_int &, const max_fast_int &);
+			static Derived factorial(const int &);
+			static Derived choose(const int &, const int &);
 			Derived pow(const double &) const;
 			Derived root(const int &) const;
 			Derived inv() const;
-			Derived partial(const psym &, const max_fast_int &n = 1) const;
+			Derived partial(const psym &, const int &n = 1) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
 		protected:
@@ -171,19 +166,10 @@ namespace piranha
 	{ \
 		named_ancestor::construct_from_file(filename); \
 	} \
-	explicit series_name(const piranha::max_fast_int &n) \
-	{ \
-		base_ancestor::construct_from_number(n,named_ancestor::m_arguments); \
-		named_ancestor::trim(); \
-	} \
 	explicit series_name(const double &x) \
 	{ \
 		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
 		named_ancestor::trim(); \
-	} \
-	explicit series_name(const piranha::max_fast_int &n, const typename named_ancestor::args_tuple_type &args_tuple) \
-	{ \
-		base_ancestor::construct_from_number(n,args_tuple); \
 	} \
 	explicit series_name(const double &x, const typename named_ancestor::args_tuple_type &args_tuple) \
 	{ \

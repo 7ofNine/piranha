@@ -30,7 +30,6 @@
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../exceptions.h"
-#include "../integer_typedefs.h"
 #include "../none.h"
 #include "../polynomial_common/monomial.h"
 #include "common_polynomial_cf_toolbox.h"

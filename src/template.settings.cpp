@@ -109,8 +109,6 @@ namespace piranha
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
 		std::cout << "Revision number: " << "@PIRANHA_REV_NUMBER@\n";
-		std::cout << "Fast unsigned int range = " << "[0," << max_u << ']' << '\n';
-		std::cout << "Fast signed int range = " << '[' << min_i << ',' << max_i << ']' << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.

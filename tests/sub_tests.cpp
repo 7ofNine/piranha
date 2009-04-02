@@ -32,14 +32,14 @@ int main()
 		// This one fails if we do not handle correctly args_tuple inside substitution.
 		qps e(psym("e")), ph(psym("ph")), th(psym("th"));
 		base_degree_truncator::set(10);
-		(e*th.cos()+max_fast_int(1)).pow(max_fast_int(-1)).sub(psyms::get("th"),ph.pow(max_fast_int(2)));
+		(e*th.cos()+1).pow(-1).sub(psyms::get("th"),ph.pow(2));
 	}
 
 	int retval = 0;
 	psym x("x"), y("y"), z("z");
-	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(max_fast_int(40));
-	retval += !(g.sub(x,zpoly(x)+max_fast_int(1)).sub(x,zpoly(x)-max_fast_int(1)) == g);
-	retval += (qps(x).cos().ei_sub(x,qpsc(std::complex<max_fast_int>(1,0))) != max_fast_int(1));
-	retval += (qps(x).sin().ei_sub(x,qpsc(std::complex<max_fast_int>(1,0))) != max_fast_int(0));
+	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(40);
+	retval += !(g.sub(x,zpoly(x)+1).sub(x,zpoly(x)-1) == g);
+	retval += (qps(x).cos().ei_sub(x,qpsc(std::complex<double>(1,0))) != 1);
+	retval += (qps(x).sin().ei_sub(x,qpsc(std::complex<double>(1,0))) != 0);
 	return retval;
 }

@@ -26,7 +26,7 @@
 namespace piranha
 {
 	// Static initialization for degree-based truncation.
-	max_fast_int base_degree_truncator::m_degree_limit = 0;
+	int base_degree_truncator::m_degree_limit = 0;
 	bool base_degree_truncator::m_effective = false;
 
 	void base_degree_truncator::unset()

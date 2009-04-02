@@ -32,10 +32,10 @@ int main()
 {
 settings::debug(true);
   psym x("x"), y("y"), z("z"), t("t");
-  poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(max_fast_int(1)) , b(a);
-  a = std::pow(a,(max_fast_int)20);
+  poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
+  a = std::pow(a,20);
   poly c(a);
-  c+=(max_fast_int)1;
+  c+=1;
   a*=c;
 
   std::cout << std::endl << a.length() << std::endl;

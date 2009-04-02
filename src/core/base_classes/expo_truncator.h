@@ -47,14 +47,14 @@ namespace piranha
 	class __PIRANHA_VISIBLE base_expo_truncator
 	{
 		protected:
-			typedef std::vector<std::pair<psym_p, max_fast_int> > container_type;
+			typedef std::vector<std::pair<psym_p, int> > container_type;
 			typedef container_type::iterator iterator;
 		public:
 			static void print(std::ostream &stream = std::cout);
-			static void set(const std::string &name, const max_fast_int &n) {
+			static void set(const std::string &name, const int &n) {
 				generic_limit(name, n);
 			}
-			static void set(const psym &p, const max_fast_int &n) {
+			static void set(const psym &p, const int &n) {
 				generic_limit(p, n);
 			}
 			static void unset();
@@ -76,7 +76,7 @@ namespace piranha
 						"an empty power series.");
 				}
 				// Let's calculate the minimum exponents of s for which the truncator defines a limit.
-				const std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> >
+				const std::pair<std::vector<int>, std::vector<int> >
 				mle(min_limited_exponents(s, args_tuple));
 				const size_t size = mle.first.size();
 				if (size == 0) {
@@ -114,14 +114,14 @@ namespace piranha
 			}
 		protected:
 			/// Transform the list of psymbol limits into a list of positions - limits given a piranha::vector_psym_p.
-			static std::vector<std::pair<size_t, max_fast_int> > positions_limits(const vector_psym_p &v) {
-				std::vector<std::pair<size_t, max_fast_int> > retval;
+			static std::vector<std::pair<size_t, int> > positions_limits(const vector_psym_p &v) {
+				std::vector<std::pair<size_t, int> > retval;
 				const size_t limits_size = m_expo_limits.size(),
 										   args_size = v.size();
 				for (size_t i = 0; i < limits_size; ++i) {
 					for (size_t j = 0; j < args_size; ++j) {
 						if (m_expo_limits[i].first == v[j]) {
-							retval.push_back(std::pair<size_t, max_fast_int>(j, m_expo_limits[i].second));
+							retval.push_back(std::pair<size_t, int>(j, m_expo_limits[i].second));
 							// We can break out, there should not be duplicates inside the arguments list.
 							break;
 						}
@@ -131,11 +131,11 @@ namespace piranha
 			}
 		private:
 			template <class Argument>
-			static void generic_limit(const Argument &arg, const max_fast_int &n) {
+			static void generic_limit(const Argument &arg, const int &n) {
 				psym_p tmp(psyms::get_pointer(arg));
 				iterator it = find_argument(tmp);
 				if (it == m_expo_limits.end()) {
-					m_expo_limits.push_back(std::pair<psym_p, max_fast_int>(tmp, n));
+					m_expo_limits.push_back(std::pair<psym_p, int>(tmp, n));
 				} else {
 					it->second = n;
 				}
@@ -153,15 +153,15 @@ namespace piranha
 			}
 			// Returns minimum_exponent - limit pairs.
 			template <class PowerSeries, class ArgsTuple>
-			static std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> >
+			static std::pair<std::vector<int>, std::vector<int> >
 			min_limited_exponents(const PowerSeries &s, const ArgsTuple &args_tuple) {
 				// First let's find out the minimum exponents of the input series.
-				const std::vector<max_fast_int> min_expos(s.min_exponents(args_tuple));
+				const std::vector<int> min_expos(s.min_exponents(args_tuple));
 				// Secondly, find out the position of the limited exponents.
-				const std::vector<std::pair<size_t, max_fast_int> >
+				const std::vector<std::pair<size_t, int> >
 				pos_lim(positions_limits(args_tuple.template get<PowerSeries::expo_args_position>()));
 				const size_t size = pos_lim.size();
-				std::pair<std::vector<max_fast_int>, std::vector<max_fast_int> > retval;
+				std::pair<std::vector<int>, std::vector<int> > retval;
 				retval.first.resize(size);
 				retval.second.resize(size);
 				for (size_t i = 0; i < size; ++i) {
@@ -254,7 +254,7 @@ namespace piranha
 					}
 				private:
 					Multiplier											&m_multiplier;
-					const std::vector<std::pair<size_t, max_fast_int> >	m_positions;
+					const std::vector<std::pair<size_t, int> >	m_positions;
 					const size_t										m_size;
 			};
 	};

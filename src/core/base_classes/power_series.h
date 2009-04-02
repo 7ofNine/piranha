@@ -24,7 +24,6 @@
 #include <algorithm> // For max_element and min_element.
 #include <boost/static_assert.hpp>
 
-#include "../integer_typedefs.h"
 #include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -58,7 +57,7 @@ namespace piranha
 			static const int expo_args_position = ExpoArgsPosition;
 			static const int expo_term_position = ExpoTermPosition;
 			/// Get the degree of the power series.
-			max_fast_int degree() const {
+			int degree() const {
 				if (derived_const_cast->empty()) {
 					return 0;
 				}
@@ -70,7 +69,7 @@ namespace piranha
 				return result->template get<ExpoTermPosition>().degree();
 			}
 			/// Get the minimum degree of the power series.
-			max_fast_int min_degree() const {
+			int min_degree() const {
 				if (derived_const_cast->empty()) {
 					return 0;
 				}
@@ -81,7 +80,7 @@ namespace piranha
 						));
 				return result->template get<ExpoTermPosition>().min_degree();
 			}
-			void upload_min_exponents(std::vector<max_fast_int> &v) const {
+			void upload_min_exponents(std::vector<int> &v) const {
 				p_assert(!derived_const_cast->empty());
 				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
@@ -93,21 +92,21 @@ namespace piranha
 			}
 			/// Get a vector containing the minimum exponents of the series.
 			template <class ArgsTuple>
-			std::vector<max_fast_int> min_exponents(const ArgsTuple &args_tuple) const {
-				std::vector<max_fast_int> retval(args_tuple.template get<ExpoArgsPosition>().size());
+			std::vector<int> min_exponents(const ArgsTuple &args_tuple) const {
+				std::vector<int> retval(args_tuple.template get<ExpoArgsPosition>().size());
 				upload_min_exponents(retval);
 				return retval;
 			}
 			template <class ArgsTuple>
-			max_fast_int min_expo_of(const size_t &pos, const ArgsTuple &args_tuple) const {
-				std::vector<max_fast_int> tmp(min_exponents(args_tuple));
+			int min_expo_of(const size_t &pos, const ArgsTuple &args_tuple) const {
+				std::vector<int> tmp(min_exponents(args_tuple));
 				if (pos >= tmp.size()) {
 					return 0;
 				} else {
 					return tmp[pos];
 				}
 			}
-			void test_min_exponents(std::vector<max_fast_int> &v) const {
+			void test_min_exponents(std::vector<int> &v) const {
 				typedef typename Derived::const_iterator const_iterator;
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
@@ -116,9 +115,9 @@ namespace piranha
 			}
 			// Return true if the minimum exponents are smaller than those specified in the limits vector.
 			template <class ArgsTuple>
-			bool test_expo_limits(const std::vector<std::pair<size_t, max_fast_int> > &v,
+			bool test_expo_limits(const std::vector<std::pair<size_t, int> > &v,
 				const ArgsTuple &args_tuple) const {
-				const std::vector<max_fast_int> min_expo(min_exponents(args_tuple));
+				const std::vector<int> min_expo(min_exponents(args_tuple));
 				const size_t size = v.size();
 				for (size_t i = 0; i < size; ++i) {
 					p_assert(v[i].first < min_expo.size());
