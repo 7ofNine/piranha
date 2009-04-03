@@ -29,7 +29,6 @@
 #include "core/integer_typedefs.h"
 #include "core/memory.h"
 #include "core/settings.h"
-#include "core/piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
 {
@@ -78,9 +77,6 @@ namespace piranha
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
 	const size_t settings::cache_size;
 	bool settings::blocker = false;
-#ifdef _PIRANHA_MT
-	const tbb::task_scheduler_init settings::tbb_init;
-#endif
 	settings::startup_class settings::startup;
 
 	settings::startup_class::startup_class()

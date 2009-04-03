@@ -30,7 +30,6 @@
 #include "exceptions.h"
 #include "integer_typedefs.h"
 #include "math.h" // For static base-2 logarithm.
-#include "piranha_tbb.h" // For task scheduler init.
 
 namespace piranha
 {
@@ -132,31 +131,28 @@ namespace piranha
 					startup_class();
 			};
 			/// Memory limit in bytes.
-			static size_t							m_memory_limit;
+			static size_t			m_memory_limit;
 			/// Load factor for hashed containers.
-			static double							m_hash_max_load_factor;
+			static double			m_hash_max_load_factor;
 			/// Numerical zero.
-			static double							m_numerical_zero;
+			static double			m_numerical_zero;
 			/// Path to theories of motion.
-			static std::string						m_path;
-			static std::string						m_default_path;
-			static bool								m_debug;
-			static const std::string				m_version;
-			static bool								enable_progress_display;
-			static startup_class					startup;
+			static std::string		m_path;
+			static std::string		m_default_path;
+			static bool			m_debug;
+			static const std::string	m_version;
+			static bool			enable_progress_display;
+			static startup_class		startup;
 			/// Minimum number of digits for output streams.
-			static const size_t						m_min_digits = 0;
+			static const size_t		m_min_digits = 0;
 			/// Maximum number of digits for output streams.
-			static const size_t						m_max_digits = 50;
+			static const size_t		m_max_digits = 50;
 			/// Number of digits to display in output stream.
-			static size_t							m_digits;
+			static size_t			m_digits;
 			/// Format for output.
-			static out_format						m_format;
+			static out_format		m_format;
 			/// Floating point representation.
-			static fp_representation				m_fp_repr;
-#ifdef _PIRANHA_MT
-			static const tbb::task_scheduler_init	tbb_init;
-#endif
+			static fp_representation	m_fp_repr;
 	};
 }
 

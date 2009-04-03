@@ -27,7 +27,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../none.h"
 #include "../p_assert.h"
 #include "../settings.h"
 

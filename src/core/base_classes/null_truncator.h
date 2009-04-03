@@ -22,7 +22,6 @@
 #define PIRANHA_NULL_TRUNCATOR_H
 
 #include "../exceptions.h"
-#include "../none.h"
 
 namespace piranha
 {
