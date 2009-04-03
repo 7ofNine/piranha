@@ -52,6 +52,8 @@ namespace piranha
 	{
 			p_static_check(Pos >= 0, "Invalid position for int_array.");
 			p_static_check(Bits == 8 || Bits == 16, "Unsupported number of bits for value type in int_array.");
+			// NOTE: the maximum number of bits here must be the same size of int.
+			p_static_check(Bits <= sizeof(int) * 8, "Number of bits for value type in int_array must not be greater than sizeof(int).");
 			typedef typename boost::int_t<Bits>::fast value_type_;
 			typedef max_fast_int packed_type;
 			p_static_check(sizeof(packed_type) % sizeof(value_type_) == 0,
@@ -60,8 +62,8 @@ namespace piranha
 			template <int Bits2, int Pos2, class Allocator2, class Derived2>
 				friend class int_array;
 			union container_type {
-				value_type_ 	*v;
-				packed_type		*p;
+				value_type_	*v;
+				packed_type	*p;
 			};
 			typedef uint8_t size_type_;
 			static const size_type_ pack_capacity = sizeof(packed_type) / sizeof(value_type_);

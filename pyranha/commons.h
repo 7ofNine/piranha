@@ -28,7 +28,6 @@
 #include <string>
 
 #include "../src/core/exceptions.h"
-#include "../src/core/shared_args.h"
 
 namespace pyranha
 {
@@ -59,11 +58,6 @@ namespace pyranha
 		std::ostringstream stream;
 		origin.print(stream);
 		return stream.str();
-	}
-
-	template <class Series, class Term>
-	inline void py_series_append(Series &s, const Term &t) {
-		s.insert(t,piranha::shared_args::get());
 	}
 
 	template <class Term>
@@ -134,12 +128,6 @@ namespace pyranha
 	inline typename Series::args_tuple_type py_series_arguments(const Series &s)
 	{
 		return s.arguments();
-	}
-
-	template <class Series>
-	inline void py_series_set_shared_arguments(const Series &s)
-	{
-		piranha::shared_args::set(s.arguments());
 	}
 
 	template <class NamedSeries>

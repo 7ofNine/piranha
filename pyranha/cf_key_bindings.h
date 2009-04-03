@@ -24,135 +24,218 @@
 #include <complex>
 #include <boost/python/class.hpp>
 #include <string>
+#include <vector>
 
 #include "../src/core/exceptions.h"
+#include "../src/core/ntuple.h"
 #include "../src/core/numerical_coefficients/double_cf.h"
 #include "../src/core/numerical_coefficients/mpq_cf.h"
 #include "../src/core/numerical_coefficients/mpz_cf.h"
 #include "../src/core/poisson_series_common/trig_array.h"
 #include "../src/core/polynomial_common/expo_array.h"
-#include "../src/core/shared_args.h"
+#include "../src/core/psym.h"
 #include "commons.h"
 
 namespace pyranha
 {
-	template <class CfKey>
-	inline double py_cfkey_norm(const CfKey &cfkey)
+	template <class CfKey, class ArgsTuple>
+	static inline double py_cfkey_norm(const CfKey &cfkey, const ArgsTuple &a)
 	{
-		if (!cfkey.is_insertable(piranha::shared_args::get())) {
-			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the norm "
+		if (!cfkey.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the norm "
 				"of this coefficient/key.");
 		}
-		return cfkey.norm_(piranha::shared_args::get());
+		return cfkey.norm_(a);
 	}
 
-	template <class CfKey>
-	inline typename CfKey::eval_type py_cfkey_eval(const CfKey &cfkey, const double &t)
+	template <class CfKey, class ArgsTuple>
+	static inline typename CfKey::eval_type py_cfkey_eval(const CfKey &cfkey, const double &t, const ArgsTuple &a)
 	{
-		if (!cfkey.is_insertable(piranha::shared_args::get())) {
-			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation "
+		if (!cfkey.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation "
 				"of the time evaluation of this coefficient/key.");
 		}
-		return cfkey.eval_(t,piranha::shared_args::get());
+		return cfkey.eval_(t,a);
 	}
 
-	// TODO: Do _not_ provide a free or py_interface in classes, use wrappers here.
-	// In the wrappers error checks can be performed.
-	template <class Cf>
-	inline boost::python::class_<Cf> cf_bindings(const std::string &name, const std::string &description)
+	template <class Cf, class ArgsTuple>
+	static inline Cf py_cf_real(const std::complex<Cf> &cf, const ArgsTuple &a)
 	{
-		boost::python::class_<Cf> cf_inst(name.c_str(), description.c_str());
-		cf_inst.def(boost::python::init<const Cf &>());
-		cf_inst.def("__abs__", &py_cfkey_norm<Cf>);
-		cf_inst.def("__copy__",&py_copy<Cf>);
-		cf_inst.add_property("norm", &py_cfkey_norm<Cf>, "Norm.");
-		cf_inst.def("eval", &py_cfkey_eval<Cf>, "Time evaluation.");
-		cf_inst.add_property("atoms", &Cf::atoms, "Number of atoms.");
-		return cf_inst;
+		if (!cf.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
+				"of the real part from this coefficient.");
+		}
+		return cf.real_(a);
 	}
 
-	template <class Cf>
-	inline boost::python::class_<std::complex<Cf> > complex_cf_bindings(const std::string &name,
-			const std::string &description)
+	template <class Cf, class ArgsTuple>
+	static inline Cf py_cf_imag(const std::complex<Cf> &cf, const ArgsTuple &a)
 	{
-		boost::python::class_<std::complex<Cf> > cf_inst(cf_bindings<std::complex<Cf> >(name, description));
-		return cf_inst;
+		if (!cf.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
+				"of the imaginary part from this coefficient.");
+		}
+		return cf.imag_(a);
+	}
+
+	template <int N, class CfKey, int M>
+	struct mp_cfkey_bindings {
+		static void run(boost::python::class_<CfKey> &cfkey_inst) {
+			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			cfkey_inst.def("norm", &py_cfkey_norm<CfKey,args_tuple_type>, "Norm.");
+			cfkey_inst.def("eval", &py_cfkey_eval<CfKey,args_tuple_type>, "Time evaluation.");
+			mp_cfkey_bindings<N - 1,CfKey,M>::run(cfkey_inst);
+		}
+	};
+
+	template <int N, class CfKey>
+	struct mp_cfkey_bindings<N,CfKey,N> {
+		static void run(boost::python::class_<CfKey> &) {}
+	};
+
+	template <class CfKey, int M = 0>
+	struct cfkey_bindings {
+		static void run(boost::python::class_<CfKey> &cfkey_inst)
+		{
+			cfkey_inst.def(boost::python::init<const CfKey &>());
+			cfkey_inst.def("__copy__",&py_copy<CfKey>);
+			cfkey_inst.def("atoms", &CfKey::atoms, "Number of atoms.");
+			mp_cfkey_bindings<__PIRANHA_MAX_ECHELON_LEVEL + 1, CfKey, M>::run(cfkey_inst);
+		}
+	};
+
+	template <int N, class Cf>
+	struct mp_complex_cf_bindings {
+		static void run(boost::python::class_<std::complex<Cf> > &cf_inst) {
+			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			cf_inst.def("real", &py_cf_real<Cf,args_tuple_type>, "Real part.");
+			cf_inst.def("imag", &py_cf_imag<Cf,args_tuple_type>, "Imaginary part.");
+			mp_complex_cf_bindings<N - 1,Cf>::run(cf_inst);
+		}
+	};
+
+	template <class Cf>
+	struct mp_complex_cf_bindings<0,Cf> {
+		static inline void run(boost::python::class_<std::complex<Cf> > &) {}
+	};
+
+	template <class Cf>
+	static inline void complex_cf_bindings(boost::python::class_<std::complex<Cf> > &cf_inst)
+	{
+		mp_complex_cf_bindings<__PIRANHA_MAX_ECHELON_LEVEL + 1, Cf>::run(cf_inst);
 	}
 
 	inline void numerical_cfs_bindings()
 	{
-		cf_bindings<piranha::double_cf>("double_cf", "Double precision coefficient.");
-		complex_cf_bindings<piranha::double_cf>("double_cfc", "Complex double precision coefficient.");
-		cf_bindings<piranha::mpq_cf>("mpq_cf", "Arbitrary precision rational coefficient.");
-		complex_cf_bindings<piranha::mpq_cf>("mpq_cfc", "Complex arbitrary precision rational coefficient.");
-		cf_bindings<piranha::mpz_cf>("mpz_cf", "Arbitrary precision integer coefficient.");
-		complex_cf_bindings<piranha::mpz_cf>("mpz_cfc", "Complex arbitrary precision integer coefficient.");
+		using namespace boost::python;
+		using namespace piranha;
+		using namespace std;
+		class_<double_cf> dcf("double_cf", "Double precision coefficient.");
+		class_<mpz_cf> zcf("mpz_cf", "Arbitrary precision integer coefficient.");
+		class_<mpq_cf> qcf("mpq_cf", "Arbitrary precision rational coefficient.");
+		cfkey_bindings<double_cf>::run(dcf);
+		cfkey_bindings<mpz_cf>::run(zcf);
+		cfkey_bindings<mpq_cf>::run(qcf);
+		// Now the complex ones.
+		class_<complex<double_cf> > cdcf("double_cfc", "Complex double precision coefficient.");
+		class_<complex<mpz_cf> > czcf("mpz_cfc", "Complex arbitrary precision integer coefficient.");
+		class_<complex<mpq_cf> > cqcf("mpq_cfc", "Complex arbitrary precision rational coefficient.");
+		cfkey_bindings<complex<double_cf> >::run(cdcf);
+		cfkey_bindings<complex<mpz_cf> >::run(czcf);
+		cfkey_bindings<complex<mpq_cf> >::run(cqcf);
+		// Complex-specific stuff.
+		complex_cf_bindings<double_cf>(cdcf);
+		complex_cf_bindings<mpz_cf>(czcf);
+		complex_cf_bindings<mpq_cf>(cqcf);
 	}
 
-	template <class IntArrayKey>
-	inline boost::python::class_<IntArrayKey> int_array_key_bindings(const std::string &name, const std::string &descr)
-	{
-		boost::python::class_<IntArrayKey> retval(name.c_str(), descr.c_str());
-		retval.def("__getitem__", &py_vector_getitem<IntArrayKey>);
-		retval.add_property("norm", py_cfkey_norm<IntArrayKey>, "Norm.");
-		retval.def("eval", &py_cfkey_eval<IntArrayKey>, "Time evaluation.");
-		return retval;
-	}
-
+	// TODO: remove this one.
 	template <class TrigArray>
-	inline bool py_trigarray_flavour(const TrigArray &t)
+	static inline bool py_trigarray_flavour(const TrigArray &t)
 	{
 		return t.flavour();
 	}
 
-	template <class TrigArray>
-	inline double py_trigarray_freq(const TrigArray &t)
+	template <class TrigArray, class ArgsTuple>
+	static inline double py_trigarray_freq(const TrigArray &t, const ArgsTuple &a)
 	{
-		if (!t.is_insertable(piranha::shared_args::get())) {
-			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the frequency "
+		if (!t.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the frequency "
 				"of this trigonometric array.");
 		}
-		return t.freq(piranha::shared_args::get());
+		return t.freq(a);
 	}
 
-	template <class TrigArray>
-	inline double py_trigarray_phase(const TrigArray &t)
+	template <class TrigArray, class ArgsTuple>
+	static inline double py_trigarray_phase(const TrigArray &t, const ArgsTuple &a)
 	{
-		if (!t.is_insertable(piranha::shared_args::get())) {
-			throw piranha::unsuitable("Current shared arguments are not compatible with the calculation of the phase "
+		if (!t.is_insertable(a)) {
+			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the phase "
 				"of this trigonometric array.");
 		}
-		return t.phase(piranha::shared_args::get());
+		return t.phase(a);
 	}
 
-	template <class TrigArray>
-	inline void trig_array_key_bindings(boost::python::class_<TrigArray> &inst)
-	{
-		inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
-		inst.add_property("freq", &py_trigarray_freq<TrigArray>);
-		inst.add_property("phase", &py_trigarray_phase<TrigArray>);
-	}
+	template <int N, class TrigArray, int M>
+	struct mp_ta_bindings {
+		static void run(boost::python::class_<TrigArray> &ta_inst) {
+			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			ta_inst.def("freq", &py_trigarray_freq<TrigArray,args_tuple_type>, "Frequency.");
+			ta_inst.def("phase", &py_trigarray_phase<TrigArray,args_tuple_type>, "Phase.");
+			mp_ta_bindings<N - 1,TrigArray, M>::run(ta_inst);
+		}
+	};
+
+	template <int N, class TrigArray>
+	struct mp_ta_bindings<N,TrigArray,N> {
+		static void run(boost::python::class_<TrigArray> &) {}
+	};
+
+	template <class TrigArray, int M = 0>
+	struct trig_array_bindings {
+		static void run(boost::python::class_<TrigArray> &inst)
+		{
+			inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
+			mp_ta_bindings<__PIRANHA_MAX_ECHELON_LEVEL + 1,TrigArray,M>::run(inst);
+		}
+	};
 
 	template <class ExpoArray>
-	inline void expo_array_key_bindings(boost::python::class_<ExpoArray> &inst)
+	static inline void expo_array_bindings(boost::python::class_<ExpoArray> &inst)
 	{
 		inst.add_property("degree", &ExpoArray::degree);
-		inst.add_property("min_degree", &ExpoArray::min_degree);
 	}
 
 	inline void keys_bindings()
 	{
-		boost::python::class_<piranha::trig_array<16, 0> >
-		ta_16_0(int_array_key_bindings<piranha::trig_array<16, 0> >("trig_array_16_0", ""));
-		trig_array_key_bindings(ta_16_0);
+		// TODO: re-establish int_array_bindings (for, e.g., __getitem__).
+		using namespace boost::python;
+		using namespace piranha;
+		class_<trig_array<16,0> > ta_16_0("trig_array_16_0");
+		class_<trig_array<16,1> > ta_16_1("trig_array_16_1");
+		class_<expo_array<16,0> > ea_16_0("expo_array_16_0");
+		// Common stuff.
+		cfkey_bindings<trig_array<16,0> >::run(ta_16_0);
+		cfkey_bindings<trig_array<16,1>,1>::run(ta_16_1);
+		cfkey_bindings<expo_array<16,0> >::run(ea_16_0);
+		// Trig-array specifics.
+		trig_array_bindings<trig_array<16,0> >::run(ta_16_0);
+		trig_array_bindings<trig_array<16,1>,1>::run(ta_16_1);
+		// Expo-array specifics.
+		expo_array_bindings(ea_16_0);
 
-		boost::python::class_<piranha::trig_array<16, 1> >
-		ta_16_1(int_array_key_bindings<piranha::trig_array<16, 1> >("trig_array_16_1", ""));
-		trig_array_key_bindings(ta_16_1);
 
-		boost::python::class_<piranha::expo_array<16, 0> >
-		ea_16_0(int_array_key_bindings<piranha::expo_array<16, 0> >("expo_array_16_0", ""));
-		expo_array_key_bindings(ea_16_0);
+// 		boost::python::class_<piranha::trig_array<16, 0> >
+// 		ta_16_0(int_array_key_bindings<1,piranha::trig_array<16, 0> >("trig_array_16_0", ""));
+// 		trig_array_key_bindings<1>(ta_16_0);
+
+// 		boost::python::class_<piranha::trig_array<16, 1> >
+// 		ta_16_1(int_array_key_bindings<piranha::trig_array<16, 1> >("trig_array_16_1", ""));
+// 		trig_array_key_bindings(ta_16_1);
+// 
+// 		boost::python::class_<piranha::expo_array<16, 0> >
+// 		ea_16_0(int_array_key_bindings<piranha::expo_array<16, 0> >("expo_array_16_0", ""));
+// 		expo_array_key_bindings(ea_16_0);
 	}
 }
 

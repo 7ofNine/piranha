@@ -27,7 +27,6 @@
 #include <iostream>
 #include <string>
 
-#include "../shared_args.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"

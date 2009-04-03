@@ -31,7 +31,6 @@
 #include "../exceptions.h"
 #include "../ntuple.h"
 #include "../psym.h"
-#include "../shared_args.h"
 
 namespace piranha
 {
@@ -315,23 +314,23 @@ namespace piranha
 		}
 	}
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class Filter>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
-	{
-		typedef typename Derived::const_iterator const_iterator;
-		Derived retval;
-		retval.m_arguments = m_arguments;
-		shared_args::set(m_arguments);
-		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it =  derived_const_cast->begin(); it != it_f; ++it) {
-			if (f(*it)) {
-				retval.insert(*it, retval.m_arguments);
-			}
-		}
-		retval.trim();
-		return retval;
-	}
+// 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+// 	template <class Filter>
+// 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
+// 	{
+// 		typedef typename Derived::const_iterator const_iterator;
+// 		Derived retval;
+// 		retval.m_arguments = m_arguments;
+// 		shared_args::set(m_arguments);
+// 		const const_iterator it_f = derived_const_cast->end();
+// 		for (const_iterator it =  derived_const_cast->begin(); it != it_f; ++it) {
+// 			if (f(*it)) {
+// 				retval.insert(*it, retval.m_arguments);
+// 			}
+// 		}
+// 		retval.trim();
+// 		return retval;
+// 	}
 
 	template <class SubCaches, class SubSeries, class ArgsTuple>
 	struct init_sub_caches
