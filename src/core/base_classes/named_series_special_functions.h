@@ -166,7 +166,7 @@ namespace piranha
 					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
 				complex_cache_type
 					cp(ei_phi,emi_phi),
-					ca(alpha.ei(),(alpha *-1).ei());
+					ca(alpha.ei(),(alpha * -1).ei());
 				real_cache_type
 					ccb2(eib2.real()),
 					csb2(eib2.imag());

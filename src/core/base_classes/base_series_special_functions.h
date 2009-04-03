@@ -76,7 +76,7 @@ namespace piranha
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
 					tmp.mult_by(-1, args_tuple);
-					tmp.divide_by(i * (i + order), args_tuple);
+					tmp.divide_by(i * ((double)i + order), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}
@@ -115,8 +115,6 @@ namespace piranha
 				}
 				retval.mult_by(order, args_tuple);
 				retval.divide_by(2, args_tuple);
-//settings::format(settings::pretty);
-//retval.print(std::cout);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
@@ -124,10 +122,6 @@ namespace piranha
 					tmp.divide_by(((double)i * ((double)i + order)) * (order + 2 * ((double)i - 1)), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
-// settings::format(settings::pretty);
-// std::cout << "foo\n";
-// retval.print(std::cout);
-// std::cout << "bar\n";
 				}
 				return retval;
 			}
@@ -144,7 +138,7 @@ namespace piranha
 						throw division_by_zero();
 					} else if (order == m) {
 						retval = Derived(2,args_tuple).pow_(-order,args_tuple);
-						retval.mult_by(Derived::factorial_(order,args_tuple).pow_(-1,args_tuple),args_tuple);
+						retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
 					}
 					return retval;
 				}
@@ -170,7 +164,7 @@ namespace piranha
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
 					tmp.mult_by(-1, args_tuple);
-					tmp.divide_by(i * (i + order), args_tuple);
+					tmp.divide_by(i * ((double)i + order), args_tuple);
 					tmp.mult_by(square_x2, args_tuple);
 					retval.add(tmp, args_tuple);
 				}

@@ -128,7 +128,7 @@ namespace piranha
 				} else {
 					for (size_t i = 1; i < n; ++i) {
 						tmp.mult_by(1 - (double)i * y + y, args_tuple);
-						tmp.divide_by(y * i, args_tuple);
+						tmp.divide_by(y * (double)i, args_tuple);
 						tmp.mult_by(XoverA, args_tuple);
 						retval.add(tmp, args_tuple);
 					}
