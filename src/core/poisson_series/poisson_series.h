@@ -71,10 +71,11 @@ namespace piranha
 	{
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
+			template <class T>
+			friend class common_poisson_series_toolbox;
 			friend class POISSON_SERIES_NAMED_ANCESTOR;
 			friend class POISSON_SERIES_BASE_ANCESTOR;
 			friend class POISSON_SERIES_MULT_ANCESTOR;
-			friend class POISSON_SERIES_COMMON_ANCESTOR;
 			friend class POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class POISSON_SERIES_CELMEC_ANCESTOR;
 			friend class named_series_complex_toolbox< POISSON_SERIES >;
@@ -125,13 +126,14 @@ namespace std
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
+			template <class T>
+			friend class piranha::common_poisson_series_toolbox;
 			friend class COMPLEX_POISSON_SERIES_NAMED_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
 			friend class COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
 			friend class COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX;
-			friend class COMPLEX_POISSON_SERIES_COMMON_ANCESTOR;
 			// We need also the non-complex one because it needs to access the complex's private space.
 			friend class POISSON_SERIES_COMMON_ANCESTOR;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_power;

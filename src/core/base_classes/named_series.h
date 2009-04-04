@@ -53,6 +53,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	class named_series
 	{
+			template <class ArgsDescr2, class Derived2>
+			friend class named_series;
 		public:
 			typedef ArgsDescr arguments_description;
 			/// Compile-time constant for the number of arguments sets.
@@ -66,9 +68,6 @@ namespace piranha
 // 			template <class Filter>
 // 			Derived filter(const Filter &) const;
 			void swap(Derived &);
-			template <class Derived2>
-			void merge_args(const Derived2 &);
-			void trim();
 			double norm() const;
 			size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
@@ -90,6 +89,9 @@ namespace piranha
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
 		protected:
+			template <class Derived2>
+			void merge_args(const Derived2 &);
+			void trim();
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
 			void construct_from_file(const std::string &);

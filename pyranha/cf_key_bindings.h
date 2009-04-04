@@ -38,6 +38,7 @@
 
 namespace pyranha
 {
+	// Secure wrappers to access methods of cfkeys that require an args tuple as input.
 	template <class CfKey, class ArgsTuple>
 	static inline double py_cfkey_norm(const CfKey &cfkey, const ArgsTuple &a)
 	{
@@ -78,6 +79,8 @@ namespace pyranha
 		return cf.imag_(a);
 	}
 
+	// Bindings common to coefficients and keys that require args tuple as input. Instantiations for
+	// args tuples of different sizes.
 	template <int N, class CfKey, int M>
 	struct mp_cfkey_bindings {
 		static void run(boost::python::class_<CfKey> &cfkey_inst) {
@@ -93,6 +96,7 @@ namespace pyranha
 		static void run(boost::python::class_<CfKey> &) {}
 	};
 
+	// Bindings common to coefficients and keys.
 	template <class CfKey, int M = 0>
 	struct cfkey_bindings {
 		static void run(boost::python::class_<CfKey> &cfkey_inst)
@@ -223,19 +227,6 @@ namespace pyranha
 		trig_array_bindings<trig_array<16,1>,1>::run(ta_16_1);
 		// Expo-array specifics.
 		expo_array_bindings(ea_16_0);
-
-
-// 		boost::python::class_<piranha::trig_array<16, 0> >
-// 		ta_16_0(int_array_key_bindings<1,piranha::trig_array<16, 0> >("trig_array_16_0", ""));
-// 		trig_array_key_bindings<1>(ta_16_0);
-
-// 		boost::python::class_<piranha::trig_array<16, 1> >
-// 		ta_16_1(int_array_key_bindings<piranha::trig_array<16, 1> >("trig_array_16_1", ""));
-// 		trig_array_key_bindings(ta_16_1);
-// 
-// 		boost::python::class_<piranha::expo_array<16, 0> >
-// 		ea_16_0(int_array_key_bindings<piranha::expo_array<16, 0> >("expo_array_16_0", ""));
-// 		expo_array_key_bindings(ea_16_0);
 	}
 }
 

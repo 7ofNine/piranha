@@ -64,9 +64,9 @@ namespace pyranha
 		inst.add_property("__arguments_description__", &py_series_arguments_description<T>);
 		inst.add_property("__arguments__", &py_series_arguments<T>);
 		inst.def("__set_arguments__", &T::set_arguments);
-		typedef void (T::*trim_free)();
-		inst.def("__trim__", trim_free(&T::trim));
-		inst.def("__append__", &py_series_append<T,term_type>);
+		//typedef void (T::*trim_free)();
+		//inst.def("__trim__", trim_free(&T::trim));
+		//inst.def("__append__", &py_series_append<T,term_type>);
 		inst.def("save_to", &T::save_to, "Save to file.");
 		typedef typename T::eval_type (T::*eval_free)(const double &) const;
 		inst.def("eval", eval_free(&T::eval), "Evaluate at time arg2.");
@@ -289,18 +289,18 @@ namespace pyranha
 	}
 
 	template <class T>
-	inline void common_poisson_series_instantiation(boost::python::class_<T> &inst, const std::string &name)
+	inline void common_poisson_series_instantiation(boost::python::class_<T> &inst, const std::string &)
 	{
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
 		// Expose the polynomial coefficient.
 		typedef typename T::term_type::cf_type cf_type;
-		boost::python::class_<cf_type> poly_cf_inst(cf_bindings<cf_type>((name + "_cf").c_str(), ""));
-		power_series_instantiation(poly_cf_inst);
-		poly_cf_inst.def("__iter__", boost::python::iterator<cf_type>());
-		poly_cf_inst.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
-		py_series_term<typename cf_type::term_type>(name + "_cf",name);
+		//boost::python::class_<cf_type> poly_cf_inst(cf_bindings<cf_type>((name + "_cf").c_str(), ""));
+		//power_series_instantiation(poly_cf_inst);
+		//poly_cf_inst.def("__iter__", boost::python::iterator<cf_type>());
+		//poly_cf_inst.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
+		//py_series_term<typename cf_type::term_type>(name + "_cf",name);
 	}
 
 	template <class T>
