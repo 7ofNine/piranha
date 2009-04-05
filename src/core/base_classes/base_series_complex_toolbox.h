@@ -126,9 +126,9 @@ namespace piranha
 			// Specialise inversion to use conjugate * inverse of absolute value. This is useful
 			// when the complex series is a complex exponential of something.
 			template <class ArgsTuple>
-			Derived inv_(const ArgsTuple &args_tuple) const {
+			Derived base_inv(const ArgsTuple &args_tuple) const {
 				Derived retval = conjugate_(args_tuple);
-				retval.mult_by(abs_(args_tuple).inv_(args_tuple),args_tuple);
+				retval.mult_by(abs_(args_tuple).base_inv(args_tuple),args_tuple);
 				return retval;
 			}
 		protected:

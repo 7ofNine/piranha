@@ -42,6 +42,13 @@ namespace piranha
 		}
 		derived_cast->swap_terms(retval);
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::inv(const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->base_inv(args_tuple);
+	}
 }
 
 #endif

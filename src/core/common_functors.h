@@ -69,7 +69,7 @@ namespace piranha
 		{}
 		T inv(const T &orig) const {
 			p_assert(m_args_tuple);
-			return orig.inv_(*m_args_tuple);
+			return orig.base_inv(*m_args_tuple);
 		}
 		void multiply(T &orig, const T &other) const {
 			p_assert(m_args_tuple);

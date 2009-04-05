@@ -470,7 +470,7 @@ namespace piranha
 	// Series inversion will use exponentiation to -1 as default.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::inv_(const ArgsTuple &args_tuple) const
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_inv(const ArgsTuple &args_tuple) const
 	{
 		return pow_(-1,args_tuple);
 	}

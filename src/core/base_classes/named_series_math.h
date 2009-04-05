@@ -166,7 +166,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::inv() const
 	{
-		Derived retval = derived_const_cast->inv_(m_arguments);
+		Derived retval = derived_const_cast->base_inv(m_arguments);
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;

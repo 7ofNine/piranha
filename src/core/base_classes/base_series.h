@@ -125,7 +125,7 @@ namespace piranha
 			std::vector<term_type const *> cache_pointers() const;
 		protected:
 			template <class ArgsTuple>
-			Derived inv_(const ArgsTuple &) const;
+			Derived base_inv(const ArgsTuple &) const;
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
 				template <class RetSeries, class Element, class PosTuple, class SubCaches,

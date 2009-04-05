@@ -76,7 +76,7 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
 				retval = retval.pow_(order, args_tuple);
-				retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
+				retval.mult_by(Derived::factorial_(order,args_tuple).base_inv(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
@@ -143,7 +143,7 @@ namespace piranha
 						throw division_by_zero();
 					} else if (order == m) {
 						retval = Derived(2,args_tuple).pow_(-order,args_tuple);
-						retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
+						retval.mult_by(Derived::factorial_(order,args_tuple).base_inv(args_tuple),args_tuple);
 					}
 					return retval;
 				}
@@ -164,7 +164,7 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.mult_by(square_x2, args_tuple);
 				retval = retval.pow_(order - m, args_tuple);
-				retval.mult_by(Derived::factorial_(order,args_tuple).inv_(args_tuple),args_tuple);
+				retval.mult_by(Derived::factorial_(order,args_tuple).base_inv(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {

@@ -77,6 +77,8 @@ namespace piranha
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived inv(const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

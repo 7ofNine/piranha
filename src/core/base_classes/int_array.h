@@ -219,7 +219,7 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			Derived inv_(const ArgsTuple &args_tuple) const {
+			Derived inv(const ArgsTuple &args_tuple) const {
 				return derived_const_cast->pow_(-1,args_tuple);
 			}
 			/// Upload integers to vector of integers.

@@ -187,7 +187,7 @@ namespace piranha
 				return Derived(0, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived inv_(const ArgsTuple &args_tuple) const {
+			Derived inv(const ArgsTuple &args_tuple) const {
 				return derived_const_cast->pow_(-1,args_tuple);
 			}
 			template <class ArgsTuple>
