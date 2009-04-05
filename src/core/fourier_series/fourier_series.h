@@ -62,8 +62,11 @@ namespace piranha
 				boost::dividable < FOURIER_SERIES, double
 				> > >
 	{
-			template <class T>
+			template <class>
 			friend class toolbox;
+			// Additional friendship required by substitution of trignometric arguments. 
+			template <int, int, class>
+			friend class trig_array;
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
 			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
@@ -107,7 +110,7 @@ namespace std
 				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
 				> > > > > >
 	{
-			template <class T>
+			template <class>
 			friend class piranha::toolbox;
 			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;

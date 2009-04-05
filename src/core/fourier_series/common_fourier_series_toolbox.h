@@ -80,7 +80,13 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			// This remains public because it is used in substitution.
+			Derived cos() const {
+				return ei().real();
+			}
+			Derived sin() const {
+				return ei().imag();
+			}
+		protected:
 			template <class ArgsTuple>
 			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
@@ -120,12 +126,6 @@ namespace piranha
 					}
 				}
 				return retval;
-			}
-			Derived cos() const {
-				return ei().real();
-			}
-			Derived sin() const {
-				return ei().imag();
 			}
 	};
 }

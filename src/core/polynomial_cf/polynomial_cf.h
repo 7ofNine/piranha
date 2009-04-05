@@ -55,7 +55,7 @@ namespace piranha
 				public POLYNOMIAL_CF_MULT_ANCESTOR,
 				public POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR
 	{
-			template <class T>
+			template <class>
 			friend class toolbox;
 			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
@@ -96,7 +96,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR
 	{
-			template <class T>
+			template <class>
 			friend class piranha::toolbox;
 			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
 			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;

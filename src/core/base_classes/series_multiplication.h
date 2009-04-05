@@ -43,13 +43,12 @@ namespace piranha
 	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
 	class toolbox<series_multiplication<__PIRANHA_SERIES_MULTIPLICATION_TP> >
 	{
-		public:
+		protected:
 			template <class ArgsTuple>
 			size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const {
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple, Truncator>::truncator_type::power_series_iterations(*derived_const_cast,
 					start,step,args_tuple);
 			}
-		protected:
 			// Multiply term-by-term with another series, and place the result into retval.
 			// Preconditions:
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,

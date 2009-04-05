@@ -65,7 +65,7 @@ namespace piranha
 				boost::dividable < POLYNOMIAL, double
 				> > >
 	{
-			template <class T>
+			template <class>
 			friend class toolbox;
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
@@ -114,7 +114,7 @@ namespace std
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
 				> > > > > >
 	{
-			template <class T>
+			template <class>
 			friend class piranha::toolbox;
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;

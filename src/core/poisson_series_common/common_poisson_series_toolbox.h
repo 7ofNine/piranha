@@ -81,59 +81,6 @@ namespace piranha
 	{
 			typedef toolbox<jacobi_anger<1, Derived> > jacang_ancestor;
 		public:
-			// NOTICE: move this into private?
-			// NOTICE: this method assumes that the input args tuple already hase merged in as
-			// trig arguments the poly arguments (see also below).
-			template <class ArgsTuple>
-			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
-				typedef typename std::complex<Derived>::term_type complex_term_type;
-				typedef typename Derived::term_type term_type;
-				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
-				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
-				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
-				// Cache and sort the terms.
-				std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
-				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
-				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
-				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
-				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<int> > >
-				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
-				// Expand using Jacobi-Anger's identity.
-				std::complex<Derived> retval;
-				jacang_ancestor::jacobi_anger(cache, int_linear_term.first, retval, args_tuple);
-				// If the linear term was found, take care of it.
-				if (int_linear_term.first != cache.end()) {
-					std::complex<Derived> tmp_series;
-					// Let's build the term to be inserted in tmp_series.
-					complex_term_type tmp_term1;
-					complex_term_type tmp_term2;
-					tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), args_tuple);
-					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_term1.m_key.flavour() = true;
-					tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), args_tuple);
-					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_term2.m_key.flavour() = false;
-					tmp_series.insert(tmp_term1, args_tuple);
-					tmp_series.insert(tmp_term2, args_tuple);
-					// Take care of the numerical-coefficient-only term, if any.
-					if (int_linear_term.second.first.size() > 0) {
-						std::complex<Derived> tmp_series2;
-						// NOTE: tmp_series2's arguments tuple is empty, it does not matter
-						// because we are explicitly dealing with single numerical coefficient series.
-						complex_term_type tmp_term;
-						tmp_term.m_cf.insert(
-							typename std::complex<Derived>::term_type::cf_type::term_type(
-								int_linear_term.second.first[0].ei(tmp_series2.arguments()),
-								typename std::complex<Derived>::term_type::cf_type::term_type::key_type()
-							),
-							tmp_series2.arguments());
-						tmp_series2.insert(tmp_term, tmp_series2.arguments());
-						tmp_series.mult_by(tmp_series2, args_tuple);
-					}
-					retval.mult_by(tmp_series, args_tuple);
-				}
-				return retval;
-			}
 			std::complex<Derived> ei() const {
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
@@ -239,6 +186,60 @@ namespace piranha
 					}
 					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.begin()->m_cf),
 						typename fourier_term::key_type(it->m_key)),args_tuple);
+				}
+				return retval;
+			}
+		protected:
+			// NOTICE: move this into private?
+			// NOTICE: this method assumes that the input args tuple already hase merged in as
+			// trig arguments the poly arguments (see also below).
+			template <class ArgsTuple>
+			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
+				typedef typename std::complex<Derived>::term_type complex_term_type;
+				typedef typename Derived::term_type term_type;
+				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
+				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
+				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
+				// Cache and sort the terms.
+				std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
+				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
+				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
+				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
+				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<int> > >
+				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
+				// Expand using Jacobi-Anger's identity.
+				std::complex<Derived> retval;
+				jacang_ancestor::jacobi_anger(cache, int_linear_term.first, retval, args_tuple);
+				// If the linear term was found, take care of it.
+				if (int_linear_term.first != cache.end()) {
+					std::complex<Derived> tmp_series;
+					// Let's build the term to be inserted in tmp_series.
+					complex_term_type tmp_term1;
+					complex_term_type tmp_term2;
+					tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), args_tuple);
+					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
+					tmp_term1.m_key.flavour() = true;
+					tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), args_tuple);
+					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
+					tmp_term2.m_key.flavour() = false;
+					tmp_series.insert(tmp_term1, args_tuple);
+					tmp_series.insert(tmp_term2, args_tuple);
+					// Take care of the numerical-coefficient-only term, if any.
+					if (int_linear_term.second.first.size() > 0) {
+						std::complex<Derived> tmp_series2;
+						// NOTE: tmp_series2's arguments tuple is empty, it does not matter
+						// because we are explicitly dealing with single numerical coefficient series.
+						complex_term_type tmp_term;
+						tmp_term.m_cf.insert(
+							typename std::complex<Derived>::term_type::cf_type::term_type(
+								int_linear_term.second.first[0].ei(tmp_series2.arguments()),
+								typename std::complex<Derived>::term_type::cf_type::term_type::key_type()
+							),
+							tmp_series2.arguments());
+						tmp_series2.insert(tmp_term, tmp_series2.arguments());
+						tmp_series.mult_by(tmp_series2, args_tuple);
+					}
+					retval.mult_by(tmp_series, args_tuple);
 				}
 				return retval;
 			}

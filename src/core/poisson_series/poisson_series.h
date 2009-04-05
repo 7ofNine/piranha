@@ -70,8 +70,10 @@ namespace piranha
 				boost::dividable < POISSON_SERIES, double
 				> > >
 	{
-			template <class T>
+			template <class>
 			friend class toolbox;
+			template <int, int, class>
+			friend class trig_array;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
@@ -118,7 +120,7 @@ namespace std
 				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
 				> > > > > >
 	{
-			template <class T>
+			template <class>
 			friend class piranha::toolbox;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
