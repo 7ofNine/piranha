@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "../base_classes/cf_series.h"
+#include "../base_classes/cf_series_special_functions.h"
 #include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../p_assert.h"
@@ -41,7 +42,8 @@ namespace piranha
 	template <>
 	template <class Derived>
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
-	class toolbox<common_polynomial_cf<Derived> >: public toolbox<common_polynomial<Derived> >
+	class toolbox<common_polynomial_cf<Derived> >: public toolbox<common_polynomial<Derived> >,
+		public toolbox<cf_series_special_functions<Derived> >
 	{
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>

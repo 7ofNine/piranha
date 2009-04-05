@@ -274,7 +274,7 @@ namespace piranha
 			 * Result is a pair consisting of an integer and a trigonometric array.
 			 */
 			template <class PosTuple, class ArgsTuple>
-			std::pair<int, Derived> partial_(const PosTuple &pos_tuple, const ArgsTuple &) const {
+			std::pair<int, Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
 				std::pair<int, Derived> retval(0, Derived());
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
@@ -294,7 +294,7 @@ namespace piranha
 			}
 			/// Exponentiation.
 			template <class ArgsTuple>
-			Derived pow_(const double &y, const ArgsTuple &) const {
+			Derived pow(const double &y, const ArgsTuple &) const {
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -302,13 +302,13 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			Derived root_(const int &n, const ArgsTuple &args_tuple) const {
+			Derived root(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return pow_(1. / static_cast<double>(n), args_tuple);
+				return pow(1. / static_cast<double>(n), args_tuple);
 			}
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.

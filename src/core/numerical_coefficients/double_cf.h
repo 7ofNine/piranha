@@ -60,13 +60,13 @@ namespace piranha
 			 * Uses Boost's math toolkit.
 			 */
 			template <class ArgsTuple>
-			double_cf besselJ_(const int &n, const ArgsTuple &) const {
+			double_cf besselJ(const int &n, const ArgsTuple &) const {
 				double_cf retval;
 				retval.m_value = piranha::besselJ(n, m_value);
 				return retval;
 			}
 			template <class ArgsTuple>
-			double_cf pow_(const double &y, const ArgsTuple &) const {
+			double_cf pow(const double &y, const ArgsTuple &) const {
 				double_cf retval;
 				retval.m_value = std::pow(ancestor::m_value, y);
 				return retval;
@@ -96,7 +96,7 @@ namespace std
 			NUMERICAL_CONTAINER_CTORS(complex);
 			COMPLEX_NUMERICAL_CONTAINER_CTORS;
 			template <class ArgsTuple>
-			complex pow_(const double &y, const ArgsTuple &) const {
+			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
 				// COMPILER_BUG: Ubuntu hardy's GCC 4.2 compiler craps out if
 				// assiging directly retval.m_value = std::pow().
@@ -105,7 +105,7 @@ namespace std
 				return retval;
 			}
 			template <class ArgsTuple>
-			complex besselJ_(const int &n, const ArgsTuple &) {
+			complex besselJ(const int &n, const ArgsTuple &) {
 				complex retval;
 				retval.m_value = piranha::besselJ(n,m_value);
 				return retval;

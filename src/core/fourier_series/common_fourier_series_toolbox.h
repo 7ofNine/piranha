@@ -29,6 +29,7 @@
 #include "../base_classes/common_comparisons.h"
 #include "../base_classes/toolbox.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
+#include "../utils.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -94,7 +95,7 @@ namespace piranha
 				} else {
 					// Cache and sort the term pointers list. Sorting is reverse (small --> big norms) because
 					// in jacang is better to do the small terms first.
-					std::vector<term_type const *> cache(derived_const_cast->cache_pointers());
+					std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
 					std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 					// Let's find out if there is a constant term. If there is one, it will be skipped
 					// and multiplied by the result of the Jacobi-Anger expansion of the other terms later.

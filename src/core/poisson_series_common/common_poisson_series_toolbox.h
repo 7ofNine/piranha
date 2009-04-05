@@ -37,6 +37,7 @@
 #include "../ntuple.h"
 #include "../p_assert.h"
 #include "../psym.h"
+#include "../utils.h"
 #include "jacobi_anger_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -91,7 +92,7 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				// Cache and sort the terms.
-				std::vector<term_type const *> cache(derived_const_cast->cache_pointers());
+				std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
 				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.

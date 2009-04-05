@@ -103,14 +103,14 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			mpq_cf pow_(const double &y, const ArgsTuple &) const {
+			mpq_cf pow(const double &y, const ArgsTuple &) const {
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 				}	return pow_double(y);
 			}
 			template <class ArgsTuple>
-			mpq_cf root_(const int &n_, const ArgsTuple &) const {
+			mpq_cf root(const int &n_, const ArgsTuple &) const {
 				mpq_cf retval;
 				if (n_ == 0) {
 					throw division_by_zero();
@@ -266,7 +266,7 @@ namespace std
 				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
-			complex pow_(const double &y, const ArgsTuple &) const {
+			complex pow(const double &y, const ArgsTuple &) const {
 				if (piranha::utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {

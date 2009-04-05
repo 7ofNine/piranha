@@ -46,21 +46,21 @@ namespace piranha
 		public:
 			/// Bessel function of the first kind.
 			Derived besselJ(const int &order) const {
-				Derived retval(derived_const_cast->besselJ_(order, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->base_besselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			Derived dbesselJ(const int &order) const {
-				Derived retval(derived_const_cast->dbesselJ_(order, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->base_dbesselJ(order, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			Derived besselJ_div_m(const int &order, const int &m) const {
-				Derived retval(derived_const_cast->besselJ_div_m_(order, m, derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->base_besselJ_div_m(order, m, derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

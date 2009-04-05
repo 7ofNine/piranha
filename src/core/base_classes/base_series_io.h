@@ -137,19 +137,6 @@ namespace piranha
 	{
 		return m_container.end();
 	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline std::vector<typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_type const *>
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::cache_pointers() const
-	{
-		std::vector<term_type const *> retval;
-		retval.reserve(length());
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval.push_back(&(*it));
-		}
-		return retval;
-	}
 }
 
 #endif

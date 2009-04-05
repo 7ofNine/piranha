@@ -136,19 +136,19 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::choose(const int &n, const int &k)
 	{
-		return Derived::choose_(n,k,args_tuple_type());
+		return Derived::base_choose(n,k,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::factorial(const int &n)
 	{
-		return Derived::factorial_(n,args_tuple_type());
+		return Derived::base_factorial(n,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::pow(const double &x) const
 	{
-		Derived retval(derived_const_cast->pow_(x, m_arguments));
+		Derived retval(derived_const_cast->base_pow(x, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
@@ -157,7 +157,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::root(const int &n) const
 	{
-		Derived retval(derived_const_cast->root_(n, m_arguments));
+		Derived retval(derived_const_cast->base_root(n, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
@@ -180,7 +180,7 @@ namespace piranha
 		pos_tuple_type pos_tuple;
 		psym_p p = psyms::get_pointer(arg);
 		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
-		Derived retval(derived_const_cast->partial_(n, pos_tuple, m_arguments));
+		Derived retval(derived_const_cast->base_partial(n, pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;

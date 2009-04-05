@@ -196,7 +196,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::choose_(
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_choose(
 		const int &n_, const int &k, const ArgsTuple &args_tuple)
 	{
 		const int n = (n_ >= 0) ? n_ : k - n_ - 1;
@@ -218,7 +218,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::factorial_(const int &n, const ArgsTuple &args_tuple)
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_factorial(const int &n, const ArgsTuple &args_tuple)
 	{
 		if (n < 0) {
 			throw unsuitable("Negative argument for factorial.");
@@ -252,7 +252,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::partial_(int n,
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_partial(int n,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		if (n < 0) {
@@ -269,9 +269,9 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::partial_(const PosTuple &pos_tuple,
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_partial(const PosTuple &pos_tuple,
 		const ArgsTuple &args_tuple) const {
-		return partial_(1,pos_tuple,args_tuple);
+		return base_partial(1,pos_tuple,args_tuple);
 	}
 
 	// When raising to power y, handle the following cases:
@@ -300,7 +300,7 @@ namespace piranha
 		if (length() == 1) {
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.pow_(y, args_tuple), it->m_key.pow_(y, args_tuple)), args_tuple);
+			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
 			return true;
 		}
 		return false;
@@ -310,7 +310,7 @@ namespace piranha
 	// Internally it will check if y is a real or an integer number.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::pow_(const double &y,
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_pow(const double &y,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -437,7 +437,7 @@ namespace piranha
 		} else if (length() == 1) {
 			// If the series has a single term, dispatch pow to the coefficient and key of said term.
 			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.root_(n, args_tuple), it->m_key.root_(n, args_tuple)), args_tuple);
+			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
 			return true;
 		}
 		return false;
@@ -446,7 +446,7 @@ namespace piranha
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::root_(const int &n,
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_root(const int &n,
 			const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -464,7 +464,7 @@ namespace piranha
 			const ArgsTuple &args_tuple) const
 	{
 		p_assert(n > 0);
-		return pow_(1. / static_cast<double>(n), args_tuple);
+		return base_pow(1. / static_cast<double>(n), args_tuple);
 	}
 
 	// Series inversion will use exponentiation to -1 as default.
@@ -472,7 +472,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_inv(const ArgsTuple &args_tuple) const
 	{
-		return pow_(-1,args_tuple);
+		return base_pow(-1,args_tuple);
 	}
 }
 

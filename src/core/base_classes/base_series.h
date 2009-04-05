@@ -110,22 +110,21 @@ namespace piranha
 			Derived &mult_by(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			static Derived factorial_(const int &, const ArgsTuple &);
-			template <class ArgsTuple>
-			static Derived choose_(const int &, const int &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived pow_(const double &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived root_(const int &, const ArgsTuple &) const;
-			template <class PosTuple, class ArgsTuple>
-			Derived partial_(int, const PosTuple &, const ArgsTuple &) const;
-			template <class PosTuple, class ArgsTuple>
-			Derived partial_(const PosTuple &, const ArgsTuple &) const;
-			std::vector<term_type const *> cache_pointers() const;
 		protected:
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			static Derived base_factorial(const int &, const ArgsTuple &);
+			template <class ArgsTuple>
+			static Derived base_choose(const int &, const int &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived base_pow(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived base_root(const int &, const ArgsTuple &) const;
+			template <class PosTuple, class ArgsTuple>
+			Derived base_partial(int, const PosTuple &, const ArgsTuple &) const;
+			template <class PosTuple, class ArgsTuple>
+			Derived base_partial(const PosTuple &, const ArgsTuple &) const;
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
 				template <class RetSeries, class Element, class PosTuple, class SubCaches,

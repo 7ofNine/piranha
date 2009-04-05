@@ -176,7 +176,7 @@ namespace piranha
 			 * Result is a pair consisting of an integer and an exponent array.
 			 */
 			template <class PosTuple, class ArgsTuple>
-			std::pair<int, Derived> partial_(const PosTuple &pos_tuple, const ArgsTuple &) const {
+			std::pair<int, Derived> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
 				std::pair<int, Derived> retval(0, Derived());
 				const size_t pos = pos_tuple.template get<Derived::position>().second;
 				p_assert(pos < derived_const_cast->size());
@@ -192,7 +192,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			Derived pow_(const double &y, const ArgsTuple &) const {
+			Derived pow(const double &y, const ArgsTuple &) const {
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -200,7 +200,7 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			Derived root_(const int &n, const ArgsTuple &) const {
+			Derived root(const int &n, const ArgsTuple &) const {
 				Derived retval = *derived_const_cast;
 				if (n == 0) {
 					throw division_by_zero();

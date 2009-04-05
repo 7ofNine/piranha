@@ -183,24 +183,24 @@ namespace piranha
 				m_value += x1.m_value * x2.value();
 			}
 			template <class PosTuple, class ArgsTuple>
-			Derived partial_(const PosTuple &, const ArgsTuple &args_tuple) const {
+			Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const {
 				return Derived(0, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow_(-1,args_tuple);
+				return derived_const_cast->pow(-1,args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived root_(const int &n, const ArgsTuple &args_tuple) const {
+			Derived root(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
-				return derived_const_cast->pow_(1. / static_cast<double>(n), args_tuple);
+				return derived_const_cast->pow(1. / static_cast<double>(n), args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived besselJ_(const int &, const ArgsTuple &) const {
+			Derived besselJ(const int &, const ArgsTuple &) const {
 				throw unsuitable("besselJ is not implemented for this coefficient type.");
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>

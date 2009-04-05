@@ -220,7 +220,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow_(-1,args_tuple);
+				return derived_const_cast->pow(-1,args_tuple);
 			}
 			/// Upload integers to vector of integers.
 			void upload_ints_to(std::vector<int> &v) const {

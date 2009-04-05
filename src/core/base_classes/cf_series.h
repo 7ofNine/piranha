@@ -79,6 +79,12 @@ namespace piranha
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived pow(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived root(const int &, const ArgsTuple &) const;
+			template <class PosTuple, class ArgsTuple>
+			Derived partial(const PosTuple &, const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

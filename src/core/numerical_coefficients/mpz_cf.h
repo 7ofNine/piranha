@@ -81,14 +81,14 @@ namespace piranha
 				mpz_addmul(m_value.get_mpz_t(), x1.m_value.get_mpz_t(), x2.m_value.get_mpz_t());
 			}
 			template <class ArgsTuple>
-			mpz_cf pow_(const double &y, const ArgsTuple &) const {
+			mpz_cf pow(const double &y, const ArgsTuple &) const {
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 				}	return pow_double(y);
 			}
 			template <class ArgsTuple>
-			mpz_cf root_(const int &n_, const ArgsTuple &) const {
+			mpz_cf root(const int &n_, const ArgsTuple &) const {
 				mpz_cf retval;
 				if (n_ == 0) {
 					throw division_by_zero();
@@ -196,7 +196,7 @@ namespace std
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			template <class ArgsTuple>
-			complex pow_(const double &y, const ArgsTuple &) const {
+			complex pow(const double &y, const ArgsTuple &) const {
 				if (piranha::utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {

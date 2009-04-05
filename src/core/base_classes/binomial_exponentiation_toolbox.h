@@ -31,6 +31,7 @@
 #include "../exceptions.h"
 #include "../p_assert.h"
 #include "../settings.h"
+#include "../utils.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -40,6 +41,7 @@ namespace piranha
 	template <class Derived, template <class> class Sorter>
 	struct binomial_exponentiation {};
 
+	// Note: this should be used with protected inheritance.
 	template <>
 	template <class Derived, template <class> class Sorter>
 	class toolbox<binomial_exponentiation<Derived,Sorter> >
@@ -48,7 +50,7 @@ namespace piranha
 		public:
 			/// Real power.
 			/**
-			* This method is written to work in conjunction with base_series::pow_.
+			* This method is written to work in conjunction with base_series::base_pow.
 			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
@@ -109,12 +111,12 @@ namespace piranha
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
 				if (Op == power_op) {
-					tmp_term.m_cf = A.m_cf.pow_(y, args_tuple);
-					tmp_term.m_key = A.m_key.pow_(y, args_tuple);
+					tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
+					tmp_term.m_key = A.m_key.pow(y, args_tuple);
 				} else {
 					// NOTE: here we should be sure about y being an integer, hence the static cast.
-					tmp_term.m_cf = A.m_cf.root_(static_cast<int>(y), args_tuple);
-					tmp_term.m_key = A.m_key.root_(static_cast<int>(y), args_tuple);
+					tmp_term.m_cf = A.m_cf.root(static_cast<int>(y), args_tuple);
+					tmp_term.m_key = A.m_key.root(static_cast<int>(y), args_tuple);
 				}
 				Derived Apowy;
 				Apowy.insert(tmp_term, args_tuple);
@@ -145,7 +147,7 @@ namespace piranha
 			template <class Series, class ArgsTuple>
 			std::vector<typename Series::term_type const *>
 			get_sorted_pointer_vector(const ArgsTuple &args_tuple) const {
-				std::vector<typename Derived::term_type const *> retval(derived_const_cast->cache_pointers());
+				std::vector<typename Derived::term_type const *> retval(utils::cache_terms_pointers(*derived_const_cast));
 				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;
 			}

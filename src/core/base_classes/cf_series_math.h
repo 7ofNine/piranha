@@ -49,6 +49,27 @@ namespace piranha
 	{
 		return derived_const_cast->base_inv(args_tuple);
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::pow(const double &y, const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->base_pow(y,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::root(const int &n, const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->base_root(n,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class PosTuple, class ArgsTuple>
+	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	{
+		return derived_const_cast->base_partial(pos_tuple,args_tuple);
+	}
 }
 
 #endif
