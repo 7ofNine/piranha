@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 
+#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../p_assert.h"
@@ -37,7 +38,11 @@
 namespace piranha
 {
 	template <class Derived, template <class> class Sorter>
-	class binomial_exponentiation_toolbox
+	struct binomial_exponentiation {};
+
+	template <>
+	template <class Derived, template <class> class Sorter>
+	class toolbox<binomial_exponentiation<Derived,Sorter> >
 	{
 			enum op_type { power_op, root_op };
 		public:

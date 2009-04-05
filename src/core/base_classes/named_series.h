@@ -35,6 +35,7 @@
 #include "../psym.h"
 #include "../settings.h"
 #include "../type_traits.h"
+#include "toolbox.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -44,17 +45,19 @@
 
 namespace piranha
 {
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	struct named_series {};
+
 	/// Named series toolbox.
 	/**
 	 * Toolbox for generating series with arguments.
 	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
 	 * called "name" naming the arguments of the series.
 	 */
+	template <>
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	class named_series
+	class toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >
 	{
-			template <class ArgsDescr2, class Derived2>
-			friend class named_series;
 		public:
 			typedef ArgsDescr arguments_description;
 			/// Compile-time constant for the number of arguments sets.
@@ -129,8 +132,9 @@ namespace piranha
 	};
 
 	// Initialization of static member.
+	template <>
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+	std::vector<std::string> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::unknown_data;
 
 	// Meta-programming to get a tuple of (presence-flag + positional index) pairs for
 	// a psym, given an arguments_tuple.
@@ -159,9 +163,9 @@ namespace piranha
 	};
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,E0_SERIES(series_name) >
+#define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::toolbox<piranha::named_series<args,E0_SERIES(series_name) > >
 
-#define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::named_series<boost::tuple<args1,args2>,series_name >
+#define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::toolbox<piranha::named_series<boost::tuple<args1,args2>,series_name > >
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
 	series_name() {} \

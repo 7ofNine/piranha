@@ -25,15 +25,20 @@
 #include <boost/static_assert.hpp>
 
 #include "../p_assert.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	/// Power series toolbox.
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
-	class power_series
+	struct power_series {};
+
+	/// Power series toolbox.
+	template <>
+	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
+	class toolbox<power_series<ExpoArgsPosition,ExpoTermPosition,Derived> >
 	{
 			BOOST_STATIC_ASSERT(ExpoArgsPosition >= 0);
 			template <class Term>

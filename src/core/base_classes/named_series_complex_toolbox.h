@@ -25,6 +25,7 @@
 
 #include "../settings.h"
 #include "named_series.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -32,7 +33,11 @@
 namespace piranha
 {
 	template <class RealDerived>
-	class named_series_complex_toolbox
+	struct named_series_complex {};
+
+	template <>
+	template <class RealDerived>
+	class toolbox<named_series_complex<RealDerived> >
 	{
 			typedef std::complex<RealDerived> Derived;
 		public:
@@ -107,7 +112,7 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::named_series<args,COMPLEX_E0_SERIES(series_name) >
+#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::toolbox<piranha::named_series<args,COMPLEX_E0_SERIES(series_name) > >
 
 #define COMPLEX_NAMED_SERIES_CTORS(complex_toolbox) \
 	explicit complex(const complex<double> &cx) { \

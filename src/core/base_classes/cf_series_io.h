@@ -34,7 +34,7 @@ namespace piranha
 	  */
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived::term_type term_type;
 		const char separator = Derived::separator;
@@ -68,7 +68,7 @@ namespace piranha
 	/// Print in plain mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		derived_const_cast->print_terms_plain(stream, args_tuple, -1);
 	}
@@ -76,7 +76,7 @@ namespace piranha
 	/// Print in pretty mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::print_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		if (derived_const_cast->length() > 1) {
 			stream << '(';

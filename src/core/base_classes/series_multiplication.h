@@ -32,11 +32,16 @@
 
 #include "../settings.h"
 #include "../p_assert.h"
+#include "toolbox.h"
 
 namespace piranha
 {
 	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
-	class series_multiplication
+	struct series_multiplication {};
+
+	template <>
+	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
+	class toolbox<series_multiplication<__PIRANHA_SERIES_MULTIPLICATION_TP> >
 	{
 		public:
 			template <class ArgsTuple>

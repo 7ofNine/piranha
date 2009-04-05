@@ -57,20 +57,20 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
+	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::is_args_compatible(const Derived2 &ps2) const
 	{
 		// Use getter in second place because we may be interacting with other series type.
 		return named_series_is_args_compatible(m_arguments, ps2.arguments());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline double named_series<__PIRANHA_NAMED_SERIES_TP>::norm() const
+	inline double toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::norm() const
 	{
 		return derived_const_cast->norm_(m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
+	inline size_t toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);
 	}

@@ -25,6 +25,7 @@
 #include <functional> // For std::equal_to.
 #include <vector>
 
+#include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
@@ -32,6 +33,7 @@
 #include "../psym.h"
 #include "../type_traits.h"
 #include "../utils.h" // For class_converter.
+#include "toolbox.h"
 
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -41,12 +43,16 @@
 
 namespace piranha
 {
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	struct base_series {};
+
 	/// Base series class.
 	/**
 	 * Term must derive from piranha::base_term class.
 	 */
+	template <>
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	class base_series
+	class toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >
 	{
 			// Alias for term type.
 			typedef Term term_type_;
@@ -59,6 +65,8 @@ namespace piranha
 			// Term container.
 			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
 				container_type;
+			template <class T, class ArgsTuple>
+			friend struct base_series_arithmetics;
 		public:
 			typedef term_type_ term_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
@@ -115,9 +123,9 @@ namespace piranha
 			template <class PosTuple, class ArgsTuple>
 			Derived partial_(const PosTuple &, const ArgsTuple &) const;
 			std::vector<term_type const *> cache_pointers() const;
+		protected:
 			template <class ArgsTuple>
 			Derived inv_(const ArgsTuple &) const;
-		protected:
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
 				template <class RetSeries, class Element, class PosTuple, class SubCaches,
@@ -192,8 +200,8 @@ namespace piranha
 #define E0_SERIES_TP Cf,Key,Multiplier,Truncator,Allocator
 #define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
-#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
-	Allocator,E0_SERIES(series_name) >
+#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::toolbox<piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
+	Allocator,E0_SERIES(series_name) > >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
 						class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
@@ -201,9 +209,9 @@ namespace piranha
 #define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,Mult0,Trunc0,Allocator>
 #define E1_SERIES(series_name) series_name<E1_SERIES_TP>
 #define E1_SERIES_TERM(term_name,cf_name) term_name< cf_name, Key1, '|', Allocator >
-#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
+#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::toolbox<piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
-	'\n',Allocator,series_name >
+	'\n',Allocator,series_name > >
 }
 
 #include "base_series_io.h"

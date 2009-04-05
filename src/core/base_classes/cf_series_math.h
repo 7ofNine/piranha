@@ -27,7 +27,7 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::invert_sign(const ArgsTuple &args_tuple)
 	{
 		// TODO: improve performance on this.
 		typedef typename Derived::const_iterator const_iterator;

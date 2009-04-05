@@ -23,18 +23,23 @@
 
 #include <string>
 
+#include "../base_classes/toolbox.h"
 #include "../psym.h"
 
 namespace piranha
 {
+	template <class Derived>
+	struct celmec {};
+
 	/// Toolbox for Celestial Mechanics.
 	/**
 	 * This toolbox requires the following toolboxes: multiplication toolbox, Poisson series toolbox,
 	 * special functions toolbox. Derived must be a Poisson series with
 	 * polynomial arguments in slot 0 of the arguments tuple.
 	 */
+	template <>
 	template <class Derived>
-	class celmec_toolbox
+	class toolbox<celmec<Derived> >
 	{
 		public:
 			static Derived r_a(const Derived &e_series, const Derived &M_series) {

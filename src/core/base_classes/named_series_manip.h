@@ -51,7 +51,7 @@ namespace piranha
 
 	/// Swap contents of series.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::swap(Derived &ps2)
 	{
 		// Do something only if we are not swapping with self.
 		if (derived_cast != &ps2) {
@@ -91,7 +91,7 @@ namespace piranha
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym_p &arg)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const std::string &s, const psym_p &arg)
 	{
 		p_assert(derived_const_cast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
@@ -99,7 +99,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym_p &arg)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const psym_p &arg)
 	{
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
 		p_assert(derived_const_cast->empty());
@@ -116,7 +116,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_args(const Derived2 &ps2)
 	{
 		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) {
 			__PDEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
@@ -220,7 +220,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_incompatible_args(const Derived2 &ps2)
 	{
 		// Build an empty retval and assign it the same arguments as this.
 		Derived retval;
@@ -298,7 +298,7 @@ namespace piranha
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::trim()
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::trim()
 	{
 		typedef typename ntuple<std::vector<bool>, n_arguments_sets>::type trim_flags_type;
 		trim_flags_type trim_flags;
@@ -316,7 +316,7 @@ namespace piranha
 
 // 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 // 	template <class Filter>
-// 	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::filter(const Filter &f) const
+// 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::filter(const Filter &f) const
 // 	{
 // 		typedef typename Derived::const_iterator const_iterator;
 // 		Derived retval;
@@ -350,7 +350,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const psym &arg, const SubSeries &s) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::sub(const psym &arg, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::

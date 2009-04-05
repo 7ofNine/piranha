@@ -30,7 +30,7 @@ namespace piranha
 {
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <bool Sign, class Derived2>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::merge_with_series(const Derived2 &s2)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_with_series(const Derived2 &s2)
 	{
 		// If we are merging with self, create a copy and call recursively.
 		if ((void *)derived_cast == (void *)(&s2)) {
@@ -46,7 +46,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::mult_by_series(const Derived2 &s2)
 	{
 		// First we merge the arguments of the two series.
 		merge_args(s2);
@@ -58,7 +58,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <bool Sign, class Number>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::merge_number_helper(const Number &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_number_helper(const Number &x)
 	{
 		derived_cast->template merge_with_number<Sign>(x, m_arguments);
 		trim();
@@ -66,31 +66,31 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const double &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const double &x)
 	{
 		return merge_number_helper<true>(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const Derived &s2)
 	{
 		return merge_with_series<true>(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const double &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const double &x)
 	{
 		return merge_number_helper<false>(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const Derived &s2)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const Derived &s2)
 	{
 		return merge_with_series<false>(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::operator-() const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-() const
 	{
 		Derived retval(*derived_const_cast);
 		retval *= -1;
@@ -99,7 +99,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::mult_number_helper(const Number &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::mult_number_helper(const Number &x)
 	{
 		derived_cast->mult_by(x, m_arguments);
 		trim();
@@ -107,20 +107,20 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const double &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator*=(const double &x)
 	{
 		return mult_number_helper(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const Derived &s2)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator*=(const Derived &s2)
 	{
 		return mult_by_series(s2);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::divide_number_helper(const Number &x)
 	{
 		derived_cast->divide_by(x, m_arguments);
 		trim();
@@ -128,25 +128,25 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator/=(const double &x)
 	{
 		return divide_number_helper(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::choose(const int &n, const int &k)
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::choose(const int &n, const int &k)
 	{
 		return Derived::choose_(n,k,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::factorial(const int &n)
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::factorial(const int &n)
 	{
 		return Derived::factorial_(n,args_tuple_type());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::pow(const double &x) const
 	{
 		Derived retval(derived_const_cast->pow_(x, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -155,7 +155,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::root(const int &n) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::root(const int &n) const
 	{
 		Derived retval(derived_const_cast->root_(n, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -164,7 +164,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::inv() const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::inv() const
 	{
 		Derived retval = derived_const_cast->inv_(m_arguments);
 		retval.m_arguments = m_arguments;
@@ -174,7 +174,7 @@ namespace piranha
 
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::partial(const psym &arg, const int &n) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::partial(const psym &arg, const int &n) const
 	{
 		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
 		pos_tuple_type pos_tuple;

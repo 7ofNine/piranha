@@ -27,6 +27,7 @@
 #include <string>
 
 #include "base_series.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -35,12 +36,16 @@
 
 namespace piranha
 {
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	struct cf_series {};
+
 	/// Toolbox for using a series as a coefficient in another series.
 	/**
 	 * Intended to be inherited by piranha::base_series.
 	 */
+	template <>
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	class cf_series
+	class toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >
 	{
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -108,12 +113,12 @@ namespace piranha
 
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>
 #define CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) \
-	piranha::base_series<CF_SERIES_TERM(term_name,term_separator),separator, \
-	Allocator,E0_SERIES(series_name) >
+	piranha::toolbox<piranha::base_series<CF_SERIES_TERM(term_name,term_separator),separator, \
+	Allocator,E0_SERIES(series_name) > >
 
 #define COMPLEX_CF_SERIES_TERM(term_name,separator) term_name<std::complex<Cf>,Key,separator,Allocator>
-#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) piranha::base_series< \
-	COMPLEX_CF_SERIES_TERM(term_name,term_separator),separator, Allocator,COMPLEX_E0_SERIES(series_name) >
+#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) piranha::toolbox<piranha::base_series< \
+	COMPLEX_CF_SERIES_TERM(term_name,term_separator),separator, Allocator,COMPLEX_E0_SERIES(series_name) > >
 }
 
 #include "cf_series_io.h"

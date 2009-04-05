@@ -35,6 +35,7 @@
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../base_classes/toolbox.h"
 #include "../polynomial_common/monomial.h"
 #include "../polynomial_common/common_polynomial_toolbox.h"
 
@@ -42,11 +43,11 @@
 #define POLYNOMIAL E0_SERIES(piranha::polynomial)
 #define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>,piranha::polynomial)
-#define POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator>
-#define POLYNOMIAL_COMMON_ANCESTOR piranha::common_polynomial_toolbox< POLYNOMIAL >
-#define POLYNOMIAL_POWER_SERIES_ANCESTOR power_series<0,1,POLYNOMIAL >
-#define POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< POLYNOMIAL >
-#define POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POLYNOMIAL >
+#define POLYNOMIAL_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< POLYNOMIAL, Multiplier, Truncator> >
+#define POLYNOMIAL_COMMON_ANCESTOR piranha::toolbox<piranha::common_polynomial< POLYNOMIAL > >
+#define POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0,1,POLYNOMIAL > >
+#define POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< POLYNOMIAL > >
+#define POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< POLYNOMIAL > >
 
 namespace piranha
 {
@@ -64,13 +65,10 @@ namespace piranha
 				boost::dividable < POLYNOMIAL, double
 				> > >
 	{
+			template <class T>
+			friend class toolbox;
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
-			friend class POLYNOMIAL_NAMED_ANCESTOR;
-			friend class POLYNOMIAL_BASE_ANCESTOR;
-			friend class POLYNOMIAL_MULT_ANCESTOR;
-			friend class POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class named_series_complex_toolbox<POLYNOMIAL>;
 			// Override power functions with the ones from the common polynomial toolbox.
 			using POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
@@ -87,13 +85,13 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
 		piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>
-#define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox<POLYNOMIAL>
-#define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox<POLYNOMIAL>
-#define COMPLEX_POLYNOMIAL_COMMON_ANCESTOR piranha::common_polynomial_toolbox< COMPLEX_POLYNOMIAL >
-#define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::power_series<0,1,COMPLEX_POLYNOMIAL >
-#define COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< COMPLEX_POLYNOMIAL >
-#define COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POLYNOMIAL >
+#define COMPLEX_POLYNOMIAL_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator> >
+#define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<POLYNOMIAL> >
+#define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<POLYNOMIAL> >
+#define COMPLEX_POLYNOMIAL_COMMON_ANCESTOR piranha::toolbox<piranha::common_polynomial< COMPLEX_POLYNOMIAL > >
+#define COMPLEX_POLYNOMIAL_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0,1,COMPLEX_POLYNOMIAL > >
+#define COMPLEX_POLYNOMIAL_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL > >
+#define COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POLYNOMIAL > >
 
 namespace std
 {
@@ -116,15 +114,11 @@ namespace std
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
 				> > > > > >
 	{
+			template <class T>
+			friend class piranha::toolbox;
 			typedef COMPLEX_POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_ANCESTOR base_ancestor;
 			typedef COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
-			friend class COMPLEX_POLYNOMIAL_NAMED_ANCESTOR;
-			friend class COMPLEX_POLYNOMIAL_BASE_ANCESTOR;
-			friend class COMPLEX_POLYNOMIAL_MULT_ANCESTOR;
-			friend class COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX;
-			friend class COMPLEX_POLYNOMIAL_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX;
 			// Override power_functions with the ones from the common polynomial toolbox.
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;

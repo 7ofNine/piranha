@@ -32,7 +32,7 @@ namespace piranha
 	/// Construct from numerical quantity.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		// Make sure we are being called from an empty series.
 		p_assert(empty());
@@ -43,7 +43,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_plain(std::ostream &stream,
 			const ArgsTuple &args_tuple, int limit) const
 	{
 		settings::setup_stream(stream);
@@ -68,7 +68,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream,
 			const ArgsTuple &args_tuple, int) const
 	{
 		settings::setup_stream(stream);
@@ -94,7 +94,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_latex(std::ostream &stream,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_latex(std::ostream &stream,
 			const ArgsTuple &args_tuple, int limit) const
 	{
 // TODO: to be implemented.
@@ -103,7 +103,7 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::construct_from_psym_p(const psym_p &p, const int &n,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::construct_from_psym_p(const psym_p &p, const int &n,
 			const ArgsTuple &args_tuple)
 	{
 		p_assert(derived_cast->empty());
@@ -111,36 +111,36 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::begin()
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::begin()
 	{
 		return m_container.begin();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::begin() const
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::begin() const
 	{
 		return m_container.begin();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::end()
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::end()
 	{
 		return m_container.end();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::end() const
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::end() const
 	{
 		return m_container.end();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline std::vector<typename base_series<__PIRANHA_BASE_SERIES_TP>::term_type const *>
-	base_series<__PIRANHA_BASE_SERIES_TP>::cache_pointers() const
+	inline std::vector<typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_type const *>
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::cache_pointers() const
 	{
 		std::vector<term_type const *> retval;
 		retval.reserve(length());

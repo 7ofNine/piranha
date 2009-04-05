@@ -26,6 +26,7 @@
 #include "../exceptions.h"
 #include "../math.h"
 #include "../p_assert.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -33,7 +34,11 @@
 namespace piranha
 {
 	template <class Derived>
-	class base_series_special_functions
+	struct base_series_special_functions {};
+
+	template <>
+	template <class Derived>
+	class toolbox<base_series_special_functions<Derived> >
 	{
 		public:
 			/// Bessel function of the first kind of integer order.

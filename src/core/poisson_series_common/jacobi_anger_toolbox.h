@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 
+#include "../base_classes/toolbox.h"
 #include "../config.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -34,7 +35,11 @@
 namespace piranha
 {
 	template <int TrigPos, class Derived>
-	class jacobi_anger_toolbox
+	struct jacobi_anger {};
+
+	template <>
+	template <int TrigPos, class Derived>
+	class toolbox<jacobi_anger<TrigPos,Derived> >
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		protected:

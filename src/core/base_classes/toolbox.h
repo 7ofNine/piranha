@@ -18,37 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
-#define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
-
-#include <cmath>
-
-#include "../base_classes/binomial_exponentiation_toolbox.h"
-#include "../base_classes/common_comparisons.h"
-#include "../base_classes/toolbox.h"
-
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#ifndef PIRANHA_TOOLBOX_H
+#define PIRANHA_TOOLBOX_H
 
 namespace piranha
 {
-	template <class Derived>
-	struct common_polynomial {};
-
-	template <>
-	template <class Derived>
-	class toolbox<common_polynomial<Derived> >:
-		protected toolbox<binomial_exponentiation<Derived,term_key_degree_comparison> >
-	{
-		public:
-			template <class ArgsTuple>
-			double norm_(const ArgsTuple &args_tuple) const {
-				return std::abs(derived_const_cast->eval_(0,args_tuple));
-			}
-	};
+	template <class T>
+	class toolbox {};
 }
-
-#undef derived_const_cast
-#undef derived_cast
 
 #endif

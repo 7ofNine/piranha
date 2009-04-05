@@ -23,9 +23,10 @@
 
 #include <complex>
 
-#include "base_series.h"
 #include "../exceptions.h"
 #include "../p_assert.h"
+#include "base_series.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -33,7 +34,11 @@
 namespace piranha
 {
 	template <class RealDerived>
-	class base_series_complex_toolbox
+	struct base_series_complex {};
+
+	template <>
+	template <class RealDerived>
+	class toolbox<base_series_complex<RealDerived> >
 	{
 			typedef std::complex<RealDerived> Derived;
 		public:
@@ -193,13 +198,13 @@ namespace piranha
 
 #define COMPLEX_E0_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
 #define COMPLEX_E0_SERIES(series_name) std::complex<E0_SERIES(series_name)>
-#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
-	Allocator,COMPLEX_E0_SERIES(series_name) >
+#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::toolbox<piranha::base_series<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
+	Allocator,COMPLEX_E0_SERIES(series_name) > >
 
 #define COMPLEX_E1_SERIES_TERM(term_name,cf_name) term_name<std::complex<cf_name>,Key1,'|',Allocator>
 #define COMPLEX_E1_SERIES(series_name) std::complex<E1_SERIES(series_name)>
-#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<COMPLEX_E1_SERIES_TERM(term_name,cf_name), \
-	'\n',Allocator,COMPLEX_E1_SERIES(series_name) >
+#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::toolbox<piranha::base_series<COMPLEX_E1_SERIES_TERM(term_name,cf_name), \
+	'\n',Allocator,COMPLEX_E1_SERIES(series_name) > >
 }
 
 #undef derived_const_cast

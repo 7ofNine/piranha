@@ -30,6 +30,7 @@
 
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_comparisons.h"
+#include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
@@ -69,11 +70,15 @@ namespace piranha
 	};
 
 	template <class Derived>
-	class common_poisson_series_toolbox:
-		public jacobi_anger_toolbox<1, Derived>,
-		public binomial_exponentiation_toolbox<Derived,ps_binomial_sorter>
+	struct common_poisson_series {};
+
+	template <>
+	template <class Derived>
+	class toolbox<common_poisson_series<Derived> >:
+		public toolbox<jacobi_anger<1, Derived> >,
+		protected toolbox<binomial_exponentiation<Derived,ps_binomial_sorter> >
 	{
-			typedef jacobi_anger_toolbox<1, Derived> jacang_ancestor;
+			typedef toolbox<jacobi_anger<1, Derived> > jacang_ancestor;
 		public:
 			// NOTICE: move this into private?
 			// NOTICE: this method assumes that the input args tuple already hase merged in as

@@ -35,6 +35,7 @@
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
+#include "../base_classes/toolbox.h"
 #include "../fourier_series/fourier_series_term.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
 #include "../poisson_series_common/celmec_toolbox.h"
@@ -45,12 +46,12 @@
 #define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF)
 #define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr,piranha::trig_args_descr,POISSON_SERIES)
-#define POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1>
-#define POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< POISSON_SERIES >
-#define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, POISSON_SERIES >
-#define POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< POISSON_SERIES >
-#define POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< POISSON_SERIES >
-#define POISSON_SERIES_CELMEC_ANCESTOR celmec_toolbox< POISSON_SERIES >
+#define POISSON_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< POISSON_SERIES, Mult1, Trunc1> >
+#define POISSON_SERIES_COMMON_ANCESTOR piranha::toolbox<piranha::common_poisson_series< POISSON_SERIES > >
+#define POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 0, POISSON_SERIES > >
+#define POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< POISSON_SERIES > >
+#define POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< POISSON_SERIES > >
+#define POISSON_SERIES_CELMEC_ANCESTOR piranha::toolbox<celmec< POISSON_SERIES > >
 
 namespace piranha
 {
@@ -69,16 +70,10 @@ namespace piranha
 				boost::dividable < POISSON_SERIES, double
 				> > >
 	{
+			template <class T>
+			friend class toolbox;
 			typedef POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef POISSON_SERIES_BASE_ANCESTOR base_ancestor;
-			template <class T>
-			friend class common_poisson_series_toolbox;
-			friend class POISSON_SERIES_NAMED_ANCESTOR;
-			friend class POISSON_SERIES_BASE_ANCESTOR;
-			friend class POISSON_SERIES_MULT_ANCESTOR;
-			friend class POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class POISSON_SERIES_CELMEC_ANCESTOR;
-			friend class named_series_complex_toolbox< POISSON_SERIES >;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;
@@ -91,16 +86,16 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,Mult0,Trunc0,Allocator>
 #define COMPLEX_POISSON_SERIES_TERM piranha::fourier_series_term<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
-#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
-	COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_MULT_ANCESTOR piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>
-#define COMPLEX_POISSON_SERIES_COMMON_ANCESTOR piranha::common_poisson_series_toolbox< COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::power_series<0, 0, COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex_toolbox< POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex_toolbox< POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::base_series_special_functions< COMPLEX_POISSON_SERIES >
-#define COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::named_series_special_functions< COMPLEX_POISSON_SERIES >
+#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::toolbox<piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::toolbox<piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
+	COMPLEX_POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1> >
+#define COMPLEX_POISSON_SERIES_COMMON_ANCESTOR piranha::toolbox<piranha::common_poisson_series< COMPLEX_POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 0, COMPLEX_POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POISSON_SERIES > >
+#define COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POISSON_SERIES > >
 
 namespace std
 {
@@ -123,19 +118,11 @@ namespace std
 				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
 				> > > > > >
 	{
+			template <class T>
+			friend class piranha::toolbox;
 			typedef COMPLEX_POISSON_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_ANCESTOR base_ancestor;
 			typedef COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
-			template <class T>
-			friend class piranha::common_poisson_series_toolbox;
-			friend class COMPLEX_POISSON_SERIES_NAMED_ANCESTOR;
-			friend class COMPLEX_POISSON_SERIES_BASE_ANCESTOR;
-			friend class COMPLEX_POISSON_SERIES_MULT_ANCESTOR;
-			friend class COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX;
-			friend class COMPLEX_POISSON_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR;
-			friend class COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX;
-			// We need also the non-complex one because it needs to access the complex's private space.
-			friend class POISSON_SERIES_COMMON_ANCESTOR;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POISSON_SERIES_COMMON_ANCESTOR::nth_root;

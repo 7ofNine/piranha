@@ -71,7 +71,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, const ArgsTuple &args_tuple)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::insert(const Term2 &term_, const ArgsTuple &args_tuple)
 	{
 		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
@@ -109,14 +109,14 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Term2, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term, const ArgsTuple &args_tuple)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::insert(const Term2 &term, const ArgsTuple &args_tuple)
 	{
 		insert<true, true>(term, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert_range(const Iterator &begin,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::insert_range(const Iterator &begin,
 		const Iterator &end, const ArgsTuple &args_tuple) {
 		for (Iterator it = begin; it != end; ++it) {
 			insert(*it,args_tuple);
@@ -126,22 +126,22 @@ namespace piranha
 	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
 	/// Find term.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t)
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::find_term(const term_type &t)
 	{
 		return m_container.find(t);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::find_term(const term_type &t) const
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::find_term(const term_type &t) const
 	{
 		return m_container.find(t);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_insert(const term_type &term, const ArgsTuple &args_tuple)
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
@@ -172,7 +172,7 @@ namespace piranha
 	// Insert a new term into the series
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const term_type &term,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_insert_new(const term_type &term,
 			const ArgsTuple &args_tuple)
 	{
 		std::pair<const_iterator, bool> res(m_container.insert(term));
@@ -184,7 +184,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::term_erase(const iterator &it,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_erase(const iterator &it,
 			const ArgsTuple &)
 	{
 		m_container.erase(it);
@@ -195,7 +195,7 @@ namespace piranha
 	 * All terms get swapped.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::swap_terms(Derived &ps2)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::swap_terms(Derived &ps2)
 	{
 		p_assert(derived_cast != &ps2);
 		m_container.swap(ps2.m_container);
@@ -204,7 +204,7 @@ namespace piranha
 	/// Apply an arguments layout to all terms and insert them into retval.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple, class Layout>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::apply_layout_to_terms(
 		const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
 	{
 		const const_iterator it_f = end();
@@ -219,7 +219,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::trim_test_terms(TrimFlags &tf) const
 	{
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
@@ -230,7 +230,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::trim_terms(const TrimFlags &tf, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
@@ -244,7 +244,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
-	inline RetSeries base_series<__PIRANHA_BASE_SERIES_TP>::base_sub(const PosTuple &pos_tuple,
+	inline RetSeries toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_sub(const PosTuple &pos_tuple,
 			SubCaches &sub_caches, const ArgsTuple &args_tuple) const
 	{
 		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value),
@@ -261,13 +261,13 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::clear_terms()
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::clear_terms()
 	{
 		m_container.clear();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::rehash(const size_t &size)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::rehash(const size_t &size)
 	{
 		m_container.rehash(size);
 	}

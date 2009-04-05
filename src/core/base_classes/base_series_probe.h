@@ -26,14 +26,14 @@
 namespace piranha
 {
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::is_single_cf() const
 	{
 		return (length() == 1 && begin()->m_key.is_unity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double base_series<__PIRANHA_BASE_SERIES_TP>::norm_(const ArgsTuple &args_tuple) const
+	inline double toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::norm_(const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		double retval = 0;
@@ -45,8 +45,8 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
-	base_series<__PIRANHA_BASE_SERIES_TP>::eval_(const double &t, const ArgsTuple &args_tuple) const
+	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::eval_type
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::eval_(const double &t, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		eval_type retval(0);
@@ -60,21 +60,21 @@ namespace piranha
 
 	/// Return the number of terms of the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::length() const
+	inline size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::length() const
 	{
 		return m_container.size();
 	}
 
 	/// Is series empty?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::empty() const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::empty() const
 	{
 		return m_container.empty();
 	}
 
 	/// Number of atoms in the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline size_t base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
+	inline size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::atoms() const
 	{
 		size_t retval = 0;
 		const const_iterator it_f = end();
@@ -86,7 +86,7 @@ namespace piranha
 
 	/// Test for equality.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const Derived &other) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator==(const Derived &other) const
 	{
 		if (length() != other.length()) {
 			return false;
@@ -103,7 +103,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_numerical_comparison(const Number &x) const
 	{
 		// Use abs() to cope with complex numbers.
 		if (std::abs(x) == 0) {
@@ -116,19 +116,19 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator==(const double &x) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator==(const double &x) const
 	{
 		return generic_numerical_comparison(x);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const Derived &other) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator!=(const Derived &other) const
 	{
 		return !(*this == other);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::operator!=(const double &x) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator!=(const double &x) const
 	{
 		return !(*this == x);
 	}
