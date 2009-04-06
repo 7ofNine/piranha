@@ -133,6 +133,20 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_add(const double &x, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<true>(x, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_subtract(const double &x, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<false>(x, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
 	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_subtract(const Derived &s2, const ArgsTuple &args_tuple)
 	{
 		return merge_terms<false>(s2, args_tuple);
@@ -205,7 +219,7 @@ namespace piranha
 			return retval;
 		}
 		// Starting point is 1.
-		retval = Derived(1,args_tuple);
+		retval.base_add(1,args_tuple);
 		for (int i = 1; i <= k; ++i) {
 			retval.base_mult_by(n - k + i, args_tuple);
 			retval.base_divide_by(i, args_tuple);
@@ -223,7 +237,8 @@ namespace piranha
 		if (n < 0) {
 			throw unsuitable("Negative argument for factorial.");
 		}
-		Derived retval(1,args_tuple);
+		Derived retval;
+		retval.base_add(1,args_tuple);
 		for (int i = 2; i <= n; ++i) {
 			retval.base_mult_by(i,args_tuple);
 		}
@@ -290,7 +305,7 @@ namespace piranha
 				throw division_by_zero();
 			} else if (y == 0) {
 				// 0**0 == 1.
-				retval = Derived(1, args_tuple);
+				retval.base_add(1, args_tuple);
 				return true;
 			} else {
 				// 0**n == 0, with n > 0.
@@ -361,7 +376,7 @@ namespace piranha
 		Derived retval;
 		switch (n) {
 		case 0: {
-			retval = Derived(1, args_tuple);
+			retval.base_add(1, args_tuple);
 			break;
 		}
 		case 1: {
@@ -387,7 +402,7 @@ namespace piranha
 			break;
 		}
 		default: {
-			retval = Derived(1, args_tuple);
+			retval.base_add(1, args_tuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
 			Derived tmp(*derived_const_cast);

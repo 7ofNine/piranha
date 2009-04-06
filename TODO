@@ -12,10 +12,6 @@
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
 - there _is_ a mpz_swap function, check if it is useful.
-- understand the relation between ordering and vector coded performance. For polynomials it increases performance
-  a total degree lex order, for poisson series it _seems_ no --> this probably has to do with prefetching, which is destroyed
-  in poisson series because of the additional subtraction on the index of the vector. This can be probably optimized
-  for poisson series somehow.
 - optimize for small series --> there's no need to avoid direct insertion in series, since we do
   not have sorted indices anymore. For small series, also avoid all the re-sorting and possible coefficient
   copies that are performed for longer series?
@@ -31,9 +27,7 @@
 - addmul for coefficient series. This probably requires moving the ignorability check higher in the insert function stack.
 - series splicing?
 - limit for multiplication time?
-- Move "using base_*" into private space of top-level series?
 - Generalise conversion to/from series with arguments sets left/right shifting
-- Check those complex changes and the static cast on root(y).
 - Use this-> instead of ancestor:: everywhere?
 - Place boost::operators in some shared toolbox?
 - Compile with -D_PIRANHA_DEBUG as default?
@@ -46,8 +40,6 @@
 - Take care of allocation of zero-size memory areas?
 - Boost's aligned storage type traits for sse?
 - Write tests also in python.
-- Provide interface to int and long int instead of just max_fast_int? Interop with int and long int
-  instead of max_fast_int.
 - Dispatch complicated functions of single-cf series to the coefficient. This way we can re-use faster implementations
   (e.g., polynomial coefficients in Poisson series).
 - Unify insert functions, possibly dropping the dangerous "check" bool param (but check performance first). Also, probably

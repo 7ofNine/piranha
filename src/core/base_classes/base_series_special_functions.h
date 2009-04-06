@@ -48,7 +48,7 @@ namespace piranha
 				// Special case of empty series. It must be handled here before the truncator is called.
 				if (derived_const_cast->empty()) {
 					if (!order_) {
-						retval = Derived(1,args_tuple);
+						retval.base_add(1,args_tuple);
 					}
 					return retval;
 				}
@@ -142,7 +142,7 @@ namespace piranha
 					if (order < m) {
 						throw division_by_zero();
 					} else if (order == m) {
-						retval = Derived(2,args_tuple).base_pow(-order,args_tuple);
+						retval = retval.base_add(2,args_tuple).base_pow(-order,args_tuple);
 						retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
 					}
 					return retval;
@@ -174,7 +174,8 @@ namespace piranha
 					retval.base_add(tmp, args_tuple);
 				}
 				// m2 will be the external divisor by 2**m.
-				Derived m2 = Derived(2,args_tuple).base_pow(-m,args_tuple);
+				Derived m2;
+				m2 = m2.base_add(2,args_tuple).base_pow(-m,args_tuple);
 				retval.base_mult_by(m2, args_tuple);
 				if (order_ < 0) {
 					retval.base_mult_by(cs_phase(order_), args_tuple);

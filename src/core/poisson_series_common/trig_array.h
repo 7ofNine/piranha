@@ -65,7 +65,7 @@ namespace piranha
 					sub_cache():ancestor::int_power_cache(),m_status(zero),m_errmsg() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = std::complex<SubSeries>(1,*args_tuple);
+						this->m_container[0] = std::complex<SubSeries>().base_add(1,*args_tuple);
 						try {
 							std::complex<SubSeries> tmp1 = s.ei(*args_tuple);
 							this->m_container[1] = tmp1;

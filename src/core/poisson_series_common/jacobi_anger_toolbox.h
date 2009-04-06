@@ -49,7 +49,7 @@ namespace piranha
 				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				p_assert(retval.empty());
-				retval = std::complex<Derived>(1, args_tuple);
+				retval.base_add(1, args_tuple);
 				if (v.empty()) {
 					return;
 				}

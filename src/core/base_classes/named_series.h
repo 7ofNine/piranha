@@ -184,10 +184,6 @@ public: \
 	} \
 	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
 		return this->eval_(t,this->m_arguments); \
-	} \
-	explicit series_name(const double &x, const typename named_ancestor::args_tuple_type &args_tuple) \
-	{ \
-		this->construct_from_number(x,args_tuple); \
 	}
 }
 
