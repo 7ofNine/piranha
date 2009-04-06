@@ -53,8 +53,8 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived &real_(const RealDerived &r, const ArgsTuple &args_tuple) {
-				subtract(real_(args_tuple), args_tuple);
-				add(r, args_tuple);
+				base_subtract(real_(args_tuple), args_tuple);
+				base_add(r, args_tuple);
 				return *derived_cast;
 			}
 			template <class ArgsTuple>
@@ -82,17 +82,17 @@ namespace piranha
 			template <class ArgsTuple>
 			RealDerived abs_(const ArgsTuple &args_tuple) const {
 				RealDerived retval = real_(args_tuple), tmp = imag_(args_tuple);
-				retval.mult_by(retval,args_tuple);
-				tmp.mult_by(tmp,args_tuple);
-				retval.add(tmp,args_tuple);
+				retval.base_mult_by(retval,args_tuple);
+				tmp.base_mult_by(tmp,args_tuple);
+				retval.base_add(tmp,args_tuple);
 				return retval;
 			}
 			template <class ArgsTuple>
 			Derived conjugate_(const ArgsTuple &args_tuple) const {
 				Derived retval;
-				retval.add(real_(args_tuple),args_tuple);
+				retval.base_add(real_(args_tuple),args_tuple);
 				RealDerived tmp = imag_(args_tuple);
-				tmp.mult_by(-1,args_tuple);
+				tmp.base_mult_by(-1,args_tuple);
 				retval.imag_(tmp,args_tuple);
 				return retval;
 			}
@@ -102,25 +102,26 @@ namespace piranha
 			bool operator!=(const std::complex<double> &cx) const {
 				return !(*this == cx);
 			}
+		protected:
 			template <class ArgsTuple>
-			Derived &add(const RealDerived &r, const ArgsTuple &args_tuple) {
+			Derived &base_add(const RealDerived &r, const ArgsTuple &args_tuple) {
 				return derived_cast->template merge_terms<true>(r, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &subtract(const RealDerived &r, const ArgsTuple &args_tuple) {
+			Derived &base_subtract(const RealDerived &r, const ArgsTuple &args_tuple) {
 				return derived_cast->template merge_terms<false>(r, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
+			Derived &base_mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return mult_by_complex(cx, args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
+			Derived &base_mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
 				derived_cast->multiply_by_series(r, args_tuple);
 				return *derived_cast;
 			}
 			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
+			Derived &base_divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return divide_by_complex(cx, args_tuple);
 			}
 			// Specialise inversion to use conjugate * inverse of absolute value. This is useful
@@ -128,10 +129,9 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &args_tuple) const {
 				Derived retval = conjugate_(args_tuple);
-				retval.mult_by(abs_(args_tuple).base_inv(args_tuple),args_tuple);
+				retval.base_mult_by(abs_(args_tuple).base_inv(args_tuple),args_tuple);
 				return retval;
 			}
-		protected:
 			// Use N = 0 for real, N != 0 for imag.
 			template <int N, class Real, class ArgsTuple>
 			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &args_tuple) {

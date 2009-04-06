@@ -100,17 +100,17 @@ namespace piranha
 			bool operator==(const double &) const;
 			bool operator!=(const Derived &) const;
 			bool operator!=(const double &) const;
-			template <class ArgsTuple>
-			Derived &add(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &subtract(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &divide_by(const double &, const ArgsTuple &);
 		protected:
+			template <class ArgsTuple>
+			Derived &base_add(const Derived &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_subtract(const Derived &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_mult_by(const double &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_mult_by(const Derived &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &) const;
 			template <class ArgsTuple>

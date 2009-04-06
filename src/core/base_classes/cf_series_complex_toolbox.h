@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
-#define PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
+#ifndef PIRANHA_CF_SERIES_COMPLEX_TOOLBOX_H
+#define PIRANHA_CF_SERIES_COMPLEX_TOOLBOX_H
+
+#include <complex>
 
 #include "toolbox.h"
 
@@ -28,28 +30,42 @@
 
 namespace piranha
 {
-	template <class Derived>
-	struct cf_series_special_functions {};
+	template <class RealDerived>
+	struct cf_series_complex {};
 
 	template <>
-	template <class Derived>
-	class toolbox<cf_series_special_functions<Derived> >
+	template <class RealDerived>
+	class toolbox<cf_series_complex<RealDerived> >
 	{
+			typedef std::complex<RealDerived> Derived;
 		public:
-			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived besselJ(const int &order, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_besselJ(order,args_tuple);
+			Derived &mult_by(const RealDerived &cs, const ArgsTuple &a) {
+				return derived_cast->base_mult_by(cs,a);
 			}
-			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived dbesselJ(const int &order, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_dbesselJ(order,args_tuple);
+			Derived &mult_by(const std::complex<double> &cx, const ArgsTuple &a) {
+				return derived_cast->base_mult_by(cx,a);
 			}
-			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived besselJ_div_m(const int &order, const int &m, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_besselJ_div_m(order,m,args_tuple);
+			Derived &add(const RealDerived &cs, const ArgsTuple &a) {
+				return derived_cast->base_add(cs,a);
+			}
+			template <class ArgsTuple>
+			Derived &add(const std::complex<double> &cx, const ArgsTuple &a) {
+				return derived_cast->base_add(cx,a);
+			}
+			template <class ArgsTuple>
+			Derived &subtract(const RealDerived &cs, const ArgsTuple &a) {
+				return derived_cast->base_subtract(cs,a);
+			}
+			template <class ArgsTuple>
+			Derived &subtract(const std::complex<double> &cx, const ArgsTuple &a) {
+				return derived_cast->base_subtract(cx,a);
+			}
+			template <class ArgsTuple>
+			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &a) {
+				return derived_cast->base_divide_by(cx,a);
 			}
 	};
 }

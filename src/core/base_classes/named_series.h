@@ -168,25 +168,26 @@ namespace piranha
 #define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::toolbox<piranha::named_series<boost::tuple<args1,args2>,series_name > >
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
+public: \
 	series_name() {} \
+	explicit series_name(const piranha::psym &p) { \
+		this->template construct_from_psym<N>(p); \
+	} \
 	explicit series_name(const std::string &filename) \
 	{ \
-		named_ancestor::construct_from_file(filename); \
+		this->construct_from_file(filename); \
 	} \
 	explicit series_name(const double &x) \
 	{ \
-		base_ancestor::construct_from_number(x,named_ancestor::m_arguments); \
-		named_ancestor::trim(); \
+		this->construct_from_number(x,this->m_arguments); \
+		this->trim(); \
+	} \
+	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
+		return this->eval_(t,this->m_arguments); \
 	} \
 	explicit series_name(const double &x, const typename named_ancestor::args_tuple_type &args_tuple) \
 	{ \
-		base_ancestor::construct_from_number(x,args_tuple); \
-	} \
-	explicit series_name(const piranha::psym &p) { \
-		named_ancestor::template construct_from_psym<N>(p); \
-	} \
-	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
-		return base_ancestor::eval_(t,named_ancestor::m_arguments); \
+		this->construct_from_number(x,args_tuple); \
 	}
 }
 

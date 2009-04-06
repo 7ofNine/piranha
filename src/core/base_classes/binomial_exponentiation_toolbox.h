@@ -88,7 +88,7 @@ namespace piranha
 				Derived Ainv;
 				Ainv.insert(tmp_term, args_tuple);
 				// Now let's compute X/A.
-				XoverA.mult_by(Ainv, args_tuple);
+				XoverA.base_mult_by(Ainv, args_tuple);
 				// Get the expansion limit from the truncator.
 				size_t n;
 				try {
@@ -124,24 +124,24 @@ namespace piranha
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
 				Derived tmp(1, args_tuple);
-				retval.add(tmp, args_tuple);
+				retval.base_add(tmp, args_tuple);
 				if (Op == power_op) {
 					for (size_t i = 1; i < n; ++i) {
-						tmp.mult_by(y - (double)i + 1, args_tuple);
-						tmp.divide_by(i, args_tuple);
-						tmp.mult_by(XoverA, args_tuple);
-						retval.add(tmp, args_tuple);
+						tmp.base_mult_by(y - (double)i + 1, args_tuple);
+						tmp.base_divide_by(i, args_tuple);
+						tmp.base_mult_by(XoverA, args_tuple);
+						retval.base_add(tmp, args_tuple);
 					}
 				} else {
 					for (size_t i = 1; i < n; ++i) {
-						tmp.mult_by(1 - (double)i * y + y, args_tuple);
-						tmp.divide_by(y * (double)i, args_tuple);
-						tmp.mult_by(XoverA, args_tuple);
-						retval.add(tmp, args_tuple);
+						tmp.base_mult_by(1 - (double)i * y + y, args_tuple);
+						tmp.base_divide_by(y * (double)i, args_tuple);
+						tmp.base_mult_by(XoverA, args_tuple);
+						retval.base_add(tmp, args_tuple);
 					}
 				}
 				// Finally, multiply the result of the summation by A**y.
-				retval.mult_by(Apowy, args_tuple);
+				retval.base_mult_by(Apowy, args_tuple);
 				return retval;
 			}
 			template <class Series, class ArgsTuple>

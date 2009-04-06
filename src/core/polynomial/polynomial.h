@@ -67,14 +67,20 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
+			// Additional friendship required by substitution of polynomial arguments. 
+			template <int, int, class>
+			friend class expo_array;
+			// TODO: temporary, remove.
+			template <class>
+			friend class expo_array_commons;
 			typedef POLYNOMIAL_NAMED_ANCESTOR named_ancestor;
 			typedef POLYNOMIAL_BASE_ANCESTOR base_ancestor;
 			// Override power functions with the ones from the common polynomial toolbox.
 			using POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::nth_root;
-		public:
 			using POLYNOMIAL_COMMON_ANCESTOR::norm_;
+		public:
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
@@ -124,15 +130,16 @@ namespace std
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::nth_root;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_inv;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_add;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_add;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_subtract;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_subtract;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_mult_by;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_mult_by;
+			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_divide_by;
+			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_divide_by;
+			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm_;
 		public:
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::add;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::add;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::subtract;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::subtract;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::mult_by;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::divide_by;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::divide_by;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::operator!=;
@@ -145,7 +152,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator*=;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator/=;
-			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::norm_;
 			// Boilerplate and additional ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX);

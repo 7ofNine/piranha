@@ -73,7 +73,7 @@ namespace piranha
 		}
 		void multiply(T &orig, const T &other) const {
 			p_assert(m_args_tuple);
-			orig.mult_by(other,*m_args_tuple);
+			orig.base_mult_by(other,*m_args_tuple);
 		}
 		mutable ArgsTuple const *m_args_tuple;
 	};

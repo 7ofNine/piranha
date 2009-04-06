@@ -45,6 +45,55 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const Derived &s, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_add(s,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const double &x, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_add(x,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const Derived &s, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_subtract(s,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const double &x, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_subtract(x,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const Derived &s, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_mult_by(s,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const double &x, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_mult_by(x,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::divide_by(const double &x, const ArgsTuple &args_tuple)
+	{
+		return derived_cast->base_divide_by(x,args_tuple);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
 	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::inv(const ArgsTuple &args_tuple) const
 	{
 		return derived_const_cast->base_inv(args_tuple);

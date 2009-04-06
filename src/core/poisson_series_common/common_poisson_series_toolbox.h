@@ -237,9 +237,9 @@ namespace piranha
 							),
 							tmp_series2.arguments());
 						tmp_series2.insert(tmp_term, tmp_series2.arguments());
-						tmp_series.mult_by(tmp_series2, args_tuple);
+						tmp_series.base_mult_by(tmp_series2, args_tuple);
 					}
-					retval.mult_by(tmp_series, args_tuple);
+					retval.base_mult_by(tmp_series, args_tuple);
 				}
 				return retval;
 			}

@@ -254,8 +254,8 @@ namespace piranha
 		for (const_iterator it = begin(); it != it_f; ++it) {
 			RetSeries tmp = SubFunctor::template run<RetSeries>(it->m_cf,pos_tuple,sub_caches,args_tuple);
 			// NOTICE: series multadd here?
-			tmp.mult_by(SubFunctor::template run<RetSeries>(it->m_key,pos_tuple,sub_caches,args_tuple),args_tuple);
-			retval.add(tmp,args_tuple);
+			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->m_key,pos_tuple,sub_caches,args_tuple),args_tuple);
+			retval.base_add(tmp,args_tuple);
 		}
 		return retval;
 	}

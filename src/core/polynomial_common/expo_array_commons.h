@@ -258,8 +258,8 @@ namespace piranha
 					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
 					p_assert(retval.empty());
 					// NOTICE: series multadd here?
-					retval.add(orig, args_tuple);
-					retval.mult_by(sub_caches.template get<Derived::position>()
+					retval.base_add(orig, args_tuple);
+					retval.base_mult_by(sub_caches.template get<Derived::position>()
 						[(*derived_const_cast)[pos]],
 					args_tuple);
 				}

@@ -64,9 +64,12 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			// Additional friendship required by substitution of trignometric arguments. 
+			// Additional friendship required by substitution of trigonometric arguments. 
 			template <int, int, class>
 			friend class trig_array;
+			// TODO: temporary, remove.
+			template <class>
+			friend class trig_array_commons;
 			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
 			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
 			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
@@ -119,15 +122,15 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_inv;
+			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_add;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_add;
+			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_subtract;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_subtract;
+			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_mult_by;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_mult_by;
+			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_divide_by;
+			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_divide_by;
 		public:
-			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::add;
-			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::add;
-			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::subtract;
-			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::subtract;
-			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::mult_by;
-			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::mult_by;
-			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::divide_by;
-			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::divide_by;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::operator==;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::operator!=;

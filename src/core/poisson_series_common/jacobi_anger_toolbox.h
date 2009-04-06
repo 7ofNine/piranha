@@ -57,7 +57,7 @@ namespace piranha
 				for (const_iterator it = v.begin(); it != it_f; ++it) {
 					// Skip the iterator we want to avoid.
 					if (it != it_avoid) {
-						retval.mult_by(jacang_term(it, args_tuple), args_tuple);
+						retval.base_mult_by(jacang_term(it, args_tuple), args_tuple);
 					}
 				}
 			}

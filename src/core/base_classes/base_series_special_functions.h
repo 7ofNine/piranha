@@ -71,22 +71,22 @@ namespace piranha
 				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
 				retval = *derived_const_cast;
-				retval.divide_by(2, args_tuple);
+				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
-				square_x2.mult_by(square_x2, args_tuple);
+				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order, args_tuple);
-				retval.mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
+				retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
-					tmp.mult_by(-1, args_tuple);
-					tmp.divide_by(i * ((double)i + order), args_tuple);
-					tmp.mult_by(square_x2, args_tuple);
-					retval.add(tmp, args_tuple);
+					tmp.base_mult_by(-1, args_tuple);
+					tmp.base_divide_by(i * ((double)i + order), args_tuple);
+					tmp.base_mult_by(square_x2, args_tuple);
+					retval.base_add(tmp, args_tuple);
 				}
 				if (order_ < 0) {
-					retval.mult_by(cs_phase(order_), args_tuple);
+					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
 				return retval;
 			}
@@ -110,23 +110,23 @@ namespace piranha
 				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
 				Derived retval(*derived_const_cast);
-				retval.divide_by(2, args_tuple);
+				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
-				square_x2.mult_by(square_x2, args_tuple);
+				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order - 1, args_tuple);
 				for (size_t i = 0; i < (size_t)order; ++i) {
-					retval.divide_by(i + 1, args_tuple);
+					retval.base_divide_by(i + 1, args_tuple);
 				}
-				retval.mult_by(order, args_tuple);
-				retval.divide_by(2, args_tuple);
+				retval.base_mult_by(order, args_tuple);
+				retval.base_divide_by(2, args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
-					tmp.mult_by((-1) * (order + 2 * (double)i), args_tuple);
-					tmp.divide_by(((double)i * ((double)i + order)) * (order + 2 * ((double)i - 1)), args_tuple);
-					tmp.mult_by(square_x2, args_tuple);
-					retval.add(tmp, args_tuple);
+					tmp.base_mult_by((-1) * (order + 2 * (double)i), args_tuple);
+					tmp.base_divide_by(((double)i * ((double)i + order)) * (order + 2 * ((double)i - 1)), args_tuple);
+					tmp.base_mult_by(square_x2, args_tuple);
+					retval.base_add(tmp, args_tuple);
 				}
 				return retval;
 			}
@@ -143,7 +143,7 @@ namespace piranha
 						throw division_by_zero();
 					} else if (order == m) {
 						retval = Derived(2,args_tuple).base_pow(-order,args_tuple);
-						retval.mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
+						retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
 					}
 					return retval;
 				}
@@ -159,25 +159,25 @@ namespace piranha
 				const size_t limit = limit_;
 				// Now we build the starting point of the power series expansion of Jn/x**m.
 				retval = *derived_const_cast;
-				retval.divide_by(2, args_tuple);
+				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
-				square_x2.mult_by(square_x2, args_tuple);
+				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order - m, args_tuple);
-				retval.mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
+				retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
-					tmp.mult_by(-1, args_tuple);
-					tmp.divide_by(i * ((double)i + order), args_tuple);
-					tmp.mult_by(square_x2, args_tuple);
-					retval.add(tmp, args_tuple);
+					tmp.base_mult_by(-1, args_tuple);
+					tmp.base_divide_by(i * ((double)i + order), args_tuple);
+					tmp.base_mult_by(square_x2, args_tuple);
+					retval.base_add(tmp, args_tuple);
 				}
 				// m2 will be the external divisor by 2**m.
 				Derived m2 = Derived(2,args_tuple).base_pow(-m,args_tuple);
-				retval.mult_by(m2, args_tuple);
+				retval.base_mult_by(m2, args_tuple);
 				if (order_ < 0) {
-					retval.mult_by(cs_phase(order_), args_tuple);
+					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
 				return retval;
 			}

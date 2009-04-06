@@ -71,7 +71,7 @@ namespace piranha
 							this->m_container[1] = tmp1;
 							m_status = one;
 							SubSeries tmp2(s);
-							tmp2.mult_by(-1,*args_tuple);
+							tmp2.base_mult_by(-1,*args_tuple);
 							std::complex<SubSeries> tmp3 = tmp2.ei(*args_tuple);
 							this->m_container[-1] = tmp3;
 							m_status = full;

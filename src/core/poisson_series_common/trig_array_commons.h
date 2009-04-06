@@ -339,25 +339,25 @@ namespace piranha
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
-						retval.add(orig_cos, args_tuple);
-						retval.mult_by(
+						retval.base_add(orig_cos, args_tuple);
+						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
 						args_tuple);
-						orig_sin.mult_by(
+						orig_sin.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
 						args_tuple);
-						retval.subtract(orig_sin, args_tuple);
+						retval.base_subtract(orig_sin, args_tuple);
 					} else {
-						retval.add(orig_sin, args_tuple);
-						retval.mult_by(
+						retval.base_add(orig_sin, args_tuple);
+						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
 						args_tuple);
-						orig_cos.mult_by(
+						orig_cos.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
 						args_tuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
-						retval.add(orig_cos, args_tuple);
+						retval.base_add(orig_cos, args_tuple);
 					}
 				}
 				return retval;
@@ -381,23 +381,23 @@ namespace piranha
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (derived_const_cast->flavour()) {
-						retval.add(orig_cos, args_tuple);
-						retval.mult_by(
+						retval.base_add(orig_cos, args_tuple);
+						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
 						args_tuple);
-						orig_sin.mult_by(
+						orig_sin.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
 						args_tuple);
-						retval.subtract(orig_sin, args_tuple);
+						retval.base_subtract(orig_sin, args_tuple);
 					} else {
-						retval.add(orig_sin, args_tuple);
-						retval.mult_by(
+						retval.base_add(orig_sin, args_tuple);
+						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
 						args_tuple);
-						orig_cos.mult_by(
+						orig_cos.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
 						args_tuple);
-						retval.add(orig_cos, args_tuple);
+						retval.base_add(orig_cos, args_tuple);
 					}
 				}
 				return retval;

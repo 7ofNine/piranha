@@ -51,7 +51,7 @@ namespace piranha
 		// First we merge the arguments of the two series.
 		merge_args(s2);
 		// Then we perform the multiplication.
-		derived_cast->mult_by(s2, m_arguments);
+		derived_cast->base_mult_by(s2, m_arguments);
 		trim();
 		return *derived_cast;
 	}
@@ -101,7 +101,7 @@ namespace piranha
 	template <class Number>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::mult_number_helper(const Number &x)
 	{
-		derived_cast->mult_by(x, m_arguments);
+		derived_cast->base_mult_by(x, m_arguments);
 		trim();
 		return *derived_cast;
 	}
@@ -122,7 +122,7 @@ namespace piranha
 	template <class Number>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::divide_number_helper(const Number &x)
 	{
-		derived_cast->divide_by(x, m_arguments);
+		derived_cast->base_divide_by(x, m_arguments);
 		trim();
 		return *derived_cast;
 	}

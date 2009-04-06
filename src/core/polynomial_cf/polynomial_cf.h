@@ -27,6 +27,7 @@
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/cf_series.h"
+#include "../base_classes/cf_series_complex_toolbox.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
@@ -64,8 +65,8 @@ namespace piranha
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
-		public:
 			using common_ancestor::norm_;
+		public:
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -83,6 +84,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR piranha::toolbox<piranha::common_polynomial_cf< COMPLEX_POLYNOMIAL_CF > >
+#define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::toolbox<piranha::cf_series_complex< POLYNOMIAL_CF > >
 
 namespace std
 {
@@ -94,7 +96,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX,
-				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR
+				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX
 	{
 			template <class>
 			friend class piranha::toolbox;
@@ -107,18 +110,26 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_inv;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_add;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_add;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_subtract;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_subtract;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_mult_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_mult_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_divide_by;
+			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
+			using common_ancestor::norm_;
 		public:
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::add;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::add;
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::subtract;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::subtract;
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::mult_by;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::divide_by;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
-			using common_ancestor::norm_;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::add;
+			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::subtract;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX);
 			template <class ArgsTuple>

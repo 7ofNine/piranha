@@ -122,7 +122,7 @@ namespace piranha
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
 						tmp.insert(complex_term_type((*it)->m_cf.ei(args_tuple),key_type()),args_tuple);
-						retval.mult_by(tmp,args_tuple);
+						retval.base_mult_by(tmp,args_tuple);
 					}
 				}
 				return retval;
