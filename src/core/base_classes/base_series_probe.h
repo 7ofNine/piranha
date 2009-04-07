@@ -33,12 +33,12 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::norm_(const ArgsTuple &args_tuple) const
+	inline double toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_norm(const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		double retval = 0;
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.norm_(args_tuple) * it->m_key.norm_(args_tuple);
+			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
 		}
 		return retval;
 	}
@@ -46,13 +46,13 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::eval_type
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::eval_(const double &t, const ArgsTuple &args_tuple) const
+	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		eval_type retval(0);
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			eval_type tmp(it->m_cf.eval_(t, args_tuple));
-			tmp *= it->m_key.eval_(t, args_tuple);
+			eval_type tmp(it->m_cf.eval(t, args_tuple));
+			tmp *= it->m_key.eval(t, args_tuple);
 			retval += tmp;
 		}
 		return retval;

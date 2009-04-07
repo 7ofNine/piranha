@@ -43,7 +43,7 @@ namespace piranha
 			fs_binomial_sorter(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
 			template <class Term>
 			bool operator()(const Term *t1, const Term *t2) const {
-				const double n1(t1->m_cf.norm_(m_args_tuple)), n2(t2->m_cf.norm_(m_args_tuple));
+				const double n1(t1->m_cf.norm(m_args_tuple)), n2(t2->m_cf.norm(m_args_tuple));
 				if (n1 != n2) {
 					return (n1 > n2);
 				} else {

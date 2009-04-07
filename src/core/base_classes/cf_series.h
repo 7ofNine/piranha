@@ -26,13 +26,14 @@
 #include <iostream>
 #include <string>
 
+#include "../type_traits.h"
 #include "base_series.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_CF_SERIES_TP_DECL class Derived
-#define __PIRANHA_CF_SERIES_TP Derived
+#define __PIRANHA_CF_SERIES_TP_DECL class Term, class Derived
+#define __PIRANHA_CF_SERIES_TP Term,Derived
 
 namespace piranha
 {
@@ -47,6 +48,7 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >
 	{
+			typedef typename term_eval_type_determiner<Term>::type eval_type;
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
@@ -99,6 +101,10 @@ namespace piranha
 			Derived root(const int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			eval_type eval(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

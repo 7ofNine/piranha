@@ -84,7 +84,7 @@ namespace piranha
 				// TODO: implement.
 			}
 			template <class ArgsTuple>
-			double eval_(const double &t, const ArgsTuple &args_tuple) const {
+			double eval(const double &t, const ArgsTuple &args_tuple) const {
 				const size_t w = derived_const_cast->size();
 				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 1.;
@@ -114,8 +114,8 @@ namespace piranha
 			 * The norm of an exponent array is defined as the evaluation at t=0.
 			 */
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &args_tuple) const {
-				return std::abs(eval_(0, args_tuple));
+			double norm(const ArgsTuple &args_tuple) const {
+				return std::abs(eval(0, args_tuple));
 			}
 			/// Calculate hash value.
 			size_t hash_value() const {

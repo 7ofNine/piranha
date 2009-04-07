@@ -47,6 +47,21 @@ namespace piranha
 	{
 		return (derived_const_cast->empty());
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline double toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::norm(const ArgsTuple &args_tuple) const
+	{
+		return (derived_const_cast->base_norm(args_tuple));
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline typename toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::eval_type
+		toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::eval(const double &t, const ArgsTuple &args_tuple) const
+	{
+		return (derived_const_cast->base_eval(t,args_tuple));
+	}
 }
 
 #endif

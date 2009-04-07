@@ -70,11 +70,11 @@ namespace piranha
 			}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const {
 				return std::abs(m_value.get_d());
 			}
 			template <class ArgsTuple>
-			double eval_(const double &, const ArgsTuple &) const {
+			double eval(const double &, const ArgsTuple &) const {
 				return m_value.get_d();
 			}
 			// Override swapping.
@@ -238,11 +238,11 @@ namespace std
 				canonicalize();
 			}
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const {
 				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
 			}
 			template <class ArgsTuple>
-			complex<double> eval_(const double &, const ArgsTuple &) const {
+			complex<double> eval(const double &, const ArgsTuple &) const {
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			// Override swapping.

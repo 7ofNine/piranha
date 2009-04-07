@@ -38,7 +38,7 @@
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
 #define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
 #define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!','?')
-#define POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< POLYNOMIAL_CF > >
+#define POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF > >
 #define POLYNOMIAL_CF_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator> >
 #define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 1, POLYNOMIAL_CF > >
 #define POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< POLYNOMIAL_CF > >
@@ -67,6 +67,7 @@ namespace piranha
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
 			using common_ancestor::norm_;
 		public:
+			typedef double eval_type;
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
@@ -78,7 +79,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_CF_SERIES_TERM(piranha::monomial,'!')
 #define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::polynomial_cf)
 #define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!','?')
-#define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< COMPLEX_POLYNOMIAL_CF > >
+#define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< COMPLEX_POLYNOMIAL_CF_TERM, COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator> >
 #define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 1, COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POLYNOMIAL_CF > >
@@ -120,6 +121,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
 			using common_ancestor::norm_;
 		public:
+			typedef complex<double> eval_type;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;

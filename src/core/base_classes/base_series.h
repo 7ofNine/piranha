@@ -88,11 +88,7 @@ namespace piranha
 			void term_erase(const iterator &, const ArgsTuple &);
 			void clear_terms();
 			void rehash(const size_t &);
-			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const;
 			size_t length() const;
-			template <class ArgsTuple>
-			eval_type eval_(const double &, const ArgsTuple &) const;
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;
@@ -101,6 +97,10 @@ namespace piranha
 			bool operator!=(const Derived &) const;
 			bool operator!=(const double &) const;
 		protected:
+			template <class ArgsTuple>
+			double base_norm(const ArgsTuple &) const;
+			template <class ArgsTuple>
+			eval_type base_eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived &base_add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>

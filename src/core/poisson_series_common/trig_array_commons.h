@@ -49,11 +49,11 @@ namespace piranha
 	class trig_array_commons
 	{
 		public:
-			/// Return const reference to flavour.
+			/// Get flavour.
 			bool get_flavour() const {
 				return derived_const_cast->m_flavour;
 			}
-			/// Return mutable reference to flavour.
+			/// Set flavour.
 			void set_flavour(bool f) {
 				derived_cast->m_flavour = f;
 			}
@@ -167,7 +167,7 @@ namespace piranha
 			 * The norm of a trigonometric part is always one.
 			 */
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &args_tuple) const {
+			double norm(const ArgsTuple &args_tuple) const {
 				p_assert(args_tuple.template get<Derived::position>().size() >= derived_const_cast->size());
 				(void)args_tuple;
 				return 1;
@@ -179,7 +179,7 @@ namespace piranha
 			 * @param[in] v vector of piranha::psym pointers.
 			 */
 			template <class ArgsTuple>
-			double eval_(const double &t, const ArgsTuple &args_tuple) const {
+			double eval(const double &t, const ArgsTuple &args_tuple) const {
 				const size_t w = derived_const_cast->size();
 				p_assert(w <= args_tuple.template get<Derived::position>().size());
 				double retval = 0.;

@@ -23,16 +23,17 @@
 #include <string>
 
 #include "core/base_classes/norm_truncator.h"
+#include "core/base_classes/toolbox.h"
 #include "core/settings.h"
 #include "core/p_assert.h"
 
 namespace piranha
 {
 	// Initial value for norm-based truncation.
-	int base_norm_truncator::m_truncation_power = 0;
-	double base_norm_truncator::m_truncation_level = 0;
+	int toolbox<base_norm_truncator>::m_truncation_power = 0;
+	double toolbox<base_norm_truncator>::m_truncation_level = 0;
 
-	void base_norm_truncator::print(std::ostream &stream)
+	void toolbox<base_norm_truncator>::print(std::ostream &stream)
 	{
 		p_assert(m_truncation_power >= 0);
 		if (m_truncation_power > 0) {
@@ -43,7 +44,7 @@ namespace piranha
 		}
 	}
 
-	void base_norm_truncator::unset()
+	void toolbox<base_norm_truncator>::unset()
 	{
 		m_truncation_power = 0;
 		m_truncation_level = 0;

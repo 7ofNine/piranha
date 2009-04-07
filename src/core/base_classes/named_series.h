@@ -183,7 +183,7 @@ public: \
 		this->trim(); \
 	} \
 	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
-		return this->eval_(t,this->m_arguments); \
+		return this->base_eval(t,this->m_arguments); \
 	}
 }
 

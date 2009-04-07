@@ -29,10 +29,14 @@
 #include "../exceptions.h"
 #include "../p_assert.h"
 #include "../settings.h"
+#include "toolbox.h"
 
 namespace piranha
 {
-	class __PIRANHA_VISIBLE base_norm_truncator
+	struct base_norm_truncator {};
+
+	template <>
+	class __PIRANHA_VISIBLE toolbox<base_norm_truncator>
 	{
 		public:
 			static void set(const int &n) {
@@ -58,7 +62,7 @@ namespace piranha
 					throw unsuitable("No value set for norm-based truncation, "
 						"cannot calculate limit of power series expansion.");
 				}
-				const double norm = x.norm_(args_tuple);
+				const double norm = x.base_norm(args_tuple);
 				p_assert(norm >= 0);
 				if (norm >= 1) {
 					throw unsuitable("The norm of the argument of the power series expansion is >= 1: "
@@ -88,12 +92,15 @@ namespace piranha
 			static double	m_truncation_level;
 	};
 
+	struct norm_truncator_;
+
 	/// Norm-based truncator.
-	class norm_truncator
+	template<>
+	class toolbox<norm_truncator_>
 	{
 		public:
 			template <class Multiplier>
-			class get_type: public base_norm_truncator
+			class get_type: public toolbox<base_norm_truncator>
 			{
 					template <class ArgsTuple>
 					class norm_comparison
@@ -102,8 +109,8 @@ namespace piranha
 							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
 							template <class Term>
 							bool operator()(const Term *t1, const Term *t2) const {
-								return (t1->m_cf.norm_(m_args_tuple) * t1->m_key.norm_(m_args_tuple) >
-										t2->m_cf.norm_(m_args_tuple) * t2->m_key.norm_(m_args_tuple));
+								return (t1->m_cf.norm(m_args_tuple) * t1->m_key.norm(m_args_tuple) >
+										t2->m_cf.norm(m_args_tuple) * t2->m_key.norm(m_args_tuple));
 							}
 						private:
 							const ArgsTuple	&m_args_tuple;
@@ -113,7 +120,7 @@ namespace piranha
 					get_type(Multiplier &m, bool initialise = true):
 							m_multiplier(m),
 							m_delta_threshold(
-								m.m_s1.norm_(m.m_args_tuple)*m.m_s2.norm_(m.m_args_tuple)*m_truncation_level /
+								m.m_s1.base_norm(m.m_args_tuple)*m.m_s2.base_norm(m.m_args_tuple)*m_truncation_level /
 								(2*m.m_s1.length()*m.m_s2.length())) {
 						if (initialise) {
 							init();
@@ -126,10 +133,10 @@ namespace piranha
 					template <class Term1, class Term2>
 					bool skip(const Term1 &t1, const Term2 &t2) const {
 						return (
-								t1.m_cf.norm_(m_multiplier.m_args_tuple) *
-								t1.m_key.norm_(m_multiplier.m_args_tuple) *
-								t2.m_cf.norm_(m_multiplier.m_args_tuple) *
-								t2.m_key.norm_(m_multiplier.m_args_tuple) / 2. <
+								t1.m_cf.norm(m_multiplier.m_args_tuple) *
+								t1.m_key.norm(m_multiplier.m_args_tuple) *
+								t2.m_cf.norm(m_multiplier.m_args_tuple) *
+								t2.m_key.norm(m_multiplier.m_args_tuple) / 2. <
 								m_delta_threshold
 						);
 					}
@@ -146,6 +153,8 @@ namespace piranha
 					const double  m_delta_threshold;
 			};
 	};
+
+	typedef toolbox<norm_truncator_> norm_truncator;
 }
 
 #endif

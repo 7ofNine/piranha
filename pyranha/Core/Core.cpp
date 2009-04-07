@@ -31,6 +31,7 @@
 #include "../../src/core/base_classes/degree_truncator.h"
 #include "../../src/core/base_classes/expo_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
+#include "../../src/core/base_classes/toolbox.h"
 #include "../../src/core/config.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
@@ -145,11 +146,11 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("set", limit_psym(&base_expo_truncator::set),
 		"Set exponent limit for psym arg1 to integer arg2.").staticmethod("set");
 
-	class_<base_norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &py_print_to_string<base_norm_truncator>)
-	.def("set", &base_norm_truncator::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
+	class_<toolbox<base_norm_truncator> >("__norm_truncator", "Norm truncator.", init<>())
+	.def("__repr__", &py_print_to_string<toolbox<base_norm_truncator> >)
+	.def("set", &toolbox<base_norm_truncator>::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
 		 "throw an error otherwise.").staticmethod("set")
-	.def("unset", &base_norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
+	.def("unset", &toolbox<base_norm_truncator>::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	class_<base_degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<base_degree_truncator>)

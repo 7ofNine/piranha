@@ -46,7 +46,7 @@ namespace pyranha
 			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the norm "
 				"of this coefficient/key.");
 		}
-		return cfkey.norm_(a);
+		return cfkey.norm(a);
 	}
 
 	template <class CfKey, class ArgsTuple>
@@ -56,7 +56,7 @@ namespace pyranha
 			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation "
 				"of the time evaluation of this coefficient/key.");
 		}
-		return cfkey.eval_(t,a);
+		return cfkey.eval(t,a);
 	}
 
 	template <class Cf, class ArgsTuple>

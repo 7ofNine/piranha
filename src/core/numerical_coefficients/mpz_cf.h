@@ -51,11 +51,11 @@ namespace piranha
 			NUMERICAL_CONTAINER_CTORS(mpz_cf);
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const {
 				return std::abs(m_value.get_d());
 			}
 			template <class ArgsTuple>
-			double eval_(const double &, const ArgsTuple &) const {
+			double eval(const double &, const ArgsTuple &) const {
 				return m_value.get_d();
 			}
 			// Override swapping for increased efficiency.
@@ -188,11 +188,11 @@ namespace std
 				return (m_value.real() == 0 && m_value.imag() == 0);
 			}
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const {
 				return std::abs(complex<double>(m_value.real().get_d(), m_value.imag().get_d()));
 			}
 			template <class ArgsTuple>
-			complex<double> eval_(const double &, const ArgsTuple &) const {
+			complex<double> eval(const double &, const ArgsTuple &) const {
 				return complex<double>(m_value.real().get_d(), m_value.imag().get_d());
 			}
 			template <class ArgsTuple>
