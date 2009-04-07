@@ -189,10 +189,10 @@ namespace piranha
 					void cache_flavours() {
 						size_t i;
 						for (i = 0; i < this->m_size1; ++i) {
-							m_flavours1[i] = this->m_terms1[i]->m_key.flavour();
+							m_flavours1[i] = this->m_terms1[i]->m_key.get_flavour();
 						}
 						for (i = 0; i < this->m_size2; ++i) {
-							m_flavours2[i] = this->m_terms2[i]->m_key.flavour();
+							m_flavours2[i] = this->m_terms2[i]->m_key.get_flavour();
 						}
 					}
 					struct vector_multiplier {
@@ -299,7 +299,7 @@ namespace piranha
 							if (!vc_res_cos[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_cos[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
-								tmp_term.m_key.flavour() = true;
+								tmp_term.m_key.set_flavour(true);
 								// Canonicalise in-place, so that we don't need to make further copies in the
 								// main insertion function.
 								if (!tmp_term.is_canonical(args_tuple)) {
@@ -312,7 +312,7 @@ namespace piranha
 							if (!vc_res_sin[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_sin[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
-								tmp_term.m_key.flavour() = false;
+								tmp_term.m_key.set_flavour(false);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
@@ -426,7 +426,7 @@ namespace piranha
 							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-								tmp_term.m_key.flavour() = true;
+								tmp_term.m_key.set_flavour(true);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
@@ -438,7 +438,7 @@ namespace piranha
 							for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
 								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
-								tmp_term.m_key.flavour() = false;
+								tmp_term.m_key.set_flavour(false);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}

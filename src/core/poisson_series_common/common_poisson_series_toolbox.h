@@ -218,10 +218,10 @@ namespace piranha
 					complex_term_type tmp_term2;
 					tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), args_tuple);
 					tmp_term1.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_term1.m_key.flavour() = true;
+					tmp_term1.m_key.set_flavour(true);
 					tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), args_tuple);
 					tmp_term2.m_key.assign_int_vector(int_linear_term.second.second);
-					tmp_term2.m_key.flavour() = false;
+					tmp_term2.m_key.set_flavour(false);
 					tmp_series.insert(tmp_term1, args_tuple);
 					tmp_series.insert(tmp_term2, args_tuple);
 					// Take care of the numerical-coefficient-only term, if any.

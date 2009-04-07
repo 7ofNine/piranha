@@ -75,14 +75,16 @@ namespace piranha
 				res.template get<0>().m_cf.divide_by(2, args_tuple);
 				res.template get<1>().m_cf = res.template get<0>().m_cf;
 				// Now adjust the signs according to werner's formulas.
-				if (t1.m_key.flavour() == t2.m_key.flavour()) {
-					res.template get<0>().m_key.flavour() = res.template get<1>().m_key.flavour() = true;
-					if (!t1.m_key.flavour()) {
+				if (t1.m_key.get_flavour() == t2.m_key.get_flavour()) {
+					res.template get<0>().m_key.set_flavour(true);
+					res.template get<1>().m_key.set_flavour(true);
+					if (!t1.m_key.get_flavour()) {
 						res.template get<1>().m_cf.invert_sign(args_tuple);
 					}
 				} else {
-					res.template get<0>().m_key.flavour() = res.template get<1>().m_key.flavour() = false;
-					if (t1.m_key.flavour()) {
+					res.template get<0>().m_key.set_flavour(false);
+					res.template get<1>().m_key.set_flavour(false);
+					if (t1.m_key.get_flavour()) {
 						res.template get<0>().m_cf.invert_sign(args_tuple);
 					}
 				}
@@ -95,7 +97,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void invert_trig_args(const ArgsTuple &args_tuple) {
 				ancestor::m_key.invert_sign();
-				if (!(ancestor::m_key.flavour())) {
+				if (!(ancestor::m_key.get_flavour())) {
 					ancestor::m_cf.invert_sign(args_tuple);
 				}
 			}

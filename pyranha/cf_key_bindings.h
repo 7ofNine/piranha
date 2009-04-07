@@ -153,13 +153,6 @@ namespace pyranha
 		complex_cf_bindings<mpq_cf>(cqcf);
 	}
 
-	// TODO: remove this one.
-	template <class TrigArray>
-	static inline bool py_trigarray_flavour(const TrigArray &t)
-	{
-		return t.flavour();
-	}
-
 	template <class TrigArray, class ArgsTuple>
 	static inline double py_trigarray_freq(const TrigArray &t, const ArgsTuple &a)
 	{
@@ -199,7 +192,7 @@ namespace pyranha
 	struct trig_array_bindings {
 		static void run(boost::python::class_<TrigArray> &inst)
 		{
-			inst.add_property("flavour", &py_trigarray_flavour<TrigArray>);
+			inst.add_property("flavour", &TrigArray::get_flavour);
 			mp_ta_bindings<__PIRANHA_MAX_ECHELON_LEVEL + 1,TrigArray,M>::run(inst);
 		}
 	};

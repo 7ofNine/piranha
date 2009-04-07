@@ -100,14 +100,14 @@ namespace piranha
 						tmp_trig_mults[j] *= i;
 					}
 					tmp_term.m_key.assign_int_vector(tmp_trig_mults);
-					if ((*it)->m_key.flavour()) {
+					if ((*it)->m_key.get_flavour()) {
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
 					} else {
 						if (i % 2 == 0) {
 							tmp_term.m_cf.mult_by(2, args_tuple);
 						} else {
 							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), args_tuple);
-							tmp_term.m_key.flavour() = false;
+							tmp_term.m_key.set_flavour(false);
 						}
 					}
 					retval.insert(tmp_term, args_tuple);

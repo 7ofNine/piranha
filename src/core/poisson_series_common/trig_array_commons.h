@@ -50,12 +50,12 @@ namespace piranha
 	{
 		public:
 			/// Return const reference to flavour.
-			const bool &flavour() const {
+			bool get_flavour() const {
 				return derived_const_cast->m_flavour;
 			}
 			/// Return mutable reference to flavour.
-			bool &flavour() {
-				return derived_cast->m_flavour;
+			void set_flavour(bool f) {
+				derived_cast->m_flavour = f;
 			}
 			// I/O.
 			template <class ArgsTuple>
@@ -332,13 +332,13 @@ namespace piranha
 					// whose key is _not_ a trig_array, in principle, so we cannot build a term consisting
 					// of a trig_array and unity coefficient and simply insert it.
 					// Build the orig_cos series.
-					tmp_ta.flavour() = true;
+					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					// Build the orig_sin series.
-					tmp_ta.flavour() = false;
+					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
-					if (derived_const_cast->flavour()) {
+					if (derived_const_cast->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
@@ -375,12 +375,12 @@ namespace piranha
 					p_assert(pos < derived_const_cast->size());
 					Derived tmp_ta(*derived_const_cast);
 					tmp_ta[pos] = 0;
-					tmp_ta.flavour() = true;
+					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
-					tmp_ta.flavour() = false;
+					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
-					if (derived_const_cast->flavour()) {
+					if (derived_const_cast->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
 							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
