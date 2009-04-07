@@ -77,6 +77,9 @@ namespace piranha
 			// TODO: temporary, remove.
 			template <class>
 			friend class trig_array_commons;
+			// Additional friendship required by substitution.
+			template <int, int, class>
+			friend class expo_array;
 			// TODO: temporary, change it.
 			template <class>
 			friend class expo_array_commons;

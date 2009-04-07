@@ -59,7 +59,7 @@ namespace piranha
 					sub_cache():ancestor::int_power_cache() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = SubSeries(1,*args_tuple);
+						this->m_container[0] = SubSeries().base_add(1,*args_tuple);
 						this->m_container[1] = s;
 					}
 			};

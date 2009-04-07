@@ -123,7 +123,8 @@ namespace piranha
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
-				Derived tmp(1, args_tuple);
+				Derived tmp;
+				tmp.base_add(1, args_tuple);
 				retval.base_add(tmp, args_tuple);
 				if (Op == power_op) {
 					for (size_t i = 1; i < n; ++i) {
