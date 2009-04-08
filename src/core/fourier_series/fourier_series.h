@@ -41,7 +41,7 @@
 #define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::fourier_series_term)
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
 #define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
-#define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>,piranha::fourier_series)
+#define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>, FOURIER_SERIES_TERM ,piranha::fourier_series)
 #define FOURIER_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< FOURIER_SERIES, Multiplier, Truncator> >
 #define FOURIER_SERIES_COMMON_ANCESTOR piranha::toolbox<piranha::common_fourier_series< FOURIER_SERIES > >
 #define FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< FOURIER_SERIES > >
@@ -70,8 +70,6 @@ namespace piranha
 			// TODO: temporary, remove.
 			template <class>
 			friend class trig_array_commons;
-			typedef FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
-			typedef FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
 			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
@@ -85,7 +83,7 @@ namespace piranha
 #define COMPLEX_FOURIER_SERIES COMPLEX_E0_SERIES(piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
-		piranha::fourier_series)
+		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator> >
 #define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<FOURIER_SERIES> >
 #define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<FOURIER_SERIES> >
@@ -115,9 +113,6 @@ namespace std
 	{
 			template <class>
 			friend class piranha::toolbox;
-			typedef COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR named_ancestor;
-			typedef COMPLEX_FOURIER_SERIES_BASE_ANCESTOR base_ancestor;
-			typedef COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::real_power;
 			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
@@ -144,7 +139,7 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator/=;
 			NAMED_SERIES_BOILERPLATE(complex, 0);
-			COMPLEX_NAMED_SERIES_CTORS(COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX);
+			COMPLEX_NAMED_SERIES_CTORS(FOURIER_SERIES);
 	};
 }
 

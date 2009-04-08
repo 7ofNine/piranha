@@ -112,18 +112,18 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::toolbox<piranha::named_series<args,COMPLEX_E0_SERIES(series_name) > >
+#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,term_name,series_name) piranha::toolbox<piranha::named_series<args,term_name,COMPLEX_E0_SERIES(series_name) > >
 
-#define COMPLEX_NAMED_SERIES_CTORS(complex_toolbox) \
+#define COMPLEX_NAMED_SERIES_CTORS(real_series) \
 	explicit complex(const complex<double> &cx) { \
-		base_ancestor::construct_from_number(cx,named_ancestor::m_arguments); \
-		named_ancestor::trim(); \
+		this->construct_from_number(cx,this->m_arguments); \
+		this->trim(); \
 	} \
-	explicit complex(const typename base_complex_toolbox::value_type &r) { \
-		complex_toolbox::construct_from_real(r); \
+	explicit complex(const real_series &r) { \
+		this->construct_from_real(r); \
 	} \
-	explicit complex(const typename base_complex_toolbox::value_type &r, const typename base_complex_toolbox::value_type &i) { \
-		complex_toolbox::construct_from_real_imag(r, i); \
+	explicit complex(const real_series &r, const real_series &i) { \
+		this->construct_from_real_imag(r, i); \
 	}
 }
 

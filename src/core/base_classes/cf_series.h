@@ -48,8 +48,8 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >
 	{
-			typedef typename term_eval_type_determiner<Term>::type eval_type;
 		public:
+			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
 				typedef typename Derived::term_type::cf_type::
@@ -117,26 +117,26 @@ namespace piranha
 	template <class ArgsTuple> \
 	explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
 	{ \
-		cf_ancestor::construct_from_string(s,args_tuple); \
+		this->construct_from_string(s,args_tuple); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
-		base_ancestor::construct_from_number(x,a); \
+		this->construct_from_number(x,a); \
 	}
 
-#define COMPLEX_CF_SERIES_CTORS(complex_toolbox) \
+#define COMPLEX_CF_SERIES_CTORS(real_series) \
 	template <class ArgsTuple> \
 	explicit complex(const complex<double> &cx, const ArgsTuple &a) { \
-		base_ancestor::construct_from_number(cx,a); \
+		this->construct_from_number(cx,a); \
 	} \
 	template <class ArgsTuple> \
-	explicit complex(const typename base_complex_toolbox::value_type &r, const ArgsTuple &a) { \
-		complex_toolbox::construct_from_real_(r,a); \
+	explicit complex(const real_series &r, const ArgsTuple &a) { \
+		this->construct_from_real_(r,a); \
 	} \
 	template <class ArgsTuple> \
-	explicit complex(const typename base_complex_toolbox::value_type &r, const typename base_complex_toolbox::value_type &i, const ArgsTuple &a) { \
-		complex_toolbox::construct_from_real_imag_(r, i, a); \
+	explicit complex(const real_series &r, const real_series &i, const ArgsTuple &a) { \
+		this->construct_from_real_imag_(r, i, a); \
 	}
 
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>

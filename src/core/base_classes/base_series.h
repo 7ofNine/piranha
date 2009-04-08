@@ -69,7 +69,7 @@ namespace piranha
 			friend struct base_series_arithmetics;
 		public:
 			typedef term_type_ term_type;
-			typedef typename term_eval_type_determiner<Term>::type eval_type;
+			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
 			typedef typename container_type::iterator iterator;
 			typedef typename container_type::const_iterator const_iterator;
 			iterator begin();
@@ -100,7 +100,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>
-			eval_type base_eval(const double &, const ArgsTuple &) const;
+			base_eval_type base_eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived &base_add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>

@@ -70,6 +70,13 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval_type
+	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const double &t) const
+	{
+		return derived_const_cast->base_eval(t,m_arguments);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline size_t toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);

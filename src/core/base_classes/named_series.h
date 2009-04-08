@@ -40,8 +40,8 @@
 // Useful shortcuts.
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Derived
-#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Derived
+#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
+#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Term,Derived
 
 namespace piranha
 {
@@ -64,6 +64,7 @@ namespace piranha
 			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
 			p_static_check(n_arguments_sets > 0, "The number of arguments vector must be strictly positive.");
 			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
+			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
 			void save_to(const std::string &) const;
@@ -72,6 +73,7 @@ namespace piranha
 // 			Derived filter(const Filter &) const;
 			void swap(Derived &);
 			double norm() const;
+			eval_type eval(const double &) const;
 			size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
@@ -163,9 +165,9 @@ namespace piranha
 	};
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args,series_name) piranha::toolbox<piranha::named_series<args,E0_SERIES(series_name) > >
+#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::toolbox<piranha::named_series<args, term_name, E0_SERIES(series_name) > >
 
-#define E1_SERIES_NAMED_ANCESTOR(args1,args2,series_name) piranha::toolbox<piranha::named_series<boost::tuple<args1,args2>,series_name > >
+#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::toolbox<piranha::named_series<boost::tuple<args1,args2>,term_name,series_name > >
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
 public: \
@@ -181,9 +183,6 @@ public: \
 	{ \
 		this->construct_from_number(x,this->m_arguments); \
 		this->trim(); \
-	} \
-	typename piranha::term_eval_type_determiner<typename base_ancestor::term_type>::type eval(const double &t) const { \
-		return this->base_eval(t,this->m_arguments); \
 	}
 }
 

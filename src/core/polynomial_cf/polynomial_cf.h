@@ -58,20 +58,16 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			typedef POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
-			typedef POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef POLYNOMIAL_CF_COMMON_ANCESTOR common_ancestor;
 			// Specify we will use the real_power from the common polynomial cf toolbox.
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
-			using common_ancestor::norm_;
+			using POLYNOMIAL_CF_COMMON_ANCESTOR::base_norm;
 		public:
-			typedef double eval_type;
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
 			explicit polynomial_cf(const psym_p &p, const int &n, const ArgsTuple &a) {
-				base_ancestor::construct_from_psym_p(p, n, a);
+				this->construct_from_psym_p(p, n, a);
 			}
 	};
 }
@@ -102,10 +98,6 @@ namespace std
 	{
 			template <class>
 			friend class piranha::toolbox;
-			typedef COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR cf_ancestor;
-			typedef COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR base_ancestor;
-			typedef COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR common_ancestor;
-			typedef COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX base_complex_toolbox;
 			// Specify we will use the real_power from the common polynomial cf toolbox.
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
@@ -119,9 +111,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
-			using common_ancestor::norm_;
+			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::base_norm;
 		public:
-			typedef complex<double> eval_type;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
@@ -133,10 +124,10 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::subtract;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::subtract;
 			CF_SERIES_CTORS(complex);
-			COMPLEX_CF_SERIES_CTORS(COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX);
+			COMPLEX_CF_SERIES_CTORS(POLYNOMIAL_CF);
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a) {
-				base_ancestor::construct_from_psym_p(p, n, a);
+				this->construct_from_psym_p(p, n, a);
 			}
 	};
 }

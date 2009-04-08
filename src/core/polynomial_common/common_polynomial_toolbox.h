@@ -42,8 +42,8 @@ namespace piranha
 	{
 		public:
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &args_tuple) const {
-				return std::abs(derived_const_cast->eval_(0,args_tuple));
+			double base_norm(const ArgsTuple &args_tuple) const {
+				return std::abs(derived_const_cast->base_eval(0,args_tuple));
 			}
 	};
 }
