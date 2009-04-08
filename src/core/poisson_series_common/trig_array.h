@@ -21,15 +21,25 @@
 #ifndef PIRANHA_TRIG_ARRAY_H
 #define PIRANHA_TRIG_ARRAY_H
 
+#include <boost/algorithm/string/split.hpp>
+#include <cmath> // For std::abs.
 #include <complex> // For std::complex<SubSeries>.
+#include <iostream>
 #include <memory> // For standard allocator.
 #include <string>
+#include <utility> // For std::pair.
+#include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../base_classes/series_builders.h"
 #include "../common_functors.h"
+#include "../config.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"
-#include "trig_array_commons.h"
+#include "../psym.h"
+#include "../settings.h"
+#include "../utils.h" // For is_integer().
+#include "trig_evaluator.h"
 
 #define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator
 #define __PIRANHA_TRIG_ARRAY_TP Bits,Pos,Allocator
@@ -42,12 +52,8 @@ namespace piranha
 	 * capabilities needed for trigonometric manipulation.
 	 */
 	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
-	class trig_array:
-				public int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >,
-				public trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >
+	class trig_array: public int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >
 	{
-			friend class trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
-			typedef trig_array_commons<trig_array<__PIRANHA_TRIG_ARRAY_TP> > trig_commons;
 			typedef int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
 			friend class int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
@@ -128,8 +134,33 @@ namespace piranha
 			trig_array(): ancestor::int_array() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array(),
-					trig_commons::trig_array_commons(s) {}
+			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array() {
+				std::vector<std::string> sd;
+				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
+				// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
+				// TODO: do it everywhere!
+				const size_t w = sd.size();
+				if (w == 0) {
+					// Set flavour to true, so that trig_array is logically equivalent to unity.
+					this->m_flavour = true;
+					return;
+				}
+				// Now we know  w >= 1.
+				this->resize(w - 1);
+				for (size_t i = 0;i < w - 1; ++i) {
+					(*this)[i] = utils::lexical_converter<value_type>(sd[i]);
+				}
+				// Take care of flavour.
+				if (*sd.back().c_str() == 's') {
+					this->m_flavour = false;
+				} else if (*sd.back().c_str() == 'c') {
+					this->m_flavour = true;
+				} else {
+					std::cout << "Warning: undefined flavour '" << sd.back() <<
+						"', defaulting to cosine." << std::endl;
+					this->m_flavour = true;
+				}
+			}
 			template <class ArgsTuple>
 			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			template <int Pos2>
@@ -184,6 +215,441 @@ namespace piranha
 					ret1[i] = (*this)[i];
 					ret2[i] = (*this)[i];
 				}
+			}
+			/// Get flavour.
+			bool get_flavour() const {
+				return this->m_flavour;
+			}
+			/// Set flavour.
+			void set_flavour(bool f) {
+				this->m_flavour = f;
+			}
+			// I/O.
+			template <class ArgsTuple>
+			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				// We assert like this because we want to make sure we don't go out of boundaries,
+				// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
+				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				(void)args_tuple;
+				this->print_elements(out_stream);
+				// Print the separator before flavour only if we actually printed something above.
+				if (this->size() != 0) {
+					out_stream << this->separator;
+				}
+				if (this->m_flavour) {
+					out_stream << "c";
+				} else {
+					out_stream << "s";
+				}
+			}
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				p_assert(args_tuple.template get<ancestor::position>().size() <= this->m_size);
+				if (this->m_flavour) {
+					out_stream << "cos(";
+				} else {
+					out_stream << "sin(";
+				}
+				bool printed_something = false;
+				for (size_t i = 0; i < this->m_size; ++i) {
+					const int n = this->m_container.v[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// If we already printed something and n is positive we are going to print the sign too.
+						if (printed_something && n > 0) {
+							out_stream << '+';
+						}
+						// Take care of printing the multiplier.
+						if (n == 1) {
+							;
+						} else if (n == -1) {
+							out_stream << '-';
+						} else {
+							out_stream << n << '*';
+						}
+						out_stream << args_tuple.template get<ancestor::position>()[i]->name();
+						printed_something = true;
+					}
+				}
+				out_stream << ')';
+			}
+			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
+				const size_t w = v.size();
+				p_assert(w <= size())
+				switch (m_flavour) {
+					case true:
+						out_stream << "c&";
+						break;
+					case false:
+						out_stream << "s&";
+				}
+				bool first_one = true;
+				std::string tmp("$");
+				for (size_t i = 0;i < w;++i) {
+					if ((*this)[i] != 0) {
+						if ((*this)[i] > 0 && !first_one) {
+							tmp.append("+");
+						}
+						if ((*this)[i] == -1) {
+							tmp.append("-");
+						} else if ((*this)[i] == 1) {} else {
+							tmp.append(boost::lexical_cast<std::string>((int)(*this)[i]));
+						}
+						tmp.append(v[i]->name());
+						first_one = false;
+					}
+				}
+				tmp.append("$");
+				// If we did not write anything erase math markers.
+				if (tmp == "$$") {
+					tmp.clear();
+				}
+				out_stream << tmp;
+			}
+			bool is_unity() const {
+				return (elements_are_zero() && m_flavour);
+			}
+			/// Frequency.
+			/**
+			 * Get the frequency of the linear combination, given a vector of piranha::psym pointers describing
+			 * the arguments.
+			 * @param[in] v vector of piranha::psym pointers.
+			 */
+			template <class ArgsTuple>
+			double freq(const ArgsTuple &args_tuple) const {
+				return combined_time_eval<1>(args_tuple);
+			}
+			/// Phase.
+			/**
+			 * Get the phase of the linear combination, given a vector of piranha::psym pointers describing the
+			 * arguments.
+			 * @param[in] v vector of piranha::psym pointers.
+			 */
+			template <class ArgsTuple>
+			double phase(const ArgsTuple &args_tuple) const {
+				return combined_time_eval<0>(args_tuple);
+			}
+			/// Norm.
+			/**
+			 * The norm of a trigonometric part is always one.
+			 */
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &args_tuple) const {
+				p_assert(args_tuple.template get<position>().size() >= size());
+				(void)args_tuple;
+				return 1;
+			}
+			/// Time evaluation of arguments.
+			/**
+			 * Returns the value assumed by the linear combination of arguments at time t.
+			 * @param[in] t double time of the evaluation.
+			 * @param[in] v vector of piranha::psym pointers.
+			 */
+			template <class ArgsTuple>
+			double eval(const double &t, const ArgsTuple &args_tuple) const {
+				const size_t w = size();
+				p_assert(w <= args_tuple.template get<position>().size());
+				double retval = 0.;
+				for (size_t i = 0;i < w;++i) {
+					if ((*this)[i] != 0) {
+						retval += (*this)[i] * args_tuple.template get<position>()[i]->eval(t);
+					}
+				}
+				if (m_flavour) {
+					return std::cos(retval);
+				} else {
+					return std::sin(retval);
+				}
+			}
+			/// Time evaluation of complex exponential of the arguments.
+			/**
+			 * Returns the real or imaginary part (depending on flavour) of the complex exponential of the
+			 * linear combination of arguments at time t.
+			 * Uses a piranha::trig_evaluator object which contains a cache of the complex exponentials of arguments.
+			 * @param[in] te piranha::trig_evaluator containing a cache of complex exponentials of arguments.
+			 */
+			template <class TrigEvaluator>
+			double t_eval(TrigEvaluator &te) const {
+				const size_t w = te.width();
+				p_assert(w <= size());
+				std::complex<double> retval(1.);
+				for (size_t i = 0;i < w;++i) {
+					if ((*this)[i] != 0) {
+						retval *= te.request_ei(i, (*this)[i]);
+					}
+				}
+				if (m_flavour) {
+					return retval.real();
+				} else {
+					return retval.imag();
+				}
+			}
+			/// Sign.
+			/**
+			 * Return the sign of the first non-zero element of the combination. Zero is considered positive.
+			 * This function is used to test for canonical form in piranha::poisson_series_term.
+			 */
+			short int sign() const {
+				const size_t w = size();
+				for (size_t i = 0;i < w;++i) {
+					if ((*this)[i] > 0) {
+						return 1;
+					}
+					if ((*this)[i] < 0) {
+						return -1;
+					}
+				}
+				return 1;
+			}
+			// All multipliers are zero and flavour is sine.
+			template <class ArgsTuple>
+			bool is_ignorable(const ArgsTuple &) const {
+				return (elements_are_zero() && !m_flavour);
+			}
+			/// Equality test.
+			bool operator==(const trig_array &t2) const {
+				return (m_flavour == t2.m_flavour && elements_equal_to(t2));
+			}
+			/// Less than.
+			bool operator<(const trig_array &t2) const {
+				if (m_flavour < t2.m_flavour) {
+					return true;
+				} else if (m_flavour > t2.m_flavour) {
+					return false;
+				}
+				return lex_comparison(t2);
+			}
+			/// Calculate hash_value.
+			/**
+			 * Used by the hash_value overload for piranha::base_term.
+			 */
+			size_t hash_value() const {
+				size_t retval = elements_hasher();
+				boost::hash_combine(retval, m_flavour);
+				return retval;
+			}
+			/// Multiply by an integer.
+			void mult_by_int(const int &n) {
+				const size_t w = size();
+				for (size_t i = 0;i < w;++i) {
+					(*this)[i] *= n;
+				}
+			}
+			/// Calculate partial derivative.
+			/**
+			 * Result is a pair consisting of an integer and a trigonometric array.
+			 */
+			template <class PosTuple, class ArgsTuple>
+			std::pair<int, trig_array> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
+				std::pair<int, trig_array> retval(0, trig_array());
+				// Do something only if the argument of the partial derivation is present in the trigonometric array.
+				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
+				// multiplied by the coefficient in the partial derivation of the whole term.
+				if (pos_tuple.template get<position>().first) {
+					retval.second = *this;
+					const size_t pos = pos_tuple.template get<position>().second;
+					// Change the flavour of the resulting key.
+					retval.second.m_flavour = !m_flavour;
+					p_assert(pos < size());
+					retval.first = m_container.v[pos];
+					if (m_flavour) {
+						retval.first = -retval.first;
+					}
+				}
+				return retval;
+			}
+			/// Exponentiation.
+			template <class ArgsTuple>
+			trig_array pow(const double &y, const ArgsTuple &) const {
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+					return pow_double(y);
+				}
+			}
+			template <class ArgsTuple>
+			trig_array root(const int &n, const ArgsTuple &args_tuple) const {
+				if (n == 0) {
+					throw division_by_zero();
+				} else if (n == 1) {
+					return trig_array(*this);
+				}
+				return pow(1. / static_cast<double>(n), args_tuple);
+			}
+			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
+			// the series used for the substitution.
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				RetSeries retval;
+				// If the argument is not present here, the return series will have one term consisting
+				// of a unitary coefficient and this very trig_array.
+				if (!pos_tuple.template get<position>().first) {
+					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+				} else {
+					const size_t pos = pos_tuple.template get<position>().second;
+					const int power = static_cast<int>((*this)[pos]);
+					p_assert(pos < size());
+					trig_array tmp_ta(*this);
+					// Let's turn off the multiplier associated to the symbol we are substituting.
+					tmp_ta[pos] = 0;
+					// NOTE: important: we need key builders here because we may be building RetSeries
+					// whose key is _not_ a trig_array, in principle, so we cannot build a term consisting
+					// of a trig_array and unity coefficient and simply insert it.
+					// Build the orig_cos series.
+					tmp_ta.set_flavour(true);
+					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					// Build the orig_sin series.
+					tmp_ta.set_flavour(false);
+					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					p_assert(retval.empty());
+					if (get_flavour()) {
+						retval.base_add(orig_cos, args_tuple);
+						retval.base_mult_by(
+							sub_caches.template get<position>()[power].base_real(args_tuple),
+						args_tuple);
+						orig_sin.base_mult_by(
+							sub_caches.template get<position>()[power].base_imag(args_tuple),
+						args_tuple);
+						retval.base_subtract(orig_sin, args_tuple);
+					} else {
+						retval.base_add(orig_sin, args_tuple);
+						retval.base_mult_by(
+							sub_caches.template get<position>()[power].base_real(args_tuple),
+						args_tuple);
+						orig_cos.base_mult_by(
+							sub_caches.template get<position>()[power].base_imag(args_tuple),
+						args_tuple);
+						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
+						// Below too...
+						retval.base_add(orig_cos, args_tuple);
+					}
+				}
+				return retval;
+			}
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				RetSeries retval;
+				if (!pos_tuple.template get<position>().first) {
+					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+				} else {
+					const size_t pos = pos_tuple.template get<position>().second;
+					const int power = static_cast<int>((*this)[pos]);
+					p_assert(pos < size());
+					trig_array tmp_ta(*this);
+					tmp_ta[pos] = 0;
+					tmp_ta.set_flavour(true);
+					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					tmp_ta.set_flavour(false);
+					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					p_assert(retval.empty());
+					if (m_flavour) {
+						retval.base_add(orig_cos, args_tuple);
+						retval.base_mult_by(
+							sub_caches.template get<position>()[power].base_real(args_tuple),
+						args_tuple);
+						orig_sin.base_mult_by(
+							sub_caches.template get<position>()[power].base_imag(args_tuple),
+						args_tuple);
+						retval.base_subtract(orig_sin, args_tuple);
+					} else {
+						retval.base_add(orig_sin, args_tuple);
+						retval.base_mult_by(
+							sub_caches.template get<position>()[power].base_real(args_tuple),
+						args_tuple);
+						orig_cos.base_mult_by(
+							sub_caches.template get<position>()[power].base_imag(args_tuple),
+						args_tuple);
+						retval.base_add(orig_cos, args_tuple);
+					}
+				}
+				return retval;
+			}
+		private:
+			// NOTICE: is there some caching mechanism that can be used here?
+			template <int N, class ArgsTuple>
+			double combined_time_eval(const ArgsTuple &args_tuple) const {
+				p_static_check(N >= 0, "");
+				const size_t w = size();
+				p_assert(w <= args_tuple.template get<position>().size());
+				double retval = 0.;
+				for (size_t i = 0;i < w;++i) {
+					// We must be sure that there actually is component N in every symbol we are going to use.
+					if (args_tuple.template get<position>()[i]->time_eval().size() > N) {
+						retval += (*this)[i] *
+							args_tuple.template get<position>()[i]->time_eval()[N];
+					}
+				}
+				return retval;
+			}
+			trig_array pow_int(const int &n) const {
+				const bool int_zero = elements_are_zero();
+				trig_array retval;
+				if (n < 0) {
+					if (int_zero && !m_flavour) {
+						// 0^-n.
+						throw division_by_zero();
+					} else if (int_zero && m_flavour) {
+						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
+						;
+					} else {
+						// x^-n -> no go.
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer "
+							"exponentiation.");
+					}
+				} else if (n == 0) {
+					// x^0 == 1. Don't do nothing because retval is already initialized properly.
+					;
+				} else {
+					if (int_zero && !m_flavour) {
+						// 0^n == 0.
+						retval.m_flavour = false;
+					} else if (int_zero && m_flavour) {
+						// 1^y == 1. Don't do nothing because retval is already initialized properly.
+						;
+					} else {
+						// x^n --> no go (it should be handled by natural power routine for series).
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer"
+							"exponentiation.");
+					}
+				}
+				return retval;
+			}
+			trig_array pow_double(const double &y) const {
+				const bool int_zero = elements_are_zero();
+				trig_array retval;
+				if (y < 0) {
+					if (int_zero && !m_flavour) {
+						// 0^-y.
+						throw division_by_zero();
+					} else if (int_zero && m_flavour) {
+						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
+						;
+					} else {
+						// x^-y -> no go.
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real "
+							"exponentiation.");
+					}
+				} else if (y == 0) {
+					// x^0 == 1. Don't do nothing because retval is already initialized properly.
+					;
+				} else {
+					if (int_zero && !m_flavour) {
+						// 0^y == 0.
+						retval.m_flavour = false;
+					} else if (int_zero && m_flavour) {
+						// 1^y == 1. Don't do nothing because retval is already initialized properly.
+						;
+					} else {
+						// x^y --> no go.
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real "
+							"exponentiation.");
+					}
+				}
+				return retval;
 			}
 	};
 }
