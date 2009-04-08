@@ -62,23 +62,23 @@ namespace piranha
 			}
 			// Getters and setters.
 			template <class ArgsTuple>
-			value_type real_(const ArgsTuple &) const {
+			value_type real(const ArgsTuple &) const {
 				value_type retval;
 				retval.m_value = derived_const_cast->value().real();
 				return retval;
 			}
 			template <class ArgsTuple>
-			value_type imag_(const ArgsTuple &) const {
+			value_type imag(const ArgsTuple &) const {
 				value_type retval;
 				retval.m_value = derived_const_cast->value().imag();
 				return retval;
 			}
 			template <class ArgsTuple>
-			void real_(const value_type &r, const ArgsTuple &) {
+			void real(const value_type &r, const ArgsTuple &) {
 				derived_cast->m_value = r.value();
 			}
 			template <class ArgsTuple>
-			void imag_(const value_type &i, const ArgsTuple &) {
+			void imag(const value_type &i, const ArgsTuple &) {
 				// TODO: this code works in gcc, but it is not standard.
 				// derived_cast->m_value.imag() = i.value();
 				derived_cast->m_value = typename Derived::numerical_type(derived_const_cast->m_value.real(),

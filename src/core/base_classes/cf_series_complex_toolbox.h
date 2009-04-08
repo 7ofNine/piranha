@@ -40,6 +40,22 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 		public:
 			template <class ArgsTuple>
+			RealDerived real(const ArgsTuple &args_tuple) const {
+				return derived_const_cast->base_real(args_tuple);
+			}
+			template <class ArgsTuple>
+			RealDerived imag(const ArgsTuple &args_tuple) const {
+				return derived_const_cast->base_imag(args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived &real(const RealDerived &r, const ArgsTuple &args_tuple) {
+				return derived_cast->base_real(r,args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived &imag(const RealDerived &r, const ArgsTuple &args_tuple) {
+				return derived_cast->base_imag(r,args_tuple);
+			}
+			template <class ArgsTuple>
 			Derived &mult_by(const RealDerived &cs, const ArgsTuple &a) {
 				return derived_cast->base_mult_by(cs,a);
 			}

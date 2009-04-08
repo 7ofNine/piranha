@@ -73,7 +73,7 @@ namespace piranha
 				{
 					std::complex<Derived> tmp;
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real_((*it)->m_cf, args_tuple);
+					tmp_term.m_cf.real((*it)->m_cf, args_tuple);
 					tmp.insert(tmp_term, args_tuple);
 					try {
 						n_ = tmp.psi_(0,1,args_tuple);
@@ -86,7 +86,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real_((*it)->m_cf.besselJ(0, args_tuple), args_tuple);
+					tmp_term.m_cf.real((*it)->m_cf.besselJ(0, args_tuple), args_tuple);
 					retval.insert(tmp_term, args_tuple);
 				}
 				const size_t w = args_tuple.template get<TrigPos>().size();
@@ -94,7 +94,7 @@ namespace piranha
 				std::complex<double> cos_multiplier(0, 2);
 				for (size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
-					tmp_term.m_cf.real_((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
+					tmp_term.m_cf.real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
 					(*it)->m_key.upload_ints_to(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;

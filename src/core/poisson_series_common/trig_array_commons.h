@@ -341,19 +341,19 @@ namespace piranha
 					if (derived_const_cast->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_subtract(orig_sin, args_tuple);
 					} else {
 						retval.base_add(orig_sin, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
@@ -383,19 +383,19 @@ namespace piranha
 					if (derived_const_cast->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_subtract(orig_sin, args_tuple);
 					} else {
 						retval.base_add(orig_sin, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].real_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<Derived::position>()[power].imag_(args_tuple),
+							sub_caches.template get<Derived::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_add(orig_cos, args_tuple);
 					}

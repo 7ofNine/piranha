@@ -132,11 +132,11 @@ namespace piranha
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const real_series &r, const ArgsTuple &a) { \
-		this->construct_from_real_(r,a); \
+		this->base_construct_from_real(r,a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const real_series &r, const real_series &i, const ArgsTuple &a) { \
-		this->construct_from_real_imag_(r, i, a); \
+		this->base_construct_from_real_imag(r, i, a); \
 	}
 
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>

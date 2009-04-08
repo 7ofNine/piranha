@@ -66,7 +66,7 @@ namespace pyranha
 			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
 				"of the real part from this coefficient.");
 		}
-		return cf.real_(a);
+		return cf.real(a);
 	}
 
 	template <class Cf, class ArgsTuple>
@@ -76,7 +76,7 @@ namespace pyranha
 			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
 				"of the imaginary part from this coefficient.");
 		}
-		return cf.imag_(a);
+		return cf.imag(a);
 	}
 
 	// Bindings common to coefficients and keys that require args tuple as input. Instantiations for
