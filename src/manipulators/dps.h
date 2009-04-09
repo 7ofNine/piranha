@@ -38,8 +38,8 @@ namespace piranha
 		typedef poisson_series
 		<
 		double_cf,
-		expo_array<16, 0>,
-		trig_array<16, 1>,
+		expo_array<16, 0>::type,
+		trig_array<16, 1>::type,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		power_series_truncator,

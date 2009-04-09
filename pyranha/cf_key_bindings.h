@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 
+#include "../src/core/base_classes/toolbox.h"
 #include "../src/core/exceptions.h"
 #include "../src/core/ntuple.h"
 #include "../src/core/numerical_coefficients/double_cf.h"
@@ -208,16 +209,16 @@ namespace pyranha
 		// TODO: re-establish int_array_bindings (for, e.g., __getitem__).
 		using namespace boost::python;
 		using namespace piranha;
-		class_<trig_array<16,0> > ta_16_0("trig_array_16_0");
-		class_<trig_array<16,1> > ta_16_1("trig_array_16_1");
-		class_<expo_array<16,0> > ea_16_0("expo_array_16_0");
+		class_<trig_array<16,0>::type> ta_16_0("trig_array_16_0");
+		class_<trig_array<16,1>::type> ta_16_1("trig_array_16_1");
+		class_<expo_array<16,0>::type> ea_16_0("expo_array_16_0");
 		// Common stuff.
-		cfkey_bindings<trig_array<16,0> >::run(ta_16_0);
-		cfkey_bindings<trig_array<16,1>,1>::run(ta_16_1);
-		cfkey_bindings<expo_array<16,0> >::run(ea_16_0);
+		cfkey_bindings<trig_array<16,0>::type>::run(ta_16_0);
+		cfkey_bindings<trig_array<16,1>::type,1>::run(ta_16_1);
+		cfkey_bindings<expo_array<16,0>::type>::run(ea_16_0);
 		// Trig-array specifics.
-		trig_array_bindings<trig_array<16,0> >::run(ta_16_0);
-		trig_array_bindings<trig_array<16,1>,1>::run(ta_16_1);
+		trig_array_bindings<trig_array<16,0>::type>::run(ta_16_0);
+		trig_array_bindings<trig_array<16,1>::type,1>::run(ta_16_1);
 		// Expo-array specifics.
 		expo_array_bindings(ea_16_0);
 	}

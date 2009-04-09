@@ -35,7 +35,7 @@ namespace piranha
 		/// Fourier series manipulator.
 		typedef fourier_series
 		<
-		double_cf, trig_array<16, 0>,
+		double_cf, trig_array<16, 0>::type,
 		poisson_series_multiplier,
 		norm_truncator
 		> dfs;

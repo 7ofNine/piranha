@@ -72,11 +72,6 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			template <int, int, class>
-			friend class trig_array;
-			// Additional friendship required by substitution.
-			template <int, int, class>
-			friend class expo_array;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;

@@ -67,9 +67,6 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			// Additional friendship required by substitution of polynomial arguments. 
-			template <int, int, class>
-			friend class expo_array;
 			// Override power functions with the ones from the common polynomial toolbox.
 			using POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;

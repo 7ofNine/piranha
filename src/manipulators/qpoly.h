@@ -36,7 +36,7 @@ namespace piranha
 		typedef polynomial
 		<
 		mpq_cf,
-		expo_array<16, 0>,
+		expo_array<16, 0>::type,
 		polynomial_multiplier,
 		power_series_truncator
 		> qpoly;

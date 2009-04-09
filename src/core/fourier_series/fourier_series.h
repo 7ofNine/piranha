@@ -64,9 +64,6 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			// Additional friendship required by substitution of trigonometric arguments. 
-			template <int, int, class>
-			friend class trig_array;
 			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;

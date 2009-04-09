@@ -32,28 +32,35 @@
 
 #include "../base_classes/int_array.h"
 #include "../base_classes/series_builders.h"
+#include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"
 #include "../psym.h"
 #include "../settings.h"
-#include "../utils.h" // For is_integer().
+#include "../utils.h" // For is_integer() and lexical_cast.
 
 #define __PIRANHA_EXPO_ARRAY_TP_DECL int Bits, int Pos, class Allocator
 #define __PIRANHA_EXPO_ARRAY_TP Bits,Pos,Allocator
 
 namespace piranha
 {
+	template < __PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
+	struct expo_array {
+		typedef toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > type;
+	};
+
 	/// Exponents array, dynamically sized version.
 	/**
 	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
 	 * capabilities needed for exponent manipulation.
 	 */
-	template < __PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
-	class expo_array: public int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >
+	template <>
+	template < __PIRANHA_EXPO_ARRAY_TP_DECL >
+	class toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> >: public int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >
 	{
-			typedef int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
-			friend class int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
+			typedef int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > > ancestor;
+			friend class int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
@@ -85,10 +92,10 @@ namespace piranha
 			};
 			// Ctors.
 			/// Default ctor.
-			expo_array(): ancestor::int_array() {}
+			toolbox(): ancestor::int_array() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit expo_array(const std::string &s, const ArgsTuple &): ancestor::int_array() {
+			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor::int_array() {
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside expo_size_t range.
@@ -101,7 +108,7 @@ namespace piranha
 			}
 			/// Ctor from psym.
 			template <class ArgsTuple>
-			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit toolbox(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			// Math.
 			/// Multiplication.
 			template <class ExpoArray, class ResultType>
@@ -178,7 +185,7 @@ namespace piranha
 				return (this->elements_are_zero());
 			}
 			/// Equality test.
-			bool operator==(const expo_array &e2) const {
+			bool operator==(const toolbox &e2) const {
 				return this->elements_equal_to(e2);
 			}
 			/// Norm.
@@ -248,8 +255,8 @@ namespace piranha
 			 * Result is a pair consisting of an integer and an exponent array.
 			 */
 			template <class PosTuple, class ArgsTuple>
-			std::pair<int, expo_array> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
-				std::pair<int, expo_array> retval(0, expo_array());
+			std::pair<int, toolbox> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
+				std::pair<int, toolbox> retval(0, toolbox());
 				const size_t pos = pos_tuple.template get<ancestor::position>().second;
 				p_assert(pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
@@ -264,7 +271,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			expo_array pow(const double &y, const ArgsTuple &) const {
+			toolbox pow(const double &y, const ArgsTuple &) const {
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -272,8 +279,8 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			expo_array root(const int &n, const ArgsTuple &) const {
-				expo_array retval = *this;
+			toolbox root(const int &n, const ArgsTuple &) const {
+				toolbox retval = *this;
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
@@ -324,7 +331,7 @@ namespace piranha
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					p_assert(pos < this->size());
-					expo_array tmp_ea(*this);
+					toolbox tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
 					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
@@ -347,8 +354,8 @@ namespace piranha
 			/**
 			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
 			 */
-			expo_array pow_int(const int &n) const {
-				expo_array retval(*this);
+			toolbox pow_int(const int &n) const {
+				toolbox retval(*this);
 				const size_type w = this->size();
 				// Integer power. Retval has already been set to this, modify integers in-place.
 				// TODO: check for overflow?
@@ -361,25 +368,13 @@ namespace piranha
 			/**
 			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
 			 */
-			expo_array pow_double(const double &) const {
+			toolbox pow_double(const double &) const {
 				// Real power is ok only if expo_array is unity.
 				if (!is_unity()) {
 					throw unsuitable("Cannot raise non-unity exponent array to real power.");
 				}
-				return expo_array(*this);
+				return toolbox(*this);
 			}
-
-
-
-
-
-
-
-
-
-
-
-
 	};
 }
 

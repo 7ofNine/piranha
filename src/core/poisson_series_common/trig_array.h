@@ -32,6 +32,7 @@
 
 #include "../base_classes/int_array.h"
 #include "../base_classes/series_builders.h"
+#include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
@@ -47,16 +48,21 @@
 
 namespace piranha
 {
+	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
+	struct trig_array {
+		typedef toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > type;
+	};
+
 	/// Trigonometric array, dynamically sized version.
 	/**
 	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
 	 * capabilities needed for trigonometric manipulation.
 	 */
-	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
-	class trig_array: public int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >
+	template < __PIRANHA_TRIG_ARRAY_TP_DECL>
+	class toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: public int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >
 	{
-			typedef int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
-			friend class int_array<Bits, Pos, Allocator, trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
+			typedef int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > > ancestor;
+			friend class int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<std::complex<SubSeries>,
 				base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
@@ -132,10 +138,10 @@ namespace piranha
 			};
 			// Ctors.
 			/// Default ctor.
-			trig_array(): ancestor::int_array() {}
+			toolbox(): ancestor::int_array() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor::int_array() {
+			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor::int_array() {
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
@@ -163,9 +169,9 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			explicit trig_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit toolbox(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			template <int Pos2>
-			explicit trig_array(const trig_array<Bits,Pos2,Allocator> &ta): ancestor::int_array(ta) {}
+			explicit toolbox(const toolbox<trig_array<Bits,Pos2,Allocator> > &ta): ancestor::int_array(ta) {}
 			// Probing.
 			/// Data footprint.
 			/**
@@ -193,7 +199,7 @@ namespace piranha
 			 * @param[out] ret2 second return value.
 			 */
 			template <class TrigArray>
-			void multiply(const TrigArray &t2, trig_array &ret1, trig_array &ret2) const
+			void multiply(const TrigArray &t2, toolbox &ret1, toolbox &ret2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
 			// critical part, so the optimization should be worth the hassle.
@@ -408,11 +414,11 @@ namespace piranha
 				return (this->elements_are_zero() && !this->m_flavour);
 			}
 			/// Equality test.
-			bool operator==(const trig_array &t2) const {
+			bool operator==(const toolbox &t2) const {
 				return (this->m_flavour == t2.m_flavour && this->elements_equal_to(t2));
 			}
 			/// Less than.
-			bool operator<(const trig_array &t2) const {
+			bool operator<(const toolbox &t2) const {
 				if (this->m_flavour < t2.m_flavour) {
 					return true;
 				} else if (this->m_flavour > t2.m_flavour) {
@@ -441,8 +447,8 @@ namespace piranha
 			 * Result is a pair consisting of an integer and a trigonometric array.
 			 */
 			template <class PosTuple, class ArgsTuple>
-			std::pair<int, trig_array> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
-				std::pair<int, trig_array> retval(0, trig_array());
+			std::pair<int, toolbox> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
+				std::pair<int, toolbox> retval(0, toolbox());
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
@@ -461,15 +467,15 @@ namespace piranha
 			}
 			/// Exponentiation.
 			template <class ArgsTuple>
-			trig_array pow(const double &y, const ArgsTuple &) const {
+			toolbox pow(const double &y, const ArgsTuple &) const {
 				return pow_number(y);
 			}
 			template <class ArgsTuple>
-			trig_array root(const int &n, const ArgsTuple &args_tuple) const {
+			toolbox root(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
 					throw division_by_zero();
 				} else if (n == 1) {
-					return trig_array(*this);
+					return toolbox(*this);
 				}
 				return pow(1. / static_cast<double>(n), args_tuple);
 			}
@@ -488,7 +494,7 @@ namespace piranha
 					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					const int power = static_cast<int>((*this)[pos]);
 					p_assert(pos < this->size());
-					trig_array tmp_ta(*this);
+					toolbox tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
 					// NOTE: important: we need key builders here because we may be building RetSeries
@@ -536,7 +542,7 @@ namespace piranha
 					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					const int power = static_cast<int>((*this)[pos]);
 					p_assert(pos < this->size());
-					trig_array tmp_ta(*this);
+					toolbox tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
@@ -583,9 +589,9 @@ namespace piranha
 				return retval;
 			}
 			template <class Number>
-			trig_array pow_number(const Number &y) const {
+			toolbox pow_number(const Number &y) const {
 				const bool int_zero = this->elements_are_zero();
-				trig_array retval;
+				toolbox retval;
 				if (y < 0) {
 					if (int_zero && !this->m_flavour) {
 						// 0**-y.
