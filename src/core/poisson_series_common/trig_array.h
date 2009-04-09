@@ -38,7 +38,8 @@
 #include "../int_power_cache.h"
 #include "../psym.h"
 #include "../settings.h"
-#include "../utils.h" // For is_integer().
+#include "../utils.h" // For lexical converter.
+// TODO: remove when efficient trig evaluation is implemented.
 #include "trig_evaluator.h"
 
 #define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator

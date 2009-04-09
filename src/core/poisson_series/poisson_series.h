@@ -77,9 +77,6 @@ namespace piranha
 			// Additional friendship required by substitution.
 			template <int, int, class>
 			friend class expo_array;
-			// TODO: temporary, change it.
-			template <class>
-			friend class expo_array_commons;
 			using POISSON_SERIES_COMMON_ANCESTOR::real_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::negative_integer_power;
 			using POISSON_SERIES_COMMON_ANCESTOR::nth_root;

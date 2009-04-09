@@ -21,15 +21,23 @@
 #ifndef PIRANHA_EXPO_ARRAY_H
 #define PIRANHA_EXPO_ARRAY_H
 
+#include <boost/algorithm/string/split.hpp>
+#include <cmath> // For std::abs and std::pow (this last is most likely temporary).
+#include <gmp.h>
+#include <gmpxx.h>
+#include <iostream>
 #include <memory> // For standard allocator.
 #include <string>
 #include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../base_classes/series_builders.h"
 #include "../common_functors.h"
+#include "../exceptions.h"
 #include "../int_power_cache.h"
 #include "../psym.h"
-#include "expo_array_commons.h"
+#include "../settings.h"
+#include "../utils.h" // For is_integer().
 
 #define __PIRANHA_EXPO_ARRAY_TP_DECL int Bits, int Pos, class Allocator
 #define __PIRANHA_EXPO_ARRAY_TP Bits,Pos,Allocator
@@ -42,12 +50,8 @@ namespace piranha
 	 * capabilities needed for exponent manipulation.
 	 */
 	template < __PIRANHA_EXPO_ARRAY_TP_DECL = std::allocator<char> >
-	class expo_array:
-				public int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >,
-				public expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >
+	class expo_array: public int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >
 	{
-			friend class expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
-			typedef expo_array_commons<expo_array<__PIRANHA_EXPO_ARRAY_TP> > expo_commons;
 			typedef int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> > ancestor;
 			friend class int_array<Bits, Pos, Allocator, expo_array<__PIRANHA_EXPO_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
@@ -84,8 +88,17 @@ namespace piranha
 			expo_array(): ancestor::int_array() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit expo_array(const std::string &s, const ArgsTuple &): ancestor::int_array(),
-					expo_commons::expo_array_commons(s) {}
+			explicit expo_array(const std::string &s, const ArgsTuple &): ancestor::int_array() {
+				std::vector<std::string> sd;
+				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
+				// TODO: check here that we are not loading too many multipliers, outside expo_size_t range.
+				// TODO: do it everywhere!
+				const size_t w = sd.size();
+				this->resize(w);
+				for (size_t i = 0; i < w; ++i) {
+					(*this)[i] = utils::lexical_converter<value_type>(sd[i]);
+				}
+			}
 			/// Ctor from psym.
 			template <class ArgsTuple>
 			explicit expo_array(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
@@ -108,6 +121,265 @@ namespace piranha
 					ret[i] = (*this)[i];
 				}
 			}
+			// I/O.
+			template <class ArgsTuple>
+			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				// We assert like this because we want to make sure we don't go out of boundaries,
+				// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
+				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				(void)args_tuple;
+				this->print_elements(out_stream);
+			}
+			template <class ArgsTuple>
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				bool printed_something = false;
+				for (size_t i = 0; i < this->m_size; ++i) {
+					const int n = this->m_container.v[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// Prepend the multiplication operator only if we already printed something.
+						if (printed_something) {
+							out_stream << '*';
+						}
+						// Take care of printing the name of the exponent.
+						out_stream << args_tuple.template get<ancestor::position>()[i]->name();
+						// Print the pow operator only if exponent is not unitary.
+						if (n != 1) {
+							out_stream << "**" << n;
+						}
+						printed_something = true;
+					}
+				}
+			}
+			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
+				// TODO: implement.
+			}
+			template <class ArgsTuple>
+			double eval(const double &t, const ArgsTuple &args_tuple) const {
+				const size_t w = this->size();
+				p_assert(w <= args_tuple.template get<ancestor::position>().size());
+				double retval = 1.;
+				for (size_t i = 0;i < w;++i) {
+					retval *= std::pow(args_tuple.template get<ancestor::position>()[i]->eval(t),
+						(*this)[i]);
+				}
+				return retval;
+			}
+			/// Am I ignorable?
+			/**
+			 * By construction an array of exponents is never ignorable.
+			 */
+			template <class ArgsTuple>
+			bool is_ignorable(const ArgsTuple &) const {
+				return false;
+			}
+			bool is_unity() const {
+				return (this->elements_are_zero());
+			}
+			/// Equality test.
+			bool operator==(const expo_array &e2) const {
+				return this->elements_equal_to(e2);
+			}
+			/// Norm.
+			/**
+			 * The norm of an exponent array is defined as the evaluation at t=0.
+			 */
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &args_tuple) const {
+				return std::abs(eval(0, args_tuple));
+			}
+			/// Calculate hash value.
+			size_t hash_value() const {
+				return this->elements_hasher();
+			}
+			/// Return the total degree of the exponents array.
+			int degree() const {
+				int retval = 0;
+				for (size_type i = 0; i < this->m_size; ++i) {
+					retval += (*this)[i];
+				}
+				return retval;
+			}
+			// This is the min total degree of a collection.
+			// In this case the collection has a single element, hence the minimum degree is the degree itself.
+			int min_degree() const {
+				return degree();
+			}
+			template <class ArgsTuple>
+			int min_expo_of(const size_t &n, const ArgsTuple &) const {
+				if (n >= this->size()) {
+					return 0;
+				} else {
+					return (*this)[n];
+				}
+			}
+			/// Return the position of the linear argument in the monomial.
+			/**
+			 * It will throw if the monomial is not linear or zero degree.
+			 */
+			int linear_arg_position() const {
+				bool found_linear = false;
+				bool is_unity = true;
+				int candidate = -1;
+				for (size_type i = 0; i < this->m_size; ++i) {
+					if ((*this)[i] == 1) {
+						is_unity = false;
+						if (found_linear) {
+							found_linear = false;
+							break;
+						} else {
+							candidate = i;
+							found_linear = true;
+						}
+					} else if ((*this)[i] != 0) {
+						is_unity = false;
+						found_linear = false;
+						break;
+					}
+				}
+				if (!found_linear && !is_unity) {
+					throw unsuitable("Monomial is not linear.");
+				}
+				return candidate;
+			}
+			/// Calculate partial derivative.
+			/**
+			 * Result is a pair consisting of an integer and an exponent array.
+			 */
+			template <class PosTuple, class ArgsTuple>
+			std::pair<int, expo_array> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
+				std::pair<int, expo_array> retval(0, expo_array());
+				const size_t pos = pos_tuple.template get<ancestor::position>().second;
+				p_assert(pos < this->size());
+				// Do something only if the argument of the partial derivation is present in the exponent array
+				// and the interesting exponent is not zero.
+				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
+				// by the coefficient in the partial derivation of the whole term.
+				if (pos_tuple.template get<ancestor::position>().first && this->m_container.v[pos] != 0) {
+					retval.second = *this;
+					retval.first = this->m_container.v[pos];
+					--retval.second[pos];
+				}
+				return retval;
+			}
+			template <class ArgsTuple>
+			expo_array pow(const double &y, const ArgsTuple &) const {
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+					return pow_double(y);
+				}
+			}
+			template <class ArgsTuple>
+			expo_array root(const int &n, const ArgsTuple &) const {
+				expo_array retval = *this;
+				if (n == 0) {
+					throw division_by_zero();
+				} else if (n == 1) {
+					return retval;
+				}
+				const size_t size = this->size();
+				const mpz_class d = n;
+				mpz_class rem;
+				std::vector<mpz_class> qs(size);
+				for (size_t i = 0; i < size; ++i) {
+					mpz_tdiv_qr(qs[i].get_mpz_t(),rem.get_mpz_t(),
+						mpz_class((*this)[i]).get_mpz_t(),d.get_mpz_t());
+					if (rem != 0) {
+						throw unsuitable("Exponent is not suitable for the calculation of nth root.");
+					}
+					retval[i] = mpz_get_si(qs[i].get_mpz_t());
+				}
+				return retval;
+			}
+			void upload_min_exponents(std::vector<int> &v) const {
+				this->upload_ints_to(v);
+			}
+			void test_min_exponents(std::vector <int> &v) const {
+				this->test_min_ints(v);
+			}
+			// Return true if the exponents are smaller than those specified in the limits vector.
+			template <class ArgsTuple>
+			bool test_expo_limits(const std::vector<std::pair<size_t, int> > &v, const ArgsTuple &) const {
+				const size_t size = v.size();
+				for (size_t i = 0; i < size; ++i) {
+					p_assert(v[i].first < this->m_size);
+					if ((*this)[v[i].first] > v[i].second) {
+						return false;
+					}
+				}
+				return true;
+			}
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches,
+				const ArgsTuple &args_tuple) const {
+				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename ret_term_type::cf_type ret_cf_type;
+				RetSeries retval;
+				// If the argument is not present here, the return series will have one term consisting
+				// of a unitary coefficient and this very expo_array.
+				if (!pos_tuple.template get<ancestor::position>().first) {
+					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+				} else {
+					const size_t pos = pos_tuple.template get<ancestor::position>().second;
+					p_assert(pos < this->size());
+					expo_array tmp_ea(*this);
+					// Let's turn off the exponent associated to the symbol we are substituting.
+					tmp_ea[pos] = 0;
+					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
+					p_assert(retval.empty());
+					// NOTICE: series multadd here?
+					retval.base_add(orig, args_tuple);
+					retval.base_mult_by(sub_caches.template get<ancestor::position>()
+						[(*this)[pos]],
+					args_tuple);
+				}
+				return retval;
+			}
+			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries ei_sub(const PosTuple &, SubCaches &,
+				const ArgsTuple &args_tuple) const {
+				return key_series_builder::template run<RetSeries>(*this, args_tuple);
+			}
+		private:
+			/// Integer exponentiation.
+			/**
+			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+			 */
+			expo_array pow_int(const int &n) const {
+				expo_array retval(*this);
+				const size_type w = this->size();
+				// Integer power. Retval has already been set to this, modify integers in-place.
+				// TODO: check for overflow?
+				for (size_type i = 0; i < w; ++i) {
+					retval[i] *= (value_type)n;
+				}
+				return retval;
+			}
+			/// Real exponentiation.
+			/**
+			 * If the exponent array cannot be raised to the desired power, an exception will be thrown.
+			 */
+			expo_array pow_double(const double &) const {
+				// Real power is ok only if expo_array is unity.
+				if (!is_unity()) {
+					throw unsuitable("Cannot raise non-unity exponent array to real power.");
+				}
+				return expo_array(*this);
+			}
+
+
+
+
+
+
+
+
+
+
+
+
 	};
 }
 
