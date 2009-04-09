@@ -78,6 +78,7 @@ namespace piranha
 	const size_t settings::cache_size;
 	bool settings::blocker = false;
 	settings::startup_class settings::startup;
+	size_t settings::m_max_pretty_print_size = 500;
 
 	settings::startup_class::startup_class()
 	{
@@ -171,5 +172,18 @@ namespace piranha
 	void settings::format(out_format fmt)
 	{
 		m_format = fmt;
+	}
+
+	size_t settings::get_max_pretty_print_size()
+	{
+		return m_max_pretty_print_size;
+	}
+
+	void settings::set_max_pretty_print_size(int n)
+	{
+		if (n < 10) {
+			throw unsuitable("Invalid max size for pretty printing.");
+		}
+		m_max_pretty_print_size = n;
 	}
 }

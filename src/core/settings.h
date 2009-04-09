@@ -114,12 +114,11 @@ namespace piranha
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
 			/// Cache size in kilobytes.
-			/**
-			 * Determined at compile-time.
-			 */
 			static const size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 			static bool blocker;
+			static size_t get_max_pretty_print_size();
+			static void set_max_pretty_print_size(int);
 		private:
 			/// Startup class.
 			/**
@@ -130,6 +129,7 @@ namespace piranha
 				public:
 					startup_class();
 			};
+			static size_t			m_max_pretty_print_size;
 			/// Memory limit in bytes.
 			static size_t			m_memory_limit;
 			/// Load factor for hashed containers.

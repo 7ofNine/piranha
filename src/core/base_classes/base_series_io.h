@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_IO_H
 #define PIRANHA_BASE_SERIES_IO_H
 
+#include <algorithm>
+#include <boost/lambda/lambda.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -71,10 +73,13 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream,
 			const ArgsTuple &args_tuple, int) const
 	{
+		using namespace boost::lambda;
 		settings::setup_stream(stream);
 		if (empty()) {
 			stream << '0';
 		} else {
+			const size_t max_length = settings::get_max_pretty_print_size();
+			size_t count = 0;
 			const const_iterator it_f = end(), it_i = begin();
 			for (const_iterator it = it_i; it != it_f; ++it) {
 				std::ostringstream tmp_stream;
@@ -84,6 +89,12 @@ namespace piranha
 				// If this is not the first term, we need to add the "+" sign if appropriate.
 				if (it != it_i && !tmp.empty() && tmp[0] != '-') {
 					tmp.insert(tmp.begin(),'+');
+				}
+				count += tmp.size();
+				if (count > max_length) {
+					std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << (boost::lambda::_1));
+					stream << "...";
+					break;
 				}
 				if (!tmp.empty()) {
 					stream << tmp;

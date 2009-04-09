@@ -37,7 +37,7 @@ namespace piranha
 
 	/// Norm-based truncator.
 	template<>
-	class toolbox<norm_truncator_>
+	class __PIRANHA_VISIBLE toolbox<norm_truncator_>
 	{
 		public:
 			template <class Multiplier>
