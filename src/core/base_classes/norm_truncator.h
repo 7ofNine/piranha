@@ -33,74 +33,15 @@
 
 namespace piranha
 {
-	struct base_norm_truncator {};
-
-	template <>
-	class __PIRANHA_VISIBLE toolbox<base_norm_truncator>
-	{
-		public:
-			static void set(const int &n) {
-				if (n <= 0) {
-					throw(unsuitable("Please insert a positive integer."));
-				} else {
-					m_truncation_level = std::pow(10., -n);
-				}
-				m_truncation_power = n;
-			}
-			static void print(std::ostream &stream = std::cout);
-			// Returns the length of a development in powers of x that satisfies the condition that the
-			// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
-			// times smaller.
-			template <class T, class ArgsTuple>
-			static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
-				const ArgsTuple &args_tuple) {
-				// NOTE: share this check in some kind of base truncator class?
-				if (step_size < 1) {
-					throw unsuitable("Please use a step size of at least 1.");
-				}
-				if (m_truncation_power == 0) {
-					throw unsuitable("No value set for norm-based truncation, "
-						"cannot calculate limit of power series expansion.");
-				}
-				const double norm = x.base_norm(args_tuple);
-				p_assert(norm >= 0);
-				if (norm >= 1) {
-					throw unsuitable("The norm of the argument of the power series expansion is >= 1: "
-						"the norm truncator is unable to give an estimate of the power series limit.");
-				}
-				// Let's prevent log10(0) below.
-				if (norm == 0) {
-					throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
-						"is zero.");
-				}
-				int retval = static_cast<int>(std::ceil(static_cast<double>(
-						static_cast<int>(std::ceil(std::log10(m_truncation_level) /
-						std::log10(norm) + 1 - start)) / step_size))) + 1;
-				// This could be negative if starting power is big enough. In this case return 0.
-				if (retval >= 0) {
-					return retval;
-				} else {
-					return 0;
-				}
-			}
-			static void unset();
-			static bool is_effective() {
-				return m_truncation_power != 0;
-			}
-		protected:
-			static int	m_truncation_power;
-			static double	m_truncation_level;
-	};
-
 	struct norm_truncator_;
 
 	/// Norm-based truncator.
 	template<>
-	class toolbox<norm_truncator_>: public toolbox<base_norm_truncator>
+	class toolbox<norm_truncator_>
 	{
 		public:
 			template <class Multiplier>
-			class get_type: public toolbox<base_norm_truncator>
+			class get_type
 			{
 					template <class ArgsTuple>
 					class norm_comparison
@@ -140,6 +81,44 @@ namespace piranha
 								m_delta_threshold
 						);
 					}
+					static bool is_effective() {
+						return m_truncation_power != 0;
+					}
+					// Returns the length of a development in powers of x that satisfies the condition that the
+					// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
+					// times smaller.
+					template <class T, class ArgsTuple>
+					static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+						const ArgsTuple &args_tuple) {
+						// NOTE: share this check in some kind of base truncator class?
+						if (step_size < 1) {
+							throw unsuitable("Please use a step size of at least 1.");
+						}
+						if (m_truncation_power == 0) {
+							throw unsuitable("No value set for norm-based truncation, "
+								"cannot calculate limit of power series expansion.");
+						}
+						const double norm = x.base_norm(args_tuple);
+						p_assert(norm >= 0);
+						if (norm >= 1) {
+							throw unsuitable("The norm of the argument of the power series expansion is >= 1: "
+								"the norm truncator is unable to give an estimate of the power series limit.");
+						}
+						// Let's prevent log10(0) below.
+						if (norm == 0) {
+							throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
+								"is zero.");
+						}
+						int retval = static_cast<int>(std::ceil(static_cast<double>(
+								static_cast<int>(std::ceil(std::log10(m_truncation_level) /
+								std::log10(norm) + 1 - start)) / step_size))) + 1;
+						// This could be negative if starting power is big enough. In this case return 0.
+						if (retval >= 0) {
+							return retval;
+						} else {
+							return 0;
+						}
+					}
 				protected:
 					void init() {
 						if (is_effective()) {
@@ -152,6 +131,20 @@ namespace piranha
 					Multiplier    &m_multiplier;
 					const double  m_delta_threshold;
 			};
+			// Shared portion.
+			static void set(const int &n) {
+				if (n <= 0) {
+					throw(unsuitable("Please insert a positive integer."));
+				} else {
+					m_truncation_level = std::pow(10., -n);
+				}
+				m_truncation_power = n;
+			}
+			static void print(std::ostream &stream = std::cout);
+			static void unset();
+		private:
+			static int	m_truncation_power;
+			static double	m_truncation_level;
 	};
 
 	typedef toolbox<norm_truncator_> norm_truncator;

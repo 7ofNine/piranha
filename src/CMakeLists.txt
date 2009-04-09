@@ -6,7 +6,7 @@ SET(SRC_LIST ${SRC_LIST}
 	#shared_args.cpp
 	base_degree_truncator.cpp
 	base_expo_truncator.cpp
-	base_norm_truncator.cpp
+	norm_truncator.cpp
 	memory.cpp
 	settings.cpp
 	psym.cpp

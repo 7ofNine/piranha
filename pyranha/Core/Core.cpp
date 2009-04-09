@@ -146,11 +146,11 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("set", limit_psym(&base_expo_truncator::set),
 		"Set exponent limit for psym arg1 to integer arg2.").staticmethod("set");
 
-	class_<toolbox<base_norm_truncator> >("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &py_print_to_string<toolbox<base_norm_truncator> >)
-	.def("set", &toolbox<base_norm_truncator>::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
+	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
+	.def("__repr__", &py_print_to_string<norm_truncator>)
+	.def("set", &norm_truncator::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
 		 "throw an error otherwise.").staticmethod("set")
-	.def("unset", &toolbox<base_norm_truncator>::unset, "Disable norm-based truncation.").staticmethod("unset");
+	.def("unset", &norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	class_<base_degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<base_degree_truncator>)

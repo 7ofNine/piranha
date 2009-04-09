@@ -42,6 +42,13 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 		public:
 			typedef RealDerived value_type;
+			bool operator==(const std::complex<double> &cx) const {
+				return derived_const_cast->generic_numerical_comparison(cx);
+			}
+			bool operator!=(const std::complex<double> &cx) const {
+				return !(*this == cx);
+			}
+		protected:
 			template <class ArgsTuple>
 			RealDerived base_real(const ArgsTuple &args_tuple) const {
 				return get_comp<0>(args_tuple);
@@ -95,13 +102,6 @@ namespace piranha
 				retval.base_imag(tmp,args_tuple);
 				return retval;
 			}
-			bool operator==(const std::complex<double> &cx) const {
-				return derived_const_cast->generic_numerical_comparison(cx);
-			}
-			bool operator!=(const std::complex<double> &cx) const {
-				return !(*this == cx);
-			}
-		protected:
 			template <class ArgsTuple>
 			Derived &base_add(const RealDerived &r, const ArgsTuple &args_tuple) {
 				return derived_cast->template merge_terms<true>(r, args_tuple);

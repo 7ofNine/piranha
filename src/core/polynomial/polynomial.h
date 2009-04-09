@@ -118,6 +118,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::nth_root;
+			// Complex overrides.
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_add;
@@ -127,6 +128,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_divide_by;
+			// Polynomial norm override.
 			using COMPLEX_POLYNOMIAL_COMMON_ANCESTOR::base_norm;
 		public:
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::operator==;
