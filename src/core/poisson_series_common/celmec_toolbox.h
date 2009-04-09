@@ -37,7 +37,6 @@ namespace piranha
 	 * special functions toolbox. Derived must be a Poisson series with
 	 * polynomial arguments in slot 0 of the arguments tuple.
 	 */
-	template <>
 	template <class Derived>
 	class toolbox<celmec<Derived> >
 	{

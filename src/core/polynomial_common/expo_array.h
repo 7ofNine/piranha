@@ -55,17 +55,16 @@ namespace piranha
 	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
 	 * capabilities needed for exponent manipulation.
 	 */
-	template <>
 	template < __PIRANHA_EXPO_ARRAY_TP_DECL >
 	class toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> >: public int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >
 	{
 			typedef int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > > ancestor;
 			friend class int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class sub_cache: public int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type>
 			{
 					typedef int_power_cache<SubSeries,
-						base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+						typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
 				public:
 					sub_cache():ancestor::int_power_cache() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {

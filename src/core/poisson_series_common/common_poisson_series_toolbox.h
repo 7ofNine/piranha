@@ -73,7 +73,6 @@ namespace piranha
 	template <class Derived>
 	struct common_poisson_series {};
 
-	template <>
 	template <class Derived>
 	class toolbox<common_poisson_series<Derived> >:
 		public toolbox<jacobi_anger<1, Derived> >,
@@ -209,7 +208,7 @@ namespace piranha
 				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
-				jacang_ancestor::jacobi_anger(cache, int_linear_term.first, retval, args_tuple);
+				jacang_ancestor::jacang(cache, int_linear_term.first, retval, args_tuple);
 				// If the linear term was found, take care of it.
 				if (int_linear_term.first != cache.end()) {
 					std::complex<Derived> tmp_series;

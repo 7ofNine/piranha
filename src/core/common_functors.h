@@ -23,6 +23,7 @@
 
 #include <algorithm>
 
+#include "base_classes/toolbox.h"
 #include "p_assert.h"
 
 namespace piranha
@@ -63,9 +64,13 @@ namespace piranha
 	};
 
 	template <class T, class ArgsTuple>
-	struct base_series_arithmetics
-	{
-		base_series_arithmetics():m_args_tuple(0)
+	struct base_series_arithmetics {
+		typedef toolbox<base_series_arithmetics<T,ArgsTuple> > type;
+	};
+
+	template <class T, class ArgsTuple>
+	struct toolbox<base_series_arithmetics<T,ArgsTuple> > {
+		toolbox():m_args_tuple(0)
 		{}
 		T inv(const T &orig) const {
 			p_assert(m_args_tuple);

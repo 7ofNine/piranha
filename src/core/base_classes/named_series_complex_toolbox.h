@@ -35,7 +35,6 @@ namespace piranha
 	template <class RealDerived>
 	struct named_series_complex {};
 
-	template <>
 	template <class RealDerived>
 	class toolbox<named_series_complex<RealDerived> >
 	{

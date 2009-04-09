@@ -66,7 +66,6 @@ namespace piranha
 	template <class Derived>
 	struct common_fourier_series {};
 
-	template <>
 	template <class Derived>
 	class toolbox<common_fourier_series<Derived> >:
 		public toolbox<jacobi_anger<0, Derived> >,
@@ -117,7 +116,7 @@ namespace piranha
 						}
 					}
 					// Expand using Jacobi-Anger's identity.
-					jacang_ancestor::jacobi_anger(cache, it, retval, args_tuple);
+					jacang_ancestor::jacang(cache, it, retval, args_tuple);
 					if (it != it_f) {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;

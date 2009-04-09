@@ -65,10 +65,10 @@ namespace piranha
 			friend class int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<std::complex<SubSeries>,
-				base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
+				typename base_series_arithmetics<std::complex<SubSeries>,ArgsTuple>::type>
 			{
 					typedef int_power_cache<std::complex<SubSeries>,
-						base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
+						typename base_series_arithmetics<std::complex<SubSeries>,ArgsTuple>::type> ancestor;
 					enum status {
 						zero,
 						one,
@@ -116,9 +116,9 @@ namespace piranha
 					std::string	m_errmsg;
 			};
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class ei_sub_cache: public int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type>
 			{
-					typedef int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+					typedef int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
 				public:
 					ei_sub_cache():ancestor::int_power_cache() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {

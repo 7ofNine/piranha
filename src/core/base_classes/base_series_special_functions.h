@@ -36,7 +36,6 @@ namespace piranha
 	template <class Derived>
 	struct base_series_special_functions {};
 
-	template <>
 	template <class Derived>
 	class toolbox<base_series_special_functions<Derived> >
 	{

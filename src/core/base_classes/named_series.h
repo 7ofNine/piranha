@@ -54,7 +54,6 @@ namespace piranha
 	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
 	 * called "name" naming the arguments of the series.
 	 */
-	template <>
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	class toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >
 	{
@@ -134,7 +133,6 @@ namespace piranha
 	};
 
 	// Initialization of static member.
-	template <>
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::unknown_data;
 

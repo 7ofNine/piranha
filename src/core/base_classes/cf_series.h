@@ -44,7 +44,6 @@ namespace piranha
 	/**
 	 * Intended to be inherited by piranha::base_series.
 	 */
-	template <>
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >
 	{

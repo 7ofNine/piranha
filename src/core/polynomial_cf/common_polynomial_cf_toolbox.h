@@ -39,7 +39,6 @@ namespace piranha
 	template <class Derived>
 	struct common_polynomial_cf {};
 
-	template <>
 	template <class Derived>
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	class toolbox<common_polynomial_cf<Derived> >: public toolbox<common_polynomial<Derived> >,

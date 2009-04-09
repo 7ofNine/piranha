@@ -42,7 +42,6 @@ namespace piranha
 	struct binomial_exponentiation {};
 
 	// Note: this should be used with protected inheritance.
-	template <>
 	template <class Derived, template <class> class Sorter>
 	class toolbox<binomial_exponentiation<Derived,Sorter> >
 	{

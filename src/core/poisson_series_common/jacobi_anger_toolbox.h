@@ -35,16 +35,17 @@
 namespace piranha
 {
 	template <int TrigPos, class Derived>
-	struct jacobi_anger {};
+	struct jacobi_anger {
+		typedef toolbox<jacobi_anger<TrigPos,Derived> > type;
+	};
 
-	template <>
 	template <int TrigPos, class Derived>
 	class toolbox<jacobi_anger<TrigPos,Derived> >
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		protected:
 			template <class Term, class ArgsTuple>
-			static void jacobi_anger(const std::vector<Term const *> &v,
+			static void jacang(const std::vector<Term const *> &v,
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 
 				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;

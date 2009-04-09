@@ -96,7 +96,7 @@ namespace piranha
 
 	/// Norm-based truncator.
 	template<>
-	class toolbox<norm_truncator_>
+	class toolbox<norm_truncator_>: public toolbox<base_norm_truncator>
 	{
 		public:
 			template <class Multiplier>

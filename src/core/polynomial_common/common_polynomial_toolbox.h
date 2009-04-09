@@ -35,7 +35,6 @@ namespace piranha
 	template <class Derived>
 	struct common_polynomial {};
 
-	template <>
 	template <class Derived>
 	class toolbox<common_polynomial<Derived> >:
 		protected toolbox<binomial_exponentiation<Derived,term_key_degree_comparison> >

@@ -25,7 +25,6 @@
 #include <functional> // For std::equal_to.
 #include <vector>
 
-#include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
@@ -50,7 +49,6 @@ namespace piranha
 	/**
 	 * Term must derive from piranha::base_term class.
 	 */
-	template <>
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	class toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >
 	{
@@ -65,8 +63,6 @@ namespace piranha
 			// Term container.
 			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
 				container_type;
-			template <class T, class ArgsTuple>
-			friend struct base_series_arithmetics;
 		public:
 			typedef term_type_ term_type;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;

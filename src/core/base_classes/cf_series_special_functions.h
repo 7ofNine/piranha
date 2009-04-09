@@ -31,7 +31,6 @@ namespace piranha
 	template <class Derived>
 	struct cf_series_special_functions {};
 
-	template <>
 	template <class Derived>
 	class toolbox<cf_series_special_functions<Derived> >
 	{

@@ -36,7 +36,6 @@ namespace piranha
 	struct power_series {};
 
 	/// Power series toolbox.
-	template <>
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
 	class toolbox<power_series<ExpoArgsPosition,ExpoTermPosition,Derived> >
 	{
