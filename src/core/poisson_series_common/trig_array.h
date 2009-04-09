@@ -461,11 +461,7 @@ namespace piranha
 			/// Exponentiation.
 			template <class ArgsTuple>
 			trig_array pow(const double &y, const ArgsTuple &) const {
-				if (utils::is_integer(y)) {
-					return pow_int((int)y);
-				} else {
-					return pow_double(y);
-				}
+				return pow_number(y);
 			}
 			template <class ArgsTuple>
 			trig_array root(const int &n, const ArgsTuple &args_tuple) const {
@@ -585,68 +581,34 @@ namespace piranha
 				}
 				return retval;
 			}
-			trig_array pow_int(const int &n) const {
-				const bool int_zero = this->elements_are_zero();
-				trig_array retval;
-				if (n < 0) {
-					if (int_zero && !this->m_flavour) {
-						// 0^-n.
-						throw division_by_zero();
-					} else if (int_zero && this->m_flavour) {
-						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
-						;
-					} else {
-						// x^-n -> no go.
-						throw unsuitable("Non-unity Trigonometric array is not suitable for negative integer "
-							"exponentiation.");
-					}
-				} else if (n == 0) {
-					// x^0 == 1. Don't do nothing because retval is already initialized properly.
-					;
-				} else {
-					if (int_zero && !this->m_flavour) {
-						// 0^n == 0.
-						retval.m_flavour = false;
-					} else if (int_zero && this->m_flavour) {
-						// 1^y == 1. Don't do nothing because retval is already initialized properly.
-						;
-					} else {
-						// x^n --> no go (it should be handled by natural power routine for series).
-						throw unsuitable("Non-unity Trigonometric array is not suitable for positive integer"
-							"exponentiation.");
-					}
-				}
-				return retval;
-			}
-			trig_array pow_double(const double &y) const {
+			template <class Number>
+			trig_array pow_number(const Number &y) const {
 				const bool int_zero = this->elements_are_zero();
 				trig_array retval;
 				if (y < 0) {
 					if (int_zero && !this->m_flavour) {
-						// 0^-y.
+						// 0**-y.
 						throw division_by_zero();
 					} else if (int_zero && this->m_flavour) {
-						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
+						// 1**-y == 1. Don't do anything because retval is already initialized properly.
 						;
 					} else {
-						// x^-y -> no go.
-						throw unsuitable("Non-unity Trigonometric array is not suitable for negative real "
-							"exponentiation.");
+						// x**-y -> no go.
+						throw unsuitable("Non-unity Trigonometric array is not suitable for negative exponentiation.");
 					}
 				} else if (y == 0) {
-					// x^0 == 1. Don't do nothing because retval is already initialized properly.
+					// x**0 == 1. Don't do nothing because retval is already initialized properly.
 					;
 				} else {
 					if (int_zero && !this->m_flavour) {
-						// 0^y == 0.
+						// 0**y == 0.
 						retval.m_flavour = false;
 					} else if (int_zero && this->m_flavour) {
-						// 1^y == 1. Don't do nothing because retval is already initialized properly.
+						// 1**y == 1. Don't do anything because retval is already initialized properly.
 						;
 					} else {
-						// x^y --> no go.
-						throw unsuitable("Non-unity Trigonometric array is not suitable for positive real "
-							"exponentiation.");
+						// x**y --> no go.
+						throw unsuitable("Non-unity Trigonometric array is not suitable for positive exponentiation.");
 					}
 				}
 				return retval;
