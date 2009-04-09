@@ -275,8 +275,8 @@ namespace piranha
 			}
 			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
 				const size_t w = v.size();
-				p_assert(w <= size())
-				switch (m_flavour) {
+				p_assert(w <= this->size())
+				switch (this->m_flavour) {
 					case true:
 						out_stream << "c&";
 						break;
@@ -307,7 +307,7 @@ namespace piranha
 				out_stream << tmp;
 			}
 			bool is_unity() const {
-				return (elements_are_zero() && m_flavour);
+				return (this->elements_are_zero() && this->m_flavour);
 			}
 			/// Frequency.
 			/**
@@ -335,7 +335,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {
-				p_assert(args_tuple.template get<position>().size() >= size());
+				p_assert(args_tuple.template get<ancestor::position>().size() >= this->size());
 				(void)args_tuple;
 				return 1;
 			}
@@ -347,15 +347,15 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
-				const size_t w = size();
-				p_assert(w <= args_tuple.template get<position>().size());
+				const size_t w = this->size();
+				p_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
-						retval += (*this)[i] * args_tuple.template get<position>()[i]->eval(t);
+						retval += (*this)[i] * args_tuple.template get<ancestor::position>()[i]->eval(t);
 					}
 				}
-				if (m_flavour) {
+				if (this->m_flavour) {
 					return std::cos(retval);
 				} else {
 					return std::sin(retval);
@@ -371,14 +371,14 @@ namespace piranha
 			template <class TrigEvaluator>
 			double t_eval(TrigEvaluator &te) const {
 				const size_t w = te.width();
-				p_assert(w <= size());
+				p_assert(w <= this->size());
 				std::complex<double> retval(1.);
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
 						retval *= te.request_ei(i, (*this)[i]);
 					}
 				}
-				if (m_flavour) {
+				if (this->m_flavour) {
 					return retval.real();
 				} else {
 					return retval.imag();
@@ -390,7 +390,7 @@ namespace piranha
 			 * This function is used to test for canonical form in piranha::poisson_series_term.
 			 */
 			short int sign() const {
-				const size_t w = size();
+				const size_t w = this->size();
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] > 0) {
 						return 1;
@@ -404,33 +404,33 @@ namespace piranha
 			// All multipliers are zero and flavour is sine.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (elements_are_zero() && !m_flavour);
+				return (this->elements_are_zero() && !this->m_flavour);
 			}
 			/// Equality test.
 			bool operator==(const trig_array &t2) const {
-				return (m_flavour == t2.m_flavour && elements_equal_to(t2));
+				return (this->m_flavour == t2.m_flavour && this->elements_equal_to(t2));
 			}
 			/// Less than.
 			bool operator<(const trig_array &t2) const {
-				if (m_flavour < t2.m_flavour) {
+				if (this->m_flavour < t2.m_flavour) {
 					return true;
-				} else if (m_flavour > t2.m_flavour) {
+				} else if (this->m_flavour > t2.m_flavour) {
 					return false;
 				}
-				return lex_comparison(t2);
+				return this->lex_comparison(t2);
 			}
 			/// Calculate hash_value.
 			/**
 			 * Used by the hash_value overload for piranha::base_term.
 			 */
 			size_t hash_value() const {
-				size_t retval = elements_hasher();
-				boost::hash_combine(retval, m_flavour);
+				size_t retval = this->elements_hasher();
+				boost::hash_combine(retval, this->m_flavour);
 				return retval;
 			}
 			/// Multiply by an integer.
 			void mult_by_int(const int &n) {
-				const size_t w = size();
+				const size_t w = this->size();
 				for (size_t i = 0;i < w;++i) {
 					(*this)[i] *= n;
 				}
@@ -445,14 +445,14 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
-				if (pos_tuple.template get<position>().first) {
+				if (pos_tuple.template get<ancestor::position>().first) {
 					retval.second = *this;
-					const size_t pos = pos_tuple.template get<position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					// Change the flavour of the resulting key.
-					retval.second.m_flavour = !m_flavour;
-					p_assert(pos < size());
-					retval.first = m_container.v[pos];
-					if (m_flavour) {
+					retval.second.m_flavour = !this->m_flavour;
+					p_assert(pos < this->size());
+					retval.first = this->m_container.v[pos];
+					if (this->m_flavour) {
 						retval.first = -retval.first;
 					}
 				}
@@ -485,12 +485,12 @@ namespace piranha
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
-				if (!pos_tuple.template get<position>().first) {
+				if (!pos_tuple.template get<ancestor::position>().first) {
 					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					const int power = static_cast<int>((*this)[pos]);
-					p_assert(pos < size());
+					p_assert(pos < this->size());
 					trig_array tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
@@ -504,22 +504,22 @@ namespace piranha
 					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
-					if (get_flavour()) {
+					if (this->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<position>()[power].base_real(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<position>()[power].base_imag(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_subtract(orig_sin, args_tuple);
 					} else {
 						retval.base_add(orig_sin, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<position>()[power].base_real(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<position>()[power].base_imag(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
@@ -533,12 +533,12 @@ namespace piranha
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				if (!pos_tuple.template get<position>().first) {
+				if (!pos_tuple.template get<ancestor::position>().first) {
 					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>().second;
 					const int power = static_cast<int>((*this)[pos]);
-					p_assert(pos < size());
+					p_assert(pos < this->size());
 					trig_array tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
@@ -546,22 +546,22 @@ namespace piranha
 					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
 					p_assert(retval.empty());
-					if (m_flavour) {
+					if (this->m_flavour) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<position>()[power].base_real(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<position>()[power].base_imag(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_subtract(orig_sin, args_tuple);
 					} else {
 						retval.base_add(orig_sin, args_tuple);
 						retval.base_mult_by(
-							sub_caches.template get<position>()[power].base_real(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
 						args_tuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<position>()[power].base_imag(args_tuple),
+							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
 						args_tuple);
 						retval.base_add(orig_cos, args_tuple);
 					}
@@ -573,26 +573,26 @@ namespace piranha
 			template <int N, class ArgsTuple>
 			double combined_time_eval(const ArgsTuple &args_tuple) const {
 				p_static_check(N >= 0, "");
-				const size_t w = size();
-				p_assert(w <= args_tuple.template get<position>().size());
+				const size_t w = this->size();
+				p_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.
-					if (args_tuple.template get<position>()[i]->time_eval().size() > N) {
+					if (args_tuple.template get<ancestor::position>()[i]->time_eval().size() > N) {
 						retval += (*this)[i] *
-							args_tuple.template get<position>()[i]->time_eval()[N];
+							args_tuple.template get<ancestor::position>()[i]->time_eval()[N];
 					}
 				}
 				return retval;
 			}
 			trig_array pow_int(const int &n) const {
-				const bool int_zero = elements_are_zero();
+				const bool int_zero = this->elements_are_zero();
 				trig_array retval;
 				if (n < 0) {
-					if (int_zero && !m_flavour) {
+					if (int_zero && !this->m_flavour) {
 						// 0^-n.
 						throw division_by_zero();
-					} else if (int_zero && m_flavour) {
+					} else if (int_zero && this->m_flavour) {
 						// 1^-n == 1. Don't do nothing because retval is already initialized properly.
 						;
 					} else {
@@ -604,10 +604,10 @@ namespace piranha
 					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 					;
 				} else {
-					if (int_zero && !m_flavour) {
+					if (int_zero && !this->m_flavour) {
 						// 0^n == 0.
 						retval.m_flavour = false;
-					} else if (int_zero && m_flavour) {
+					} else if (int_zero && this->m_flavour) {
 						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 						;
 					} else {
@@ -619,13 +619,13 @@ namespace piranha
 				return retval;
 			}
 			trig_array pow_double(const double &y) const {
-				const bool int_zero = elements_are_zero();
+				const bool int_zero = this->elements_are_zero();
 				trig_array retval;
 				if (y < 0) {
-					if (int_zero && !m_flavour) {
+					if (int_zero && !this->m_flavour) {
 						// 0^-y.
 						throw division_by_zero();
-					} else if (int_zero && m_flavour) {
+					} else if (int_zero && this->m_flavour) {
 						// 1^-y == 1. Don't do nothing because retval is already initialized properly.
 						;
 					} else {
@@ -637,10 +637,10 @@ namespace piranha
 					// x^0 == 1. Don't do nothing because retval is already initialized properly.
 					;
 				} else {
-					if (int_zero && !m_flavour) {
+					if (int_zero && !this->m_flavour) {
 						// 0^y == 0.
 						retval.m_flavour = false;
-					} else if (int_zero && m_flavour) {
+					} else if (int_zero && this->m_flavour) {
 						// 1^y == 1. Don't do nothing because retval is already initialized properly.
 						;
 					} else {
