@@ -26,15 +26,15 @@
 namespace piranha
 {
 	// Static initialization for degree-based truncation.
-	int base_degree_truncator::m_degree_limit = 0;
-	bool base_degree_truncator::m_effective = false;
+	int degree_truncator::m_degree_limit = 0;
+	bool degree_truncator::m_effective = false;
 
-	void base_degree_truncator::unset()
+	void degree_truncator::unset()
 	{
 		m_effective = false;
 	}
 
-	void base_degree_truncator::print(std::ostream &stream)
+	void degree_truncator::print(std::ostream &stream)
 	{
 		if (m_effective) {
 			stream << "Minimum degree limit: " << m_degree_limit;

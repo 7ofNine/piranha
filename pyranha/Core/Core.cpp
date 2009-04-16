@@ -153,8 +153,8 @@ BOOST_PYTHON_MODULE(_Core)
 		 "throw an error otherwise.").staticmethod("set")
 	.def("unset", &norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
-	class_<base_degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
-	.def("__repr__", &py_print_to_string<base_degree_truncator>)
-	.def("set", &base_degree_truncator::set, "Set truncation level of series minimum degree to arg1.").staticmethod("set")
-	.def("unset", &base_degree_truncator::unset, "Clear minimum degree limit.").staticmethod("unset");
+	class_<degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
+	.def("__repr__", &py_print_to_string<degree_truncator>)
+	.def("set", &degree_truncator::set, "Set truncation level of series minimum degree to arg1.").staticmethod("set")
+	.def("unset", &degree_truncator::unset, "Clear minimum degree limit.").staticmethod("unset");
 }

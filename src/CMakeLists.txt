@@ -3,8 +3,7 @@ SET(SRC_LIST "")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp)
 
 SET(SRC_LIST ${SRC_LIST}
-	#shared_args.cpp
-	base_degree_truncator.cpp
+	degree_truncator.cpp
 	base_expo_truncator.cpp
 	norm_truncator.cpp
 	memory.cpp
