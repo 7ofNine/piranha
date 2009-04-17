@@ -107,7 +107,7 @@ namespace piranha
 							return 0;
 						}
 					}
-					static bool is_effective() {
+					bool is_effective() const {
 						return m_effective;
 					}
 				protected:

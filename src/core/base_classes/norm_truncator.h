@@ -81,7 +81,7 @@ namespace piranha
 								m_delta_threshold
 						);
 					}
-					static bool is_effective() {
+					bool is_effective() const {
 						return m_truncation_power != 0;
 					}
 					// Returns the length of a development in powers of x that satisfies the condition that the
