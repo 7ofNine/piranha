@@ -212,14 +212,6 @@ namespace piranha
 			int min_degree() const {
 				return degree();
 			}
-			template <class ArgsTuple>
-			int min_expo_of(const size_t &n, const ArgsTuple &) const {
-				if (n >= this->size()) {
-					return 0;
-				} else {
-					return (*this)[n];
-				}
-			}
 			/// Return the position of the linear argument in the monomial.
 			/**
 			 * It will throw if the monomial is not linear or zero degree.
@@ -298,24 +290,6 @@ namespace piranha
 					retval[i] = mpz_get_si(qs[i].get_mpz_t());
 				}
 				return retval;
-			}
-			void upload_min_exponents(std::vector<int> &v) const {
-				this->upload_ints_to(v);
-			}
-			void test_min_exponents(std::vector <int> &v) const {
-				this->test_min_ints(v);
-			}
-			// Return true if the exponents are smaller than those specified in the limits vector.
-			template <class ArgsTuple>
-			bool test_expo_limits(const std::vector<std::pair<size_t, int> > &v, const ArgsTuple &) const {
-				const size_t size = v.size();
-				for (size_t i = 0; i < size; ++i) {
-					p_assert(v[i].first < this->m_size);
-					if ((*this)[v[i].first] > v[i].second) {
-						return false;
-					}
-				}
-				return true;
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches,
