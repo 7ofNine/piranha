@@ -229,31 +229,13 @@ namespace piranha
 					v[i] = m_container.v[i];
 				}
 			}
-			/// Upload integers to vector of integer pairs.
-			void upload_ints_to(std::vector<std::pair<int, int> > &v) const {
-				p_assert(v.size() >= m_size);
-				for (size_type i = 0; i < m_size; ++i) {
-					v[i].first = m_container.v[i];
-					v[i].second = m_container.v[i];
-				}
-			}
-			/// Upload to v those integers which are less than the corresponding elements of v.
-			void test_min_ints(std::vector<int> &v) const {
-				p_assert(v.size() >= m_size);
-				for (size_type i = 0; i < m_size; ++i) {
-					if (m_container.v[i] < v[i]) {
-						v[i] = m_container.v[i];
-					}
-				}
-			}
 			/// Upload to v.first/second those integers which are less than/greater than the corresponding elements of v.
 			void test_min_max_ints(std::vector<std::pair<int, int> > &v) const {
 				p_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (m_container.v[i] < v[i].first) {
 						v[i].first = m_container.v[i];
-					}
-					if (m_container.v[i] > v[i].second) {
+					} else if (m_container.v[i] > v[i].second) {
 						v[i].second = m_container.v[i];
 					}
 				}
@@ -444,7 +426,7 @@ namespace piranha
 			 */
 			size_type				m_size;
 			/// Container.
-			container_type			m_container;
+			container_type				m_container;
 	};
 };
 

@@ -54,22 +54,17 @@ namespace piranha
 				key.decode(n, m_coding_vector, m_h_min, m_fast_res_min_max, derived_const_cast->m_args_tuple);
 			}
 			template <class Cf, class Ckey>
-			class coded_term_type {
-				public:
-					coded_term_type():m_cf(),m_ckey() {}
-					coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
-					void swap(coded_term_type &t) {
-						m_cf.swap(t.m_cf);
-						std::swap(m_ckey,t.m_ckey);
-					}
-					bool operator==(const coded_term_type &t) const {
-						return (m_ckey == t.m_ckey);
-					}
-					size_t hash_value() const {
-						return boost::hash<Ckey>()(m_ckey);
-					}
-					mutable Cf	m_cf;
-					Ckey		m_ckey;
+			struct coded_term_type {
+				coded_term_type():m_cf(),m_ckey() {}
+				coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
+				bool operator==(const coded_term_type &t) const {
+					return (m_ckey == t.m_ckey);
+				}
+				size_t hash_value() const {
+					return boost::hash<Ckey>()(m_ckey);
+				}
+				mutable Cf	m_cf;
+				Ckey		m_ckey;
 			};
 		protected:
 			coded_series_multiplier():
@@ -86,8 +81,14 @@ namespace piranha
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
 				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
-				derived_const_cast->m_terms1[i1]->m_key.upload_ints_to(m_min_max1);
-				derived_const_cast->m_terms2[i2]->m_key.upload_ints_to(m_min_max2);
+				for (size_t i = 0; i < derived_const_cast->m_terms1[i1]->m_key.size(); ++i) {
+					m_min_max1[i].first = m_min_max1[i].second =
+						derived_const_cast->m_terms1[i1]->m_key[i];
+				}
+				for (size_t i = 0; i < derived_const_cast->m_terms2[i2]->m_key.size(); ++i) {
+					m_min_max2[i].first = m_min_max2[i].second =
+						derived_const_cast->m_terms2[i2]->m_key[i];
+				}
 				// Move to the second terms and cycle on all remaining terms.
 				++i1;
 				++i2;

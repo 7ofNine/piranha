@@ -37,22 +37,6 @@ namespace piranha
 	};
 
 	template <class T>
-	struct member_swap
-	{
-		void operator()(T &a, T &b) const {
-			a.swap(b);
-		}
-	};
-
-	template <class T>
-	struct std_swap
-	{
-		void operator()(T &a, T &b) const {
-			std::swap(a,b);
-		}
-	};
-
-	template <class T>
 	struct named_series_arithmetics
 	{
 		T inv(const T &orig) const {
