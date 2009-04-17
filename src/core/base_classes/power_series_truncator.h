@@ -26,7 +26,6 @@
 #include "../exceptions.h"
 #include "../p_assert.h"
 #include "degree_truncator.h"
-#include "expo_truncator.h"
 #include "norm_truncator.h"
 
 namespace piranha
@@ -37,30 +36,26 @@ namespace piranha
 		public:
 			template <class Multiplier>
 			class get_type:
-				public expo_truncator::template get_type<Multiplier>,
 				public degree_truncator::template get_type<Multiplier>,
 				public norm_truncator::template get_type<Multiplier>
 			{
-					typedef typename expo_truncator::template get_type<Multiplier> expo_ancestor;
 					typedef typename degree_truncator::template get_type<Multiplier> degree_ancestor;
 					typedef typename norm_truncator::template get_type<Multiplier> norm_ancestor;
-					enum selected_truncator {exp_t, deg_t, norm_t, null_t};
+					enum selected_truncator {deg_t, norm_t, null_t};
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m):expo_ancestor(m),degree_ancestor(m,false),
-						norm_ancestor(m,false),m_active_truncator(exp_t) {
-						if (!expo_ancestor::is_effective()) {
-							degree_ancestor::init();
-							if (!degree_ancestor::is_effective()) {
-								norm_ancestor::init();
-								if (!norm_ancestor::is_effective()) {
-									m_active_truncator = null_t;
-								} else {
-									m_active_truncator = norm_t;
-								}
+					get_type(Multiplier &m):degree_ancestor(m,false),
+						norm_ancestor(m,false),m_active_truncator(deg_t) {
+						degree_ancestor::init();
+						if (!degree_ancestor::is_effective()) {
+							norm_ancestor::init();
+							if (!norm_ancestor::is_effective()) {
+								m_active_truncator = null_t;
 							} else {
-								m_active_truncator = deg_t;
+								m_active_truncator = norm_t;
 							}
+						} else {
+							m_active_truncator = deg_t;
 						}
 					}
 					template <class T, class ArgsTuple>
@@ -68,12 +63,6 @@ namespace piranha
 						const ArgsTuple &args_tuple) {
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");
-						try {
-							return expo_ancestor::power_series_iterations(x,start,step_size,args_tuple);
-						}
-						catch (const base_exception &b) {
-							msg += b.what() + "\n";
-						}
 						try {
 							return degree_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
@@ -94,8 +83,6 @@ namespace piranha
 					template <class T>
 					bool accept(const T &x) const {
 						switch (m_active_truncator) {
-							case exp_t:
-								return expo_ancestor::accept(x);
 							case deg_t:
 								return degree_ancestor::accept(x);
 							case norm_t:
@@ -109,8 +96,6 @@ namespace piranha
 					template <class T, class U>
 					bool skip(const T &x1, const U &x2) const {
 						switch (m_active_truncator) {
-							case exp_t:
-								return expo_ancestor::skip(x1,x2);
 							case deg_t:
 								return degree_ancestor::skip(x1,x2);
 							case norm_t:

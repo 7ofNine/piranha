@@ -29,7 +29,6 @@
 #include <vector>
 
 #include "../../src/core/base_classes/degree_truncator.h"
-#include "../../src/core/base_classes/expo_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/base_classes/toolbox.h"
 #include "../../src/core/config.h"
@@ -129,23 +128,6 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("__repr__", &py_print_to_string<psym>)
 	.def("eval", &psym::eval)
 	.add_property("name", &psym::name);
-
-	typedef void (*limit_name)(const std::string &, const int &);
-	typedef void (*limit_psym)(const piranha::psym &, const int &);
-	typedef void (*unset_void)();
-	typedef void (*unset_name)(const std::string &);
-	typedef void (*unset_psym)(const psym &);
-	class_<base_expo_truncator>("__expo_truncator", "Exponent truncator.", init<>())
-	.def("__repr__", &py_print_to_string<base_expo_truncator>)
-	.def("unset", unset_void(&base_expo_truncator::unset), "Clear the list of exponent limits.")
-	.def("unset", unset_name(&base_expo_truncator::unset),
-		"Clear exponent limit for argument named arg1.")
-	.def("unset", unset_psym(&base_expo_truncator::unset),
-		"Clear exponent limit for psym arg1.").staticmethod("unset")
-	.def("set", limit_name(&base_expo_truncator::set), "Set exponent limit for symbol named arg1 to integer arg2. "
-		 "If arg1 does not exist, throw an error")
-	.def("set", limit_psym(&base_expo_truncator::set),
-		"Set exponent limit for psym arg1 to integer arg2.").staticmethod("set");
 
 	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
 	.def("__repr__", &py_print_to_string<norm_truncator>)

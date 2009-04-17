@@ -4,7 +4,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT
 
 SET(SRC_LIST ${SRC_LIST}
 	degree_truncator.cpp
-	base_expo_truncator.cpp
 	norm_truncator.cpp
 	memory.cpp
 	settings.cpp
