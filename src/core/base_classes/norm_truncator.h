@@ -36,7 +36,7 @@ namespace piranha
 	struct norm_truncator_;
 
 	/// Norm-based truncator.
-	template<>
+	template <>
 	class __PIRANHA_VISIBLE toolbox<norm_truncator_>
 	{
 		public:

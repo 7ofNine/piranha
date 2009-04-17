@@ -33,7 +33,7 @@
 namespace piranha
 {
 	/// Truncator based on the minium degree of the series.
-	class degree_truncator
+	class __PIRANHA_VISIBLE degree_truncator
 	{
 		public:
 			template <class Multiplier>
