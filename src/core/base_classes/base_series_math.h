@@ -30,6 +30,10 @@
 #include "../p_assert.h"
 #include "../settings.h"
 #include "../utils.h" // For is_integer().
+#include "base_series_def.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -490,5 +494,8 @@ namespace piranha
 		return base_pow(-1,args_tuple);
 	}
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif

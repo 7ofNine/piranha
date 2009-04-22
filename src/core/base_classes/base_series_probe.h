@@ -23,6 +23,11 @@
 
 #include <cmath> // For std::abs.
 
+#include "base_series_def.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
+
 namespace piranha
 {
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -133,5 +138,8 @@ namespace piranha
 		return !(*this == x);
 	}
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif

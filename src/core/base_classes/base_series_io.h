@@ -28,6 +28,10 @@
 #include <vector>
 
 #include "../settings.h"
+#include "base_series_def.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -148,5 +152,8 @@ namespace piranha
 		return m_container.end();
 	}
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif
