@@ -73,7 +73,6 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream,
 			const ArgsTuple &args_tuple, int) const
 	{
-		using namespace boost::lambda;
 		settings::setup_stream(stream);
 		if (empty()) {
 			stream << '0';
@@ -92,7 +91,7 @@ namespace piranha
 				}
 				count += tmp.size();
 				if (count > max_length) {
-					std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << (boost::lambda::_1));
+					std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << boost::lambda::_1);
 					stream << "...";
 					break;
 				}

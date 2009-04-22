@@ -36,7 +36,6 @@ namespace piranha
 	struct power_series {};
 
 	/// Power series toolbox.
-	// TODO: maybe use boost lambda instead of explicit predicates.
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
 	class toolbox<power_series<ExpoArgsPosition,ExpoTermPosition,Derived> >
 	{
