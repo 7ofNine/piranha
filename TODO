@@ -59,3 +59,5 @@
 - exception inherit from base
 - re-work norm truncator to work with absolute-value norm (instead of relative norm) and maybe simply truncating terms smaller
   than the limit.
+- packed attribute for structs in gcc
+- what about std::domain_error? check about those standard exceptions....
