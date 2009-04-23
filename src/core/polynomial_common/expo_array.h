@@ -207,8 +207,10 @@ namespace piranha
 				}
 				return retval;
 			}
-			// This is the min total degree of a collection.
-			// In this case the collection has a single element, hence the minimum degree is the degree itself.
+			/// Minimum total degree of the exponents array.
+			/**
+			 * Provided for use within the power series toolbox, and defined to be equal to degree().
+			 */
 			int min_degree() const {
 				return degree();
 			}

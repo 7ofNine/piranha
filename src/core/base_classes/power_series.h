@@ -22,8 +22,8 @@
 #define PIRANHA_POWER_SERIES_H
 
 #include <algorithm> // For max_element and min_element.
-#include <boost/static_assert.hpp>
 
+#include "../config.h"
 #include "../p_assert.h"
 #include "toolbox.h"
 
@@ -39,7 +39,7 @@ namespace piranha
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
 	class toolbox<power_series<ExpoArgsPosition,ExpoTermPosition,Derived> >
 	{
-			BOOST_STATIC_ASSERT(ExpoArgsPosition >= 0);
+			p_static_check(ExpoArgsPosition >= 0, "Invalid expo args position.");
 			template <class Term>
 			class degree_binary_predicate
 			{
