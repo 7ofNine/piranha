@@ -144,15 +144,15 @@ namespace piranha
 			}
 		public:
 			// References to the series.
-			const Series1					&m_s1;
-			const Series2					&m_s2;
+			const Series1			&m_s1;
+			const Series2			&m_s2;
 			// Reference to the arguments tuple.
-			const ArgsTuple					&m_args_tuple;
+			const ArgsTuple			&m_args_tuple;
 			// Sizes of the series.
-			const size_t					m_size1;
-			const size_t					m_size2;
+			const size_t			m_size1;
+			const size_t			m_size2;
 			// Reference to the result.
-			Series1							&m_retval;
+			Series1				&m_retval;
 			// Vectors of pointers the input terms.
 			std::vector<term_type1 const *>	m_terms1;
 			std::vector<term_type2 const *>	m_terms2;

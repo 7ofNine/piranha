@@ -28,10 +28,8 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
-#include "../p_assert.h"
 #include "../psym.h"
 #include "../type_traits.h"
-#include "../utils.h" // For class_converter.
 #include "toolbox.h"
 
 // Useful shortcuts.

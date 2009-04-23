@@ -41,9 +41,9 @@ namespace piranha
 		public:
 			/// Constructor.
 			template <class ArgsTuple>
-			explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c, a) {}
+			explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c,a) {}
 			/// Copy of the converted term.
-			const Term1	result;
+			const Term1 result;
 	};
 
 	/// Specialized term converter.
