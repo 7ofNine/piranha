@@ -22,6 +22,7 @@
 #define PIRANHA_EXPO_ARRAY_H
 
 #include <boost/algorithm/string/split.hpp>
+#include <boost/numeric/conversion/converter.hpp>
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <gmp.h>
 #include <gmpxx.h>
@@ -204,6 +205,19 @@ namespace piranha
 				int retval = 0;
 				for (size_type i = 0; i < this->m_size; ++i) {
 					retval += (*this)[i];
+				}
+				return retval;
+			}
+			/// Total degree of the variables at specified positions pos.
+			int partial_degree(const std::vector<size_t> &pos) const {
+				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
+				p_assert(w <= pos_size);
+				int retval = 0;
+				for (size_type i = 0; i < pos_size; ++i) {
+					// Don't try to read outside boundaries.
+					if (pos[i] < w) {
+						retval += (*this)[pos[i]];
+					}
 				}
 				return retval;
 			}
