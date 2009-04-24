@@ -85,7 +85,7 @@ namespace piranha
 			 * Sets m_value to one.
 			 */
 			template <class ArgsTuple>
-			explicit numerical_container(const psym_p &, const int &, const ArgsTuple &): m_value(1) {}
+			explicit numerical_container(const psym &, const int &, const ArgsTuple &): m_value(1) {}
 			// I/O.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
@@ -258,7 +258,7 @@ namespace piranha
 	template <class ArgsTuple> \
 	explicit derived(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
 	template <class ArgsTuple> \
-	explicit derived(const piranha::psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+	explicit derived(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
 }
 
 namespace std

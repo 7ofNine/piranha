@@ -43,18 +43,18 @@ namespace piranha
 	// TMP for series printing.
 	template <class ArgsDescr>
 	inline void named_series_print_plain(std::ostream &stream,
-		 const typename ntuple<vector_psym_p, boost::tuples::length<ArgsDescr>::value>::type &args_tuple)
+		 const typename ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &args_tuple)
 	{
 		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
 			stream << "[" << ArgsDescr::head_type::name << "_arg]" << '\n';
-			args_tuple.get_head()[i]->print(stream);
+			args_tuple.get_head()[i].print(stream);
 		}
 		named_series_print_plain<typename ArgsDescr::tail_type>(stream, args_tuple.get_tail());
 	}
 
 	template <>
 	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &,
-			const ntuple<vector_psym_p, boost::tuples::length<boost::tuples::null_type>::value>::type &)
+			const ntuple<vector_psym, boost::tuples::length<boost::tuples::null_type>::value>::type &)
 	{}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -156,7 +156,7 @@ namespace piranha
 			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') {
 				std::cout << "Finished parsing " << name << " argument." << std::endl;
 				inf.seekg(cur_pos);
-				append_arg(name, psyms::get_pointer(psym(temp_name, temp_time_eval)));
+				append_arg(name, psym(temp_name, temp_time_eval));
 				return;
 			}
 			std::vector<std::string> split_v;
@@ -217,12 +217,11 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::construct_from_psym(const psym &psym)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::construct_from_psym(const psym &p)
 	{
 		p_assert(derived_const_cast->empty());
-		psym_p p(psyms::get_pointer(psym));
 		append_arg<N>(p);
-		derived_cast->construct_from_psym_p(p, N, m_arguments);
+		derived_cast->construct_from_psym(p, N, m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

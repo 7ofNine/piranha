@@ -64,14 +64,14 @@ namespace piranha
 	template <class ArgsDescr>
 	struct named_series_append_arg {
 		static void run(const std::string &s,
-						typename ntuple<vector_psym_p, boost::tuples::length<ArgsDescr>::value>::type &args_tuple,
-						const psym_p &arg) {
+						typename ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &args_tuple,
+						const psym &arg) {
 			switch (ArgsDescr::head_type::name == s) {
 			case true:
 				// Check that the argument is not already present in this set.
-				for (vector_psym_p::iterator it = args_tuple.get_head().begin(); it != args_tuple.get_head().end(); ++it) {
+				for (vector_psym::iterator it = args_tuple.get_head().begin(); it != args_tuple.get_head().end(); ++it) {
 					if (arg == (*it)) {
-						std::cout << "Error: " << s << " argument '" << (*it)->name() << "' already present in the set.\n";
+						std::cout << "Error: " << s << " argument '" << it->get_name() << "' already present in the set.\n";
 						return;
 					}
 				}
@@ -85,13 +85,13 @@ namespace piranha
 
 	template <>
 	struct named_series_append_arg<boost::tuples::null_type> {
-		static void run(const std::string &s, const boost::tuples::null_type &, const psym_p &) {
+		static void run(const std::string &s, const boost::tuples::null_type &, const psym &) {
 			std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
 		}
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const std::string &s, const psym_p &arg)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const std::string &s, const psym &arg)
 	{
 		p_assert(derived_const_cast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
@@ -99,15 +99,15 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const psym_p &arg)
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const psym &arg)
 	{
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
 		p_assert(derived_const_cast->empty());
 		// Check that the argument is not already present in this set.
-		for (vector_psym_p::iterator it = m_arguments.template get<N>().begin();
+		for (vector_psym::iterator it = m_arguments.template get<N>().begin();
 			it != m_arguments.template get<N>().end(); ++it) {
 			if (arg == (*it)) {
-				std::cout << "Error: argument '" << (*it)->name() << "' already present in the set." << std::endl;
+				std::cout << "Error: argument '" << it->get_name() << "' already present in the set." << std::endl;
 				return;
 			}
 		}
@@ -189,20 +189,18 @@ namespace piranha
 			// The layout must have at least all arguments in v1.
 			p_assert(l_size >= a1.get_head().size());
 			// Memorize the old vector.
-			const vector_psym_p old(a1.get_head());
+			const vector_psym old(a1.get_head());
 			// Make space.
-			a1.get_head().resize(l_size);
+			a1.get_head().reserve(l_size);
 			for (size_t i = 0; i < l_size; ++i) {
-				switch (l.get_head()[i].first) {
-				case true:
+				if (l.get_head()[i].first) {
 					// The argument was present in the old arguments sets. Copy it over.
 					p_assert(l.get_head()[i].second < old.size());
-					a1.get_head()[i] = old[l.get_head()[i].second];
-					break;
-				case false:
+					a1.get_head().push_back(old[l.get_head()[i].second]);
+				} else {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
 					p_assert(i < a2.get_head().size());
-					a1.get_head()[i] = a2.get_head()[i];
+					a1.get_head().push_back(a2.get_head()[i]);
 				}
 			}
 			named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.get_tail(),
@@ -280,7 +278,7 @@ namespace piranha
 		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
 			const size_t size = tf.get_head().size();
 			p_assert(size == args_tuple.get_head().size());
-			vector_psym_p new_vector;
+			vector_psym new_vector;
 			for (size_t i = 0; i < size; ++i) {
 				if (tf.get_head()[i]) {
 					new_vector.push_back(args_tuple.get_head()[i]);
@@ -350,7 +348,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::sub(const psym &arg, const SubSeries &s) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::sub(const psym &p, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
@@ -367,8 +365,7 @@ namespace piranha
 		// Init sub caches using s_copy and this_copy.m_arguments.
 		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,&this_copy.m_arguments);
 		pos_tuple_type pos_tuple;
-		psym_p p(psyms::get_pointer(arg));
-		named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
+		named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, this_copy.m_arguments);
 		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(
 			pos_tuple, sub_caches, this_copy.m_arguments));
 		retval.m_arguments = this_copy.m_arguments;

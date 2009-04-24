@@ -169,7 +169,7 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			explicit toolbox(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			template <int Pos2>
 			explicit toolbox(const toolbox<trig_array<Bits,Pos2,Allocator> > &ta): ancestor::int_array(ta) {}
 			// Probing.
@@ -274,13 +274,13 @@ namespace piranha
 						} else {
 							out_stream << n << '*';
 						}
-						out_stream << args_tuple.template get<ancestor::position>()[i]->name();
+						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
 						printed_something = true;
 					}
 				}
 				out_stream << ')';
 			}
-			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
+			void print_latex(std::ostream &out_stream, const vector_psym &v) const {
 				const size_t w = v.size();
 				p_assert(w <= this->size())
 				switch (this->m_flavour) {
@@ -302,7 +302,7 @@ namespace piranha
 						} else if ((*this)[i] == 1) {} else {
 							tmp.append(boost::lexical_cast<std::string>((int)(*this)[i]));
 						}
-						tmp.append(v[i]->name());
+						tmp.append(v[i].get_name());
 						first_one = false;
 					}
 				}
@@ -359,7 +359,7 @@ namespace piranha
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
-						retval += (*this)[i] * args_tuple.template get<ancestor::position>()[i]->eval(t);
+						retval += (*this)[i] * args_tuple.template get<ancestor::position>()[i].eval(t);
 					}
 				}
 				if (this->m_flavour) {
@@ -581,9 +581,9 @@ namespace piranha
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.
-					if (args_tuple.template get<ancestor::position>()[i]->time_eval().size() > N) {
+					if (args_tuple.template get<ancestor::position>()[i].get_time_eval().size() > N) {
 						retval += (*this)[i] *
-							args_tuple.template get<ancestor::position>()[i]->time_eval()[N];
+							args_tuple.template get<ancestor::position>()[i].get_time_eval()[N];
 					}
 				}
 				return retval;

@@ -39,7 +39,7 @@ namespace pyranha
 	{
 		std::ostringstream stream;
 		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
-			stream << i << ' ' << args_tuple.get_head()[i]->name() << '\n';
+			stream << i << ' ' << args_tuple.get_head()[i].get_name() << '\n';
 		}
 		out += stream.str();
 		args_tuple_py_print_helper(args_tuple.get_tail(), out);
@@ -56,7 +56,7 @@ namespace pyranha
 	template <int N>
 	inline void expose_args_tuples()
 	{
-		typedef typename piranha::ntuple<piranha::vector_psym_p, N>::type args_tuple_type;
+		typedef typename piranha::ntuple<piranha::vector_psym, N>::type args_tuple_type;
 		boost::python::class_<args_tuple_type>
 		args_tuple_inst((std::string("__base_args_tuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
 						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());

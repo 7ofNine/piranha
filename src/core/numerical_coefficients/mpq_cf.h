@@ -65,7 +65,7 @@ namespace piranha
 			}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit mpq_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
+			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
 				m_value.canonicalize();
 			}
 			// Override norm and evaluation.
@@ -218,7 +218,7 @@ namespace std
 			}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym_p &p, const int &n, const ArgsTuple &a):
+			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a):
 				ancestor::numerical_container(p, n, a) {
 				canonicalize();
 			}

@@ -101,7 +101,7 @@ namespace piranha
 			 * resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
-			int_array(const psym_p &p, const int &n, const ArgsTuple &args_tuple):
+			int_array(const psym &p, const int &n, const ArgsTuple &args_tuple):
 					m_flavour(true), m_size(0) {
 				(void)p;
 				(void)args_tuple;

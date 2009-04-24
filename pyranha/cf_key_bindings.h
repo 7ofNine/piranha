@@ -85,7 +85,7 @@ namespace pyranha
 	template <int N, class CfKey, int M>
 	struct mp_cfkey_bindings {
 		static void run(boost::python::class_<CfKey> &cfkey_inst) {
-			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			typedef typename piranha::ntuple<std::vector<piranha::psym>,N>::type args_tuple_type;
 			cfkey_inst.def("norm", &py_cfkey_norm<CfKey,args_tuple_type>, "Norm.");
 			cfkey_inst.def("eval", &py_cfkey_eval<CfKey,args_tuple_type>, "Time evaluation.");
 			mp_cfkey_bindings<N - 1,CfKey,M>::run(cfkey_inst);
@@ -112,7 +112,7 @@ namespace pyranha
 	template <int N, class Cf>
 	struct mp_complex_cf_bindings {
 		static void run(boost::python::class_<std::complex<Cf> > &cf_inst) {
-			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			typedef typename piranha::ntuple<std::vector<piranha::psym>,N>::type args_tuple_type;
 			cf_inst.def("real", &py_cf_real<Cf,args_tuple_type>, "Real part.");
 			cf_inst.def("imag", &py_cf_imag<Cf,args_tuple_type>, "Imaginary part.");
 			mp_complex_cf_bindings<N - 1,Cf>::run(cf_inst);
@@ -177,7 +177,7 @@ namespace pyranha
 	template <int N, class TrigArray, int M>
 	struct mp_ta_bindings {
 		static void run(boost::python::class_<TrigArray> &ta_inst) {
-			typedef typename piranha::ntuple<std::vector<piranha::psym_p>,N>::type args_tuple_type;
+			typedef typename piranha::ntuple<std::vector<piranha::psym>,N>::type args_tuple_type;
 			ta_inst.def("freq", &py_trigarray_freq<TrigArray,args_tuple_type>, "Frequency.");
 			ta_inst.def("phase", &py_trigarray_phase<TrigArray,args_tuple_type>, "Phase.");
 			mp_ta_bindings<N - 1,TrigArray, M>::run(ta_inst);

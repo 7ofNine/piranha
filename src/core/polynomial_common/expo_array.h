@@ -108,7 +108,7 @@ namespace piranha
 			}
 			/// Ctor from psym.
 			template <class ArgsTuple>
-			explicit toolbox(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			// Math.
 			/// Multiplication.
 			template <class ExpoArray, class ResultType>
@@ -159,7 +159,7 @@ namespace piranha
 					}
 				}
 			}
-			void print_latex(std::ostream &out_stream, const vector_psym_p &v) const {
+			void print_latex(std::ostream &out_stream, const vector_psym &v) const {
 				// TODO: implement.
 			}
 			template <class ArgsTuple>
@@ -168,7 +168,7 @@ namespace piranha
 				p_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 1.;
 				for (size_t i = 0;i < w;++i) {
-					retval *= std::pow(args_tuple.template get<ancestor::position>()[i]->eval(t),
+					retval *= std::pow(args_tuple.template get<ancestor::position>()[i].eval(t),
 						(*this)[i]);
 				}
 				return retval;

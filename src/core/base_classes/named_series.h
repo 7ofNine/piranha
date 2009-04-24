@@ -62,7 +62,7 @@ namespace piranha
 			/// Compile-time constant for the number of arguments sets.
 			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
 			p_static_check(n_arguments_sets > 0, "The number of arguments vector must be strictly positive.");
-			typedef typename ntuple<vector_psym_p, n_arguments_sets>::type args_tuple_type;
+			typedef typename ntuple<vector_psym, n_arguments_sets>::type args_tuple_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout, int limit = -1) const;
@@ -101,9 +101,9 @@ namespace piranha
 			void construct_from_file(const std::string &);
 			template <int N>
 			void construct_from_psym(const psym &);
-			void append_arg(const std::string &, const psym_p &);
+			void append_arg(const std::string &, const psym &);
 			template <int N>
-			void append_arg(const psym_p &);
+			void append_arg(const psym &);
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>
@@ -139,9 +139,9 @@ namespace piranha
 	// Meta-programming to get a tuple of (presence-flag, positional index) pairs for
 	// a psym, given an arguments_tuple.
 	template <class PosTuple, class ArgsTuple>
-	struct named_series_get_psym_p_positions {
+	struct named_series_get_psym_positions {
 		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value, "");
-		static void run(const psym_p &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+		static void run(const psym &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
 			// Set to not found.
 			pos_tuple.get_head().first = false;
 			const size_t w = args_tuple.get_head().size();
@@ -152,14 +152,14 @@ namespace piranha
 					break;
 				}
 			}
-			named_series_get_psym_p_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
+			named_series_get_psym_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
 			run(p, pos_tuple.get_tail(), args_tuple.get_tail());
 		}
 	};
 
 	template <>
-	struct named_series_get_psym_p_positions<boost::tuples::null_type, boost::tuples::null_type> {
-		static void run(const psym_p &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	struct named_series_get_psym_positions<boost::tuples::null_type, boost::tuples::null_type> {
+		static void run(const psym &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
 
 // Useful macros for named series.

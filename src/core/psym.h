@@ -21,18 +21,14 @@
 #ifndef PIRANHA_PSYMBOL_H
 #define PIRANHA_PSYMBOL_H
 
-#include <boost/array.hpp>
-#include <boost/functional/hash.hpp>
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <set>
-#include <sstream>
 #include <string>
+#include <utility> // For std::pair.
 #include <vector>
+
+#include <cmath>
 
 #include "config.h"
 #include "exceptions.h"
@@ -42,196 +38,149 @@
 
 namespace piranha
 {
-	class __PIRANHA_VISIBLE psyms
-	{
-		public:
-			/// Literal symbol class.
-			/**
-			  * This class is used represent symbolic arguments. It features a string representing the symbol's name and a
-			  * numerical vector
-			  * which is used to evaluate the symbol in time in a polynomial fashion. For instance, if the numerical vector
-			  * has a size of three and its elements are named \f$ \alpha \f$, \f$ \beta \f$ and \f$ \gamma \f$,
-			  * it means that the symbol is evaluated as
-			  * \f[
-			  * \alpha + \beta t + \gamma t^2,
-			  * \f]
-			  * where \f$ t \f$ is time.
-			  */
-			class __PIRANHA_VISIBLE psym
-			{
-					friend class psyms;
-				public:
-					// Ctors
-					/// Constructor from two std::string objects
-					/**
-					  * Assigns both psym::m_name and psym::m_time_eval by parsing the two strings.
-					  * @param[in] name symbol's name.
-					  * @param[in] te symbol's time evaluation expressed in string format.
-					  */
-					psym(const std::string &name, const std::string &te): m_name(name),
-							m_time_eval(utils::str_to_vector<double>(te, separator)) {
-						reg(*this);
+	struct psym_manager {
+		struct psym_impl {
+			psym_impl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
+				m_name(name),m_time_eval(time_eval) {}
+			// Print to stream.
+			void print(std::ostream &out_stream) const {
+				settings::setup_stream(out_stream);
+				out_stream << "name=" << m_name << '\n';
+				out_stream << "time_eval=";
+				for (size_t j = 0; j < m_time_eval.size(); ++j) {
+					out_stream << m_time_eval[j];
+					if (j != m_time_eval.size() - 1) {
+						out_stream << separator;
 					}
-					/// Constructor from std::string.
-					/**
-					* Constructs a psym with empty time evaluation
-					*/
-					psym(const std::string &str): m_name(str), m_time_eval() {
-						reg(*this);
-					}
-					// Constructors from multiple values for time evlauation.
-					psym(const std::string &s, const double &x1): m_name(s), m_time_eval((size_t)1) {
-						boost::array<double, 1> tmp = {
-							{
-								x1
-							}
-						};
-						build_from_array(tmp);
-					}
-					psym(const std::string &s, const double &x1, const double &x2): m_name(s), m_time_eval((size_t)2) {
-						boost::array<double, 2> tmp = {
-							{
-								x1, x2
-							}
-						};
-						build_from_array(tmp);
-					}
-					psym(const std::string &s, const double &x1, const double &x2, const double &x3):
-							m_name(s), m_time_eval((size_t)3) {
-						boost::array<double, 3> tmp = {
-							{
-								x1, x2, x3
-							}
-						};
-						build_from_array(tmp);
-					}
-					psym(const std::string &s, const double &x1, const double &x2, const double &x3, const double &x4):
-							m_name(s), m_time_eval((size_t)4) {
-						boost::array<double, 4> tmp = {
-							{
-								x1, x2, x3, x4
-							}
-						};
-						build_from_array(tmp);
-					}
-					psym(const std::string &s, const double &x1, const double &x2, const double &x3,
-						 const double &x4, const double &x5): m_name(s), m_time_eval((size_t)5) {
-						boost::array<double, 5> tmp = {
-							{
-								x1, x2, x3, x4, x5
-							}
-						};
-						build_from_array(tmp);
-					}
-					/// Print to stream.
-					void print(std::ostream &out_stream = std::cout) const {
-						settings::setup_stream(out_stream);
-						out_stream << "name=" << m_name << '\n';
-						out_stream << "time_eval=";
-						for (size_t j = 0; j < m_time_eval.size(); ++j) {
-							out_stream << m_time_eval[j];
-							if (j != m_time_eval.size() - 1) {
-								out_stream << separator;
-							}
-						}
-						out_stream << '\n';
-					}
-					/// Time evaluation.
-					double eval(const double &t) const {
-						double retval = 0.;
-						const size_t w = m_time_eval.size();
-						for (size_t i = 0; i < w; ++i) {
-							// FIXME: use natural_pow or the like here, to speed up?
-							retval += std::pow(t, (int)i) * m_time_eval[i];
-						}
-						return retval;
-					}
-					std::string name() const {
-						return m_name;
-					}
-					const std::vector<double> &time_eval() const {
-						return m_time_eval;
-					}
-				private:
-					// Helper for ctor from boost::array.
-					template <class T>
-					void build_from_array(const T &a) {
-						const size_t size = a.size();
-						p_assert(a.size() == m_time_eval.size());
-						for (size_t i = 0; i < size; ++i) {
-							m_time_eval[i] = a[i];
-						}
-						reg(*this);
-					}
-				private:
-					// Data members.
-					const std::string		m_name;
-					// Mutable because we want to be able to freely change it in the psym manager.
-					mutable std::vector<double>	m_time_eval;
-					static const std::string	separator;
-			};
-		private:
-			typedef boost::multi_index_container
-			<
-			psym,
-			boost::multi_index::indexed_by
-			<
-			boost::multi_index::ordered_unique<boost::multi_index::const_mem_fun<psym, std::string, &psym::name> >
-			>
-			> set_type;
-		public:
-			typedef set_type::iterator psym_p;
-			typedef psym_p iterator;
-			static psym_p get_pointer(const psym &psym) {
-				psym_p retval(get_pointer(psym.m_name));
-				return retval;
+				}
+				out_stream << '\n';
 			}
-			static psym_p get_pointer(const std::string &name) {
-				psym_p retval(set.find(name));
-				if (retval == set.end()) {
-					throw not_existing(std::string("Symbol \"") + name + "\" does not exist.");
+			// Time evaluation.
+			double eval(const double &t) const {
+				double retval = 0.;
+				const size_t w = m_time_eval.size();
+				for (size_t i = 0; i < w; ++i) {
+					// FIXME: use natural_pow or the like here, to speed up?
+					retval += std::pow(t, (int)i) * m_time_eval[i];
 				}
 				return retval;
 			}
-			/// Print list of symbols.
-			static void print(std::ostream &stream = std::cout) {
-				const psym_p it_f = set.end();
-				for (psym_p it = set.begin(); it != it_f; ++it) {
-					it->print(stream);
-				}
+			// Data members.
+			const std::string		m_name;
+			// Mutable because we want to be able to freely change it in the psym manager.
+			mutable std::vector<double>	m_time_eval;
+			static const std::string	separator;
+		};
+		struct psym_impl_comparison {
+			size_t operator()(const psym_impl &p1, const psym_impl &p2) const {
+				return (p1.m_name < p2.m_name);
 			}
-			static psym get(const std::string &name) {
-				return *get_pointer(name);
-			}
-			// Needed to mimic standard container.
-			static size_t length() {
-				return set.size();
-			}
-			static iterator begin() {
-				return set.begin();
-			}
-			static iterator end() {
-				return set.end();
-			}
-		private:
-			static void reg(const psym &psym) {
-				const psym_p it = set.find(psym.m_name);
-				if (it == set.end()) {
-					// Symbol is not already present, add it.
-					std::pair<psym_p, bool> result = set.insert(psym);
-					p_assert(result.second);
-				} else {
-					// Symbol name is already registered, overwrite time evaluation.
-					it->m_time_eval = psym.m_time_eval;
-				}
-			}
-		private:
-			static set_type set;
+		};
+		typedef std::set<psym_impl,psym_impl_comparison> container_type;
+		static container_type container;
 	};
 
-	typedef psyms::psym psym;
-	typedef psyms::psym_p psym_p;
-	typedef std::vector<psym_p> vector_psym_p;
+	// Forward declaration for use in the typedef below.
+	class psym;
+
+	typedef std::vector<psym> vector_psym;
+
+	/// Literal symbol class.
+	/**
+	 * This class is used represent symbolic arguments. It features a string representing the symbol's name and a
+	 * numerical vector
+	 * which is used to evaluate the symbol in time in a polynomial fashion. For instance, if the numerical vector
+	 * has a size of three and its elements are named \f$ \alpha \f$, \f$ \beta \f$ and \f$ \gamma \f$,
+	 * it means that the symbol is evaluated as
+	 * \f[
+	 * \alpha + \beta t + \gamma t^2,
+	 * \f]
+	 * where \f$ t \f$ is time.
+	 */
+	class __PIRANHA_VISIBLE psym {
+			typedef psym_manager::container_type::const_iterator it_type;
+			typedef psym_manager::psym_impl psym_impl;
+			struct push_back_to {
+				push_back_to(vector_psym &v):m_v(&v) {}
+				template <class T>
+				void operator()(const T &x) const {
+					m_v->push_back(psym(x.m_name,x.m_time_eval));
+				}
+				mutable vector_psym *m_v;
+			};
+		public:
+			/// Constructor from name and time evaluation in string form.
+			psym(const std::string &name, const std::string &time_eval) {
+				const psym_impl p(name,utils::str_to_vector<double>(time_eval,psym_impl::separator));
+				construct_from_impl(p);
+			}
+			/// Constructor from name.
+			psym(const std::string &name) {
+				const psym_impl p(name);
+				construct_from_impl(p);
+			}
+			/// Constructor from name and vector.
+			psym(const std::string &name, const std::vector<double> &time_eval) {
+				const psym_impl p(name,time_eval);
+				construct_from_impl(p);
+			}
+			bool operator==(const psym &other) const {
+				return m_it == other.m_it;
+			}
+			bool operator!=(const psym &other) const {
+				return !operator==(other);
+			}
+			static psym get(const std::string &name) {
+				const psym_impl p(name);
+				const it_type it = psym_manager::container.find(p);
+				if (it == psym_manager::container.end()) {
+					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
+					p_assert(res.second);
+					return psym(res.first);
+				} else {
+					return psym(it);
+				}
+			}
+			static vector_psym list() {
+				vector_psym retval;
+				retval.reserve(psym_manager::container.size());
+				std::for_each(psym_manager::container.begin(),psym_manager::container.end(),push_back_to(retval));
+				return retval;
+			}
+			// TODO: move to operator<< for streams? Along with other classes...
+			/// Print to stream.
+			void print(std::ostream &s = std::cout) const {
+				m_it->print(s);
+			}
+			/// Evaluate symbol at time t.
+			double eval(const double &t) const {
+				return m_it->eval(t);
+			}
+			/// Name getter.
+			const std::string &get_name() const {
+				return m_it->m_name;
+			}
+			/// Time evaluation vector getter.
+			const std::vector<double> &get_time_eval() const {
+				return m_it->m_time_eval;
+			}
+		private:
+			// Constructor from psym_manager iterator.
+			psym(const it_type &it):m_it(it) {}
+			void construct_from_impl(const psym_impl &p) {
+				const it_type it = psym_manager::container.find(p);
+				if (it == psym_manager::container.end()) {
+					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
+					p_assert(res.second);
+					m_it = res.first;
+				} else {
+					it->m_time_eval = p.m_time_eval;
+					m_it = it;
+				}
+			}
+		private:
+			it_type m_it;
+	};
 
 	// Transform a vector of psyms into a tuple of positions, given a reference arguments tuple.
 }

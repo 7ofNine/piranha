@@ -22,6 +22,7 @@
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/enum.hpp>
+#include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -59,9 +60,9 @@ static inline double load_factor_get()
 }
 
 // Wrapper needed to emulate non-static property.
-static inline psym psyms_get(const psyms &, const std::string &name)
+static inline psym psym_get(const psym &, const std::string &name)
 {
-	return psyms::get(name);
+	return psym::get(name);
 }
 
 // Instantiate the pyranha Core module.
@@ -108,26 +109,14 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
 
-	// Psym manager.
-	class_<psyms>("__psyms", "Manager for symbols.", init<>())
-	.def("__iter__", iterator<psyms, return_internal_reference<> >())
-	.def("__len__", &psyms::length).staticmethod("__len__")
-	.def("__repr__", &py_print_to_string<psyms>)
-	.def("__getitem__", &psyms_get);
-
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &>())
-	.def(init<const std::string &, const std::string &>())
-	.def(init<const std::string &, const double &>())
-	.def(init<const std::string &, const double &, const double &>())
-	.def(init<const std::string &, const double &, const double &, const double &>())
-	.def(init<const std::string &, const double &, const double &, const double &, const double &>())
-	.def(init < const std::string &, const double &, const double &, const double &, const double &,
-		 const double & > ())
-	.def("__copy__", &py_copy<psym>)
-	.def("__repr__", &py_print_to_string<psym>)
-	.def("eval", &psym::eval)
-	.add_property("name", &psym::name);
+		.def(init<const std::string &, const std::vector<double> &>())
+		.def("__copy__", &py_copy<psym>)
+		.def("__getitem__", &psym_get)
+		.def("__repr__", &py_print_to_string<psym>)
+		.def("eval", &psym::eval)
+		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()));
 
 	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
 	.def("__repr__", &py_print_to_string<norm_truncator>)
