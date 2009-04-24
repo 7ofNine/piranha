@@ -136,7 +136,7 @@ namespace piranha
 			template <class Number, class ArgsTuple>
 			void construct_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
-			void construct_from_psym(const psym &, const int &, const ArgsTuple &);
+			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>

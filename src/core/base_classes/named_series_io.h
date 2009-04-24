@@ -221,7 +221,7 @@ namespace piranha
 	{
 		p_assert(derived_const_cast->empty());
 		append_arg<N>(p);
-		derived_cast->construct_from_psym(p, N, m_arguments);
+		derived_cast->base_construct_from_psym(p, N, m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

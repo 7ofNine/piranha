@@ -104,7 +104,7 @@ namespace piranha
 			// that poly args of s may be added as trig args (as s will be used as argument for sines
 			// and/or cosines).
 			template <class SubSeries>
-			Derived sub(const psym &arg, const SubSeries &series) const {
+			Derived sub(const psym &p, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -134,8 +134,7 @@ namespace piranha
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
 					&this_copy.m_arguments);
 				pos_tuple_type pos_tuple;
-				psym_p p(psyms::get_pointer(arg));
-				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
+				named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
 					this_copy.m_arguments);
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
@@ -144,7 +143,7 @@ namespace piranha
 				return retval;
 			}
 			template <class SubSeries>
-			Derived ei_sub(const psym &arg, const SubSeries &series) const {
+			Derived ei_sub(const psym &p, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -162,8 +161,7 @@ namespace piranha
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
 					&this_copy.m_arguments);
 				pos_tuple_type pos_tuple;
-				psym_p p(psyms::get_pointer(arg));
-				named_series_get_psym_p_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
+				named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
 					this_copy.m_arguments);
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
@@ -175,7 +173,7 @@ namespace piranha
 			FourierSeries to_fs() const {
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
-				typename ntuple<vector_psym_p,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
+				typename ntuple<vector_psym,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
 				retval.set_arguments(args_tuple);
 				const const_iterator it_f = derived_const_cast->end();

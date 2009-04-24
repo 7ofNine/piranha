@@ -118,7 +118,7 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::construct_from_psym(const psym &p, const int &n,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_construct_from_psym(const psym &p, const int &n,
 			const ArgsTuple &args_tuple)
 	{
 		p_assert(derived_cast->empty());

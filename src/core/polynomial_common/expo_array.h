@@ -150,7 +150,7 @@ namespace piranha
 							out_stream << '*';
 						}
 						// Take care of printing the name of the exponent.
-						out_stream << args_tuple.template get<ancestor::position>()[i]->name();
+						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) {
 							out_stream << "**" << n;
