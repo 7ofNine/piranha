@@ -136,7 +136,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::unknown_data;
 
-	// Meta-programming to get a tuple of (presence-flag + positional index) pairs for
+	// Meta-programming to get a tuple of (presence-flag, positional index) pairs for
 	// a psym, given an arguments_tuple.
 	template <class PosTuple, class ArgsTuple>
 	struct named_series_get_psym_p_positions {

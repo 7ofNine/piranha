@@ -209,9 +209,13 @@ namespace piranha
 				return retval;
 			}
 			/// Total degree of the variables at specified positions pos.
-			int partial_degree(const std::vector<size_t> &pos) const {
+			/**
+			 * pos_tuple must be a tuple of size_t vectors.
+			 */
+			template <class PosTuple>
+			int partial_degree(const PosTuple &pos_tuple) const {
+				const std::vector<size_t> &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
-				p_assert(w <= pos_size);
 				int retval = 0;
 				for (size_type i = 0; i < pos_size; ++i) {
 					// Don't try to read outside boundaries.
