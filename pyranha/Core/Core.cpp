@@ -118,13 +118,13 @@ BOOST_PYTHON_MODULE(_Core)
 		.def("eval", &psym::eval)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()));
 
-	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &py_print_to_string<norm_truncator>)
+	class_<norm_truncator>("norm_truncator", "Norm truncator.", init<>())
+	.def("__repr__", &py_print_to_string<norm_truncator>).staticmethod("__repr__")
 	.def("set", &norm_truncator::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
 		 "throw an error otherwise.").staticmethod("set")
 	.def("unset", &norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
-	class_<degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
+	class_<degree_truncator>("degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<degree_truncator>)
 	.def("set", &degree_truncator::set, "Set truncation level of series minimum degree to arg1.").staticmethod("set")
 	.def("unset", &degree_truncator::unset, "Clear minimum degree limit.").staticmethod("unset");

@@ -38,7 +38,7 @@
 
 namespace piranha
 {
-	struct psym_manager {
+	struct __PIRANHA_VISIBLE psym_manager {
 		struct psym_impl {
 			psym_impl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
 				m_name(name),m_time_eval(time_eval) {}

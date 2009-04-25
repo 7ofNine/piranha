@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -19,14 +20,15 @@
 from _Core import *
 
 def copy(arg):
-	"""Standard copy function. Lifted from the copy module."""
+	"""
+	Standard copy function. Lifted from the copy module.
+	"""
 	import copy as __copy
 	return __copy.copy(arg)
 
-def __create_psyms(self, names):
+def psyms(names):
 	"""
-	Create psyms from a string of space-separated names. If a name is already assigned to a psym,
-	create a copy of the psym with the same properties of its homonymous.
+	Create psyms from a string of space-separated names.
 	"""
 	try:
 		import IPython.ipapi
@@ -36,15 +38,9 @@ def __create_psyms(self, names):
 	for i in names.split():
 		try:
 			# Try to fetch the psym from the psym manager.
-			ip.ex("%s = psyms[\"%s\"]" % (i,i))
-		except UserWarning:
-			# If we failed, create a new psym.
-			ip.ex("%s = psym(\"%s\")" % (i,i))
+			ip.ex("%s = psym[\"%s\"]" % (i,i))
 		except SyntaxError:
-			print "The name '" + i + "' is not valid Python syntax, skipping."
-
-setattr(_Core.__psyms,"__call__",__create_psyms)
-psyms = _Core.__psyms()
+			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
 
 def series(names,series_t = None):
 	"""
@@ -68,11 +64,8 @@ def series(names,series_t = None):
 		try:
 			# Try to fetch the psym from the psym manager.
 			ip.ex("%s = %s(psyms[\"%s\"])" % (i,s_type,i))
-		except UserWarning:
-			# If we failed, create a new psym.
-			ip.ex("%s = %s(psym(\"%s\"))" % (i,s_type,i))
 		except SyntaxError:
-			print "The name '" + i + "' is not valid Python syntax, skipping."
+			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
 
 def load(*args):
 	"""
@@ -97,9 +90,6 @@ def load(*args):
 		except NameError:
 			raise NameError("Series type \"" + ext_name + "\" is unknown.")
 
-degree_truncator = _Core.__degree_truncator()
-expo_truncator = _Core.__expo_truncator()
-norm_truncator = _Core.__norm_truncator()
 settings = _Core.__settings()
 
 def gui():
