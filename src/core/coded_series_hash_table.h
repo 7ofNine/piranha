@@ -337,7 +337,7 @@ namespace piranha
 	const size_t coded_series_hash_table<T,Allocator>::bucket_size;
 
 	template <class T, class Allocator>
-	const size_t coded_series_hash_table<T,Allocator>::sizes[2][sizes_size] = { {
+	const size_t coded_series_hash_table<T,Allocator>::sizes[2][coded_series_hash_table<T,Allocator>::sizes_size] = { {
 		1u,
 		2u,
 		4u,

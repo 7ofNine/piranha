@@ -204,9 +204,9 @@ namespace piranha
 			};
 			// Data members.
 			/// Coefficient.
-			mutable cf_type			m_cf;
+			mutable cf_type		m_cf;
 			/// Key.
-			key_type				m_key;
+			key_type		m_key;
 			/// Rebound allocator for term type.
 			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.

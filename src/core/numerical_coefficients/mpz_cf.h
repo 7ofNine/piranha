@@ -48,7 +48,7 @@ namespace piranha
 		public:
 			typedef mpz_class numerical_type;
 			// Ctors
-			NUMERICAL_CONTAINER_CTORS(mpz_cf);
+			NUMERICAL_CONTAINER_CTORS(mpz_cf)
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -167,8 +167,8 @@ namespace std
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
 			typedef piranha::mpz_cf value_type;
-			NUMERICAL_CONTAINER_CTORS(complex);
-			COMPLEX_NUMERICAL_CONTAINER_CTORS;
+			NUMERICAL_CONTAINER_CTORS(complex)
+			COMPLEX_NUMERICAL_CONTAINER_CTORS()
 			// Override numerical container's division to catch divide by zero.
 			template <class ArgsTuple>
 			complex &divide_by(const double &x, const ArgsTuple &a) {

@@ -46,7 +46,7 @@ namespace piranha
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
 			// Ctors.
-			NUMERICAL_CONTAINER_CTORS(double_cf);
+			NUMERICAL_CONTAINER_CTORS(double_cf)
 			int get_int() const {
 				typedef boost::numeric::converter<int, double> double_to_int;
 				const int retval(static_cast<int>(double_to_int::nearbyint(ancestor::m_value)));
@@ -93,8 +93,8 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
-			NUMERICAL_CONTAINER_CTORS(complex);
-			COMPLEX_NUMERICAL_CONTAINER_CTORS;
+			NUMERICAL_CONTAINER_CTORS(complex)
+			COMPLEX_NUMERICAL_CONTAINER_CTORS()
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;
