@@ -1,0 +1,13 @@
+diff --git a/external_headers/boost/function/function_base.hpp b/external_headers/boost/function/function_base.hpp
+index 6612fb8..96b0e3c 100644
+--- a/external_headers/boost/function/function_base.hpp
++++ b/external_headers/boost/function/function_base.hpp
+@@ -42,7 +42,7 @@
+ #endif       
+ 
+ // Define BOOST_FUNCTION_STD_NS to the namespace that contains type_info.
+-#ifdef BOOST_NO_EXCEPTION_STD_NAMESPACE
++#if defined(BOOST_NO_EXCEPTION_STD_NAMESPACE) && !defined(__SUNPRO_CC)
+ // Embedded VC++ does not have type_info in namespace std
+ #  define BOOST_FUNCTION_STD_NS
+ #else
