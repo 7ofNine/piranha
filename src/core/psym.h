@@ -110,17 +110,17 @@ namespace piranha
 			};
 		public:
 			/// Constructor from name and time evaluation in string form.
-			psym(const std::string &name, const std::string &time_eval) {
+			explicit psym(const std::string &name, const std::string &time_eval) {
 				const psym_impl p(name,utils::str_to_vector<double>(time_eval,psym_impl::separator));
 				construct_from_impl(p);
 			}
 			/// Constructor from name.
-			psym(const std::string &name) {
+			explicit psym(const std::string &name) {
 				const psym_impl p(name);
 				construct_from_impl(p);
 			}
 			/// Constructor from name and vector.
-			psym(const std::string &name, const std::vector<double> &time_eval) {
+			explicit psym(const std::string &name, const std::vector<double> &time_eval) {
 				const psym_impl p(name,time_eval);
 				construct_from_impl(p);
 			}
@@ -128,7 +128,7 @@ namespace piranha
 				return m_it == other.m_it;
 			}
 			bool operator!=(const psym &other) const {
-				return !operator==(other);
+				return !(*this == other);
 			}
 			static psym get(const std::string &name) {
 				const psym_impl p(name);
@@ -166,7 +166,7 @@ namespace piranha
 			}
 		private:
 			// Constructor from psym_manager iterator.
-			psym(const it_type &it):m_it(it) {}
+			explicit psym(const it_type &it):m_it(it) {}
 			void construct_from_impl(const psym_impl &p) {
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {

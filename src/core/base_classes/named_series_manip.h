@@ -182,9 +182,8 @@ namespace piranha
 	// Template metaprogramming for applying a layout to a series.
 	template <class ArgsTuple>
 	struct named_series_apply_layout_to_args {
-		static void run(ArgsTuple &a1, const ArgsTuple &a2,
-						const typename ntuple < std::vector<std::pair<bool, size_t> >,
-						boost::tuples::length<ArgsTuple>::value >::type &l) {
+		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename ntuple < std::vector<std::pair<bool, size_t> >,
+			boost::tuples::length<ArgsTuple>::value >::type &l) {
 			const size_t l_size = l.get_head().size();
 			// The layout must have at least all arguments in v1.
 			p_assert(l_size >= a1.get_head().size());
@@ -196,15 +195,23 @@ namespace piranha
 				if (l.get_head()[i].first) {
 					// The argument was present in the old arguments sets. Copy it over.
 					p_assert(l.get_head()[i].second < old.size());
-					a1.get_head().push_back(old[l.get_head()[i].second]);
+					if (i < a1.get_head().size()) {
+						a1.get_head()[i] = old[l.get_head()[i].second];
+					} else {
+						a1.get_head().push_back(old[l.get_head()[i].second]);
+					}
 				} else {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
 					p_assert(i < a2.get_head().size());
-					a1.get_head().push_back(a2.get_head()[i]);
+					if (i < a1.get_head().size()) {
+						a1.get_head()[i] = a2.get_head()[i];
+					} else {
+						a1.get_head().push_back(a2.get_head()[i]);
+					}
 				}
 			}
 			named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.get_tail(),
-					a2.get_tail(), l.get_tail());
+				a2.get_tail(), l.get_tail());
 		}
 	};
 
