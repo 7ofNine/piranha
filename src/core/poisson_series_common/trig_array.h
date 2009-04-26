@@ -143,10 +143,10 @@ namespace piranha
 			};
 			// Ctors.
 			/// Default ctor.
-			toolbox(): ancestor::int_array() {}
+			toolbox(): ancestor() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor::int_array() {
+			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor() {
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.

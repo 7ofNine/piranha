@@ -32,6 +32,7 @@
 
 namespace piranha
 {
+	extern "C" {
 	static inline void *gmp_alloc_func(size_t size)
 	{
 		std_counting_allocator<char> a;
@@ -51,6 +52,7 @@ namespace piranha
 	{
 		std_counting_allocator<char> a;
 		a.deallocate(static_cast<char *>(ptr),size);
+	}
 	}
 
 	static inline std::string get_env_variable(const char *str)
