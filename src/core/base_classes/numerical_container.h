@@ -252,7 +252,7 @@ namespace piranha
 	};
 
 #define NUMERICAL_CONTAINER_CTORS(derived) \
-	explicit derived() {} \
+	explicit derived(): ancestor() {} \
 	template <class ArgsTuple> \
 	explicit derived(const std::string &s, const ArgsTuple &a): ancestor(s, a) {} \
 	template <class ArgsTuple> \

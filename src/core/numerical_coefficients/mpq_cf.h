@@ -49,7 +49,7 @@ namespace piranha
 			typedef mpq_class numerical_type;
 			// Ctors. Do not use macro since we need to canonicalize.
 			/// Empty constructor.
-			explicit mpq_cf() {
+			explicit mpq_cf(): ancestor() {
 				m_value.canonicalize();
 			}
 			/// Constructor from string.
@@ -202,7 +202,7 @@ namespace std
 			using complex_toolbox::print_pretty;
 			typedef piranha::mpq_cf value_type;
 			/// Empty constructor.
-			explicit complex() {
+			explicit complex(): ancestor() {
 				canonicalize();
 			}
 			/// Constructor from string.
