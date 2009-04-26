@@ -36,14 +36,13 @@ namespace piranha
 	struct common_polynomial {};
 
 	template <class Derived>
-	class toolbox<common_polynomial<Derived> >:
+	struct toolbox<common_polynomial<Derived> >:
 		protected toolbox<binomial_exponentiation<Derived,term_key_degree_comparison> >
 	{
-		public:
-			template <class ArgsTuple>
-			double base_norm(const ArgsTuple &args_tuple) const {
-				return std::abs(derived_const_cast->base_eval(0,args_tuple));
-			}
+		template <class ArgsTuple>
+		double base_norm(const ArgsTuple &args_tuple) const {
+			return std::abs(derived_const_cast->base_eval(0,args_tuple));
+		}
 	};
 }
 
