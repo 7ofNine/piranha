@@ -134,7 +134,7 @@ namespace piranha
 			template <class U>
 			counting_allocator(const counting_allocator<U,Allocator> &):m_alloc() {}
 			~counting_allocator() {}
-			pointer address(reference x) const {
+			pointer address(reference x) {
 				return m_alloc.address(x);
 			}
 			const_pointer address(const_reference x) const {

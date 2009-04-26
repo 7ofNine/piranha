@@ -254,11 +254,11 @@ namespace piranha
 #define NUMERICAL_CONTAINER_CTORS(derived) \
 	explicit derived() {} \
 	template <class ArgsTuple> \
-	explicit derived(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {} \
+	explicit derived(const std::string &s, const ArgsTuple &a): ancestor(s, a) {} \
 	template <class ArgsTuple> \
-	explicit derived(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {} \
+	explicit derived(const double &val, const ArgsTuple &a): ancestor(val, a) {} \
 	template <class ArgsTuple> \
-	explicit derived(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+	explicit derived(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 }
 
 namespace std

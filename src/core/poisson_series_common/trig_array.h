@@ -132,6 +132,11 @@ namespace piranha
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,
+					SubCachesCons> type;
+			};
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct ei_sub_cache_selector {
 				typedef boost::tuples::cons<ei_sub_cache<SubSeries,ArgsTuple>,
 					SubCachesCons> type;

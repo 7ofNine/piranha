@@ -47,7 +47,7 @@ namespace piranha
 			};
 			enum size_policy {
 				pow2	= 0,
-				prime	= 1,
+				prime	= 1
 			};
 			// Configuration options.
 			static const size_t bucket_size		= 12;
@@ -62,7 +62,7 @@ namespace piranha
 				32;
 #endif
 			static const size_t sizes[2][sizes_size];
-			typedef bucket_type_<bucket_size> bucket_type;;
+			typedef bucket_type_<bucket_size> bucket_type;
 			typedef bucket_type *container_type;
 			p_static_check(bucket_size > 0, "Size of bucket is not strictly positive.");
 			p_static_check(min_size_index >= 0, "min_size_index must be non-negative.");

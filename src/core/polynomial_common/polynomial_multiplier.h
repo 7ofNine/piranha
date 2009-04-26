@@ -74,7 +74,7 @@ namespace piranha
 					typedef ArgsTuple args_tuple_type;
 					typedef typename Truncator::template get_type<get_type> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-							ancestor::base_series_multiplier(s1, s2, retval, args_tuple) {}
+							ancestor(s1, s2, retval, args_tuple) {}
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication() {
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between

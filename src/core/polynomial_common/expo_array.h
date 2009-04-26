@@ -86,13 +86,18 @@ namespace piranha
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
+			struct sub_cache_selector {
+				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,
+					SubCachesCons> type;
+			};
+			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct ei_sub_cache_selector {
 				typedef boost::tuples::cons<ei_sub_cache<SubSeries,ArgsTuple>,
 					SubCachesCons> type;
 			};
 			// Ctors.
 			/// Default ctor.
-			toolbox(): ancestor::int_array() {}
+			toolbox(): ancestor() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
 			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor::int_array() {
@@ -108,7 +113,7 @@ namespace piranha
 			}
 			/// Ctor from psym.
 			template <class ArgsTuple>
-			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 			// Math.
 			/// Multiplication.
 			template <class ExpoArray, class ResultType>
