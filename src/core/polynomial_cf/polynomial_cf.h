@@ -26,43 +26,47 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/base_series_special_functions.h"
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/cf_series.h"
 #include "../base_classes/cf_series_complex_toolbox.h"
+#include "../base_classes/cf_series_special_functions.h"
+#include "../base_classes/common_comparisons.h"
 #include "../base_classes/power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../exceptions.h"
 #include "../polynomial_common/monomial.h"
+#include "../polynomial_common/base_polynomial_toolbox.h"
 #include "common_polynomial_cf_toolbox.h"
 
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
 #define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
 #define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!','?')
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF > >
-#define POLYNOMIAL_CF_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator> >
-#define POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 1, POLYNOMIAL_CF > >
-#define POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< POLYNOMIAL_CF > >
-#define POLYNOMIAL_CF_COMMON_ANCESTOR piranha::toolbox<piranha::common_polynomial_cf< POLYNOMIAL_CF > >
+#define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL_CF,piranha::term_key_degree_comparison> >
 
 namespace piranha
 {
-	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
+	// NOTE: this assumes that exponents are in position 0 of arguments tuple. Can be made configurable at a later stage.
 	template <E0_SERIES_TP_DECL>
 	class polynomial_cf:
 				public POLYNOMIAL_CF_BASE_ANCESTOR,
 				public POLYNOMIAL_CF_CF_ANCESTOR,
-				public POLYNOMIAL_CF_COMMON_ANCESTOR,
-				public POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
-				public POLYNOMIAL_CF_MULT_ANCESTOR,
-				public POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR
+				public POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
+				public toolbox<common_polynomial_cf< POLYNOMIAL_CF > >,
+				public toolbox<power_series<0, 1, POLYNOMIAL_CF > >,
+				public toolbox<series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator> >,
+				public toolbox<base_series_special_functions< POLYNOMIAL_CF > >,
+				public toolbox<cf_series_special_functions< POLYNOMIAL_CF > >,
+				public toolbox<base_polynomial_toolbox< POLYNOMIAL_CF > >
 	{
 			template <class>
 			friend class toolbox;
-			// Specify we will use the real_power from the common polynomial cf toolbox.
-			using POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
-			using POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
-			using POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
-			using POLYNOMIAL_CF_COMMON_ANCESTOR::base_norm;
+			// Specify we will use the power/root functions from the binomial toolbox.
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::nth_root;
+			using toolbox<base_polynomial_toolbox< POLYNOMIAL_CF > >::base_norm;
 		public:
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
@@ -76,32 +80,31 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::polynomial_cf)
 #define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!','?')
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< COMPLEX_POLYNOMIAL_CF_TERM, COMPLEX_POLYNOMIAL_CF > >
-#define COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator> >
-#define COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR piranha::toolbox<piranha::power_series<0, 1, COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POLYNOMIAL_CF > >
-#define COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF > >
-#define COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR piranha::toolbox<piranha::common_polynomial_cf< COMPLEX_POLYNOMIAL_CF > >
-#define COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX piranha::toolbox<piranha::cf_series_complex< POLYNOMIAL_CF > >
+#define COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX piranha::toolbox<piranha::cf_series_complex< POLYNOMIAL_CF > >
+#define COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL_CF,piranha::term_key_degree_comparison> >
 
 namespace std
 {
 	template < E0_SERIES_TP_DECL >
 	class complex<POLYNOMIAL_CF>:
 				public COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_POWER_SERIES_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_MULT_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX,
-				public COMPLEX_POLYNOMIAL_CF_SPECIAL_FUNCTION_ANCESTOR,
-				public COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX
+				public COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX,
+				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
+				public piranha::toolbox<piranha::common_polynomial_cf< COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::power_series<0, 1, COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator> >,
+				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF > >
 	{
 			template <class>
 			friend class piranha::toolbox;
-			// Specify we will use the real_power from the common polynomial cf toolbox.
-			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::real_power;
-			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::negative_integer_power;
-			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::nth_root;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::nth_root;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_add;
@@ -111,17 +114,17 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
-			using COMPLEX_POLYNOMIAL_CF_COMMON_ANCESTOR::base_norm;
+			using piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF > >::base_norm;
 		public:
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::mult_by;
+			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::divide_by;
+			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::divide_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::divide_by;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::add;
+			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::add;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::add;
-			using COMPLEX_POLYNOMIAL_CF_COMPLEX_TOOLBOX::subtract;
+			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::subtract;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::subtract;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(POLYNOMIAL_CF);

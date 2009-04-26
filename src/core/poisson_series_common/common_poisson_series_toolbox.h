@@ -28,8 +28,6 @@
 #include <utility>
 #include <vector>
 
-#include "../base_classes/binomial_exponentiation_toolbox.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../config.h"
@@ -38,7 +36,6 @@
 #include "../p_assert.h"
 #include "../psym.h"
 #include "../utils.h"
-#include "jacobi_anger_toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -74,11 +71,8 @@ namespace piranha
 	struct common_poisson_series {};
 
 	template <class Derived>
-	class toolbox<common_poisson_series<Derived> >:
-		public toolbox<jacobi_anger<1, Derived> >,
-		protected toolbox<binomial_exponentiation<Derived,ps_binomial_sorter> >
+	class toolbox<common_poisson_series<Derived> >
 	{
-			typedef toolbox<jacobi_anger<1, Derived> > jacang_ancestor;
 		public:
 			std::complex<Derived> ei() const {
 				// In order to account for a potential integer linear combination of arguments
@@ -202,7 +196,7 @@ namespace piranha
 				int_linear_term(get_int_linear_term<term_type, poly_cf_type>(cache,args_tuple));
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
-				jacang_ancestor::jacang(cache, int_linear_term.first, retval, args_tuple);
+				derived_const_cast->jacang(cache, int_linear_term.first, retval, args_tuple);
 				// If the linear term was found, take care of it.
 				if (int_linear_term.first != cache.end()) {
 					std::complex<Derived> tmp_series;

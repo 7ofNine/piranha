@@ -29,12 +29,15 @@
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
 #include "../base_classes/base_series_special_functions.h"
+#include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
+#include "../base_classes/common_comparisons.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/toolbox.h"
+#include "../poisson_series_common/jacobi_anger_toolbox.h"
 #include "common_fourier_series_toolbox.h"
 #include "fourier_series_term.h"
 
@@ -42,10 +45,7 @@
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
 #define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>, FOURIER_SERIES_TERM ,piranha::fourier_series)
-#define FOURIER_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< FOURIER_SERIES, Multiplier, Truncator> >
-#define FOURIER_SERIES_COMMON_ANCESTOR piranha::toolbox<piranha::common_fourier_series< FOURIER_SERIES > >
-#define FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< FOURIER_SERIES > >
-#define FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< FOURIER_SERIES > >
+#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< FOURIER_SERIES, piranha::fs_binomial_sorter > >
 
 namespace piranha
 {
@@ -53,10 +53,12 @@ namespace piranha
 	class fourier_series:
 				public FOURIER_SERIES_BASE_ANCESTOR,
 				public FOURIER_SERIES_NAMED_ANCESTOR,
-				public FOURIER_SERIES_MULT_ANCESTOR,
-				public FOURIER_SERIES_COMMON_ANCESTOR,
-				public FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
-				public FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
+				public FOURIER_SERIES_BINOMIAL_ANCESTOR,
+				public toolbox<common_fourier_series< FOURIER_SERIES > >,
+				public toolbox<series_multiplication< FOURIER_SERIES, Multiplier, Truncator> >,
+				public toolbox<base_series_special_functions< FOURIER_SERIES > >,
+				public toolbox<named_series_special_functions< FOURIER_SERIES > >,
+				public toolbox<jacobi_anger<0, FOURIER_SERIES > >,
 				boost::ring_operators < FOURIER_SERIES,
 				boost::ring_operators < FOURIER_SERIES, double,
 				boost::dividable < FOURIER_SERIES, double
@@ -64,9 +66,9 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			using FOURIER_SERIES_COMMON_ANCESTOR::real_power;
-			using FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
-			using FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::nth_root;
 		public:
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
@@ -78,12 +80,9 @@ namespace piranha
 #define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_MULT_ANCESTOR piranha::toolbox<piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator> >
-#define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<FOURIER_SERIES> >
-#define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<FOURIER_SERIES> >
-#define COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR piranha::toolbox<piranha::common_fourier_series < COMPLEX_FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::base_series_special_functions< COMPLEX_FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR piranha::toolbox<piranha::named_series_special_functions< COMPLEX_FOURIER_SERIES > >
+#define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< FOURIER_SERIES > >
+#define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< FOURIER_SERIES > >
+#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES, piranha::fs_binomial_sorter > >
 
 namespace std
 {
@@ -91,12 +90,13 @@ namespace std
 	class complex<FOURIER_SERIES>:
 				public COMPLEX_FOURIER_SERIES_BASE_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR,
-				public COMPLEX_FOURIER_SERIES_MULT_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX,
-				public COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR,
-				public COMPLEX_FOURIER_SERIES_BASE_SPECIAL_FUNCTIONS_ANCESTOR,
-				public COMPLEX_FOURIER_SERIES_NAMED_SPECIAL_FUNCTIONS_ANCESTOR,
+				public piranha::toolbox<piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator> >,
+				public piranha::toolbox<piranha::common_fourier_series < COMPLEX_FOURIER_SERIES > >,
+				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_FOURIER_SERIES > >,
+				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_FOURIER_SERIES > >,
+				public COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,
 				boost::dividable < COMPLEX_FOURIER_SERIES, double,
@@ -107,9 +107,9 @@ namespace std
 	{
 			template <class>
 			friend class piranha::toolbox;
-			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::real_power;
-			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::negative_integer_power;
-			using COMPLEX_FOURIER_SERIES_COMMON_ANCESTOR::nth_root;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::nth_root;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_add;

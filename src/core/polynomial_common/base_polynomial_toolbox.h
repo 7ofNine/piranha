@@ -18,13 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
-#define PIRANHA_COMMON_POLYNOMIAL_TOOLBOX_H
+#ifndef PIRANHA_BASE_POLYNOMIAL_TOOLBOX_H
+#define PIRANHA_BASE_POLYNOMIAL_TOOLBOX_H
 
 #include <cmath>
 
-#include "../base_classes/binomial_exponentiation_toolbox.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -33,16 +31,24 @@
 namespace piranha
 {
 	template <class Derived>
-	struct common_polynomial {};
+	struct base_polynomial_toolbox {};
 
+	/// Base polynomial toolbox.
+	/**
+	 * Overrides base_series::base_norm().
+	 */
 	template <class Derived>
-	struct toolbox<common_polynomial<Derived> >:
-		protected toolbox<binomial_exponentiation<Derived,term_key_degree_comparison> >
+	class toolbox<base_polynomial_toolbox<Derived> >
 	{
-		template <class ArgsTuple>
-		double base_norm(const ArgsTuple &args_tuple) const {
-			return std::abs(derived_const_cast->base_eval(0,args_tuple));
-		}
+		protected:
+			/// Norm of a polynomial.
+			/**
+			* Defined as the evaluation at t = 0.
+			*/
+			template <class ArgsTuple>
+			double base_norm(const ArgsTuple &args_tuple) const {
+				return std::abs(derived_const_cast->base_eval(0,args_tuple));
+			}
 	};
 }
 

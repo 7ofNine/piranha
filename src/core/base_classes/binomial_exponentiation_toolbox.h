@@ -41,26 +41,29 @@ namespace piranha
 	template <class Derived, template <class> class Sorter>
 	struct binomial_exponentiation {};
 
-	// Note: this should be used with protected inheritance.
+	/// Binomial exponentiation toolbox.
+	/**
+	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::nth_root
+	 * and reimplements them using binomial expansion.
+	 */
 	template <class Derived, template <class> class Sorter>
 	class toolbox<binomial_exponentiation<Derived,Sorter> >
 	{
 			enum op_type { power_op, root_op };
-		public:
+		protected:
 			/// Real power.
-			/**
-			* This method is written to work in conjunction with base_series::base_pow.
-			*/
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
 				return generic_binomial_power<power_op>(
 					get_sorted_pointer_vector<Derived>(args_tuple),y,args_tuple);
 			}
+			/// Negative integer power.
 			template <class ArgsTuple>
 			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const {
 				return generic_binomial_power<power_op>(
 					get_sorted_pointer_vector<Derived>(args_tuple),y, args_tuple);
 			}
+			/// Nth root.
 			template <class ArgsTuple>
 			Derived nth_root(const int &n, const ArgsTuple &args_tuple) const {
 				p_assert(n != 0 && n != 1);
