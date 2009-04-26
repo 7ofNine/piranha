@@ -29,6 +29,7 @@
 #include <iostream>
 #include <memory> // For standard allocator.
 #include <string>
+#include <utility> // For std::pair.
 #include <vector>
 
 #include "../base_classes/int_array.h"
@@ -215,17 +216,19 @@ namespace piranha
 			}
 			/// Total degree of the variables at specified positions pos.
 			/**
-			 * pos_tuple must be a tuple of size_t vectors.
+			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
 			 */
 			template <class PosTuple>
 			int partial_degree(const PosTuple &pos_tuple) const {
-				const std::vector<size_t> &pos = pos_tuple.template get<ancestor::position>();
+				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
 				int retval = 0;
 				for (size_type i = 0; i < pos_size; ++i) {
-					// Don't try to read outside boundaries.
-					if (pos[i] < w) {
-						retval += (*this)[pos[i]];
+					// Add up exponents only if they are present and don't try to read outside boundaries
+					// (this last could happen after merging arguments with a second series with smaller
+					// number of arguments).
+					if (pos[i].first && pos[i].second < w) {
+						retval += (*this)[pos[i].second];
 					}
 				}
 				return retval;
@@ -236,6 +239,14 @@ namespace piranha
 			 */
 			int min_degree() const {
 				return degree();
+			}
+			/// Minimum total degree of the variables at specified positions pos.
+			/**
+			 * Provided for use within the power series toolbox, and defined to be equal to partial_degree().
+			 */
+			template <class PosTuple>
+			int partial_min_degree(const PosTuple &pos_tuple) const {
+				return partial_degree(pos_tuple);
 			}
 			/// Return the position of the linear argument in the monomial.
 			/**

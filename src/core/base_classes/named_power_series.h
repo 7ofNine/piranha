@@ -21,29 +21,24 @@
 #ifndef PIRANHA_NAMED_POWER_SERIES_H
 #define PIRANHA_NAMED_POWER_SERIES_H
 
-#include <vector>
-
-#include "../ntuple.h"
 #include "../psym.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
+	template <class Derived>
 	struct named_power_series {};
 
 	/// Named power series toolbox.
 	template <class Derived>
-	class toolbox<named_power_series<Derived> >
+	struct toolbox<named_power_series<Derived> >
 	{
-		public:
-			int partial_degree(const std::vector<psym> &v_psym) const {
-				typedef typename ntuple<std::vector<size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
-				typedef typename Derived::args_tuple_type args_tuple_type;
-				pos_tuple_type pos_tuple;
-				v_psym_2_pos_tuple<args_tuple_type>::run(derived_const_cast->m_arguments);
-			}
+		int partial_degree(const vector_psym &v) const {
+			return derived_const_cast->base_partial_degree(psyms2pos(v,derived_const_cast->m_arguments));
+		}
 	};
 }
 
