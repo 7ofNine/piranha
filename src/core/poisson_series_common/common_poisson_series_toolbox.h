@@ -106,7 +106,7 @@ namespace piranha
 			template <class SubSeries>
 			Derived sub(const psym &p, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -133,9 +133,7 @@ namespace piranha
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
 					&this_copy.m_arguments);
-				pos_tuple_type pos_tuple;
-				named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
-					this_copy.m_arguments);
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.m_arguments);
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;
@@ -145,7 +143,7 @@ namespace piranha
 			template <class SubSeries>
 			Derived ei_sub(const psym &p, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::pair<bool, size_t>, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -160,9 +158,7 @@ namespace piranha
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
 					&this_copy.m_arguments);
-				pos_tuple_type pos_tuple;
-				named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple,
-					this_copy.m_arguments);
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.m_arguments);
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
 					sub_caches, this_copy.m_arguments));
 				retval.m_arguments = this_copy.m_arguments;

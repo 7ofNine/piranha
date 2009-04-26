@@ -136,32 +136,6 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	std::vector<std::string> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::unknown_data;
 
-	// Meta-programming to get a tuple of (presence-flag, positional index) pairs for
-	// a psym, given an arguments_tuple.
-	template <class PosTuple, class ArgsTuple>
-	struct named_series_get_psym_positions {
-		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value, "");
-		static void run(const psym &p, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
-			// Set to not found.
-			pos_tuple.get_head().first = false;
-			const size_t w = args_tuple.get_head().size();
-			for (size_t i = 0; i < w ; ++i) {
-				if (args_tuple.get_head()[i] == p) {
-					pos_tuple.get_head().first = true;
-					pos_tuple.get_head().second = i;
-					break;
-				}
-			}
-			named_series_get_psym_positions<typename PosTuple::tail_type, typename ArgsTuple::tail_type>::
-			run(p, pos_tuple.get_tail(), args_tuple.get_tail());
-		}
-	};
-
-	template <>
-	struct named_series_get_psym_positions<boost::tuples::null_type, boost::tuples::null_type> {
-		static void run(const psym &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
-	};
-
 // Useful macros for named series.
 #define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::toolbox<piranha::named_series<args, term_name, E0_SERIES(series_name) > >
 

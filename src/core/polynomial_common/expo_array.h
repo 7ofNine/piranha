@@ -273,13 +273,14 @@ namespace piranha
 			template <class PosTuple, class ArgsTuple>
 			std::pair<int, toolbox> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
 				std::pair<int, toolbox> retval(0, toolbox());
-				const size_t pos = pos_tuple.template get<ancestor::position>().second;
+				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 				p_assert(pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
 				// by the coefficient in the partial derivation of the whole term.
-				if (pos_tuple.template get<ancestor::position>().first && this->m_container.v[pos] != 0) {
+				if (pos_tuple.template get<ancestor::position>()[0].first && this->m_container.v[pos] != 0) {
 					retval.second = *this;
 					retval.first = this->m_container.v[pos];
 					--retval.second[pos];
@@ -324,10 +325,12 @@ namespace piranha
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
-				if (!pos_tuple.template get<ancestor::position>().first) {
+				// NOTE: for now we can substitute one symbol at a time.
+				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					p_assert(pos < this->size());
 					toolbox tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.

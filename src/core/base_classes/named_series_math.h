@@ -21,6 +21,8 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
+#include <vector>
+
 #include "../exceptions.h"
 #include "../ntuple.h"
 #include "../psym.h"
@@ -176,9 +178,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::partial(const psym &p, const int &n) const
 	{
-		typedef typename ntuple<std::pair<bool, size_t>, n_arguments_sets>::type pos_tuple_type;
-		pos_tuple_type pos_tuple;
-		named_series_get_psym_positions<pos_tuple_type, args_tuple_type>::run(p, pos_tuple, m_arguments);
+		typedef typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type pos_tuple_type;
+		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),m_arguments);
 		Derived retval(derived_const_cast->base_partial(n, pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();

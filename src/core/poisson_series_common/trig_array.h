@@ -457,9 +457,10 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
-				if (pos_tuple.template get<ancestor::position>().first) {
+				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				if (pos_tuple.template get<ancestor::position>()[0].first) {
 					retval.second = *this;
-					const size_t pos = pos_tuple.template get<ancestor::position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					// Change the flavour of the resulting key.
 					retval.second.m_flavour = !this->m_flavour;
 					p_assert(pos < this->size());
@@ -493,10 +494,12 @@ namespace piranha
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
-				if (!pos_tuple.template get<ancestor::position>().first) {
+				// NOTE: for now we can substitute one symbol at a time.
+				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					p_assert(pos < this->size());
 					toolbox tmp_ta(*this);
@@ -541,10 +544,11 @@ namespace piranha
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				if (!pos_tuple.template get<ancestor::position>().first) {
+				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>().second;
+					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					p_assert(pos < this->size());
 					toolbox tmp_ta(*this);

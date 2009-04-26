@@ -32,6 +32,7 @@
 
 #include "config.h"
 #include "exceptions.h"
+#include "ntuple.h"
 #include "p_assert.h"
 #include "settings.h"
 #include "utils.h"
@@ -55,6 +56,9 @@ namespace piranha
 				}
 				out_stream << '\n';
 			}
+			bool operator<(const psym_impl &other) const {
+				return (m_name < other.m_name);
+			}
 			// Time evaluation.
 			double eval(const double &t) const {
 				double retval = 0.;
@@ -71,12 +75,7 @@ namespace piranha
 			mutable std::vector<double>	m_time_eval;
 			static const std::string	separator;
 		};
-		struct psym_impl_comparison {
-			size_t operator()(const psym_impl &p1, const psym_impl &p2) const {
-				return (p1.m_name < p2.m_name);
-			}
-		};
-		typedef std::set<psym_impl,psym_impl_comparison> container_type;
+		typedef std::set<psym_impl> container_type;
 		static container_type container;
 	};
 
@@ -123,6 +122,9 @@ namespace piranha
 			explicit psym(const std::string &name, const std::vector<double> &time_eval) {
 				const psym_impl p(name,time_eval);
 				construct_from_impl(p);
+			}
+			bool operator<(const psym &other) const {
+				return ((*m_it) < *(other.m_it));
 			}
 			bool operator==(const psym &other) const {
 				return m_it == other.m_it;
@@ -182,6 +184,46 @@ namespace piranha
 			it_type m_it;
 	};
 
-	// Transform a vector of psyms into a tuple of positions, given a reference arguments tuple.
+	template <class ArgsTuple>
+	struct psyms2pos_impl {
+		template <class PosTuple>
+		static void run(const vector_psym &v, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+			const size_t a_size = args_tuple.get_head().size(), v_size = v.size();
+			pos_tuple.get_head().reserve(v_size);
+			// For each psymbol, test presence.
+			for (size_t i = 0; i < v_size; ++i) {
+				// Initially set the symbol to not found.
+				pos_tuple.get_head().push_back(std::make_pair(false,size_t(0)));
+				for (size_t j = 0; j < a_size; ++j) {
+					if (args_tuple.get_head()[j] == v[i]) {
+						pos_tuple.get_head().back().first = true;
+						pos_tuple.get_head().back().second = j;
+						// No need to continue, the symbol is (supposed to be) unique.
+						break;
+					}
+				}
+			}
+			psyms2pos_impl<typename ArgsTuple::tail_type>::run(v,pos_tuple.get_tail(),args_tuple.get_tail());
+		}
+	};
+
+	template <>
+	struct psyms2pos_impl<boost::tuples::null_type> {
+		static void run(const vector_psym &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
+
+	// Transform a vector of psyms into a tuple of vectors of (position flag, position) pairs, given a reference arguments tuple.
+	// Return value will be a tuple of vectors, each of size v.size(), containing (presence, position) pairs for the corresponding symbols
+	// in v.
+	template <class ArgsTuple>
+	typename ntuple<std::vector<std::pair<bool,size_t> >,boost::tuples::length<ArgsTuple>::value>::type psyms2pos(const vector_psym &v, const ArgsTuple &args_tuple) {
+		typedef typename ntuple<std::vector<std::pair<bool,size_t> >,boost::tuples::length<ArgsTuple>::value>::type retval_type;
+		// First we want to make sure that the vector of symbols does not contain duplicate elements.
+		const std::set<psym> uniques_set(v.begin(),v.end());
+		const vector_psym uniques_vector(uniques_set.begin(),uniques_set.end());
+		retval_type retval;
+		psyms2pos_impl<ArgsTuple>::run(uniques_vector,retval,args_tuple);
+		return retval;
+	}
 }
 #endif
