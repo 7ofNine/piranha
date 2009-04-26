@@ -35,7 +35,8 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
-#include "../base_classes/power_series.h"
+#include "../base_classes/base_power_series.h"
+#include "../base_classes/named_power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../polynomial_common/monomial.h"
@@ -54,7 +55,8 @@ namespace piranha
 				public POLYNOMIAL_BASE_ANCESTOR,
 				public POLYNOMIAL_NAMED_ANCESTOR,
 				public POLYNOMIAL_BINOMIAL_ANCESTOR,
-				public toolbox<power_series<0,1,POLYNOMIAL > >,
+				public toolbox<base_power_series<0,1,POLYNOMIAL > >,
+				public toolbox<named_power_series< POLYNOMIAL > >,
 				public toolbox<series_multiplication< POLYNOMIAL, Multiplier, Truncator> >,
 				public toolbox<base_polynomial_toolbox< POLYNOMIAL > >,
 				public toolbox<base_series_special_functions< POLYNOMIAL > >,
@@ -96,7 +98,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator> >,
 				public piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::power_series<0,1,COMPLEX_POLYNOMIAL > >,
+				public piranha::toolbox<piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL > >,
+				public piranha::toolbox<piranha::named_power_series< COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POLYNOMIAL > >,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,

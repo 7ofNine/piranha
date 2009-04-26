@@ -35,7 +35,8 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
-#include "../base_classes/power_series.h"
+#include "../base_classes/base_power_series.h"
+#include "../base_classes/named_power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../fourier_series/fourier_series_term.h"
@@ -61,7 +62,8 @@ namespace piranha
 				public toolbox<series_multiplication< POISSON_SERIES, Mult1, Trunc1> >,
 				public toolbox<jacobi_anger<1, POISSON_SERIES > >,
 				public toolbox<common_poisson_series< POISSON_SERIES > >,
-				public toolbox<power_series<0, 0, POISSON_SERIES > >,
+				public toolbox<base_power_series<0, 0, POISSON_SERIES > >,
+				public toolbox<named_power_series< POISSON_SERIES > >,
 				public toolbox<base_series_special_functions< POISSON_SERIES > >,
 				public toolbox<named_series_special_functions< POISSON_SERIES > >,
 				public toolbox<celmec< POISSON_SERIES > >,
@@ -102,7 +104,8 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1> >,
 				public piranha::toolbox<piranha::common_poisson_series< COMPLEX_POISSON_SERIES > >,
-				public piranha::toolbox<piranha::power_series<0, 0, COMPLEX_POISSON_SERIES > >,
+				public piranha::toolbox<piranha::base_power_series<0, 0, COMPLEX_POISSON_SERIES > >,
+				public piranha::toolbox<piranha::named_power_series< COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POISSON_SERIES > >,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,

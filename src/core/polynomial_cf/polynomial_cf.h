@@ -31,7 +31,8 @@
 #include "../base_classes/cf_series_complex_toolbox.h"
 #include "../base_classes/cf_series_special_functions.h"
 #include "../base_classes/common_comparisons.h"
-#include "../base_classes/power_series.h"
+#include "../base_classes/base_power_series.h"
+#include "../base_classes/cf_power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../exceptions.h"
@@ -54,7 +55,8 @@ namespace piranha
 				public POLYNOMIAL_CF_CF_ANCESTOR,
 				public POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
 				public toolbox<common_polynomial_cf< POLYNOMIAL_CF > >,
-				public toolbox<power_series<0, 1, POLYNOMIAL_CF > >,
+				public toolbox<base_power_series<0, 1, POLYNOMIAL_CF > >,
+				public toolbox<cf_power_series< POLYNOMIAL_CF > >,
 				public toolbox<series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator> >,
 				public toolbox<base_series_special_functions< POLYNOMIAL_CF > >,
 				public toolbox<cf_series_special_functions< POLYNOMIAL_CF > >,
@@ -94,7 +96,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::common_polynomial_cf< COMPLEX_POLYNOMIAL_CF > >,
-				public piranha::toolbox<piranha::power_series<0, 1, COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::base_power_series<0, 1, COMPLEX_POLYNOMIAL_CF > >,
+				public piranha::toolbox<piranha::cf_power_series< COMPLEX_POLYNOMIAL_CF > >,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator> >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
 				public piranha::toolbox<piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
