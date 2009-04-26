@@ -58,13 +58,12 @@ namespace piranha
 				return get_comp<1>(args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &base_real(const RealDerived &r, const ArgsTuple &args_tuple) {
+			void base_set_real(const RealDerived &r, const ArgsTuple &args_tuple) {
 				base_subtract(base_real(args_tuple), args_tuple);
 				base_add(r, args_tuple);
-				return *derived_cast;
 			}
 			template <class ArgsTuple>
-			Derived &base_imag(const RealDerived &i, const ArgsTuple &args_tuple) {
+			void base_set_imag(const RealDerived &i, const ArgsTuple &args_tuple) {
 				typedef typename RealDerived::const_iterator real_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				complex_term_type tmp;
@@ -73,17 +72,16 @@ namespace piranha
 				const real_iterator old_i_it_f = old_i.end();
 				for (real_iterator i_it = old_i.begin(); i_it != old_i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
-					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					tmp.m_cf.set_imag(i_it->m_cf, args_tuple);
 					derived_cast->template insert<true, false>(tmp, args_tuple);
 				}
 				// Now add the new imaginary part.
 				const real_iterator i_it_f = i.end();
 				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
-					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					tmp.m_cf.set_imag(i_it->m_cf, args_tuple);
 					derived_cast->insert(tmp, args_tuple);
 				}
-				return *derived_cast;
 			}
 			template <class ArgsTuple>
 			RealDerived base_abs(const ArgsTuple &args_tuple) const {
@@ -99,7 +97,7 @@ namespace piranha
 				retval.base_add(base_real(args_tuple),args_tuple);
 				RealDerived tmp = base_imag(args_tuple);
 				tmp.base_mult_by(-1,args_tuple);
-				retval.base_imag(tmp,args_tuple);
+				retval.base_set_imag(tmp,args_tuple);
 				return retval;
 			}
 			template <class ArgsTuple>
@@ -170,7 +168,7 @@ namespace piranha
 				complex_term_type tmp;
 				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) {
 					tmp.m_key = i_it->m_key;
-					tmp.m_cf.imag(i_it->m_cf, args_tuple);
+					tmp.m_cf.set_imag(i_it->m_cf, args_tuple);
 					derived_cast->insert(tmp, args_tuple);
 				}
 			}

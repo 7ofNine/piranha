@@ -52,17 +52,15 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			Derived &real(const RealDerived &r) {
+			void set_real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				derived_cast->base_real(r, derived_const_cast->m_arguments);
+				derived_cast->base_set_real(r, derived_const_cast->m_arguments);
 				derived_cast->trim();
-				return *derived_cast;
 			}
-			Derived &imag(const RealDerived &i) {
+			void set_imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				derived_cast->base_imag(i, derived_const_cast->m_arguments);
+				derived_cast->base_set_imag(i, derived_const_cast->m_arguments);
 				derived_cast->trim();
-				return *derived_cast;
 			}
 			RealDerived abs() const {
 				RealDerived retval = derived_const_cast->base_abs(derived_const_cast->m_arguments);

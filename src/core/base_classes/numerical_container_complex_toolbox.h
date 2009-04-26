@@ -74,11 +74,11 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			void real(const value_type &r, const ArgsTuple &) {
+			void set_real(const value_type &r, const ArgsTuple &) {
 				derived_cast->m_value = r.value();
 			}
 			template <class ArgsTuple>
-			void imag(const value_type &i, const ArgsTuple &) {
+			void set_imag(const value_type &i, const ArgsTuple &) {
 				// TODO: this code works in gcc, but it is not standard.
 				// derived_cast->m_value.imag() = i.value();
 				derived_cast->m_value = typename Derived::numerical_type(derived_const_cast->m_value.real(),

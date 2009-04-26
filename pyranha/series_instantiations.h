@@ -151,8 +151,8 @@ namespace pyranha
 		instc.def(boost::python::self /= std::complex<double>());
 		instc.def(boost::python::self / std::complex<double>());
 		// Real and imaginary parts assignment and extraction.
-		instc.add_property("real", &py_series_get_real<T>, &py_series_set_real<T>, "Get/set real part.");
-		instc.add_property("imag", &py_series_get_imag<T>, &py_series_set_imag<T>, "Get/set imaginary part.");
+		instc.add_property("real", &std::complex<T>::real, &std::complex<T>::set_real, "Get/set real part.");
+		instc.add_property("imag", &std::complex<T>::imag, &std::complex<T>::set_imag, "Get/set imaginary part.");
 		// Absolute value.
 		instc.def("__abs__", &std::complex<T>::abs, "Absolute value.");
 		// Conjugate.

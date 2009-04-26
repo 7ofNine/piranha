@@ -47,12 +47,12 @@ namespace piranha
 				return derived_const_cast->base_imag(args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &real(const RealDerived &r, const ArgsTuple &args_tuple) {
-				return derived_cast->base_real(r,args_tuple);
+			void set_real(const RealDerived &r, const ArgsTuple &args_tuple) {
+				derived_cast->base_set_real(r,args_tuple);
 			}
 			template <class ArgsTuple>
-			Derived &imag(const RealDerived &r, const ArgsTuple &args_tuple) {
-				return derived_cast->base_imag(r,args_tuple);
+			void set_imag(const RealDerived &r, const ArgsTuple &args_tuple) {
+				derived_cast->base_set_imag(r,args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &mult_by(const RealDerived &cs, const ArgsTuple &a) {
