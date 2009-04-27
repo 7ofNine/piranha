@@ -114,9 +114,20 @@ namespace piranha
 				construct_from_impl(p);
 			}
 			/// Constructor from name.
+			/**
+			 * If the symbol is already present in the psym manager then use it, otherwise initialise
+			 * a new psym with the given name and an empty time evaluation vector.
+			 */
 			explicit psym(const std::string &name) {
 				const psym_impl p(name);
-				construct_from_impl(p);
+				const it_type it = psym_manager::container.find(p);
+				if (it == psym_manager::container.end()) {
+					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
+					p_assert(res.second);
+					m_it = res.first;
+				} else {
+					m_it = it;
+				}
 			}
 			/// Constructor from name and vector.
 			explicit psym(const std::string &name, const std::vector<double> &time_eval) {
@@ -131,17 +142,6 @@ namespace piranha
 			}
 			bool operator!=(const psym &other) const {
 				return !(*this == other);
-			}
-			static psym get(const std::string &name) {
-				const psym_impl p(name);
-				const it_type it = psym_manager::container.find(p);
-				if (it == psym_manager::container.end()) {
-					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
-					p_assert(res.second);
-					return psym(res.first);
-				} else {
-					return psym(it);
-				}
 			}
 			static vector_psym list() {
 				vector_psym retval;
@@ -166,9 +166,11 @@ namespace piranha
 			const std::vector<double> &get_time_eval() const {
 				return m_it->m_time_eval;
 			}
+			/// Time evaluation vector setter.
+			void set_time_eval(const std::vector<double> &t) const {
+				m_it->m_time_eval = t;
+			}
 		private:
-			// Constructor from psym_manager iterator.
-			explicit psym(const it_type &it):m_it(it) {}
 			void construct_from_impl(const psym_impl &p) {
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {

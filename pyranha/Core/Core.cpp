@@ -94,14 +94,14 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
 
 	// Psym.
-	class_<psym>("psym", "Symbol class.", init<const std::string &>())
-		.def(init<const std::string &, const std::vector<double> &>())
+	class_<psym>("psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())
+		.def(init<const std::string &>())
 		.def("__copy__", &py_copy<psym>)
-		.def("get", &psym::get).staticmethod("get")
 		.def("__repr__", &py_print_to_string<psym>)
 		.def("eval", &psym::eval)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
-		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()))
+		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()),
+			&psym::set_time_eval)
 		.def("list", &psym::list, "Get list of global psyms").staticmethod("list");
 
 	class_<norm_truncator>("norm_truncator", "Norm truncator.", init<>())
