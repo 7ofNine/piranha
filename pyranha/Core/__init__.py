@@ -38,7 +38,7 @@ def psyms(names):
 	for i in names.split():
 		try:
 			# Try to fetch the psym from the psym manager.
-			ip.ex("%s = psym[\"%s\"]" % (i,i))
+			ip.ex("%s = psym.get(\"%s\")" % (i,i))
 		except SyntaxError:
 			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
 
@@ -63,7 +63,7 @@ def series(names,series_t = None):
 	for i in names.split():
 		try:
 			# Try to fetch the psym from the psym manager.
-			ip.ex("%s = %s(psyms[\"%s\"])" % (i,s_type,i))
+			ip.ex("%s = %s(psym.get(\"%s\"))" % (i,s_type,i))
 		except SyntaxError:
 			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
 

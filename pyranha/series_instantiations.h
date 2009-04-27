@@ -276,8 +276,10 @@ namespace pyranha
 	template <class T>
 	inline void power_series_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.add_property("degree", &T::degree, "Degree.");
-		inst.add_property("min_degree", &T::min_degree, "Minimum degree.");
+		inst.def("degree", &T::degree, "Degree.");
+		inst.def("partial_degree", &T::partial_degree, "Partial degree.");
+		inst.def("min_degree", &T::min_degree, "Minimum degree.");
+		inst.def("partial_min_degree", &T::partial_min_degree, "Partial minimum degree.");
 	}
 
 	template <class T>

@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include <boost_python_container_conversions.h>
 #include "../../src/core/base_classes/degree_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/base_classes/toolbox.h"
@@ -59,15 +60,12 @@ static inline double load_factor_get()
 	return settings::load_factor();
 }
 
-// Wrapper needed to emulate non-static property.
-static inline psym psym_get(const psym &, const std::string &name)
-{
-	return psym::get(name);
-}
-
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
+	to_tuple_mapping<vector_psym>();
+	from_python_sequence<vector_psym,variable_capacity_policy>();
+
 	translate_exceptions();
 	numerical_cfs_bindings();
 	keys_bindings();
@@ -113,7 +111,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_<psym>("psym", "Symbol class.", init<const std::string &>())
 		.def(init<const std::string &, const std::vector<double> &>())
 		.def("__copy__", &py_copy<psym>)
-		.def("__getitem__", &psym_get)
+		.def("get", &psym::get).staticmethod("get")
 		.def("__repr__", &py_print_to_string<psym>)
 		.def("eval", &psym::eval)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()));

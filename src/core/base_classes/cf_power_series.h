@@ -39,6 +39,10 @@ namespace piranha
 		int partial_degree(const PosTuple &pos_tuple) const {
 			return derived_const_cast->base_partial_degree(pos_tuple);
 		}
+		template <class PosTuple>
+		int partial_min_degree(const PosTuple &pos_tuple) const {
+			return derived_const_cast->base_partial_min_degree(pos_tuple);
+		}
 	};
 }
 

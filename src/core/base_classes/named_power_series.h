@@ -39,6 +39,9 @@ namespace piranha
 		int partial_degree(const vector_psym &v) const {
 			return derived_const_cast->base_partial_degree(psyms2pos(v,derived_const_cast->m_arguments));
 		}
+		int partial_min_degree(const vector_psym &v) const {
+			return derived_const_cast->base_partial_min_degree(psyms2pos(v,derived_const_cast->m_arguments));
+		}
 	};
 }
 

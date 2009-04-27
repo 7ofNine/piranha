@@ -23,6 +23,7 @@
 #include <string>
 #include <utility>
 
+#include <boost_python_container_conversions.h>
 #include "../../src/manipulators/qps.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
