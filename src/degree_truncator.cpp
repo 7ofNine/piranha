@@ -19,27 +19,52 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <sstream>
 
 #include "core/base_classes/degree_truncator.h"
+#include "core/psym.h"
 
 namespace piranha
 {
 	// Static initialization for degree-based truncation.
 	int degree_truncator::m_degree_limit = 0;
-	bool degree_truncator::m_effective = false;
+	degree_truncator::mode degree_truncator::m_mode = degree_truncator::inactive;
+	vector_psym degree_truncator::m_psyms;
 
 	void degree_truncator::unset()
 	{
-		m_effective = false;
+		m_mode = inactive;
+	}
+
+	void degree_truncator::set(const int &n) {
+		m_degree_limit = n;
+		m_mode = deg;
+	}
+
+	void degree_truncator::set(const vector_psym &v, const int &n) {
+		m_degree_limit = n;
+		m_psyms = v;
+		m_mode = p_deg;
 	}
 
 	void degree_truncator::print(std::ostream &stream)
 	{
-		if (m_effective) {
-			stream << "Minimum degree limit: " << m_degree_limit;
-		} else {
-			stream << "No minimum degree limit set.";
+		switch (m_mode) {
+			case inactive:
+				stream << "No minimum degree limit set.";
+				break;
+			case deg:
+				stream << "Minimum degree limit: " << m_degree_limit;
+				break;
+			case p_deg:
+				stream << "Partial minimum degree limit: " << m_degree_limit << '\n';
+				stream << "Affected symbols: [";
+				for (size_t i = 0; i < m_psyms.size(); ++i) {
+					stream << m_psyms[i].get_name();
+					if (i < m_psyms.size() - 1) {
+						stream << " ";
+					}
+				}
+				stream << ']';
 		}
 	}
 }
