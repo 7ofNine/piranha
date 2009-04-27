@@ -67,6 +67,5 @@
 #endif
 
 #define __PIRANHA_MAX_ECHELON_LEVEL (4)
-p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "");
 
 #endif

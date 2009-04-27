@@ -59,7 +59,7 @@ namespace piranha
 				m_memory_limit = limit;
 			}
 			/// Return maximum load factor for hashed containers.
-			static const double &load_factor() {
+			static const double &get_load_factor() {
 				return m_hash_max_load_factor;
 			}
 			// Getters.
@@ -90,7 +90,7 @@ namespace piranha
 			/**
 			 * @see settings::load_factor().
 			 */
-			static void load_factor(const double &value) {
+			static void set_load_factor(const double &value) {
 				if (value <= 0 || value >= 1) {
 					throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
 				}

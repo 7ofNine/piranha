@@ -45,33 +45,18 @@ using namespace boost::python;
 using namespace piranha;
 using namespace pyranha;
 
-namespace pyranha
-{
-	template <class T>
-	void vector_indexing(const std::string &name)
-	{
-		class_<std::vector<T> >((name + "_vec").c_str()).def(vector_indexing_suite<std::vector<T> >());
-	}
-}
-
-// We need this wrapper because we return a reference, and this messes up the exporting of property.
-static inline double load_factor_get()
-{
-	return settings::load_factor();
-}
-
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
 	to_tuple_mapping<vector_psym>();
 	from_python_sequence<vector_psym,variable_capacity_policy>();
+	to_tuple_mapping<std::vector<double> >();
+	from_python_sequence<std::vector<double>,variable_capacity_policy>();
 
 	translate_exceptions();
 	numerical_cfs_bindings();
 	keys_bindings();
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
-
-	vector_indexing<double>("double");
 
 	// Settings.
 	enum_<settings::out_format>("out_format")
@@ -96,7 +81,8 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
 	class_setm.add_static_property("memory_limit", size_t_get(&settings::memory_limit),
 		size_t_set(&settings::memory_limit));
-	class_setm.add_static_property("load_factor", &load_factor_get, double_set(&settings::load_factor));
+	class_setm.add_static_property("load_factor", make_function(&settings::get_load_factor,return_value_policy<copy_const_reference>()),
+		&settings::set_load_factor);
 	typedef void (*digits_set)(const int &);
 	class_setm.add_static_property("digits", size_t_get(&settings::digits), digits_set(&settings::digits));
 	typedef settings::out_format (*format_get)();
@@ -114,7 +100,9 @@ BOOST_PYTHON_MODULE(_Core)
 		.def("get", &psym::get).staticmethod("get")
 		.def("__repr__", &py_print_to_string<psym>)
 		.def("eval", &psym::eval)
-		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()));
+		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
+		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()))
+		.def("list", &psym::list, "Get list of global psyms").staticmethod("list");
 
 	class_<norm_truncator>("norm_truncator", "Norm truncator.", init<>())
 	.def("__repr__", &py_print_to_string<norm_truncator>).staticmethod("__repr__")

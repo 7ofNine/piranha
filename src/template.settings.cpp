@@ -89,6 +89,7 @@ namespace piranha
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		p_static_check(sizeof(size_t) == sizeof(void *), "size_t and void * are not the same size.");
+		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
 		// Init values.
 		m_numerical_zero = 1E-80;
 		m_digits = 15;
