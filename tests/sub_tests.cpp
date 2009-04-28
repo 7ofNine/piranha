@@ -32,7 +32,7 @@ int main()
 		// This one fails if we do not handle correctly args_tuple inside substitution.
 		qps e(psym("e")), ph(psym("ph")), th(psym("th"));
 		degree_truncator::set(10);
-		(e*th.cos()+1).pow(-1).sub(psym::get("th"),ph.pow(2));
+		(e*th.cos()+1).pow(-1).sub(psym("th"),ph.pow(2));
 	}
 
 	int retval = 0;
