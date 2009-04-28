@@ -23,10 +23,11 @@
 
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
-#include <sstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
+#include "../p_assert.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "base_series_def.h"

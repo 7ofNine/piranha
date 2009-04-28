@@ -25,6 +25,10 @@
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "../config.h" // For (un)likely
+#include "named_series_def.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -157,5 +161,8 @@ namespace piranha
 		return !(*this == x);
 	}
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif

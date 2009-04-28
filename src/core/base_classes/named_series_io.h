@@ -31,6 +31,10 @@
 #include "../exceptions.h"
 #include "../psym.h"
 #include "../settings.h"
+#include "named_series_def.h"
+
+#define derived_const_cast static_cast<Derived const *>(this)
+#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -240,5 +244,8 @@ namespace piranha
 		m_arguments = args_tuple;
 	}
 }
+
+#undef derived_const_cast
+#undef derived_cast
 
 #endif
