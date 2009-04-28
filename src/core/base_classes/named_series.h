@@ -76,6 +76,10 @@ namespace piranha
 			size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
+			bool operator==(const Derived &) const;
+			bool operator!=(const Derived &) const;
+			bool operator==(const double &) const;
+			bool operator!=(const double &) const;
 			Derived &operator+=(const double &);
 			Derived &operator+=(const Derived &);
 			Derived &operator-=(const double &);

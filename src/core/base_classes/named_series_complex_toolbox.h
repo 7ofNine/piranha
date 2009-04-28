@@ -74,6 +74,12 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			bool operator==(const std::complex<double> &cx) const {
+				return derived_const_cast->base_equal_to_complex_number(cx);
+			}
+			bool operator!=(const std::complex<double> &cx) const {
+				return !(*this == cx);
+			}
 			Derived &operator+=(const std::complex<double> &cx) {
 				return derived_cast->template merge_number_helper<true>(cx);
 			}

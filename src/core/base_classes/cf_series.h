@@ -104,6 +104,10 @@ namespace piranha
 			eval_type eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
+			bool operator==(const Derived &) const;
+			bool operator!=(const Derived &) const;
+			bool operator==(const double &) const;
+			bool operator!=(const double &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

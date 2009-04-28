@@ -62,6 +62,30 @@ namespace piranha
 	{
 		return (derived_const_cast->base_eval(t,args_tuple));
 	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const Derived &other) const
+	{
+		return derived_const_cast->base_equal_to(other);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const Derived &other) const
+	{
+		return !(*this == other);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const double &x) const
+	{
+		return derived_const_cast->base_equal_to(x);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const double &x) const
+	{
+		return !(*this == x);
+	}
 }
 
 #endif

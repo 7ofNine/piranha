@@ -119,8 +119,8 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
 			using piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF > >::base_norm;
 		public:
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::operator==;
-			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::operator==;
+			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::operator==;
+			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::mult_by;
 			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::divide_by;

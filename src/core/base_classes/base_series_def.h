@@ -84,11 +84,9 @@ namespace piranha
 			bool empty() const;
 			bool is_single_cf() const;
 			size_t atoms() const;
-			bool operator==(const Derived &) const;
-			bool operator==(const double &) const;
-			bool operator!=(const Derived &) const;
-			bool operator!=(const double &) const;
 		protected:
+			bool base_equal_to(const Derived &) const;
+			bool base_equal_to(const double &) const;
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>

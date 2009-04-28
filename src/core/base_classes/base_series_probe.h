@@ -90,8 +90,12 @@ namespace piranha
 	}
 
 	/// Test for equality.
+	/**
+	 * Please note that this method has no knowledge about arguments: all comparisons performed here on coefficients and keys
+	 * assume that the arguments tuples of this and other have been merged.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator==(const Derived &other) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const Derived &other) const
 	{
 		if (length() != other.length()) {
 			return false;
@@ -121,21 +125,9 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator==(const double &x) const
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const double &x) const
 	{
 		return generic_numerical_comparison(x);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator!=(const Derived &other) const
-	{
-		return !(*this == other);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::operator!=(const double &x) const
-	{
-		return !(*this == x);
 	}
 }
 

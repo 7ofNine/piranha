@@ -82,6 +82,12 @@ namespace piranha
 			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &a) {
 				return derived_cast->base_divide_by(cx,a);
 			}
+			bool operator==(const std::complex<double> &cx) const {
+				return derived_const_cast->base_equal_to_complex_number(cx);
+			}
+			bool operator!=(const std::complex<double> &cx) const {
+				return !(*this == cx);
+			}
 	};
 }
 
