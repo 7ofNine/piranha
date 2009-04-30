@@ -244,7 +244,7 @@ namespace piranha
 		// Apply the layout to the arguments tuple of retval.
 		named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derived_const_cast->apply_layout_to_terms(retval.m_arguments, l, retval);
+		derived_const_cast->apply_layout_to_terms(l, retval, retval.m_arguments);
 		// Finally, swap the contents of retval with this.
 		swap(retval);
 	}

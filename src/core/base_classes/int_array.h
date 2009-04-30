@@ -25,6 +25,7 @@
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp> // For sub cache selection.
 #include <stdint.h>
 #include <utility> // For std::pair.
@@ -164,16 +165,14 @@ namespace piranha
 				p_assert(args_tuple.template get<Pos>().size() >= m_size);
 				resize(args_tuple.template get<Pos>().size());
 			}
-			// TODO: invert order of parameters here.
-			// TODO: check that l.get<Pos>().size() is compatible with size_type.
-			template <class ArgsTuple, class Layout>
-			void apply_layout(const ArgsTuple &, const Layout &l) {
-				const size_t l_size = l.template get<Pos>().size();
+			template <class Layout, class ArgsTuple>
+			void apply_layout(const Layout &l, const ArgsTuple &) {
+				const size_type l_size = boost::numeric_cast<size_type>(l.template get<Pos>().size());
 				// The layout must have at least all arguments in this.
 				p_assert(l_size >= m_size);
 				container_type new_container;
 				new_container.p = pack_init(l_size);
-				for (size_t i = 0; i < l_size; ++i) {
+				for (size_type i = 0; i < l_size; ++i) {
 					if (l.template get<Pos>()[i].first) {
 						p_assert(l.template get<Pos>()[i].second < m_size);
 						new_container.v[i] = m_container.v[l.template get<Pos>()[i].second];

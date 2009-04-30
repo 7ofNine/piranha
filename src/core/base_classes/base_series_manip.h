@@ -207,16 +207,16 @@ namespace piranha
 
 	/// Apply an arguments layout to all terms and insert them into retval.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple, class Layout>
+	template <class Layout, class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::apply_layout_to_terms(
-		const ArgsTuple &args_tuple, const Layout &l, Derived &retval) const
+		const Layout &l, Derived &retval, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		for (const_iterator it = begin();
 				it != it_f; ++it) {
 			term_type term(*it);
-			term.m_cf.apply_layout(args_tuple, l);
-			term.m_key.apply_layout(args_tuple, l);
+			term.m_cf.apply_layout(l,args_tuple);
+			term.m_key.apply_layout(l,args_tuple);
 			retval.insert(term, args_tuple);
 		}
 	}

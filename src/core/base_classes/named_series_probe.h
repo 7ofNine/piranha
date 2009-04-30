@@ -138,7 +138,7 @@ namespace piranha
 		// Apply the layout to the arguments tuple of retval.
 		named_series_apply_layout_to_args<args_tuple_type>::run(tmp.m_arguments, other.arguments(), l);
 		// Apply the layout to all terms of this and insert them into tmp.
-		derived_const_cast->apply_layout_to_terms(tmp.m_arguments, l, tmp);
+		derived_const_cast->apply_layout_to_terms(l, tmp, tmp.m_arguments);
 		// Now we can perform the comparison between tmp and other.
 		return tmp.base_equal_to(other);
 	}

@@ -144,8 +144,8 @@ namespace piranha
 			void swap_terms(Derived &);
 			template <class Number>
 			bool generic_numerical_comparison(const Number &) const;
-			template <class ArgsTuple, class Layout>
-			void apply_layout_to_terms(const ArgsTuple &, const Layout &, Derived &) const;
+			template <class Layout, class ArgsTuple>
+			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
 			template <bool, class Derived2, class ArgsTuple>
 			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
 			template <class TrimFlags>

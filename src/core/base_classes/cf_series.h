@@ -70,8 +70,8 @@ namespace piranha
 			template <class ArgsTuple>
 			void invert_sign(const ArgsTuple &);
 			void swap(Derived &);
-			template <class ArgsTuple, class Layout>
-			void apply_layout(const ArgsTuple &, const Layout &);
+			template <class Layout, class ArgsTuple>
+			void apply_layout(const Layout &, const ArgsTuple &);
 			template <class TrimFlags>
 			void trim_test(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
