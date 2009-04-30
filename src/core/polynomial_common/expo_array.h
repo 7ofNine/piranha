@@ -52,16 +52,16 @@ namespace piranha
 		typedef toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > type;
 	};
 
-	/// Exponents array, dynamically sized version.
+	/// Exponents array.
 	/**
-	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
+	 * It wraps a piranha::int_array with integer sized Bits, and adds the
 	 * capabilities needed for exponent manipulation.
 	 */
 	template < __PIRANHA_EXPO_ARRAY_TP_DECL >
-	class toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> >: public int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >
+	class toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> >: public int_array<__PIRANHA_EXPO_ARRAY_TP, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >
 	{
-			typedef int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > > ancestor;
-			friend class int_array<Bits, Pos, Allocator, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >;
+			typedef int_array<__PIRANHA_EXPO_ARRAY_TP, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > > ancestor;
+			friend class int_array<__PIRANHA_EXPO_ARRAY_TP, toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type>
 			{
