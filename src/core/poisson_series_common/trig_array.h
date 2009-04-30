@@ -59,10 +59,10 @@ namespace piranha
 	 * capabilities needed for trigonometric manipulation.
 	 */
 	template < __PIRANHA_TRIG_ARRAY_TP_DECL>
-	class toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: public int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >
+	class toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: public int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >
 	{
-			typedef int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > > ancestor;
-			friend class int_array<Bits, Pos, Allocator, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >;
+			typedef int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > > ancestor;
+			friend class int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<std::complex<SubSeries>,
 				typename base_series_arithmetics<std::complex<SubSeries>,ArgsTuple>::type>
