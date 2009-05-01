@@ -197,6 +197,8 @@ namespace piranha
 				Derived retval;
 				retval.m_flavour = m_flavour;
 				std::vector<int> tmp;
+				// Make space, so we can avoid extra allocations in the cycle.
+				tmp.reserve(m_size);
 				p_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (tf.template get<position>()[i]) {
