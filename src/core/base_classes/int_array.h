@@ -283,11 +283,11 @@ namespace piranha
 			}
 			bool revlex_comparison(const Derived &a2) const {
 				p_assert(m_size == a2.m_size);
-				value_type *ptr = m_container.v;
+				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = m_size; i > 0; --i) {
-					if (ptr[i - 1] < a2[i - 1]) {
+					if (ptr1[i - 1] < ptr2[i - 1]) {
 						return true;
-					} else if (ptr[i - 1] > a2[i - 1]) {
+					} else if (ptr1[i - 1] > ptr2[i - 1]) {
 						return false;
 					}
 				}
@@ -295,10 +295,11 @@ namespace piranha
 			}
 			bool lex_comparison(const Derived &a2) const {
 				p_assert(m_size == a2.m_size);
+				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = 0; i < m_size; ++i) {
-					if (m_container.v[i] < a2[i]) {
+					if (ptr1[i] < ptr2[i]) {
 						return true;
-					} else if (m_container.v[i] > a2[i]) {
+					} else if (ptr1[i] > ptr2[i]) {
 						return false;
 					}
 				}
