@@ -212,12 +212,14 @@ namespace piranha
 			mpq_class m_value;
 	};
 
+	/// Overload out stream operator<< for piranha::mp_rational.
 	inline std::ostream &operator<<(std::ostream &o, const mp_rational &q)
 	{
 		o << q.m_value;
 		return o;
 	}
 
+	/// Overload in stream operator>> for piranha::mp_rational.
 	inline std::istream &operator>>(std::istream &i, mp_rational &q)
 	{
 		i >> q.m_value;
