@@ -22,6 +22,7 @@
 #define PIRANHA_PIRANHA_GMP_H
 
 #include <algorithm>
+#include <boost/functional/hash.hpp>
 #include <boost/operators.hpp>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -96,6 +97,20 @@ namespace piranha
 			{
 				mpz_swap(mpq_numref(m_value.get_mpq_t()),mpq_numref(other.m_value.get_mpq_t()));
 				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(other.m_value.get_mpq_t()));
+			}
+			/// Hash value.
+			size_t hash() const
+			{
+				size_t retval = 0;
+				const __mpz_struct *num = mpq_numref(m_value.get_mpq_t()), *den = mpq_denref(m_value.get_mpq_t());
+				const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
+				for (size_t i = 0; i < num_limb_size; ++i) {
+					boost::hash_combine(retval, num->_mp_d[i]);
+				}
+				for (size_t i = 0; i < den_limb_size; ++i) {
+					boost::hash_combine(retval, den->_mp_d[i]);
+				}
+				return retval;
 			}
 			/// Equality operator.
 			bool operator==(const mp_rational &other) const
@@ -224,6 +239,12 @@ namespace piranha
 	{
 		i >> q.m_value;
 		return i;
+	}
+
+	/// Overload hash_value function for use with boost::hash.
+	inline size_t hash_value(const mp_rational &q)
+	{
+                return q.hash();
 	}
 }
 

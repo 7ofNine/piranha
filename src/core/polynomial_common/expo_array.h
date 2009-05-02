@@ -196,7 +196,7 @@ namespace piranha
 			}
 			/// Norm.
 			/**
-			 * The norm of an exponent array is defined as the evaluation at t=0.
+			 * The norm of an exponent array is defined as the absolute value of the evaluation at t=0.
 			 */
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {

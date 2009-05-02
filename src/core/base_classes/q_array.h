@@ -23,7 +23,9 @@
 
 #include <algorithm>
 #include <functional>
+#include <boost/functional/hash.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <iostream>
 
 #include "../config.h"
 #include "../memory.h"
@@ -219,6 +221,54 @@ namespace piranha
 			Derived inv(const ArgsTuple &args_tuple) const {
 				return derived_const_cast->pow(-1,args_tuple);
 			}
+			/// Upload to a std::vector.
+			/**
+			 * Vector size must not be smaller than current size, otherwise an assertion failure will be raised.
+			 */
+			void upload_to_vector(std::vector<value_type> &v) const
+			{
+				p_assert(v.size() >= m_size);
+				for (size_type i = 0; i < m_size; ++i) {
+					v[i] = (*this)[i];
+				}
+			}
+			/// Assign a std::vector of values.
+			template <class T>
+			void assign_vector(const std::vector<T> &v)
+			{
+				const size_type size = boost::numeric_cast<size_type>(v.size());
+				// TODO: check where this function is used to see if this resize can be avoided.
+				resize(size);
+				for (size_t i = 0; i < size; ++i) {
+					(*this)[i] = value_type(v[i]);
+				}
+			}
+			/// Element-wise reverse lexicographic comparison.
+			bool revlex_comparison(const Derived &a2) const
+			{
+				p_assert(m_size == a2.m_size);
+				for (size_t i = m_size; i > 0; --i) {
+					if ((*this)[i - 1] < a2[i - 1]) {
+						return true;
+					} else if ((*this)[i - 1] > a2[i - 1]) {
+						return false;
+					}
+				}
+				return false;
+			}
+			/// Element-wise lexicographic comparison.
+			bool lex_comparison(const Derived &a2) const
+			{
+				p_assert(m_size == a2.m_size);
+				for (size_t i = 0; i < m_size; ++i) {
+					if ((*this)[i] < a2[i]) {
+						return true;
+					} else if ((*this)[i] > a2[i]) {
+						return false;
+					}
+				}
+				return false;
+			}
 		//protected:
 			/// Element setter.
 			value_type &operator[](const size_type &n)
@@ -228,6 +278,30 @@ namespace piranha
 				} else {
 					return m_others[n - 1];
 				}
+			}
+			/// Print to stream the elements separated by the default separator character.
+			void print_elements(std::ostream &out_stream) const
+			{
+				for (size_type i = 0; i < m_size; ++i) {
+					out_stream << (*this)[i];
+					// Print the separator iff this is not the last element.
+					if (i != m_size - 1) {
+						out_stream << separator;
+					}
+				}
+			}
+			/// Test for zero elements.
+			/**
+			 * Returns true if all elements are zero, false otherwise.
+			 */
+			bool elements_are_zero() const
+			{
+				for (size_type i = 0; i < m_size; ++i) {
+					if ((*this)[i] != 0) {
+						return false;
+					}
+				}
+				return true;
 			}
 			/// Resize to new_size. Content will be unchanged to the minimum of old and new size.
 			void resize(const size_type &new_size)
@@ -265,6 +339,30 @@ namespace piranha
 				// Assign data members.
 				m_others = new_elements;
 				m_size = new_size;
+			}
+			/// Hash value.
+			size_t elements_hasher() const
+			{
+				size_t retval = 0;
+				boost::hash<value_type> tmp_hash;
+				for (size_type i = 0; i < m_size; ++i) {
+					boost::hash_combine(retval, tmp_hash((*this)[i]));
+				}
+				return retval;
+			}
+			/// Equality test.
+			bool elements_equal_to(const q_array &q) const
+			{
+				if (m_size == q.m_size) {
+					for (size_type i = 0; i < m_size; ++i) {
+						if ((*this)[i] != q[i]) {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+				return true;
 			}
 		private:
 			// Setup elements from other array: allocate the space needed to store

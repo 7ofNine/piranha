@@ -312,11 +312,11 @@ namespace piranha
 			}
 			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const {
-				for (size_t i = 0; i < m_size; ++i) {
-					// We cast to max_fast_int, which is the largest integer type admitted.
+				for (size_type i = 0; i < m_size; ++i) {
+					// We cast to int, which is the largest integer type admitted.
 					out_stream << static_cast<int>(m_container.v[i]);
 					// Print the separator iff this is not the last element.
-					if (i != static_cast<size_t>(m_size - 1)) {
+					if (i != (m_size - 1)) {
 						out_stream << separator;
 					}
 				}
