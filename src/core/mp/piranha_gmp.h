@@ -54,47 +54,26 @@ namespace piranha
 
 	// Macros for operators.
 	#define EQUALITY_OPERATOR(type) \
-	/** Test equality with type. */ \
+	/** \brief Test equality with type. */ \
 	bool operator==(const type &other) const \
 	{ \
 		return (m_value == other); \
 	}
-	#define ASSIGNMENT_OPERATOR(self,type) \
-	/** Assign type. */ \
-	self &operator=(const type &other) \
-	{ \
-		m_value = other; \
-		return *this; \
-	}
 	#define COMPARISON_OPERATOR(type) \
-	/** Comparison operator with type. */ \
+	/** \brief Comparison operator with type. */ \
 	bool operator<(const type &other) const \
 	{ \
 		return (m_value < other); \
 	}
-	#define INPLACE_ADDITION(self,type) \
-	/** In-place addition with type. */ \
-	self &operator+=(const type &other) \
+	#define INPLACE_OPERATOR(self,op,type) \
+	/** \brief In-place operator op for type. */ \
+	self &operator op(const type &other) \
 	{ \
-		m_value += other; \
-		return *this; \
-	}
-	#define INPLACE_SUBTRACTION(self,type) \
-	/** In-place subtraction with type. */ \
-	self &operator-=(const type &other) \
-	{ \
-		m_value -= other; \
-		return *this; \
-	}
-	#define INPLACE_MULTIPLICATION(self,type) \
-	/** In-place multiplication with type. */ \
-	self &operator*=(const type &other) \
-	{ \
-		m_value *= other; \
+		m_value op other; \
 		return *this; \
 	}
 	#define INPLACE_DIVISION(self,type) \
-	/** In-place division with type. */ \
+	/** \brief In-place division with type. */ \
 	self &operator/=(const type &other) \
 	{ \
 		if (other == 0) { \
@@ -145,6 +124,9 @@ namespace piranha
 			/// Constructor from integer.
 			explicit mp_rational(const int &n):m_value(n) {}
 			/// Constructor from integer numerator and denominator.
+			/**
+			 * @throws zero_division_error if denominator is zero.
+			 */
 			explicit mp_rational(const int &n, const int &d):m_value()
 			{
 				// Guard against division by zero.
@@ -169,6 +151,9 @@ namespace piranha
 				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(other.m_value.get_mpq_t()));
 			}
 			/// Hash value.
+			/**
+			 * Internally uses boost::hash_combine on the GMP limbs of numerator and denominator.
+			 */
 			size_t hash() const
 			{
 				return hash_from_mpq_class(m_value);
@@ -202,6 +187,9 @@ namespace piranha
 				return *this;
 			}
 			/// In-place division.
+			/**
+			 * @throws zero_division_error if dividing by zero.
+			 */
 			mp_rational &operator/=(const mp_rational &other)
 			{
 				if (other.m_value == 0) {
@@ -232,16 +220,16 @@ namespace piranha
 			// Operators against types directly compatible with mpq_class.
 			EQUALITY_OPERATOR(int)
 			EQUALITY_OPERATOR(double)
-			ASSIGNMENT_OPERATOR(mp_rational,double)
-			ASSIGNMENT_OPERATOR(mp_rational,int)
 			COMPARISON_OPERATOR(int)
 			COMPARISON_OPERATOR(double)
-			INPLACE_ADDITION(mp_rational,int)
-			INPLACE_ADDITION(mp_rational,double)
-			INPLACE_SUBTRACTION(mp_rational,int)
-			INPLACE_SUBTRACTION(mp_rational,double)
-			INPLACE_MULTIPLICATION(mp_rational,int)
-			INPLACE_MULTIPLICATION(mp_rational,double)
+			INPLACE_OPERATOR(mp_rational,=,double)
+			INPLACE_OPERATOR(mp_rational,=,int)
+			INPLACE_OPERATOR(mp_rational,+=,int)
+			INPLACE_OPERATOR(mp_rational,+=,double)
+			INPLACE_OPERATOR(mp_rational,-=,int)
+			INPLACE_OPERATOR(mp_rational,-=,double)
+			INPLACE_OPERATOR(mp_rational,*=,int)
+			INPLACE_OPERATOR(mp_rational,*=,double)
 			INPLACE_DIVISION(mp_rational,int)
 			INPLACE_DIVISION(mp_rational,double)
 		private:
@@ -290,11 +278,8 @@ namespace piranha
 	};
 
 	#undef EQUALITY_OPERATOR
-	#undef ASSIGNMENT_OPERATOR
 	#undef COMPARISON_OPERATOR
-	#undef INPLACE_ADDITION
-	#undef INPLACE_SUBTRACTION
-	#undef INPLACE_MULTIPLICATION
+	#undef INPLACE_OPERATOR
 	#undef INPLACE_DIVISION
 
 	/// Overload out stream operator<< for piranha::mp_rational.
@@ -333,11 +318,59 @@ namespace std
 		q1.swap(q2);
 	}
 
+	// Useful macros for operators.
+	#define INPLACE_REAL_OPERATOR(op,type) \
+	/** \brief In-place operator op for type. */ \
+	complex &operator op(const type &x) \
+	{ \
+		m_real op x; \
+		return *this; \
+	}
+	#define INPLACE_COMPLEX_OPERATOR(op,type) \
+	/** \brief In-place operator op for complex type. */ \
+	complex &operator op(const complex< type > &c) \
+	{ \
+		m_real op c.real(); \
+		m_imag op c.imag(); \
+		return *this; \
+	}
+	#define INPLACE_COMPLEX_MULT(type) \
+	/** \brief In-place operator *= for complex type. */ \
+	complex &operator*=(const complex< type > &c) \
+	{ \
+		return mult_by_complex(c); \
+	}
+	#define INPLACE_COMPLEX_DIV(type) \
+	/** \brief In-place operator /= for complex type. */ \
+	complex &operator/=(const complex< type > &c) \
+	{ \
+		return divide_by_complex(c); \
+	}
+	#define REAL_EQUALITY(type) \
+	/** \brief Equality operator for type. */ \
+	bool operator==(const type &x) \
+	{ \
+		return (m_real == x && m_imag == 0); \
+	}
+	#define COMPLEX_EQUALITY(type) \
+	/** \brief Equality operator for complex type. */ \
+	bool operator==(const complex< type > &c) \
+	{ \
+		return (m_real == c.real() && m_imag == c.imag()); \
+	}
+
 	/// Complex counterpart of piranha::mp_rational.
 	template <>
-	class complex<piranha::mp_rational> {
+	class complex<piranha::mp_rational>:
+		boost::field_operators<complex<piranha::mp_rational>,
+		boost::field_operators<complex<piranha::mp_rational>, int,
+		boost::field_operators<complex<piranha::mp_rational>, double,
+		boost::field_operators<complex<piranha::mp_rational>, piranha::mp_rational
+		> > > >
+	{
 			friend ostream &operator<<(ostream &, const complex &);
 		public:
+			/// STL-like typedef for internal scalar type.
 			typedef piranha::mp_rational value_type;
 			/// Default constructor.
 			explicit complex(): m_real(),m_imag() {}
@@ -358,19 +391,32 @@ namespace std
 			/// Constructor from real and imaginary parts of type value_type.
 			explicit complex(const value_type &r, const value_type &i): m_real(r),m_imag(i) {}
 			/// Constructor from std::string.
+			/**
+			 * Will raise a value_error exception if string is not valid. A valid string is of the form
+			 * "(real,imag)", where "real" and "imag" are strings that can construct successfully a
+			 * piranha::mp_rational.
+			 * @see piranha::mp_rational::mp_rational(const std::string &).
+			 * @throws value_error if string is invalid.
+			 * @throws zero_division_error if string is valid but at least one denominator is zero.
+			 */
 			explicit complex(const string &str): m_real(),m_imag()
 			{
 				construct_from_string(str.c_str());
 			}
 			/// Constructor from C string.
+			/**
+			 * @see complex(const std::string &).
+			 */
 			explicit complex(const char *str): m_real(),m_imag()
 			{
 				construct_from_string(str);
 			}
+			/// Get const reference to the real part.
 			const value_type &real() const
 			{
 				return m_real;
 			}
+			/// Get const reference to the imaginary part.
 			const value_type &imag() const
 			{
 				return m_imag;
@@ -382,6 +428,9 @@ namespace std
 				m_imag.swap(other.m_imag);
 			}
 			/// Hash value.
+			/**
+			 * Uses boost::hash_combine to combine the hashes of real and imaginary parts.
+			 */
 			size_t hash() const
 			{
 				boost::hash<value_type> hasher;
@@ -412,49 +461,78 @@ namespace std
 			/// In-place multiplication.
 			complex &operator*=(const complex &other)
 			{
-				const value_type tmp1(m_imag * other.m_imag), tmp2(m_real * other.m_imag);
-				// NOTE: we do imag first because if we modify real now, then it screws up the computation.
-				// m_imag is not used anymore as rhs from this point onwards.
-				m_imag *= other.m_real;
-				m_imag += tmp2;
-				m_real *= other.m_real;
-				m_real -= tmp1;
-				return *this;
+				return mult_by_complex(other);
 			}
 			/// In-place division.
 			complex &operator/=(const complex &other)
 			{
-				if (other.m_real == 0 && other.m_imag == 0) {
+				return divide_by_complex(other);
+			}
+			// Maths for other types.
+			REAL_EQUALITY(int)
+			REAL_EQUALITY(double)
+			REAL_EQUALITY(value_type)
+			COMPLEX_EQUALITY(int)
+			COMPLEX_EQUALITY(double)
+			INPLACE_REAL_OPERATOR(=,int)
+			INPLACE_REAL_OPERATOR(=,double)
+			INPLACE_REAL_OPERATOR(=,value_type)
+			INPLACE_COMPLEX_OPERATOR(=,int)
+			INPLACE_COMPLEX_OPERATOR(=,double)
+			INPLACE_REAL_OPERATOR(+=,int)
+			INPLACE_REAL_OPERATOR(+=,double)
+			INPLACE_REAL_OPERATOR(+=,value_type)
+			INPLACE_COMPLEX_OPERATOR(+=,int)
+			INPLACE_COMPLEX_OPERATOR(+=,double)
+			INPLACE_REAL_OPERATOR(-=,int)
+			INPLACE_REAL_OPERATOR(-=,double)
+			INPLACE_REAL_OPERATOR(-=,value_type)
+			INPLACE_COMPLEX_OPERATOR(-=,int)
+			INPLACE_COMPLEX_OPERATOR(-=,double)
+			INPLACE_REAL_OPERATOR(*=,int)
+			INPLACE_REAL_OPERATOR(*=,double)
+			INPLACE_REAL_OPERATOR(*=,value_type)
+			INPLACE_REAL_OPERATOR(/=,int)
+			INPLACE_REAL_OPERATOR(/=,double)
+			INPLACE_REAL_OPERATOR(/=,value_type)
+			INPLACE_COMPLEX_MULT(int)
+			INPLACE_COMPLEX_MULT(double)
+			INPLACE_COMPLEX_DIV(int)
+			INPLACE_COMPLEX_DIV(double)
+		private:
+			template <class Complex>
+			complex &divide_by_complex(const Complex &other)
+			{
+				if (other.real() == 0 && other.imag() == 0) {
 					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				// This is the divisor, i.e. the square of absolute value of other.
-				value_type div(other.m_real);
-				div *= other.m_real;
-				div += other.m_imag * other.m_imag;
+				value_type div(other.real());
+				div *= other.real();
+				div += other.imag() * other.imag();
 				// The numerator looks like a multiplication with opposite signs.
-				const value_type tmp1 = m_imag * other.m_imag, tmp2 = m_real * other.m_imag;
-				m_imag *= other.m_real;
+				const value_type tmp1 = m_imag * other.imag(), tmp2 = m_real * other.imag();
+				m_imag *= other.real();
 				m_imag -= tmp2;
-				m_real *= other.m_real;
+				m_real *= other.real();
 				m_real += tmp1;
 				// Now divide by divisor.
 				m_real /= div;
 				m_imag /= div;
 				return *this;
 			}
-			// Maths for other types.
-			complex &operator+=(const double &x)
+			template <class Complex>
+			complex &mult_by_complex(const Complex &other)
 			{
-				m_real += x;
+				const value_type tmp1(m_imag * other.imag()), tmp2(m_real * other.imag());
+				// NOTE: we do imag first because if we modify real now, then it screws up the computation.
+				// m_imag is not used anymore as rhs from this point onwards.
+				m_imag *= other.real();
+				m_imag += tmp2;
+				m_real *= other.real();
+				m_real -= tmp1;
 				return *this;
 			}
-			complex &operator+=(const complex<double> &c)
-			{
-				m_real += c.real();
-				m_imag += c.imag();
-				return *this;
-			}
-		private:
 			void construct_from_string(const char *str)
 			{
 				string tmp(str);
@@ -484,7 +562,14 @@ namespace std
 			value_type	m_imag;
 	};
 
-	/// Overload standard swap function for std::complex<piranha::mp_rational>.
+	#undef INPLACE_REAL_OPERATOR
+	#undef INPLACE_COMPLEX_OPERATOR
+	#undef INPLACE_COMPLEX_MULT
+	#undef INPLACE_COMPLEX_DIV
+	#undef REAL_EQUALITY
+	#undef COMPLEX_EQUALITY
+
+	/// Overload of standard swap function for std::complex<piranha::mp_rational>.
 	/**
 	 * Will use the swap() method internally.
 	 */
