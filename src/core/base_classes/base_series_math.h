@@ -275,7 +275,7 @@ namespace piranha
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		if (n < 0) {
-			throw unsuitable("For an n-th partial derivative, n must be non-negative.");
+			piranha_throw(value_error,"for an n-th partial derivative, n must be non-negative");
 		}
 		Derived retval(*derived_const_cast);
 		for (; n > 0; --n) {
