@@ -28,9 +28,9 @@
 #include <iostream>
 
 #include "../config.h"
+#include "../exceptions.h"
 #include "../memory.h"
 #include "../mp.h"
-#include "../p_assert.h"
 #include "../psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -87,7 +87,7 @@ namespace piranha
 				(void)args_tuple;
 				// Construct only if the positions match.
 				if (n == position) {
-// 					p_assert(args_tuple.template get<position>().size() == 1 &&
+// 					piranha_assert(args_tuple.template get<position>().size() == 1 &&
 // 							 args_tuple.template get<position>()[0] == p);
 					m_size = 1;
 					m_first = 1;
@@ -162,7 +162,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &args_tuple)
 			{
-				p_assert(args_tuple.template get<position>().size() >= m_size);
+				piranha_assert(args_tuple.template get<position>().size() >= m_size);
 				resize(boost::numeric_cast<size_type>(args_tuple.template get<position>().size()));
 			}
 			/// Apply layout.
@@ -171,12 +171,12 @@ namespace piranha
 			{
 				const size_type l_size = boost::numeric_cast<size_type>(l.template get<position>().size());
 				// The layout must have at least all arguments in this.
-				p_assert(l_size >= m_size);
+				piranha_assert(l_size >= m_size);
 				q_array tmp;
 				tmp.resize(l_size);
 				for (size_type i = 0; i < l_size; ++i) {
 					if (l.template get<position>()[i].first) {
-						p_assert(l.template get<position>()[i].second < m_size);
+						piranha_assert(l.template get<position>()[i].second < m_size);
 						tmp[i] = (*this)[l.template get<Pos>()[i].second];
 					}
 				}
@@ -186,7 +186,7 @@ namespace piranha
 			template <class TrimFlags>
 			void trim_test(TrimFlags &tf) const
 			{
-				p_assert(tf.template get<position>().size() == m_size);
+				piranha_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					// If the element is different from zero, turn on the flag..
 					if ((*this)[i] != 0) {
@@ -201,7 +201,7 @@ namespace piranha
 				std::vector<value_type> tmp;
 				// Make space, so we can avoid extra allocations in the cycle.
 				tmp.reserve(m_size);
-				p_assert(tf.template get<position>().size() == m_size);
+				piranha_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (tf.template get<position>()[i]) {
 						tmp.push_back((*this)[i]);
@@ -216,7 +216,10 @@ namespace piranha
 					(*this)[i].negate();
 				}
 			}
-			/// Return the mathematical inverse. Will call the pow() method of the derived class.
+			/// Return the mathematical inverse.
+			/**
+			 * Will call the pow() method of the derived class.
+			 */
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &args_tuple) const {
 				return derived_const_cast->pow(-1,args_tuple);
@@ -227,7 +230,7 @@ namespace piranha
 			 */
 			void upload_to_vector(std::vector<value_type> &v) const
 			{
-				p_assert(v.size() >= m_size);
+				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					v[i] = (*this)[i];
 				}
@@ -246,7 +249,7 @@ namespace piranha
 			/// Element-wise reverse lexicographic comparison.
 			bool revlex_comparison(const Derived &a2) const
 			{
-				p_assert(m_size == a2.m_size);
+				piranha_assert(m_size == a2.m_size);
 				for (size_t i = m_size; i > 0; --i) {
 					if ((*this)[i - 1] < a2[i - 1]) {
 						return true;
@@ -259,7 +262,7 @@ namespace piranha
 			/// Element-wise lexicographic comparison.
 			bool lex_comparison(const Derived &a2) const
 			{
-				p_assert(m_size == a2.m_size);
+				piranha_assert(m_size == a2.m_size);
 				for (size_t i = 0; i < m_size; ++i) {
 					if ((*this)[i] < a2[i]) {
 						return true;
@@ -303,14 +306,17 @@ namespace piranha
 				}
 				return true;
 			}
-			/// Resize to new_size. Content will be unchanged to the minimum of old and new size.
+			/// Resize to new_size.
+			/**
+			 * Content will be unchanged to the minimum of old and new size.
+			 */
 			void resize(const size_type &new_size)
 			{
 				if (new_size == m_size) {
 					return;
 				}
 				// Check: make sure that if the current size is zero, also m_first is zero.
-				p_assert(m_size > 0 || m_first == 0);
+				piranha_assert(m_size > 0 || m_first == 0);
 				// Size of old and new elements.
 				const size_type new_others_size = (new_size > 1) ? (new_size - 1) : 0,
 					old_others_size = (m_size > 1) ? (m_size - 1) : 0;

@@ -360,6 +360,9 @@ namespace std
 	}
 
 	/// Complex counterpart of piranha::mp_rational.
+	/**
+	 * Stores two piranha::mp_rational members as real and imaginary part.
+	 */
 	template <>
 	class complex<piranha::mp_rational>:
 		boost::field_operators<complex<piranha::mp_rational>,
@@ -538,11 +541,6 @@ namespace std
 				string tmp(str);
 				// First let's trim the input string.
 				boost::trim(tmp);
-				// For string to be a valid complex number, it must consist of a least 5 chars
-				// (2 brackets, a comma and the two numbers).
-				if (tmp.size() < 5) {
-					piranha_throw(value_error,"invalid string input");
-				}
 				// Next we split the input string into two parts, separated by the comma.
 				vector<string> split_v;
 				boost::split(split_v,tmp,boost::is_any_of(","));
