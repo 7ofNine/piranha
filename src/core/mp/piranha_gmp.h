@@ -52,11 +52,62 @@ namespace piranha
 		return retval;
 	}
 
+	// Macros for operators.
+	#define EQUALITY_OPERATOR(type) \
+	/** Test equality with type. */ \
+	bool operator==(const type &other) const \
+	{ \
+		return (m_value == other); \
+	}
+	#define ASSIGNMENT_OPERATOR(self,type) \
+	/** Assign type. */ \
+	self &operator=(const type &other) \
+	{ \
+		m_value = other; \
+		return *this; \
+	}
+	#define COMPARISON_OPERATOR(type) \
+	/** Comparison operator with type. */ \
+	bool operator<(const type &other) const \
+	{ \
+		return (m_value < other); \
+	}
+	#define INPLACE_ADDITION(self,type) \
+	/** In-place addition with type. */ \
+	self &operator+=(const type &other) \
+	{ \
+		m_value += other; \
+		return *this; \
+	}
+	#define INPLACE_SUBTRACTION(self,type) \
+	/** In-place subtraction with type. */ \
+	self &operator-=(const type &other) \
+	{ \
+		m_value -= other; \
+		return *this; \
+	}
+	#define INPLACE_MULTIPLICATION(self,type) \
+	/** In-place multiplication with type. */ \
+	self &operator*=(const type &other) \
+	{ \
+		m_value *= other; \
+		return *this; \
+	}
+	#define INPLACE_DIVISION(self,type) \
+	/** In-place division with type. */ \
+	self &operator/=(const type &other) \
+	{ \
+		if (other == 0) { \
+			piranha_throw(zero_division_error,"cannot divide by zero"); \
+		} \
+		m_value /= other; \
+		return *this; \
+	}
+
 	/// Multiprecision rational class.
 	/**
 	 * Wraps a GMP mpq_class. Interoperability with C++ int and double types is provided through constructors and
-	 * in-place mathematical operators against arbitrary types that provide forwarding to the underlying
-	 * mpq_class type. Additional operators are provided through inheritance from the Boost operator library.	
+	 * in-place mathematical operators. Non in-place operators are provided through inheritance from the Boost operator library.
 	 */
 	class mp_rational:
 		boost::ordered_field_operators<mp_rational,
@@ -65,6 +116,7 @@ namespace piranha
 		> > >
 	{
 			friend std::ostream &operator<<(std::ostream &, const mp_rational &);
+			typedef mp_rational self;
 		public:
 			/// Default constructor.
 			/**
@@ -178,56 +230,20 @@ namespace piranha
 				return retval;
 			}
 			// Operators against types directly compatible with mpq_class.
-			/// Assignment operator for arbitrary type.
-			template <class T>
-			mp_rational &operator=(const T &other)
-			{
-				m_value = other;
-				return *this;
-			}
-			/// Equality operator with arbitrary type.
-			template <class T>
-			bool operator==(const T &other) const
-			{
-				return (m_value == other);
-			}
-			/// Comparison operator with arbitrary type.
-			template <class T>
-			bool operator<(const T &other) const
-			{
-				return (m_value < other);
-			}
-			/// In-place addition with arbitrary type.
-			template <class T>
-			mp_rational &operator+=(const T &other)
-			{
-				m_value += other;
-				return *this;
-			}
-			/// In-place subtraction with arbitrary type.
-			template <class T>
-			mp_rational &operator-=(const T &other)
-			{
-				m_value -= other;
-				return *this;
-			}
-			/// In-place multiplication with arbitrary type.
-			template <class T>
-			mp_rational &operator*=(const T &other)
-			{
-				m_value *= other;
-				return *this;
-			}
-			/// In-place division with arbitrary type.
-			template <class T>
-			mp_rational &operator/=(const T &other)
-			{
-				if (other == 0) {
-					piranha_throw(zero_division_error,"cannot divide by zero");
-				}
-				m_value /= other;
-				return *this;
-			}
+			EQUALITY_OPERATOR(int)
+			EQUALITY_OPERATOR(double)
+			ASSIGNMENT_OPERATOR(mp_rational,double)
+			ASSIGNMENT_OPERATOR(mp_rational,int)
+			COMPARISON_OPERATOR(int)
+			COMPARISON_OPERATOR(double)
+			INPLACE_ADDITION(mp_rational,int)
+			INPLACE_ADDITION(mp_rational,double)
+			INPLACE_SUBTRACTION(mp_rational,int)
+			INPLACE_SUBTRACTION(mp_rational,double)
+			INPLACE_MULTIPLICATION(mp_rational,int)
+			INPLACE_MULTIPLICATION(mp_rational,double)
+			INPLACE_DIVISION(mp_rational,int)
+			INPLACE_DIVISION(mp_rational,double)
 		private:
 			// Will throw value_error if string is invalid, zero_division_error if string is valid
 			// but contains zero as denominator.
@@ -272,6 +288,14 @@ namespace piranha
 			}
 			mpq_class m_value;
 	};
+
+	#undef EQUALITY_OPERATOR
+	#undef ASSIGNMENT_OPERATOR
+	#undef COMPARISON_OPERATOR
+	#undef INPLACE_ADDITION
+	#undef INPLACE_SUBTRACTION
+	#undef INPLACE_MULTIPLICATION
+	#undef INPLACE_DIVISION
 
 	/// Overload out stream operator<< for piranha::mp_rational.
 	inline std::ostream &operator<<(std::ostream &o, const mp_rational &q)
@@ -343,6 +367,14 @@ namespace std
 			{
 				construct_from_string(str);
 			}
+			const value_type &real() const
+			{
+				return m_real;
+			}
+			const value_type &imag() const
+			{
+				return m_imag;
+			}
 			/// Swap content.
 			void swap(complex &other)
 			{
@@ -356,6 +388,71 @@ namespace std
 				size_t retval = hasher(m_real);
 				boost::hash_combine(retval, hasher(m_imag));
 				return retval;
+			}
+			/// Equality operator.
+			bool operator==(const complex &other) const
+			{
+				return (m_real == other.m_real && m_imag == other.m_imag);
+			}
+			// Math operators.
+			/// In-place addition.
+			complex &operator+=(const complex &other)
+			{
+				m_real += other.m_real;
+				m_imag += other.m_imag;
+				return *this;
+			}
+			/// In-place subtraction.
+			complex &operator-=(const complex &other)
+			{
+				m_real -= other.m_real;
+				m_imag -= other.m_imag;
+				return *this;
+			}
+			/// In-place multiplication.
+			complex &operator*=(const complex &other)
+			{
+				const value_type tmp1(m_imag * other.m_imag), tmp2(m_real * other.m_imag);
+				// NOTE: we do imag first because if we modify real now, then it screws up the computation.
+				// m_imag is not used anymore as rhs from this point onwards.
+				m_imag *= other.m_real;
+				m_imag += tmp2;
+				m_real *= other.m_real;
+				m_real -= tmp1;
+				return *this;
+			}
+			/// In-place division.
+			complex &operator/=(const complex &other)
+			{
+				if (other.m_real == 0 && other.m_imag == 0) {
+					piranha_throw(zero_division_error,"cannot divide by zero");
+				}
+				// This is the divisor, i.e. the square of absolute value of other.
+				value_type div(other.m_real);
+				div *= other.m_real;
+				div += other.m_imag * other.m_imag;
+				// The numerator looks like a multiplication with opposite signs.
+				const value_type tmp1 = m_imag * other.m_imag, tmp2 = m_real * other.m_imag;
+				m_imag *= other.m_real;
+				m_imag -= tmp2;
+				m_real *= other.m_real;
+				m_real += tmp1;
+				// Now divide by divisor.
+				m_real /= div;
+				m_imag /= div;
+				return *this;
+			}
+			// Maths for other types.
+			complex &operator+=(const double &x)
+			{
+				m_real += x;
+				return *this;
+			}
+			complex &operator+=(const complex<double> &c)
+			{
+				m_real += c.real();
+				m_imag += c.imag();
+				return *this;
 			}
 		private:
 			void construct_from_string(const char *str)
