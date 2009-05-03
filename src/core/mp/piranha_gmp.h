@@ -22,25 +22,42 @@
 #define PIRANHA_PIRANHA_GMP_H
 
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/operators.hpp>
+#include <cmath>
+#include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "../exceptions.h"
 
 namespace piranha
 {
+	// Construct hash value from mpq_class.
+	static inline size_t hash_from_mpq_class(const mpq_class &q)
+	{
+		size_t retval = 0;
+		const __mpz_struct *num = mpq_numref(q.get_mpq_t()), *den = mpq_denref(q.get_mpq_t());
+		const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
+		for (size_t i = 0; i < num_limb_size; ++i) {
+			boost::hash_combine(retval, num->_mp_d[i]);
+		}
+		for (size_t i = 0; i < den_limb_size; ++i) {
+			boost::hash_combine(retval, den->_mp_d[i]);
+		}
+		return retval;
+	}
+
 	/// Multiprecision rational class.
 	/**
 	 * Wraps a GMP mpq_class. Interoperability with C++ int and double types is provided through constructors and
 	 * in-place mathematical operators against arbitrary types that provide forwarding to the underlying
 	 * mpq_class type. Additional operators are provided through inheritance from the Boost operator library.	
 	 */
-	// TODO: catch std::invalid_argument when initialising from invalid string
-	// and rethrow as value_error.
 	class mp_rational:
 		boost::ordered_field_operators<mp_rational,
 		boost::ordered_field_operators<mp_rational, int,
@@ -48,7 +65,6 @@ namespace piranha
 		> > >
 	{
 			friend std::ostream &operator<<(std::ostream &, const mp_rational &);
-			friend std::istream &operator>>(std::istream &, mp_rational &);
 		public:
 			/// Default constructor.
 			/**
@@ -57,38 +73,40 @@ namespace piranha
 			explicit mp_rational():m_value(0) {}
 			/// Constructor from std::string.
 			/**
-			 * Will raise a piranha::value_error exception if string is not valid. Valid strings include
+			 * Will raise a value_error exception if string is not valid. Valid strings include
 			 * integer numbers and rationals, even with negative signs (e.g., "3", "-10", "3/4", "5/-6", etc.).
+			 * @throws value_error if string is invalid.
+			 * @throws zero_division_error if string is valid but denominator is zero.
 			 */
-			explicit mp_rational(const std::string &str):m_value(str.c_str())
+			explicit mp_rational(const std::string &str):m_value()
 			{
-				canonicalize();
+				construct_from_string(str.c_str());
 			}
 			/// Constructor from C string.
 			/**
 			 * @see mp_rational(const std::string &).
 			 */
-			explicit mp_rational(const char *str):m_value(str)
+			explicit mp_rational(const char *str):m_value()
 			{
-				canonicalize();
+				construct_from_string(str);
 			}
 			/// Constructor from integer.
 			explicit mp_rational(const int &n):m_value(n) {}
 			/// Constructor from integer numerator and denominator.
-			explicit mp_rational(const int &n, const int &d):m_value(n,d)
+			explicit mp_rational(const int &n, const int &d):m_value()
 			{
-				canonicalize();
+				// Guard against division by zero.
+				if (d == 0) {
+					piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
+				}
+				mpq_class tmp(n,d);
+				mpq_canonicalize(tmp.get_mpq_t());
+				// Swap content (more efficient than copying).
+				mpz_swap(mpq_numref(m_value.get_mpq_t()),mpq_numref(tmp.get_mpq_t()));
+				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(tmp.get_mpq_t()));
 			}
 			/// Constructor from double.
 			explicit mp_rational(const double &x):m_value(x) {}
-			/// Copy constructor.
-			mp_rational(const mp_rational &other):m_value(other.m_value) {}
-			/// Assignment operator.
-			mp_rational &operator=(const mp_rational &other)
-			{
-				m_value = other.m_value;
-				return *this;
-			}
 			/// Swap content.
 			/**
 			 * Internally uses the mpz_swap GMP function on numerator and denominator..
@@ -101,16 +119,7 @@ namespace piranha
 			/// Hash value.
 			size_t hash() const
 			{
-				size_t retval = 0;
-				const __mpz_struct *num = mpq_numref(m_value.get_mpq_t()), *den = mpq_denref(m_value.get_mpq_t());
-				const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
-				for (size_t i = 0; i < num_limb_size; ++i) {
-					boost::hash_combine(retval, num->_mp_d[i]);
-				}
-				for (size_t i = 0; i < den_limb_size; ++i) {
-					boost::hash_combine(retval, den->_mp_d[i]);
-				}
-				return retval;
+				return hash_from_mpq_class(m_value);
 			}
 			/// Equality operator.
 			bool operator==(const mp_rational &other) const
@@ -144,7 +153,7 @@ namespace piranha
 			mp_rational &operator/=(const mp_rational &other)
 			{
 				if (other.m_value == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				m_value /= other.m_value;
 				return *this;
@@ -214,15 +223,52 @@ namespace piranha
 			mp_rational &operator/=(const T &other)
 			{
 				if (other == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				m_value /= other;
 				return *this;
 			}
 		private:
-			void canonicalize()
+			// Will throw value_error if string is invalid, zero_division_error if string is valid
+			// but contains zero as denominator.
+			void construct_from_string(const char *str)
 			{
-				mpq_canonicalize(m_value.get_mpq_t());
+				std::string tmp(str);
+				// First let's trim the input string.
+				boost::trim(tmp);
+				// Let's try to separate numerator and denominator.
+				std::vector<std::string> split_v;
+				boost::split(split_v,tmp,boost::is_any_of("/"));
+				switch (split_v.size()) {
+					case 1:
+						// If there is no "/" character, we assume that string represent an integer number,
+						// hence we try to build mpq_class from it.
+						try {
+							m_value = mpq_class(split_v[0]);
+						} catch (const std::invalid_argument &) {
+							piranha_throw(value_error,"invalid string input");
+						}
+						break;
+					case 2:
+						{
+						mpz_class num(0), den(0);
+						try {
+							num = mpz_class(split_v[0]);
+							den = mpz_class(split_v[1]);
+						} catch (const std::invalid_argument &) {
+							piranha_throw(value_error,"invalid string input");
+						}
+						if (den == 0) {
+							piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
+						}
+						mpq_class tmp_q(num,den);
+						mpq_canonicalize(tmp_q.get_mpq_t());
+						m_value = tmp_q;
+						}
+						break;
+					default:
+						piranha_throw(value_error,"invalid string input");
+				}
 			}
 			mpq_class m_value;
 	};
@@ -237,11 +283,14 @@ namespace piranha
 	/// Overload in stream operator>> for piranha::mp_rational.
 	inline std::istream &operator>>(std::istream &i, mp_rational &q)
 	{
-		i >> q.m_value;
+		std::string tmp_str;
+		std::getline(i,tmp_str);
+		mp_rational tmp(tmp_str);
+		q.swap(tmp);
 		return i;
 	}
 
-	/// Overload hash_value function for use with boost::hash.
+	/// Overload hash_value function for piranha::mp_rational.
 	inline size_t hash_value(const mp_rational &q)
 	{
                 return q.hash();
@@ -258,6 +307,116 @@ namespace std
 	inline void swap(piranha::mp_rational &q1, piranha::mp_rational &q2)
 	{
 		q1.swap(q2);
+	}
+
+	/// Complex counterpart of piranha::mp_rational.
+	template <>
+	class complex<piranha::mp_rational> {
+			friend ostream &operator<<(ostream &, const complex &);
+		public:
+			typedef piranha::mp_rational value_type;
+			/// Default constructor.
+			explicit complex(): m_real(),m_imag() {}
+			/// Constructor from integer.
+			explicit complex(const int &n): m_real(n),m_imag() {}
+			/// Constructor from integer real and imaginary parts..
+			explicit complex(const int &r, const int &i): m_real(r),m_imag(i) {}
+			/// Constructor from complex integer.
+			explicit complex(const complex<int> &c): m_real(c.real()),m_imag(c.imag()) {}
+			/// Constructor from double.
+			explicit complex(const double &x): m_real(x),m_imag() {}
+			/// Constructor from double real and imaginary parts..
+			explicit complex(const double &r, const double &i): m_real(r),m_imag(i) {}
+			/// Constructor from complex double.
+			explicit complex(const complex<double> &c): m_real(c.real()),m_imag(c.imag()) {}
+			/// Constructor from value_type.
+			explicit complex(const value_type &x): m_real(x),m_imag() {}
+			/// Constructor from real and imaginary parts of type value_type.
+			explicit complex(const value_type &r, const value_type &i): m_real(r),m_imag(i) {}
+			/// Constructor from std::string.
+			explicit complex(const string &str): m_real(),m_imag()
+			{
+				construct_from_string(str.c_str());
+			}
+			/// Constructor from C string.
+			explicit complex(const char *str): m_real(),m_imag()
+			{
+				construct_from_string(str);
+			}
+			/// Swap content.
+			void swap(complex &other)
+			{
+				m_real.swap(other.m_real);
+				m_imag.swap(other.m_imag);
+			}
+			/// Hash value.
+			size_t hash() const
+			{
+				boost::hash<value_type> hasher;
+				size_t retval = hasher(m_real);
+				boost::hash_combine(retval, hasher(m_imag));
+				return retval;
+			}
+		private:
+			void construct_from_string(const char *str)
+			{
+				string tmp(str);
+				// First let's trim the input string.
+				boost::trim(tmp);
+				// For string to be a valid complex number, it must consist of a least 5 chars
+				// (2 brackets, a comma and the two numbers).
+				if (tmp.size() < 5) {
+					piranha_throw(value_error,"invalid string input");
+				}
+				// Next we split the input string into two parts, separated by the comma.
+				vector<string> split_v;
+				boost::split(split_v,tmp,boost::is_any_of(","));
+				// Now we check that the input string is well formed, i.e., it contains one comma,
+				// it starts and ends with round brackets and each element of the split vector contains at
+				// least two characters.
+				if (split_v.size() != 2 || split_v[0].size() < 2 || split_v[1].size() < 2 ||
+					split_v[0][0] != '(' || split_v[1][split_v[1].size() - 1] != ')') {
+					piranha_throw(value_error,"invalid string input");
+				}
+				// Finally, we try to build the two components from the split vector,
+				// discarding the positions in which there are the brackets.
+				m_real = value_type(string(&split_v[0][1],&split_v[0][split_v[0].size()]));
+				m_imag = value_type(string(&split_v[1][0],&split_v[1][split_v[1].size() - 1]));
+			}
+			value_type	m_real;
+			value_type	m_imag;
+	};
+
+	/// Overload standard swap function for std::complex<piranha::mp_rational>.
+	/**
+	 * Will use the swap() method internally.
+	 */
+	inline void swap(complex<piranha::mp_rational> &qc1, complex<piranha::mp_rational> &qc2)
+	{
+		qc1.swap(qc2);
+	}
+
+	/// Overload out stream operator<< for std::complex<piranha::mp_rational>.
+	inline ostream &operator<<(ostream &o, const complex<piranha::mp_rational> &qc)
+	{
+		o << '(' << qc.m_real << ',' << qc.m_imag << ')';
+		return o;
+	}
+
+	/// Overload in stream operator>> for std::complex<piranha::mp_rational>.
+	inline std::istream &operator>>(std::istream &i, complex<piranha::mp_rational> &qc)
+	{
+		string tmp_str;
+		getline(i,tmp_str);
+		complex<piranha::mp_rational> tmp(tmp_str);
+		swap(qc,tmp);
+		return i;
+	}
+
+	/// Overload hash_value function for std::complex<piranha::mp_rational>.
+	inline size_t hash_value(const complex<piranha::mp_rational> &qc)
+	{
+		return qc.hash();
 	}
 }
 

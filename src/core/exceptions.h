@@ -24,6 +24,11 @@
 #include <iostream>
 #include <string>
 
+#include <p_exceptions.h>
+
+#define piranha_throw(ex,s) P_EX_THROW(ex,s)
+#define piranha_assert(expr) P_EX_ASSERT(expr)
+
 namespace piranha
 {
 	class base_exception
