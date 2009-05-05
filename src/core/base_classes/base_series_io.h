@@ -31,6 +31,7 @@
 #include "../psym.h"
 #include "../settings.h"
 #include "base_series_def.h"
+#include "series_factory.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -152,6 +153,36 @@ namespace piranha
 	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::end() const
 	{
 		return m_container.end();
+	}
+
+	/// Construct series from a key.
+	/**
+	 * The returning series will consist of a single term with unitary numerical coefficient and key in its position.
+	 * For instance, if the key is \f$ \cos\left( x \right) \f$ one in a Fourier series, the resulting series will be  \f$ 1 \cdot \cos\left( x \right) \f$;
+	 * the exponent key \f$ x^2 y \f$ used to build a Poisson series, instead, will result instead in the series \f$ 1 \cdot x^2 y \cdot \cos\left( 0 \right) \f$.
+	 * If the provided key type does not appear in the series, a compile-time error will occur.
+	 */
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Key, class ArgsTuple>
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_series_from_key(const Key &key, const ArgsTuple &args_tuple)
+	{
+		Derived retval;
+		series_from_key_impl<Key, typename term_type::key_type>::run(retval,key,args_tuple);
+		return retval;
+	}
+
+	/// Construct series from a cf.
+	/**
+	 * The returning series will consist of a single term with provided coefficient
+	 * If the provided coefficient type does not appear in the series, a compile-time error will occur.
+	 */
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Cf, class ArgsTuple>
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_series_from_cf(const Cf &cf, const ArgsTuple &args_tuple)
+	{
+		Derived retval;
+		series_from_cf_impl<Cf, typename term_type::cf_type>::run(retval,cf,args_tuple);
+		return retval;
 	}
 }
 

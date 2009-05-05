@@ -47,14 +47,29 @@ namespace piranha
 		}
 	};
 
-	template <class Series, class Key, class ArgsTuple>
-	Series series_from_key(const Key &key, const ArgsTuple &args_tuple)
+	template <class RequestedCf, class SeriesCf>
+	struct series_from_cf_impl
 	{
-		typedef typename Series::term_type term_type;
-		Series retval;
-		series_from_key_impl<Key, typename term_type::key_type>::run(retval,key,args_tuple);
-		return retval;
-	}
+		template <class Series, class ArgsTuple>
+		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &args_tuple)
+		{
+			typedef typename Series::term_type::cf_type cf_series_type;
+			cf_series_type cf_series;
+			series_from_cf_impl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
+				cf_series,cf,args_tuple);
+			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
+		}
+	};
+
+	template <class Cf>
+	struct series_from_cf_impl<Cf,Cf>
+	{
+		template <class Series, class ArgsTuple>
+		static void run(Series &retval, const Cf &cf, const ArgsTuple &args_tuple)
+		{
+			retval.insert(typename Series::term_type(cf,typename Series::term_type::key_type()),args_tuple);
+		}
+	};
 }
 
 #endif

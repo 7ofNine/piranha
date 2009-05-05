@@ -85,6 +85,10 @@ namespace piranha
 			bool is_single_cf() const;
 			size_t atoms() const;
 		protected:
+			template <class Key, class ArgsTuple>
+			static Derived base_series_from_key(const Key &, const ArgsTuple &);
+			template <class Cf, class ArgsTuple>
+			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
 			bool base_equal_to(const Derived &) const;
 			bool base_equal_to(const double &) const;
 			template <class ArgsTuple>
