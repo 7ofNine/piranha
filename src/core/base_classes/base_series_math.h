@@ -250,8 +250,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class PosTuple, class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_partial(const Derived &in, Derived &out,
+	template <class Series, class PosTuple, class ArgsTuple>
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_partial(const Derived &in, Series &out,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
 		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			"Size mismatch between args tuple and pos tuple in partial derivative.");
@@ -259,9 +259,12 @@ namespace piranha
 		term_type tmp_term1, tmp_term2;
 		const const_iterator it_f = in.end();
 		for (const_iterator it = in.begin(); it != it_f; ++it) {
-			it->partial(tmp_term1, tmp_term2, pos_tuple, args_tuple);
-			out.insert(tmp_term1, args_tuple);
-			out.insert(tmp_term2, args_tuple);
+			Series tmp1(it->m_cf.template partial<Series>(pos_tuple,args_tuple));
+			tmp1.base_mult_by(Series::base_series_from_key(it->m_key,args_tuple),args_tuple);
+			Series tmp2(it->m_key.template partial<Series>(pos_tuple,args_tuple));
+			tmp2.base_mult_by(Series::base_series_from_cf(it->m_cf,args_tuple),args_tuple);
+			out.base_add(tmp1,args_tuple);
+			out.base_add(tmp2,args_tuple);
 		}
 	}
 

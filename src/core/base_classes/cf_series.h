@@ -98,8 +98,8 @@ namespace piranha
 			Derived pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived root(const int &, const ArgsTuple &) const;
-			template <class PosTuple, class ArgsTuple>
-			Derived partial(const PosTuple &, const ArgsTuple &) const;
+			template <class Series, class PosTuple, class ArgsTuple>
+			Series partial(const PosTuple &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			eval_type eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>

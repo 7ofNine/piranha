@@ -114,10 +114,12 @@ namespace piranha
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class PosTuple, class ArgsTuple>
-	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	template <class Series, class PosTuple, class ArgsTuple>
+	inline Series toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
-		return derived_const_cast->base_partial(pos_tuple,args_tuple);
+		Series retval;
+		Derived::ll_partial(*derived_const_cast,retval,pos_tuple,args_tuple);
+		return retval;
 	}
 }
 

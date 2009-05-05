@@ -451,23 +451,24 @@ namespace piranha
 			/**
 			 * Result is a pair consisting of an integer and a trigonometric array.
 			 */
-			template <class PosTuple, class ArgsTuple>
-			std::pair<int, toolbox> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
-				std::pair<int, toolbox> retval(0, toolbox());
+			template <class Series, class PosTuple, class ArgsTuple>
+			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
+				Series retval;
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
 				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) {
-					retval.second = *this;
+					toolbox copy(*this);
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					// Change the flavour of the resulting key.
-					retval.second.m_flavour = !this->m_flavour;
+					copy.m_flavour = !this->m_flavour;
 					p_assert(pos < this->size());
-					retval.first = this->m_container.v[pos];
+					retval = Series::base_series_from_key(copy,args_tuple);
 					if (this->m_flavour) {
-						retval.first = -retval.first;
+						retval.base_mult_by(-1,args_tuple);
 					}
+					retval.base_mult_by((*this)[pos],args_tuple);
 				}
 				return retval;
 			}

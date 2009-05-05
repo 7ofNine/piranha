@@ -278,23 +278,19 @@ namespace piranha
 				return candidate;
 			}
 			/// Calculate partial derivative.
-			/**
-			 * Result is a pair consisting of an integer and an exponent array.
-			 */
-			template <class PosTuple, class ArgsTuple>
-			std::pair<int, toolbox> partial(const PosTuple &pos_tuple, const ArgsTuple &) const {
-				std::pair<int, toolbox> retval(0, toolbox());
+			template <class Series, class PosTuple, class ArgsTuple>
+			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
 				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 				p_assert(pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
-				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be multiplied
-				// by the coefficient in the partial derivation of the whole term.
+				Series retval;
 				if (pos_tuple.template get<ancestor::position>()[0].first && this->m_container.v[pos] != 0) {
-					retval.second = *this;
-					retval.first = this->m_container.v[pos];
-					--retval.second[pos];
+					toolbox copy(*this);
+					--copy[pos];
+					retval = Series::base_series_from_key(copy,args_tuple);
+					retval.base_mult_by((*this)[pos],args_tuple);
 				}
 				return retval;
 			}

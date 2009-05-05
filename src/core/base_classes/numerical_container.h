@@ -182,9 +182,9 @@ namespace piranha
 			void addmul(const Derived &x1, const Derived2 &x2, const ArgsTuple &) {
 				m_value += x1.m_value * x2.value();
 			}
-			template <class PosTuple, class ArgsTuple>
-			Derived partial(const PosTuple &, const ArgsTuple &args_tuple) const {
-				return Derived(0, args_tuple);
+			template <class Series, class PosTuple, class ArgsTuple>
+			Series partial(const PosTuple &, const ArgsTuple &) const {
+				return Series();
 			}
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &args_tuple) const {
