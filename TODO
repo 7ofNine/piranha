@@ -61,6 +61,5 @@
   than the limit.
 - packed attribute for structs in gcc
 - what about std::domain_error? check about those standard exceptions....
-- get rid of series_builder, use factory...
 - is it interesting to add series type to cf/key template signature in order to
   differentiate them as types?

@@ -40,13 +40,13 @@ namespace piranha
 			term.m_key.pad_right(args_tuple);
 			retval.insert(term, args_tuple);
 		}
-		derived_cast->swap_terms(retval);
+		derived_cast->base_swap(retval);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::swap(Derived &s2)
 	{
-		derived_cast->swap_terms(s2);
+		derived_cast->base_swap(s2);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -55,7 +55,7 @@ namespace piranha
 	{
 		Derived retval;
 		derived_cast->apply_layout_to_terms(l, retval, args_tuple);
-		derived_cast->swap_terms(retval);
+		derived_cast->base_swap(retval);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

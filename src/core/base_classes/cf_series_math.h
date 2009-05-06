@@ -40,7 +40,7 @@ namespace piranha
 			// No need to check, we are merging terms from this series.
 			retval.template insert<false, true>(term, args_tuple);
 		}
-		derived_cast->swap_terms(retval);
+		derived_cast->base_swap(retval);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

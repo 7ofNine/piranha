@@ -45,9 +45,8 @@ namespace piranha
 	{
 		// Make sure we are being called from an empty series.
 		p_assert(empty());
-		term_type term;
-		term.m_cf = cf_type(x, args_tuple);
-		insert(term, args_tuple);
+		Derived tmp(base_series_from_cf(typename term_type::cf_type(x,args_tuple),args_tuple));
+		base_swap(tmp);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -124,7 +123,7 @@ namespace piranha
 			const ArgsTuple &args_tuple)
 	{
 		p_assert(derived_cast->empty());
-		insert(term_type(cf_type(p, n, args_tuple), key_type(p, n, args_tuple)), args_tuple);
+		insert(term_type(typename term_type::cf_type(p, n, args_tuple), typename term_type::key_type(p, n, args_tuple)), args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

@@ -101,7 +101,7 @@ namespace piranha
 			for (it = begin(); it != it_f; ++it) {
 				new_series.insert(*it,args_tuple);
 			}
-			swap_terms(new_series);
+			base_swap(new_series);
 		}
 	}
 
@@ -284,7 +284,7 @@ namespace piranha
 		for (; n > 0; --n) {
 			Derived tmp;
 			ll_partial(retval,tmp,pos_tuple,args_tuple);
-			tmp.swap_terms(retval);
+			tmp.base_swap(retval);
 		}
 		return retval;
 	}
@@ -341,14 +341,14 @@ namespace piranha
 				const int n = (int)(y);
 				if (n >= 0) {
 					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
-					retval.swap_terms(tmp);
+					retval.base_swap(tmp);
 				} else {
 					Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
-					retval.swap_terms(tmp);
+					retval.base_swap(tmp);
 				}
 			} else {
 				Derived tmp(derived_const_cast->real_power(y, args_tuple));
-				retval.swap_terms(tmp);
+				retval.base_swap(tmp);
 			}
 		}
 		return retval;
@@ -474,7 +474,7 @@ namespace piranha
 		Derived retval;
 		if (!common_root_handler(n, retval, args_tuple)) {
 			Derived tmp(derived_const_cast->nth_root(n, args_tuple));
-			retval.swap_terms(tmp);
+			retval.base_swap(tmp);
 		}
 		return retval;
 	}

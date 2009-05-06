@@ -50,10 +50,6 @@ namespace piranha
 	{
 			// Alias for term type.
 			typedef Term term_type_;
-			// Alias for coefficient type.
-			typedef typename term_type_::cf_type cf_type;
-			// Alias for key type.
-			typedef typename term_type_::key_type key_type;
 			// Alias for allocator type.
 			typedef counting_allocator<term_type_,Allocator> allocator_type;
 			// Term container.
@@ -145,7 +141,7 @@ namespace piranha
 			void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &, int limit) const;
-			void swap_terms(Derived &);
+			void base_swap(Derived &);
 			template <class Number>
 			bool generic_numerical_comparison(const Number &) const;
 			template <class Layout, class ArgsTuple>

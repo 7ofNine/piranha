@@ -60,7 +60,7 @@ namespace piranha
 		// Do something only if we are not swapping with self.
 		if (derived_cast != &ps2) {
 			named_series_swap<args_tuple_type>::run(m_arguments, ps2.m_arguments);
-			derived_cast->swap_terms(ps2);
+			derived_cast->base_swap(ps2);
 		}
 	}
 
@@ -322,7 +322,7 @@ namespace piranha
 			// Let's proceed to the terms now.
 			Derived tmp;
 			derived_cast->trim_terms(trim_flags, tmp, m_arguments);
-			derived_cast->swap_terms(tmp);
+			derived_cast->base_swap(tmp);
 		}
 	}
 

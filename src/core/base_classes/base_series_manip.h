@@ -199,7 +199,7 @@ namespace piranha
 	 * All terms get swapped.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::swap_terms(Derived &ps2)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_swap(Derived &ps2)
 	{
 		p_assert(derived_cast != &ps2);
 		m_container.swap(ps2.m_container);
@@ -240,7 +240,8 @@ namespace piranha
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval.insert(
-				term_type(cf_type(it->m_cf.trim(tf, args_tuple)), key_type(it->m_key.trim(tf, args_tuple))),
+				term_type(typename term_type::cf_type(it->m_cf.trim(tf, args_tuple)),
+					typename term_type::key_type(it->m_key.trim(tf, args_tuple))),
 				args_tuple
 			);
 		}

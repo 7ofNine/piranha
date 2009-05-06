@@ -74,13 +74,13 @@ namespace piranha
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
 					tmp.multiply_coefficients_by(derived_const_cast->begin()->m_cf, args_tuple);
-					derived_cast->swap_terms(tmp);
+					derived_cast->base_swap(tmp);
 				} else {
 					Derived retval;
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
 						m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();
-					derived_cast->swap_terms(retval);
+					derived_cast->base_swap(retval);
 				}
 			}
 	};
