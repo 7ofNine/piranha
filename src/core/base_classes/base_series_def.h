@@ -48,15 +48,14 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	class toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >
 	{
-			// Alias for term type.
-			typedef Term term_type_;
-			// Alias for allocator type.
-			typedef counting_allocator<term_type_,Allocator> allocator_type;
-			// Term container.
-			typedef boost::unordered_set<term_type_,boost::hash<term_type_>,std::equal_to<term_type_>,allocator_type>
-				container_type;
 		public:
-			typedef term_type_ term_type;
+			/// Alias for term type.
+			typedef Term term_type;
+			/// Alias for allocator type.
+			typedef counting_allocator<term_type,Allocator> allocator_type;
+			/// Term container.
+			typedef boost::unordered_set<term_type,boost::hash<term_type>,std::equal_to<term_type>,allocator_type>
+				container_type;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
 			typedef typename container_type::iterator iterator;
 			typedef typename container_type::const_iterator const_iterator;

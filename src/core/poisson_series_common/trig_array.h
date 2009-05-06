@@ -39,7 +39,7 @@
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // For lexical converter.
-// TODO: remove when efficient trig evaluation is implemented.
+// NOTE: remove when efficient trig evaluation is implemented.
 #include "trig_evaluator.h"
 
 #define __PIRANHA_TRIG_ARRAY_TP_DECL int Bits, int Pos, class Allocator
@@ -412,10 +412,10 @@ namespace piranha
 				}
 				return 1;
 			}
-			// All multipliers are zero and flavour is sine.
+			/// All multipliers are zero and flavour is sine.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (this->elements_are_zero() && !this->m_flavour);
+				return (!this->m_flavour && this->elements_are_zero());
 			}
 			/// Equality test.
 			bool operator==(const toolbox &t2) const {
