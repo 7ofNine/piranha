@@ -435,6 +435,10 @@ namespace std
 			{
 				construct_from_string(str);
 			}
+			operator complex<double>() const
+			{
+				return complex<double>((double)m_real,(double)m_imag);
+			}
 			/// Get const reference to the real part.
 			const value_type &real() const
 			{

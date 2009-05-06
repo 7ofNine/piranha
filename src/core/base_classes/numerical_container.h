@@ -94,11 +94,6 @@ namespace piranha
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				print_plain(out_stream,args_tuple);
 			}
-			template <class ArgsTuple>
-			void print_latex(std::ostream &out_stream, const ArgsTuple &) const {
-// TODO: rework this.
-//         out_stream << "$" << m_value << "$";
-			}
 			// Manipulation
 			Derived &swap(Derived &dc) {
 				std::swap(m_value, dc.m_value);

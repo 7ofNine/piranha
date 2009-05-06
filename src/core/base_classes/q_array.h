@@ -63,15 +63,15 @@ namespace piranha
 			/**
 			 * Constructs an empty array.
 			 */
-			q_array(): m_size(0),m_first(0),m_others(0) {}
+			q_array(): m_size(0),m_ptr(0) {}
 			/// Copy ctor.
-			q_array(const q_array &other): m_size(other.m_size),m_first(other.m_first)
+			q_array(const q_array &other): m_size(other.m_size)
 			{
 				setup_elements_from_other(other);
 			}
 			/// Copy ctor. Position can be different.
 			template <int Pos2, class Derived2>
-			explicit q_array(const q_array<Pos2,Allocator,Derived2> &other): m_size(other.m_size),m_first(other.m_first)
+			explicit q_array(const q_array<Pos2,Allocator,Derived2> &other): m_size(other.m_size)
 			{
 				setup_elements_from_other(other);
 			}
@@ -81,7 +81,7 @@ namespace piranha
 			 * resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
-			q_array(const psym &p, const int &n, const ArgsTuple &args_tuple): m_size(0),m_first(0),m_others(0)
+			q_array(const psym &p, const int &n, const ArgsTuple &args_tuple): m_size(0),m_ptr(0)
 			{
 				(void)p;
 				(void)args_tuple;
@@ -89,8 +89,8 @@ namespace piranha
 				if (n == position) {
 // 					piranha_assert(args_tuple.template get<position>().size() == 1 &&
 // 							 args_tuple.template get<position>()[0] == p);
-					m_size = 1;
-					m_first = 1;
+					resize(1);
+					m_ptr[0] = 1;
 				}
 			}
 			/// Destructor.
@@ -106,17 +106,14 @@ namespace piranha
 					// If the sizes are equal we can just copy over the elements,
 					// without additional allocations.
 					if (m_size == other.m_size) {
-						for (size_type i = 1; i < m_size; ++i) {
-							m_others[i - 1] = other.m_others[i - 1];
-						}
+						std::copy(m_ptr, m_ptr + i, other.m_ptr);
 					} else {
 						destroy_elements();
 						deallocate_memory();
 						setup_elements_from_other(other);
 					}
-					// Take care of the other data members.
+					// Take care of the size data member.
 					m_size = other.m_size;
-					m_first = other.m_first;
 				}
 				return *this;
 			}
@@ -128,18 +125,13 @@ namespace piranha
 			/// Element getter.
 			const value_type &operator[](const size_type &n) const
 			{
-				if (n == 0) {
-					return m_first;
-				} else {
-					return m_others[n - 1];
-				}
+				return m_ptr[n];
 			}
 			/// Swap with other q_array.
 			void swap(q_array &other)
 			{
 				std::swap(m_size,other.m_size);
-				std::swap(m_first,other.m_first);
-				std::swap(m_others,other.m_others);
+				std::swap(m_ptr,other.m_ptr);
 			}
 			/// Do I need padding in order to be compatible with args_tuple?
 			template <class ArgsTuple>
@@ -276,11 +268,7 @@ namespace piranha
 			/// Element setter.
 			value_type &operator[](const size_type &n)
 			{
-				if (n == 0) {
-					return m_first;
-				} else {
-					return m_others[n - 1];
-				}
+				return m_ptr[n];
 			}
 			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const
@@ -315,27 +303,18 @@ namespace piranha
 				if (new_size == m_size) {
 					return;
 				}
-				// Check: make sure that if the current size is zero, also m_first is zero.
-				piranha_assert(m_size > 0 || m_first == 0);
-				// Size of old and new elements.
-				const size_type new_others_size = (new_size > 1) ? (new_size - 1) : 0,
-					old_others_size = (m_size > 1) ? (m_size - 1) : 0;
-				// If we are shrinking to zero, set the first element to zero.
-				if (new_size == 0) {
-					m_first = 0;
-				}
 				value_type *new_elements = 0;
-				if (new_others_size > 0) {
+				if (new_size > 0) {
 					allocator_type a;
-					new_elements = a.allocate(new_others_size);
-					const size_type min_others_sizes = std::min(new_others_size,old_others_size);
+					new_elements = a.allocate(new_size);
+					const size_type min_size = std::min(new_size,m_size);
 					// Copy over old elements.
-					for (size_type i = 0; i < min_others_sizes; ++i) {
-						a.construct(new_elements + i, m_others[i]);
+					for (size_type i = 0; i < min_size; ++i) {
+						a.construct(new_elements + i, m_ptr[i]);
 					}
 					// Default-construct the remaining elements.
 					const value_type tmp(0);
-					for (size_type i = min_others_sizes; i < new_others_size; ++i) {
+					for (size_type i = min_size; i < new_size; ++i) {
 						a.construct(new_elements + i, tmp);
 					}
 				}
@@ -343,7 +322,7 @@ namespace piranha
 				destroy_elements();
 				deallocate_memory();
 				// Assign data members.
-				m_others = new_elements;
+				m_ptr = new_elements;
 				m_size = new_size;
 			}
 			/// Hash value.
