@@ -106,7 +106,7 @@ namespace piranha
 					// If the sizes are equal we can just copy over the elements,
 					// without additional allocations.
 					if (m_size == other.m_size) {
-						std::copy(m_ptr, m_ptr + i, other.m_ptr);
+						std::copy(other.m_ptr, other.m_ptr + m_size, m_ptr);
 					} else {
 						destroy_elements();
 						deallocate_memory();
@@ -356,35 +356,34 @@ namespace piranha
 			template <class T>
 			void setup_elements_from_other(const T &other)
 			{
-				if (other.m_size > 1) {
+				if (other.m_size > 0) {
 					allocator_type a;
-					m_others = a.allocate(other.m_size - 1);
-					for (size_type i = 0; i < other.m_size - 1; ++i) {
-						a.construct(m_others + i, *(other.m_others + i));
+					m_ptr = a.allocate(other.m_size);
+					for (size_type i = 0; i < other.m_size; ++i) {
+						a.construct(m_ptr + i, other.m_ptr[i]);
 					}
 				} else {
-					m_others = 0;
+					m_ptr = 0;
 				}
 			}
 			// Destroy all allocated elements.
 			void destroy_elements()
 			{
 				allocator_type a;
-				for (size_type i = 1; i < m_size; ++i) {
-					a.destroy(m_others + i - 1);
+				for (size_type i = 0; i < m_size; ++i) {
+					a.destroy(m_ptr + i);
 				}
 			}
 			// Deallocate memory allocated in m_others.
 			void deallocate_memory()
 			{
-				if (m_size > 1) {
-					allocator_type().deallocate(m_others, m_size - 1);
+				if (m_size > 0) {
+					allocator_type().deallocate(m_ptr, m_size);
 				}
 			}
 		private:
 			size_type	m_size;
-			value_type	m_first;
-			value_type	*m_others;
+			value_type	*m_ptr;
 	};
 }
 
