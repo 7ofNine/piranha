@@ -33,7 +33,6 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
-#include "../base_classes/series_builders.h"
 #include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../exceptions.h"
@@ -335,14 +334,14 @@ namespace piranha
 				// NOTE: for now we can substitute one symbol at a time.
 				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
-					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					p_assert(pos < this->size());
 					toolbox tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
-					RetSeries orig(key_series_builder::template run<RetSeries>(tmp_ea, args_tuple));
+					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, args_tuple));
 					p_assert(retval.empty());
 					// NOTICE: series multadd here?
 					retval.base_add(orig, args_tuple);
@@ -355,7 +354,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &, SubCaches &,
 				const ArgsTuple &args_tuple) const {
-				return key_series_builder::template run<RetSeries>(*this, args_tuple);
+				return RetSeries::base_series_from_key(*this, args_tuple);
 			}
 		private:
 			/// Integer exponentiation.

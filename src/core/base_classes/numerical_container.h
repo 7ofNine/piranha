@@ -31,7 +31,6 @@
 #include "../settings.h"
 #include "../utils.h" // Lexical converter.
 #include "numerical_container_complex_toolbox.h"
-#include "series_builders.h"
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -205,8 +204,7 @@ namespace piranha
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const {
-				return numerical_cf_series_builder < boost::tuples::length<ArgsTuple>::value - 1 >::
-					template run<RetSeries>(*derived_const_cast, args_tuple);
+				return RetSeries::base_series_from_cf(*derived_const_cast, args_tuple);
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const {

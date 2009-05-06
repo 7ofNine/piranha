@@ -31,7 +31,6 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
-#include "../base_classes/series_builders.h"
 #include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../config.h"
@@ -498,7 +497,7 @@ namespace piranha
 				// NOTE: for now we can substitute one symbol at a time.
 				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
-					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
@@ -511,10 +510,10 @@ namespace piranha
 					// of a trig_array and unity coefficient and simply insert it.
 					// Build the orig_cos series.
 					tmp_ta.set_flavour(true);
-					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
 					// Build the orig_sin series.
 					tmp_ta.set_flavour(false);
-					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (this->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
@@ -547,7 +546,7 @@ namespace piranha
 				RetSeries retval;
 				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
-					retval = key_series_builder::template run<RetSeries>(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
@@ -555,9 +554,9 @@ namespace piranha
 					toolbox tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
-					RetSeries orig_cos = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
 					tmp_ta.set_flavour(false);
-					RetSeries orig_sin = key_series_builder::template run<RetSeries>(tmp_ta,args_tuple);
+					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
 					p_assert(retval.empty());
 					if (this->m_flavour) {
 						retval.base_add(orig_cos, args_tuple);
