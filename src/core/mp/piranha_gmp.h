@@ -151,8 +151,9 @@ namespace piranha
 			 */
 			operator double() const
 			{
-				return m_value.get_d();
-
+				// NOTE: the natural way to do it would seem to be this, but reading the GMP docs
+				// it seems like this could fail in horrible ways in case of overflows. Need to check.
+				// return m_value.get_d();
 				if (!mpz_fits_slong_p(mpq_numref(m_value.get_mpq_t())) ||
 					!mpz_fits_ulong_p(mpq_denref(m_value.get_mpq_t()))) {
 					piranha_throw(std::overflow_error,"overflow while converting rational to double");
@@ -163,7 +164,7 @@ namespace piranha
 			}
 			/// Swap content.
 			/**
-			 * Internally uses the mpz_swap GMP function on numerator and denominator..
+			 * Internally uses the mpz_swap GMP function on numerator and denominator.
 			 */
 			void swap(mp_rational &other)
 			{
@@ -218,7 +219,7 @@ namespace piranha
 				m_value /= other.m_value;
 				return *this;
 			}
-			/// Negate in-plcae.
+			/// Negate in-place.
 			/**
 			 * Implemented through the mpq_neg GMP function.
 			 */
