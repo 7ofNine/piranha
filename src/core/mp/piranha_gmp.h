@@ -468,6 +468,22 @@ namespace std
 		m_real op x; \
 		return *this; \
 	}
+	#define INPLACE_REAL_OPERATOR2(op,type) \
+	/** \brief In-place operator op for type. */ \
+	complex &operator op(const type &x) \
+	{ \
+		m_real op x; \
+		m_imag op x; \
+		return *this; \
+	}
+	#define INPLACE_REAL_ASSIGN(type) \
+	/** \brief Assign type. */ \
+	complex &operator=(const type &x) \
+	{ \
+		m_real = x; \
+		m_imag = 0; \
+		return *this; \
+	}
 	#define INPLACE_COMPLEX_OPERATOR(op,type) \
 	/** \brief In-place operator op for complex type. */ \
 	complex &operator op(const complex< type > &c) \
@@ -635,9 +651,9 @@ namespace std
 			REAL_EQUALITY(value_type)
 			COMPLEX_EQUALITY(int)
 			COMPLEX_EQUALITY(double)
-			INPLACE_REAL_OPERATOR(=,int)
-			INPLACE_REAL_OPERATOR(=,double)
-			INPLACE_REAL_OPERATOR(=,value_type)
+			INPLACE_REAL_ASSIGN(int)
+			INPLACE_REAL_ASSIGN(double)
+			INPLACE_REAL_ASSIGN(value_type)
 			INPLACE_COMPLEX_OPERATOR(=,int)
 			INPLACE_COMPLEX_OPERATOR(=,double)
 			INPLACE_REAL_OPERATOR(+=,int)
@@ -650,12 +666,12 @@ namespace std
 			INPLACE_REAL_OPERATOR(-=,value_type)
 			INPLACE_COMPLEX_OPERATOR(-=,int)
 			INPLACE_COMPLEX_OPERATOR(-=,double)
-			INPLACE_REAL_OPERATOR(*=,int)
-			INPLACE_REAL_OPERATOR(*=,double)
-			INPLACE_REAL_OPERATOR(*=,value_type)
-			INPLACE_REAL_OPERATOR(/=,int)
-			INPLACE_REAL_OPERATOR(/=,double)
-			INPLACE_REAL_OPERATOR(/=,value_type)
+			INPLACE_REAL_OPERATOR2(*=,int)
+			INPLACE_REAL_OPERATOR2(*=,double)
+			INPLACE_REAL_OPERATOR2(*=,value_type)
+			INPLACE_REAL_OPERATOR2(/=,int)
+			INPLACE_REAL_OPERATOR2(/=,double)
+			INPLACE_REAL_OPERATOR2(/=,value_type)
 			INPLACE_COMPLEX_MULT(int)
 			INPLACE_COMPLEX_MULT(double)
 			INPLACE_COMPLEX_DIV(int)
