@@ -78,9 +78,9 @@ namespace piranha
 					tmp.insert(tmp_term, args_tuple);
 					try {
 						n_ = tmp.psi_(0,1,args_tuple);
-					} catch (const base_exception &b) {
-						throw unsuitable(std::string("Unable to determine the limit of the Jacobi-Anger development. "
-							"The reported error was:\n")+b.what());
+					} catch (const value_error &ve) {
+						piranha_throw(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "
+							"The reported error was:\n")+ve.what());
 					}
 				}
 				const size_t n = n_;

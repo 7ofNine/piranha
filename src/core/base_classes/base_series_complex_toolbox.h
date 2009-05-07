@@ -173,7 +173,7 @@ namespace piranha
 			template <class Complex, class ArgsTuple>
 			Derived &divide_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
 				if (c.real() == 0 && c.imag() == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				} else if (c.real() != 1 || c.imag() != 0) {
 					derived_cast->divide_coefficients_by(c, args_tuple);
 				}

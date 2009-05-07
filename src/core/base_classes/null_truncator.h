@@ -46,7 +46,7 @@ namespace piranha
 					// Limit of a power series development of a power series.
 					template <class Series, class ArgsTuple>
 					static size_t power_series_iterations(const Series &, const int &, const int &, const ArgsTuple &) {
-						throw unsuitable("Null truncator cannot provide number of iterations for power series.");
+						piranha_throw(value_error,"null truncator cannot provide number of iterations for power series");
 					}
 					bool is_effective() const {
 						return false;

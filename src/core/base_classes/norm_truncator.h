@@ -92,22 +92,23 @@ namespace piranha
 						const ArgsTuple &args_tuple) {
 						// NOTE: share this check in some kind of base truncator class?
 						if (step_size < 1) {
-							throw unsuitable("Please use a step size of at least 1.");
+							piranha_throw(value_error,
+								"please use a step size of at least 1");
 						}
 						if (m_truncation_power == 0) {
-							throw unsuitable("No value set for norm-based truncation, "
-								"cannot calculate limit of power series expansion.");
+							piranha_throw(value_error,"no value set for norm-based truncation, "
+								"cannot calculate limit of power series expansion");
 						}
 						const double norm = x.base_norm(args_tuple);
 						p_assert(norm >= 0);
 						if (norm >= 1) {
-							throw unsuitable("The norm of the argument of the power series expansion is >= 1: "
-								"the norm truncator is unable to give an estimate of the power series limit.");
+							piranha_throw(value_error,"the norm of the argument of the power series expansion is >= 1: "
+								"the norm truncator is unable to give an estimate of the power series limit");
 						}
 						// Let's prevent log10(0) below.
 						if (norm == 0) {
-							throw unsuitable("Unable to find a limit for the power series expansion of a series whose norm "
-								"is zero.");
+							piranha_throw(value_error,"unable to find a limit for the power series expansion of a series whose norm "
+								"is zero");
 						}
 						int retval = static_cast<int>(std::ceil(static_cast<double>(
 								static_cast<int>(std::ceil(std::log10(m_truncation_level) /
@@ -134,7 +135,7 @@ namespace piranha
 			// Shared portion.
 			static void set(const int &n) {
 				if (n <= 0) {
-					throw(unsuitable("Please insert a positive integer."));
+					piranha_throw(value_error,"please insert a positive integer");
 				} else {
 					m_truncation_level = std::pow(10., -n);
 				}

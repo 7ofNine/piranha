@@ -120,15 +120,15 @@ namespace piranha
 					static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
 						const ArgsTuple &args_tuple) {
 						if (step_size < 1) {
-							throw unsuitable("Please use a step size of at least 1.");
+							piranha_throw(value_error,"please use a step size of at least 1");
 						}
 						if (m_mode == inactive) {
-							throw unsuitable("Cannot calculate the limit of a power series expansion "
-								"if no degree limit has been set.");
+							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
+								"if no degree limit has been set");
 						}
 						if (s.empty()) {
-							throw unsuitable("Cannot calculate the limit of the power series expansion of "
-								"an empty power series.");
+							piranha_throw(value_error,"cannot calculate the limit of the power series expansion of "
+								"an empty power series");
 						}
 						// min_degree will be either total or partial, depending on the mode.
 						int min_degree = 0;
@@ -143,12 +143,12 @@ namespace piranha
 								p_assert(false);
 						}
 						if (min_degree <= 0) {
-							throw unsuitable("Cannot calculate the limit of a power series expansion if the (partial) minimum degree "
-											"of the series is negative or zero.");
+							piranha_throw(value_error,"cannot calculate the limit of a power series expansion if the (partial) minimum degree "
+								"of the series is negative or zero");
 						}
 						if (m_degree_limit < 0) {
-							throw unsuitable("Cannot calculate the limit of a power series expansion "
-								"if the minimum degree limit is negative.");
+							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
+								"if the minimum degree limit is negative");
 						}
 						const double tmp  = (static_cast<double>(m_degree_limit) / min_degree - start) /
 							static_cast<double>(step_size) + 1;

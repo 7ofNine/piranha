@@ -169,7 +169,7 @@ namespace piranha
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					if (!it->m_cf.is_single_cf()) {
-						throw unsuitable("Polynomial coefficient cannot be converted to numerical coefficient.");
+						piranha_throw(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
 					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.begin()->m_cf),
 						typename fourier_term::key_type(it->m_key)),args_tuple);

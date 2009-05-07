@@ -52,7 +52,7 @@ namespace piranha
 				typedef boost::numeric::converter<int, double> double_to_int;
 				const int retval(static_cast<int>(double_to_int::nearbyint(ancestor::m_value)));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
-					throw(unsuitable("Cannot convert double coefficient to integer."));
+					piranha_throw(value_error,"cannot convert double coefficient to integer");
 				}
 				return retval;
 			}

@@ -305,7 +305,7 @@ namespace piranha
 			toolbox root(const int &n, const ArgsTuple &) const {
 				toolbox retval = *this;
 				if (n == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot calculate zero-th root");
 				} else if (n == 1) {
 					return retval;
 				}
@@ -317,7 +317,7 @@ namespace piranha
 					mpz_tdiv_qr(qs[i].get_mpz_t(),rem.get_mpz_t(),
 						mpz_class((*this)[i]).get_mpz_t(),d.get_mpz_t());
 					if (rem != 0) {
-						throw unsuitable("Exponent is not suitable for the calculation of nth root.");
+						piranha_throw(value_error,"exponent is not suitable for the calculation of nth root");
 					}
 					retval[i] = mpz_get_si(qs[i].get_mpz_t());
 				}
@@ -378,7 +378,7 @@ namespace piranha
 			toolbox pow_double(const double &) const {
 				// Real power is ok only if expo_array is unity.
 				if (!is_unity()) {
-					throw unsuitable("Cannot raise non-unity exponent array to real power.");
+					piranha_throw(value_error,"cannot raise non-unity exponent array to real power");
 				}
 				return toolbox(*this);
 			}

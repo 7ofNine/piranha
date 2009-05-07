@@ -199,7 +199,7 @@ namespace piranha
 		if (x == 1) {
 			return *derived_cast;
 		} else if (x == 0) {
-			throw division_by_zero();
+			piranha_throw(zero_division_error,"cannot divide by zero");
 		}
 		divide_coefficients_by(x, args_tuple);
 		return *derived_cast;
@@ -239,7 +239,7 @@ namespace piranha
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_factorial(const int &n, const ArgsTuple &args_tuple)
 	{
 		if (n < 0) {
-			throw unsuitable("Negative argument for factorial.");
+			piranha_throw(value_error,"negative argument for factorial");
 		}
 		Derived retval;
 		retval.base_add(1,args_tuple);
@@ -309,7 +309,7 @@ namespace piranha
 		// Handle the case of an empty series.
 		if (empty()) {
 			if (y < 0) {
-				throw division_by_zero();
+				piranha_throw(zero_division_error,"cannot divide by zero");
 			} else if (y == 0) {
 				// 0**0 == 1.
 				retval.base_add(1, args_tuple);
@@ -358,7 +358,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::real_power(const double &, const ArgsTuple &) const
 	{
-		throw(not_implemented("Real power for this series has not been implemented."));
+		piranha_throw(not_implemented_error,"real power for this series has not been implemented");
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -368,7 +368,7 @@ namespace piranha
 	{
 		(void)n;
 		p_assert(n < 0);
-		throw(not_implemented("Negative integer power for this series has not been implemented."));
+		piranha_throw(not_implemented_error,"negative integer power for this series has not been implemented");
 	}
 
 	/// Exponentiation to natural number.
@@ -442,7 +442,7 @@ namespace piranha
 	{
 		p_assert(retval.empty());
 		if (n == 0) {
-			throw division_by_zero();
+			piranha_throw(zero_division_error,"cannot calculate zero-th root");
 		}
 		if (n == 1) {
 			retval = *derived_const_cast;
@@ -451,7 +451,7 @@ namespace piranha
 		// Handle the case of an empty series.
 		if (empty()) {
 			if (n < 0) {
-				throw division_by_zero();
+				piranha_throw(zero_division_error,"cannot divide by zero");
 			} else {
 				// 0**n == 0, with n > 0.
 				return true;

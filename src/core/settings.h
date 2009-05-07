@@ -81,7 +81,7 @@ namespace piranha
 				m_debug = flag;
 #else
 				(void)flag;
-				throw(unsuitable("Debug support was not compiled in."));
+				piranha_throw(not_implemented_error,"debug support was not compiled in");
 #endif
 			}
 			/// Get Piranha version.
@@ -92,7 +92,8 @@ namespace piranha
 			 */
 			static void set_load_factor(const double &value) {
 				if (value <= 0 || value >= 1) {
-					throw(unsuitable("Please insert a real number in the ]0,1[ interval."));
+					piranha_throw(value_error,"please insert a real number "
+						"in the ]0,1[ interval");
 				}
 				m_hash_max_load_factor = value;
 			}
@@ -101,7 +102,7 @@ namespace piranha
 			static size_t digits();
 			static void digits(const int &n) {
 				if (n < static_cast<int>(m_min_digits) || n > static_cast<int>(m_max_digits)) {
-					throw unsuitable("Invalid number of digits.");
+					piranha_throw(value_error,"invalid number of digits");
 				} else {
 					m_digits = static_cast<size_t>(n);
 				}

@@ -95,10 +95,10 @@ namespace piranha
 				size_t n;
 				try {
 					n = XoverA.psi_(0, 1, args_tuple);
-				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable for exponentiation through binomial expansion."
-												 "\nThe reported error is: ")
-									 + u.what());
+				} catch (const value_error &ve) {
+					piranha_throw(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
+						"\nThe reported error is: ")
+						+ ve.what());
 				}
 				return binomial_expansion<Op>(A, XoverA, y, n, args_tuple);
 			}

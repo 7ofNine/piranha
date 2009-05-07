@@ -184,7 +184,8 @@ namespace piranha
 	void settings::set_max_pretty_print_size(int n)
 	{
 		if (n < 10) {
-			throw unsuitable("Invalid max size for pretty printing.");
+			piranha_throw(value_error,"invalid max size for pretty printing, "
+				"please insert an integer greater than 10");
 		}
 		m_max_pretty_print_size = n;
 	}

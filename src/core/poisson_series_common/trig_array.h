@@ -87,21 +87,21 @@ namespace piranha
 							std::complex<SubSeries> tmp3 = tmp2.ei(*args_tuple);
 							this->m_container[-1] = tmp3;
 							m_status = full;
-						} catch (const unsuitable &u) {
-							m_errmsg = u.what();
+						} catch (const value_error &ve) {
+							m_errmsg = ve.what();
 						}
 					}
 					const std::complex<SubSeries> &operator[](const int &n) {
 						switch (m_status) {
 							case zero:
 								if (n != 0) {
-									throw unsuitable(std::string("The substitution cache was unable to "
+									piranha_throw(value_error,std::string("the substitution cache was unable to "
 										"compute the complex exponential of the series used for substitution. "
 										"The reported error was:\n") + m_errmsg);
 								}
 							case one:
 								if (n < 0) {
-									throw unsuitable(std::string("The substitution cache was unable to "
+									piranha_throw(value_error,std::string("the substitution cache was unable to "
 										"compute the inverse complex exponential of the series used for substitution. "
 										"The reported error was:\n") + m_errmsg);
 								}
@@ -479,7 +479,7 @@ namespace piranha
 			template <class ArgsTuple>
 			toolbox root(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot calculate zero-th root");
 				} else if (n == 1) {
 					return toolbox(*this);
 				}
@@ -604,13 +604,13 @@ namespace piranha
 				if (y < 0) {
 					if (int_zero && !this->m_flavour) {
 						// 0**-y.
-						throw division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (int_zero && this->m_flavour) {
 						// 1**-y == 1. Don't do anything because retval is already initialized properly.
 						;
 					} else {
 						// x**-y -> no go.
-						throw unsuitable("Non-unity Trigonometric array is not suitable for negative exponentiation.");
+						piranha_throw(value_error,"non-unity Trigonometric array is not suitable for negative exponentiation");
 					}
 				} else if (y == 0) {
 					// x**0 == 1. Don't do nothing because retval is already initialized properly.
@@ -624,7 +624,7 @@ namespace piranha
 						;
 					} else {
 						// x**y --> no go.
-						throw unsuitable("Non-unity Trigonometric array is not suitable for positive exponentiation.");
+						piranha_throw(value_error,"non-unity Trigonometric array is not suitable for positive exponentiation");
 					}
 				}
 				return retval;

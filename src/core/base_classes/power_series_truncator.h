@@ -75,7 +75,7 @@ namespace piranha
 						catch (const base_exception &b) {
 							msg += b.what() + "\n";
 						}
-						throw unsuitable(msg);
+						piranha_throw(value_error,msg);
 					}
 					bool is_effective() const {
 						return m_active_truncator != null_t;

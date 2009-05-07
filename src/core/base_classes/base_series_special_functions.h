@@ -63,9 +63,9 @@ namespace piranha
 				size_t limit_;
 				try {
 					limit_ = derived_const_cast->psi_(order, 2, args_tuple);
-				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable as argument of "
-						"Bessel function of the first kind.\nThe reported error is: ") + u.what());
+				} catch (const value_error &ve) {
+					piranha_throw(value_error,std::string("series is unsuitable as argument of "
+						"Bessel function of the first kind.\nThe reported error is: ") + ve.what());
 				}
 				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
@@ -94,17 +94,17 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_dbesselJ(const int &order, const ArgsTuple &args_tuple) const {
 				if (order < 1) {
-					throw unsuitable("Partial derivative of Bessel function of the first kind is implemented only for "
-									 "strictly positive orders.");
+					piranha_throw(value_error,"partial derivative of Bessel function of the first kind is implemented only for "
+									 "strictly positive orders");
 				}
 				// Get the expansion limit from the truncator.
 				size_t limit_;
 				try {
 					limit_ = derived_const_cast->psi_(order - 1, 2, args_tuple);
-				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable as argument of the derivative of "
-												 "Bessel function of the first kind.\nThe reported error is: ")
-									 + u.what());
+				} catch (const value_error &ve) {
+					piranha_throw(value_error,std::string("series is unsuitable as argument of the derivative of "
+						"Bessel function of the first kind.\nThe reported error is: ")
+						+ ve.what());
 				}
 				const size_t limit = limit_;
 				// Now we buid the starting point of the power series expansion of Jn.
@@ -139,7 +139,7 @@ namespace piranha
 				// Special case of empty series.
 				if (derived_const_cast->empty()) {
 					if (order < m) {
-						throw division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (order == m) {
 						retval = retval.base_add(2,args_tuple).base_pow(-order,args_tuple);
 						retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_inv(args_tuple),args_tuple);
@@ -150,10 +150,10 @@ namespace piranha
 				size_t limit_;
 				try {
 					limit_ = derived_const_cast->psi_(order - m, 2, args_tuple);
-				} catch (const unsuitable &u) {
-					throw unsuitable(std::string("Series is unsuitable as argument of Bessel function "
+				} catch (const value_error &ve) {
+					piranha_throw(value_error,std::string("series is unsuitable as argument of Bessel function "
 						"of the first kind divided by its argument raised to unsigned integer power.\n"
-						"The reported error is: ") + u.what());
+						"The reported error is: ") + ve.what());
 				}
 				const size_t limit = limit_;
 				// Now we build the starting point of the power series expansion of Jn/x**m.

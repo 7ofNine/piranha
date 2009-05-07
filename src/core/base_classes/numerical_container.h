@@ -187,7 +187,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived root(const int &n, const ArgsTuple &args_tuple) const {
 				if (n == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot calculate zero-th root");
 				} else if (n == 1) {
 					return Derived(*derived_const_cast);
 				}
@@ -195,7 +195,8 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived besselJ(const int &, const ArgsTuple &) const {
-				throw unsuitable("besselJ is not implemented for this coefficient type.");
+				piranha_throw(not_implemented_error,
+					"besselJ is not implemented for this coefficient type");
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const {

@@ -27,7 +27,7 @@
 
 #define _P_EXCEPTION_QUOTEME(x) #x
 #define P_EXCEPTION_QUOTEME(x) _P_EXCEPTION_QUOTEME(x)
-#define P_EXCEPTION_EXCTOR(s) (__FILE__ "," P_EXCEPTION_QUOTEME(__LINE__) ": " s ".")
+#define P_EXCEPTION_EXCTOR(s) (std::string(__FILE__) + "," + P_EXCEPTION_QUOTEME(__LINE__) + ": " + s + ".")
 #define P_EX_THROW(ex,s) (throw ex(P_EXCEPTION_EXCTOR(s)))
 
 class p_base_exception: public std::exception {
@@ -59,6 +59,10 @@ struct assertion_error: public p_base_exception {
 
 struct zero_division_error: public p_base_exception {
 	zero_division_error(const std::string &s): p_base_exception(s) {}
+};
+
+struct not_implemented_error: public p_base_exception {
+	not_implemented_error(const std::string &s): p_base_exception(s) {}
 };
 
 #define P_EX_ASSERT(expr) \

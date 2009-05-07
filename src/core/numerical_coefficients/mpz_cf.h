@@ -66,7 +66,7 @@ namespace piranha
 			template <class ArgsTuple>
 			mpz_cf &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				return ancestor::divide_by(x, a);
 			}
@@ -91,16 +91,16 @@ namespace piranha
 			mpz_cf root(const int &n_, const ArgsTuple &) const {
 				mpz_cf retval;
 				if (n_ == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot calculate zero-th root");
 				} else if (n_ == 1) {
 					retval = *this;
 					return retval;
 				} else if (n_ < 0) {
-					throw unsuitable("Integer coefficients different from unity cannot be arguments of negative root.");
+					piranha_throw(value_error,"integer coefficients different from unity cannot be arguments of negative root");
 				}
 				const size_t n = static_cast<size_t>(n_);
 				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
-					throw unsuitable("Integer coefficient is not an exact nth root.");
+					piranha_throw(value_error,"integer coefficient is not an exact nth root");
 				}
 				return retval;
 			}
@@ -111,12 +111,12 @@ namespace piranha
 				// If negative, only 1^-something is reasonable.
 				if (n < 0) {
 					if (m_value == 0) {
-						throw division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise integer coefficient different from unity to "
-							"negative integer power.");
+						piranha_throw(value_error,"cannot raise integer coefficient different from unity to "
+							"negative integer power");
 					}
 				} else {
 					mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)n);
@@ -128,11 +128,11 @@ namespace piranha
 				// If negative, only 1^-something is reasonable.
 				if (y < 0) {
 					if (m_value == 0) {
-						throw division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise integer coefficient different from unity to negative real power.");
+						piranha_throw(value_error,"cannot raise integer coefficient different from unity to negative real power");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -144,7 +144,7 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						throw unsuitable("Cannot raise integer coefficient different from unity to positive real power.");
+						piranha_throw(value_error,"cannot raise integer coefficient different from unity to positive real power");
 					}
 				}
 				return retval;
@@ -173,7 +173,7 @@ namespace std
 			template <class ArgsTuple>
 			complex &divide_by(const double &x, const ArgsTuple &a) {
 				if (x == 0) {
-					throw piranha::division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				return ancestor::divide_by(x, a);
 			}
@@ -208,13 +208,13 @@ namespace std
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
 					if (m_value.real() == 0 && m_value.imag() == 0) {
-						throw piranha::division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
-							"negative integer power.");
+						piranha_throw(value_error,"cannot raise complex integer coefficient different from unity to "
+							"negative integer power");
 					}
 				} else {
 					retval.m_value.real() = 1;
@@ -230,13 +230,13 @@ namespace std
 				complex retval;
 				if (y < 0) {
 					if (m_value.real() == 0 && m_value.imag() == 0) {
-						throw piranha::division_by_zero();
+						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (m_value.real() == 1 && m_value.imag() == 0) {
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
-							"negative real power.");
+						piranha_throw(value_error,"cannot raise complex integer coefficient different from unity to "
+							"negative real power");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -251,8 +251,8 @@ namespace std
 						retval.m_value.real() = 1;
 						retval.m_value.imag() = 0;
 					} else {
-						throw piranha::unsuitable("Cannot raise complex integer coefficient different from unity to "
-							"positive real power.");
+						piranha_throw(value_error,"cannot raise complex integer coefficient different from unity to "
+							"positive real power");
 					}
 				}
 				return retval;

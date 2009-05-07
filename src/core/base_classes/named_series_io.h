@@ -239,7 +239,7 @@ namespace piranha
 	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::set_arguments(const args_tuple_type &args_tuple)
 	{
 		if (!derived_const_cast->empty()) {
-			throw unsuitable("Cannot assign arguments to non-empty series.");
+			piranha_throw(value_error,"cannot assign arguments to non-empty series");
 		}
 		m_arguments = args_tuple;
 	}

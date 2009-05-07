@@ -111,7 +111,7 @@ namespace piranha
 			template <class Number>
 			Derived &complex_division_helper(const std::complex<Number> &x) {
 				if (x.real() == 0 && x.imag() == 0) {
-					throw division_by_zero();
+					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
 				derived_cast->m_value /= x;
 				return *derived_cast;

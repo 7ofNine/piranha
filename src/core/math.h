@@ -115,7 +115,8 @@ namespace piranha
 	template <class T>
 	static inline void factorial_check(const T &x) {
 		if (x < 0) {
-			throw unsuitable("Please use a non-negative integer as argument for factorials.");
+			piranha_throw(value_error,
+				"please use a non-negative integer as argument for factorials");
 		}
 	}
 
@@ -171,8 +172,8 @@ namespace piranha
 	inline std::complex<double> besselJ(const int &order, const std::complex<double> &arg)
 	{
 		if (arg.imag() != 0) {
-			throw unsuitable("Only complex values with null imaginary part can be used as arguments "
-				"for besselJ.");
+			piranha_throw(value_error,"only complex values with null imaginary part can be used as arguments "
+				"for besselJ");
 		}
 		return std::complex<double>(boost::math::cyl_bessel_j(order, arg.real()));
 	}
