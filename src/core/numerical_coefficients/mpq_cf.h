@@ -54,18 +54,18 @@ namespace piranha
 			}
 			/// Constructor from string.
 			template <class ArgsTuple>
-			explicit mpq_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {
+			explicit mpq_cf(const std::string &s, const ArgsTuple &a): ancestor(s, a) {
 				// We need to canonicalize when reading from string.
 				m_value.canonicalize();
 			}
 			/// Constructor from double.
 			template <class ArgsTuple>
-			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor::numerical_container(val, a) {
+			explicit mpq_cf(const double &val, const ArgsTuple &a): ancestor(val, a) {
 				m_value.canonicalize();
 			}
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {
+			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {
 				m_value.canonicalize();
 			}
 			// Override norm and evaluation.

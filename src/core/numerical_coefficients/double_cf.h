@@ -28,7 +28,7 @@
 
 #include "../base_classes/numerical_container.h"
 #include "../exceptions.h"
-#include "../math.h" // For std::pow.
+#include "../math.h"
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../type_traits.h" // For lightweight attribute.

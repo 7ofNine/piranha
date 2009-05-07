@@ -35,6 +35,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../utils.h"
 
 namespace piranha
 {
@@ -96,7 +97,6 @@ namespace piranha
 		> > >
 	{
 			friend std::ostream &operator<<(std::ostream &, const mp_rational &);
-			typedef mp_rational self;
 		public:
 			/// Default constructor.
 			/**
@@ -146,7 +146,7 @@ namespace piranha
 			/**
 			 * The conversion will throw overflow if either the numerator is outside
 			 * the range of long int type or the denominator is outside the range of unsigned
-			 * long int type.
+			 * long int type. Conversion will not be exact.
 			 * @throws std::overflow_error if the conversion overflows.
 			 */
 			operator double() const
@@ -159,8 +159,24 @@ namespace piranha
 					piranha_throw(std::overflow_error,"overflow while converting rational to double");
 				}
 				double retval = mpz_get_si(mpq_numref(m_value.get_mpq_t()));
+				piranha_assert(mpz_get_ui(mpq_denref(m_value.get_mpq_t())) != 0);
 				retval /= mpz_get_ui(mpq_denref(m_value.get_mpq_t()));
 				return retval;
+			}
+			/// Convert to integer.
+			/**
+			 * @throws value_error if the denominator is not unitary.
+			 * @throws std::overflow_error if the numerator overflows int type.
+			 */
+			operator int() const
+			{
+				if (m_value.get_den() != 1) {
+					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
+				}
+				if (!m_value.get_num().fits_sint_p()) {
+					piranha_throw(std::overflow_error,"numerator is too large while converting rational to integer");
+				}
+				return m_value.get_num().get_si();
 			}
 			/// Swap content.
 			/**
@@ -253,6 +269,48 @@ namespace piranha
 			INPLACE_OPERATOR(mp_rational,*=,double)
 			INPLACE_DIVISION(mp_rational,int)
 			INPLACE_DIVISION(mp_rational,double)
+			/// Exponentiation.
+			/**
+			 * @throws zero_division_error if power is negative and value is zero.
+			 * @throws value_error if power cannot be calculated exactly.
+			 */
+			mp_rational pow(const double &y) const
+			{
+				if (utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+				}	return pow_double(y);
+			}
+			/// N-th root.
+			/**
+			 * @throws zero_division_error if n_ is zero.
+			 * @throws value_error if root cannot be calculated exactly.
+			 */
+			mp_rational root(const int &n_) const
+			{
+				mp_rational retval;
+				if (n_ == 0) {
+					piranha_throw(zero_division_error,"cannot calculate zero-th root of rational number");
+				} else if (n_ == 1) {
+					retval = *this;
+					return retval;
+				}
+				const size_t n = (n_ > 0) ? n_ : -n_;
+				if (!mpz_root(mpq_numref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),n) ||
+					!mpz_root(mpq_denref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),n)) {
+					piranha_throw(value_error,"rational number is not an exact nth root");
+				}
+				// Better to canonicalise, for peace of mind.
+				retval.m_value.canonicalize();
+				if (n_ < 0) {
+					// Let's guard against division by zero below.
+					if (retval == 0) {
+						piranha_throw(zero_division_error,"cannot calculate negative root of zero");
+					}
+					mpq_inv(retval.m_value.get_mpq_t(), mpq_class(retval.m_value).get_mpq_t());
+				}
+				return retval;
+			}
 		private:
 			// Will throw value_error if string is invalid, zero_division_error if string is valid
 			// but contains zero as denominator.
@@ -295,6 +353,51 @@ namespace piranha
 						piranha_throw(value_error,"invalid string input");
 				}
 			}
+			mp_rational pow_int(const int &n) const {
+				mp_rational retval;
+				if (m_value == 0 && n < 0) {
+					piranha_throw(zero_division_error,"cannot raise zero to negative power");
+				}
+				if (n < 0) {
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long int)(-n));
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long int)(-n));
+					// We need to canonicalize, since negative numbers may have gone to the denominator.
+					retval.m_value.canonicalize();
+				} else {
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long int)n);
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long int)n);
+				}
+				return retval;
+			}
+			mp_rational pow_double(const double &y) const {
+				mp_rational retval;
+				// If negative, only 1^-something is reasonable.
+				if (y < 0) {
+					if (m_value == 0) {
+						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						piranha_throw(value_error,"cannot raise rational number different from unity to "
+							"negative real power");
+					}
+				} else if (y == 0) {
+					// If y == 0, then x**0 == 1 for every x.
+					retval.m_value = 1;
+				} else {
+					// If y > 0, we can accept only 0^y and 1^y.
+					if (m_value == 0) {
+						retval.m_value = 0;
+					} else if (m_value == 1) {
+						retval.m_value = 1;
+					} else {
+						piranha_throw(value_error,"cannot raise rational number different from unity to "
+							"positive real power");
+					}
+				}
+				return retval;
+			}
+		private:
 			mpq_class m_value;
 	};
 
@@ -339,6 +442,24 @@ namespace std
 		q1.swap(q2);
 	}
 
+	/// Overload standard power function for piranha::mp_rational and double argument.
+	/**
+	 * @see piranha::mp_rational::pow.
+	 */
+	inline piranha::mp_rational pow(const piranha::mp_rational &q, const double &y)
+	{
+		return q.pow(y);
+	}
+
+	/// Overload standard power function for piranha::mp_rational and int argument.
+	/**
+	 * @see piranha::mp_rational::pow.
+	 */
+	inline piranha::mp_rational pow(const piranha::mp_rational &q, const int &y)
+	{
+		return q.pow(y);
+	}
+
 	// Useful macros for operators.
 	#define INPLACE_REAL_OPERATOR(op,type) \
 	/** \brief In-place operator op for type. */ \
@@ -369,13 +490,13 @@ namespace std
 	}
 	#define REAL_EQUALITY(type) \
 	/** \brief Equality operator for type. */ \
-	bool operator==(const type &x) \
+	bool operator==(const type &x) const \
 	{ \
 		return (m_real == x && m_imag == 0); \
 	}
 	#define COMPLEX_EQUALITY(type) \
 	/** \brief Equality operator for complex type. */ \
-	bool operator==(const complex< type > &c) \
+	bool operator==(const complex< type > &c) const \
 	{ \
 		return (m_real == c.real() && m_imag == c.imag()); \
 	}
@@ -435,9 +556,21 @@ namespace std
 			{
 				construct_from_string(str);
 			}
+			/// Cast to complex double.
+			/**
+			 * @see piranha::mp_rational::operator double.
+			 */
 			operator complex<double>() const
 			{
 				return complex<double>((double)m_real,(double)m_imag);
+			}
+			/// Cast to complex int.
+			/**
+			 * @see piranha::mp_rational::operator int.
+			 */
+			operator complex<int>() const
+			{
+				return complex<int>((int)m_real,(int)m_imag);
 			}
 			/// Get const reference to the real part.
 			const value_type &real() const
@@ -527,10 +660,41 @@ namespace std
 			INPLACE_COMPLEX_MULT(double)
 			INPLACE_COMPLEX_DIV(int)
 			INPLACE_COMPLEX_DIV(double)
+			/// Exponentiation.
+			/**
+			 * @throws zero_division_error if power is negative and value is zero.
+			 * @throws value_error if power cannot be calculated exactly.
+			 */
+			complex pow(const double &y) const
+			{
+				if (piranha::utils::is_integer(y)) {
+					return pow_int((int)y);
+				} else {
+				}	return pow_double(y);
+			}
+			/// N-th root.
+			/**
+			 * @throws zero_division_error if n is zero.
+			 * @throws value_error if root cannot be calculated exactly.
+			 */
+			complex root(const int &n) const
+			{
+				return pow(1. / double(n));
+			}
 		private:
+			// Square of absolute value.
+			value_type abs2() const
+			{
+				// NOTE: rewrite this in terms of multadd, when implemented.
+				value_type retval(m_real);
+				retval *= m_real;
+				retval += m_imag * m_imag;
+				return retval;
+			}
 			template <class Complex>
 			complex &divide_by_complex(const Complex &other)
 			{
+				// NOTE: rewrite this in terms of multadd, when implemented.
 				if (other.real() == 0 && other.imag() == 0) {
 					piranha_throw(zero_division_error,"cannot divide by zero");
 				}
@@ -552,6 +716,7 @@ namespace std
 			template <class Complex>
 			complex &mult_by_complex(const Complex &other)
 			{
+				// NOTE: rewrite this in terms of multadd, when implemented?
 				const value_type tmp1(m_imag * other.imag()), tmp2(m_real * other.imag());
 				// NOTE: we do imag first because if we modify real now, then it screws up the computation.
 				// m_imag is not used anymore as rhs from this point onwards.
@@ -581,6 +746,67 @@ namespace std
 				m_real = value_type(string(&split_v[0][1],&split_v[0][split_v[0].size()]));
 				m_imag = value_type(string(&split_v[1][0],&split_v[1][split_v[1].size() - 1]));
 			}
+			complex invert() const
+			{
+				complex retval(*this);
+				retval.m_imag.negate();
+				const value_type div = abs2();
+				retval.m_real /= div;
+				retval.m_imag /= div;
+				return retval;
+			}
+			complex pow_int(const int &n) const {
+				complex retval;
+				// For negative powers, we must guard against division by zero.
+				if (n < 0) {
+					if ((*this) == 0) {
+						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+					} else {
+						// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
+						retval = invert();
+						const size_t count = static_cast<size_t>(-n);
+						complex tmp(retval);
+						for (size_t i = 1; i < count; ++i) {
+							retval *= tmp;
+						}
+					}
+				} else {
+					retval = 1;
+					const size_t count = static_cast<size_t>(n);
+					for (size_t i = 0; i < count; ++i) {
+						retval *= (*this);
+					}
+				}
+				return retval;
+			}
+			complex pow_double(const double &y) const {
+				complex retval;
+				if (y < 0) {
+					if ((*this) == 0) {
+						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+					} else if ((*this) == 1) {
+						retval = 1;
+					} else {
+						piranha_throw(value_error,"cannot raise complex rational "
+							"different from unity to negative real power");
+					}
+				} else if (y == 0) {
+					// If y == 0, then x**0 == 1 for every x.
+					retval = 1;
+				} else {
+					// If y > 0, we can accept only 0^y and 1^y.
+					if ((*this) == 0) {
+						retval = 0;
+					} else if ((*this) == 1) {
+						retval = 1;
+					} else {
+						piranha_throw(value_error,"cannot raise complex rational "
+							"different from unity to positive real power");
+					}
+				}
+				return retval;
+			}
+		private:
 			value_type	m_real;
 			value_type	m_imag;
 	};
@@ -599,6 +825,24 @@ namespace std
 	inline void swap(complex<piranha::mp_rational> &qc1, complex<piranha::mp_rational> &qc2)
 	{
 		qc1.swap(qc2);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_rational> and double argument.
+	/**
+	 * @see std::complex<piranha::mp_rational>::pow.
+	 */
+	inline complex<piranha::mp_rational> pow(const complex<piranha::mp_rational> &qc, const double &y)
+	{
+		return qc.pow(y);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_rational> and int argument.
+	/**
+	 * @see std::complex<piranha::mp_rational>::pow.
+	 */
+	inline complex<piranha::mp_rational> pow(const complex<piranha::mp_rational> &qc, const int &y)
+	{
+		return qc.pow(y);
 	}
 
 	/// Overload out stream operator<< for std::complex<piranha::mp_rational>.

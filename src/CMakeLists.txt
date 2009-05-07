@@ -8,6 +8,7 @@ SET(SRC_LIST ${SRC_LIST}
 	memory.cpp
 	settings.cpp
 	psym.cpp
+	utils.cpp
 )
 
 IF(BUILD_MULTITHREADING)
