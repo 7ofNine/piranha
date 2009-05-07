@@ -48,6 +48,7 @@ namespace piranha
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf)
 			int get_int() const {
+				// TODO: guard against overflow or use utils::is_int()?
 				typedef boost::numeric::converter<int, double> double_to_int;
 				const int retval(static_cast<int>(double_to_int::nearbyint(ancestor::m_value)));
 				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {

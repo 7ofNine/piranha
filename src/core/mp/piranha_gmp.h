@@ -144,24 +144,13 @@ namespace piranha
 			explicit mp_rational(const double &x):m_value(x) {}
 			/// Cast to double.
 			/**
-			 * The conversion will throw overflow if either the numerator is outside
-			 * the range of long int type or the denominator is outside the range of unsigned
-			 * long int type. Conversion will not be exact.
-			 * @throws std::overflow_error if the conversion overflows.
+			 * Uses the get_d() GMP routine internally.
 			 */
 			operator double() const
 			{
 				// NOTE: the natural way to do it would seem to be this, but reading the GMP docs
 				// it seems like this could fail in horrible ways in case of overflows. Need to check.
-				// return m_value.get_d();
-				if (!mpz_fits_slong_p(mpq_numref(m_value.get_mpq_t())) ||
-					!mpz_fits_ulong_p(mpq_denref(m_value.get_mpq_t()))) {
-					piranha_throw(std::overflow_error,"overflow while converting rational to double");
-				}
-				double retval = mpz_get_si(mpq_numref(m_value.get_mpq_t()));
-				piranha_assert(mpz_get_ui(mpq_denref(m_value.get_mpq_t())) != 0);
-				retval /= mpz_get_ui(mpq_denref(m_value.get_mpq_t()));
-				return retval;
+				return m_value.get_d();
 			}
 			/// Convert to integer.
 			/**
