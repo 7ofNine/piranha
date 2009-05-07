@@ -272,7 +272,7 @@ namespace piranha
 					}
 				}
 				if (!found_linear && !is_unity) {
-					throw unsuitable("Monomial is not linear.");
+					piranha_throw(value_error,"monomial is not linear");
 				}
 				return candidate;
 			}
