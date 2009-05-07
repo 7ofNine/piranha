@@ -116,7 +116,7 @@ namespace piranha
 	// Useful macro for ctors in coefficient series.
 	// TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
 #define CF_SERIES_CTORS(series_name) \
-	series_name() {} \
+	explicit series_name() {} \
 	template <class ArgsTuple> \
 	explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
 	{ \

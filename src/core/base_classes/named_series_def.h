@@ -144,7 +144,7 @@ namespace piranha
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
 public: \
-	series_name() {} \
+	explicit series_name() {} \
 	explicit series_name(const piranha::psym &p) { \
 		this->template construct_from_psym<N>(p); \
 	} \

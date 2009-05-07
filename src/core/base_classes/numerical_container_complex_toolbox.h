@@ -48,10 +48,6 @@ namespace piranha
 				//derived_cast->m_value.real() = r.value();
 				derived_cast->m_value = typename Derived::numerical_type(r.value());
 			}
-			explicit numerical_container_complex_toolbox(const value_type &r, const value_type &i) {
-				derived_cast->m_value.real() = r.value();
-				derived_cast->m_value.imag() = i.value();
-			}
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &) const {
 				out_stream << '(' << derived_const_cast->m_value.real();
@@ -117,16 +113,7 @@ namespace piranha
 				if (x.real() == 0 && x.imag() == 0) {
 					throw division_by_zero();
 				}
-				// Do something only if we are not dividing by one.
-				if (x.real() != 1 || x.imag() != 0) {
-					Derived retval;
-					const typename Derived::value_type::numerical_type abs2(x.real() * x.real() + x.imag() * x.imag());
-					retval.m_value = typename Derived::numerical_type(derived_const_cast->m_value.real() * x.real() +
-						derived_const_cast->m_value.imag() * x.imag(),
-						derived_const_cast->m_value.imag() * x.real() - derived_const_cast->m_value.real() * x.imag());
-					retval.m_value /= abs2;
-					derived_cast->m_value = retval.m_value;
-				}
+				derived_cast->m_value /= x;
 				return *derived_cast;
 			}
 		private:
