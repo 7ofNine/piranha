@@ -32,6 +32,7 @@
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../type_traits.h" // For lightweight attribute.
+#include "../utils.h"
 
 namespace piranha
 {
@@ -48,13 +49,10 @@ namespace piranha
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf)
 			int get_int() const {
-				// TODO: guard against overflow or use utils::is_int()?
-				typedef boost::numeric::converter<int, double> double_to_int;
-				const int retval(static_cast<int>(double_to_int::nearbyint(ancestor::m_value)));
-				if (std::abs(ancestor::m_value - retval) > settings::numerical_zero()) {
+				if (!utils::is_integer(m_value)) {
 					piranha_throw(value_error,"cannot convert double coefficient to integer");
 				}
-				return retval;
+				return (int)m_value;
 			}
 			/// Bessel function of the first kind.
 			/**
