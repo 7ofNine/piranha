@@ -25,7 +25,6 @@
 
 #include "../exceptions.h"
 #include "../math.h"
-#include "../p_assert.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)

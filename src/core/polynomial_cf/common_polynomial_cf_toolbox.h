@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "../base_classes/toolbox.h"
-#include "../p_assert.h"
+#include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -63,8 +63,8 @@ namespace piranha
 								break;
 							}
 						}
-						p_assert(i != args_tuple.template get<TargetPos>().size());
-						p_assert(i < res.second.size());
+						piranha_assert(i != args_tuple.template get<TargetPos>().size());
+						piranha_assert(i < res.second.size());
 						res.second[i] = it->m_cf.get_int();
 					} else {
 						res.first.push_back(it->m_cf);

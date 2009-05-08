@@ -33,7 +33,6 @@
 #include "config.h"
 #include "exceptions.h"
 #include "ntuple.h"
-#include "p_assert.h"
 #include "settings.h"
 #include "utils.h"
 
@@ -123,7 +122,7 @@ namespace piranha
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {
 					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
-					p_assert(res.second);
+					piranha_assert(res.second);
 					m_it = res.first;
 				} else {
 					m_it = it;
@@ -175,7 +174,7 @@ namespace piranha
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {
 					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
-					p_assert(res.second);
+					piranha_assert(res.second);
 					m_it = res.first;
 				} else {
 					it->m_time_eval = p.m_time_eval;

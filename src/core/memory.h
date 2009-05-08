@@ -23,8 +23,6 @@
 
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
 #include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
-#include <cstdlib> // For malloc.
-#include <cstring> // For memcpy.
 #include <exception> // For standard bad_alloc exception.
 #include <memory>
 
@@ -32,85 +30,10 @@
 #include "base_classes/base_counting_allocator.h"
 #include "config.h" // For unlikely(), aligned malloc, visibility, etc.
 #include "exceptions.h"
-#include "math.h" // For lg to detect that memory alignment is a power of 2.
-#include "portable_memalign.h"
 #include "settings.h"
 
 namespace piranha
 {
-	/// Low level memory allocation function.
-	/**
-	 * Thin wrapper around malloc(), will throw an instance of std::bad_alloc if allocation fails.
-	 */
-	inline void *piranha_malloc(const size_t &size)
-	{
-		void *retval = malloc(size);
-		if (unlikely(retval == NULL)) {
-			throw std::bad_alloc();
-		}
-		return retval;
-	}
-
-	template <int Alignment>
-	inline void memory_alignment_checks() {
-		p_static_check(Alignment > 0, "Memory alignment must be strictly positive.");
-		// Test that Alignment is a multiple of the size of pointers.
-		p_static_check(Alignment % sizeof(void *) == 0, "Memory alignment must be a multiple of sizeof(void *).");
-		// Test that Alignment is at least as big as the size of pointers.
-		p_static_check(Alignment >= sizeof(void *), "Memory alignment must be equal to or greater than sizeof(void *).");
-		// Test that Alignment is a power of 2.
-		p_static_check(lg<Alignment>::value > 0, "Memory alignment must be a multiple of 2.");
-		// Test that Alignment is no greater than 128 (2**7). This is done beacuse portable memalign
-		// uses a uint8 to store the alignment info.
-		p_static_check(Alignment <= 128, "Memory alignment value is too big (>128)");
-	}
-
-	/// Low level memory allocation function supporting alignment specification.
-	/**
-	 * Thin wrapper around a platform-specific memory aligning function, will throw an
-	 * instance of std::bad_alloc if allocation fails.
-	 */
-	template <int Alignment>
-	inline void *piranha_malloc(const size_t &size)
-	{
-		memory_alignment_checks<Alignment>();
-		void *ptr;
-#if defined(_MSC_VER)
-		ptr = _aligned_malloc(size,Alignment);
-		if (unlikely(ptr == NULL)) {
-#elif defined (_GNUC_) && ( !defined (_PIRANHA_MINGW) )
-		if (unlikely(posix_memalign(&ptr,Alignment,size) != 0)) {
-#else
-		ptr = portable_memalign<Alignment>(size);
-		if (unlikely(ptr == NULL)) {
-#endif
-			throw std::bad_alloc();
-		}
-		return ptr;
-	}
-
-	/// Low level memory deallocation function.
-	/**
-	 * Thin wrapper around free().
-	 */
-	inline void piranha_free(void *ptr)
-	{
-		free(ptr);
-	}
-
-	// To be used in conjunction with the aligning piranha_malloc.
-	template <int Alignment>
-	inline void piranha_free(void *ptr) {
-		memory_alignment_checks<Alignment>();
-#if defined(_MSC_VER)
-		_aligned_free(ptr);
-#elif defined (_GNUC_) && ( !defined (_PIRANHA_MINGW) )
-		free(ptr);
-#else
-		portable_aligned_free(ptr);
-#endif
-	}
-
 	/// An allocator that decorates another allocator by adding a counting mechanism for the number of allocated bytes.
 	template<class T, class Allocator>
 	class counting_allocator: public base_counting_allocator
@@ -145,7 +68,7 @@ namespace piranha
 					l = settings::memory_limit();
 				// Cast to double so that we resolve the case in which cur+add overflows size_t.
 				if (static_cast<double>(cur) + add > l) {
-					throw out_of_memory();
+					piranha_throw(memory_error,"memory limit reached");
 				}
 				pointer retval = m_alloc.allocate(n,hint);
 				m_counter += add;

@@ -28,6 +28,7 @@
 
 #include "../base_classes/toolbox.h"
 #include "../config.h"
+#include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -49,7 +50,7 @@ namespace piranha
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 
 				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
-				p_assert(retval.empty());
+				piranha_assert(retval.empty());
 				retval.base_add(1, args_tuple);
 				if (v.empty()) {
 					return;

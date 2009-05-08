@@ -195,11 +195,11 @@ namespace piranha
 			try {
 				term_type term(temp, m_arguments);
 				if (!term.m_cf.is_insertable(m_arguments) || !term.m_key.is_insertable(m_arguments)) {
-					throw bad_input("Term not insertable in series.");
+					piranha_throw(value_error,"term not insertable in series");
 				}
 				derived_cast->insert(term, derived_const_cast->m_arguments);
-			} catch (bad_input &b) {
-				std::cout << b.what() << std::endl;
+			} catch (value_error &ve) {
+				std::cout << ve.what() << std::endl;
 			}
 		}
 	}
@@ -223,7 +223,7 @@ namespace piranha
 	template <int N>
 	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::construct_from_psym(const psym &p)
 	{
-		p_assert(derived_const_cast->empty());
+		piranha_assert(derived_const_cast->empty());
 		append_arg<N>(p);
 		derived_cast->base_construct_from_psym(p, N, m_arguments);
 	}

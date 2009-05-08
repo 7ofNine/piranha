@@ -35,7 +35,6 @@
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
 #include "../memory.h"
-#include "../p_assert.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -104,7 +103,7 @@ namespace piranha
 				m_container.p = allocator_type().allocate(0);
 				// Construct only if the positions match.
 				if (n == Pos) {
-					p_assert(args_tuple.template get<Pos>().size() == 1 &&
+					piranha_assert(args_tuple.template get<Pos>().size() == 1 &&
 							 args_tuple.template get<Pos>()[0] == p);
 					resize(1);
 					m_container.v[0] = 1;
@@ -162,19 +161,19 @@ namespace piranha
 			/// Pad right.
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &args_tuple) {
-				p_assert(args_tuple.template get<Pos>().size() >= m_size);
+				piranha_assert(args_tuple.template get<Pos>().size() >= m_size);
 				resize(args_tuple.template get<Pos>().size());
 			}
 			template <class Layout, class ArgsTuple>
 			void apply_layout(const Layout &l, const ArgsTuple &) {
 				const size_type l_size = boost::numeric_cast<size_type>(l.template get<Pos>().size());
 				// The layout must have at least all arguments in this.
-				p_assert(l_size >= m_size);
+				piranha_assert(l_size >= m_size);
 				container_type new_container;
 				new_container.p = pack_init(l_size);
 				for (size_type i = 0; i < l_size; ++i) {
 					if (l.template get<Pos>()[i].first) {
-						p_assert(l.template get<Pos>()[i].second < m_size);
+						piranha_assert(l.template get<Pos>()[i].second < m_size);
 						new_container.v[i] = m_container.v[l.template get<Pos>()[i].second];
 					}
 				}
@@ -184,7 +183,7 @@ namespace piranha
 			}
 			template <class TrimFlags>
 			void trim_test(TrimFlags &tf) const {
-				p_assert(tf.template get<position>().size() == m_size);
+				piranha_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					// If the integer is different from zero, turn on the flag..
 					if (m_container.v[i]) {
@@ -199,7 +198,7 @@ namespace piranha
 				std::vector<int> tmp;
 				// Make space, so we can avoid extra allocations in the cycle.
 				tmp.reserve(m_size);
-				p_assert(tf.template get<position>().size() == m_size);
+				piranha_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (tf.template get<position>()[i]) {
 						tmp.push_back(m_container.v[i]);
@@ -220,14 +219,14 @@ namespace piranha
 			}
 			/// Upload integers to vector of integers.
 			void upload_ints_to(std::vector<int> &v) const {
-				p_assert(v.size() >= m_size);
+				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					v[i] = m_container.v[i];
 				}
 			}
 			/// Upload to v.first/second those integers which are less than/greater than the corresponding elements of v.
 			void test_min_max_ints(std::vector<std::pair<int, int> > &v) const {
-				p_assert(v.size() >= m_size);
+				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (m_container.v[i] < v[i].first) {
 						v[i].first = m_container.v[i];
@@ -242,7 +241,7 @@ namespace piranha
 				// The +1 is because the coding vector contains one extra element at the end.
 				// The assert is >= instead of == beacuse we may code an array smaller than the
 				// coding vector when multiplying series with different numbers of arguments.
-				p_assert(v.size() >= static_cast<size_t>(m_size) + 1);
+				piranha_assert(v.size() >= static_cast<size_t>(m_size) + 1);
 				max_fast_int retval = 0;
 				for (size_type i = 0; i < m_size; ++i) {
 					retval += (v[i] * m_container.v[i]);
@@ -255,7 +254,7 @@ namespace piranha
 						const MinMaxVec &mmv, const ArgsTuple &args_tuple) {
 				resize(args_tuple.template get<position>().size());
 				// The -1 is because the coding vector contains one extra element at the end.
-				p_assert(cv.size() == static_cast<size_t>(m_size) + 1);
+				piranha_assert(cv.size() == static_cast<size_t>(m_size) + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
 					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
@@ -263,7 +262,7 @@ namespace piranha
 			}
 			void assign_int_vector(const std::vector<int> &v) {
 				const size_t size = v.size();
-				p_assert(boost::integer_traits<size_type>::const_max > size);
+				piranha_assert(boost::integer_traits<size_type>::const_max > size);
 				// TODO: check where this function is used to see if this resize can be avoided.
 				resize(size);
 				// TODO: check for assignments out of numerical boundaries.
@@ -274,7 +273,7 @@ namespace piranha
 			// Vector-like interface.
 			/// Array-like operator[], const version.
 			const value_type &operator[](const size_t &n) const {
-				p_assert(n < m_size);
+				piranha_assert(n < m_size);
 				return m_container.v[n];
 			}
 			/// Return container size.
@@ -282,7 +281,7 @@ namespace piranha
 				return m_size;
 			}
 			bool revlex_comparison(const Derived &a2) const {
-				p_assert(m_size == a2.m_size);
+				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = m_size; i > 0; --i) {
 					if (ptr1[i - 1] < ptr2[i - 1]) {
@@ -294,7 +293,7 @@ namespace piranha
 				return false;
 			}
 			bool lex_comparison(const Derived &a2) const {
-				p_assert(m_size == a2.m_size);
+				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = 0; i < m_size; ++i) {
 					if (ptr1[i] < ptr2[i]) {
@@ -308,7 +307,7 @@ namespace piranha
 		protected:
 			/// Array-like operator[], mutable version.
 			value_type &operator[](const size_t &n) {
-				p_assert(n < m_size);
+				piranha_assert(n < m_size);
 				return m_container.v[n];
 			}
 			/// Print to stream the elements separated by the default separator character.

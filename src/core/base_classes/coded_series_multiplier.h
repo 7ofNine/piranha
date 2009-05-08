@@ -29,8 +29,8 @@
 #include <utility> // For std::pair.
 #include <vector>
 
+#include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../p_assert.h"
 #include "../settings.h" // For debug messages.
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -80,7 +80,7 @@ namespace piranha
 				size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
-				p_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
+				piranha_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
 				for (size_t i = 0; i < derived_const_cast->m_terms1[i1]->m_key.size(); ++i) {
 					m_min_max1[i].first = m_min_max1[i].second =
 						derived_const_cast->m_terms1[i1]->m_key[i];
@@ -121,7 +121,7 @@ namespace piranha
 				// We want to fill an extra slot of the coding vector (wrt to the nominal size,
 				// corresponding to the arguments number for the key). This is handy for decodification.
 				m_coding_vector[m_size] = ck.get_si();
-				p_assert(ck > 0);
+				piranha_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
 				// respect the fast integer boundaries.
 				if (ck < traits::const_max && hmin > traits::const_min && hmin < traits::const_max &&
@@ -130,7 +130,7 @@ namespace piranha
 					m_h_min = hmin.get_si();
 					m_h_max = hmax.get_si();
 					m_h_tot = m_h_max - m_h_min + 1;
-					p_assert(m_h_tot >= 1);
+					piranha_assert(m_h_tot >= 1);
 					// Downcast minimum and maximum result values to fast integers.
 					for (size_t i = 0; i < m_size; ++i) {
 						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
@@ -167,7 +167,7 @@ namespace piranha
 				static const double limit = 1E-4;
 				// We don't want this to be called if we haven't established the suitability
 				// of the coded representation first.
-				p_assert(m_cr_is_viable);
+				piranha_assert(m_cr_is_viable);
 				const double max_density = std::max<double>(m_density1,m_density2);
 				__PDEBUG(std::cout << "Density 1: " << m_density1 << '\n');
 				__PDEBUG(std::cout << "Density 2: " << m_density2 << '\n');

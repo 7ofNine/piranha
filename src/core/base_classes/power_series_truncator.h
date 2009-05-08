@@ -24,7 +24,6 @@
 #include <string>
 
 #include "../exceptions.h"
-#include "../p_assert.h"
 #include "degree_truncator.h"
 #include "norm_truncator.h"
 
@@ -66,14 +65,14 @@ namespace piranha
 						try {
 							return degree_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
-						catch (const base_exception &b) {
-							msg += b.what() + "\n";
+						catch (const value_error &ve) {
+							msg += std::string(ve.what()) + "\n";
 						}
 						try {
 							return norm_ancestor::power_series_iterations(x,start,step_size,args_tuple);
 						}
-						catch (const base_exception &b) {
-							msg += b.what() + "\n";
+						catch (const value_error &ve) {
+							msg += std::string(ve.what()) + "\n";
 						}
 						piranha_throw(value_error,msg);
 					}
@@ -88,9 +87,9 @@ namespace piranha
 							case norm_t:
 								return norm_ancestor::accept(x);
 							case null_t:
-								p_assert(false);
+								piranha_assert(false);
 						}
-						p_assert(false);
+						piranha_assert(false);
 						return true;
 					}
 					template <class T, class U>
@@ -101,9 +100,9 @@ namespace piranha
 							case norm_t:
 								return norm_ancestor::skip(x1,x2);
 							case null_t:
-								p_assert(false);
+								piranha_assert(false);
 						}
-						p_assert(false);
+						piranha_assert(false);
 						return false;
 					}
 				private:

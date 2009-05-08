@@ -29,7 +29,6 @@
 #include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
-#include "../p_assert.h"
 #include "../settings.h"
 #include "../utils.h"
 
@@ -66,7 +65,7 @@ namespace piranha
 			/// Nth root.
 			template <class ArgsTuple>
 			Derived nth_root(const int &n, const ArgsTuple &args_tuple) const {
-				p_assert(n != 0 && n != 1);
+				piranha_assert(n != 0 && n != 1);
 				return generic_binomial_power<root_op>(
 					get_sorted_pointer_vector<Derived>(args_tuple), n, args_tuple);
 			}
@@ -77,7 +76,7 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of single term, empty series and natural power have already
 				// been taken care of in base_series::pow_.
-				p_assert(v.size() > 1);
+				piranha_assert(v.size() > 1);
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
 				Derived XoverA;

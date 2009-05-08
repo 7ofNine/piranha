@@ -88,7 +88,7 @@ namespace piranha
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
 				if (vs.size() != 2) {
-					throw bad_input(std::string("Unable to build term from input '") + str + "'.");
+					piranha_throw(value_error,std::string("unable to build term from input '") + str + "'");
 				} else {
 					boost::trim(vs[0]);
 					boost::trim(vs[1]);

@@ -31,7 +31,6 @@
 #include <iostream>
 
 #include "../settings.h"
-#include "../p_assert.h"
 #include "toolbox.h"
 
 namespace piranha

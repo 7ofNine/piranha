@@ -24,8 +24,8 @@
 
 #include "core/base_classes/norm_truncator.h"
 #include "core/base_classes/toolbox.h"
+#include "core/exceptions.h"
 #include "core/settings.h"
-#include "core/p_assert.h"
 
 namespace piranha
 {
@@ -35,7 +35,7 @@ namespace piranha
 
 	void norm_truncator::print(std::ostream &stream)
 	{
-		p_assert(m_truncation_power >= 0);
+		piranha_assert(m_truncation_power >= 0);
 		if (m_truncation_power > 0) {
 			settings::setup_stream(stream);
 			stream << "Truncation level: " << m_truncation_level;

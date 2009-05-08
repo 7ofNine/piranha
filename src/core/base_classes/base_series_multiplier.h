@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "../config.h"
-#include "../p_assert.h"
 #include "../settings.h"
 #include "../utils.h"
 #include "base_series_multiplier_mp.h"

@@ -65,6 +65,10 @@ struct not_implemented_error: public p_base_exception {
 	not_implemented_error(const std::string &s): p_base_exception(s) {}
 };
 
+struct memory_error: public p_base_exception {
+	memory_error(const std::string &s): p_base_exception(s) {}
+};
+
 #define P_EX_ASSERT(expr) \
 if (!(expr)) { \
 	P_EX_THROW(assertion_error,"assertion error"); \

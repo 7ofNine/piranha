@@ -24,7 +24,7 @@
 #include <algorithm> // For max_element and min_element.
 
 #include "../config.h"
-#include "../p_assert.h"
+#include "../exceptions.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)

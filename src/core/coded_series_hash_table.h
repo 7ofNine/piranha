@@ -25,7 +25,7 @@
 #include <utility> // For std::pair.
 
 #include "config.h"
-#include "p_assert.h"
+#include "exceptions.h"
 #include "settings.h"
 
 namespace piranha
@@ -86,15 +86,15 @@ namespace piranha
 						return *this;
 					}
 					const key_type &operator*() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
-						p_assert(m_bucket_index < bucket_size);
-						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
+						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
+						piranha_assert(m_bucket_index < bucket_size);
+						piranha_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					const key_type *operator->() const {
-						p_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
-						p_assert(m_bucket_index < bucket_size);
-						p_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
+						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
+						piranha_assert(m_bucket_index < bucket_size);
+						piranha_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					bool operator==(const iterator &it2) const {
@@ -147,7 +147,7 @@ namespace piranha
 			}
 			std::pair<bool,iterator> find(const key_type &key) const {
 				const size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
-				p_assert(vector_pos < sizes[m_size_policy][m_size_index]);
+				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {
@@ -201,7 +201,7 @@ namespace piranha
 					case prime:
 						return (hash % sizes[prime][size_index]);
 				}
-				p_assert(false);
+				piranha_assert(false);
 				return 0;
 			}
 			size_t find_upper_size_index(const size_t &size) const {
@@ -236,10 +236,10 @@ namespace piranha
 				if (unlikely(bucket_index == bucket_size)) {
 					return false;
 				}
-				p_assert(bucket_index < bucket_size);
-				p_assert(it.m_vector_index < sizes[m_size_policy][m_size_index] + neb);
+				piranha_assert(bucket_index < bucket_size);
+				piranha_assert(it.m_vector_index < sizes[m_size_policy][m_size_index] + neb);
 				bucket_type &bucket = m_container[it.m_vector_index];
-				p_assert(!bucket.f[bucket_index]);
+				piranha_assert(!bucket.f[bucket_index]);
 				bucket.f[bucket_index] = true;
 				bucket.t[bucket_index] = key;
 				++m_length;
@@ -248,7 +248,7 @@ namespace piranha
 			// Insertion routine that won't check for equal key.
 			bool unchecked_insertion(const key_type &key) {
 				const size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
-				p_assert(vector_pos < sizes[m_size_policy][m_size_index]);
+				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				bucket_type &bucket = m_container[vector_pos];
 				// Now check for an available slot in the bucket.
 				for (size_t i = 0; i < bucket_size; ++i) {

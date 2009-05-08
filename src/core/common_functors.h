@@ -24,7 +24,7 @@
 #include <algorithm>
 
 #include "base_classes/toolbox.h"
-#include "p_assert.h"
+#include "exceptions.h"
 
 namespace piranha
 {
@@ -57,11 +57,11 @@ namespace piranha
 		toolbox():m_args_tuple(0)
 		{}
 		T inv(const T &orig) const {
-			p_assert(m_args_tuple);
+			piranha_assert(m_args_tuple);
 			return orig.base_inv(*m_args_tuple);
 		}
 		void multiply(T &orig, const T &other) const {
-			p_assert(m_args_tuple);
+			piranha_assert(m_args_tuple);
 			orig.base_mult_by(other,*m_args_tuple);
 		}
 		mutable ArgsTuple const *m_args_tuple;

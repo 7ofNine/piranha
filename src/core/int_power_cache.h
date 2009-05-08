@@ -24,7 +24,7 @@
 #include <boost/unordered_map.hpp>
 #include <vector>
 
-#include "p_assert.h"
+#include "exceptions.h"
 #include "settings.h"
 
 namespace piranha
@@ -56,7 +56,7 @@ namespace piranha
 			const T &operator[](const int &n) {
 				iterator it = m_container.find(n);
 				if (it == m_container.end()) {
-					p_assert(n != 0 && n != 1);
+					piranha_assert(n != 0 && n != 1);
 					if (n > 0) {
 						return insert_new<true>(n);
 					} else {
@@ -73,7 +73,7 @@ namespace piranha
 			}
 			template <bool Sign>
 			T &insert_new(int n) {
-				p_assert((Sign && n > 0) || (!Sign && n < 0));
+				piranha_assert((Sign && n > 0) || (!Sign && n < 0));
 				const int orig_n = n;
 				std::vector<int> ebs_sequence;
 				// First we find the first available value in the EBS sequence.
@@ -105,12 +105,12 @@ namespace piranha
 				int index = ebs_sequence.back();
 				while (index != orig_n) {
 					// Check that we are not going to pop too much.
-					p_assert(ebs_sequence.size() >= 2);
+					piranha_assert(ebs_sequence.size() >= 2);
 					int tmp = ebs_sequence.back();
 					__PDEBUG(std::cout << "Int power cache popping " << ebs_sequence.back() << '\n');
 					ebs_sequence.pop_back();
 					index = ebs_sequence.back();
-					p_assert((Sign && index > tmp) || (!Sign && index < tmp));
+					piranha_assert((Sign && index > tmp) || (!Sign && index < tmp));
 					m_container[index] = m_container[tmp];
 					if (std::abs(index - tmp) == 1) {
 						if (Sign) {
@@ -119,7 +119,7 @@ namespace piranha
 							m_arith_functor.multiply(m_container[index], m_container[-1]);
 						}
 					} else {
-						p_assert(index % tmp == 0 && std::abs(index / tmp) == 2)
+						piranha_assert(index % tmp == 0 && std::abs(index / tmp) == 2)
 						m_arith_functor.multiply(m_container[index], m_container[tmp]);
 					}
 				}

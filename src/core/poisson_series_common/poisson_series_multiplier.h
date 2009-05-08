@@ -37,7 +37,6 @@
 #include "../integer_typedefs.h"
 #include "../math.h"
 #include "../memory.h"
-#include "../p_assert.h"
 #include "../settings.h" // For debug.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -250,7 +249,7 @@ namespace piranha
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
-						p_assert(this->m_h_max - this->m_h_min + 1 >= 0);
+						piranha_assert(this->m_h_max - this->m_h_min + 1 >= 0);
 						const size_t n_codes = static_cast<size_t>(this->m_h_max -
 							this->m_h_min + 1);
 						try {
@@ -259,7 +258,7 @@ namespace piranha
 						} catch (const std::bad_alloc &) {
 							__PDEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
 							return false;
-						} catch (const out_of_memory &) {
+						} catch (const memory_error &) {
 							__PDEBUG(std::cout << "Memory limit reached for vector coded.\n");
 							return false;
 						}

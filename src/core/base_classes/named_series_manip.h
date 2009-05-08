@@ -95,7 +95,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const std::string &s, const psym &arg)
 	{
-		p_assert(derived_const_cast->empty());
+		piranha_assert(derived_const_cast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
 	}
 
@@ -104,7 +104,7 @@ namespace piranha
 	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::append_arg(const psym &arg)
 	{
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
-		p_assert(derived_const_cast->empty());
+		piranha_assert(derived_const_cast->empty());
 		// Check that the argument is not already present in this set.
 		for (vector_psym::iterator it = m_arguments.template get<N>().begin();
 			it != m_arguments.template get<N>().end(); ++it) {
@@ -193,7 +193,7 @@ namespace piranha
 			const std::vector<std::pair<bool, size_t> > &l = layout.get_head();
 			const size_t l_size = l.size();
 			// The layout must have at least all arguments in v1.
-			p_assert(l_size >= v1.size());
+			piranha_assert(l_size >= v1.size());
 			// Memorize the old vector.
 			const vector_psym old(v1);
 			// Make space.
@@ -201,7 +201,7 @@ namespace piranha
 			for (size_t i = 0; i < l_size; ++i) {
 				if (l[i].first) {
 					// The argument was present in the old arguments sets. Copy it over.
-					p_assert(l[i].second < old.size());
+					piranha_assert(l[i].second < old.size());
 					if (i < v1.size()) {
 						v1[i] = old[l[i].second];
 					} else {
@@ -209,7 +209,7 @@ namespace piranha
 					}
 				} else {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
-					p_assert(i < v2.size());
+					piranha_assert(i < v2.size());
 					if (i < v1.size()) {
 						v1[i] = v2[i];
 					} else {
@@ -291,7 +291,7 @@ namespace piranha
 	struct trim_arguments {
 		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
 			const size_t size = tf.get_head().size();
-			p_assert(size == args_tuple.get_head().size());
+			piranha_assert(size == args_tuple.get_head().size());
 			vector_psym new_vector;
 			for (size_t i = 0; i < size; ++i) {
 				if (tf.get_head()[i]) {

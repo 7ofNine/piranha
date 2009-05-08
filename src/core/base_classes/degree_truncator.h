@@ -32,7 +32,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../ntuple.h"
-#include "../p_assert.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
 
@@ -109,7 +108,7 @@ namespace piranha
 									m_degree_limit);
 							case inactive:
 								// We should never get there.
-								p_assert(false);
+								piranha_assert(false);
 						}
 						return false;
 					}
@@ -140,7 +139,7 @@ namespace piranha
 								min_degree = s.base_partial_min_degree(psyms2pos(m_psyms,args_tuple));
 								break;
 							case inactive:
-								p_assert(false);
+								piranha_assert(false);
 						}
 						if (min_degree <= 0) {
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion if the (partial) minimum degree "
@@ -170,7 +169,7 @@ namespace piranha
 								// contains some elements.
 								return (m_pos_tuple.template get<expo_args_pos>().size() > 0);
 						}
-						p_assert(false);
+						piranha_assert(false);
 						return false;
 					}
 				protected:

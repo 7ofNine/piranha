@@ -25,7 +25,7 @@
 #include <utility>
 #include <vector>
 
-#include "../p_assert.h"
+#include "../exceptions.h"
 
 namespace piranha
 {
@@ -46,9 +46,9 @@ namespace piranha
 				}
 			}
 			std::complex<double> request_complexp(const size_t &index, const int &power_) {
-				p_assert(power_ != 0);
+				piranha_assert(power_ != 0);
 				// Make sure we are not going outside container's boundaries.
-				p_assert(index < private_width_);
+				piranha_assert(index < private_width_);
 				int power = power_;
 				vector_complex *exp_vec = &private_container_[index].first;
 				// Change sign and pointer to vector of complex exponentials if negative.

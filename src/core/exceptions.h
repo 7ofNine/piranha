@@ -22,43 +22,28 @@
 #define PIRANHA_EXCEPTIONS_H
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
-#include <p_exceptions.h>
+#include "p_exceptions.h"
+
+#include "config.h" // For "unlikely()".
 
 #define piranha_throw(ex,s) P_EX_THROW(ex,s)
-#define piranha_assert(expr) P_EX_ASSERT(expr)
 
-namespace piranha
-{
-	class base_exception
-	{
-		public:
-			base_exception(const std::string &s): m_what(s) {}
-			const std::string &what() const {
-				return m_what;
-			}
-		protected:
-			std::string m_what;
-	};
-
-	struct bad_input: public base_exception {
-		bad_input(const std::string &s): base_exception(s) {}
-	};
-
-	struct out_of_memory: public base_exception {
-		out_of_memory(const char *msg = 0): base_exception("Out of memory.") {
-			if (msg) {
-				m_what += std::string(" ") + msg;
-			}
-		}
-	};
-
-	struct assertion_failure: public base_exception {
-		assertion_failure(const std::string &s): base_exception(s) {
-			std::cout << m_what << '\n';
-		}
-	};
-}
+#if defined _PIRANHA_ENABLE_ASSERTS
+#define piranha_assert(result) \
+	if (unlikely(!(result))) \
+	{ \
+		std::ostringstream tmp;\
+		tmp << "Assertion failed at: " << __FILE__ << ", " << __LINE__ << ".\n"; \
+		tmp << "Assertion failures should not happen and denote a bug.\n"; \
+		tmp << "Please help us correct the problem by sending a bug report to piranha-psm@googlegroups.com\n"; \
+		tmp << "providing as many details as possible. Thanks!\n"; \
+		piranha_throw(assertion_error,"assertion error"); \
+	}
+#else
+#define p_assert(__arg)
+#endif // _PIRANHA_ENABLE_ASSERTS
 
 #endif

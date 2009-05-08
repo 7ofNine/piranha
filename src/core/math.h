@@ -32,7 +32,6 @@
 
 #include "config.h"
 #include "exceptions.h"
-#include "p_assert.h"
 
 namespace piranha
 {
@@ -139,7 +138,7 @@ namespace piranha
 		if (k < 0 || k > n) {
 			return 0.;
 		}
-		p_assert(n >= 0);
+		piranha_assert(n >= 0);
 		return boost::math::binomial_coefficient<double>(
 			static_cast<unsigned>(n),static_cast<unsigned>(k)) * multiplier;
 	}
@@ -227,7 +226,7 @@ namespace piranha
 		if (m > n) {
 			return retval;
 		}
-		p_assert(n >= m && n >= 0 && m >= 0);
+		piranha_assert(n >= m && n >= 0 && m >= 0);
 		std::complex<double> factor(std::polar(1.,-gamma*m));
 		factor *= einpi2(-m);
 		factor *= factorial(n+m);

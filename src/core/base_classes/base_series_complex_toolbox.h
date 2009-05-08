@@ -24,7 +24,6 @@
 #include <complex>
 
 #include "../exceptions.h"
-#include "../p_assert.h"
 #include "base_series.h"
 #include "toolbox.h"
 
@@ -149,7 +148,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void base_construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple) {
 				// Make sure we are being called from an empty series.
-				p_assert(derived_const_cast->empty());
+				piranha_assert(derived_const_cast->empty());
 				derived_cast->insert_range(r.begin(),r.end(),args_tuple);
 			}
 			template <class ArgsTuple>
@@ -157,7 +156,7 @@ namespace piranha
 				typedef typename RealDerived::const_iterator real_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				// Make sure we are being called from an empty series.
-				p_assert(derived_const_cast->empty());
+				piranha_assert(derived_const_cast->empty());
 				// Let's build the real part first.
 				base_construct_from_real(r, args_tuple);
 				// Now let's proceed to the imaginary part.

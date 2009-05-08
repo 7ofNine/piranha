@@ -26,9 +26,9 @@
 #include <complex>
 
 #include "../common_functors.h"
+#include "../exceptions.h"
 #include "../int_power_cache.h"
 #include "../math.h"
-#include "../p_assert.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -84,7 +84,7 @@ namespace piranha
 					retval = Derived();
 					return retval;
 				}
-				p_assert(n >= m && n >= 0 && m >= 0);
+				piranha_assert(n >= m && n >= 0 && m >= 0);
 				Derived P00(retval), old_Pnm, tmp1;
 				int i = 0;
 				// Recursion to get from P_00 to P_mm.
@@ -92,7 +92,7 @@ namespace piranha
 					retval *= -(i*2+1);
 					retval *= self_qc;
 				}
-				p_assert(i == m);
+				piranha_assert(i == m);
 				// Recursion to get from P_mm to P_nm (n>m).
 				for (; i < n; ++i) {
 					old_Pnm *= -m-i;
@@ -158,7 +158,7 @@ namespace piranha
 				if (m > n) {
 					return retval;
 				}
-				p_assert(n >= m && n >= 0 && m >= 0);
+				piranha_assert(n >= m && n >= 0 && m >= 0);
 				// Let's prepare the quantities needed for the calculations.
 				const std::complex<Derived>
 					eit(theta.ei()),

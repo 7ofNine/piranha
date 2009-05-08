@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include "../p_assert.h"
+#include "../exceptions.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "base_series_def.h"
@@ -44,7 +44,7 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		// Make sure we are being called from an empty series.
-		p_assert(empty());
+		piranha_assert(empty());
 		Derived tmp(base_series_from_cf(typename term_type::cf_type(x,args_tuple),args_tuple));
 		base_swap(tmp);
 	}
@@ -122,7 +122,7 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_construct_from_psym(const psym &p, const int &n,
 			const ArgsTuple &args_tuple)
 	{
-		p_assert(derived_cast->empty());
+		piranha_assert(derived_cast->empty());
 		insert(term_type(typename term_type::cf_type(p, n, args_tuple), typename term_type::key_type(p, n, args_tuple)), args_tuple);
 	}
 

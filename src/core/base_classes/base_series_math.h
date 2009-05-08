@@ -27,7 +27,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../math.h"
-#include "../p_assert.h"
 #include "../settings.h"
 #include "../utils.h" // For is_integer().
 #include "base_series_def.h"
@@ -43,7 +42,7 @@ namespace piranha
 	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
-		p_assert((void *)derived_cast != (void *)&s2);
+		piranha_assert((void *)derived_cast != (void *)&s2);
 		const const_iterator2 it_f = s2.end();
 		for (const_iterator2 it = s2.begin(); it != it_f; ++it) {
 			// No need to check, we are merging from another series.
@@ -255,7 +254,7 @@ namespace piranha
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
 		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			"Size mismatch between args tuple and pos tuple in partial derivative.");
-		p_assert(out.empty());
+		piranha_assert(out.empty());
 		term_type tmp_term1, tmp_term2;
 		const const_iterator it_f = in.end();
 		for (const_iterator it = in.begin(); it != it_f; ++it) {
@@ -305,7 +304,7 @@ namespace piranha
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::common_power_handler(const double &y, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		p_assert(retval.empty());
+		piranha_assert(retval.empty());
 		// Handle the case of an empty series.
 		if (empty()) {
 			if (y < 0) {
@@ -367,7 +366,7 @@ namespace piranha
 		const ArgsTuple &) const
 	{
 		(void)n;
-		p_assert(n < 0);
+		piranha_assert(n < 0);
 		piranha_throw(not_implemented_error,"negative integer power for this series has not been implemented");
 	}
 
@@ -440,7 +439,7 @@ namespace piranha
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::common_root_handler(const int &n, Derived &retval,
 			const ArgsTuple &args_tuple) const
 	{
-		p_assert(retval.empty());
+		piranha_assert(retval.empty());
 		if (n == 0) {
 			piranha_throw(zero_division_error,"cannot calculate zero-th root");
 		}
@@ -485,7 +484,7 @@ namespace piranha
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::nth_root(const int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		p_assert(n > 0);
+		piranha_assert(n > 0);
 		return base_pow(1. / static_cast<double>(n), args_tuple);
 	}
 

@@ -211,12 +211,12 @@ namespace piranha
 				const size_type max_w = ancestor::size(), min_w = t2.size();
 				// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 				// already adjusted my merge_args in multiplication routines.
-				p_assert(max_w >= min_w);
+				piranha_assert(max_w >= min_w);
 				// Adjust the width of retvals, if needed.
 				ret1.resize(max_w);
 				ret2.resize(max_w);
-				p_assert(ret1.size() == max_w);
-				p_assert(ret2.size() == max_w);
+				piranha_assert(ret1.size() == max_w);
+				piranha_assert(ret2.size() == max_w);
 				size_type i;
 				for (i = 0; i < min_w; ++i) {
 					ret1[i] = (*this)[i] - t2[i];
@@ -240,7 +240,7 @@ namespace piranha
 			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				// We assert like this because we want to make sure we don't go out of boundaries,
 				// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
 				(void)args_tuple;
 				this->print_elements(out_stream);
 				// Print the separator before flavour only if we actually printed something above.
@@ -255,7 +255,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				p_assert(args_tuple.template get<ancestor::position>().size() <= this->m_size);
+				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->m_size);
 				if (this->m_flavour) {
 					out_stream << "cos(";
 				} else {
@@ -286,7 +286,7 @@ namespace piranha
 			}
 			void print_latex(std::ostream &out_stream, const vector_psym &v) const {
 				const size_t w = v.size();
-				p_assert(w <= this->size())
+				piranha_assert(w <= this->size());
 				switch (this->m_flavour) {
 					case true:
 						out_stream << "c&";
@@ -346,7 +346,7 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &args_tuple) const {
-				p_assert(args_tuple.template get<ancestor::position>().size() >= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() >= this->size());
 				(void)args_tuple;
 				return 1;
 			}
@@ -359,7 +359,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
 				const size_t w = this->size();
-				p_assert(w <= args_tuple.template get<ancestor::position>().size());
+				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
@@ -382,7 +382,7 @@ namespace piranha
 			template <class TrigEvaluator>
 			double t_eval(TrigEvaluator &te) const {
 				const size_t w = te.width();
-				p_assert(w <= this->size());
+				piranha_assert(w <= this->size());
 				std::complex<double> retval(1.);
 				for (size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
@@ -456,13 +456,13 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the trigonometric array.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
-				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) {
 					toolbox copy(*this);
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					// Change the flavour of the resulting key.
 					copy.m_flavour = !this->m_flavour;
-					p_assert(pos < this->size());
+					piranha_assert(pos < this->size());
 					retval = Series::base_series_from_key(copy,args_tuple);
 					if (this->m_flavour) {
 						retval.base_mult_by(-1,args_tuple);
@@ -495,13 +495,13 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very trig_array.
 				// NOTE: for now we can substitute one symbol at a time.
-				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
-					p_assert(pos < this->size());
+					piranha_assert(pos < this->size());
 					toolbox tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
@@ -514,7 +514,7 @@ namespace piranha
 					// Build the orig_sin series.
 					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
-					p_assert(retval.empty());
+					piranha_assert(retval.empty());
 					if (this->get_flavour()) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
@@ -544,20 +544,20 @@ namespace piranha
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
-					p_assert(pos < this->size());
+					piranha_assert(pos < this->size());
 					toolbox tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
 					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
-					p_assert(retval.empty());
+					piranha_assert(retval.empty());
 					if (this->m_flavour) {
 						retval.base_add(orig_cos, args_tuple);
 						retval.base_mult_by(
@@ -586,7 +586,7 @@ namespace piranha
 			double combined_time_eval(const ArgsTuple &args_tuple) const {
 				p_static_check(N >= 0, "");
 				const size_t w = this->size();
-				p_assert(w <= args_tuple.template get<ancestor::position>().size());
+				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
 				for (size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.

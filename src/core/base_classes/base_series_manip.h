@@ -24,6 +24,7 @@
 #include <utility>
 
 #include "../config.h"
+#include "../exceptions.h"
 #include "base_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -79,7 +80,7 @@ namespace piranha
 	{
 		term_converter<Term2, term_type> converted_term(term_, args_tuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
-		p_assert(converted_term.result.m_cf.is_insertable(args_tuple) &&
+		piranha_assert(converted_term.result.m_cf.is_insertable(args_tuple) &&
 			converted_term.result.m_key.is_insertable(args_tuple));
 		term_type *new_term(0);
 		if (unlikely(converted_term.result.m_cf.needs_padding(args_tuple) ||
@@ -152,7 +153,7 @@ namespace piranha
 		if (term.m_cf.is_ignorable(args_tuple) || term.m_key.is_ignorable(args_tuple)) {
 			return;
 		}
-		p_assert(term.m_cf.is_insertable(args_tuple) && term.m_key.is_insertable(args_tuple) &&
+		piranha_assert(term.m_cf.is_insertable(args_tuple) && term.m_key.is_insertable(args_tuple) &&
 			!term.m_cf.needs_padding(args_tuple) && !term.m_key.needs_padding(args_tuple) && term.is_canonical(args_tuple));
 		iterator it(find_term(term));
 		if (it == end()) {
@@ -180,7 +181,7 @@ namespace piranha
 			const ArgsTuple &args_tuple)
 	{
 		std::pair<const_iterator, bool> res(m_container.insert(term));
-		p_assert(res.second);
+		piranha_assert(res.second);
 		if (!Sign) {
 			res.first->m_cf.invert_sign(args_tuple);
 		}
@@ -201,7 +202,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_swap(Derived &ps2)
 	{
-		p_assert(derived_cast != &ps2);
+		piranha_assert(derived_cast != &ps2);
 		m_container.swap(ps2.m_container);
 	}
 

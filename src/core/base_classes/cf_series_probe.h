@@ -21,8 +21,6 @@
 #ifndef PIRANHA_CF_SERIES_PROBE_H
 #define PIRANHA_CF_SERIES_PROBE_H
 
-#include "../p_assert.h"
-
 namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>

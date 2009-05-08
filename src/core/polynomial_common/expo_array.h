@@ -123,8 +123,8 @@ namespace piranha
 				ret.resize(max_w);
 				// Assert widths, *this should always come from a polynomial, and its width should hence be
 				// already adjusted my merge_args in multiplication routines.
-				p_assert(max_w >= min_w);
-				p_assert(ret.size() == max_w);
+				piranha_assert(max_w >= min_w);
+				piranha_assert(ret.size() == max_w);
 				size_type i;
 				for (i = 0;i < min_w;++i) {
 					ret[i] = (*this)[i] + e2[i];
@@ -138,13 +138,13 @@ namespace piranha
 			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				// We assert like this because we want to make sure we don't go out of boundaries,
 				// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
 				(void)args_tuple;
 				this->print_elements(out_stream);
 			}
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				p_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
 				bool printed_something = false;
 				for (size_t i = 0; i < this->m_size; ++i) {
 					const int n = this->m_container.v[i];
@@ -170,7 +170,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
 				const size_t w = this->size();
-				p_assert(w <= args_tuple.template get<ancestor::position>().size());
+				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 1.;
 				for (size_t i = 0;i < w;++i) {
 					retval *= std::pow(args_tuple.template get<ancestor::position>()[i].eval(t),
@@ -279,9 +279,9 @@ namespace piranha
 			/// Calculate partial derivative.
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const {
-				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
-				p_assert(pos < this->size());
+				piranha_assert(pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
@@ -332,17 +332,17 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
 				// NOTE: for now we can substitute one symbol at a time.
-				p_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
 					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
-					p_assert(pos < this->size());
+					piranha_assert(pos < this->size());
 					toolbox tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
 					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, args_tuple));
-					p_assert(retval.empty());
+					piranha_assert(retval.empty());
 					// NOTICE: series multadd here?
 					retval.base_add(orig, args_tuple);
 					retval.base_mult_by(sub_caches.template get<ancestor::position>()

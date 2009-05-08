@@ -33,7 +33,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../ntuple.h"
-#include "../p_assert.h"
 #include "../psym.h"
 #include "../utils.h"
 
@@ -262,7 +261,7 @@ namespace piranha
 						break;
 					}
 				}
-				p_assert(retval.second.first.size() <= 1);
+				piranha_assert(retval.second.first.size() <= 1);
 				return retval;
 			}
 	};

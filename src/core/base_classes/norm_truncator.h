@@ -27,7 +27,6 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../p_assert.h"
 #include "../settings.h"
 #include "toolbox.h"
 
@@ -100,7 +99,7 @@ namespace piranha
 								"cannot calculate limit of power series expansion");
 						}
 						const double norm = x.base_norm(args_tuple);
-						p_assert(norm >= 0);
+						piranha_assert(norm >= 0);
 						if (norm >= 1) {
 							piranha_throw(value_error,"the norm of the argument of the power series expansion is >= 1: "
 								"the norm truncator is unable to give an estimate of the power series limit");
