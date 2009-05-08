@@ -245,7 +245,6 @@ namespace piranha
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							size += (!vc_res[i].is_ignorable(args_tuple));
 						}
-						this->m_retval.rehash(static_cast<size_t>(size / settings::get_load_factor()) + 1);
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
@@ -322,7 +321,6 @@ namespace piranha
 						);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
-						this->m_retval.rehash(static_cast<size_t>(cms.size() / settings::get_load_factor()) + 1);
 						term_type1 tmp_term;
 						const c_iterator c_it_f = cms.end();
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {

@@ -290,8 +290,6 @@ namespace piranha
 							size_cos += (!vc_res_cos[i].is_ignorable(args_tuple));
 							size_sin += (!vc_res_sin[i].is_ignorable(args_tuple));
 						}
-						this->m_retval.rehash(static_cast<size_t>((size_cos + size_sin) /
-							settings::get_load_factor()) + 1);
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
@@ -417,8 +415,6 @@ namespace piranha
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,hm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
-						this->m_retval.rehash(static_cast<size_t>((cms_cos.size() + cms_sin.size()) /
-							settings::get_load_factor()) + 1);
 						term_type1 tmp_term;
 						{
 							const c_iterator c_it_f = cms_cos.end();

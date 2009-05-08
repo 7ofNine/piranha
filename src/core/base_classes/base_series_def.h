@@ -74,7 +74,6 @@ namespace piranha
 			template <class ArgsTuple>
 			void term_erase(const iterator &, const ArgsTuple &);
 			void clear_terms();
-			void rehash(const size_t &);
 			size_t length() const;
 			bool empty() const;
 			bool is_single_cf() const;
