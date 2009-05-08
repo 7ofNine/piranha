@@ -39,21 +39,6 @@
 
 namespace piranha
 {
-	// Construct hash value from mpq_class.
-	static inline size_t hash_from_mpq_class(const mpq_class &q)
-	{
-		size_t retval = 0;
-		const __mpz_struct *num = mpq_numref(q.get_mpq_t()), *den = mpq_denref(q.get_mpq_t());
-		const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
-		for (size_t i = 0; i < num_limb_size; ++i) {
-			boost::hash_combine(retval, num->_mp_d[i]);
-		}
-		for (size_t i = 0; i < den_limb_size; ++i) {
-			boost::hash_combine(retval, den->_mp_d[i]);
-		}
-		return retval;
-	}
-
 	// Macros for operators.
 	#define EQUALITY_OPERATOR(type) \
 	/** \brief Test equality with type. */ \
@@ -182,7 +167,16 @@ namespace piranha
 			 */
 			size_t hash() const
 			{
-				return hash_from_mpq_class(m_value);
+				size_t retval = 0;
+				const __mpz_struct *num = mpq_numref(m_value.get_mpq_t()), *den = mpq_denref(m_value.get_mpq_t());
+				const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
+				for (size_t i = 0; i < num_limb_size; ++i) {
+					boost::hash_combine(retval, num->_mp_d[i]);
+				}
+				for (size_t i = 0; i < den_limb_size; ++i) {
+					boost::hash_combine(retval, den->_mp_d[i]);
+				}
+				return retval;
 			}
 			/// Equality operator.
 			bool operator==(const mp_rational &other) const
