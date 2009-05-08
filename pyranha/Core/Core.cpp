@@ -29,7 +29,6 @@
 #include <string>
 #include <vector>
 
-#include <boost_python_container_conversions.h>
 #include "../../src/core/base_classes/degree_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/base_classes/toolbox.h"
@@ -37,6 +36,7 @@
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
 #include "../args_tuple.h"
+#include "../boost_python_container_conversions.h"
 #include "../cf_key_bindings.h"
 #include "../commons.h"
 #include "../exceptions.h"

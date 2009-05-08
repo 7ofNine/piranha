@@ -25,8 +25,6 @@
 #include <boost/python/exception_translator.hpp>
 #include <exception>
 
-#include "p_exceptions.h"
-
 inline void ie_translator(const index_error &ie)
 {
 	PyErr_SetString(PyExc_IndexError, ie.what());

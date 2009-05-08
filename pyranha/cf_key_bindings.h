@@ -44,8 +44,8 @@ namespace pyranha
 	static inline double py_cfkey_norm(const CfKey &cfkey, const ArgsTuple &a)
 	{
 		if (!cfkey.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the norm "
-				"of this coefficient/key.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the calculation of the norm "
+				"of this coefficient/key");
 		}
 		return cfkey.norm(a);
 	}
@@ -54,8 +54,8 @@ namespace pyranha
 	static inline typename CfKey::eval_type py_cfkey_eval(const CfKey &cfkey, const double &t, const ArgsTuple &a)
 	{
 		if (!cfkey.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation "
-				"of the time evaluation of this coefficient/key.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the calculation "
+				"of the time evaluation of this coefficient/key");
 		}
 		return cfkey.eval(t,a);
 	}
@@ -64,8 +64,8 @@ namespace pyranha
 	static inline Cf py_cf_real(const std::complex<Cf> &cf, const ArgsTuple &a)
 	{
 		if (!cf.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
-				"of the real part from this coefficient.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the extraction "
+				"of the real part from this coefficient");
 		}
 		return cf.real(a);
 	}
@@ -74,8 +74,8 @@ namespace pyranha
 	static inline Cf py_cf_imag(const std::complex<Cf> &cf, const ArgsTuple &a)
 	{
 		if (!cf.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the extraction "
-				"of the imaginary part from this coefficient.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the extraction "
+				"of the imaginary part from this coefficient");
 		}
 		return cf.imag(a);
 	}
@@ -158,8 +158,8 @@ namespace pyranha
 	static inline double py_trigarray_freq(const TrigArray &t, const ArgsTuple &a)
 	{
 		if (!t.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the frequency "
-				"of this trigonometric array.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the calculation of the frequency "
+				"of this trigonometric array");
 		}
 		return t.freq(a);
 	}
@@ -168,8 +168,8 @@ namespace pyranha
 	static inline double py_trigarray_phase(const TrigArray &t, const ArgsTuple &a)
 	{
 		if (!t.is_insertable(a)) {
-			throw piranha::unsuitable("Arguments tuple is not compatible with the calculation of the phase "
-				"of this trigonometric array.");
+			piranha_throw(value_error,"arguments tuple is not compatible with the calculation of the phase "
+				"of this trigonometric array");
 		}
 		return t.phase(a);
 	}

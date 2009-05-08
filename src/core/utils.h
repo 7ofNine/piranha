@@ -30,11 +30,12 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
 #include "settings.h"
 
 namespace piranha
 {
-	class utils
+	class __PIRANHA_VISIBLE utils
 	{
 		public:
 			/// Lexical converter.

@@ -21,33 +21,14 @@
 #ifndef PYRANHA_EXCEPTIONS_H
 #define PYRANHA_EXCEPTIONS_H
 
-#include <boost/python/exception_translator.hpp>
-
 #include "../src/core/exceptions.h"
+#include "boost_python_p_exceptions.h"
 
 namespace pyranha
 {
-	template <class Exception>
-	inline void exception_translator(const Exception &e)
-	{
-		PyErr_SetString(PyExc_UserWarning, e.what().c_str());
-	}
-
-	template <class Exception>
-	inline void register_exception()
-	{
-		boost::python::register_exception_translator<Exception>(exception_translator<Exception>);
-	}
-
 	inline void translate_exceptions()
 	{
-		register_exception<piranha::bad_input>();
-		register_exception<piranha::not_existing>();
-		register_exception<piranha::not_implemented>();
-		register_exception<piranha::unsuitable>();
-		register_exception<piranha::division_by_zero>();
-		register_exception<piranha::out_of_memory>();
-		register_exception<piranha::assertion_failure>();
+		translate_p_exceptions();
 	}
 }
 

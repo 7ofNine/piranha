@@ -27,29 +27,11 @@
 #include <sstream>
 #include <string>
 
-#include "../src/core/exceptions.h"
-
 namespace pyranha
 {
 	template <class T>
 	inline T py_copy(const T &x) {
 		return T(x);
-	}
-
-	template <class Vector>
-	inline typename Vector::value_type py_vector_getitem(const Vector &v, const int &n_)
-	{
-		int n = n_;
-		const size_t size = v.size();
-		if (n_ < 0) {
-			n = n_ + size;
-		}
-		if (n < 0 || static_cast<size_t>(n) >= size) {
-			std::ostringstream stream;
-			stream << "Index " << n << " is out of range.";
-			throw piranha::unsuitable(stream.str());
-		}
-		return v[n];
 	}
 
 	template <class T>

@@ -107,8 +107,10 @@ namespace std
 			}
 			template <class ArgsTuple>
 			complex besselJ(const int &n, const ArgsTuple &) {
+				// COMPILER_BUG: same as above :/
 				complex retval;
-				retval.m_value = piranha::besselJ(n,m_value);
+				std::complex<double> tmp(piranha::besselJ(n,m_value));
+				retval.m_value = tmp;
 				return retval;
 			}
 	};
