@@ -82,6 +82,8 @@ namespace pyranha
 		inst.def(boost::python::self / int());
 		inst.def(boost::python::self / double());
 		inst.def(boost::python::self / boost::python::self);
+		// Exponentiation
+		inst.def("__pow__",&T::pow,"Exponentiation.");
 		return inst;
 	}
 }

@@ -60,6 +60,11 @@ inline void me_translator(const memory_error &me)
 	PyErr_SetString(PyExc_MemoryError, me.what());
 }
 
+inline void zde_translator(const zero_division_error &zde)
+{
+	PyErr_SetString(PyExc_ZeroDivisionError, zde.what());
+}
+
 // Translators for some standard and Boost exceptions.
 
 inline void ba_translator(const std::bad_alloc &ba)
@@ -87,6 +92,7 @@ inline void translate_p_exceptions()
 	boost::python::register_exception_translator<runtime_error>(re_translator);
 	boost::python::register_exception_translator<not_implemented_error>(nie_translator);
 	boost::python::register_exception_translator<memory_error>(me_translator);
+	boost::python::register_exception_translator<zero_division_error>(zde_translator);
 	boost::python::register_exception_translator<std::bad_alloc>(ba_translator);
 	boost::python::register_exception_translator<std::overflow_error>(oe_translator);
 	boost::python::register_exception_translator<boost::numeric::bad_numeric_cast>(bnc_translator);

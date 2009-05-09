@@ -61,8 +61,9 @@ BOOST_PYTHON_MODULE(_Core)
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	// MP classes.
-	boost::python::class_<mp_rational> mpr(expose_mp_class<mp_rational>("rational","Multi-precision rational number."));
-	boost::python::class_<mp_integer> mpi(expose_mp_class<mp_integer>("integer","Multi-precision integer number."));
+	class_<mp_rational> mpr(expose_mp_class<mp_rational>("rational","Multi-precision rational number."));
+	mpr.def(init<const int &, const int &>());
+	class_<mp_integer> mpi(expose_mp_class<mp_integer>("integer","Multi-precision integer number."));
 
 	// Settings.
 	enum_<settings::out_format>("out_format")
