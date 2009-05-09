@@ -25,8 +25,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/iterator.hpp>
 #include <boost/python/operators.hpp>
-#include <boost/python/pure_virtual.hpp>
-#include <boost/python/return_internal_reference.hpp>
 #include <complex>
 #include <string>
 #include <utility> // For std::pair.

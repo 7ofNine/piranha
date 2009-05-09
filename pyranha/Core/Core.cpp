@@ -33,6 +33,7 @@
 #include "../../src/core/base_classes/norm_truncator.h"
 #include "../../src/core/base_classes/toolbox.h"
 #include "../../src/core/config.h"
+#include "../../src/core/mp.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
 #include "../args_tuple.h"
@@ -40,6 +41,7 @@
 #include "../cf_key_bindings.h"
 #include "../commons.h"
 #include "../exceptions.h"
+#include "../mp_classes.h"
 
 using namespace boost::python;
 using namespace piranha;
@@ -57,6 +59,10 @@ BOOST_PYTHON_MODULE(_Core)
 	numerical_cfs_bindings();
 	keys_bindings();
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
+
+	// MP classes.
+	boost::python::class_<mp_rational> mpr(expose_mp_class<mp_rational>("rational","Multi-precision rational number."));
+	boost::python::class_<mp_integer> mpi(expose_mp_class<mp_integer>("integer","Multi-precision integer number."));
 
 	// Settings.
 	enum_<settings::out_format>("out_format")

@@ -119,6 +119,21 @@ namespace piranha
 				if (m_value.get_den() != 1) {
 					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
 				}
+				if (!m_value.get_num().fits_slong_p()) {
+					piranha_throw(std::overflow_error,"numerator is too large while converting rational to long integer");
+				}
+				return m_value.get_num().get_si();
+			}
+			/// Convert to long integer.
+			/**
+			 * @throws value_error if the denominator is not unitary.
+			 * @throws std::overflow_error if the numerator overflows long int type.
+			 */
+			operator long int() const
+			{
+				if (m_value.get_den() != 1) {
+					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
+				}
 				if (!m_value.get_num().fits_sint_p()) {
 					piranha_throw(std::overflow_error,"numerator is too large while converting rational to integer");
 				}
@@ -356,6 +371,17 @@ namespace piranha
 			{
 				if (!m_value.fits_sint_p()) {
 					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to integer");
+				}
+				return m_value.get_si();
+			}
+			/// Convert to long integer.
+			/**
+			 * @throws std::overflow_error if the numerator overflows long int type.
+			 */
+			operator long int() const
+			{
+				if (!m_value.fits_slong_p()) {
+					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to long integer");
 				}
 				return m_value.get_si();
 			}
