@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <boost/functional/hash.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
 
