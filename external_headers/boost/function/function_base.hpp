@@ -42,7 +42,7 @@
 #endif       
 
 // Define BOOST_FUNCTION_STD_NS to the namespace that contains type_info.
-#if defined(BOOST_NO_EXCEPTION_STD_NAMESPACE) && !defined(__SUNPRO_CC)
+#ifdef BOOST_NO_EXCEPTION_STD_NAMESPACE
 // Embedded VC++ does not have type_info in namespace std
 #  define BOOST_FUNCTION_STD_NS
 #else
