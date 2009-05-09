@@ -77,7 +77,7 @@ namespace piranha
 			}
 			/// Set debug flag.
 			static void debug(const bool &flag) {
-#ifdef _PIRANHA_DEBUG
+#ifndef NDEBUG
 				m_debug = flag;
 #else
 				(void)flag;
@@ -158,7 +158,7 @@ namespace piranha
 }
 
 // Debug mode.
-#ifdef _PIRANHA_DEBUG
+#ifndef NDEBUG
 #define __PDEBUG(statement) {if (settings::debug()) {statement;}}
 #else
 #define __PDEBUG(statement)
