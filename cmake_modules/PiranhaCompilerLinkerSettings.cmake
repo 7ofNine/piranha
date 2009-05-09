@@ -45,7 +45,7 @@ IF(${CMAKE_CXX_COMPILER} MATCHES "(c\\+\\+|g\\+\\+?)")
 		#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 	ENDIF(HAVE_CPP0X_SUPPORT)
 	# Extra warnings for the GCC compiler.
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization -Wno-strict-aliasing -Wno-write-strings")
 	ADD_DEFINITIONS(-D_GNU_SOURCE)
 	IF(BUILD_MULTITHREADING)
 		SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_REENTRANT)
