@@ -72,8 +72,6 @@ namespace pyranha
 		inst.add_property("norm", norm_named(&T::norm), "Norm.");
 		inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
-		// NOTICE: the order seems important here, if we place *=int before *=double we
-		// will get just *=double in Python. Go figure...
 		// Equality.
 		inst.def(boost::python::self == double());
 		inst.def(boost::python::self == boost::python::self);
