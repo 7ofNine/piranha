@@ -51,11 +51,11 @@ namespace piranha
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs((double)m_value);
+				return std::abs(m_value.to_double());
 			}
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
-				return (double)m_value;
+				return m_value.to_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
@@ -106,11 +106,11 @@ namespace std
 			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs((complex<double>)m_value);
+				return std::abs(m_value.to_complex_double());
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return (complex<double>)m_value;
+				return m_value.to_complex_double();
 			}
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {

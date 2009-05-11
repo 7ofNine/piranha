@@ -23,6 +23,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/operators.hpp>
 #include <cmath>
 #include <complex>
 #include <exception>
@@ -34,30 +35,66 @@
 
 #include "../exceptions.h"
 #include "../utils.h"
-#include "generic_mp_container.h"
+#include "complex_generic_mp_container.h"
 
 namespace piranha
 {
-	#define ASSIGNMENT_OPERATOR(self, type) \
-	/** \brief Assignment operator for type. */ \
-	self &operator=(const type &x) \
+	// Forward declaration of classes.
+	class mp_rational;
+	class mp_integer;
+
+	#define FORWARDING_CTOR_DECL(class_type,arg_type) \
+	/** \brief Constructor from arg_type. */ \
+	explicit class_type(const arg_type &);
+	#define FORWARDING_CTOR(class_type,arg_type) \
+	inline class_type::class_type(const arg_type &x):m_value(x.get_internal()) {}
+	#define FORWARDING_MATH_OPERATOR_DECL(class_type,arg_type,op) \
+	/** \brief Operator op against arg_type. */ \
+	class_type &operator op(const arg_type &);
+	#define FORWARDING_MATH_OPERATOR(class_type,arg_type,op,...) \
+	inline class_type & class_type::operator op(const arg_type &other) \
 	{ \
-		return this->assign(x); \
+		m_value op other __VA_ARGS__; \
+		return *this; \
+	}
+	#define FORWARDING_DIVISION_OPERATOR_DECL(class_type,arg_type) \
+	/** \brief Operator /= against arg_type. */ \
+	class_type & operator /=(const arg_type &);
+	#define FORWARDING_DIVISION_OPERATOR(class_type,arg_type,...) \
+	inline class_type & class_type::operator /=(const arg_type &other) \
+	{ \
+		if (other == 0) { \
+			piranha_throw(zero_division_error,"cannot divide by zero"); \
+		} \
+		m_value /= other __VA_ARGS__; \
+		return *this; \
+	}
+	#define FORWARDING_COMPARISON_OPERATOR_DECL(class_type,arg_type,op) \
+	/** \brief Operator op against arg_type. */ \
+	bool operator op(const arg_type &) const;
+	#define FORWARDING_COMPARISON_OPERATOR(class_type,arg_type,op,...) \
+	inline bool class_type::operator op(const arg_type &other) const \
+	{ \
+		return (m_value op other __VA_ARGS__ ); \
 	}
 
 	/// Multiprecision rational class.
 	/**
 	 * Wraps a GMP mpq_class.
 	 */
-	class mp_rational: public generic_mp_container<mpq_class,mp_rational>
+	class mp_rational:
+		boost::ordered_field_operators<mp_rational,
+		boost::ordered_field_operators<mp_rational, int,
+		boost::ordered_field_operators<mp_rational, double,
+		boost::ordered_field_operators<mp_rational, mp_integer
+		> > > >
 	{
-			typedef generic_mp_container<mpq_class,mp_rational> ancestor;
 		public:
 			/// Default constructor.
 			/**
 			 * Initialises value to zero.
 			 */
-			explicit mp_rational():ancestor() {}
+			explicit mp_rational():m_value(0) {}
 			/// Constructor from std::string.
 			/**
 			 * Will raise a value_error exception if string is not valid. Valid strings include
@@ -65,7 +102,7 @@ namespace piranha
 			 * @throws value_error if string is invalid.
 			 * @throws zero_division_error if string is valid but denominator is zero.
 			 */
-			explicit mp_rational(const std::string &str):ancestor()
+			explicit mp_rational(const std::string &str):m_value(0)
 			{
 				construct_from_string(str.c_str());
 			}
@@ -73,17 +110,17 @@ namespace piranha
 			/**
 			 * @see mp_rational(const std::string &).
 			 */
-			explicit mp_rational(const char *str):ancestor()
+			explicit mp_rational(const char *str):m_value(0)
 			{
 				construct_from_string(str);
 			}
 			/// Constructor from integer.
-			explicit mp_rational(const int &n):ancestor(n) {}
+			explicit mp_rational(const int &n):m_value(n) {}
 			/// Constructor from integer numerator and denominator.
 			/**
 			 * @throws zero_division_error if denominator is zero.
 			 */
-			explicit mp_rational(const int &n, const int &d):ancestor()
+			explicit mp_rational(const int &n, const int &d):m_value(0)
 			{
 				// Guard against division by zero.
 				if (d == 0) {
@@ -96,14 +133,50 @@ namespace piranha
 				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(tmp.get_mpq_t()));
 			}
 			/// Constructor from double.
-			explicit mp_rational(const double &x):ancestor(x) {}
-			ASSIGNMENT_OPERATOR(mp_rational,int)
-			ASSIGNMENT_OPERATOR(mp_rational,double)
+			explicit mp_rational(const double &x):m_value(x) {}
+			/// Const reference to internal type.
+			const mpq_class &get_internal() const
+			{
+				return m_value;
+			}
+			// Interoperability with self and plain old types.
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_rational,mp_rational)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_rational,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_rational,<)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,int,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,int,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,int,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,int,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_rational,int)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,int,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,int,<)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,int,>)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,double,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,double,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,double,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,double,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_rational,double)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,<)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,>)
+			// Interoperability with mp_integer.
+			FORWARDING_CTOR_DECL(mp_rational,mp_integer)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_rational,mp_integer)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,<)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,>)
 			/// Cast to double.
 			/**
 			 * Uses the get_d() GMP routine internally.
 			 */
-			operator double() const
+			double to_double() const
 			{
 				// NOTE: the natural way to do it would seem to be this, but reading the GMP docs
 				// it seems like this could fail in horrible ways in case of overflows. Need to check.
@@ -114,28 +187,13 @@ namespace piranha
 			 * @throws value_error if the denominator is not unitary.
 			 * @throws std::overflow_error if the numerator overflows int type.
 			 */
-			operator int() const
+			int to_int() const
 			{
 				if (m_value.get_den() != 1) {
 					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
 				}
 				if (!m_value.get_num().fits_slong_p()) {
 					piranha_throw(std::overflow_error,"numerator is too large while converting rational to long integer");
-				}
-				return m_value.get_num().get_si();
-			}
-			/// Convert to long integer.
-			/**
-			 * @throws value_error if the denominator is not unitary.
-			 * @throws std::overflow_error if the numerator overflows long int type.
-			 */
-			operator long int() const
-			{
-				if (m_value.get_den() != 1) {
-					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
-				}
-				if (!m_value.get_num().fits_sint_p()) {
-					piranha_throw(std::overflow_error,"numerator is too large while converting rational to integer");
 				}
 				return m_value.get_num().get_si();
 			}
@@ -312,7 +370,39 @@ namespace piranha
 				}
 				return retval;
 			}
+		private:
+			mpq_class m_value;
 	};
+
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_rational,+=,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_rational,-=,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_rational,*=,.m_value)
+	FORWARDING_DIVISION_OPERATOR(mp_rational,mp_rational,.m_value)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,mp_rational,==,.m_value)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,mp_rational,<,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_rational,int,=)
+	FORWARDING_MATH_OPERATOR(mp_rational,int,+=)
+	FORWARDING_MATH_OPERATOR(mp_rational,int,-=)
+	FORWARDING_MATH_OPERATOR(mp_rational,int,*=)
+	FORWARDING_DIVISION_OPERATOR(mp_rational,int)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,int,==)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,int,<)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,int,>)
+	FORWARDING_MATH_OPERATOR(mp_rational,double,=)
+	FORWARDING_MATH_OPERATOR(mp_rational,double,+=)
+	FORWARDING_MATH_OPERATOR(mp_rational,double,-=)
+	FORWARDING_MATH_OPERATOR(mp_rational,double,*=)
+	FORWARDING_DIVISION_OPERATOR(mp_rational,double)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,double,==)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,double,<)
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,double,>)
+
+	/// Overload of out stream operator<< for piranha::mp_rational.
+	inline std::ostream &operator<<(std::ostream &o, const mp_rational &q)
+	{
+		o << q.get_internal();
+		return o;
+	}
 
 	/// Overload in stream operator>> for piranha::mp_rational.
 	inline std::istream &operator>>(std::istream &i, mp_rational &q)
@@ -334,30 +424,66 @@ namespace piranha
 	/**
 	 * Wraps a GMP mpz_class.
 	 */
-	class mp_integer: public generic_mp_container<mpz_class,mp_integer>
+	class mp_integer:
+		boost::ordered_field_operators<mp_integer,
+		boost::ordered_field_operators<mp_integer, int,
+		boost::ordered_field_operators<mp_integer, double
+		> > >
 	{
-			typedef generic_mp_container<mpz_class,mp_integer> ancestor;
 		public:
 			/// Default constructor.
 			/**
 			 * Initialises value to zero.
 			 */
-			explicit mp_integer():ancestor() {}
+			explicit mp_integer():m_value(0) {}
 			/// Constructor from std::string.
-			explicit mp_integer(const std::string &str):ancestor(str) {}
+			explicit mp_integer(const std::string &str):m_value(str) {}
 			/// Constructor from C string.
-			explicit mp_integer(const char *str):ancestor(str) {}
+			explicit mp_integer(const char *str):m_value(str) {}
 			/// Constructor from integer.
-			explicit mp_integer(const int &n):ancestor(n) {}
+			explicit mp_integer(const int &n):m_value(n) {}
 			/// Constructor from double.
-			explicit mp_integer(const double &x):ancestor(x) {}
-			ASSIGNMENT_OPERATOR(mp_integer,int)
-			ASSIGNMENT_OPERATOR(mp_integer,double)
+			explicit mp_integer(const double &x):m_value(x) {}
+			/// Const reference to internal type.
+			const mpz_class &get_internal() const
+			{
+				return m_value;
+			}
+			// Interoperability with plain numerical types.
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_integer,mp_integer)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,mp_integer,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,mp_integer,<)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,int,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,int,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,int,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,int,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_integer,int)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,int,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,int,<)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,int,>)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,double,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,double,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,double,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,double,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_integer,double)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,==)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,<)
+			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,>)
+			// Interoperability with mp_rational.
+			FORWARDING_CTOR_DECL(mp_integer,mp_rational)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,+=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,-=)
+			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,*=)
+			FORWARDING_DIVISION_OPERATOR_DECL(mp_integer,mp_rational)
 			/// Cast to double.
 			/**
 			 * Uses the get_d() GMP routine internally.
 			 */
-			operator double() const
+			double to_double() const
 			{
 				// NOTE: the natural way to do it would seem to be this, but reading the GMP docs
 				// it seems like this could fail in horrible ways in case of overflows. Need to check.
@@ -367,21 +493,10 @@ namespace piranha
 			/**
 			 * @throws std::overflow_error if the numerator overflows int type.
 			 */
-			operator int() const
+			int to_int() const
 			{
 				if (!m_value.fits_sint_p()) {
 					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to integer");
-				}
-				return m_value.get_si();
-			}
-			/// Convert to long integer.
-			/**
-			 * @throws std::overflow_error if the numerator overflows long int type.
-			 */
-			operator long int() const
-			{
-				if (!m_value.fits_slong_p()) {
-					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to long integer");
 				}
 				return m_value.get_si();
 			}
@@ -514,7 +629,39 @@ namespace piranha
 				}
 				return retval;
 			}
+		private:
+			mpz_class m_value;
 	};
+
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_integer,+=,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_integer,-=,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_integer,*=,.m_value)
+	FORWARDING_DIVISION_OPERATOR(mp_integer,mp_integer,.m_value)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,mp_integer,==,.m_value)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,mp_integer,<,.m_value)
+	FORWARDING_MATH_OPERATOR(mp_integer,int,=)
+	FORWARDING_MATH_OPERATOR(mp_integer,int,+=)
+	FORWARDING_MATH_OPERATOR(mp_integer,int,-=)
+	FORWARDING_MATH_OPERATOR(mp_integer,int,*=)
+	FORWARDING_DIVISION_OPERATOR(mp_integer,int)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,int,==)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,int,<)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,int,>)
+	FORWARDING_MATH_OPERATOR(mp_integer,double,=)
+	FORWARDING_MATH_OPERATOR(mp_integer,double,+=)
+	FORWARDING_MATH_OPERATOR(mp_integer,double,-=)
+	FORWARDING_MATH_OPERATOR(mp_integer,double,*=)
+	FORWARDING_DIVISION_OPERATOR(mp_integer,double)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,double,==)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,double,<)
+	FORWARDING_COMPARISON_OPERATOR(mp_integer,double,>)
+
+	/// Overload of out stream operator<< for piranha::mp_integer.
+	inline std::ostream &operator<<(std::ostream &o, const mp_integer &q)
+	{
+		o << q.get_internal();
+		return o;
+	}
 
 	/// Overload in stream operator>> for piranha::mp_integer.
 	inline std::istream &operator>>(std::istream &i, mp_integer &z)
@@ -531,6 +678,32 @@ namespace piranha
 	{
                 return z.hash();
 	}
+
+	// Mixed operations between mp types.
+	FORWARDING_CTOR(mp_rational,mp_integer)
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,+=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,-=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,*=, .get_internal())
+	FORWARDING_DIVISION_OPERATOR(mp_rational,mp_integer, .get_internal())
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,mp_integer,==, .get_internal())
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,mp_integer,<, .get_internal())
+	FORWARDING_COMPARISON_OPERATOR(mp_rational,mp_integer,>, .get_internal())
+	FORWARDING_CTOR(mp_integer,mp_rational)
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,+=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,-=, .get_internal())
+	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,*=, .get_internal())
+	FORWARDING_DIVISION_OPERATOR(mp_integer,mp_rational, .get_internal())
+
+	#undef FORWARDING_CTOR_DECL
+	#undef FORWARDING_CTOR
+	#undef FORWARDING_MATH_OPERATOR_DECL
+	#undef FORWARDING_MATH_OPERATOR
+	#undef FORWARDING_DIVISION_OPERATOR_DECL
+	#undef FORWARDING_DIVISION_OPERATOR
+	#undef FORWARDING_COMPARISON_OPERATOR_DECL
+	#undef FORWARDING_COMPARISON_OPERATOR
 }
 
 namespace std
@@ -591,13 +764,50 @@ namespace std
 		return z.pow(y);
 	}
 
+	#define CTOR_DECL(class_type,arg_type) \
+	/** Constructor from arg_type. */ \
+	explicit class_type(const arg_type &);
+	#define CTOR(class_type,arg_type) \
+	inline class_type::complex(const arg_type &x):ancestor(x) {}
+	#define MATH_OPERATOR_DECL(class_type,arg_type,op) \
+	/** \brief Operator op against arg_type. */ \
+	class_type &operator op(const arg_type &);
+	#define MATH_OPERATOR(class_type,arg_type,op) \
+	inline class_type & class_type::operator op(const arg_type &other) \
+	{ \
+		return ancestor::operator op(other); \
+	}
+	#define COMPARISON_OPERATOR_DECL(class_type,arg_type) \
+	/** \brief Operator op against arg_type. */ \
+	bool operator==(const arg_type &) const;
+	#define COMPARISON_OPERATOR(class_type,arg_type) \
+	inline bool class_type::operator==(const arg_type &other) const \
+	{ \
+		return ancestor::operator==(other); \
+	}
+
+	// Forward declarations.
+	template <>
+	class complex<piranha::mp_rational>;
+	template <>
+	class complex<piranha::mp_integer>;
+
 	/// Complex counterpart of piranha::mp_rational.
 	/**
 	 * Stores two piranha::mp_rational members as real and imaginary part.
 	 */
 	template <>
 	class complex<piranha::mp_rational>:
-		public piranha::complex_generic_mp_container<piranha::mp_rational,complex<piranha::mp_rational> >
+		public piranha::complex_generic_mp_container<piranha::mp_rational,complex<piranha::mp_rational> >,
+		boost::field_operators<complex<piranha::mp_rational>,
+		boost::field_operators<complex<piranha::mp_rational>, int,
+		boost::field_operators<complex<piranha::mp_rational>, double,
+		boost::field_operators<complex<piranha::mp_rational>, piranha::mp_rational,
+		boost::field_operators<complex<piranha::mp_rational>, piranha::mp_integer,
+		boost::field_operators<complex<piranha::mp_rational>, complex<int>,
+		boost::field_operators<complex<piranha::mp_rational>, complex<double>,
+		boost::field_operators<complex<piranha::mp_rational>, complex<piranha::mp_integer>
+		> > > > > > > >
 	{
 			typedef piranha::complex_generic_mp_container<piranha::mp_rational,complex<piranha::mp_rational> > ancestor;
 		public:
@@ -631,44 +841,56 @@ namespace std
 			 * @see complex(const std::string &).
 			 */
 			explicit complex(const char *str): ancestor(str) {}
-			ASSIGNMENT_OPERATOR(complex,int)
-			ASSIGNMENT_OPERATOR(complex,double)
-			ASSIGNMENT_OPERATOR(complex,complex<int>)
-			ASSIGNMENT_OPERATOR(complex,complex<double>)
-			ASSIGNMENT_OPERATOR(complex,value_type)
-			/// Cast to complex double.
-			/**
-			 * @see piranha::mp_rational::operator double.
-			 */
-			operator complex<double>() const
-			{
-				return complex<double>((double)m_real,(double)m_imag);
-			}
-			/// Cast to complex int.
-			/**
-			 * @see piranha::mp_rational::operator int.
-			 */
-			operator complex<int>() const
-			{
-				return complex<int>((int)m_real,(int)m_imag);
-			}
-			/// Swap content.
-			void swap(complex &other)
-			{
-				m_real.swap(other.m_real);
-				m_imag.swap(other.m_imag);
-			}
-			/// Hash value.
-			/**
-			 * Uses boost::hash_combine to combine the hashes of real and imaginary parts.
-			 */
-			size_t hash() const
-			{
-				boost::hash<value_type> hasher;
-				size_t retval = hasher(m_real);
-				boost::hash_combine(retval, hasher(m_imag));
-				return retval;
-			}
+			MATH_OPERATOR_DECL(complex,int,=)
+			MATH_OPERATOR_DECL(complex,int,+=)
+			MATH_OPERATOR_DECL(complex,int,-=)
+			MATH_OPERATOR_DECL(complex,int,*=)
+			MATH_OPERATOR_DECL(complex,int,/=)
+			COMPARISON_OPERATOR_DECL(complex,int)
+			MATH_OPERATOR_DECL(complex,double,=)
+			MATH_OPERATOR_DECL(complex,double,+=)
+			MATH_OPERATOR_DECL(complex,double,-=)
+			MATH_OPERATOR_DECL(complex,double,*=)
+			MATH_OPERATOR_DECL(complex,double,/=)
+			COMPARISON_OPERATOR_DECL(complex,double)
+			MATH_OPERATOR_DECL(complex,complex,+=)
+			MATH_OPERATOR_DECL(complex,complex,-=)
+			MATH_OPERATOR_DECL(complex,complex,*=)
+			MATH_OPERATOR_DECL(complex,complex,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex)
+			MATH_OPERATOR_DECL(complex,complex<int>,=)
+			MATH_OPERATOR_DECL(complex,complex<int>,+=)
+			MATH_OPERATOR_DECL(complex,complex<int>,-=)
+			MATH_OPERATOR_DECL(complex,complex<int>,*=)
+			MATH_OPERATOR_DECL(complex,complex<int>,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex<int>)
+			MATH_OPERATOR_DECL(complex,complex<double>,=)
+			MATH_OPERATOR_DECL(complex,complex<double>,+=)
+			MATH_OPERATOR_DECL(complex,complex<double>,-=)
+			MATH_OPERATOR_DECL(complex,complex<double>,*=)
+			MATH_OPERATOR_DECL(complex,complex<double>,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex<double>)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,+=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,-=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,*=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,/=)
+			COMPARISON_OPERATOR_DECL(complex,piranha::mp_rational)
+			// Interop with other mp types.
+			CTOR_DECL(complex,piranha::mp_integer)
+			CTOR_DECL(complex,complex<piranha::mp_integer>)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,+=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,-=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,*=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,/=)
+			COMPARISON_OPERATOR_DECL(complex,piranha::mp_integer)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_integer>,=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_integer>,+=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_integer>,-=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_integer>,*=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_integer>,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex<piranha::mp_integer>)
 			/// Exponentiation.
 			/**
 			 * @throws zero_division_error if power is negative and value is zero.
@@ -746,6 +968,42 @@ namespace std
 			}
 	};
 
+	MATH_OPERATOR(complex<piranha::mp_rational>,int,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,int,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,int,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,int,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,int,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,int)
+	MATH_OPERATOR(complex<piranha::mp_rational>,double,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,double,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,double,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,double,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,double,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,double)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_rational>,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_rational>,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_rational>,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_rational>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_rational>)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<int>,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<int>,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<int>,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<int>,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<int>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,complex<int>)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<double>,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<double>,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<double>,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<double>,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<double>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,complex<double>)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,piranha::mp_rational)
+
 	/// Overload of standard swap function for std::complex<piranha::mp_rational>.
 	/**
 	 * Will use the swap() method internally.
@@ -795,7 +1053,14 @@ namespace std
 	 */
 	template <>
 	class complex<piranha::mp_integer>:
-		public piranha::complex_generic_mp_container<piranha::mp_integer,complex<piranha::mp_integer> >
+		public piranha::complex_generic_mp_container<piranha::mp_integer,complex<piranha::mp_integer> >,
+		boost::field_operators<complex<piranha::mp_integer>,
+		boost::field_operators<complex<piranha::mp_integer>, int,
+		boost::field_operators<complex<piranha::mp_integer>, double,
+		boost::field_operators<complex<piranha::mp_integer>, piranha::mp_integer,
+		boost::field_operators<complex<piranha::mp_integer>, complex<int>,
+		boost::field_operators<complex<piranha::mp_integer>, complex<double>
+		> > > > > >
 	{
 			typedef piranha::complex_generic_mp_container<piranha::mp_integer,complex<piranha::mp_integer> > ancestor;
 		public:
@@ -829,44 +1094,54 @@ namespace std
 			 * @see complex(const std::string &).
 			 */
 			explicit complex(const char *str): ancestor(str) {}
-			ASSIGNMENT_OPERATOR(complex,int)
-			ASSIGNMENT_OPERATOR(complex,double)
-			ASSIGNMENT_OPERATOR(complex,complex<int>)
-			ASSIGNMENT_OPERATOR(complex,complex<double>)
-			ASSIGNMENT_OPERATOR(complex,value_type)
-			/// Cast to complex double.
-			/**
-			 * @see piranha::mp_integer::operator double.
-			 */
-			operator complex<double>() const
-			{
-				return complex<double>((double)m_real,(double)m_imag);
-			}
-			/// Cast to complex int.
-			/**
-			 * @see piranha::mp_integer::operator int.
-			 */
-			operator complex<int>() const
-			{
-				return complex<int>((int)m_real,(int)m_imag);
-			}
-			/// Swap content.
-			void swap(complex &other)
-			{
-				m_real.swap(other.m_real);
-				m_imag.swap(other.m_imag);
-			}
-			/// Hash value.
-			/**
-			 * Uses boost::hash_combine to combine the hashes of real and imaginary parts.
-			 */
-			size_t hash() const
-			{
-				boost::hash<value_type> hasher;
-				size_t retval = hasher(m_real);
-				boost::hash_combine(retval, hasher(m_imag));
-				return retval;
-			}
+			MATH_OPERATOR_DECL(complex,int,=)
+			MATH_OPERATOR_DECL(complex,int,+=)
+			MATH_OPERATOR_DECL(complex,int,-=)
+			MATH_OPERATOR_DECL(complex,int,*=)
+			MATH_OPERATOR_DECL(complex,int,/=)
+			COMPARISON_OPERATOR_DECL(complex,int)
+			MATH_OPERATOR_DECL(complex,double,=)
+			MATH_OPERATOR_DECL(complex,double,+=)
+			MATH_OPERATOR_DECL(complex,double,-=)
+			MATH_OPERATOR_DECL(complex,double,*=)
+			MATH_OPERATOR_DECL(complex,double,/=)
+			COMPARISON_OPERATOR_DECL(complex,double)
+			MATH_OPERATOR_DECL(complex,complex,+=)
+			MATH_OPERATOR_DECL(complex,complex,-=)
+			MATH_OPERATOR_DECL(complex,complex,*=)
+			MATH_OPERATOR_DECL(complex,complex,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex)
+			MATH_OPERATOR_DECL(complex,complex<int>,=)
+			MATH_OPERATOR_DECL(complex,complex<int>,+=)
+			MATH_OPERATOR_DECL(complex,complex<int>,-=)
+			MATH_OPERATOR_DECL(complex,complex<int>,*=)
+			MATH_OPERATOR_DECL(complex,complex<int>,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex<int>)
+			MATH_OPERATOR_DECL(complex,complex<double>,=)
+			MATH_OPERATOR_DECL(complex,complex<double>,+=)
+			MATH_OPERATOR_DECL(complex,complex<double>,-=)
+			MATH_OPERATOR_DECL(complex,complex<double>,*=)
+			MATH_OPERATOR_DECL(complex,complex<double>,/=)
+			COMPARISON_OPERATOR_DECL(complex,complex<double>)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,+=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,-=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,*=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_integer,/=)
+			COMPARISON_OPERATOR_DECL(complex,piranha::mp_integer)
+			// Interop with other mp types.
+			CTOR_DECL(complex,piranha::mp_rational)
+			CTOR_DECL(complex,complex<piranha::mp_rational>)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,+=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,-=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,*=)
+			MATH_OPERATOR_DECL(complex,piranha::mp_rational,/=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,+=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,-=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,*=)
+			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,/=)
 			/// Exponentiation.
 			/**
 			 * @throws zero_division_error if power is negative and value is zero.
@@ -941,6 +1216,72 @@ namespace std
 			}
 	};
 
+	MATH_OPERATOR(complex<piranha::mp_integer>,int,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,int,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,int,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,int,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,int,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,int)
+	MATH_OPERATOR(complex<piranha::mp_integer>,double,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,double,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,double,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,double,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,double,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,double)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_integer>,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_integer>,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_integer>,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_integer>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_integer>)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<int>,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<int>,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<int>,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<int>,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<int>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,complex<int>)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<double>,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<double>,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<double>,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<double>,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<double>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,complex<double>)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,piranha::mp_integer)
+
+	// Mixed type operators.
+	// Complex rational.
+	CTOR(complex<piranha::mp_rational>,piranha::mp_integer)
+	CTOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,piranha::mp_integer)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>,=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>,+=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>,-=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>,*=)
+	MATH_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_rational>,complex<piranha::mp_integer>)
+	// Complex integer.
+	CTOR(complex<piranha::mp_integer>,piranha::mp_rational)
+	CTOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,/=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,+=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,-=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,*=)
+	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,/=)
+
 	/// Overload of standard swap function for std::complex<piranha::mp_integer>.
 	/**
 	 * Will use the swap() method internally.
@@ -984,7 +1325,12 @@ namespace std
 		return zc.hash();
 	}
 
-	#undef ASSIGNMENT_OPERATOR
+	#undef CTOR_DECL
+	#undef CTOR
+	#undef MATH_OPERATOR_DECL
+	#undef MATH_OPERATOR
+	#undef COMPARISON_OPERATOR_DECL
+	#undef COMPARISON_OPERATOR
 }
 
 #endif

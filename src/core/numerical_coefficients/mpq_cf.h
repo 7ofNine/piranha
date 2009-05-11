@@ -48,11 +48,11 @@ namespace piranha
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs((double)m_value);
+				return std::abs(m_value.to_double());
 			}
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
-				return (double)m_value;
+				return m_value.to_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
@@ -60,7 +60,7 @@ namespace piranha
 				return (m_value == 0);
 			}
 			int get_int() const {
-				return (int)m_value;
+				return m_value.to_int();
 			}
 			template <class ArgsTuple>
 			mpq_cf pow(const double &y, const ArgsTuple &) const {
@@ -98,11 +98,11 @@ namespace std
 			COMPLEX_NUMERICAL_CONTAINER_CTORS()
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs((complex<double>)m_value);
+				return std::abs(m_value.to_complex_double());
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return (complex<double>)(m_value);
+				return m_value.to_complex_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>

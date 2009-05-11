@@ -30,7 +30,7 @@ namespace piranha
 	{
 		try {
 			const mp_rational tmp(x);
-			int n = (int)tmp;
+			int n = tmp.to_int();
 			(void)n;
 			return true;
 		} catch (const value_error &) {
