@@ -26,8 +26,8 @@
 
 #ifdef __GNUC__
 #define GCC_VERSION (__GNUC__ * 100000 \
-					 + __GNUC_MINOR__ * 1000 \
-					 + __GNUC_PATCHLEVEL__ * 10)
+	 + __GNUC_MINOR__ * 1000 \
+	 + __GNUC_PATCHLEVEL__ * 10)
 #if GCC_VERSION < 304000
 #error "The minimum GCC version required is 3.4"
 #endif
@@ -43,9 +43,6 @@
 
 // Platform switches.
 #ifdef _PIRANHA_WIN32
-#if defined(_MSC_VER)
-#include <malloc.h> // _aligned_malloc
-#endif
 #ifdef _PIRANHA_DLL_EXPORT_API
 #define __PIRANHA_VISIBLE __declspec(dllexport)
 #elif defined ( _PIRANHA_DLL_IMPORT_API )
@@ -54,7 +51,6 @@
 #define __PIRANHA_VISIBLE
 #endif
 #else
-#include <cstdlib> // posix_memalign
 #define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
