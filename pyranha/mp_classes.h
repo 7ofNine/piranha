@@ -29,6 +29,39 @@
 
 namespace pyranha
 {
+	template <class T, class U>
+	inline void mp_operators(T &inst, const U &x)
+	{
+		// Comparisons
+		inst.def(boost::python::self == x);
+		inst.def(boost::python::self != x);
+		inst.def(boost::python::self < x);
+		inst.def(boost::python::self <= x);
+		inst.def(boost::python::self > x);
+		inst.def(boost::python::self >= x);
+		inst.def(x == boost::python::self);
+		inst.def(x != boost::python::self);
+		inst.def(x < boost::python::self);
+		inst.def(x <= boost::python::self);
+		inst.def(x > boost::python::self);
+		inst.def(x >= boost::python::self);
+		// Addition and subtraction.
+		inst.def(boost::python::self += x);
+		inst.def(boost::python::self + x);
+		inst.def(x + boost::python::self);
+		inst.def(boost::python::self -= x);
+		inst.def(boost::python::self - x);
+		inst.def(x - boost::python::self);
+		// Multiplication.
+		inst.def(boost::python::self *= x);
+		inst.def(boost::python::self * x);
+		inst.def(x * boost::python::self);
+		// Division.
+		inst.def(boost::python::self /= x);
+		inst.def(boost::python::self / x);
+		inst.def(x / boost::python::self);
+	}
+
 	template <class T>
 	inline boost::python::class_<T> expose_mp_class(const std::string &name, const std::string &doc)
 	{
@@ -39,49 +72,13 @@ namespace pyranha
 		// Some special methods.
 		inst.def("__copy__", &py_copy<T>);
 		inst.def(boost::python::self_ns::repr(boost::python::self));
-		inst.def(boost::python::self_ns::float_(boost::python::self));
-		inst.def(boost::python::self_ns::int_(boost::python::self));
-		// Equality.
-		inst.def(boost::python::self == int());
-		inst.def(boost::python::self == double());
-		inst.def(boost::python::self == boost::python::self);
-		inst.def(boost::python::self != int());
-		inst.def(boost::python::self != double());
-		inst.def(boost::python::self != boost::python::self);
-		// Addition and subtraction.
-		inst.def(boost::python::self += int());
-		inst.def(boost::python::self += double());
-		inst.def(boost::python::self += boost::python::self);
-		inst.def(boost::python::self + int());
-		inst.def(boost::python::self + double());
-		inst.def(int() + boost::python::self);
-		inst.def(double() + boost::python::self);
-		inst.def(boost::python::self + boost::python::self);
-		inst.def(boost::python::self -= int());
-		inst.def(boost::python::self -= double());
-		inst.def(boost::python::self -= boost::python::self);
-		inst.def(boost::python::self - int());
-		inst.def(boost::python::self - double());
-		inst.def(int() - boost::python::self);
-		inst.def(double() - boost::python::self);
-		inst.def(boost::python::self - boost::python::self);
+		inst.def("__float__", &T::to_double, "Convert to floating point.");
+		inst.def("__int__", &T::to_int, "Convert to integer.");
+		// Operators against standard types.
+		mp_operators(inst,int());
+		mp_operators(inst,double());
+		mp_operators(inst,boost::python::self);
 		inst.def(-boost::python::self);
-		// Multiplication.
-		inst.def(boost::python::self *= int());
-		inst.def(boost::python::self *= double());
-		inst.def(boost::python::self *= boost::python::self);
-		inst.def(boost::python::self * int());
-		inst.def(boost::python::self * double());
-		inst.def(int() * boost::python::self);
-		inst.def(double() * boost::python::self);
-		inst.def(boost::python::self * boost::python::self);
-		// Division.
-		inst.def(boost::python::self /= int());
-		inst.def(boost::python::self /= double());
-		inst.def(boost::python::self /= boost::python::self);
-		inst.def(boost::python::self / int());
-		inst.def(boost::python::self / double());
-		inst.def(boost::python::self / boost::python::self);
 		// Exponentiation & friends.
 		inst.def("__pow__",&T::pow,"Exponentiation.");
 		inst.def("root",&T::root,"N-th root.");

@@ -24,8 +24,6 @@
 #include <boost/python/enum.hpp>
 #include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
-#include <boost/python/operators.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <string>
 #include <vector>
 
@@ -63,7 +61,12 @@ BOOST_PYTHON_MODULE(_Core)
 	// MP classes.
 	class_<mp_rational> mpr(expose_mp_class<mp_rational>("rational","Multi-precision rational number."));
 	mpr.def(init<const int &, const int &>());
-	class_<mp_integer> mpi(expose_mp_class<mp_integer>("integer","Multi-precision integer number."));
+	mpr.def(init<const mp_integer &>());
+	mpr.def(init<const mp_integer &, const mp_integer &>());
+	mp_operators(mpr,mp_integer());
+	class_<mp_integer> mpz(expose_mp_class<mp_integer>("integer","Multi-precision integer number."));
+	mpz.def(init<const mp_rational &>());
+	mp_operators(mpz,mp_rational());
 
 	// Settings.
 	enum_<settings::out_format>("out_format")

@@ -122,15 +122,7 @@ namespace piranha
 			 */
 			explicit mp_rational(const int &n, const int &d):m_value(0)
 			{
-				// Guard against division by zero.
-				if (d == 0) {
-					piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
-				}
-				mpq_class tmp(n,d);
-				mpq_canonicalize(tmp.get_mpq_t());
-				// Swap content (more efficient than copying).
-				mpz_swap(mpq_numref(m_value.get_mpq_t()),mpq_numref(tmp.get_mpq_t()));
-				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(tmp.get_mpq_t()));
+				construct_from_numden(n,d);
 			}
 			/// Constructor from double.
 			explicit mp_rational(const double &x):m_value(x) {}
@@ -163,6 +155,11 @@ namespace piranha
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,<)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,>)
 			// Interoperability with mp_integer.
+			/// Constructor from piranha::mp_integer numerator and denominator.
+			/**
+			 * @throws zero_division_error if denominator is zero.
+			 */
+			explicit mp_rational(const mp_integer &, const mp_integer &);
 			FORWARDING_CTOR_DECL(mp_rational,mp_integer)
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_integer,+=)
@@ -285,6 +282,19 @@ namespace piranha
 				return retval;
 			}
 		private:
+			template <class T>
+			void construct_from_numden(const T &n, const T &d)
+			{
+				// Guard against division by zero.
+				if (d == 0) {
+					piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
+				}
+				mpq_class tmp(n,d);
+				mpq_canonicalize(tmp.get_mpq_t());
+				// Swap content (more efficient than copying).
+				mpz_swap(mpq_numref(m_value.get_mpq_t()),mpq_numref(tmp.get_mpq_t()));
+				mpz_swap(mpq_denref(m_value.get_mpq_t()),mpq_denref(tmp.get_mpq_t()));
+			}
 			// Will throw value_error if string is invalid, zero_division_error if string is valid
 			// but contains zero as denominator.
 			void construct_from_string(const char *str)
@@ -680,6 +690,10 @@ namespace piranha
 	}
 
 	// Mixed operations between mp types.
+	inline mp_rational::mp_rational(const mp_integer &n, const mp_integer &d):m_value(0)
+	{
+		construct_from_numden(n.get_internal(),d.get_internal());
+	}
 	FORWARDING_CTOR(mp_rational,mp_integer)
 	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,=, .get_internal())
 	FORWARDING_MATH_OPERATOR(mp_rational,mp_integer,+=, .get_internal())
