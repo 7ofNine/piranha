@@ -153,16 +153,6 @@ namespace piranha
 			{
 				m_imag = imag;
 			}
-			/// Mathematical inversion.
-			Derived invert() const
-			{
-				Derived retval(*derived_const_cast);
-				retval.m_imag.negate();
-				const T div = abs2();
-				retval.m_real /= div;
-				retval.m_imag /= div;
-				return retval;
-			}
 			/// Swap content.
 			/**
 			 * Will call std::swap on real and imaginary members.
@@ -171,6 +161,19 @@ namespace piranha
 			{
 				std::swap(m_real,other.m_real);
 				std::swap(m_imag,other.m_imag);
+			}
+			/// Negate in-place.
+			void negate()
+			{
+				m_real.negate();
+				m_imag.negate();
+			}
+			/// Negated copy.
+			Derived negated() const
+			{
+				Derived retval(*derived_const_cast);
+				retval.negate();
+				return retval;
 			}
 			/// Hash value.
 			/**
@@ -234,40 +237,56 @@ namespace piranha
 			{
 				construct_from_string(str);
 			}
+			/// Generic assignment operator.
 			template <class U>
 			Derived &operator=(const U &other)
 			{
 				cgmp_helper<U>::assign(*this,other);
 				return *derived_cast;
 			}
+			/// Generic comparison operator.
 			template <class U>
 			bool operator==(const U &other) const
 			{
 				return cgmp_helper<U>::compare(*this,other);
 			}
+			/// Generic in-place addition.
 			template <class U>
 			Derived &operator+=(const U &other)
 			{
 				cgmp_helper<U>::add(*this,other);
 				return *derived_cast;
 			}
+			/// Generic in-place subtraction.
 			template <class U>
 			Derived &operator-=(const U &other)
 			{
 				cgmp_helper<U>::subtract(*this,other);
 				return *derived_cast;
 			}
+			/// Generic in-place multiplication.
 			template <class U>
 			Derived &operator*=(const U &other)
 			{
 				cgmp_helper<U>::mult(*this,other);
 				return *derived_cast;
 			}
+			/// Generic in-place division.
 			template <class U>
 			Derived &operator/=(const U &other)
 			{
 				cgmp_helper<U>::divide(*this,other);
 				return *derived_cast;
+			}
+			/// Inversion.
+			Derived invert() const
+			{
+				Derived retval(*derived_const_cast);
+				retval.m_imag.negate();
+				const T div = abs2();
+				retval.m_real /= div;
+				retval.m_imag /= div;
+				return retval;
 			}
 		private:
 			// Square of absolute value.

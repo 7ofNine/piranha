@@ -27,6 +27,7 @@
 
 #include "../config.h"
 #include "../math.h"
+#include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // Lexical converter.
@@ -55,7 +56,7 @@ namespace piranha
 	/// Numerical container class.
 	/**
 	 * This class can be used as a base class for coefficients that consist of a
-	 * numerical entity (double, GMP classes, etc.).
+	 * numerical entity (double, MP classes, etc.).
 	 */
 	template <class T, class Derived>
 	class numerical_container
@@ -79,6 +80,10 @@ namespace piranha
 				m_value(utils::lexical_converter<T>(s)) {}
 			template <class ArgsTuple>
 			explicit numerical_container(const double &x, const ArgsTuple &): m_value(x) {}
+			template <class ArgsTuple>
+			explicit numerical_container(const mp_rational &q, const ArgsTuple &): m_value(q) {}
+			template <class ArgsTuple>
+			explicit numerical_container(const mp_integer &z, const ArgsTuple &): m_value(z) {}
 			/// Ctor from psym.
 			/**
 			 * Sets m_value to one.

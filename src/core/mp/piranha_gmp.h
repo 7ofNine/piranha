@@ -37,6 +37,11 @@
 #include "../utils.h"
 #include "complex_generic_mp_container.h"
 
+// TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
+// - overload std::pow for exponentiation to rational
+// - icrement and decrement operators
+// ...
+
 namespace piranha
 {
 	// Forward declaration of classes.
