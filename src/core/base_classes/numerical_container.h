@@ -63,7 +63,9 @@ namespace piranha
 	{
 			friend class numerical_container_complex_toolbox<Derived>;
 		public:
+			/// Typedef for evaluation type.
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
+			/// Alias for internal type.
 			typedef T numerical_type;
 			template <class, class SubCachesCons, class>
 			struct sub_cache_selector {
@@ -73,70 +75,82 @@ namespace piranha
 			struct ei_sub_cache_selector {
 				typedef SubCachesCons type;
 			};
-			// Ctors.
+			/// Default constructor, initialises internal value to 0.
 			explicit numerical_container(): m_value(0) {}
+			/// Constructor from string.
+			/**
+			 * Will call boost::lexical_converter internally.
+			 */
 			template <class ArgsTuple>
 			explicit numerical_container(const std::string &s, const ArgsTuple &):
 				m_value(utils::lexical_converter<T>(s)) {}
+			/// Constructor from double.
 			template <class ArgsTuple>
 			explicit numerical_container(const double &x, const ArgsTuple &): m_value(x) {}
+			/// Constructor from piranha::mp_rational.
 			template <class ArgsTuple>
 			explicit numerical_container(const mp_rational &q, const ArgsTuple &): m_value(q) {}
+			/// Constructor from piranha::mp_integer.
 			template <class ArgsTuple>
 			explicit numerical_container(const mp_integer &z, const ArgsTuple &): m_value(z) {}
 			/// Ctor from psym.
 			/**
-			 * Sets m_value to one.
+			 * Sets internal value to one.
 			 */
 			template <class ArgsTuple>
 			explicit numerical_container(const psym &, const int &, const ArgsTuple &): m_value(1) {}
-			// I/O.
+			/// Print in plain mode.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
 				out_stream << m_value;
 			}
+			/// Print in pretty mode. Equivalent to print_plain.
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				print_plain(out_stream,args_tuple);
 			}
-			// Manipulation
+			/// Swap content using std::swap.
 			Derived &swap(Derived &dc) {
 				std::swap(m_value, dc.m_value);
 				return *derived_cast;
 			}
+			/// Pad right.
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &) {}
+			/// Apply layout.
 			template <class Layout, class ArgsTuple>
 			void apply_layout(const Layout &, const ArgsTuple &) {}
+			/// Test if trimming is possible.
 			template <class TrimFlags>
 			void trim_test(TrimFlags &) const {}
+			/// Trim.
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const {
 				return Derived(*derived_const_cast);
 			}
-			// Probing.
+			/// Number of atoms. Returns 1.
 			size_t atoms() const {
 				return 1;
 			}
-			template <class ArgsTuple>
-			bool checkup(const ArgsTuple &) const {
-				return true;
-			}
+			/// Norm. Returns std::abs of internal value.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
 				return std::abs(m_value);
 			}
-			static const size_t max_size = 0;
-			// If value is less than numerical zero in absolute value it is considered
-			// to be zero.
+			/// Test for ignorability.
+			/**
+			 * Returns true if norm() is less than settings::numerical_zero().
+			 */
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &a) const {
 				return (static_cast<Derived const *>(this)->norm(a) < settings::numerical_zero());
 			}
+			/// Insertability test. Returns true.
 			template <class ArgsTuple>
 			bool is_insertable(const ArgsTuple &) const {
 				return true;
 			}
+			/// Padding test. Returns false.
 			template <class ArgsTuple>
 			bool needs_padding(const ArgsTuple &) const {
 				return false;
