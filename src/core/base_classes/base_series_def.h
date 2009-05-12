@@ -28,6 +28,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
+#include "../mp.h"
 #include "../psym.h"
 #include "../type_traits.h"
 #include "toolbox.h"
@@ -85,6 +86,8 @@ namespace piranha
 		protected:
 			bool base_equal_to(const Derived &) const;
 			bool base_equal_to(const double &) const;
+			bool base_equal_to(const mp_rational &) const;
+			bool base_equal_to(const mp_integer &) const;
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>

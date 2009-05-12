@@ -165,6 +165,12 @@ namespace piranha
 			bool operator==(const double &x) const {
 				return (m_value == x);
 			}
+			bool operator==(const mp_rational &q) const {
+				return (m_value == q);
+			}
+			bool operator==(const mp_integer &z) const {
+				return (m_value == z);
+			}
 			// Maths.
 			template <class ArgsTuple>
 			void invert_sign(const ArgsTuple &) {
@@ -183,12 +189,28 @@ namespace piranha
 				return mult_by_generic(x);
 			}
 			template <class ArgsTuple>
+			Derived &mult_by(const mp_rational &q, const ArgsTuple &) {
+				return mult_by_generic(q);
+			}
+			template <class ArgsTuple>
+			Derived &mult_by(const mp_integer &z, const ArgsTuple &) {
+				return mult_by_generic(z);
+			}
+			template <class ArgsTuple>
 			Derived &mult_by(const Derived &x, const ArgsTuple &) {
 				return mult_by_generic(x.value());
 			}
 			template <class ArgsTuple>
 			Derived &divide_by(const double &x, const ArgsTuple &) {
 				return divide_by_generic(x);
+			}
+			template <class ArgsTuple>
+			Derived &divide_by(const mp_rational &q, const ArgsTuple &) {
+				return divide_by_generic(q);
+			}
+			template <class ArgsTuple>
+			Derived &divide_by(const mp_integer &z, const ArgsTuple &) {
+				return divide_by_generic(z);
 			}
 			// Multiply and add.
 			template <class Derived2, class ArgsTuple>
@@ -260,7 +282,6 @@ namespace piranha
 				return *derived_cast;
 			}
 		protected:
-			// Data member.
 			T m_value;
 	};
 

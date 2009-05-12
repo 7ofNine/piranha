@@ -70,6 +70,7 @@ namespace pyranha
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const std::string &>());
 		// Some special methods.
+		inst.def("__abs__", &T::abs, "Absolute value.");
 		inst.def("__copy__", &py_copy<T>);
 		inst.def(boost::python::self_ns::repr(boost::python::self));
 		inst.def("__float__", &T::to_double, "Convert to floating point.");

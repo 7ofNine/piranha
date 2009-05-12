@@ -29,6 +29,7 @@
 #include <string>
 #include <utility> // For std::pair.
 
+#include "../src/core/mp.h"
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
 #include "cf_key_bindings.h"
@@ -74,8 +75,12 @@ namespace pyranha
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
 		// Equality.
 		inst.def(boost::python::self == double());
+		inst.def(boost::python::self == piranha::mp_rational());
+		inst.def(boost::python::self == piranha::mp_integer());
 		inst.def(boost::python::self == boost::python::self);
 		inst.def(boost::python::self != double());
+		inst.def(boost::python::self != piranha::mp_rational());
+		inst.def(boost::python::self != piranha::mp_integer());
 		inst.def(boost::python::self != boost::python::self);
 		// Addition and subtraction.
 		inst.def(boost::python::self += double());

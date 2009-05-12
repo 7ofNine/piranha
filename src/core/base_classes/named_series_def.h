@@ -31,6 +31,7 @@
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "../mp.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -77,6 +78,10 @@ namespace piranha
 			bool operator!=(const Derived &) const;
 			bool operator==(const double &) const;
 			bool operator!=(const double &) const;
+			bool operator==(const mp_rational &) const;
+			bool operator!=(const mp_rational &) const;
+			bool operator==(const mp_integer &) const;
+			bool operator!=(const mp_integer &) const;
 			Derived &operator+=(const double &);
 			Derived &operator+=(const Derived &);
 			Derived &operator-=(const double &);

@@ -25,6 +25,7 @@
 #include <boost/tuple/tuple_comparison.hpp>
 
 #include "../config.h" // For (un)likely
+#include "../mp.h"
 #include "named_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -159,6 +160,30 @@ namespace piranha
 	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const double &x) const
 	{
 		return !(*this == x);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const mp_rational &q) const
+	{
+		return derived_const_cast->base_equal_to(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const mp_rational &q) const
+	{
+		return !(*this == q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const mp_integer &q) const
+	{
+		return derived_const_cast->base_equal_to(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const mp_integer &q) const
+	{
+		return !(*this == q);
 	}
 }
 

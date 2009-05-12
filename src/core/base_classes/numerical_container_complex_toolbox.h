@@ -25,6 +25,7 @@
 #include <complex>
 
 #include "../exceptions.h"
+#include "../mp.h"
 #include "../settings.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -39,9 +40,15 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 			typedef RealDerived value_type;
 		public:
-			// Ctors.
+			// NOTE: are these really good or it is better to employ the ctor macros below?
 			numerical_container_complex_toolbox() {}
 			explicit numerical_container_complex_toolbox(const std::complex<double> &c) {
+				derived_cast->m_value = c;
+			}
+			explicit numerical_container_complex_toolbox(const std::complex<mp_rational> &c) {
+				derived_cast->m_value = c;
+			}
+			explicit numerical_container_complex_toolbox(const std::complex<mp_integer> &c) {
 				derived_cast->m_value = c;
 			}
 			explicit numerical_container_complex_toolbox(const value_type &r) {
@@ -90,8 +97,24 @@ namespace piranha
 				return derived_cast->mult_by_generic(c);
 			}
 			template <class ArgsTuple>
+			Derived &mult_by(const std::complex<mp_rational> &c, const ArgsTuple &) {
+				return derived_cast->mult_by_generic(c);
+			}
+			template <class ArgsTuple>
+			Derived &mult_by(const std::complex<mp_integer> &c, const ArgsTuple &) {
+				return derived_cast->mult_by_generic(c);
+			}
+			template <class ArgsTuple>
 			Derived &divide_by(const std::complex<double> &c, const ArgsTuple &) {
-				return complex_division_helper(c);
+				return derived_cast->divide_by_generic(c);
+			}
+			template <class ArgsTuple>
+			Derived &divide_by(const std::complex<mp_rational> &c, const ArgsTuple &) {
+				return derived_cast->divide_by_generic(c);
+			}
+			template <class ArgsTuple>
+			Derived &divide_by(const std::complex<mp_integer> &c, const ArgsTuple &) {
+				return derived_cast->divide_by_generic(c);
 			}
 			// We must rewrite all comparisons, otherwise there will be conflicts with those defined in
 			// numerical container.
@@ -102,45 +125,22 @@ namespace piranha
 				return (derived_const_cast->m_value.real() == x.m_value && derived_const_cast->m_value.imag() == 0);
 			}
 			bool operator==(const double &x) const {
-				return generic_real_comparison(x);
+				return (derived_const_cast->m_value.real() == x && derived_const_cast->m_value.imag() == 0);
 			}
 			bool operator==(const std::complex<double> &cx) const {
-				return generic_complex_comparison(cx);
+				return (derived_const_cast->m_value == cx);
 			}
-		protected:
-			template <class Number>
-			Derived &complex_division_helper(const std::complex<Number> &x) {
-				if (x.real() == 0 && x.imag() == 0) {
-					piranha_throw(zero_division_error,"cannot divide by zero");
-				}
-				derived_cast->m_value /= x;
-				return *derived_cast;
+			bool operator==(const mp_rational &q) const {
+				return (derived_const_cast->m_value == q);
 			}
-		private:
-			template <class Number>
-			bool generic_real_comparison(const Number &x) const {
-#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
-				// TODO: these are too costly, we should be able to compare directly m_value in
-				// many cases. But apparently this breaks with GMP types in MinGW 3.4. Investigate.
-				const typename RealDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - x);
-				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
-					derived_const_cast->m_value.imag() <= settings::numerical_zero() &&
-					derived_const_cast->m_value.imag() >= -settings::numerical_zero());
-#else
-				return (derived_const_cast->m_value.real() == x && derived_const_cast->m_value.imag() == 0);
-#endif
+			bool operator==(const std::complex<mp_rational> &cq) const {
+				return (derived_const_cast->m_value == cq);
 			}
-			template <class Number>
-			bool generic_complex_comparison(const std::complex<Number> &c) const {
-#if defined ( _PIRANHA_MINGW ) && GCC_VERSION < 400000
-				const typename RealDerived::numerical_type tmp_real(derived_const_cast->m_value.real() - c.real()),
-					tmp_imag(derived_const_cast->m_value.imag() - c.imag());
-				return (tmp_real <= settings::numerical_zero() && tmp_real >= -settings::numerical_zero() &&
-					tmp_imag <= settings::numerical_zero() && tmp_imag >= -settings::numerical_zero());
-#else
-				return (derived_const_cast->m_value.real() == c.real() &&
-					derived_const_cast->m_value.imag() == c.imag());
-#endif
+			bool operator==(const mp_integer &z) const {
+				return (derived_const_cast->m_value == z);
+			}
+			bool operator==(const std::complex<mp_integer> &cz) const {
+				return (derived_const_cast->m_value == cz);
 			}
 	};
 

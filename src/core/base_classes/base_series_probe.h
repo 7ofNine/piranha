@@ -23,6 +23,8 @@
 
 #include <cmath> // For std::abs.
 
+#include "../exceptions.h"
+#include "../mp.h"
 #include "base_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -114,9 +116,14 @@ namespace piranha
 	template <class Number>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_numerical_comparison(const Number &x) const
 	{
-		// Use abs() to cope with complex numbers.
-		if (std::abs(x) == 0) {
-			return empty();
+		// Use std::abs() to cope with complex numbers. In case of mp classes this could throw value_error,
+		// so handle this.
+		try {
+			if (std::abs(x) == 0) {
+				return empty();
+			}
+		} catch (const value_error &) {
+			// Don't do anything, continue the flow.
 		}
 		if (!is_single_cf()) {
 			return false;
@@ -128,6 +135,18 @@ namespace piranha
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const double &x) const
 	{
 		return generic_numerical_comparison(x);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const mp_rational &q) const
+	{
+		return generic_numerical_comparison(q);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const mp_integer &z) const
+	{
+		return generic_numerical_comparison(z);
 	}
 }
 

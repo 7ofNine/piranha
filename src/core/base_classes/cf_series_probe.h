@@ -21,6 +21,8 @@
 #ifndef PIRANHA_CF_SERIES_PROBE_H
 #define PIRANHA_CF_SERIES_PROBE_H
 
+#include "../mp.h"
+
 namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -83,6 +85,30 @@ namespace piranha
 	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const double &x) const
 	{
 		return !(*this == x);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const mp_rational &q) const
+	{
+		return derived_const_cast->base_equal_to(q);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const mp_rational &q) const
+	{
+		return !(*this == q);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const mp_integer &z) const
+	{
+		return derived_const_cast->base_equal_to(z);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const mp_integer &z) const
+	{
+		return !(*this == z);
 	}
 }
 

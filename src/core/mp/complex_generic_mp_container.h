@@ -202,6 +202,15 @@ namespace piranha
 			{
 				return std::complex<int>(m_real.to_int(),m_imag.to_int());
 			}
+			/// Absolute value.
+			/**
+			 * Will call abs2() and then will try to compute root(2) on the result.
+			 * @throws value_error if abs2() is not an exact square.
+			 */
+			T abs() const
+			{
+				return abs2().root(2);
+			}
 		protected:
 			/// Default constructor.
 			explicit complex_generic_mp_container(): m_real(0),m_imag(0) {}

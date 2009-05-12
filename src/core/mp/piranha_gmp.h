@@ -47,7 +47,19 @@ namespace piranha
 	// Forward declaration of classes.
 	class mp_rational;
 	class mp_integer;
+}
 
+namespace std
+{
+	// Forward declarations.
+	template <>
+	class complex<piranha::mp_rational>;
+	template <>
+	class complex<piranha::mp_integer>;
+}
+
+namespace piranha
+{
 	#define FORWARDING_CTOR_DECL(class_type,arg_type) \
 	/** \brief Constructor from arg_type. */ \
 	explicit class_type(const arg_type &);
@@ -82,18 +94,55 @@ namespace piranha
 	{ \
 		return (m_value op other __VA_ARGS__ ); \
 	}
+	#define COMPLEX_COMPARISON_OPERATOR(arg_type) \
+	/** \brief Comparison against std::complex< arg_type >. */ \
+	bool operator==(const std::complex< arg_type > &c) const\
+	{ \
+		return complex_comparison(c);\
+	}
+
+	#define derived_const_cast static_cast<Derived const *>(this)
+	#define derived_cast static_cast<Derived *>(this)
+
+	template <class T, class Derived>
+	class mp_toolbox {
+		public:
+			/// Absolute value.
+			Derived abs() const
+			{
+				return (((*derived_const_cast) >= 0) ? (*derived_const_cast) : -(*derived_const_cast));
+			}
+			/// Const reference to internal type.
+			const T &get_internal() const
+			{
+				return derived_const_cast->m_value;
+			}
+		protected:
+			template <class U>
+			bool complex_comparison(const std::complex<U> &c) const
+			{
+				return (derived_const_cast->m_value == c.real() && c.imag() == 0);
+			}
+	};
+
+	#undef derived_const_cast
+	#undef derived_cast
 
 	/// Multiprecision rational class.
 	/**
 	 * Wraps a GMP mpq_class.
 	 */
 	class mp_rational:
+		public mp_toolbox<mpq_class,mp_rational>,
 		boost::ordered_field_operators<mp_rational,
 		boost::ordered_field_operators<mp_rational, int,
 		boost::ordered_field_operators<mp_rational, double,
-		boost::ordered_field_operators<mp_rational, mp_integer
-		> > > >
+		boost::ordered_field_operators<mp_rational, mp_integer,
+		boost::equality_comparable<mp_rational, std::complex<double>,
+		boost::equality_comparable<mp_rational, std::complex<int>
+		> > > > > >
 	{
+			friend class mp_toolbox<mpq_class,mp_rational>;
 		public:
 			/// Default constructor.
 			/**
@@ -131,11 +180,6 @@ namespace piranha
 			}
 			/// Constructor from double.
 			explicit mp_rational(const double &x):m_value(x) {}
-			/// Const reference to internal type.
-			const mpq_class &get_internal() const
-			{
-				return m_value;
-			}
 			// Interoperability with self and plain old types.
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,+=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,-=)
@@ -159,6 +203,8 @@ namespace piranha
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,==)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,<)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,double,>)
+			COMPLEX_COMPARISON_OPERATOR(double)
+			COMPLEX_COMPARISON_OPERATOR(int)
 			// Interoperability with mp_integer.
 			/// Constructor from piranha::mp_integer numerator and denominator.
 			/**
@@ -254,7 +300,8 @@ namespace piranha
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
-				}	return pow_double(y);
+					return pow_double(y);
+				}
 			}
 			/// N-th root.
 			/**
@@ -440,11 +487,15 @@ namespace piranha
 	 * Wraps a GMP mpz_class.
 	 */
 	class mp_integer:
+		public mp_toolbox<mpz_class,mp_integer>,
 		boost::ordered_field_operators<mp_integer,
 		boost::ordered_field_operators<mp_integer, int,
-		boost::ordered_field_operators<mp_integer, double
-		> > >
+		boost::ordered_field_operators<mp_integer, double,
+		boost::equality_comparable<mp_integer, std::complex<double>,
+		boost::equality_comparable<mp_integer, std::complex<int>
+		> > > > >
 	{
+			friend class mp_toolbox<mpz_class,mp_integer>;
 		public:
 			/// Default constructor.
 			/**
@@ -459,11 +510,6 @@ namespace piranha
 			explicit mp_integer(const int &n):m_value(n) {}
 			/// Constructor from double.
 			explicit mp_integer(const double &x):m_value(x) {}
-			/// Const reference to internal type.
-			const mpz_class &get_internal() const
-			{
-				return m_value;
-			}
 			// Interoperability with plain numerical types.
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,+=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,-=)
@@ -487,6 +533,8 @@ namespace piranha
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,==)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,<)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_integer,double,>)
+			COMPLEX_COMPARISON_OPERATOR(double)
+			COMPLEX_COMPARISON_OPERATOR(int)
 			// Interoperability with mp_rational.
 			FORWARDING_CTOR_DECL(mp_integer,mp_rational)
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,=)
@@ -574,7 +622,8 @@ namespace piranha
 				if (utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
-				}	return pow_double(y);
+					return pow_double(y);
+				}
 			}
 			/// N-th root.
 			/**
@@ -723,6 +772,7 @@ namespace piranha
 	#undef FORWARDING_DIVISION_OPERATOR
 	#undef FORWARDING_COMPARISON_OPERATOR_DECL
 	#undef FORWARDING_COMPARISON_OPERATOR
+	#undef COMPLEX_COMPARISON_OPERATOR
 }
 
 namespace std
@@ -783,6 +833,24 @@ namespace std
 		return z.pow(y);
 	}
 
+	/// Overload standard abs function for piranha::mp_rational.
+	/**
+	 * @see piranha::mp_rational::abs.
+	 */
+	inline piranha::mp_rational abs(const piranha::mp_rational &q)
+	{
+		return q.abs();
+	}
+
+	/// Overload standard abs function for piranha::mp_integer.
+	/**
+	 * @see piranha::mp_integer::abs.
+	 */
+	inline piranha::mp_integer abs(const piranha::mp_integer &z)
+	{
+		return z.abs();
+	}
+
 	#define CTOR_DECL(class_type,arg_type) \
 	/** Constructor from arg_type. */ \
 	explicit class_type(const arg_type &);
@@ -804,12 +872,6 @@ namespace std
 	{ \
 		return ancestor::operator==(other); \
 	}
-
-	// Forward declarations.
-	template <>
-	class complex<piranha::mp_rational>;
-	template <>
-	class complex<piranha::mp_integer>;
 
 	/// Complex counterpart of piranha::mp_rational.
 	/**
@@ -920,7 +982,8 @@ namespace std
 				if (piranha::utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
-				}	return pow_double(y);
+					return pow_double(y);
+				}
 			}
 			/// N-th root.
 			/**
@@ -1077,9 +1140,10 @@ namespace std
 		boost::field_operators<complex<piranha::mp_integer>, int,
 		boost::field_operators<complex<piranha::mp_integer>, double,
 		boost::field_operators<complex<piranha::mp_integer>, piranha::mp_integer,
+		boost::field_operators<complex<piranha::mp_integer>, piranha::mp_rational,
 		boost::field_operators<complex<piranha::mp_integer>, complex<int>,
 		boost::field_operators<complex<piranha::mp_integer>, complex<double>
-		> > > > > >
+		> > > > > > >
 	{
 			typedef piranha::complex_generic_mp_container<piranha::mp_integer,complex<piranha::mp_integer> > ancestor;
 		public:
@@ -1156,6 +1220,7 @@ namespace std
 			MATH_OPERATOR_DECL(complex,piranha::mp_rational,-=)
 			MATH_OPERATOR_DECL(complex,piranha::mp_rational,*=)
 			MATH_OPERATOR_DECL(complex,piranha::mp_rational,/=)
+			COMPARISON_OPERATOR_DECL(complex,piranha::mp_rational)
 			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,=)
 			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,+=)
 			MATH_OPERATOR_DECL(complex,complex<piranha::mp_rational>,-=)
@@ -1171,7 +1236,8 @@ namespace std
 				if (piranha::utils::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
-				}	return pow_double(y);
+					return pow_double(y);
+				}
 			}
 			/// N-th root.
 			/**
@@ -1295,6 +1361,7 @@ namespace std
 	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,-=)
 	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,*=)
 	MATH_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational,/=)
+	COMPARISON_OPERATOR(complex<piranha::mp_integer>,piranha::mp_rational)
 	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,=)
 	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,+=)
 	MATH_OPERATOR(complex<piranha::mp_integer>,complex<piranha::mp_rational>,-=)
@@ -1326,6 +1393,24 @@ namespace std
 	inline complex<piranha::mp_integer> pow(const complex<piranha::mp_integer> &zc, const int &y)
 	{
 		return zc.pow(y);
+	}
+
+	/// Overload standard abs function for std::complex<piranha::mp_rational>.
+	/**
+	 * @see complex_generic_mp_container::abs()
+	 */
+	inline piranha::mp_rational abs(const complex<piranha::mp_rational> &qc)
+	{
+		return qc.abs();
+	}
+
+	/// Overload standard abs function for std::complex<piranha::mp_integer>.
+	/**
+	 * @see complex_generic_mp_container::abs()
+	 */
+	inline piranha::mp_integer abs(const complex<piranha::mp_integer> &zc)
+	{
+		return zc.abs();
 	}
 
 	/// Overload in stream operator>> for std::complex<piranha::mp_integer>.
