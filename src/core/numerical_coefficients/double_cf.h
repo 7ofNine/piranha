@@ -47,7 +47,7 @@ namespace piranha
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
 			// Ctors.
-			NUMERICAL_CONTAINER_CTORS(double_cf)
+			NUMERICAL_CONTAINER_CTORS(double_cf,.to_double())
 			int get_int() const {
 				if (!utils::is_integer(m_value)) {
 					piranha_throw(value_error,"cannot convert double coefficient to integer");
@@ -92,8 +92,8 @@ namespace std
 			using complex_toolbox::mult_by;
 			using ancestor::divide_by;
 			using complex_toolbox::divide_by;
-			NUMERICAL_CONTAINER_CTORS(complex)
-			COMPLEX_NUMERICAL_CONTAINER_CTORS()
+			NUMERICAL_CONTAINER_CTORS(complex,.to_double())
+			COMPLEX_NUMERICAL_CONTAINER_CTORS(.to_complex_double())
 			template <class ArgsTuple>
 			complex pow(const double &y, const ArgsTuple &) const {
 				complex retval;

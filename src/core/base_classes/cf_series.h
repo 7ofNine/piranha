@@ -84,15 +84,31 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &add(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			Derived &add(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &add(const mp_integer &, const ArgsTuple &);
+			template <class ArgsTuple>
 			Derived &subtract(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &subtract(const double &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &subtract(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &subtract(const mp_integer &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &mult_by(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &mult_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			Derived &mult_by(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &mult_by(const mp_integer &, const ArgsTuple &);
+			template <class ArgsTuple>
 			Derived &divide_by(const double &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &divide_by(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &divide_by(const mp_integer &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -131,6 +147,16 @@ namespace piranha
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
 		this->construct_from_number(x,a); \
+	} \
+	template <class ArgsTuple> \
+	explicit series_name(const piranha::mp_rational &q, const ArgsTuple &a) \
+	{ \
+		this->construct_from_number(q,a); \
+	} \
+	template <class ArgsTuple> \
+	explicit series_name(const piranha::mp_integer &z, const ArgsTuple &a) \
+	{ \
+		this->construct_from_number(z,a); \
 	}
 
 #define COMPLEX_CF_SERIES_CTORS(real_series) \

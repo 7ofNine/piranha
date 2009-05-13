@@ -37,6 +37,7 @@
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
 #include "../base_classes/toolbox.h"
+#include "../mp.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
 #include "common_fourier_series_toolbox.h"
 #include "fourier_series_term.h"
@@ -61,8 +62,12 @@ namespace piranha
 				public toolbox<jacobi_anger<0, FOURIER_SERIES > >,
 				boost::ring_operators < FOURIER_SERIES,
 				boost::ring_operators < FOURIER_SERIES, double,
-				boost::dividable < FOURIER_SERIES, double
-				> > >
+				boost::dividable < FOURIER_SERIES, double,
+				boost::ring_operators < FOURIER_SERIES, mp_rational,
+				boost::dividable < FOURIER_SERIES, mp_rational,
+				boost::ring_operators < FOURIER_SERIES, mp_integer,
+				boost::dividable < FOURIER_SERIES, mp_integer
+				> > > > > > >
 	{
 			template <class>
 			friend class toolbox;
@@ -100,10 +105,14 @@ namespace std
 				boost::ring_operators < COMPLEX_FOURIER_SERIES,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,
 				boost::dividable < COMPLEX_FOURIER_SERIES, double,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, piranha::mp_rational,
+				boost::dividable < COMPLEX_FOURIER_SERIES, piranha::mp_rational,
+				boost::ring_operators < COMPLEX_FOURIER_SERIES, piranha::mp_integer,
+				boost::dividable < COMPLEX_FOURIER_SERIES, piranha::mp_integer,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, FOURIER_SERIES,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, complex<double>,
 				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
-				> > > > > >
+				> > > > > > > > > >
 	{
 			template <class>
 			friend class piranha::toolbox;

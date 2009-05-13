@@ -97,15 +97,31 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &base_add(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			Derived &base_add(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_add(const mp_integer &, const ArgsTuple &);
+			template <class ArgsTuple>
 			Derived &base_subtract(const double &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_subtract(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_subtract(const mp_integer &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &base_subtract(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &base_mult_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>
+			Derived &base_mult_by(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_mult_by(const mp_integer &, const ArgsTuple &);
+			template <class ArgsTuple>
 			Derived &base_mult_by(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &base_divide_by(const double &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_divide_by(const mp_rational &, const ArgsTuple &);
+			template <class ArgsTuple>
+			Derived &base_divide_by(const mp_integer &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &) const;
 			template <class ArgsTuple>

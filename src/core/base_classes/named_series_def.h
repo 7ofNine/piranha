@@ -83,13 +83,21 @@ namespace piranha
 			bool operator==(const mp_integer &) const;
 			bool operator!=(const mp_integer &) const;
 			Derived &operator+=(const double &);
+			Derived &operator+=(const mp_rational &);
+			Derived &operator+=(const mp_integer &);
 			Derived &operator+=(const Derived &);
 			Derived &operator-=(const double &);
+			Derived &operator-=(const mp_rational &);
+			Derived &operator-=(const mp_integer &);
 			Derived &operator-=(const Derived &);
 			Derived operator-() const;
 			Derived &operator*=(const double &);
+			Derived &operator*=(const mp_rational &);
+			Derived &operator*=(const mp_integer &);
 			Derived &operator*=(const Derived &);
 			Derived &operator/=(const double &);
+			Derived &operator/=(const mp_rational &);
+			Derived &operator/=(const mp_integer &);
 			static Derived factorial(const int &);
 			static Derived choose(const int &, const int &);
 			Derived pow(const double &) const;
@@ -160,6 +168,16 @@ public: \
 	explicit series_name(const double &x) \
 	{ \
 		this->construct_from_number(x,this->m_arguments); \
+		this->trim(); \
+	} \
+	explicit series_name(const piranha::mp_rational &q) \
+	{ \
+		this->construct_from_number(q,this->m_arguments); \
+		this->trim(); \
+	} \
+	explicit series_name(const piranha::mp_integer &z) \
+	{ \
+		this->construct_from_number(z,this->m_arguments); \
 		this->trim(); \
 	}
 }

@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../mp.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h"
@@ -78,6 +79,18 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const mp_rational &q)
+	{
+		return merge_number_helper<true>(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const mp_integer &z)
+	{
+		return merge_number_helper<true>(z);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const Derived &s2)
 	{
 		return merge_with_series<true>(s2);
@@ -87,6 +100,18 @@ namespace piranha
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const double &x)
 	{
 		return merge_number_helper<false>(x);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const mp_rational &q)
+	{
+		return merge_number_helper<false>(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const mp_integer &z)
+	{
+		return merge_number_helper<false>(z);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -119,6 +144,18 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator*=(const mp_rational &q)
+	{
+		return mult_number_helper(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator*=(const mp_integer &z)
+	{
+		return mult_number_helper(z);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator*=(const Derived &s2)
 	{
 		return mult_by_series(s2);
@@ -137,6 +174,18 @@ namespace piranha
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator/=(const double &x)
 	{
 		return divide_number_helper(x);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator/=(const mp_rational &q)
+	{
+		return divide_number_helper(q);
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator/=(const mp_integer &z)
+	{
+		return divide_number_helper(z);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

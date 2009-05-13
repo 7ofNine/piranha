@@ -50,6 +50,8 @@ namespace pyranha
 		inst.def(boost::python::init<const T &>());
 		inst.def(boost::python::init<const std::string &>());
 		inst.def(boost::python::init<const double &>());
+		inst.def(boost::python::init<const piranha::mp_rational &>());
+		inst.def(boost::python::init<const piranha::mp_integer &>());
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
 		inst.def("__copy__", &py_copy<T>);
@@ -82,27 +84,51 @@ namespace pyranha
 		inst.def(boost::python::self != piranha::mp_rational());
 		inst.def(boost::python::self != piranha::mp_integer());
 		inst.def(boost::python::self != boost::python::self);
-		// Addition and subtraction.
+		// Addition.
 		inst.def(boost::python::self += double());
+		inst.def(boost::python::self += piranha::mp_rational());
+		inst.def(boost::python::self += piranha::mp_integer());
 		inst.def(boost::python::self += boost::python::self);
 		inst.def(boost::python::self + double());
+		inst.def(boost::python::self + piranha::mp_rational());
+		inst.def(boost::python::self + piranha::mp_integer());
 		inst.def(double() + boost::python::self);
+		inst.def(piranha::mp_rational() + boost::python::self);
+		inst.def(piranha::mp_integer() + boost::python::self);
 		inst.def(boost::python::self + boost::python::self);
+		// Subtraction (same as above).
 		inst.def(boost::python::self -= double());
+		inst.def(boost::python::self -= piranha::mp_rational());
+		inst.def(boost::python::self -= piranha::mp_integer());
 		inst.def(boost::python::self -= boost::python::self);
 		inst.def(boost::python::self - double());
+		inst.def(boost::python::self - piranha::mp_rational());
+		inst.def(boost::python::self - piranha::mp_integer());
 		inst.def(double() - boost::python::self);
+		inst.def(piranha::mp_rational() - boost::python::self);
+		inst.def(piranha::mp_integer() - boost::python::self);
 		inst.def(boost::python::self - boost::python::self);
+		// Negation.
 		inst.def(-boost::python::self);
 		// Multiplication.
 		inst.def(boost::python::self *= double());
+		inst.def(boost::python::self *= piranha::mp_rational());
+		inst.def(boost::python::self *= piranha::mp_integer());
 		inst.def(boost::python::self *= boost::python::self);
-		inst.def(boost::python::self*double());
-		inst.def(double()*boost::python::self);
-		inst.def(boost::python::self*boost::python::self);
+		inst.def(boost::python::self * double());
+		inst.def(boost::python::self * piranha::mp_rational());
+		inst.def(boost::python::self * piranha::mp_integer());
+		inst.def(double() * boost::python::self);
+		inst.def(piranha::mp_rational() * boost::python::self);
+		inst.def(piranha::mp_integer() * boost::python::self);
+		inst.def(boost::python::self * boost::python::self);
 		// Division.
 		inst.def(boost::python::self /= double());
+		inst.def(boost::python::self /= piranha::mp_rational());
+		inst.def(boost::python::self /= piranha::mp_integer());
 		inst.def(boost::python::self / double());
+		inst.def(boost::python::self / piranha::mp_rational());
+		inst.def(boost::python::self / piranha::mp_integer());
 		// Inversion.
 		inst.def("inv", &T::inv, "Series inversion.");
 		// Factorial and binomial coefficient.

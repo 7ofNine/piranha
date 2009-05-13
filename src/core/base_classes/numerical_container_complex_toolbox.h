@@ -144,10 +144,16 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_NUMERICAL_CONTAINER_CTORS() \
+#define COMPLEX_NUMERICAL_CONTAINER_CTORS(...) \
 	template <class ArgsTuple> \
 	explicit complex(const std::complex<double> &c, const ArgsTuple &): \
 			complex_toolbox::numerical_container_complex_toolbox(c) {} \
+	template <class ArgsTuple> \
+	explicit complex(const std::complex<piranha::mp_rational> &qc, const ArgsTuple &): \
+			complex_toolbox::numerical_container_complex_toolbox(qc __VA_ARGS__) {} \
+	template <class ArgsTuple> \
+	explicit complex(const std::complex<piranha::mp_integer> &cz, const ArgsTuple &): \
+			complex_toolbox::numerical_container_complex_toolbox(cz __VA_ARGS__) {} \
 	template <class ArgsTuple> \
 	explicit complex(const value_type &r, const ArgsTuple &): complex_toolbox::numerical_container_complex_toolbox(r) {} \
 	template <class ArgsTuple> \

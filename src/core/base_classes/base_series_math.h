@@ -27,6 +27,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../math.h"
+#include "../mp.h"
 #include "../settings.h"
 #include "../utils.h" // For is_integer().
 #include "base_series_def.h"
@@ -143,9 +144,37 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_add(const mp_rational &q, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<true>(q, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_add(const mp_integer &z, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<true>(z, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
 	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_subtract(const double &x, const ArgsTuple &args_tuple)
 	{
 		return merge_with_number<false>(x, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_subtract(const mp_rational &q, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<false>(q, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_subtract(const mp_integer &z, const ArgsTuple &args_tuple)
+	{
+		return merge_with_number<false>(z, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -173,6 +202,20 @@ namespace piranha
 	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return multiply_by_number(x, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_mult_by(const mp_rational &q, const ArgsTuple &args_tuple)
+	{
+		return multiply_by_number(q, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_mult_by(const mp_integer &z, const ArgsTuple &args_tuple)
+	{
+		return multiply_by_number(z, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -209,6 +252,20 @@ namespace piranha
 	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_divide_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return divide_by_number(x, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_divide_by(const mp_rational &q, const ArgsTuple &args_tuple)
+	{
+		return divide_by_number(q, args_tuple);
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived &toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_divide_by(const mp_integer &z, const ArgsTuple &args_tuple)
+	{
+		return divide_by_number(z, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

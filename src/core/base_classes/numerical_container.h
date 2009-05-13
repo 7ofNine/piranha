@@ -53,6 +53,54 @@ namespace piranha
 			typedef std::complex<double> type;
 	};
 
+	template <class T, class U>
+	struct in_place_transform {
+		static const U &run(const U &u)
+		{
+			return u;
+		}
+	};
+
+	template <class U>
+	struct in_place_transform<double,U> {
+		static const double run(const U &u)
+		{
+			return u.to_double();
+		}
+	};
+
+	template <>
+	struct in_place_transform<double,double> {
+		static const double &run(const double &u)
+		{
+			return u;
+		}
+	};
+
+	template <class U>
+	struct in_place_transform<std::complex<double>,U> {
+		static const std::complex<double> run(const U &u)
+		{
+			return u.to_double();
+		}
+	};
+
+	template <>
+	struct in_place_transform<std::complex<double>,std::complex<double> > {
+		static const std::complex<double> &run(const std::complex<double> &u)
+		{
+			return u;
+		}
+	};
+
+	template <>
+	struct in_place_transform<std::complex<double>,double> {
+		static const double &run(const double &u)
+		{
+			return u;
+		}
+	};
+
 	/// Numerical container class.
 	/**
 	 * This class can be used as a base class for coefficients that consist of a
@@ -263,34 +311,38 @@ namespace piranha
 			}
 			template <class U>
 			Derived &add_generic(const U &x) {
-				m_value += x;
+				m_value += in_place_transform<T,U>::run(x);
 				return *derived_cast;
 			}
 			template <class U>
 			Derived &subtract_generic(const U &x) {
-				m_value -= x;
+				m_value -= in_place_transform<T,U>::run(x);
 				return *derived_cast;
 			}
 			template <class U>
 			Derived &mult_by_generic(const U &x) {
-				m_value *= x;
+				m_value *= in_place_transform<T,U>::run(x);
 				return *derived_cast;
 			}
 			template <class U>
 			Derived &divide_by_generic(const U &x) {
-				m_value /= x;
+				m_value /= in_place_transform<T,U>::run(x);
 				return *derived_cast;
 			}
 		protected:
 			T m_value;
 	};
 
-#define NUMERICAL_CONTAINER_CTORS(derived) \
+	#define NUMERICAL_CONTAINER_CTORS(derived,...) \
 	explicit derived(): ancestor() {} \
 	template <class ArgsTuple> \
 	explicit derived(const std::string &s, const ArgsTuple &a): ancestor(s, a) {} \
 	template <class ArgsTuple> \
 	explicit derived(const double &val, const ArgsTuple &a): ancestor(val, a) {} \
+	template <class ArgsTuple> \
+	explicit derived(const piranha::mp_rational &val, const ArgsTuple &a): ancestor(val __VA_ARGS__ , a) {} \
+	template <class ArgsTuple> \
+	explicit derived(const piranha::mp_integer &val, const ArgsTuple &a): ancestor(val __VA_ARGS__ , a) {} \
 	template <class ArgsTuple> \
 	explicit derived(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 }
