@@ -186,6 +186,24 @@ namespace piranha
 				boost::hash_combine(retval, hasher(m_imag));
 				return retval;
 			}
+			/// Cast to double.
+			/**
+			 * Following Python's behaviour, it will throw type_error.
+			 */
+			double to_double() const
+			{
+				piranha_throw(type_error,"cannot convert complex to real floating point");
+				return  0.;
+			}
+			/// Cast to int.
+			/**
+			 * Following Python's behaviour, it will throw type_error.
+			 */
+			int to_int() const
+			{
+				piranha_throw(type_error,"cannot convert complex to real int");
+				return  0;
+			}
 			/// Cast to complex double.
 			/**
 			 * Will call the to_double() method on real and imaginary part.
