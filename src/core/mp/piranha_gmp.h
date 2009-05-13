@@ -39,7 +39,7 @@
 
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
 // - overload std::pow for exponentiation to rational
-// - icrement and decrement operators
+// - interaction between real of one type with complex of other type?
 // ...
 
 namespace piranha
@@ -134,13 +134,15 @@ namespace piranha
 	 */
 	class mp_rational:
 		public mp_toolbox<mpq_class,mp_rational>,
+		boost::incrementable<mp_rational,
+		boost::decrementable<mp_rational,
 		boost::ordered_field_operators<mp_rational,
 		boost::ordered_field_operators<mp_rational, int,
 		boost::ordered_field_operators<mp_rational, double,
 		boost::ordered_field_operators<mp_rational, mp_integer,
 		boost::equality_comparable<mp_rational, std::complex<double>,
 		boost::equality_comparable<mp_rational, std::complex<int>
-		> > > > > >
+		> > > > > > > >
 	{
 			friend class mp_toolbox<mpq_class,mp_rational>;
 		public:
@@ -488,12 +490,14 @@ namespace piranha
 	 */
 	class mp_integer:
 		public mp_toolbox<mpz_class,mp_integer>,
+		boost::incrementable<mp_integer,
+		boost::decrementable<mp_integer,
 		boost::ordered_field_operators<mp_integer,
 		boost::ordered_field_operators<mp_integer, int,
 		boost::ordered_field_operators<mp_integer, double,
 		boost::equality_comparable<mp_integer, std::complex<double>,
 		boost::equality_comparable<mp_integer, std::complex<int>
-		> > > > >
+		> > > > > > >
 	{
 			friend class mp_toolbox<mpz_class,mp_integer>;
 		public:
