@@ -91,6 +91,7 @@ namespace std
 			friend class piranha::numerical_container_complex_toolbox<piranha::mpq_cf>;
 		public:
 			using complex_toolbox::divide_by;
+			using ancestor::divide_by;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
 			typedef piranha::mpq_cf value_type;

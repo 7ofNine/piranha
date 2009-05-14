@@ -39,6 +39,7 @@
 #include "../base_classes/named_power_series.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
+#include "../mp.h"
 #include "../polynomial_common/monomial.h"
 #include "../polynomial_common/base_polynomial_toolbox.h"
 
@@ -63,8 +64,12 @@ namespace piranha
 				public toolbox<named_series_special_functions< POLYNOMIAL > >,
 				boost::ring_operators < POLYNOMIAL,
 				boost::ring_operators < POLYNOMIAL, double,
-				boost::dividable < POLYNOMIAL, double
-				> > >
+				boost::dividable < POLYNOMIAL, double,
+				boost::ring_operators < POLYNOMIAL, mp_rational,
+				boost::dividable < POLYNOMIAL, mp_rational,
+				boost::ring_operators < POLYNOMIAL, mp_integer,
+				boost::dividable < POLYNOMIAL, mp_integer
+				> > > > > > >
 	{
 			template <class>
 			friend class toolbox;
@@ -105,10 +110,14 @@ namespace std
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
 				boost::dividable < COMPLEX_POLYNOMIAL, double,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::mp_rational,
+				boost::dividable < COMPLEX_POLYNOMIAL, piranha::mp_rational,
+				boost::ring_operators < COMPLEX_POLYNOMIAL, piranha::mp_integer,
+				boost::dividable < COMPLEX_POLYNOMIAL, piranha::mp_integer,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, complex<double>,
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
-				> > > > > >
+				> > > > > > > > > >
 	{
 			template <class>
 			friend class piranha::toolbox;

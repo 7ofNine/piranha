@@ -40,6 +40,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../fourier_series/fourier_series_term.h"
+#include "../mp.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
 #include "../poisson_series_common/celmec_toolbox.h"
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
@@ -69,8 +70,12 @@ namespace piranha
 				public toolbox<celmec< POISSON_SERIES > >,
 				boost::ring_operators < POISSON_SERIES,
 				boost::ring_operators < POISSON_SERIES, double,
-				boost::dividable < POISSON_SERIES, double
-				> > >
+				boost::dividable < POISSON_SERIES, double,
+				boost::ring_operators < POISSON_SERIES, mp_rational,
+				boost::dividable < POISSON_SERIES, mp_rational,
+				boost::ring_operators < POISSON_SERIES, mp_integer,
+				boost::dividable < POISSON_SERIES, mp_integer
+				> > > > > > >
 	{
 			template <class>
 			friend class toolbox;
@@ -111,10 +116,14 @@ namespace std
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, double,
 				boost::dividable < COMPLEX_POISSON_SERIES, double,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::mp_rational,
+				boost::dividable < COMPLEX_POISSON_SERIES, piranha::mp_rational,
+				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::mp_integer,
+				boost::dividable < COMPLEX_POISSON_SERIES, piranha::mp_integer,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<double>,
 				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
-				> > > > > >
+				> > > > > > > > > >
 	{
 			template <class>
 			friend class piranha::toolbox;

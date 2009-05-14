@@ -63,7 +63,7 @@ namespace piranha
 
 	template <class U>
 	struct in_place_transform<double,U> {
-		static const double run(const U &u)
+		static double run(const U &u)
 		{
 			return u.to_double();
 		}
@@ -79,7 +79,7 @@ namespace piranha
 
 	template <class U>
 	struct in_place_transform<std::complex<double>,U> {
-		static const std::complex<double> run(const U &u)
+		static std::complex<double> run(const U &u)
 		{
 			return u.to_double();
 		}
