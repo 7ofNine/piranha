@@ -30,21 +30,13 @@
 namespace pyranha
 {
 	template <class T, class U>
-	inline void mp_operators(T &inst, const U &x)
+	inline void common_mp_operators(T &inst, const U &x)
 	{
 		// Comparisons
 		inst.def(boost::python::self == x);
 		inst.def(boost::python::self != x);
-		inst.def(boost::python::self < x);
-		inst.def(boost::python::self <= x);
-		inst.def(boost::python::self > x);
-		inst.def(boost::python::self >= x);
 		inst.def(x == boost::python::self);
 		inst.def(x != boost::python::self);
-		inst.def(x < boost::python::self);
-		inst.def(x <= boost::python::self);
-		inst.def(x > boost::python::self);
-		inst.def(x >= boost::python::self);
 		// Addition and subtraction.
 		inst.def(boost::python::self += x);
 		inst.def(boost::python::self + x);
@@ -63,24 +55,56 @@ namespace pyranha
 	}
 
 	template <class T>
-	inline boost::python::class_<T> expose_mp_class(const std::string &name, const std::string &doc)
+	inline void common_mp_methods(boost::python::class_<T>  &inst)
 	{
-		boost::python::class_<T> inst(name.c_str(),doc.c_str(),boost::python::init<>());
+		// Constructors.
 		inst.def(boost::python::init<const int &>());
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const std::string &>());
-		inst.def(boost::python::init<const T &>());
+		inst.def(boost::python::init<const piranha::mp_rational &>());
+		inst.def(boost::python::init<const piranha::mp_integer &>());
 		// Some special methods.
 		inst.def("__abs__", &T::abs, "Absolute value.");
 		inst.def("__copy__", &py_copy<T>);
 		inst.def(boost::python::self_ns::repr(boost::python::self));
+		// Negation.
+		inst.def(-boost::python::self);
+	}
+
+	template <class T, class U>
+	inline void real_mp_operators(T &inst, const U &x)
+	{
+		common_mp_operators(inst,x);
+		// Comparisons
+		inst.def(boost::python::self < x);
+		inst.def(boost::python::self <= x);
+		inst.def(boost::python::self > x);
+		inst.def(boost::python::self >= x);
+		inst.def(x < boost::python::self);
+		inst.def(x <= boost::python::self);
+		inst.def(x > boost::python::self);
+		inst.def(x >= boost::python::self);
+	}
+
+	template <class T>
+	inline void real_mp_methods(boost::python::class_<T> &inst)
+	{
+		common_mp_methods(inst);
+		// Conversions.
 		inst.def("__float__", &T::to_double, "Convert to floating point.");
 		inst.def("__int__", &T::to_int, "Convert to integer.");
+	}
+
+	template <class T>
+	inline boost::python::class_<T> expose_real_mp_class(const std::string &name, const std::string &doc)
+	{
+		boost::python::class_<T> inst(name.c_str(),doc.c_str(),boost::python::init<>());
+		real_mp_methods(inst);
 		// Operators against standard types.
-		mp_operators(inst,int());
-		mp_operators(inst,double());
-		mp_operators(inst,boost::python::self);
-		inst.def(-boost::python::self);
+		real_mp_operators(inst,int());
+		real_mp_operators(inst,double());
+		real_mp_operators(inst,piranha::mp_rational());
+		real_mp_operators(inst,piranha::mp_integer());
 		// Exponentiation & friends.
 		inst.def("__pow__",&T::pow,"Exponentiation.");
 		inst.def("root",&T::root,"N-th root.");
