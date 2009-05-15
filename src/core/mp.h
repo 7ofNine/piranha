@@ -21,7 +21,24 @@
 #ifndef PIRANHA_MP_H
 #define PIRANHA_MP_H
 
+#include <cmath>
+
 // For now we support only GMP.
 #include "mp/piranha_gmp.h"
+
+namespace std
+{
+	/// Overload std::pow for double and piranha::mp_rational arguments.
+	inline double pow(const double &x, const piranha::mp_rational &q)
+	{
+		return pow(x,q.to_double());
+	}
+
+	/// Overload std::pow for std::complex<double> and piranha::mp_rational arguments.
+	inline complex<double> pow(const complex<double> &c, const piranha::mp_rational &q)
+	{
+		return pow(c,q.to_double());
+	}
+}
 
 #endif

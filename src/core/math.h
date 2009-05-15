@@ -253,6 +253,35 @@ namespace piranha
 	{
 		return Ynm(n,m,theta,std::polar(1.,phi),std::complex<double>(),alpha,beta,gamma);
 	}
+
+	// Root functions.
+
+	/// Root function.
+	/**
+	 * @throws value_error if n <= 0 or if x < 0 and n is not unitary.
+	 */
+	inline double root(const int &n, const double &x)
+	{
+		if (n <= 0) {
+			piranha_throw(value_error,"root order must be strictly positive");
+		}
+		if (x < 0 && n > 1) {
+			piranha_throw(value_error,"cannot calculate the root of a negative real number");
+		}
+		return std::pow(x, 1./(double)n);
+	}
+
+	/// Root function, complex version.
+	/**
+	 * @throws value_error if n <= 0.
+	 */
+	inline std::complex<double> root(const int &n, const std::complex<double> &c)
+	{
+		if (n <= 0) {
+			piranha_throw(value_error,"root order must be strictly positive");
+		}
+		return std::pow(c, 1./(double)n);
+	}
 }
 
 #endif

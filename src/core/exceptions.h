@@ -43,7 +43,7 @@
 		piranha_throw(assertion_error,"assertion error"); \
 	}
 #else
-#define p_assert(__arg)
+#define piranha_assert(__arg)
 #endif // _PIRANHA_ENABLE_ASSERTS
 
 #endif
