@@ -268,7 +268,7 @@ namespace piranha
 		if (x < 0 && n > 1) {
 			piranha_throw(value_error,"cannot calculate the root of a negative real number");
 		}
-		return std::pow(x, 1./(double)n);
+		return std::pow(x, 1. / (double)n);
 	}
 
 	/// Root function, complex version.
@@ -280,7 +280,7 @@ namespace piranha
 		if (n <= 0) {
 			piranha_throw(value_error,"root order must be strictly positive");
 		}
-		return std::pow(c, 1./(double)n);
+		return std::pow(c, 1. / (double)n);
 	}
 }
 

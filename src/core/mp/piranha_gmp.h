@@ -104,8 +104,9 @@ namespace piranha
 	#define derived_const_cast static_cast<Derived const *>(this)
 	#define derived_cast static_cast<Derived *>(this)
 
+	/// Toolbox of usefule functions for wrapping GMP-like types.
 	template <class T, class Derived>
-	class mp_toolbox {
+	class gmp_toolbox {
 		public:
 			/// Absolute value.
 			Derived abs() const
@@ -116,6 +117,11 @@ namespace piranha
 			const T &get_internal() const
 			{
 				return derived_const_cast->m_value;
+			}
+			/// Print to stream.
+			std::ostream &print(std::ostream &s) const
+			{
+				return (s << derived_const_cast->m_value);
 			}
 		protected:
 			template <class U>
@@ -133,7 +139,7 @@ namespace piranha
 	 * Wraps a GMP mpq_class.
 	 */
 	class mp_rational:
-		public mp_toolbox<mpq_class,mp_rational>,
+		public gmp_toolbox<mpq_class,mp_rational>,
 		boost::incrementable<mp_rational,
 		boost::decrementable<mp_rational,
 		boost::ordered_field_operators<mp_rational,
@@ -144,7 +150,7 @@ namespace piranha
 		boost::equality_comparable<mp_rational, std::complex<int>
 		> > > > > > > >
 	{
-			friend class mp_toolbox<mpq_class,mp_rational>;
+			friend class gmp_toolbox<mpq_class,mp_rational>;
 		public:
 			/// Default constructor.
 			/**
@@ -464,8 +470,7 @@ namespace piranha
 	/// Overload of out stream operator<< for piranha::mp_rational.
 	inline std::ostream &operator<<(std::ostream &o, const mp_rational &q)
 	{
-		o << q.get_internal();
-		return o;
+		return q.print(o);
 	}
 
 	/// Overload in stream operator>> for piranha::mp_rational.
@@ -489,7 +494,7 @@ namespace piranha
 	 * Wraps a GMP mpz_class.
 	 */
 	class mp_integer:
-		public mp_toolbox<mpz_class,mp_integer>,
+		public gmp_toolbox<mpz_class,mp_integer>,
 		boost::incrementable<mp_integer,
 		boost::decrementable<mp_integer,
 		boost::ordered_field_operators<mp_integer,
@@ -499,7 +504,7 @@ namespace piranha
 		boost::equality_comparable<mp_integer, std::complex<int>
 		> > > > > > >
 	{
-			friend class mp_toolbox<mpz_class,mp_integer>;
+			friend class gmp_toolbox<mpz_class,mp_integer>;
 		public:
 			/// Default constructor.
 			/**
@@ -725,10 +730,9 @@ namespace piranha
 	FORWARDING_COMPARISON_OPERATOR(mp_integer,double,>)
 
 	/// Overload of out stream operator<< for piranha::mp_integer.
-	inline std::ostream &operator<<(std::ostream &o, const mp_integer &q)
+	inline std::ostream &operator<<(std::ostream &o, const mp_integer &z)
 	{
-		o << q.get_internal();
-		return o;
+		return z.print(o);
 	}
 
 	/// Overload in stream operator>> for piranha::mp_integer.
