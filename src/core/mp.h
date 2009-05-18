@@ -21,19 +21,258 @@
 #ifndef PIRANHA_MP_H
 #define PIRANHA_MP_H
 
+#include <algorithm>
+#include <boost/functional/hash.hpp>
 #include <cmath>
 #include <complex>
+#include <string>
 
 // For now we support only GMP.
 #include "mp/piranha_gmp.h"
 
+// Function overloads that go into the piranha namespace.
 namespace piranha
 {
+	/* RATIONAL CLASS OVERLOADS */
+	/* ------------------------ */
 
+	/// Overload of out stream operator<< for piranha::mp_rational.
+	inline std::ostream &operator<<(std::ostream &o, const mp_rational &q)
+	{
+		return q.print(o);
+	}
+
+	/// Overload in stream operator>> for piranha::mp_rational.
+	inline std::istream &operator>>(std::istream &i, mp_rational &q)
+	{
+		std::string tmp_str;
+		std::getline(i,tmp_str);
+		mp_rational tmp(tmp_str);
+		q.swap(tmp);
+		return i;
+	}
+
+	/// Overload hash_value function for piranha::mp_rational.
+	inline size_t hash_value(const mp_rational &q)
+	{
+                return q.hash();
+	}
+
+	/// Overload in stream operator>> for std::complex<piranha::mp_rational>.
+	inline std::istream &operator>>(std::istream &i, std::complex<mp_rational> &qc)
+	{
+		std::string tmp_str;
+		std::getline(i,tmp_str);
+		std::complex<mp_rational> tmp(tmp_str);
+		qc.swap(tmp);
+		return i;
+	}
+
+	/// Overload hash_value function for std::complex<piranha::mp_rational>.
+	inline size_t hash_value(const std::complex<mp_rational> &qc)
+	{
+		return qc.hash();
+	}
+
+	/* INTEGER CLASS OVERLOADS */
+	/* ----------------------- */
+
+	/// Overload of out stream operator<< for piranha::mp_integer.
+	inline std::ostream &operator<<(std::ostream &o, const mp_integer &z)
+	{
+		return z.print(o);
+	}
+
+	/// Overload in stream operator>> for piranha::mp_integer.
+	inline std::istream &operator>>(std::istream &i, mp_integer &z)
+	{
+		std::string tmp_str;
+		std::getline(i,tmp_str);
+		mp_integer tmp(tmp_str);
+		z.swap(tmp);
+		return i;
+	}
+
+	/// Overload hash_value function for piranha::mp_integer.
+	inline size_t hash_value(const mp_integer &z)
+	{
+                return z.hash();
+	}
+
+	/// Overload in stream operator>> for std::complex<piranha::mp_integer>.
+	inline std::istream &operator>>(std::istream &i, std::complex<mp_integer> &zc)
+	{
+		std::string tmp_str;
+		std::getline(i,tmp_str);
+		std::complex<mp_integer> tmp(tmp_str);
+		zc.swap(tmp);
+		return i;
+	}
+
+	/// Overload hash_value function for std::complex<piranha::mp_integer>.
+	inline size_t hash_value(const std::complex<mp_integer> &zc)
+	{
+		return zc.hash();
+	}
 }
 
 namespace std
 {
+	/* RATIONAL CLASS OVERLOADS */
+	/* ------------------------ */
+
+	/// Overload standard swap function for piranha::mp_rational.
+	/**
+	 * Will use piranha::mp_rational::swap() internally.
+	 * @see piranha::mp_rational::swap().
+	 */
+	inline void swap(piranha::mp_rational &q1, piranha::mp_rational &q2)
+	{
+		q1.swap(q2);
+	}
+
+	/// Overload standard power function for piranha::mp_rational and double argument.
+	/**
+	 * @see piranha::mp_rational::pow.
+	 */
+	inline piranha::mp_rational pow(const piranha::mp_rational &q, const double &y)
+	{
+		return q.pow(y);
+	}
+
+	/// Overload standard power function for piranha::mp_rational and int argument.
+	/**
+	 * @see piranha::mp_rational::pow.
+	 */
+	inline piranha::mp_rational pow(const piranha::mp_rational &q, const int &y)
+	{
+		return q.pow(y);
+	}
+
+	/// Overload standard abs function for piranha::mp_rational.
+	/**
+	 * @see piranha::mp_rational::abs.
+	 */
+	inline piranha::mp_rational abs(const piranha::mp_rational &q)
+	{
+		return q.abs();
+	}
+
+	/// Overload of standard swap function for std::complex<piranha::mp_rational>.
+	/**
+	 * Will use the swap() method internally.
+	 */
+	inline void swap(complex<piranha::mp_rational> &qc1, complex<piranha::mp_rational> &qc2)
+	{
+		qc1.swap(qc2);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_rational> and double argument.
+	/**
+	 * @see std::complex<piranha::mp_rational>::pow.
+	 */
+	inline complex<piranha::mp_rational> pow(const complex<piranha::mp_rational> &qc, const double &y)
+	{
+		return qc.pow(y);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_rational> and int argument.
+	/**
+	 * @see std::complex<piranha::mp_rational>::pow.
+	 */
+	inline complex<piranha::mp_rational> pow(const complex<piranha::mp_rational> &qc, const int &y)
+	{
+		return qc.pow(y);
+	}
+
+	/// Overload standard abs function for std::complex<piranha::mp_rational>.
+	/**
+	 * @see complex_generic_mp_container::abs()
+	 */
+	inline piranha::mp_rational abs(const complex<piranha::mp_rational> &qc)
+	{
+		return qc.abs();
+	}
+
+	/* INTEGER CLASS OVERLOADS */
+	/* ------------------------ */
+
+	/// Overload standard swap function for piranha::mp_integer.
+	/**
+	 * Will use piranha::mp_integer::swap() internally.
+	 * @see piranha::mp_integer::swap().
+	 */
+	inline void swap(piranha::mp_integer &z1, piranha::mp_integer &z2)
+	{
+		z1.swap(z2);
+	}
+
+	/// Overload standard power function for piranha::mp_integer and double argument.
+	/**
+	 * @see piranha::mp_integer::pow.
+	 */
+	inline piranha::mp_integer pow(const piranha::mp_integer &z, const double &y)
+	{
+		return z.pow(y);
+	}
+
+	/// Overload standard power function for piranha::mp_integer and int argument.
+	/**
+	 * @see piranha::mp_integer::pow.
+	 */
+	inline piranha::mp_integer pow(const piranha::mp_integer &z, const int &y)
+	{
+		return z.pow(y);
+	}
+
+	/// Overload standard abs function for piranha::mp_integer.
+	/**
+	 * @see piranha::mp_integer::abs.
+	 */
+	inline piranha::mp_integer abs(const piranha::mp_integer &z)
+	{
+		return z.abs();
+	}
+
+	/// Overload of standard swap function for std::complex<piranha::mp_integer>.
+	/**
+	 * Will use the swap() method internally.
+	 */
+	inline void swap(complex<piranha::mp_integer> &zc1, complex<piranha::mp_integer> &zc2)
+	{
+		zc1.swap(zc2);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_integer> and double argument.
+	/**
+	 * @see std::complex<piranha::mp_integer>::pow.
+	 */
+	inline complex<piranha::mp_integer> pow(const complex<piranha::mp_integer> &zc, const double &y)
+	{
+		return zc.pow(y);
+	}
+
+	/// Overload standard power function for std::complex<piranha::mp_integer> and int argument.
+	/**
+	 * @see std::complex<piranha::mp_integer>::pow.
+	 */
+	inline complex<piranha::mp_integer> pow(const complex<piranha::mp_integer> &zc, const int &y)
+	{
+		return zc.pow(y);
+	}
+
+	/// Overload standard abs function for std::complex<piranha::mp_integer>.
+	/**
+	 * @see complex_generic_mp_container::abs()
+	 */
+	inline piranha::mp_integer abs(const complex<piranha::mp_integer> &zc)
+	{
+		return zc.abs();
+	}
+
+	/* OVERLOADS OF POD NUMERICAL TYPES MATHS */
+	/* -------------------------------------- */
+
 	/// Overload std::pow for double and piranha::mp_rational arguments.
 	inline double pow(const double &x, const piranha::mp_rational &q)
 	{
