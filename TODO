@@ -63,6 +63,9 @@
 - what about std::domain_error? check about those standard exceptions....
 - is it interesting to add series type to cf/key template signature in order to
   differentiate them as types?
+
+- special functions should forward to cf if series is single cf, and should use generic hypergeometric
+  function as much as possible.
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container
