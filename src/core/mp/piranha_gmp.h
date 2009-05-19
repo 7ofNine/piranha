@@ -2,7 +2,7 @@
  *   Copyright (C) 2007, 2008 by Francesco Biscani   *
  *   bluescarni@gmail.com   *
  *                                                                         *
- *   This program is free software; you can redis\bute it and/or modify  *
+ *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -36,10 +36,13 @@
 #include "../exceptions.h"
 #include "../utils.h"
 #include "complex_generic_mp_container.h"
+#include "mp_commons.h"
 
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
 // - overload std::pow for exponentiation to rational
 // - interaction between real of one type with complex of other type?
+// - better pow for complex, like handling the case in which there is only real or imaginary part and pow can be forwarded
+//   to the scalar implementation.
 // ...
 
 namespace piranha
@@ -100,42 +103,6 @@ namespace piranha
 	{ \
 		return complex_comparison(c);\
 	}
-
-	#define derived_const_cast static_cast<Derived const *>(this)
-	#define derived_cast static_cast<Derived *>(this)
-
-	/// Toolbox of useful functions for wrapping GMP-like types.
-	/**
-	 * CRTP-based.
-	 */
-	template <class T, class Derived>
-	class gmp_toolbox {
-		public:
-			/// Absolute value.
-			Derived abs() const
-			{
-				return (((*derived_const_cast) >= 0) ? (*derived_const_cast) : -(*derived_const_cast));
-			}
-			/// Const reference to internal type.
-			const T &get_internal() const
-			{
-				return derived_const_cast->m_value;
-			}
-			/// Print to stream.
-			std::ostream &print(std::ostream &s) const
-			{
-				return (s << derived_const_cast->m_value);
-			}
-		protected:
-			template <class U>
-			bool complex_comparison(const std::complex<U> &c) const
-			{
-				return (derived_const_cast->m_value == c.real() && c.imag() == 0);
-			}
-	};
-
-	#undef derived_const_cast
-	#undef derived_cast
 
 	/// Multiprecision rational class.
 	/**
@@ -231,6 +198,10 @@ namespace piranha
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,==)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,<)
 			FORWARDING_COMPARISON_OPERATOR_DECL(mp_rational,mp_integer,>)
+			/// Get copy of numerator.
+			mp_integer get_num() const;
+			/// Get copy of denominator.
+			mp_integer get_den() const;
 			/// Cast to double.
 			/**
 			 * Uses the get_d() GMP routine internally.
@@ -313,6 +284,11 @@ namespace piranha
 				} else {
 					return pow_double(y);
 				}
+			}
+			/// Rational exponentiation.
+			mp_rational pow(const mp_rational &q) const
+			{
+				return rat_pow(*this,q);
 			}
 			/// N-th root.
 			/**
@@ -487,6 +463,8 @@ namespace piranha
 	{
 			friend class gmp_toolbox<mpz_class,mp_integer>;
 		public:
+			/// Make friends with piranha::mp_rational.
+			friend class mp_rational;
 			/// Default constructor.
 			/**
 			 * Initialises value to zero.
@@ -615,6 +593,11 @@ namespace piranha
 					return pow_double(y);
 				}
 			}
+			/// Rational exponentiation.
+			mp_integer pow(const mp_rational &q) const
+			{
+				return rat_pow(*this,q);
+			}
 			/// N-th root.
 			/**
 			 * @throws zero_division_error if n_ is zero.
@@ -730,6 +713,21 @@ namespace piranha
 	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,-=, .get_internal())
 	FORWARDING_MATH_OPERATOR(mp_integer,mp_rational,*=, .get_internal())
 	FORWARDING_DIVISION_OPERATOR(mp_integer,mp_rational, .get_internal())
+
+	// mp_rational's operations that require the definition of mp_integer.
+	inline mp_integer mp_rational::get_num() const
+	{
+		mp_integer retval;
+		retval.m_value = m_value.get_num();
+		return retval;
+	}
+
+	inline mp_integer mp_rational::get_den() const
+	{
+		mp_integer retval;
+		retval.m_value = m_value.get_den();
+		return retval;
+	}
 
 	#undef FORWARDING_CTOR_DECL
 	#undef FORWARDING_CTOR

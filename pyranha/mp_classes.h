@@ -69,6 +69,12 @@ namespace pyranha
 		inst.def(boost::python::self_ns::repr(boost::python::self));
 		// Negation.
 		inst.def(-boost::python::self);
+		// Exponentiation & friends.
+		typedef T (T::*pow_double)(const double &) const;
+		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
+		inst.def("__pow__", (pow_double)&T::pow, "Exponentiation.");
+		inst.def("__pow__", (pow_rational)&T::pow, "Exponentiation.");
+		inst.def("root",&T::root,"N-th root.");
 	}
 
 	template <class T, class U>
@@ -105,9 +111,6 @@ namespace pyranha
 		real_mp_operators(inst,double());
 		real_mp_operators(inst,piranha::mp_rational());
 		real_mp_operators(inst,piranha::mp_integer());
-		// Exponentiation & friends.
-		inst.def("__pow__",&T::pow,"Exponentiation.");
-		inst.def("root",&T::root,"N-th root.");
 		return inst;
 	}
 }
