@@ -40,17 +40,15 @@
 namespace piranha
 {
 	template <class T>
-	class numerical_container_eval_type_determiner
+	struct numerical_container_eval_type_determiner
 	{
-		public:
-			typedef double type;
+		typedef double type;
 	};
 
 	template <class T>
-	class numerical_container_eval_type_determiner<std::complex<T> >
+	struct numerical_container_eval_type_determiner<std::complex<T> >
 	{
-		public:
-			typedef std::complex<double> type;
+		typedef std::complex<double> type;
 	};
 
 	template <class T, class U>
