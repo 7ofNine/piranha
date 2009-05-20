@@ -156,17 +156,15 @@ namespace std
 		q1.swap(q2);
 	}
 
-	/// Overload standard power function for piranha::mp_rational and generic argument.
-	/**
-	 * Call will be forwarded to one of the available pow()
-	 * methods.
-	 * @see piranha::mp_rational::pow().
-	 */
-	template <class T>
-	inline piranha::mp_rational pow(const piranha::mp_rational &q, const T &y)
-	{
-		return q.pow(y);
+	#define STD_POW_OVERLOAD(ret_type, expo_type) \
+	/** \brief Overload standard power function for ret_type argument and expo_type exponent. */ \
+	inline ret_type pow(const ret_type &x, const expo_type &e) \
+	{ \
+		return x.pow(e); \
 	}
+
+	STD_POW_OVERLOAD(piranha::mp_rational,double)
+	STD_POW_OVERLOAD(piranha::mp_rational,piranha::mp_rational)
 
 	/// Overload standard abs function for piranha::mp_rational.
 	/**
@@ -186,17 +184,8 @@ namespace std
 		qc1.swap(qc2);
 	}
 
-	/// Overload standard power function for std::complex<piranha::mp_rational> and double argument.
-	/**
-	 * Call will be forwarded to one of the available pow()
-	 * methods.
-	 * @see std::complex<piranha::mp_rational>::pow().
-	 */
-	template <class T>
-	inline complex<piranha::mp_rational> pow(const complex<piranha::mp_rational> &qc, const T &y)
-	{
-		return qc.pow(y);
-	}
+	STD_POW_OVERLOAD(std::complex<piranha::mp_rational>,double)
+	STD_POW_OVERLOAD(std::complex<piranha::mp_rational>,piranha::mp_rational)
 
 	/// Overload standard abs function for std::complex<piranha::mp_rational>.
 	/**
@@ -220,17 +209,8 @@ namespace std
 		z1.swap(z2);
 	}
 
-	/// Overload standard power function for piranha::mp_integer and generic argument.
-	/**
-	 * Call will be forwarded to one of the available pow()
-	 * methods.
-	 * @see piranha::mp_integer::pow().
-	 */
-	template <class T>
-	inline piranha::mp_integer pow(const piranha::mp_integer &z, const T &y)
-	{
-		return z.pow(y);
-	}
+	STD_POW_OVERLOAD(piranha::mp_integer,double)
+	STD_POW_OVERLOAD(piranha::mp_integer,piranha::mp_rational)
 
 	/// Overload standard abs function for piranha::mp_integer.
 	/**
@@ -250,17 +230,8 @@ namespace std
 		zc1.swap(zc2);
 	}
 
-	/// Overload standard power function for std::complex<piranha::mp_integer> and double argument.
-	/**
-	 * Call will be forwarded to one of the available pow()
-	 * methods.
-	 * @see std::complex<piranha::mp_integer>::pow.
-	 */
-	template <class T>
-	inline complex<piranha::mp_integer> pow(const complex<piranha::mp_integer> &zc, const T &y)
-	{
-		return zc.pow(y);
-	}
+	STD_POW_OVERLOAD(std::complex<piranha::mp_integer>,double)
+	STD_POW_OVERLOAD(std::complex<piranha::mp_integer>,piranha::mp_rational)
 
 	/// Overload standard abs function for std::complex<piranha::mp_integer>.
 	/**

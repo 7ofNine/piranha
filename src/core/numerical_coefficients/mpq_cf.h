@@ -63,18 +63,6 @@ namespace piranha
 				return m_value.to_int();
 			}
 			template <class ArgsTuple>
-			mpq_cf pow(const double &y, const ArgsTuple &) const {
-				mpq_cf retval;
-				retval.m_value = m_value.pow(y);
-				return retval;
-			}
-			template <class ArgsTuple>
-			mpq_cf root(const int &n, const ArgsTuple &) const {
-				mpq_cf retval;
-				retval.m_value = m_value.root(n);
-				return retval;
-			}
-			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
 }
@@ -109,18 +97,6 @@ namespace std
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
-			}
-			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
-				complex retval;
-				retval.m_value = m_value.pow(y);
-				return retval;
-			}
-			template <class ArgsTuple>
-			complex root(const int &n, const ArgsTuple &) const {
-				complex retval;
-				retval.m_value =  m_value.root(n);
-				return retval;
 			}
 	};
 }

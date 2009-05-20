@@ -65,12 +65,6 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			double_cf pow(const double &y, const ArgsTuple &) const {
-				double_cf retval;
-				retval.m_value = std::pow(ancestor::m_value, y);
-				return retval;
-			}
-			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
 	};
 }
@@ -94,15 +88,6 @@ namespace std
 			using complex_toolbox::divide_by;
 			NUMERICAL_CONTAINER_CTORS(complex,.to_double())
 			COMPLEX_NUMERICAL_CONTAINER_CTORS(.to_complex_double())
-			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
-				complex retval;
-				// COMPILER_BUG: Ubuntu hardy's GCC 4.2 compiler craps out if
-				// assiging directly retval.m_value = std::pow().
-				std::complex<double> tmp(std::pow(ancestor::m_value, y));
-				retval.m_value = tmp;
-				return retval;
-			}
 			template <class ArgsTuple>
 			complex besselJ(const int &n, const ArgsTuple &) {
 				// COMPILER_BUG: same as above :/

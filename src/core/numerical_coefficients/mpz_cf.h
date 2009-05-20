@@ -67,18 +67,6 @@ namespace piranha
 			void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &) {
 				m_value.addmul(x1.m_value,x2.m_value);
 			}
-			template <class ArgsTuple>
-			mpz_cf pow(const double &y, const ArgsTuple &) const {
-				mpz_cf retval;
-				retval.m_value = m_value.pow(y);
-				return retval;
-			}
-			template <class ArgsTuple>
-			mpz_cf root(const int &n, const ArgsTuple &) const {
-				mpz_cf retval;
-				retval.m_value = m_value.root(n);
-				return retval;
-			}
 	};
 }
 
@@ -112,12 +100,6 @@ namespace std
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
 				return m_value.to_complex_double();
-			}
-			template <class ArgsTuple>
-			complex pow(const double &y, const ArgsTuple &) const {
-				complex retval;
-				retval.m_value = m_value.pow(y);
-				return retval;
 			}
 	};
 }

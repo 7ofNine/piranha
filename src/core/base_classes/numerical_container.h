@@ -269,16 +269,19 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			Derived inv(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow(-1,args_tuple);
+				return pow(-1,args_tuple);
+			}
+			template <class Number, class ArgsTuple>
+			Derived pow(const Number &n, const ArgsTuple &) const {
+				Derived retval;
+				retval.m_value = std::pow(m_value,n);
+				return retval;
 			}
 			template <class ArgsTuple>
-			Derived root(const int &n, const ArgsTuple &args_tuple) const {
-				if (n == 0) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root");
-				} else if (n == 1) {
-					return Derived(*derived_const_cast);
-				}
-				return derived_const_cast->pow(1. / static_cast<double>(n), args_tuple);
+			Derived root(const int &n, const ArgsTuple &) const {
+				Derived retval;
+				retval.m_value = piranha::root(n,m_value);
+				return retval;
 			}
 			template <class ArgsTuple>
 			Derived besselJ(const int &, const ArgsTuple &) const {

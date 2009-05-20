@@ -876,6 +876,11 @@ namespace std
 					return pow_double(y);
 				}
 			}
+			/// Rational exponentiation.
+			complex pow(const piranha::mp_rational &q) const
+			{
+				return rat_pow(*this,q);
+			}
 			/// N-th root.
 			/**
 			 * @throws zero_division_error if n is zero.
@@ -1086,6 +1091,11 @@ namespace std
 				} else {
 					return pow_double(y);
 				}
+			}
+			/// Rational exponentiation.
+			complex pow(const piranha::mp_rational &q) const
+			{
+				return rat_pow(*this,q);
 			}
 			/// N-th root.
 			/**
