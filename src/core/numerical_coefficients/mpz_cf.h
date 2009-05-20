@@ -26,13 +26,8 @@
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
-#include "../exceptions.h"
-#include "../integer_typedefs.h"
-#include "../math.h"
 #include "../mp.h"
-#include "../settings.h"
 #include "../type_traits.h" // For lightweight attribute.
-#include "../utils.h" // For is_integer().
 
 namespace piranha
 {

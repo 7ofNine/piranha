@@ -268,6 +268,8 @@ namespace std
 	{
 		return pow(c,q.to_double());
 	}
+
+	#undef STD_POW_OVERLOAD
 }
 
 #endif
