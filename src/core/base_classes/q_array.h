@@ -46,10 +46,10 @@ namespace piranha
 	template <int Pos, class Allocator, class Derived>
 	class q_array {
 			p_static_check(Pos >= 0, "Invalid position for int_array.");
-			/// Make friends with q_array with other template parameters (i.e., position and allocator).
+		public:
+			/// Make friends with q_array with other template parameters (i.e., position and/or allocator).
 			template <int, class, class>
 			friend class q_array;
-		public:
 			/// Size type.
 			typedef uint8_t size_type;
 			/// STL-like alias for mp_rational
@@ -88,8 +88,8 @@ namespace piranha
 				(void)args_tuple;
 				// Construct only if the positions match.
 				if (n == position) {
-// 					piranha_assert(args_tuple.template get<position>().size() == 1 &&
-// 							 args_tuple.template get<position>()[0] == p);
+					piranha_assert(args_tuple.template get<position>().size() == 1 &&
+							 args_tuple.template get<position>()[0] == p);
 					resize(1);
 					m_ptr[0] = 1;
 				}
@@ -265,7 +265,7 @@ namespace piranha
 				}
 				return false;
 			}
-		//protected:
+		protected:
 			/// Element setter.
 			value_type &operator[](const size_type &n)
 			{

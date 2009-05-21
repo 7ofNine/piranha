@@ -7,11 +7,9 @@
   Normally a limb contains 32 or 64 bits. The C data type for a limb is mp_limb_t.". Use this
   to evaluate the real size of GMP variables when we will do cache-blocking during multiplications.
   http://gmplib.org/manual/Integer-Special-Functions.html#Integer-Special-Functions
-- Add line - file info into exceptions string.
 - Coded multiplication with mpz as codes when going out of range?
 - elements_* --> ints_* in int_array for clarity
 - int_array --> key_int_array for clarity
-- there _is_ a mpz_swap function, check if it is useful.
 - optimize for small series --> there's no need to avoid direct insertion in series, since we do
   not have sorted indices anymore. For small series, also avoid all the re-sorting and possible coefficient
   copies that are performed for longer series?
@@ -28,11 +26,9 @@
 - series splicing?
 - limit for multiplication time?
 - Generalise conversion to/from series with arguments sets left/right shifting
-- Use this-> instead of ancestor:: everywhere?
 - Place boost::operators in some shared toolbox?
-- Compile with -D_PIRANHA_DEBUG as default?
+- Compile with DEBUG as default?
 - Another interface for Ynm, this time with theta as a complex thingie representing the complex exponential of colatitude?
-- Drop all typename Derived::term_type
 - check that truncators do not sort if not necessary.
 - for hash coded structure, use directly the counting allocator internally.
 - direct calculation of special functions and celmec expansions - psym interface from celmec functions should be dropped
@@ -65,7 +61,8 @@
   differentiate them as types?
 
 - special functions should forward to cf if series is single cf, and should use generic hypergeometric
-  function as much as possible.
+  function as much as possible. Also, for pow maybe we can forward to single term and then handle the case in which
+  something goes wrong (e.g.., the trig key cannot be raised to the specified power)
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container

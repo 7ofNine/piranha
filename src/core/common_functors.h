@@ -29,14 +29,6 @@
 namespace piranha
 {
 	template <class T>
-	struct member_hash_value
-	{
-		size_t operator()(const T &x) const {
-			return x.hash_value();
-		}
-	};
-
-	template <class T>
 	struct named_series_arithmetics
 	{
 		T inv(const T &orig) const {

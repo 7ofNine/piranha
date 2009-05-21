@@ -325,9 +325,8 @@ namespace piranha
 			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches,
-				const ArgsTuple &args_tuple) const {
-				typedef typename RetSeries::term_type ret_term_type;
-				typedef typename ret_term_type::cf_type ret_cf_type;
+				const ArgsTuple &args_tuple) const
+			{
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very expo_array.
