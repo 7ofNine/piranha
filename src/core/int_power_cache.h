@@ -44,20 +44,28 @@ namespace piranha
 		public:
 			int_power_cache(const T &x_1):
 				m_container(),
-				m_arith_functor() {
+				m_arith_functor()
+			{
 				init(x_1);
 			}
 			int_power_cache(const T &x_1, const T &inv_x):
 				m_container(),
-				m_arith_functor() {
+				m_arith_functor()
+			{
 				init(x_1);
 				m_container[-1] = inv_x;
 			}
-			const T &operator[](const int &n) {
+			const T &operator[](const int &n)
+			{
 				iterator it = m_container.find(n);
 				if (it == m_container.end()) {
-					piranha_assert(n != 0 && n != 1);
-					if (n > 0) {
+					piranha_assert(n != 1);
+					// We must handle the case n == 0 here (and not in the ctor, for instance)
+					// because here we are sure that the arith functor has been properly initialised.
+					if (n == 0) {
+						m_container[0] = m_arith_functor.pow(T(),0);
+						return m_container[0];
+					} else if (n > 0) {
 						return insert_new<true>(n);
 					} else {
 						return insert_new<false>(n);
@@ -67,12 +75,13 @@ namespace piranha
 				}
 			}
 		private:
-			void init(const T &x_1) {
-				m_container[0] = T(1);
+			void init(const T &x_1)
+			{
 				m_container[1] = x_1;
 			}
 			template <bool Sign>
-			T &insert_new(int n) {
+			T &insert_new(int n)
+			{
 				piranha_assert((Sign && n > 0) || (!Sign && n < 0));
 				const int orig_n = n;
 				std::vector<int> ebs_sequence;

@@ -26,16 +26,25 @@
 #include "base_classes/toolbox.h"
 #include "exceptions.h"
 
+// NOTE: maybe better move these and the caches into own subdirectory.
+
 namespace piranha
 {
+	// TODO: use std::pow instead of pow method and inv().
 	template <class T>
 	struct named_series_arithmetics
 	{
-		T inv(const T &orig) const {
+		T inv(const T &orig) const
+		{
 			return orig.inv();
 		}
-		void multiply(T &orig, const T &other) const {
+		void multiply(T &orig, const T &other) const
+		{
 			orig *= other;
+		}
+		T pow(const T &orig, const double &x) const
+		{
+			return orig.pow(x);
 		}
 	};
 
@@ -46,15 +55,21 @@ namespace piranha
 
 	template <class T, class ArgsTuple>
 	struct toolbox<base_series_arithmetics<T,ArgsTuple> > {
-		toolbox():m_args_tuple(0)
-		{}
-		T inv(const T &orig) const {
+		toolbox():m_args_tuple(0) {}
+		T inv(const T &orig) const
+		{
 			piranha_assert(m_args_tuple);
 			return orig.base_inv(*m_args_tuple);
 		}
-		void multiply(T &orig, const T &other) const {
+		void multiply(T &orig, const T &other) const
+		{
 			piranha_assert(m_args_tuple);
 			orig.base_mult_by(other,*m_args_tuple);
+		}
+		T pow(const T &orig, const double &x) const
+		{
+			piranha_assert(m_args_tuple);
+			return orig.base_pow(x,*m_args_tuple);
 		}
 		mutable ArgsTuple const *m_args_tuple;
 	};
