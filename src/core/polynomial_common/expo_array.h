@@ -67,7 +67,7 @@ namespace piranha
 					typedef int_power_cache<SubSeries,
 						typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
 				public:
-					sub_cache():ancestor::int_power_cache() {}
+					sub_cache():ancestor() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
 						this->m_container[0] = SubSeries().base_add(1,*args_tuple);
@@ -136,15 +136,13 @@ namespace piranha
 			// I/O.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				// We assert like this because we want to make sure we don't go out of boundaries,
-				// and because in case of fixed-width we may have smaller size of v wrt to "real" size.
-				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				(void)args_tuple;
 				this->print_elements(out_stream);
 			}
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->size());
+				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				bool printed_something = false;
 				for (size_t i = 0; i < this->m_size; ++i) {
 					const int n = this->m_container.v[i];
@@ -234,14 +232,14 @@ namespace piranha
 			}
 			/// Minimum total degree of the exponents array.
 			/**
-			 * Provided for use within the power series toolbox, and defined to be equal to degree().
+			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
 			int min_degree() const {
 				return degree();
 			}
 			/// Minimum total degree of the variables at specified positions pos.
 			/**
-			 * Provided for use within the power series toolbox, and defined to be equal to partial_degree().
+			 * Provided for use within the power series toolbox, and defined to be equivalent to partial_degree().
 			 */
 			template <class PosTuple>
 			int partial_min_degree(const PosTuple &pos_tuple) const {
