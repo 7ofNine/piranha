@@ -39,6 +39,7 @@
 #include "mp_commons.h"
 
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
+// - do not use boost::operator ++ and --, use common impl in mp_commons instead and overload correctly for pre/post increment.
 // - overload std::pow for exponentiation to rational
 // - interaction between real of one type with complex of other type?
 // - better pow for complex, like handling the case in which there is only real or imaginary part and pow can be forwarded

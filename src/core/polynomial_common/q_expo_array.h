@@ -66,8 +66,8 @@ namespace piranha
 					sub_cache():ancestor() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[0] = SubSeries().base_add(1,*args_tuple);
-						this->m_container[1] = s;
+						this->m_container[mp_rational(0)] = SubSeries().base_add(1,*args_tuple);
+						this->m_container[mp_rational(1)] = s;
 					}
 			};
 			// This is just a stub.
@@ -141,7 +141,7 @@ namespace piranha
 			{
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				bool printed_something = false;
-				for (size_t i = 0; i < this->m_size; ++i) {
+				for (size_t i = 0; i < this->size(); ++i) {
 					const value_type &q = (*this)[i];
 					// Don't print anything if q is zero.
 					if (q != 0) {
@@ -214,8 +214,8 @@ namespace piranha
 			/// Return the total degree of the exponents array.
 			int degree() const
 			{
-				value_type tmp = 0;
-				for (size_type i = 0; i < this->m_size; ++i) {
+				value_type tmp(0);
+				for (size_type i = 0; i < this->size(); ++i) {
 					tmp += (*this)[i];
 				}
 				return sup_integer(tmp);
@@ -229,7 +229,7 @@ namespace piranha
 			{
 				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
-				value_type tmp = 0;
+				value_type tmp(0);
 				for (size_type i = 0; i < pos_size; ++i) {
 					// Add up exponents only if they are present and don't try to read outside boundaries
 					// (this last could happen after merging arguments with a second series with smaller
@@ -297,9 +297,10 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
-				if (pos_tuple.template get<ancestor::position>()[0].first && this->m_container.v[pos] != 0) {
+				if (pos_tuple.template get<ancestor::position>()[0].first && (*this)[pos] != 0) {
 					toolbox copy(*this);
-					--copy[pos];
+					// TODO: use decrement operator here.
+					copy[pos] = copy[pos] - 1;
 					retval = Series::base_series_from_key(copy,args_tuple);
 					retval.base_mult_by((*this)[pos],args_tuple);
 				}

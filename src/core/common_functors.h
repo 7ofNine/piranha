@@ -42,9 +42,10 @@ namespace piranha
 		{
 			orig *= other;
 		}
-		T pow(const T &orig, const double &x) const
+		template <class U>
+		T pow(const T &orig, const U &y) const
 		{
-			return orig.pow(x);
+			return orig.pow(y);
 		}
 	};
 
@@ -66,10 +67,11 @@ namespace piranha
 			piranha_assert(m_args_tuple);
 			orig.base_mult_by(other,*m_args_tuple);
 		}
-		T pow(const T &orig, const double &x) const
+		template <class U>
+		T pow(const T &orig, const U &y) const
 		{
 			piranha_assert(m_args_tuple);
-			return orig.base_pow(x,*m_args_tuple);
+			return orig.base_pow(y,*m_args_tuple);
 		}
 		mutable ArgsTuple const *m_args_tuple;
 	};
