@@ -1,0 +1,2 @@
+ADD_LIBRARY(_Qqpoly SHARED Qqpoly.cpp)
+PYRANHA_MANIPULATOR(_Qqpoly)
