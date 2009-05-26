@@ -129,8 +129,6 @@ namespace pyranha
 		inst.def(boost::python::self / double());
 		inst.def(boost::python::self / piranha::mp_rational());
 		inst.def(boost::python::self / piranha::mp_integer());
-		// Inversion.
-		inst.def("inv", &T::inv, "Series inversion.");
 		// Factorial and binomial coefficient.
 		typedef T (*named_factorial)(const int &);
 		inst.def("factorial", named_factorial(&T::factorial), "Factorial function.").staticmethod("factorial");
