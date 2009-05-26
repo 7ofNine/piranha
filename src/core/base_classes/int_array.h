@@ -213,10 +213,6 @@ namespace piranha
 					m_container.v[i] = -m_container.v[i];
 				}
 			}
-			template <class ArgsTuple>
-			Derived inv(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow(-1,args_tuple);
-			}
 			/// Upload integers to vector of integers.
 			void upload_ints_to(std::vector<int> &v) const {
 				piranha_assert(v.size() >= m_size);

@@ -218,15 +218,6 @@ namespace piranha
 		return retval;
 	}
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::inv() const
-	{
-		Derived retval = derived_const_cast->base_inv(m_arguments);
-		retval.m_arguments = m_arguments;
-		retval.trim();
-		return retval;
-	}
-
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::partial(const psym &p, const int &n) const

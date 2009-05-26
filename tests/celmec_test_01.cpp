@@ -61,7 +61,7 @@ int main()
 	retval += (ps::eipE(e_s,M_s,5).abs() != 1);
 	retval += (ps::eipE(e_s,M_s,5) * ps::eipE(e_s,M_s,-5) != 1);
 	retval += (ps::eipE(e_s,M_s,1).pow(6) != ps::eipE(e_s,M_s,6));
-	retval += (ps::eipE(e_s,M_s,1).inv().pow(6) != ps::eipE(e_s,M_s,-6));
+	retval += (ps::eipE(e_s,M_s,1).pow(-1).pow(6) != ps::eipE(e_s,M_s,-6));
 
 	return retval;
 }

@@ -73,7 +73,7 @@ namespace piranha
 			friend class toolbox;
 			using FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using FOURIER_SERIES_BINOMIAL_ANCESTOR::nth_root;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
 		public:
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
@@ -118,7 +118,7 @@ namespace std
 			friend class piranha::toolbox;
 			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::nth_root;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_add;

@@ -131,6 +131,8 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
+			Derived base_pow(const mp_rational &, const ArgsTuple &) const;
+			template <class ArgsTuple>
 			Derived base_root(const int &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(int, const PosTuple &, const ArgsTuple &) const;
@@ -182,7 +184,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived real_power(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived nth_root(const int &, const ArgsTuple &) const;
+			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
 			template <class Series, class PosTuple, class ArgsTuple>
@@ -198,10 +200,8 @@ namespace piranha
 			Derived &multiply_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
-			template <class ArgsTuple>
-			bool common_power_handler(const double &, Derived &retval, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			bool common_root_handler(const int &, Derived &retval, const ArgsTuple &) const;
+			template <class Number, class ArgsTuple>
+			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 		private:
 			container_type m_container;
 	};

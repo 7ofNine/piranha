@@ -22,6 +22,7 @@
 #define PIRANHA_EXPO_ARRAY_H
 
 #include <boost/algorithm/string/split.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/conversion/converter.hpp>
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <gmp.h>
@@ -37,6 +38,7 @@
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"
+#include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // For is_integer() and lexical_cast.
@@ -300,24 +302,16 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			toolbox root(const int &n, const ArgsTuple &) const {
-				toolbox retval = *this;
-				if (n == 0) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root");
-				} else if (n == 1) {
-					return retval;
-				}
-				const size_t size = this->size();
-				const mpz_class d = n;
-				mpz_class rem;
-				std::vector<mpz_class> qs(size);
-				for (size_t i = 0; i < size; ++i) {
-					mpz_tdiv_qr(qs[i].get_mpz_t(),rem.get_mpz_t(),
-						mpz_class((*this)[i]).get_mpz_t(),d.get_mpz_t());
-					if (rem != 0) {
-						piranha_throw(value_error,"exponent is not suitable for the calculation of nth root");
+			toolbox pow(const mp_rational &q, const ArgsTuple &) const {
+				toolbox retval(*this);
+				const size_type size = this->size();
+				for(size_type i = 0; i < size; ++i) {
+					mp_rational tmp(q);
+					tmp *= (*this)[i];
+					if (tmp.get_den() != 1) {
+						piranha_throw(value_error,"exponent is not suitable for the calculation of rational power");
 					}
-					retval[i] = mpz_get_si(qs[i].get_mpz_t());
+					retval[i] = boost::numeric_cast<value_type>(tmp.to_int());
 				}
 				return retval;
 			}

@@ -209,14 +209,6 @@ namespace piranha
 					(*this)[i].negate();
 				}
 			}
-			/// Return the mathematical inverse.
-			/**
-			 * Will call the pow() method of the derived class.
-			 */
-			template <class ArgsTuple>
-			Derived inv(const ArgsTuple &args_tuple) const {
-				return derived_const_cast->pow(-1,args_tuple);
-			}
 			/// Upload to a std::vector.
 			/**
 			 * Vector size must not be smaller than current size, otherwise an assertion failure will be raised.

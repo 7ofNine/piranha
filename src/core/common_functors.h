@@ -36,7 +36,7 @@ namespace piranha
 	{
 		T inv(const T &orig) const
 		{
-			return orig.inv();
+			return orig.pow(-1);
 		}
 		void multiply(T &orig, const T &other) const
 		{
@@ -60,7 +60,7 @@ namespace piranha
 		T inv(const T &orig) const
 		{
 			piranha_assert(m_args_tuple);
-			return orig.base_inv(*m_args_tuple);
+			return orig.base_pow(-1,*m_args_tuple);
 		}
 		void multiply(T &orig, const T &other) const
 		{

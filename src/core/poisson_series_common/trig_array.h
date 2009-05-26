@@ -36,6 +36,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"
+#include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // For lexical converter.
@@ -477,13 +478,8 @@ namespace piranha
 				return pow_number(y);
 			}
 			template <class ArgsTuple>
-			toolbox root(const int &n, const ArgsTuple &args_tuple) const {
-				if (n == 0) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root");
-				} else if (n == 1) {
-					return toolbox(*this);
-				}
-				return pow(1. / static_cast<double>(n), args_tuple);
+			toolbox pow(const mp_rational &q, const ArgsTuple &) const {
+				return pow_number(q);
 			}
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.

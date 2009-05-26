@@ -188,10 +188,10 @@ namespace piranha
 						Derived tmp3(ccb2[n*2-m+k-t*2]);
 						tmp3 *= csb2[m-k+t*2];
 						tmp3 *= cs_phase(t);
-						tmp3 *= tmp3.factorial(t).inv();
-						tmp3 *= tmp3.factorial(n+k-t).inv();
-						tmp3 *= tmp3.factorial(n-m-t).inv();
-						tmp3 *= tmp3.factorial(m-k+t).inv();
+						tmp3 *= tmp3.factorial(t).pow(-1);
+						tmp3 *= tmp3.factorial(n+k-t).pow(-1);
+						tmp3 *= tmp3.factorial(n-m-t).pow(-1);
+						tmp3 *= tmp3.factorial(m-k+t).pow(-1);
 						tmp2 += tmp3;
 					}
 					tmp *= tmp2;

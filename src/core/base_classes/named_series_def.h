@@ -102,7 +102,6 @@ namespace piranha
 			static Derived choose(const int &, const int &);
 			Derived pow(const double &) const;
 			Derived root(const int &) const;
-			Derived inv() const;
 			Derived partial(const psym &, const int &n = 1) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
