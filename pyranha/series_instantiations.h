@@ -136,7 +136,10 @@ namespace pyranha
 		inst.def("choose", named_choose(&T::choose), "Choose function: (arg1 over arg2). "
 			"arg1 is an arbitrary integer, arg2 must be a suitable non-negative integer.").staticmethod("choose");
 		// Exponentiation.
-		inst.def("__pow__", &T::pow);
+		typedef T (T::*pow_double)(const double &) const;
+		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
+		inst.def("__pow__", pow_double(&T::pow));
+		inst.def("__pow__", pow_rational(&T::pow));
 		inst.def("root", &T::root, "arg2-th root.");
 		return std::make_pair(inst, term_inst);
 	}

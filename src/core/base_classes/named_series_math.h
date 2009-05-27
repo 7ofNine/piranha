@@ -210,6 +210,15 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::pow(const mp_rational &q) const
+	{
+		Derived retval(derived_const_cast->base_pow(q, m_arguments));
+		retval.m_arguments = m_arguments;
+		retval.trim();
+		return retval;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::root(const int &n) const
 	{
 		Derived retval(derived_const_cast->base_root(n, m_arguments));

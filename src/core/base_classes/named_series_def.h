@@ -101,6 +101,7 @@ namespace piranha
 			static Derived factorial(const int &);
 			static Derived choose(const int &, const int &);
 			Derived pow(const double &) const;
+			Derived pow(const mp_rational &) const;
 			Derived root(const int &) const;
 			Derived partial(const psym &, const int &n = 1) const;
 			template <class SubSeries>
