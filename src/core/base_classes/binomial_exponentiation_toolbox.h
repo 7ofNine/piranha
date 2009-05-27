@@ -29,6 +29,7 @@
 #include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
+#include "../mp.h"
 #include "../settings.h"
 #include "../utils.h"
 
@@ -42,41 +43,44 @@ namespace piranha
 
 	/// Binomial exponentiation toolbox.
 	/**
-	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::nth_root
+	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::rational_power
 	 * and reimplements them using binomial expansion.
 	 */
 	template <class Derived, template <class> class Sorter>
 	class toolbox<binomial_exponentiation<Derived,Sorter> >
 	{
-			enum op_type { power_op, root_op };
 		protected:
 			/// Real power.
 			template <class ArgsTuple>
-			Derived real_power(const double &y, const ArgsTuple &args_tuple) const {
-				return generic_binomial_power<power_op>(
+			Derived real_power(const double &y, const ArgsTuple &args_tuple) const
+			{
+				return generic_binomial_power(
 					get_sorted_pointer_vector<Derived>(args_tuple),y,args_tuple);
 			}
 			/// Negative integer power.
 			template <class ArgsTuple>
-			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const {
-				return generic_binomial_power<power_op>(
+			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const
+			{
+				return generic_binomial_power(
 					get_sorted_pointer_vector<Derived>(args_tuple),y, args_tuple);
 			}
-			/// Nth root.
+			/// Rational power.
 			template <class ArgsTuple>
-			Derived nth_root(const int &n, const ArgsTuple &args_tuple) const {
-				piranha_assert(n != 0 && n != 1);
-				return generic_binomial_power<root_op>(
-					get_sorted_pointer_vector<Derived>(args_tuple), n, args_tuple);
+			Derived rational_power(const mp_rational &q, const ArgsTuple &args_tuple) const
+			{
+				piranha_assert(q != 0 && q != 1);
+				return generic_binomial_power(
+					get_sorted_pointer_vector<Derived>(args_tuple), q, args_tuple);
 			}
 		private:
-			template <op_type Op, class Term, class Number, class ArgsTuple>
+			template <class Term, class Number, class ArgsTuple>
 			static Derived generic_binomial_power(const std::vector<Term const *> &v,
-				const Number &y, const ArgsTuple &args_tuple) {
+				const Number &y, const ArgsTuple &args_tuple)
+			{
 				typedef typename Derived::term_type term_type;
-				// Here we know that the cases of single term, empty series and natural power have already
-				// been taken care of in base_series::pow_.
-				piranha_assert(v.size() > 1);
+				// Here we know that the cases of empty series and natural power have already
+				// been taken care of in base_series::base_pow.
+				piranha_assert(v.size() >= 1);
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
 				Derived XoverA;
@@ -85,7 +89,7 @@ namespace piranha
 					XoverA.insert(term_type(*v[i]),args_tuple);
 				}
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.m_cf.inv(args_tuple), A.m_key.inv(args_tuple));
+				term_type tmp_term(A.m_cf.pow(-1,args_tuple), A.m_key.pow(-1,args_tuple));
 				Derived Ainv;
 				Ainv.insert(tmp_term, args_tuple);
 				// Now let's compute X/A.
@@ -99,11 +103,12 @@ namespace piranha
 						"\nThe reported error is: ")
 						+ ve.what());
 				}
-				return binomial_expansion<Op>(A, XoverA, y, n, args_tuple);
+				return binomial_expansion(A, XoverA, y, n, args_tuple);
 			}
-			template <op_type Op, class Term, class Number, class ArgsTuple>
+			template <class Term, class Number, class ArgsTuple>
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
-											  const Number &y, const size_t &n, const ArgsTuple &args_tuple) {
+				const Number &y, const size_t &n, const ArgsTuple &args_tuple)
+			{
 				typedef typename Derived::term_type term_type;
 				p_static_check((boost::is_same<Term, typename Derived::term_type>::value),
 					"Term type mismatch in binomial expansion.");
@@ -111,14 +116,8 @@ namespace piranha
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
-				if (Op == power_op) {
-					tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
-					tmp_term.m_key = A.m_key.pow(y, args_tuple);
-				} else {
-					// NOTE: here we should be sure about y being an integer, hence the static cast.
-					tmp_term.m_cf = A.m_cf.root(static_cast<int>(y), args_tuple);
-					tmp_term.m_key = A.m_key.root(static_cast<int>(y), args_tuple);
-				}
+				tmp_term.m_cf = A.m_cf.pow(y, args_tuple);
+				tmp_term.m_key = A.m_key.pow(y, args_tuple);
 				Derived Apowy;
 				Apowy.insert(tmp_term, args_tuple);
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
@@ -127,28 +126,19 @@ namespace piranha
 				Derived tmp;
 				tmp.base_add(1, args_tuple);
 				retval.base_add(tmp, args_tuple);
-				if (Op == power_op) {
-					for (size_t i = 1; i < n; ++i) {
-						tmp.base_mult_by(y - (double)i + 1, args_tuple);
-						tmp.base_divide_by(i, args_tuple);
-						tmp.base_mult_by(XoverA, args_tuple);
-						retval.base_add(tmp, args_tuple);
-					}
-				} else {
-					for (size_t i = 1; i < n; ++i) {
-						tmp.base_mult_by(1 - (double)i * y + y, args_tuple);
-						tmp.base_divide_by(y * (double)i, args_tuple);
-						tmp.base_mult_by(XoverA, args_tuple);
-						retval.base_add(tmp, args_tuple);
-					}
+				for (size_t i = 1; i < n; ++i) {
+					tmp.base_mult_by(y - (double)i + 1, args_tuple);
+					tmp.base_divide_by(i, args_tuple);
+					tmp.base_mult_by(XoverA, args_tuple);
+					retval.base_add(tmp, args_tuple);
 				}
 				// Finally, multiply the result of the summation by A**y.
 				retval.base_mult_by(Apowy, args_tuple);
 				return retval;
 			}
 			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_type const *>
-			get_sorted_pointer_vector(const ArgsTuple &args_tuple) const {
+			std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const ArgsTuple &args_tuple) const
+			{
 				std::vector<typename Derived::term_type const *> retval(utils::cache_terms_pointers(*derived_const_cast));
 				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;

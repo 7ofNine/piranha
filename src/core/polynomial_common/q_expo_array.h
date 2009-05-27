@@ -318,11 +318,6 @@ namespace piranha
 			{
 				return pow_impl(q,args_tuple);
 			}
-			template <class ArgsTuple>
-			toolbox root(const int &n, const ArgsTuple &args_tuple) const
-			{
-				return pow(mp_rational(1,n),args_tuple);
-			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches,
 				const ArgsTuple &args_tuple) const

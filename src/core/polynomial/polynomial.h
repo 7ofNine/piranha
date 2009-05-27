@@ -75,7 +75,7 @@ namespace piranha
 			friend class toolbox;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
-			using POLYNOMIAL_BINOMIAL_ANCESTOR::nth_root;
+			using POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
 			using toolbox<base_polynomial_toolbox< POLYNOMIAL > >::base_norm;
 		public:
 			// Boilerplate.
@@ -123,7 +123,7 @@ namespace std
 			friend class piranha::toolbox;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::nth_root;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
 			// Complex overrides.
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_add;

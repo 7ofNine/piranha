@@ -64,10 +64,10 @@ namespace piranha
 	{
 			template <class>
 			friend class toolbox;
-			// Specify we will use the power/root functions from the binomial toolbox.
+			// Specify we will use the power functions from the binomial toolbox.
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
-			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::nth_root;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
 			using toolbox<base_polynomial_toolbox< POLYNOMIAL_CF > >::base_norm;
 		public:
 			CF_SERIES_CTORS(polynomial_cf);
@@ -107,7 +107,7 @@ namespace std
 			friend class piranha::toolbox;
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::nth_root;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_add;

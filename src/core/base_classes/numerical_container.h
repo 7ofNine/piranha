@@ -267,20 +267,10 @@ namespace piranha
 			Series partial(const PosTuple &, const ArgsTuple &) const {
 				return Series();
 			}
-			template <class ArgsTuple>
-			Derived inv(const ArgsTuple &args_tuple) const {
-				return pow(-1,args_tuple);
-			}
 			template <class Number, class ArgsTuple>
 			Derived pow(const Number &n, const ArgsTuple &) const {
 				Derived retval;
 				retval.m_value = std::pow(m_value,n);
-				return retval;
-			}
-			template <class ArgsTuple>
-			Derived root(const int &n, const ArgsTuple &) const {
-				Derived retval;
-				retval.m_value = piranha::root(n,m_value);
 				return retval;
 			}
 			template <class ArgsTuple>

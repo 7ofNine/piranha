@@ -97,6 +97,7 @@ namespace piranha
 		}
 		// Rebuild if needed.
 		if (needs_rebuilding) {
+			// TODO: probably insert range here.
 			Derived new_series;
 			for (it = begin(); it != it_f; ++it) {
 				new_series.insert(*it,args_tuple);
@@ -308,7 +309,8 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_partial(const Derived &in, Series &out,
-		const PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+		const PosTuple &pos_tuple, const ArgsTuple &args_tuple)
+	{
 		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			"Size mismatch between args tuple and pos tuple in partial derivative.");
 		piranha_assert(out.empty());
@@ -348,24 +350,20 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_partial(const PosTuple &pos_tuple,
-		const ArgsTuple &args_tuple) const {
+		const ArgsTuple &args_tuple) const
+	{
 		return base_partial(1,pos_tuple,args_tuple);
 	}
 
-	// When raising to power y, handle the following cases:
-	// - series is empty,
-	// - series is made of a single term.
-	// Return true if one of the above is true, false otherwise.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::common_power_handler(const double &y, Derived &retval,
-			const ArgsTuple &args_tuple) const
+	template <class Number, class ArgsTuple>
+	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::common_pow_handler(const Number &y, Derived &retval, const ArgsTuple &args_tuple) const
 	{
 		piranha_assert(retval.empty());
 		// Handle the case of an empty series.
 		if (empty()) {
 			if (y < 0) {
-				piranha_throw(zero_division_error,"cannot divide by zero");
+				piranha_throw(zero_division_error,"cannot raise to negative power an empty series");
 			} else if (y == 0) {
 				// 0**0 == 1.
 				retval.base_add(1, args_tuple);
@@ -375,11 +373,20 @@ namespace piranha
 				return true;
 			}
 		}
-		if (length() == 1) {
-			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
+		// If the series is a single cf, let's try to forward the pow call to the only coefficient.
+		if (is_single_cf()) {
+			retval.insert(term_type(begin()->m_cf.pow(y,args_tuple),typename term_type::key_type()),args_tuple);
 			return true;
+		}
+		if (length() == 1) {
+			// If length is 1, let's try to compute separately pow of coefficient and key
+			// and assemble them. If we are not able, some exception is raised, we
+			// catch it and try to go to the next step.
+			try {
+				const const_iterator it = begin();
+				retval.insert(term_type(it->m_cf.pow(y, args_tuple), it->m_key.pow(y, args_tuple)), args_tuple);
+				return true;
+			} catch (...) {}
 		}
 		return false;
 	}
@@ -389,18 +396,32 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_pow(const double &y,
-			const ArgsTuple &args_tuple) const
+		const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
-		if (!common_power_handler(y, retval, args_tuple)) {
+		if (!common_pow_handler(y, retval, args_tuple)) {
 			if (utils::is_integer(y)) {
 				const int n = (int)(y);
+				// NOTE: check if it is possible to skip using temporary variables.
+				// Apparently this will be possible in C++1x with the move constructor.
 				if (n >= 0) {
 					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
 					retval.base_swap(tmp);
 				} else {
-					Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
-					retval.base_swap(tmp);
+					if (n == -1) {
+						// Take advantage of a re-implementation of inversion in derived class,
+						// if available. Otherwise just use negative_integer_power.
+						try {
+							Derived tmp(derived_const_cast->base_inv(args_tuple));
+							retval.base_swap(tmp);
+						} catch (const not_implemented_error &) {
+							Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+							retval.base_swap(tmp);
+						}
+					} else {
+						Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+						retval.base_swap(tmp);
+					}
 				}
 			} else {
 				Derived tmp(derived_const_cast->real_power(y, args_tuple));
@@ -412,9 +433,44 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_pow(const mp_rational &q,
+		const ArgsTuple &args_tuple) const
+	{
+		Derived retval;
+		if (!common_pow_handler(q, retval, args_tuple)) {
+			// If rational is integer, dispatch to natural power or negative integer power.
+			if (q.get_den() == 1) {
+				const int n = q.get_num().to_int();
+				if (n >= 0) {
+					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+					retval.base_swap(tmp);
+				} else {
+					if (n == -1) {
+						try {
+							Derived tmp(derived_const_cast->base_inv(args_tuple));
+							retval.base_swap(tmp);
+						} catch (const not_implemented_error &) {
+							Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+							retval.base_swap(tmp);
+						}
+					} else {
+						Derived tmp(derived_const_cast->negative_integer_power(n, args_tuple));
+						retval.base_swap(tmp);
+					}
+				}
+			} else {
+				Derived tmp(derived_const_cast->rational_power(q, args_tuple));
+				retval.base_swap(tmp);
+			}
+		}
+		return retval;
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::real_power(const double &, const ArgsTuple &) const
 	{
-		piranha_throw(not_implemented_error,"real power for this series has not been implemented");
+		piranha_throw(not_implemented_error,"real power for this series type has not been implemented");
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -424,7 +480,14 @@ namespace piranha
 	{
 		(void)n;
 		piranha_assert(n < 0);
-		piranha_throw(not_implemented_error,"negative integer power for this series has not been implemented");
+		piranha_throw(not_implemented_error,"negative integer power for this series type has not been implemented");
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::rational_power(const mp_rational &, const ArgsTuple &) const
+	{
+		piranha_throw(not_implemented_error,"rational power for this series type has not been implemented");
 	}
 
 	/// Exponentiation to natural number.
@@ -486,71 +549,21 @@ namespace piranha
 		return retval;
 	}
 
-	// Handle the following cases:
-	// - n is 0,
-	// - n is 1,
-	// - series is empty,
-	// - series is made of a single term.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::common_root_handler(const int &n, Derived &retval,
-			const ArgsTuple &args_tuple) const
-	{
-		piranha_assert(retval.empty());
-		if (n == 0) {
-			piranha_throw(zero_division_error,"cannot calculate zero-th root");
-		}
-		if (n == 1) {
-			retval = *derived_const_cast;
-			return true;
-		}
-		// Handle the case of an empty series.
-		if (empty()) {
-			if (n < 0) {
-				piranha_throw(zero_division_error,"cannot divide by zero");
-			} else {
-				// 0**n == 0, with n > 0.
-				return true;
-			}
-		} else if (length() == 1) {
-			// If the series has a single term, dispatch pow to the coefficient and key of said term.
-			const const_iterator it = begin();
-			retval.insert(term_type(it->m_cf.root(n, args_tuple), it->m_key.root(n, args_tuple)), args_tuple);
-			return true;
-		}
-		return false;
-	}
-
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_root(const int &n,
 			const ArgsTuple &args_tuple) const
 	{
-		Derived retval;
-		if (!common_root_handler(n, retval, args_tuple)) {
-			Derived tmp(derived_const_cast->nth_root(n, args_tuple));
-			retval.base_swap(tmp);
-		}
-		return retval;
-	}
-
-	// As default will use real power.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::nth_root(const int &n,
-			const ArgsTuple &args_tuple) const
-	{
-		piranha_assert(n > 0);
-		return base_pow(1. / static_cast<double>(n), args_tuple);
+		return base_pow(mp_rational(1,n),args_tuple);
 	}
 
 	// Series inversion will use exponentiation to -1 as default.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_inv(const ArgsTuple &args_tuple) const
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_inv(const ArgsTuple &) const
 	{
-		return base_pow(-1,args_tuple);
+		piranha_throw(not_implemented_error,"inversion for this series type has not been implemented");
 	}
 }
 

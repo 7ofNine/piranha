@@ -117,12 +117,12 @@ namespace piranha
 			Derived &base_divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return divide_by_complex(cx, args_tuple);
 			}
-			// Specialise inversion to use conjugate * inverse of absolute value. This is useful
+			// Specialise inversion to use conjugate * inverse of absolute value ** 2. This is useful
 			// when the complex series is a complex exponential of something.
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &args_tuple) const {
 				Derived retval = base_conjugate(args_tuple);
-				retval.base_mult_by(base_abs(args_tuple).base_inv(args_tuple),args_tuple);
+				retval.base_mult_by(base_abs(args_tuple).base_pow(-1,args_tuple),args_tuple);
 				return retval;
 			}
 			// Use N = 0 for real, N != 0 for imag.

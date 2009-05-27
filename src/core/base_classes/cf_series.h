@@ -110,11 +110,9 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived &divide_by(const mp_integer &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived inv(const ArgsTuple &) const;
-			template <class ArgsTuple>
 			Derived pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			Derived root(const int &, const ArgsTuple &) const;
+			Derived pow(const mp_rational &, const ArgsTuple &) const;
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &, const ArgsTuple &) const;
 			template <class ArgsTuple>

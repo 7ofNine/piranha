@@ -81,7 +81,7 @@ namespace piranha
 			friend class toolbox;
 			using POISSON_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using POISSON_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using POISSON_SERIES_BINOMIAL_ANCESTOR::nth_root;
+			using POISSON_SERIES_BINOMIAL_ANCESTOR::rational_power;
 		public:
 			using toolbox<common_poisson_series< POISSON_SERIES > >::sub;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
@@ -129,7 +129,7 @@ namespace std
 			friend class piranha::toolbox;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::nth_root;
+			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::rational_power;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::base_inv;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::base_add;
 			using COMPLEX_POISSON_SERIES_BASE_ANCESTOR::base_add;

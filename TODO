@@ -68,3 +68,5 @@ IMMEDIATE:
   double_cf instead; also, implement pow() as template member function in numerical container
   so that it will call std::pow, and same for root. Hopefully lines of code should go down,
   maybe we can even ditch pow from complex toolbox (if it is there at all, etc.).
+- drop factorial and choose as methods, implement GMP versions of them now that we have
+  interop with mp types.
