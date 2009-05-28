@@ -129,12 +129,6 @@ namespace pyranha
 		inst.def(boost::python::self / double());
 		inst.def(boost::python::self / piranha::mp_rational());
 		inst.def(boost::python::self / piranha::mp_integer());
-		// Factorial and binomial coefficient.
-		typedef T (*named_factorial)(const int &);
-		inst.def("factorial", named_factorial(&T::factorial), "Factorial function.").staticmethod("factorial");
-		typedef T (*named_choose)(const int &, const int &);
-		inst.def("choose", named_choose(&T::choose), "Choose function: (arg1 over arg2). "
-			"arg1 is an arbitrary integer, arg2 must be a suitable non-negative integer.").staticmethod("choose");
 		// Exponentiation.
 		inst.def("__pow__", &T::pow);
 		inst.def("root", &T::root, "arg2-th root.");

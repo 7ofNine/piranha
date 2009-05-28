@@ -24,6 +24,7 @@
 #include <complex>
 
 #include "../../src/core/math.h"
+#include "../../src/core/mp.h"
 #include "../exceptions.h"
 
 using namespace pyranha;
@@ -51,10 +52,23 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Ynm", Ynm_ei_plain(&Ynm), "Spherical harmonic (not normalised).");
 	def("Ynm", Ynm_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("Ynm", Ynm_ei_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
-	def("factorial", &piranha::factorial, "Factorial.");
+	typedef double (*factorial_double)(const int &);
+	typedef mp_integer (*factorial_mp)(const mp_integer &);
+	def("factorial", factorial_double(&piranha::factorial), "Factorial (double-precision).");
+	def("factorial", factorial_mp(&piranha::factorial), "Factorial (arbitrary precision).");
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
-	def("choose", &choose, "Binomial coefficient with integer inputs. "
-		"arg1 can be negative, arg2 must be a valid positive value.");
+	typedef double (*choose_double)(const int &, const int &);
+	typedef double (*choose_double_double)(const double &, const int &);
+	typedef std::complex<double> (*c_choose_double)(const std::complex<int> &, const int &);
+	typedef std::complex<double> (*c_choose_double_double)(const std::complex<double> &, const int &);
+	typedef mp_integer (*choose_z)(const mp_integer &, const int &);
+	typedef mp_rational (*choose_q)(const mp_rational &, const int &);
+	def("choose", choose_double(&choose), "Binomial coefficient (double-precision).");
+	def("choose", choose_double_double(&choose), "Binomial coefficient (double-precision).");
+	def("choose", c_choose_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("choose", c_choose_double_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("choose", choose_z(&choose), "Binomial coefficient (multiprecision integer).");
+	def("choose", choose_q(&choose), "Binomial coefficient (multiprecision rational).");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
 	def("cs_phase", &cs_phase, "Condon-Shortley phase = (-1)**arg1.");

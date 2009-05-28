@@ -270,43 +270,6 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_choose(
-		const int &n_, const int &k, const ArgsTuple &args_tuple)
-	{
-		const int n = (n_ >= 0) ? n_ : k - n_ - 1;
-		Derived retval;
-		if (k < 0 || k > n) {
-			return retval;
-		}
-		// Starting point is 1.
-		retval.base_add(1,args_tuple);
-		for (int i = 1; i <= k; ++i) {
-			retval.base_mult_by(n - k + i, args_tuple);
-			retval.base_divide_by(i, args_tuple);
-		}
-		if (n_ < 0) {
-			retval.base_mult_by(cs_phase(k), args_tuple);
-		}
-		return retval;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_factorial(const int &n, const ArgsTuple &args_tuple)
-	{
-		if (n < 0) {
-			piranha_throw(value_error,"negative argument for factorial");
-		}
-		Derived retval;
-		retval.base_add(1,args_tuple);
-		for (int i = 2; i <= n; ++i) {
-			retval.base_mult_by(i,args_tuple);
-		}
-		return retval;
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_partial(const Derived &in, Series &out,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple)
