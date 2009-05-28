@@ -257,18 +257,6 @@ namespace std
 		return pow(c,q.to_double());
 	}
 
-	/// Overload std::pow for int and piranha::mp_rational arguments.
-	inline double pow(const int &n, const piranha::mp_rational &q)
-	{
-		return pow(n,q.to_double());
-	}
-
-	/// Overload std::pow for std::complex<int> and piranha::mp_rational arguments.
-	inline complex<int> pow(const complex<int> &c, const piranha::mp_rational &q)
-	{
-		return pow(c,q.to_double());
-	}
-
 	#undef STD_POW_OVERLOAD
 }
 

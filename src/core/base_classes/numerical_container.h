@@ -267,11 +267,13 @@ namespace piranha
 			Series partial(const PosTuple &, const ArgsTuple &) const {
 				return Series();
 			}
-			template <class Number, class ArgsTuple>
-			Derived pow(const Number &n, const ArgsTuple &) const {
-				Derived retval;
-				retval.m_value = std::pow(m_value,n);
-				return retval;
+			template <class ArgsTuple>
+			Derived pow(const double &x, const ArgsTuple &args_tuple) const {
+				return generic_pow(x,args_tuple);
+			}
+			template <class ArgsTuple>
+			Derived pow(const mp_rational &q, const ArgsTuple &args_tuple) const {
+				return generic_pow(q,args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived besselJ(const int &, const ArgsTuple &) const {
@@ -319,6 +321,14 @@ namespace piranha
 			Derived &divide_by_generic(const U &x) {
 				m_value /= in_place_transform<T,U>::run(x);
 				return *derived_cast;
+			}
+			template <class Number, class ArgsTuple>
+			Derived generic_pow(const Number &n, const ArgsTuple &) const {
+				// COMPILER BUG: usual stuff with ubuntu's 4.1.3 compiler :(
+				Derived retval;
+				const numerical_type tmp(std::pow(m_value,n));
+				retval.m_value = tmp;
+				return retval;
 			}
 		protected:
 			T m_value;
