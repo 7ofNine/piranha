@@ -63,10 +63,10 @@ BOOST_PYTHON_MODULE(_Math)
 	typedef std::complex<double> (*c_choose_double_double)(const std::complex<double> &, const int &);
 	typedef mp_integer (*choose_z)(const mp_integer &, const int &);
 	typedef mp_rational (*choose_q)(const mp_rational &, const int &);
-	def("choose", choose_double(&choose), "Binomial coefficient (double-precision).");
-	def("choose", choose_double_double(&choose), "Binomial coefficient (double-precision).");
-	def("choose", c_choose_double(&choose), "Binomial coefficient (complex double-precision).");
 	def("choose", c_choose_double_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("choose", c_choose_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("choose", choose_double_double(&choose), "Binomial coefficient (double-precision).");
+	def("choose", choose_double(&choose), "Binomial coefficient (double-precision).");
 	def("choose", choose_z(&choose), "Binomial coefficient (multiprecision integer).");
 	def("choose", choose_q(&choose), "Binomial coefficient (multiprecision rational).");
 	typedef double (*double_gamma)(double);
