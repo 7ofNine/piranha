@@ -65,6 +65,15 @@ namespace piranha
 		return q.root(n);
 	}
 
+	/// Overload binomial coefficient (choose) function for piranha::mp_rational.
+	/**
+	 * @see piranha::mp_rational::choose.
+	 */
+	inline mp_rational choose(const mp_rational &q, const int &k)
+	{
+		return q.choose(k);
+	}
+
 	/// Overload in stream operator>> for std::complex<piranha::mp_rational>.
 	inline std::istream &operator>>(std::istream &i, std::complex<mp_rational> &qc)
 	{
@@ -85,6 +94,15 @@ namespace piranha
 	inline std::complex<mp_rational> root(const int &n, const std::complex<mp_rational> &qc)
 	{
 		return qc.root(n);
+	}
+
+	/// Overload binomial coefficient (choose) function for std::complex<piranha::mp_rational>.
+	/**
+	 * @see std::complex<piranha::mp_rational>::choose.
+	 */
+	inline std::complex<mp_rational> choose(const std::complex<mp_rational> &c, const int &k)
+	{
+		return c.choose(k);
 	}
 
 	/* INTEGER CLASS OVERLOADS */
@@ -118,6 +136,24 @@ namespace piranha
 		return z.root(n);
 	}
 
+	/// Overload factorial function for piranha::mp_integer.
+	/**
+	 * @see piranha::mp_integer::factorial.
+	 */
+	inline mp_integer factorial(const mp_integer &z)
+	{
+		return z.factorial();
+	}
+
+	/// Overload binomial coefficient (choose) function for piranha::mp_integer.
+	/**
+	 * @see piranha::mp_integer::choose.
+	 */
+	inline mp_integer choose(const mp_integer &n, const int &k)
+	{
+		return n.choose(k);
+	}
+
 	/// Overload in stream operator>> for std::complex<piranha::mp_integer>.
 	inline std::istream &operator>>(std::istream &i, std::complex<mp_integer> &zc)
 	{
@@ -138,6 +174,15 @@ namespace piranha
 	inline std::complex<mp_integer> root(const int &n, const std::complex<mp_integer> &zc)
 	{
 		return zc.root(n);
+	}
+
+	/// Overload binomial coefficient (choose) function for std::complex<piranha::mp_integer>.
+	/**
+	 * @see std::complex<piranha::mp_integer>::choose.
+	 */
+	inline std::complex<mp_integer> choose(const std::complex<mp_integer> &c, const int &k)
+	{
+		return c.choose(k);
 	}
 }
 
@@ -253,18 +298,6 @@ namespace std
 
 	/// Overload std::pow for std::complex<double> and piranha::mp_rational arguments.
 	inline complex<double> pow(const complex<double> &c, const piranha::mp_rational &q)
-	{
-		return pow(c,q.to_double());
-	}
-
-	/// Overload std::pow for int and piranha::mp_rational arguments.
-	inline double pow(const int &n, const piranha::mp_rational &q)
-	{
-		return pow(n,q.to_double());
-	}
-
-	/// Overload std::pow for std::complex<int> and piranha::mp_rational arguments.
-	inline complex<int> pow(const complex<int> &c, const piranha::mp_rational &q)
 	{
 		return pow(c,q.to_double());
 	}

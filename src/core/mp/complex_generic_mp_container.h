@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../math.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -228,6 +229,16 @@ namespace piranha
 			T abs() const
 			{
 				return abs2().root(2);
+			}
+			/// Binomial coefficient.
+			/**
+			 * Internally it will use the piranha::generic_choose function.
+			 * @param[in] k integer over which binomial coefficient of this is calculated.
+			 * @param[out] retval binomial coefficient of this over k.
+			 */
+			Derived choose(const int &k) const
+			{
+				return generic_choose(*derived_const_cast,k);
 			}
 		protected:
 			/// Default constructor.

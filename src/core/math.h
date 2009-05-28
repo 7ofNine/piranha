@@ -131,16 +131,64 @@ namespace piranha
 		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
 	}
 
-	/// Binomial coefficient.
-	inline double choose(const long int &n_, const long int &k)
+	template <class Number>
+	inline Number generic_choose(const Number &n, const int &k)
 	{
-		const long int multiplier = (n_ >= 0) ? 1 : cs_phase(k), n = (n_ >= 0) ? n_ : k - n_ - 1;
+		Number retval(0);
+		if (k < 0) {
+			return retval;
+		}
+		retval = 1;
+		for (int i = 1; i <= k; ++i) {
+			Number tmp(n);
+			tmp -= k;
+			tmp += i;
+			retval *= tmp;
+			retval /= i;
+		}
+		return retval;
+	}
+
+	/// Binomial coefficient.
+	/**
+	 * Will use internally Boost's implementation.
+	 */
+	inline double choose(const int &n_, const int &k)
+	{
+		const int multiplier = (n_ >= 0) ? 1 : cs_phase(k), n = (n_ >= 0) ? n_ : k - n_ - 1;
 		if (k < 0 || k > n) {
 			return 0.;
 		}
 		piranha_assert(n >= 0);
 		return boost::math::binomial_coefficient<double>(
 			static_cast<unsigned>(n),static_cast<unsigned>(k)) * multiplier;
+	}
+
+	/// Binomial coefficient.
+	/**
+	 * Will use piranha::generic_choose internally.
+	 */
+	inline double choose(const double &x, const int &k)
+	{
+		return generic_choose(x,k);
+	}
+
+	/// Binomial coefficient.
+	/**
+	 * Will use piranha::generic_choose internally.
+	 */
+	inline std::complex<double> choose(const std::complex<double> &c, const int &k)
+	{
+		return generic_choose(c,k);
+	}
+
+	/// Binomial coefficient.
+	/**
+	 * Will use piranha::generic_choose internally.
+	 */
+	inline std::complex<double> choose(const std::complex<int> &c, const int &k)
+	{
+		return generic_choose(std::complex<double>(c.real(),c.imag()),k);
 	}
 
 	/// Calculate complex exponential of n*pi/2.

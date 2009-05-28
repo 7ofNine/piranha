@@ -61,12 +61,11 @@
   differentiate them as types?
 
 - special functions should forward to cf if series is single cf, and should use generic hypergeometric
-  function as much as possible. Also, for pow maybe we can forward to single term and then handle the case in which
-  something goes wrong (e.g.., the trig key cannot be raised to the specified power)
+  function as much as possible.
+- in speical functions and the likes, use mp types when interacting with factorials and friends, so we don't worry about
+  overflows.
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container
   so that it will call std::pow, and same for root. Hopefully lines of code should go down,
   maybe we can even ditch pow from complex toolbox (if it is there at all, etc.).
-- drop factorial and choose as methods, implement GMP versions of them now that we have
-  interop with mp types.

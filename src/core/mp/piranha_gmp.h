@@ -34,6 +34,7 @@
 #include <vector>
 
 #include "../exceptions.h"
+#include "../math.h"
 #include "../utils.h"
 #include "complex_generic_mp_container.h"
 #include "mp_commons.h"
@@ -43,7 +44,7 @@
 // - overload std::pow for exponentiation to rational
 // - interaction between real of one type with complex of other type?
 // - better pow for complex, like handling the case in which there is only real or imaginary part and pow can be forwarded
-//   to the scalar implementation.
+//   to the scalar implementation? Maybe overkill...
 // ...
 
 namespace piranha
@@ -272,6 +273,16 @@ namespace piranha
 				mp_rational retval(*this);
 				retval.negate();
 				return retval;
+			}
+			/// Binomial coefficient of this over k.
+			/**
+			 * Internally it will use the piranha::generic_choose function.
+			 * @param[in] k integer over which binomial coefficient of this is calculated.
+			 * @param[out] retval binomial coefficient of this over k.
+			 */
+			mp_rational choose(const int &k) const
+			{
+				return generic_choose(*this,k);
 			}
 			/// Exponentiation.
 			/**
@@ -580,6 +591,37 @@ namespace piranha
 			void addmul(const mp_integer &z1, const mp_integer &z2)
 			{
 				mpz_addmul(m_value.get_mpz_t(), z1.m_value.get_mpz_t(), z2.m_value.get_mpz_t());
+			}
+			/// Factorial.
+			/**
+			 * Internally it will use the GMP mpz_fac_ui function.
+			 * @param[out] retval factorial of this.
+			 * @throws value_error if this is negative.
+			 * @throws std::overflow_error if this overflows int type.
+			 */
+			mp_integer factorial() const
+			{
+				if ((*this) < 0) {
+					piranha_throw(value_error,"cannot calculate factorial of negative integer");
+				}
+				mp_integer retval;
+				mpz_fac_ui(retval.m_value.get_mpz_t(),(unsigned long int)to_int());
+				return retval;
+			}
+			/// Binomial coefficient of this over k.
+			/**
+			 * Internally it will use the GMP mpz_bin_ui function.
+			 * @param[in] k integer over which binomial coefficient of this is calculated.
+			 * @param[out] retval binomial coefficient of this over k.
+			 */
+			mp_integer choose(const int &k) const
+			{
+				mp_integer retval(0);
+				if (k < 0) {
+					return retval;
+				}
+				mpz_bin_ui(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),(unsigned long int)k);
+				return retval;
 			}
 			/// Exponentiation.
 			/**

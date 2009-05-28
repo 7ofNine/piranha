@@ -125,10 +125,6 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &) const;
 			template <class ArgsTuple>
-			static Derived base_factorial(const int &, const ArgsTuple &);
-			template <class ArgsTuple>
-			static Derived base_choose(const int &, const int &, const ArgsTuple &);
-			template <class ArgsTuple>
 			Derived base_pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived base_pow(const mp_rational &, const ArgsTuple &) const;

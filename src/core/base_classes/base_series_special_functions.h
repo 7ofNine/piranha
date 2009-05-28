@@ -74,7 +74,7 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order, args_tuple);
-				retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_pow(-1,args_tuple),args_tuple);
+				retval.base_divide_by(factorial(order),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {
@@ -141,7 +141,7 @@ namespace piranha
 						piranha_throw(zero_division_error,"cannot divide by zero");
 					} else if (order == m) {
 						retval = retval.base_add(2,args_tuple).base_pow(-order,args_tuple);
-						retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_pow(-1,args_tuple),args_tuple);
+						retval.base_divide_by(factorial(order),args_tuple);
 					}
 					return retval;
 				}
@@ -162,7 +162,7 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order - m, args_tuple);
-				retval.base_mult_by(Derived::base_factorial(order,args_tuple).base_pow(-1,args_tuple),args_tuple);
+				retval.base_divide_by(factorial(order),args_tuple);
 				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
 				Derived tmp(retval);
 				for (size_t i = 1; i < limit; ++i) {

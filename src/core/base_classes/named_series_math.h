@@ -189,18 +189,6 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::choose(const int &n, const int &k)
-	{
-		return Derived::base_choose(n,k,args_tuple_type());
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::factorial(const int &n)
-	{
-		return Derived::base_factorial(n,args_tuple_type());
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::pow(const double &x) const
 	{
 		Derived retval(derived_const_cast->base_pow(x, m_arguments));

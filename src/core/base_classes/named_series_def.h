@@ -98,8 +98,6 @@ namespace piranha
 			Derived &operator/=(const double &);
 			Derived &operator/=(const mp_rational &);
 			Derived &operator/=(const mp_integer &);
-			static Derived factorial(const int &);
-			static Derived choose(const int &, const int &);
 			Derived pow(const double &) const;
 			Derived pow(const mp_rational &) const;
 			Derived root(const int &) const;

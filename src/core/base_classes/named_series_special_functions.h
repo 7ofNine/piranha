@@ -175,11 +175,11 @@ namespace piranha
 					ccb2(eib2.real()),
 					csb2(eib2.imag());
 				final_factor *= einpi2(-m);
-				final_factor *= final_factor.factorial(n+m);
+				final_factor *= factorial(n+m);
 				for (int k = -n; k <= n; ++k) {
 					std::complex<Derived> tmp(ca[-k]);
 					tmp *= einpi2(k);
-					tmp *= tmp.factorial(n-k);
+					tmp *= factorial(n-k);
 					tmp *= cp[k];
 					tmp *= cos_t.Pnm(n,k,sin_t);
 					Derived tmp2;
@@ -188,10 +188,10 @@ namespace piranha
 						Derived tmp3(ccb2[n*2-m+k-t*2]);
 						tmp3 *= csb2[m-k+t*2];
 						tmp3 *= cs_phase(t);
-						tmp3 *= tmp3.factorial(t).pow(-1);
-						tmp3 *= tmp3.factorial(n+k-t).pow(-1);
-						tmp3 *= tmp3.factorial(n-m-t).pow(-1);
-						tmp3 *= tmp3.factorial(m-k+t).pow(-1);
+						tmp3 /= factorial(t);
+						tmp3 /= factorial(n+k-t);
+						tmp3 /= factorial(n-m-t);
+						tmp3 /= factorial(m-k+t);
 						tmp2 += tmp3;
 					}
 					tmp *= tmp2;
