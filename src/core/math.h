@@ -112,7 +112,8 @@ namespace piranha
 	}
 
 	template <class T>
-	static inline void factorial_check(const T &x) {
+	static inline void factorial_check(const T &x)
+	{
 		if (x < 0) {
 			piranha_throw(value_error,
 				"please use a non-negative integer as argument for factorials");
@@ -120,13 +121,15 @@ namespace piranha
 	}
 
 	/// Factorial.
-	inline double factorial(const int &i) {
+	inline double factorial(const int &i)
+	{
 		factorial_check(i);
 		return boost::math::factorial<double>(static_cast<unsigned>(i));
 	}
 
 	/// Double factorial.
-	inline double double_factorial(const int &i) {
+	inline double double_factorial(const int &i)
+	{
 		factorial_check(i);
 		return boost::math::double_factorial<double>(static_cast<unsigned>(i));
 	}

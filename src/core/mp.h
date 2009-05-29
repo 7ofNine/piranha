@@ -145,6 +145,15 @@ namespace piranha
 		return z.factorial();
 	}
 
+	/// Overload double factorial function for piranha::mp_integer.
+	/**
+	 * @see piranha::mp_integer::double_factorial.
+	 */
+	inline mp_integer double_factorial(const mp_integer &z)
+	{
+		return z.double_factorial();
+	}
+
 	/// Overload binomial coefficient (choose) function for piranha::mp_integer.
 	/**
 	 * @see piranha::mp_integer::choose.

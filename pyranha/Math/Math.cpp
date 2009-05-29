@@ -52,11 +52,16 @@ BOOST_PYTHON_MODULE(_Math)
 	def("Ynm", Ynm_ei_plain(&Ynm), "Spherical harmonic (not normalised).");
 	def("Ynm", Ynm_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
 	def("Ynm", Ynm_ei_rot(&Ynm), "Rotated spherical harmonic (not normalised).");
+	// Factorial.
 	typedef double (*factorial_double)(const int &);
 	typedef mp_integer (*factorial_mp)(const mp_integer &);
-	def("factorial", factorial_double(&piranha::factorial), "Factorial (double-precision).");
-	def("factorial", factorial_mp(&piranha::factorial), "Factorial (arbitrary precision).");
-	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
+	def("__factorial", factorial_double(&factorial), "Factorial (double-precision).");
+	def("__factorial", factorial_mp(&factorial), "Factorial (arbitrary precision).");
+	// Double factorial.
+	typedef mp_integer (*double_factorial_mp)(const mp_integer &);
+	typedef double (*double_factorial_double)(const int &);
+	def("__double_factorial", double_factorial_mp(&double_factorial), "Double factorial of non-negative integer argument.");
+	def("__double_factorial", double_factorial_double(&double_factorial), "Double factorial of non-negative integer argument.");
 	// Choose function.
 	typedef double (*choose_double)(const int &, const int &);
 	typedef double (*choose_double_double)(const double &, const int &);

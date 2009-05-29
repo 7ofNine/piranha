@@ -608,6 +608,16 @@ namespace piranha
 				mpz_fac_ui(retval.m_value.get_mpz_t(),(unsigned long int)to_int());
 				return retval;
 			}
+			/// Double factorial.
+			/**
+			 * Internally it will use the piranha::generic_double_factorial function.
+			 * @param[out] retval double factorial of this.
+			 * @see piranha::generic_double_factorial.
+			 */
+			mp_integer double_factorial() const
+			{
+				return generic_double_factorial(*this);
+			}
 			/// Binomial coefficient of this over k.
 			/**
 			 * Internally it will use the GMP mpz_bin_ui function.

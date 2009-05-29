@@ -19,15 +19,37 @@
 
 from _Math import *
 
+def factorial(n):
+	"""
+	Factorial of n.
+
+	n must be a nonnegative (multiprecision) integer.
+	"""
+	from _Math import __factorial
+	from pyranha.Core import integer
+	if not isinstance(n,int) and not isinstance(n,integer): raise TypeError('n must be an integer')
+	return __factorial(n)
+
+def double_factorial(n):
+	"""
+	Double factorial of n.
+
+	n must be a nonnegative (multiprecision) integer.
+	"""
+	from _Math import __double_factorial
+	from pyranha.Core import integer
+	if not isinstance(n,int) and not isinstance(n,integer): raise TypeError('n must be an integer')
+	return __double_factorial(n)
+
 def choose(x,k):
 	"""
-	Binomial coefficient (x over k).
+	Generalised binomial coefficient (x over k).
 
 	k must be an integer, while x can be any (complex) numerical type. This implementation returns
 	0 whenever k < 0 or k > n.
 	"""
 	from _Math import __choose
-	if not isinstance(k,int): raise TypeError('k must be an integer')
+	if not isinstance(k,int): raise TypeError('k must be an int')
 	return __choose(x,k)
 
 def complex(real,imag_ = None):

@@ -21,6 +21,8 @@
 #ifndef PIRANHA_MP_COMMONS_H
 #define PIRANHA_MP_COMMONS_H
 
+#include "../math.h" // For factorial_check.
+
 namespace piranha
 {
 	#define derived_const_cast static_cast<Derived const *>(this)
@@ -65,6 +67,26 @@ namespace piranha
 	{
 		const int n = q.get_num().to_int();
 		return x.pow(n).root(q.get_den().to_int());
+	}
+
+	/// Function for generic double factorial of multiprecision integer class.
+	/**
+	 * @throws value_error if n is negative.
+	 * @throws std::overflow_error if n cannot be converted to int type.
+	 */
+	template <class Integer>
+	inline Integer generic_double_factorial(const Integer &n)
+	{
+		const int z = n.to_int();
+		factorial_check(z);
+		Integer retval(1);
+		if (z == 0 || z == 1) {
+			return retval;
+		}
+		for (int i = z; i > 0; i -= 2) {
+			retval *= i;
+		}
+		return retval;
 	}
 }
 
