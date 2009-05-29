@@ -57,18 +57,19 @@ BOOST_PYTHON_MODULE(_Math)
 	def("factorial", factorial_double(&piranha::factorial), "Factorial (double-precision).");
 	def("factorial", factorial_mp(&piranha::factorial), "Factorial (arbitrary precision).");
 	def("double_factorial", &piranha::double_factorial, "Double factorial of non-negative integer argument.");
+	// Choose function.
 	typedef double (*choose_double)(const int &, const int &);
 	typedef double (*choose_double_double)(const double &, const int &);
 	typedef std::complex<double> (*c_choose_double)(const std::complex<int> &, const int &);
 	typedef std::complex<double> (*c_choose_double_double)(const std::complex<double> &, const int &);
 	typedef mp_integer (*choose_z)(const mp_integer &, const int &);
 	typedef mp_rational (*choose_q)(const mp_rational &, const int &);
-	def("choose", c_choose_double_double(&choose), "Binomial coefficient (complex double-precision).");
-	def("choose", c_choose_double(&choose), "Binomial coefficient (complex double-precision).");
-	def("choose", choose_double_double(&choose), "Binomial coefficient (double-precision).");
-	def("choose", choose_double(&choose), "Binomial coefficient (double-precision).");
-	def("choose", choose_z(&choose), "Binomial coefficient (multiprecision integer).");
-	def("choose", choose_q(&choose), "Binomial coefficient (multiprecision rational).");
+	def("__choose", c_choose_double_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("__choose", c_choose_double(&choose), "Binomial coefficient (complex double-precision).");
+	def("__choose", choose_double_double(&choose), "Binomial coefficient (double-precision).");
+	def("__choose", choose_double(&choose), "Binomial coefficient (double-precision).");
+	def("__choose", choose_z(&choose), "Binomial coefficient (multiprecision integer).");
+	def("__choose", choose_q(&choose), "Binomial coefficient (multiprecision rational).");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
 	def("cs_phase", &cs_phase, "Condon-Shortley phase = (-1)**arg1.");

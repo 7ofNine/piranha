@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -17,6 +18,17 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from _Math import *
+
+def choose(x,k):
+	"""
+	Binomial coefficient (x over k).
+
+	k must be an integer, while x can be any (complex) numerical type. This implementation returns
+	0 whenever k < 0 or k > n.
+	"""
+	from _Math import __choose
+	if not isinstance(k,int): raise TypeError('k must be an integer')
+	return __choose(x,k)
 
 def complex(real,imag_ = None):
 	"""
