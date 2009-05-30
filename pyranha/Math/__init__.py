@@ -41,6 +41,26 @@ def double_factorial(n):
 	if not isinstance(n,int) and not isinstance(n,integer): raise TypeError('n must be an integer')
 	return __double_factorial(n)
 
+def r_factorial(x,n):
+	"""
+	Rising factorial x^(n).
+
+	x must be a numerical type, n must be a nonnegative integer.
+	"""
+	from _Math import __r_factorial
+	if not isinstance(n,int): raise TypeError('n must be an integer')
+	return __r_factorial(x,n)
+
+def f_factorial(x,n):
+	"""
+	Falling factorial (x)_n.
+
+	x must be a numerical type, n must be a nonnegative integer.
+	"""
+	from _Math import __f_factorial
+	if not isinstance(n,int): raise TypeError('n must be an integer')
+	return __f_factorial(x,n)
+
 def choose(x,k):
 	"""
 	Generalised binomial coefficient (x over k).

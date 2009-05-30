@@ -21,7 +21,7 @@
 #ifndef PIRANHA_MP_COMMONS_H
 #define PIRANHA_MP_COMMONS_H
 
-#include "../math.h" // For factorial_check.
+#include "../math.h" // For factorial_check and generic factorials.
 
 namespace piranha
 {
@@ -49,6 +49,22 @@ namespace piranha
 			std::ostream &print(std::ostream &s) const
 			{
 				return (s << derived_const_cast->m_value);
+			}
+			/// Rising factorial.
+			/**
+			 * @see piranha::generic_r_factorial.
+			 */
+			Derived r_factorial(const int &n) const
+			{
+				return generic_r_factorial(*derived_const_cast,n);
+			}
+			/// Falling factorial.
+			/**
+			 * @see piranha::generic_f_factorial.
+			 */
+			Derived f_factorial(const int &n) const
+			{
+				return generic_f_factorial(*derived_const_cast,n);
 			}
 		protected:
 			template <class U>

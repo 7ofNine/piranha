@@ -65,6 +65,18 @@ namespace piranha
 		return q.root(n);
 	}
 
+	/// Overload r_factorial for piranha::mp_rational.
+	inline mp_rational r_factorial(const mp_rational &q, const int &n)
+	{
+		return q.r_factorial(n);
+	}
+
+	/// Overload f_factorial for piranha::mp_rational.
+	inline mp_rational f_factorial(const mp_rational &q, const int &n)
+	{
+		return q.f_factorial(n);
+	}
+
 	/// Overload binomial coefficient (choose) function for piranha::mp_rational.
 	/**
 	 * @see piranha::mp_rational::choose.
@@ -94,6 +106,18 @@ namespace piranha
 	inline std::complex<mp_rational> root(const int &n, const std::complex<mp_rational> &qc)
 	{
 		return qc.root(n);
+	}
+
+	/// Overload r_factorial for std::complex<piranha::mp_rational>.
+	inline std::complex<mp_rational> r_factorial(const std::complex<mp_rational> &c, const int &n)
+	{
+		return c.r_factorial(n);
+	}
+
+	/// Overload f_factorial for std::complex<piranha::mp_rational>.
+	inline std::complex<mp_rational> f_factorial(const std::complex<mp_rational> &c, const int &n)
+	{
+		return c.f_factorial(n);
 	}
 
 	/// Overload binomial coefficient (choose) function for std::complex<piranha::mp_rational>.
@@ -154,6 +178,18 @@ namespace piranha
 		return z.double_factorial();
 	}
 
+	/// Overload r_factorial for piranha::mp_integer.
+	inline mp_integer r_factorial(const mp_integer &z, const int &n)
+	{
+		return z.r_factorial(n);
+	}
+
+	/// Overload f_factorial for piranha::mp_integer.
+	inline mp_integer f_factorial(const mp_integer &z, const int &n)
+	{
+		return z.f_factorial(n);
+	}
+
 	/// Overload binomial coefficient (choose) function for piranha::mp_integer.
 	/**
 	 * @see piranha::mp_integer::choose.
@@ -183,6 +219,18 @@ namespace piranha
 	inline std::complex<mp_integer> root(const int &n, const std::complex<mp_integer> &zc)
 	{
 		return zc.root(n);
+	}
+
+	/// Overload r_factorial for std::complex<piranha::mp_integer>.
+	inline std::complex<mp_integer> r_factorial(const std::complex<mp_integer> &c, const int &n)
+	{
+		return c.r_factorial(n);
+	}
+
+	/// Overload f_factorial for std::complex<piranha::mp_integer>.
+	inline std::complex<mp_integer> f_factorial(const std::complex<mp_integer> &c, const int &n)
+	{
+		return c.f_factorial(n);
 	}
 
 	/// Overload binomial coefficient (choose) function for std::complex<piranha::mp_integer>.

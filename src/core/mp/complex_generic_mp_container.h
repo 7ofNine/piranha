@@ -240,6 +240,22 @@ namespace piranha
 			{
 				return generic_choose(*derived_const_cast,k);
 			}
+			/// Rising factorial.
+			/**
+			 * @see piranha::generic_r_factorial.
+			 */
+			Derived r_factorial(const int &n) const
+			{
+				return generic_r_factorial(*derived_const_cast,n);
+			}
+			/// Falling factorial.
+			/**
+			 * @see piranha::generic_f_factorial.
+			 */
+			Derived f_factorial(const int &n) const
+			{
+				return generic_f_factorial(*derived_const_cast,n);
+			}
 		protected:
 			/// Default constructor.
 			explicit complex_generic_mp_container(): m_real(0),m_imag(0) {}
