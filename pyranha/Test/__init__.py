@@ -22,13 +22,13 @@ import pyranha.Core
 
 integer_numerical_types = [int, pyranha.Core.integer]
 
-scalar_mp_numerical_types = [pyranha.Core.integer, pyranha.Core.rational]
+scalar_exact_numerical_types = [pyranha.Core.integer, pyranha.Core.rational]
 scalar_numerical_types = integer_numerical_types + [float, pyranha.Core.rational]
 
-complex_mp_numerical_types = []
+complex_exact_numerical_types = []
 complex_numerical_types = [complex]
 
-mp_numerical_types = scalar_mp_numerical_types + complex_mp_numerical_types
+exact_numerical_types = scalar_exact_numerical_types + complex_exact_numerical_types
 numerical_types = scalar_numerical_types + complex_numerical_types
 
 class double_factorial_test(unittest.TestCase):
@@ -73,7 +73,7 @@ class rf_factorial_test(unittest.TestCase):
 				if t in integer_numerical_types:
 					self.assertEqual(r_factorial(t(1),n),factorial(t(n)))
 				for x in linspace(t(-10),t(10),100):
-					if t in mp_numerical_types:
+					if t in exact_numerical_types:
 						self.assertEqual(r_factorial(-t(x),n),f_factorial(t(x),n) * cs_phase(n))
 						self.assertEqual(r_factorial(t(x),n) / factorial(n),choose(t(x) + n - 1, n))
 						self.assertEqual(f_factorial(t(x),n) / factorial(n),choose(t(x), n))
