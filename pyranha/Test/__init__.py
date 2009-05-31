@@ -67,7 +67,7 @@ class rf_factorial_test(unittest.TestCase):
 		from numpy import linspace
 		for t in numerical_types:
 			for n in range(0,8):
-				# Here we should wrt standard IEEE floating point format, the factorial is small enough
+				# Here we should be safe wrt standard IEEE floating point format, the factorial is small enough
 				# to be contained within 2**52 and we are working only with integers and multiplications.
 				self.assertEqual(r_factorial(t(1),n),f_factorial(t(n),n))
 				if t in integer_numerical_types:
@@ -91,6 +91,9 @@ class binomial_test(unittest.TestCase):
 		from numpy import linspace
 		for t in numerical_types:
 			for n in range(0,10):
+				self.assertEqual(choose(t(n),0),choose(t(n),n))
+				self.assertEqual(choose(t(n),0),1)
+				self.assertEqual(choose(t(n),-1),choose(t(n),n + 1))
 				self.assertEqual(sum([choose(t(n),k) for k in range(0,n + 1)]),t(2) ** n)
 				if n >= 1:
 					self.assertEqual(sum([choose(t(n),k) * k for k in range(1,n + 1)]),t(2) ** (n - 1) * n)
