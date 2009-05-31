@@ -59,17 +59,22 @@ class double_factorial_test(unittest.TestCase):
 					self.assertEqual(factorial(t(n) - 2),factorial(t2(n) - 2))
 
 class rf_factorial_test(unittest.TestCase):
+	"""
+	Exercise known relations between rising/falling, factorials and choose functions.
+	"""
 	def runTest(self):
 		from pyranha.Math import factorial, r_factorial, f_factorial, choose, cs_phase
 		from numpy import linspace
 		for t in numerical_types:
 			for n in range(0,8):
+				# Here we should wrt standard IEEE floating point format, the factorial is small enough
+				# to be contained within 2**52 and we are working only with integers and multiplications.
 				self.assertEqual(r_factorial(t(1),n),f_factorial(t(n),n))
 				if t in integer_numerical_types:
 					self.assertEqual(r_factorial(t(1),n),factorial(t(n)))
 				for x in linspace(t(-10),t(10),100):
-					self.assertEqual(r_factorial(-t(x),n),f_factorial(t(x),n) * cs_phase(n))
 					if t in mp_numerical_types:
+						self.assertEqual(r_factorial(-t(x),n),f_factorial(t(x),n) * cs_phase(n))
 						self.assertEqual(r_factorial(t(x),n) / factorial(n),choose(t(x) + n - 1, n))
 						self.assertEqual(f_factorial(t(x),n) / factorial(n),choose(t(x), n))
 
