@@ -78,6 +78,7 @@ namespace pyranha
 		inst.def("__pow__", (pow_double)&T::pow, "Exponentiation.");
 		inst.def("__pow__", (pow_rational)&T::pow, "Exponentiation.");
 		inst.def("root",&T::root,"N-th root.");
+		inst.def("__hash__",&T::hash,"Hash value.");
 	}
 
 	template <class T, class U>
@@ -110,8 +111,8 @@ namespace pyranha
 		boost::python::class_<T> inst(name.c_str(),doc.c_str(),boost::python::init<>());
 		real_mp_methods(inst);
 		// Operators against standard types.
-		real_mp_operators(inst,int());
 		real_mp_operators(inst,double());
+		real_mp_operators(inst,int());
 		real_mp_operators(inst,piranha::mp_rational());
 		real_mp_operators(inst,piranha::mp_integer());
 		return inst;

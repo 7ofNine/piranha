@@ -24,6 +24,7 @@
 #include <boost/python/enum.hpp>
 #include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/operators.hpp>
 #include <string>
 #include <vector>
 
@@ -62,11 +63,17 @@ BOOST_PYTHON_MODULE(_Core)
 	class_<mp_rational> mpr(expose_real_mp_class<mp_rational>("rational","Multi-precision rational number."));
 	mpr.def(init<const int &, const int &>());
 	mpr.def(init<const mp_integer &, const mp_integer &>());
+	mpr.add_property("num",&mp_rational::get_num);
+	mpr.add_property("den",&mp_rational::get_den);
 	mpr.def("choose", &mp_rational::choose, "Binomial coefficient (choose function).");
 	class_<mp_integer> mpz(expose_real_mp_class<mp_integer>("integer","Multi-precision integer number."));
 	mpz.def(init<const mp_rational &>());
 	mpz.def("factorial", &mp_integer::factorial, "Factorial.");
 	mpz.def("choose", &mp_integer::choose, "Binomial coefficient (choose function).");
+	mpz.def(boost::python::self %= mp_integer());
+	mpz.def(boost::python::self %= int());
+	mpz.def(boost::python::self % mp_integer());
+	mpz.def(boost::python::self % int());
 
 	// Settings.
 	enum_<settings::out_format>("out_format")

@@ -469,9 +469,11 @@ namespace piranha
 		boost::ordered_field_operators<mp_integer,
 		boost::ordered_field_operators<mp_integer, int,
 		boost::ordered_field_operators<mp_integer, double,
+		boost::modable<mp_integer,
+		boost::modable<mp_integer, int,
 		boost::equality_comparable<mp_integer, std::complex<double>,
 		boost::equality_comparable<mp_integer, std::complex<int>
-		> > > > > > >
+		> > > > > > > > >
 	{
 			friend class gmp_toolbox<mpz_class,mp_integer>;
 		public:
@@ -522,6 +524,18 @@ namespace piranha
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,-=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_rational,*=)
 			FORWARDING_DIVISION_OPERATOR_DECL(mp_integer,mp_rational)
+			/// Mod operator.
+			mp_integer &operator%=(const int &n)
+			{
+				m_value %= n;
+				return *this;
+			}
+			/// Mod operator.
+			mp_integer &operator%=(const mp_integer &z)
+			{
+				m_value %= z.m_value;
+				return *this;
+			}
 			/// Cast to double.
 			/**
 			 * Uses the get_d() GMP routine internally.
