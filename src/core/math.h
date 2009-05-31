@@ -155,37 +155,14 @@ namespace piranha
 		return retval;
 	}
 
-	/// Rising factorial, integer argument.
-	/**
-	 * Will use boost's implementation internally.
-	 * @throws value_error if i is negative.
-	 * @throws std::overflow_error if result is too big to be represented in double-precision.
-	 * @see http://www.boost.org/doc/libs/1_39_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/factorials/sf_rising_factorial.html
-	 */
-	inline double r_factorial(const int &n, const int &i)
-	{
-		factorial_check(i);
-		// Adopt the definition 0^(i) == 0 with i != 0 (boost's implementation errors out).
-		if (n == 0 && i != 0) {
-			return 0;
-		}
-		return boost::math::rising_factorial(n,static_cast<unsigned>(i));
-	}
-
 	/// Rising factorial, double-precision argument.
 	/**
-	 * Will use boost's implementation internally.
+	 * Will use piranha::generic_r_factorial internally.
 	 * @throws value_error if i is negative.
-	 * @throws std::overflow_error if result is too big to be represented in double-precision.
-	 * @see http://www.boost.org/doc/libs/1_39_0/libs/math/doc/sf_and_dist/html/math_toolkit/special/factorials/sf_rising_factorial.html
 	 */
 	inline double r_factorial(const double &x, const int &i)
 	{
-		factorial_check(i);
-		if (x == 0 && i != 0) {
-			return 0;
-		}
-		return boost::math::rising_factorial(x,static_cast<unsigned>(i));
+		return generic_r_factorial(x,i);
 	}
 
 	/// Rising factorial, complex double-precision argument.
@@ -209,16 +186,6 @@ namespace piranha
 			retval *= tmp;
 		}
 		return retval;
-	}
-
-	/// Falling factorial, integer argument.
-	/**
-	 * Will use piranha::generic_f_factorial internally.
-	 * @throws value_error if i is negative.
-	 */
-	inline double f_factorial(const int &n, const int &i)
-	{
-		return generic_f_factorial(n,i);
 	}
 
 	/// Falling factorial, double-precision argument.

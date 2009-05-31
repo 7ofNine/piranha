@@ -63,25 +63,21 @@ BOOST_PYTHON_MODULE(_Math)
 	def("__double_factorial", double_factorial_mp(&double_factorial), "Double factorial of non-negative integer argument.");
 	def("__double_factorial", double_factorial_double(&double_factorial), "Double factorial of non-negative integer argument.");
 	// Rising factorial.
-	typedef double (*r_factorial_int)(const int &, const int &);
 	typedef double (*r_factorial_double)(const double &, const int &);
 	typedef std::complex<double> (*r_factorial_complex_double)(const std::complex<double> &, const int &);
 	typedef mp_integer (*r_factorial_mp_int)(const mp_integer &, const int &);
 	typedef mp_rational (*r_factorial_mp_rat)(const mp_rational &, const int &);
 	def("__r_factorial", r_factorial_complex_double(&r_factorial), "Rising factorial.");
 	def("__r_factorial", r_factorial_double(&r_factorial), "Rising factorial.");
-	def("__r_factorial", r_factorial_int(&r_factorial), "Rising factorial.");
 	def("__r_factorial", r_factorial_mp_int(&r_factorial), "Rising factorial.");
 	def("__r_factorial", r_factorial_mp_rat(&r_factorial), "Rising factorial.");
 	// Falling factorial.
-	typedef double (*f_factorial_int)(const int &, const int &);
 	typedef double (*f_factorial_double)(const double &, const int &);
 	typedef std::complex<double> (*f_factorial_complex_double)(const std::complex<double> &, const int &);
 	typedef mp_integer (*f_factorial_mp_int)(const mp_integer &, const int &);
 	typedef mp_rational (*f_factorial_mp_rat)(const mp_rational &, const int &);
 	def("__f_factorial", f_factorial_complex_double(&f_factorial), "Falling factorial.");
 	def("__f_factorial", f_factorial_double(&f_factorial), "Falling factorial.");
-	def("__f_factorial", f_factorial_int(&f_factorial), "Falling factorial.");
 	def("__f_factorial", f_factorial_mp_int(&f_factorial), "Falling factorial.");
 	def("__f_factorial", f_factorial_mp_rat(&f_factorial), "Falling factorial.");
 	// Choose function.
