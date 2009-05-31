@@ -60,7 +60,7 @@ class double_factorial_test(unittest.TestCase):
 
 class rf_factorial_test(unittest.TestCase):
 	"""
-	Exercise known relations between rising/falling, factorials and choose functions.
+	Exercise known relations between rising/falling factorials, factorial and choose functions.
 	"""
 	def runTest(self):
 		from pyranha.Math import factorial, r_factorial, f_factorial, choose, cs_phase
@@ -72,14 +72,39 @@ class rf_factorial_test(unittest.TestCase):
 				self.assertEqual(r_factorial(t(1),n),f_factorial(t(n),n))
 				if t in integer_numerical_types:
 					self.assertEqual(r_factorial(t(1),n),factorial(t(n)))
-				for x in linspace(t(-10),t(10),100):
+				for x in linspace(t(-10),t(10),26):
 					if t in exact_numerical_types:
 						self.assertEqual(r_factorial(-t(x),n),f_factorial(t(x),n) * cs_phase(n))
 						self.assertEqual(r_factorial(t(x),n) / factorial(n),choose(t(x) + n - 1, n))
 						self.assertEqual(f_factorial(t(x),n) / factorial(n),choose(t(x), n))
+						# Binomial-like theorem for rising/falling factorials.
+						for y in linspace(t(-10),t(10),26):
+							self.assertEqual(r_factorial(t(x) + t(y),n),sum([choose(t(n),j) * r_factorial(t(x),n - j) * r_factorial(t(y),j) for j in range(0,n + 1)]))
+							self.assertEqual(f_factorial(t(x) + t(y),n),sum([choose(t(n),j) * f_factorial(t(x),n - j) * f_factorial(t(y),j) for j in range(0,n + 1)]))
+
+class binomial_test(unittest.TestCase):
+	"""
+	Exercise known relations for the binomial coefficient.
+	"""
+	def runTest(self):
+		from pyranha.Math import choose, r_factorial, cs_phase
+		from numpy import linspace
+		for t in numerical_types:
+			for n in range(0,10):
+				self.assertEqual(sum([choose(t(n),k) for k in range(0,n + 1)]),t(2) ** n)
+				if n >= 1:
+					self.assertEqual(sum([choose(t(n),k) * k for k in range(1,n + 1)]),t(2) ** (n - 1) * n)
+					self.assertEqual(sum([choose(t(n),i) ** 2 * i * i for i in range(0,n + 1)]),choose(t(n) * 2 - 2, n - 1) * n * n)
+				self.assertEqual(sum([choose(t(n),k) ** 2 for k in range(0,n + 1)]),choose(t(n) * 2, n))
+				self.assertEqual(sum([choose(t(n),i) ** 2 * i for i in range(0,n + 1)]),choose(t(n) * 2, n) / 2 * n)
+				for k in range(1,n):
+					self.assertEqual(sum([choose(t(n),j) * cs_phase(j) * r_factorial(t(j),k) for j in range(0,n + 1)]),0)
+				for k in range(1,10):
+					self.assertEqual((t(n) - 2 * k) * choose(t(n),k), t(n) * (choose(t(n) - 1, k) - choose(t(n) - 1, k - 1)))
 
 def suite_math():
 	suite = unittest.TestSuite()
 	suite.addTest(double_factorial_test())
+	suite.addTest(binomial_test())
 	suite.addTest(rf_factorial_test())
 	return suite
