@@ -111,3 +111,44 @@ def suite_math():
 	suite.addTest(binomial_test())
 	suite.addTest(rf_factorial_test())
 	return suite
+
+import pyranha.Qps
+import pyranha.Qpoly
+import pyranha.Qqpoly
+
+scalar_exact_series_types = [pyranha.Qps.qps, pyranha.Qpoly.qpoly, pyranha.Qqpoly.qqpoly]
+
+class series_sf_test(unittest.TestCase):
+	"""
+	Exercise known relations involving special functions.
+	"""
+	def runTest(self):
+		from pyranha.Core import psym, degree_truncator, rational
+		from pyranha.Math import cs_phase
+		for limit in [0,1,2,3,80]:
+			degree_truncator.set(limit)
+			for t in scalar_exact_series_types:
+				x = t(psym('x'))
+				self.assertEqual(x.root(1),x)
+				self.assertEqual(x ** rational(1,1),x)
+				for n in range(-10,11):
+					self.assert_(t().besselJ(n) == 1 or t().besselJ(n) == 0)
+					self.assertEqual(x.besselJ(n),x.besselJ(-n) * cs_phase(n))
+					for m in range(-10,11):
+						if n >= m:
+							Jnx = x.besselJ(n)
+							Jnxm = x.besselJ_div_m(n,m)
+							if m >= 0 and Jnxm.degree() > 0:
+								self.assertEqual(x ** m * Jnxm, Jnx);
+							elif m < 0 and Jnx.degree() > 0:
+								self.assertEqual(Jnxm,Jnx * x ** (-m));
+					if n != 0:
+						self.assertEqual((x ** -n).root(-n),x)
+						self.assertEqual((x ** -n) ** rational(1,-n),x)
+			#retval += (x.sin() * x.sin() + x.cos() * x.cos() != 1);
+			#
+
+def suite_series():
+	suite = unittest.TestSuite()
+	suite.addTest(series_sf_test())
+	return suite

@@ -67,6 +67,9 @@ namespace piranha
 						"Bessel function of the first kind.\nThe reported error is: ") + ve.what());
 				}
 				const size_t limit = limit_;
+				if (limit == 0) {
+					return retval;
+				}
 				// Now we buid the starting point of the power series expansion of Jn.
 				retval = *derived_const_cast;
 				retval.base_divide_by(2, args_tuple);
@@ -106,8 +109,12 @@ namespace piranha
 						+ ve.what());
 				}
 				const size_t limit = limit_;
+				Derived retval;
+				if (limit == 0) {
+					return retval;
+				}
 				// Now we buid the starting point of the power series expansion of Jn.
-				Derived retval(*derived_const_cast);
+				retval = *derived_const_cast;
 				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
@@ -131,14 +138,15 @@ namespace piranha
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
 			Derived base_besselJ_div_m(const int &order_, const int &m,
-				const ArgsTuple &args_tuple) const {
+				const ArgsTuple &args_tuple) const
+			{
 				Derived retval;
 				// Let's take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
 				// Special case of empty series.
 				if (derived_const_cast->empty()) {
 					if (order < m) {
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						piranha_throw(zero_division_error,"besselJ_div_m with order smaller than m has a pole in the origin");
 					} else if (order == m) {
 						retval = retval.base_add(2,args_tuple).base_pow(-order,args_tuple);
 						retval.base_divide_by(factorial(order),args_tuple);
@@ -155,6 +163,9 @@ namespace piranha
 						"The reported error is: ") + ve.what());
 				}
 				const size_t limit = limit_;
+				if (limit == 0) {
+					return retval;
+				}
 				// Now we build the starting point of the power series expansion of Jn/x**m.
 				retval = *derived_const_cast;
 				retval.base_divide_by(2, args_tuple);
