@@ -112,11 +112,13 @@ def suite_math():
 	suite.addTest(rf_factorial_test())
 	return suite
 
+import pyranha.Qqpoly
+import pyranha.Qqps
 import pyranha.Qps
 import pyranha.Qpoly
-import pyranha.Qqpoly
 
-scalar_exact_series_types = [pyranha.Qps.qps, pyranha.Qpoly.qpoly, pyranha.Qqpoly.qqpoly]
+scalar_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps, pyranha.Qpoly.qpoly, pyranha.Qqpoly.qqpoly]
+scalar_exact_series_types += [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc, pyranha.Qpoly.qpolyc, pyranha.Qqpoly.qqpolyc]
 
 class series_sf_test(unittest.TestCase):
 	"""

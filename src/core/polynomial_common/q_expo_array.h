@@ -266,7 +266,8 @@ namespace piranha
 				bool found_linear = false;
 				bool is_unity = true;
 				int candidate = -1;
-				for (size_type i = 0; i < this->m_size; ++i) {
+				const size_type size = this->size();
+				for (size_type i = 0; i < size; ++i) {
 					if ((*this)[i] == 1) {
 						is_unity = false;
 						if (found_linear) {

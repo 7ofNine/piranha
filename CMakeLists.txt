@@ -31,6 +31,7 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QPOLY "Build arbitrary-size rational coeffi
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QQPOLY "Build arbitrary-size rational coefficient multivariate polynomial manipulator with rational exponents in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPS "Build double precision Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QPS "Build rational coeffcient Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QQPS "Build rational coeffcient - rational expoents Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(BUILD_MULTITHREADING "Enable multi-threaded parallelism." OFF)
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
