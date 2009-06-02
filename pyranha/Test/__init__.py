@@ -154,3 +154,7 @@ def suite_series():
 	suite = unittest.TestSuite()
 	suite.addTest(series_sf_test())
 	return suite
+
+def run_full_suite():
+	alltests = unittest.TestSuite([suite_series(), suite_math()])
+	unittest.TextTestRunner(verbosity = 2).run(alltests)
