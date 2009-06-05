@@ -118,7 +118,12 @@ import pyranha.Qps
 import pyranha.Qpoly
 
 scalar_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps, pyranha.Qpoly.qpoly, pyranha.Qqpoly.qqpoly]
-scalar_exact_series_types += [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc, pyranha.Qpoly.qpolyc, pyranha.Qqpoly.qqpolyc]
+complex_exact_series_types = [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc, pyranha.Qpoly.qpolyc, pyranha.Qqpoly.qqpolyc]
+exact_series_types = scalar_exact_series_types + complex_exact_series_types
+
+scalar_trig_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps]
+complex_trig_exact_series_types = [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc]
+trig_exact_series_types = scalar_trig_exact_series_types + complex_trig_exact_series_types
 
 class series_sf_test(unittest.TestCase):
 	"""
@@ -129,7 +134,7 @@ class series_sf_test(unittest.TestCase):
 		from pyranha.Math import cs_phase
 		for limit in [0,1,2,3,80]:
 			degree_truncator.set(limit)
-			for t in scalar_exact_series_types:
+			for t in exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.root(1),x)
 				self.assertEqual(x ** rational(1,1),x)
@@ -141,18 +146,49 @@ class series_sf_test(unittest.TestCase):
 							Jnx = x.besselJ(n)
 							Jnxm = x.besselJ_div_m(n,m)
 							if m >= 0 and Jnxm.degree() > 0:
-								self.assertEqual(x ** m * Jnxm, Jnx);
+								self.assertEqual(x ** m * Jnxm, Jnx)
 							elif m < 0 and Jnx.degree() > 0:
-								self.assertEqual(Jnxm,Jnx * x ** (-m));
+								self.assertEqual(Jnxm,Jnx * x ** (-m))
 					if n != 0:
 						self.assertEqual((x ** -n).root(-n),x)
 						self.assertEqual((x ** -n) ** rational(1,-n),x)
-			#retval += (x.sin() * x.sin() + x.cos() * x.cos() != 1);
-			#
+
+class series_trig_test(unittest.TestCase):
+	"""
+	Exercise known relations involving trigonometric functions.
+	"""
+	def runTest(self):
+		from pyranha.Core import psym, degree_truncator, integer, rational
+		from pyranha.Math import choose, einpi2, cs_phase
+		for limit in [0,1,2,3,80]:
+			degree_truncator.set(limit)
+			for t in scalar_trig_exact_series_types:
+				x = t(psym('x'))
+				self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
+				# Double angle formulas.
+				self.assertEqual((2 * x).sin(), 2 * x.sin() * x.cos())
+				self.assertEqual((2 * x).cos(), x.cos() ** 2 - x.sin() ** 2)
+				self.assertEqual((2 * x).cos(), 2 * x.cos() ** 2 - 1)
+				self.assertEqual((2 * x).cos(), 1 - 2 * x.sin() ** 2)
+				# Triple angle formulas.
+				self.assertEqual((3 * x).sin(), 3 * x.sin() - 4 * x.sin() ** 3)
+				self.assertEqual((3 * x).cos(), 4 * x.cos() ** 3 - 3 * x.cos())
+				for n in range(0,21):
+					# Sine/cosine of multiple angles.
+					self.assertEqual((n * x).sin(), sum([choose(integer(n),k) * x.cos() ** k * x.sin() ** (n - k) * einpi2(n - k).imag for k in range(0,n + 1)]))
+					self.assertEqual((n * x).cos(), sum([choose(integer(n),k) * x.cos() ** k * x.sin() ** (n - k) * einpi2(n - k).real for k in range(0,n + 1)]))
+					# Power-reduction formulas.
+					if n % 2:
+						self.assertEqual(x.cos() ** n, rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,(n - 1) / 2 + 1)]))
+						self.assertEqual(x.sin() ** n, rational(2) / (rational(2) ** n) * sum([cs_phase((n - 1) / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).sin() for k in range(0,(n - 1) / 2 + 1)]))
+					else:
+						self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
+						self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
 
 def suite_series():
 	suite = unittest.TestSuite()
 	suite.addTest(series_sf_test())
+	suite.addTest(series_trig_test())
 	return suite
 
 def run_full_suite():
