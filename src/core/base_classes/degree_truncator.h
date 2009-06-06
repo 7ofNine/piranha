@@ -100,11 +100,11 @@ namespace piranha
 						switch (m_mode) {
 							case deg:
 								return (t1.template get<expo_term_pos>().min_degree() +
-									t2.template get<expo_term_pos>().min_degree() >
+									t2.template get<expo_term_pos>().min_degree() >=
 									m_degree_limit);
 							case p_deg:
 								return (t1.template get<expo_term_pos>().partial_min_degree(m_pos_tuple) +
-									t2.template get<expo_term_pos>().partial_min_degree(m_pos_tuple) >
+									t2.template get<expo_term_pos>().partial_min_degree(m_pos_tuple) >=
 									m_degree_limit);
 							case inactive:
 								// We should never get there.
@@ -152,7 +152,9 @@ namespace piranha
 						const double tmp  = (static_cast<double>(m_degree_limit) / min_degree - start) /
 							static_cast<double>(step_size) + 1;
 						if (tmp > 0) {
-							return static_cast<size_t>(std::floor(tmp));
+							const double tmp2 = std::floor(tmp);
+							const size_t retval = static_cast<size_t>(tmp2);
+							return (tmp2 != tmp) ? retval : ((retval > 0) ? (retval - 1) : 0);
 						} else {
 							__PDEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
 							return 0;

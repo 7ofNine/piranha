@@ -160,7 +160,7 @@ class series_trig_test(unittest.TestCase):
 	def runTest(self):
 		from pyranha.Core import psym, degree_truncator, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
-		for limit in [0,1,2,3,80]:
+		for limit in [1,2,3,80]:
 			degree_truncator.set(limit)
 			for t in scalar_trig_exact_series_types:
 				x = t(psym('x'))
