@@ -115,9 +115,12 @@ namespace piranha
 					// Number of a iterations of a power series development of a power series.
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
+					// TODO: range checking on return value. Probably we want it to be in int range, so that we can have
+					// fully safe interop with mp types.
 					template <class PowerSeries, class ArgsTuple>
 					static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
-						const ArgsTuple &args_tuple) {
+						const ArgsTuple &args_tuple)
+					{
 						if (step_size < 1) {
 							piranha_throw(value_error,"please use a step size of at least 1");
 						}
