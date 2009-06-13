@@ -155,6 +155,7 @@ namespace piranha
 						const double tmp  = (static_cast<double>(m_degree_limit) / min_degree - start) /
 							static_cast<double>(step_size) + 1;
 						if (tmp > 0) {
+							// TODO: replace here with boost safe cast with round_to_floor policy.
 							const double tmp2 = std::floor(tmp);
 							const size_t retval = static_cast<size_t>(tmp2);
 							return (tmp2 != tmp) ? retval : ((retval > 0) ? (retval - 1) : 0);

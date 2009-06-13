@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 #include <complex>
+#include <vector>
 
 #include "../common_functors.h"
 #include "../exceptions.h"
@@ -60,6 +61,14 @@ namespace piranha
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			Derived besselJ_div_m(const int &order, const int &m) const {
 				Derived retval(derived_const_cast->base_besselJ_div_m(order, m, derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			template <class T>
+			Derived hyperF(const std::vector<T> &a_list, const std::vector<T> &b_list) const
+			{
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

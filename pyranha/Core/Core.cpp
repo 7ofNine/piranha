@@ -53,6 +53,10 @@ BOOST_PYTHON_MODULE(_Core)
 	from_python_sequence<vector_psym,variable_capacity_policy>();
 	to_tuple_mapping<std::vector<double> >();
 	from_python_sequence<std::vector<double>,variable_capacity_policy>();
+	to_tuple_mapping<std::vector<mp_rational> >();
+	from_python_sequence<std::vector<mp_rational>,variable_capacity_policy>();
+	to_tuple_mapping<std::vector<mp_integer> >();
+	from_python_sequence<std::vector<mp_integer>,variable_capacity_policy>();
 
 	translate_exceptions();
 	numerical_cfs_bindings();

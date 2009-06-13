@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 
 #include <string>
+#include <vector>
 
 #include "../exceptions.h"
 #include "../math.h"
@@ -39,6 +40,37 @@ namespace piranha
 	class toolbox<base_series_special_functions<Derived> >
 	{
 		protected:
+			template <class T, class ArgsTuple>
+			Derived base_hyperF(const std::vector<T> &a_list, const std::vector<T> &b_list, const ArgsTuple &args_tuple) const
+			{
+				Derived retval;
+				// HyperF of a null series will always be equal to 1.
+				if (derived_const_cast->empty()) {
+					retval.base_add(1,args_tuple);
+					return retval;
+				}
+				const size_t iter = derived_const_cast->psi_(0,1,args_tuple);
+				// If the truncator says that no iterations are needed, return an empty series.
+				if (!iter) {
+					return retval;
+				}
+				retval.base_add(1,args_tuple);
+				Derived tmp;
+				tmp.base_add(1,args_tuple);
+				const size_t a_size = a_list.size(), b_size = b_list.size();
+				for (size_t i = 1; i < iter; ++i) {
+					for (size_t j = 0; j < a_size; ++j) {
+						tmp.base_mult_by(a_list[j] + (int)(i - 1),args_tuple);
+					}
+					for (size_t j = 0; j < b_size; ++j) {
+						tmp.base_divide_by(b_list[j] + (int)(i - 1),args_tuple);
+					}
+					tmp.base_divide_by(i,args_tuple);
+					tmp.base_mult_by(*derived_const_cast,args_tuple);
+					retval.base_add(tmp,args_tuple);
+				}
+				return retval;
+			}
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
 			Derived base_besselJ(const int &order_, const ArgsTuple &args_tuple) const {

@@ -30,6 +30,8 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
+// TODO: here we are still missing all interoperability with complex mps.
+
 namespace piranha
 {
 	template <class RealDerived>
@@ -68,11 +70,29 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			RealDerived abs2() const {
+				RealDerived retval = derived_const_cast->base_abs2(derived_const_cast->m_arguments);
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
 			Derived conjugate() const {
 				Derived retval = derived_const_cast->base_conjugate(derived_const_cast->m_arguments);
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
+			}
+			// NOTE: this is probably implementable in base fashion, by doing all the arguments merging dance
+			// and then comparing. But since we do only one comparison (real() == x) in which all the dancing is already
+			// done, we would not gain anything.
+			bool operator==(const RealDerived &x) const
+			{
+				return (derived_const_cast->base_imag(derived_const_cast->m_arguments).empty() && real() == x);
+			}
+			// TODO: remove != operators when using boost::operators.
+			bool operator!=(const RealDerived &x) const
+			{
+				return !(operator==(x));
 			}
 			bool operator==(const std::complex<double> &cx) const {
 				return derived_const_cast->base_equal_to_complex_number(cx);

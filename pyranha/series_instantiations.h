@@ -147,6 +147,8 @@ namespace pyranha
 		instc.def(boost::python::init<const T &>());
 		instc.def(boost::python::init<const T &, const T &>());
 		inst.def("complex", &T::complex, "Return complex counterpart.");
+		instc.def(boost::python::self == T());
+		instc.def(boost::python::self != T());
 		instc.def(boost::python::self == std::complex<double>());
 		instc.def(boost::python::self != std::complex<double>());
 		// Addition and subtraction.
@@ -175,8 +177,9 @@ namespace pyranha
 		// Real and imaginary parts assignment and extraction.
 		instc.add_property("real", &std::complex<T>::real, &std::complex<T>::set_real, "Get/set real part.");
 		instc.add_property("imag", &std::complex<T>::imag, &std::complex<T>::set_imag, "Get/set imaginary part.");
-		// Absolute value.
+		// Absolute values.
 		instc.def("__abs__", &std::complex<T>::abs, "Absolute value.");
+		instc.def("abs2", &std::complex<T>::abs2, "Squared absolute value.");
 		// Conjugate.
 		instc.def("conjugate", &std::complex<T>::conjugate, "Complex conjugate.");
 	}
@@ -264,6 +267,7 @@ namespace pyranha
 		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);
 		inst.def("Pnm", named_3(&T::Pnm), Pnm_descr);
 		inst.def("Pn", &T::Pn, "Legendre polynomial of degree arg2.");
+		inst.def("hyperF", &T::template hyperF<piranha::mp_rational>);
 	}
 
 #define __celmec_inst(arg) \

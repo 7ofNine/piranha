@@ -80,12 +80,18 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			RealDerived base_abs(const ArgsTuple &args_tuple) const {
+			RealDerived base_abs2(const ArgsTuple &args_tuple) const
+			{
 				RealDerived retval = base_real(args_tuple), tmp = base_imag(args_tuple);
 				retval.base_mult_by(retval,args_tuple);
 				tmp.base_mult_by(tmp,args_tuple);
 				retval.base_add(tmp,args_tuple);
 				return retval;
+			}
+			template <class ArgsTuple>
+			RealDerived base_abs(const ArgsTuple &args_tuple) const
+			{
+				return base_abs2(args_tuple).base_root(2,args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived base_conjugate(const ArgsTuple &args_tuple) const {
@@ -122,7 +128,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &args_tuple) const {
 				Derived retval = base_conjugate(args_tuple);
-				retval.base_mult_by(base_abs(args_tuple).base_pow(-1,args_tuple),args_tuple);
+				retval.base_mult_by(base_abs2(args_tuple).base_pow(-1,args_tuple),args_tuple);
 				return retval;
 			}
 			// Use N = 0 for real, N != 0 for imag.
