@@ -74,8 +74,4 @@ if (!(expr)) { \
 	P_EX_THROW(assertion_error,"assertion error"); \
 }
 
-struct runtime_error: public p_base_exception {
-	runtime_error(const std::string &s): p_base_exception(s) {}
-};
-
 #endif
