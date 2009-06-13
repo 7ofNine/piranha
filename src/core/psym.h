@@ -133,6 +133,11 @@ namespace piranha
 				const psym_impl p(name,time_eval);
 				construct_from_impl(p);
 			}
+			/// Constructor from name and constant value.
+			explicit psym(const std::string &name, const double &value) {
+				const psym_impl p(name,std::vector<double>((size_t)1,value));
+				construct_from_impl(p);
+			}
 			bool operator<(const psym &other) const {
 				return ((*m_it) < *(other.m_it));
 			}

@@ -116,6 +116,7 @@ BOOST_PYTHON_MODULE(_Core)
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())
+		.def(init<const std::string &, const double &>())
 		.def(init<const std::string &>())
 		.def("__copy__", &py_copy<psym>)
 		.def("__repr__", &py_print_to_string<psym>)
