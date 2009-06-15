@@ -28,20 +28,93 @@
 #include <complex>
 #include <string>
 #include <utility> // For std::pair.
+#include <vector>
 
+#include "../src/core/config.h"
 #include "../src/core/mp.h"
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
+#include "boost_python_container_conversions.h"
 #include "cf_key_bindings.h"
 #include "commons.h"
 
+// TODO: less ugly __psi__ handling (with optional<>?) and remove any reference to terms.
+
 namespace pyranha
 {
+	// "Fat" iterator that wraps the iterator of named series, allowing retrieval of coefficient and key
+	// of each term as a 2-vector of series. Provides safe and useful iterator capabilities for series in Python.
+	// NOT thread-safe.
+	template <class NamedSeries>
+	struct __PIRANHA_VISIBLE named_iterator {
+		typedef typename NamedSeries::iterator s_iterator;
+		typedef typename s_iterator::iterator_category iterator_category;
+		typedef std::vector<NamedSeries> value_type;
+		typedef typename s_iterator::difference_type difference_type;
+		typedef value_type * pointer;
+		typedef value_type & reference;
+		named_iterator(const s_iterator &it, const NamedSeries &s):m_it(it),m_s(&s) {}
+		named_iterator &operator=(const named_iterator &n)
+		{
+			if (*this != &n) {
+				m_it = n.m_it;
+				m_s = n.m_s;
+			}
+			return *this;
+		}
+		value_type &operator*() const
+		{
+			if (m_value.size() != 2) {
+				m_value.resize(2);
+			}
+			m_value[0] = m_s->series_from_cf(m_it->m_cf);
+			m_value[1] = m_s->series_from_key(m_it->m_key);
+			return m_value;
+		}
+		bool operator==(const named_iterator &n_it) const
+		{
+			return (m_it == n_it.m_it && m_s == n_it.m_s);
+		}
+		named_iterator &operator++()
+		{
+			++m_it;
+			return *this;
+		}
+		named_iterator operator++(int)
+		{
+			named_iterator retval(m_it,*m_s);
+			++m_it;
+			return retval;
+		}
+		s_iterator 		m_it;
+		const NamedSeries	*m_s;
+		static value_type	m_value;
+	};
+
+	template <class NamedSeries>
+	inline named_iterator<NamedSeries> series_begin(const NamedSeries &s)
+	{
+		return named_iterator<NamedSeries>(s.begin(),s);
+	}
+
+	template <class NamedSeries>
+	inline named_iterator<NamedSeries> series_end(const NamedSeries &s)
+	{
+		return named_iterator<NamedSeries>(s.end(),s);
+	}
+
+	// Initializer for named_iterator's static member.
+	template <class NamedSeries>
+	std::vector<NamedSeries> named_iterator<NamedSeries>::m_value;
+
 	/// Basic series instantiation.
 	template <class T>
 	inline std::pair<boost::python::class_<T>, boost::python::class_<typename T::term_type> >
 	series_basic_instantiation(const std::string &name, const std::string &description)
 	{
+		// Interoperability between Python lists of series and C++ vectors of series.
+		to_tuple_mapping<std::vector<T> >();
+		from_python_sequence<std::vector<T>,variable_capacity_policy>();
 		typedef typename T::term_type term_type;
 		// Expose the term type.
 		boost::python::class_<term_type> term_inst(py_series_term<term_type>(name,description));
@@ -55,7 +128,8 @@ namespace pyranha
 		inst.def(boost::python::init<const piranha::psym &>());
 		// Some special methods.
 		inst.def("__copy__", &py_copy<T>);
-		inst.def("__iter__", boost::python::iterator<T>());
+		//inst.def("__iter__", boost::python::iterator<T>());
+		inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
 		// Pyranha-specific special methods.

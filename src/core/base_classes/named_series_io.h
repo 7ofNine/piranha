@@ -243,6 +243,34 @@ namespace piranha
 		}
 		m_arguments = args_tuple;
 	}
+
+	/// Construct series from a key.
+	/**
+	 * @see piranha::base_series::base_series_from_key.
+	 */
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Key>
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::series_from_key(const Key &key) const
+	{
+		Derived retval(derived_const_cast->base_series_from_key(key,m_arguments));
+		retval.m_arguments = m_arguments;
+		retval.trim();
+		return retval;
+	}
+
+	/// Construct series from a cf.
+	/**
+	 * @see piranha::base_series::base_series_from_cf.
+	 */
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <class Cf>
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::series_from_cf(const Cf &cf) const
+	{
+		Derived retval(derived_const_cast->base_series_from_cf(cf,m_arguments));
+		retval.m_arguments = m_arguments;
+		retval.trim();
+		return retval;
+	}
 }
 
 #undef derived_const_cast

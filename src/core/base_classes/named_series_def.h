@@ -104,6 +104,10 @@ namespace piranha
 			Derived partial(const psym &, const int &n = 1) const;
 			template <class SubSeries>
 			Derived sub(const psym &, const SubSeries &) const;
+			template <class Key>
+			Derived series_from_key(const Key &) const;
+			template <class Cf>
+			Derived series_from_cf(const Cf &) const;
 		protected:
 			template <class Derived2>
 			void merge_args(const Derived2 &);
