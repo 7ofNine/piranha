@@ -21,6 +21,8 @@
 #ifndef PIRANHA_MP_COMMONS_H
 #define PIRANHA_MP_COMMONS_H
 
+#include <iostream>
+
 #include "../math.h" // For factorial_check and generic factorials.
 
 namespace piranha
@@ -65,6 +67,10 @@ namespace piranha
 			Derived f_factorial(const int &n) const
 			{
 				return generic_f_factorial(*derived_const_cast,n);
+			}
+			void print_tex(std::ostream &out_stream) const
+			{
+				out_stream << *derived_const_cast;
 			}
 		protected:
 			template <class U>

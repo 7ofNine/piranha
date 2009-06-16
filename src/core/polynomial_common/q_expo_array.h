@@ -168,6 +168,22 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				for (size_t i = 0; i < this->m_size; ++i) {
+					const value_type &q = (*this)[i];
+					// Don't print anything if n is zero.
+					if (q != 0) {
+						// Take care of printing the name of the exponent.
+						out_stream << ' ' << args_tuple.template get<ancestor::position>()[i].get_name() << ' ';
+						// Print the pow operator only if exponent is not unitary.
+						if (q != 1) {
+							q.print_tex(out_stream);
+						}
+					}
+				}
+			}
+			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const
 			{
 				const size_t w = this->size();

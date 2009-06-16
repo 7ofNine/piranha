@@ -256,6 +256,17 @@ namespace piranha
 			{
 				return generic_f_factorial(*derived_const_cast,n);
 			}
+			/// Print in Tex format.
+			void print_tex(std::ostream &out_stream) const
+			{
+				out_stream << "\\left(";
+				m_real.print_tex(out_stream);
+				if (m_imag >= 0) {
+					out_stream << '+';
+				}
+				m_imag.print_tex(out_stream);
+				out_stream << "\\, \\imath\\right)";
+			}
 		protected:
 			/// Default constructor.
 			explicit complex_generic_mp_container(): m_real(0),m_imag(0) {}

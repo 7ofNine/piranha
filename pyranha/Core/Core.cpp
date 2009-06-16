@@ -83,7 +83,7 @@ BOOST_PYTHON_MODULE(_Core)
 	enum_<settings::out_format>("out_format")
 	.value("plain", settings::plain)
 	.value("pretty", settings::pretty)
-	.value("latex", settings::latex)
+	.value("tex", settings::tex)
 	.export_values();
 
 	enum_<settings::fp_representation>("fp_representation")

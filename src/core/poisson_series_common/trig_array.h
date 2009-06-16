@@ -178,6 +178,7 @@ namespace piranha
 			template <int Pos2>
 			explicit toolbox(const toolbox<trig_array<Bits,Pos2,Allocator> > &ta): ancestor::int_array(ta) {}
 			// Probing.
+			// TODO: remove.
 			/// Data footprint.
 			/**
 			 * Returns the memory occupied by the data members.
@@ -285,38 +286,36 @@ namespace piranha
 				}
 				out_stream << ')';
 			}
-			void print_latex(std::ostream &out_stream, const vector_psym &v) const {
-				const size_t w = v.size();
-				piranha_assert(w <= this->size());
-				switch (this->m_flavour) {
-					case true:
-						out_stream << "c&";
-						break;
-					case false:
-						out_stream << "s&";
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				piranha_assert(args_tuple.template get<ancestor::position>().size() <= this->m_size);
+				if (this->m_flavour) {
+					out_stream << "\\cos\\left(";
+				} else {
+					out_stream << "\\sin\\left(";
 				}
-				bool first_one = true;
-				std::string tmp("$");
-				for (size_t i = 0;i < w;++i) {
-					if ((*this)[i] != 0) {
-						if ((*this)[i] > 0 && !first_one) {
-							tmp.append("+");
+				bool printed_something = false;
+				for (size_t i = 0; i < this->m_size; ++i) {
+					const int n = this->m_container.v[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// If we already printed something and n is positive we are going to print the sign too.
+						if (printed_something && n > 0) {
+							out_stream << '+';
 						}
-						if ((*this)[i] == -1) {
-							tmp.append("-");
-						} else if ((*this)[i] == 1) {} else {
-							tmp.append(boost::lexical_cast<std::string>((int)(*this)[i]));
+						// Take care of printing the multiplier.
+						if (n == 1) {
+							;
+						} else if (n == -1) {
+							out_stream << '-';
+						} else {
+							out_stream << n;
 						}
-						tmp.append(v[i].get_name());
-						first_one = false;
+						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
+						printed_something = true;
 					}
 				}
-				tmp.append("$");
-				// If we did not write anything erase math markers.
-				if (tmp == "$$") {
-					tmp.clear();
-				}
-				out_stream << tmp;
+				out_stream << "\\right)";
 			}
 			bool is_unity() const {
 				return (this->elements_are_zero() && this->m_flavour);

@@ -110,10 +110,28 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_latex(std::ostream &stream,
-			const ArgsTuple &args_tuple, int limit) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_tex(std::ostream &stream,
+			const ArgsTuple &args_tuple, int) const
 	{
-// TODO: to be implemented.
+		settings::setup_stream(stream);
+		if (empty()) {
+			stream << '0';
+		} else {
+			const const_iterator it_f = end(), it_i = begin();
+			for (const_iterator it = it_i; it != it_f; ++it) {
+				std::ostringstream tmp_stream;
+				settings::setup_stream(tmp_stream);
+				it->print_tex(tmp_stream,args_tuple);
+				std::string tmp(tmp_stream.str());
+				// If this is not the first term, we need to add the "+" sign if appropriate.
+				if (it != it_i && !tmp.empty() && tmp[0] != '-') {
+					tmp.insert(tmp.begin(),'+');
+				}
+				if (!tmp.empty()) {
+					stream << tmp;
+				}
+			}
+		}
 	}
 
 	/// Constructor from psym and from position in the arguments set.

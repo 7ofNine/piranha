@@ -148,14 +148,20 @@ namespace piranha
 					m_key.print_pretty(out_stream, args_tuple);
 				}
 			}
-			/// Print in latex format.
+			/// Print in tex format.
 			template <class ArgsTuple>
-			void print_latex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-// TODO: redo this to work in a more general way.
-//         m_cf.print_latex(out_stream,args_tuple);
-//         out_stream << "&";
-//         out_stream << "$" << m_key.phase(tv) << "$" << "&" << "$" << m_key.freq(tv) << "$" << "&";
-//         m_key.print_latex(out_stream,args_tuple);
+			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				if (m_key.is_unity()) {
+					m_cf.print_tex(out_stream,args_tuple);
+				} else if (m_cf == 1) {
+					m_key.print_tex(out_stream,args_tuple);
+				} else if (m_cf == -1) {
+					out_stream << '-';
+					m_key.print_tex(out_stream,args_tuple);
+				} else {
+					m_cf.print_tex(out_stream, args_tuple);
+					m_key.print_tex(out_stream, args_tuple);
+				}
 			}
 			/// Equality test.
 			/**

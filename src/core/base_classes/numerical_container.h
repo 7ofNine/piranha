@@ -155,6 +155,11 @@ namespace piranha
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				print_plain(out_stream,args_tuple);
 			}
+			/// Print in Tex mode.
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &) const {
+				out_stream << ' ' << m_value << ' ';
+			}
 			/// Swap content using std::swap.
 			Derived &swap(Derived &dc) {
 				std::swap(m_value, dc.m_value);

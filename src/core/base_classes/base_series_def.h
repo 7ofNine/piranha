@@ -153,7 +153,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>
-			void print_terms_latex(std::ostream &, const ArgsTuple &, int limit) const;
+			void print_terms_tex(std::ostream &, const ArgsTuple &, int limit) const;
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &, int limit) const;
 			void base_swap(Derived &);

@@ -63,6 +63,14 @@ namespace piranha
 				}
 				out_stream << derived_const_cast->m_value.imag() << "j)";
 			}
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &) const {
+				out_stream << "\\left(" << derived_const_cast->m_value.real();
+				if (derived_const_cast->m_value.imag() >= 0) {
+					out_stream << '+';
+				}
+				out_stream << derived_const_cast->m_value.imag() << "\\, \\imath\\right)";
+			}
 			// Getters and setters.
 			template <class ArgsTuple>
 			value_type real(const ArgsTuple &) const {
@@ -160,7 +168,8 @@ namespace piranha
 	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): \
 			complex_toolbox::numerical_container_complex_toolbox(r, i) {} \
 	using complex_toolbox::operator==; \
-	using complex_toolbox::print_pretty;
+	using complex_toolbox::print_pretty; \
+	using complex_toolbox::print_tex;
 }
 
 #undef derived_const_cast

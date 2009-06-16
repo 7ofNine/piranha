@@ -133,7 +133,7 @@ namespace piranha
 		private:
 			void print_plain(std::ostream &, int) const;
 			void print_pretty(std::ostream &, int) const;
-			void print_latex(std::ostream &, int) const;
+			void print_tex(std::ostream &, int) const;
 			void read_from_file(std::ifstream &, const std::string &);
 			void read_sections(std::ifstream &);
 			void read_arg(std::ifstream &, const std::string &);

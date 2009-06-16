@@ -164,8 +164,21 @@ namespace piranha
 					}
 				}
 			}
-			void print_latex(std::ostream &out_stream, const vector_psym &v) const {
-				// TODO: implement.
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				for (size_t i = 0; i < this->m_size; ++i) {
+					const int n = this->m_container.v[i];
+					// Don't print anything if n is zero.
+					if (n != 0) {
+						// Take care of printing the name of the exponent.
+						out_stream << ' ' << args_tuple.template get<ancestor::position>()[i].get_name() << ' ';
+						// Print the pow operator only if exponent is not unitary.
+						if (n != 1) {
+							out_stream << "^{" << n << '}';
+						}
+					}
+				}
 			}
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {

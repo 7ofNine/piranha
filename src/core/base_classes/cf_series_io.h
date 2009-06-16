@@ -74,6 +74,20 @@ namespace piranha
 			stream << ')';
 		}
 	}
+
+	/// Print in tex mode.
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::print_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
+	{
+		if (derived_const_cast->length() > 1) {
+			stream << "\\left(";
+		}
+		derived_const_cast->print_terms_tex(stream, args_tuple, -1);
+		if (derived_const_cast->length() > 1) {
+			stream << "\\right)";
+		}
+	}
 }
 
 #endif

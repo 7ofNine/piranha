@@ -42,6 +42,12 @@ namespace piranha
 		public:
 			typedef mp_rational numerical_type;
 			NUMERICAL_CONTAINER_CTORS(mpq_cf)
+			/// Override print in Tex mode.
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
+			{
+				m_value.print_tex(out_stream);
+			}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
@@ -94,6 +100,12 @@ namespace std
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
+			}
+			/// Override print in Tex mode.
+			template <class ArgsTuple>
+			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
+			{
+				m_value.print_tex(out_stream);
 			}
 	};
 }

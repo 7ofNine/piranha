@@ -332,6 +332,19 @@ namespace piranha
 				}
 				return retval;
 			}
+			/// Print to stream in Tex format.
+			void print_tex(std::ostream &out_stream) const
+			{
+				if (m_value.get_den() == 1) {
+					out_stream << ' ' << m_value.get_num() << ' ';
+				} else {
+					if (m_value.get_num() >= 0) {
+						out_stream << "\\frac{" << m_value.get_num() << "}{" << m_value.get_den() << '}';
+					} else {
+						out_stream << "-\\frac{" << (-m_value.get_num()) << "}{" << m_value.get_den() << '}';
+					}
+				}
+			}
 		private:
 			template <class T>
 			void construct_from_numden(const T &n, const T &d)

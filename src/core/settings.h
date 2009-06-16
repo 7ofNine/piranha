@@ -43,7 +43,7 @@ namespace piranha
 			enum out_format {
 				plain,
 				pretty,
-				latex
+				tex
 			};
 			enum fp_representation {
 				scientific,
