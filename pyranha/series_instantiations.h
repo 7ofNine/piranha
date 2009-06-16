@@ -27,7 +27,6 @@
 #include <boost/python/operators.hpp>
 #include <complex>
 #include <string>
-#include <utility> // For std::pair.
 #include <vector>
 
 #include "../src/core/config.h"
@@ -35,7 +34,6 @@
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
 #include "boost_python_container_conversions.h"
-#include "cf_key_bindings.h"
 #include "commons.h"
 
 // TODO: less ugly __psi__ handling (with optional<>?) and remove any reference to terms.
@@ -43,7 +41,7 @@
 namespace pyranha
 {
 	// "Fat" iterator that wraps the iterator of named series, allowing retrieval of coefficient and key
-	// of each term as a 2-vector of series. Provides safe and useful iterator capabilities for series in Python.
+	// of each term as a 2-vector of named series. Provides safe and useful iterator capabilities for series in Python.
 	// NOT thread-safe.
 	template <class NamedSeries>
 	struct __PIRANHA_VISIBLE named_iterator {
@@ -109,15 +107,11 @@ namespace pyranha
 
 	/// Basic series instantiation.
 	template <class T>
-	inline std::pair<boost::python::class_<T>, boost::python::class_<typename T::term_type> >
-	series_basic_instantiation(const std::string &name, const std::string &description)
+	inline boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
 	{
 		// Interoperability between Python lists of series and C++ vectors of series.
 		to_tuple_mapping<std::vector<T> >();
 		from_python_sequence<std::vector<T>,variable_capacity_policy>();
-		typedef typename T::term_type term_type;
-		// Expose the term type.
-		boost::python::class_<term_type> term_inst(py_series_term<term_type>(name,description));
 		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
@@ -132,21 +126,16 @@ namespace pyranha
 		inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
+		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
+		inst.def("arguments", &py_series_arguments<T>, "Series arguments.");
 		// Pyranha-specific special methods.
 		inst.def("__psi__", &psi0<T>);
 		inst.def("__psi__", &psi1<T>);
 		inst.def("__psi__", &psi2<T>);
-		inst.add_property("__arguments_description__", &py_series_arguments_description<T>);
-		inst.add_property("__arguments__", &py_series_arguments<T>);
-		inst.def("__set_arguments__", &T::set_arguments);
-		//typedef void (T::*trim_free)();
-		//inst.def("__trim__", trim_free(&T::trim));
-		//inst.def("__append__", &py_series_append<T,term_type>);
+		// TODO: add 'arguments' method.
 		inst.def("save_to", &T::save_to, "Save to file.");
-		typedef typename T::eval_type (T::*eval_free)(const double &) const;
-		inst.def("eval", eval_free(&T::eval), "Evaluate at time arg2.");
-		typedef double (T::*norm_named)() const;
-		inst.add_property("norm", norm_named(&T::norm), "Norm.");
+		inst.def("eval", &T::eval, "Evaluate at time arg2.");
+		inst.add_property("norm", &T::norm, "Norm.");
 		inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
 		// Equality.
@@ -209,7 +198,7 @@ namespace pyranha
 		inst.def("__pow__", pow_double(&T::pow));
 		inst.def("__pow__", pow_rational(&T::pow));
 		inst.def("root", &T::root, "arg2-th root.");
-		return std::make_pair(inst, term_inst);
+		return inst;
 	}
 
 	template <class T>
@@ -261,8 +250,7 @@ namespace pyranha
 	template <class T>
 	inline void series_trigonometric_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef std::complex<T> (T::*named_ei)() const;
-		inst.def("ei", named_ei(&T::ei), "Complex exponential.");
+		inst.def("ei", &T::ei, "Complex exponential.");
 		inst.def("cos", &T::cos, "Cosine.");
 		inst.def("sin", &T::sin, "Sine.");
 		typedef std::complex<T> (*Ynm_named)(const int &, const int &,
@@ -329,13 +317,12 @@ namespace pyranha
 	template <class T>
 	inline void series_special_functions_instantiation(boost::python::class_<T> &inst)
 	{
-		typedef T (T::*named_1)(const int &) const;
-		typedef T (T::*named_2)(const int &, const int &) const;
-		inst.def("besselJ", named_1(&T::besselJ), "Bessel function of the first kind of integer order arg2.");
-		inst.def("dbesselJ", named_1(&T::dbesselJ), "Partial derivative of Bessel function of the first kind "
+		inst.def("besselJ", &T::besselJ, "Bessel function of the first kind of integer order arg2.");
+		inst.def("dbesselJ", &T::dbesselJ, "Partial derivative of Bessel function of the first kind "
 			"of integer order arg2.");
-		inst.def("besselJ_div_m", named_2(&T::besselJ_div_m),
+		inst.def("besselJ_div_m", &T::besselJ_div_m,
 			"Bessel function of the first kind of integer order arg2 divided by its argument**arg3.");
+		typedef T (T::*named_2)(const int &, const int &) const;
 		typedef T (T::*named_3)(const int &, const int &, const T &) const;
 		const char *Pnm_descr = "Associated Legendre function of integer degree arg2 and order arg3.";
 		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);
@@ -396,13 +383,6 @@ namespace pyranha
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
-		// Expose the polynomial coefficient.
-		typedef typename T::term_type::cf_type cf_type;
-		//boost::python::class_<cf_type> poly_cf_inst(cf_bindings<cf_type>((name + "_cf").c_str(), ""));
-		//power_series_instantiation(poly_cf_inst);
-		//poly_cf_inst.def("__iter__", boost::python::iterator<cf_type>());
-		//poly_cf_inst.def("__append__", &py_series_append<cf_type,typename cf_type::term_type>);
-		//py_series_term<typename cf_type::term_type>(name + "_cf",name);
 	}
 
 	template <class T>

@@ -40,11 +40,6 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
-			enum out_format {
-				plain,
-				pretty,
-				tex
-			};
 			enum fp_representation {
 				scientific,
 				decimal
@@ -110,8 +105,6 @@ namespace piranha
 			static size_t min_digits();
 			static size_t max_digits();
 			static void setup_stream(std::ostream &);
-			static out_format format();
-			static void format(out_format);
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
 			/// Cache size in kilobytes.
@@ -150,8 +143,6 @@ namespace piranha
 			static const size_t		m_max_digits = 50;
 			/// Number of digits to display in output stream.
 			static size_t			m_digits;
-			/// Format for output.
-			static out_format		m_format;
 			/// Floating point representation.
 			static fp_representation	m_fp_repr;
 	};

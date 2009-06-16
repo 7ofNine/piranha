@@ -26,6 +26,14 @@ def copy(arg):
 	import copy as __copy
 	return __copy.copy(arg)
 
+def latex(arg):
+	"""
+	Return latex-formatted string representation of the object.
+	"""
+	if not hasattr(arg,"_latex_"):
+		raise AttributeError('Object does not provide a _latex_() method.')
+	return arg._latex_()
+
 def psyms(names):
 	"""
 	Create psyms from a string of space-separated names.
@@ -99,64 +107,5 @@ def gui():
 	except ImportError:
 		print "Gui support is not available or PyQt4 is not installed."
 
-class tc(object):
-	def __init__(self, args, f, t0, t1, step, res = None):
-		try:
-			import numpy
-		except ImportError:
-			raise ImportError("Numpy is not available.")
-		# If args is a tuple, transform it into a list, if args is a single value
-		# build a list from it.
-		if isinstance(args,type(())):
-			args_list = list(args)
-		else:
-			args_list = [args]
-		if t1 <= t0:
-			raise ValueError, 't1 must be strictly greater than t0.'
-		if step <= 0:
-			raise ValueError, 'Step must be strictly positive.'
-		if res != None:
-			r = res
-		else:
-			r = f(*args_list)
-		args_list_eval_funcs = map(lambda x: x.eval,args_list)
-		self.time_array = numpy.arange(t0,t1,step)
-		self.eval_array = numpy.array(map(lambda t: r.eval(t), self.time_array))
-		self.diff_array = numpy.array(map(lambda x: abs(x[1] - f(*map(lambda y: y(x[0]),args_list_eval_funcs))),zip(self.time_array,self.eval_array)))
-	def plot(self):
-		import pylab
-		pylab.semilogy(self.time_array,self.eval_array,self.time_array,self.diff_array)
-
-def __decorate_args_tuples():
-	import _Core
-	n = 1
-	try:
-		while True:
-			base_class_name = "_Core.__base_args_tuple"+str(n)+"__"
-			new_class_name = "__args_tuple"+str(n)+"__"
-			repr_function_name = "__args_tuple"+str(n)+"_repr__"
-			exec(
-				"""class %s(%s):
-						def __init__(self,series):
-							%s.__init__(self,series.__arguments__)
-							self.__args_descr = series.__arguments_description__.split(\"\\n\")
-							self.__args_list = series.__arguments__.__repr__().split(\"\\n\")
-							self.__args_descr.pop()
-							self.__args_list.pop()
-						def __get_tuple__(self):
-							tmp = []
-							for i in self.__args_descr:
-								tmp.extend([i.split(":")[0]]*int(i.split(":")[1]))
-							return tuple([(i[0],i[1].split()[0],i[1].split()[1]) for i in zip(tmp,self.__args_list)])
-						def __repr__(self):
-							retval = \"\"
-							for i in self.__get_tuple__():
-								retval += str(i[0])+\" \"+str(i[1])+\" \"+str(i[2])+\"\\n\"
-							return retval"""
-				% (new_class_name, base_class_name, base_class_name))
-			exec("setattr(_Core, new_class_name, %s)" % new_class_name)
-			n += 1
-	except AttributeError:
-		pass
-
-__decorate_args_tuples()
+norm_truncator = _Core.__norm_truncator()
+degree_truncator = _Core.__degree_truncator()

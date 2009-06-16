@@ -21,11 +21,12 @@
 #ifndef PYRANHA_COMMONS_H
 #define PYRANHA_COMMONS_H
 
-#include <boost/lexical_cast.hpp>
-#include <boost/python/class.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <sstream>
 #include <string>
+#include <vector>
+
+#include "../src/core/psym.h"
 
 namespace pyranha
 {
@@ -42,50 +43,36 @@ namespace pyranha
 		return stream.str();
 	}
 
-	template <class Term>
-	inline boost::python::class_<Term> py_series_term(const std::string &name, const std::string &description)
+	template <class T>
+	std::string py_print_to_string_tex(const T &origin)
 	{
-		boost::python::class_<Term> term_inst((name + "_term").c_str(),
-				(std::string("Term for: ") + description).c_str());
-		term_inst.def_readwrite("cf", &Term::m_cf);
-		term_inst.def_readwrite("key", &Term::m_key);
-		return term_inst;
+		std::ostringstream stream;
+		origin.print_tex(stream);
+		return stream.str();
 	}
 
-	template <class ArgsDescr>
-	class arguments_type_report_helper
+	template <class ArgsTuple>
+	struct py_series_arguments_impl
 	{
-		public:
-			template <class ArgsTuple>
-			static void run(const ArgsTuple &args_tuple, std::string &report) {
-				report += ArgsDescr::head_type::name;
-				report += ":";
-				report += boost::lexical_cast<std::string>(args_tuple.get_head().size());
-				report += "\n";
-				arguments_type_report_helper<typename ArgsDescr::tail_type>::run(args_tuple.get_tail(), report);
-			}
+		static void run(std::vector<piranha::vector_psym> &retval, const ArgsTuple &args_tuple)
+		{
+			retval.push_back(args_tuple.template get_head());
+			py_series_arguments_impl<typename ArgsTuple::tail_type>::run(retval,args_tuple.template get_tail());
+		}
 	};
 
 	template <>
-	class arguments_type_report_helper<boost::tuples::null_type>
+	struct py_series_arguments_impl<boost::tuples::null_type>
 	{
-		public:
-			template <class ArgsTuple>
-			static void run(const ArgsTuple &, const std::string &) {}
+		static void run(std::vector<piranha::vector_psym> &, const boost::tuples::null_type &) {}
 	};
 
 	template <class Series>
-	inline std::string py_series_arguments_description(const Series &s)
+	inline std::vector<piranha::vector_psym> py_series_arguments(const Series &s)
 	{
-		std::string retval;
-		arguments_type_report_helper<typename Series::arguments_description>::run(s.arguments(), retval);
+		std::vector<piranha::vector_psym> retval;
+		py_series_arguments_impl<typename Series::args_tuple_type>::run(retval,s.arguments());
 		return retval;
-	}
-
-	template <class Series>
-	inline typename Series::args_tuple_type py_series_arguments(const Series &s)
-	{
-		return s.arguments();
 	}
 
 	template <class NamedSeries>

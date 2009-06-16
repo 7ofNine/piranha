@@ -77,6 +77,7 @@ namespace pyranha
 		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
 		inst.def("__pow__", (pow_double)&T::pow, "Exponentiation.");
 		inst.def("__pow__", (pow_rational)&T::pow, "Exponentiation.");
+		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("root",&T::root,"N-th root.");
 		inst.def("__hash__",&T::hash,"Hash value.");
 	}

@@ -21,7 +21,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
-#include <utility>
 
 #include "../../src/manipulators/dfs.h"
 #include "../../src/manipulators/dps.h"
@@ -37,19 +36,19 @@ BOOST_PYTHON_MODULE(_Dps)
 {
 	translate_exceptions();
 
-	std::pair<class_<dps>, class_<dps::term_type> > inst = series_basic_instantiation<dps>(std::string("dps"),
+	class_<dps> inst = series_basic_instantiation<dps>(std::string("dps"),
 			std::string("Poisson series with double precision coefficients."));
-	common_poisson_series_instantiation(inst.first, "dps");
-	celmec_instantiation(inst.first);
-	series_trigonometric_instantiation(inst.first);
-	series_sub_instantiation<dps, dps>(inst.first);
-	series_ei_sub_instantiation<dps, dpsc>(inst.first);
-	inst.first.def("to_dfs", &dps::to_fs<dfs>, "Convert to dfs.");
-	std::pair<class_<dpsc>, class_<dpsc::term_type> > instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
+	common_poisson_series_instantiation(inst, "dps");
+	celmec_instantiation(inst);
+	series_trigonometric_instantiation(inst);
+	series_sub_instantiation<dps, dps>(inst);
+	series_ei_sub_instantiation<dps, dpsc>(inst);
+	inst.def("to_dfs", &dps::to_fs<dfs>, "Convert to dfs.");
+	class_<dpsc> instc = series_basic_instantiation<dpsc>(std::string("dpsc"),
 			std::string("Poisson series with complex double precision coefficients."));
-	common_poisson_series_instantiation(instc.first, "dpsc");
-	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<dpsc, dps>(instc.first);
-	series_ei_sub_instantiation<dpsc, dpsc>(instc.first);
-	instc.first.def("to_dfsc", &dpsc::to_fs<dfsc>, "Convert to dfsc.");
+	common_poisson_series_instantiation(instc, "dpsc");
+	series_complex_instantiation(instc, inst);
+	series_sub_instantiation<dpsc, dps>(instc);
+	series_ei_sub_instantiation<dpsc, dpsc>(instc);
+	instc.def("to_dfsc", &dpsc::to_fs<dfsc>, "Convert to dfsc.");
 }

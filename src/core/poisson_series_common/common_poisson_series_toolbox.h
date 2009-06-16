@@ -82,7 +82,7 @@ namespace piranha
 				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
 				copy.merge_args(tmp);
 				// Now we can call in the ei method from above.
-				std::complex<Derived> retval(copy.ei(copy.m_arguments));
+				std::complex<Derived> retval(copy.base_ei(copy.m_arguments));
 				retval.m_arguments = copy.arguments();
 				retval.trim();
 				return retval;
@@ -180,7 +180,7 @@ namespace piranha
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
-			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;

@@ -21,7 +21,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
-#include <utility>
 
 #include "../../src/manipulators/zpoly.h"
 #include "../series_instantiations.h"
@@ -36,14 +35,14 @@ BOOST_PYTHON_MODULE(_Zpoly)
 {
 	translate_exceptions();
 
-	std::pair<class_<zpoly>, class_<zpoly::term_type> > inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
-			std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(inst.first);
-	series_sub_instantiation<zpoly, zpoly>(inst.first);
-	std::pair<class_<zpolyc>, class_<zpolyc::term_type> > instc = series_basic_instantiation<zpolyc>(std::string("zpolyc"),
-			std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(instc.first);
-	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<zpolyc, zpoly>(instc.first);
-	series_sub_instantiation<zpolyc, zpolyc>(instc.first);
+	class_<zpoly> inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
+		std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
+	common_polynomial_instantiation(inst);
+	series_sub_instantiation<zpoly, zpoly>(inst);
+	class_<zpolyc> instc = series_basic_instantiation<zpolyc>(std::string("zpolyc"),
+		std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
+	common_polynomial_instantiation(instc);
+	series_complex_instantiation(instc, inst);
+	series_sub_instantiation<zpolyc, zpoly>(instc);
+	series_sub_instantiation<zpolyc, zpolyc>(instc);
 }

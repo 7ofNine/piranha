@@ -21,7 +21,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
-#include <utility>
 
 #include "../../src/manipulators/qqpoly.h"
 #include "../series_instantiations.h"
@@ -36,14 +35,14 @@ BOOST_PYTHON_MODULE(_Qqpoly)
 {
 	translate_exceptions();
 
-	std::pair<class_<qqpoly>, class_<qqpoly::term_type> > inst = series_basic_instantiation<qqpoly>(std::string("qqpoly"),
-			std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(inst.first);
-	series_sub_instantiation<qqpoly, qqpoly>(inst.first);
-	std::pair<class_<qqpolyc>, class_<qqpolyc::term_type> > instc = series_basic_instantiation<qqpolyc>(std::string("qqpolyc"),
+	class_<qqpoly> inst = series_basic_instantiation<qqpoly>(std::string("qqpoly"),
+		std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
+	common_polynomial_instantiation(inst);
+	series_sub_instantiation<qqpoly, qqpoly>(inst);
+	class_<qqpolyc> instc = series_basic_instantiation<qqpolyc>(std::string("qqpolyc"),
 			std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(instc.first);
-	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<qqpolyc, qqpoly>(instc.first);
-	series_sub_instantiation<qqpolyc, qqpolyc>(instc.first);
+	common_polynomial_instantiation(instc);
+	series_complex_instantiation(instc, inst);
+	series_sub_instantiation<qqpolyc, qqpoly>(instc);
+	series_sub_instantiation<qqpolyc, qqpolyc>(instc);
 }

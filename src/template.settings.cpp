@@ -75,7 +75,6 @@ namespace piranha
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	bool settings::enable_progress_display = true;
 	size_t settings::m_digits;
-	settings::out_format settings::m_format = settings::plain;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
 	const size_t settings::cache_size;
 	bool settings::blocker = false;
@@ -164,16 +163,6 @@ namespace piranha
 			out_stream << std::fixed;
 			break;
 		}
-	}
-
-	settings::out_format settings::format()
-	{
-		return m_format;
-	}
-
-	void settings::format(out_format fmt)
-	{
-		m_format = fmt;
 	}
 
 	size_t settings::get_max_pretty_print_size()

@@ -21,7 +21,6 @@
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
 #include <string>
-#include <utility>
 
 #include "../../src/manipulators/qqps.h"
 #include "../series_instantiations.h"
@@ -36,20 +35,20 @@ BOOST_PYTHON_MODULE(_Qqps)
 {
 	translate_exceptions();
 
-	std::pair<class_<qqps>, class_<qqps::term_type> > inst(
+	class_<qqps> inst(
 		series_basic_instantiation<qqps>(std::string("qqps"),
 		std::string("Poisson series with arbitrary-precision rational coefficients and arbitrary-precision rational exponents.")));
-	common_poisson_series_instantiation(inst.first, "qqps");
-	celmec_instantiation(inst.first);
-	series_trigonometric_instantiation(inst.first);
-	series_sub_instantiation<qqps, qqps>(inst.first);
-	series_ei_sub_instantiation<qqps, qqpsc>(inst.first);
-	std::pair<class_<qqpsc>, class_<qqpsc::term_type> > instc(
+	common_poisson_series_instantiation(inst, "qqps");
+	celmec_instantiation(inst);
+	series_trigonometric_instantiation(inst);
+	series_sub_instantiation<qqps, qqps>(inst);
+	series_ei_sub_instantiation<qqps, qqpsc>(inst);
+	class_<qqpsc> instc(
 		series_basic_instantiation<qqpsc>(std::string("qqpsc"),
 		std::string("Poisson series with complex arbitrary-precision "
 		"rational coefficients and arbitrary-precision rational exponents.")));
-	common_poisson_series_instantiation(instc.first, "qqpsc");
-	series_complex_instantiation(instc.first, inst.first);
-	series_sub_instantiation<qqpsc, qqps>(instc.first);
-	series_ei_sub_instantiation<qqpsc, qqpsc>(instc.first);
+	common_poisson_series_instantiation(instc, "qqpsc");
+	series_complex_instantiation(instc, inst);
+	series_sub_instantiation<qqpsc, qqps>(instc);
+	series_ei_sub_instantiation<qqpsc, qqpsc>(instc);
 }

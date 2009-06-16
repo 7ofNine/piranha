@@ -68,7 +68,7 @@ namespace piranha
 	{
 		public:
 			std::complex<Derived> ei() const {
-				std::complex<Derived> retval(ei(derived_const_cast->m_arguments));
+				std::complex<Derived> retval(base_ei(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
@@ -81,7 +81,7 @@ namespace piranha
 			}
 		protected:
 			template <class ArgsTuple>
-			std::complex<Derived> ei(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const {
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				typedef typename Derived::term_type term_type;

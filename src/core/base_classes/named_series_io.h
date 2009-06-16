@@ -30,7 +30,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
-#include "../settings.h"
 #include "named_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -88,16 +87,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print(std::ostream &out_stream, int limit) const
 	{
-		switch (settings::format()) {
-		case settings::plain:
-			print_plain(out_stream, limit);
-			break;
-		case settings::pretty:
-			print_pretty(out_stream, limit);
-			break;
-		case settings::tex:
-			print_tex(out_stream, limit);
-		}
+		print_pretty(out_stream, limit);
 	}
 
 	/// Construct from file.

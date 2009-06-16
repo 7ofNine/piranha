@@ -30,14 +30,12 @@
 
 #include "../../src/core/base_classes/degree_truncator.h"
 #include "../../src/core/base_classes/norm_truncator.h"
-#include "../../src/core/base_classes/toolbox.h"
 #include "../../src/core/config.h"
 #include "../../src/core/mp.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
 #include "../args_tuple.h"
 #include "../boost_python_container_conversions.h"
-#include "../cf_key_bindings.h"
 #include "../commons.h"
 #include "../exceptions.h"
 #include "../mp_classes.h"
@@ -49,8 +47,12 @@ using namespace pyranha;
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
 {
+	translate_exceptions();
+
+	// Interop between vectors of some types and Python tuples/lists.
 	to_tuple_mapping<vector_psym>();
 	from_python_sequence<vector_psym,variable_capacity_policy>();
+	to_tuple_mapping<std::vector<vector_psym> >();
 	to_tuple_mapping<std::vector<double> >();
 	from_python_sequence<std::vector<double>,variable_capacity_policy>();
 	to_tuple_mapping<std::vector<mp_rational> >();
@@ -58,9 +60,7 @@ BOOST_PYTHON_MODULE(_Core)
 	to_tuple_mapping<std::vector<mp_integer> >();
 	from_python_sequence<std::vector<mp_integer>,variable_capacity_policy>();
 
-	translate_exceptions();
-	numerical_cfs_bindings();
-	keys_bindings();
+	// Expose arguments tuples.
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	// MP classes.
@@ -78,13 +78,6 @@ BOOST_PYTHON_MODULE(_Core)
 	mpz.def(boost::python::self %= int());
 	mpz.def(boost::python::self % mp_integer());
 	mpz.def(boost::python::self % int());
-
-	// Settings.
-	enum_<settings::out_format>("out_format")
-	.value("plain", settings::plain)
-	.value("pretty", settings::pretty)
-	.value("tex", settings::tex)
-	.export_values();
 
 	enum_<settings::fp_representation>("fp_representation")
 	.value("scientific", settings::scientific)
@@ -106,9 +99,6 @@ BOOST_PYTHON_MODULE(_Core)
 		&settings::set_load_factor);
 	typedef void (*digits_set)(const int &);
 	class_setm.add_static_property("digits", size_t_get(&settings::digits), digits_set(&settings::digits));
-	typedef settings::out_format (*format_get)();
-	typedef void (*format_set)(settings::out_format);
-	class_setm.add_static_property("format", format_get(&settings::format), format_set(&settings::format));
 	typedef settings::fp_representation (*fp_repr_get)();
 	typedef void (*fp_repr_set)(settings::fp_representation);
 	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
@@ -126,15 +116,15 @@ BOOST_PYTHON_MODULE(_Core)
 			&psym::set_time_eval)
 		.def("list", &psym::list, "Get list of global psyms").staticmethod("list");
 
-	class_<norm_truncator>("norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &py_print_to_string<norm_truncator>).staticmethod("__repr__")
+	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
+	.def("__repr__", &py_print_to_string<norm_truncator>)
 	.def("set", &norm_truncator::set, "Set truncation level to 10^-arg1 of series' norm if arg1 > 0, "
 		 "throw an error otherwise.").staticmethod("set")
 	.def("unset", &norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	typedef void (*deg_set)(const int &);
 	typedef void (*p_deg_set)(const vector_psym &, const int &);
-	class_<degree_truncator>("degree_truncator", "Minimum degree truncator.", init<>())
+	class_<degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<degree_truncator>)
 	.def("set", deg_set(&degree_truncator::set), "Set truncation level of series' minimum degree to arg1.")
 	.def("set", p_deg_set(&degree_truncator::set), "Set truncation level of series' partial minimum degree to arg2, "
