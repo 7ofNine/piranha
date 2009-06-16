@@ -25,6 +25,7 @@
 #include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -43,6 +44,13 @@
 using namespace boost::python;
 using namespace piranha;
 using namespace pyranha;
+
+std::string static inline py_psym_repr(const psym &p)
+{
+	std::ostringstream stream;
+	stream << p.get_name();
+	return stream.str();
+}
 
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
@@ -109,7 +117,7 @@ BOOST_PYTHON_MODULE(_Core)
 		.def(init<const std::string &, const double &>())
 		.def(init<const std::string &>())
 		.def("__copy__", &py_copy<psym>)
-		.def("__repr__", &py_print_to_string<psym>)
+		.def("__repr__", &py_psym_repr)
 		.def("eval", &psym::eval)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
 		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()),
