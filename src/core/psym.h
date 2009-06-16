@@ -45,15 +45,17 @@ namespace piranha
 			// Print to stream.
 			void print(std::ostream &out_stream) const {
 				settings::setup_stream(out_stream);
-				out_stream << "name=" << m_name << '\n';
-				out_stream << "time_eval=";
-				for (size_t j = 0; j < m_time_eval.size(); ++j) {
-					out_stream << m_time_eval[j];
-					if (j != m_time_eval.size() - 1) {
-						out_stream << separator;
+				out_stream << "Psym name = '" << m_name << "'\n";
+				if (m_time_eval.size()) {
+					out_stream << "Time dependence = [";
+					for (size_t j = 0; j < m_time_eval.size(); ++j) {
+						out_stream << m_time_eval[j];
+						if (j != m_time_eval.size() - 1) {
+							out_stream << separator;
+						}
 					}
+					out_stream << "]\n";
 				}
-				out_stream << '\n';
 			}
 			bool operator<(const psym_impl &other) const {
 				return (m_name < other.m_name);
