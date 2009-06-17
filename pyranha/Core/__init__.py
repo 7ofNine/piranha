@@ -30,11 +30,27 @@ def latex(arg):
 	"""
 	Return latex-formatted string representation of the object.
 	"""
+	if isinstance(arg,(int,long)):
+		return str(arg)
+	if isinstance(arg,float):
+		# Handle the case in which float representation is in scientific format.
+		tmp = str(arg).split('e')
+		assert(len(tmp) >= 1)
+		if len(tmp) == 1:
+			return tmp[0]
+		retval = r'%s \cdot 10^{%s}' % (tmp[0],str(int(tmp[1])))
+		return retval
+	if isinstance(arg,complex):
+		retval = r'\left( %s' % latex(arg.real)
+		if arg.imag >= 0:
+			retval += r'+'
+		retval += r'%s\,\imath\right)' % latex(arg.imag)
+		return retval
 	if not hasattr(arg,"_latex_"):
 		raise AttributeError('Object does not provide a _latex_() method.')
 	return arg._latex_()
 
-def latex_tab(s, width = .8 , geometry = 'a4paper,margin=0.2in', textsize = 'tiny'):
+def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize = 'tiny'):
 	"""
 	Returns a table-like latex representation for an input series s. The geometry of the page (in latex geometry
 	package format) and the latex textsize value can be passed as optional parameters. The width parameter, which must
@@ -47,7 +63,6 @@ def latex_tab(s, width = .8 , geometry = 'a4paper,margin=0.2in', textsize = 'tin
 	In order to use the output of this function, the 'breqn', 'xtab', 'nicefrac' and 'geometry' packages must be present (they should
 	be fairly common on most latex installations).
 	"""
-	series = sorted(s, key = lambda t: t[0].degree(),reverse = True)
 	if width <= 0 or width >= 1:
 		raise ValueError('Use a width value in the ]0,1[ range.')
 	l_w = str(float(width) * .9)
