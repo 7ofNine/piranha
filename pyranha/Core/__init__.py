@@ -34,6 +34,45 @@ def latex(arg):
 		raise AttributeError('Object does not provide a _latex_() method.')
 	return arg._latex_()
 
+def latex_tab(s, width = .8 , geometry = 'a4paper,margin=0.2in', textsize = 'tiny'):
+	"""
+	Returns a table-like latex representation for an input series s. The geometry of the page (in latex geometry
+	package format) and the latex textsize value can be passed as optional parameters. The width parameter, which must
+	be in the interval ]0,1[, is the fraction of total space occupied by the first column, displaying the series' coefficients.
+	The second column displays the series' keys.
+
+	Argument s is expected to be a collection of indexable pairs, so that it is possible to pass not only a series but also, e.g., a list of
+	coefficient-key pairs.
+
+	In order to use the output of this function, the 'breqn', 'xtab', 'nicefrac' and 'geometry' packages must be present (they should
+	be fairly common on most latex installations).
+	"""
+	series = sorted(s, key = lambda t: t[0].degree(),reverse = True)
+	if width <= 0 or width >= 1:
+		raise ValueError('Use a width value in the ]0,1[ range.')
+	l_w = str(float(width) * .9)
+	r_w = str((1. - width) * .9)
+	retval = r"""
+	\documentclass[landscape]{article}
+	\usepackage[""" + geometry + r"""]{geometry}
+	\usepackage{xtab}
+	\usepackage{breqn}
+	\usepackage{nicefrac}
+	\begin{document}\%s""" % textsize + r"""
+	\begin{center}
+	\begin{xtabular}{|p{""" + l_w + r"""\textwidth}|p{""" + r_w + r"""\textwidth}|} \hline
+	"""
+	for t in series:
+		retval += r'\begin{minipage}{'+ l_w + r'\textwidth} \begin{dmath*} ' + latex(t[0]) + r' \end{dmath*} \end{minipage} & \begin{minipage}{' + r_w + r'\textwidth} \begin{dmath*}' \
+			+ latex(t[1]) + r'\end{dmath*} \end{minipage} \\ \hline '
+	retval += r"""
+	\end{xtabular}
+	\end{center}
+	\end{document}
+
+	"""
+	return retval
+
 def psyms(names):
 	"""
 	Create psyms from a string of space-separated names.
