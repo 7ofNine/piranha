@@ -51,33 +51,23 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_plain(std::ostream &stream,
-			const ArgsTuple &args_tuple, int limit) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		settings::setup_stream(stream);
-		size_t j = 0, lim;
-		if (limit < 0) {
-			lim = length();
-		} else {
-			lim = static_cast<size_t>(limit);
-		}
 		const const_iterator it_f = end();
-		for (const_iterator it = begin();it != it_f;++it) {
-			if (j == lim) {
-				break;
-			}
+		const_iterator it = begin();
+		while (it != it_f) {
 			it->print_plain(stream, args_tuple);
-			if (j < lim - 1) {
+			++it;
+			if (it != it_f) {
 				stream << separator;
 			}
-			++j;
 		}
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream,
-			const ArgsTuple &args_tuple, int) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		settings::setup_stream(stream);
 		if (empty()) {
@@ -110,8 +100,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_tex(std::ostream &stream,
-			const ArgsTuple &args_tuple, int) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		settings::setup_stream(stream);
 		if (empty()) {

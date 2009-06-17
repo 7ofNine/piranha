@@ -127,6 +127,7 @@ namespace pyranha
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
+		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.def("arguments", &py_series_arguments<T>, "Series arguments.");
 		// Pyranha-specific special methods.
 		inst.def("__psi__", &psi0<T>);

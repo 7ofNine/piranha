@@ -63,9 +63,9 @@ namespace piranha
 			typedef typename ntuple<vector_psym, n_arguments_sets>::type args_tuple_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			std::complex<Derived> complex() const;
-			void print(std::ostream &stream = std::cout, int limit = -1) const;
-			void print_plain(std::ostream &, int limit = -1) const;
-			void print_tex(std::ostream &, int limit = -1) const;
+			void print(std::ostream &stream = std::cout) const;
+			void print_plain(std::ostream &) const;
+			void print_tex(std::ostream &) const;
 			void save_to(const std::string &) const;
 			// Rework this.
 // 			template <class Filter>
@@ -133,7 +133,7 @@ namespace piranha
 			template <class Number>
 			Derived &divide_number_helper(const Number &);
 		private:
-			void print_pretty(std::ostream &, int) const;
+			void print_pretty(std::ostream &) const;
 			void read_from_file(std::ifstream &, const std::string &);
 			void read_sections(std::ifstream &);
 			void read_arg(std::ifstream &, const std::string &);

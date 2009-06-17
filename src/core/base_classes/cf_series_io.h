@@ -58,7 +58,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		derived_const_cast->print_terms_plain(stream, args_tuple, -1);
+		derived_const_cast->print_terms_plain(stream, args_tuple);
 	}
 
 	/// Print in pretty mode.
@@ -69,7 +69,7 @@ namespace piranha
 		if (derived_const_cast->length() > 1) {
 			stream << '(';
 		}
-		derived_const_cast->print_terms_pretty(stream, args_tuple, -1);
+		derived_const_cast->print_terms_pretty(stream, args_tuple);
 		if (derived_const_cast->length() > 1) {
 			stream << ')';
 		}
@@ -83,7 +83,7 @@ namespace piranha
 		if (derived_const_cast->length() > 1) {
 			stream << "\\left(";
 		}
-		derived_const_cast->print_terms_tex(stream, args_tuple, -1);
+		derived_const_cast->print_terms_tex(stream, args_tuple);
 		if (derived_const_cast->length() > 1) {
 			stream << "\\right)";
 		}

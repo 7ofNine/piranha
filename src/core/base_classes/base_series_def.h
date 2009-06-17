@@ -151,11 +151,11 @@ namespace piranha
 			template <class ArgsTuple>
 			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
 			template <class ArgsTuple>
-			void print_terms_plain(std::ostream &, const ArgsTuple &, int limit) const;
+			void print_terms_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			void print_terms_tex(std::ostream &, const ArgsTuple &, int limit) const;
+			void print_terms_tex(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			void print_terms_pretty(std::ostream &, const ArgsTuple &, int limit) const;
+			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
 			void base_swap(Derived &);
 			template <class Number>
 			bool generic_numerical_comparison(const Number &) const;

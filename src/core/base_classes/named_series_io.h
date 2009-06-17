@@ -60,34 +60,41 @@ namespace piranha
 			const ntuple<vector_psym, boost::tuples::length<boost::tuples::null_type>::value>::type &)
 	{}
 
+	/// Print series to stream in plain format.
+	/**
+	 * This is the same text format used when saving series to file.
+	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_plain(std::ostream &stream, int limit) const
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_plain(std::ostream &stream) const
 	{
 		named_series_print_plain<arguments_description>(stream, m_arguments);
 		stream << "[terms]" << std::endl;
-		derived_const_cast->print_terms_plain(stream, m_arguments, limit);
+		derived_const_cast->print_terms_plain(stream, m_arguments);
 	}
 
+	/// Print series to stream in pretty format.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_pretty(std::ostream &stream, int) const
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_pretty(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_pretty(stream, m_arguments, 0);
+		derived_const_cast->print_terms_pretty(stream, m_arguments);
 	}
 
+	/// Print in tex format.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_tex(std::ostream &stream, int) const
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_tex(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_tex(stream, m_arguments, 0);
+		derived_const_cast->print_terms_tex(stream, m_arguments);
 	}
+
 
 	/// Print series to stream.
 	/**
-	 * Print first "limit" terms. If limit is negative, print all terms.
+	 * Equivalent to named_series::print_pretty.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print(std::ostream &out_stream, int limit) const
+	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print(std::ostream &out_stream) const
 	{
-		print_pretty(out_stream, limit);
+		print_pretty(out_stream);
 	}
 
 	/// Construct from file.
@@ -204,7 +211,7 @@ namespace piranha
 			outf.close();
 			return;
 		}
-		print_plain(outf,-1);
+		print_plain(outf);
 		outf.close();
 	}
 

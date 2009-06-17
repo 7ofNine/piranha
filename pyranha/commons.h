@@ -51,6 +51,14 @@ namespace pyranha
 		return stream.str();
 	}
 
+	template <class T>
+	std::string py_print_to_string_plain(const T &origin)
+	{
+		std::ostringstream stream;
+		origin.print_plain(stream);
+		return stream.str();
+	}
+
 	template <class ArgsTuple>
 	struct py_series_arguments_impl
 	{

@@ -62,6 +62,9 @@ def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize =
 
 	In order to use the output of this function, the 'breqn', 'xtab', 'nicefrac' and 'geometry' packages must be present (they should
 	be fairly common on most latex installations).
+
+	PLEASE NOTE: apparently the xtab package may require many runs of the latex command in order to figure out exactly the placement of the long
+	table resulting from a big series.
 	"""
 	if width <= 0 or width >= 1:
 		raise ValueError('Use a width value in the ]0,1[ range.')
