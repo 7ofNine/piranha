@@ -177,15 +177,6 @@ namespace piranha
 			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			template <int Pos2>
 			explicit toolbox(const toolbox<trig_array<Bits,Pos2,Allocator> > &ta): ancestor::int_array(ta) {}
-			// Probing.
-			// TODO: remove.
-			/// Data footprint.
-			/**
-			 * Returns the memory occupied by the data members.
-			 */
-			size_t data_footprint() const {
-				return (ancestor::size()*sizeof(value_type));
-			}
 			// Math.
 			/// Multiplication.
 			/**
