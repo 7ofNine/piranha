@@ -64,8 +64,8 @@ namespace pyranha
 	{
 		static void run(std::vector<piranha::vector_psym> &retval, const ArgsTuple &args_tuple)
 		{
-			retval.push_back(args_tuple.template get_head());
-			py_series_arguments_impl<typename ArgsTuple::tail_type>::run(retval,args_tuple.template get_tail());
+			retval.push_back(args_tuple.get_head());
+			py_series_arguments_impl<typename ArgsTuple::tail_type>::run(retval,args_tuple.get_tail());
 		}
 	};
 

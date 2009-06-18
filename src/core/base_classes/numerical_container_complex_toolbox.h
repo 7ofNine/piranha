@@ -168,8 +168,7 @@ namespace piranha
 	explicit complex(const value_type &r, const value_type &i, const ArgsTuple &): \
 			complex_toolbox::numerical_container_complex_toolbox(r, i) {} \
 	using complex_toolbox::operator==; \
-	using complex_toolbox::print_pretty; \
-	using complex_toolbox::print_tex;
+	using complex_toolbox::print_pretty;
 }
 
 #undef derived_const_cast
