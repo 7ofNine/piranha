@@ -109,9 +109,9 @@ namespace pyranha
 	template <class T>
 	inline boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
 	{
-		// Interoperability between Python lists of series and C++ vectors of series.
+		// Expose vectors of series and vectors of vectors of series as Python tuples.
 		to_tuple_mapping<std::vector<T> >();
-		from_python_sequence<std::vector<T>,variable_capacity_policy>();
+		to_tuple_mapping<std::vector<std::vector<T> > >();
 		// Expose the manipulator class.
 		boost::python::class_<T> inst(name.c_str(), description.c_str());
 		inst.def(boost::python::init<const T &>());
@@ -126,15 +126,12 @@ namespace pyranha
 		inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));
 		inst.def("__len__", &T::length);
 		inst.def("__repr__", &py_print_to_string<T>);
+		// Pyranha-specific special methods.
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
-		inst.def("arguments", &py_series_arguments<T>, "Series arguments.");
-		inst.def("split", &T::split, "Split series.");
-		// Pyranha-specific special methods.
-		inst.def("__psi__", &psi0<T>);
-		inst.def("__psi__", &psi1<T>);
-		inst.def("__psi__", &psi2<T>);
-		// TODO: add 'arguments' method.
+		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
+		inst.def("__split__", &T::split, "Split series.");
+		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");
 		inst.def("eval", &T::eval, "Evaluate at time arg2.");
 		inst.add_property("norm", &T::norm, "Norm.");

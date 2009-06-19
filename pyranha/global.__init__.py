@@ -24,6 +24,6 @@ print "Pyranha initializing..."
 print "Available manipulators: ", __manipulators__
 print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
 
-from __impl import manipulators
+from detail import manipulators
 
 print "Pyranha is ready."

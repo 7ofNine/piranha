@@ -82,21 +82,6 @@ namespace pyranha
 		py_series_arguments_impl<typename Series::args_tuple_type>::run(retval,s.arguments());
 		return retval;
 	}
-
-	template <class NamedSeries>
-	inline size_t psi0(const NamedSeries &s) {
-		return s.psi(0, 1);
-	}
-
-	template <class NamedSeries>
-	inline size_t psi1(const NamedSeries &s, const int &n) {
-		return s.psi(n, 1);
-	}
-
-	template <class NamedSeries>
-	inline size_t psi2(const NamedSeries &s, const int &n, const int &step) {
-		return s.psi(n, step);
-	}
 }
 
 #endif

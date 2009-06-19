@@ -182,10 +182,9 @@ namespace piranha
 			}
 			/// Split.
 			template <class Series, class ArgsTuple>
-			void split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const
 			{
-				piranha_assert(retval.empty());
-				retval.push_back(Series::base_series_from_cf(*derived_const_cast,args_tuple));
+				piranha_assert(false);
 			}
 			/// Number of atoms. Returns 1.
 			size_t atoms() const {

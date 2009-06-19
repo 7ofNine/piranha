@@ -131,7 +131,7 @@ namespace piranha
 			bool operator==(const mp_integer &) const;
 			bool operator!=(const mp_integer &) const;
 			template <class Series, class ArgsTuple>
-			void split(std::vector<Series> &, const ArgsTuple &) const;
+			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

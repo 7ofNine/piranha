@@ -110,7 +110,7 @@ namespace piranha
 			Derived series_from_key(const Key &) const;
 			template <class Cf>
 			Derived series_from_cf(const Cf &) const;
-			std::vector<Derived> split() const;
+			std::vector<std::vector<Derived> > split(const int &n = 0) const;
 		protected:
 			template <class Derived2>
 			void merge_args(const Derived2 &);

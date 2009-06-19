@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_MANIP_H
 #define PIRANHA_BASE_SERIES_MANIP_H
 
+#include <boost/tuple/tuple.hpp>
 #include <utility>
 #include <vector>
 
@@ -275,18 +276,26 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &args_tuple) const
 	{
 		piranha_assert(retval.empty());
-		if (is_single_cf()) {
-			begin()->m_cf.split(retval,args_tuple);
-		} else {
+		piranha_assert(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
+		if (n == 0) {
 			const const_iterator it_f = end();
 			for (const_iterator it = begin(); it != it_f; ++it) {
-				Series tmp(Series::base_series_from_cf(it->m_cf,args_tuple));
-				tmp.base_mult_by(Series::base_series_from_key(it->m_key,args_tuple),args_tuple);
+				Series tmp_cf(Series::base_series_from_cf(it->m_cf,args_tuple));
+				Series tmp_key(Series::base_series_from_key(it->m_key,args_tuple));
+				std::vector<Series> tmp;
+				tmp.reserve(2);
+				tmp.push_back(tmp_cf);
+				tmp.push_back(tmp_key);
 				retval.push_back(tmp);
 			}
+		} else {
+			if (!is_single_cf()) {
+				piranha_throw(value_error,"cannot split up to the specified level: series is non-degenerate");
+			}
+			begin()->m_cf.split(retval,n - 1,args_tuple);
 		}
 	}
 }

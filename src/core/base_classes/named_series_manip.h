@@ -369,14 +369,19 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::split() const
+	inline std::vector<std::vector<Derived> > toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::split(const int &n) const
 	{
-		std::vector<Derived> retval;
-		derived_const_cast->base_split(retval,m_arguments);
+		if (n < 0 || n >= boost::tuples::length<args_tuple_type>::value) {
+			piranha_throw(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
+		}
+		std::vector<std::vector<Derived> > retval;
+		derived_const_cast->base_split(retval,n,m_arguments);
 		const size_t size = retval.size();
 		for (size_t i = 0; i < size; ++i) {
-			retval[i].m_arguments = m_arguments;
-			retval[i].trim();
+			retval[i][0].m_arguments = m_arguments;
+			retval[i][0].trim();
+			retval[i][1].m_arguments = m_arguments;
+			retval[i][1].trim();
 		}
 		return retval;
 	}

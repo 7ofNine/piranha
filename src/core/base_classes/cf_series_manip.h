@@ -86,9 +86,9 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &args_tuple) const
 	{
-		derived_const_cast->base_split(retval,args_tuple);
+		derived_const_cast->base_split(retval,n,args_tuple);
 	}
 }
 
