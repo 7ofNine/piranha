@@ -80,6 +80,7 @@ namespace std
 			using ancestor::divide_by;
 			using ancestor::mult_by;
 			using complex_toolbox::mult_by;
+			using complex_toolbox::print_tex;
 			typedef piranha::mpz_cf value_type;
 			NUMERICAL_CONTAINER_CTORS(complex)
 			COMPLEX_NUMERICAL_CONTAINER_CTORS()
