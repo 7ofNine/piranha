@@ -132,6 +132,7 @@ class series_sf_test(unittest.TestCase):
 	def runTest(self):
 		from pyranha.Core import psym, degree_truncator, rational
 		from pyranha.Math import cs_phase
+		from detail import check_min_degree
 		for limit in [0,1,2,3,80]:
 			degree_truncator.set(limit)
 			for t in exact_series_types:
@@ -145,10 +146,10 @@ class series_sf_test(unittest.TestCase):
 						if n >= m:
 							Jnx = x.besselJ(n)
 							Jnxm = x.besselJ_div_m(n,m)
-							if m >= 0 and Jnxm.degree() > 0:
-								self.assertEqual(x ** m * Jnxm, Jnx)
-							elif m < 0 and Jnx.degree() > 0:
-								self.assertEqual(Jnxm,Jnx * x ** (-m))
+							if m >= 0:
+								self.assert_(check_min_degree(x ** m * Jnxm, Jnx,limit))
+							elif m < 0:
+								self.assert_(check_min_degree(Jnxm,Jnx * x ** (-m),limit))
 					if n != 0:
 						self.assertEqual((x ** -n).root(-n),x)
 						self.assertEqual((x ** -n) ** rational(1,-n),x)

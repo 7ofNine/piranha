@@ -1,1 +1,1 @@
-INSTALL(FILES __init__.py ${pyranha_py} ${pyranha_ui} DESTINATION ${PYRANHA_INSTALL_PATH}/Test/)
+INSTALL(FILES __init__.py detail.py DESTINATION ${PYRANHA_INSTALL_PATH}/Test/)
