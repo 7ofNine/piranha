@@ -122,7 +122,9 @@ BOOST_PYTHON_MODULE(_Core)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
 		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()),
 			&psym::set_time_eval)
-		.def("list", &psym::list, "Get list of global psyms").staticmethod("list");
+		.def("list", &psym::list, "Get list of global psyms").staticmethod("list")
+		.def(self == self)
+		.def(self != self);
 
 	class_<norm_truncator>("__norm_truncator", "Norm truncator.", init<>())
 	.def("__repr__", &py_print_to_string<norm_truncator>)
