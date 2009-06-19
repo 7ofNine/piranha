@@ -126,8 +126,7 @@ def root(n,arg):
 	n-th root of argument arg. If arg provides a root() method, it will be called, otherwise
 	the standard ** operator will be called.
 	"""
-	if type(n) != int:
-		raise ValueError("n must be an integer.")
+	if not isinstance(n,int): raise TypeError('n must be an int')
 	try:
 		return arg.root(n)
 	except AttributeError:
@@ -151,8 +150,7 @@ def besselJ(order,arg):
 	Bessel function of the first kind of integer order of argument arg.
 	If arg provides a besselJ() method, it will be called, otherwise _Math.besselJ will be called.
 	"""
-	if type(order) != int:
-		raise ValueError("order must be an integer.")
+	if not isinstance(order,int): raise TypeError('order must be an int')
 	try:
 		return arg.besselJ(order)
 	except AttributeError:
@@ -164,8 +162,7 @@ def dbesselJ(order,arg):
 	It will call the dbesselJ() method of arg, if available, otherwise an AttributeError exception
 	will be raised.
 	"""
-	if type(order) != int:
-		raise ValueError("order must be an integer.")
+	if not isinstance(order,int): raise TypeError('order must be an int')
 	try:
 		return arg.dbesselJ(order)
 	except AttributeError:
@@ -176,8 +173,7 @@ def besselJ_div_m(order,arg,m = 1):
 	Bessel function of the first kind of integer order of argument arg divided by arg**m.
 	If arg provides a besselJ_div_m() method, it will be called, otherwise _Math.besselJ will be called.
 	"""
-	if type(order) != int or type(m) != int:
-		raise ValueError("order and m must be integers.")
+	if not isinstance(order,int) or not isinstance(m,int): raise TypeError('order and m must be ints')
 	try:
 		return arg.besselJ_div_m(order,m)
 	except AttributeError:
@@ -190,8 +186,7 @@ def Pnm(n,m,arg,*extra_arg):
 	Pnm using recurrence relations. If extra_arg is not provided, the function will try to calculate
 	sqrt(1-arg**2) on its own.
 	"""
-	if type(n) != int or type(m) != int:
-		raise ValueError("n and m must be integers.")
+	if not isinstance(n,int) or not isinstance(m,int): raise TypeError('n and m must be ints')
 	if len(list(extra_arg)) > 1:
 		raise TypeError("Please provide at most one extra argument.")
 	try:
@@ -203,8 +198,7 @@ def Pn(n,arg):
 	"""
 	Legendre polynomial of integer degree n of argument arg.
 	"""
-	if type(n) != int:
-		raise ValueError("n must be an integer.")
+	if not isinstance(n,int): raise TypeError('n must be an int')
 	try:
 		return arg.Pn(n)
 	except AttributeError:
@@ -223,8 +217,7 @@ def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = Non
 	Other than n and m, which must always be integers, the arguments of this function must be of homogeneous type
 	(i.e., all series or all numbers).
 	"""
-	if type(n) != int or type(m) != int:
-		raise ValueError("n and m must be integers.")
+	if not isinstance(n,int) or not isinstance(m,int): raise TypeError('n and m must be ints')
 	if alpha != None or beta != None or gamma != None:
 		a = alpha or type(theta)(0)
 		b = beta or type(theta)(0)
@@ -253,15 +246,14 @@ def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = Non
 			except AttributeError:
 				return _Math.Ynm(n,m,theta,ei_phi,emi_phi)
 
-def partial(arg,p,n=1):
+def partial(arg,p,n = 1):
 	"""
 	Calculate the n-th partial derivative of arg with respect to psym p.
 	
 	Internally the partial() method of arg is called. If such method is not available, an AttributeError
 	exception will be raised.
 	"""
-	if type(n) != int:
-		raise ValueError("n must be an integer.")
+	if not isinstance(n,int): raise TypeError('n must be an int')
 	try:
 		return arg.partial(p,n)
 	except AttributeError:
@@ -271,8 +263,7 @@ def einpi2(n):
 	"""
 	Complex exponential of n*pi/2.
 	"""
-	if type(n) != int:
-		raise ValueError("n must be an integer.")
+	if not isinstance(n,int): raise TypeError('n must be an int')
 	if n & 1:
 		if (n - 1) & 3:
 			return complex(0,-1)
