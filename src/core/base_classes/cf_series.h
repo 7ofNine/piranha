@@ -25,6 +25,7 @@
 #include <complex>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "../mp.h"
 #include "../type_traits.h"
@@ -129,6 +130,8 @@ namespace piranha
 			bool operator!=(const mp_rational &) const;
 			bool operator==(const mp_integer &) const;
 			bool operator!=(const mp_integer &) const;
+			template <class Series, class ArgsTuple>
+			void split(std::vector<Series> &, const ArgsTuple &) const;
 		protected:
 			template <class ArgsTuple>
 			void construct_from_string(const std::string &, const ArgsTuple &);

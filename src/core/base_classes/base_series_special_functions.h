@@ -106,6 +106,7 @@ namespace piranha
 				retval = *derived_const_cast;
 				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
+				// Note: copy ctor of named derived class is not a problem, since it does not trim.
 				Derived square_x2(retval);
 				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order, args_tuple);

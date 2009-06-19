@@ -185,6 +185,8 @@ namespace piranha
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
 			template <class Series, class PosTuple, class ArgsTuple>
 			static void ll_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
+			template <class Series, class ArgsTuple>
+			void base_split(std::vector<Series> &, const ArgsTuple &) const;
 		private:
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);

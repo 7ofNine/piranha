@@ -24,6 +24,7 @@
 #include <complex>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "../config.h"
 #include "../math.h"
@@ -178,6 +179,13 @@ namespace piranha
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const {
 				return Derived(*derived_const_cast);
+			}
+			/// Split.
+			template <class Series, class ArgsTuple>
+			void split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+			{
+				piranha_assert(retval.empty());
+				retval.push_back(Series::base_series_from_cf(*derived_const_cast,args_tuple));
 			}
 			/// Number of atoms. Returns 1.
 			size_t atoms() const {

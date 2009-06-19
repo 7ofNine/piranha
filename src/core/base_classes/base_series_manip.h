@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MANIP_H
 
 #include <utility>
+#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -270,6 +271,23 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::clear_terms()
 	{
 		m_container.clear();
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Series, class ArgsTuple>
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+	{
+		piranha_assert(retval.empty());
+		if (is_single_cf()) {
+			begin()->m_cf.split(retval,args_tuple);
+		} else {
+			const const_iterator it_f = end();
+			for (const_iterator it = begin(); it != it_f; ++it) {
+				Series tmp(Series::base_series_from_cf(it->m_cf,args_tuple));
+				tmp.base_mult_by(Series::base_series_from_key(it->m_key,args_tuple),args_tuple);
+				retval.push_back(tmp);
+			}
+		}
 	}
 }
 

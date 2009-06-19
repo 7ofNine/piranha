@@ -21,6 +21,8 @@
 #ifndef PIRANHA_CF_SERIES_MANIP_H
 #define PIRANHA_CF_SERIES_MANIP_H
 
+#include <vector>
+
 namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -80,6 +82,13 @@ namespace piranha
 		SubCaches &s, const ArgsTuple &a) const
 	{
 		return derived_const_cast->template base_sub<RetSeries,typename Derived::sub_functor>(p, s, a);
+	}
+
+	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <class Series, class ArgsTuple>
+	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::split(std::vector<Series> &retval, const ArgsTuple &args_tuple) const
+	{
+		derived_const_cast->base_split(retval,args_tuple);
 	}
 }
 

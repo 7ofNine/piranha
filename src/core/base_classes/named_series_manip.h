@@ -326,24 +326,6 @@ namespace piranha
 		}
 	}
 
-// 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-// 	template <class Filter>
-// 	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::filter(const Filter &f) const
-// 	{
-// 		typedef typename Derived::const_iterator const_iterator;
-// 		Derived retval;
-// 		retval.m_arguments = m_arguments;
-// 		shared_args::set(m_arguments);
-// 		const const_iterator it_f = derived_const_cast->end();
-// 		for (const_iterator it =  derived_const_cast->begin(); it != it_f; ++it) {
-// 			if (f(*it)) {
-// 				retval.insert(*it, retval.m_arguments);
-// 			}
-// 		}
-// 		retval.trim();
-// 		return retval;
-// 	}
-
 	template <class SubCaches, class SubSeries, class ArgsTuple>
 	struct init_sub_caches
 	{
@@ -383,6 +365,19 @@ namespace piranha
 			pos_tuple, sub_caches, this_copy.m_arguments));
 		retval.m_arguments = this_copy.m_arguments;
 		retval.trim();
+		return retval;
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::split() const
+	{
+		std::vector<Derived> retval;
+		derived_const_cast->base_split(retval,m_arguments);
+		const size_t size = retval.size();
+		for (size_t i = 0; i < size; ++i) {
+			retval[i].m_arguments = m_arguments;
+			retval[i].trim();
+		}
 		return retval;
 	}
 }
