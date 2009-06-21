@@ -66,12 +66,12 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &n) const
+			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit) const
 			{
-				if (n < 0) {
+				if (iter_limit < 0) {
 					piranha_throw(value_error,"iteration limit in hyperF must be non-negative");
 				}
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,n,derived_const_cast->m_arguments));
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,iter_limit,derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
@@ -79,6 +79,23 @@ namespace piranha
 			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
 			{
 				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,-1,derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			Derived dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit) const
+			{
+				if (iter_limit < 0) {
+					piranha_throw(value_error,"iteration limit in dhyperF must be non-negative");
+				}
+				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,iter_limit,derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			Derived dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
+			{
+				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,-1,derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

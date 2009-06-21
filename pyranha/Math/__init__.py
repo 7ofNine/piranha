@@ -132,20 +132,41 @@ def root(n,arg):
 	except AttributeError:
 		return arg**(1./n)
 
-def hyperF(a_sequence,b_sequence,z,n = None):
+def hyperF(a_sequence,b_sequence,z,limit = None):
 	"""
 	Hypergeometric series of argument z, with the a and b parameters provided as sequences
 	of objects that can be used to construct a rational.
 	"""
 	from pyranha.Core import rational
+	if not limit is None and not isinstance(limit,int):
+		raise TypeError('limit must be either None or an integer value.')
 	try:
-		if n is None:
+		if limit is None:
 			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
 		else:
-			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence],n)
+			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence],limit)
 	except TypeError, ArgumentError:
-		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed,' +
-			'n must be an int.')
+		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
+	except AttributeError:
+		raise TypeError('z does not provide an hyperZ() method.')
+
+def dhyperF(a_sequence,b_sequence,z,limit = None,order = 1):
+	"""
+	Derivative of the hypergeometric series of argument z, with the a and b parameters provided as sequences
+	of objects that can be used to construct a rational. Order of derivation defaults to one.
+	"""
+	from pyranha.Core import rational
+	if not limit is None and not isinstance(limit,int):
+		raise TypeError('limit must be either None or an integer value.')
+	if not isinstance(order,int):
+		raise TypeError('order must be an integer value.')
+	try:
+		if limit is None:
+			return z.dhyperF(order,[rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
+		else:
+			return z.dhyperF(order,[rational(a) for a in a_sequence],[rational(b) for b in b_sequence],limit)
+	except TypeError, ArgumentError:
+		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
 	except AttributeError:
 		raise TypeError('z does not provide an hyperZ() method.')
 

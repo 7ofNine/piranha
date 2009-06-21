@@ -45,14 +45,10 @@ namespace piranha
 			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
 			{
 				Derived retval;
+				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
+				hyperF_b_check(b_list);
 				// Cache values.
 				const size_t a_size = a_list.size(), b_size = b_list.size();
-				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
-				for (size_t i = 0; i < b_size; ++i) {
-					if (b_list[i] <= 0 && b_list[i].get_den() == 1) {
-						piranha_throw(zero_division_error,"b_list in hyperF contains a non-positive integer");
-					}
-				}
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) {
 					retval.base_add(1,args_tuple);
@@ -109,6 +105,35 @@ namespace piranha
 					tmp.base_mult_by(*derived_const_cast,args_tuple);
 					retval.base_add(tmp,args_tuple);
 				}
+				return retval;
+			}
+			template <class ArgsTuple>
+			Derived base_dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
+			{
+				if (n < 0) {
+					piranha_throw(value_error,"please enter a non-negative order of differentiation");
+				}
+				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
+				hyperF_b_check(b_list);
+				// Compute the outside factor.
+				mp_rational factor(1);
+				const size_t a_size = a_list.size(), b_size = b_list.size();
+				for (size_t i = 0; i < a_size; ++i) {
+					factor *= a_list[i].r_factorial(n);
+				}
+				for (size_t i = 0; i < b_size; ++i) {
+					factor /= b_list[i].r_factorial(n);
+				}
+				// Create the new a_list and b_list.
+				std::vector<mp_rational> new_a(a_list), new_b(b_list);
+				for (size_t i = 0; i < a_size; ++i) {
+					new_a[i] += n;
+				}
+				for (size_t i = 0; i < b_size; ++i) {
+					new_b[i] += n;
+				}
+				Derived retval(base_hyperF(new_a,new_b,iter_limit,args_tuple));
+				retval.base_mult_by(factor,args_tuple);
 				return retval;
 			}
 			/// Bessel function of the first kind of integer order.
@@ -263,6 +288,16 @@ namespace piranha
 					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
 				return retval;
+			}
+		private:
+			static void hyperF_b_check(const std::vector<mp_rational> &b_list)
+			{
+				const size_t b_size = b_list.size();
+				for (size_t i = 0; i < b_size; ++i) {
+					if (b_list[i] <= 0 && b_list[i].get_den() == 1) {
+						piranha_throw(zero_division_error,"b_list in hyperF contains a non-positive integer");
+					}
+				}
 			}
 	};
 }

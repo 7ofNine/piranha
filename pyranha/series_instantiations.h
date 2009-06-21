@@ -329,6 +329,10 @@ namespace pyranha
 		typedef T (T::*hyper_2)(const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &, const int &) const;
 		inst.def("hyperF", hyper_1(&T::hyperF));
 		inst.def("hyperF", hyper_2(&T::hyperF));
+		typedef T (T::*dhyper_1)(const int &, const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &) const;
+		typedef T (T::*dhyper_2)(const int &, const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &, const int &) const;
+		inst.def("dhyperF", dhyper_1(&T::dhyperF));
+		inst.def("dhyperF", dhyper_2(&T::dhyperF));
 	}
 
 #define __celmec_inst(arg) \
