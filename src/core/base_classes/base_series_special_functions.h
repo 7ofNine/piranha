@@ -140,13 +140,6 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_besselJ(const int &order_, const ArgsTuple &args_tuple) const {
 				Derived retval;
-				// Special case of empty series. It must be handled here before the truncator is called.
-				if (derived_const_cast->empty()) {
-					if (!order_) {
-						retval.base_add(1,args_tuple);
-					}
-					return retval;
-				}
 				// Dispatch besselJ to coefficient if series consists of a single coefficient.
 				if (derived_const_cast->is_single_cf()) {
 					typedef typename Derived::term_type term_type;
@@ -154,48 +147,32 @@ namespace piranha
 						typename term_type::key_type()),args_tuple);
 					return retval;
 				}
+				// Take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
-				// Get the expansion limit from the truncator.
-				size_t limit_;
-				try {
-					limit_ = derived_const_cast->psi_(order, 2, args_tuple);
-				} catch (const value_error &ve) {
-					piranha_throw(value_error,std::string("series is unsuitable as argument of "
-						"Bessel function of the first kind.\nThe reported error is: ") + ve.what());
-				}
-				const size_t limit = limit_;
-				if (limit == 0) {
-					return retval;
-				}
-				// Now we buid the starting point of the power series expansion of Jn.
-				retval = *derived_const_cast;
-				retval.base_divide_by(2, args_tuple);
-				// This will be used later.
-				// Note: copy ctor of named derived class is not a problem, since it does not trim.
-				Derived square_x2(retval);
-				square_x2.base_mult_by(square_x2, args_tuple);
-				retval = retval.base_pow(order, args_tuple);
-				retval.base_divide_by(factorial(order),args_tuple);
-				// Now let's proceed to the bulk of the power series expansion for Jn.
-				Derived tmp(retval);
-				for (size_t i = 1; i < limit; ++i) {
-					tmp.base_mult_by(-1, args_tuple);
-					tmp.base_divide_by(i * ((double)i + order), args_tuple);
-					tmp.base_mult_by(square_x2, args_tuple);
-					retval.base_add(tmp, args_tuple);
-				}
+				// Calculate this/2.
+				Derived x_2(*derived_const_cast);
+				x_2.base_divide_by(2,args_tuple);
+				retval = Derived(x_2).base_mult_by(-1,args_tuple).base_mult_by(x_2,args_tuple)
+					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((size_t)1,mp_rational(order) + 1),-1,args_tuple);
+				retval.base_mult_by(x_2.base_pow(order,args_tuple),args_tuple);
+				retval.base_divide_by(mp_integer(order).factorial(),args_tuple);
 				if (order_ < 0) {
 					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
 				return retval;
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
-			// TODO: polish and make it less restrictive. Use factorial().
 			template <class ArgsTuple>
-			Derived base_dbesselJ(const int &order, const ArgsTuple &args_tuple) const {
-				if (order < 1) {
-					piranha_throw(value_error,"partial derivative of Bessel function of the first kind is implemented only for "
-									 "strictly positive orders");
+			Derived base_dbesselJ(const int &order_, const ArgsTuple &args_tuple) const
+			{
+				// NOTE: we don't user hyperF here because direct series expansion is faster.
+				const int order = (order_ >= 0) ? order_ : -order_;
+				Derived retval;
+				if (!order) {
+					// Exploit the fact that for order == 0, derivative is -J_1.
+					retval = base_besselJ(1,args_tuple);
+					retval.base_mult_by(-1,args_tuple);
+					return retval;
 				}
 				// Get the expansion limit from the truncator.
 				size_t limit_;
@@ -207,27 +184,24 @@ namespace piranha
 						+ ve.what());
 				}
 				const size_t limit = limit_;
-				Derived retval;
-				if (limit == 0) {
+				if (!limit) {
 					return retval;
 				}
-				// Now we buid the starting point of the power series expansion of Jn.
+				// Now we buid the starting point of the power series expansion.
 				retval = *derived_const_cast;
 				retval.base_divide_by(2, args_tuple);
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order - 1, args_tuple);
-				for (size_t i = 0; i < (size_t)order; ++i) {
-					retval.base_divide_by(i + 1, args_tuple);
-				}
+				retval.base_divide_by(mp_integer(order).factorial(),args_tuple);
 				retval.base_mult_by(order, args_tuple);
 				retval.base_divide_by(2, args_tuple);
-				// Now let's proceed to the bulk of the power series expansion for Jn.
+				// Now let's proceed to the bulk of the power series expansion.
 				Derived tmp(retval);
-				for (size_t i = 1; i < limit; ++i) {
-					tmp.base_mult_by((-1) * (order + 2 * (double)i), args_tuple);
-					tmp.base_divide_by(((double)i * ((double)i + order)) * (order + 2 * ((double)i - 1)), args_tuple);
+				for (int i = 1; i < (int)limit; ++i) {
+					tmp.base_mult_by((-1) * (mp_integer(order) + 2 * mp_integer(i)), args_tuple);
+					tmp.base_divide_by((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), args_tuple);
 					tmp.base_mult_by(square_x2, args_tuple);
 					retval.base_add(tmp, args_tuple);
 				}
@@ -238,52 +212,22 @@ namespace piranha
 			Derived base_besselJ_div_m(const int &order_, const int &m,
 				const ArgsTuple &args_tuple) const
 			{
-				Derived retval;
-				// Let's take care of negative order.
+				if (m < 0) {
+					piranha_throw(value_error,"m must be a non-negative value");
+				}
+				// Take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
-				// Special case of empty series.
-				if (derived_const_cast->empty()) {
-					if (order < m) {
-						piranha_throw(zero_division_error,"besselJ_div_m with order smaller than m has a pole in the origin");
-					} else if (order == m) {
-						retval = retval.base_add(2,args_tuple).base_pow(-order,args_tuple);
-						retval.base_divide_by(factorial(order),args_tuple);
-					}
-					return retval;
+				if (order < m) {
+					piranha_throw(zero_division_error,"absolute value of order must not be smaller than m");
 				}
-				// Get the expansion limit from the truncator.
-				size_t limit_;
-				try {
-					limit_ = derived_const_cast->psi_(order - m, 2, args_tuple);
-				} catch (const value_error &ve) {
-					piranha_throw(value_error,std::string("series is unsuitable as argument of Bessel function "
-						"of the first kind divided by its argument raised to unsigned integer power.\n"
-						"The reported error is: ") + ve.what());
-				}
-				const size_t limit = limit_;
-				if (limit == 0) {
-					return retval;
-				}
-				// Now we build the starting point of the power series expansion of Jn/x**m.
-				retval = *derived_const_cast;
-				retval.base_divide_by(2, args_tuple);
-				// This will be used later.
-				Derived square_x2(retval);
-				square_x2.base_mult_by(square_x2, args_tuple);
-				retval = retval.base_pow(order - m, args_tuple);
-				retval.base_divide_by(factorial(order),args_tuple);
-				// Now let's proceed to the bulk of the power series expansion for Jn/x**m.
-				Derived tmp(retval);
-				for (size_t i = 1; i < limit; ++i) {
-					tmp.base_mult_by(-1, args_tuple);
-					tmp.base_divide_by(i * ((double)i + order), args_tuple);
-					tmp.base_mult_by(square_x2, args_tuple);
-					retval.base_add(tmp, args_tuple);
-				}
-				// m2 will be the external divisor by 2**m.
-				Derived m2;
-				m2 = m2.base_add(2,args_tuple).base_pow(-m,args_tuple);
-				retval.base_mult_by(m2, args_tuple);
+				Derived retval;
+				// Calculate this/2.
+				Derived x_2(*derived_const_cast);
+				x_2.base_divide_by(2,args_tuple);
+				retval = Derived(x_2).base_mult_by(-1,args_tuple).base_mult_by(x_2,args_tuple)
+					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((size_t)1,mp_rational(order) + 1),-1,args_tuple);
+				retval.base_mult_by(derived_const_cast->base_pow(order - m,args_tuple),args_tuple);
+				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order),args_tuple);
 				if (order_ < 0) {
 					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
