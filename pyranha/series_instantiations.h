@@ -36,8 +36,6 @@
 #include "boost_python_container_conversions.h"
 #include "commons.h"
 
-// TODO: less ugly __psi__ handling (with optional<>?) and remove any reference to terms.
-
 namespace pyranha
 {
 	// "Fat" iterator that wraps the iterator of named series, allowing retrieval of coefficient and key
@@ -327,7 +325,10 @@ namespace pyranha
 		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);
 		inst.def("Pnm", named_3(&T::Pnm), Pnm_descr);
 		inst.def("Pn", &T::Pn, "Legendre polynomial of degree arg2.");
-		inst.def("hyperF", &T::template hyperF<piranha::mp_rational>);
+		typedef T (T::*hyper_1)(const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &) const;
+		typedef T (T::*hyper_2)(const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &, const int &) const;
+		inst.def("hyperF", hyper_1(&T::hyperF));
+		inst.def("hyperF", hyper_2(&T::hyperF));
 	}
 
 #define __celmec_inst(arg) \

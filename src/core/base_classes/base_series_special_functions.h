@@ -26,6 +26,7 @@
 
 #include "../exceptions.h"
 #include "../math.h"
+#include "../mp.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -40,24 +41,63 @@ namespace piranha
 	class toolbox<base_series_special_functions<Derived> >
 	{
 		protected:
-			template <class T, class ArgsTuple>
-			Derived base_hyperF(const std::vector<T> &a_list, const std::vector<T> &b_list, const ArgsTuple &args_tuple) const
+			template <class ArgsTuple>
+			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
 			{
 				Derived retval;
+				// Cache values.
+				const size_t a_size = a_list.size(), b_size = b_list.size();
+				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
+				for (size_t i = 0; i < b_size; ++i) {
+					if (b_list[i] <= 0 && b_list[i].get_den() == 1) {
+						piranha_throw(zero_division_error,"b_list in hyperF contains a non-positive integer");
+					}
+				}
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) {
 					retval.base_add(1,args_tuple);
 					return retval;
 				}
-				const size_t iter = derived_const_cast->psi_(0,1,args_tuple);
-				// If the truncator says that no iterations are needed, return an empty series.
+				// If one of the elements in a_list is zero, hyperF will always be 1.
+				for (size_t i = 0; i < a_size; ++i) {
+					if (a_list[i] == 0) {
+						retval.base_add(1,args_tuple);
+						return retval;
+					}
+				}
+				// Establish series limit, using the following strategy...
+				size_t iter_;
+				try {
+					// First we try to respect the given iter_limit, if any,
+					// otherwise we call the truncator to see what it has to say.
+					iter_ = (iter_limit >= 0) ? iter_limit : derived_const_cast->psi_(0,1,args_tuple);
+				} catch (const value_error &) {
+					// If the truncator fails to establish a limit, we go to see into a_list and b_list
+					// whether there are negative integer numbers.
+					mp_rational const *min_int = 0;
+					for (size_t i = 0; i < a_size; ++i) {
+						if (a_list[i] < 0 && a_list[i].get_den() == 1) {
+							if (!min_int || a_list[i] < *min_int) {
+								min_int = &a_list[i];
+							}
+						}
+					}
+					if (!min_int) {
+						piranha_throw(value_error,"could not establish a value for the series limit in hyperF: "
+							"no limit was provided, the truncator failed to establish a limit and "
+							"no negative integer numbers were found in a_list");
+					}
+					piranha_assert(*min_int < 0);
+					iter_ = -(((*min_int) - 1).to_int());
+				}
+				const size_t iter = iter_;
+				// If no iterations are needed, return an empty series.
 				if (!iter) {
 					return retval;
 				}
 				retval.base_add(1,args_tuple);
 				Derived tmp;
 				tmp.base_add(1,args_tuple);
-				const size_t a_size = a_list.size(), b_size = b_list.size();
 				for (size_t i = 1; i < iter; ++i) {
 					for (size_t j = 0; j < a_size; ++j) {
 						tmp.base_mult_by(a_list[j] + (int)(i - 1),args_tuple);

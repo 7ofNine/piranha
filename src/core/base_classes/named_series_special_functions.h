@@ -30,6 +30,7 @@
 #include "../exceptions.h"
 #include "../int_power_cache.h"
 #include "../math.h"
+#include "../mp.h"
 #include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -65,10 +66,19 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			template <class T>
-			Derived hyperF(const std::vector<T> &a_list, const std::vector<T> &b_list) const
+			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &n) const
 			{
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,derived_const_cast->m_arguments));
+				if (n < 0) {
+					piranha_throw(value_error,"iteration limit in hyperF must be non-negative");
+				}
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,n,derived_const_cast->m_arguments));
+				retval.m_arguments = derived_const_cast->m_arguments;
+				retval.trim();
+				return retval;
+			}
+			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
+			{
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,-1,derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;

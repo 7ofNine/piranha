@@ -132,16 +132,20 @@ def root(n,arg):
 	except AttributeError:
 		return arg**(1./n)
 
-def hyperF(a_sequence,b_sequence,z):
+def hyperF(a_sequence,b_sequence,z,n = None):
 	"""
 	Hypergeometric series of argument z, with the a and b parameters provided as sequences
 	of objects that can be used to construct a rational.
 	"""
 	from pyranha.Core import rational
 	try:
-		return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
+		if n is None:
+			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
+		else:
+			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence],n)
 	except TypeError, ArgumentError:
-		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
+		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed,' +
+			'n must be an int.')
 	except AttributeError:
 		raise TypeError('z does not provide an hyperZ() method.')
 
