@@ -212,9 +212,6 @@ namespace piranha
 			Derived base_besselJ_div_m(const int &order_, const int &m,
 				const ArgsTuple &args_tuple) const
 			{
-				if (m < 0) {
-					piranha_throw(value_error,"m must be a non-negative value");
-				}
 				// Take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
 				if (order < m) {
