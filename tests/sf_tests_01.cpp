@@ -36,7 +36,6 @@ int main()
 	retval += (x.root(1) != x);
 	retval += (x.pow(-3).root(-3) != x);
 	retval += (x.sin() * x.sin() + x.cos() * x.cos() != 1);
-	retval += (x.pow(10) * x.besselJ_div_m(-6,10) != x.besselJ(-6));
 	retval += (x.besselJ_div_m(-3,-3) != x.besselJ(-3) * x.pow(3));
 	retval += (ps().besselJ(0) != 1 || ps().besselJ(1) != 0);
 	// Test Bessel's differential equation.
