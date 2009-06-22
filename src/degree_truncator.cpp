@@ -21,12 +21,13 @@
 #include <iostream>
 
 #include "core/base_classes/degree_truncator.h"
+#include "core/mp.h"
 #include "core/psym.h"
 
 namespace piranha
 {
 	// Static initialization for degree-based truncation.
-	int degree_truncator::m_degree_limit = 0;
+	mp_rational degree_truncator::m_degree_limit;
 	degree_truncator::mode degree_truncator::m_mode = degree_truncator::inactive;
 	vector_psym degree_truncator::m_psyms;
 
@@ -40,8 +41,19 @@ namespace piranha
 		m_mode = deg;
 	}
 
+	void degree_truncator::set(const mp_rational &r) {
+		m_degree_limit = r;
+		m_mode = deg;
+	}
+
 	void degree_truncator::set(const vector_psym &v, const int &n) {
 		m_degree_limit = n;
+		m_psyms = v;
+		m_mode = p_deg;
+	}
+
+	void degree_truncator::set(const vector_psym &v, const mp_rational &r) {
+		m_degree_limit = r;
 		m_psyms = v;
 		m_mode = p_deg;
 	}

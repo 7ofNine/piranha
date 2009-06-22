@@ -31,6 +31,7 @@
 #include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
+#include "../mp.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
@@ -60,7 +61,8 @@ namespace piranha
 					struct min_degree_comparison
 					{
 						template <class Term>
-						bool operator()(const Term *t1, const Term *t2) const {
+						bool operator()(const Term *t1, const Term *t2) const
+						{
 							return t1->template get<expo_term_pos>().min_degree() <
 								   t2->template get<expo_term_pos>().min_degree();
 						}
@@ -69,7 +71,8 @@ namespace piranha
 					{
 						partial_min_degree_comparison(const pos_tuple_type &pos_tuple):m_pos_tuple(pos_tuple) {}
 						template <class Term>
-						bool operator()(const Term *t1, const Term *t2) const {
+						bool operator()(const Term *t1, const Term *t2) const
+						{
 							return t1->template get<expo_term_pos>().partial_min_degree(m_pos_tuple) <
 								   t2->template get<expo_term_pos>().partial_min_degree(m_pos_tuple);
 						}
@@ -77,7 +80,8 @@ namespace piranha
 					};
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m, bool initialise = true): m_multiplier(m) {
+					get_type(Multiplier &m, bool initialise = true): m_multiplier(m)
+					{
 						// Some static checks.
 						p_static_check(Multiplier::series_type1::expo_args_position ==
 									   Multiplier::series_type2::expo_args_position, "");
@@ -92,11 +96,13 @@ namespace piranha
 						}
 					}
 					template <class T>
-					bool accept(const T &) const {
+					bool accept(const T &) const
+					{
 						return true;
 					}
 					template <class Term1, class Term2>
-					bool skip(const Term1 &t1, const Term2 &t2) const {
+					bool skip(const Term1 &t1, const Term2 &t2) const
+					{
 						switch (m_mode) {
 							case deg:
 								return (t1.template get<expo_term_pos>().min_degree() +
@@ -115,8 +121,6 @@ namespace piranha
 					// Number of a iterations of a power series development of a power series.
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
-					// TODO: range checking on return value. Probably we want it to be in int range, so that we can have
-					// fully safe interop with mp types.
 					template <class PowerSeries, class ArgsTuple>
 					static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
 						const ArgsTuple &args_tuple)
@@ -133,7 +137,7 @@ namespace piranha
 								"an empty power series");
 						}
 						// min_degree will be either total or partial, depending on the mode.
-						int min_degree = 0;
+						mp_rational min_degree(0);
 						switch (m_mode) {
 							case deg:
 								min_degree = s.min_degree();
@@ -152,19 +156,30 @@ namespace piranha
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
 								"if the minimum degree limit is negative");
 						}
-						const double tmp  = (static_cast<double>(m_degree_limit) / min_degree - start) /
-							static_cast<double>(step_size) + 1;
+						// (mp_rational(limit) / min_degree - start) / step_size + 1;
+						mp_rational tmp(m_degree_limit);
+						tmp /= min_degree;
+						tmp -= start;
+						tmp /= step_size;
+						tmp += 1;
 						if (tmp > 0) {
-							// TODO: replace here with boost safe cast with round_to_floor policy.
-							const double tmp2 = std::floor(tmp);
-							const size_t retval = static_cast<size_t>(tmp2);
-							return (tmp2 != tmp) ? retval : ((retval > 0) ? (retval - 1) : 0);
+							// Take the floor of tmp and convert to integer.
+							const int retval = (tmp.get_num() / tmp.get_den()).to_int();
+							if (tmp == retval) {
+								// If tmp was an integer in the beginning, we want to take the number
+								// immediately preceding it (or zero).
+								return (retval > 0) ? (retval - 1) : 0;
+							} else {
+								// If tmp was not an integer, let's take the floor.
+								return retval;
+							}
 						} else {
 							__PDEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
 							return 0;
 						}
 					}
-					bool is_effective() const {
+					bool is_effective() const
+					{
 						switch (m_mode) {
 							case inactive:
 								return false;
@@ -179,7 +194,8 @@ namespace piranha
 						return false;
 					}
 				protected:
-					void init() {
+					void init()
+					{
 						switch (m_mode) {
 							case deg:
 								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
@@ -204,11 +220,13 @@ namespace piranha
 					pos_tuple_type		m_pos_tuple;
 			};
 			static void set(const int &);
+			static void set(const mp_rational &);
 			static void set(const vector_psym &, const int &);
+			static void set(const vector_psym &, const mp_rational &);
 			static void unset();
 			static void print(std::ostream &stream = std::cout);
 		private:
-			static int		m_degree_limit;
+			static mp_rational	m_degree_limit;
 			static vector_psym	m_psyms;
 			static mode		m_mode;
 	};

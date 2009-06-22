@@ -52,6 +52,7 @@
 #define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr, piranha::trig_args_descr, POISSON_SERIES_TERM, POISSON_SERIES)
 #define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POISSON_SERIES , piranha::ps_binomial_sorter> >
+#define POISSON_SERIES_DEGREE typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
 
 namespace piranha
 {
@@ -63,8 +64,8 @@ namespace piranha
 				public toolbox<series_multiplication< POISSON_SERIES, Mult1, Trunc1> >,
 				public toolbox<jacobi_anger<1, POISSON_SERIES > >,
 				public toolbox<common_poisson_series< POISSON_SERIES > >,
-				public toolbox<base_power_series<0, 0, POISSON_SERIES > >,
-				public toolbox<named_power_series< POISSON_SERIES > >,
+				public toolbox<base_power_series<0, 0, POISSON_SERIES_DEGREE, POISSON_SERIES > >,
+				public toolbox<named_power_series< POISSON_SERIES_DEGREE, POISSON_SERIES > >,
 				public toolbox<base_series_special_functions< POISSON_SERIES > >,
 				public toolbox<named_series_special_functions< POISSON_SERIES > >,
 				public toolbox<celmec< POISSON_SERIES > >,
@@ -97,6 +98,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES , piranha::ps_binomial_sorter> >
+#define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
 
 namespace std
 {
@@ -109,8 +111,8 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1> >,
 				public piranha::toolbox<piranha::common_poisson_series< COMPLEX_POISSON_SERIES > >,
-				public piranha::toolbox<piranha::base_power_series<0, 0, COMPLEX_POISSON_SERIES > >,
-				public piranha::toolbox<piranha::named_power_series< COMPLEX_POISSON_SERIES > >,
+				public piranha::toolbox<piranha::base_power_series<0, 0, COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES > >,
+				public piranha::toolbox<piranha::named_power_series< COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POISSON_SERIES > >,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,

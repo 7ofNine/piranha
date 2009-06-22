@@ -32,12 +32,12 @@
 
 namespace piranha
 {
-	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
+	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
 	struct base_power_series {};
 
 	/// Power series toolbox.
-	template <int ExpoArgsPosition, int ExpoTermPosition, class Derived>
-	class toolbox<base_power_series<ExpoArgsPosition,ExpoTermPosition,Derived> >
+	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
+	class toolbox<base_power_series<ExpoArgsPosition,ExpoTermPosition,Degree,Derived> >
 	{
 			p_static_check(ExpoArgsPosition >= 0, "Invalid expo args position.");
 			template <class Term>
@@ -77,10 +77,11 @@ namespace piranha
 		public:
 			static const int expo_args_position = ExpoArgsPosition;
 			static const int expo_term_position = ExpoTermPosition;
+			typedef Degree degree_type;
 			/// Get the degree of the power series.
-			int degree() const {
+			Degree degree() const {
 				if (derived_const_cast->empty()) {
-					return 0;
+					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::max_element(
 							derived_const_cast->begin(),
@@ -90,9 +91,9 @@ namespace piranha
 				return result->template get<ExpoTermPosition>().degree();
 			}
 			/// Get the minimum degree of the power series.
-			int min_degree() const {
+			Degree min_degree() const {
 				if (derived_const_cast->empty()) {
-					return 0;
+					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::min_element(
 							derived_const_cast->begin(),
@@ -104,9 +105,9 @@ namespace piranha
 		protected:
 			/// Get the degree of the power series for specific variables.
 			template <class PosTuple>
-			int base_partial_degree(const PosTuple &pos_tuple) const {
+			Degree base_partial_degree(const PosTuple &pos_tuple) const {
 				if (derived_const_cast->empty()) {
-					return 0;
+					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::max_element(
 							derived_const_cast->begin(),
@@ -117,9 +118,9 @@ namespace piranha
 			}
 			/// Get the mininum degree of the power series for specific variables.
 			template <class PosTuple>
-			int base_partial_min_degree(const PosTuple &pos_tuple) const {
+			Degree base_partial_min_degree(const PosTuple &pos_tuple) const {
 				if (derived_const_cast->empty()) {
-					return 0;
+					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::min_element(
 							derived_const_cast->begin(),

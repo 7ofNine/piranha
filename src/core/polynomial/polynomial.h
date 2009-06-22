@@ -48,6 +48,7 @@
 #define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::polynomial)
 #define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL ,piranha::term_key_degree_comparison> >
+#define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
 
 namespace piranha
 {
@@ -56,8 +57,8 @@ namespace piranha
 				public POLYNOMIAL_BASE_ANCESTOR,
 				public POLYNOMIAL_NAMED_ANCESTOR,
 				public POLYNOMIAL_BINOMIAL_ANCESTOR,
-				public toolbox<base_power_series<0,1,POLYNOMIAL > >,
-				public toolbox<named_power_series< POLYNOMIAL > >,
+				public toolbox<base_power_series<0,1,POLYNOMIAL_DEGREE,POLYNOMIAL > >,
+				public toolbox<named_power_series< POLYNOMIAL_DEGREE,POLYNOMIAL > >,
 				public toolbox<series_multiplication< POLYNOMIAL, Multiplier, Truncator> >,
 				public toolbox<base_polynomial_toolbox< POLYNOMIAL > >,
 				public toolbox<base_series_special_functions< POLYNOMIAL > >,
@@ -91,6 +92,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<POLYNOMIAL> >
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<POLYNOMIAL> >
 #define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL , piranha::term_key_degree_comparison> >
+#define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::key_type::degree_type
 
 namespace std
 {
@@ -103,8 +105,8 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator> >,
 				public piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::named_power_series< COMPLEX_POLYNOMIAL > >,
+				public piranha::toolbox<piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
+				public piranha::toolbox<piranha::named_power_series< COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POLYNOMIAL > >,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,

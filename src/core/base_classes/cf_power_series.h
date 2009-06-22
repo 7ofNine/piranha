@@ -28,19 +28,19 @@
 
 namespace piranha
 {
-	template <class Derived>
+	template <class Degree, class Derived>
 	struct cf_power_series {};
 
 	/// Coefficient power series toolbox.
-	template <class Derived>
-	struct toolbox<cf_power_series<Derived> >
+	template <class Degree, class Derived>
+	struct toolbox<cf_power_series<Degree,Derived> >
 	{
 		template <class PosTuple>
-		int partial_degree(const PosTuple &pos_tuple) const {
+		Degree partial_degree(const PosTuple &pos_tuple) const {
 			return derived_const_cast->base_partial_degree(pos_tuple);
 		}
 		template <class PosTuple>
-		int partial_min_degree(const PosTuple &pos_tuple) const {
+		Degree partial_min_degree(const PosTuple &pos_tuple) const {
 			return derived_const_cast->base_partial_min_degree(pos_tuple);
 		}
 	};

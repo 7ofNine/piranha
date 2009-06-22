@@ -29,17 +29,17 @@
 
 namespace piranha
 {
-	template <class Derived>
+	template <class Degree, class Derived>
 	struct named_power_series {};
 
 	/// Named power series toolbox.
-	template <class Derived>
-	struct toolbox<named_power_series<Derived> >
+	template <class Degree, class Derived>
+	struct toolbox<named_power_series<Degree,Derived> >
 	{
-		int partial_degree(const vector_psym &v) const {
+		Degree partial_degree(const vector_psym &v) const {
 			return derived_const_cast->base_partial_degree(psyms2pos(v,derived_const_cast->m_arguments));
 		}
-		int partial_min_degree(const vector_psym &v) const {
+		Degree partial_min_degree(const vector_psym &v) const {
 			return derived_const_cast->base_partial_min_degree(psyms2pos(v,derived_const_cast->m_arguments));
 		}
 	};

@@ -133,11 +133,16 @@ BOOST_PYTHON_MODULE(_Core)
 	.def("unset", &norm_truncator::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	typedef void (*deg_set)(const int &);
+	typedef void (*q_deg_set)(const mp_rational &);
 	typedef void (*p_deg_set)(const vector_psym &, const int &);
+	typedef void (*p_q_deg_set)(const vector_psym &, const mp_rational &);
 	class_<degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<degree_truncator>)
 	.def("set", deg_set(&degree_truncator::set), "Set truncation level of series' minimum degree to arg1.")
 	.def("set", p_deg_set(&degree_truncator::set), "Set truncation level of series' partial minimum degree to arg2, "
+		"relatively to list of psyms psym1.")
+	.def("set", q_deg_set(&degree_truncator::set), "Set truncation level of series' minimum degree to arg1.")
+	.def("set", p_q_deg_set(&degree_truncator::set), "Set truncation level of series' partial minimum degree to arg2, "
 		"relatively to list of psyms psym1.").staticmethod("set")
 	.def("unset", &degree_truncator::unset, "Clear minimum degree limit.").staticmethod("unset");
 }

@@ -78,6 +78,7 @@ namespace piranha
 					void setup(const SubSeries &, const ArgsTuple *) {}
 			};
 		public:
+			typedef mp_rational degree_type;
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
@@ -230,24 +231,24 @@ namespace piranha
 				return this->elements_hasher();
 			}
 			/// Return the total degree of the exponents array.
-			int degree() const
+			mp_rational degree() const
 			{
-				value_type tmp(0);
+				mp_rational tmp(0);
 				for (size_type i = 0; i < this->size(); ++i) {
 					tmp += (*this)[i];
 				}
-				return sup_integer(tmp);
+				return tmp;
 			}
 			/// Total degree of the variables at specified positions pos.
 			/**
 			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
 			 */
 			template <class PosTuple>
-			int partial_degree(const PosTuple &pos_tuple) const
+			mp_rational partial_degree(const PosTuple &pos_tuple) const
 			{
 				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
-				value_type tmp(0);
+				mp_rational tmp(0);
 				for (size_type i = 0; i < pos_size; ++i) {
 					// Add up exponents only if they are present and don't try to read outside boundaries
 					// (this last could happen after merging arguments with a second series with smaller
@@ -256,13 +257,13 @@ namespace piranha
 						tmp += (*this)[pos[i].second];
 					}
 				}
-				return sup_integer(tmp);
+				return tmp;
 			}
 			/// Minimum total degree.
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
-			int min_degree() const
+			mp_rational min_degree() const
 			{
 				return degree();
 			}
@@ -271,7 +272,7 @@ namespace piranha
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partial_degree().
 			 */
 			template <class PosTuple>
-			int partial_min_degree(const PosTuple &pos_tuple) const
+			mp_rational partial_min_degree(const PosTuple &pos_tuple) const
 			{
 				return partial_degree(pos_tuple);
 			}
@@ -370,21 +371,6 @@ namespace piranha
 				return RetSeries::base_series_from_key(*this, args_tuple);
 			}
 		private:
-			static int sup_integer(const mp_rational &q)
-			{
-				mp_integer num(q.get_num()), den(q.get_den());
-				if (den == 1) {
-					// If degree is already an integer number, let's
-					// convert num to int and return it.
-					return num.to_int();
-				} else {
-					// Divide truncating the non-integer part.
-					num /= den;
-					const int retval = num.to_int();
-					// Take the ceil.
-					return (q > 0) ? retval + 1 : retval;
-				}
-			}
 			template <class T, class ArgsTuple>
 			toolbox pow_impl(const T &x, const ArgsTuple &) const
 			{

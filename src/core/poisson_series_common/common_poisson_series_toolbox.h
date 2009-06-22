@@ -47,8 +47,9 @@ namespace piranha
 		public:
 			ps_binomial_sorter(const ArgsTuple &) {}
 			template <class Term>
-			bool operator()(const Term *t1, const Term *t2) const {
-				const int d1 = t1->m_cf.min_degree(), d2 = t2->m_cf.min_degree();
+			bool operator()(const Term *t1, const Term *t2) const
+			{
+				const typename Term::cf_type::degree_type d1(t1->m_cf.min_degree()), d2(t2->m_cf.min_degree());
 				if (d1 == d2) {
 					// NOTICE: the idea is that for leading terms with equal
 					// min_degree we choose the ones that have

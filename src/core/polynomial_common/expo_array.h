@@ -84,6 +84,7 @@ namespace piranha
 					void setup(const SubSeries &, const ArgsTuple *) {}
 			};
 		public:
+			typedef int degree_type;
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
