@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/functional/hash.hpp>
 #include <boost/python/class.hpp>
 #include <boost/python/copy_const_reference.hpp>
 #include <boost/python/def.hpp>
@@ -50,6 +51,11 @@ std::string static inline py_psym_repr(const psym &p)
 	std::ostringstream stream;
 	stream << p.get_name();
 	return stream.str();
+}
+
+size_t static inline py_psym_hash(const psym &p)
+{
+	return boost::hash<std::string>()(p.get_name());
 }
 
 // Instantiate the pyranha Core module.
@@ -117,6 +123,7 @@ BOOST_PYTHON_MODULE(_Core)
 		.def(init<const std::string &, const double &>())
 		.def(init<const std::string &>())
 		.def("__copy__", &py_copy<psym>)
+		.def("__hash__", &py_psym_hash)
 		.def("__repr__", &py_psym_repr)
 		.def("eval", &psym::eval)
 		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
