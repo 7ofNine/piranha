@@ -102,6 +102,20 @@ def __series_split(self, n = 0):
 	"""
 	return self.__split__(n)
 
+def __series_eval_sub(self,subs):
+	"""
+	Evaluate by substitution.
+	"""
+	from copy import copy
+	from pyranha.Core import psym
+	args_set = list(set(reduce(lambda x,y: list(x) + list(y), self.arguments)))
+	retval = copy(self)
+	for a in args_set:
+		if not a.name in subs:
+			raise ValueError('The provided substitution dictionary does not contain all the arguments of the series.')
+		retval = retval.sub(psym(a.name),type(self)(subs[a.name]))
+	return retval.eval(0)
+
 def __add_method(module_name,method_name,function):
 	"""
 	Add a method to a manipulator.
@@ -134,6 +148,7 @@ def __enhance_manipulators(manipulators):
 		__add_method(i, "filtered", __series_filtered)
 		__add_method(i, "psi", __series_psi)
 		__add_method(i, "split", __series_split)
+		__add_method(i, "eval_sub", __series_eval_sub)
 
 import pyranha
 
