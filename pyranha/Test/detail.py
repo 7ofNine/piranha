@@ -17,7 +17,7 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-def check_min_degree(s1,s2,n):
+def check_order(s1,s2,n):
 	l = len(s1.arguments)
 	assert(l == len(s2.arguments))
-	return s1.filtered([lambda c,k: (c * k).min_degree() < n] * l) == s2.filtered([lambda c,k: (c * k).min_degree() < n] * l)
+	return s1.filtered([lambda c,k: (c * k).order() < n] * l) == s2.filtered([lambda c,k: (c * k).order() < n] * l)

@@ -369,8 +369,8 @@ namespace pyranha
 	{
 		inst.def("degree", &T::degree, "Degree.");
 		inst.def("partial_degree", &T::partial_degree, "Partial degree.");
-		inst.def("min_degree", &T::min_degree, "Minimum degree.");
-		inst.def("partial_min_degree", &T::partial_min_degree, "Partial minimum degree.");
+		inst.def("order", &T::order, "Order.");
+		inst.def("partial_order", &T::partial_order, "Partial order.");
 	}
 
 	template <class T>

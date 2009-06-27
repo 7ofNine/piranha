@@ -254,7 +254,7 @@ namespace piranha
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
-			int min_degree() const {
+			int order() const {
 				return degree();
 			}
 			/// Minimum total degree of the variables at specified positions pos.
@@ -262,7 +262,7 @@ namespace piranha
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partial_degree().
 			 */
 			template <class PosTuple>
-			int partial_min_degree(const PosTuple &pos_tuple) const {
+			int partial_order(const PosTuple &pos_tuple) const {
 				return partial_degree(pos_tuple);
 			}
 			/// Return the position of the linear argument in the monomial.

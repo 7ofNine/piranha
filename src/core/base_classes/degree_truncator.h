@@ -51,16 +51,16 @@ namespace piranha
 				inactive
 			};
 			template <int ExpoTermPos>
-			struct min_degree_comparison
+			struct order_comparison
 			{
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
 					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
-					const degree_type md1(t1->template get<ExpoTermPos>().min_degree()), md2(t2->template get<ExpoTermPos>().min_degree());
+					const degree_type md1(t1->template get<ExpoTermPos>().order()), md2(t2->template get<ExpoTermPos>().order());
 					if (md1 == md2) {
 						// NOTICE: the idea is that for leading terms with equal
-						// min_degree we choose the ones that have
+						// order we choose the ones that have
 						// unity key vector, so that we increase the chance of
 						// being able to perform the expansion.
 						if (t1->m_key.is_unity()) {
@@ -75,18 +75,18 @@ namespace piranha
 				}
 			};
 			template <int ExpoTermPos, class PosTuple>
-			struct partial_min_degree_comparison
+			struct partial_order_comparison
 			{
-				partial_min_degree_comparison(const PosTuple &pos_tuple):m_pos_tuple(pos_tuple) {}
+				partial_order_comparison(const PosTuple &pos_tuple):m_pos_tuple(pos_tuple) {}
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
 					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
-					const degree_type md1(t1->template get<ExpoTermPos>().partial_min_degree(m_pos_tuple)),
-						md2(t2->template get<ExpoTermPos>().partial_min_degree(m_pos_tuple));
+					const degree_type md1(t1->template get<ExpoTermPos>().partial_order(m_pos_tuple)),
+						md2(t2->template get<ExpoTermPos>().partial_order(m_pos_tuple));
 					if (md1 == md2) {
 						// NOTICE: the idea is that for leading terms with equal
-						// min_degree we choose the ones that have
+						// order we choose the ones that have
 						// unity key vector, so that we increase the chance of
 						// being able to perform the expansion.
 						if (t1->m_key.is_unity()) {
@@ -137,12 +137,12 @@ namespace piranha
 					{
 						switch (m_mode) {
 							case deg:
-								return (t1.template get<expo_term_pos>().min_degree() +
-									t2.template get<expo_term_pos>().min_degree() >=
+								return (t1.template get<expo_term_pos>().order() +
+									t2.template get<expo_term_pos>().order() >=
 									m_degree_limit);
 							case p_deg:
-								return (t1.template get<expo_term_pos>().partial_min_degree(m_pos_tuple) +
-									t2.template get<expo_term_pos>().partial_min_degree(m_pos_tuple) >=
+								return (t1.template get<expo_term_pos>().partial_order(m_pos_tuple) +
+									t2.template get<expo_term_pos>().partial_order(m_pos_tuple) >=
 									m_degree_limit);
 							case inactive:
 								// We should never get there.
@@ -168,19 +168,19 @@ namespace piranha
 							piranha_throw(value_error,"cannot calculate the limit of the power series expansion of "
 								"an empty power series");
 						}
-						// min_degree will be either total or partial, depending on the mode.
-						mp_rational min_degree(0);
+						// order will be either total or partial, depending on the mode.
+						mp_rational order(0);
 						switch (m_mode) {
 							case deg:
-								min_degree = s.min_degree();
+								order = s.order();
 								break;
 							case p_deg:
-								min_degree = s.base_partial_min_degree(psyms2pos(m_psyms,args_tuple));
+								order = s.base_partial_order(psyms2pos(m_psyms,args_tuple));
 								break;
 							case inactive:
 								piranha_assert(false);
 						}
-						if (min_degree <= 0) {
+						if (order <= 0) {
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion if the (partial) minimum degree "
 								"of the series is negative or zero");
 						}
@@ -188,9 +188,9 @@ namespace piranha
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
 								"if the minimum degree limit is negative");
 						}
-						// (mp_rational(limit) / min_degree - start) / step_size + 1;
+						// (mp_rational(limit) / order - start) / step_size + 1;
 						mp_rational tmp(m_degree_limit);
-						tmp /= min_degree;
+						tmp /= order;
 						tmp -= start;
 						tmp /= step_size;
 						tmp += 1;
@@ -216,7 +216,7 @@ namespace piranha
 						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
 						switch (m_mode) {
 							case deg:
-								std::sort(retval.begin(),retval.end(),min_degree_comparison<Series::expo_term_position>());
+								std::sort(retval.begin(),retval.end(),order_comparison<Series::expo_term_position>());
 								break;
 							case p_deg:
 								{
@@ -224,7 +224,7 @@ namespace piranha
 									boost::tuples::length<ArgsTuple>::value>::type pos_tuple_type;
 								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
 								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) {
-									std::sort(retval.begin(), retval.end(),partial_min_degree_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
+									std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
 								} else {
 									piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not "
 										"effective on this series");
@@ -256,17 +256,17 @@ namespace piranha
 					{
 						switch (m_mode) {
 							case deg:
-								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison<expo_term_pos>());
-								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison<expo_term_pos>());
+								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), order_comparison<expo_term_pos>());
+								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), order_comparison<expo_term_pos>());
 								break;
 							case p_deg:
 								// We need to do the sorting only if the position tuple
 								// contains some elements.
 								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) {
 									std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),
-										partial_min_degree_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
+										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
 									std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(),
-										partial_min_degree_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
+										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
 								}
 								break;
 							case inactive:

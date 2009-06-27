@@ -268,7 +268,7 @@ namespace piranha
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
-			mp_rational min_degree() const
+			mp_rational order() const
 			{
 				return degree();
 			}
@@ -277,7 +277,7 @@ namespace piranha
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partial_degree().
 			 */
 			template <class PosTuple>
-			mp_rational partial_min_degree(const PosTuple &pos_tuple) const
+			mp_rational partial_order(const PosTuple &pos_tuple) const
 			{
 				return partial_degree(pos_tuple);
 			}
