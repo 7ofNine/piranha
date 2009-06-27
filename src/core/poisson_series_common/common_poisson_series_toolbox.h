@@ -29,7 +29,6 @@
 #include <vector>
 
 #include "../base_classes/toolbox.h"
-#include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../ntuple.h"
@@ -41,32 +40,6 @@
 
 namespace piranha
 {
-	template <class ArgsTuple>
-	class ps_binomial_sorter
-	{
-		public:
-			ps_binomial_sorter(const ArgsTuple &) {}
-			template <class Term>
-			bool operator()(const Term *t1, const Term *t2) const
-			{
-				const typename Term::cf_type::degree_type d1(t1->m_cf.min_degree()), d2(t2->m_cf.min_degree());
-				if (d1 == d2) {
-					// NOTICE: the idea is that for leading terms with equal
-					// min_degree we choose the ones that have
-					// unity trig vector, so that we increase the chance of
-					// being able to perform the expansion.
-					if (t1->m_key.is_unity()) {
-						return true;
-					} else if (t2->m_key.is_unity()) {
-						return false;
-					}
-					return (t1->m_key < t2->m_key);
-				} else {
-					return (d1 < d2);
-				}
-			}
-	};
-
 	template <class Derived>
 	struct common_poisson_series {};
 
@@ -187,9 +160,10 @@ namespace piranha
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
-				// Cache and sort the terms.
-				std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
-				std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
+				// Cache and sort the terms according to the criterion defined in the truncator.
+				std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+				// Reverse the series, we want to start multiplication from the least significant terms.
+				std::reverse(cache.begin(),cache.end());
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
 				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<int> > >

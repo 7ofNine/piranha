@@ -35,6 +35,7 @@
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
+#include "../utils.h"
 
 namespace piranha
 {
@@ -49,6 +50,57 @@ namespace piranha
 				p_deg,
 				inactive
 			};
+			template <int ExpoTermPos>
+			struct min_degree_comparison
+			{
+				template <class Term>
+				bool operator()(const Term *t1, const Term *t2) const
+				{
+					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
+					const degree_type md1(t1->template get<ExpoTermPos>().min_degree()), md2(t2->template get<ExpoTermPos>().min_degree());
+					if (md1 == md2) {
+						// NOTICE: the idea is that for leading terms with equal
+						// min_degree we choose the ones that have
+						// unity key vector, so that we increase the chance of
+						// being able to perform the expansion.
+						if (t1->m_key.is_unity()) {
+							return true;
+						} else if (t2->m_key.is_unity()) {
+							return false;
+						}
+						return (t1->m_key < t2->m_key);
+					} else {
+						return md1 < md2;
+					}
+				}
+			};
+			template <int ExpoTermPos, class PosTuple>
+			struct partial_min_degree_comparison
+			{
+				partial_min_degree_comparison(const PosTuple &pos_tuple):m_pos_tuple(pos_tuple) {}
+				template <class Term>
+				bool operator()(const Term *t1, const Term *t2) const
+				{
+					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
+					const degree_type md1(t1->template get<ExpoTermPos>().partial_min_degree(m_pos_tuple)),
+						md2(t2->template get<ExpoTermPos>().partial_min_degree(m_pos_tuple));
+					if (md1 == md2) {
+						// NOTICE: the idea is that for leading terms with equal
+						// min_degree we choose the ones that have
+						// unity key vector, so that we increase the chance of
+						// being able to perform the expansion.
+						if (t1->m_key.is_unity()) {
+							return true;
+						} else if (t2->m_key.is_unity()) {
+							return false;
+						}
+						return (t1->m_key < t2->m_key);
+					} else {
+						return md1 < md2;
+					}
+				}
+				const PosTuple &m_pos_tuple;
+			};
 		public:
 			template <class Multiplier>
 			class get_type
@@ -58,26 +110,6 @@ namespace piranha
 						pos_tuple_type;
 					static const int expo_term_pos = Multiplier::series_type1::expo_term_position;
 					static const int expo_args_pos = Multiplier::series_type1::expo_args_position;
-					struct min_degree_comparison
-					{
-						template <class Term>
-						bool operator()(const Term *t1, const Term *t2) const
-						{
-							return t1->template get<expo_term_pos>().min_degree() <
-								   t2->template get<expo_term_pos>().min_degree();
-						}
-					};
-					struct partial_min_degree_comparison
-					{
-						partial_min_degree_comparison(const pos_tuple_type &pos_tuple):m_pos_tuple(pos_tuple) {}
-						template <class Term>
-						bool operator()(const Term *t1, const Term *t2) const
-						{
-							return t1->template get<expo_term_pos>().partial_min_degree(m_pos_tuple) <
-								   t2->template get<expo_term_pos>().partial_min_degree(m_pos_tuple);
-						}
-						const pos_tuple_type &m_pos_tuple;
-					};
 				public:
 					typedef get_type type;
 					get_type(Multiplier &m, bool initialise = true): m_multiplier(m)
@@ -178,6 +210,32 @@ namespace piranha
 							return 0;
 						}
 					}
+					template <class Series, class ArgsTuple>
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
+					{
+						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
+						switch (m_mode) {
+							case deg:
+								std::sort(retval.begin(),retval.end(),min_degree_comparison<Series::expo_term_position>());
+								break;
+							case p_deg:
+								{
+								typedef typename ntuple<std::vector<std::pair<bool,size_t> >,
+									boost::tuples::length<ArgsTuple>::value>::type pos_tuple_type;
+								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
+								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) {
+									std::sort(retval.begin(), retval.end(),partial_min_degree_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
+								} else {
+									piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not "
+										"effective on this series");
+								}
+								}
+								break;
+							case inactive:
+								piranha_throw(value_error,"cannot establish series ordering, degree truncator is not active");
+						}
+						return retval;
+					}
 					bool is_effective() const
 					{
 						switch (m_mode) {
@@ -198,17 +256,17 @@ namespace piranha
 					{
 						switch (m_mode) {
 							case deg:
-								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison());
-								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison());
+								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), min_degree_comparison<expo_term_pos>());
+								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), min_degree_comparison<expo_term_pos>());
 								break;
 							case p_deg:
 								// We need to do the sorting only if the position tuple
 								// contains some elements.
 								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) {
 									std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),
-										partial_min_degree_comparison(m_pos_tuple));
+										partial_min_degree_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
 									std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(),
-										partial_min_degree_comparison(m_pos_tuple));
+										partial_min_degree_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
 								}
 								break;
 							case inactive:

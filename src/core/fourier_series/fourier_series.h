@@ -31,7 +31,6 @@
 #include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
@@ -46,7 +45,7 @@
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
 #define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>, FOURIER_SERIES_TERM ,piranha::fourier_series)
-#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< FOURIER_SERIES, piranha::fs_binomial_sorter > >
+#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< FOURIER_SERIES > >
 
 namespace piranha
 {
@@ -87,7 +86,7 @@ namespace piranha
 		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< FOURIER_SERIES > >
 #define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES, piranha::fs_binomial_sorter > >
+#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES > >
 
 namespace std
 {

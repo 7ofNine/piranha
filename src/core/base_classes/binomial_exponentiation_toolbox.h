@@ -21,7 +21,6 @@
 #ifndef PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 #define PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 
-#include <algorithm> // For sorting.
 #include <boost/type_traits/is_same.hpp>
 #include <string>
 #include <vector>
@@ -31,14 +30,13 @@
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../settings.h"
-#include "../utils.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <class Derived, template <class> class Sorter>
+	template <class Derived>
 	struct binomial_exponentiation {};
 
 	/// Binomial exponentiation toolbox.
@@ -46,8 +44,8 @@ namespace piranha
 	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::rational_power
 	 * and reimplements them using binomial expansion.
 	 */
-	template <class Derived, template <class> class Sorter>
-	class toolbox<binomial_exponentiation<Derived,Sorter> >
+	template <class Derived>
+	class toolbox<binomial_exponentiation<Derived> >
 	{
 		protected:
 			/// Real power.
@@ -55,14 +53,14 @@ namespace piranha
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const
 			{
 				return generic_binomial_power(
-					get_sorted_pointer_vector<Derived>(args_tuple),y,args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(args_tuple),y,args_tuple);
 			}
 			/// Negative integer power.
 			template <class ArgsTuple>
 			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const
 			{
 				return generic_binomial_power(
-					get_sorted_pointer_vector<Derived>(args_tuple),y, args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(args_tuple),y, args_tuple);
 			}
 			/// Rational power.
 			template <class ArgsTuple>
@@ -70,7 +68,7 @@ namespace piranha
 			{
 				piranha_assert(q != 0 && q != 1);
 				return generic_binomial_power(
-					get_sorted_pointer_vector<Derived>(args_tuple), q, args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(args_tuple), q, args_tuple);
 			}
 		private:
 			template <class Term, class Number, class ArgsTuple>
@@ -134,13 +132,6 @@ namespace piranha
 				}
 				// Finally, multiply the result of the summation by A**y.
 				retval.base_mult_by(Apowy, args_tuple);
-				return retval;
-			}
-			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const ArgsTuple &args_tuple) const
-			{
-				std::vector<typename Derived::term_type const *> retval(utils::cache_terms_pointers(*derived_const_cast));
-				std::sort(retval.begin(),retval.end(),Sorter<ArgsTuple>(args_tuple));
 				return retval;
 			}
 	};

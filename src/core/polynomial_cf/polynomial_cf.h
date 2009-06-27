@@ -30,7 +30,6 @@
 #include "../base_classes/cf_series.h"
 #include "../base_classes/cf_series_complex_toolbox.h"
 #include "../base_classes/cf_series_special_functions.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/base_power_series.h"
 #include "../base_classes/cf_power_series.h"
 #include "../base_classes/series_multiplication.h"
@@ -44,7 +43,7 @@
 #define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
 #define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial_cf,'!','?')
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF > >
-#define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL_CF,piranha::term_key_degree_comparison> >
+#define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL_CF > >
 #define POLYNOMIAL_CF_DEGREE typename POLYNOMIAL_CF_TERM::key_type::degree_type
 
 namespace piranha
@@ -85,7 +84,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< COMPLEX_POLYNOMIAL_CF_TERM, COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX piranha::toolbox<piranha::cf_series_complex< POLYNOMIAL_CF > >
-#define COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL_CF,piranha::term_key_degree_comparison> >
+#define COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_DEGREE typename COMPLEX_POLYNOMIAL_CF_TERM::key_type::degree_type
 
 namespace std

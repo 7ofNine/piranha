@@ -33,33 +33,6 @@
 
 namespace piranha
 {
-	template <class ArgsTuple>
-	class fs_binomial_sorter
-	{
-		public:
-			fs_binomial_sorter(const ArgsTuple &args_tuple):m_args_tuple(args_tuple) {}
-			template <class Term>
-			bool operator()(const Term *t1, const Term *t2) const {
-				const double n1(t1->m_cf.norm(m_args_tuple)), n2(t2->m_cf.norm(m_args_tuple));
-				if (n1 != n2) {
-					return (n1 > n2);
-				} else {
-					// NOTICE: the idea is that for leading terms with equal
-					// norm we choose the ones that have
-					// unity trig vector, so that we increase the chance of
-					// being able to perform the expansion.
-					if (t1->m_key.is_unity()) {
-						return true;
-					} else if (t2->m_key.is_unity()) {
-						return false;
-					}
-					return (t1->m_key < t2->m_key);
-				}
-			}
-		private:
-			const ArgsTuple &m_args_tuple;
-	};
-
 	template <class Derived>
 	struct common_fourier_series {};
 
@@ -67,21 +40,25 @@ namespace piranha
 	class toolbox<common_fourier_series<Derived> >
 	{
 		public:
-			std::complex<Derived> ei() const {
+			std::complex<Derived> ei() const
+			{
 				std::complex<Derived> retval(base_ei(derived_const_cast->m_arguments));
 				retval.m_arguments = derived_const_cast->m_arguments;
 				retval.trim();
 				return retval;
 			}
-			Derived cos() const {
+			Derived cos() const
+			{
 				return ei().real();
 			}
-			Derived sin() const {
+			Derived sin() const
+			{
 				return ei().imag();
 			}
 		protected:
 			template <class ArgsTuple>
-			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const
+			{
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
 				typedef typename Derived::term_type term_type;
@@ -89,13 +66,13 @@ namespace piranha
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
-													m_cf.ei(args_tuple), key_type()),
-								  args_tuple);
+						m_cf.ei(args_tuple), key_type()),
+						args_tuple);
 				} else {
-					// Cache and sort the term pointers list. Sorting is reverse (small --> big norms) because
-					// in jacang is better to do the small terms first.
-					std::vector<term_type const *> cache(utils::cache_terms_pointers(*derived_const_cast));
-					std::sort(cache.begin(),cache.end(),cf_norm_comparison_reverse<ArgsTuple>(args_tuple));
+					// Cache and sort the terms according to the criterion defined in the truncator.
+					std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+					// Reverse the series, we want to start multiplication from the least significant terms.
+					std::reverse(cache.begin(),cache.end());
 					// Let's find out if there is a constant term. If there is one, it will be skipped
 					// and multiplied by the result of the Jacobi-Anger expansion of the other terms later.
 					// We treat it this way because the constant term may be a phase with arbitrary value,

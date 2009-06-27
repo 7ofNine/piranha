@@ -31,7 +31,6 @@
 #include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
@@ -51,7 +50,7 @@
 #define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF)
 #define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr, piranha::trig_args_descr, POISSON_SERIES_TERM, POISSON_SERIES)
-#define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POISSON_SERIES , piranha::ps_binomial_sorter> >
+#define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POISSON_SERIES > >
 #define POISSON_SERIES_DEGREE typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
 
 namespace piranha
@@ -97,7 +96,7 @@ namespace piranha
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< POISSON_SERIES > >
-#define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES , piranha::ps_binomial_sorter> >
+#define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
 
 namespace std

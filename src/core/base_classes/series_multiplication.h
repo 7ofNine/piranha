@@ -28,8 +28,10 @@
 					class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
+#include <boost/type_traits/is_same.hpp>
 #include <iostream>
 
+#include "../config.h"
 #include "../settings.h"
 #include "toolbox.h"
 
@@ -43,16 +45,26 @@ namespace piranha
 	{
 		protected:
 			template <class ArgsTuple>
-			size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const {
+			size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
+			{
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
 					Truncator>::truncator_type::power_series_iterations(*derived_const_cast,
 					start,step,args_tuple);
+			}
+			template <class Series, class ArgsTuple>
+			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &args_tuple) const
+			{
+				static const bool check = boost::is_same<Series,Derived>::value;
+				p_static_check(check,"");
+				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
+					Truncator>::truncator_type::template get_sorted_pointer_vector<Series,ArgsTuple>(*derived_const_cast,args_tuple);
 			}
 			// Multiply term-by-term with another series, and place the result into retval.
 			// Preconditions:
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
 			template <class Derived2, class ArgsTuple>
-			void multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple) {
+			void multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple)
+			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::term_type term_type;
 				__PDEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','

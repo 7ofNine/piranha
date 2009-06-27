@@ -23,6 +23,8 @@
 
 #include "../exceptions.h"
 
+#include <vector>
+
 namespace piranha
 {
 	/// Truncator which does not truncate.
@@ -52,6 +54,11 @@ namespace piranha
 						return false;
 					}
 			};
+			template <class Series, class ArgsTuple>
+			static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &, const ArgsTuple &)
+			{
+				piranha_throw(value_error,"null truncator cannot order series");
+			}
 	};
 }
 

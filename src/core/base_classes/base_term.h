@@ -71,6 +71,11 @@ namespace piranha
 	class base_term
 	{
 		public:
+			// Meta-programming to get the type of the component.
+			template <int N>
+			struct component {
+				typedef typename base_term_get_helper<N, base_term>::type type;
+			};
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for key type.

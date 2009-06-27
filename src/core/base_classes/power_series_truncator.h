@@ -22,6 +22,7 @@
 #define PIRANHA_POWER_SERIES_TRUNCATOR
 
 #include <string>
+#include <vector>
 
 #include "../exceptions.h"
 #include "degree_truncator.h"
@@ -73,6 +74,22 @@ namespace piranha
 						}
 						catch (const value_error &ve) {
 							msg += std::string(ve.what()) + "\n";
+						}
+						piranha_throw(value_error,msg);
+					}
+					template <class Series, class ArgsTuple>
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
+					{
+						std::string msg("The power series truncator was not able to establish a series ordering. The reported errors were:\n");
+						try {
+							return degree_ancestor::get_sorted_pointer_vector(s,args_tuple);
+						} catch (const value_error &ve) {
+									msg += std::string(ve.what()) + "\n";
+						}
+						try {
+							return norm_ancestor::get_sorted_pointer_vector(s,args_tuple);
+						} catch (const value_error &ve) {
+									msg += std::string(ve.what()) + "\n";
 						}
 						piranha_throw(value_error,msg);
 					}

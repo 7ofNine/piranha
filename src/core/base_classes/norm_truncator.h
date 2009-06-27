@@ -24,10 +24,12 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
 #include "../settings.h"
+#include "../utils.h"
 #include "toolbox.h"
 
 namespace piranha
@@ -38,23 +40,38 @@ namespace piranha
 	template <>
 	class __PIRANHA_VISIBLE toolbox<norm_truncator_>
 	{
+			template <class ArgsTuple>
+			class norm_comparison
+			{
+				public:
+					norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
+					template <class Term>
+					bool operator()(const Term *t1, const Term *t2) const
+					{
+						const double n1(t1->m_cf.norm(m_args_tuple) * t1->m_key.norm(m_args_tuple)), n2(t2->m_cf.norm(m_args_tuple) * t2->m_key.norm(m_args_tuple));
+						if (n1 != n2) {
+							return (n1 > n2);
+						} else {
+							// NOTICE: the idea is that for leading terms with equal
+							// norm we choose the ones that have
+							// unity key vector, so that we increase the chance of
+							// being able to perform the expansion.
+							if (t1->m_key.is_unity()) {
+								return true;
+							} else if (t2->m_key.is_unity()) {
+								return false;
+							}
+							return (t1->m_key < t2->m_key);
+						}
+
+					}
+				private:
+					const ArgsTuple	&m_args_tuple;
+			};
 		public:
 			template <class Multiplier>
 			class get_type
 			{
-					template <class ArgsTuple>
-					class norm_comparison
-					{
-						public:
-							norm_comparison(const ArgsTuple &args_tuple): m_args_tuple(args_tuple) {}
-							template <class Term>
-							bool operator()(const Term *t1, const Term *t2) const {
-								return (t1->m_cf.norm(m_args_tuple) * t1->m_key.norm(m_args_tuple) >
-										t2->m_cf.norm(m_args_tuple) * t2->m_key.norm(m_args_tuple));
-							}
-						private:
-							const ArgsTuple	&m_args_tuple;
-					};
 				public:
 					typedef get_type type;
 					get_type(Multiplier &m, bool initialise = true):
@@ -118,6 +135,17 @@ namespace piranha
 						} else {
 							return 0;
 						}
+					}
+					template <class Series, class ArgsTuple>
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
+					{
+						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
+						if (m_truncation_power == 0) {
+							piranha_throw(value_error,"cannot establish series ordering, norm truncator is not active");
+						}
+						const norm_comparison<ArgsTuple> cmp(args_tuple);
+						std::sort(retval.begin(), retval.end(), cmp);
+						return retval;
 					}
 				protected:
 					void init() {

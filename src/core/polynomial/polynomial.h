@@ -31,7 +31,6 @@
 #include "../base_classes/base_series_special_functions.h"
 #include "../base_classes/binomial_exponentiation_toolbox.h"
 #include "../base_classes/common_args_descriptions.h"
-#include "../base_classes/common_comparisons.h"
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
@@ -47,7 +46,7 @@
 #define POLYNOMIAL E0_SERIES(piranha::polynomial)
 #define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::polynomial)
-#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL ,piranha::term_key_degree_comparison> >
+#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL > >
 #define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
 
 namespace piranha
@@ -91,7 +90,7 @@ namespace piranha
 		COMPLEX_POLYNOMIAL_TERM, piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<POLYNOMIAL> >
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<POLYNOMIAL> >
-#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL , piranha::term_key_degree_comparison> >
+#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL > >
 #define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::key_type::degree_type
 
 namespace std

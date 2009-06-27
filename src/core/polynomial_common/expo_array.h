@@ -207,6 +207,10 @@ namespace piranha
 			bool operator==(const toolbox &e2) const {
 				return this->elements_equal_to(e2);
 			}
+			/// Inequality test.
+			bool operator<(const toolbox &e2) const {
+				return this->lex_comparison(e2);
+			}
 			/// Norm.
 			/**
 			 * The norm of an exponent array is defined as the absolute value of the evaluation at t=0.
