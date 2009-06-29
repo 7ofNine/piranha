@@ -166,3 +166,75 @@ def vsop_to_dps(input_filename):
 				retval[-1] += S + "!" + alpha + "|" + trig_array + ";s\n"
 				retval[-1] += K + "!" + alpha + "|" + trig_array + ";c\n"
 	return retval
+
+def delaunay(degree = 10, t = None):
+	"""
+	Returns a list containing the expressions of classical orbital elements in terms of series of modified Delaunay variables.
+	Specifically, the list will contain the expressions for:
+
+	- a, semi-major axis,
+	- e, eccentricity,
+	- sin(i/2), sine of half inclination (here referred to as 's'),
+	- omega, argument of pericentre,
+	- Omega, longitude of the ascending node,
+	- M, mean anomaly,
+
+	in terms of the modified Delaunay elements:
+
+	- Lambda,
+	- P,
+	- Q,
+	- lambda,
+	- p,
+	- q.
+
+	Additionally, the resulting series will contain also as symbolic variable the number 2 as "two", which
+	is kept in literal form since its square root appears in the expressions involving the Delaunay elements.
+
+	The series expansions will be developed up to the total degree specified in input for the element P.
+	Note that for small eccentricities and inclinations, P is proportional to e ** 2.
+
+	The optional parameter t is the series type to be used for the expansion. If None, the piranha series type
+	qqps (Poisson series with rational coefficients and rational exponents) will be used.
+
+	Finally, note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is
+	set equal to unity.
+	"""
+	from pyranha.Qqps import qqps
+	from pyranha.Core import degree_truncator, psym
+	from pyranha.Math import root
+	if degree <= 0:
+		raise ValueError('Truncation degree must be a positive value.')
+	# st is the series type.
+	if t is None:
+		st = qqps
+	else:
+		st = t
+	# Reset the degree truncator.
+	degree_truncator.unset()
+	retval = []
+	# Let's start with the semi-major axis, easy.
+	Lambda = st(psym('Lambda'))
+	retval.append(Lambda ** 2)
+	# Let's declare the "two" symbol and construct a series from it.
+	two = st(psym('two'))
+	# P and Q
+	P = st(psym('P'))
+	Q = st(psym('Q'))
+	# Now set the truncator for the series expansions.
+	# TODO: rewrite when we allow for direct input of symbols as strings.
+	degree_truncator.set([psym('P')],degree)
+	# Calculate series expansion for e.
+	e = root(2, two * P * Lambda ** -1 - P ** 2 * Lambda ** -2)
+	retval.append(e)
+	# Now let's deal with sin(i/2) (aka 's').
+	s = root(2,Q * (two * Lambda) ** -1) * root(-2, 1 - P * Lambda ** -1)
+	retval.append(s)
+	# Finally, let's deal with the angle variables.
+	lambda_ = st(psym('lambda'))
+	p = st(psym('p'))
+	q = st(psym('q'))
+	retval.append(q - p) # omega
+	retval.append(-q) # Omega
+	retval.append(lambda_ + p) # M
+	return retval

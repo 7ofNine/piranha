@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -35,7 +36,7 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 					x,
 					self.ip_ns[x].__short_type__,
 					len(self.ip_ns[x])
-				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators_type_tuple, self.ip_ns))
+				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators, self.ip_ns))
 			assert(not retval or self.__n_columns == len(retval[0]))
 			retval.sort()
 			return retval
@@ -109,20 +110,20 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			series = self.__series_db.ip_ns[series_name]
 		except KeyError:
 			series_name = None
-		if series_name:
-			self.series_info_groupbox.setEnabled(True)
-			self.series_name_label.setText(series_name)
-			self.series_type_label.setText(series.__short_type__)
-			self.series_type_label.setToolTip(str(series.__doc__))
-			self.series_length_label.setText(str(len(series)))
-			self.series_atoms_label.setText(str(series.atoms))
-		else:
+		if series_name is None:
 			self.series_info_groupbox.setEnabled(False)
 			self.series_name_label.setText("")
 			self.series_type_label.setText("")
 			self.series_type_label.setToolTip("")
 			self.series_length_label.setText("")
 			self.series_atoms_label.setText("")
+		else:
+			self.series_info_groupbox.setEnabled(True)
+			self.series_name_label.setText(series_name)
+			self.series_type_label.setText(series.__short_type__)
+			self.series_type_label.setToolTip(str(series.__doc__))
+			self.series_length_label.setText(str(len(series)))
+			self.series_atoms_label.setText(str(series.atoms))
 	def __slot_series_tree_item_activated(self,index):
 		# Fetch series' name from the index.
 		name = str(index.sibling(index.row(),1).data().toString())
