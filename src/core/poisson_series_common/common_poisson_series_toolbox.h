@@ -161,9 +161,14 @@ namespace piranha
 				typedef typename std::complex<Derived>::term_type::cf_type complex_cf_type;
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				// Cache and sort the terms according to the criterion defined in the truncator.
-				std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
-				// Reverse the series, we want to start multiplication from the least significant terms.
-				std::reverse(cache.begin(),cache.end());
+				std::vector<term_type const *> cache;
+				try {
+					cache = derived_const_cast->template get_sorted_series<Derived>(args_tuple);
+					// Reverse the series, we want to start multiplication from the least significant terms.
+					std::reverse(cache.begin(),cache.end());
+				} catch (const value_error &) {
+					cache = utils::cache_terms_pointers(*derived_const_cast);
+				}
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.
 				std::pair<const_iterator, std::pair<std::vector<poly_cf_type>, std::vector<int> > >
