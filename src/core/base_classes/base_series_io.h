@@ -65,6 +65,58 @@ namespace piranha
 		}
 	}
 
+	template <class Iterator>
+	struct print_from_it {
+		template <class ArgsTuple>
+		static void run_pretty(const Iterator &it, std::ostream &stream, const ArgsTuple &args_tuple) {
+			it->print_pretty(stream,args_tuple);
+		}
+		template <class ArgsTuple>
+		static void run_tex(const Iterator &it, std::ostream &stream, const ArgsTuple &args_tuple) {
+			it->print_tex(stream,args_tuple);
+		}
+	};
+
+	template <class PointerToPointer>
+	struct print_from_it<PointerToPointer *> {
+		template <class ArgsTuple>
+		static void run_pretty(PointerToPointer const *p, std::ostream &stream, const ArgsTuple &args_tuple) {
+			(*p)->print_pretty(stream,args_tuple);
+		}
+		template <class ArgsTuple>
+		static void run_tex(PointerToPointer const *p, std::ostream &stream, const ArgsTuple &args_tuple) {
+			(*p)->print_tex(stream,args_tuple);
+		}
+	};
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Iterator, class ArgsTuple>
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
+		const ArgsTuple &args_tuple) const
+	{
+		const size_t max_length = settings::get_max_pretty_print_size();
+		size_t count = 0;
+		for (Iterator it = start; it != end; ++it) {
+			std::ostringstream tmp_stream;
+			settings::setup_stream(tmp_stream);
+			print_from_it<Iterator>::run_pretty(it,tmp_stream,args_tuple);
+			std::string tmp(tmp_stream.str());
+			// If this is not the first term, we need to add the "+" sign if appropriate.
+			if (it != start && !tmp.empty() && tmp[0] != '-') {
+				tmp.insert(tmp.begin(),'+');
+			}
+			count += tmp.size();
+			if (count > max_length) {
+				std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << boost::lambda::_1);
+				stream << "...";
+				break;
+			}
+			if (!tmp.empty()) {
+				stream << tmp;
+			}
+		}
+	}
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::print_terms_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
@@ -73,27 +125,32 @@ namespace piranha
 		if (empty()) {
 			stream << '0';
 		} else {
-			const size_t max_length = settings::get_max_pretty_print_size();
-			size_t count = 0;
-			const const_iterator it_f = end(), it_i = begin();
-			for (const_iterator it = it_i; it != it_f; ++it) {
-				std::ostringstream tmp_stream;
-				settings::setup_stream(tmp_stream);
-				it->print_pretty(tmp_stream,args_tuple);
-				std::string tmp(tmp_stream.str());
-				// If this is not the first term, we need to add the "+" sign if appropriate.
-				if (it != it_i && !tmp.empty() && tmp[0] != '-') {
-					tmp.insert(tmp.begin(),'+');
-				}
-				count += tmp.size();
-				if (count > max_length) {
-					std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << boost::lambda::_1);
-					stream << "...";
-					break;
-				}
-				if (!tmp.empty()) {
-					stream << tmp;
-				}
+			try {
+				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+				generic_print_terms_pretty(stream,&(*s.begin()),&(*s.end()),args_tuple);
+			} catch (const value_error &) {
+				generic_print_terms_pretty(stream,begin(),end(),args_tuple);
+			}
+		}
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Iterator, class ArgsTuple>
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_print_terms_tex(std::ostream &stream, const Iterator &start, const Iterator &end,
+		const ArgsTuple &args_tuple) const
+	{
+
+		for (Iterator it = start; it != end; ++it) {
+			std::ostringstream tmp_stream;
+			settings::setup_stream(tmp_stream);
+			print_from_it<Iterator>::run_tex(it,tmp_stream,args_tuple);
+			std::string tmp(tmp_stream.str());
+			// If this is not the first term, we need to add the "+" sign if appropriate.
+			if (it != end && !tmp.empty() && tmp[0] != '-') {
+				tmp.insert(tmp.begin(),'+');
+			}
+			if (!tmp.empty()) {
+				stream << tmp;
 			}
 		}
 	}
@@ -106,19 +163,11 @@ namespace piranha
 		if (empty()) {
 			stream << '0';
 		} else {
-			const const_iterator it_f = end(), it_i = begin();
-			for (const_iterator it = it_i; it != it_f; ++it) {
-				std::ostringstream tmp_stream;
-				settings::setup_stream(tmp_stream);
-				it->print_tex(tmp_stream,args_tuple);
-				std::string tmp(tmp_stream.str());
-				// If this is not the first term, we need to add the "+" sign if appropriate.
-				if (it != it_i && !tmp.empty() && tmp[0] != '-') {
-					tmp.insert(tmp.begin(),'+');
-				}
-				if (!tmp.empty()) {
-					stream << tmp;
-				}
+			try {
+				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+				generic_print_terms_tex(stream,&(*s.begin()),&(*s.end()),args_tuple);
+			} catch (const value_error &) {
+				generic_print_terms_tex(stream,begin(),end(),args_tuple);
 			}
 		}
 	}
@@ -164,7 +213,7 @@ namespace piranha
 	/// Construct series from a key.
 	/**
 	 * The returning series will consist of a single term with unitary numerical coefficient and key in its position.
-	 * For instance, if the key is \f$ \cos\left( x \right) \f$ one in a Fourier series, the resulting series will be  \f$ 1 \cdot \cos\left( x \right) \f$;
+	 * For instance, if the key is \f$ \cos\left( x \right) \f$ in a Fourier series, the resulting series will be  \f$ 1 \cdot \cos\left( x \right) \f$;
 	 * the exponent key \f$ x^2 y \f$ used to build a Poisson series, instead, will result instead in the series \f$ 1 \cdot x^2 y \cdot \cos\left( 0 \right) \f$.
 	 * If the provided key type does not appear in the series, a compile-time error will occur.
 	 */
@@ -179,7 +228,7 @@ namespace piranha
 
 	/// Construct series from a cf.
 	/**
-	 * The returning series will consist of a single term with provided coefficient
+	 * The returning series will consist of a single term with provided coefficient.
 	 * If the provided coefficient type does not appear in the series, a compile-time error will occur.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

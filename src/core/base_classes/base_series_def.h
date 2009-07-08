@@ -23,6 +23,7 @@
 
 #include <boost/unordered_set.hpp>
 #include <functional> // For std::equal_to.
+#include <iostream>
 #include <vector>
 
 #include "../config.h"
@@ -188,6 +189,10 @@ namespace piranha
 			template <class Series, class ArgsTuple>
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
 		private:
+			template <class Iterator, class ArgsTuple>
+			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+			template <class Iterator, class ArgsTuple>
+			void generic_print_terms_tex(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
