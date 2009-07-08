@@ -66,14 +66,14 @@ def __series_filtered(self, criterion = None):
 		raise ValueError('Cannot apply %d recursive filters to a series of echelon level %d' % (rec_depth,len(self.arguments) - 1))
 	for c in crit:
 		if not callable(c) and not c is None:
-			raise ValueError('Please provide binary callables (or None) as filtering criterions.')
+			raise ValueError('Please provide one or more unary callables (or None) as filtering criterions.')
 	def filter_series(cur,tot,s,crits):
 		if cur > tot:
 			return copy(s)
 		retval = type(s)()
 		l = s.split(cur)
 		for t in l:
-			if crits[cur] is None or crits[cur](t[0],t[1]):
+			if crits[cur] is None or crits[cur](t):
 				retval += filter_series(cur + 1, tot, t[0], crits) * t[1]
 		return retval
 	return filter_series(0,rec_depth - 1,self,crit)
