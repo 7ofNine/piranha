@@ -36,7 +36,6 @@
 #include "../base_classes/toolbox.h"
 #include "../exceptions.h"
 #include "../polynomial_common/monomial.h"
-#include "../polynomial_common/base_polynomial_toolbox.h"
 #include "common_polynomial_cf_toolbox.h"
 
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
@@ -59,8 +58,7 @@ namespace piranha
 				public toolbox<cf_power_series< POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF > >,
 				public toolbox<series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator> >,
 				public toolbox<base_series_special_functions< POLYNOMIAL_CF > >,
-				public toolbox<cf_series_special_functions< POLYNOMIAL_CF > >,
-				public toolbox<base_polynomial_toolbox< POLYNOMIAL_CF > >
+				public toolbox<cf_series_special_functions< POLYNOMIAL_CF > >
 	{
 			template <class>
 			friend class toolbox;
@@ -68,7 +66,6 @@ namespace piranha
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
-			using toolbox<base_polynomial_toolbox< POLYNOMIAL_CF > >::base_norm;
 		public:
 			CF_SERIES_CTORS(polynomial_cf);
 			template <class ArgsTuple>
@@ -101,8 +98,7 @@ namespace std
 				public piranha::toolbox<piranha::cf_power_series< COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF > >,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator> >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
-				public piranha::toolbox<piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF > >,
-				public piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF > >
+				public piranha::toolbox<piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF > >
 	{
 			template <class>
 			friend class piranha::toolbox;
@@ -118,7 +114,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR::base_divide_by;
-			using piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL_CF > >::base_norm;
 		public:
 			using COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR::operator==;

@@ -40,7 +40,6 @@
 #include "../base_classes/toolbox.h"
 #include "../mp.h"
 #include "../polynomial_common/monomial.h"
-#include "../polynomial_common/base_polynomial_toolbox.h"
 
 #define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::monomial)
 #define POLYNOMIAL E0_SERIES(piranha::polynomial)
@@ -59,7 +58,6 @@ namespace piranha
 				public toolbox<base_power_series<0,1,POLYNOMIAL_DEGREE,POLYNOMIAL > >,
 				public toolbox<named_power_series< POLYNOMIAL_DEGREE,POLYNOMIAL > >,
 				public toolbox<series_multiplication< POLYNOMIAL, Multiplier, Truncator> >,
-				public toolbox<base_polynomial_toolbox< POLYNOMIAL > >,
 				public toolbox<base_series_special_functions< POLYNOMIAL > >,
 				public toolbox<named_series_special_functions< POLYNOMIAL > >,
 				boost::ring_operators < POLYNOMIAL,
@@ -76,7 +74,6 @@ namespace piranha
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
-			using toolbox<base_polynomial_toolbox< POLYNOMIAL > >::base_norm;
 		public:
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
@@ -103,7 +100,6 @@ namespace std
 				public COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator> >,
-				public piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::named_power_series< COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
 				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL > >,
@@ -135,8 +131,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_divide_by;
-			// Polynomial norm override.
-			using piranha::toolbox<piranha::base_polynomial_toolbox< COMPLEX_POLYNOMIAL > >::base_norm;
 		public:
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator==;
