@@ -30,13 +30,11 @@
 namespace piranha
 {
 	// Initial value for norm-based truncation.
-	int norm_truncator::m_truncation_power = 0;
 	double norm_truncator::m_truncation_level = 0;
 
 	void norm_truncator::print(std::ostream &stream)
 	{
-		piranha_assert(m_truncation_power >= 0);
-		if (m_truncation_power > 0) {
+		if (m_truncation_level > 0) {
 			settings::setup_stream(stream);
 			stream << "Truncation level: " << m_truncation_level;
 		} else {
@@ -46,7 +44,6 @@ namespace piranha
 
 	void norm_truncator::unset()
 	{
-		m_truncation_power = 0;
 		m_truncation_level = 0;
 	}
 }

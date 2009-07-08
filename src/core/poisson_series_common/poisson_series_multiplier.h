@@ -202,10 +202,11 @@ namespace piranha
 							const size_t &i, const size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res_pair, const ArgsTuple &args_tuple) {
+							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res_pair, const ArgsTuple &args_tuple)
+						{
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
-							if (trunc.skip(*t1[i], *t2[j])) {
+							if (trunc.skip(&t1[i], &t2[j])) {
 								return false;
 							}
 							// Cache values.
@@ -243,7 +244,8 @@ namespace piranha
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc)
+					{
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
@@ -277,7 +279,7 @@ namespace piranha
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
 						vector_multiplier vm(&m_flavours1[0],&m_flavours2[0]);
-						ancestor::template blocked_multiplication<block_size,CfGetter>(
+						this->template blocked_multiplication<block_size,CfGetter>(
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,vm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done multiplying\n");
@@ -295,7 +297,7 @@ namespace piranha
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res_cos[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_cos[i];
-								coded_ancestor::decode(tmp_term.m_key, i);
+								this->decode(tmp_term.m_key, i);
 								tmp_term.m_key.set_flavour(true);
 								// Canonicalise in-place, so that we don't need to make further copies in the
 								// main insertion function.
@@ -308,7 +310,7 @@ namespace piranha
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							if (!vc_res_sin[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_sin[i];
-								coded_ancestor::decode(tmp_term.m_key, i);
+								this->decode(tmp_term.m_key, i);
 								tmp_term.m_key.set_flavour(false);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
@@ -329,11 +331,12 @@ namespace piranha
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
 							const Ckey *ck2, const Trunc &trunc, std::pair<HashSet *,HashSet *> *cms_pair,
-							const ArgsTuple &args_tuple) {
+							const ArgsTuple &args_tuple)
+						{
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
 							typedef typename HashSet::iterator c_iterator;
-							if (trunc.skip(*t1[i], *t2[j])) {
+							if (trunc.skip(&t1[i], &t2[j])) {
 								return false;
 							}
 							// Cache values.
@@ -394,7 +397,8 @@ namespace piranha
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc)
+					{
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
 						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
@@ -411,7 +415,7 @@ namespace piranha
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						hash_multiplier<cterm> hm(&m_flavours1[0],&m_flavours2[0]);
-						ancestor::template blocked_multiplication<block_size,CfGetter>(
+						this->template blocked_multiplication<block_size,CfGetter>(
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&res,hm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
@@ -420,7 +424,7 @@ namespace piranha
 							const c_iterator c_it_f = cms_cos.end();
 							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
-								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+								this->decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.set_flavour(true);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
@@ -432,7 +436,7 @@ namespace piranha
 							const c_iterator c_it_f = cms_sin.end();
 							for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
-								coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+								this->decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.set_flavour(false);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
@@ -444,8 +448,8 @@ namespace piranha
 					}
 				private:
 					// For Poisson series we also need flavours.
-					std::vector<char>		m_flavours1;
-					std::vector<char>		m_flavours2;
+					std::vector<char>	m_flavours1;
+					std::vector<char>	m_flavours2;
 			};
 	};
 }

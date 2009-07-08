@@ -22,6 +22,7 @@
 #define PIRANHA_NORM_TRUNCATOR_H
 
 #include <algorithm>
+#include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -72,46 +73,43 @@ namespace piranha
 			template <class Multiplier>
 			class get_type
 			{
+					typedef typename Multiplier::series_type1::term_type term_type1;
+					typedef typename Multiplier::series_type2::term_type term_type2;
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m, bool initialise = true):
-							m_multiplier(m),
-							m_delta_threshold(
-								m.m_s1.base_norm(m.m_args_tuple)*m.m_s2.base_norm(m.m_args_tuple)*m_truncation_level /
-								(2*m.m_s1.length()*m.m_s2.length())) {
+					get_type(Multiplier &m, bool initialise = true):m_multiplier(m),m_t1(0),m_t2(0)
+					{
 						if (initialise) {
 							init();
 						}
 					}
 					template <class Result>
-					bool accept(const Result &) const {
+					bool accept(const Result &) const
+					{
 						return true;
 					}
 					template <class Term1, class Term2>
-					bool skip(const Term1 &t1, const Term2 &t2) const {
-						return (
-								t1.m_cf.norm(m_multiplier.m_args_tuple) *
-								t1.m_key.norm(m_multiplier.m_args_tuple) *
-								t2.m_cf.norm(m_multiplier.m_args_tuple) *
-								t2.m_key.norm(m_multiplier.m_args_tuple) / 2. <
-								m_delta_threshold
-						);
+					bool skip(const Term1 **t1, const Term2 **t2) const
+					{
+						return (m_t1 && t1 >= m_t1) || (m_t2 && t2 >= m_t2);
 					}
-					bool is_effective() const {
-						return m_truncation_power != 0;
+					bool is_effective() const
+					{
+						return m_truncation_level != 0;
 					}
 					// Returns the length of a development in powers of x that satisfies the condition that the
 					// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 					// times smaller.
 					template <class T, class ArgsTuple>
 					static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
-						const ArgsTuple &args_tuple) {
+						const ArgsTuple &args_tuple)
+					{
 						// NOTE: share this check in some kind of base truncator class?
 						if (step_size < 1) {
 							piranha_throw(value_error,
 								"please use a step size of at least 1");
 						}
-						if (m_truncation_power == 0) {
+						if (m_truncation_level == 0) {
 							piranha_throw(value_error,"no value set for norm-based truncation, "
 								"cannot calculate limit of power series expansion");
 						}
@@ -126,21 +124,17 @@ namespace piranha
 							piranha_throw(value_error,"unable to find a limit for the power series expansion of a series whose norm "
 								"is zero");
 						}
-						int retval = static_cast<int>(std::ceil(static_cast<double>(
-								static_cast<int>(std::ceil(std::log10(m_truncation_level) /
-								std::log10(norm) + 1 - start)) / step_size))) + 1;
+						const int retval = boost::numeric_cast<int>(std::ceil(
+							(std::log(m_truncation_level) / std::log(norm) + step_size - start) / step_size + 1
+						));
 						// This could be negative if starting power is big enough. In this case return 0.
-						if (retval >= 0) {
-							return retval;
-						} else {
-							return 0;
-						}
+						return (retval >= 0) ? retval : 0;
 					}
 					template <class Series, class ArgsTuple>
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
 					{
 						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
-						if (m_truncation_power == 0) {
+						if (m_truncation_level == 0) {
 							piranha_throw(value_error,"cannot establish series ordering, norm truncator is not active");
 						}
 						const norm_comparison<ArgsTuple> cmp(args_tuple);
@@ -148,31 +142,75 @@ namespace piranha
 						return retval;
 					}
 				protected:
-					void init() {
+					void init()
+					{
 						if (is_effective()) {
+							piranha_assert(m_multiplier.m_s1.length() >= 1 && m_multiplier.m_s2.length() >= 1);
 							const norm_comparison<typename Multiplier::args_tuple_type> cmp(m_multiplier.m_args_tuple);
 							std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), cmp);
 							std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), cmp);
+							const double
+								norm1 = m_multiplier.m_s1.base_norm(m_multiplier.m_args_tuple),
+								norm2 = m_multiplier.m_s2.base_norm(m_multiplier.m_args_tuple);
+							// If one of the norms is zero, then we don't want to do any multiplication.
+							const term_type1 **final1 = &(*(m_multiplier.m_terms1.begin()));
+							const term_type2 **final2 = &(*(m_multiplier.m_terms2.begin()));
+							if (norm1 == 0 || norm2 == 0) {
+								m_t1 = final1;
+								m_t2 = final2;
+								return;
+							}
+							const double
+								limit1 = m_truncation_level / (norm1 * 2),
+								limit2 = m_truncation_level / (norm2 * 2);
+							double delta1 = 0, delta2 = 0;
+							while (true) {
+								const term_type1 **tmp = (m_t1) ? m_t1 - 1 : &(*(m_multiplier.m_terms1.end() - 1));
+								delta1 += (*tmp)->m_cf.norm(m_multiplier.m_args_tuple) * (*tmp)->m_key.norm(m_multiplier.m_args_tuple);
+								// If, by going to the next term, we exceed the delta1, leave m_t1 where it is and break out.
+								if (delta1 >= limit1) {
+									break;
+								}
+								// Assign new limit.
+								m_t1 = tmp;
+								// If we reached the top, break out.
+								if (tmp == final1) {
+									break;
+								}
+							}
+							while (true) {
+								const term_type2 **tmp = (m_t2) ? m_t2 - 1 : &(*(m_multiplier.m_terms2.end() - 1));
+								delta2 += (*tmp)->m_cf.norm(m_multiplier.m_args_tuple) * (*tmp)->m_key.norm(m_multiplier.m_args_tuple);
+								// If, by going to the next term, we exceed the delta2, leave m_t2 where it is and break out.
+								if (delta2 >= limit2) {
+									break;
+								}
+								// Assign new limit.
+								m_t2 = tmp;
+								// If we reached the top, break out.
+								if (tmp == final2) {
+									break;
+								}
+							}
 						}
 					}
 				private:
-					Multiplier    &m_multiplier;
-					const double  m_delta_threshold;
+					Multiplier    		&m_multiplier;
+					term_type1 const	**m_t1;
+					term_type2 const	**m_t2;
 			};
 			// Shared portion.
-			static void set(const int &n) {
-				if (n <= 0) {
-					piranha_throw(value_error,"please insert a positive integer");
-				} else {
-					m_truncation_level = std::pow(10., -n);
+			static void set(const double &x)
+			{
+				if (x <= 0) {
+					piranha_throw(value_error,"please insert a positive number");
 				}
-				m_truncation_power = n;
+				m_truncation_level = x;
 			}
 			static void print(std::ostream &stream = std::cout);
 			static void unset();
 		private:
-			static int	m_truncation_power;
-			static double	m_truncation_level;
+			static double m_truncation_level;
 	};
 
 	typedef toolbox<norm_truncator_> norm_truncator;

@@ -191,7 +191,7 @@ namespace piranha
 							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res, const ArgsTuple &args_tuple) {
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
-							if (trunc.skip(*t1[i], *t2[j])) {
+							if (trunc.skip(&t1[i], &t2[j])) {
 								return false;
 							}
 							// Calculate index of the result.
@@ -275,7 +275,7 @@ namespace piranha
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
 							typedef typename HashSet::iterator c_iterator;
-							if (trunc.skip(*t1[i], *t2[j])) {
+							if (trunc.skip(&t1[i], &t2[j])) {
 								return false;
 							}
 							m_cterm.m_ckey = ck1[i];

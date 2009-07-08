@@ -133,16 +133,16 @@ namespace piranha
 						return true;
 					}
 					template <class Term1, class Term2>
-					bool skip(const Term1 &t1, const Term2 &t2) const
+					bool skip(const Term1 **t1, const Term2 **t2) const
 					{
 						switch (m_mode) {
 							case deg:
-								return (t1.template get<expo_term_pos>().order() +
-									t2.template get<expo_term_pos>().order() >=
+								return ((*t1)->template get<expo_term_pos>().order() +
+									(*t2)->template get<expo_term_pos>().order() >=
 									m_degree_limit);
 							case p_deg:
-								return (t1.template get<expo_term_pos>().partial_order(m_pos_tuple) +
-									t2.template get<expo_term_pos>().partial_order(m_pos_tuple) >=
+								return ((*t1)->template get<expo_term_pos>().partial_order(m_pos_tuple) +
+									(*t2)->template get<expo_term_pos>().partial_order(m_pos_tuple) >=
 									m_degree_limit);
 							case inactive:
 								// We should never get there.

@@ -73,7 +73,8 @@ namespace piranha
 			static void blocked_multiplication(const size_t &size1, const size_t &size2,
 				const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
 				const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
-				const ArgsTuple &args_tuple) {
+				const ArgsTuple &args_tuple)
+			{
 				p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
 				const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 				for (size_t n1 = 0; n1 < nblocks1; ++n1) {
@@ -133,7 +134,7 @@ namespace piranha
 				mult_res res;
 				for (size_t i = 0; i < m_size1; ++i) {
 					for (size_t j = 0; j < m_size2; ++j) {
-						if (trunc.skip(*m_terms1[i], *m_terms2[j])) {
+						if (trunc.skip(&m_terms1[i], &m_terms2[j])) {
 							break;
 						}
 						term_type1::multiply(*m_terms1[i], *m_terms2[j], res, m_args_tuple);
