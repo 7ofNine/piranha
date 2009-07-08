@@ -217,7 +217,6 @@ namespace piranha
 							// so that we can avoid copying stuff around here and elsewhere?
 							cf_type1 tmp_cf = get1::get(tc1[i]);
 							tmp_cf.mult_by(get2::get(tc2[j]), args_tuple);
-							tmp_cf.divide_by(2, args_tuple);
 							const max_fast_int index_plus = ck1[i] + ck2[j], index_minus = ck1[i] - ck2[j];
 							if (f1[i] == f2[j]) {
 								if (f1[i]) {
@@ -284,15 +283,11 @@ namespace piranha
 						);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						// Decode and insert the results into return value.
-						const cf_type1 *vc_res_cos = res.first, *vc_res_sin = res.second;
+						cf_type1 *vc_res_cos = res.first, *vc_res_sin = res.second;
 						term_type1 tmp_term;
 						const max_fast_int i_f = this->m_h_max;
-						size_t size_cos = 0, size_sin = 0;
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
-							size_cos += (!vc_res_cos[i].is_ignorable(args_tuple));
-							size_sin += (!vc_res_sin[i].is_ignorable(args_tuple));
-						}
-						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
+							vc_res_cos[i].divide_by(2,args_tuple);
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res_cos[i].is_ignorable(args_tuple)) {
@@ -308,6 +303,7 @@ namespace piranha
 							}
 						}
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
+							vc_res_sin[i].divide_by(2,args_tuple);
 							if (!vc_res_sin[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res_sin[i];
 								this->decode(tmp_term.m_key, i);
@@ -349,7 +345,6 @@ namespace piranha
 							Cterm tmp_term1(get1::get(tc1[i]), ck1[i]);
 							// Handle the coefficient, with positive signs for now.
 							tmp_term1.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-							tmp_term1.m_cf.divide_by(2, args_tuple);
 							tmp_term1.m_ckey -= ck2[j];
 							// Create the second term, using the first one's coefficient and the appropriate code.
 							Cterm tmp_term2(tmp_term1.m_cf, ck1[i] + ck2[j]);
@@ -424,6 +419,7 @@ namespace piranha
 							const c_iterator c_it_f = cms_cos.end();
 							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
+								tmp_term.m_cf.divide_by(2,args_tuple);
 								this->decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.set_flavour(true);
 								if (!tmp_term.is_canonical(args_tuple)) {
@@ -436,6 +432,7 @@ namespace piranha
 							const c_iterator c_it_f = cms_sin.end();
 							for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) {
 								tmp_term.m_cf = c_it->m_cf;
+								tmp_term.m_cf.divide_by(2,args_tuple);
 								this->decode(tmp_term.m_key, c_it->m_ckey);
 								tmp_term.m_key.set_flavour(false);
 								if (!tmp_term.is_canonical(args_tuple)) {
