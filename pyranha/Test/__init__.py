@@ -130,11 +130,13 @@ class series_sf_test(unittest.TestCase):
 	Exercise known relations involving special functions.
 	"""
 	def runTest(self):
-		from pyranha.Core import psym, degree_truncator, rational
+		from pyranha.Core import psym, rational
 		from pyranha.Math import cs_phase
+		from pyranha.Truncators import degree, unset
 		from detail import check_order
+		unset()
 		for limit in [0,1,2,3,80]:
-			degree_truncator.set(limit)
+			degree.set(limit)
 			for t in exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.root(1),x)
@@ -153,16 +155,19 @@ class series_sf_test(unittest.TestCase):
 					if n != 0:
 						self.assertEqual((x ** -n).root(-n),x)
 						self.assertEqual((x ** -n) ** rational(1,-n),x)
+		unset()
 
 class series_trig_test(unittest.TestCase):
 	"""
 	Exercise known relations involving trigonometric functions.
 	"""
 	def runTest(self):
-		from pyranha.Core import psym, degree_truncator, integer, rational
+		from pyranha.Core import psym, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
+		from pyranha.Truncators import degree, unset
+		unset()
 		for limit in [1,2,3,80]:
-			degree_truncator.set(limit)
+			degree.set(limit)
 			for t in scalar_trig_exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
@@ -185,6 +190,7 @@ class series_trig_test(unittest.TestCase):
 					else:
 						self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
 						self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
+		unset()
 
 def suite_series():
 	suite = unittest.TestSuite()
