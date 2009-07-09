@@ -27,19 +27,19 @@
 #include <iostream>
 #include <vector>
 
+#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../settings.h"
 #include "../utils.h"
-#include "toolbox.h"
 
 namespace piranha
 {
-	struct norm_truncator_;
+	struct norm_;
 
 	/// Norm-based truncator.
 	template <>
-	class __PIRANHA_VISIBLE toolbox<norm_truncator_>
+	class __PIRANHA_VISIBLE toolbox<norm_>
 	{
 			template <class ArgsTuple>
 			class norm_comparison
@@ -216,7 +216,10 @@ namespace piranha
 			static double m_truncation_level;
 	};
 
-	typedef toolbox<norm_truncator_> norm_truncator;
+namespace truncators
+{
+	typedef toolbox<norm_> norm;
+}
 }
 
 #endif

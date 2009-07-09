@@ -23,26 +23,27 @@
 
 #include <complex>
 
-#include "../core/base_classes/power_series_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial/polynomial.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
+#include "../core/truncators/power_series.h"
 
 namespace piranha
 {
-	namespace manipulators {
-		/// Double coefficient multivariate polynomial manipulator.
-		typedef polynomial
-		<
+namespace manipulators 
+{
+	/// Double coefficient multivariate polynomial manipulator.
+	typedef polynomial
+	<
 		double_cf,
 		expo_array<16, 0>::type,
 		polynomial_multiplier,
-		power_series_truncator
-		> dpoly;
+		truncators::power_series
+	> dpoly;
 
-		typedef std::complex<dpoly> dpolyc;
-	}
+	typedef std::complex<dpoly> dpolyc;
+}
 }
 
 #endif

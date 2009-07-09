@@ -25,22 +25,24 @@
 #include <vector>
 
 #include "../exceptions.h"
-#include "degree_truncator.h"
-#include "norm_truncator.h"
+#include "degree.h"
+#include "norm.h"
 
 namespace piranha
 {
+namespace truncators
+{
 	/// Truncator for power series.
-	class power_series_truncator
+	class power_series
 	{
 		public:
 			template <class Multiplier>
 			class get_type:
-				public degree_truncator::template get_type<Multiplier>,
-				public norm_truncator::template get_type<Multiplier>
+				public degree::template get_type<Multiplier>,
+				public norm::template get_type<Multiplier>
 			{
-					typedef typename degree_truncator::template get_type<Multiplier> degree_ancestor;
-					typedef typename norm_truncator::template get_type<Multiplier> norm_ancestor;
+					typedef typename degree::template get_type<Multiplier> degree_ancestor;
+					typedef typename norm::template get_type<Multiplier> norm_ancestor;
 					enum selected_truncator {deg_t, norm_t, null_t};
 				public:
 					typedef get_type type;
@@ -126,6 +128,7 @@ namespace piranha
 					selected_truncator m_active_truncator;
 			};
 	};
+}
 }
 
 #endif

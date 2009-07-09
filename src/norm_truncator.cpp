@@ -22,17 +22,19 @@
 #include <sstream>
 #include <string>
 
-#include "core/base_classes/norm_truncator.h"
 #include "core/base_classes/toolbox.h"
 #include "core/exceptions.h"
 #include "core/settings.h"
+#include "core/truncators/norm.h"
+
+using namespace piranha::truncators;
 
 namespace piranha
 {
 	// Initial value for norm-based truncation.
-	double norm_truncator::m_truncation_level = 0;
+	double norm::m_truncation_level = 0;
 
-	void norm_truncator::print(std::ostream &stream)
+	void norm::print(std::ostream &stream)
 	{
 		if (m_truncation_level > 0) {
 			settings::setup_stream(stream);
@@ -42,7 +44,7 @@ namespace piranha
 		}
 	}
 
-	void norm_truncator::unset()
+	void norm::unset()
 	{
 		m_truncation_level = 0;
 	}

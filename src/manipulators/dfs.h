@@ -23,25 +23,26 @@
 
 #include <complex>
 
-#include "../core/base_classes/norm_truncator.h"
 #include "../core/fourier_series/fourier_series.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/poisson_series_common/trig_array.h"
+#include "../core/truncators/norm.h"
 
 namespace piranha
 {
-	namespace manipulators {
-		/// Fourier series manipulator.
-		typedef fourier_series
-		<
+namespace manipulators
+{
+	/// Fourier series manipulator.
+	typedef fourier_series
+	<
 		double_cf, trig_array<16, 0>::type,
 		poisson_series_multiplier,
-		norm_truncator
-		> dfs;
+		truncators::norm
+	> dfs;
 
-		typedef std::complex<dfs> dfsc;
-	}
+	typedef std::complex<dfs> dfsc;
+}
 }
 
 #endif

@@ -23,31 +23,31 @@
 
 #include <complex>
 
-#include "../core/base_classes/power_series_truncator.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_array.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/poisson_series_common/trig_array.h"
 #include "../core/poisson_series/poisson_series.h"
+#include "../core/truncators/power_series.h"
 
 namespace piranha
 {
-	namespace manipulators {
-		/// Double coefficient Poisson series.
-		typedef poisson_series
-		<
+namespace manipulators {
+	/// Double coefficient Poisson series.
+	typedef poisson_series
+	<
 		double_cf,
 		expo_array<16, 0>::type,
 		trig_array<16, 1>::type,
 		polynomial_multiplier,
 		poisson_series_multiplier,
-		power_series_truncator,
-		power_series_truncator
-		> dps;
+		truncators::power_series,
+		truncators::power_series
+	> dps;
 
-		typedef std::complex<dps> dpsc;
-	}
+	typedef std::complex<dps> dpsc;
+}
 }
 
 #endif

@@ -37,12 +37,14 @@ def main():
 		except:
 			pass
 	for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
-		if i != "Gui" and i != "Test":
+		if i != "Gui" and i != "Test" and i != "Truncators":
 			ip.ex("from pyranha.%s import *" % i)
 	# Import default series type.
 	ip.ex("from pyranha import ds")
 	# Import test module.
 	ip.ex("from pyranha import Test")
+	# Import truncator module.
+	ip.ex("from pyranha import Truncators")
 	import_error_msg = """
 		Warning: many of Pyranha's capabilities rely on numpy and matplotlib.
 		Please consider installing these packages:

@@ -18,31 +18,59 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_ZPOLY_H
-#define PIRANHA_ZPOLY_H
+#ifndef PIRANHA_TRUNCATORS_H
+#define PIRANHA_TRUNCATORS_H
 
-#include <complex>
+#include <boost/mpl/int.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/tuple/tuple.hpp>
 
-#include "../core/numerical_coefficients/mpz_cf.h"
-#include "../core/polynomial_common/expo_array.h"
-#include "../core/polynomial/polynomial.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
-#include "../core/truncators/power_series.h"
+#include "degree.h"
+#include "norm.h"
+#include "power_series.h"
 
 namespace piranha
 {
-namespace manipulators
+/// Namespace containing series truncators.
+namespace truncators
 {
-	/// Manipulator of multivariate polynomials with arbitrary-size integer coefficients.
-	typedef polynomial
-	<
-		mpz_cf,
-		expo_array<16, 0>::type,
-		polynomial_multiplier,
-		truncators::power_series
-	> zpoly;
+	// Sequence of truncators type. NOTE: add here any new truncator.
+	typedef boost::mpl::vector<norm,degree,power_series> truncator_types;
 
-	typedef std::complex<zpoly> zpolyc;
+	// General functor for calling unset() on a truncator.
+	template <class Truncator>
+	struct truncator_unset {
+		static void run()
+		{
+			Truncator::unset();
+		}
+	};
+
+	// For power series truncators, there is not unset() function to be called.
+	template <>
+	struct truncator_unset<power_series> {
+		static void run() {}
+	};
+
+	template <int N>
+	struct unset_impl {
+		static void run()
+		{
+			truncator_unset<typename boost::mpl::at<truncator_types,boost::mpl::int_<N> >::type>::run();
+			unset_impl<N-1>::run();
+		}
+	};
+
+	template <>
+	struct unset_impl<-1> {
+		static void run() {}
+	};
+
+	/// Unset all available truncators.
+	inline void unset()
+	{
+		unset_impl<boost::mpl::size<truncator_types>::type::value - 1>::run();
+	}
 }
 }
 

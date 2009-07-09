@@ -22,49 +22,51 @@
 #include <string>
 #include <vector>
 
-#include "core/base_classes/degree_truncator.h"
 #include "core/mp.h"
 #include "core/psym.h"
+#include "core/truncators/degree.h"
+
+using namespace piranha::truncators;
 
 namespace piranha
-{
+{ 
 	// Static initialization for degree-based truncation.
-	mp_rational degree_truncator::m_degree_limit;
-	degree_truncator::mode degree_truncator::m_mode = degree_truncator::inactive;
-	vector_psym degree_truncator::m_psyms;
+	mp_rational degree::m_degree_limit;
+	degree::mode degree::m_mode = degree::inactive;
+	vector_psym degree::m_psyms;
 
-	void degree_truncator::unset()
+	void degree::unset()
 	{
 		m_mode = inactive;
 	}
 
-	void degree_truncator::set(const int &n)
+	void degree::set(const int &n)
 	{
 		m_degree_limit = n;
 		m_mode = deg;
 	}
 
-	void degree_truncator::set(const mp_rational &r)
+	void degree::set(const mp_rational &r)
 	{
 		m_degree_limit = r;
 		m_mode = deg;
 	}
 
-	void degree_truncator::set(const std::vector<std::string> &vs, const int &n)
+	void degree::set(const std::vector<std::string> &vs, const int &n)
 	{
 		m_degree_limit = n;
 		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
 	}
 
-	void degree_truncator::set(const std::vector<std::string> &vs, const mp_rational &r)
+	void degree::set(const std::vector<std::string> &vs, const mp_rational &r)
 	{
 		m_degree_limit = r;
 		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
 	}
 
-	void degree_truncator::print(std::ostream &stream)
+	void degree::print(std::ostream &stream)
 	{
 		switch (m_mode) {
 			case inactive:

@@ -23,26 +23,27 @@
 
 #include <complex>
 
-#include "../core/base_classes/power_series_truncator.h"
 #include "../core/base_classes/series_multiplier.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
 #include "../core/polynomial_common/q_expo_array.h"
 #include "../core/polynomial/polynomial.h"
+#include "../core/truncators/power_series.h"
 
 namespace piranha
 {
-	namespace manipulators {
-		/// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
-		typedef polynomial
-		<
+namespace manipulators
+{
+	/// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
+	typedef polynomial
+	<
 		mpq_cf,
 		q_expo_array<0>::type,
 		series_multiplier,
-		power_series_truncator
-		> qqpoly;
+		truncators::power_series
+	> qqpoly;
 
-		typedef std::complex<qqpoly> qqpolyc;
-	}
+	typedef std::complex<qqpoly> qqpolyc;
+}
 }
 
 #endif

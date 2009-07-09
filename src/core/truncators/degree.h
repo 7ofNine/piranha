@@ -39,11 +39,11 @@
 
 namespace piranha
 {
-	struct degree_truncator_ {};
+	struct degree_ {};
 
 	/// Truncator based on the minium degree of the series.
 	template <>
-	class __PIRANHA_VISIBLE toolbox<degree_truncator_>
+	class __PIRANHA_VISIBLE toolbox<degree_>
 	{
 			enum mode {
 				deg,
@@ -289,7 +289,10 @@ namespace piranha
 			static mode		m_mode;
 	};
 
-	typedef toolbox<degree_truncator_> degree_truncator;
+namespace truncators
+{
+	typedef toolbox<degree_> degree;
+}
 }
 
 #endif

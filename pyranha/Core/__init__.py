@@ -163,6 +163,3 @@ def gui():
 		pyranha.Gui.mw.show()
 	except ImportError:
 		print "Gui support is not available or PyQt4 is not installed."
-
-norm_truncator = _Core.__norm_truncator()
-degree_truncator = _Core.__degree_truncator()
