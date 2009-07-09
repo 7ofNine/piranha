@@ -71,7 +71,7 @@ namespace piranha
 			// that poly args of s may be added as trig args (as s will be used as argument for sines
 			// and/or cosines).
 			template <class SubSeries>
-			Derived sub(const psym &p, const SubSeries &series) const {
+			Derived sub(const std::string &name, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -81,6 +81,7 @@ namespace piranha
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series substitution.");
+				const psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments series's polynomial arguments.
@@ -108,7 +109,7 @@ namespace piranha
 				return retval;
 			}
 			template <class SubSeries>
-			Derived ei_sub(const psym &p, const SubSeries &series) const {
+			Derived ei_sub(const std::string &name, const SubSeries &series) const {
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -118,6 +119,7 @@ namespace piranha
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
+				const psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series);
 				this_copy.merge_args(s_copy);

@@ -64,6 +64,8 @@ BOOST_PYTHON_MODULE(_Core)
 	translate_exceptions();
 
 	// Interop between vectors of some types and Python tuples/lists.
+	to_tuple_mapping<std::vector<std::string> >();
+	from_python_sequence<std::vector<std::string>,variable_capacity_policy>();
 	to_tuple_mapping<vector_psym>();
 	from_python_sequence<vector_psym,variable_capacity_policy>();
 	to_tuple_mapping<std::vector<vector_psym> >();
@@ -141,8 +143,8 @@ BOOST_PYTHON_MODULE(_Core)
 
 	typedef void (*deg_set)(const int &);
 	typedef void (*q_deg_set)(const mp_rational &);
-	typedef void (*p_deg_set)(const vector_psym &, const int &);
-	typedef void (*p_q_deg_set)(const vector_psym &, const mp_rational &);
+	typedef void (*p_deg_set)(const std::vector<std::string> &, const int &);
+	typedef void (*p_q_deg_set)(const std::vector<std::string> &, const mp_rational &);
 	class_<degree_truncator>("__degree_truncator", "Minimum degree truncator.", init<>())
 	.def("__repr__", &py_print_to_string<degree_truncator>)
 	.def("set", deg_set(&degree_truncator::set), "Set truncation level of series' minimum degree to arg1.")

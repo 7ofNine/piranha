@@ -267,48 +267,48 @@ namespace pyranha
 	}
 
 	template <class T>
-	static inline T py_series_partial_psym_1(const T &series, const piranha::psym &p)
+	static inline T py_series_partial_1(const T &series, const std::string &s)
 	{
-		return series.partial(p);
+		return series.partial(s);
 	}
 
 	template <class T>
-	static inline T py_series_partial_psym_n(const T &series, const piranha::psym &p, const int &n)
+	static inline T py_series_partial_n(const T &series, const std::string &s, const int &n)
 	{
-		return series.partial(p,n);
+		return series.partial(s,n);
 	}
 
 	template <class T>
 	inline void series_differential_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("partial", &py_series_partial_psym_1<T>, "Partial derivative with respect to psym arg2.");
-		inst.def("partial", &py_series_partial_psym_n<T>, "Partial derivative of natural order arg3 "
-			"with respect to psym arg2.");
+		inst.def("partial", &py_series_partial_1<T>, "Partial derivative with respect to psym named arg2.");
+		inst.def("partial", &py_series_partial_n<T>, "Partial derivative of natural order arg3 "
+			"with respect to psym named arg2.");
 	}
 
 	template <class T, class Series>
-	static inline T py_series_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub)
+	static inline T py_series_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
-		return series.template sub<Series>(p, sub);
+		return series.template sub<Series>(s, sub);
 	}
 
 	template <class T, class Series>
-	static inline T py_series_ei_sub_psym_series(const T &series, const piranha::psym &p, const Series &sub)
+	static inline T py_series_ei_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
-		return series.template ei_sub<Series>(p, sub);
+		return series.template ei_sub<Series>(s, sub);
 	}
 
 	template <class T, class Series>
 	inline void series_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("sub", &py_series_sub_psym_series<T, Series>, "Substitute psym arg2 with series arg3.");
+		inst.def("sub", &py_series_sub_string_series<T, Series>, "Substitute psym named arg2 with series arg3.");
 	}
 
 	template <class T, class Series>
 	inline void series_ei_sub_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("ei_sub", &py_series_ei_sub_psym_series<T, Series>, "Substitute complex exponential of psym "
-			"arg2 with series arg3 in trigonometric keys.");
+		inst.def("ei_sub", &py_series_ei_sub_string_series<T, Series>, "Substitute complex exponential of psym "
+			"named arg2 with series arg3 in trigonometric keys.");
 	}
 
 	template <class T>

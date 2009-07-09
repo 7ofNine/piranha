@@ -217,9 +217,10 @@ namespace piranha
 
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::partial(const psym &p, const int &n) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::partial(const std::string &name, const int &n) const
 	{
 		typedef typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type pos_tuple_type;
+		const psym p(name);
 		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),m_arguments);
 		Derived retval(derived_const_cast->base_partial(n, pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;

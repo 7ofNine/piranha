@@ -103,9 +103,9 @@ namespace piranha
 			Derived pow(const double &) const;
 			Derived pow(const mp_rational &) const;
 			Derived root(const int &) const;
-			Derived partial(const psym &, const int &n = 1) const;
+			Derived partial(const std::string &, const int &n = 1) const;
 			template <class SubSeries>
-			Derived sub(const psym &, const SubSeries &) const;
+			Derived sub(const std::string &, const SubSeries &) const;
 			template <class Key>
 			Derived series_from_key(const Key &) const;
 			template <class Cf>

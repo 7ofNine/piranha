@@ -23,6 +23,7 @@
 
 #include <algorithm> // For sorting.
 #include <complex>
+#include <string>
 #include <vector>
 
 #include "../base_classes/toolbox.h"

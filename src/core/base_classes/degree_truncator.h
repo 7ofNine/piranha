@@ -279,8 +279,8 @@ namespace piranha
 			};
 			static void set(const int &);
 			static void set(const mp_rational &);
-			static void set(const vector_psym &, const int &);
-			static void set(const vector_psym &, const mp_rational &);
+			static void set(const std::vector<std::string> &, const int &);
+			static void set(const std::vector<std::string> &, const mp_rational &);
 			static void unset();
 			static void print(std::ostream &stream = std::cout);
 		private:

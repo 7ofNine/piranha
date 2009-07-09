@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "core/base_classes/degree_truncator.h"
 #include "core/mp.h"
@@ -36,25 +38,29 @@ namespace piranha
 		m_mode = inactive;
 	}
 
-	void degree_truncator::set(const int &n) {
+	void degree_truncator::set(const int &n)
+	{
 		m_degree_limit = n;
 		m_mode = deg;
 	}
 
-	void degree_truncator::set(const mp_rational &r) {
+	void degree_truncator::set(const mp_rational &r)
+	{
 		m_degree_limit = r;
 		m_mode = deg;
 	}
 
-	void degree_truncator::set(const vector_psym &v, const int &n) {
+	void degree_truncator::set(const std::vector<std::string> &vs, const int &n)
+	{
 		m_degree_limit = n;
-		m_psyms = v;
+		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
 	}
 
-	void degree_truncator::set(const vector_psym &v, const mp_rational &r) {
+	void degree_truncator::set(const std::vector<std::string> &vs, const mp_rational &r)
+	{
 		m_degree_limit = r;
-		m_psyms = v;
+		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
 	}
 

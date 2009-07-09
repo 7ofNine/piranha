@@ -43,7 +43,8 @@ namespace piranha
 			psym_impl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
 				m_name(name),m_time_eval(time_eval) {}
 			// Print to stream.
-			void print(std::ostream &out_stream) const {
+			void print(std::ostream &out_stream) const
+			{
 				settings::setup_stream(out_stream);
 				out_stream << "name=" << m_name << '\n';
 				out_stream << "time_eval=";
@@ -55,11 +56,13 @@ namespace piranha
 				}
 				out_stream << '\n';
 			}
-			bool operator<(const psym_impl &other) const {
+			bool operator<(const psym_impl &other) const
+			{
 				return (m_name < other.m_name);
 			}
 			// Time evaluation.
-			double eval(const double &t) const {
+			double eval(const double &t) const
+			{
 				double retval = 0.;
 				const size_t w = m_time_eval.size();
 				for (size_t i = 0; i < w; ++i) {
@@ -101,14 +104,16 @@ namespace piranha
 			struct push_back_to {
 				push_back_to(vector_psym &v):m_v(&v) {}
 				template <class T>
-				void operator()(const T &x) const {
+				void operator()(const T &x) const
+				{
 					m_v->push_back(psym(x.m_name,x.m_time_eval));
 				}
 				mutable vector_psym *m_v;
 			};
 		public:
 			/// Constructor from name and time evaluation in string form.
-			explicit psym(const std::string &name, const std::string &time_eval) {
+			explicit psym(const std::string &name, const std::string &time_eval)
+			{
 				const psym_impl p(name,utils::str_to_vector<double>(time_eval,psym_impl::separator));
 				construct_from_impl(p);
 			}
@@ -117,7 +122,8 @@ namespace piranha
 			 * If the symbol is already present in the psym manager then use it, otherwise initialise
 			 * a new psym with the given name and an empty time evaluation vector.
 			 */
-			explicit psym(const std::string &name) {
+			explicit psym(const std::string &name)
+			{
 				const psym_impl p(name);
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {
@@ -129,25 +135,31 @@ namespace piranha
 				}
 			}
 			/// Constructor from name and vector.
-			explicit psym(const std::string &name, const std::vector<double> &time_eval) {
+			explicit psym(const std::string &name, const std::vector<double> &time_eval)
+			{
 				const psym_impl p(name,time_eval);
 				construct_from_impl(p);
 			}
 			/// Constructor from name and constant value.
-			explicit psym(const std::string &name, const double &value) {
+			explicit psym(const std::string &name, const double &value)
+			{
 				const psym_impl p(name,std::vector<double>((size_t)1,value));
 				construct_from_impl(p);
 			}
-			bool operator<(const psym &other) const {
+			bool operator<(const psym &other) const
+			{
 				return ((*m_it) < *(other.m_it));
 			}
-			bool operator==(const psym &other) const {
+			bool operator==(const psym &other) const
+			{
 				return m_it == other.m_it;
 			}
-			bool operator!=(const psym &other) const {
+			bool operator!=(const psym &other) const
+			{
 				return !(*this == other);
 			}
-			static vector_psym list() {
+			static vector_psym list()
+			{
 				vector_psym retval;
 				retval.reserve(psym_manager::container.size());
 				std::for_each(psym_manager::container.begin(),psym_manager::container.end(),push_back_to(retval));
@@ -155,27 +167,33 @@ namespace piranha
 			}
 			// TODO: move to operator<< for streams? Along with other classes...
 			/// Print to stream.
-			void print(std::ostream &s = std::cout) const {
+			void print(std::ostream &s = std::cout) const
+			{
 				m_it->print(s);
 			}
 			/// Evaluate symbol at time t.
-			double eval(const double &t) const {
+			double eval(const double &t) const
+			{
 				return m_it->eval(t);
 			}
 			/// Name getter.
-			const std::string &get_name() const {
+			const std::string &get_name() const
+			{
 				return m_it->m_name;
 			}
 			/// Time evaluation vector getter.
-			const std::vector<double> &get_time_eval() const {
+			const std::vector<double> &get_time_eval() const
+			{
 				return m_it->m_time_eval;
 			}
 			/// Time evaluation vector setter.
-			void set_time_eval(const std::vector<double> &t) const {
+			void set_time_eval(const std::vector<double> &t) const
+			{
 				m_it->m_time_eval = t;
 			}
 		private:
-			void construct_from_impl(const psym_impl &p) {
+			void construct_from_impl(const psym_impl &p)
+			{
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) {
 					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
@@ -193,7 +211,8 @@ namespace piranha
 	template <class ArgsTuple>
 	struct psyms2pos_impl {
 		template <class PosTuple>
-		static void run(const vector_psym &v, PosTuple &pos_tuple, const ArgsTuple &args_tuple) {
+		static void run(const vector_psym &v, PosTuple &pos_tuple, const ArgsTuple &args_tuple)
+		{
 			const size_t a_size = args_tuple.get_head().size(), v_size = v.size();
 			pos_tuple.get_head().reserve(v_size);
 			// For each psymbol, test presence.
@@ -222,7 +241,8 @@ namespace piranha
 	// Return value will be a tuple of vectors, each of size v.size(), containing (presence, position) pairs for the corresponding symbols
 	// in v.
 	template <class ArgsTuple>
-	typename ntuple<std::vector<std::pair<bool,size_t> >,boost::tuples::length<ArgsTuple>::value>::type psyms2pos(const vector_psym &v, const ArgsTuple &args_tuple) {
+	inline typename ntuple<std::vector<std::pair<bool,size_t> >,boost::tuples::length<ArgsTuple>::value>::type psyms2pos(const vector_psym &v, const ArgsTuple &args_tuple)
+	{
 		typedef typename ntuple<std::vector<std::pair<bool,size_t> >,boost::tuples::length<ArgsTuple>::value>::type retval_type;
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		const std::set<psym> uniques_set(v.begin(),v.end());
@@ -230,6 +250,18 @@ namespace piranha
 		retval_type retval;
 		psyms2pos_impl<ArgsTuple>::run(uniques_vector,retval,args_tuple);
 		return retval;
+	}
+
+	// Transform a vector of names into a vector of symbols.
+	inline vector_psym names2psyms(const std::vector<std::string> &vs)
+	{
+		const size_t size = vs.size();
+		vector_psym v;
+		v.reserve(size);
+		for (size_t i = 0; i < size; ++i) {
+			v.push_back(psym(vs[i]));
+		}
+		return v;
 	}
 }
 #endif

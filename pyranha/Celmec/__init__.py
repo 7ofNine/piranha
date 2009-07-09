@@ -222,8 +222,7 @@ def delaunay(degree = 10, t = None):
 	P = st(psym('P'))
 	Q = st(psym('Q'))
 	# Now set the truncator for the series expansions.
-	# TODO: rewrite when we allow for direct input of symbols as strings.
-	degree_truncator.set([psym('P')],degree)
+	degree_truncator.set(['P'],degree)
 	# Calculate series expansion for e.
 	e = root(2, two * P * Lambda ** -1 - P ** 2 * Lambda ** -2)
 	retval.append(e)

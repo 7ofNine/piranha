@@ -344,7 +344,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::sub(const psym &p, const SubSeries &s) const
+	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::sub(const std::string &name, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
@@ -353,6 +353,7 @@ namespace piranha
 		typedef typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type pos_tuple_type;
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
+		const psym p(name);
 		sub_caches_type sub_caches;
 		Derived this_copy(*derived_const_cast);
 		SubSeries s_copy(s);
