@@ -161,10 +161,13 @@ namespace piranha
 								return;
 							}
 							const double
-								limit1 = m_truncation_level / (norm1 * 2),
-								limit2 = m_truncation_level / (norm2 * 2);
+								limit1 = -norm2 + std::sqrt(norm2 * norm2 + m_truncation_level * norm2 / norm1),
+								limit2 = -norm1 + std::sqrt(norm1 * norm1 + m_truncation_level * norm1 / norm2);
 							double delta1 = 0, delta2 = 0;
-							while (true) {
+							// NOTE: the issue here is that it may happen that limit is greater than norm, in which case all the calculations
+							// done for maximimzing the number of terms truncated do not apply. In such case for the time being we just turn
+							// off truncation, but it should be probably dealt with differently.
+							while (limit1 < norm1) {
 								const term_type1 **tmp = (m_t1) ? m_t1 - 1 : &(*(m_multiplier.m_terms1.end() - 1));
 								delta1 += (*tmp)->m_cf.norm(m_multiplier.m_args_tuple) * (*tmp)->m_key.norm(m_multiplier.m_args_tuple);
 								// If, by going to the next term, we exceed the delta1, leave m_t1 where it is and break out.
@@ -178,7 +181,7 @@ namespace piranha
 									break;
 								}
 							}
-							while (true) {
+							while (limit2 < norm2) {
 								const term_type2 **tmp = (m_t2) ? m_t2 - 1 : &(*(m_multiplier.m_terms2.end() - 1));
 								delta2 += (*tmp)->m_cf.norm(m_multiplier.m_args_tuple) * (*tmp)->m_key.norm(m_multiplier.m_args_tuple);
 								// If, by going to the next term, we exceed the delta2, leave m_t2 where it is and break out.

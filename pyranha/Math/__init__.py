@@ -191,7 +191,7 @@ def dbesselJ(order,arg):
 	try:
 		return arg.dbesselJ(order)
 	except AttributeError:
-		raise AttributeError("The dbesselJ() method is not available for this argument type, returning None.")
+		return _Math.dbesselJ(order,arg)
 
 def besselJ_div_m(order,arg,m = 1):
 	"""
