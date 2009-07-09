@@ -367,10 +367,10 @@ namespace pyranha
 	template <class T>
 	inline void power_series_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("degree", &T::degree, "Degree.");
-		inst.def("partial_degree", &T::partial_degree, "Partial degree.");
-		inst.def("order", &T::order, "Order.");
-		inst.def("partial_order", &T::partial_order, "Partial order.");
+		inst.def("degree", &T::degree, "(Partial) degree.");
+		inst.def("degree", &T::partial_degree);
+		inst.def("order", &T::order, "(Partial) order.");
+		inst.def("order", &T::partial_order);
 	}
 
 	template <class T>

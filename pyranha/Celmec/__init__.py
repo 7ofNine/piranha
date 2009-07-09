@@ -192,7 +192,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 
 	- a, semi-major axis,
 	- e, eccentricity,
-	- sin(i/2), sine of half inclination (here referred to as 's'),
+	- sin(i/2), sine of half inclination,
 	- omega, argument of pericentre,
 	- Omega, longitude of the ascending node,
 	- M, mean anomaly,
