@@ -47,7 +47,15 @@ using namespace pyranha;
 std::string static inline py_psym_repr(const psym &p)
 {
 	std::ostringstream stream;
-	stream << p.get_name();
+	stream << "Symbol: '" << p.get_name() << "' - [";
+	const size_t size = p.get_time_eval().size();
+	for (size_t i = 0; i < size; ++i) {
+		stream << p.get_time_eval()[i];
+		if (i < size - 1) {
+			stream << ',';
+		}
+	}
+	stream << ']';
 	return stream.str();
 }
 

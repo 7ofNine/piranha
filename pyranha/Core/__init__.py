@@ -18,6 +18,7 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from _Core import *
+from impl import *
 
 def copy(arg):
 	"""
@@ -91,46 +92,8 @@ def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize =
 	"""
 	return retval
 
-def psyms(names):
-	"""
-	Create psyms from a string of space-separated names.
-	"""
-	try:
-		import IPython.ipapi
-	except ImportError:
-		raise ImportError("IPython not available.")
-	ip = IPython.ipapi.get()
-	for i in names.split():
-		try:
-			# Try to fetch the psym from the psym manager.
-			ip.ex("%s = psym(\"%s\")" % (i,i))
-		except SyntaxError:
-			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
-
-def series(names,series_t = None):
-	"""
-	Create series from a string of space-separated names. If the optional parameter series_t is None,
-	Pyranha's default series type (ds) will be used. Otherwise the type series_t is used for
-	series creation.
-	"""
-	try:
-		import IPython.ipapi
-	except ImportError:
-		raise ImportError("IPython not available.")
-	import pyranha
-	if series_t == None:
-		s_type = "ds"
-	else:
-		if series_t not in pyranha.manipulators:
-			raise TypeError(str(type(series_t)) + " is not recognized as a valid series type.")
-		s_type = series_t().__short_type__
-	ip = IPython.ipapi.get()
-	for i in names.split():
-		try:
-			# Try to fetch the psym from the psym manager.
-			ip.ex("%s = %s(psym(\"%s\"))" % (i,s_type,i))
-		except SyntaxError:
-			raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
+psyms = impl.__psyms()
+series = impl.__series()
 
 def load(*args):
 	"""

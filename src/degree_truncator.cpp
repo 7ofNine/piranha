@@ -52,6 +52,20 @@ namespace piranha
 		m_mode = deg;
 	}
 
+	void degree::set(const std::string &s, const int &n)
+	{
+		m_degree_limit = n;
+		m_psyms = names2psyms(std::vector<std::string>(1,s));
+		m_mode = p_deg;
+	}
+
+	void degree::set(const std::string &s, const mp_rational &r)
+	{
+		m_degree_limit = r;
+		m_psyms = names2psyms(std::vector<std::string>(1,s));
+		m_mode = p_deg;
+	}
+
 	void degree::set(const std::vector<std::string> &vs, const int &n)
 	{
 		m_degree_limit = n;

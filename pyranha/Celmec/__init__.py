@@ -167,19 +167,11 @@ def vsop_to_dps(input_filename):
 				retval[-1] += K + "!" + alpha + "|" + trig_array + ";c\n"
 	return retval
 
-def delaunay(degree = 10, t = None):
+def delaunay2oe(d_elements = None, degree = 10, t = None):
 	"""
 	Returns a list containing the expressions of classical orbital elements in terms of series of modified Delaunay variables.
-	Specifically, the list will contain the expressions for:
-
-	- a, semi-major axis,
-	- e, eccentricity,
-	- sin(i/2), sine of half inclination (here referred to as 's'),
-	- omega, argument of pericentre,
-	- Omega, longitude of the ascending node,
-	- M, mean anomaly,
-
-	in terms of the modified Delaunay elements:
+	If d_elements is not None, all other arguments are ignored and d_elements is assumed to be a list of series representing
+	the following modified Delaunay variables:
 
 	- Lambda,
 	- P,
@@ -188,41 +180,71 @@ def delaunay(degree = 10, t = None):
 	- p,
 	- q.
 
-	Additionally, the resulting series will contain also as symbolic variable the number 2 as "two", which
+	The truncation of the series expansions needed for the transformation from Delaunay variables to classical orbital elements is
+	established by the active truncator.
+
+	If d_elements is None, then the series representing the Delaunay variables are created internally. The series will be of type t
+	or qqps if t is None. Series truncation will be degree-based, with the maximum degree for the Delaunay variable P being the input
+	parameter 'degree'. Note that for small eccentricities and inclinations, P is proportional to e ** 2.
+
+	In all cases, the return value of this function will be a list representing the series expansions of the following classical
+	orbital elements in terms of modifed Delaunay variables:
+
+	- a, semi-major axis,
+	- e, eccentricity,
+	- sin(i/2), sine of half inclination (here referred to as 's'),
+	- omega, argument of pericentre,
+	- Omega, longitude of the ascending node,
+	- M, mean anomaly,
+
+	Additionally, the resulting series will contain also as symbolic variable the integral constant 2 as "two", which
 	is kept in literal form since its square root appears in the expressions involving the Delaunay elements.
-
-	The series expansions will be developed up to the total degree specified in input for the element P.
-	Note that for small eccentricities and inclinations, P is proportional to e ** 2.
-
-	The optional parameter t is the series type to be used for the expansion. If None, the piranha series type
-	qqps (Poisson series with rational coefficients and rational exponents) will be used.
 
 	Finally, note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is
 	set equal to unity.
 	"""
-	from pyranha.Qqps import qqps
-	from pyranha.Core import degree_truncator, psym
 	from pyranha.Math import root
-	if degree <= 0:
-		raise ValueError('Truncation degree must be a positive value.')
-	# st is the series type.
-	if t is None:
-		st = qqps
+	if d_elements is None:
+		from pyranha.Qqps import qqps
+		from pyranha.Core import psym
+		import pyranha.Truncators
+		if degree <= 0:
+			raise ValueError('Truncation degree must be a positive value.')
+		# st is the series type.
+		if t is None:
+			st = qqps
+		else:
+			st = t
+		# Reset all the truncators.
+		pyranha.Truncators.unset()
+		# Create the series representing the Delaunay elements.
+		Lambda = st(psym('Lambda'))
+		P = st(psym('P'))
+		Q = st(psym('Q'))
+		lambda_ = st(psym('lambda'))
+		p = st(psym('p'))
+		q = st(psym('q'))
+		# Now set the truncator for the series expansions.
+		pyranha.Truncators.degree.set('P',degree)
 	else:
-		st = t
-	# Reset the degree truncator.
-	degree_truncator.unset()
+		try:
+			iter(d_elements)
+		except TypeError:
+			raise TypeError('Please provide a list of series as input parameter.')
+		if len(d_elements) != 6:
+			raise ValueError('The list of Delaunay variables must contain 6 elements.')
+		Lambda = d_elements[0]
+		P = d_elements[1]
+		Q = d_elements[2]
+		lambda_ = d_elements[3]
+		p = d_elements[4]
+		q = d_elements[5]
 	retval = []
-	# Let's start with the semi-major axis, easy.
-	Lambda = st(psym('Lambda'))
-	retval.append(Lambda ** 2)
 	# Let's declare the "two" symbol and construct a series from it.
-	two = st(psym('two'))
-	# P and Q
-	P = st(psym('P'))
-	Q = st(psym('Q'))
-	# Now set the truncator for the series expansions.
-	degree_truncator.set(['P'],degree)
+	two = st(psym('two',2))
+	# Let's start with the semi-major axis, easy.
+	a = Lambda ** 2
+	retval.append(a)
 	# Calculate series expansion for e.
 	e = root(2, two * P * Lambda ** -1 - P ** 2 * Lambda ** -2)
 	retval.append(e)
@@ -230,10 +252,10 @@ def delaunay(degree = 10, t = None):
 	s = root(2,Q * (two * Lambda) ** -1) * root(-2, 1 - P * Lambda ** -1)
 	retval.append(s)
 	# Finally, let's deal with the angle variables.
-	lambda_ = st(psym('lambda'))
-	p = st(psym('p'))
-	q = st(psym('q'))
 	retval.append(q - p) # omega
 	retval.append(-q) # Omega
 	retval.append(lambda_ + p) # M
+	if d_elements is None:
+		# Reset all the truncators on exit, if needed.
+		pyranha.Truncators.unset()
 	return retval
