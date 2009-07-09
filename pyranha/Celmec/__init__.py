@@ -204,9 +204,9 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	set equal to unity.
 	"""
 	from pyranha.Math import root
+	from pyranha.Core import psym
 	if d_elements is None:
 		from pyranha.Qqps import qqps
-		from pyranha.Core import psym
 		import pyranha.Truncators
 		if degree <= 0:
 			raise ValueError('Truncation degree must be a positive value.')
@@ -233,6 +233,9 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 			raise TypeError('Please provide a list of series as input parameter.')
 		if len(d_elements) != 6:
 			raise ValueError('The list of Delaunay variables must contain 6 elements.')
+		if [type(d_elements[0])] * 6 != [type(e) for e in d_elements]:
+			raise TypeError('The series representing Delaunay variables must be all of the same type.')
+		st = type(d_elements[0])
 		Lambda = d_elements[0]
 		P = d_elements[1]
 		Q = d_elements[2]
@@ -255,7 +258,4 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	retval.append(q - p) # omega
 	retval.append(-q) # Omega
 	retval.append(lambda_ + p) # M
-	if d_elements is None:
-		# Reset all the truncators on exit, if needed.
-		pyranha.Truncators.unset()
 	return retval
