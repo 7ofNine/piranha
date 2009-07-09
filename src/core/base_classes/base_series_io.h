@@ -146,7 +146,7 @@ namespace piranha
 			print_from_it<Iterator>::run_tex(it,tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
-			if (it != end && !tmp.empty() && tmp[0] != '-') {
+			if (it != start && !tmp.empty() && tmp[0] != '-') {
 				tmp.insert(tmp.begin(),'+');
 			}
 			if (!tmp.empty()) {
