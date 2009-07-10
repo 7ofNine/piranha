@@ -384,7 +384,7 @@ namespace pyranha
 		inst.def("degree", &p_degree_str<T>);
 		inst.def("order", &T::order, "(Partial) order.");
 		inst.def("order", &T::partial_order);
-		inst.def("irder", &p_order_str<T>);
+		inst.def("order", &p_order_str<T>);
 	}
 
 	template <class T>
