@@ -107,6 +107,7 @@ namespace piranha
 		m_path = m_default_path;
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
+		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.
