@@ -364,13 +364,27 @@ namespace pyranha
 
 #undef __celmec_inst
 
+	template <class PowerSeries>
+	typename PowerSeries::degree_type p_degree_str(const PowerSeries &p, const std::string &name)
+	{
+		return p.partial_degree(std::vector<std::string>(1,name));
+	}
+
+	template <class PowerSeries>
+	typename PowerSeries::degree_type p_order_str(const PowerSeries &p, const std::string &name)
+	{
+		return p.partial_order(std::vector<std::string>(1,name));
+	}
+
 	template <class T>
 	inline void power_series_instantiation(boost::python::class_<T> &inst)
 	{
 		inst.def("degree", &T::degree, "(Partial) degree.");
 		inst.def("degree", &T::partial_degree);
+		inst.def("degree", &p_degree_str<T>);
 		inst.def("order", &T::order, "(Partial) order.");
 		inst.def("order", &T::partial_order);
+		inst.def("irder", &p_order_str<T>);
 	}
 
 	template <class T>
