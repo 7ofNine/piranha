@@ -68,6 +68,10 @@ namespace piranha
 
 	void degree::set(const std::vector<std::string> &vs, const int &n)
 	{
+		if (!vs.size()) {
+			set(n);
+			return;
+		}
 		m_degree_limit = n;
 		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
@@ -75,6 +79,10 @@ namespace piranha
 
 	void degree::set(const std::vector<std::string> &vs, const mp_rational &r)
 	{
+		if (!vs.size()) {
+			set(r);
+			return;
+		}
 		m_degree_limit = r;
 		m_psyms = names2psyms(vs);
 		m_mode = p_deg;
@@ -84,16 +92,15 @@ namespace piranha
 	{
 		switch (m_mode) {
 			case inactive:
-				stream << "No minimum degree limit set.";
+				stream << "No degree limit set.";
 				break;
 			case deg:
-				stream << "Minimum degree limit: " << m_degree_limit;
+				stream << "Degree limit: " << m_degree_limit;
 				break;
 			case p_deg:
-				stream << "Partial minimum degree limit: " << m_degree_limit << '\n';
-				stream << "Affected symbols: [";
+				stream << "Partial degree limit: " << m_degree_limit << ", Affected symbols: [";
 				for (size_t i = 0; i < m_psyms.size(); ++i) {
-					stream << m_psyms[i].get_name();
+					stream << '\'' << m_psyms[i].get_name() << '\'';
 					if (i < m_psyms.size() - 1) {
 						stream << " ";
 					}

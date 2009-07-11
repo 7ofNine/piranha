@@ -19,5 +19,12 @@
 
 from _Truncators import *
 
-norm = _Truncators.__norm_truncator()
-degree = _Truncators.__degree_truncator()
+_truncators_list_ = filter(lambda x: x.endswith('_truncator'),dir(_Truncators))
+
+for _n in _truncators_list_:
+	exec('%s = _Truncators.%s()' % (_n.split('_truncator')[0][2:],_n))
+
+def status():
+	for n in _truncators_list_:
+		exec('t = _Truncators.%s()' % n)
+		print('%s: %s' % (n.split('_truncator')[0][2:],str(t)))

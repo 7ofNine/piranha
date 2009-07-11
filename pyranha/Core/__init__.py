@@ -96,10 +96,14 @@ def display(series):
 	import shutil, tempfile, os.path
 	from pyranha.Core import latex_tab
 	from subprocess import Popen, PIPE, STDOUT
+	if isinstance(series,str):
+		s = series
+	else:
+		s = latex_tab(series.split())
 	tmp_dir = tempfile.mkdtemp()
 	try:
 		tex_file = tempfile.NamedTemporaryFile(dir = tmp_dir, delete = False)
-		tex_file.write(latex_tab(series.split()))
+		tex_file.write(s)
 		tex_file.close()
 		proc = Popen(['pdflatex','-interaction=batchmode','-jobname=output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
 		output = proc.communicate()[0]
@@ -115,6 +119,7 @@ def display(series):
 			output = tmp
 		proc = Popen(['okular',os.path.join(tmp_dir,'output.pdf')], stdout = PIPE, stderr = STDOUT)
 		proc.wait()
+		raw_input('Press Enter to continue...')
 	finally:
 		shutil.rmtree(tmp_dir)
 
