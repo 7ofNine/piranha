@@ -193,6 +193,8 @@ namespace piranha
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_tex(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+			template <class Iterator, class Series, class ArgsTuple>
+			void generic_base_split(std::vector<std::vector<Series> > &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
@@ -225,6 +227,24 @@ namespace piranha
 #define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::toolbox<piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name > >
+
+	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
+	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
+	template <class Iterator>
+	struct it_getter {
+		static const Iterator &get(const Iterator &it)
+		{
+			return it;
+		}
+	};
+
+	template <class TermPointer>
+	struct it_getter<TermPointer *> {
+		static const TermPointer get(const TermPointer *p)
+		{
+			return *p;
+		}
+	};
 }
 
 #endif

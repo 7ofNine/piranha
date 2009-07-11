@@ -65,30 +65,6 @@ namespace piranha
 		}
 	}
 
-	template <class Iterator>
-	struct print_from_it {
-		template <class ArgsTuple>
-		static void run_pretty(const Iterator &it, std::ostream &stream, const ArgsTuple &args_tuple) {
-			it->print_pretty(stream,args_tuple);
-		}
-		template <class ArgsTuple>
-		static void run_tex(const Iterator &it, std::ostream &stream, const ArgsTuple &args_tuple) {
-			it->print_tex(stream,args_tuple);
-		}
-	};
-
-	template <class PointerToPointer>
-	struct print_from_it<PointerToPointer *> {
-		template <class ArgsTuple>
-		static void run_pretty(PointerToPointer const *p, std::ostream &stream, const ArgsTuple &args_tuple) {
-			(*p)->print_pretty(stream,args_tuple);
-		}
-		template <class ArgsTuple>
-		static void run_tex(PointerToPointer const *p, std::ostream &stream, const ArgsTuple &args_tuple) {
-			(*p)->print_tex(stream,args_tuple);
-		}
-	};
-
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
@@ -99,7 +75,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
 			settings::setup_stream(tmp_stream);
-			print_from_it<Iterator>::run_pretty(it,tmp_stream,args_tuple);
+			it_getter<Iterator>::get(it)->print_pretty(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') {
@@ -143,7 +119,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
 			settings::setup_stream(tmp_stream);
-			print_from_it<Iterator>::run_tex(it,tmp_stream,args_tuple);
+			it_getter<Iterator>::get(it)->print_tex(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') {

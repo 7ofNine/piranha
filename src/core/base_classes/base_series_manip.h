@@ -281,21 +281,33 @@ namespace piranha
 		piranha_assert(retval.empty());
 		piranha_assert(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
 		if (n == 0) {
-			const const_iterator it_f = end();
-			for (const_iterator it = begin(); it != it_f; ++it) {
-				Series tmp_cf(Series::base_series_from_cf(it->m_cf,args_tuple));
-				Series tmp_key(Series::base_series_from_key(it->m_key,args_tuple));
-				std::vector<Series> tmp;
-				tmp.reserve(2);
-				tmp.push_back(tmp_cf);
-				tmp.push_back(tmp_key);
-				retval.push_back(tmp);
+			try {
+				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+				generic_base_split(retval,&(*s.begin()),&(*s.end()),args_tuple);
+			} catch (const value_error &) {
+				generic_base_split(retval,begin(),end(),args_tuple);
 			}
 		} else {
 			if (!is_single_cf()) {
 				piranha_throw(value_error,"cannot split up to the specified level: series is non-degenerate");
 			}
 			begin()->m_cf.split(retval,n - 1,args_tuple);
+		}
+	}
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class Iterator, class Series, class ArgsTuple>
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_base_split(std::vector<std::vector<Series> > &retval, const Iterator &start,
+		const Iterator &end, const ArgsTuple &args_tuple) const
+	{
+		for (Iterator it = start; it != end; ++it) {
+			Series tmp_cf(Series::base_series_from_cf(it_getter<Iterator>::get(it)->m_cf,args_tuple));
+			Series tmp_key(Series::base_series_from_key(it_getter<Iterator>::get(it)->m_key,args_tuple));
+			std::vector<Series> tmp;
+			tmp.reserve(2);
+			tmp.push_back(tmp_cf);
+			tmp.push_back(tmp_key);
+			retval.push_back(tmp);
 		}
 	}
 }

@@ -92,6 +92,32 @@ def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize =
 	"""
 	return retval
 
+def display(series):
+	import shutil, tempfile, os.path
+	from pyranha.Core import latex_tab
+	from subprocess import Popen, PIPE, STDOUT
+	tmp_dir = tempfile.mkdtemp()
+	try:
+		tex_file = tempfile.NamedTemporaryFile(dir = tmp_dir, delete = False)
+		tex_file.write(latex_tab(series.split()))
+		tex_file.close()
+		proc = Popen(['pdflatex','-interaction=batchmode','-jobname=output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
+		output = proc.communicate()[0]
+		if proc.returncode:
+			raise RuntimeError(output)
+		while True:
+			proc = Popen(['pdflatex','-interaction=batchmode','-jobname=output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
+			tmp = proc.communicate()[0]
+			if proc.returncode:
+				raise RuntimeError(tmp)
+			if tmp == output:
+				break
+			output = tmp
+		proc = Popen(['okular',os.path.join(tmp_dir,'output.pdf')], stdout = PIPE, stderr = STDOUT)
+		proc.wait()
+	finally:
+		shutil.rmtree(tmp_dir)
+
 psyms = impl.__psyms()
 series = impl.__series()
 
