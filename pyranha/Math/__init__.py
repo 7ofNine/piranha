@@ -72,23 +72,6 @@ def choose(x,k):
 	if not isinstance(k,int): raise TypeError('k must be an int')
 	return __choose(x,k)
 
-def complex(real,imag_ = None):
-	"""
-	Wrapper around standard builtin "complex". If arg provides a complex() method, it will be called, otherwise
-	builtin complex will be called.
-	"""
-	try:
-		retval = real.complex()
-		if imag_ != None:
-			retval.imag = imag_
-		return retval
-	except AttributeError:
-		if imag_ == None:
-			imag = 0
-		else:
-			imag = imag_
-		return (real + imag*1j)
-
 def ei(arg):
 	"""
 	Complex exponential of arg.
