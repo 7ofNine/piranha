@@ -121,10 +121,14 @@ namespace piranha
 					typedef int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
 				public:
 					ei_sub_cache():ancestor::int_power_cache() {}
-					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
+					// NOTE: here we assume that s as absolute value equal to one, which lets us calculate its
+					// inverse as conjugate.
+					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
+					{
 						this->m_arith_functor.m_args_tuple = args_tuple;
 						this->m_container[0] = SubSeries().base_add(1,*args_tuple);
 						this->m_container[1] = s;
+						this->m_container[-1] = s.base_conjugate(*args_tuple);
 					}
 			};
 		public:
