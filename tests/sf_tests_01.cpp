@@ -31,7 +31,7 @@ int main()
 	int retval = 0;
 	psym x_("x");
 	const ps x(x_);
-	degree_truncator::set(80);
+	truncators::degree::set(80);
 	retval += (x.besselJ(3) != -x.besselJ(-3));
 	retval += (x.root(1) != x);
 	retval += (x.pow(-3).root(-3) != x);
@@ -42,7 +42,7 @@ int main()
 	const int order = -5;
 	const ps y = x.besselJ(order);
 	retval += (
-		x.pow(2)*y.partial(x_,2)+x*y.partial(x_)+
+		x.pow(2)*y.partial("x",2)+x*y.partial("x")+
 		(x.pow(2)-ps(order*order))*y != 0
 	);
 	// Relation between Jn and its derivatives.

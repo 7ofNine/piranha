@@ -31,16 +31,16 @@ int main()
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
 	psym e("e"), M("M");
-	degree_truncator::set(401);
+	truncators::degree::set(401);
 	ps res(ps::r_a(ps(e),ps(M)));
 	std::cout << res.length() << '\n';
 	std::cout << res.atoms() << '\n';
 	retval += (res.length() != 401 || res.atoms() != 80805);
 
 	// Identity.
-	degree_truncator::set(20);
+	truncators::degree::set(20);
 	ps e_s(e), M_s(M);
-	retval += (qps::EE(e_s,M_s).cos().sub(e,e_s-1).sub(e,e_s+1) != qps::cos_E(e_s,M_s));
+	retval += (qps::EE(e_s,M_s).cos().sub("e",e_s-1).sub("e",e_s+1) != qps::cos_E(e_s,M_s));
 
 	// Another identity.
 	retval += (qps::r_a(e_s,M_s) * qps::sin_f(e_s,M_s) !=
