@@ -18,6 +18,9 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from _Math import *
+from math import *
+
+# NOTE: import cmath into cos, sin and allow for complex arguments?
 
 def factorial(n):
 	"""
