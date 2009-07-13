@@ -59,13 +59,9 @@ namespace piranha
 			typedef boost::unordered_set<term_type,boost::hash<term_type>,std::equal_to<term_type>,allocator_type>
 				container_type;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
-			typedef typename container_type::iterator iterator;
 			typedef typename container_type::const_iterator const_iterator;
-			iterator begin();
 			const_iterator begin() const;
-			iterator end();
 			const_iterator end() const;
-			iterator find_term(const term_type &);
 			const_iterator find_term(const term_type &) const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
@@ -74,7 +70,7 @@ namespace piranha
 			template <class Iterator, class ArgsTuple>
 			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
 			template <class ArgsTuple>
-			void term_erase(const iterator &, const ArgsTuple &);
+			void term_erase(const const_iterator &, const ArgsTuple &);
 			void clear_terms();
 			size_t length() const;
 			bool empty() const;

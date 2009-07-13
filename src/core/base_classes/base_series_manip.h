@@ -130,15 +130,6 @@ namespace piranha
 		}
 	}
 
-	// This cannot be const because we use this in insertion function, hence we need a non const iterator.
-	/// Find term.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::find_term(const term_type &t)
-	{
-		return m_container.find(t);
-	}
-
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
 	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::find_term(const term_type &t) const
@@ -157,7 +148,7 @@ namespace piranha
 		}
 		piranha_assert(term.m_cf.is_insertable(args_tuple) && term.m_key.is_insertable(args_tuple) &&
 			!term.m_cf.needs_padding(args_tuple) && !term.m_key.needs_padding(args_tuple) && term.is_canonical(args_tuple));
-		iterator it(find_term(term));
+		const_iterator it(find_term(term));
 		if (it == end()) {
 			// The term is NOT a duplicate, insert in the set.
 			term_insert_new<Sign>(term, args_tuple);
@@ -191,7 +182,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_erase(const iterator &it,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_erase(const const_iterator &it,
 			const ArgsTuple &)
 	{
 		m_container.erase(it);

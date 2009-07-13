@@ -43,7 +43,7 @@ namespace pyranha
 	// NOT thread-safe.
 	template <class NamedSeries>
 	struct __PIRANHA_VISIBLE named_iterator {
-		typedef typename NamedSeries::iterator s_iterator;
+		typedef typename NamedSeries::const_iterator s_iterator;
 		typedef typename s_iterator::iterator_category iterator_category;
 		typedef std::vector<NamedSeries> value_type;
 		typedef typename s_iterator::difference_type difference_type;

@@ -159,24 +159,10 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::begin()
-	{
-		return m_container.begin();
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
 	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::begin() const
 	{
 		return m_container.begin();
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::iterator
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::end()
-	{
-		return m_container.end();
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
