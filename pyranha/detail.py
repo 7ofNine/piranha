@@ -116,6 +116,14 @@ def __series_eval_sub(self,subs):
 		retval = retval.sub(psym(a.name),type(self)(subs[a.name]))
 	return retval.eval(0)
 
+def __series_repr(self):
+	"""
+	__repr__ method that prints the series' type and then the series itself in pretty print.
+	"""
+	retval = 'Series type: %s\n' % self.__short_type__
+	retval += self.__impl_repr__()
+	return retval
+
 def __add_method(module_name,method_name,function):
 	"""
 	Add a method to a manipulator.
@@ -149,6 +157,7 @@ def __enhance_manipulators(manipulators):
 		__add_method(i, "psi", __series_psi)
 		__add_method(i, "split", __series_split)
 		__add_method(i, "eval_sub", __series_eval_sub)
+		__add_method(i, "__repr__", __series_repr)
 
 import pyranha
 

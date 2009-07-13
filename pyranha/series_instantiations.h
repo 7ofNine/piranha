@@ -123,7 +123,7 @@ namespace pyranha
 		//inst.def("__iter__", boost::python::iterator<T>());
 		inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));
 		inst.def("__len__", &T::length);
-		inst.def("__repr__", &py_print_to_string<T>);
+		inst.def("__impl_repr__", &py_print_to_string<T>);
 		// Pyranha-specific special methods.
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
