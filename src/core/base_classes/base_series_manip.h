@@ -206,8 +206,7 @@ namespace piranha
 		const Layout &l, Derived &retval, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
-		for (const_iterator it = begin();
-				it != it_f; ++it) {
+		for (const_iterator it = begin(); it != it_f; ++it) {
 			term_type term(*it);
 			term.m_cf.apply_layout(l,args_tuple);
 			term.m_key.apply_layout(l,args_tuple);
