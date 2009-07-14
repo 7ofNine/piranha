@@ -256,6 +256,7 @@ namespace piranha
 					if (!bucket.f[i]) {
 						bucket.f[i] = true;
 						bucket.t[i] = key;
+						++m_length;
 						return true;
 					}
 				}
@@ -267,6 +268,7 @@ namespace piranha
 						if (!extra_bucket[b].f[i]) {
 							extra_bucket[b].f[i] = true;
 							extra_bucket[b].t[i] = key;
+							++m_length;
 							return true;
 						}
 					}
