@@ -23,7 +23,6 @@
 
 #include <algorithm> // For std::min/max.
 #include <boost/integer.hpp>
-#include <boost/integer_traits.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp> // For sub cache selection.
@@ -104,8 +103,7 @@ namespace piranha
 				m_container.p = allocator_type().allocate(0);
 				// Construct only if the positions match.
 				if (n == Pos) {
-					piranha_assert(args_tuple.template get<Pos>().size() == 1 &&
-							 args_tuple.template get<Pos>()[0] == p);
+					piranha_assert(args_tuple.template get<Pos>().size() == 1 && args_tuple.template get<Pos>()[0] == p);
 					resize(1);
 					m_container.v[0] = 1;
 				}
@@ -278,13 +276,10 @@ namespace piranha
 			}
 			void assign_int_vector(const std::vector<int> &v)
 			{
-				const size_t size = v.size();
-				piranha_assert(boost::integer_traits<size_type>::const_max > size);
-				// TODO: check where this function is used to see if this resize can be avoided.
+				const size_type size = boost::numeric_cast<size_type>(v.size());
 				resize(size);
-				// TODO: check for assignments out of numerical boundaries.
 				for (size_t i = 0; i < size; ++i) {
-					m_container.v[i] = (value_type)v[i];
+					m_container.v[i] = boost::numeric_cast<value_type>(v[i]);
 				}
 			}
 			// Vector-like interface.
