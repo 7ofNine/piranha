@@ -148,7 +148,7 @@ namespace piranha
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				bool printed_something = false;
 				for (size_t i = 0; i < this->m_size; ++i) {
-					const int n = this->m_container.v[i];
+					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// Prepend the multiplication operator only if we already printed something.
@@ -169,7 +169,7 @@ namespace piranha
 			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				for (size_t i = 0; i < this->m_size; ++i) {
-					const int n = this->m_container.v[i];
+					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// Take care of printing the name of the exponent.
@@ -303,7 +303,7 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
-				if (pos_tuple.template get<ancestor::position>()[0].first && this->m_container.v[pos] != 0) {
+				if (pos_tuple.template get<ancestor::position>()[0].first && (*this)[pos] != 0) {
 					toolbox copy(*this);
 					--copy[pos];
 					retval = Series::base_series_from_key(copy,args_tuple);

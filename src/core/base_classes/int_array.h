@@ -59,8 +59,7 @@ namespace piranha
 			p_static_check(sizeof(packed_type) % sizeof(value_type_) == 0,
 				"Invalid packed/value ratio in int_array.");
 			typedef counting_allocator<packed_type,Allocator> allocator_type;
-			template <int Bits2, int Pos2, class Allocator2, class Derived2>
-				friend class int_array;
+			template <int Bits2, int Pos2, class Allocator2, class Derived2> friend class int_array;
 			union container_type {
 				value_type_	*v;
 				packed_type	*p;

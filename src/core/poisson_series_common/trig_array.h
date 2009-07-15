@@ -260,7 +260,7 @@ namespace piranha
 				}
 				bool printed_something = false;
 				for (size_t i = 0; i < this->m_size; ++i) {
-					const int n = this->m_container.v[i];
+					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If we already printed something and n is positive we are going to print the sign too.
@@ -291,7 +291,7 @@ namespace piranha
 				}
 				bool printed_something = false;
 				for (size_t i = 0; i < this->m_size; ++i) {
-					const int n = this->m_container.v[i];
+					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
 						// If we already printed something and n is positive we are going to print the sign too.
