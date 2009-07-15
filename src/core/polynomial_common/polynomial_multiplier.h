@@ -322,6 +322,7 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						term_type1 tmp_term;
+						// TODO: add debug info about cms' size here.
 						const c_iterator c_it_f = cms.end();
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
 							tmp_term.m_cf = c_it->m_cf;
