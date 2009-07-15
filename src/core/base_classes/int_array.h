@@ -56,8 +56,7 @@ namespace piranha
 			p_static_check(Bits <= sizeof(int) * 8, "Number of bits for value type in int_array must not be greater than sizeof(int).");
 			typedef typename boost::int_t<Bits>::fast value_type_;
 			typedef max_fast_int packed_type;
-			p_static_check(sizeof(packed_type) % sizeof(value_type_) == 0,
-				"Invalid packed/value ratio in int_array.");
+			p_static_check(sizeof(packed_type) % sizeof(value_type_) == 0, "Invalid packed/value ratio in int_array.");
 			typedef counting_allocator<packed_type,Allocator> allocator_type;
 			template <int Bits2, int Pos2, class Allocator2, class Derived2> friend class int_array;
 			union container_type {
@@ -76,17 +75,19 @@ namespace piranha
 			/**
 			 * Constructs an empty array.
 			 */
-			int_array(): m_flavour(true), m_size(0) {
+			int_array(): m_flavour(true), m_size(0)
+			{
 				m_container.p = allocator_type().allocate(0);
 			}
 			/// Copy ctor.
-			int_array(const int_array &other): m_flavour(other.m_flavour), m_size(other.m_size) {
+			int_array(const int_array &other): m_flavour(other.m_flavour), m_size(other.m_size)
+			{
 				init_copy(other);
 			}
 			/// Copy ctor. Position can be different.
 			template <int Pos2, class Derived2>
-			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour),
-				m_size(v.m_size) {
+			explicit int_array(const int_array<Bits,Pos2,Allocator,Derived2> &v): m_flavour(v.m_flavour), m_size(v.m_size)
+			{
 				init_copy(v);
 			}
 			/// Ctor from psym.
@@ -96,7 +97,8 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			int_array(const psym &p, const int &n, const ArgsTuple &args_tuple):
-					m_flavour(true), m_size(0) {
+					m_flavour(true), m_size(0)
+			{
 				(void)p;
 				(void)args_tuple;
 				m_container.p = allocator_type().allocate(0);
@@ -109,11 +111,14 @@ namespace piranha
 				}
 			}
 			/// Dtor.
-			~int_array() {
+			~int_array()
+			{
+				piranha_assert(verify_elements());
 				allocator_type().deallocate(m_container.p, packed_size(m_size));
 			}
 			/// Assignment operator.
-			int_array &operator=(const int_array &v) {
+			int_array &operator=(const int_array &v)
+			{
 				// Don't do anything if the memory address is the same.
 				if (this == &v) {
 					return *this;
@@ -125,32 +130,39 @@ namespace piranha
 					allocator_type a;
 					a.deallocate(m_container.p, p_size1);
 					m_container.p = a.allocate(p_size2);
-					m_size = v.m_size;
 				}
 				// Perform the copy from v to this.
 				packed_copy(m_container.p, v.m_container.p, p_size2);
+				// Take care of size.
+				m_size = v.m_size;
 				return *this;
 			}
-			void swap(int_array &other) {
+			/// Swap content.
+			void swap(int_array &other)
+			{
 				std::swap(m_flavour,other.m_flavour);
 				std::swap(m_size,other.m_size);
 				std::swap(m_container.p,other.m_container.p);
 			}
 			/// Do I need padding in order to be compatible with args_tuple?
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &args_tuple) const {
+			bool needs_padding(const ArgsTuple &args_tuple) const
+			{
 				return (m_size < args_tuple.template get<Pos>().size());
 			}
 			/// Am I insertion-compatible with args_tuple?
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &args_tuple) const {
+			bool is_insertable(const ArgsTuple &args_tuple) const
+			{
 				return (m_size <= args_tuple.template get<Pos>().size());
 			}
-			size_t atoms() const {
+			size_t atoms() const
+			{
 				return 1;
 			}
 			template <class ArgsTuple>
-			bool checkup(const ArgsTuple &args_tuple) const {
+			bool checkup(const ArgsTuple &args_tuple) const
+			{
 				if (args_tuple.template get<Pos>().size() == m_size) {
 					return true;
 				}
@@ -159,12 +171,14 @@ namespace piranha
 			}
 			/// Pad right.
 			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &args_tuple) {
+			void pad_right(const ArgsTuple &args_tuple)
+			{
 				piranha_assert(args_tuple.template get<Pos>().size() >= m_size);
 				resize(args_tuple.template get<Pos>().size());
 			}
 			template <class Layout, class ArgsTuple>
-			void apply_layout(const Layout &l, const ArgsTuple &) {
+			void apply_layout(const Layout &l, const ArgsTuple &)
+			{
 				const size_type l_size = boost::numeric_cast<size_type>(l.template get<Pos>().size());
 				// The layout must have at least all arguments in this.
 				piranha_assert(l_size >= m_size);
@@ -181,7 +195,8 @@ namespace piranha
 				m_container.p = new_container.p;
 			}
 			template <class TrimFlags>
-			void trim_test(TrimFlags &tf) const {
+			void trim_test(TrimFlags &tf) const
+			{
 				piranha_assert(tf.template get<position>().size() == m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					// If the integer is different from zero, turn on the flag..
@@ -191,7 +206,8 @@ namespace piranha
 				}
 			}
 			template <class TrimFlags, class ArgsTuple>
-			Derived trim(const TrimFlags &tf, const ArgsTuple &) const {
+			Derived trim(const TrimFlags &tf, const ArgsTuple &) const
+			{
 				Derived retval;
 				retval.m_flavour = m_flavour;
 				std::vector<int> tmp;
@@ -207,20 +223,23 @@ namespace piranha
 				return retval;
 			}
 			/// Invert the sign of the integers in the array.
-			void invert_sign() {
+			void invert_sign()
+			{
 				for (size_type i = 0; i < m_size; ++i) {
 					m_container.v[i] = -m_container.v[i];
 				}
 			}
 			/// Upload integers to vector of integers.
-			void upload_ints_to(std::vector<int> &v) const {
+			void upload_ints_to(std::vector<int> &v) const
+			{
 				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					v[i] = m_container.v[i];
 				}
 			}
 			/// Upload to v.first/second those integers which are less than/greater than the corresponding elements of v.
-			void test_min_max_ints(std::vector<std::pair<int, int> > &v) const {
+			void test_min_max_ints(std::vector<std::pair<int, int> > &v) const
+			{
 				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
 					if (m_container.v[i] < v[i].first) {
@@ -232,7 +251,8 @@ namespace piranha
 			}
 			/// Codify integers into generalised lexicographic representation.
 			template <class CodingVector, class ArgsTuple>
-			max_fast_int code(const CodingVector &v, const ArgsTuple &) const {
+			max_fast_int code(const CodingVector &v, const ArgsTuple &) const
+			{
 				// The +1 is because the coding vector contains one extra element at the end.
 				// The assert is >= instead of == beacuse we may code an array smaller than the
 				// coding vector when multiplying series with different numbers of arguments.
@@ -246,7 +266,8 @@ namespace piranha
 			/// Decode integers from generalised lexicographic representation.
 			template <class CodingVector, class MinMaxVec, class ArgsTuple>
 			void decode(const max_fast_int &n, const CodingVector &cv, const max_fast_int &h_min,
-						const MinMaxVec &mmv, const ArgsTuple &args_tuple) {
+				const MinMaxVec &mmv, const ArgsTuple &args_tuple)
+			{
 				resize(args_tuple.template get<position>().size());
 				// The -1 is because the coding vector contains one extra element at the end.
 				piranha_assert(cv.size() == static_cast<size_t>(m_size) + 1);
@@ -255,7 +276,8 @@ namespace piranha
 					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
-			void assign_int_vector(const std::vector<int> &v) {
+			void assign_int_vector(const std::vector<int> &v)
+			{
 				const size_t size = v.size();
 				piranha_assert(boost::integer_traits<size_type>::const_max > size);
 				// TODO: check where this function is used to see if this resize can be avoided.
@@ -267,15 +289,18 @@ namespace piranha
 			}
 			// Vector-like interface.
 			/// Array-like operator[], const version.
-			const value_type &operator[](const size_t &n) const {
+			const value_type &operator[](const size_t &n) const
+			{
 				piranha_assert(n < m_size);
 				return m_container.v[n];
 			}
 			/// Return container size.
-			size_t size() const {
+			size_t size() const
+			{
 				return m_size;
 			}
-			bool revlex_comparison(const Derived &a2) const {
+			bool revlex_comparison(const Derived &a2) const
+			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = m_size; i > 0; --i) {
@@ -287,7 +312,8 @@ namespace piranha
 				}
 				return false;
 			}
-			bool lex_comparison(const Derived &a2) const {
+			bool lex_comparison(const Derived &a2) const
+			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
 				for (size_t i = 0; i < m_size; ++i) {
@@ -301,12 +327,14 @@ namespace piranha
 			}
 		protected:
 			/// Array-like operator[], mutable version.
-			value_type &operator[](const size_t &n) {
+			value_type &operator[](const size_t &n)
+			{
 				piranha_assert(n < m_size);
 				return m_container.v[n];
 			}
 			/// Print to stream the elements separated by the default separator character.
-			void print_elements(std::ostream &out_stream) const {
+			void print_elements(std::ostream &out_stream) const
+			{
 				for (size_type i = 0; i < m_size; ++i) {
 					// We cast to int, which is the largest integer type admitted.
 					out_stream << static_cast<int>(m_container.v[i]);
@@ -320,21 +348,23 @@ namespace piranha
 			/**
 			 * Returns true if all elements are zero, false otherwise.
 			 */
-			bool elements_are_zero() const {
+			bool elements_are_zero() const
+			{
+				const packed_type *ptr = m_container.p;
 				const size_type p_size = packed_size(m_size);
 				for (size_type i = 0; i < p_size; ++i) {
-					if (m_container.p[i] != 0) {
+					if (ptr[i] != 0) {
 						return false;
 					}
 				}
 				return true;
 			}
-			// TODO: should we pass size_t here, and test against size_type and throw in case of out-of-range request?
 			/// Resize the container.
 			/**
 			 * The existing elements are copied over.
 			 */
-			void resize(const size_type &new_size) {
+			void resize(const size_type &new_size)
+			{
 				if (m_size == new_size) {
 					return;
 				}
@@ -353,7 +383,8 @@ namespace piranha
 			/**
 			 * Hashes only the integer elements of the array, not the flavour.
 			 */
-			size_t elements_hasher() const {
+			size_t elements_hasher() const
+			{
 				const size_type p_size = packed_size(m_size);
 				switch (p_size) {
 					case 0:
@@ -361,9 +392,10 @@ namespace piranha
 					case 1:
 						return m_container.p[0];
 				}
-				size_t retval = m_container.p[0];
+				const packed_type *ptr = m_container.p;
+				size_t retval = ptr[0];
 				for (size_type i = 1; i < p_size; ++i) {
-					boost::hash_combine(retval, m_container.p[i]);
+					boost::hash_combine(retval, ptr[i]);
 				}
 				return retval;
 			}
@@ -371,11 +403,13 @@ namespace piranha
 			/**
 			 * Tests only the integer elements of the array, not the flavour.
 			 */
-			bool elements_equal_to(const int_array &v) const {
+			bool elements_equal_to(const int_array &v) const
+			{
+				const packed_type *ptr1 = m_container.p, *ptr2 = v.m_container.p;
 				if (m_size == v.m_size) {
 					const size_type p_size = packed_size(m_size);
 					for (size_type i = 0; i < p_size; ++i) {
-						if (m_container.p[i] != v.m_container.p[i]) {
+						if (ptr1[i] != ptr2[i]) {
 							return false;
 						}
 					}
@@ -385,16 +419,21 @@ namespace piranha
 				return true;
 			}
 		private:
-			static size_type packed_size(const size_type &s) {
+			// Number of packed integers. A partially-filled packed integer counts as one.
+			static size_type packed_size(const size_type &s)
+			{
+				// Divide actual size by pack size and add 1 if the division is not exact.
 				return ((s >> pack_shift) + ((s & (pack_capacity - 1)) != 0));
 			}
-			static void packed_copy(packed_type *dest, const packed_type *src, const size_type &packed_size) {
+			static void packed_copy(packed_type *dest, const packed_type *src, const size_type &packed_size)
+			{
 				for (size_type i = 0; i < packed_size; ++i) {
 					dest[i] = src[i];
 				}
 			}
-			static packed_type *pack_init(const size_type &l_size) {
-				const size_type p_size = packed_size(l_size);
+			static packed_type *pack_init(const size_type &size)
+			{
+				const size_type p_size = packed_size(size);
 				packed_type *retval = allocator_type().allocate(p_size);
 				for (size_type i = 0; i < p_size; ++i) {
 					retval[i] = 0;
@@ -402,13 +441,23 @@ namespace piranha
 				return retval;
 			}
 			template <class IntArray>
-			void init_copy(const IntArray &other) {
+			void init_copy(const IntArray &other)
+			{
 				const size_type p_size = packed_size(m_size);
 				m_container.p = allocator_type().allocate(p_size);
 				packed_copy(m_container.p, other.m_container.p, p_size);
 			}
+			// Verify that the unused elements of the last packed integer, if any, are zero.
+			bool verify_elements() const
+			{
+				for (size_type i = m_size; i < packed_size(m_size) * pack_capacity; ++i) {
+					if (m_container.v[i]) {
+						return false;
+					}
+				}
+				return true;
+			}
 		protected:
-			// Data members.
 			/// Flavour.
 			bool					m_flavour;
 			/// Size of the array.
