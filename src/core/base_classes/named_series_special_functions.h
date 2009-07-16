@@ -100,70 +100,37 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			/// Legendre function of the first kind: Pnm(self).
+			/// Associated Legendre Function of degree n and order m.
 			/**
-			* This implementation uses recurrence relations. self_qc is the quadratic conjugate of self, i.e.,
-			* sqrt(1-self**2).
-			*/
-			// This recursion appears on Wikipedia.
-			Derived Pnm(const int &n_, const int &m_, const Derived &self_qc) const {
-				// This is P00 right now.
-				Derived retval(1);
-				int n(n_), m(std::abs(m_));
-				if (n_ < 0) {
-					n = -n_-1;
-				}
-				if (n == 0 && m == 0) {
-					return retval;
-				}
-				if (m > n) {
-					retval = Derived();
-					return retval;
-				}
-				piranha_assert(n >= m && n >= 0 && m >= 0);
-				Derived P00(retval), old_Pnm, tmp1;
-				int i = 0;
-				// Recursion to get from P_00 to P_mm.
-				for (; i < m; ++i) {
-					retval *= -(i*2+1);
-					retval *= self_qc;
-				}
-				piranha_assert(i == m);
-				// Recursion to get from P_mm to P_nm (n>m).
-				for (; i < n; ++i) {
-					old_Pnm *= -m-i;
-					old_Pnm /= -m+i+1;
-					tmp1 = old_Pnm;
-					old_Pnm = retval;
-					retval *= i*2+1;
-					retval /= -m+i+1;
-					retval *= *derived_const_cast;
-					retval += tmp1;
-				}
-				if (m_ < 0) {
-					for (int j = n + m; j >= n - m + 1; --j) {
-						retval /= j;
-					}
-					retval *= cs_phase(m);
-				}
-				return retval;
+			 * Implemented through multiple differentiation of hypergeometric series.
+			 * When m is odd, this method will attempt to calculate sqrt(1 - self ** 2) internally.
+			 */
+			Derived legendrePnm(const int &n, const int &m) const
+			{
+				return impl_legendrePnm(n,m,0);
 			}
-			Derived Pnm(const int &n, const int &m) const {
-				// Let's build sqrt(1-self**2).
-				Derived tmp(*derived_const_cast);
-				tmp *= tmp;
-				tmp *= -1;
-				tmp += Derived(1);
-				return Pnm(n,m,tmp.root(2));
+			/// Associated Legendre Function of degree n and order m.
+			/**
+			 * The additional input parameter self_qc is the quadratic conjugate of self, i.e. sqrt(1 - self ** 2).
+			 * It will be used when m is odd.
+			 */
+			Derived legendrePnm(const int &n, const int &m, const Derived &self_qc) const
+			{
+				return impl_legendrePnm(n,m,&self_qc);
 			}
-			Derived Pn(const int &n) const {
-				return Pnm(n,0,Derived());
+			/// Legendre polynomial.
+			/**
+			 * Equivalent to legendrePnm(n,0).
+			 */
+			Derived legendrePn(const int &n) const
+			{
+				return legendrePnm(n,0);
 			}
 			static std::complex<Derived> Ynm(const int &n, const int &m,
 				const Derived &theta, const Derived &phi) {
 				const std::complex<Derived> ei_theta(theta.ei());
 				std::complex<Derived> retval((phi * m).ei());
-				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
+				retval *= ei_theta.real().legendrePnm(n,m,ei_theta.imag());
 				return retval;
 			}
 			static std::complex<Derived> Ynm(const int &n, const int &m,
@@ -175,7 +142,7 @@ namespace piranha
 				} else {
 					retval = emi_phi.pow(m);
 				}
-				retval *= ei_theta.real().Pnm(n,m,ei_theta.imag());
+				retval *= ei_theta.real().legendrePnm(n,m,ei_theta.imag());
 				return retval;
 			}
 			static std::complex<Derived> Ynm(const int &n_, const int &m_, const Derived &theta,
@@ -217,7 +184,7 @@ namespace piranha
 					tmp *= einpi2(k);
 					tmp *= factorial(n-k);
 					tmp *= cp[k];
-					tmp *= cos_t.Pnm(n,k,sin_t);
+					tmp *= cos_t.legendrePnm(n,k,sin_t);
 					Derived tmp2;
 					for (int t = std::max<int>(0,k-m);
 						t <= std::min<int>(n-m,n+k); ++t) {
@@ -239,6 +206,42 @@ namespace piranha
 			static std::complex<Derived> Ynm(const int &n, const int &m, const Derived &theta,
 				const Derived &phi, const Derived &alpha, const Derived &beta, const Derived &gamma) {
 				return Ynm(n,m,theta,phi.ei(),(phi * -1).ei(),alpha,beta,gamma);
+			}
+		private:
+			Derived impl_legendrePnm(const int &n_, const int &m_, const Derived *self_qc) const
+			{
+				// Take care of negative degree and/or order.
+				const int n = (n_ >= 0) ? n_ : (-n_ - 1), m = (m_ >= 0) ? m_ : -m_;
+				Derived retval;
+				if (m > n) {
+					return retval;
+				}
+				std::vector<mp_rational> a_list, b_list;
+				a_list.push_back(mp_rational(-n));
+				a_list.push_back(mp_rational(n) + 1);
+				b_list.push_back(mp_rational(1));
+				retval = ((1 - *derived_const_cast) / 2).dhyperF(m,a_list,b_list);
+				// If m is odd we need to deal with a square root.
+				if (m & 1) {
+					if (self_qc) {
+						retval *= self_qc->pow(m);
+					} else {
+						retval *= (1 - derived_const_cast->pow(2)).root(2).pow(m);
+					}
+				} else {
+					retval *= (1 - derived_const_cast->pow(2)).pow(m / 2);
+				}
+				// Correct for the fact that we are not deriving with respect to self but to
+				// (1 - self) / 2. The cs_phase of the original definition of Pnm and the one
+				// of this correction cancel each other out.
+				retval /= mp_integer(2).pow(m);
+				// Finally, if original m was negative, we must multiply by another correcting factor.
+				if (m_ < 0) {
+					retval *= cs_phase(m);
+					retval *= (mp_integer(n) - m).factorial();
+					retval /= (mp_integer(n) + m).factorial();
+				}
+				return retval;
 			}
 	};
 }

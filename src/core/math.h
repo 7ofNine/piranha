@@ -325,13 +325,13 @@ namespace piranha
 	}
 
 	/// Associated Legendre function Pnm.
-	inline double Pnm(const int &n, const int &m, const double &arg)
+	inline double legendrePnm(const int &n, const int &m, const double &arg)
 	{
 		return boost::math::legendre_p(n, m, arg);
 	}
 
 	/// Legendre polynomial Pn.
-	inline double Pn(const int &n, const double &arg)
+	inline double legendrePn(const int &n, const double &arg)
 	{
 		return boost::math::legendre_p(n, arg);
 	}
@@ -340,7 +340,7 @@ namespace piranha
 		const std::complex<double> &)
 	{
 		std::complex<double> retval(std::pow(ei_phi,m));
-		retval *= Pnm(n,m,std::cos(theta));
+		retval *= legendrePnm(n,m,std::cos(theta));
 		return retval;
 	}
 
@@ -374,7 +374,7 @@ namespace piranha
 		for (int k = -n; k <=n; ++k) {
 			std::complex<double> tmp = std::pow(ei_phi,k) * std::polar(1.,-alpha*k);
 			tmp *= einpi2(k);
-			tmp *= Pnm(n,k,std::cos(theta));
+			tmp *= legendrePnm(n,k,std::cos(theta));
 			tmp *= factorial(n-k);
 			double tmp2 = 0;
 			for (int t = std::max<int>(0,k-m); t <= std::min<int>(n-m,n+k); ++t) {

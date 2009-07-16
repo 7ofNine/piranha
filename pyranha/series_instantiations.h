@@ -322,9 +322,9 @@ namespace pyranha
 		typedef T (T::*named_2)(const int &, const int &) const;
 		typedef T (T::*named_3)(const int &, const int &, const T &) const;
 		const char *Pnm_descr = "Associated Legendre function of integer degree arg2 and order arg3.";
-		inst.def("Pnm", named_2(&T::Pnm), Pnm_descr);
-		inst.def("Pnm", named_3(&T::Pnm), Pnm_descr);
-		inst.def("Pn", &T::Pn, "Legendre polynomial of degree arg2.");
+		inst.def("legendrePnm", named_2(&T::legendrePnm), Pnm_descr);
+		inst.def("legendrePnm", named_3(&T::legendrePnm), Pnm_descr);
+		inst.def("legendrePn", &T::legendrePn, "Legendre polynomial of degree arg2.");
 		typedef T (T::*hyper_1)(const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &) const;
 		typedef T (T::*hyper_2)(const std::vector<piranha::mp_rational> &, const std::vector<piranha::mp_rational> &, const int &) const;
 		inst.def("hyperF", hyper_1(&T::hyperF));

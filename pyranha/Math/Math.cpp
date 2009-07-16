@@ -41,8 +41,8 @@ BOOST_PYTHON_MODULE(_Math)
 	def("dbesselJ", jn_real(&dbesselJ),
 		"First derivative of the Bessel function of the first kind of integer order and real double-precision argument.");
 	def("besselI", &besselI, "Modified Bessel function of the first kind of integer order.");
-	def("Pnm", &Pnm, "Associated Legendre function.");
-	def("Pn", &Pn, "Legendre polynomial.");
+	def("legendrePnm", &legendrePnm, "Associated Legendre function.");
+	def("legendrePn", &legendrePn, "Legendre polynomial.");
 	typedef std::complex<double> (*Ynm_plain)(const int &, const int &, const double &, const double &);
 	typedef std::complex<double> (*Ynm_ei_plain)(const int &, const int &, const double &,
 		const std::complex<double> &, const std::complex<double> &);

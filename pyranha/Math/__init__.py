@@ -190,7 +190,7 @@ def besselJ_div_m(order,arg,m = 1):
 	except AttributeError:
 		return _Math.besselJ(order,arg) / arg**m
 
-def Pnm(n,m,arg,*extra_arg):
+def legendrePnm(n,m,arg,*extra_arg):
 	"""
 	Associated Legendre function of integer degree n and order m of argument arg. The optional argument extra_arg
 	can be used to provide a value for sqrt(1-arg**2), which will be used for the calculation of
@@ -201,19 +201,19 @@ def Pnm(n,m,arg,*extra_arg):
 	if len(list(extra_arg)) > 1:
 		raise TypeError("Please provide at most one extra argument.")
 	try:
-		return arg.Pnm(n,m,*extra_arg)
+		return arg.legendrePnm(n,m,*extra_arg)
 	except AttributeError:
-		return _Math.Pnm(n,m,arg)
+		return _Math.legendrePnm(n,m,arg)
 
-def Pn(n,arg):
+def legendrePn(n,arg):
 	"""
 	Legendre polynomial of integer degree n of argument arg.
 	"""
 	if not isinstance(n,int): raise TypeError('n must be an int')
 	try:
-		return arg.Pn(n)
+		return arg.legendrePn(n)
 	except AttributeError:
-		return _Math.Pn(n,arg)
+		return _Math.legendrePn(n,arg)
 
 def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = None):
 	"""

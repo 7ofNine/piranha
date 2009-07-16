@@ -80,7 +80,7 @@ namespace piranha
 					}
 					if (!min_int) {
 						piranha_throw(value_error,"could not establish a value for the series limit in hyperF: "
-							"no limit was provided, the truncator failed to establish a limit and "
+							"no explicit limit was provided, the truncator failed to establish a limit and "
 							"no negative integer numbers were found in a_list");
 					}
 					piranha_assert(*min_int < 0);
