@@ -203,6 +203,7 @@ class series_trig_test(unittest.TestCase):
 	Exercise known relations involving trigonometric functions.
 	"""
 	def runTest(self):
+		# TODO: legendre tests with sine/cosine as arguments.
 		from pyranha.Core import psym, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
 		from pyranha.Truncators import degree, unset

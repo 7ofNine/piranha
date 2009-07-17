@@ -259,3 +259,91 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	retval.append(-q) # Omega
 	retval.append(lambda_ + p) # M
 	return retval
+
+def oe2delaunay(oe = None, degree = 10, t = None):
+	"""
+	Returns a list containing the expressions of modified Delaunay variables in terms of classical orbital elements.
+	If oe is not None, all other arguments are ignored and oe is assumed to be a list of series representing
+	the following classical orbital elements:
+
+	- a, semi-major axis,
+	- e, eccentricity,
+	- sin(i/2), sine of half inclination,
+	- omega, argument of pericentre,
+	- Omega, longitude of the ascending node,
+	- M, mean anomaly,
+
+	The truncation of the series expansions needed for the transformation from classical orbital elements to modified Delaunay variables
+	is established by the active truncator.
+
+	If oe is None, then the series representing the classical orbital elements are created internally. The series will be of type t
+	or qqps if t is None. Series truncation will be degree-based, with the maximum degree for the eccentricity being the input
+	parameter 'degree'.
+
+	In all cases, the return value of this function will be a list representing the series expansions of the following modified Delaunay
+	variables in terms of classical orbital elements:
+
+	- Lambda,
+	- P,
+	- Q,
+	- lambda,
+	- p,
+	- q.
+
+	Note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is
+	set equal to unity.
+	"""
+	from pyranha.Math import root
+	if oe is None:
+		from pyranha.Core import psym
+		from pyranha.Qqps import qqps
+		import pyranha.Truncators
+		if degree <= 0:
+			raise ValueError('Truncation degree must be a positive value.')
+		# st is the series type.
+		if t is None:
+			st = qqps
+		else:
+			st = t
+		# Reset all the truncators.
+		pyranha.Truncators.unset()
+		# Create the series representing the classical orbital elements.
+		a = st(psym('a'))
+		e = st(psym('e'))
+		s = st(psym('s'))
+		omega = st(psym('omega'))
+		Omega = st(psym('Omega'))
+		M = st(psym('M'))
+		# Now set the truncator for the series expansions.
+		pyranha.Truncators.degree.set('e',degree)
+	else:
+		try:
+			iter(oe)
+		except TypeError:
+			raise TypeError('Please provide a list of series as input parameter.')
+		if len(oe) != 6:
+			raise ValueError('The list of classical orbital elements must contain 6 elements.')
+		if [type(oe[0])] * 6 != [type(e) for e in oe]:
+			raise TypeError('The series representing classical orbital elements must be all of the same type.')
+		st = type(oe[0])
+		a = oe[0]
+		e = oe[1]
+		s = oe[2]
+		omega = oe[3]
+		Omega = oe[4]
+		M = oe[5]
+	retval = []
+	# Let's start with Lambda.
+	Lambda = root(2,a)
+	retval.append(Lambda)
+	# P.
+	P = Lambda * (1 - root(2,1 - e * e))
+	retval.append(P)
+	# Q.
+	Q = 2 * Lambda * root(2,1 - e * e) * (s * s)
+	retval.append(Q)
+	# Finally, let's deal with the angle variables.
+	retval.append(M + omega + Omega) # lambda
+	retval.append(-omega -Omega) # p
+	retval.append(-Omega) # q
+	return retval
