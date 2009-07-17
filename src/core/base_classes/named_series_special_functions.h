@@ -124,6 +124,9 @@ namespace piranha
 			 */
 			Derived legendrePn(const int &n) const
 			{
+				if (n < 0) {
+					piranha_throw(value_error,"please select a non-negative order");
+				}
 				return legendrePnm(n,0);
 			}
 			static std::complex<Derived> Ynm(const int &n, const int &m,
