@@ -130,6 +130,7 @@ class series_sf_test01(unittest.TestCase):
 	Exercise known relations involving special functions, part 1.
 	"""
 	def runTest(self):
+		# TODO: integration tests.
 		from pyranha.Core import psym, rational
 		from pyranha.Math import cs_phase
 		from pyranha.Truncators import degree, unset
@@ -161,7 +162,8 @@ class series_sf_test02(unittest.TestCase):
 	Exercise known relations involving special functions, part 2.
 	"""
 	def runTest(self):
-		from pyranha.Core import psym, rational
+		# TODO: integration tests, like orthogonality of Legendre polynomials/functions.
+		from pyranha.Core import psym, rational, integer
 		from pyranha.Math import cs_phase
 		from pyranha.Truncators import unset
 		# Legendre polynomials.
@@ -171,14 +173,30 @@ class series_sf_test02(unittest.TestCase):
 			for n in range(0,50):
 				self.assertEqual((-x).legendrePn(n),cs_phase(n) * x.legendrePn(n))
 				self.assertEqual(t(1).legendrePn(n),1)
+				# TODO: modify this when we implement substitution by complex series.
 				if not hasattr(t,'real'):
 					self.assertEqual(x.legendrePn(n).partial('x').sub('x',t(1)),rational(n)*(rational(n) + 1) / 2)
-				self.assertEqual((n + 1) * x.legendrePn(n + 1), (2 * n + 1) * x * x.legendrePn(n) - n * x.legendrePn(n-1))
-				self.assertEqual((x ** 2 - 1) * x.legendrePn(n).partial('x'), n * x * x.legendrePn(n) - n * x.legendrePn(n-1))
+				if n > 0:
+					self.assertEqual((n + 1) * x.legendrePn(n + 1), (2 * n + 1) * x * x.legendrePn(n) - n * x.legendrePn(n - 1))
+					self.assertEqual((x ** 2 - 1) * x.legendrePn(n).partial('x'), n * x * x.legendrePn(n) - n * x.legendrePn(n - 1))
 				# Satisfy Legendre's differential equation.
 				self.assertEqual(((1 - x ** 2) * x.legendrePn(n).partial('x')).partial('x') + rational(n) * (n + 1) * x.legendrePn(n), 0)
 				# Another differential operation.
-				self.assertEqual((2 * n + 1) * x.legendrePn(n),(x.legendrePn(n + 1) - x.legendrePn(n - 1)).partial('x'))
+				if n > 0:
+					self.assertEqual((2 * n + 1) * x.legendrePn(n),(x.legendrePn(n + 1) - x.legendrePn(n - 1)).partial('x'))
+				# Rodrigues' formula.
+				self.assertEqual(x.legendrePn(n),rational(1) / (integer(2) ** n * integer(n).factorial()) * ((x ** 2 - 1) ** n).partial('x',n))
+		# Associated Legendre functions.
+		# TODO: Gaunt's formula and odd values of m.
+		for t in exact_series_types:
+			x = t(psym('x'))
+			for n in range(-20,20):
+				for m in range(-n,n):
+					if n >= 0 and m >= 0 and not (m & 1):
+						self.assertEqual(x.legendrePnm(n,m),cs_phase(m) * (1 - x ** 2) ** (m / 2) * x.legendrePn(n).partial('x',m))
+						self.assertEqual(x.legendrePnm(n,m),rational(cs_phase(m)) / (integer(2) ** n * integer(n).factorial()) * (1 - x ** 2) ** (m / 2) * ((x ** 2 - 1) ** n).partial('x',n + m))
+					if not (m & 1):
+						self.assertEqual(x.legendrePnm(n,-m),cs_phase(m) * rational(integer(n - m).factorial(),integer(n + m).factorial()) * x.legendrePnm(n,m))
 
 class series_trig_test(unittest.TestCase):
 	"""
