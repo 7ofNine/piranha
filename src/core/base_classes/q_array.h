@@ -225,7 +225,6 @@ namespace piranha
 			void assign_vector(const std::vector<T> &v)
 			{
 				const size_type size = boost::numeric_cast<size_type>(v.size());
-				// TODO: check where this function is used to see if this resize can be avoided.
 				resize(size);
 				for (size_t i = 0; i < size; ++i) {
 					(*this)[i] = value_type(v[i]);

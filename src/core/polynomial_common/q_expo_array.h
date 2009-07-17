@@ -318,7 +318,7 @@ namespace piranha
 			{
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
-				piranha_assert(pos < this->size());
+				piranha_assert(!pos_tuple.template get<ancestor::position>()[0].first || pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
