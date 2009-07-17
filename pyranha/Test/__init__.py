@@ -125,9 +125,9 @@ scalar_trig_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps]
 complex_trig_exact_series_types = [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc]
 trig_exact_series_types = scalar_trig_exact_series_types + complex_trig_exact_series_types
 
-class series_sf_test(unittest.TestCase):
+class series_sf_test01(unittest.TestCase):
 	"""
-	Exercise known relations involving special functions.
+	Exercise known relations involving special functions, part 1.
 	"""
 	def runTest(self):
 		from pyranha.Core import psym, rational
@@ -155,7 +155,30 @@ class series_sf_test(unittest.TestCase):
 					if n != 0:
 						self.assertEqual((x ** -n).root(-n),x)
 						self.assertEqual((x ** -n) ** rational(1,-n),x)
+
+class series_sf_test02(unittest.TestCase):
+	"""
+	Exercise known relations involving special functions, part 2.
+	"""
+	def runTest(self):
+		from pyranha.Core import psym, rational
+		from pyranha.Math import cs_phase
+		from pyranha.Truncators import unset
+		# Legendre polynomials.
 		unset()
+		for t in exact_series_types:
+			x = t(psym('x'))
+			for n in range(0,50):
+				self.assertEqual((-x).legendrePn(n),cs_phase(n) * x.legendrePn(n))
+				self.assertEqual(t(1).legendrePn(n),1)
+				if not hasattr(t,'real'):
+					self.assertEqual(x.legendrePn(n).partial('x').sub('x',t(1)),rational(n)*(rational(n) + 1) / 2)
+				self.assertEqual((n + 1) * x.legendrePn(n + 1), (2 * n + 1) * x * x.legendrePn(n) - n * x.legendrePn(n-1))
+				self.assertEqual((x ** 2 - 1) * x.legendrePn(n).partial('x'), n * x * x.legendrePn(n) - n * x.legendrePn(n-1))
+				# Satisfy Legendre's differential equation.
+				self.assertEqual(((1 - x ** 2) * x.legendrePn(n).partial('x')).partial('x') + rational(n) * (n + 1) * x.legendrePn(n), 0)
+				# Another differential operation.
+				self.assertEqual((2 * n + 1) * x.legendrePn(n),(x.legendrePn(n + 1) - x.legendrePn(n - 1)).partial('x'))
 
 class series_trig_test(unittest.TestCase):
 	"""
@@ -190,11 +213,11 @@ class series_trig_test(unittest.TestCase):
 					else:
 						self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
 						self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
-		unset()
 
 def suite_series():
 	suite = unittest.TestSuite()
-	suite.addTest(series_sf_test())
+	suite.addTest(series_sf_test01())
+	suite.addTest(series_sf_test02())
 	suite.addTest(series_trig_test())
 	return suite
 
