@@ -285,3 +285,12 @@ def einpi2(n):
 			return complex(-1,0)
 		else:
 			return complex(1,0)
+
+def grad(l_var,s):
+	"""
+	Gradient of series s with respect to variables whose names are listed in l_var.
+	"""
+	for n in l_var:
+		if not isinstance(n,str):
+			raise TypeError('Please pass a list of variable names as first argument.')
+	return [partial(s,n) for n in l_var]

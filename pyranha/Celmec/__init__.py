@@ -347,3 +347,21 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	retval.append(-omega -Omega) # p
 	retval.append(-Omega) # q
 	return retval
+
+def poisson_bra(p_list,q_list,s1,s2):
+	"""
+	Calculate the Poisson bracket {s1,s2}, with series s1 and s2 are interpreted as
+	functions of generalised momenta whose names are listed in p_list and generalised
+	coordinates whose names are listed in q_list.
+	"""
+	from pyranha.Math import partial
+	if len(p_list) != len(q_list):
+		raise ValueError('The list of names of momenta and coordinates must contain the same number of elements.')
+	for i in p_list:
+		if not isinstance(i,str):
+			raise TypeError('The list of names of momenta variables must contain only string elements.')
+	for i in q_list:
+		if not isinstance(i,str):
+			raise TypeError('The list of names of coordinate variables must contain only string elements.')
+	l = [partial(s1,q_list[i]) * partial(s2,p_list[i]) - partial(s1,p_list[i]) * partial(s2,q_list[i]) for i in range(0,len(p_list))]
+	return sum(l)
