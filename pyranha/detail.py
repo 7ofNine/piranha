@@ -121,7 +121,7 @@ def __series_repr(self):
 	__repr__ method that prints the series' type and then the series itself in pretty print.
 	"""
 	retval = 'Series type: %s\n' % self.__short_type__
-	retval += self.__impl_repr__()
+	retval += self.__impl_repr__() + '\n'
 	return retval
 
 def __add_method(module_name,method_name,function):
