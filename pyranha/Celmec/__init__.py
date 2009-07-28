@@ -348,7 +348,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	retval.append(-Omega) # q
 	return retval
 
-def poisson_bra(p_list,q_list,s1,s2):
+def poisson_bra(s1,s2,p_list,q_list):
 	"""
 	Calculate the Poisson bracket {s1,s2}, with series s1 and s2 are interpreted as
 	functions of generalised momenta whose names are listed in p_list and generalised
@@ -365,3 +365,38 @@ def poisson_bra(p_list,q_list,s1,s2):
 			raise TypeError('The list of names of coordinate variables must contain only string elements.')
 	l = [partial(s1,q_list[i]) * partial(s2,p_list[i]) - partial(s1,p_list[i]) * partial(s2,q_list[i]) for i in range(0,len(p_list))]
 	return sum(l)
+
+def is_canonical(new_p,new_q,p_list,q_list):
+	"""
+	Test whether the transformation new_p = new_p(p_list) and new_q = new_q(q_list)
+	is canonical using the Poisson brackets test.
+
+	new_p and new_q must be lists of series, while p_list and q_list must be lists of
+	variable names.
+	"""
+	n = len(new_p)
+	if n != len(new_q) or n != len(p_list) or n != len(q_list):
+		raise ValueError('The lengths of the input lists must be consistent.')
+	for i in range(0,n):
+		for j in range(0,n):
+			if poisson_bra(new_p[i],new_p[j],p_list,q_list) != 0:
+				return False
+			if poisson_bra(new_q[i],new_q[j],p_list,q_list) != 0:
+				return False
+			if poisson_bra(new_q[i],new_p[j],p_list,q_list) != int(i == j):
+				return False
+	return True
+
+def lieL(arg,gen,p_list,q_list,n = 1):
+	"""
+	Lie derivative of order n on argument arg with generator gen, using p_list and q_list
+	as lists of names of the canonical momenta and coordinates.
+	"""
+	if n < 0:
+		raise ValueError('The order of the Lie operator must be non-negative.')
+	if n == 0:
+		return arg
+	retval = poisson_bra(arg,gen,p_list,q_list)
+	for _ in range(1,n):
+		retval = poisson_bra(retval,gen)
+	return retval
