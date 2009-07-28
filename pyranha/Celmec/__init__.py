@@ -99,35 +99,6 @@ def eipE(e,M,p = 1):
 	except AttributeError:
 		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer an eipE method."
 
-def cos_psi():
-	"""
-	Calculate the expansion of cos(psi) in terms of the classical orbital elements:
-	e, ep, l, lp, s, sp, v, vp, O, Op,
-	where l is the mean longitude, s = sin(i/2), v the longitude of pericentre, O the longitude of ascending node.
-	psi will be the angular separation of the two secondary bodies, orbiting a massive primary body, whom the orbital
-	elements listed above refer to.
-	"""
-	from pyranha.Core import psyms, psym
-	from pyranha import ds
-	from pyranha.Math import cos, sin, root
-	for i in "e M O s l v ep Mp Op sp lp vp".split():
-		try:
-			exec("%s = ds(psyms[\"%s\"])" % (i,i))
-		except UserWarning:
-			exec("%s = ds(psym(\"%s\"))" % (i,i))
-	cos_of = cos(v-O)*cos_f(e,M).sub(psyms["M"],l-v)-sin(v-O)*sin_f(e,M).sub(psyms["M"],l-v)
-	sin_of = sin(v-O)*cos_f(e,M).sub(psyms["M"],l-v)+cos(v-O)*sin_f(e,M).sub(psyms["M"],l-v)
-	x_r = cos(O)*cos_of-sin(O)*sin_of*(1-2*s**2)
-	y_r = sin(O)*cos_of+cos(O)*sin_of*(1-2*s**2)
-	z_r = sin_of*2*s*root(2,1-s**2)
-	cos_opfp = cos(vp-Op)*cos_f(ep,Mp).sub(psyms["Mp"],lp-vp)-sin(vp-Op)*sin_f(ep,Mp).sub(psyms["Mp"],lp-vp)
-	sin_opfp = sin(vp-Op)*cos_f(ep,Mp).sub(psyms["Mp"],lp-vp)+cos(vp-Op)*sin_f(ep,Mp).sub(psyms["Mp"],lp-vp)
-	x_rp = cos(Op)*cos_opfp-sin(Op)*sin_opfp*(1-2*sp**2)
-	y_rp = sin(Op)*cos_opfp+cos(Op)*sin_opfp*(1-2*sp**2)
-	z_rp = sin_opfp*2*sp*root(2,1-sp**2)
-	cp = x_r*x_rp+y_r*y_rp+z_r*z_rp
-	return cp
-
 def vsop_to_dps(input_filename):
 	import re
 	arguments = "[poly_arg]\nname=t\ntime_eval=0;1\n"
@@ -184,7 +155,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	established by the active truncator.
 
 	If d_elements is None, then the series representing the Delaunay variables are created internally. The series will be of type t
-	or qqps if t is None. Series truncation will be degree-based, with the maximum degree for the Delaunay variable P being the input
+	or ds if t is None. Series truncation will be degree-based, with the maximum degree for the Delaunay variable P being the input
 	parameter 'degree'. Note that for small eccentricities and inclinations, P is proportional to e ** 2.
 
 	In all cases, the return value of this function will be a list representing the series expansions of the following classical
@@ -206,13 +177,13 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	from pyranha.Math import root
 	from pyranha.Core import psym
 	if d_elements is None:
-		from pyranha.Qqps import qqps
+		from pyranha import ds
 		import pyranha.Truncators
 		if degree <= 0:
 			raise ValueError('Truncation degree must be a positive value.')
 		# st is the series type.
 		if t is None:
-			st = qqps
+			st = ds
 		else:
 			st = t
 		# Reset all the truncators.
@@ -277,7 +248,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	is established by the active truncator.
 
 	If oe is None, then the series representing the classical orbital elements are created internally. The series will be of type t
-	or qqps if t is None. Series truncation will be degree-based, with the maximum degree for the eccentricity being the input
+	or ds if t is None. Series truncation will be degree-based, with the maximum degree for the eccentricity being the input
 	parameter 'degree'.
 
 	In all cases, the return value of this function will be a list representing the series expansions of the following modified Delaunay
@@ -290,19 +261,18 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	- p,
 	- q.
 
-	Note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is
-	set equal to unity.
+	Note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is set equal to unity.
 	"""
 	from pyranha.Math import root
 	if oe is None:
 		from pyranha.Core import psym
-		from pyranha.Qqps import qqps
+		from pyranha import ds
 		import pyranha.Truncators
 		if degree <= 0:
 			raise ValueError('Truncation degree must be a positive value.')
 		# st is the series type.
 		if t is None:
-			st = qqps
+			st = ds
 		else:
 			st = t
 		# Reset all the truncators.
@@ -400,3 +370,40 @@ def lieL(arg,gen,p_list,q_list,n = 1):
 	for _ in range(1,n):
 		retval = poisson_bra(retval,gen)
 	return retval
+
+def orbital_rot(angles = None, t = None):
+	"""
+	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which
+	a keplerian orbit is emebedded. The rotation angles are the classical orbital elements omega, i, Omega.
+
+	If angles is not None, all the other arguments are discarded and angles is considered to be a list of series
+	representing, in order, the argument of pericenter, the inclination and the longitude of the ascending node
+	of the orbit.
+
+	If angles is None, then the angles series will be created internally, and will be of type t or ds.
+	"""
+	from numpy import array
+	from pyranha.Math import cos, sin
+	if angles is None:
+		from pyranha import ds
+		from pyranha.Core import psym
+		if t is None:
+			tp = ds
+		else:
+			tp = t
+		omega = tp(psym('omega'))
+		i = tp(psym('i'))
+		Omega = tp(psym('Omega'))
+	else:
+		omega, i, Omega = angles
+	return array([ \
+		[cos(Omega) * cos(omega) - sin(Omega) * cos(i) * sin(omega), \
+		-cos(Omega) * sin(omega) - sin(Omega) * cos(i) * cos(omega), \
+		sin(Omega) * sin(i)], \
+		[sin(Omega) * cos(omega) + cos(Omega) * cos(i) * sin(omega), \
+		-sin(Omega) * sin(omega) + cos(Omega) * cos(i) * cos(omega), \
+		-cos(Omega) * sin(i)], \
+		[sin(i) * sin(omega), \
+		sin(i) * cos(omega), \
+		cos(i)] \
+	])
