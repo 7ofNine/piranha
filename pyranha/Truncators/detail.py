@@ -17,7 +17,20 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from _Truncators import *
-from detail import __truncators
+class __truncators(object):
+	def __init__(self):
+		from pyranha.Truncators import _Truncators
+		self.__list = filter(lambda x: x.endswith('_truncator'),dir(_Truncators))
+		for n in self.__list:
+			exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
+	def __repr__(self):
+		from pyranha.Truncators import _Truncators
+		retval = ''
+		for n in self.__list:
+			exec('t = _Truncators.%s()' % n)
+			retval += ('%s: %s\n' % (n.split('_truncator')[0][2:],str(t)))
+		return retval
+	def unset(self):
+		from pyranha.Truncators import _Truncators
+		_Truncators.unset()
 
-truncators = __truncators()

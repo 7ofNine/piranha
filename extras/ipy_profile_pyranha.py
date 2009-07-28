@@ -25,9 +25,9 @@ ip = IPython.ipapi.get()
 def main():
 	o = ip.options
 	o.system_verbose = 0
-	ip.ex("import math")
 	ip.ex("import pyranha")
 	import pyranha
+	ip.ex("from pyranha import truncators")
 	for i in pyranha.__manipulators__:
 		ip.ex("from pyranha import %s" % i)
 		ip.ex("from pyranha.%s import %s" % (i,i.lower()))

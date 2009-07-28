@@ -25,5 +25,6 @@ print "Available manipulators: ", __manipulators__
 print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
 
 from detail import manipulators
+from Truncators import truncators
 
 print "Pyranha is ready."
