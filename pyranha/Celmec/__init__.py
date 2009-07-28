@@ -163,7 +163,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 
 	- a, semi-major axis,
 	- e, eccentricity,
-	- sin(i/2), sine of half inclination,
+	- sin(i/2), sine of half inclination (often known as 's'),
 	- omega, argument of pericentre,
 	- Omega, longitude of the ascending node,
 	- M, mean anomaly,
@@ -239,7 +239,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 
 	- a, semi-major axis,
 	- e, eccentricity,
-	- sin(i/2), sine of half inclination,
+	- sin(i/2), sine of half inclination (often known as 's'),
 	- omega, argument of pericentre,
 	- Omega, longitude of the ascending node,
 	- M, mean anomaly,
@@ -371,7 +371,7 @@ def lieL(arg,gen,p_list,q_list,n = 1):
 		retval = poisson_bra(retval,gen)
 	return retval
 
-def orbital_rot(angles = None, t = None):
+def orbitalR(angles = None, t = None):
 	"""
 	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which
 	a keplerian orbit is emebedded. The rotation angles are the classical orbital elements omega, i, Omega.
