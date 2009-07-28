@@ -25,9 +25,7 @@ ip = IPython.ipapi.get()
 def main():
 	o = ip.options
 	o.system_verbose = 0
-	ip.ex("import pyranha")
 	import pyranha
-	ip.ex("from pyranha import truncators")
 	for i in pyranha.__manipulators__:
 		ip.ex("from pyranha import %s" % i)
 		ip.ex("from pyranha.%s import %s" % (i,i.lower()))
@@ -43,26 +41,26 @@ def main():
 	ip.ex("from pyranha import ds")
 	# Import test module.
 	ip.ex("from pyranha import Test")
-	# Import truncator module.
-	ip.ex("from pyranha import Truncators")
+	# Import truncator-handling class.
+	ip.ex("from pyranha import truncators")
 	import_error_msg = """
-		Warning: many of Pyranha's capabilities rely on numpy and matplotlib.
+		Warning: some of Pyranha's capabilities rely on numpy and matplotlib.
 		Please consider installing these packages:
 		http://numpy.scipy.org
 		http://matplotlib.sf.net"""
 	error_msg = False
 	try:
 		ip.ex("import numpy")
-		print "Numpy was successfully loaded."
+		print("Numpy was successfully loaded.")
 	except ImportError:
-		if not error_msg: print import_error_msg
+		if not error_msg: print(import_error_msg)
 		error_msg = True
 	try:
 		ip.ex("import matplotlib")
 		ip.ex("matplotlib.interactive(True)")
-		print "Matplotlib was successfully loaded. Interactive mode has been activated."
+		print("Matplotlib was successfully loaded. Interactive mode has been activated.")
 	except ImportError:
-		if not error_msg: print import_error_msg
+		if not error_msg: print(import_error_msg)
 		error_msg = True
 
 def piranha_editor(self, filename, linenum=None):
