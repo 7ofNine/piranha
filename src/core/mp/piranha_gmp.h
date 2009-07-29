@@ -305,10 +305,13 @@ namespace piranha
 			/// N-th root.
 			/**
 			 * @throws zero_division_error if n_ is zero.
-			 * @throws value_error if root cannot be calculated exactly.
+			 * @throws value_error if root cannot be calculated exactly or this is negative.
 			 */
 			mp_rational root(const int &n_) const
 			{
+				if (m_value < 0) {
+					piranha_throw(value_error,"cannot calculate nth-root of negative rational number");
+				}
 				mp_rational retval;
 				if (n_ == 0) {
 					piranha_throw(zero_division_error,"cannot calculate zero-th root of rational number");
@@ -681,10 +684,13 @@ namespace piranha
 			/// N-th root.
 			/**
 			 * @throws zero_division_error if n_ is zero.
-			 * @throws value_error if root cannot be calculated exactly.
+			 * @throws value_error if root cannot be calculated exactly or this is negative.
 			 */
 			mp_integer root(const int &n_) const
 			{
+				if (m_value < 0) {
+					piranha_throw(value_error,"cannot calculate nth-root of negative integer number");
+				}
 				mp_integer retval;
 				if (n_ == 0) {
 					piranha_throw(zero_division_error,"cannot calculate zero-th root");
