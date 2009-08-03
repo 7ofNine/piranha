@@ -178,7 +178,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	from pyranha.Core import psym
 	if d_elements is None:
 		from pyranha import ds
-		import pyranha.Truncators
+		from pyranha.Truncators import truncators
 		if degree <= 0:
 			raise ValueError('Truncation degree must be a positive value.')
 		# st is the series type.
@@ -187,7 +187,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 		else:
 			st = t
 		# Reset all the truncators.
-		pyranha.Truncators.unset()
+		truncators.unset()
 		# Create the series representing the Delaunay elements.
 		Lambda = st(psym('Lambda'))
 		P = st(psym('P'))
@@ -196,7 +196,7 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 		p = st(psym('p'))
 		q = st(psym('q'))
 		# Now set the truncator for the series expansions.
-		pyranha.Truncators.degree.set('P',degree)
+		truncators.degree.set('P',degree)
 	else:
 		try:
 			iter(d_elements)
@@ -267,7 +267,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	if oe is None:
 		from pyranha.Core import psym
 		from pyranha import ds
-		import pyranha.Truncators
+		from pyranha.Truncators import truncators
 		if degree <= 0:
 			raise ValueError('Truncation degree must be a positive value.')
 		# st is the series type.
@@ -276,7 +276,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 		else:
 			st = t
 		# Reset all the truncators.
-		pyranha.Truncators.unset()
+		truncators.unset()
 		# Create the series representing the classical orbital elements.
 		a = st(psym('a'))
 		e = st(psym('e'))
@@ -285,7 +285,7 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 		Omega = st(psym('Omega'))
 		M = st(psym('M'))
 		# Now set the truncator for the series expansions.
-		pyranha.Truncators.degree.set('e',degree)
+		truncators.degree.set('e',degree)
 	else:
 		try:
 			iter(oe)
