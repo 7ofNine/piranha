@@ -387,6 +387,29 @@ namespace pyranha
 		inst.def("order", &p_order_str<T>);
 	}
 
+	template <class HarmonicSeries>
+	typename HarmonicSeries::h_degree_type p_h_degree_str(const HarmonicSeries &p, const std::string &name)
+	{
+		return p.partial_h_degree(std::vector<std::string>(1,name));
+	}
+
+	template <class HarmonicSeries>
+	typename HarmonicSeries::h_degree_type p_h_order_str(const HarmonicSeries &p, const std::string &name)
+	{
+		return p.partial_h_order(std::vector<std::string>(1,name));
+	}
+
+	template <class T>
+	inline void harmonic_series_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("h_degree", &T::h_degree, "(Partial) harmonic degree.");
+		inst.def("h_degree", &T::partial_h_degree);
+		inst.def("h_degree", &p_h_degree_str<T>);
+		inst.def("h_order", &T::h_order, "(Partial) harmonic order.");
+		inst.def("h_order", &T::partial_h_order);
+		inst.def("h_order", &p_h_order_str<T>);
+	}
+
 	template <class T>
 	inline void common_polynomial_instantiation(boost::python::class_<T> &inst)
 	{
@@ -401,6 +424,7 @@ namespace pyranha
 		series_differential_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
+		harmonic_series_instantiation(inst);
 	}
 
 	template <class T>
@@ -408,6 +432,7 @@ namespace pyranha
 	{
 		series_special_functions_instantiation(inst);
 		series_differential_instantiation(inst);
+		harmonic_series_instantiation(inst);
 	}
 }
 

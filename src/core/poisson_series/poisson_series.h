@@ -39,6 +39,8 @@
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../fourier_series/fourier_series_term.h"
+#include "../harmonic_series/base_harmonic_series.h"
+#include "../harmonic_series/named_harmonic_series.h"
 #include "../mp.h"
 #include "../poisson_series_common/common_poisson_series_toolbox.h"
 #include "../poisson_series_common/celmec_toolbox.h"
@@ -52,6 +54,7 @@
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr, piranha::trig_args_descr, POISSON_SERIES_TERM, POISSON_SERIES)
 #define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POISSON_SERIES > >
 #define POISSON_SERIES_DEGREE typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
+#define POISSON_SERIES_H_DEGREE typename POISSON_SERIES_TERM::key_type::h_degree_type
 
 namespace piranha
 {
@@ -60,6 +63,8 @@ namespace piranha
 				public POISSON_SERIES_BASE_ANCESTOR,
 				public POISSON_SERIES_NAMED_ANCESTOR,
 				public POISSON_SERIES_BINOMIAL_ANCESTOR,
+				public toolbox<base_harmonic_series<1,1,POISSON_SERIES_H_DEGREE,POISSON_SERIES > >,
+				public toolbox<named_harmonic_series<POISSON_SERIES_H_DEGREE,POISSON_SERIES > >,
 				public toolbox<series_multiplication< POISSON_SERIES, Mult1, Trunc1> >,
 				public toolbox<jacobi_anger<1, POISSON_SERIES > >,
 				public toolbox<common_poisson_series< POISSON_SERIES > >,
@@ -98,6 +103,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES > >
 #define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
+#define COMPLEX_POISSON_SERIES_H_DEGREE typename COMPLEX_POISSON_SERIES_TERM::key_type::h_degree_type
 
 namespace std
 {
@@ -108,6 +114,8 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
+				public piranha::toolbox<piranha::base_harmonic_series<1,1,COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES > >,
+				public piranha::toolbox<piranha::named_harmonic_series<COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1> >,
 				public piranha::toolbox<piranha::common_poisson_series< COMPLEX_POISSON_SERIES > >,
 				public piranha::toolbox<piranha::base_power_series<0, 0, COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES > >,

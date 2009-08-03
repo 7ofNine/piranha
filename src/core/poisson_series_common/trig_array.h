@@ -22,6 +22,7 @@
 #define PIRANHA_TRIG_ARRAY_H
 
 #include <boost/algorithm/string/split.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <cmath> // For std::abs.
 #include <complex> // For std::complex<SubSeries>.
 #include <iostream>
@@ -132,6 +133,7 @@ namespace piranha
 					}
 			};
 		public:
+			typedef int h_degree_type;
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;
 			typedef double eval_type;
@@ -334,6 +336,52 @@ namespace piranha
 			template <class ArgsTuple>
 			double phase(const ArgsTuple &args_tuple) const {
 				return combined_time_eval<0>(args_tuple);
+			}
+			/// Total harmonic degree.
+			int h_degree() const
+			{
+				int retval = 0;
+				for (size_type i = 0; i < this->m_size; ++i) {
+					retval += (*this)[i];
+				}
+				return retval;
+			}
+			/// Total harmonic degree of the variables at specified positions pos.
+			/**
+			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
+			 */
+			template <class PosTuple>
+			int partial_h_degree(const PosTuple &pos_tuple) const
+			{
+				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
+				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
+				int retval = 0;
+				for (size_type i = 0; i < pos_size; ++i) {
+					// Add up exponents only if they are present and don't try to read outside boundaries
+					// (this last could happen after merging arguments with a second series with smaller
+					// number of arguments).
+					if (pos[i].first && pos[i].second < w) {
+						retval += (*this)[pos[i].second];
+					}
+				}
+				return retval;
+			}
+			/// Minimum total harmonic degree.
+			/**
+			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to h_degree().
+			 */
+			int h_order() const
+			{
+				return h_degree();
+			}
+			/// Minimum total harmonic degree of the variables at specified positions pos.
+			/**
+			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to partial_h_degree().
+			 */
+			template <class PosTuple>
+			int partial_h_order(const PosTuple &pos_tuple) const
+			{
+				return partial_h_degree(pos_tuple);
 			}
 			/// Norm.
 			/**
