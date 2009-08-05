@@ -357,7 +357,7 @@ def is_canonical(new_p,new_q,p_list,q_list):
 				return False
 	return True
 
-def lieL(arg,gen,p_list,q_list,n = 1):
+def lieL(gen,arg,p_list,q_list,n = 1):
 	"""
 	Lie derivative of order n on argument arg with generator gen, using p_list and q_list
 	as lists of names of the canonical momenta and coordinates.
@@ -368,7 +368,24 @@ def lieL(arg,gen,p_list,q_list,n = 1):
 		return arg
 	retval = poisson_bra(arg,gen,p_list,q_list)
 	for _ in range(1,n):
-		retval = poisson_bra(retval,gen)
+		retval = poisson_bra(retval,gen,p_list,q_list)
+	return retval
+
+def lieS(eps,chi,arg,p_list,q_list, n = 1):
+	"""
+	Lie series of generator chi developed in powers of the small quantity eps, using p_list and q_list
+	as lists of names of the canonical momenta and coordinates.
+	"""
+	from copy import copy
+	if n == 0:
+		return type(eps)()
+	tmp = copy(arg)
+	retval = copy(arg)
+	for i in range(1,n):
+		tmp = lieL(chi,tmp,p_list,q_list)
+		tmp *= eps
+		tmp /= i
+		retval += tmp
 	return retval
 
 def orbitalR(angles = None, t = None):
