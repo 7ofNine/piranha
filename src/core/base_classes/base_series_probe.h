@@ -53,7 +53,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_eval_type
-	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_eval(const double &t, const ArgsTuple &args_tuple) const
+		toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		base_eval_type retval(0);
