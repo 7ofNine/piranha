@@ -30,6 +30,8 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
+// TODO: share implementation with power series class, using templates and functors.
+
 namespace piranha
 {
 	template <int ExpoArgsPosition, int ExpoTermPosition, class HDegree, class Derived>
