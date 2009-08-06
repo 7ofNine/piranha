@@ -388,31 +388,15 @@ def lieS(eps,chi,arg,p_list,q_list, n = 1):
 		retval += tmp
 	return retval
 
-def orbitalR(angles = None, t = None):
+def orbitalR(angles, t = None):
 	"""
 	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which
-	a keplerian orbit is emebedded. The rotation angles are the classical orbital elements omega, i, Omega.
-
-	If angles is not None, all the other arguments are discarded and angles is considered to be a list of series
-	representing, in order, the argument of pericenter, the inclination and the longitude of the ascending node
-	of the orbit.
-
-	If angles is None, then the angles series will be created internally, and will be of type t or ds.
+	a keplerian orbit is emebedded. The rotation angles are the classical orbital elements omega, i, Omega,
+	and must be passed as a list.
 	"""
 	from numpy import array
 	from pyranha.Math import cos, sin
-	if angles is None:
-		from pyranha import ds
-		from pyranha.Core import psym
-		if t is None:
-			tp = ds
-		else:
-			tp = t
-		omega = tp(psym('omega'))
-		i = tp(psym('i'))
-		Omega = tp(psym('Omega'))
-	else:
-		omega, i, Omega = angles
+	omega, i, Omega = angles
 	return array([ \
 		[cos(Omega) * cos(omega) - sin(Omega) * cos(i) * sin(omega), \
 		-cos(Omega) * sin(omega) - sin(Omega) * cos(i) * cos(omega), \
