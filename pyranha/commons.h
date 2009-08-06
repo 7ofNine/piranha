@@ -59,27 +59,29 @@ namespace pyranha
 		return stream.str();
 	}
 
-	template <class ArgsTuple>
-	struct py_series_arguments_impl
+	template <class Tuple>
+	struct py_tuple_to_vector
 	{
-		static void run(std::vector<piranha::vector_psym> &retval, const ArgsTuple &args_tuple)
+		template <class Vector>
+		static void run(Vector &retval, const Tuple &tuple)
 		{
-			retval.push_back(args_tuple.get_head());
-			py_series_arguments_impl<typename ArgsTuple::tail_type>::run(retval,args_tuple.get_tail());
+			retval.push_back(tuple.get_head());
+			py_tuple_to_vector<typename Tuple::tail_type>::template run(retval,tuple.get_tail());
 		}
 	};
 
 	template <>
-	struct py_series_arguments_impl<boost::tuples::null_type>
+	struct py_tuple_to_vector<boost::tuples::null_type>
 	{
-		static void run(std::vector<piranha::vector_psym> &, const boost::tuples::null_type &) {}
+		template <class Vector>
+		static void run(Vector &, const boost::tuples::null_type &) {}
 	};
 
 	template <class Series>
 	inline std::vector<piranha::vector_psym> py_series_arguments(const Series &s)
 	{
 		std::vector<piranha::vector_psym> retval;
-		py_series_arguments_impl<typename Series::args_tuple_type>::run(retval,s.arguments());
+		py_tuple_to_vector<typename Series::args_tuple_type>::run(retval,s.arguments());
 		return retval;
 	}
 }
