@@ -338,11 +338,14 @@ namespace piranha
 				return combined_time_eval<0>(args_tuple);
 			}
 			/// Total harmonic degree.
+			/**
+			 * The harmonic degree is defined as the summation of the absolute values of the trigonometric multipliers.
+			 */
 			int h_degree() const
 			{
 				int retval = 0;
 				for (size_type i = 0; i < this->m_size; ++i) {
-					retval += (*this)[i];
+					retval += std::abs((*this)[i]);
 				}
 				return retval;
 			}
@@ -361,7 +364,7 @@ namespace piranha
 					// (this last could happen after merging arguments with a second series with smaller
 					// number of arguments).
 					if (pos[i].first && pos[i].second < w) {
-						retval += (*this)[pos[i].second];
+						retval += std::abs((*this)[pos[i].second]);
 					}
 				}
 				return retval;
