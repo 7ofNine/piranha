@@ -199,6 +199,15 @@ namespace piranha
 		return n.choose(k);
 	}
 
+	/// Multiply-accumulate overload for piranha::mp_integer.
+	/**
+	 * Will call mp_integer::multiply_accumulate().
+	 */
+	inline void multiply_accumulate(mp_integer &x, const mp_integer &y, const mp_integer &z)
+	{
+		x.multiply_accumulate(y,z);
+	}
+
 	/// Overload in stream operator>> for std::complex<piranha::mp_integer>.
 	inline std::istream &operator>>(std::istream &i, std::complex<mp_integer> &zc)
 	{

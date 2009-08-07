@@ -57,11 +57,6 @@ namespace piranha
 			bool is_ignorable(const ArgsTuple &) const {
 				return (m_value == 0);
 			}
-			// Multiply and add.
-			template <class ArgsTuple>
-			void addmul(const mpz_cf &x1, const mpz_cf &x2, const ArgsTuple &) {
-				m_value.addmul(x1.m_value,x2.m_value);
-			}
 	};
 }
 

@@ -273,7 +273,7 @@ namespace piranha
 			// Multiply and add.
 			template <class Derived2, class ArgsTuple>
 			void addmul(const Derived &x1, const Derived2 &x2, const ArgsTuple &) {
-				m_value += x1.m_value * x2.value();
+				multiply_accumulate(m_value,x1.m_value,x2.value());
 			}
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &, const ArgsTuple &) const {

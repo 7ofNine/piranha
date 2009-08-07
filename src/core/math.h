@@ -423,6 +423,16 @@ namespace piranha
 		}
 		return std::pow(c, 1. / (double)n);
 	}
+
+	/// Multiply-accumulate.
+	/**
+	 * Equivalent to x += y * z.
+	 */
+	template <class T, class U, class V>
+	inline void multiply_accumulate(T &x, const U &y, const V &z)
+	{
+		x += y * z;
+	}
 }
 
 #endif

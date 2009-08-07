@@ -581,6 +581,14 @@ namespace piranha
 			{
 				mpz_swap(m_value.get_mpz_t(),other.m_value.get_mpz_t());
 			}
+			/// Multiply-accumulate.
+			/**
+			 * Will use GMP's addmul() function, see http://gmplib.org/manual/Integer-Arithmetic.html#Integer-Arithmetic.
+			 */
+			void multiply_accumulate(const mp_integer &y, const mp_integer &z)
+			{
+				mpz_addmul(m_value.get_mpz_t(),y.m_value.get_mpz_t(),z.m_value.get_mpz_t());
+			}
 			/// Hash value.
 			/**
 			 * Internally uses boost::hash_combine on the GMP limbs of the number.
@@ -613,14 +621,6 @@ namespace piranha
 				mp_integer retval(*this);
 				retval.negate();
 				return retval;
-			}
-			/// Multiply and add.
-			/**
-			 * *this += z1 * z2.
-			 */
-			void addmul(const mp_integer &z1, const mp_integer &z2)
-			{
-				mpz_addmul(m_value.get_mpz_t(), z1.m_value.get_mpz_t(), z2.m_value.get_mpz_t());
 			}
 			/// Factorial.
 			/**
