@@ -102,19 +102,45 @@ def __series_split(self, n = 0):
 	"""
 	return self.__split__(n)
 
-def __series_eval_sub(self,subs):
+def __series_eval(self,arg):
 	"""
-	Evaluate by substitution.
+	Numerical evaluation of the series.
+
+	If arg is a floating point number, then arg is assumed to be a time and the series is evaluated according to the
+	time evaluation vectors of each psym of the series.
+
+	If arg is a dictionary of string-floating point value pairs, the series is evaluated as if each psyms were substituted the numerical
+	value specified in the dictionary. If the dictionary does not contain an entry for each psym of the series, a ValueError exception
+	will be raised.
+
+	If arg is anything else, a TypeError exception will be raised.
 	"""
-	from copy import copy
-	from pyranha.Core import psym
-	args_set = list(set(reduce(lambda x,y: list(x) + list(y), self.arguments)))
-	retval = copy(self)
-	for a in args_set:
-		if not a.name in subs:
-			raise ValueError('The provided substitution dictionary does not contain all the arguments of the series.')
-		retval = retval.sub(psym(a.name),type(self)(subs[a.name]))
-	return retval.eval(0)
+	if isinstance(arg,(float,int)):
+		return self.__eval__(arg)
+	if isinstance(arg,dict):
+		from pyranha.Core import eval_dict
+		d = eval_dict()
+		for t in arg:
+			# Check that all entries are of the right type.
+			if not isinstance(t,str) or not isinstance(arg[t],(float,int)):
+				raise TypeError('The provided dictionary does not contain only string-float pairs.')
+			d[t] = arg[t]
+		return self.__eval__(d)
+	raise TypeError('Cannot use the type ' + str(type(arg)) + ' for evaluation.')
+
+#def __series_eval_sub(self,subs):
+	#"""
+	#Evaluate by substitution.
+	#"""
+	#from copy import copy
+	#from pyranha.Core import psym
+	#args_set = list(set(reduce(lambda x,y: list(x) + list(y), self.arguments)))
+	#retval = copy(self)
+	#for a in args_set:
+		#if not a.name in subs:
+			#raise ValueError('The provided substitution dictionary does not contain all the arguments of the series.')
+		#retval = retval.sub(psym(a.name),type(self)(subs[a.name]))
+	#return retval.eval(0)
 
 def __series_repr(self):
 	"""
@@ -156,7 +182,7 @@ def __enhance_manipulators(manipulators):
 		__add_method(i, "filtered", __series_filtered)
 		__add_method(i, "psi", __series_psi)
 		__add_method(i, "split", __series_split)
-		__add_method(i, "eval_sub", __series_eval_sub)
+		__add_method(i, "eval", __series_eval)
 		__add_method(i, "__repr__", __series_repr)
 
 import pyranha
@@ -164,7 +190,7 @@ import pyranha
 # Let's try do define a default series type
 if len(filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__)) > 0:
 	exec "import %s as __last_manipulator" % pyranha.__manipulators__[-1]
-	ds = getattr(__last_manipulator,pyranha.__manipulators__[-1].lower());
+	ds = getattr(__last_manipulator,pyranha.__manipulators__[-1].lower())
 	setattr(pyranha,'ds',ds)
 	print "Default series type is " + str(ds)
 else:

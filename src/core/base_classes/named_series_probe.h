@@ -23,9 +23,12 @@
 
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include <utility>
+#include <vector>
 
 #include "../config.h" // For (un)likely
 #include "../mp.h"
+#include "../psym.h"
 #include "named_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -82,6 +85,52 @@ namespace piranha
 	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const double &t) const
 	{
 		return derived_const_cast->base_eval(t,m_arguments);
+	}
+
+	// TMP function for checking that evaluation dictionary has all the elements needed.
+	static inline bool check_eval_dict(const eval_dict &, const boost::tuples::null_type &)
+	{
+		return true;
+	}
+
+	template <class ArgsTuple>
+	static inline bool check_eval_dict(const eval_dict &d, const ArgsTuple &args_tuple)
+	{
+		const size_t size = args_tuple.get_head().size();
+		const eval_dict::const_iterator it_f = d.end();
+		for (size_t i = 0; i < size; ++i) {
+			// If the dictionary does not contain the symbol's name, return false.
+			if (d.find(args_tuple.get_head()[i].get_name()) == it_f) {
+				return false;
+			}
+		}
+		// Check next tuple position.
+		return check_eval_dict(d,args_tuple.get_tail());
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval_type
+	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const eval_dict &d) const
+	{
+		if (!check_eval_dict(d,m_arguments)) {
+			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
+		}
+		// Vector of original time evaluation vectors, paired with the corresponding symbol.
+		// NOTE: here we allocate dynamically. This can be avoided by fixing a max number of items in time evaluation for psyms
+		// and using static vectors. We should test performance before bothering though.
+		std::vector<std::pair<psym,std::vector<double> > > orig_eval;
+		orig_eval.reserve(d.size());
+		const eval_dict::const_iterator it_f(d.end());
+		for (eval_dict::const_iterator it = d.begin(); it != it_f; ++it) {
+			orig_eval.push_back(std::make_pair(psym(it->first),psym(it->first).get_time_eval()));
+			psym(it->first,it->second);
+		}
+		const eval_type retval(eval(0));
+		// Restor original evaluation vectors.
+		for (size_t i = 0; i < orig_eval.size(); ++i) {
+			orig_eval[i].first.set_time_eval(orig_eval[i].second);
+		}
+		return retval;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

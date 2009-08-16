@@ -23,6 +23,7 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/unordered_map.hpp>
 #include <complex>
 #include <fstream>
 #include <iostream>
@@ -43,6 +44,9 @@
 
 namespace piranha
 {
+	/// Dictionary for evaluation.
+	typedef boost::unordered_map<std::string, double> eval_dict;
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	struct named_series {};
 
@@ -73,6 +77,7 @@ namespace piranha
 			void swap(Derived &);
 			double norm() const;
 			eval_type eval(const double &) const;
+			eval_type eval(const eval_dict &) const;
 			size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);

@@ -378,7 +378,7 @@ def lieS(eps,chi,arg,p_list,q_list,order = None):
 
 	If order is None, then the limit of the series is taken from the active truncator. Otherwise, the series limit
 	is given by order itself (which must be a non-negative integer) and which represents the power of eps from which the
-	remainder of the power series starts.
+	remainder of the Lie series starts.
 	"""
 	from copy import copy
 	if order is None:

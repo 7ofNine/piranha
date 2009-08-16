@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 
+#include "../../src/core/base_classes/named_series_def.h"
 #include "../../src/core/config.h"
 #include "../../src/core/mp.h"
 #include "../../src/core/psym.h"
@@ -59,9 +60,14 @@ std::string static inline py_psym_repr(const psym &p)
 	return stream.str();
 }
 
-size_t static inline py_psym_hash(const psym &p)
+static inline size_t py_psym_hash(const psym &p)
 {
 	return boost::hash<std::string>()(p.get_name());
+}
+
+static inline void ed_set_item(eval_dict &d, const std::string &n, const double &value)
+{
+	d[n] = value;
 }
 
 // Instantiate the pyranha Core module.
@@ -81,6 +87,10 @@ BOOST_PYTHON_MODULE(_Core)
 	from_python_sequence<std::vector<mp_rational>,variable_capacity_policy>();
 	to_tuple_mapping<std::vector<mp_integer> >();
 	from_python_sequence<std::vector<mp_integer>,variable_capacity_policy>();
+
+	// Expose evaluation dictionary.
+	class_<eval_dict> ed("eval_dict","Evaluation dictionary.", init<>());
+	ed.def("__setitem__",&ed_set_item);
 
 	// Expose arguments tuples.
 	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();

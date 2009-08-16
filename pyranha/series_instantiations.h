@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include "../src/core/base_classes/named_series_def.h" // For eval_dict.
 #include "../src/core/config.h"
 #include "../src/core/mp.h"
 #include "../src/core/psym.h"
@@ -131,7 +132,10 @@ namespace pyranha
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");
-		inst.def("eval", &T::eval, "Evaluate at time arg2.");
+		typedef typename T::eval_type (T::*eval_double)(const double &) const;
+		typedef typename T::eval_type (T::*eval_dic)(const piranha::eval_dict &) const;
+		inst.def("__eval__", eval_double(&T::eval), "Evaluate at time arg2.");
+		inst.def("__eval__", eval_dic(&T::eval), "Evaluate using dictionary arg2.");
 		inst.add_property("norm", &T::norm, "Norm.");
 		inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
