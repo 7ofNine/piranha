@@ -30,7 +30,7 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
-// TODO: share implementation with power series class, using templates and functors.
+// TODO: share implementation with power series class, using templates and functors?
 
 namespace piranha
 {
@@ -107,6 +107,42 @@ namespace piranha
 						));
 				return result->template get<HarmonicTermPosition>().h_order();
 			}
+			/// Return true if all terms of the harmonic series are cosines.
+			/**
+			 * An empty series will return false.
+			 */
+			bool is_cosine() const
+			{
+				typedef typename Derived::const_iterator const_iterator;
+				if (derived_const_cast->empty()) {
+					return false;
+				}
+				const const_iterator it_f = derived_const_cast->end();
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+					if (!it->template get<HarmonicTermPosition>().get_flavour()) {
+						return false;
+					}
+				}
+				return true;
+			}
+			/// Return true if all terms of the harmonic series are sines.
+			/**
+			 * An empty series will return false.
+			 */
+			bool is_sine() const
+			{
+				typedef typename Derived::const_iterator const_iterator;
+				if (derived_const_cast->empty()) {
+					return false;
+				}
+				const const_iterator it_f = derived_const_cast->end();
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+					if (it->template get<HarmonicTermPosition>().get_flavour()) {
+						return false;
+					}
+				}
+				return true;
+			}
 		protected:
 			/// Get the harmonic degree of the series for specific variables.
 			template <class PosTuple>
@@ -133,6 +169,20 @@ namespace piranha
 							partial_h_order_binary_predicate<typename Derived::term_type,PosTuple>(pos_tuple)
 						));
 				return result->template get<HarmonicTermPosition>().partial_h_order(pos_tuple);
+			}
+			/// Flip flavour.
+			template <class ArgsTuple>
+			void base_flip_flavour(Derived &retval, const ArgsTuple &args_tuple) const
+			{
+				typedef typename Derived::const_iterator const_iterator;
+				piranha_assert(retval.empty());
+				const const_iterator it_f = derived_const_cast->end();
+				typename Derived::term_type tmp_term;
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+					tmp_term = *it;
+					tmp_term.m_key.set_flavour(!tmp_term.m_key.get_flavour());
+					retval.insert(tmp_term,args_tuple);
+				}
 			}
 	};
 }

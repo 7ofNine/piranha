@@ -52,6 +52,15 @@ namespace piranha
 			}
 			return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));
 		}
+		/// Flip flavour.
+		Derived flip_flavour() const
+		{
+			Derived retval;
+			derived_const_cast->base_flip_flavour(retval,derived_const_cast->m_arguments);
+			retval.m_arguments = derived_const_cast->m_arguments;
+			retval.trim();
+			return retval;
+		}
 	};
 }
 

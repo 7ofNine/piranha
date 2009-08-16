@@ -23,7 +23,6 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/numeric/conversion/cast.hpp>
-#include <cmath> // For std::abs.
 #include <complex> // For std::complex<SubSeries>.
 #include <iostream>
 #include <memory> // For standard allocator.
@@ -339,17 +338,17 @@ namespace piranha
 			}
 			/// Total harmonic degree.
 			/**
-			 * The harmonic degree is defined as the summation of the absolute values of the trigonometric multipliers.
+			 * The total harmonic degree is defined as the summation of the values of the trigonometric multipliers.
 			 */
 			int h_degree() const
 			{
 				int retval = 0;
 				for (size_type i = 0; i < this->m_size; ++i) {
-					retval += std::abs((*this)[i]);
+					retval += (*this)[i];
 				}
 				return retval;
 			}
-			/// Total harmonic degree of the variables at specified positions pos.
+			/// Harmonic degree of the variables at specified positions pos.
 			/**
 			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
 			 */
@@ -364,7 +363,7 @@ namespace piranha
 					// (this last could happen after merging arguments with a second series with smaller
 					// number of arguments).
 					if (pos[i].first && pos[i].second < w) {
-						retval += std::abs((*this)[pos[i].second]);
+						retval += (*this)[pos[i].second];
 					}
 				}
 				return retval;

@@ -408,6 +408,9 @@ namespace pyranha
 		inst.def("h_order", &T::h_order, "(Partial) harmonic order.");
 		inst.def("h_order", &T::partial_h_order);
 		inst.def("h_order", &p_h_order_str<T>);
+		inst.def("is_sine", &T::is_sine, "Return true if series is made only of sine terms.");
+		inst.def("is_cosine", &T::is_cosine, "Return true if series is made only of cosine terms.");
+		inst.def("flip_flavour", &T::flip_flavour, "Invert the trigonometric flavours of all terms.");
 	}
 
 	template <class T>
