@@ -128,20 +128,6 @@ def __series_eval(self,arg):
 		return self.__eval__(d)
 	raise TypeError('Cannot use the type ' + str(type(arg)) + ' for evaluation.')
 
-#def __series_eval_sub(self,subs):
-	#"""
-	#Evaluate by substitution.
-	#"""
-	#from copy import copy
-	#from pyranha.Core import psym
-	#args_set = list(set(reduce(lambda x,y: list(x) + list(y), self.arguments)))
-	#retval = copy(self)
-	#for a in args_set:
-		#if not a.name in subs:
-			#raise ValueError('The provided substitution dictionary does not contain all the arguments of the series.')
-		#retval = retval.sub(psym(a.name),type(self)(subs[a.name]))
-	#return retval.eval(0)
-
 def __series_repr(self):
 	"""
 	__repr__ method that prints the series' type and then the series itself in pretty print.
@@ -149,6 +135,13 @@ def __series_repr(self):
 	retval = 'Series type: %s\n' % self.__short_type__
 	retval += self.__impl_repr__() + '\n'
 	return retval
+
+def __series_contains(self,name):
+	"""
+	Check whether symbol named 'name' is present in the series.
+	"""
+	from pyranha.Core import psym
+	return psym(name) in reduce(lambda a,b: a + b, self.arguments)
 
 def __add_method(module_name,method_name,function):
 	"""
@@ -183,6 +176,7 @@ def __enhance_manipulators(manipulators):
 		__add_method(i, "psi", __series_psi)
 		__add_method(i, "split", __series_split)
 		__add_method(i, "eval", __series_eval)
+		__add_method(i, "__contains__", __series_contains)
 		__add_method(i, "__repr__", __series_repr)
 
 import pyranha
