@@ -105,19 +105,19 @@ def display(series):
 		tex_file = tempfile.NamedTemporaryFile(dir = tmp_dir, delete = False)
 		tex_file.write(s)
 		tex_file.close()
-		proc = Popen(['pdflatex','-interaction=batchmode','-jobname=output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
+		proc = Popen(['pdflatex','-interaction=batchmode','-jobname=pyranha_output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
 		output = proc.communicate()[0]
 		if proc.returncode:
 			raise RuntimeError(output)
 		while True:
-			proc = Popen(['pdflatex','-interaction=batchmode','-jobname=output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
+			proc = Popen(['pdflatex','-interaction=batchmode','-jobname=pyranha_output',tex_file.name], cwd = tmp_dir, stdout = PIPE, stderr = STDOUT)
 			tmp = proc.communicate()[0]
 			if proc.returncode:
 				raise RuntimeError(tmp)
 			if tmp == output:
 				break
 			output = tmp
-		proc = Popen(['okular',os.path.join(tmp_dir,'output.pdf')], stdout = PIPE, stderr = STDOUT)
+		proc = Popen(['okular',os.path.join(tmp_dir,'pyranha_output.pdf')], stdout = PIPE, stderr = STDOUT)
 		proc.wait()
 		raw_input('Press Enter to continue...')
 	finally:
