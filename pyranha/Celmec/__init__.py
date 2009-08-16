@@ -371,12 +371,20 @@ def lieL(gen,arg,p_list,q_list,n = 1):
 		retval = poisson_bra(retval,gen,p_list,q_list)
 	return retval
 
-def lieS(eps,chi,arg,p_list,q_list, n = 1):
+def lieS(eps,chi,arg,p_list,q_list,order = None):
 	"""
 	Lie series of generator chi developed in powers of the small quantity eps, using p_list and q_list
 	as lists of names of the canonical momenta and coordinates.
+
+	If order is None, then the limit of the series is taken from the active truncator. Otherwise, the series limit
+	is given by order itself (which must be a non-negative integer) and which represents the power of eps from which the
+	remainder of the power series starts.
 	"""
 	from copy import copy
+	if order is None:
+		n = eps.psi()
+	else:
+		n = order
 	if n == 0:
 		return type(eps)()
 	tmp = copy(arg)

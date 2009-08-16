@@ -268,7 +268,7 @@ def partial(arg,p,n = 1):
 	try:
 		return arg.partial(p,n)
 	except AttributeError:
-		raise AttributeError("The partial() method is not available for this argument type.")
+		raise AttributeError("The partial() method is not available for argument type '" + str(type(arg)) + "'")
 
 def einpi2(n):
 	"""
