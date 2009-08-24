@@ -170,20 +170,6 @@ namespace piranha
 						));
 				return result->template get<HarmonicTermPosition>().partial_h_order(pos_tuple);
 			}
-			/// Flip flavour.
-			template <class ArgsTuple>
-			void base_flip_flavour(Derived &retval, const ArgsTuple &args_tuple) const
-			{
-				typedef typename Derived::const_iterator const_iterator;
-				piranha_assert(retval.empty());
-				const const_iterator it_f = derived_const_cast->end();
-				typename Derived::term_type tmp_term;
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					tmp_term = *it;
-					tmp_term.m_key.set_flavour(!tmp_term.m_key.get_flavour());
-					retval.insert(tmp_term,args_tuple);
-				}
-			}
 	};
 }
 
