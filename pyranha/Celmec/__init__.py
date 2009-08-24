@@ -396,6 +396,58 @@ def lieS(eps,chi,arg,p_list,q_list,order = None):
 		retval += tmp
 	return retval
 
+def lieH(H,eps,mom,coord,limit,he_solver):
+	"""
+	Generator of chain of canonical transformations based on Lie series. Input parameters:
+
+	- H:         series representing the full Hamiltonian
+	- eps:       name of the symbol representing the small quantity
+	- mom:       list of names of the momenta symbols
+	- coord:     list of names of the coordinates symbols
+	- limit:     desired order of quantity eps for the remainders of Lie series expansions
+	- he_solver: solver for the homological equation
+
+	he_solver must be a function (i.e., a callable) that accepts two input parameters, R and H0. R is the
+	remainder of the Hamiltonian at the current order and H0 is the integrable hamiltonian. The return value
+	will be the generating function of the Lie series transformation used for the next step of the iteration.
+	"""
+	from copy import copy
+	from math import ceil
+	from pyranha.Core import is_iteratable, psym
+	from pyranha.Celmec import lieS
+	# Check input parameters.
+	# NOTE: check that here H is a manipulator type?
+	if not isinstance(eps,str):
+		raise TypeError('eps must be a string.')
+	if not is_iteratable(mom) or not is_iteratable(coord):
+		raise TypeError('mom and coord must be lists of strings.')
+	for m in mom:
+		if not isinstance(m,str):
+			raise TypeError('mom and coord must be lists of strings.')
+	for c in coord:
+		if not isinstance(c,str):
+			raise TypeError('mom and coord must be lists of strings.')
+	if not isinstance(limit,int):
+		raise TypeError('limit must be an integer value.')
+	if limit < 2:
+		raise ValueError('The value of limit must be at least 2.')
+	__eps = copy(eps)
+	__mom = copy(mom)
+	__coord = copy(coord)
+	__limit = copy(limit)
+	__H = copy(H)
+	t = type(__H)
+	s_eps = t(psym(__eps))
+	# Integrable Hamiltonian.
+	H0 = H.filtered([lambda t:(t[0] * t[1]).order(__eps) == 0] * len(H.arguments))
+	# Iteration starts.
+	for i in range(1,limit):
+		# Residual of order i.
+		R = __H.filtered([lambda term:(term[0] * term[1]).order(__eps) == i] * len(__H.arguments)).sub(__eps,t(1))
+		chi = he_solver(R,H0)
+		__H = lieS(s_eps ** i,chi,__H,__mom,__coord,int(ceil(float(__limit)/i)))
+		yield copy(__H),copy(chi)
+
 def orbitalR(angles, t = None):
 	"""
 	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which

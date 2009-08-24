@@ -20,6 +20,17 @@
 from _Core import *
 from impl import *
 
+def is_iteratable(arg):
+	"""
+	Returns True if arg is iteratable, false otherwise.
+	"""
+	try:
+		iter(arg)
+		return True
+	except TypeError:
+		pass
+	return False
+
 def copy(arg):
 	"""
 	Standard copy function. Lifted from the copy module.
