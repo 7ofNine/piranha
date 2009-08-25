@@ -446,6 +446,7 @@ namespace pyranha
 		series_special_functions_instantiation(inst);
 		series_differential_instantiation(inst);
 		harmonic_series_instantiation(inst);
+		series_integral_instantiation(inst);
 	}
 }
 
