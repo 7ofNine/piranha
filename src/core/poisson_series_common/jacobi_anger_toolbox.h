@@ -97,11 +97,11 @@ namespace piranha
 				for (size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
-					(*it)->m_key.upload_ints_to(tmp_trig_mults);
+					(*it)->m_key.upload_to_vector(tmp_trig_mults);
 					for (size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
 					}
-					tmp_term.m_key.assign_int_vector(tmp_trig_mults);
+					tmp_term.m_key.assign_vector(tmp_trig_mults);
 					if ((*it)->m_key.get_flavour()) {
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
 					} else {

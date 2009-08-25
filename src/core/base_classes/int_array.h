@@ -217,7 +217,7 @@ namespace piranha
 						tmp.push_back(m_container.v[i]);
 					}
 				}
-				retval.assign_int_vector(tmp);
+				retval.assign_vector(tmp);
 				return retval;
 			}
 			/// Invert the sign of the integers in the array.
@@ -228,7 +228,7 @@ namespace piranha
 				}
 			}
 			/// Upload integers to vector of integers.
-			void upload_ints_to(std::vector<int> &v) const
+			void upload_to_vector(std::vector<int> &v) const
 			{
 				piranha_assert(v.size() >= m_size);
 				for (size_type i = 0; i < m_size; ++i) {
@@ -274,7 +274,7 @@ namespace piranha
 					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
 				}
 			}
-			void assign_int_vector(const std::vector<int> &v)
+			void assign_vector(const std::vector<int> &v)
 			{
 				const size_type size = boost::numeric_cast<size_type>(v.size());
 				resize(size);

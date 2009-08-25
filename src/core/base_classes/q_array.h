@@ -45,7 +45,7 @@ namespace piranha
 	 */
 	template <int Pos, class Allocator, class Derived>
 	class q_array {
-			p_static_check(Pos >= 0, "Invalid position for int_array.");
+			p_static_check(Pos >= 0, "Invalid position for q_array.");
 		public:
 			/// Make friends with q_array with other template parameters (i.e., position and/or allocator).
 			template <int, class, class>
