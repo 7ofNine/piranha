@@ -259,8 +259,8 @@ def Ynm(n, m, theta, phi, emi_phi = None, alpha = None, beta = None, gamma = Non
 
 def partial(arg,p,n = 1):
 	"""
-	Calculate the n-th partial derivative of arg with respect to psym p.
-	
+	Calculate the n-th partial derivative of arg with respect to symbol named p.
+
 	Internally the partial() method of arg is called. If such method is not available, an AttributeError
 	exception will be raised.
 	"""
@@ -269,6 +269,18 @@ def partial(arg,p,n = 1):
 		return arg.partial(p,n)
 	except AttributeError:
 		raise AttributeError("The partial() method is not available for argument type '" + str(type(arg)) + "'")
+
+def integrate(arg,p):
+	"""
+	Indefinite integral of arg with respect to symbol named p.
+
+	Internally the integrate() method of arg is called. If such method is not available, an AttributeError
+	exception will be raised.
+	"""
+	try:
+		return arg.integrate(p)
+	except AttributeError:
+		raise AttributeError("The integrate() method is not available for argument type '" + str(type(arg)) + "'")
 
 def einpi2(n):
 	"""

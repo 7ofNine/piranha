@@ -290,6 +290,12 @@ namespace pyranha
 			"with respect to psym named arg2.");
 	}
 
+	template <class T>
+	inline void series_integral_instantiation(boost::python::class_<T> &inst)
+	{
+		inst.def("integrate", &T::integrate, "Indefinite integration with respect to psym named arg2.");
+	}
+
 	template <class T, class Series>
 	static inline T py_series_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
@@ -420,6 +426,7 @@ namespace pyranha
 	inline void common_polynomial_instantiation(boost::python::class_<T> &inst)
 	{
 		series_differential_instantiation(inst);
+		series_integral_instantiation(inst);
 		series_special_functions_instantiation(inst);
 		power_series_instantiation(inst);
 	}
