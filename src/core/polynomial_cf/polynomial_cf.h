@@ -35,6 +35,7 @@
 #include "../base_classes/series_multiplication.h"
 #include "../base_classes/toolbox.h"
 #include "../exceptions.h"
+#include "../polynomial_common/base_polynomial.h"
 #include "../polynomial_common/monomial.h"
 #include "common_polynomial_cf_toolbox.h"
 
@@ -44,6 +45,7 @@
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::toolbox<piranha::cf_series< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF > >
 #define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL_CF > >
 #define POLYNOMIAL_CF_DEGREE typename POLYNOMIAL_CF_TERM::key_type::degree_type
+#define POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::base_polynomial<0,POLYNOMIAL_CF > >
 
 namespace piranha
 {
@@ -53,6 +55,7 @@ namespace piranha
 				public POLYNOMIAL_CF_BASE_ANCESTOR,
 				public POLYNOMIAL_CF_CF_ANCESTOR,
 				public POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
+				public POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR,
 				public toolbox<common_polynomial_cf< POLYNOMIAL_CF > >,
 				public toolbox<base_power_series<0, 1, POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF > >,
 				public toolbox<cf_power_series< POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF > >,
@@ -83,6 +86,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX piranha::toolbox<piranha::cf_series_complex< POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL_CF > >
 #define COMPLEX_POLYNOMIAL_CF_DEGREE typename COMPLEX_POLYNOMIAL_CF_TERM::key_type::degree_type
+#define COMPLEX_POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::base_polynomial<0,COMPLEX_POLYNOMIAL_CF > >
 
 namespace std
 {
@@ -93,6 +97,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX,
 				public COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
+				public COMPLEX_POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR,
 				public piranha::toolbox<piranha::common_polynomial_cf< COMPLEX_POLYNOMIAL_CF > >,
 				public piranha::toolbox<piranha::base_power_series<0, 1, COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF > >,
 				public piranha::toolbox<piranha::cf_power_series< COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF > >,

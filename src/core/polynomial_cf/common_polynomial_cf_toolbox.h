@@ -78,6 +78,11 @@ namespace piranha
 					p,s,args_tuple
 				);
 			}
+			template <class PosTuple, class ArgsTuple>
+			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			{
+				return derived_const_cast->base_integrate(pos_tuple,args_tuple);
+			}
 	};
 }
 

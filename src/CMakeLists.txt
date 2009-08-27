@@ -5,10 +5,10 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT
 SET(SRC_LIST ${SRC_LIST}
 	degree_truncator.cpp
 	norm_truncator.cpp
+	math.cpp
 	memory.cpp
 	settings.cpp
 	psym.cpp
-	utils.cpp
 )
 
 IF(BUILD_MULTITHREADING)

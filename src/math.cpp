@@ -22,11 +22,10 @@
 
 #include "core/exceptions.h"
 #include "core/mp.h"
-#include "core/utils.h"
 
 namespace piranha
 {
-	bool utils::is_integer(const double &x)
+	bool is_integer(const double &x)
 	{
 		try {
 			const mp_rational tmp(x);

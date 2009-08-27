@@ -38,10 +38,11 @@
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"
+#include "../math.h"
 #include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
-#include "../utils.h" // For is_integer() and lexical_cast.
+#include "../utils.h" // For lexical_cast.
 
 #define __PIRANHA_EXPO_ARRAY_TP_DECL int Bits, int Pos, class Allocator
 #define __PIRANHA_EXPO_ARRAY_TP Bits,Pos,Allocator
@@ -313,7 +314,7 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			toolbox pow(const double &y, const ArgsTuple &) const {
-				if (utils::is_integer(y)) {
+				if (is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 					return pow_double(y);

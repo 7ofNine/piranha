@@ -132,8 +132,6 @@ namespace piranha
 				}
 				return retval;
 			}
-			/// Check if a double-precision number represents exactly an integer.
-			static bool is_integer(const double &);
 			/// Cache const pointers to terms of a series in a vector.
 			template <class Series>
 			static std::vector<typename Series::term_type const *> cache_terms_pointers(const Series &s) {

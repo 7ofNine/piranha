@@ -433,6 +433,15 @@ namespace piranha
 	{
 		x += y * z;
 	}
+
+	/// Check if input argument can be represented exactly as an int type.
+	/**
+	 * Returns true.
+	 */
+	inline bool is_integer(const int &) {return true;}
+
+	/// Check if input argument can be represented exactly as an int type.
+	__PIRANHA_VISIBLE bool is_integer(const double &);
 }
 
 #endif

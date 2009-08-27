@@ -35,7 +35,6 @@
 
 #include "../exceptions.h"
 #include "../math.h"
-#include "../utils.h"
 #include "complex_generic_mp_container.h"
 #include "mp_commons.h"
 
@@ -291,7 +290,7 @@ namespace piranha
 			 */
 			mp_rational pow(const double &y) const
 			{
-				if (utils::is_integer(y)) {
+				if (is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 					return pow_double(y);
@@ -670,7 +669,7 @@ namespace piranha
 			 */
 			mp_integer pow(const double &y) const
 			{
-				if (utils::is_integer(y)) {
+				if (is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 					return pow_double(y);
@@ -956,7 +955,7 @@ namespace std
 			 */
 			complex pow(const double &y) const
 			{
-				if (piranha::utils::is_integer(y)) {
+				if (piranha::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 					return pow_double(y);
@@ -1172,7 +1171,7 @@ namespace std
 			 */
 			complex pow(const double &y) const
 			{
-				if (piranha::utils::is_integer(y)) {
+				if (piranha::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
 					return pow_double(y);

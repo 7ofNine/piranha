@@ -129,6 +129,21 @@ namespace piranha
 		return c.choose(k);
 	}
 
+	/// Check if input argument can be represented exactly as an int type.
+	inline bool is_integer(const mp_rational &q)
+	{
+		try {
+			int n = q.to_int();
+			(void)n;
+			return true;
+		} catch (const value_error &) {
+			// This means that x is not an integer.
+		} catch (const std::overflow_error &) {
+			// This means that x is an integer but overflows int range.
+		}
+		return false;
+	}
+
 	/* INTEGER CLASS OVERLOADS */
 	/* ----------------------- */
 
@@ -249,6 +264,30 @@ namespace piranha
 	inline std::complex<mp_integer> choose(const std::complex<mp_integer> &c, const int &k)
 	{
 		return c.choose(k);
+	}
+
+	/// Check if input argument can be represented exactly as an int type.
+	inline bool is_integer(const mp_integer &z)
+	{
+		try {
+			int n = z.to_int();
+			(void)n;
+			return true;
+		} catch (const std::overflow_error &) {
+			// This means that x is an integer but overflows int range.
+		}
+		return false;
+	}
+
+	/// Condon-Shortley phase.
+	inline int cs_phase(const mp_integer &z)
+	{
+		// TODO: more efficient implementation here.
+		if (z % 2 != 0) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 }
 

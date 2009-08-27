@@ -32,7 +32,6 @@
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../type_traits.h" // For lightweight attribute.
-#include "../utils.h"
 
 namespace piranha
 {
@@ -49,7 +48,7 @@ namespace piranha
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf,.to_double())
 			int get_int() const {
-				if (!utils::is_integer(m_value)) {
+				if (!is_integer(m_value)) {
 					piranha_throw(value_error,"cannot convert double coefficient to integer");
 				}
 				return (int)m_value;

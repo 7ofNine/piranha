@@ -97,5 +97,8 @@ BOOST_PYTHON_MODULE(_Math)
 	def("__choose", choose_q(&choose), "Binomial coefficient (multiprecision rational).");
 	typedef double (*double_gamma)(double);
 	def("gamma", double_gamma(&boost::math::tgamma<double>), "Gamma function.");
-	def("cs_phase", &cs_phase, "Condon-Shortley phase = (-1)**arg1.");
+	typedef int (*cs_int)(const int &);
+	typedef int (*cs_z)(const mp_integer &);
+	def("cs_phase", cs_int(&cs_phase), "Condon-Shortley phase = (-1)**arg1.");
+	def("cs_phase", cs_z(&cs_phase), "Condon-Shortley phase = (-1)**arg1.");
 }

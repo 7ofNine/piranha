@@ -29,7 +29,6 @@
 #include "../math.h"
 #include "../mp.h"
 #include "../settings.h"
-#include "../utils.h" // For is_integer().
 #include "base_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -363,7 +362,7 @@ namespace piranha
 	{
 		Derived retval;
 		if (!common_pow_handler(y, retval, args_tuple)) {
-			if (utils::is_integer(y)) {
+			if (is_integer(y)) {
 				const int n = (int)(y);
 				// NOTE: check if it is possible to skip using temporary variables.
 				// Apparently this will be possible in C++1x with the move constructor.

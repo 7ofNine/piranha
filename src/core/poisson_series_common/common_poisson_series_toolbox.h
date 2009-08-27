@@ -31,6 +31,8 @@
 #include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
+#include "../math.h"
+#include "../mp.h"
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../utils.h"
@@ -47,7 +49,8 @@ namespace piranha
 	class toolbox<common_poisson_series<Derived> >
 	{
 		public:
-			std::complex<Derived> ei() const {
+			std::complex<Derived> ei() const
+			{
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
 				// way to do this is by using named_series::merge_args with a phony series having zero
@@ -61,17 +64,20 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
-			Derived cos() const {
+			Derived cos() const
+			{
 				return ei().real();
 			}
-			Derived sin() const {
+			Derived sin() const
+			{
 				return ei().imag();
 			}
 			// We have to specialise this in order to prepare the arguments tuple for the fact
 			// that poly args of s may be added as trig args (as s will be used as argument for sines
 			// and/or cosines).
 			template <class SubSeries>
-			Derived sub(const std::string &name, const SubSeries &series) const {
+			Derived sub(const std::string &name, const SubSeries &series) const
+			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -109,7 +115,8 @@ namespace piranha
 				return retval;
 			}
 			template <class SubSeries>
-			Derived ei_sub(const std::string &name, const SubSeries &series) const {
+			Derived ei_sub(const std::string &name, const SubSeries &series) const
+			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
 				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
@@ -135,7 +142,8 @@ namespace piranha
 				return retval;
 			}
 			template <class FourierSeries>
-			FourierSeries to_fs() const {
+			FourierSeries to_fs() const
+			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
 				typename ntuple<vector_psym,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
@@ -151,12 +159,102 @@ namespace piranha
 				}
 				return retval;
 			}
+			Derived integrate(const std::string &name) const
+			{
+				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, 2>::type pos_tuple_type;
+				const psym p(name);
+				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->m_arguments);
+				Derived retval;
+				if (pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first) {
+					// If the symbol is present either as a poly arg or a trig arg, invoke the base integration routine.
+					// We must prepare arguments list to take an extra polynomial argument, for cases such as 1 + cos(x)
+					// where integration adds a symbol to the list of polynomial symbols.
+					Derived this_copy(*derived_const_cast);
+					this_copy.merge_args(Derived(p));
+					const pos_tuple_type new_pos_tuple = psyms2pos(vector_psym(1,p),this_copy.m_arguments);
+					retval = this_copy.base_integrate(new_pos_tuple,this_copy.m_arguments);
+					retval.m_arguments = this_copy.m_arguments;
+					retval.trim();
+				} else {
+					// If the symbol is not present at all in the series, just multiply this by the series generated
+					// by the input symbol.
+					retval = *derived_const_cast;
+					retval *= Derived(p);
+				}
+				return retval;
+			}
 		protected:
+			// Integrate supposing that the symbol is present in the Poisson series.
+			template <typename PosTuple, typename ArgsTuple>
+			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			{
+				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
+				typedef typename Derived::const_iterator const_iterator;
+				typedef typename Derived::term_type::cf_type::degree_type degree_type;
+				// Make sure that the position tuple contains just one symbol in each element of the tuple,
+				// and that the symbol is present in the series.
+				piranha_assert(pos_tuple.template get<0>().size() == 1 && pos_tuple.template get<1>().size() == 1);
+				piranha_assert(pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first);
+				Derived retval;
+				const const_iterator it_f = derived_const_cast->end();
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+					if (pos_tuple.template get<1>()[0].first && it->m_key[pos_tuple.template get<1>()[0].second] != 0) {
+						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
+						typedef typename Derived::term_type::cf_type::degree_type degree_type;
+						const degree_type degree(it->m_cf.partial_degree(pos_tuple));
+						if (degree < 0 || !is_integer(degree)) {
+							piranha_throw(value_error,"cannot integrate Poisson series term if the polynomial degree of the integrand argument "
+								"is negative or not an integer");
+						}
+						const int trig_mult = it->m_key[pos_tuple.template get<1>()[0].second];
+						typename Derived::term_type tmp(*it);
+						typename Derived::term_type::cf_type tmp_cf(it->m_cf);
+						tmp_cf.divide_by(trig_mult,args_tuple);
+						for (mp_integer i(0); i < degree + 1; i += 1) {
+							// Flip the flavour of the trigonometric part.
+							tmp.m_key.set_flavour(!tmp.m_key.get_flavour());
+							const mp_integer rem(i % 4);
+							int mult;
+							if (rem == 0) {
+								if (it->m_key.get_flavour()) {
+									mult = 1;
+								} else {
+									mult = -1;
+								}
+							} else if (rem == 1) {
+								mult = -1;
+							} else if (rem == 2) {
+								if (it->m_key.get_flavour()) {
+									mult = -1;
+								} else {
+									mult = 1;
+								}
+							} else {
+								piranha_assert(rem == 3);
+								mult = 1;
+							}
+							tmp.m_cf = tmp_cf;
+							tmp.m_cf.mult_by(mult * cs_phase(i),args_tuple);
+							retval.insert(tmp,args_tuple);
+							// Prepare tmp's cf for next step.
+							tmp_cf = tmp_cf.template partial<typename Derived::term_type::cf_type>(pos_tuple,args_tuple);
+							tmp_cf.divide_by(trig_mult,args_tuple);
+						}
+					} else {
+						typename Derived::term_type tmp(*it);
+						tmp.m_cf = tmp.m_cf.integrate(pos_tuple,args_tuple);
+						retval.insert(tmp,args_tuple);
+					}
+				}
+				return retval;
+			}
 			// NOTICE: move this into private?
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
-			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const {
+			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const
+			{
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename Derived::term_type term_type;
 				typedef typename term_type::cf_type::term_type::cf_type poly_cf_type;
@@ -213,9 +311,9 @@ namespace piranha
 			}
 		private:
 			template <class Term, class PolyCf, class ArgsTuple>
-			std::pair<typename std::vector<Term const *>::const_iterator, std::pair<std::vector<PolyCf>,
-			std::vector<int> > >
-			static get_int_linear_term(const std::vector<const Term *> &v, const ArgsTuple &args_tuple) {
+			std::pair<typename std::vector<Term const *>::const_iterator, std::pair<std::vector<PolyCf>, std::vector<int> > >
+			static get_int_linear_term(const std::vector<const Term *> &v, const ArgsTuple &args_tuple)
+			{
 				p_static_check((boost::is_same<PolyCf,
 					typename Derived::term_type::cf_type::term_type::cf_type>::value),
 					"Coefficient type mismatch in Poisson series toolbox.");
