@@ -133,11 +133,11 @@ class series_sf_test01(unittest.TestCase):
 		# TODO: integration tests.
 		from pyranha.Core import psym, rational
 		from pyranha.Math import cs_phase
-		from pyranha.Truncators import degree, unset
+		from pyranha.Truncators import truncators
 		from detail import check_order
-		unset()
+		truncators.unset()
 		for limit in [0,1,2,3,80]:
-			degree.set(limit)
+			truncators.degree.set(limit)
 			for t in exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.root(1),x)
@@ -165,9 +165,9 @@ class series_sf_test02(unittest.TestCase):
 		# TODO: integration tests, like orthogonality of Legendre polynomials/functions.
 		from pyranha.Core import psym, rational, integer
 		from pyranha.Math import cs_phase
-		from pyranha.Truncators import unset
+		from pyranha.Truncators import truncators
 		# Legendre polynomials.
-		unset()
+		truncators.unset()
 		for t in exact_series_types:
 			x = t(psym('x'))
 			for n in range(0,50):
@@ -206,10 +206,10 @@ class series_trig_test(unittest.TestCase):
 		# TODO: legendre tests with sine/cosine as arguments.
 		from pyranha.Core import psym, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
-		from pyranha.Truncators import degree, unset
-		unset()
+		from pyranha.Truncators import truncators
+		truncators.unset()
 		for limit in [1,2,3,80]:
-			degree.set(limit)
+			truncators.degree.set(limit)
 			for t in scalar_trig_exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
