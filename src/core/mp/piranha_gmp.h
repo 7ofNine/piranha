@@ -38,6 +38,7 @@
 #include "complex_generic_mp_container.h"
 #include "mp_commons.h"
 
+// TODO: protect mp classes from non-normal floating-point numbers with boost/math/special_functions/fpclassify.hpp.
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
 // - do not use boost::operator ++ and --, use common impl in mp_commons instead and overload correctly for pre/post increment.
 // - overload std::pow for exponentiation to rational

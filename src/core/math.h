@@ -445,12 +445,6 @@ namespace piranha
 
 	/// Check if input argument can be represented exactly as an int type.
 	__PIRANHA_VISIBLE bool is_integer(const double &);
-
-	/// Check if floating-point number is normal.
-	inline bool fp_is_normal(const double &x)
-	{
-		return is_normal(x);
-	}
 }
 
 #endif
