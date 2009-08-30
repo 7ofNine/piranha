@@ -138,11 +138,11 @@ def vsop_to_dps(input_filename):
 				retval[-1] += K + "!" + alpha + "|" + trig_array + ";c\n"
 	return retval
 
-def delaunay2oe(d_elements = None, degree = 10, t = None):
+def mdelaunay2oe(md_elements):
 	"""
-	Returns a list containing the expressions of classical orbital elements in terms of series of modified Delaunay variables.
-	If d_elements is not None, all other arguments are ignored and d_elements is assumed to be a list of series representing
-	the following modified Delaunay variables:
+	Transform modified Delaunay elements into classical orbital elements.
+
+	md_elements is assumed to be a list of the following modified Delaunay variables:
 
 	- Lambda,
 	- P,
@@ -151,15 +151,11 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	- p,
 	- q.
 
-	The truncation of the series expansions needed for the transformation from Delaunay variables to classical orbital elements is
-	established by the active truncator.
+	In case md_elements is a list of series, the truncation of the series expansions needed for the transformation from
+	modified Delaunay variables to classical orbital elements is established by the active truncator.
 
-	If d_elements is None, then the series representing the Delaunay variables are created internally. The series will be of type t
-	or ds if t is None. Series truncation will be degree-based, with the maximum degree for the Delaunay variable P being the input
-	parameter 'degree'. Note that for small eccentricities and inclinations, P is proportional to e ** 2.
-
-	In all cases, the return value of this function will be a list representing the series expansions of the following classical
-	orbital elements in terms of modifed Delaunay variables:
+	The return value of this function will be a list containing the following classical orbital element equivalent to the
+	input modifed Delaunay variables:
 
 	- a, semi-major axis,
 	- e, eccentricity,
@@ -168,91 +164,62 @@ def delaunay2oe(d_elements = None, degree = 10, t = None):
 	- Omega, longitude of the ascending node,
 	- M, mean anomaly,
 
-	Additionally, the resulting series will contain also as symbolic variable the integral constant 2 as "two", which
+	When working with series, the resulting series will contain also as symbolic variable the integral constant 2 as "two", which
 	is kept in literal form since its square root appears in the expressions involving the Delaunay elements.
 
-	Finally, note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is
+	Finally, note that the gravitational parameter in this transformation (e.g.,G * m, or G * (m0 + m1), etc.) is
 	set equal to unity.
 	"""
 	from pyranha.Math import root
-	from pyranha.Core import psym
-	if d_elements is None:
-		from pyranha import ds
-		from pyranha.Truncators import truncators
-		if degree <= 0:
-			raise ValueError('Truncation degree must be a positive value.')
-		# st is the series type.
-		if t is None:
-			st = ds
-		else:
-			st = t
-		# Reset all the truncators.
-		truncators.unset()
-		# Create the series representing the Delaunay elements.
-		Lambda = st(psym('Lambda'))
-		P = st(psym('P'))
-		Q = st(psym('Q'))
-		lambda_ = st(psym('lambda'))
-		p = st(psym('p'))
-		q = st(psym('q'))
-		# Now set the truncator for the series expansions.
-		truncators.degree.set('P',degree)
-	else:
-		try:
-			iter(d_elements)
-		except TypeError:
-			raise TypeError('Please provide a list of series as input parameter.')
-		if len(d_elements) != 6:
-			raise ValueError('The list of Delaunay variables must contain 6 elements.')
-		if [type(d_elements[0])] * 6 != [type(e) for e in d_elements]:
-			raise TypeError('The series representing Delaunay variables must be all of the same type.')
-		st = type(d_elements[0])
-		Lambda = d_elements[0]
-		P = d_elements[1]
-		Q = d_elements[2]
-		lambda_ = d_elements[3]
-		p = d_elements[4]
-		q = d_elements[5]
+	from pyranha.Core import psym, is_iteratable
+	from pyranha import manipulators
+	if not is_iteratable(md_elements):
+		raise TypeError('Please provide a list of modified Delaunay arguments as input parameter.')
+	if len(md_elements) != 6:
+		raise ValueError('The list of modified Delaunay variables must contain 6 elements.')
+	if [type(md_elements[0])] * 6 != [type(e) for e in md_elements]:
+		raise TypeError('The modified Delaunay variables must be all of the same type.')
+	t = type(md_elements[0])
+	Lam, P, Q, lam, p, q = md_elements
 	retval = []
-	# Let's declare the "two" symbol and construct a series from it.
-	two = st(psym('two',2))
+	if t in manipulators:
+		# Let's declare the "two" symbol and construct a series from it.
+		two = t(psym('two',2))
+	else:
+		two = 2.
 	# Let's start with the semi-major axis, easy.
-	a = Lambda ** 2
+	a = Lam ** 2
 	retval.append(a)
 	# Calculate series expansion for e.
-	e = root(2, two * P * Lambda ** -1 - P ** 2 * Lambda ** -2)
+	e = root(2, two * P * Lam ** -1 - P ** 2 * Lam ** -2)
 	retval.append(e)
 	# Now let's deal with sin(i/2) (aka 's').
-	s = root(2,Q * (two * Lambda) ** -1) * root(-2, 1 - P * Lambda ** -1)
+	s = root(2,Q * (two * Lam) ** -1) * root(-2, 1 - P * Lam ** -1)
 	retval.append(s)
 	# Finally, let's deal with the angle variables.
 	retval.append(q - p) # omega
 	retval.append(-q) # Omega
-	retval.append(lambda_ + p) # M
+	retval.append(lam + p) # M
 	return retval
 
-def oe2delaunay(oe = None, degree = 10, t = None):
+def oe2mdelaunay(oe):
 	"""
-	Returns a list containing the expressions of modified Delaunay variables in terms of classical orbital elements.
-	If oe is not None, all other arguments are ignored and oe is assumed to be a list of series representing
-	the following classical orbital elements:
+	Transform classical orbital elements into modified Delaunay elements.
+
+	oe is assumed to be a list of the following classical orbital elements:
 
 	- a, semi-major axis,
 	- e, eccentricity,
 	- sin(i/2), sine of half inclination (often known as 's'),
 	- omega, argument of pericentre,
 	- Omega, longitude of the ascending node,
-	- M, mean anomaly,
+	- M, mean anomaly.
 
-	The truncation of the series expansions needed for the transformation from classical orbital elements to modified Delaunay variables
-	is established by the active truncator.
+	In case oe is a list of series, the truncation of the series expansions needed for the transformation from
+	classical orbital elements to modified Delaunay variables is established by the active truncator.
 
-	If oe is None, then the series representing the classical orbital elements are created internally. The series will be of type t
-	or ds if t is None. Series truncation will be degree-based, with the maximum degree for the eccentricity being the input
-	parameter 'degree'.
-
-	In all cases, the return value of this function will be a list representing the series expansions of the following modified Delaunay
-	variables in terms of classical orbital elements:
+	The return value of this function will be a list containing the following modifed Delaunay variables equivalent to the
+	input classical orbital element:
 
 	- Lambda,
 	- P,
@@ -261,56 +228,28 @@ def oe2delaunay(oe = None, degree = 10, t = None):
 	- p,
 	- q.
 
-	Note that the gravitational parameter in this transformation (e.g.,G * m, G * (m0 + m1), etc.) is set equal to unity.
+	Finally, note that the gravitational parameter in this transformation (e.g.,G * m, or G * (m0 + m1), etc.) is
+	set equal to unity.
 	"""
 	from pyranha.Math import root
-	if oe is None:
-		from pyranha.Core import psym
-		from pyranha import ds
-		from pyranha.Truncators import truncators
-		if degree <= 0:
-			raise ValueError('Truncation degree must be a positive value.')
-		# st is the series type.
-		if t is None:
-			st = ds
-		else:
-			st = t
-		# Reset all the truncators.
-		truncators.unset()
-		# Create the series representing the classical orbital elements.
-		a = st(psym('a'))
-		e = st(psym('e'))
-		s = st(psym('s'))
-		omega = st(psym('omega'))
-		Omega = st(psym('Omega'))
-		M = st(psym('M'))
-		# Now set the truncator for the series expansions.
-		truncators.degree.set('e',degree)
-	else:
-		try:
-			iter(oe)
-		except TypeError:
-			raise TypeError('Please provide a list of series as input parameter.')
-		if len(oe) != 6:
-			raise ValueError('The list of classical orbital elements must contain 6 elements.')
-		if [type(oe[0])] * 6 != [type(e) for e in oe]:
-			raise TypeError('The series representing classical orbital elements must be all of the same type.')
-		st = type(oe[0])
-		a = oe[0]
-		e = oe[1]
-		s = oe[2]
-		omega = oe[3]
-		Omega = oe[4]
-		M = oe[5]
+	from pyranha.Core import is_iteratable
+	if not is_iteratable(oe):
+		raise TypeError('Please provide a list of classical orbital elements as input parameter.')
+	if len(oe) != 6:
+		raise ValueError('The list of classical orbital elements must contain 6 elements.')
+	if [type(oe[0])] * 6 != [type(e) for e in oe]:
+		raise TypeError('The classical orbital elements must be all of the same type.')
+	t = type(oe[0])
+	a, e, s, omega, Omega, M = oe
 	retval = []
 	# Let's start with Lambda.
-	Lambda = root(2,a)
-	retval.append(Lambda)
+	Lam = root(2,a)
+	retval.append(Lam)
 	# P.
-	P = Lambda * (1 - root(2,1 - e * e))
+	P = Lam * (1 - root(2,1 - e * e))
 	retval.append(P)
 	# Q.
-	Q = 2 * Lambda * root(2,1 - e * e) * (s * s)
+	Q = 2 * Lam * root(2,1 - e * e) * (s * s)
 	retval.append(Q)
 	# Finally, let's deal with the angle variables.
 	retval.append(M + omega + Omega) # lambda
