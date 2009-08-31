@@ -264,14 +264,13 @@ def poisson_bra(s1,s2,p_list,q_list):
 	coordinates whose names are listed in q_list.
 	"""
 	from pyranha.Math import partial
+	from pyranha import manipulators
+	if not type(s1) in manipulator or not type(s2) in manipulator:
+		raise TypeError('s1 and s2 must be series.')
 	if len(p_list) != len(q_list):
 		raise ValueError('The list of names of momenta and coordinates must contain the same number of elements.')
-	for i in p_list:
-		if not isinstance(i,str):
-			raise TypeError('The list of names of momenta variables must contain only string elements.')
-	for i in q_list:
-		if not isinstance(i,str):
-			raise TypeError('The list of names of coordinate variables must contain only string elements.')
+	if not all(isinstance(n,str) for n in p_list) or not all(isinstance(n,str) for n in q_list):
+		raise TypeError('The list of names of momenta and coordinates must contain only string elements.')
 	l = [partial(s1,q_list[i]) * partial(s2,p_list[i]) - partial(s1,p_list[i]) * partial(s2,q_list[i]) for i in range(0,len(p_list))]
 	return sum(l)
 
@@ -354,18 +353,16 @@ def lieH(H,eps,mom,coord,limit,he_solver):
 	from math import ceil
 	from pyranha.Core import is_iteratable, psym
 	from pyranha.Celmec import lieS
+	from pyranha import manipulators
 	# Check input parameters.
-	# NOTE: check that here H is a manipulator type?
+	if not type(H) in manipulators:
+		raise TypeError('H must be a series.')
 	if not isinstance(eps,str):
 		raise TypeError('eps must be a string.')
 	if not is_iteratable(mom) or not is_iteratable(coord):
 		raise TypeError('mom and coord must be lists of strings.')
-	for m in mom:
-		if not isinstance(m,str):
-			raise TypeError('mom and coord must be lists of strings.')
-	for c in coord:
-		if not isinstance(c,str):
-			raise TypeError('mom and coord must be lists of strings.')
+	if not all(isinstance(n,str) for n in mom) or not all(isinstance(n,str) for n in coord):
+		raise TypeError('mom and coord must be lists of strings.')
 	if not isinstance(limit,int):
 		raise TypeError('limit must be an integer value.')
 	if limit < 2:
