@@ -177,8 +177,6 @@ def mdelaunay2oe(md_elements):
 		raise TypeError('Please provide a list of modified Delaunay arguments as input parameter.')
 	if len(md_elements) != 6:
 		raise ValueError('The list of modified Delaunay variables must contain 6 elements.')
-	if [type(md_elements[0])] * 6 != [type(e) for e in md_elements]:
-		raise TypeError('The modified Delaunay variables must be all of the same type.')
 	t = type(md_elements[0])
 	Lam, P, Q, lam, p, q = md_elements
 	retval = []
@@ -237,8 +235,6 @@ def oe2mdelaunay(oe):
 		raise TypeError('Please provide a list of classical orbital elements as input parameter.')
 	if len(oe) != 6:
 		raise ValueError('The list of classical orbital elements must contain 6 elements.')
-	if [type(oe[0])] * 6 != [type(e) for e in oe]:
-		raise TypeError('The classical orbital elements must be all of the same type.')
 	t = type(oe[0])
 	a, e, s, omega, Omega, M = oe
 	retval = []
