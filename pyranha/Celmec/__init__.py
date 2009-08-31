@@ -265,7 +265,7 @@ def poisson_bra(s1,s2,p_list,q_list):
 	"""
 	from pyranha.Math import partial
 	from pyranha import manipulators
-	if not type(s1) in manipulator or not type(s2) in manipulator:
+	if not type(s1) in manipulators or not type(s2) in manipulators:
 		raise TypeError('s1 and s2 must be series.')
 	if len(p_list) != len(q_list):
 		raise ValueError('The list of names of momenta and coordinates must contain the same number of elements.')
