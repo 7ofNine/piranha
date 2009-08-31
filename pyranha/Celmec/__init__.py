@@ -309,20 +309,14 @@ def lieL(gen,arg,p_list,q_list,n = 1):
 		retval = poisson_bra(retval,gen,p_list,q_list)
 	return retval
 
-def lieS(eps,chi,arg,p_list,q_list,order = None):
+def lieS(eps,chi,arg,p_list,q_list):
 	"""
 	Lie series of generator chi developed in powers of the small quantity eps, using p_list and q_list
-	as lists of names of the canonical momenta and coordinates.
-
-	If order is None, then the limit of the series is taken from the active truncator. Otherwise, the series limit
-	is given by order itself (which must be a non-negative integer) and which represents the power of eps from which the
-	remainder of the Lie series starts.
+	as lists of names of the canonical momenta and coordinates. The limit of the series expansion is taken
+	from the active truncator.
 	"""
 	from copy import copy
-	if order is None:
-		n = eps.psi()
-	else:
-		n = order
+	n = eps.psi()
 	if n == 0:
 		return type(eps)()
 	tmp = copy(arg)
@@ -334,7 +328,7 @@ def lieS(eps,chi,arg,p_list,q_list,order = None):
 		retval += tmp
 	return retval
 
-def lieH(H,eps,mom,coord,limit,he_solver):
+def lieH(H,eps,mom,coord,he_solver):
 	"""
 	Generator of chain of canonical transformations based on Lie series. Input parameters:
 
@@ -363,25 +357,21 @@ def lieH(H,eps,mom,coord,limit,he_solver):
 		raise TypeError('mom and coord must be lists of strings.')
 	if not all(isinstance(n,str) for n in mom) or not all(isinstance(n,str) for n in coord):
 		raise TypeError('mom and coord must be lists of strings.')
-	if not isinstance(limit,int):
-		raise TypeError('limit must be an integer value.')
-	if limit < 2:
-		raise ValueError('The value of limit must be at least 2.')
 	__eps = copy(eps)
 	__mom = copy(mom)
 	__coord = copy(coord)
-	__limit = copy(limit)
 	__H = copy(H)
 	t = type(__H)
 	s_eps = t(psym(__eps))
+	n_it = s_eps.psi()
 	# Integrable Hamiltonian.
 	H0 = H.filtered([lambda t:(t[0] * t[1]).order(__eps) == 0] * len(H.arguments))
 	# Iteration starts.
-	for i in range(1,limit):
-		# Residual of order i.
-		R = __H.filtered([lambda term:(term[0] * term[1]).order(__eps) == i] * len(__H.arguments)).sub(__eps,t(1))
+	for i in range(0,n_it - 1):
+		# Residual of order i + 1.
+		R = __H.filtered([lambda term:(term[0] * term[1]).order(__eps) == i + 1] * len(__H.arguments)).sub(__eps,t(1))
 		chi = he_solver(R,H0)
-		__H = lieS(s_eps ** i,chi,__H,__mom,__coord,int(ceil(float(__limit)/i)))
+		__H = lieS(s_eps ** (i + 1),chi,__H,__mom,__coord)
 		yield copy(__H),copy(chi)
 
 def orbitalR(angles):

@@ -28,8 +28,7 @@ def is_iteratable(arg):
 		iter(arg)
 		return True
 	except TypeError:
-		pass
-	return False
+		return False
 
 def copy(arg):
 	"""
