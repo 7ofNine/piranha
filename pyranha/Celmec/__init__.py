@@ -384,23 +384,38 @@ def lieH(H,eps,mom,coord,limit,he_solver):
 		__H = lieS(s_eps ** i,chi,__H,__mom,__coord,int(ceil(float(__limit)/i)))
 		yield copy(__H),copy(chi)
 
-def orbitalR(angles, t = None):
+def orbitalR(angles):
 	"""
 	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which
 	a keplerian orbit is emebedded. The rotation angles are the classical orbital elements omega, i, Omega,
 	and must be passed as a list.
+
+	If the input list contains 3 elements, they will be interpreted as the angles omega, i, Omega. If the input list
+	contains 6 elements, they will be interpreted as [cos(om),sin(om),cos(i),sin(i),cos(Om),sin(Om)].
 	"""
 	from numpy import array
 	from pyranha.Math import cos, sin
-	omega, i, Omega = angles
+	from pyranha.Core import is_iteratable
+	if not is_iteratable(angles):
+		raise TypeError('Input parameter is not a list.')
+	l = len(angles)
+	if l != 3 and l != 6:
+		raise ValueError('Input list must contain either 3 or 6 elements.')
+	if l == 3:
+		omega, i, Omega = angles
+		cos_omega, sin_omega = cos(omega), sin(omega)
+		cos_i, sin_i = cos(i), sin(i)
+		cos_Omega, sin_Omega = cos(Omega), sin(Omega)
+	else:
+		cos_omega, sin_omega, cos_i, sin_i, cos_Omega, sin_Omega = angles
 	return array([ \
-		[cos(Omega) * cos(omega) - sin(Omega) * cos(i) * sin(omega), \
-		-cos(Omega) * sin(omega) - sin(Omega) * cos(i) * cos(omega), \
-		sin(Omega) * sin(i)], \
-		[sin(Omega) * cos(omega) + cos(Omega) * cos(i) * sin(omega), \
-		-sin(Omega) * sin(omega) + cos(Omega) * cos(i) * cos(omega), \
-		-cos(Omega) * sin(i)], \
-		[sin(i) * sin(omega), \
-		sin(i) * cos(omega), \
-		cos(i)] \
+		[cos_Omega * cos_omega - sin_Omega * cos_i * sin_omega, \
+		-cos_Omega * sin_omega - sin_Omega * cos_i * cos_omega, \
+		sin_Omega * sin_i], \
+		[sin_Omega * cos_omega + cos_Omega * cos_i * sin_omega, \
+		-sin_Omega * sin_omega + cos_Omega * cos_i * cos_omega, \
+		-cos_Omega * sin_i], \
+		[sin_i * sin_omega, \
+		sin_i * cos_omega, \
+		cos_i] \
 	])
