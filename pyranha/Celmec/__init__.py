@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -305,9 +305,9 @@ def lieL(gen,arg,p_list,q_list,n = 1):
 		retval = poisson_bra(retval,gen,p_list,q_list)
 	return retval
 
-def lieS(eps,chi,arg,p_list,q_list):
+def lieS(eps,gen,arg,p_list,q_list):
 	"""
-	Lie series of generator chi developed in powers of the small quantity eps, using p_list and q_list
+	Lie series of generator gen developed in powers of the small quantity eps, using p_list and q_list
 	as lists of names of the canonical momenta and coordinates. The limit of the series expansion is taken
 	from the active truncator.
 	"""
@@ -318,57 +318,11 @@ def lieS(eps,chi,arg,p_list,q_list):
 	tmp = copy(arg)
 	retval = copy(arg)
 	for i in range(1,n):
-		tmp = lieL(chi,tmp,p_list,q_list)
+		tmp = lieL(gen,tmp,p_list,q_list)
 		tmp *= eps
 		tmp /= i
 		retval += tmp
 	return retval
-
-def lieH(H,eps,mom,coord,he_solver):
-	"""
-	Generator of chain of canonical transformations based on Lie series. Input parameters:
-
-	- H:         series representing the full Hamiltonian
-	- eps:       name of the symbol representing the small quantity
-	- mom:       list of names of the momenta symbols
-	- coord:     list of names of the coordinates symbols
-	- limit:     desired order of quantity eps for the remainders of Lie series expansions
-	- he_solver: solver for the homological equation
-
-	he_solver must be a function (i.e., a callable) that accepts two input parameters, R and H0. R is the
-	remainder of the Hamiltonian at the current order and H0 is the integrable hamiltonian. The return value
-	will be the generating function of the Lie series transformation used for the next step of the iteration.
-	"""
-	from copy import copy
-	from math import ceil
-	from pyranha.Core import is_iteratable, psym
-	from pyranha.Celmec import lieS
-	from pyranha import manipulators
-	# Check input parameters.
-	if not type(H) in manipulators:
-		raise TypeError('H must be a series.')
-	if not isinstance(eps,str):
-		raise TypeError('eps must be a string.')
-	if not is_iteratable(mom) or not is_iteratable(coord):
-		raise TypeError('mom and coord must be lists of strings.')
-	if not all(isinstance(n,str) for n in mom) or not all(isinstance(n,str) for n in coord):
-		raise TypeError('mom and coord must be lists of strings.')
-	__eps = copy(eps)
-	__mom = copy(mom)
-	__coord = copy(coord)
-	__H = copy(H)
-	t = type(__H)
-	s_eps = t(psym(__eps))
-	n_it = s_eps.psi()
-	# Integrable Hamiltonian.
-	H0 = H.filtered([lambda t:(t[0] * t[1]).order(__eps) == 0] * len(H.arguments))
-	# Iteration starts.
-	for i in range(0,n_it - 1):
-		# Residual of order i + 1.
-		R = __H.filtered([lambda term:(term[0] * term[1]).order(__eps) == i + 1] * len(__H.arguments)).sub(__eps,t(1))
-		chi = he_solver(R,H0)
-		__H = lieS(s_eps ** (i + 1),chi,__H,__mom,__coord)
-		yield copy(__H),copy(chi)
 
 def orbitalR(angles):
 	"""
