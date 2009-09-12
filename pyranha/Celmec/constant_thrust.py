@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -20,7 +20,7 @@
 __doc__ = 'Keplerian motion perturbed by constant thrust.'
 
 axis = 0
-thrust = 0.01
+thrust = 0.001
 
 def H1(mdelaunay):
 	"""
@@ -56,13 +56,80 @@ def numerical(s0,tf,n):
 	from numpy import linspace
 	return odeint(dyn,s0,linspace(0,tf,n))
 
-def s2oe(s0):
+def build_analytical(s0):
+	from copy import copy
+	from pyranha import truncators
+	from pyranha.Celmec import oe2mdelaunay, lieS
+	from pyranha.Math import integrate, partial
+	from pyranha.Core import psym, rational
+	from pyranha.Qqps import qqps
+	import pyranha.Celmec.constant_thrust as ct
+	# Some parameters.
+	# NOTE: these could depend on a parametric numerical precision.
+	pert_order = 2
+	H1_exp_order = 4 # Order of ecc + incl in the initial expansion of the perturbing Hamiltonian.
+	mom = ['Lam','P','Q']
+	coord = ['lam','p','q']
+	# Create needed series.
+	Lam, P, Q, lam, p, q, lam0, eps = [qqps(psym(n)) for n in mom + coord + ['lam0','eps']]
+	# Set truncators for initial expansion of perturbing Hamiltonian.
+	truncators.unset()
+	truncators.degree.set(['P','Q'],rational(H1_exp_order + 1,2))
+	# Hamiltonian.
+	H = -1 * (2 * Lam ** 2) ** -1 + eps * H1([Lam,P,Q,lam,p,q])
+	# Solver for the homological equation.
+	def he_s(Hk):
+		# This will integrate wrt lambda the part of the k-th order of the Hamiltonian that depends on the coordinates
+		# and return the result as the generator for the Lie transform.
+		return integrate(Lam ** 3 * Hk.filtered([lambda t: any(n in t[0] or n in t[1] for n in coord)]),'lam')
+		#return integrate(Lam ** 3 * Hk.filtered(lambda t: t[1].h_order('lam') != 0),'lam')
+	# Truncator for Lie Series expansions.
+	truncators.degree.set(['eps'],pert_order + 1)
+	# Clear return values.
+	# Replace lambda with delta_lam + lambda_0.
+	ct.H_list = [H.sub('lam',lam + lam0)]
+	ct.chi_list = []
+	ct.direct = [[Lam, P, Q, lam, p, q]]
+	ct.inverse = [[Lam, P, Q, lam, p, q]]
+	ct.freqs = []
+	# Start the iteration.
+	for i in range(0,pert_order):
+		cur_H = ct.H_list[-1]
+		print('\033[1;32mCurrent perturbative order: %d\033[1;m' % (i + 1))
+		Hk = cur_H.filtered([None,lambda t: t[1].degree('eps') == i + 1]) * eps ** (-i -1) 
+		print('Solving homological equation...')
+		chi = he_s(Hk)
+		print('Calculating Hamiltonian...')
+		ct.H_list.append(lieS(eps ** (i + 1),chi,cur_H,mom,coord))
+		ct.chi_list.append(chi)
+		print('Calculating ' +'\033[1;31mdirect\033[1;m ' +'coordinate transformation...')
+		ct.direct.append([lieS(eps ** (i + 1),chi,arg,mom,coord) for arg in ct.direct[-1]])
+		print('Calculating ' +'\033[1;31minverse\033[1;m ' +'coordinate transformation...')
+		ct.inverse.append([lieS(eps ** (i + 1),-chi,arg,mom,coord) for arg in ct.inverse[-1]])
+	# Build dictionaries for evaluation.
+	var_names = mom + coord + ['eps','two','lam0']
+	eval_direct = dict(zip(var_names,oe2mdelaunay(s2oe(s0)) + [ct.thrust,2.,0]))
+	# We have to take into account the modification of lambda for delta_lam.
+	eval_direct['lam0'] = eval_direct['lam']
+	eval_direct['lam'] = 0
+	# Now te initial conditions for the inverse.
+	eval_inverse = dict(zip(var_names,[ct.inverse[-1][i].eval(eval_direct) for i in range(0,6)] + [ct.thrust,2.,eval_direct['lam0']]))
+	# Now the frequencies of the angles.
+	ct.freqs = dict(zip(coord,[partial(ct.H_list[-1],arg).eval(eval_inverse) for arg in mom]))
+	def t_eval(t):
+		retval = copy(eval_inverse)
+		for n in coord:
+			retval[n] += freqs[n] * t
+		return retval
+	ct.t_eval = t_eval
+
+def s2oe(s):
 	from numpy.linalg import norm
 	from numpy import array, cross, dot
 	from math import acos, atan2, cos, pi, sin, sqrt
 	# Position and velocity.
-	v_r = s0[:3]
-	v_v = s0[3:]
+	v_r = s[:3]
+	v_v = s[3:]
 	r = norm(v_r)
 	v = norm(v_v)
 	# Angular momentum.
@@ -80,7 +147,7 @@ def s2oe(s0):
 	n = norm(v_n)
 	# omega and Omega.
 	if e == 0:
-		om = 0
+		om = 0.
 	elif s == 0:
 		om = acos(v_e[0] / e)
 	elif v_e[2] >= 0:
@@ -88,7 +155,7 @@ def s2oe(s0):
 	else:
 		om = 2 * pi - acos(dot(v_n,v_e) / (n * e))
 	if s == 0:
-		Om = 0
+		Om = 0.
 	elif v_n[1] >= 0:
 		Om = acos(v_n[0] / n)
 	else:
