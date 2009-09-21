@@ -253,6 +253,26 @@ def oe2mdelaunay(oe):
 	retval.append(-Omega) # q
 	return retval
 
+def mdelaunay2poincare(md):
+	"""
+	Transform modified Delaunay orbital elements into Poincare' variables.
+
+	Return values: [Lambda,y,z,lambda,x,v]
+	"""
+	from copy import copy
+	from pyranha import manipulators
+	from pyranha.Core import psym
+	from pyranha.Math import root, cos, sin
+	Lam, P, Q, lam, p, q = md
+	t = type(Lam)
+	if t in manipulators:
+		# Let's declare the "two" symbol and construct a series from it.
+		two = t(psym('two',2))
+	else:
+		two = 2.
+	sqrt2P, sqrt2Q = root(2,two * P), root(2,two * Q)
+	return [copy(Lam),sqrt2P * cos(p),sqrt2Q * cos(q),copy(lam),sqrt2P * sin(p),sqrt2Q * sin(q)]
+
 def poisson_bra(s1,s2,p_list,q_list):
 	"""
 	Calculate the Poisson bracket {s1,s2}, with series s1 and s2 are interpreted as
@@ -272,7 +292,7 @@ def poisson_bra(s1,s2,p_list,q_list):
 
 def is_canonical(new_p,new_q,p_list,q_list):
 	"""
-	Test whether the transformation new_p = new_p(p_list) and new_q = new_q(q_list)
+	Test whether the transformation new_p = new_p(p_list,q_list) and new_q = new_q(p_list,q_list)
 	is canonical using the Poisson brackets test.
 
 	new_p and new_q must be lists of series, while p_list and q_list must be lists of
