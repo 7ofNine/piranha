@@ -240,16 +240,14 @@ namespace piranha
 							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple
 						);
 						__PDEBUG(std::cout << "Done multiplying\n");
-						size_t size = 0;
 						const max_fast_int i_f = this->m_h_max;
-						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
-							size += (!vc_res[i].is_ignorable(args_tuple));
-						}
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
+							// NOTE: wouldn't it be better if insrt() were smart enough to do these checks first
+							// and reduce its workload?
 							if (!vc_res[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res[i];
 								coded_ancestor::decode(tmp_term.m_key, i);
