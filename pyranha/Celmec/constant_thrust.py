@@ -145,7 +145,7 @@ def build_poincare(s0):
 	# Hamiltonian.
 	H = -1 * (2 * Lam ** 2) ** -1 + eps * H1([Lam,P,Q,lam,p,q])
 	truncators.unset()
-	# Transform int Poincare' variables.
+	# Transform into Poincare' variables.
 	p_mom = ['Lam','y','z']
 	p_coord = ['lam','x','v']
 	Lam, y, z, lam, x, v, two = [qqps(psym(n)) for n in p_mom + p_coord + ['two']]
