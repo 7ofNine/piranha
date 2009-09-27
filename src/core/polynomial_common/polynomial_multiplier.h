@@ -246,7 +246,7 @@ namespace piranha
 						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							// NOTE: wouldn't it be better if insrt() were smart enough to do these checks first
+							// NOTE: wouldn't it be better if insert() were smart enough to do these checks first
 							// and reduce its workload?
 							if (!vc_res[i].is_ignorable(args_tuple)) {
 								tmp_term.m_cf = vc_res[i];

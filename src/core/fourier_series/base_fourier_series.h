@@ -43,7 +43,7 @@ namespace piranha
 	template <int N, class Derived>
 	class toolbox<base_fourier_series<N,Derived> >
 	{
-			p_static_check(N >= 0, "Invalid argumsnts position in base Fourier series toolbox.");
+			p_static_check(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
 		protected:
 			// Integrate supposing that the symbol is present in the fourier series..
 			template <typename PosTuple, typename ArgsTuple>
