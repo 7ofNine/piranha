@@ -42,7 +42,7 @@ namespace piranha
 			/// Lexical converter.
 			/**
 			 * Convert a string to type T using boost::lexical_cast. If the operation is unsuccessful
-			 * a defaul constructed value is returned.
+			 * a default-constructed value is returned.
 			 * @param[in] s std::string to be converted.
 			 */
 			template <class T> static T lexical_converter(const std::string &s) {
