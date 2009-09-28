@@ -56,7 +56,7 @@ def numerical(s0,tf,n):
 	from numpy import linspace
 	return odeint(dyn,s0,linspace(0,tf,n))
 
-def build_analytical(s0):
+def build_analytical(s0,pert_order):
 	from copy import copy
 	from pyranha import truncators
 	from pyranha.Celmec import oe2mdelaunay, lieS
@@ -66,8 +66,7 @@ def build_analytical(s0):
 	import pyranha.Celmec.constant_thrust as ct
 	# Some parameters.
 	# NOTE: these could depend on a parametric numerical precision.
-	pert_order = 2
-	H1_exp_order = 4 # Order of ecc + incl in the initial expansion of the perturbing Hamiltonian.
+	H1_exp_order = 2 # Order of ecc + incl in the initial expansion of the perturbing Hamiltonian.
 	mom = ['Lam','P','Q']
 	coord = ['lam','p','q']
 	# Create needed series.
@@ -83,11 +82,9 @@ def build_analytical(s0):
 		# and return the result as the generator for the Lie transform.
 		return integrate(Lam ** 3 * Hk.filtered([lambda t: any(n in t[0] or n in t[1] for n in coord)]),'lam')
 		#return integrate(Lam ** 3 * Hk.filtered(lambda t: t[1].h_order('lam') != 0),'lam')
-	# Truncator for Lie Series expansions.
-	truncators.degree.set(['eps'],pert_order + 1)
 	# Clear return values.
 	# Replace lambda with delta_lam + lambda_0.
-	ct.H_list = [H.sub('lam',lam + lam0)]
+	ct.H_list = [H.sub('lam',lam + lam0).sub('Q',qqps())]
 	ct.chi_list = []
 	ct.direct = [[Lam, P, Q, lam, p, q]]
 	ct.inverse = [[Lam, P, Q, lam, p, q]]
@@ -100,12 +97,16 @@ def build_analytical(s0):
 		print('Solving homological equation...')
 		chi = he_s(Hk)
 		print('Calculating Hamiltonian...')
-		ct.H_list.append(lieS(eps ** (i + 1),chi,cur_H,mom,coord))
+		# Truncators setup.
+		truncators.degree.set(['eps'],pert_order + 1)
+		l = eps.psi()
+		truncators.degree.set(['P','Q'],rational(H1_exp_order + 1,2))
+		ct.H_list.append(lieS(eps ** (i + 1),chi,cur_H,mom,coord,l))
 		ct.chi_list.append(chi)
 		print('Calculating ' +'\033[1;31mdirect\033[1;m ' +'coordinate transformation...')
-		ct.direct.append([lieS(eps ** (i + 1),chi,arg,mom,coord) for arg in ct.direct[-1]])
+		ct.direct.append([lieS(eps ** (i + 1),chi,arg,mom,coord,l) for arg in ct.direct[-1]])
 		print('Calculating ' +'\033[1;31minverse\033[1;m ' +'coordinate transformation...')
-		ct.inverse.append([lieS(eps ** (i + 1),-chi,arg,mom,coord) for arg in ct.inverse[-1]])
+		ct.inverse.append([lieS(eps ** (i + 1),-chi,arg,mom,coord,l) for arg in ct.inverse[-1]])
 	# Build dictionaries for evaluation.
 	var_names = mom + coord + ['eps','two','lam0']
 	eval_direct = dict(zip(var_names,oe2mdelaunay(s2oe(s0)) + [ct.thrust,2.,0]))

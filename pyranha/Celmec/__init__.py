@@ -325,14 +325,19 @@ def lieL(gen,arg,p_list,q_list,n = 1):
 		retval = poisson_bra(retval,gen,p_list,q_list)
 	return retval
 
-def lieS(eps,gen,arg,p_list,q_list):
+def lieS(eps,gen,arg,p_list,q_list,limit = None):
 	"""
 	Lie series of generator gen developed in powers of the small quantity eps, using p_list and q_list
-	as lists of names of the canonical momenta and coordinates. The limit of the series expansion is taken
-	from the active truncator.
+	as lists of names of the canonical momenta and coordinates. The limit of the series expansion,if not specified,
+	is taken from the active truncator.
 	"""
 	from copy import copy
-	n = eps.psi()
+	if limit is None:
+		n = eps.psi()
+	else:
+		if not isinstance(limit,int):
+			raise TypeError('The limit of thse Lie series must be an integer.')
+		n = limit
 	if n == 0:
 		return type(eps)()
 	tmp = copy(arg)

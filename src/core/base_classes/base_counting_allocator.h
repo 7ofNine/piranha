@@ -21,18 +21,20 @@
 #ifndef PIRANHA_BASE_COUNTING_ALLOCATOR_H
 #define PIRANHA_BASE_COUNTING_ALLOCATOR_H
 
-#include "../atomic_counter.h"
+#include "../atomic_counters/atomic_counters.h"
+#include "../config.h"
 
 namespace piranha
 {
 	class __PIRANHA_VISIBLE base_counting_allocator
 	{
 		public:
-			static size_t count() {
-				return static_cast<size_t>(m_counter);
+			static size_t count()
+			{
+				return m_counter.get_value();
 			}
 		protected:
-			static unsigned_atomic_counter m_counter;
+			static atomic_counter_size_t m_counter;
 	};
 }
 

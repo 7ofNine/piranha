@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007, 2008 by Francesco Biscani   *
+ *   Copyright (C) 2009 by Francesco Biscani   *
  *   bluescarni@gmail.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,40 +18,41 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_ATOMIC_COUNTER_H
-#define PIRANHA_ATOMIC_COUNTER_H
+#ifndef PIRANHA_ATOMIC_COUNTERS_H
+#define PIRANHA_ATOMIC_COUNTERS_H
 
-#include "config.h"
+#include <cstddef>
 
-#ifdef _PIRANHA_MT
-#if defined( __GNUC__ ) && GCC_VERSION >= 401000
+#if defined ( _PIRANHA_GCC_ATOMIC_BUILTINS )
 
 #include "atomic_counter_gcc_41.h"
 
 namespace piranha
 {
-	typedef atomic_counter_gcc_41<size_t> unsigned_atomic_counter;
+	typedef atomic_counter_gcc_41<std::size_t> atomic_counter_size_t;
 }
 
-#else // Not GCC or GCC < 4.1.
+#elif defined ( _PIRANHA_MSVC_ATOMIC_BUILTINS )
 
-// TODO: for MSVC, use its atomic builtins instead of the generic counter.
+#include "atomic_counter_msvc_long.h"
+
+namespace piranha
+{
+	// TODO: make atomic counter for msvc generic using casting to long, see http://www.dlugosz.com/Repertoire/refman/Classics/atomic_counter_whitepaper.html
+	// TODO: here for win64 bit we probably need another counter altogether and another #ifdef, since
+	// MSVC's atomic builtins operate on 32bit and 64bit with different naming conventions.
+	typedef atomic_counter_msvc_long atomic_counter_size_t;
+}
+
+#else
+
 #include "atomic_counter_generic.h"
 
 namespace piranha
 {
-	typedef atomic_counter_generic<size_t> unsigned_atomic_counter;
+	typedef atomic_counter_generic<std::size_t> atomic_counter_size_t;
 }
 
-#endif // Compiler selection in case of MT.
-#else // _PIRANHA_MT
-
-namespace piranha
-{
-	// If multi-thread support was not enabled use plain old integers as counters.
-	typedef size_t unsigned_atomic_counter;
-}
-
-#endif // _PIRANHA_MT
+#endif
 
 #endif

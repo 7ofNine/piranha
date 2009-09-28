@@ -36,6 +36,13 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUI
 OPTION(BUILD_MULTITHREADING "Enable multi-threaded parallelism." OFF)
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
+# Set default build type to "Release", change it in the GUI if you need to build with debug.
+IF(NOT CMAKE_BUILD_TYPE)
+	SET(CMAKE_BUILD_TYPE Release CACHE STRING
+		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+	FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 SET(MANDATORY_LIBRARIES "")
 SET(PIRANHA_DEFINITIONS "")
 
@@ -84,8 +91,6 @@ SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${GMPXX_LIBRARIES} ${GMP_LIBRARIE
 INCLUDE_DIRECTORIES(${GMP_INCLUDE_DIR} ${GMPXX_INCLUDE_DIR})
 
 # Common stuff
-# TODO: fix this.
-SET(CMAKE_BUILD_TYPE "Release")
 # Find out theories files to be installed
 IF(UNIX)
 	SET(THEORIES_INSTALL_PATH "share/piranha/theories")

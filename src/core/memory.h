@@ -23,10 +23,10 @@
 
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
 #include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
-#include <exception> // For standard bad_alloc exception.
+#include <cstddef>
 #include <memory>
 
-#include "atomic_counter.h" // For counting allocator.
+#include "atomic_counters/atomic_counters.h" // For counting allocator.
 #include "base_classes/base_counting_allocator.h"
 #include "config.h" // For unlikely(), aligned malloc, visibility, etc.
 #include "exceptions.h"
@@ -57,34 +57,42 @@ namespace piranha
 			template <class U>
 			counting_allocator(const counting_allocator<U,Allocator> &):m_alloc() {}
 			~counting_allocator() {}
-			pointer address(reference x) {
+			pointer address(reference x)
+			{
 				return m_alloc.address(x);
 			}
-			const_pointer address(const_reference x) const {
+			const_pointer address(const_reference x) const
+			{
 				return m_alloc.address(x);
 			}
-			pointer allocate(const size_type &n, const void *hint = 0) {
-				const size_t add = n * sizeof(value_type), cur = static_cast<size_t>(m_counter),
+			pointer allocate(const size_type &n, const void *hint = 0)
+			{
+				const std::size_t add = n * sizeof(value_type), cur = m_counter.get_value(),
 					l = settings::memory_limit();
-				// Cast to double so that we resolve the case in which cur+add overflows size_t.
-				if (static_cast<double>(cur) + add > l) {
+				// Formulate in this way in order to avoid bogus values when doing l - add
+				// (which is unsigned arithmetic).
+				if (add > l || cur > l - add) {
 					piranha_throw(memory_error,"memory limit reached");
 				}
 				pointer retval = m_alloc.allocate(n,hint);
 				m_counter += add;
 				return retval;
 			}
-			void deallocate(pointer p, const size_type &n) {
+			void deallocate(pointer p, const size_type &n)
+			{
 				m_alloc.deallocate(p,n);
 				m_counter -= n * sizeof(value_type);
 			}
-			size_type max_size() const {
+			size_type max_size() const
+			{
 				return boost::integer_traits<size_type>::const_max/sizeof(value_type);
 			}
-			void construct(pointer p, const value_type &val) {
+			void construct(pointer p, const value_type &val)
+			{
 				m_alloc.construct(p,val);
 			}
-			void destroy(pointer p) {
+			void destroy(pointer p)
+			{
 				m_alloc.destroy(p);
 			}
 		private:
@@ -92,12 +100,14 @@ namespace piranha
 	};
 
 	template<class T, class Allocator>
-	inline bool operator==(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &) {
+	inline bool operator==(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &)
+	{
 		return true;
 	}
 
 	template<class T, class Allocator>
-	inline bool operator!=(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &) {
+	inline bool operator!=(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &)
+	{
 		return false;
 	}
 
