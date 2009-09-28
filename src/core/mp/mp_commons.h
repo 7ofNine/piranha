@@ -21,8 +21,11 @@
 #ifndef PIRANHA_MP_COMMONS_H
 #define PIRANHA_MP_COMMONS_H
 
+#include <boost/math/special_functions/fpclassify.hpp>
+#include <complex>
 #include <iostream>
 
+#include "../exceptions.h"
 #include "../math.h" // For factorial_check and generic factorials.
 
 namespace piranha
@@ -109,6 +112,26 @@ namespace piranha
 			retval *= i;
 		}
 		return retval;
+	}
+
+	// Function to check that a number is not pathological, in order to shield MP
+	// functions from bogus stuff. Basically it will do something just for floating-point
+	// values.
+	template <class T>
+	inline void normal_check(const T &) {}
+
+	inline void normal_check(const double &x)
+	{
+		if (!boost::math::isnormal(x)) {
+			piranha_throw(value_error,"floating-point value is not normal");
+		}
+	}
+
+	inline void normal_check(const std::complex<double> &c)
+	{
+		if (!boost::math::isnormal(c.real()) || !boost::math::isnormal(c.imag())) {
+			piranha_throw(value_error,"complex floating-point value is not normal");
+		}
 	}
 }
 

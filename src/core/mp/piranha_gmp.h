@@ -39,7 +39,6 @@
 #include "complex_generic_mp_container.h"
 #include "mp_commons.h"
 
-// TODO: protect mp classes from non-normal floating-point numbers with boost/math/special_functions/fpclassify.hpp.
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
 // - do not use boost::operator ++ and --, use common impl in mp_commons instead and overload correctly for pre/post increment.
 // - overload std::pow for exponentiation to rational
@@ -77,6 +76,7 @@ namespace piranha
 	#define FORWARDING_MATH_OPERATOR(class_type,arg_type,op,...) \
 	inline class_type & class_type::operator op(const arg_type &other) \
 	{ \
+		normal_check(other); \
 		m_value op other __VA_ARGS__; \
 		return *this; \
 	}
@@ -86,6 +86,7 @@ namespace piranha
 	#define FORWARDING_DIVISION_OPERATOR(class_type,arg_type,...) \
 	inline class_type & class_type::operator /=(const arg_type &other) \
 	{ \
+		normal_check(other); \
 		if (other == 0) { \
 			piranha_throw(zero_division_error,"cannot divide by zero"); \
 		} \
@@ -160,7 +161,11 @@ namespace piranha
 				construct_from_numden(n,d);
 			}
 			/// Constructor from double.
-			explicit mp_rational(const double &x):m_value(x) {}
+			explicit mp_rational(const double &x):m_value(0)
+			{
+				normal_check(x);
+				m_value = x;
+			}
 			// Interoperability with self and plain old types.
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,+=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_rational,mp_rational,-=)
@@ -292,6 +297,7 @@ namespace piranha
 			 */
 			mp_rational pow(const double &y) const
 			{
+				normal_check(y);
 				if (is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -508,7 +514,11 @@ namespace piranha
 			/// Constructor from integer.
 			explicit mp_integer(const int &n):m_value(n) {}
 			/// Constructor from double.
-			explicit mp_integer(const double &x):m_value(x) {}
+			explicit mp_integer(const double &x):m_value(0)
+			{
+				normal_check(x);
+				m_value = x;
+			}
 			// Interoperability with plain numerical types.
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,+=)
 			FORWARDING_MATH_OPERATOR_DECL(mp_integer,mp_integer,-=)
@@ -671,6 +681,7 @@ namespace piranha
 			 */
 			mp_integer pow(const double &y) const
 			{
+				normal_check(y);
 				if (is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -957,6 +968,7 @@ namespace std
 			 */
 			complex pow(const double &y) const
 			{
+				piranha::normal_check(y);
 				if (piranha::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -975,6 +987,9 @@ namespace std
 			 */
 			complex root(const int &n) const
 			{
+				if (!n) {
+					piranha_throw(zero_division_error,"cannot calculate zero-th root of complex rational number");
+				}
 				return pow(1. / double(n));
 			}
 		private:
@@ -1173,6 +1188,7 @@ namespace std
 			 */
 			complex pow(const double &y) const
 			{
+				piranha::normal_check(y);
 				if (piranha::is_integer(y)) {
 					return pow_int((int)y);
 				} else {
@@ -1191,6 +1207,9 @@ namespace std
 			 */
 			complex root(const int &n) const
 			{
+				if (!n) {
+					piranha_throw(zero_division_error,"cannot calculate zero-th root of complex integer number");
+				}
 				return pow(1. / double(n));
 			}
 		private:

@@ -32,6 +32,7 @@
 
 #include "../exceptions.h"
 #include "../math.h"
+#include "mp_commons.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -43,11 +44,13 @@ namespace piranha
 		template <class U>
 		static void construct(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real = x;
 		}
 		template <class U>
 		static void assign(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real = x;
 			u.m_imag = 0;
 		}
@@ -59,22 +62,26 @@ namespace piranha
 		template <class U>
 		static void add(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real += x;
 		}
 		template <class U>
 		static void subtract(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real -= x;
 		}
 		template <class U>
 		static void mult(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real *= x;
 			u.m_imag *= x;
 		}
 		template <class U>
 		static void divide(U &u, const T &x)
 		{
+			normal_check(x);
 			u.m_real /= x;
 			u.m_imag /= x;
 		}
@@ -85,12 +92,14 @@ namespace piranha
 		template <class U>
 		static void construct(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.m_real = c.real();
 			u.m_imag = c.imag();
 		}
 		template <class U>
 		static void assign(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.m_real = c.real();
 			u.m_imag = c.imag();
 		}
@@ -102,23 +111,27 @@ namespace piranha
 		template <class U>
 		static void add(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.m_real += c.real();
 			u.m_imag += c.imag();
 		}
 		template <class U>
 		static void subtract(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.m_real -= c.real();
 			u.m_imag -= c.imag();
 		}
 		template <class U>
 		static void mult(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.mult_by_complex(c);
 		}
 		template <class U>
 		static void divide(U &u, const std::complex<T> &c)
 		{
+			normal_check(c);
 			u.divide_by_complex(c);
 		}
 	};
@@ -195,7 +208,7 @@ namespace piranha
 			double to_double() const
 			{
 				piranha_throw(type_error,"cannot convert complex to real floating point");
-				return  0.;
+				return 0.;
 			}
 			/// Cast to int.
 			/**
@@ -204,7 +217,7 @@ namespace piranha
 			int to_int() const
 			{
 				piranha_throw(type_error,"cannot convert complex to real int");
-				return  0;
+				return 0;
 			}
 			/// Cast to complex double.
 			/**
