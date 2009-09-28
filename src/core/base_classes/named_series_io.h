@@ -24,6 +24,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <complex>
+#include <cstddef>
 #include <iostream>
 #include <string>
 
@@ -48,7 +49,7 @@ namespace piranha
 	inline void named_series_print_plain(std::ostream &stream,
 		 const typename ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &args_tuple)
 	{
-		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
+		for (std::size_t i = 0; i < args_tuple.get_head().size(); ++i) {
 			stream << "[" << ArgsDescr::head_type::name << "_arg]" << '\n';
 			args_tuple.get_head()[i].print(stream);
 		}

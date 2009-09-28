@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MATH_H
 
 #include <boost/lexical_cast.hpp>
+#include <cstddef>
 #include <string>
 
 #include "../config.h"
@@ -367,7 +368,7 @@ namespace piranha
 				// NOTE: check if it is possible to skip using temporary variables.
 				// Apparently this will be possible in C++1x with the move constructor.
 				if (n >= 0) {
-					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+					Derived tmp(derived_const_cast->natural_power((std::size_t)n, args_tuple));
 					retval.base_swap(tmp);
 				} else {
 					if (n == -1) {
@@ -404,7 +405,7 @@ namespace piranha
 			if (q.get_den() == 1) {
 				const int n = q.get_num().to_int();
 				if (n >= 0) {
-					Derived tmp(derived_const_cast->natural_power((size_t)n, args_tuple));
+					Derived tmp(derived_const_cast->natural_power((std::size_t)n, args_tuple));
 					retval.base_swap(tmp);
 				} else {
 					if (n == -1) {
@@ -458,7 +459,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::natural_power(const size_t &n,
+	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::natural_power(const std::size_t &n,
 		const ArgsTuple &args_tuple) const
 	{
 		Derived retval;
@@ -494,7 +495,7 @@ namespace piranha
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
 			Derived tmp(*derived_const_cast);
-			size_t i = n;
+			std::size_t i = n;
 			while (i) {
 				if (i & 1) {
 					retval.base_mult_by(tmp, args_tuple);

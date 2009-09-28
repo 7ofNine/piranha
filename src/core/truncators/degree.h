@@ -24,6 +24,7 @@
 #include <algorithm> // For sorting.
 #include <boost/tuple/tuple.hpp>
 #include <cmath> // For std::ceil.
+#include <cstddef>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -105,7 +106,7 @@ namespace piranha
 			template <class Multiplier>
 			class get_type
 			{
-					typedef typename ntuple<std::vector<std::pair<bool,size_t> >,
+					typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
 						boost::tuples::length<typename Multiplier::args_tuple_type>::value>::type
 						pos_tuple_type;
 					static const int expo_term_pos = Multiplier::series_type1::expo_term_position;
@@ -154,7 +155,7 @@ namespace piranha
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
 					template <class PowerSeries, class ArgsTuple>
-					static size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
+					static std::size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
 						const ArgsTuple &args_tuple)
 					{
 						if (step_size < 1) {
@@ -220,7 +221,7 @@ namespace piranha
 								break;
 							case p_deg:
 								{
-								typedef typename ntuple<std::vector<std::pair<bool,size_t> >,
+								typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
 									boost::tuples::length<ArgsTuple>::value>::type pos_tuple_type;
 								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
 								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) {

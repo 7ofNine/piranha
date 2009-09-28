@@ -21,6 +21,7 @@
 #ifndef PIRANHA_NAMED_POWER_SERIES_H
 #define PIRANHA_NAMED_POWER_SERIES_H
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -47,7 +48,7 @@ namespace piranha
 		{
 			vector_psym v;
 			v.reserve(vs.size());
-			for (size_t i = 0; i < vs.size(); ++i) {
+			for (std::size_t i = 0; i < vs.size(); ++i) {
 				v.push_back(psym(vs[i]));
 			}
 			return derived_const_cast->base_partial_order(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));

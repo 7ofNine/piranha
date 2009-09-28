@@ -25,6 +25,7 @@
 #include <boost/functional/hash.hpp>
 #include <cmath>
 #include <complex>
+#include <cstddef>
 #include <string>
 
 #include "math.h"
@@ -54,7 +55,7 @@ namespace piranha
 	}
 
 	/// Overload hash_value function for piranha::mp_rational.
-	inline size_t hash_value(const mp_rational &q)
+	inline std::size_t hash_value(const mp_rational &q)
 	{
                 return q.hash();
 	}
@@ -97,7 +98,7 @@ namespace piranha
 	}
 
 	/// Overload hash_value function for std::complex<piranha::mp_rational>.
-	inline size_t hash_value(const std::complex<mp_rational> &qc)
+	inline std::size_t hash_value(const std::complex<mp_rational> &qc)
 	{
 		return qc.hash();
 	}
@@ -164,7 +165,7 @@ namespace piranha
 	}
 
 	/// Overload hash_value function for piranha::mp_integer.
-	inline size_t hash_value(const mp_integer &z)
+	inline std::size_t hash_value(const mp_integer &z)
 	{
                 return z.hash();
 	}
@@ -234,7 +235,7 @@ namespace piranha
 	}
 
 	/// Overload hash_value function for std::complex<piranha::mp_integer>.
-	inline size_t hash_value(const std::complex<mp_integer> &zc)
+	inline std::size_t hash_value(const std::complex<mp_integer> &zc)
 	{
 		return zc.hash();
 	}

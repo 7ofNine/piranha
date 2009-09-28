@@ -20,8 +20,9 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp> // For replacing "\" with "/" in Windows.
-#include <cstring>
+#include <cstddef>
 #include <cstdlib> // For getenv in Windows.
+#include <cstring>
 #include <gmp.h>
 
 #include "core/config.h"
@@ -33,22 +34,22 @@
 namespace piranha
 {
 	extern "C" {
-	static inline void *gmp_alloc_func(size_t size)
+	static inline void *gmp_alloc_func(std::size_t size)
 	{
 		std_counting_allocator<char> a;
 		return static_cast<void *>(a.allocate(size));
 	}
 
-	static inline void *gmp_realloc_func(void *ptr, size_t old_size, size_t new_size)
+	static inline void *gmp_realloc_func(void *ptr, std::size_t old_size, std::size_t new_size)
 	{
 		std_counting_allocator<char> a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
-		memcpy(retval, static_cast<void const *>(ptr), std::min<size_t>(old_size,new_size));
+		memcpy(retval, static_cast<void const *>(ptr), std::min<std::size_t>(old_size,new_size));
 		a.deallocate(static_cast<char *>(ptr),old_size);
 		return retval;
 	}
 
-	static inline void gmp_free_func(void *ptr, size_t size)
+	static inline void gmp_free_func(void *ptr, std::size_t size)
 	{
 		std_counting_allocator<char> a;
 		a.deallocate(static_cast<char *>(ptr),size);
@@ -66,7 +67,7 @@ namespace piranha
 	}
 
 	// Settings' static members.
-	size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
+	std::size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_hash_max_load_factor = 1;
 	double settings::m_numerical_zero;
 	std::string settings::m_default_path;
@@ -74,12 +75,12 @@ namespace piranha
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	bool settings::enable_progress_display = true;
-	size_t settings::m_digits;
+	std::size_t settings::m_digits;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
-	const size_t settings::cache_size;
+	const std::size_t settings::cache_size;
 	bool settings::blocker = false;
 	settings::startup_class settings::startup;
-	size_t settings::m_max_pretty_print_size = 500;
+	std::size_t settings::m_max_pretty_print_size = 500;
 
 	settings::startup_class::startup_class()
 	{
@@ -87,7 +88,7 @@ namespace piranha
 		p_static_check(sizeof(char) == 1, "Wrong char size.");
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
-		p_static_check(sizeof(size_t) == sizeof(void *), "size_t and void * are not the same size.");
+		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
 		// Init values.
 		m_numerical_zero = 1E-80;
@@ -128,17 +129,17 @@ namespace piranha
 		return m_version;
 	}
 
-	size_t settings::digits()
+	std::size_t settings::digits()
 	{
 		return m_digits;
 	}
 
-	size_t settings::min_digits()
+	std::size_t settings::min_digits()
 	{
 		return m_min_digits;
 	}
 
-	size_t settings::max_digits()
+	std::size_t settings::max_digits()
 	{
 		return m_max_digits;
 	}
@@ -166,7 +167,7 @@ namespace piranha
 		}
 	}
 
-	size_t settings::get_max_pretty_print_size()
+	std::size_t settings::get_max_pretty_print_size()
 	{
 		return m_max_pretty_print_size;
 	}

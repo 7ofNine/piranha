@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 #define PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -48,21 +49,21 @@ namespace piranha
 				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
 				hyperF_b_check(b_list);
 				// Cache values.
-				const size_t a_size = a_list.size(), b_size = b_list.size();
+				const std::size_t a_size = a_list.size(), b_size = b_list.size();
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) {
 					retval.base_add(1,args_tuple);
 					return retval;
 				}
 				// If one of the elements in a_list is zero, hyperF will always be 1.
-				for (size_t i = 0; i < a_size; ++i) {
+				for (std::size_t i = 0; i < a_size; ++i) {
 					if (a_list[i] == 0) {
 						retval.base_add(1,args_tuple);
 						return retval;
 					}
 				}
 				// Establish series limit, using the following strategy...
-				size_t iter_;
+				std::size_t iter_;
 				try {
 					// First we try to respect the given iter_limit, if any,
 					// otherwise we call the truncator to see what it has to say.
@@ -71,7 +72,7 @@ namespace piranha
 					// If the truncator fails to establish a limit, we go to see into a_list and b_list
 					// whether there are negative integer numbers.
 					mp_rational const *min_int = 0;
-					for (size_t i = 0; i < a_size; ++i) {
+					for (std::size_t i = 0; i < a_size; ++i) {
 						if (a_list[i] < 0 && a_list[i].get_den() == 1) {
 							if (!min_int || a_list[i] < *min_int) {
 								min_int = &a_list[i];
@@ -86,7 +87,7 @@ namespace piranha
 					piranha_assert(*min_int < 0);
 					iter_ = -(((*min_int) - 1).to_int());
 				}
-				const size_t iter = iter_;
+				const std::size_t iter = iter_;
 				// If no iterations are needed, return an empty series.
 				if (!iter) {
 					return retval;
@@ -94,11 +95,11 @@ namespace piranha
 				retval.base_add(1,args_tuple);
 				Derived tmp;
 				tmp.base_add(1,args_tuple);
-				for (size_t i = 1; i < iter; ++i) {
-					for (size_t j = 0; j < a_size; ++j) {
+				for (std::size_t i = 1; i < iter; ++i) {
+					for (std::size_t j = 0; j < a_size; ++j) {
 						tmp.base_mult_by(a_list[j] + (int)(i - 1),args_tuple);
 					}
-					for (size_t j = 0; j < b_size; ++j) {
+					for (std::size_t j = 0; j < b_size; ++j) {
 						tmp.base_divide_by(b_list[j] + (int)(i - 1),args_tuple);
 					}
 					tmp.base_divide_by(i,args_tuple);
@@ -117,19 +118,19 @@ namespace piranha
 				hyperF_b_check(b_list);
 				// Compute the outside factor.
 				mp_rational factor(1);
-				const size_t a_size = a_list.size(), b_size = b_list.size();
-				for (size_t i = 0; i < a_size; ++i) {
+				const std::size_t a_size = a_list.size(), b_size = b_list.size();
+				for (std::size_t i = 0; i < a_size; ++i) {
 					factor *= a_list[i].r_factorial(n);
 				}
-				for (size_t i = 0; i < b_size; ++i) {
+				for (std::size_t i = 0; i < b_size; ++i) {
 					factor /= b_list[i].r_factorial(n);
 				}
 				// Create the new a_list and b_list.
 				std::vector<mp_rational> new_a(a_list), new_b(b_list);
-				for (size_t i = 0; i < a_size; ++i) {
+				for (std::size_t i = 0; i < a_size; ++i) {
 					new_a[i] += n;
 				}
-				for (size_t i = 0; i < b_size; ++i) {
+				for (std::size_t i = 0; i < b_size; ++i) {
 					new_b[i] += n;
 				}
 				Derived retval(base_hyperF(new_a,new_b,iter_limit,args_tuple));
@@ -153,7 +154,7 @@ namespace piranha
 				Derived x_2(*derived_const_cast);
 				x_2.base_divide_by(2,args_tuple);
 				retval = Derived(x_2).base_mult_by(-1,args_tuple).base_mult_by(x_2,args_tuple)
-					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((size_t)1,mp_rational(order) + 1),-1,args_tuple);
+					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((std::size_t)1,mp_rational(order) + 1),-1,args_tuple);
 				retval.base_mult_by(x_2.base_pow(order,args_tuple),args_tuple);
 				retval.base_divide_by(mp_integer(order).factorial(),args_tuple);
 				if (order_ < 0) {
@@ -175,7 +176,7 @@ namespace piranha
 					return retval;
 				}
 				// Get the expansion limit from the truncator.
-				size_t limit_;
+				std::size_t limit_;
 				try {
 					limit_ = derived_const_cast->psi_(order - 1, 2, args_tuple);
 				} catch (const value_error &ve) {
@@ -183,7 +184,7 @@ namespace piranha
 						"Bessel function of the first kind.\nThe reported error is: ")
 						+ ve.what());
 				}
-				const size_t limit = limit_;
+				const std::size_t limit = limit_;
 				if (!limit) {
 					return retval;
 				}
@@ -222,7 +223,7 @@ namespace piranha
 				Derived x_2(*derived_const_cast);
 				x_2.base_divide_by(2,args_tuple);
 				retval = Derived(x_2).base_mult_by(-1,args_tuple).base_mult_by(x_2,args_tuple)
-					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((size_t)1,mp_rational(order) + 1),-1,args_tuple);
+					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((std::size_t)1,mp_rational(order) + 1),-1,args_tuple);
 				retval.base_mult_by(derived_const_cast->base_pow(order - m,args_tuple),args_tuple);
 				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order),args_tuple);
 				if (order_ < 0) {
@@ -233,8 +234,8 @@ namespace piranha
 		private:
 			static void hyperF_b_check(const std::vector<mp_rational> &b_list)
 			{
-				const size_t b_size = b_list.size();
-				for (size_t i = 0; i < b_size; ++i) {
+				const std::size_t b_size = b_list.size();
+				for (std::size_t i = 0; i < b_size; ++i) {
 					if (b_list[i] <= 0 && b_list[i].get_den() == 1) {
 						piranha_throw(zero_division_error,"b_list in hyperF contains a non-positive integer");
 					}

@@ -25,6 +25,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/unordered_map.hpp>
 #include <complex>
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -78,7 +79,7 @@ namespace piranha
 			double norm() const;
 			eval_type eval(const double &) const;
 			eval_type eval(const eval_dict &) const;
-			size_t psi(const int &start = 0, const int &step = 1) const;
+			std::size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
 			bool operator==(const Derived &) const;

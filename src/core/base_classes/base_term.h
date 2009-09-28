@@ -23,6 +23,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/static_assert.hpp>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -194,7 +195,7 @@ namespace piranha
 			 * Useful in STL-like containers.
 			 */
 			struct hasher {
-				size_t operator()(const base_term &t) const {
+				std::size_t operator()(const base_term &t) const {
 					return t.m_key.hash_value();
 				}
 			};
@@ -222,7 +223,7 @@ namespace piranha
 	 * The key's hash_value() method is used to calculate the term's hash value.
 	 */
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	inline size_t hash_value(const base_term<__PIRANHA_BASE_TERM_TP> &t)
+	inline std::size_t hash_value(const base_term<__PIRANHA_BASE_TERM_TP> &t)
 	{
 		return t.m_key.hash_value();
 	}

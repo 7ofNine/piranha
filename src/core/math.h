@@ -29,6 +29,7 @@
 #include <boost/static_assert.hpp>
 #include <cmath>
 #include <complex>
+#include <cstddef>
 
 #include "config.h"
 #include "exceptions.h"
@@ -43,24 +44,24 @@ namespace piranha
 	struct lg {
 		p_static_check(N > 0 && (N % 2) == 0, "N is not a power of 2.");
 		/// Value of the base-2 logarithm of N.
-		static const size_t value = lg < (N >> 1) >::value + 1;
+		static const std::size_t value = lg < (N >> 1) >::value + 1;
 	};
 
 	template <>
 	struct lg<1> {
-		static const size_t value = 0;
+		static const std::size_t value = 0;
 	};
 
 	// Integer base-2 logarithm. Like lg, but won't error out if N is not a power of 2.
 	template <int N>
 	struct ilg {
 		p_static_check(N > 0, "N must be positive.");
-		static const size_t value = ilg < (N >> 1) >::value + 1;
+		static const std::size_t value = ilg < (N >> 1) >::value + 1;
 	};
 
 	template <>
 	struct ilg<1> {
-		static const size_t value = 0;
+		static const std::size_t value = 0;
 	};
 
 	template <long int Xk, long int N, bool Stop, long int Xkm1 = 0>
@@ -83,12 +84,12 @@ namespace piranha
 		p_static_check(N > 0, "Invalid value for isqrt.");
 		static const long int value_ = isqrt_impl<N,N,false>::value;
 		p_static_check(value_ >= 0, "Invalid result for isqrt.");
-		static const size_t value = static_cast<size_t>(value_);
+		static const std::size_t value = static_cast<std::size_t>(value_);
 	};
 
 	template <>
 	struct isqrt<0> {
-		static const size_t value = 0;
+		static const std::size_t value = 0;
 	};
 
 	template <class T>

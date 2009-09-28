@@ -29,6 +29,7 @@
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 #include <boost/type_traits/is_same.hpp>
+#include <cstddef>
 #include <iostream>
 
 #include "../config.h"
@@ -45,7 +46,7 @@ namespace piranha
 	{
 		protected:
 			template <class ArgsTuple>
-			size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
+			std::size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
 			{
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
 					Truncator>::truncator_type::power_series_iterations(*derived_const_cast,

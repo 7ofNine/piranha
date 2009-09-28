@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_POLYNOMIAL_H
 
 #include <boost/tuple/tuple.hpp>
+#include <cstddef>
 #include <vector>
 
 #include "../base_classes/toolbox.h"
@@ -58,7 +59,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<N>().size() == 1);
 				piranha_assert(pos_tuple.template get<N>()[0].first);
 				Derived retval;
-				const size_t pos = pos_tuple.template get<N>()[0].second;
+				const std::size_t pos = pos_tuple.template get<N>()[0].second;
 				const const_iterator it_f = derived_const_cast->end();
 				std::vector<degree_type> tmp_expos(args_tuple.template get<N>().size());
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {

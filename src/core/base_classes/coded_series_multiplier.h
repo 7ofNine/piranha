@@ -24,6 +24,7 @@
 #include <algorithm> // For std::swap.
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <boost/functional/hash.hpp>
+#include <cstddef>
 #include <gmp.h>
 #include <gmpxx.h>
 #include <utility> // For std::pair.
@@ -60,7 +61,7 @@ namespace piranha
 				bool operator==(const coded_term_type &t) const {
 					return (m_ckey == t.m_ckey);
 				}
-				size_t hash_value() const {
+				std::size_t hash_value() const {
 					return boost::hash<Ckey>()(m_ckey);
 				}
 				mutable Cf	m_cf;
@@ -77,15 +78,15 @@ namespace piranha
 				m_ckeys2.reserve(derived_const_cast->m_size2);
 			}
 			void find_input_min_max() {
-				size_t i1 = 0, i2 = 0;
+				std::size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
 				piranha_assert(derived_const_cast->m_size1 > 0 && derived_const_cast->m_size2 > 0);
-				for (size_t i = 0; i < derived_const_cast->m_terms1[i1]->m_key.size(); ++i) {
+				for (std::size_t i = 0; i < derived_const_cast->m_terms1[i1]->m_key.size(); ++i) {
 					m_min_max1[i].first = m_min_max1[i].second =
 						derived_const_cast->m_terms1[i1]->m_key[i];
 				}
-				for (size_t i = 0; i < derived_const_cast->m_terms2[i2]->m_key.size(); ++i) {
+				for (std::size_t i = 0; i < derived_const_cast->m_terms2[i2]->m_key.size(); ++i) {
 					m_min_max2[i].first = m_min_max2[i].second =
 						derived_const_cast->m_terms2[i2]->m_key[i];
 				}
@@ -99,18 +100,18 @@ namespace piranha
 					derived_cast->m_terms2[i2]->m_key.test_min_max_ints(m_min_max2);
 				}
 				__PDEBUG(std::cout << "Limits are:\n";
-				for (size_t i = 0; i < m_min_max1.size(); ++i) {
+				for (std::size_t i = 0; i < m_min_max1.size(); ++i) {
 				std::cout << m_min_max1[i].first << ',' << m_min_max1[i].second << '\n';
 				}
 				std::cout << "and:\n";
-				for (size_t i = 0; i < m_min_max2.size(); ++i) {
+				for (std::size_t i = 0; i < m_min_max2.size(); ++i) {
 				std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
 				})
 			}
 			void determine_viability() {
 				// We must do the computations with arbitrary integers to avoid exceeding range.
 				mpz_class hmin(0), hmax(0), ck(1);
-				for (size_t i = 0; i < m_size; ++i) {
+				for (std::size_t i = 0; i < m_size; ++i) {
 					hmin += ck * m_res_min_max[i].first;
 					hmax += ck * m_res_min_max[i].second;
 					// Assign also the coding vector, so we avoid doing it later.
@@ -132,7 +133,7 @@ namespace piranha
 					m_h_tot = m_h_max - m_h_min + 1;
 					piranha_assert(m_h_tot >= 1);
 					// Downcast minimum and maximum result values to fast integers.
-					for (size_t i = 0; i < m_size; ++i) {
+					for (std::size_t i = 0; i < m_size; ++i) {
 						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
 							m_res_min_max[i].second < traits::const_min || m_res_min_max[i].second > traits::const_max) {
 							std::cout << "Warning: results of series multiplication cross " <<
@@ -142,7 +143,7 @@ namespace piranha
 						m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
 					}
 					__PDEBUG(std::cout << "Coding vector: ";
-					for (size_t i = 0; i < m_size; ++i) {
+					for (std::size_t i = 0; i < m_size; ++i) {
 					std::cout << m_coding_vector[i] << '\t';
 					}
 					std::cout << "+\t" << m_coding_vector[m_size] << '\n';)
@@ -153,11 +154,11 @@ namespace piranha
 			}
 			/// Code keys.
 			void code_keys() {
-				for (size_t i = 0; i < derived_const_cast->m_size1; ++i) {
+				for (std::size_t i = 0; i < derived_const_cast->m_size1; ++i) {
 					m_ckeys1.push_back(derived_const_cast->m_terms1[i]->m_key.code(m_coding_vector,
 									   derived_const_cast->m_args_tuple));
 				}
-				for (size_t i = 0; i < derived_const_cast->m_size2; ++i) {
+				for (std::size_t i = 0; i < derived_const_cast->m_size2; ++i) {
 					m_ckeys2.push_back(derived_const_cast->m_terms2[i]->m_key.code(m_coding_vector,
 									   derived_const_cast->m_args_tuple));
 				}
@@ -179,7 +180,7 @@ namespace piranha
 			// Is coded representation viable?
 			bool							m_cr_is_viable;
 			// Size of the coding vector, min_max vectors, etc.
-			const size_t						m_size;
+			const std::size_t					m_size;
 			// Vectors of minimum and maximum value pairs for the series being multiplied.
 			std::vector<std::pair<int, int> >			m_min_max1;
 			std::vector<std::pair<int, int> >			m_min_max2;

@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_DEF_H
 
 #include <boost/unordered_set.hpp>
+#include <cstddef>
 #include <functional> // For std::equal_to.
 #include <iostream>
 #include <vector>
@@ -72,10 +73,10 @@ namespace piranha
 			template <class ArgsTuple>
 			void term_erase(const const_iterator &, const ArgsTuple &);
 			void clear_terms();
-			size_t length() const;
+			std::size_t length() const;
 			bool empty() const;
 			bool is_single_cf() const;
-			size_t atoms() const;
+			std::size_t atoms() const;
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
 			template <class Cf, class ArgsTuple>
@@ -171,7 +172,7 @@ namespace piranha
 			template <bool, class Number, class ArgsTuple>
 			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
-			Derived natural_power(const size_t &, const ArgsTuple &) const;
+			Derived natural_power(const std::size_t &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived negative_integer_power(const int &, const ArgsTuple &) const;
 			template <class ArgsTuple>

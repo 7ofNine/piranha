@@ -25,6 +25,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <cmath>
+#include <cstddef>
 #include <memory> // For default allocator.
 #include <string>
 #include <vector>
@@ -102,7 +103,7 @@ namespace piranha
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
 				this->resize(w);
-				for (size_t i = 0; i < w; ++i) {
+				for (std::size_t i = 0; i < w; ++i) {
 					(*this)[i] = utils::lexical_converter<value_type>(sd[i]);
 				}
 			}
@@ -142,7 +143,7 @@ namespace piranha
 			{
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
 				bool printed_something = false;
-				for (size_t i = 0; i < this->size(); ++i) {
+				for (std::size_t i = 0; i < this->size(); ++i) {
 					const value_type &q = (*this)[i];
 					// Don't print anything if q is zero.
 					if (q != 0) {
@@ -171,7 +172,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
-				for (size_t i = 0; i < this->size(); ++i) {
+				for (std::size_t i = 0; i < this->size(); ++i) {
 					const value_type &q = (*this)[i];
 					// Don't print anything if n is zero.
 					if (q != 0) {
@@ -189,10 +190,10 @@ namespace piranha
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const
 			{
-				const size_t w = this->size();
+				const std::size_t w = this->size();
 				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 1.;
-				for (size_t i = 0; i < w; ++i) {
+				for (std::size_t i = 0; i < w; ++i) {
 					retval *= std::pow(args_tuple.template get<ancestor::position>()[i].eval(t),
 						(*this)[i]);
 				}
@@ -231,7 +232,7 @@ namespace piranha
 				return std::abs(eval(0, args_tuple));
 			}
 			/// Calculate hash value.
-			size_t hash_value() const
+			std::size_t hash_value() const
 			{
 				return this->elements_hasher();
 			}
@@ -246,12 +247,12 @@ namespace piranha
 			}
 			/// Total degree of the variables at specified positions pos.
 			/**
-			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
+			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
 			 */
 			template <class PosTuple>
 			mp_rational partial_degree(const PosTuple &pos_tuple) const
 			{
-				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
+				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
 				mp_rational tmp(0);
 				for (size_type i = 0; i < pos_size; ++i) {
@@ -317,7 +318,7 @@ namespace piranha
 			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 			{
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
-				const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+				const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 				piranha_assert(!pos_tuple.template get<ancestor::position>()[0].first || pos < this->size());
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
@@ -355,7 +356,7 @@ namespace piranha
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					piranha_assert(pos < this->size());
 					toolbox tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.

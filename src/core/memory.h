@@ -28,7 +28,7 @@
 
 #include "atomic_counters/atomic_counters.h" // For counting allocator.
 #include "base_classes/base_counting_allocator.h"
-#include "config.h" // For unlikely(), aligned malloc, visibility, etc.
+#include "config.h" // For unlikely().
 #include "exceptions.h"
 #include "settings.h"
 
@@ -71,7 +71,7 @@ namespace piranha
 					l = settings::memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
-				if (add > l || cur > l - add) {
+				if (unlikely(add > l || cur > l - add)) {
 					piranha_throw(memory_error,"memory limit reached");
 				}
 				pointer retval = m_alloc.allocate(n,hint);

@@ -25,6 +25,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -109,9 +110,9 @@ namespace piranha
 				}
 				std::vector<std::string> v;
 				boost::split(v, str, boost::is_any_of(separator));
-				const size_t size = v.size();
+				const std::size_t size = v.size();
 				std::vector<T> retval(size);
-				for (size_t j = 0; j < size; ++j) {
+				for (std::size_t j = 0; j < size; ++j) {
 					retval[j] = lexical_converter<T>(v[j]);
 				}
 				return retval;
@@ -123,8 +124,8 @@ namespace piranha
 			template <class T>
 			static std::string vector_to_str(const std::vector<T> &v, const std::string &separator) {
 				std::string retval;
-				const size_t size = v.size();
-				for (size_t i = 0; i < size; ++i) {
+				const std::size_t size = v.size();
+				for (std::size_t i = 0; i < size; ++i) {
 					retval.append(boost::lexical_cast<std::string>(v[i]));
 					if (i != size - 1) {
 						retval.append(separator);

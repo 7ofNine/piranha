@@ -21,6 +21,7 @@
 #ifndef PIRANHA_NAMED_FOURIER_SERIES_H
 #define PIRANHA_NAMED_FOURIER_SERIES_H
 
+#include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
@@ -44,7 +45,7 @@ namespace piranha
 		public:
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, 1>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
 				const psym p(name);
 				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->m_arguments);
 				Derived retval;

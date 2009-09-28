@@ -26,6 +26,7 @@
 #include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
+#include <cstddef>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -49,8 +50,8 @@ std::string static inline py_psym_repr(const psym &p)
 {
 	std::ostringstream stream;
 	stream << "Symbol: '" << p.get_name() << "' - [";
-	const size_t size = p.get_time_eval().size();
-	for (size_t i = 0; i < size; ++i) {
+	const std::size_t size = p.get_time_eval().size();
+	for (std::size_t i = 0; i < size; ++i) {
 		stream << p.get_time_eval()[i];
 		if (i < size - 1) {
 			stream << ',';
@@ -60,7 +61,7 @@ std::string static inline py_psym_repr(const psym &p)
 	return stream.str();
 }
 
-static inline size_t py_psym_hash(const psym &p)
+static inline std::size_t py_psym_hash(const psym &p)
 {
 	return boost::hash<std::string>()(p.get_name());
 }
@@ -118,8 +119,8 @@ BOOST_PYTHON_MODULE(_Core)
 
 	typedef bool (*bool_get)();
 	typedef void (*bool_set)(const bool &);
-	typedef size_t (*size_t_get)();
-	typedef void (*size_t_set)(const size_t &);
+	typedef std::size_t (*size_t_get)();
+	typedef void (*size_t_set)(const std::size_t &);
 	typedef double (*double_get)();
 	typedef void (*double_set)(const double &);
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());

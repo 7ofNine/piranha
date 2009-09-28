@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POWER_SERIES_TRUNCATOR
 #define PIRANHA_POWER_SERIES_TRUNCATOR
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -61,7 +62,7 @@ namespace truncators
 						}
 					}
 					template <class T, class ArgsTuple>
-					static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
 						const ArgsTuple &args_tuple) {
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");

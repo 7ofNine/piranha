@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -70,8 +71,8 @@ namespace piranha
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
 		const ArgsTuple &args_tuple) const
 	{
-		const size_t max_length = settings::get_max_pretty_print_size();
-		size_t count = 0;
+		const std::size_t max_length = settings::get_max_pretty_print_size();
+		std::size_t count = 0;
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
 			settings::setup_stream(tmp_stream);

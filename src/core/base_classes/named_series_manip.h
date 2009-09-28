@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/tuple/tuple.hpp>
+#include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
@@ -133,15 +134,15 @@ namespace piranha
 	template <class ArgsTuple>
 	struct named_series_get_layout {
 		static void run(const ArgsTuple &a1, const ArgsTuple &a2,
-			typename ntuple < std::vector<std::pair<bool, size_t> >,
+			typename ntuple < std::vector<std::pair<bool, std::size_t> >,
 			boost::tuples::length<ArgsTuple>::value >::type &layout) {
 			// Store frequently-used variables.
 			const vector_psym &v1 = a1.get_head(), &v2 = a2.get_head();
-			const size_t size1 = v1.size(), size2 = v2.size();
-			std::vector<std::pair<bool, size_t> > &l = layout.get_head();
+			const std::size_t size1 = v1.size(), size2 = v2.size();
+			std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
 			// First we must construct v2's layout wrt to v1.
 			l.resize(size2);
-			for (size_t i = 0; i < size2; ++i) {
+			for (std::size_t i = 0; i < size2; ++i) {
 				// Let's see if current v2's symbol is present in v1.
 				const vector_psym::const_iterator result = std::find(v1.begin(), v1.end(), v2[i]);
 				if (result == v1.end()) {
@@ -154,11 +155,11 @@ namespace piranha
 			}
 			// Now we must take care of those elements of v1 that are not represented in
 			// the layout (i.e., they are not in v2)
-			for (size_t i = 0; i < size1; ++i) {
+			for (std::size_t i = 0; i < size1; ++i) {
 				// Look for element index i in the layout.
 				bool found = false;
-				const size_t l_size = l.size();
-				for (size_t j = 0; j < l_size; ++j) {
+				const std::size_t l_size = l.size();
+				for (std::size_t j = 0; j < l_size; ++j) {
 					if (l[j].first && l[j].second == i) {
 						found = true;
 						break;
@@ -166,7 +167,7 @@ namespace piranha
 				}
 				// If we did not find it, append it to the layout.
 				if (!found) {
-					l.push_back(std::pair<bool, size_t>(true, i));
+					l.push_back(std::pair<bool, std::size_t>(true, i));
 				}
 			}
 			named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.get_tail(),
@@ -185,20 +186,20 @@ namespace piranha
 	// Template metaprogramming for applying a layout to a series.
 	template <class ArgsTuple>
 	struct named_series_apply_layout_to_args {
-		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename ntuple < std::vector<std::pair<bool, size_t> >,
+		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename ntuple < std::vector<std::pair<bool, std::size_t> >,
 			boost::tuples::length<ArgsTuple>::value >::type &layout) {
 			// Store frequently-used variables.
 			vector_psym &v1 = a1.get_head();
 			const vector_psym &v2 = a2.get_head();
-			const std::vector<std::pair<bool, size_t> > &l = layout.get_head();
-			const size_t l_size = l.size();
+			const std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
+			const std::size_t l_size = l.size();
 			// The layout must have at least all arguments in v1.
 			piranha_assert(l_size >= v1.size());
 			// Memorize the old vector.
 			const vector_psym old(v1);
 			// Make space.
 			v1.reserve(l_size);
-			for (size_t i = 0; i < l_size; ++i) {
+			for (std::size_t i = 0; i < l_size; ++i) {
 				if (l[i].first) {
 					// The argument was present in the old arguments sets. Copy it over.
 					piranha_assert(l[i].second < old.size());
@@ -238,7 +239,7 @@ namespace piranha
 		Derived retval;
 		retval.m_arguments = m_arguments;
 		// Build a tuple of layouts.
-		typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type l;
+		typename ntuple<std::vector<std::pair<bool, std::size_t> >, n_arguments_sets>::type l;
 		// Get the relative layouts of this wrt ps2 and put the result into l.
 		named_series_get_layout<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
 		// Apply the layout to the arguments tuple of retval.
@@ -252,9 +253,9 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_flags_init {
 		static void run(TrimFlags &tf, const ArgsTuple &args_tuple) {
-			const size_t size = args_tuple.get_head().size();
+			const std::size_t size = args_tuple.get_head().size();
 			tf.get_head().resize(size);
-			for (size_t i = 0; i < size; ++i) {
+			for (std::size_t i = 0; i < size; ++i) {
 				tf.get_head()[i] = false;
 			}
 			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
@@ -277,8 +278,8 @@ namespace piranha
 	template <class TrimFlags>
 	inline bool trim_flags_proceed(const TrimFlags &tf)
 	{
-		const size_t size = tf.get_head().size();
-		for (size_t i = 0; i < size; ++i) {
+		const std::size_t size = tf.get_head().size();
+		for (std::size_t i = 0; i < size; ++i) {
 			// If we find a flag that was never turned on, we have something to trim.
 			if (!tf.get_head()[i]) {
 				return true;
@@ -290,10 +291,10 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_arguments {
 		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
-			const size_t size = tf.get_head().size();
+			const std::size_t size = tf.get_head().size();
 			piranha_assert(size == args_tuple.get_head().size());
 			vector_psym new_vector;
-			for (size_t i = 0; i < size; ++i) {
+			for (std::size_t i = 0; i < size; ++i) {
 				if (tf.get_head()[i]) {
 					new_vector.push_back(args_tuple.get_head()[i]);
 				}
@@ -350,7 +351,7 @@ namespace piranha
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 			template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
 			::type,args_tuple_type>::type sub_caches_type;
-		typedef typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type pos_tuple_type;
+		typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, n_arguments_sets>::type pos_tuple_type;
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 		const psym p(name);
@@ -377,8 +378,8 @@ namespace piranha
 		}
 		std::vector<std::vector<Derived> > retval;
 		derived_const_cast->base_split(retval,n,m_arguments);
-		const size_t size = retval.size();
-		for (size_t i = 0; i < size; ++i) {
+		const std::size_t size = retval.size();
+		for (std::size_t i = 0; i < size; ++i) {
 			retval[i][0].m_arguments = m_arguments;
 			retval[i][0].trim();
 			retval[i][1].m_arguments = m_arguments;

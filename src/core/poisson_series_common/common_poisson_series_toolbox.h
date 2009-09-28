@@ -24,6 +24,7 @@
 #include <algorithm> // For sorting.
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
+#include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
@@ -79,7 +80,7 @@ namespace piranha
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -118,7 +119,7 @@ namespace piranha
 			Derived ei_sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -161,7 +162,7 @@ namespace piranha
 			}
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename ntuple<std::vector<std::pair<bool, size_t> >, 2>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
 				const psym p(name);
 				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->m_arguments);
 				Derived retval;

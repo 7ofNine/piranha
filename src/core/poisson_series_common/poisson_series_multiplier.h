@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <cstddef>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -118,13 +119,13 @@ namespace piranha
 							// not much worthwhile.
 							if (is_lightweight<cf_type1>::value) {
 								// Cache the values if cf_type1 is lightweight.
-								const size_t size1 = this->m_size1, size2 = this->m_size2;
+								const std::size_t size1 = this->m_size1, size2 = this->m_size2;
 								cf1_cache.reserve(size1);
 								cf2_cache.reserve(size2);
-								for (size_t i = 0; i < size1; ++i) {
+								for (std::size_t i = 0; i < size1; ++i) {
 									cf1_cache.push_back(t1[i]->m_cf);
 								}
-								for (size_t i = 0; i < size2; ++i) {
+								for (std::size_t i = 0; i < size2; ++i) {
 									cf2_cache.push_back(t2[i]->m_cf);
 								}
 							}
@@ -158,8 +159,8 @@ namespace piranha
 						std::vector<mpz_class> tmp_vec(8);
 						std::pair<typename std::vector<mpz_class>::const_iterator,
 							std::vector<mpz_class>::const_iterator> min_max;
-						const size_t size = this->m_size;
-						for (size_t i = 0; i < size; ++i) {
+						const std::size_t size = this->m_size;
+						for (std::size_t i = 0; i < size; ++i) {
 							tmp_vec[0] = this->m_min_max1[i].second;
 							tmp_vec[0] += this->m_min_max2[i].second;
 							tmp_vec[1] = this->m_min_max1[i].first;
@@ -178,7 +179,7 @@ namespace piranha
 						}
 						__PDEBUG(
 							std::cout << "Mult limits are:\n";
-						for (size_t i = 0; i < this->m_res_min_max.size(); ++i) {
+						for (std::size_t i = 0; i < this->m_res_min_max.size(); ++i) {
 						std::cout << this->m_res_min_max[i].first << ',' <<
 							this->m_res_min_max[i].second << '\n';
 						}
@@ -186,7 +187,7 @@ namespace piranha
 					}
 					// Store flavours of the series into own vectors.
 					void cache_flavours() {
-						size_t i;
+						std::size_t i;
 						for (i = 0; i < this->m_size1; ++i) {
 							m_flavours1[i] = this->m_terms1[i]->m_key.get_flavour();
 						}
@@ -199,7 +200,7 @@ namespace piranha
 						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 							class Term1, class Term2, class Ckey, class Trunc, class ResVec>
 						bool run(
-							const size_t &i, const size_t &j,
+							const std::size_t &i, const std::size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
 							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res_pair, const ArgsTuple &args_tuple)
@@ -251,7 +252,7 @@ namespace piranha
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
 						piranha_assert(this->m_h_max - this->m_h_min + 1 >= 0);
-						const size_t n_codes = static_cast<size_t>(this->m_h_max -
+						const std::size_t n_codes = static_cast<std::size_t>(this->m_h_max -
 							this->m_h_min + 1);
 						try {
 							vc_cos.resize(n_codes);
@@ -268,12 +269,12 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
-						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_h_min, &vc_sin[0] - this->m_h_min);
 						// Find out a suitable block size.
-						static const size_t block_size =
+						static const std::size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
@@ -323,7 +324,7 @@ namespace piranha
 						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 							class Term1, class Term2, class Ckey, class Trunc, class HashSet>
 						bool run(
-							const size_t &i, const size_t &j,
+							const std::size_t &i, const std::size_t &j,
 							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
 							const Ckey *ck2, const Trunc &trunc, std::pair<HashSet *,HashSet *> *cms_pair,
@@ -398,15 +399,15 @@ namespace piranha
 						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
-						const size_t size_hint = static_cast<size_t>(
+						const std::size_t size_hint = static_cast<std::size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
 						csht cms_cos(size_hint), cms_sin(size_hint);
 						std::pair<csht *, csht *> res(&cms_cos,&cms_sin);
-						const size_t size1 = this->m_size1, size2 = this->m_size2;
+						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						// Find out a suitable block size.
-						static const size_t block_size =
+						static const std::size_t block_size =
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						hash_multiplier<cterm> hm(&m_flavours1[0],&m_flavours2[0]);

@@ -22,6 +22,7 @@
 #define PIRANHA_CF_SERIES_IO_H
 
 #include <boost/algorithm/string.hpp>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -44,8 +45,8 @@ namespace piranha
 		// Split into single terms.
 		std::vector<std::string> vs;
 		boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
-		const size_t length = vs.size();
-		for (size_t i = 0; i < length; ++i) {
+		const std::size_t length = vs.size();
+		for (std::size_t i = 0; i < length; ++i) {
 			// Build the term from the string.
 			term_type term(vs[i], args_tuple);
 			// Insert it.

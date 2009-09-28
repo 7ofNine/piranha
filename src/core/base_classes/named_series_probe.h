@@ -23,6 +23,7 @@
 
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include <cstddef>
 #include <utility>
 #include <vector>
 
@@ -40,11 +41,11 @@ namespace piranha
 	template <class ArgsTuple>
 	inline bool named_series_is_args_compatible(const ArgsTuple &a1, const ArgsTuple &a2)
 	{
-		const size_t w = a2.get_head().size();
+		const std::size_t w = a2.get_head().size();
 		if (unlikely(w > a1.get_head().size())) {
 			return false;
 		}
-		for (size_t i = 0; i < w; ++i) {
+		for (std::size_t i = 0; i < w; ++i) {
 			if (unlikely(a1.get_head()[i] != a2.get_head()[i])) {
 				return false;
 			}
@@ -96,9 +97,9 @@ namespace piranha
 	template <class ArgsTuple>
 	static inline bool check_eval_dict(const eval_dict &d, const ArgsTuple &args_tuple)
 	{
-		const size_t size = args_tuple.get_head().size();
+		const std::size_t size = args_tuple.get_head().size();
 		const eval_dict::const_iterator it_f = d.end();
-		for (size_t i = 0; i < size; ++i) {
+		for (std::size_t i = 0; i < size; ++i) {
 			// If the dictionary does not contain the symbol's name, return false.
 			if (d.find(args_tuple.get_head()[i].get_name()) == it_f) {
 				return false;
@@ -127,14 +128,14 @@ namespace piranha
 		}
 		const eval_type retval(eval(0));
 		// Restor original evaluation vectors.
-		for (size_t i = 0; i < orig_eval.size(); ++i) {
+		for (std::size_t i = 0; i < orig_eval.size(); ++i) {
 			orig_eval[i].first.set_time_eval(orig_eval[i].second);
 		}
 		return retval;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline size_t toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::psi(const int &start, const int &step) const
+	inline std::size_t toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);
 	}
@@ -172,7 +173,7 @@ namespace piranha
 			return false;
 		}
 		// Build a tuple of layouts.
-		typename ntuple<std::vector<std::pair<bool, size_t> >, n_arguments_sets>::type l;
+		typename ntuple<std::vector<std::pair<bool, std::size_t> >, n_arguments_sets>::type l;
 		// Get the relative layouts of this wrt other and put the result into l.
 		named_series_get_layout<args_tuple_type>::run(m_arguments, other.arguments(), l);
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,

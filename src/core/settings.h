@@ -22,6 +22,7 @@
 #define PIRANHA_SETTINGS_H
 
 #include <boost/integer_traits.hpp>
+#include <cstddef>
 #include <iostream>
 #include <string>
 
@@ -44,13 +45,13 @@ namespace piranha
 				scientific,
 				decimal
 			};
-			static size_t used_memory() {
+			static std::size_t used_memory() {
 				return base_counting_allocator::count();
 			}
-			static size_t memory_limit() {
+			static std::size_t memory_limit() {
 				return m_memory_limit;
 			}
-			static void memory_limit(const size_t &limit) {
+			static void memory_limit(const std::size_t &limit) {
 				m_memory_limit = limit;
 			}
 			/// Return maximum load factor for hashed containers.
@@ -94,24 +95,24 @@ namespace piranha
 			}
 			static void set_path(const std::string &);
 			// Getters and setters for I/O.
-			static size_t digits();
+			static std::size_t digits();
 			static void digits(const int &n) {
 				if (n < static_cast<int>(m_min_digits) || n > static_cast<int>(m_max_digits)) {
 					piranha_throw(value_error,"invalid number of digits");
 				} else {
-					m_digits = static_cast<size_t>(n);
+					m_digits = static_cast<std::size_t>(n);
 				}
 			}
-			static size_t min_digits();
-			static size_t max_digits();
+			static std::size_t min_digits();
+			static std::size_t max_digits();
 			static void setup_stream(std::ostream &);
 			static fp_representation fp_repr();
 			static void fp_repr(fp_representation);
 			/// Cache size in kilobytes.
-			static const size_t cache_size = _PIRANHA_CACHE_SIZE;
+			static const std::size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 			static bool blocker;
-			static size_t get_max_pretty_print_size();
+			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
 		private:
 			/// Startup class.
@@ -123,9 +124,9 @@ namespace piranha
 				public:
 					startup_class();
 			};
-			static size_t			m_max_pretty_print_size;
+			static std::size_t		m_max_pretty_print_size;
 			/// Memory limit in bytes.
-			static size_t			m_memory_limit;
+			static std::size_t		m_memory_limit;
 			/// Load factor for hashed containers.
 			static double			m_hash_max_load_factor;
 			/// Numerical zero.
@@ -138,11 +139,11 @@ namespace piranha
 			static bool			enable_progress_display;
 			static startup_class		startup;
 			/// Minimum number of digits for output streams.
-			static const size_t		m_min_digits = 0;
+			static const std::size_t	m_min_digits = 0;
 			/// Maximum number of digits for output streams.
-			static const size_t		m_max_digits = 50;
+			static const std::size_t	m_max_digits = 50;
 			/// Number of digits to display in output stream.
-			static size_t			m_digits;
+			static std::size_t		m_digits;
 			/// Floating point representation.
 			static fp_representation	m_fp_repr;
 	};

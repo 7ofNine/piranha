@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
 #include <boost/type_traits/is_same.hpp> // For key type detection.
+#include <cstddef>
 #include <vector>
 
 #include "../config.h"
@@ -68,22 +69,22 @@ namespace piranha
 					return c;
 				}
 			};
-			template <size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+			template <std::size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 				class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
-			static void blocked_multiplication(const size_t &size1, const size_t &size2,
+			static void blocked_multiplication(const std::size_t &size1, const std::size_t &size2,
 				const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
 				const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
 				const ArgsTuple &args_tuple)
 			{
 				p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
-				const size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
-				for (size_t n1 = 0; n1 < nblocks1; ++n1) {
-					const size_t i_start = n1 * block_size, i_end = i_start + block_size;
+				const std::size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+				for (std::size_t n1 = 0; n1 < nblocks1; ++n1) {
+					const std::size_t i_start = n1 * block_size, i_end = i_start + block_size;
 					// regulars1 * regulars2
-					for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-						const size_t j_start = n2 * block_size, j_end = j_start + block_size;
-						for (size_t i = i_start; i < i_end; ++i) {
-							for (size_t j = j_start; j < j_end; ++j) {
+					for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
+						const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
+						for (std::size_t i = i_start; i < i_end; ++i) {
+							for (std::size_t j = j_start; j < j_end; ++j) {
 								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 									break;
 								}
@@ -91,8 +92,8 @@ namespace piranha
 						}
 					}
 					// regulars1 * rem2
-					for (size_t i = i_start; i < i_end; ++i) {
-						for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+					for (std::size_t i = i_start; i < i_end; ++i) {
+						for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
 							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 								break;
 							}
@@ -100,10 +101,10 @@ namespace piranha
 					}
 				}
 				// rem1 * regulars2
-				for (size_t n2 = 0; n2 < nblocks2; ++n2) {
-					const size_t j_start = n2 * block_size, j_end = j_start + block_size;
-					for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-						for (size_t j = j_start; j < j_end; ++j) {
+				for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
+					const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
+					for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
+						for (std::size_t j = j_start; j < j_end; ++j) {
 							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 								break;
 							}
@@ -111,8 +112,8 @@ namespace piranha
 					}
 				}
 				// rem1 * rem2.
-				for (size_t i = nblocks1 * block_size; i < size1; ++i) {
-					for (size_t j = nblocks2 * block_size; j < size2; ++j) {
+				for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
+					for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
 						if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
 							break;
 						}
@@ -132,8 +133,8 @@ namespace piranha
 			void perform_plain_multiplication(const GenericTruncator &trunc) {
 				typedef typename term_type1::multiplication_result mult_res;
 				mult_res res;
-				for (size_t i = 0; i < m_size1; ++i) {
-					for (size_t j = 0; j < m_size2; ++j) {
+				for (std::size_t i = 0; i < m_size1; ++i) {
+					for (std::size_t j = 0; j < m_size2; ++j) {
 						if (trunc.skip(&m_terms1[i], &m_terms2[j])) {
 							break;
 						}
@@ -149,8 +150,8 @@ namespace piranha
 			// Reference to the arguments tuple.
 			const ArgsTuple			&m_args_tuple;
 			// Sizes of the series.
-			const size_t			m_size1;
-			const size_t			m_size2;
+			const std::size_t		m_size1;
+			const std::size_t		m_size2;
 			// Reference to the result.
 			Series1				&m_retval;
 			// Vectors of pointers the input terms.

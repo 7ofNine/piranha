@@ -25,6 +25,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/functional/hash.hpp>
 #include <complex>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -180,10 +181,10 @@ namespace piranha
 			/**
 			 * Uses boost::hash_combine to combine the hashes of real and imaginary parts.
 			 */
-			size_t hash() const
+			std::size_t hash() const
 			{
 				boost::hash<T> hasher;
-				size_t retval = hasher(m_real);
+				std::size_t retval = hasher(m_real);
 				boost::hash_combine(retval, hasher(m_imag));
 				return retval;
 			}

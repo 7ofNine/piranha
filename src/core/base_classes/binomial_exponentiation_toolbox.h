@@ -22,6 +22,7 @@
 #define PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 
 #include <boost/type_traits/is_same.hpp>
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -82,8 +83,8 @@ namespace piranha
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
 				Derived XoverA;
-				const size_t size = v.size();
-				for (size_t i = 1; i < size; ++i) {
+				const std::size_t size = v.size();
+				for (std::size_t i = 1; i < size; ++i) {
 					XoverA.insert(term_type(*v[i]),args_tuple);
 				}
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
@@ -93,7 +94,7 @@ namespace piranha
 				// Now let's compute X/A.
 				XoverA.base_mult_by(Ainv, args_tuple);
 				// Get the expansion limit from the truncator.
-				size_t n;
+				std::size_t n;
 				try {
 					n = XoverA.psi_(0, 1, args_tuple);
 				} catch (const value_error &ve) {
@@ -105,7 +106,7 @@ namespace piranha
 			}
 			template <class Term, class Number, class ArgsTuple>
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
-				const Number &y, const size_t &n, const ArgsTuple &args_tuple)
+				const Number &y, const std::size_t &n, const ArgsTuple &args_tuple)
 			{
 				typedef typename Derived::term_type term_type;
 				p_static_check((boost::is_same<Term, typename Derived::term_type>::value),
@@ -124,7 +125,7 @@ namespace piranha
 				Derived tmp;
 				tmp.base_add(1, args_tuple);
 				retval.base_add(tmp, args_tuple);
-				for (size_t i = 1; i < n; ++i) {
+				for (std::size_t i = 1; i < n; ++i) {
 					tmp.base_mult_by(y - (double)i + 1, args_tuple);
 					tmp.base_divide_by(i, args_tuple);
 					tmp.base_mult_by(XoverA, args_tuple);

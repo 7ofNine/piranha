@@ -21,6 +21,7 @@
 #ifndef PIRANHA_COMMON_POLYNOMIAL_CF_TOOLBOX_H
 #define PIRANHA_COMMON_POLYNOMIAL_CF_TOOLBOX_H
 
+#include <cstddef>
 #include <utility>
 #include <vector>
 
@@ -56,9 +57,9 @@ namespace piranha
 					const int pos = it->m_key.linear_arg_position();
 					if (pos >= 0) {
 						// Let's find the corresponding symbol in the target vector of arguments.
-						size_t i = 0;
+						std::size_t i = 0;
 						for (; i < args_tuple.template get<TargetPos>().size(); ++i) {
-							if (args_tuple.template get<0>()[static_cast<size_t>(pos)] ==
+							if (args_tuple.template get<0>()[static_cast<std::size_t>(pos)] ==
 									args_tuple.template get<TargetPos>()[i]) {
 								break;
 							}

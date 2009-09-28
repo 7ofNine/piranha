@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -99,7 +100,7 @@ namespace piranha
 				break;
 			case p_deg:
 				stream << "Partial degree limit: " << m_degree_limit << ", Affected symbols: [";
-				for (size_t i = 0; i < m_psyms.size(); ++i) {
+				for (std::size_t i = 0; i < m_psyms.size(); ++i) {
 					stream << '\'' << m_psyms[i].get_name() << '\'';
 					if (i < m_psyms.size() - 1) {
 						stream << " ";

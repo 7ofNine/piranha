@@ -26,6 +26,7 @@
 #include <boost/operators.hpp>
 #include <cmath>
 #include <complex>
+#include <cstddef>
 #include <exception>
 #include <gmp.h>
 #include <gmpxx.h>
@@ -242,15 +243,15 @@ namespace piranha
 			/**
 			 * Internally uses boost::hash_combine on the GMP limbs of numerator and denominator.
 			 */
-			size_t hash() const
+			std::size_t hash() const
 			{
-				size_t retval = 0;
+				std::size_t retval = 0;
 				const __mpz_struct *num = mpq_numref(m_value.get_mpq_t()), *den = mpq_denref(m_value.get_mpq_t());
-				const size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
-				for (size_t i = 0; i < num_limb_size; ++i) {
+				const std::size_t num_limb_size = std::abs(num->_mp_size), den_limb_size = std::abs(den->_mp_size);
+				for (std::size_t i = 0; i < num_limb_size; ++i) {
 					boost::hash_combine(retval, num->_mp_d[i]);
 				}
-				for (size_t i = 0; i < den_limb_size; ++i) {
+				for (std::size_t i = 0; i < den_limb_size; ++i) {
 					boost::hash_combine(retval, den->_mp_d[i]);
 				}
 				return retval;
@@ -319,7 +320,7 @@ namespace piranha
 					retval = *this;
 					return retval;
 				}
-				const size_t n = (n_ > 0) ? n_ : -n_;
+				const std::size_t n = (n_ > 0) ? n_ : -n_;
 				if (!mpz_root(mpq_numref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),n) ||
 					!mpz_root(mpq_denref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),n)) {
 					piranha_throw(value_error,"rational number is not an exact nth root");
@@ -593,12 +594,12 @@ namespace piranha
 			/**
 			 * Internally uses boost::hash_combine on the GMP limbs of the number.
 			 */
-			size_t hash() const
+			std::size_t hash() const
 			{
-				size_t retval = 0;
+				std::size_t retval = 0;
 				const __mpz_struct *ptr = m_value.get_mpz_t();
-				const size_t limb_size = std::abs(ptr->_mp_size);
-				for (size_t i = 0; i < limb_size; ++i) {
+				const std::size_t limb_size = std::abs(ptr->_mp_size);
+				for (std::size_t i = 0; i < limb_size; ++i) {
 					boost::hash_combine(retval, ptr->_mp_d[i]);
 				}
 				return retval;
@@ -700,7 +701,7 @@ namespace piranha
 				} else if (n_ < 0) {
 					piranha_throw(value_error,"integer numbers different from unity cannot be arguments of negative root");
 				}
-				const size_t n = static_cast<size_t>(n_);
+				const std::size_t n = static_cast<std::size_t>(n_);
 				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
 					piranha_throw(value_error,"integer coefficient is not an exact nth root");
 				}
@@ -721,7 +722,7 @@ namespace piranha
 							"negative integer power");
 					}
 				} else {
-					mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (size_t)n);
+					mpz_pow_ui(retval.m_value.get_mpz_t(), m_value.get_mpz_t(), (std::size_t)n);
 				}
 				return retval;
 			}
@@ -987,16 +988,16 @@ namespace std
 					} else {
 						// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
 						retval = invert();
-						const size_t count = static_cast<size_t>(-n);
+						const std::size_t count = static_cast<std::size_t>(-n);
 						complex tmp(retval);
-						for (size_t i = 1; i < count; ++i) {
+						for (std::size_t i = 1; i < count; ++i) {
 							retval *= tmp;
 						}
 					}
 				} else {
 					retval = 1;
-					const size_t count = static_cast<size_t>(n);
-					for (size_t i = 0; i < count; ++i) {
+					const std::size_t count = static_cast<std::size_t>(n);
+					for (std::size_t i = 0; i < count; ++i) {
 						retval *= (*this);
 					}
 				}
@@ -1208,8 +1209,8 @@ namespace std
 					}
 				} else {
 					retval = 1;
-					const size_t count = static_cast<size_t>(n);
-					for (size_t i = 0; i < count; ++i) {
+					const std::size_t count = static_cast<std::size_t>(n);
+					for (std::size_t i = 0; i < count; ++i) {
 						retval *= (*this);
 					}
 				}

@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <vector>
 
@@ -101,7 +102,7 @@ namespace piranha
 					// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 					// times smaller.
 					template <class T, class ArgsTuple>
-					static size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
 						const ArgsTuple &args_tuple)
 					{
 						// NOTE: share this check in some kind of base truncator class?

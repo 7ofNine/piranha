@@ -22,6 +22,7 @@
 #define PIRANHA_JACOBI_ANGER_TOOLBOX_H
 
 #include <boost/type_traits/is_same.hpp>
+#include <cstddef>
 #include <complex>
 #include <string>
 #include <vector>
@@ -71,7 +72,7 @@ namespace piranha
 				// The Jacobi-Anger development is a development into Bessel functions of the first kind starting
 				// from zero and increasing in unity steps, hence the psi function can be used
 				// straightforwardly.
-				size_t n_;
+				std::size_t n_;
 				{
 					std::complex<Derived> tmp;
 					complex_term_type tmp_term;
@@ -84,21 +85,21 @@ namespace piranha
 							"The reported error was:\n")+ve.what());
 					}
 				}
-				const size_t n = n_;
+				const std::size_t n = n_;
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(0, args_tuple), args_tuple);
 					retval.insert(tmp_term, args_tuple);
 				}
-				const size_t w = args_tuple.template get<TrigPos>().size();
+				const std::size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<int> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
-				for (size_t i = 1; i < n; ++i) {
+				for (std::size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
 					(*it)->m_key.upload_to_vector(tmp_trig_mults);
-					for (size_t j = 0; j < w; ++j) {
+					for (std::size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
 					}
 					tmp_term.m_key.assign_vector(tmp_trig_mults);

@@ -22,6 +22,7 @@
 #define PIRANHA_Q_ARRAY_H
 
 #include <algorithm>
+#include <cstddef>
 #include <functional>
 #include <boost/functional/hash.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -147,7 +148,7 @@ namespace piranha
 				return (m_size <= args_tuple.template get<position>().size());
 			}
 			/// Number of atoms. Returns 1.
-			size_t atoms() const
+			std::size_t atoms() const
 			{
 				return 1;
 			}
@@ -226,7 +227,7 @@ namespace piranha
 			{
 				const size_type size = boost::numeric_cast<size_type>(v.size());
 				resize(size);
-				for (size_t i = 0; i < size; ++i) {
+				for (std::size_t i = 0; i < size; ++i) {
 					(*this)[i] = value_type(v[i]);
 				}
 			}
@@ -234,7 +235,7 @@ namespace piranha
 			bool revlex_comparison(const Derived &a2) const
 			{
 				piranha_assert(m_size == a2.m_size);
-				for (size_t i = m_size; i > 0; --i) {
+				for (std::size_t i = m_size; i > 0; --i) {
 					if ((*this)[i - 1] < a2[i - 1]) {
 						return true;
 					} else if ((*this)[i - 1] > a2[i - 1]) {
@@ -247,7 +248,7 @@ namespace piranha
 			bool lex_comparison(const Derived &a2) const
 			{
 				piranha_assert(m_size == a2.m_size);
-				for (size_t i = 0; i < m_size; ++i) {
+				for (std::size_t i = 0; i < m_size; ++i) {
 					if ((*this)[i] < a2[i]) {
 						return true;
 					} else if ((*this)[i] > a2[i]) {
@@ -318,9 +319,9 @@ namespace piranha
 				m_size = new_size;
 			}
 			/// Hash value.
-			size_t elements_hasher() const
+			std::size_t elements_hasher() const
 			{
-				size_t retval = 0;
+				std::size_t retval = 0;
 				boost::hash<value_type> tmp_hash;
 				for (size_type i = 0; i < m_size; ++i) {
 					boost::hash_combine(retval, tmp_hash((*this)[i]));

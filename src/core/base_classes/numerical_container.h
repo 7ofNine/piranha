@@ -22,6 +22,7 @@
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
 #include <complex>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -187,7 +188,7 @@ namespace piranha
 				piranha_assert(false);
 			}
 			/// Number of atoms. Returns 1.
-			size_t atoms() const {
+			std::size_t atoms() const {
 				return 1;
 			}
 			/// Norm. Returns std::abs of internal value.

@@ -24,6 +24,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <complex> // For std::complex<SubSeries>.
+#include <cstddef>
 #include <iostream>
 #include <memory> // For standard allocator.
 #include <string>
@@ -156,7 +157,7 @@ namespace piranha
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
 				// TODO: do it everywhere!
-				const size_t w = sd.size();
+				const std::size_t w = sd.size();
 				if (w == 0) {
 					// Set flavour to true, so that trig_array is logically equivalent to unity.
 					this->m_flavour = true;
@@ -164,7 +165,7 @@ namespace piranha
 				}
 				// Now we know  w >= 1.
 				this->resize(w - 1);
-				for (size_t i = 0;i < w - 1; ++i) {
+				for (std::size_t i = 0;i < w - 1; ++i) {
 					(*this)[i] = utils::lexical_converter<value_type>(sd[i]);
 				}
 				// Take care of flavour.
@@ -260,7 +261,7 @@ namespace piranha
 					out_stream << "sin(";
 				}
 				bool printed_something = false;
-				for (size_t i = 0; i < this->m_size; ++i) {
+				for (std::size_t i = 0; i < this->m_size; ++i) {
 					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
@@ -291,7 +292,7 @@ namespace piranha
 					out_stream << "\\sin\\left(";
 				}
 				bool printed_something = false;
-				for (size_t i = 0; i < this->m_size; ++i) {
+				for (std::size_t i = 0; i < this->m_size; ++i) {
 					const int n = (*this)[i];
 					// Don't print anything if n is zero.
 					if (n != 0) {
@@ -350,12 +351,12 @@ namespace piranha
 			}
 			/// Harmonic degree of the variables at specified positions pos.
 			/**
-			 * pos_tuple must be a tuple of vectors of (bool,size_t) pairs.
+			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
 			 */
 			template <class PosTuple>
 			int partial_h_degree(const PosTuple &pos_tuple) const
 			{
-				const std::vector<std::pair<bool,size_t> > &pos = pos_tuple.template get<ancestor::position>();
+				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
 				int retval = 0;
 				for (size_type i = 0; i < pos_size; ++i) {
@@ -403,10 +404,10 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &args_tuple) const {
-				const size_t w = this->size();
+				const std::size_t w = this->size();
 				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
-				for (size_t i = 0;i < w;++i) {
+				for (std::size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
 						retval += (*this)[i] * args_tuple.template get<ancestor::position>()[i].eval(t);
 					}
@@ -426,10 +427,10 @@ namespace piranha
 			 */
 			template <class TrigEvaluator>
 			double t_eval(TrigEvaluator &te) const {
-				const size_t w = te.width();
+				const std::size_t w = te.width();
 				piranha_assert(w <= this->size());
 				std::complex<double> retval(1.);
-				for (size_t i = 0;i < w;++i) {
+				for (std::size_t i = 0;i < w;++i) {
 					if ((*this)[i] != 0) {
 						retval *= te.request_ei(i, (*this)[i]);
 					}
@@ -446,8 +447,8 @@ namespace piranha
 			 * This function is used to test for canonical form in piranha::poisson_series_term.
 			 */
 			short int sign() const {
-				const size_t w = this->size();
-				for (size_t i = 0;i < w;++i) {
+				const std::size_t w = this->size();
+				for (std::size_t i = 0;i < w;++i) {
 					if ((*this)[i] > 0) {
 						return 1;
 					}
@@ -479,15 +480,15 @@ namespace piranha
 			/**
 			 * Used by the hash_value overload for piranha::base_term.
 			 */
-			size_t hash_value() const {
-				size_t retval = this->elements_hasher();
+			std::size_t hash_value() const {
+				std::size_t retval = this->elements_hasher();
 				boost::hash_combine(retval, this->m_flavour);
 				return retval;
 			}
 			/// Multiply by an integer.
 			void mult_by_int(const int &n) {
-				const size_t w = this->size();
-				for (size_t i = 0;i < w;++i) {
+				const std::size_t w = this->size();
+				for (std::size_t i = 0;i < w;++i) {
 					(*this)[i] *= n;
 				}
 			}
@@ -504,7 +505,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) {
 					toolbox copy(*this);
-					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					// Change the flavour of the resulting key.
 					copy.m_flavour = !this->m_flavour;
 					piranha_assert(pos < this->size());
@@ -539,7 +540,7 @@ namespace piranha
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					piranha_assert(pos < this->size());
 					toolbox tmp_ta(*this);
@@ -588,7 +589,7 @@ namespace piranha
 				if (!pos_tuple.template get<ancestor::position>()[0].first) {
 					retval = RetSeries::base_series_from_key(*this, args_tuple);
 				} else {
-					const size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					piranha_assert(pos < this->size());
 					toolbox tmp_ta(*this);
@@ -625,10 +626,10 @@ namespace piranha
 			template <int N, class ArgsTuple>
 			double combined_time_eval(const ArgsTuple &args_tuple) const {
 				p_static_check(N >= 0, "");
-				const size_t w = this->size();
+				const std::size_t w = this->size();
 				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
 				double retval = 0.;
-				for (size_t i = 0;i < w;++i) {
+				for (std::size_t i = 0;i < w;++i) {
 					// We must be sure that there actually is component N in every symbol we are going to use.
 					if (args_tuple.template get<ancestor::position>()[i].get_time_eval().size() > N) {
 						retval += (*this)[i] *

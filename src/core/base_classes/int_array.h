@@ -26,6 +26,7 @@
 #include <boost/functional/hash.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp> // For sub cache selection.
+#include <cstddef>
 #include <stdint.h>
 #include <utility> // For std::pair.
 #include <vector>
@@ -154,7 +155,7 @@ namespace piranha
 			{
 				return (m_size <= args_tuple.template get<Pos>().size());
 			}
-			size_t atoms() const
+			std::size_t atoms() const
 			{
 				return 1;
 			}
@@ -254,7 +255,7 @@ namespace piranha
 				// The +1 is because the coding vector contains one extra element at the end.
 				// The assert is >= instead of == beacuse we may code an array smaller than the
 				// coding vector when multiplying series with different numbers of arguments.
-				piranha_assert(v.size() >= static_cast<size_t>(m_size) + 1);
+				piranha_assert(v.size() >= static_cast<std::size_t>(m_size) + 1);
 				max_fast_int retval = 0;
 				for (size_type i = 0; i < m_size; ++i) {
 					retval += (v[i] * m_container.v[i]);
@@ -268,7 +269,7 @@ namespace piranha
 			{
 				resize(args_tuple.template get<position>().size());
 				// The -1 is because the coding vector contains one extra element at the end.
-				piranha_assert(cv.size() == static_cast<size_t>(m_size) + 1);
+				piranha_assert(cv.size() == static_cast<std::size_t>(m_size) + 1);
 				const max_fast_int tmp = n - h_min;
 				for (size_type i = 0; i < m_size; ++i) {
 					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
@@ -278,19 +279,19 @@ namespace piranha
 			{
 				const size_type size = boost::numeric_cast<size_type>(v.size());
 				resize(size);
-				for (size_t i = 0; i < size; ++i) {
+				for (std::size_t i = 0; i < size; ++i) {
 					m_container.v[i] = boost::numeric_cast<value_type>(v[i]);
 				}
 			}
 			// Vector-like interface.
 			/// Array-like operator[], const version.
-			const value_type &operator[](const size_t &n) const
+			const value_type &operator[](const std::size_t &n) const
 			{
 				piranha_assert(n < m_size);
 				return m_container.v[n];
 			}
 			/// Return container size.
-			size_t size() const
+			std::size_t size() const
 			{
 				return m_size;
 			}
@@ -298,7 +299,7 @@ namespace piranha
 			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
-				for (size_t i = m_size; i > 0; --i) {
+				for (std::size_t i = m_size; i > 0; --i) {
 					if (ptr1[i - 1] < ptr2[i - 1]) {
 						return true;
 					} else if (ptr1[i - 1] > ptr2[i - 1]) {
@@ -311,7 +312,7 @@ namespace piranha
 			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
-				for (size_t i = 0; i < m_size; ++i) {
+				for (std::size_t i = 0; i < m_size; ++i) {
 					if (ptr1[i] < ptr2[i]) {
 						return true;
 					} else if (ptr1[i] > ptr2[i]) {
@@ -322,7 +323,7 @@ namespace piranha
 			}
 		protected:
 			/// Array-like operator[], mutable version.
-			value_type &operator[](const size_t &n)
+			value_type &operator[](const std::size_t &n)
 			{
 				piranha_assert(n < m_size);
 				return m_container.v[n];
@@ -378,7 +379,7 @@ namespace piranha
 			/**
 			 * Hashes only the integer elements of the array, not the flavour.
 			 */
-			size_t elements_hasher() const
+			std::size_t elements_hasher() const
 			{
 				const size_type p_size = packed_size(m_size);
 				switch (p_size) {
@@ -388,7 +389,7 @@ namespace piranha
 						return m_container.p[0];
 				}
 				const packed_type *ptr = m_container.p;
-				size_t retval = ptr[0];
+				std::size_t retval = ptr[0];
 				for (size_type i = 1; i < p_size; ++i) {
 					boost::hash_combine(retval, ptr[i]);
 				}

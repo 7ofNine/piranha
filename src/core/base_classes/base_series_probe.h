@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_PROBE_H
 
 #include <cmath> // For std::abs.
+#include <cstddef>
 
 #include "../exceptions.h"
 #include "../mp.h"
@@ -67,7 +68,7 @@ namespace piranha
 
 	/// Return the number of terms of the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::length() const
+	inline std::size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::length() const
 	{
 		return m_container.size();
 	}
@@ -81,9 +82,9 @@ namespace piranha
 
 	/// Number of atoms in the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::atoms() const
+	inline std::size_t toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::atoms() const
 	{
-		size_t retval = 0;
+		std::size_t retval = 0;
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
 			retval += it->m_cf.atoms() + it->m_key.atoms();
