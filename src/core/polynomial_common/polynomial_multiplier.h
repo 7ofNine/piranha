@@ -25,8 +25,6 @@
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <cstddef>
 #include <exception>
-#include <gmp.h>
-#include <gmpxx.h>
 #include <utility> // For std::pair.
 #include <vector>
 
@@ -38,6 +36,7 @@
 #include "../integer_typedefs.h"
 #include "../math.h" // For static maths.
 #include "../memory.h"
+#include "../mp.h"
 #include "../settings.h" // For debug and cache size.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -158,9 +157,9 @@ namespace piranha
 					// into account to establish the codification parameters for the input series _and_
 					// the resulting series.
 					void calculate_result_min_max() {
-						std::vector<mpz_class> tmp_vec(6);
-						std::pair<typename std::vector<mpz_class>::const_iterator,
-							std::vector<mpz_class>::const_iterator> min_max;
+						std::vector<mp_integer> tmp_vec(6);
+						std::pair<typename std::vector<mp_integer>::const_iterator,
+							std::vector<mp_integer>::const_iterator> min_max;
 						for (std::size_t i = 0; i < this->m_size; ++i) {
 							tmp_vec[0] = this->m_min_max1[i].second;
 							tmp_vec[0] += this->m_min_max2[i].second;

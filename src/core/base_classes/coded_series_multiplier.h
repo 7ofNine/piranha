@@ -25,13 +25,12 @@
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <boost/functional/hash.hpp>
 #include <cstddef>
-#include <gmp.h>
-#include <gmpxx.h>
 #include <utility> // For std::pair.
 #include <vector>
 
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
+#include "../mp.h"
 #include "../settings.h" // For debug messages.
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -110,37 +109,37 @@ namespace piranha
 			}
 			void determine_viability() {
 				// We must do the computations with arbitrary integers to avoid exceeding range.
-				mpz_class hmin(0), hmax(0), ck(1);
+				mp_integer hmin(0), hmax(0), ck(1);
 				for (std::size_t i = 0; i < m_size; ++i) {
 					hmin += ck * m_res_min_max[i].first;
 					hmax += ck * m_res_min_max[i].second;
 					// Assign also the coding vector, so we avoid doing it later.
-					m_coding_vector[i] = ck.get_si();
+					m_coding_vector[i] = ck.to_long();
 					ck *= (m_res_min_max[i].second - m_res_min_max[i].first + 1);
 				}
 				__PDEBUG(std::cout << "h_tot = " << (hmax - hmin + 1) << '\n');
 				// We want to fill an extra slot of the coding vector (wrt to the nominal size,
 				// corresponding to the arguments number for the key). This is handy for decodification.
-				m_coding_vector[m_size] = ck.get_si();
+				m_coding_vector[m_size] = ck.to_long();
 				piranha_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
 				// respect the fast integer boundaries.
-				if (ck < traits::const_max && hmin > traits::const_min && hmin < traits::const_max &&
-						hmax > traits::const_min && hmax < traits::const_max) {
+				if (ck < mp_integer(traits::const_max) && hmin > mp_integer(traits::const_min) && hmin < mp_integer(traits::const_max) &&
+						hmax > mp_integer(traits::const_min) && hmax < mp_integer(traits::const_max)) {
 					m_cr_is_viable = true;
-					m_h_min = hmin.get_si();
-					m_h_max = hmax.get_si();
+					m_h_min = hmin.to_long();
+					m_h_max = hmax.to_long();
 					m_h_tot = m_h_max - m_h_min + 1;
 					piranha_assert(m_h_tot >= 1);
 					// Downcast minimum and maximum result values to fast integers.
 					for (std::size_t i = 0; i < m_size; ++i) {
-						if (m_res_min_max[i].first < traits::const_min || m_res_min_max[i].first > traits::const_max ||
-							m_res_min_max[i].second < traits::const_min || m_res_min_max[i].second > traits::const_max) {
+						if (m_res_min_max[i].first < mp_integer(traits::const_min) || m_res_min_max[i].first > mp_integer(traits::const_max) ||
+							m_res_min_max[i].second < mp_integer(traits::const_min) || m_res_min_max[i].second > mp_integer(traits::const_max)) {
 							std::cout << "Warning: results of series multiplication cross " <<
 									  "fast integer limits. Expect errors." << std::endl;
 						}
-						m_fast_res_min_max[i].first = m_res_min_max[i].first.get_si();
-						m_fast_res_min_max[i].second = m_res_min_max[i].second.get_si();
+						m_fast_res_min_max[i].first = m_res_min_max[i].first.to_long();
+						m_fast_res_min_max[i].second = m_res_min_max[i].second.to_long();
 					}
 					__PDEBUG(std::cout << "Coding vector: ";
 					for (std::size_t i = 0; i < m_size; ++i) {
@@ -186,7 +185,7 @@ namespace piranha
 			std::vector<std::pair<int, int> >			m_min_max2;
 			// Vector of minimum and maximum value pairs for the resulting series.
 			// GMP is used to avoid trespassing the range limits of max_fast_int.
-			std::vector<std::pair<mpz_class, mpz_class> >		m_res_min_max;
+			std::vector<std::pair<mp_integer, mp_integer> >		m_res_min_max;
 			// Version of the above downcast to int.
 			std::vector<std::pair<int, int> >			m_fast_res_min_max;
 			// Coding vector.

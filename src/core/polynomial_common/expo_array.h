@@ -26,8 +26,6 @@
 #include <boost/numeric/conversion/converter.hpp>
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <cstddef>
-#include <gmp.h>
-#include <gmpxx.h>
 #include <iostream>
 #include <memory> // For standard allocator.
 #include <string>

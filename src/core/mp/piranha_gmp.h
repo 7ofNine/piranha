@@ -150,7 +150,7 @@ namespace piranha
 			{
 				construct_from_string(str);
 			}
-			/// Constructor from integer.
+			/// Constructor from int.
 			explicit mp_rational(const int &n):m_value(n) {}
 			/// Constructor from integer numerator and denominator.
 			/**
@@ -220,7 +220,7 @@ namespace piranha
 				// it seems like this could fail in horrible ways in case of overflows. Need to check.
 				return m_value.get_d();
 			}
-			/// Convert to integer.
+			/// Convert to int.
 			/**
 			 * @throws value_error if the denominator is not unitary.
 			 * @throws std::overflow_error if the numerator overflows int type.
@@ -228,10 +228,27 @@ namespace piranha
 			int to_int() const
 			{
 				if (m_value.get_den() != 1) {
-					piranha_throw(value_error,"cannot convert rational to integer if denominator is non-unitary");
+					piranha_throw(value_error,"cannot convert rational to int if denominator is non-unitary");
+				}
+				// NOTE: here we test for fits into signed integer, but the return value below will be long signed
+				// integer because that's what offered by the API. It will be safely downcast to int on exit.
+				if (!m_value.get_num().fits_sint_p()) {
+					piranha_throw(std::overflow_error,"numerator is too large while converting rational to int");
+				}
+				return m_value.get_num().get_si();
+			}
+			/// Convert to long.
+			/**
+			 * @throws value_error if the denominator is not unitary.
+			 * @throws std::overflow_error if the numerator overflows long type.
+			 */
+			int to_long() const
+			{
+				if (m_value.get_den() != 1) {
+					piranha_throw(value_error,"cannot convert rational to long if denominator is non-unitary");
 				}
 				if (!m_value.get_num().fits_slong_p()) {
-					piranha_throw(std::overflow_error,"numerator is too large while converting rational to long integer");
+					piranha_throw(std::overflow_error,"numerator is too large while converting rational to long");
 				}
 				return m_value.get_num().get_si();
 			}
@@ -416,13 +433,13 @@ namespace piranha
 					piranha_throw(zero_division_error,"cannot raise zero to negative power");
 				}
 				if (n < 0) {
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long int)(-n));
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long int)(-n));
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long)(-n));
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long)(-n));
 					// We need to canonicalize, since negative numbers may have gone to the denominator.
 					retval.m_value.canonicalize();
 				} else {
-					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long int)n);
-					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long int)n);
+					mpz_pow_ui(mpq_numref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long)n);
+					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_denref(m_value.get_mpq_t()), (unsigned long)n);
 				}
 				return retval;
 			}
@@ -511,8 +528,10 @@ namespace piranha
 			explicit mp_integer(const std::string &str):m_value(str) {}
 			/// Constructor from C string.
 			explicit mp_integer(const char *str):m_value(str) {}
-			/// Constructor from integer.
+			/// Constructor from int.
 			explicit mp_integer(const int &n):m_value(n) {}
+			/// Constructor from long.
+			explicit mp_integer(const long &n):m_value(n) {}
 			/// Constructor from double.
 			explicit mp_integer(const double &x):m_value(0)
 			{
@@ -573,14 +592,25 @@ namespace piranha
 				// it seems like this could fail in horrible ways in case of overflows. Need to check.
 				return m_value.get_d();
 			}
-			/// Convert to integer.
+			/// Convert to int.
 			/**
 			 * @throws std::overflow_error if the numerator overflows int type.
 			 */
 			int to_int() const
 			{
 				if (!m_value.fits_sint_p()) {
-					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to integer");
+					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to int");
+				}
+				return m_value.get_si();
+			}
+			/// Convert to long.
+			/**
+			 * @throws std::overflow_error if the numerator overflows long type.
+			 */
+			int to_long() const
+			{
+				if (!m_value.fits_slong_p()) {
+					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to long");
 				}
 				return m_value.get_si();
 			}
@@ -646,7 +676,7 @@ namespace piranha
 					piranha_throw(value_error,"cannot calculate factorial of negative integer");
 				}
 				mp_integer retval;
-				mpz_fac_ui(retval.m_value.get_mpz_t(),(unsigned long int)to_int());
+				mpz_fac_ui(retval.m_value.get_mpz_t(),(unsigned long)to_int());
 				return retval;
 			}
 			/// Double factorial.
@@ -671,7 +701,7 @@ namespace piranha
 				if (k < 0) {
 					return retval;
 				}
-				mpz_bin_ui(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),(unsigned long int)k);
+				mpz_bin_ui(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),(unsigned long)k);
 				return retval;
 			}
 			/// Exponentiation.
