@@ -114,6 +114,8 @@ namespace piranha
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
+			static const std::size_t &get_nthread();
+			static void set_nthread(const int &);
 		private:
 			/// Startup class.
 			/**
@@ -146,6 +148,8 @@ namespace piranha
 			static std::size_t		m_digits;
 			/// Floating point representation.
 			static fp_representation	m_fp_repr;
+			/// Number of threads available.
+			static size_t			m_nthread;
 	};
 }
 

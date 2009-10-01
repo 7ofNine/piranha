@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp> // For replacing "\" with "/" in Windows.
+#include <boost/thread/thread.hpp>
 #include <cstddef>
 #include <cstdlib> // For getenv in Windows.
 #include <cstring>
@@ -81,6 +82,7 @@ namespace piranha
 	bool settings::blocker = false;
 	settings::startup_class settings::startup;
 	std::size_t settings::m_max_pretty_print_size = 500;
+	std::size_t settings::m_nthread = 1;
 
 	settings::startup_class::startup_class()
 	{
@@ -116,6 +118,8 @@ namespace piranha
 		settings::setup_stream(std::cout);
 		// Setup GMP's memory allocation functions.
 		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
+		// Setup number of threads.
+		set_nthread(boost::thread::hardware_concurrency());
 	}
 
 	/// Set path to theories of motion.
@@ -180,5 +184,19 @@ namespace piranha
 				"please insert an integer greater than 10");
 		}
 		m_max_pretty_print_size = n;
+	}
+
+	void settings::set_nthread(const int &n)
+	{
+		if (n <= 0) {
+			piranha_throw(value_error,"invalid number of threads, "
+				"please insert an integer greater than 0");
+		}
+		m_nthread = n;
+	}
+
+	const size_t &settings::get_nthread()
+	{
+		return m_nthread;
 	}
 }

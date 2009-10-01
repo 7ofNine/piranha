@@ -136,6 +136,8 @@ BOOST_PYTHON_MODULE(_Core)
 	typedef void (*fp_repr_set)(settings::fp_representation);
 	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
+	class_setm.add_static_property("nthread", make_function(&settings::get_nthread,return_value_policy<copy_const_reference>()),
+		&settings::set_nthread);
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())
