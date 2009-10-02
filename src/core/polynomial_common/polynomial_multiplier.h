@@ -349,10 +349,6 @@ namespace piranha
 						}
 						__PDEBUG(std::cout << "Done polynomial hash coded\n");
 					}
-				public:
-					// Temporary key used for the decodification in the truncator.
-					// It is mutable because it is used as temporary decodification area.
-					mutable typename term_type1::key_type m_tmp_key;
 			};
 	};
 }
