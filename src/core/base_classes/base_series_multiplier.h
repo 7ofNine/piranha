@@ -21,8 +21,10 @@
 #ifndef PIRANHA_BASE_SERIES_MULTIPLIER_H
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
+#include <algorithm>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 #include "../config.h"
@@ -48,6 +50,9 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
+			// Alias for vector of ranges used during parallel multiplication.
+			typedef std::vector<std::pair<typename std::vector<term_type1 const *>::const_iterator,typename std::vector<term_type1 const *>::const_iterator> >
+				vector_ranges;
 			class key_revlex_comparison
 			{
 				public:
@@ -125,12 +130,30 @@ namespace piranha
 				"Key type mismatch in base multiplier.");
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-					m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
-					m_size2(m_s2.length()), m_retval(retval),
-					m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2)) {}
+				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
+				m_size2(m_s2.length()), m_retval(retval),
+				m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2))
+			{
+				piranha_assert(m_size1 > 0);
+				// Effective number of threads to use. If size1 is less than the number of desired threads,
+				// use size1 as number of threads.
+				const std::size_t n = std::min(settings::get_nthread(),m_size1);
+				piranha_assert(n > 0);
+				m_ranges.reserve(n);
+				// m is the number of terms per thread for homogeneous blocks.
+				const std::size_t m = m_size1 / n;
+				// Iterate up to n - 1 because that's the number up to which we can divide series1 into
+				// homogeneous blocks.
+				for (std::size_t i = 0;i < n - 1; ++i) {
+					m_ranges.push_back(std::make_pair(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
+				}
+				// Last iteration.
+				m_ranges.push_back(std::make_pair(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
+			}
 			// Perform plain multiplication.
 			template <class GenericTruncator>
-			void perform_plain_multiplication(const GenericTruncator &trunc) {
+			void perform_plain_multiplication(const GenericTruncator &trunc)
+			{
 				typedef typename term_type1::multiplication_result mult_res;
 				mult_res res;
 				for (std::size_t i = 0; i < m_size1; ++i) {
@@ -157,6 +180,8 @@ namespace piranha
 			// Vectors of pointers the input terms.
 			std::vector<term_type1 const *>	m_terms1;
 			std::vector<term_type2 const *>	m_terms2;
+			// Vectors of ranges
+			vector_ranges			m_ranges;
 	};
 }
 

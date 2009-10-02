@@ -109,8 +109,17 @@ namespace piranha
 			"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 #endif
 		m_path = m_default_path;
+		// Setup number of threads.
+		const std::size_t nthread = boost::thread::hardware_concurrency();
+		if (nthread <= 0) {
+			std::cout << "Unable to detect automatically the number of hardware threads, setting value to 1.\n";
+			set_nthread(1);
+		} else {
+			set_nthread(nthread);
+		}
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
+		std::cout << "Number of hardware threads: " << get_nthread() << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
@@ -118,8 +127,6 @@ namespace piranha
 		settings::setup_stream(std::cout);
 		// Setup GMP's memory allocation functions.
 		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
-		// Setup number of threads.
-		set_nthread(boost::thread::hardware_concurrency());
 	}
 
 	/// Set path to theories of motion.

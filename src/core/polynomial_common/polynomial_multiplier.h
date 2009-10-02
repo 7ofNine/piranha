@@ -23,6 +23,7 @@
 
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/thread/thread.hpp>
 #include <cstddef>
 #include <exception>
 #include <utility> // For std::pair.
@@ -52,12 +53,12 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-						public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-						public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
+				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+					get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
 					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-					get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
 					typedef typename Series1::const_iterator const_iterator1;
@@ -73,9 +74,25 @@ namespace piranha
 					typedef ArgsTuple args_tuple_type;
 					typedef typename Truncator::template get_type<get_type> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-							ancestor(s1, s2, retval, args_tuple) {}
+						ancestor(s1, s2, retval, args_tuple) {}
 					/// Perform multiplication and place the result into m_retval.
-					void perform_multiplication() {
+					void perform_multiplication()
+					{
+// 						const std::size_t n = this->m_ranges.size();
+// 						piranha_assert(n > 0);
+// 						if (n == 1) {
+// 							worker(this,&(this->m_retval),0);
+// 							worker();
+// 						} else {
+// 							boost::thread_group() tg;
+// 							std::vector<Series1> retvals(n,Series1());
+// 							for (std::size_t i = 0; i < n; ++i) {
+// 								tg.create_thread(worker(this,&retvals[i],i));
+// 							}
+// 							tg.join_all();
+// 							// Take the retvals and insert them into final retval.
+// 							// TODO
+// 						}
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(*this);
