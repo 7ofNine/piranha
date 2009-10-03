@@ -24,7 +24,6 @@
 #include <algorithm>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <cstddef>
-#include <utility>
 #include <vector>
 
 #include "../config.h"
@@ -57,20 +56,23 @@ namespace piranha
 			{
 				public:
 					template <class Term>
-					bool operator()(const Term *t1, const Term *t2) const {
+					bool operator()(const Term *t1, const Term *t2) const
+					{
 						return (t1->m_key.revlex_comparison(t2->m_key));
 					}
 			};
 			template <class Cf>
 			struct cf_from_term {
 				template <class Term>
-				static const Cf &get(const Term *t) {
+				static const Cf &get(const Term *t)
+				{
 					return t->m_cf;
 				}
 			};
 			template <class Cf>
 			struct cf_direct {
-				static const Cf &get(const Cf &c) {
+				static const Cf &get(const Cf &c)
+				{
 					return c;
 				}
 			};
@@ -132,23 +134,33 @@ namespace piranha
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 				m_size2(m_s2.length()), m_retval(retval),
-				m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2))
+				m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2)),
+				m_split1()
 			{
 				piranha_assert(m_size1 > 0);
-				// Effective number of threads to use. If size1 is less than the number of desired threads,
-				// use size1 as number of threads.
-				const std::size_t n = std::min(settings::get_nthread(),m_size1);
+				// Effective number of threads to use. If the two series are small, we want to use one single thread.
+				// TODO: testing to see which number should go here. Maybe test with small poly multiplication and see how many of them we
+				// can do per second with the best possible scenario (double coefficients, integer exponents, vector coded) and compare to how
+				// many threads we can generate per second with little overhead.
+				std::size_t n;
+				if (double(m_size1) * double(m_size2) < 400) {
+					n = 1;
+				} else {
+					// If size1 is less than the number of desired threads,
+					// use size1 as number of threads.
+					n = std::min(settings::get_nthread(),m_size1);
+				}
 				piranha_assert(n > 0);
-				m_ranges.reserve(n);
-				// m is the number of terms per thread for homogeneous blocks.
+				m_split1.reserve(n);
+				// m is the number of terms per thread for regular blocks.
 				const std::size_t m = m_size1 / n;
 				// Iterate up to n - 1 because that's the number up to which we can divide series1 into
-				// homogeneous blocks.
+				// regular blocks.
 				for (std::size_t i = 0;i < n - 1; ++i) {
-					m_ranges.push_back(std::make_pair(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
+					m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
 				}
 				// Last iteration.
-				m_ranges.push_back(std::make_pair(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
+				m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
 			}
 			// Perform plain multiplication.
 			template <class GenericTruncator>
@@ -168,20 +180,20 @@ namespace piranha
 			}
 		public:
 			// References to the series.
-			const Series1			&m_s1;
-			const Series2			&m_s2;
+			const Series1					&m_s1;
+			const Series2					&m_s2;
 			// Reference to the arguments tuple.
-			const ArgsTuple			&m_args_tuple;
+			const ArgsTuple					&m_args_tuple;
 			// Sizes of the series.
-			const std::size_t		m_size1;
-			const std::size_t		m_size2;
+			const std::size_t				m_size1;
+			const std::size_t				m_size2;
 			// Reference to the result.
-			Series1				&m_retval;
+			Series1						&m_retval;
 			// Vectors of pointers the input terms.
-			std::vector<term_type1 const *>	m_terms1;
-			std::vector<term_type2 const *>	m_terms2;
-			// Vectors of ranges
-			vector_ranges			m_ranges;
+			std::vector<term_type1 const *>			m_terms1;
+			std::vector<term_type2 const *>			m_terms2;
+			// Vector resulting from splitting m_terms1 into chunks.
+			std::vector<std::vector<term_type1 const *> >	m_split1;
 	};
 }
 
