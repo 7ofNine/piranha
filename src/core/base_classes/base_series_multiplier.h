@@ -220,7 +220,7 @@ std::cout << "Using " << n << " thread(s)\n";
 					boost::thread_group tg;
 					std::vector<Series1> retvals(n,Series1());
 					{
-					runtime::register_threads(n - 1);
+					runtime::register_threads r(n - 1);
 					for (std::size_t i = 0; i < n; ++i) {
 						tg.create_thread(w_type(*this,retvals[i],i,trunc));
 					}
