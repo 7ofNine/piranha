@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
 #include <algorithm>
+#include <boost/thread/thread.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <cstddef>
 #include <vector>
@@ -49,9 +50,6 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
-			// Alias for vector of ranges used during parallel multiplication.
-			typedef std::vector<std::pair<typename std::vector<term_type1 const *>::const_iterator,typename std::vector<term_type1 const *>::const_iterator> >
-				vector_ranges;
 			class key_revlex_comparison
 			{
 				public:
@@ -127,6 +125,102 @@ namespace piranha
 					}
 				}
 			}
+			template <class GenericTruncator>
+			struct plain_worker {
+				plain_worker(base_series_multiplier &mult, Series1 &retval, const std::size_t &idx, const GenericTruncator &trunc):
+					m_mult(mult),m_retval(retval),m_idx(idx),m_trunc(trunc) {}
+				void operator()()
+				{
+					typedef typename term_type1::multiplication_result mult_res;
+					mult_res res;
+					const std::size_t size1 = m_mult.m_split1[m_idx].size(), size2 = m_mult.m_size2;
+					std::vector<term_type1 const *> &terms1 = m_mult.m_split1[m_idx];
+					std::vector<term_type2 const *> &terms2 = m_mult.m_terms2;
+					const ArgsTuple &args_tuple = m_mult.m_args_tuple;
+					Series1 &retval = m_retval;
+					const GenericTruncator &trunc = m_trunc;
+					for (std::size_t i = 0; i < size1; ++i) {
+						for (std::size_t j = 0; j < size2; ++j) {
+							if (trunc.skip(&terms1[i], &terms2[j])) {
+								break;
+							}
+							term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
+							insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
+						}
+					}
+
+
+
+// 					static const std::size_t block_size = 64;
+// 					p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
+// 					const std::size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
+// 					for (std::size_t n1 = 0; n1 < nblocks1; ++n1) {
+// 						const std::size_t i_start = n1 * block_size, i_end = i_start + block_size;
+// 						// regulars1 * regulars2
+// 						for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
+// 							const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
+// 							for (std::size_t i = i_start; i < i_end; ++i) {
+// 								for (std::size_t j = j_start; j < j_end; ++j) {
+// 									if (trunc.skip(&terms1[i], &terms2[j])) {
+// 										break;
+// 									}
+// 									term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
+// 									insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
+// 								}
+// 							}
+// 						}
+// 						// regulars1 * rem2
+// 						for (std::size_t i = i_start; i < i_end; ++i) {
+// 							for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
+// 								if (trunc.skip(&terms1[i], &terms2[j])) {
+// 									break;
+// 								}
+// 								term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
+// 								insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
+// 							}
+// 						}
+// 					}
+// 					// rem1 * regulars2
+// 					for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
+// 						const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
+// 						for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
+// 							for (std::size_t j = j_start; j < j_end; ++j) {
+// 								if (trunc.skip(&terms1[i], &terms2[j])) {
+// 									break;
+// 								}
+// 								term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
+// 								insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
+// 							}
+// 						}
+// 					}
+// 					// rem1 * rem2.
+// 					for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
+// 						for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
+// 							if (trunc.skip(&terms1[i], &terms2[j])) {
+// 								break;
+// 							}
+// 							term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
+// 							insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
+// 						}
+// 					}
+
+
+
+
+
+
+
+
+
+
+
+
+				}
+				base_series_multiplier		&m_mult;
+				Series1				&m_retval;
+				const std::size_t		m_idx;
+				const GenericTruncator		&m_trunc;
+			};
 		private:
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
@@ -166,17 +260,30 @@ namespace piranha
 			template <class GenericTruncator>
 			void perform_plain_multiplication(const GenericTruncator &trunc)
 			{
-				typedef typename term_type1::multiplication_result mult_res;
-				mult_res res;
-				for (std::size_t i = 0; i < m_size1; ++i) {
-					for (std::size_t j = 0; j < m_size2; ++j) {
-						if (trunc.skip(&m_terms1[i], &m_terms2[j])) {
-							break;
-						}
-						term_type1::multiply(*m_terms1[i], *m_terms2[j], res, m_args_tuple);
-						insert_multiplication_result<mult_res>::run(res, m_retval, trunc, m_args_tuple);
+				typedef plain_worker<GenericTruncator> w_type;
+				const std::size_t n = m_split1.size();
+				piranha_assert(n > 0);
+std::cout << "Using " << n << " thread(s)\n";
+				if (n == 1) {
+					w_type w(*this,m_retval,0,trunc);
+					w();
+				} else {
+					boost::thread_group tg;
+					std::vector<Series1> retvals(n,Series1());
+					for (std::size_t i = 0; i < n; ++i) {
+						tg.create_thread(w_type(*this,retvals[i],i,trunc));
 					}
+std::cout << "joining\n";
+					tg.join_all();
+std::cout << "joined\n";					
+					// Take the retvals and insert them into final retval.
+					for (std::size_t i = 0; i < n; ++i) {
+						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_args_tuple);
+					}
+std::cout << "inserted\n";
 				}
+
+
 			}
 		public:
 			// References to the series.
