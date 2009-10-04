@@ -74,12 +74,8 @@ namespace piranha
 					return c;
 				}
 			};
-			template <std::size_t block_size, template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
-				class Term1, class Term2, class Ckey, class Trunc, class Result, class Multiplier>
-			static void blocked_multiplication(const std::size_t &size1, const std::size_t &size2,
-				const TermOrCf1 *tc1, const TermOrCf2 *tc2, const Term1 **t1, const Term2 **t2,
-				const Ckey *ck1, const Ckey *ck2, const Trunc &trunc, Result *res, Multiplier &m,
-				const ArgsTuple &args_tuple)
+			template <std::size_t block_size, class Multiplier>
+			static void blocked_multiplication(const std::size_t &size1, const std::size_t &size2, Multiplier &m)
 			{
 				p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
 				const std::size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
@@ -90,7 +86,7 @@ namespace piranha
 						const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
 						for (std::size_t i = i_start; i < i_end; ++i) {
 							for (std::size_t j = j_start; j < j_end; ++j) {
-								if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+								if (!m(i,j)) {
 									break;
 								}
 							}
@@ -99,7 +95,7 @@ namespace piranha
 					// regulars1 * rem2
 					for (std::size_t i = i_start; i < i_end; ++i) {
 						for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
-							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+							if (!m(i,j)) {
 								break;
 							}
 						}
@@ -110,7 +106,7 @@ namespace piranha
 					const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
 					for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
 						for (std::size_t j = j_start; j < j_end; ++j) {
-							if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+							if (!m(i,j)) {
 								break;
 							}
 						}
@@ -119,12 +115,34 @@ namespace piranha
 				// rem1 * rem2.
 				for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
 					for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
-						if (!m.template run<CfGetter>(i,j,tc1,tc2,t1,t2,ck1,ck2,trunc,res,args_tuple)) {
+						if (!m(i,j)) {
 							break;
 						}
 					}
 				}
 			}
+			template <class GenericTruncator>
+			struct plain_functor {
+				typedef typename term_type1::multiplication_result mult_res;
+				plain_functor(mult_res &res,const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc,
+					Series1 &retval, const ArgsTuple &args_tuple):m_res(res),m_t1(t1),m_t2(t2),
+					m_trunc(trunc),m_retval(retval),m_args_tuple(args_tuple) {}
+				bool operator()(const std::size_t &i, const std::size_t &j)
+				{
+					if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
+						return false;
+					}
+					term_type1::multiply(*m_t1[i], *m_t2[j], m_res, m_args_tuple);
+					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_trunc, m_args_tuple);
+					return true;
+				}
+				mult_res		&m_res;
+				const term_type1	**m_t1;
+				const term_type2	**m_t2;
+				const GenericTruncator	&m_trunc;
+				Series1			&m_retval;
+				const ArgsTuple		&m_args_tuple;
+			};
 			template <class GenericTruncator>
 			struct plain_worker {
 				plain_worker(base_series_multiplier &mult, Series1 &retval, const std::size_t &idx, const GenericTruncator &trunc):
@@ -134,87 +152,11 @@ namespace piranha
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
 					const std::size_t size1 = m_mult.m_split1[m_idx].size(), size2 = m_mult.m_size2;
-					std::vector<term_type1 const *> &terms1 = m_mult.m_split1[m_idx];
-					std::vector<term_type2 const *> &terms2 = m_mult.m_terms2;
-					const ArgsTuple &args_tuple = m_mult.m_args_tuple;
-					Series1 &retval = m_retval;
-					const GenericTruncator &trunc = m_trunc;
-					for (std::size_t i = 0; i < size1; ++i) {
-						for (std::size_t j = 0; j < size2; ++j) {
-							if (trunc.skip(&terms1[i], &terms2[j])) {
-								break;
-							}
-							term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
-							insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
-						}
-					}
-
-
-
-// 					static const std::size_t block_size = 64;
-// 					p_static_check(block_size > 0, "Invalid block size for cache-blocking.");
-// 					const std::size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
-// 					for (std::size_t n1 = 0; n1 < nblocks1; ++n1) {
-// 						const std::size_t i_start = n1 * block_size, i_end = i_start + block_size;
-// 						// regulars1 * regulars2
-// 						for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
-// 							const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
-// 							for (std::size_t i = i_start; i < i_end; ++i) {
-// 								for (std::size_t j = j_start; j < j_end; ++j) {
-// 									if (trunc.skip(&terms1[i], &terms2[j])) {
-// 										break;
-// 									}
-// 									term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
-// 									insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
-// 								}
-// 							}
-// 						}
-// 						// regulars1 * rem2
-// 						for (std::size_t i = i_start; i < i_end; ++i) {
-// 							for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
-// 								if (trunc.skip(&terms1[i], &terms2[j])) {
-// 									break;
-// 								}
-// 								term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
-// 								insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
-// 							}
-// 						}
-// 					}
-// 					// rem1 * regulars2
-// 					for (std::size_t n2 = 0; n2 < nblocks2; ++n2) {
-// 						const std::size_t j_start = n2 * block_size, j_end = j_start + block_size;
-// 						for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
-// 							for (std::size_t j = j_start; j < j_end; ++j) {
-// 								if (trunc.skip(&terms1[i], &terms2[j])) {
-// 									break;
-// 								}
-// 								term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
-// 								insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
-// 							}
-// 						}
-// 					}
-// 					// rem1 * rem2.
-// 					for (std::size_t i = nblocks1 * block_size; i < size1; ++i) {
-// 						for (std::size_t j = nblocks2 * block_size; j < size2; ++j) {
-// 							if (trunc.skip(&terms1[i], &terms2[j])) {
-// 								break;
-// 							}
-// 							term_type1::multiply(*terms1[i], *terms2[j], res, args_tuple);
-// 							insert_multiplication_result<mult_res>::run(res, retval, trunc, args_tuple);
-// 						}
-// 					}
-
-
-
-
-
-
-
-
-
-
-
-
+					const term_type1 **t1 = &m_mult.m_split1[m_idx][0];
+					const term_type2 **t2 = &m_mult.m_terms2[0];
+					plain_functor<GenericTruncator> pf(res,t1,t2,m_trunc,m_retval,m_mult.m_args_tuple);
+					// TODO: fix block size.
+					blocked_multiplication<64>(size1,size2,pf);
 				}
 				base_series_multiplier		&m_mult;
 				Series1				&m_retval;

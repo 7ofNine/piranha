@@ -198,31 +198,44 @@ namespace piranha
 						}
 						);
 					}
-					struct vector_multiplier {
-						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
-							class Term1, class Term2, class Ckey, class Trunc, class ResVec>
-						bool run(
-							const std::size_t &i, const std::size_t &j,
-							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, ResVec *vc_res, const ArgsTuple &args_tuple) {
+					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Ckey, class Trunc>
+					struct vector_functor {
+						vector_functor(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const term_type1 **t1, const term_type2 **t2,
+							const Ckey *ck1, const Ckey *ck2,
+							const Trunc &trunc, cf_type1 *vc_res, const ArgsTuple &args_tuple):
+							m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2(ck2),m_trunc(trunc),
+							m_vc_res(vc_res),m_args_tuple(args_tuple) {}
+						bool operator()(const std::size_t &i, const std::size_t &j)
+						{
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
-							if (trunc.skip(&t1[i], &t2[j])) {
+							if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
 								return false;
 							}
 							// Calculate index of the result.
-							const max_fast_int res_index = ck1[i] + ck2[j];
-							if (trunc.accept(res_index)) {
-								vc_res[res_index].addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+							const max_fast_int res_index = m_ck1[i] + m_ck2[j];
+							if (m_trunc.accept(res_index)) {
+								m_vc_res[res_index].addmul(get1::get(m_tc1[i]), get2::get(m_tc2[j]), m_args_tuple);
 							}
 							return true;
 						}
+						const TermOrCf1		*m_tc1;
+						const TermOrCf2		*m_tc2;
+						const term_type1	**m_t1;
+						const term_type2	**m_t2;
+						const Ckey		*m_ck1;
+						const Ckey		*m_ck2;
+						const Trunc		&m_trunc;
+						cf_type1		*m_vc_res;
+						const ArgsTuple		&m_args_tuple;
 					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc)
+					{
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -252,10 +265,9 @@ namespace piranha
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
-						vector_multiplier vm;
-						ancestor::template blocked_multiplication<block_size,CfGetter>(
-							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,vm,args_tuple
-						);
+						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
+							vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
+						ancestor::template blocked_multiplication<block_size>(size1,size2,vm);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
@@ -277,44 +289,55 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded.\n");
 						return true;
 					}
-					template <class Cterm>
-					struct hash_multiplier {
-						hash_multiplier(Cterm &cterm):m_cterm(cterm) {}
-						template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
-							class Term1, class Term2, class Ckey, class Trunc, class HashSet>
-						bool run(
-							const std::size_t &i, const std::size_t &j,
-							const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-							const Term1 **t1, const Term2 **t2, const Ckey *ck1,
-							const Ckey *ck2, const Trunc &trunc, HashSet *cms, const ArgsTuple &args_tuple) {
+					template <class Cterm,template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
+						class Ckey, class Trunc, class HashSet>
+					struct hash_functor {
+						hash_functor(Cterm &cterm, const TermOrCf1 *tc1, const TermOrCf2 *tc2,
+							const term_type1 **t1, const term_type2 **t2,
+							const Ckey *ck1, const Ckey *ck2,
+							const Trunc &trunc, HashSet *cms, const ArgsTuple &args_tuple):
+							m_cterm(cterm),m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2(ck2),
+							m_trunc(trunc),m_cms(cms),m_args_tuple(args_tuple) {}
+						bool operator()(const std::size_t &i, const std::size_t &j)
+						{
 							typedef CfGetter<cf_type1> get1;
 							typedef CfGetter<cf_type2> get2;
 							typedef typename HashSet::iterator c_iterator;
-							if (trunc.skip(&t1[i], &t2[j])) {
+							if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
 								return false;
 							}
-							m_cterm.m_ckey = ck1[i];
-							m_cterm.m_ckey += ck2[j];
-							if (trunc.accept(m_cterm.m_ckey)) {
-								const std::pair<bool,c_iterator> res = cms->find(m_cterm);
+							m_cterm.m_ckey = m_ck1[i];
+							m_cterm.m_ckey += m_ck2[j];
+							if (m_trunc.accept(m_cterm.m_ckey)) {
+								const std::pair<bool,c_iterator> res = m_cms->find(m_cterm);
 								if (res.first) {
-									res.second->m_cf.addmul(get1::get(tc1[i]), get2::get(tc2[j]), args_tuple);
+									res.second->m_cf.addmul(get1::get(m_tc1[i]), get2::get(m_tc2[j]), m_args_tuple);
 								} else {
 									// Assign to the temporary term the old cf (new_key is already assigned).
-									m_cterm.m_cf = get1::get(tc1[i]);
+									m_cterm.m_cf = get1::get(m_tc1[i]);
 									// Multiply the old term by the second term.
-									m_cterm.m_cf.mult_by(get2::get(tc2[j]), args_tuple);
-									cms->insert(m_cterm,res.second);
+									m_cterm.m_cf.mult_by(get2::get(m_tc2[j]), m_args_tuple);
+									m_cms->insert(m_cterm,res.second);
 								}
 							}
 							return true;
 						}
-						Cterm &m_cterm;
+						Cterm			&m_cterm;
+						const TermOrCf1		*m_tc1;
+						const TermOrCf2		*m_tc2;
+						const term_type1	**m_t1;
+						const term_type2	**m_t2;
+						const Ckey		*m_ck1;
+						const Ckey		*m_ck2;
+						const Trunc		&m_trunc;
+						HashSet			*m_cms;
+						const ArgsTuple		&m_args_tuple;
 					};
 					template <template <class> class CfGetter, class TermOrCf1, class TermOrCf2,
 						class Term1, class Term2, class GenericTruncator>
 					void perform_hash_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
-						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc) {
+						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc)
+					{
 						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
 						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
@@ -330,10 +353,9 @@ namespace piranha
 							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						cterm tmp_cterm;
-						hash_multiplier<cterm> hm(tmp_cterm);
-						ancestor::template blocked_multiplication<block_size,CfGetter>(
-							size1,size2,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,hm,args_tuple
-						);
+						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>
+							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
+						ancestor::template blocked_multiplication<block_size>(size1,size2,hm);
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						term_type1 tmp_term;
