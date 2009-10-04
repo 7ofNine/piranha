@@ -34,16 +34,18 @@
 
 namespace piranha
 {
+	typedef std_counting_allocator<char> gmp_allocator;
+
 	extern "C" {
 	static inline void *gmp_alloc_func(std::size_t size)
 	{
-		std_counting_allocator<char> a;
+		gmp_allocator a;
 		return static_cast<void *>(a.allocate(size));
 	}
 
 	static inline void *gmp_realloc_func(void *ptr, std::size_t old_size, std::size_t new_size)
 	{
-		std_counting_allocator<char> a;
+		gmp_allocator a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
 		memcpy(retval, static_cast<void const *>(ptr), std::min<std::size_t>(old_size,new_size));
 		a.deallocate(static_cast<char *>(ptr),old_size);
@@ -52,7 +54,7 @@ namespace piranha
 
 	static inline void gmp_free_func(void *ptr, std::size_t size)
 	{
-		std_counting_allocator<char> a;
+		gmp_allocator a;
 		a.deallocate(static_cast<char *>(ptr),size);
 	}
 	}
