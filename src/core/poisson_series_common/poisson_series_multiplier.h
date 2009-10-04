@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <cmath>
 #include <cstddef>
 #include <exception>
 #include <utility> // For std::pair.
@@ -34,9 +35,9 @@
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../math.h"
 #include "../mp.h"
 #include "../memory.h"
+#include "../runtime.h"
 #include "../settings.h" // For debug.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -283,13 +284,13 @@ namespace piranha
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_h_min, &vc_sin[0] - this->m_h_min);
 						// Find out a suitable block size.
-						static const std::size_t block_size =
-							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
-						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+						const std::size_t block_size = 2 <<
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1) * runtime::get_n_cur_threads())))) - 1);
+						std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
 							vm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2,trunc,&res,args_tuple);
-						this->template blocked_multiplication<block_size>(size1,size2,vm);
+						this->blocked_multiplication(block_size,size1,size2,vm);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						// Decode and insert the results into return value.
 						cf_type1 *vc_res_cos = res.first, *vc_res_sin = res.second;
@@ -424,12 +425,12 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						// Find out a suitable block size.
-						static const std::size_t block_size =
-							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
-						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+						const std::size_t block_size = 2 <<
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm) * runtime::get_n_cur_threads())))) - 1);
+						std::cout << "Block size: " << block_size << '\n';
 						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>
 							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2,trunc,&res,args_tuple);
-						this->template blocked_multiplication<block_size>(size1,size2,hm);
+						this->blocked_multiplication(block_size,size1,size2,hm);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 						term_type1 tmp_term;
 						{

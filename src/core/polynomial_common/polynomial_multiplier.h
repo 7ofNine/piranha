@@ -24,6 +24,7 @@
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/thread/thread.hpp>
+#include <cmath>
 #include <cstddef>
 #include <exception>
 #include <utility> // For std::pair.
@@ -35,9 +36,9 @@
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../math.h" // For static maths.
 #include "../memory.h"
 #include "../mp.h"
+#include "../runtime.h"
 #include "../settings.h" // For debug and cache size.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -261,13 +262,13 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_h_min;
 						// Find out a suitable block size.
-						static const std::size_t block_size =
-							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cf_type1))>::value>::value - 1));
-						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+						const std::size_t block_size = 2 <<
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1) * runtime::get_n_cur_threads())))) - 1);
+						std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
 							vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
-						ancestor::template blocked_multiplication<block_size>(size1,size2,vm);
+						this->blocked_multiplication(block_size,size1,size2,vm);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
@@ -349,13 +350,15 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
-						static const std::size_t block_size =
-							(2 << (ilg<isqrt<(settings::cache_size * 1024) / (sizeof(cterm))>::value>::value - 1));
-						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+						const std::size_t block_size = 2 <<
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm) * runtime::get_n_cur_threads())))) - 1);
+						std::cout << "Block size: " << block_size << '\n';
+std::cout << "n thread :" << runtime::get_n_cur_threads() << '\n';
 						cterm tmp_cterm;
 						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>
 							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
-						ancestor::template blocked_multiplication<block_size>(size1,size2,hm);
+						this->blocked_multiplication(block_size,size1,size2,hm);
+std::cout << "Done polynomial hash coded multiplying\n";
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						term_type1 tmp_term;
