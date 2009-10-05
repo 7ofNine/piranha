@@ -29,6 +29,7 @@
 #include <cstddef>
 #include <vector>
 
+#include "../base_classes/null_truncator.h"
 #include "../config.h"
 #include "../runtime.h"
 #include "../settings.h"
@@ -146,18 +147,34 @@ namespace piranha
 				Series1			&m_retval;
 				const ArgsTuple		&m_args_tuple;
 			};
-			template <class GenericTruncator>
 			struct plain_worker {
-				plain_worker(base_series_multiplier &mult, Series1 &retval, const std::size_t &idx, const GenericTruncator &trunc):
-					m_mult(mult),m_retval(retval),m_idx(idx),m_trunc(trunc) {}
+				plain_worker(base_series_multiplier &mult, Series1 &retval, const std::size_t &idx):
+					m_mult(mult),m_retval(retval),m_idx(idx) {}
 				void operator()()
+				{
+					// Build the truncator.
+					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_mult.m_split1[m_idx],m_mult.m_terms2,m_mult.m_args_tuple);
+					// Use the selected truncator only if it really truncates, otherwise use the
+					// null truncator.
+					if (trunc.is_effective()) {
+						impl(trunc);
+					} else {
+						impl(
+							null_truncator::template get_type<Series1,Series2,ArgsTuple>(
+							m_mult.m_split1[m_idx],m_mult.m_terms2,m_mult.m_args_tuple
+							)
+						);
+					}
+				}
+				template <class GenericTruncator>
+				void impl(const GenericTruncator &trunc)
 				{
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
 					const std::size_t size1 = m_mult.m_split1[m_idx].size(), size2 = m_mult.m_size2;
 					const term_type1 **t1 = &m_mult.m_split1[m_idx][0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
-					plain_functor<GenericTruncator> pf(res,t1,t2,m_trunc,m_retval,m_mult.m_args_tuple);
+					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
 					const std::size_t block_size = 2 << (
 							(std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) /
 							((sizeof(term_type1) + sizeof(term_type2) + boost::tuples::length<mult_res>::value * sizeof(term_type1))
@@ -168,7 +185,6 @@ std::cout << "Block size: " << block_size << '\n';
 				base_series_multiplier		&m_mult;
 				Series1				&m_retval;
 				const std::size_t		m_idx;
-				const GenericTruncator		&m_trunc;
 			};
 		private:
 			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
@@ -206,15 +222,12 @@ std::cout << "Block size: " << block_size << '\n';
 				m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
 			}
 			// Perform plain multiplication.
-			template <class GenericTruncator>
-			void perform_plain_multiplication(const GenericTruncator &trunc)
+			void perform_plain_multiplication()
 			{
-				typedef plain_worker<GenericTruncator> w_type;
 				const std::size_t n = m_split1.size();
 				piranha_assert(n > 0);
-std::cout << "Using " << n << " thread(s)\n";
 				if (n == 1) {
-					w_type w(*this,m_retval,0,trunc);
+					plain_worker w(*this,m_retval,0);
 					w();
 				} else {
 					boost::thread_group tg;
@@ -222,20 +235,15 @@ std::cout << "Using " << n << " thread(s)\n";
 					{
 					runtime::register_threads r(n - 1);
 					for (std::size_t i = 0; i < n; ++i) {
-						tg.create_thread(w_type(*this,retvals[i],i,trunc));
+						tg.create_thread(plain_worker(*this,retvals[i],i));
 					}
-std::cout << "joining\n";
 					tg.join_all();
-std::cout << "joined\n";		
 					}
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i) {
 						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_args_tuple);
 					}
-std::cout << "inserted\n";
 				}
-
-
 			}
 		public:
 			// References to the series.

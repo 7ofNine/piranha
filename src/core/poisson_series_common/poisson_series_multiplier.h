@@ -54,12 +54,12 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-						public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-						public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
+				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
+				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
 					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-					get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
 					typedef typename Series1::const_iterator const_iterator1;
@@ -73,7 +73,7 @@ namespace piranha
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
 					typedef ArgsTuple args_tuple_type;
-					typedef typename Truncator::template get_type<get_type> truncator_type;
+					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 							ancestor::base_series_multiplier(s1, s2, retval, args_tuple),
 							m_flavours1(ancestor::m_size1), m_flavours2(ancestor::m_size2) {}
@@ -81,7 +81,7 @@ namespace piranha
 					void perform_multiplication() {
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
-						const truncator_type trunc(*this);
+						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
 						this->find_input_min_max();
 						calculate_result_min_max();
 						this->determine_viability();
@@ -95,7 +95,9 @@ namespace piranha
 								std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
 								std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
 							}
-							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
+							ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,ArgsTuple>(
+								this->m_terms1,this->m_terms2,this->m_args_tuple
+							));
 						}
 					}
 				private:
@@ -104,7 +106,7 @@ namespace piranha
 						if (!is_lightweight<cf_type1>::value || (this->m_terms1.size() < 10 && this->m_terms2.size() < 10)) {
 							__PDEBUG(std::cout << "Heavy coefficient or small series, "
 								"going for plain poisson series multiplication\n");
-							this->perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication();
 						} else if (this->m_cr_is_viable) {
 							this->code_keys();
 							// We also need flavours here.
@@ -152,7 +154,7 @@ namespace piranha
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain poisson series multiplication\n");
-							this->perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication();
 						}
 					}
 					void calculate_result_min_max() {

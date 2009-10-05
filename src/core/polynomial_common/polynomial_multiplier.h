@@ -73,7 +73,7 @@ namespace piranha
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
 					typedef ArgsTuple args_tuple_type;
-					typedef typename Truncator::template get_type<get_type> truncator_type;
+					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 						ancestor(s1, s2, retval, args_tuple) {}
 					/// Perform multiplication and place the result into m_retval.
@@ -96,7 +96,7 @@ namespace piranha
 // 						}
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
-						const truncator_type trunc(*this);
+						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
 						this->find_input_min_max();
 						calculate_result_min_max();
 						this->determine_viability();
@@ -112,16 +112,19 @@ namespace piranha
 								std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
 								std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
 							}
-							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
+							ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,ArgsTuple>(
+								this->m_terms1,this->m_terms2,this->m_args_tuple
+							));
 						}
 					}
 				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
+						// TODO: these checks maybe should go earlier in order to avoid redoing truncator check in plain multiplication?
 						if (!is_lightweight<cf_type1>::value || (this->m_terms1.size() < 10 && this->m_terms2.size() < 10)) {
 							__PDEBUG(std::cout << "Heavy coefficient or small series, "
 								"going for plain polynomial multiplication\n");
-							this->perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication();
 						} else if (this->m_cr_is_viable) {
 							this->code_keys();
 							const term_type1 **t1 = &this->m_terms1[0];
@@ -167,7 +170,7 @@ namespace piranha
 							}
 						} else {
 							__PDEBUG(std::cout << "Going for plain polynomial multiplication\n");
-							this->perform_plain_multiplication(trunc);
+							this->perform_plain_multiplication();
 						}
 					}
 					// TODO: better rename result_min_max here and everywhere. It is not really the min/max
