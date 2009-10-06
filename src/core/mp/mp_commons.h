@@ -122,14 +122,14 @@ namespace piranha
 
 	inline void normal_check(const double &x)
 	{
-		if (!boost::math::isnormal(x)) {
+		if (!boost::math::isfinite(x)) {
 			piranha_throw(value_error,"floating-point value is not normal");
 		}
 	}
 
 	inline void normal_check(const std::complex<double> &c)
 	{
-		if (!boost::math::isnormal(c.real()) || !boost::math::isnormal(c.imag())) {
+		if (!boost::math::isfinite(c.real()) || !boost::math::isfinite(c.imag())) {
 			piranha_throw(value_error,"complex floating-point value is not normal");
 		}
 	}
