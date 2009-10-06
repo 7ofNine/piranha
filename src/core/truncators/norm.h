@@ -146,7 +146,7 @@ namespace piranha
 					void init()
 					{
 						if (is_effective()) {
-							piranha_assert(m_term1.size() >= 1 && m_term2.size() >= 1);
+							piranha_assert(m_terms1.size() >= 1 && m_terms2.size() >= 1);
 							const norm_comparison<ArgsTuple> cmp(m_args_tuple);
 							std::sort(m_terms1.begin(), m_terms1.end(), cmp);
 							std::sort(m_terms2.begin(), m_terms2.end(), cmp);

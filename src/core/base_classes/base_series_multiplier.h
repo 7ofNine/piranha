@@ -147,33 +147,34 @@ namespace piranha
 				Series1			&m_retval;
 				const ArgsTuple		&m_args_tuple;
 			};
+			template <class Multiplier>
 			struct plain_worker {
-				plain_worker(base_series_multiplier &mult, Series1 &retval, const std::size_t &idx):
+				plain_worker(Multiplier &mult, Series1 &retval, const std::size_t &idx):
 					m_mult(mult),m_retval(retval),m_idx(idx) {}
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_mult.m_split1[m_idx],m_mult.m_terms2,m_mult.m_args_tuple);
+					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_mult.m_split1[m_idx],m_mult.m_split2[m_idx],m_mult.m_args_tuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
 					if (trunc.is_effective()) {
-						impl(trunc);
+						plain_implementation(trunc);
 					} else {
-						impl(
+						plain_implementation(
 							null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-							m_mult.m_split1[m_idx],m_mult.m_terms2,m_mult.m_args_tuple
+							m_mult.m_split1[m_idx],m_mult.m_split2[m_idx],m_mult.m_args_tuple
 							)
 						);
 					}
 				}
 				template <class GenericTruncator>
-				void impl(const GenericTruncator &trunc)
+				void plain_implementation(const GenericTruncator &trunc)
 				{
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
 					const std::size_t size1 = m_mult.m_split1[m_idx].size(), size2 = m_mult.m_size2;
 					const term_type1 **t1 = &m_mult.m_split1[m_idx][0];
-					const term_type2 **t2 = &m_mult.m_terms2[0];
+					const term_type2 **t2 = &m_mult.m_split2[m_idx][0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
 					const std::size_t block_size = 2 << (
 							(std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) /
@@ -182,7 +183,7 @@ namespace piranha
 std::cout << "Block size: " << block_size << '\n';
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
-				base_series_multiplier		&m_mult;
+				Multiplier			&m_mult;
 				Series1				&m_retval;
 				const std::size_t		m_idx;
 			};
@@ -201,6 +202,7 @@ std::cout << "Block size: " << block_size << '\n';
 				// TODO: testing to see which number should go here. Maybe test with small poly multiplication and see how many of them we
 				// can do per second with the best possible scenario (double coefficients, integer exponents, vector coded) and compare to how
 				// many threads we can generate per second with little overhead.
+				// TODO: think about dropping m_terms* altogether and using only m_split*.
 				std::size_t n;
 				if (double(m_size1) * double(m_size2) < 400) {
 					n = 1;
@@ -217,33 +219,47 @@ std::cout << "Block size: " << block_size << '\n';
 				// regular blocks.
 				for (std::size_t i = 0;i < n - 1; ++i) {
 					m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
+					m_split2.push_back(m_terms2);
+					std::sort(m_split1[i].begin(),m_split1[i].end(),key_revlex_comparison());
+					std::sort(m_split2[i].begin(),m_split2[i].end(),key_revlex_comparison());
 				}
 				// Last iteration.
 				m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
+				m_split2.push_back(m_terms2);
 			}
-			// Perform plain multiplication.
-			void perform_plain_multiplication()
+			// Threaded multiplication.
+			template <class Worker>
+			void perform_threaded_multiplication()
 			{
 				const std::size_t n = m_split1.size();
 				piranha_assert(n > 0);
 				if (n == 1) {
-					plain_worker w(*this,m_retval,0);
+					Worker w(*derived_cast,m_retval,0);
 					w();
 				} else {
+std::cout << "Going threaded\n";
 					boost::thread_group tg;
 					std::vector<Series1> retvals(n,Series1());
 					{
 					runtime::register_threads r(n - 1);
 					for (std::size_t i = 0; i < n; ++i) {
-						tg.create_thread(plain_worker(*this,retvals[i],i));
+						tg.create_thread(Worker(*derived_cast,retvals[i],i));
 					}
+std::cout << "joining\n";
 					tg.join_all();
 					}
+std::cout << "joined\n";
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i) {
 						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_args_tuple);
 					}
+std::cout << "inserted\n";
 				}
+			}
+			// Plain multiplication.
+			void perform_plain_multiplication()
+			{
+				perform_threaded_multiplication<plain_worker<base_series_multiplier> >();
 			}
 		public:
 			// References to the series.
@@ -259,8 +275,9 @@ std::cout << "Block size: " << block_size << '\n';
 			// Vectors of pointers the input terms.
 			std::vector<term_type1 const *>			m_terms1;
 			std::vector<term_type2 const *>			m_terms2;
-			// Vector resulting from splitting m_terms1 into chunks.
+			// Vector resulting from splitting m_terms1 into chunks and copies of m_terms2 to be used in threads.
 			std::vector<std::vector<term_type1 const *> >	m_split1;
+			std::vector<std::vector<term_type2 const *> >	m_split2;
 	};
 }
 
