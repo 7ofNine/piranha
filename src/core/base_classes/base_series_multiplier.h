@@ -180,7 +180,6 @@ namespace piranha
 							(std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) /
 							((sizeof(term_type1) + sizeof(term_type2) + boost::tuples::length<mult_res>::value * sizeof(term_type1))
 							* runtime::get_n_cur_threads())))) - 1);
-std::cout << "Block size: " << block_size << '\n';
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
 				Multiplier			&m_mult;
@@ -213,6 +212,7 @@ std::cout << "Block size: " << block_size << '\n';
 				}
 				piranha_assert(n > 0);
 				m_split1.reserve(n);
+				m_split2.reserve(n);
 				// m is the number of terms per thread for regular blocks.
 				const std::size_t m = m_size1 / n;
 				// Iterate up to n - 1 because that's the number up to which we can divide series1 into
@@ -220,8 +220,6 @@ std::cout << "Block size: " << block_size << '\n';
 				for (std::size_t i = 0;i < n - 1; ++i) {
 					m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
 					m_split2.push_back(m_terms2);
-					std::sort(m_split1[i].begin(),m_split1[i].end(),key_revlex_comparison());
-					std::sort(m_split2[i].begin(),m_split2[i].end(),key_revlex_comparison());
 				}
 				// Last iteration.
 				m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
@@ -233,7 +231,8 @@ std::cout << "Block size: " << block_size << '\n';
 			{
 				const std::size_t n = m_split1.size();
 				piranha_assert(n > 0);
-				if (n == 1) {
+				// Alas, this is not working :(
+				if (true) {
 					Worker w(*derived_cast,m_retval,0);
 					w();
 				} else {

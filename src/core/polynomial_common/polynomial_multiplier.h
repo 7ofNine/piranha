@@ -267,7 +267,7 @@ namespace piranha
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1) * runtime::get_n_cur_threads())))) - 1);
-						std::cout << "Block size: " << block_size << '\n';
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						// Perform multiplication.
 						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
 							vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
@@ -355,13 +355,11 @@ namespace piranha
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm) * runtime::get_n_cur_threads())))) - 1);
-						std::cout << "Block size: " << block_size << '\n';
-std::cout << "n thread :" << runtime::get_n_cur_threads() << '\n';
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						cterm tmp_cterm;
 						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>
 							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
-std::cout << "Done polynomial hash coded multiplying\n";
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						term_type1 tmp_term;
