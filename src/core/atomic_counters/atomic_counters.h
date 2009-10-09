@@ -30,6 +30,7 @@
 namespace piranha
 {
 	typedef atomic_counter_gcc_41<std::size_t> atomic_counter_size_t;
+	typedef atomic_counter_gcc_41<char> atomic_counter_char;
 }
 
 #elif defined ( _PIRANHA_MSVC_ATOMIC_BUILTINS )

@@ -119,10 +119,13 @@ class atomic_counter_gcc_41
 		{
 			return __sync_fetch_and_add(&m_value,static_cast<IntType>(0));
 		}
-		/// Fast type-trait for increment operation.
-		static const bool is_increment_fast = true;
-		/// Fast type-trait for arithmetics.
-		static const bool is_arithmetics_fast = true;
+		/// Boolean compare-and-swap.
+		bool bool_cas(const IntType &oldval, const IntType &newval)
+		{
+			return __sync_bool_compare_and_swap(&m_value,oldval,newval);
+		}
+		/// Fast type-trait.
+		static const bool is_fast = true;
 	private:
 		/// Internal value.
 		/**
