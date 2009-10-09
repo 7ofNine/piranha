@@ -194,7 +194,7 @@ namespace piranha
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 				m_size2(m_s2.length()), m_retval(retval),
 				m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2)),
-				m_split1()
+				m_split1(),m_split2()
 			{
 				piranha_assert(m_size1 > 0);
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
@@ -208,7 +208,8 @@ namespace piranha
 				} else {
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					n = std::min(settings::get_nthread(),m_size1);
+					// Alas, this is not working :(
+					n = 1/*std::min(settings::get_nthread(),m_size1)*/;
 				}
 				piranha_assert(n > 0);
 				m_split1.reserve(n);
@@ -231,8 +232,7 @@ namespace piranha
 			{
 				const std::size_t n = m_split1.size();
 				piranha_assert(n > 0);
-				// Alas, this is not working :(
-				if (true) {
+				if (n == 1) {
 					Worker w(*derived_cast,m_retval,0);
 					w();
 				} else {
