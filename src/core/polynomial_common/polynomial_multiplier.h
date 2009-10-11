@@ -79,21 +79,6 @@ namespace piranha
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
-// 						const std::size_t n = this->m_ranges.size();
-// 						piranha_assert(n > 0);
-// 						if (n == 1) {
-// 							worker(this,&(this->m_retval),0);
-// 							worker();
-// 						} else {
-// 							boost::thread_group() tg;
-// 							std::vector<Series1> retvals(n,Series1());
-// 							for (std::size_t i = 0; i < n; ++i) {
-// 								tg.create_thread(worker(this,&retvals[i],i));
-// 							}
-// 							tg.join_all();
-// 							// Take the retvals and insert them into final retval.
-// 							// TODO
-// 						}
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
