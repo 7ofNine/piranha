@@ -270,7 +270,7 @@ std::cout << "Going threaded\n";
 					std::vector<Series1> retvals(n,Series1());
 					// Scope appropriately the thread registerer.
 					{
-						runtime::register_threads r(n - 1);
+						runtime::threads_registerer r(n);
 						for (std::size_t i = 0; i < n; ++i) {
 							tg.create_thread(Worker(*derived_cast,retvals[i],i));
 						}

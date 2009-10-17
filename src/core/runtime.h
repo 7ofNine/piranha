@@ -30,13 +30,13 @@ namespace piranha
 	// Class that holds runtime info.
 	class runtime {
 		public:
-			class register_threads {
+			class threads_registerer {
 				public:
-					register_threads(const std::size_t &n):m_n(n)
+					threads_registerer(const std::size_t &n):m_n(n)
 					{
 						m_n_current_threads += n;
 					}
-					~register_threads()
+					~threads_registerer()
 					{
 						m_n_current_threads -= m_n;
 					}

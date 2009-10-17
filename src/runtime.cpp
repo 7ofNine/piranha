@@ -25,5 +25,5 @@
 
 namespace piranha
 {
-	atomic_counter_size_t runtime::m_n_current_threads = atomic_counter_size_t((std::size_t)1);
+	atomic_counter_size_t runtime::m_n_current_threads = atomic_counter_size_t((std::size_t)0);
 }
