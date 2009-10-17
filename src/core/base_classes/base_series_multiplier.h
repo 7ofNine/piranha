@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
 #include <algorithm>
+#include <boost/lambda/lambda.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
@@ -194,38 +195,66 @@ namespace piranha
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 				m_size2(m_s2.length()), m_retval(retval),
 				m_terms1(utils::cache_terms_pointers(s1)),m_terms2(utils::cache_terms_pointers(s2)),
-				m_split1(),m_split2()
+				m_split1(),m_split2(),
+				m_copy1(),m_copy2()
 			{
 				piranha_assert(m_size1 > 0);
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
 				// TODO: testing to see which number should go here. Maybe test with small poly multiplication and see how many of them we
 				// can do per second with the best possible scenario (double coefficients, integer exponents, vector coded) and compare to how
 				// many threads we can generate per second with little overhead.
-				// TODO: think about dropping m_terms* altogether and using only m_split*.
+				// TODO: think about dropping m_terms* altogether and using only m_split*. <-- this will be done in the end, when we have cleared up the way to proceed with threads.
 				std::size_t n;
 				if (double(m_size1) * double(m_size2) < 400) {
 					n = 1;
 				} else {
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					// Alas, this is not working :(
-					n = 1/*std::min(settings::get_nthread(),m_size1)*/;
+					n = std::min(settings::get_nthread(),m_size1);
 				}
 				piranha_assert(n > 0);
-				m_split1.reserve(n);
-				m_split2.reserve(n);
-				// m is the number of terms per thread for regular blocks.
-				const std::size_t m = m_size1 / n;
-				// Iterate up to n - 1 because that's the number up to which we can divide series1 into
-				// regular blocks.
-				for (std::size_t i = 0;i < n - 1; ++i) {
-					m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + i * m,m_terms1.begin() + (i + 1) * m));
+				// In case of multiple threads, we want to make copies of input series, in order to improve cache memory utilization.
+				// For single thread, this is not needed.
+				if (n == 1) {
+					m_split1.push_back(m_terms1);
 					m_split2.push_back(m_terms2);
+				} else {
+					m_split1.reserve(n);
+					m_split2.reserve(n);
+					m_copy1.reserve(n);
+					m_copy2.reserve(n);
+					// m is the number of terms per thread for regular blocks.
+					const std::size_t m = m_size1 / n;
+					// Iterate up to n - 1 because that's the number up to which we can divide series1 into
+					// regular blocks.
+					// NOTE: this begs for lambda expressions in C++0x.
+					for (std::size_t i = 0; i < n - 1; ++i) {
+						std::vector<term_type1> tmp1(m);
+						std::vector<term_type2> tmp2(m_size2);
+						std::transform(m_terms1.begin() + i * m, m_terms1.begin() + (i + 1) * m, tmp1.begin(), *boost::lambda::_1);
+						std::transform(m_terms2.begin(), m_terms2.end(), tmp2.begin(), *boost::lambda::_1);
+						m_copy1.push_back(tmp1);
+						m_copy2.push_back(tmp2);
+						m_split1.push_back(cache_const_pointers(m_copy1[i]));
+						m_split2.push_back(cache_const_pointers(m_copy2[i]));
+					}
+					// Last iteration.
+					std::vector<term_type1> tmp1(m_size1 - (n - 1) * m);
+					std::vector<term_type2> tmp2(m_size2);
+					std::transform(m_terms1.begin() + (n - 1) * m, m_terms1.end(), tmp1.begin(), *boost::lambda::_1);
+					std::transform(m_terms2.begin(), m_terms2.end(), tmp2.begin(), *boost::lambda::_1);
+					m_copy1.push_back(tmp1);
+					m_copy2.push_back(tmp2);
+					m_split1.push_back(cache_const_pointers(m_copy1[n - 1]));
+					m_split2.push_back(cache_const_pointers(m_copy2[n - 1]));
 				}
-				// Last iteration.
-				m_split1.push_back(std::vector<term_type1 const *>(m_terms1.begin() + (n - 1) * m,m_terms1.end()));
-				m_split2.push_back(m_terms2);
 			}
+			// Plain multiplication.
+			void perform_plain_multiplication()
+			{
+				perform_threaded_multiplication<plain_worker<base_series_multiplier> >();
+			}
+		private:
 			// Threaded multiplication.
 			template <class Worker>
 			void perform_threaded_multiplication()
@@ -239,13 +268,14 @@ namespace piranha
 std::cout << "Going threaded\n";
 					boost::thread_group tg;
 					std::vector<Series1> retvals(n,Series1());
+					// Scope appropriately the thread registerer.
 					{
-					runtime::register_threads r(n - 1);
-					for (std::size_t i = 0; i < n; ++i) {
-						tg.create_thread(Worker(*derived_cast,retvals[i],i));
-					}
+						runtime::register_threads r(n - 1);
+						for (std::size_t i = 0; i < n; ++i) {
+							tg.create_thread(Worker(*derived_cast,retvals[i],i));
+						}
 std::cout << "joining\n";
-					tg.join_all();
+						tg.join_all();
 					}
 std::cout << "joined\n";
 					// Take the retvals and insert them into final retval.
@@ -255,10 +285,12 @@ std::cout << "joined\n";
 std::cout << "inserted\n";
 				}
 			}
-			// Plain multiplication.
-			void perform_plain_multiplication()
+			template <class T>
+			static std::vector<typename std::vector<T>::value_type const *> cache_const_pointers(const std::vector<T> &v)
 			{
-				perform_threaded_multiplication<plain_worker<base_series_multiplier> >();
+				std::vector<typename std::vector<T>::value_type const *> retval(v.size());
+				std::transform(v.begin(),v.end(),retval.begin(),&boost::lambda::_1);
+				return retval;
 			}
 		public:
 			// References to the series.
@@ -271,12 +303,17 @@ std::cout << "inserted\n";
 			const std::size_t				m_size2;
 			// Reference to the result.
 			Series1						&m_retval;
-			// Vectors of pointers the input terms.
+			// Vectors of pointers to the input terms.
 			std::vector<term_type1 const *>			m_terms1;
 			std::vector<term_type2 const *>			m_terms2;
 			// Vector resulting from splitting m_terms1 into chunks and copies of m_terms2 to be used in threads.
 			std::vector<std::vector<term_type1 const *> >	m_split1;
 			std::vector<std::vector<term_type2 const *> >	m_split2;
+		private:
+			// Vector of copies of terms of arguments series. These may or may not be used, depending on
+			// the number of threads actually utilised.
+			std::vector<std::vector<term_type1> >		m_copy1;
+			std::vector<std::vector<term_type2> >		m_copy2;
 	};
 }
 

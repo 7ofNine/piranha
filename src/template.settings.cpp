@@ -34,7 +34,7 @@
 
 namespace piranha
 {
-	typedef std_counting_allocator<char> gmp_allocator;
+	typedef counting_allocator<char,mt_allocator_char> gmp_allocator;
 
 	extern "C" {
 	static inline void *gmp_alloc_func(std::size_t size)

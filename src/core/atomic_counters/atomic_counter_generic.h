@@ -140,7 +140,7 @@ class atomic_counter_generic
 		/// Internal value.
 		IntType					m_value;
 		/// Mutex.
-		mutable boost::mutex	m_mutex;
+		mutable boost::mutex			m_mutex;
 };
 
 #endif
