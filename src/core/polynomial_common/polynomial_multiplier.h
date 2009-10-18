@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstddef>
 #include <exception>
+#include <memory>
 #include <utility> // For std::pair.
 #include <vector>
 
@@ -36,7 +37,6 @@
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
-#include "../memory.h"
 #include "../mp.h"
 #include "../runtime.h"
 #include "../settings.h" // For debug and cache size.
@@ -103,7 +103,6 @@ namespace piranha
 						}
 					}
 				private:
-					typedef align_allocator<char,64> a_alloc;
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
 						// TODO: not sure this comment below is relevant anymore....
@@ -116,8 +115,8 @@ namespace piranha
 							this->code_keys();
 							const term_type1 **t1 = &this->m_terms1[0];
 							const term_type2 **t2 = &this->m_terms2[0];
-							std::vector<cf_type1,a_alloc> cf1_cache;
-							std::vector<cf_type2,a_alloc> cf2_cache;
+							std::vector<cf_type1> cf1_cache;
+							std::vector<cf_type2> cf2_cache;
 							// NOTICE: this check is really compile-time, so we could probably avoid
 							// having this "if" in favour of a meta-programmed chooser. However, the compiler
 							// here probably just ditches this part while optimizing, so maybe it is really
@@ -227,7 +226,7 @@ namespace piranha
 					bool perform_vector_coded_multiplication(const TermOrCf1 *tc1, const TermOrCf2 *tc2,
 						const Term1 **t1, const Term2 **t2, const GenericTruncator &trunc)
 					{
-						std::vector<cf_type1,a_alloc> vc;
+						std::vector<cf_type1> vc;
 						// Try to allocate the space for vector coded multiplication.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.

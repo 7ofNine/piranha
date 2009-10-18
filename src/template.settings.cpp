@@ -89,7 +89,7 @@ namespace piranha
 	settings::startup_class::startup_class()
 	{
 		// Some static checks.
-		p_static_check(sizeof(char) == 1, "Wrong char size.");
+		// This is because somewhere we use chars as bools.
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
@@ -113,7 +113,7 @@ namespace piranha
 		m_path = m_default_path;
 		// Setup number of threads.
 		const std::size_t nthread = boost::thread::hardware_concurrency();
-		if (nthread == 0) {
+		if (!nthread) {
 			std::cout << "Unable to detect automatically the number of hardware threads, setting value to 1.\n";
 			set_nthread(1);
 		} else {
