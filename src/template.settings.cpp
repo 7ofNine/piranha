@@ -113,7 +113,7 @@ namespace piranha
 		m_path = m_default_path;
 		// Setup number of threads.
 		const std::size_t nthread = boost::thread::hardware_concurrency();
-		if (nthread <= 0) {
+		if (nthread == 0) {
 			std::cout << "Unable to detect automatically the number of hardware threads, setting value to 1.\n";
 			set_nthread(1);
 		} else {
