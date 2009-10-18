@@ -50,17 +50,20 @@ namespace piranha
 		public:
 			// Decode code n into key.
 			template <class Key>
-			void decode(Key &key, const max_fast_int &n) const {
+			void decode(Key &key, const max_fast_int &n) const
+			{
 				key.decode(n, m_coding_vector, m_h_min, m_fast_res_min_max, derived_const_cast->m_args_tuple);
 			}
 			template <class Cf, class Ckey>
 			struct coded_term_type {
 				coded_term_type():m_cf(),m_ckey() {}
 				coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
-				bool operator==(const coded_term_type &t) const {
+				bool operator==(const coded_term_type &t) const
+				{
 					return (m_ckey == t.m_ckey);
 				}
-				std::size_t hash_value() const {
+				std::size_t hash_value() const
+				{
 					return boost::hash<Ckey>()(m_ckey);
 				}
 				mutable Cf	m_cf;
@@ -68,15 +71,17 @@ namespace piranha
 			};
 		protected:
 			coded_series_multiplier():
-					m_cr_is_viable(false),
-					m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
-					m_min_max1(m_size), m_min_max2(m_size), m_res_min_max(m_size), m_fast_res_min_max(m_size),
-					// Coding vector is larger to accomodate extra element at the end (used during decodification).
-					m_coding_vector(m_size + 1),m_density1(0.),m_density2(0.) {
+				m_cr_is_viable(false),
+				m_size(derived_const_cast->m_args_tuple.template get<Derived::key_type::position>().size()),
+				m_min_max1(m_size), m_min_max2(m_size), m_res_min_max(m_size), m_fast_res_min_max(m_size),
+				// Coding vector is larger to accomodate extra element at the end (used during decodification).
+				m_coding_vector(m_size + 1),m_density1(0.),m_density2(0.)
+			{
 				m_ckeys1.reserve(derived_const_cast->m_size1);
 				m_ckeys2.reserve(derived_const_cast->m_size2);
 			}
-			void find_input_min_max() {
+			void find_input_min_max()
+			{
 				std::size_t i1 = 0, i2 = 0;
 				// Fill first minmax vector. This works because at this point we are sure both series have
 				// at least one term. Assert it, just to make sure.
@@ -107,7 +112,8 @@ namespace piranha
 				std::cout << m_min_max2[i].first << ',' << m_min_max2[i].second << '\n';
 				})
 			}
-			void determine_viability() {
+			void determine_viability()
+			{
 				// We must do the computations with arbitrary integers to avoid exceeding range.
 				mp_integer hmin(0), hmax(0), ck(1);
 				for (std::size_t i = 0; i < m_size; ++i) {
@@ -124,8 +130,11 @@ namespace piranha
 				piranha_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
 				// respect the fast integer boundaries.
-				if (ck < mp_integer(traits::const_max) && hmin > mp_integer(traits::const_min) && hmin < mp_integer(traits::const_max) &&
-						hmax > mp_integer(traits::const_min) && hmax < mp_integer(traits::const_max)) {
+				if (ck < mp_integer(traits::const_max) &&
+						hmin > mp_integer(traits::const_min) &&
+						hmin < mp_integer(traits::const_max) &&
+						hmax > mp_integer(traits::const_min) &&
+						hmax < mp_integer(traits::const_max)) {
 					m_cr_is_viable = true;
 					m_h_min = hmin.to_long();
 					m_h_max = hmax.to_long();
@@ -152,7 +161,8 @@ namespace piranha
 				}
 			}
 			/// Code keys.
-			void code_keys() {
+			void code_keys()
+			{
 				for (std::size_t i = 0; i < derived_const_cast->m_size1; ++i) {
 					m_ckeys1.push_back(derived_const_cast->m_terms1[i]->m_key.code(m_coding_vector,
 									   derived_const_cast->m_args_tuple));
@@ -162,7 +172,8 @@ namespace piranha
 									   derived_const_cast->m_args_tuple));
 				}
 			}
-			bool is_sparse() const {
+			bool is_sparse() const
+			{
 				// Magic value established empirically. Possibly subject to tuning in the future.
 				static const double limit = 1E-4;
 				// We don't want this to be called if we haven't established the suitability
