@@ -23,6 +23,8 @@
 
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/bind.hpp>
+#include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
 #include <cmath>
 #include <cstddef>
@@ -44,6 +46,46 @@
 
 namespace piranha
 {
+	// Threaded vector multiplication.
+	template <class Functor>
+	static inline void threaded_vector_blocked_multiplication(const std::size_t &block_size, const std::size_t &size1, const std::size_t &size2, const std::size_t &thread_id,
+		const std::size_t &thread_n, boost::barrier *b, Functor &m)
+	{
+		piranha_assert(block_size > 0 && thread_n > 0 && thread_id < thread_n);
+		// Number of blocks of dimension block_size.
+		const std::size_t nrblocks1 = size1 / block_size, nrblocks2 = size2 / block_size;
+		// Size of the last "irregular" two blocks.
+		const std::size_t ib_size1 = size1 % block_size, ib_size2 = size2 % block_size;
+		// Total number of blocks.
+		const std::size_t nblocks1 = nrblocks1 + (ib_size1 != 0), nblocks2 = nrblocks2 + (ib_size2 != 0);
+		// Number of block iterations: for the first series we want to jump every n_thread blocks
+		// (also maybe going past the series end), while for the second series we want to iterate
+		// over all blocks plus allow also for thread_n - 1 "silent" iterations which are needed
+		// to make sure that at the same time the threads are operating on ordered blocks (which
+		// guarantees that we are writing in isolated areas of the output array).
+		const std::size_t nbi1 = nblocks1 / thread_n + ((nblocks1 % thread_n) != 0),
+			nbi2 = nblocks2 + (thread_n - 1);
+		for (std::size_t n1 = 0; n1 < nbi1; ++n1) {
+			const std::size_t i_start = (thread_id + n1 * thread_n) * block_size;
+			// Here the block size will be zero if we are past the end of the first series, ib_size1 if this is the last block,
+			// block_size if this is a standard block.
+			const std::size_t cur_block_size1 = (i_start >= size1) ? 0 : ((i_start + block_size > size1) ? ib_size1 : block_size);
+			const std::size_t i_end = i_start + cur_block_size1;
+			for (std::size_t n2 = 0; n2 < nbi2; ++n2) {
+				const std::size_t j_start = ((thread_id + n2) % nbi2) * block_size;
+				const std::size_t cur_block_size2 = (j_start >= size2) ? 0 : ((j_start + block_size > size2) ? ib_size2 : block_size);
+				const std::size_t j_end = j_start + cur_block_size2;
+				for (std::size_t i = i_start; i < i_end; ++i) {
+					for (std::size_t j = j_start; j < j_end; ++j) {
+						m(i,j);
+					}
+				}
+				// Synchronize this thread.
+				b->wait();
+			}
+		}
+	}
+
 	/// Series multiplier specifically tuned for Polynomials.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
@@ -88,15 +130,10 @@ namespace piranha
 						if (trunc.is_effective()) {
 							ll_perform_multiplication(trunc);
 						} else {
-							// NOTE: maybe here it is worth to sort them anyway, given the fact
-							// that ascending codes should still be beneficial for cache usage.
-							// We want to sort them this way if we are not truncating and
-							// coefficients are lightweight, in order to optimize cache memory usage
-							if (is_lightweight<cf_type1>::value) {
-								typedef typename ancestor::key_revlex_comparison key_revlex_comparison;
-								std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
-								std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
-							}
+							// Sort input series for better cache usage and multi-threaded implementation.
+							typedef typename ancestor::key_revlex_comparison key_revlex_comparison;
+							std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
+							std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
 							ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,ArgsTuple>(
 								this->m_terms1,this->m_terms2,this->m_args_tuple
 							));
@@ -105,8 +142,7 @@ namespace piranha
 				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc) {
-						// TODO: not sure this comment below is relevant anymore....
-						// TODO: these checks maybe should go earlier in order to avoid redoing truncator check in plain multiplication?
+						// TODO: move out lightweight check, drop getter complications.
 						if (!is_lightweight<cf_type1>::value || (this->m_terms1.size() < 10 && this->m_terms2.size() < 10)) {
 							__PDEBUG(std::cout << "Heavy coefficient or small series, "
 								"going for plain polynomial multiplication\n");
@@ -252,13 +288,24 @@ namespace piranha
 						cf_type1 *vc_res =  &vc[0] - this->m_h_min;
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1) * runtime::get_n_cur_threads())))) - 1);
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / sizeof(cf_type1)))) - 1);
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
-						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
-							vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
-						this->blocked_multiplication(block_size,size1,size2,vm);
+						typedef vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator> vf_type;
+						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
+						const std::size_t nthread = settings::get_nthread();
+						if (trunc.is_effective() || nthread == 1) {
+							this->blocked_multiplication(block_size,size1,size2,vm);
+						} else {
+std::cout << "using " << nthread << " threads\n";
+							boost::thread_group tg;
+							boost::barrier b(nthread);
+							for (std::size_t i = 0; i < nthread; ++i) {
+								tg.create_thread(boost::bind(threaded_vector_blocked_multiplication<vf_type>,block_size,size1,size2,i,nthread,&b,vm));
+							}
+							tg.join_all();
+						}
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
