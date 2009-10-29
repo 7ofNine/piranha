@@ -295,6 +295,7 @@ namespace piranha
 						typedef vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
+const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						if (trunc.is_effective() || nthread == 1) {
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
@@ -306,6 +307,7 @@ std::cout << "using " << nthread << " threads\n";
 							}
 							tg.join_all();
 						}
+std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
