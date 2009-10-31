@@ -34,7 +34,7 @@
 
 namespace piranha
 {
-	typedef counting_allocator<char,mt_allocator_char> gmp_allocator;
+	typedef std_counting_allocator<char> gmp_allocator;
 
 	extern "C" {
 	static inline void *gmp_alloc_func(std::size_t size)
@@ -45,6 +45,10 @@ namespace piranha
 
 	static inline void *gmp_realloc_func(void *ptr, std::size_t old_size, std::size_t new_size)
 	{
+		// Return the previous pointer if size does not change.
+		if (old_size == new_size) {
+			return ptr;
+		}
 		gmp_allocator a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
 		memcpy(retval, static_cast<void const *>(ptr), std::min<std::size_t>(old_size,new_size));

@@ -30,15 +30,12 @@
 
 #include "atomic_counters/atomic_counters.h" // For counting allocator.
 #include "base_classes/base_counting_allocator.h"
-#include "config.h" // For unlikely() and mt allocator.
+#include "config.h" // For unlikely().
 #include "exceptions.h"
 #include "settings.h"
 
 namespace piranha
 {
-	/// Multi_threaded allocator.
-	typedef mt_allocator_char__ mt_allocator_char;
-
 	/// An allocator that decorates another allocator by adding a counting mechanism for the number of allocated bytes.
 	template<class T, class Allocator>
 	class counting_allocator: public base_counting_allocator

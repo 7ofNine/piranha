@@ -32,19 +32,10 @@
 #error "The minimum GCC version required is 3.4"
 #endif
 
-// Multi-threaded memory allocator.
-#include <ext/mt_allocator.h>
-typedef __gnu_cxx::__mt_alloc<char> mt_allocator_char__;
-
 // Useful macros.
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 #else
-
-// Use standard allocator as mt allocator.
-
-#include <memory>
-typedef std::allocator<char> mt_allocator_char__;
 
 // Don't do anything special with (un)likely.
 #define likely(exp)   exp
