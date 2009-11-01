@@ -37,7 +37,6 @@
 #include "../integer_typedefs.h"
 #include "../mp.h"
 #include "../memory.h"
-#include "../runtime.h"
 #include "../settings.h" // For debug.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -287,7 +286,7 @@ namespace piranha
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_h_min, &vc_sin[0] - this->m_h_min);
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1) * runtime::get_n_cur_threads())))) - 1);
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1))))) - 1);
 						std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator>
@@ -428,7 +427,7 @@ namespace piranha
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm) * runtime::get_n_cur_threads())))) - 1);
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
 						std::cout << "Block size: " << block_size << '\n';
 						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>
 							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2,trunc,&res,args_tuple);

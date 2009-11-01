@@ -40,7 +40,6 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
-#include "../runtime.h"
 #include "../settings.h" // For debug and cache size.
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -389,7 +388,7 @@ namespace piranha
 						csht cms(size_hint);
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm) * runtime::get_n_cur_threads())))) - 1);
+							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 						cterm tmp_cterm;
 						hash_functor<cterm,CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator,csht>

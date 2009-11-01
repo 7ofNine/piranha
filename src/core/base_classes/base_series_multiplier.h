@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_MULTIPLIER_H
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
+#include <algorithm>
 #include <boost/thread/thread.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
@@ -163,16 +164,17 @@ namespace piranha
 				const ArgsTuple		&m_args_tuple;
 			};
 			struct plain_worker {
-				plain_worker(base_series_multiplier &mult,
-					std::vector<std::vector<term_type1 const *> > &split1,
-					std::vector<std::vector<term_type2 const *> > &split2,
-					Series1 &retval, const std::size_t &idx):
-					m_mult(mult),m_split1(split1),m_split2(split2),m_retval(retval),m_idx(idx)
+				plain_worker(base_series_multiplier &mult, Series1 &retval):
+					m_mult(mult),m_retval(retval),m_terms1(mult.m_terms1)
+				{}
+				plain_worker(base_series_multiplier &mult, Series1 &retval,
+					std::vector<std::vector<term_type1 const *> > &split1, const std::size_t &idx):
+					m_mult(mult),m_retval(retval),m_terms1(split1[idx])
 				{}
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_split1[m_idx],m_split2[m_idx],m_mult.m_args_tuple);
+					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_terms1,m_mult.m_terms2,m_mult.m_args_tuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
 					if (trunc.is_effective()) {
@@ -180,7 +182,7 @@ namespace piranha
 					} else {
 						plain_implementation(
 							null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-							m_split1[m_idx],m_split2[m_idx],m_mult.m_args_tuple
+							m_terms1,m_mult.m_terms2,m_mult.m_args_tuple
 							)
 						);
 					}
@@ -190,9 +192,9 @@ namespace piranha
 				{
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
-					const std::size_t size1 = m_split1[m_idx].size(), size2 = m_mult.m_size2;
-					const term_type1 **t1 = &m_split1[m_idx][0];
-					const term_type2 **t2 = &m_split2[m_idx][0];
+					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_size2;
+					const term_type1 **t1 = &m_terms1[0];
+					const term_type2 **t2 = &m_mult.m_terms2[0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
 					const std::size_t block_size = 2 << (
 							(std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) /
@@ -200,22 +202,18 @@ namespace piranha
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
 				base_series_multiplier				&m_mult;
-				std::vector<std::vector<term_type1 const *> >	&m_split1;
-				std::vector<std::vector<term_type2 const *> >	&m_split2;
 				Series1						&m_retval;
-				const std::size_t				m_idx;
+				std::vector<term_type1 const *>			&m_terms1;
 			};
 			// Threaded multiplication.
 			void perform_plain_threaded_multiplication()
 			{
-				std::vector<std::vector<term_type1 const *> > split1;
-				std::vector<std::vector<term_type2 const *> > split2;
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
 				// TODO: testing to see which number should go here. Maybe test with small poly multiplication and see how many of them we
 				// can do per second with the best possible scenario (double coefficients, integer exponents, vector coded) and compare to how
 				// many threads we can generate per second with little overhead.
 				std::size_t n;
-				if (double(m_size1) * double(m_size2) < 400) {
+				if (double(m_size1) * double(m_size2) < 2500) {
 					n = 1;
 				} else {
 					// If size1 is less than the number of desired threads,
@@ -226,13 +224,10 @@ namespace piranha
 				// In case of multiple threads, we want to make copies of input series, in order to improve cache memory utilization.
 				// For single thread, this is not needed.
 				if (n == 1) {
-					split1.push_back(m_terms1);
-					split2.push_back(m_terms2);
-					plain_worker w(*derived_cast,split1,split2,m_retval,0);
+					plain_worker w(*derived_cast,m_retval);
 					w();
 				} else {
-					split1.resize(n);
-					split2.insert(split2.end(),n,m_terms2);
+					std::vector<std::vector<term_type1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
 					const std::size_t m = m_size1 / n;
 					// Iterate up to n - 1 because that's the number up to which we can divide series1 into
@@ -242,20 +237,16 @@ namespace piranha
 					}
 					// Last iteration.
 					split1[n - 1].insert(split1[n - 1].end(),m_terms1.begin() + (n - 1) * m, m_terms1.end());
-std::cout << "Going threaded\n";
 					boost::thread_group tg;
 					std::vector<Series1> retvals(n,Series1());
 					for (std::size_t i = 0; i < n; ++i) {
-						tg.create_thread(plain_worker(*derived_cast,split1,split2,retvals[i],i));
+						tg.create_thread(plain_worker(*derived_cast,retvals[i],split1,i));
 					}
-std::cout << "joining\n";
 					tg.join_all();
-std::cout << "joined\n";
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i) {
 						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_args_tuple);
 					}
-std::cout << "inserted\n";
 				}
 			}
 		public:
