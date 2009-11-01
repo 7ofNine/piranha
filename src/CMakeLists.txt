@@ -9,7 +9,6 @@ SET(SRC_LIST ${SRC_LIST}
 	memory.cpp
 	settings.cpp
 	psym.cpp
-	runtime.cpp
 )
 
 ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)

@@ -290,16 +290,15 @@ namespace piranha
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / sizeof(cf_type1)))) - 1);
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
-						std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						typedef vector_functor<CfGetter,TermOrCf1,TermOrCf2,max_fast_int,GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
-const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-						if (trunc.is_effective() || nthread == 1) {
+//const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+						if (trunc.is_effective() || (this->m_size1 * this->m_size2) <= 400 || nthread == 1) {
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
-std::cout << "using " << nthread << " threads\n";
+//std::cout << "using " << nthread << " threads\n";
 							boost::thread_group tg;
 							boost::barrier b(nthread);
 							for (std::size_t i = 0; i < nthread; ++i) {
@@ -307,7 +306,7 @@ std::cout << "using " << nthread << " threads\n";
 							}
 							tg.join_all();
 						}
-std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+//std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
