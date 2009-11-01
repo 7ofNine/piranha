@@ -29,7 +29,7 @@
 #include <cmath>
 #include <cstddef>
 #include <exception>
-#include <memory>
+#include <memory> // Drop this when we declate csht with counting allocator externally.
 #include <utility> // For std::pair.
 #include <vector>
 
