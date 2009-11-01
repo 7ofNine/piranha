@@ -201,32 +201,23 @@ namespace piranha
 							((sizeof(term_type1) + sizeof(term_type2) + boost::tuples::length<mult_res>::value * sizeof(term_type1)))))) - 1);
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
-				base_series_multiplier				&m_mult;
-				Series1						&m_retval;
-				std::vector<term_type1 const *>			&m_terms1;
+				base_series_multiplier		&m_mult;
+				Series1				&m_retval;
+				std::vector<term_type1 const *>	&m_terms1;
 			};
 			// Threaded multiplication.
 			void perform_plain_threaded_multiplication()
 			{
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
-				// TODO: testing to see which number should go here. Maybe test with small poly multiplication and see how many of them we
-				// can do per second with the best possible scenario (double coefficients, integer exponents, vector coded) and compare to how
-				// many threads we can generate per second with little overhead.
-				std::size_t n;
+				// NOTE: here the number 2500 is a kind of rule-of thumb. Basically multiplications of series < 50 elements
+				// will use just one thread.
 				if (double(m_size1) * double(m_size2) < 2500) {
-					n = 1;
-				} else {
-					// If size1 is less than the number of desired threads,
-					// use size1 as number of threads.
-					n = std::min(settings::get_nthread(),m_size1);
-				}
-				piranha_assert(n > 0);
-				// In case of multiple threads, we want to make copies of input series, in order to improve cache memory utilization.
-				// For single thread, this is not needed.
-				if (n == 1) {
 					plain_worker w(*derived_cast,m_retval);
 					w();
 				} else {
+					// If size1 is less than the number of desired threads,
+					// use size1 as number of threads.
+					const std::size_t n = std::min(settings::get_nthread(),m_size1);
 					std::vector<std::vector<term_type1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
 					const std::size_t m = m_size1 / n;
