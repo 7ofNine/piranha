@@ -103,26 +103,27 @@ namespace piranha
 				const PosTuple &m_pos_tuple;
 			};
 		public:
-			template <class Multiplier>
+			template <class Series1, class Series2, class ArgsTuple>
 			class get_type
 			{
 					typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
-						boost::tuples::length<typename Multiplier::args_tuple_type>::value>::type
+						boost::tuples::length<ArgsTuple>::value>::type
 						pos_tuple_type;
-					static const int expo_term_pos = Multiplier::series_type1::expo_term_position;
-					static const int expo_args_pos = Multiplier::series_type1::expo_args_position;
+					static const int expo_term_pos = Series1::expo_term_position;
+					static const int expo_args_pos = Series1::expo_args_position;
 				public:
+					typedef typename Series1::term_type term_type1;
+					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
-					get_type(Multiplier &m, bool initialise = true): m_multiplier(m)
+					get_type(std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const ArgsTuple &args_tuple, bool initialise = true):
+						m_t1(t1),m_t2(t2),m_args_tuple(args_tuple)
 					{
 						// Some static checks.
-						p_static_check(Multiplier::series_type1::expo_args_position ==
-									   Multiplier::series_type2::expo_args_position, "");
-						p_static_check(Multiplier::series_type1::expo_term_position ==
-									   Multiplier::series_type2::expo_term_position, "");
+						p_static_check(Series1::expo_args_position == Series2::expo_args_position, "");
+						p_static_check(Series1::expo_term_position == Series2::expo_term_position, "");
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (m_mode == p_deg) {
-							m_pos_tuple = psyms2pos(m_psyms,m_multiplier.m_args_tuple);
+							m_pos_tuple = psyms2pos(m_psyms,m_args_tuple);
 						}
 						if (initialise) {
 							init();
@@ -133,8 +134,7 @@ namespace piranha
 					{
 						return true;
 					}
-					template <class Term1, class Term2>
-					bool skip(const Term1 **t1, const Term2 **t2) const
+					bool skip(const term_type1 **t1, const term_type2 **t2) const
 					{
 						switch (m_mode) {
 							case deg:
@@ -154,9 +154,9 @@ namespace piranha
 					// Number of a iterations of a power series development of a power series.
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
-					template <class PowerSeries, class ArgsTuple>
+					template <class PowerSeries, class ArgsTuple2>
 					static std::size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
-						const ArgsTuple &args_tuple)
+						const ArgsTuple2 &args_tuple)
 					{
 						if (step_size < 1) {
 							piranha_throw(value_error,"please use a step size of at least 1");
@@ -211,8 +211,8 @@ namespace piranha
 							return 0;
 						}
 					}
-					template <class Series, class ArgsTuple>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
+					template <class Series, class ArgsTuple2>
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
 						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
 						switch (m_mode) {
@@ -222,7 +222,7 @@ namespace piranha
 							case p_deg:
 								{
 								typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
-									boost::tuples::length<ArgsTuple>::value>::type pos_tuple_type;
+									boost::tuples::length<ArgsTuple2>::value>::type pos_tuple_type;
 								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
 								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) {
 									std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
@@ -257,16 +257,16 @@ namespace piranha
 					{
 						switch (m_mode) {
 							case deg:
-								std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(), order_comparison<expo_term_pos>());
-								std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(), order_comparison<expo_term_pos>());
+								std::sort(m_t1.begin(), m_t1.end(), order_comparison<expo_term_pos>());
+								std::sort(m_t2.begin(), m_t2.end(), order_comparison<expo_term_pos>());
 								break;
 							case p_deg:
 								// We need to do the sorting only if the position tuple
 								// contains some elements.
 								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) {
-									std::sort(m_multiplier.m_terms1.begin(), m_multiplier.m_terms1.end(),
+									std::sort(m_t1.begin(), m_t1.end(),
 										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
-									std::sort(m_multiplier.m_terms2.begin(), m_multiplier.m_terms2.end(),
+									std::sort(m_t2.begin(), m_t2.end(),
 										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
 								}
 								break;
@@ -275,8 +275,10 @@ namespace piranha
 						}
 					}
 				private:
-					Multiplier		&m_multiplier;
-					pos_tuple_type		m_pos_tuple;
+					std::vector<term_type1 const *>	&m_t1;
+					std::vector<term_type2 const *>	&m_t2;
+					const ArgsTuple			&m_args_tuple;
+					pos_tuple_type			m_pos_tuple;
 			};
 			static void set(const int &);
 			static void set(const mp_rational &);

@@ -110,10 +110,8 @@ class atomic_counter_msvc_long
 		{
 			return InterlockedExchangeAdd(&m_value,0);
 		}
-		/// Fast type-trait for increment operation.
-		static const bool is_increment_fast = true;
-		/// Fast type-trait for arithmetics.
-		static const bool is_arithmetics_fast = true;
+		/// Fast type-trait.
+		static const bool is_fast = true;
 	private:
 		/// Internal value.
 		/**

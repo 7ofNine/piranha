@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
+#include "../src/manipulators/qqpoly.h"
 
 // Fateman's polynomial multiplication test number 1. Calculate:
 // s*(s+1)
@@ -26,14 +26,15 @@
 
 using namespace piranha;
 using namespace piranha::manipulators;
-typedef dpoly poly;
+typedef qqpoly poly;
 
 int main()
 {
 //settings::debug(true);
+settings::set_nthread(2);
   psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
-  a = std::pow(a,30);
+  a = std::pow(a,10);
   poly c(a);
   c+=1;
   a*=c;

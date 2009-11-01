@@ -36,9 +36,11 @@
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
 #else
+
 // Don't do anything special with (un)likely.
 #define likely(exp)   exp
 #define unlikely(exp) exp
+
 #endif
 
 // Platform switches.

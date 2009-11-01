@@ -37,18 +37,21 @@ namespace truncators
 	class power_series
 	{
 		public:
-			template <class Multiplier>
+			template <class Series1, class Series2, class ArgsTuple>
 			class get_type:
-				public degree::template get_type<Multiplier>,
-				public norm::template get_type<Multiplier>
+				public degree::template get_type<Series1,Series2,ArgsTuple>,
+				public norm::template get_type<Series1,Series2,ArgsTuple>
 			{
-					typedef typename degree::template get_type<Multiplier> degree_ancestor;
-					typedef typename norm::template get_type<Multiplier> norm_ancestor;
+					typedef typename degree::template get_type<Series1,Series2,ArgsTuple> degree_ancestor;
+					typedef typename norm::template get_type<Series1,Series2,ArgsTuple> norm_ancestor;
 					enum selected_truncator {deg_t, norm_t, null_t};
 				public:
 					typedef get_type type;
-					get_type(Multiplier &m):degree_ancestor(m,false),
-						norm_ancestor(m,false),m_active_truncator(deg_t) {
+					typedef typename Series1::term_type term_type1;
+					typedef typename Series2::term_type term_type2;
+					get_type(std::vector<term_type1 const *> &terms1, std::vector<term_type2 const *> &terms2, const ArgsTuple &args_tuple):
+						degree_ancestor(terms1,terms2,args_tuple,false),norm_ancestor(terms1,terms2,args_tuple,false),m_active_truncator(deg_t)
+					{
 						degree_ancestor::init();
 						if (!degree_ancestor::is_effective()) {
 							norm_ancestor::init();
@@ -61,9 +64,9 @@ namespace truncators
 							m_active_truncator = deg_t;
 						}
 					}
-					template <class T, class ArgsTuple>
+					template <class T, class ArgsTuple2>
 					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
-						const ArgsTuple &args_tuple) {
+						const ArgsTuple2 &args_tuple) {
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");
 						try {
@@ -80,8 +83,8 @@ namespace truncators
 						}
 						piranha_throw(value_error,msg);
 					}
-					template <class Series, class ArgsTuple>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple &args_tuple)
+					template <class Series, class ArgsTuple2>
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
 						std::string msg("The power series truncator was not able to establish a series ordering. The reported errors were:\n");
 						try {

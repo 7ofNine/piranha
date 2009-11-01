@@ -31,31 +31,37 @@ namespace piranha
 	class null_truncator
 	{
 		public:
-			template <class Multiplier>
+			template <class Series1, class Series2, class ArgsTuple>
 			class get_type
 			{
 				public:
+					typedef typename Series1::term_type term_type1;
+					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
-					get_type(const Multiplier &) {}
+					get_type(std::vector<term_type1 const *> &, std::vector<term_type2 const *> &, const ArgsTuple &) {}
 					template <class Result>
-					bool accept(const Result &) const {
+					bool accept(const Result &) const
+					{
 						return true;
 					}
 					template <class Term1, class Term2>
-					bool skip(const Term1 &, const Term2 &) const {
+					bool skip(const Term1 &, const Term2 &) const
+					{
 						return false;
 					}
 					// Limit of a power series development of a power series.
-					template <class Series, class ArgsTuple>
-					static size_t power_series_iterations(const Series &, const int &, const int &, const ArgsTuple &) {
+					template <class Series, class ArgsTuple2>
+					static size_t power_series_iterations(const Series &, const int &, const int &, const ArgsTuple2 &)
+					{
 						piranha_throw(value_error,"null truncator cannot provide number of iterations for power series");
 					}
-					bool is_effective() const {
+					bool is_effective() const
+					{
 						return false;
 					}
 			};
-			template <class Series, class ArgsTuple>
-			static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &, const ArgsTuple &)
+			template <class Series, class ArgsTuple2>
+			static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &, const ArgsTuple2 &)
 			{
 				piranha_throw(value_error,"null truncator cannot order series");
 			}

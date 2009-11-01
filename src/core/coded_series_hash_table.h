@@ -68,6 +68,8 @@ namespace piranha
 			p_static_check(min_size_index >= 0, "min_size_index must be non-negative.");
 		public:
 			typedef T key_type;
+			// NOTE: maybe here we should not blindly rebind to counting allocator, but instead
+			// allow to do it from outside (so that the behaviour of this class is transparent).
 			typedef counting_allocator<bucket_type,Allocator> allocator_type;
 			class iterator
 			{

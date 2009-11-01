@@ -123,14 +123,14 @@ namespace piranha
 	inline void normal_check(const double &x)
 	{
 		if (!boost::math::isfinite(x)) {
-			piranha_throw(value_error,"floating-point value is not normal");
+			piranha_throw(std::runtime_error,"non-finite floating-point number cannot interact with mp types");
 		}
 	}
 
 	inline void normal_check(const std::complex<double> &c)
 	{
 		if (!boost::math::isfinite(c.real()) || !boost::math::isfinite(c.imag())) {
-			piranha_throw(value_error,"complex floating-point value is not normal");
+			piranha_throw(std::runtime_error,"complex non-finite floating-point number cannot interact with mp types");
 		}
 	}
 }

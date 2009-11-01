@@ -34,16 +34,22 @@
 
 namespace piranha
 {
+	typedef std_counting_allocator<char> gmp_allocator;
+
 	extern "C" {
 	static inline void *gmp_alloc_func(std::size_t size)
 	{
-		std_counting_allocator<char> a;
+		gmp_allocator a;
 		return static_cast<void *>(a.allocate(size));
 	}
 
 	static inline void *gmp_realloc_func(void *ptr, std::size_t old_size, std::size_t new_size)
 	{
-		std_counting_allocator<char> a;
+		// Return the previous pointer if size does not change.
+		if (old_size == new_size) {
+			return ptr;
+		}
+		gmp_allocator a;
 		void *retval = static_cast<void *>(a.allocate(new_size));
 		memcpy(retval, static_cast<void const *>(ptr), std::min<std::size_t>(old_size,new_size));
 		a.deallocate(static_cast<char *>(ptr),old_size);
@@ -52,7 +58,7 @@ namespace piranha
 
 	static inline void gmp_free_func(void *ptr, std::size_t size)
 	{
-		std_counting_allocator<char> a;
+		gmp_allocator a;
 		a.deallocate(static_cast<char *>(ptr),size);
 	}
 	}
@@ -87,7 +93,7 @@ namespace piranha
 	settings::startup_class::startup_class()
 	{
 		// Some static checks.
-		p_static_check(sizeof(char) == 1, "Wrong char size.");
+		// This is because somewhere we use chars as bools.
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
@@ -109,8 +115,17 @@ namespace piranha
 			"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
 #endif
 		m_path = m_default_path;
+		// Setup number of threads.
+		const std::size_t nthread = boost::thread::hardware_concurrency();
+		if (!nthread) {
+			std::cout << "Unable to detect automatically the number of hardware threads, setting value to 1.\n";
+			set_nthread(1);
+		} else {
+			set_nthread(nthread);
+		}
 		// Startup report.
 		std::cout << "Piranha version: " << m_version << '\n';
+		std::cout << "Number of hardware threads: " << get_nthread() << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
@@ -118,8 +133,6 @@ namespace piranha
 		settings::setup_stream(std::cout);
 		// Setup GMP's memory allocation functions.
 		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
-		// Setup number of threads.
-		set_nthread(boost::thread::hardware_concurrency());
 	}
 
 	/// Set path to theories of motion.

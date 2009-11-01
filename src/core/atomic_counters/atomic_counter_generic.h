@@ -134,15 +134,13 @@ class atomic_counter_generic
 			lock_type lock(m_mutex);
 			return m_value;
 		}
-		/// Fast type-trait for increment operation.
-		static const bool is_increment_fast = false;
-		/// Fast type-trait for arithmetics.
-		static const bool is_arithmetics_fast = false;
+		/// Fast type-trait.
+		static const bool is_fast = false;
 	private:
 		/// Internal value.
 		IntType					m_value;
 		/// Mutex.
-		mutable boost::mutex	m_mutex;
+		mutable boost::mutex			m_mutex;
 };
 
 #endif

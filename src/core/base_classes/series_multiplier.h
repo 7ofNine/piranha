@@ -22,7 +22,6 @@
 #define PIRANHA_SERIES_MULTIPLIER_H
 
 #include "../base_classes/base_series_multiplier.h"
-#include "../base_classes/null_truncator.h"
 
 namespace piranha
 {
@@ -39,30 +38,17 @@ namespace piranha
 					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
 						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 				public:
+					// TODO: which of these are needed? Cleanup also elsewhere when parallel is implemented.
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
 					typedef ArgsTuple args_tuple_type;
-					typedef typename Truncator::template get_type<get_type> truncator_type;
+					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):ancestor(s1, s2, retval, args_tuple)
 					{}
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
-						// Build the truncator.
-						const truncator_type trunc(*this);
-						// Use the selected truncator only if it really truncates, otherwise use the
-						// null truncator.
-						if (trunc.is_effective()) {
-							ll_perform_multiplication(trunc);
-						} else {
-							ll_perform_multiplication(null_truncator::template get_type<get_type>(*this));
-						}
-					}
-				private:
-					template <class GenericTruncator>
-					void ll_perform_multiplication(const GenericTruncator &trunc)
-					{
-						this->perform_plain_multiplication(trunc);
+						this->perform_plain_multiplication();
 					}
 			};
 	};
