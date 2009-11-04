@@ -24,7 +24,6 @@
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
 #include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
 #include <cstddef>
-#include <cstdlib> // NOTE: remove when posix_memalign and free() are abstracted.
 #include <stdexcept>
 #include <memory>
 
@@ -36,8 +35,11 @@
 
 namespace piranha
 {
-	/// An allocator that decorates another allocator by adding a counting mechanism for the number of allocated bytes.
-	template<class T, class Allocator>
+	/// STL-compatible allocator that decorates an existing allocator by adding a counting mechanism for the number of allocated bytes.
+	/**
+	 * The counting mechanism is thread-safe through the use of atomic operations.
+	 */
+	template <class T, class Allocator>
 	class counting_allocator: public base_counting_allocator
 	{
 			typedef typename Allocator::template rebind<T>::other alloc;
@@ -115,78 +117,6 @@ namespace piranha
 
 	template <class T>
 	class std_counting_allocator: public counting_allocator<T,std::allocator<char> > {};
-
-	/// An allocator that aligns data according to the specified value.
-	template<class T, int Alignment>
-	class align_allocator
-	{
-			p_static_check(Alignment >= 16, "Invalid memory alignment value.");
-		public:
-			typedef std::size_t size_type;
-			typedef std::ptrdiff_t difference_type;
-			typedef T* pointer;
-			typedef const T* const_pointer;
-			typedef T& reference;
-			typedef const T& const_reference;
-			typedef T value_type;
-			template <class U>
-			struct rebind {
-				typedef align_allocator<U,Alignment> other;
-			};
-			align_allocator() {}
-			align_allocator(const align_allocator &) {}
-			template <class U>
-			align_allocator(const align_allocator<U,Alignment> &) {}
-			~align_allocator() {}
-			pointer address(reference x)
-			{
-				return &x;
-			}
-			const_pointer address(const_reference x) const
-			{
-				return &x;
-			}
-			pointer allocate(const size_type &n, const void * = 0)
-			{
-				if (unlikely(n > max_size())) {
-					throw std::bad_alloc();
-				}
-				pointer ret;
-				const int res = posix_memalign((void **)(&ret),static_cast<std::size_t>(Alignment),n * sizeof(T));
-				if (unlikely(res)) {
-					throw std::bad_alloc();
-				}
-				return ret;
-			}
-			void deallocate(pointer p, const size_type &)
-			{
-				std::free(static_cast<void *>(p));
-			}
-			size_type max_size() const
-			{
-				return boost::integer_traits<size_type>::const_max / sizeof(value_type);
-			}
-			void construct(pointer p, const value_type &val)
-			{
-				::new((void *)p) value_type(val);
-			}
-			void destroy(pointer p)
-			{
-				p->~T();
-			}
-	};
-
-	template<class T, int Alignment>
-	inline bool operator==(const align_allocator<T,Alignment> &, const align_allocator<T,Alignment> &)
-	{
-		return true;
-	}
-
-	template<class T, int Alignment>
-	inline bool operator!=(const align_allocator<T,Alignment> &, const align_allocator<T,Alignment> &)
-	{
-		return false;
-	}
 }
 
 #endif
