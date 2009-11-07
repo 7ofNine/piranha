@@ -117,24 +117,12 @@ BOOST_PYTHON_MODULE(_Core)
 	.value("decimal", settings::decimal)
 	.export_values();
 
-	typedef bool (*bool_get)();
-	typedef void (*bool_set)(const bool &);
-	typedef std::size_t (*size_t_get)();
-	typedef void (*size_t_set)(const std::size_t &);
-	typedef double (*double_get)();
-	typedef void (*double_set)(const double &);
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
-	class_setm.add_static_property("debug", bool_get(&settings::debug), bool_set(&settings::debug));
-	class_setm.add_static_property("used_memory", &settings::used_memory, "Amount of used memory in bytes.");
-	class_setm.add_static_property("memory_limit", size_t_get(&settings::memory_limit),
-		size_t_set(&settings::memory_limit));
-	class_setm.add_static_property("load_factor", make_function(&settings::get_load_factor,return_value_policy<copy_const_reference>()),
-		&settings::set_load_factor);
-	typedef void (*digits_set)(const int &);
-	class_setm.add_static_property("digits", size_t_get(&settings::digits), digits_set(&settings::digits));
-	typedef settings::fp_representation (*fp_repr_get)();
-	typedef void (*fp_repr_set)(settings::fp_representation);
-	class_setm.add_static_property("fp_repr", fp_repr_get(&settings::fp_repr), fp_repr_set(&settings::fp_repr));
+	class_setm.add_static_property("debug", &settings::get_debug, &settings::set_debug);
+	class_setm.add_static_property("used_memory", &settings::get_used_memory, "Amount of used memory in bytes.");
+	class_setm.add_static_property("memory_limit", &settings::get_memory_limit, &settings::set_memory_limit);
+	class_setm.add_static_property("digits", &settings::get_digits, &settings::set_digits);
+	class_setm.add_static_property("fp_repr", &settings::get_fp_repr, &settings::set_fp_repr);
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
 	class_setm.add_static_property("nthread", make_function(&settings::get_nthread,return_value_policy<copy_const_reference>()),
 		&settings::set_nthread);

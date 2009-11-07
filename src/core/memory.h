@@ -72,7 +72,7 @@ namespace piranha
 			pointer allocate(const size_type &n, const void *hint = 0)
 			{
 				const std::size_t add = n * sizeof(value_type), cur = m_counter.get_value(),
-					l = settings::memory_limit();
+					l = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
 				if (unlikely(add > l || cur > l - add)) {

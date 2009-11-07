@@ -75,13 +75,11 @@ namespace piranha
 
 	// Settings' static members.
 	std::size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
-	double settings::m_hash_max_load_factor = 1;
 	double settings::m_numerical_zero;
 	std::string settings::m_default_path;
 	std::string settings::m_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
-	bool settings::enable_progress_display = true;
 	std::size_t settings::m_digits;
 	settings::fp_representation settings::m_fp_repr = settings::scientific;
 	const std::size_t settings::cache_size;
@@ -142,32 +140,32 @@ namespace piranha
 	}
 
 	/// Get version.
-	const std::string &settings::version()
+	const std::string &settings::get_version()
 	{
 		return m_version;
 	}
 
-	std::size_t settings::digits()
+	std::size_t settings::get_digits()
 	{
 		return m_digits;
 	}
 
-	std::size_t settings::min_digits()
+	std::size_t settings::get_min_digits()
 	{
 		return m_min_digits;
 	}
 
-	std::size_t settings::max_digits()
+	std::size_t settings::get_max_digits()
 	{
 		return m_max_digits;
 	}
 
-	void settings::fp_repr(fp_representation fpr)
+	void settings::set_fp_repr(fp_representation fpr)
 	{
 		m_fp_repr = fpr;
 	}
 
-	settings::fp_representation settings::fp_repr()
+	settings::fp_representation settings::get_fp_repr()
 	{
 		return m_fp_repr;
 	}

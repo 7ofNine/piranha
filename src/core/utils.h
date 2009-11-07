@@ -87,7 +87,7 @@ namespace piranha
 					// Clear ifstream's state (it is done automatically on close() on Linux, but not on
 					// Windows).
 					inf.clear();
-					filename = (settings::path() + std::string("/") + filename);
+					filename = (settings::get_path() + std::string("/") + filename);
 					inf.open(filename.c_str(), std::ios::in | std::ios::binary);
 					if (inf.fail()) {
 						std::cout << "Error opening file \"" << fn << "\"." << std::endl;

@@ -45,34 +45,36 @@ namespace piranha
 				scientific,
 				decimal
 			};
-			static std::size_t used_memory() {
+			static std::size_t get_used_memory()
+			{
 				return base_counting_allocator::count();
 			}
-			static std::size_t memory_limit() {
+			static std::size_t get_memory_limit()
+			{
 				return m_memory_limit;
 			}
-			static void memory_limit(const std::size_t &limit) {
+			static void set_memory_limit(const std::size_t &limit)
+			{
 				m_memory_limit = limit;
 			}
-			/// Return maximum load factor for hashed containers.
-			static const double &get_load_factor() {
-				return m_hash_max_load_factor;
-			}
 			// Getters.
-			/// Get numerical zero.
-			static const double &numerical_zero() {
-				return m_numerical_zero;
-			}
 			/// Get path to theories of motion files.
-			static const std::string &path() {
+			static const std::string &get_path()
+			{
 				return m_path;
 			}
 			/// Get debug flag.
-			static bool debug() {
+			static bool get_debug()
+			{
 				return m_debug;
 			}
+			static const double &get_numerical_zero()
+			{
+				return m_numerical_zero;
+			}
 			/// Set debug flag.
-			static void debug(const bool &flag) {
+			static void set_debug(const bool &flag)
+			{
 #ifndef NDEBUG
 				m_debug = flag;
 #else
@@ -81,33 +83,22 @@ namespace piranha
 #endif
 			}
 			/// Get Piranha version.
-			static const std::string &version();
-			/// Set maximum load factor for hashed containers.
-			/**
-			 * @see settings::load_factor().
-			 */
-			static void set_load_factor(const double &value) {
-				if (value <= 0 || value >= 1) {
-					piranha_throw(value_error,"please insert a real number "
-						"in the ]0,1[ interval");
-				}
-				m_hash_max_load_factor = value;
-			}
+			static const std::string &get_version();
 			static void set_path(const std::string &);
 			// Getters and setters for I/O.
-			static std::size_t digits();
-			static void digits(const int &n) {
+			static std::size_t get_digits();
+			static void set_digits(const int &n) {
 				if (n < static_cast<int>(m_min_digits) || n > static_cast<int>(m_max_digits)) {
 					piranha_throw(value_error,"invalid number of digits");
 				} else {
 					m_digits = static_cast<std::size_t>(n);
 				}
 			}
-			static std::size_t min_digits();
-			static std::size_t max_digits();
+			static std::size_t get_min_digits();
+			static std::size_t get_max_digits();
 			static void setup_stream(std::ostream &);
-			static fp_representation fp_repr();
-			static void fp_repr(fp_representation);
+			static fp_representation get_fp_repr();
+			static void set_fp_repr(fp_representation);
 			/// Cache size in kilobytes.
 			static const std::size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
@@ -129,8 +120,6 @@ namespace piranha
 			static std::size_t		m_max_pretty_print_size;
 			/// Memory limit in bytes.
 			static std::size_t		m_memory_limit;
-			/// Load factor for hashed containers.
-			static double			m_hash_max_load_factor;
 			/// Numerical zero.
 			static double			m_numerical_zero;
 			/// Path to theories of motion.
@@ -138,7 +127,6 @@ namespace piranha
 			static std::string		m_default_path;
 			static bool			m_debug;
 			static const std::string	m_version;
-			static bool			enable_progress_display;
 			static startup_class		startup;
 			/// Minimum number of digits for output streams.
 			static const std::size_t	m_min_digits = 0;

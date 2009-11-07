@@ -21,6 +21,8 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_H
 #define PIRANHA_NUMERICAL_CONTAINER_H
 
+#include <algorithm>
+#include <cmath>
 #include <complex>
 #include <cstddef>
 #include <iostream>
@@ -56,46 +58,6 @@ namespace piranha
 	template <class T, class U>
 	struct in_place_transform {
 		static const U &run(const U &u)
-		{
-			return u;
-		}
-	};
-
-	template <class U>
-	struct in_place_transform<double,U> {
-		static double run(const U &u)
-		{
-			return u.to_double();
-		}
-	};
-
-	template <>
-	struct in_place_transform<double,double> {
-		static const double &run(const double &u)
-		{
-			return u;
-		}
-	};
-
-	template <class U>
-	struct in_place_transform<std::complex<double>,U> {
-		static std::complex<double> run(const U &u)
-		{
-			return u.to_double();
-		}
-	};
-
-	template <>
-	struct in_place_transform<std::complex<double>,std::complex<double> > {
-		static const std::complex<double> &run(const std::complex<double> &u)
-		{
-			return u;
-		}
-	};
-
-	template <>
-	struct in_place_transform<std::complex<double>,double> {
-		static const double &run(const double &u)
 		{
 			return u;
 		}
@@ -179,7 +141,7 @@ namespace piranha
 			/// Trim.
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const {
-				return Derived(*derived_const_cast);
+				return *derived_const_cast;
 			}
 			/// Split.
 			template <class Series, class ArgsTuple>
@@ -198,11 +160,11 @@ namespace piranha
 			}
 			/// Test for ignorability.
 			/**
-			 * Returns true if norm() is less than settings::numerical_zero().
+			 * Returns true if norm() is less than settings::get_numerical_zero().
 			 */
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &a) const {
-				return (static_cast<Derived const *>(this)->norm(a) < settings::numerical_zero());
+				return (derived_const_cast->norm(a) < settings::get_numerical_zero());
 			}
 			/// Insertability test. Returns true.
 			template <class ArgsTuple>

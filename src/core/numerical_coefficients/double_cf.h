@@ -35,6 +35,46 @@
 
 namespace piranha
 {
+	template <class U>
+	struct in_place_transform<double,U> {
+		static double run(const U &u)
+		{
+			return u.to_double();
+		}
+	};
+
+	template <>
+	struct in_place_transform<double,double> {
+		static const double &run(const double &u)
+		{
+			return u;
+		}
+	};
+
+	template <class U>
+	struct in_place_transform<std::complex<double>,U> {
+		static std::complex<double> run(const U &u)
+		{
+			return u.to_double();
+		}
+	};
+
+	template <>
+	struct in_place_transform<std::complex<double>,std::complex<double> > {
+		static const std::complex<double> &run(const std::complex<double> &u)
+		{
+			return u;
+		}
+	};
+
+	template <>
+	struct in_place_transform<std::complex<double>,double> {
+		static const double &run(const double &u)
+		{
+			return u;
+		}
+	};
+
 	/// Double-precision numerical coefficient.
 	/**
 	 * This class is meant to be used as coefficient in series. It encapsulate a double precision
