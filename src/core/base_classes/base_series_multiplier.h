@@ -64,19 +64,11 @@ namespace piranha
 						return (t1->m_key.revlex_comparison(t2->m_key));
 					}
 			};
-			template <class Cf>
-			struct cf_from_term {
-				template <class Term>
-				static const Cf &get(const Term *t)
-				{
+			template <class Term>
+			struct ptr_cf_extractor
+			{
+				const typename Term::cf_type &operator()(const Term *t) {
 					return t->m_cf;
-				}
-			};
-			template <class Cf>
-			struct cf_direct {
-				static const Cf &get(const Cf &c)
-				{
-					return c;
 				}
 			};
 			template <class Functor>

@@ -29,6 +29,7 @@
 #include <cmath>
 #include <cstddef>
 #include <exception>
+#include <iterator>
 #include <memory> // Drop this when we declare csht with counting allocator externally.
 #include <utility> // For std::pair.
 #include <vector>
@@ -123,8 +124,8 @@ namespace piranha
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
-						// NOTE: hard coded value of 100.
-						if (!is_lightweight<cf_type1>::value || double(this->m_size1) * double(this->m_size2) < 100) {
+						// NOTE: hard coded value of 1000.
+						if (!is_lightweight<cf_type1>::value || double(this->m_size1) * double(this->m_size2) < 1000) {
 							__PDEBUG(std::cout << "Heavy coefficient or small polynomials, "
 								"going for plain polynomial multiplication\n");
 							this->perform_plain_multiplication();
@@ -160,18 +161,14 @@ namespace piranha
 						this->code_keys();
 						const term_type1 **t1 = &this->m_terms1[0];
 						const term_type2 **t2 = &this->m_terms2[0];
+						// Cache the coefficients.
+						// NOTE: c++0x lambdas here.
 						std::vector<cf_type1> cf1_cache;
 						std::vector<cf_type2> cf2_cache;
-						// Cache the values.
-						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
-						cf1_cache.reserve(size1);
-						cf2_cache.reserve(size2);
-						for (std::size_t i = 0; i < size1; ++i) {
-							cf1_cache.push_back(t1[i]->m_cf);
-						}
-						for (std::size_t i = 0; i < size2; ++i) {
-							cf2_cache.push_back(t2[i]->m_cf);
-						}
+						std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
+						std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
+						std::transform(this->m_terms1.begin(),this->m_terms1.end(),i_it1,typename ancestor::template ptr_cf_extractor<term_type1>());
+						std::transform(this->m_terms2.begin(),this->m_terms2.end(),i_it2,typename ancestor::template ptr_cf_extractor<term_type2>());
 						bool vec_res;
 						if (this->is_sparse()) {
 							vec_res = false;
