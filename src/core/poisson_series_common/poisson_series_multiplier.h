@@ -269,7 +269,7 @@ namespace piranha
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cf_type1))))) - 1);
-						std::cout << "Block size: " << block_size << '\n';
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 						// Perform multiplication.
 						vector_functor<GenericTruncator> vm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2,trunc,&res,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,vm);
@@ -406,7 +406,7 @@ namespace piranha
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
-						std::cout << "Block size: " << block_size << '\n';
+						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 						hash_functor<cterm,max_fast_int,GenericTruncator,csht>
 							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2,trunc,&res,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
