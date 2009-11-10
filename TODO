@@ -64,6 +64,7 @@
   function as much as possible.
 - in speical functions and the likes, use mp types when interacting with factorials and friends, so we don't worry about
   overflows.
+- C++0x: use explicit cast operations to solve the problem of to_long() conversion of MP types to max_fast_int.
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container
