@@ -95,7 +95,9 @@ namespace piranha
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
-		p_static_check(sizeof(long) == sizeof(void *), "long and max_fast_int are not the same size.");
+		// This is used in aligning allocator to determine the int type corresponding to void *.
+		// Also, long == max_fast_int is used when converting to_long() the MP types using in coded multiplication.
+		p_static_check(sizeof(long) == sizeof(void *), "long and max_fast_int / void * are not the same size.");
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
 		// Init values.
 		m_numerical_zero = 1E-80;
