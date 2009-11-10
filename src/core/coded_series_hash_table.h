@@ -132,15 +132,14 @@ namespace piranha
 			};
 			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0) {
 				init();
-				std::cout << sizeof(bucket_type) << '\n';
 			}
 			coded_series_hash_table(const std::size_t &size_hint):
 				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0) {
 				init();
 			}
 			~coded_series_hash_table() {
-				std::cout << "On destruction, the vector size of coded_series_hash_table was: "
-								   << sizes[m_size_policy][m_size_index] << '\n';
+				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_hash_table was: "
+								   << sizes[m_size_policy][m_size_index] << '\n';)
 				destroy();
 			}
 			iterator begin() const {
@@ -290,7 +289,7 @@ namespace piranha
 				// we want to switch to prime sizes.
 				static const double min_load_factor = .1;
 				if (new_ht.m_size_policy == pow2 && load_factor < min_load_factor) {
-					std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n";
+					__PDEBUG(std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n";)
 					new_ht.m_size_policy = prime;
 				}
 				new_ht.m_size_index = m_size_index + 2;
@@ -344,92 +343,92 @@ namespace piranha
 
 	template <class T, class Allocator>
 	const std::size_t coded_series_hash_table<T,Allocator>::sizes[2][coded_series_hash_table<T,Allocator>::sizes_size] = { {
-		1u,
-		2u,
-		4u,
-		8u,
-		16u,
-		32u,
-		64u,
-		128u,
-		256u,
-		512u,
-		1024u,
-		2048u,
-		4096u,
-		8192u,
-		16384u,
-		32768u,
-		65536u,
-		131072u,
-		262144u,
-		524288u,
-		1048576u,
-		2097152u,
-		4194304u,
-		8388608u,
-		16777216u,
-		33554432u,
-		67108864u,
-		134217728u,
-		268435456u,
-		536870912u,
-		1073741824u,
-		2147483648u
+		1ull,
+		2ull,
+		4ull,
+		8ull,
+		16ull,
+		32ull,
+		64ull,
+		128ull,
+		256ull,
+		512ull,
+		1024ull,
+		2048ull,
+		4096ull,
+		8192ull,
+		16384ull,
+		32768ull,
+		65536ull,
+		131072ull,
+		262144ull,
+		524288ull,
+		1048576ull,
+		2097152ull,
+		4194304ull,
+		8388608ull,
+		16777216ull,
+		33554432ull,
+		67108864ull,
+		134217728ull,
+		268435456ull,
+		536870912ull,
+		1073741824ull,
+		2147483648ull
 #ifdef _PIRANHA_64BIT
 		,
-		4294967296u,
-		8589934592u,
-		17179869184u,
-		34359738368u,
-		68719476736u,
-		137438953472u,
-		274877906944u,
-		549755813888u
+		4294967296ull,
+		8589934592ull,
+		17179869184ull,
+		34359738368ull,
+		68719476736ull,
+		137438953472ull,
+		274877906944ull,
+		549755813888ull
 #endif
 	}, {
-		1u,
-		3u,
-		5u,
-		11u,
-		23u,
-		53u,
-		97u,
-		193u,
-		389u,
-		769u,
-		1543u,
-		3079u,
-		6151u,
-		12289u,
-		24593u,
-		49157u,
-		98317u,
-		196613u,
-		393241u,
-		786433u,
-		1572869u,
-		3145739u,
-		6291469u,
-		12582917u,
-		25165843u,
-		50331653u,
-		100663319u,
-		201326611u,
-		402653189u,
-		805306457u,
-		1610612741u,
-		3221225473u
+		1ull,
+		3ull,
+		5ull,
+		11ull,
+		23ull,
+		53ull,
+		97ull,
+		193ull,
+		389ull,
+		769ull,
+		1543ull,
+		3079ull,
+		6151ull,
+		12289ull,
+		24593ull,
+		49157ull,
+		98317ull,
+		196613ull,
+		393241ull,
+		786433ull,
+		1572869ull,
+		3145739ull,
+		6291469ull,
+		12582917ull,
+		25165843ull,
+		50331653ull,
+		100663319ull,
+		201326611ull,
+		402653189ull,
+		805306457ull,
+		1610612741ull,
+		3221225473ull
 #ifdef _PIRANHA_64BIT
 		,
-		6442450939u,
-		12884901893u,
-		25769803799u,
-		51539607551u,
-		103079215111u,
-		206158430209u,
-		412316860441u,
-		824633720831u
+		6442450939ull,
+		12884901893ull,
+		25769803799ull,
+		51539607551ull,
+		103079215111ull,
+		206158430209ull,
+		412316860441ull,
+		824633720831ull
 #endif
 	} };
 }
