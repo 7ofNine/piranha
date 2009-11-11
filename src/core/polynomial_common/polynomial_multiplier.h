@@ -276,7 +276,7 @@ namespace piranha
 						typedef vector_functor<GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
-//const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						if (trunc.is_effective() || (this->m_size1 * this->m_size2) <= 400 || nthread == 1) {
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
@@ -288,7 +288,7 @@ namespace piranha
 							}
 							tg.join_all();
 						}
-//std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_h_max;
 						// Decode and insert the results into return value.
@@ -369,10 +369,13 @@ namespace piranha
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+std::cout << "Block size: " << block_size << '\n';
 						cterm tmp_cterm;
+const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						hash_functor<cterm,max_fast_int,GenericTruncator,csht>
 							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
+std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						term_type1 tmp_term;

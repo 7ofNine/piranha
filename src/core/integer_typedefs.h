@@ -29,7 +29,7 @@ namespace piranha
 {
 	/// Integer selector.
 	/**
-	 * It detects wehther the platform is 64bit or 32bit, and sets maximum and minimum
+	 * It detects wehther the platform has a 64bit or 32bit address space, and sets maximum and minimum
 	 * "fast" integer types accordingly, using the boost integer libraries. If the platform is
 	 * other than 32bit or 64bit it won't define any type.
 	 */
@@ -39,7 +39,7 @@ namespace piranha
 		typedef boost::int32_t  max_fast_int;
 	};
 
-	// Specialization for 64bit archs.
+	/// Specialization for 64bit archs.
 	template <>
 	struct int_selector<8> {
 		typedef boost::int64_t  max_fast_int;
