@@ -148,8 +148,8 @@ namespace piranha
 	****************************************************************************/
 	/// STL-compatible allocator that aligns memory to a specific boundary N.
 	/**
-	 * N must be in the [0,256[ range. If N == 0, then no specific alignment is requested and default alignment will be used.
-	 * Implementation uses malloc(). Slightly adapted from http://cvs.xvid.org/cvs/viewvc.cgi/xvidcore/src/utils/mem_align.c?view=log.
+	 * N must be in the [0,256[ range. If N == 0, the alignment will be undefined.
+	 * Implementation uses std::malloc(). Slightly adapted from http://cvs.xvid.org/cvs/viewvc.cgi/xvidcore/src/utils/mem_align.c?view=log.
 	 */
 	template <class T, int Alignment>
 	class align_mallocator {
