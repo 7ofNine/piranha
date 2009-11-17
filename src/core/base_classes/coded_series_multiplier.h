@@ -24,7 +24,9 @@
 #include <algorithm> // For std::swap.
 #include <boost/integer_traits.hpp> // For integer limits.
 #include <boost/functional/hash.hpp>
+#include <boost/lexical_cast.hpp>
 #include <cstddef>
+#include <string>
 #include <utility> // For std::pair.
 #include <vector>
 
@@ -116,40 +118,41 @@ namespace piranha
 			{
 				// We must do the computations with arbitrary integers to avoid exceeding range.
 				mp_integer hmin(0), hmax(0), ck(1);
+				std::vector<mp_integer> coding_vector;
+				coding_vector.reserve(m_size + 1);
 				for (std::size_t i = 0; i < m_size; ++i) {
 					hmin += ck * m_res_min_max[i].first;
 					hmax += ck * m_res_min_max[i].second;
-					// Assign also the coding vector, so we avoid doing it later.
-					m_coding_vector[i] = ck.to_long();
+					// Build also the arbitrary precision coding vector.
+					coding_vector.push_back(ck);
 					ck *= (m_res_min_max[i].second - m_res_min_max[i].first + 1);
 				}
 				__PDEBUG(std::cout << "h_tot = " << (hmax - hmin + 1) << '\n');
 				// We want to fill an extra slot of the coding vector (wrt to the nominal size,
 				// corresponding to the arguments number for the key). This is handy for decodification.
-				m_coding_vector[m_size] = ck.to_long();
+				coding_vector.push_back(ck);
 				piranha_assert(ck > 0);
 				// Determine viability by checking that ck and the minimum/maximum values for the codes
-				// respect the fast integer boundaries.
-				if (ck < mp_integer(traits::const_max) &&
-						hmin > mp_integer(traits::const_min) &&
-						hmin < mp_integer(traits::const_max) &&
-						hmax > mp_integer(traits::const_min) &&
-						hmax < mp_integer(traits::const_max)) {
+				// respect the fast integer boundaries. NOTE: we are using lexical cast here because
+				// the MP API cannot rely on long long integer, which are instead necessary in some cases
+				// (e.g., Windows 64 bit).
+				if (ck < mp_integer(boost::lexical_cast<std::string>(traits::const_max)) &&
+						hmin > mp_integer(boost::lexical_cast<std::string>(traits::const_min)) &&
+						hmin < mp_integer(boost::lexical_cast<std::string>(traits::const_max)) &&
+						hmax > mp_integer(boost::lexical_cast<std::string>(traits::const_min)) &&
+						hmax < mp_integer(boost::lexical_cast<std::string>(traits::const_max))) {
 					m_cr_is_viable = true;
-					m_h_min = hmin.to_long();
-					m_h_max = hmax.to_long();
+					m_h_min = boost::lexical_cast<max_fast_int>(hmin);
+					m_h_max = boost::lexical_cast<max_fast_int>(hmax);
 					m_h_tot = m_h_max - m_h_min + 1;
 					piranha_assert(m_h_tot >= 1);
 					// Downcast minimum and maximum result values to fast integers.
 					for (std::size_t i = 0; i < m_size; ++i) {
-						if (m_res_min_max[i].first < mp_integer(traits::const_min) || m_res_min_max[i].first > mp_integer(traits::const_max) ||
-							m_res_min_max[i].second < mp_integer(traits::const_min) || m_res_min_max[i].second > mp_integer(traits::const_max)) {
-							std::cout << "Warning: results of series multiplication cross " <<
-									  "fast integer limits. Expect errors." << std::endl;
-						}
-						m_fast_res_min_max[i].first = m_res_min_max[i].first.to_long();
-						m_fast_res_min_max[i].second = m_res_min_max[i].second.to_long();
+						m_fast_res_min_max[i].first = boost::lexical_cast<max_fast_int>(m_res_min_max[i].first);
+						m_fast_res_min_max[i].second = boost::lexical_cast<max_fast_int>(m_res_min_max[i].second);
+						m_coding_vector[i] = boost::lexical_cast<max_fast_int>(coding_vector[i]);
 					}
+					m_coding_vector[m_size] = boost::lexical_cast<max_fast_int>(coding_vector[m_size]);
 					__PDEBUG(std::cout << "Coding vector: ";
 					for (std::size_t i = 0; i < m_size; ++i) {
 					std::cout << m_coding_vector[i] << '\t';

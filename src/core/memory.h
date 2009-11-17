@@ -34,6 +34,7 @@
 #include "base_classes/base_counting_allocator.h"
 #include "config.h" // For unlikely().
 #include "exceptions.h"
+#include "integer_typedefs.h"
 #include "settings.h"
 
 namespace piranha
@@ -203,7 +204,7 @@ namespace piranha
 					// can realign the data if necessary.
 					if ((tmp = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + Alignment)) != 0) {
 						// Align the tmp pointer.
-						mem_ptr = (boost::uint8_t *)((unsigned long)(tmp + Alignment - 1) & (~(unsigned long)(Alignment - 1)));
+						mem_ptr = (boost::uint8_t *)((ptr_uint_t)(tmp + Alignment - 1) & (~(ptr_uint_t)(Alignment - 1)));
 						// Special case where malloc has already satisfied the alignment
 						// We must add alignment to mem_ptr because we must store
 						// (mem_ptr - tmp) in *(mem_ptr-1)

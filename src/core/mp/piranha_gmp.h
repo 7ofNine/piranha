@@ -238,21 +238,6 @@ namespace piranha
 				}
 				return m_value.get_num().get_si();
 			}
-			/// Convert to long.
-			/**
-			 * @throws value_error if the denominator is not unitary.
-			 * @throws std::overflow_error if the numerator overflows long type.
-			 */
-			int to_long() const
-			{
-				if (m_value.get_den() != 1) {
-					piranha_throw(value_error,"cannot convert rational to long if denominator is non-unitary");
-				}
-				if (!m_value.get_num().fits_slong_p()) {
-					piranha_throw(std::overflow_error,"numerator is too large while converting rational to long");
-				}
-				return m_value.get_num().get_si();
-			}
 			/// Swap content.
 			/**
 			 * Internally uses the mpz_swap GMP function on numerator and denominator.
@@ -531,8 +516,6 @@ namespace piranha
 			explicit mp_integer(const char *str):m_value(str) {}
 			/// Constructor from int.
 			explicit mp_integer(const int &n):m_value(n) {}
-			/// Constructor from long.
-			explicit mp_integer(const long &n):m_value(n) {}
 			/// Constructor from double.
 			explicit mp_integer(const double &x):m_value(0)
 			{
@@ -601,17 +584,6 @@ namespace piranha
 			{
 				if (!m_value.fits_sint_p()) {
 					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to int");
-				}
-				return m_value.get_si();
-			}
-			/// Convert to long.
-			/**
-			 * @throws std::overflow_error if the numerator overflows long type.
-			 */
-			int to_long() const
-			{
-				if (!m_value.fits_slong_p()) {
-					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to long");
 				}
 				return m_value.get_si();
 			}

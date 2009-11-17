@@ -21,32 +21,19 @@
 #ifndef PIRANHA_INTEGER_TYPEDEFS_H
 #define PIRANHA_INTEGER_TYPEDEFS_H
 
-#include <boost/cstdint.hpp>
+#include <boost/integer.hpp>
 
 #include "config.h"
 
 namespace piranha
 {
-	/// Integer selector.
+	/// Maximum-width "fast" signed integer.
 	/**
-	 * It detects wehther the platform has a 64bit or 32bit address space, and sets maximum and minimum
-	 * "fast" integer types accordingly, using the boost integer libraries. If the platform is
-	 * other than 32bit or 64bit it won't define any type.
+	 * Assumed to be the smallest signed integer type as wide as a pointer.
 	 */
-	template <int SizeOfPointer>
-	struct int_selector {
-		p_static_check(SizeOfPointer == 4, "Unknown pointer size.");
-		typedef boost::int32_t  max_fast_int;
-	};
-
-	/// Specialization for 64bit archs.
-	template <>
-	struct int_selector<8> {
-		typedef boost::int64_t  max_fast_int;
-	};
-
-	/// Maximum fast integer, detected through piranha::int_selector.
-	typedef int_selector < sizeof(void *) >::max_fast_int max_fast_int;
+	typedef boost::int_t<sizeof(void *) * 8>::least max_fast_int;
+	/// Unsigned interger type as wide as a pointer.
+	typedef boost::uint_t<sizeof(void *) * 8>::least ptr_uint_t;
 }
 
 #endif

@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp> // For replacing "\" with "/" in Windows.
 #include <boost/thread/thread.hpp>
+#include <climits>
 #include <cstddef>
 #include <cstdlib> // For getenv in Windows.
 #include <cstring>
@@ -91,13 +92,12 @@ namespace piranha
 	settings::startup_class::startup_class()
 	{
 		// Some static checks.
+		// This check is here because in integer_typedefs we select integers based on the number of bits.
+		p_static_check(CHAR_BIT == 8, "Invalid size of char.");
 		// This is because somewhere we use chars as bools.
 		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
-		p_static_check(sizeof(max_fast_int) == sizeof(void *), "max_fast_int and void * are not the same size.");
+		// TODO: where is this used? Find out and wipe it.
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
-		// This is used in aligning allocator to determine the int type corresponding to void *.
-		// Also, long == max_fast_int is used when converting to_long() the MP types using in coded multiplication.
-		p_static_check(sizeof(long) == sizeof(void *), "long and max_fast_int / void * are not the same size.");
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
 		// Init values.
 		m_numerical_zero = 1E-80;
