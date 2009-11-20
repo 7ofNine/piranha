@@ -22,6 +22,8 @@
 #define PIRANHA_CODED_SERIES_HASH_TABLE_H
 
 #include <algorithm>
+#include <bitset>
+#include <boost/cstdint.hpp>
 #include <cstddef>
 #include <utility> // For std::pair.
 
@@ -37,24 +39,24 @@ namespace piranha
 			template <int N>
 			class bucket_type_
 			{
+					p_static_check(N > 0 && N <= 256, "Invalid bucket size.");
 				public:
-					bucket_type_() {
-						for (std::size_t i = 0; i < N; ++i) {
-							f[i] = false;
-						}
-					}
-					bool	f[N];
-					T	t[N];
+					typedef boost::uint8_t bucket_size_type;
+					bucket_type_(): f(0) {}
+					std::bitset<N>	f;
+					T		t[N];
+					//atomic_counter_char at;
 			};
 			enum size_policy {
 				pow2	= 0,
 				prime	= 1
 			};
+			typedef boost::uint8_t bucket_size_type;
 			// Configuration options.
-			static const std::size_t bucket_size	= 6;
-			static const std::size_t min_size_index	= 0;
+			static const bucket_size_type bucket_size	= 6;
+			static const std::size_t min_size_index		= 0;
 			// Number of extra buckets.
-			static const std::size_t neb		= 500;
+			static const std::size_t neb			= 500;
 			// Configuration options end here.
 			static const std::size_t sizes_size =
 #ifdef _PIRANHA_64BIT
@@ -65,7 +67,6 @@ namespace piranha
 			static const std::size_t sizes[2][sizes_size];
 			typedef bucket_type_<bucket_size> bucket_type;
 			typedef bucket_type *container_type;
-			p_static_check(bucket_size > 0, "Size of bucket is not strictly positive.");
 			p_static_check(min_size_index >= 0, "min_size_index must be non-negative.");
 		public:
 			typedef T key_type;
@@ -81,7 +82,7 @@ namespace piranha
 							next();
 						}
 					}
-					iterator(const coded_series_hash_table *p, const std::size_t &vi, const std::size_t &bi):
+					iterator(const coded_series_hash_table *p, const std::size_t &vi, const bucket_size_type &bi):
 							m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
 				public:
 					iterator &operator++() {
@@ -128,7 +129,7 @@ namespace piranha
 				private:
 					const coded_series_hash_table	*m_ht;
 					std::size_t			m_vector_index;
-					std::size_t			m_bucket_index;
+					bucket_size_type		m_bucket_index;
 			};
 			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0) {
 				init();
@@ -153,7 +154,7 @@ namespace piranha
 				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
-				for (std::size_t i = 0; i < bucket_size; ++i) {
+				for (bucket_size_type i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken (which means there are no more elements to examine),
 					// it means that key was not found.
 					if (!bucket.f[i]) {
@@ -170,7 +171,7 @@ namespace piranha
 				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
 				const bucket_type *extra_bucket = m_container + vector_size;
 				for (std::size_t b = 0; b < neb; ++b) {
-					for (std::size_t i = 0; i < bucket_size; ++i) {
+					for (bucket_size_type i = 0; i < bucket_size; ++i) {
 						if (!extra_bucket[b].f[i]) {
 							return std::make_pair(false,iterator(this, vector_size + b, i));
 						}
@@ -235,7 +236,7 @@ namespace piranha
 				a.deallocate(m_container, size);
 			}
 			bool attempt_insertion(const key_type &key, const iterator &it) {
-				const std::size_t bucket_index = it.m_bucket_index;
+				const bucket_size_type bucket_index = it.m_bucket_index;
 				if (unlikely(bucket_index == bucket_size)) {
 					return false;
 				}
@@ -254,7 +255,7 @@ namespace piranha
 				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				bucket_type &bucket = m_container[vector_pos];
 				// Now check for an available slot in the bucket.
-				for (std::size_t i = 0; i < bucket_size; ++i) {
+				for (bucket_size_type i = 0; i < bucket_size; ++i) {
 					// If the slot in the bucket is not taken we can place the key here.
 					if (!bucket.f[i]) {
 						bucket.f[i] = true;
@@ -267,7 +268,7 @@ namespace piranha
 				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
 				bucket_type *extra_bucket = m_container + vector_size;
 				for (std::size_t b = 0; b < neb; ++b) {
-					for (std::size_t i = 0; i < bucket_size; ++i) {
+					for (bucket_size_type i = 0; i < bucket_size; ++i) {
 						if (!extra_bucket[b].f[i]) {
 							extra_bucket[b].f[i] = true;
 							extra_bucket[b].t[i] = key;
@@ -339,7 +340,7 @@ namespace piranha
 	const std::size_t coded_series_hash_table<T,Allocator>::min_size_index;
 
 	template <class T, class Allocator>
-	const std::size_t coded_series_hash_table<T,Allocator>::bucket_size;
+	const typename coded_series_hash_table<T,Allocator>::bucket_size_type coded_series_hash_table<T,Allocator>::bucket_size;
 
 	template <class T, class Allocator>
 	const std::size_t coded_series_hash_table<T,Allocator>::sizes[2][coded_series_hash_table<T,Allocator>::sizes_size] = { {
