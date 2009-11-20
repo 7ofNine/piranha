@@ -76,40 +76,47 @@ namespace piranha
 			class iterator
 			{
 					friend class coded_series_hash_table;
-					iterator(const coded_series_hash_table *p): m_ht(p), m_vector_index(0), m_bucket_index(0) {
+					iterator(const coded_series_hash_table *p): m_ht(p), m_vector_index(0), m_bucket_index(0)
+					{
 						// If the first slot is not taken, find the next one.
 						if (!m_ht->m_container[m_vector_index].f[m_bucket_index]) {
 							next();
 						}
 					}
 					iterator(const coded_series_hash_table *p, const std::size_t &vi, const bucket_size_type &bi):
-							m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
+						m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
 				public:
-					iterator &operator++() {
+					iterator &operator++()
+					{
 						next();
 						return *this;
 					}
-					const key_type &operator*() const {
+					const key_type &operator*() const
+					{
 						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
-					const key_type *operator->() const {
+					const key_type *operator->() const
+					{
 						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb);
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].f[m_bucket_index]);
 						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
-					bool operator==(const iterator &it2) const {
+					bool operator==(const iterator &it2) const
+					{
 						return (m_ht == it2.m_ht && m_vector_index == it2.m_vector_index &&
-								m_bucket_index == it2.m_bucket_index);
+							m_bucket_index == it2.m_bucket_index);
 					}
-					bool operator!=(const iterator &it2) const {
+					bool operator!=(const iterator &it2) const
+					{
 						return !(*this == it2);
 					}
 				private:
-					void next() {
+					void next()
+					{
 						const std::size_t vector_size = sizes[m_ht->m_size_policy][m_ht->m_size_index] + neb;
 						while (true) {
 							// Go to the next bucket if we are at the last element of the current one.
@@ -131,25 +138,31 @@ namespace piranha
 					std::size_t			m_vector_index;
 					bucket_size_type		m_bucket_index;
 			};
-			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0) {
+			coded_series_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0)
+			{
 				init();
 			}
 			coded_series_hash_table(const std::size_t &size_hint):
-				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0) {
+				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0)
+			{
 				init();
 			}
-			~coded_series_hash_table() {
+			~coded_series_hash_table()
+			{
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_series_hash_table was: "
-								   << sizes[m_size_policy][m_size_index] << '\n';)
+					<< sizes[m_size_policy][m_size_index] << '\n';)
 				destroy();
 			}
-			iterator begin() const {
+			iterator begin() const
+			{
 				return iterator(this);
 			}
-			iterator end() const {
+			iterator end() const
+			{
 				return iterator(this, sizes[m_size_policy][m_size_index] + neb, 0);
 			}
-			std::pair<bool,iterator> find(const key_type &key) const {
+			std::pair<bool,iterator> find(const key_type &key) const
+			{
 				const std::size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
 				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				const bucket_type &bucket = m_container[vector_pos];
@@ -183,7 +196,8 @@ namespace piranha
 				// All the elements of the extra buckets were taken, we examined them but found no match.
 				return std::make_pair(false,iterator(this, vector_size + neb, bucket_size));
 			}
-			void insert(const key_type &key, const iterator &it) {
+			void insert(const key_type &key, const iterator &it)
+			{
 				if (unlikely(!attempt_insertion(key,it))) {
 					iterator tmp = it;
 					do {
@@ -194,11 +208,13 @@ namespace piranha
 					} while (unlikely(!attempt_insertion(key,tmp)));
 				}
 			}
-			std::size_t size() const {
+			std::size_t size() const
+			{
 				return m_length;
 			}
 		private:
-			static std::size_t get_position(const std::size_t &hash, const std::size_t &size_index, const size_policy &sp) {
+			static std::size_t get_position(const std::size_t &hash, const std::size_t &size_index, const size_policy &sp)
+			{
 				switch (sp) {
 					case pow2:
 						return (hash & (sizes[pow2][size_index] - 1));
@@ -208,7 +224,8 @@ namespace piranha
 				piranha_assert(false);
 				return 0;
 			}
-			std::size_t find_upper_size_index(const std::size_t &size) const {
+			std::size_t find_upper_size_index(const std::size_t &size) const
+			{
 				for (std::size_t retval = 0; retval < sizes_size; ++retval) {
 					if (sizes[m_size_policy][retval] >= size) {
 						return std::max<std::size_t>(min_size_index,retval);
@@ -217,7 +234,8 @@ namespace piranha
 				return min_size_index;
 			}
 			// Allocate and default-construct according to m_size_index.
-			void init() {
+			void init()
+			{
 				const std::size_t size = sizes[m_size_policy][m_size_index] + neb;
 				const bucket_type bucket;
 				allocator_type a;
@@ -227,7 +245,8 @@ namespace piranha
 				}
 			}
 			// Destroy and deallocate.
-			void destroy() {
+			void destroy()
+			{
 				const std::size_t size = sizes[m_size_policy][m_size_index] + neb;
 				allocator_type a;
 				for (std::size_t i = 0; i < size; ++i) {
@@ -235,7 +254,8 @@ namespace piranha
 				}
 				a.deallocate(m_container, size);
 			}
-			bool attempt_insertion(const key_type &key, const iterator &it) {
+			bool attempt_insertion(const key_type &key, const iterator &it)
+			{
 				const bucket_size_type bucket_index = it.m_bucket_index;
 				if (unlikely(bucket_index == bucket_size)) {
 					return false;
@@ -250,7 +270,8 @@ namespace piranha
 				return true;
 			}
 			// Insertion routine that won't check for equal key.
-			bool unchecked_insertion(const key_type &key) {
+			bool unchecked_insertion(const key_type &key)
+			{
 				const std::size_t vector_pos = get_position(key.hash_value(),m_size_index,m_size_policy);
 				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
 				bucket_type &bucket = m_container[vector_pos];
@@ -281,7 +302,8 @@ namespace piranha
 				return false;
 			}
 			// Increase size of the container to the next size.
-			void increase_size() {
+			void increase_size()
+			{
 				const double load_factor = static_cast<double>(m_length) / sizes[m_size_policy][m_size_index];
 				__PDEBUG(std::cout << "Increase size requested at load factor: " << load_factor << '\n');
 				coded_series_hash_table new_ht;
