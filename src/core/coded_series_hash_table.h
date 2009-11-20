@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <bitset>
 #include <boost/cstdint.hpp>
+#include <boost/integer_traits.hpp>
 #include <cstddef>
 #include <utility> // For std::pair.
 
@@ -36,12 +37,12 @@ namespace piranha
 	template <class T, class Allocator>
 	class coded_series_hash_table
 	{
+			typedef boost::uint8_t bucket_size_type;
 			template <int N>
 			class bucket_type_
 			{
-					p_static_check(N > 0 && N <= 256, "Invalid bucket size.");
+					p_static_check(N > 0 && N <= boost::integer_traits<bucket_size_type>::const_max, "Invalid bucket size.");
 				public:
-					typedef boost::uint8_t bucket_size_type;
 					bucket_type_(): f(0) {}
 					std::bitset<N>	f;
 					T		t[N];
@@ -51,7 +52,6 @@ namespace piranha
 				pow2	= 0,
 				prime	= 1
 			};
-			typedef boost::uint8_t bucket_size_type;
 			// Configuration options.
 			static const bucket_size_type bucket_size	= 6;
 			static const std::size_t min_size_index		= 0;
