@@ -85,11 +85,6 @@ namespace piranha
 							init();
 						}
 					}
-					template <class Result>
-					bool accept(const Result &) const
-					{
-						return true;
-					}
 					bool skip(const term_type1 **t1, const term_type2 **t2) const
 					{
 						return (m_t1 && t1 >= m_t1) || (m_t2 && t2 >= m_t2);

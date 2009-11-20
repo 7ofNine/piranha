@@ -102,19 +102,6 @@ namespace truncators
 					bool is_effective() const {
 						return m_active_truncator != null_t;
 					}
-					template <class T>
-					bool accept(const T &x) const {
-						switch (m_active_truncator) {
-							case deg_t:
-								return degree_ancestor::accept(x);
-							case norm_t:
-								return norm_ancestor::accept(x);
-							case null_t:
-								piranha_assert(false);
-						}
-						piranha_assert(false);
-						return true;
-					}
 					template <class T, class U>
 					bool skip(const T &x1, const U &x2) const {
 						switch (m_active_truncator) {

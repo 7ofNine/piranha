@@ -145,7 +145,7 @@ namespace piranha
 						return false;
 					}
 					term_type1::multiply(*m_t1[i], *m_t2[j], m_res, m_args_tuple);
-					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_trunc, m_args_tuple);
+					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_args_tuple);
 					return true;
 				}
 				mult_res		&m_res;

@@ -129,11 +129,6 @@ namespace piranha
 							init();
 						}
 					}
-					template <class T>
-					bool accept(const T &) const
-					{
-						return true;
-					}
 					bool skip(const term_type1 **t1, const term_type2 **t2) const
 					{
 						switch (m_mode) {

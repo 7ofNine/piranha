@@ -28,11 +28,9 @@ namespace piranha
 	class base_insert_multiplication_result
 	{
 		protected:
-			template <class SingleRes, class Series, class Truncator, class ArgsTuple>
-			static void insert_single_res(const SingleRes &res, Series &s, const Truncator &trunc, const ArgsTuple &args_tuple) {
-				if (trunc.accept(res)) {
-					s.insert(res,args_tuple);
-				}
+			template <class SingleRes, class Series, class ArgsTuple>
+			static void insert_single_res(const SingleRes &res, Series &s, const ArgsTuple &args_tuple) {
+				s.insert(res,args_tuple);
 			}
 	};
 
@@ -41,10 +39,10 @@ namespace piranha
 	class insert_multiplication_result: public base_insert_multiplication_result
 	{
 		public:
-			template <class Series, class Truncator, class ArgsTuple>
-			static void run(const ResultTuple &mult_res, Series &s, const Truncator &trunc, const ArgsTuple &args_tuple) {
-				insert_single_res(mult_res.get_head(), s, trunc, args_tuple);
-				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, trunc, args_tuple);
+			template <class Series, class ArgsTuple>
+			static void run(const ResultTuple &mult_res, Series &s, const ArgsTuple &args_tuple) {
+				insert_single_res(mult_res.get_head(), s, args_tuple);
+				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, args_tuple);
 			}
 	};
 
@@ -52,8 +50,8 @@ namespace piranha
 	class insert_multiplication_result<boost::tuples::null_type>
 	{
 		public:
-			template <class Series, class Truncator, class ArgsTuple>
-			static void run(const boost::tuples::null_type &, Series &, const Truncator &, const ArgsTuple &) {}
+			template <class Series, class ArgsTuple>
+			static void run(const boost::tuples::null_type &, Series &, const ArgsTuple &) {}
 	};
 }
 

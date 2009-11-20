@@ -39,11 +39,6 @@ namespace piranha
 					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
 					get_type(std::vector<term_type1 const *> &, std::vector<term_type2 const *> &, const ArgsTuple &) {}
-					template <class Result>
-					bool accept(const Result &) const
-					{
-						return true;
-					}
 					template <class Term1, class Term2>
 					bool skip(const Term1 &, const Term2 &) const
 					{

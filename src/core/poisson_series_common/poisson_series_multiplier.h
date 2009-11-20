@@ -48,7 +48,6 @@ namespace piranha
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	// NOTE: isn't truncator's "accept" used here?
 	class poisson_series_multiplier
 	{
 		public:
