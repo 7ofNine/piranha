@@ -225,9 +225,7 @@ namespace piranha
 							}
 							// Calculate index of the result.
 							const max_fast_int res_index = m_ck1[i] + m_ck2[j];
-							if (m_trunc.accept(res_index)) {
-								m_vc_res[res_index].addmul(m_tc1[i],m_tc2[j],m_args_tuple);
-							}
+							m_vc_res[res_index].addmul(m_tc1[i],m_tc2[j],m_args_tuple);
 							return true;
 						}
 						const cf_type1		*m_tc1;
@@ -326,17 +324,15 @@ std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::loc
 							}
 							m_cterm.m_ckey = m_ck1[i];
 							m_cterm.m_ckey += m_ck2[j];
-							if (m_trunc.accept(m_cterm.m_ckey)) {
-								const std::pair<bool,c_iterator> res = m_cms->find(m_cterm);
-								if (res.first) {
-									res.second->m_cf.addmul(m_tc1[i],m_tc2[j],m_args_tuple);
-								} else {
-									// Assign to the temporary term the old cf (new_key is already assigned).
-									m_cterm.m_cf = m_tc1[i];
-									// Multiply the old term by the second term.
-									m_cterm.m_cf.mult_by(m_tc2[j],m_args_tuple);
-									m_cms->insert(m_cterm,res.second);
-								}
+							const std::pair<bool,c_iterator> res = m_cms->find(m_cterm);
+							if (res.first) {
+								res.second->m_cf.addmul(m_tc1[i],m_tc2[j],m_args_tuple);
+							} else {
+								// Assign to the temporary term the old cf (new_key is already assigned).
+								m_cterm.m_cf = m_tc1[i];
+								// Multiply the old term by the second term.
+								m_cterm.m_cf.mult_by(m_tc2[j],m_args_tuple);
+								m_cms->insert(m_cterm,res.second);
 							}
 							return true;
 						}
