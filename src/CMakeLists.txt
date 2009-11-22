@@ -14,14 +14,12 @@ SET(SRC_LIST ${SRC_LIST}
 ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
 IF(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
-		boost_thread/win32/exceptions.cpp
 		boost_thread/win32/thread.cpp
 		boost_thread/win32/tss_dll.cpp
 		boost_thread/win32/tss_pe.cpp
 	)
 ELSE(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
-		boost_thread/pthread/exceptions.cpp
 		boost_thread/pthread/once.cpp
 		boost_thread/pthread/thread.cpp
 	)
