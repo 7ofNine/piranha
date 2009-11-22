@@ -111,6 +111,7 @@ namespace boost { namespace unordered_detail {
         hash_bucket(hash_bucket const& x)
           : next_()
         {
+            (void)x;
             BOOST_ASSERT(!x.next_);
         }
     };

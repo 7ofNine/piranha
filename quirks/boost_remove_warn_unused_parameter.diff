@@ -1,8 +1,8 @@
 diff --git a/external_headers/boost/fusion/container/vector/vector10.hpp b/external_headers/boost/fusion/container/vector/vector10.hpp
-index 28531b6..7241488 100644
+index 929815a..e8c191c 100644
 --- a/external_headers/boost/fusion/container/vector/vector10.hpp
 +++ b/external_headers/boost/fusion/container/vector/vector10.hpp
-@@ -51,7 +51,7 @@ namespace boost { namespace fusion
+@@ -52,7 +52,7 @@ namespace boost { namespace fusion
          vector0() {}
  
          template<typename Sequence>
@@ -11,3 +11,15 @@ index 28531b6..7241488 100644
          {}
      };
  
+diff --git a/external_headers/boost/unordered/detail/fwd.hpp b/external_headers/boost/unordered/detail/fwd.hpp
+index 5696cbc..291124c 100644
+--- a/external_headers/boost/unordered/detail/fwd.hpp
++++ b/external_headers/boost/unordered/detail/fwd.hpp
+@@ -111,6 +111,7 @@ namespace boost { namespace unordered_detail {
+         hash_bucket(hash_bucket const& x)
+           : next_()
+         {
++            (void)x;
+             BOOST_ASSERT(!x.next_);
+         }
+     };
