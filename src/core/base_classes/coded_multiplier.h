@@ -23,8 +23,11 @@
 
 #include <boost/integer_traits.hpp>
 #include <cstddef>
+#include <utility>
+#include <vector>
 
 #include "../integer_typedefs.h"
+#include "../mp.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -36,37 +39,41 @@ namespace piranha
 	 * Intended to be inherited together with piranha::base_series_multiplier. It adds common methods for
 	 * series multiplication through Kronecker codification.
 	 */
-	template <class Derived, class Key>
+	template <class Derived, class Key, bool SubtractKeys>
 	class coded_series_multiplier
 	{
-			typedef max_fast_int coded_key_type;
-			typedef boost::integer_traits<coded_key_type> traits;
-			typedef typename Key::value_type value_type;
+			typedef boost::integer_traits<max_fast_int> traits;
 		public:
+			/// Value type of the key.
+			typedef typename Key::value_type value_type;
 		protected:
 			/// Is coded representation viable?
 			bool							m_cr_is_viable;
-			// Size of the coding vector, min_max vectors, etc.
+			/// Size of the coding vector, min_max vectors, etc.
 			const std::size_t					m_size;
-			// Vectors of minimum and maximum value pairs for the series being multiplied.
-			std::vector<std::pair<int, int> >			m_min_max1;
-			std::vector<std::pair<int, int> >			m_min_max2;
-			// Vector of minimum and maximum value pairs for the resulting series.
-			// GMP is used to avoid trespassing the range limits of max_fast_int.
+			/// Vectors of minimum and maximum value pairs for the first series.
+			std::vector<std::pair<value_type, value_type> >		m_min_max1;
+			/// Vectors of minimum and maximum value pairs for the second series.
+			std::vector<std::pair<value_type, value_type> >		m_min_max2;
+			/// Vector of minimum and maximum value pairs for the resulting series, MP version.
 			std::vector<std::pair<mp_integer, mp_integer> >		m_res_min_max;
-			// Version of the above downcast to int.
-			std::vector<std::pair<int, int> >			m_fast_res_min_max;
-			// Coding vector.
+			/// Vector of minimum and maximum value pairs for the resulting series, value_type version.
+			std::vector<std::pair<value_type, value_type> >		m_fast_res_min_max;
+			/// Coding vector.
 			std::vector<max_fast_int>				m_coding_vector;
-			// Mininum and maximum values of codes, and total number of codes.
+			/// Mininum code.
 			max_fast_int						m_h_min;
+			/// Maximum code.
 			max_fast_int						m_h_max;
+			/// Total number of codes.
 			max_fast_int						m_h_tot;
-			// Coded keys.
+			/// Coded keys for the first series.
 			std::vector<max_fast_int>				m_ckeys1;
+			/// Coded keys for the second series.
 			std::vector<max_fast_int>				m_ckeys2;
-			// Densities of input series wrt the resulting series' codification.
+			/// Density of the first series.
 			double							m_density1;
+			/// Density of the second series.
 			double							m_density2;
 	};
 }
