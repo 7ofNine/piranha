@@ -22,6 +22,7 @@
 #define PIRANHA_INT_ARRAY_H
 
 #include <algorithm> // For std::min/max.
+#include <boost/cstdint.hpp>
 #include <boost/integer.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -41,6 +42,7 @@
 
 namespace piranha
 {
+	// TODO: check integer bounds on all resize operations; clean up private/public interface, typedefs, etc.
 	/// Dynamically-sized integer array.
 	/**
 	 * Parametrized to a signed integer sized Bits, it contains also
@@ -53,8 +55,8 @@ namespace piranha
 			p_static_check(Pos >= 0, "Invalid position for int_array.");
 			p_static_check(Bits == 8 || Bits == 16, "Unsupported number of bits for value type in int_array.");
 			// NOTE: the maximum number of bits here must be the same size of int.
-			p_static_check(Bits <= sizeof(int) * 8, "Number of bits for value type in int_array must not be greater than sizeof(int).");
-			typedef typename boost::int_t<Bits>::fast value_type_;
+			p_static_check(Bits <= sizeof(int) * 8, "Number of bits for value type in int_array must not be greater than sizeof(int) * 8.");
+			typedef typename boost::int_t<Bits>::least value_type_;
 			typedef max_fast_int packed_type;
 			p_static_check(sizeof(packed_type) % sizeof(value_type_) == 0, "Invalid packed/value ratio in int_array.");
 			typedef counting_allocator<packed_type,Allocator> allocator_type;
@@ -63,7 +65,7 @@ namespace piranha
 				value_type_	*v;
 				packed_type	*p;
 			};
-			typedef uint8_t size_type_;
+			typedef boost::uint8_t size_type_;
 			static const size_type_ pack_capacity = sizeof(packed_type) / sizeof(value_type_);
 			static const size_type_ pack_shift = lg<pack_capacity>::value;
 		public:
@@ -454,6 +456,7 @@ namespace piranha
 				return true;
 			}
 		protected:
+			// NOTE: replace with a bit field?
 			/// Flavour.
 			bool					m_flavour;
 			/// Size of the array.
