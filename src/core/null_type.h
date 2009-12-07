@@ -18,31 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_NTUPLE_H
-#define PIRANHA_NTUPLE_H
-
-#include <boost/tuple/tuple.hpp>
-
-#include "config.h"
+#ifndef PIRANHA_NULL_TYPE_H
+#define PIRANHA_NULL_TYPE_H
 
 namespace piranha
 {
-	/// Wrapper for tuple of homogeneous types.
-	template <class T, int N>
-	struct ntuple {
-		p_static_check(N > 0,"");
-		typedef boost::tuples::cons < T, typename ntuple < T, N - 1 >::type > type;
-	};
-
-	template <class T>
-	struct ntuple<T, 1> {
-		typedef boost::tuples::cons<T, boost::tuples::null_type> type;
-	};
-
-	template <class T>
-	struct ntuple<T, 0> {
-		typedef boost::tuples::null_type type;
-	};
+	/// Null type.
+	/**
+	 * Used to terminate recursions.
+	 */
+	struct null_type {};
 }
 
 #endif

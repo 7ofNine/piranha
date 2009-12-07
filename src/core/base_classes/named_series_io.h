@@ -269,6 +269,13 @@ namespace piranha
 		retval.trim();
 		return retval;
 	}
+
+	// Trivial destructor. It's here only to enforce a static check that cannot stay in the class definition.
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::~toolbox()
+	{
+		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1,"");
+	}
 }
 
 #undef derived_const_cast

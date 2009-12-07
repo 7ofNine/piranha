@@ -37,6 +37,8 @@
 #define __PIRANHA_CF_SERIES_TP_DECL class Term, class Derived
 #define __PIRANHA_CF_SERIES_TP Term,Derived
 
+// TODO: split this off like in base/name series.
+
 namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>

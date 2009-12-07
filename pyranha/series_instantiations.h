@@ -129,6 +129,7 @@ namespace pyranha
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
+		inst.def_readonly("echelon_level", &T::echelon_level, "Echelon level of the series.");
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");

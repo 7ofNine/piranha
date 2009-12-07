@@ -31,6 +31,7 @@
 #include "../exceptions.h"
 #include "../memory.h"
 #include "../mp.h"
+#include "../null_type.h"
 #include "../psym.h"
 #include "../type_traits.h"
 #include "toolbox.h"
@@ -41,6 +42,17 @@
 
 namespace piranha
 {
+	template <class Series, int N>
+	struct echelon_level_impl {
+		static const int value = echelon_level_impl<typename Series::next_echelon_type,N + 1>::value;
+	};
+
+	template <int N>
+	struct echelon_level_impl<null_type,N> {
+		// Offset is 2 because it is a length and because we went one past.
+		static const int value = N - 2;
+	};
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	struct base_series {};
 
@@ -59,6 +71,8 @@ namespace piranha
 			/// Term container.
 			typedef boost::unordered_set<term_type,boost::hash<term_type>,std::equal_to<term_type>,allocator_type>
 				container_type;
+			/// Next echelon type is term's coefficient.
+			typedef typename term_type::cf_type next_echelon_type;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
 			typedef typename container_type::const_iterator const_iterator;
 			const_iterator begin() const;
@@ -77,6 +91,8 @@ namespace piranha
 			bool empty() const;
 			bool is_single_cf() const;
 			std::size_t atoms() const;
+			/// Echelon level.
+			static const int echelon_level = (echelon_level_impl<Derived,0>::value);
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
 			template <class Cf, class ArgsTuple>

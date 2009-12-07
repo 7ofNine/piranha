@@ -173,7 +173,7 @@ namespace piranha
 			return false;
 		}
 		// Build a tuple of layouts.
-		typename ntuple<std::vector<std::pair<bool, std::size_t> >, n_arguments_sets>::type l;
+		typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
 		// Get the relative layouts of this wrt other and put the result into l.
 		named_series_get_layout<args_tuple_type>::run(m_arguments, other.arguments(), l);
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,

@@ -46,6 +46,8 @@ namespace piranha
 	template <class Derived>
 	struct common_poisson_series {};
 
+	// NOTE: this seems to be valid only for specific position of arguments. Document. Maybe put static const int "trig_index" or something like
+	// that, as we do for power series?
 	template <class Derived>
 	class toolbox<common_poisson_series<Derived> >
 	{
@@ -80,7 +82,7 @@ namespace piranha
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -119,7 +121,7 @@ namespace piranha
 			Derived ei_sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::n_arguments_sets>::type pos_tuple_type;
+				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
@@ -142,6 +144,7 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+			// NOTE: either this must be generalised somehow, or dropped completely.
 			template <class FourierSeries>
 			FourierSeries to_fs() const
 			{

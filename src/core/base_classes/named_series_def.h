@@ -62,10 +62,7 @@ namespace piranha
 	{
 		public:
 			typedef ArgsDescr arguments_description;
-			/// Compile-time constant for the number of arguments sets.
-			static const int n_arguments_sets = boost::tuples::length<arguments_description>::value;
-			p_static_check(n_arguments_sets > 0, "The number of arguments vector must be strictly positive.");
-			typedef typename ntuple<vector_psym, n_arguments_sets>::type args_tuple_type;
+			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout) const;
@@ -117,6 +114,7 @@ namespace piranha
 			template <class Cf>
 			Derived series_from_cf(const Cf &) const;
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
+			~toolbox();
 		protected:
 			template <class Derived2>
 			void merge_args(const Derived2 &);
