@@ -21,15 +21,16 @@
 #ifndef PIRANHA_NTUPLE_H
 #define PIRANHA_NTUPLE_H
 
-#include <boost/static_assert.hpp>
 #include <boost/tuple/tuple.hpp>
+
+#include "../config.h"
 
 namespace piranha
 {
 	/// Wrapper for tuple of homogeneous types.
 	template <class T, int N>
 	struct ntuple {
-		BOOST_STATIC_ASSERT(N > 0);
+		p_static_check(N > 0,"");
 		typedef boost::tuples::cons < T, typename ntuple < T, N - 1 >::type > type;
 	};
 
