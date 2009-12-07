@@ -104,6 +104,12 @@ namespace pyranha
 	template <class NamedSeries>
 	std::vector<NamedSeries> named_iterator<NamedSeries>::m_value;
 
+	template <class Series>
+	static inline int py_echelon_level()
+	{
+		return Series::echelon_level;
+	}
+
 	/// Basic series instantiation.
 	template <class T>
 	inline boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
@@ -129,7 +135,7 @@ namespace pyranha
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
-		inst.def_readonly("echelon_level", &T::echelon_level, "Echelon level of the series.");
+		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");

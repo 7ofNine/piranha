@@ -92,7 +92,7 @@ namespace piranha
 			bool is_single_cf() const;
 			std::size_t atoms() const;
 			/// Echelon level.
-			static const int echelon_level = (echelon_level_impl<Derived,0>::value);
+			static const int echelon_level = echelon_level_impl<Derived,0>::value;
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
 			template <class Cf, class ArgsTuple>

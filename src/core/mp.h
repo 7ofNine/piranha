@@ -283,7 +283,7 @@ namespace piranha
 	/// Condon-Shortley phase.
 	inline int cs_phase(const mp_integer &z)
 	{
-		// TODO: more efficient implementation here.
+		// NOTE: more efficient implementation here, probably with GMP functions?
 		if (z % 2 != 0) {
 			return -1;
 		} else {
