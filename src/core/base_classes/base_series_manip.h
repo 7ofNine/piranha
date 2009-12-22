@@ -330,6 +330,10 @@ namespace piranha
 		}
 	};
 
+	/// Return a vector of flattened terms.
+	/**
+	 * Flattened terms have coefficient series with a single term in all echelon levels.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline std::vector<typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_type>
