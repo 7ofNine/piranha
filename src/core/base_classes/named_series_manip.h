@@ -408,6 +408,7 @@ namespace piranha
 		for (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != it_f; ++it) {
 			Derived tmp_series;
 			tmp_series.insert(*it,m_arguments);
+			tmp_series.m_arguments = m_arguments;
 			tmp_series.trim();
 			retval.push_back(Derived());
 			retval.back().swap(tmp_series);
