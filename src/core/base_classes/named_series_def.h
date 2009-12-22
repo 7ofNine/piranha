@@ -114,6 +114,7 @@ namespace piranha
 			template <class Cf>
 			Derived series_from_cf(const Cf &) const;
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
+			std::vector<Derived> flatten() const;
 			~toolbox();
 		protected:
 			template <class Derived2>

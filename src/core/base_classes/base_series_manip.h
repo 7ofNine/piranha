@@ -264,6 +264,7 @@ namespace piranha
 		m_container.clear();
 	}
 
+	// NOTE: can we use the concepts of next_echelon_type and echelon level here? Maybe we can avoid the runtime assert in numerical_cf?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
 	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &args_tuple) const
@@ -299,6 +300,51 @@ namespace piranha
 			tmp.push_back(tmp_key);
 			retval.push_back(tmp);
 		}
+	}
+
+	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
+	template <int N>
+	struct series_flattener {
+		p_static_check(N > 0,"");
+		template <class CfSeries, class Term, class ArgsTuple>
+		static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &args_tuple)
+		{
+			// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
+			// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
+			piranha_assert(!cf_series.empty());
+			const CfSeries tmp(cf_series);
+			for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
+				cf_series.clear_terms();
+				cf_series.insert(*it,args_tuple);
+				series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,args_tuple);
+			}
+		}
+	};
+
+	template <>
+	struct series_flattener<0> {
+		template <class Cf, class Term, class ArgsTuple>
+		static void run(Cf &, Term &term, std::vector<Term> &out, const ArgsTuple &)
+		{
+			out.push_back(term);
+		}
+	};
+
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <class ArgsTuple>
+	inline std::vector<typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_type>
+		toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::flatten_terms(const ArgsTuple &args_tuple) const
+	{
+		std::vector<term_type> retval;
+		term_type term;
+		const const_iterator it_f(end());
+		for (const_iterator it = begin(); it != it_f; ++it) {
+			// Create the term that will be inserted at the end of the recursion.
+			term = *it;
+			// Start the recursion.
+			series_flattener<echelon_level>::run(term.m_cf,term,retval,args_tuple);
+		}
+		return retval;
 	}
 }
 

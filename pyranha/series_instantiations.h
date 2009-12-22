@@ -146,6 +146,7 @@ namespace pyranha
 		inst.add_property("norm", &T::norm, "Norm.");
 		inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");
 		inst.def("swap", &T::swap, "Swap contents with series arg2.");
+		inst.def("flatten", &T::flatten, "Flatten series.");
 		// Equality.
 		inst.def(boost::python::self == double());
 		inst.def(boost::python::self == piranha::mp_rational());

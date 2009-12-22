@@ -387,6 +387,33 @@ namespace piranha
 		}
 		return retval;
 	}
+
+	/// Flatten series.
+	/**
+	 * At echelon level 0, this method will return a vector of series each one consisting of a single term of the original series.
+	 * For echelon levels above 0, each coefficient series will also consist of only one term. This method, in other words, flattens
+	 * out the tree structure of echeloned series into a vector of single-term series, whose coefficients series are also single-term series
+	 * and so on. For instance, the Poisson series
+	 * \f[
+	 * \left(x + y\right) \cos a + z
+	 * \f]
+	 * will be flattened into the vector \f$\left[ x\cos a, y\cos a, z \right]\f$.
+	 */
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::flatten() const
+	{
+		const std::vector<typename Derived::term_type> tmp(derived_const_cast->flatten_terms(m_arguments));
+		std::vector<Derived> retval;
+		const typename std::vector<typename Derived::term_type>::const_iterator it_f(tmp.end());
+		for (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != it_f; ++it) {
+			Derived tmp_series;
+			tmp_series.insert(*it,m_arguments);
+			tmp_series.trim();
+			retval.push_back(Derived());
+			retval.back().swap(tmp_series);
+		}
+		return retval;
+	}
 }
 
 #undef derived_const_cast

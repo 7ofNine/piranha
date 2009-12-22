@@ -201,6 +201,8 @@ namespace piranha
 			static void ll_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
 			template <class Series, class ArgsTuple>
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
 		private:
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
@@ -241,6 +243,7 @@ namespace piranha
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name > >
 
+	// NOTE: move these just where they are used?
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
 	template <class Iterator>
