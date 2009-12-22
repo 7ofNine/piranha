@@ -122,8 +122,8 @@ namespace piranha
 					typedef int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
 				public:
 					ei_sub_cache():ancestor::int_power_cache() {}
-					// NOTE: here we assume that s as absolute value equal to one, which lets us calculate its
-					// inverse as conjugate.
+					// NOTE: here we assume that s has absolute value equal to one, which lets us calculate its
+					// inverse as conjugate. Note it into the documentation.
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
 					{
 						this->m_arith_functor.m_args_tuple = args_tuple;
@@ -133,6 +133,9 @@ namespace piranha
 					}
 			};
 		public:
+			// NOTE: here and in expo array possibly we can check somehow that the highest/lowest degree representable
+			// is within the range of representability of int 8/16 times the maximum number of exponents/trig multipliers
+			// resulting by size_type. Or something like that. It's 1 am and I'm fucking tired.
 			typedef int h_degree_type;
 			typedef typename ancestor::value_type value_type;
 			typedef typename ancestor::size_type size_type;

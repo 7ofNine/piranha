@@ -31,7 +31,7 @@ typedef dpoly poly;
 int main()
 {
 //settings::debug(true);
-settings::set_nthread(1);
+settings::set_nthread(2);
   psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
   a = std::pow(a,30);
