@@ -24,6 +24,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/type_traits/integral_constant.hpp> // For type traits.
 #include <cmath>
 #include <cstddef>
 #include <memory> // For default allocator.
@@ -36,6 +37,7 @@
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../q_power_cache.h"
+#include "../type_traits.h"
 #include "../utils.h"
 
 #define __PIRANHA_Q_EXPO_ARRAY_TP_DECL int Pos, class Allocator
@@ -392,6 +394,10 @@ namespace piranha
 				return retval;
 			}
 	};
+
+	/// is_exact type trait specialisation for q_expo_array.
+	template <__PIRANHA_Q_EXPO_ARRAY_TP_DECL>
+	struct is_exact<toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >: boost::true_type {};
 }
 
 #undef __PIRANHA_Q_EXPO_ARRAY_TP_DECL

@@ -118,12 +118,21 @@ namespace piranha
 		piranha_throw(value_error,"rational coefficient is unsuitable for complex exponentiation");
 	}
 
-	// Specialise lightweight type trait for mpq coefficients.
+	/// is_lightweight trait specialisation for mpq_cf.
 	template <>
 	struct is_lightweight<mpq_cf>: boost::true_type {};
 
+	/// is_lightweight trait specialisation for std::complex<mpq_cf>.
 	template <>
 	struct is_lightweight<std::complex<mpq_cf> >: boost::true_type {};
+
+	/// is_exact type trait specialisation for mpq_cf.
+	template <>
+	struct is_exact<mpq_cf>: boost::true_type {};
+
+	/// is_exact type trait specialisation for std::complex<mpq_cf>.
+	template <>
+	struct is_exact<std::complex<mpq_cf> >: boost::true_type {};
 }
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/type_traits/integral_constant.hpp> // For type traits.
 #include <complex> // For std::complex<SubSeries>.
 #include <cstddef>
 #include <iostream>
@@ -40,6 +41,7 @@
 #include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
+#include "../type_traits.h"
 #include "../utils.h" // For lexical converter.
 // NOTE: remove when efficient trig evaluation is implemented.
 #include "trig_evaluator.h"
@@ -674,6 +676,10 @@ namespace piranha
 				return retval;
 			}
 	};
+
+	/// is_exact type trait specialisation for trig_array.
+	template <__PIRANHA_TRIG_ARRAY_TP_DECL>
+	struct is_exact<toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >: boost::true_type {};
 }
 
 #undef __PIRANHA_TRIG_ARRAY_TP_DECL

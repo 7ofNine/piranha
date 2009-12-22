@@ -36,6 +36,7 @@
 #include "../integer_typedefs.h"
 #include "../math.h" // For lg.
 #include "../memory.h"
+#include "../type_traits.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)

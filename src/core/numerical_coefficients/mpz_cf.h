@@ -97,12 +97,21 @@ namespace std
 
 namespace piranha
 {
-	// Specialise lightweight type trait for mpz coefficients.
+	/// is_lightweight type trait specialisation for mpz_cf.
 	template <>
 	struct is_lightweight<mpz_cf>: boost::true_type {};
 
+	/// is_lightweight type trait specialisation for std::complex<mpz_cf>.
 	template <>
 	struct is_lightweight<std::complex<mpz_cf> >: boost::true_type {};
+
+	/// is_exact type trait specialisation for mpz_cf.
+	template <>
+	struct is_exact<mpz_cf>: boost::true_type {};
+
+	/// is_exact type trait specialisation for std::complex<mpz_cf>.
+	template <>
+	struct is_exact<std::complex<mpz_cf> >: boost::true_type {};
 }
 
 #endif

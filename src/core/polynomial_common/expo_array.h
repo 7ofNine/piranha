@@ -24,6 +24,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/conversion/converter.hpp>
+#include <boost/type_traits/integral_constant.hpp> // For type traits.
 #include <cmath> // For std::abs and std::pow (this last is most likely temporary).
 #include <cstddef>
 #include <iostream>
@@ -41,6 +42,7 @@
 #include "../mp.h"
 #include "../psym.h"
 #include "../settings.h"
+#include "../type_traits.h"
 #include "../utils.h" // For lexical_cast.
 
 #define __PIRANHA_EXPO_ARRAY_TP_DECL int Bits, int Pos, class Allocator
@@ -392,6 +394,10 @@ namespace piranha
 				return toolbox(*this);
 			}
 	};
+
+	/// is_exact type trait specialisation for expo_array.
+	template <__PIRANHA_EXPO_ARRAY_TP_DECL>
+	struct is_exact<toolbox<expo_array<__PIRANHA_EXPO_ARRAY_TP> > >: boost::true_type {};
 }
 
 #undef __PIRANHA_EXPO_ARRAY_TP_DECL

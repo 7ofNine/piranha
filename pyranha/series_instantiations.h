@@ -110,6 +110,12 @@ namespace pyranha
 		return Series::echelon_level;
 	}
 
+	template <class Series>
+	static inline bool py_is_exact()
+	{
+		return Series::is_exact;
+	}
+
 	/// Basic series instantiation.
 	template <class T>
 	inline boost::python::class_<T> series_basic_instantiation(const std::string &name, const std::string &description)
@@ -136,6 +142,7 @@ namespace pyranha
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
 		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
+		inst.add_static_property("is_exact", &py_is_exact<T>, "is_exact type trait for the series.");
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");

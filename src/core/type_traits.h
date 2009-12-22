@@ -64,7 +64,20 @@ namespace piranha
 			typedef std::complex<double> type;
 	};
 
+	/// Default lightweight type trait.
+	/**
+	 * Used to determine if it is worth to cache objects in contiguous memory areas during
+	 * performance-critical sections. Defaults to false.
+	 */
 	template <class>
 	struct is_lightweight: boost::false_type {};
+
+	/// Default type trait for exact computations.
+	/**
+	 * Used to determine whether computations with the class are exact (e.g., integer and
+	 * rational types) or not (e.g., floating-point). Defaults to false.
+	 */
+	template <class>
+	struct is_exact: boost::false_type {};
 }
 #endif
