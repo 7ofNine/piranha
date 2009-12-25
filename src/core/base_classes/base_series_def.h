@@ -33,6 +33,7 @@
 #include "../mp.h"
 #include "../null_type.h"
 #include "../psym.h"
+#include "../type_traits.h"
 #include "toolbox.h"
 
 // Useful shortcuts.
