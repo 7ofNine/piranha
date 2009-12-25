@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -134,7 +134,7 @@ def hyperF(a_sequence,b_sequence,z,limit = None):
 	except TypeError, ArgumentError:
 		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
 	except AttributeError:
-		raise TypeError('z does not provide an hyperZ() method.')
+		raise TypeError('z does not provide an hyperF() method.')
 
 def dhyperF(a_sequence,b_sequence,z,limit = None,order = 1):
 	"""
@@ -154,7 +154,7 @@ def dhyperF(a_sequence,b_sequence,z,limit = None,order = 1):
 	except TypeError, ArgumentError:
 		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
 	except AttributeError:
-		raise TypeError('z does not provide an hyperZ() method.')
+		raise TypeError('z does not provide an hyperF() method.')
 
 def besselJ(order,arg):
 	"""
