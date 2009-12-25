@@ -22,6 +22,7 @@
 #define PIRANHA_FOURIER_SERIES_H
 
 #include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
@@ -88,6 +89,14 @@ namespace piranha
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
+
+	/// is_exact type trait specialisation for fourier_series.
+	template <E0_SERIES_TP_DECL>
+	struct is_exact<FOURIER_SERIES>: boost::integral_constant<bool,series_trait<FOURIER_SERIES,is_exact,true>::value>::type {};
+
+	/// is_trig_exact type trait specialisation for fourier_series.
+	template <E0_SERIES_TP_DECL>
+	struct is_trig_exact<FOURIER_SERIES>: boost::integral_constant<bool,series_trait<FOURIER_SERIES,is_trig_exact,false>::value>::type {};
 }
 
 #define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::fourier_series_term)

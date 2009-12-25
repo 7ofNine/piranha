@@ -22,6 +22,7 @@
 #define PIRANHA_POLYNOMIAL_H
 
 #include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
@@ -41,6 +42,7 @@
 #include "../mp.h"
 #include "../polynomial_common/base_polynomial.h"
 #include "../polynomial_common/monomial.h"
+#include "../type_traits.h"
 #include "named_polynomial.h"
 
 #define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::monomial)
@@ -84,6 +86,10 @@ namespace piranha
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
+
+	/// is_exact type trait specialisation for polynomial.
+	template <E0_SERIES_TP_DECL>
+	struct is_exact<POLYNOMIAL>: boost::integral_constant<bool,series_trait<POLYNOMIAL,is_exact,true>::value>::type {};
 }
 
 #define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::monomial)

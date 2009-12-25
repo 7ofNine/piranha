@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POLYNOMIAL_CF_H
 #define PIRANHA_POLYNOMIAL_CF_H
 
+#include <boost/type_traits/integral_constant.hpp>
 #include <complex>
 
 #include "../base_classes/base_series.h"
@@ -37,6 +38,7 @@
 #include "../exceptions.h"
 #include "../polynomial_common/base_polynomial.h"
 #include "../polynomial_common/monomial.h"
+#include "../type_traits.h"
 #include "common_polynomial_cf_toolbox.h"
 
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::monomial,'!')
@@ -76,6 +78,10 @@ namespace piranha
 				this->base_construct_from_psym(p, n, a);
 			}
 	};
+
+	/// is_exact type trait specialisation for polynomial_cf.
+	template <E0_SERIES_TP_DECL>
+	struct is_exact<POLYNOMIAL_CF>: boost::integral_constant<bool,series_trait<POLYNOMIAL_CF,is_exact,true>::value>::type {};
 }
 
 #define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_CF_SERIES_TERM(piranha::monomial,'!')

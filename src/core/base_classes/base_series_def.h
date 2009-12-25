@@ -33,7 +33,6 @@
 #include "../mp.h"
 #include "../null_type.h"
 #include "../psym.h"
-#include "../type_traits.h"
 #include "toolbox.h"
 
 // Useful shortcuts.
@@ -42,20 +41,6 @@
 
 namespace piranha
 {
-	// Recursively examine the echelon hierarchy of a series: if TypeTrait is true for all elements
-	// of the hierarchy, then value is also true, otherwise it is false.
-	template<class Series, int N, template <class> class TypeTrait>
-	struct recursive_series_trait_impl {
-		static const bool value =
-			(recursive_series_trait_impl<typename Series::term_type::cf_type,N - 1,TypeTrait>::value &&
-			TypeTrait<typename Series::term_type::key_type>::value);
-	};
-
-	template<class Cf, template <class> class TypeTrait>
-	struct recursive_series_trait_impl<Cf,0,TypeTrait> {
-		static const bool value = TypeTrait<Cf>::value;
-	};
-
 	template <class Series, int N>
 	struct echelon_level_impl {
 		static const int value = echelon_level_impl<typename Series::next_echelon_type,N + 1>::value;
@@ -89,13 +74,6 @@ namespace piranha
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
 			static const int echelon_level = echelon_level_impl<Derived,0>::value;
-			/// is_exact type trait.
-			/**
-			 * Calculated examining all the elements of the echelon hierarchy: if all the elements are exact
-			 * (according to the piranha::is_exact type trait), then also the series is considered exact.
-			 * Otherwise it is not.
-			 */
-			static const bool is_exact = recursive_series_trait_impl<Derived,echelon_level + 1,piranha::is_exact>::value;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
 			typedef typename container_type::const_iterator const_iterator;
 			const_iterator begin() const;

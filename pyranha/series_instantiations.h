@@ -110,10 +110,26 @@ namespace pyranha
 		return Series::echelon_level;
 	}
 
-	template <class Series>
-	static inline bool py_is_exact()
+	template <class Series, template <class> class TypeTrait>
+	static inline bool py_type_trait()
 	{
-		return Series::is_exact;
+		return TypeTrait<Series>::value;
+	}
+
+	template <class Series>
+	struct py_is_complex_impl {
+		static const bool value = false;
+	};
+
+	template <class Series>
+	struct py_is_complex_impl<std::complex<Series> > {
+		static const bool value = true;
+	};
+
+	template <class Series>
+	static inline bool py_is_complex()
+	{
+		return py_is_complex_impl<Series>::value;
 	}
 
 	/// Basic series instantiation.
@@ -142,7 +158,16 @@ namespace pyranha
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
 		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
-		inst.add_static_property("is_exact", &py_is_exact<T>, "is_exact type trait for the series.");
+		if (piranha::is_exact<T>::value) {
+			inst.add_static_property("is_exact", &py_type_trait<T,piranha::is_exact>, "is_exact type trait for the series.");
+		}
+		if (piranha::is_trig_exact<T>::value) {
+			inst.add_static_property("is_trig_exact", &py_type_trait<T,piranha::is_trig_exact>,
+				"is_trig_exact type trait for the series.");
+		}
+		if (py_is_complex_impl<T>::value) {
+			inst.add_static_property("is_complex", &py_is_complex<T>, "is_complex type trait for the series.");
+		}
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");

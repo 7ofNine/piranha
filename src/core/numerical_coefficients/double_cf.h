@@ -151,12 +151,9 @@ namespace piranha
 		return retval;
 	}
 
-	// Specialise lightweight type trait for double coefficients.
+	/// is_lightweight type trait specialisation for double_cf.
 	template <>
 	struct is_lightweight<double_cf>: boost::true_type {};
-
-	template <>
-	struct is_lightweight<std::complex<double_cf> >: boost::true_type {};
 }
 
 #endif

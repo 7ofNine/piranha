@@ -72,6 +72,13 @@ namespace piranha
 	template <class>
 	struct is_lightweight: boost::false_type {};
 
+	/// is_lightweight type trait specialization for complex types.
+	/**
+	 * Inherits the type trait from the value_type of the complex class.
+	 */
+	template <class T>
+	struct is_lightweight<std::complex<T> >: is_lightweight<T>::type {};
+
 	/// Default type trait for exact computations.
 	/**
 	 * Used to determine whether computations with the class are exact (e.g., integer and
@@ -79,5 +86,59 @@ namespace piranha
 	 */
 	template <class>
 	struct is_exact: boost::false_type {};
+
+	/// is_exact type trait specialization for complex types.
+	/**
+	 * Inherits the type trait from the value_type of the complex class.
+	 */
+	template <class T>
+	struct is_exact<std::complex<T> >: is_exact<T>::type {};
+
+	/// Default type trait for trigonometric classes.
+	/**
+	 * Used to determine whether the class can represent basic trigonometric functions
+	 * (sin and cos) exactly. Defaults to false.
+	 */
+	template <class>
+	struct is_trig_exact: boost::false_type {};
+
+	/// is_trig_exact type trait specialization for complex types.
+	/**
+	 * Inherits the type trait from the value_type of the complex class.
+	 */
+	template <class T>
+	struct is_trig_exact<std::complex<T> >: is_trig_exact<T>::type {};
+
+	// Recursively examine the echelon hierarchy of a series: if TypeTrait is true for all elements
+	// of the hierarchy, then value is also true, otherwise it is false.
+	template<class Series, int N, template <class> class TypeTrait, bool IsAnd>
+	struct series_trait_impl {
+		static const bool value =
+			IsAnd ?
+				(series_trait_impl<typename Series::term_type::cf_type,N - 1,TypeTrait,IsAnd>::value &&
+				TypeTrait<typename Series::term_type::key_type>::value)
+			:
+				(series_trait_impl<typename Series::term_type::cf_type,N - 1,TypeTrait,IsAnd>::value ||
+				TypeTrait<typename Series::term_type::key_type>::value)
+			;
+	};
+
+	template<class Cf, template <class> class TypeTrait, bool IsAnd>
+	struct series_trait_impl<Cf,0,TypeTrait,IsAnd> {
+		static const bool value = TypeTrait<Cf>::value;
+	};
+
+	/// Type-trait helper for series.
+	/**
+	 * This struct defines a static const boolean value in the following way: if all (or any) of the elements of the series hierarchy
+	 * have satisfied the type trait TypeTrait, then value is true, otherwise value is false.
+	 * The choice between logical OR and logical AND is dictated by the boolean flag IsAnd.
+	 */
+	template <class Series, template <class> class TypeTrait, bool IsAnd>
+	struct series_trait {
+		/// Static boolean value.
+		static const bool value = series_trait_impl<Series,Series::echelon_level + 1,TypeTrait,IsAnd>::value;
+	};
 }
+
 #endif

@@ -112,17 +112,14 @@ def suite_math():
 	suite.addTest(rf_factorial_test())
 	return suite
 
-import pyranha.Qqpoly
-import pyranha.Qqps
-import pyranha.Qps
-import pyranha.Qpoly
+from pyranha import manipulators
 
-scalar_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps, pyranha.Qpoly.qpoly, pyranha.Qqpoly.qqpoly]
-complex_exact_series_types = [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc, pyranha.Qpoly.qpolyc, pyranha.Qqpoly.qqpolyc]
+scalar_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and not hasattr(m,'is_complex'),manipulators)
+complex_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_complex'),manipulators)
 exact_series_types = scalar_exact_series_types + complex_exact_series_types
 
-scalar_trig_exact_series_types = [pyranha.Qps.qps, pyranha.Qqps.qqps]
-complex_trig_exact_series_types = [pyranha.Qps.qpsc, pyranha.Qqps.qqpsc]
+scalar_trig_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex'),manipulators)
+complex_trig_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_trig_exact') and hasattr(m,'is_complex'),manipulators)
 trig_exact_series_types = scalar_trig_exact_series_types + complex_trig_exact_series_types
 
 class series_sf_test01(unittest.TestCase):

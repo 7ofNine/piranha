@@ -22,6 +22,7 @@
 #define PIRANHA_POISSON_SERIES_H
 
 #include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
@@ -91,6 +92,14 @@ namespace piranha
 			using toolbox<common_poisson_series< POISSON_SERIES > >::sub;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
+
+	/// is_exact type trait specialisation for poisson_series.
+	template <E1_SERIES_TP_DECL>
+	struct is_exact<POISSON_SERIES>: boost::integral_constant<bool,series_trait<POISSON_SERIES,is_exact,true>::value>::type {};
+
+	/// is_trig_exact type trait specialisation for poisson_series.
+	template <E1_SERIES_TP_DECL>
+	struct is_trig_exact<POISSON_SERIES>: boost::integral_constant<bool,series_trait<POISSON_SERIES,is_trig_exact,false>::value>::type {};
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
