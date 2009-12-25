@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -132,8 +132,8 @@ def __series_repr(self):
 	"""
 	__repr__ method that prints the series' type and then the series itself in pretty print.
 	"""
-	retval = 'Series type: %s\n' % self.__short_type__
-	retval += self.__impl_repr__() + '\n'
+	retval = '%s series: ' % self.__short_type__
+	retval += self.__impl_repr__()
 	return retval
 
 def __series_contains(self,name):
