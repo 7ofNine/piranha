@@ -397,7 +397,7 @@ namespace piranha
 	 * \f[
 	 * \left(x + y\right) \cos a + z
 	 * \f]
-	 * will be flattened into the vector \f$\left[ x\cos a, y\cos a, z \right]\f$.
+	 * will be flattened into the vector \f$ \left[ x\cos a, y\cos a, z \right] \f$.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::flatten() const
