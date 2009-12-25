@@ -79,20 +79,20 @@ namespace piranha
 	template <class T>
 	struct is_lightweight<std::complex<T> >: is_lightweight<T>::type {};
 
-	/// Default type trait for exact computations.
+	/// Default type trait for exact ring operations.
 	/**
-	 * Used to determine whether computations with the class are exact (e.g., integer and
-	 * rational types) or not (e.g., floating-point). Defaults to false.
+	 * Used to determine whether ring operations (add, sub and mult) with the class are exact (e.g., integer and
+	 * rational types) or not (e.g., floating-point types). Defaults to false.
 	 */
 	template <class>
-	struct is_exact: boost::false_type {};
+	struct is_ring_exact: boost::false_type {};
 
-	/// is_exact type trait specialization for complex types.
+	/// is_ring_exact type trait specialization for complex types.
 	/**
 	 * Inherits the type trait from the value_type of the complex class.
 	 */
 	template <class T>
-	struct is_exact<std::complex<T> >: is_exact<T>::type {};
+	struct is_ring_exact<std::complex<T> >: is_ring_exact<T>::type {};
 
 	/// Default type trait for trigonometric classes.
 	/**
@@ -108,6 +108,21 @@ namespace piranha
 	 */
 	template <class T>
 	struct is_trig_exact<std::complex<T> >: is_trig_exact<T>::type {};
+
+	/// Default type trait for classes dividable by int.
+	/**
+	 * Used to determine whether the class can be divided exactly by an int
+	 * (e.g., rationals). Defaults to false.
+	 */
+	template <class>
+	struct is_divint_exact: boost::false_type {};
+
+	/// is_divint_exact type trait specialization for complex types.
+	/**
+	 * Inherits the type trait from the value_type of the complex class.
+	 */
+	template <class T>
+	struct is_divint_exact<std::complex<T> >: is_divint_exact<T>::type {};
 
 	// Recursively examine the echelon hierarchy of a series: if TypeTrait is true for all elements
 	// of the hierarchy, then value is also true, otherwise it is false.

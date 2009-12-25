@@ -114,12 +114,12 @@ def suite_math():
 
 from pyranha import manipulators
 
-scalar_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and not hasattr(m,'is_complex'),manipulators)
-complex_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_complex'),manipulators)
+scalar_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and not hasattr(m,'is_complex'),manipulators)
+complex_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_complex'),manipulators)
 exact_series_types = scalar_exact_series_types + complex_exact_series_types
 
-scalar_trig_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex'),manipulators)
-complex_trig_exact_series_types = filter(lambda m: hasattr(m,'is_exact') and hasattr(m,'is_trig_exact') and hasattr(m,'is_complex'),manipulators)
+scalar_trig_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex'),manipulators)
+complex_trig_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and hasattr(m,'is_complex'),manipulators)
 trig_exact_series_types = scalar_trig_exact_series_types + complex_trig_exact_series_types
 
 class series_sf_test01(unittest.TestCase):
@@ -165,9 +165,10 @@ class series_sf_test02(unittest.TestCase):
 		from pyranha.Truncators import truncators
 		# Legendre polynomials.
 		truncators.unset()
-		for t in exact_series_types:
+		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
 			x = t(psym('x'))
 			for n in range(0,50):
+				print n
 				self.assertEqual((-x).legendrePn(n),cs_phase(n) * x.legendrePn(n))
 				self.assertEqual(t(1).legendrePn(n),1)
 				# TODO: modify this when we implement substitution by complex series.
@@ -185,7 +186,7 @@ class series_sf_test02(unittest.TestCase):
 				self.assertEqual(x.legendrePn(n),rational(1) / (integer(2) ** n * integer(n).factorial()) * ((x ** 2 - 1) ** n).partial('x',n))
 		# Associated Legendre functions.
 		# TODO: Gaunt's formula and odd values of m.
-		for t in exact_series_types:
+		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
 			x = t(psym('x'))
 			for n in range(-20,20):
 				for m in range(-n,n):

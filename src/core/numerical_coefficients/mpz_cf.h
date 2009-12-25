@@ -58,6 +58,14 @@ namespace piranha
 				return (m_value == 0);
 			}
 	};
+
+	/// is_lightweight type trait specialisation for mpz_cf.
+	template <>
+	struct is_lightweight<mpz_cf>: boost::true_type {};
+
+	/// is_ring_exact type trait specialisation for mpz_cf.
+	template <>
+	struct is_ring_exact<mpz_cf>: boost::true_type {};
 }
 
 namespace std
@@ -93,17 +101,6 @@ namespace std
 				return m_value.to_complex_double();
 			}
 	};
-}
-
-namespace piranha
-{
-	/// is_lightweight type trait specialisation for mpz_cf.
-	template <>
-	struct is_lightweight<mpz_cf>: boost::true_type {};
-
-	/// is_exact type trait specialisation for mpz_cf.
-	template <>
-	struct is_exact<mpz_cf>: boost::true_type {};
 }
 
 #endif

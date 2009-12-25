@@ -395,9 +395,9 @@ namespace piranha
 			}
 	};
 
-	/// is_exact type trait specialisation for q_expo_array.
+	/// is_ring_exact type trait specialisation for q_expo_array.
 	template <__PIRANHA_Q_EXPO_ARRAY_TP_DECL>
-	struct is_exact<toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >: boost::true_type {};
+	struct is_ring_exact<toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >: boost::true_type {};
 }
 
 #undef __PIRANHA_Q_EXPO_ARRAY_TP_DECL

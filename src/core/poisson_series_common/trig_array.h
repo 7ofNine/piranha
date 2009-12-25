@@ -677,9 +677,9 @@ namespace piranha
 			}
 	};
 
-	/// is_exact type trait specialisation for trig_array.
+	/// is_ring_exact type trait specialisation for trig_array.
 	template <__PIRANHA_TRIG_ARRAY_TP_DECL>
-	struct is_exact<toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >: boost::true_type {};
+	struct is_ring_exact<toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >: boost::true_type {};
 
 	/// is_trig_exact type trait specialisation for trig_array.
 	template <__PIRANHA_TRIG_ARRAY_TP_DECL>

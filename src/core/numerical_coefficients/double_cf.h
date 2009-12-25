@@ -106,6 +106,10 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
 	};
+
+	/// is_lightweight type trait specialisation for double_cf.
+	template <>
+	struct is_lightweight<double_cf>: boost::true_type {};
 }
 
 namespace std
@@ -150,10 +154,6 @@ namespace piranha
 		retval.m_value = std::polar(1., m_value);
 		return retval;
 	}
-
-	/// is_lightweight type trait specialisation for double_cf.
-	template <>
-	struct is_lightweight<double_cf>: boost::true_type {};
 }
 
 #endif

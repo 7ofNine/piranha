@@ -158,12 +158,17 @@ namespace pyranha
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
 		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
-		if (piranha::is_exact<T>::value) {
-			inst.add_static_property("is_exact", &py_type_trait<T,piranha::is_exact>, "is_exact type trait for the series.");
+		if (piranha::is_ring_exact<T>::value) {
+			inst.add_static_property("is_ring_exact", &py_type_trait<T,piranha::is_ring_exact>,
+				"is_ring_exact type trait for the series.");
 		}
 		if (piranha::is_trig_exact<T>::value) {
 			inst.add_static_property("is_trig_exact", &py_type_trait<T,piranha::is_trig_exact>,
 				"is_trig_exact type trait for the series.");
+		}
+		if (piranha::is_divint_exact<T>::value) {
+			inst.add_static_property("is_divint_exact", &py_type_trait<T,piranha::is_divint_exact>,
+				"is_divint_exact type trait for the series.");
 		}
 		if (py_is_complex_impl<T>::value) {
 			inst.add_static_property("is_complex", &py_is_complex<T>, "is_complex type trait for the series.");
