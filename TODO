@@ -64,7 +64,11 @@
   function as much as possible.
 - in speical functions and the likes, use mp types when interacting with factorials and friends, so we don't worry about
   overflows.
-- C++0x: use explicit cast operations to solve the problem of to_long() conversion of MP types to max_fast_int.
+- C++0x: use explicit cast operations to solve the problem of to_long() conversion of MP types to max_fast_int - but maybe here we can
+  use templatized to_value<> member function with policies?
+- meta-programmed checker for delimiters in series hierarchy (i.e., delimiters for keys, cf_series, etc. must not clash).
+- check that there are no other static data that are using the counting allocator, otherwise we could incur into issues when program ends and
+  static stuff for counting allocator is destroyed before all memory allocated with it has been reclaimed.
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container

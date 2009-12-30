@@ -107,6 +107,7 @@ BOOST_PYTHON_MODULE(_Core)
 	mpz.def(init<const mp_rational &>());
 	mpz.def("factorial", &mp_integer::factorial, "Factorial.");
 	mpz.def("choose", &mp_integer::choose, "Binomial coefficient (choose function).");
+	mpz.def("lcm", &mp_integer::lcm, "Set self to the least common multiplier of input arguments.");
 	mpz.def(boost::python::self %= mp_integer());
 	mpz.def(boost::python::self %= int());
 	mpz.def(boost::python::self % mp_integer());

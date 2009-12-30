@@ -603,6 +603,16 @@ namespace piranha
 			{
 				mpz_addmul(m_value.get_mpz_t(),y.m_value.get_mpz_t(),z.m_value.get_mpz_t());
 			}
+			/// Least common multiplier.
+			/**
+			 * Set this to the least common multiplier of a and b.
+			 * Will use GMP's mpz_lcm() function, see
+			 * http://gmplib.org/manual/Number-Theoretic-Functions.html#Number-Theoretic-Functions.
+			 */
+			void lcm(const mp_integer &a, const mp_integer &b)
+			{
+				mpz_lcm(m_value.get_mpz_t(),a.m_value.get_mpz_t(),b.m_value.get_mpz_t());
+			}
 			/// Hash value.
 			/**
 			 * Internally uses boost::hash_combine on the GMP limbs of the number.
