@@ -201,23 +201,30 @@ namespace piranha {
 		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_coding_tuple type_coding_tuple;
 	};
 
-	// Initialise the tuples-of-vectors types in coded multiplier with proper vector sizes.
 	template <class Series, class Tuple>
-	struct cm_init_vector_tuples {
+	struct cm_init_vector_tuples_impl {
 		template <class ArgsTuple>
 		static void run(const ArgsTuple &args_tuple, Tuple &t)
 		{
 			t.get_head().resize(args_tuple.template get<Series::term_type::key_type::position>().size());
-			cm_init_vector_tuples<typename Series::term_type::cf_type,typename Tuple::tail_type>::run(args_tuple,t.get_tail());
+			cm_init_vector_tuples_impl<typename Series::term_type::cf_type,typename Tuple::tail_type>::run(args_tuple,t.get_tail());
 		}
 	};
 
 	template <class Series>
-	struct cm_init_vector_tuples<Series,boost::tuples::null_type>
+	struct cm_init_vector_tuples_impl<Series,boost::tuples::null_type>
 	{
 		template <class ArgsTuple>
 		static void run(const ArgsTuple &, const boost::tuples::null_type &) {}
 	};
+
+	// Initialise the tuples-of-vectors types in coded multiplier with proper vector sizes.
+	template <class Series, class Tuple, class ArgsTuple>
+	inline void cm_init_vector_tuple(Tuple &t, const ArgsTuple &args_tuple)
+	{
+		p_static_check(boost::tuples::length<Tuple>::value == Series::echelon_level + 1,"");
+		cm_init_vector_tuples_impl<Series,Tuple>::run(args_tuple,t);
+	}
 
 	template <class MinMaxTuple>
 	struct cm_minmax2 {
@@ -382,33 +389,36 @@ namespace piranha {
 		cm_mp_ct_impl<MpCt>::run(prev_value,prev_interval,mp_ct,mp_gt);
 	}
 
-	// Calculate the dot product between two tuples of vectors. The result is assumed to be of the same type
-	// of the values held in the head of the tuple.
 	template <class Tuple1, class Tuple2>
-	struct tuple_vector_dot {
+	struct tuple_vector_dot_impl {
 		p_static_check(boost::tuples::length<Tuple1>::value == boost::tuples::length<Tuple2>::value,"");
 		typedef typename Tuple1::head_type::value_type value_type;
 		typedef typename Tuple1::head_type::size_type size_type;
+		p_static_check((boost::is_same<size_type,typename Tuple2::head_type::size_type>::value),"");
 		static void run(const Tuple1 &t1, const Tuple2 &t2, value_type &retval)
 		{
 			piranha_assert(t1.get_head().size() == t2.get_head().size());
 			for (size_type i = 0; i < t1.get_head().size(); ++i) {
 				retval += t1.get_head()[i] * t2.get_head()[i];
 			}
-			tuple_vector_dot<typename Tuple1::tail_type, typename Tuple2::tail_type>::run(
+			tuple_vector_dot_impl<typename Tuple1::tail_type, typename Tuple2::tail_type>::run(
 				t1.get_tail(),t2.get_tail(),retval);
 		}
 	};
 
 	template <>
-	struct tuple_vector_dot<boost::tuples::null_type,boost::tuples::null_type> {
+	struct tuple_vector_dot_impl<boost::tuples::null_type,boost::tuples::null_type> {
 		template <class T>
 		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &, const T &) {}
 	};
 
-	// To test whether a representation is viable or not, we need to test for the following things:
-	// - mp_h_minmax must be in the max_fast_int range;
-	// - mp_h_minmax's width must be in the max_fast_int range.
+	// Calculate the dot product between two tuples of vectors. The result is assumed to be of the same type
+	// of the values held in the head of the tuple.
+	template <class Tuple1, class Tuple2>
+	inline void tuple_vector_dot(const Tuple1 &t1, const Tuple2 &t2, typename Tuple1::head_type::value_type &retval)
+	{
+		tuple_vector_dot_impl<Tuple1,Tuple2>::run(t1,t2,retval);
+	}
 }
 
 #endif
