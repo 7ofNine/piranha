@@ -29,6 +29,9 @@
 
 namespace piranha
 {
+	// NOTE: beware here, we are hard-coding integer type here. Which is not good if we want to be really generic.
+	// Maybe make it template parameter. Must be coordinated with all the expo_type, degree_type etc. stuff.
+
 	// Uses exponentiation by squaring (EBS) internally. Computed values are stored in a hash
 	// map and re-used to calculate new values. To use it, simply construct and request the
 	// value with operator[].
