@@ -22,6 +22,7 @@
 #define PIRANHA_CODED_MULTIPLIER_MP_H
 
 #include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -68,6 +69,12 @@ namespace piranha {
 		// Harmonization of two vh won't do anything by default.
 		static void harmonize(cm_value_handler &, std::vector<boost::numeric::interval<T> > &,
 			cm_value_handler &, std::vector<boost::numeric::interval<T> > &) {}
+		// Convert to max_fast_int.
+		max_fast_int to_max_fast_int(const T &x) const
+		{
+std::cout << boost::numeric_cast<max_fast_int>(x) << '\n';
+			return boost::numeric_cast<max_fast_int>(x);
+		}
 	};
 
 	// Value handler class for rationals.
@@ -121,6 +128,12 @@ namespace piranha {
 		{
 			vh1.compute_new_lcd_and_update(minmax1,vh2.m_lcd);
 			vh2.compute_new_lcd_and_update(minmax2,vh1.m_lcd);
+		}
+		// Convert to max_fast_int.
+		max_fast_int to_max_fast_int(const mp_rational &q) const
+		{
+std::cout << boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(q * m_lcd)) << '\n';
+			return boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(q * m_lcd));
 		}
 		// Store current lcd into m_old_lcd, compute lcd between current lcd and input argument value,
 		// store it into m_lcd and update the minmax vector to take into account the new lcd if needed.
@@ -418,6 +431,109 @@ namespace piranha {
 	inline void tuple_vector_dot(const Tuple1 &t1, const Tuple2 &t2, typename Tuple1::head_type::value_type &retval)
 	{
 		tuple_vector_dot_impl<Tuple1,Tuple2>::run(t1,t2,retval);
+	}
+
+	template <class MpTuple>
+	struct cm_mp_tuple_downcast_impl {
+		template <class FastTuple>
+		static void run(const MpTuple &mp_tuple, FastTuple &fast_tuple)
+		{
+			run_impl(mp_tuple.get_head(),fast_tuple.get_head());
+			cm_mp_tuple_downcast_impl<typename MpTuple::tail_type>::run(mp_tuple.get_tail(),fast_tuple.get_tail());
+		}
+		static void run_impl(const std::vector<mp_integer> &mp_vector, std::vector<max_fast_int> &fast_vector)
+		{
+			typedef std::vector<mp_integer>::size_type size_type;
+			p_static_check((boost::is_same<size_type,std::vector<max_fast_int>::size_type>::value),"");
+			piranha_assert(mp_vector.size() == fast_vector.size());
+			const size_type size = mp_vector.size();
+			for (size_type i = 0; i < size; ++i) {
+				fast_vector[i] = boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(mp_vector[i]));
+			}
+		}
+		static void run_impl(const std::vector<boost::numeric::interval<mp_integer> > &mp_vector,
+			std::vector<boost::numeric::interval<max_fast_int> > &fast_vector)
+		{
+			typedef std::vector<boost::numeric::interval<mp_integer> >::size_type size_type;
+			p_static_check((boost::is_same<size_type,std::vector<boost::numeric::interval<max_fast_int> >::size_type>::value),"");
+			piranha_assert(mp_vector.size() == fast_vector.size());
+			const size_type size = mp_vector.size();
+			for (size_type i = 0; i < size; ++i) {
+				fast_vector[i].assign(boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(mp_vector[i].lower())),
+				boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(mp_vector[i].upper())));
+			}
+		}
+	};
+
+	template <>
+	struct cm_mp_tuple_downcast_impl<boost::tuples::null_type> {
+		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
+
+	// Downcast a tuple of multiprecision integer (interval) vectors to tuple of max_fast_int integer
+	// (interval) vectors.
+	template <class MpTuple, class FastTuple>
+	inline void cm_mp_tuple_downcast(const MpTuple &mp_tuple, FastTuple &fast_tuple)
+	{
+		cm_mp_tuple_downcast_impl<MpTuple>::run(mp_tuple,fast_tuple);
+	}
+
+	// Check whether operations tuple contains at least one subtraction.
+	template <class OpTuple>
+	struct op_has_sub {
+		static const bool value = (!OpTuple::head_type::value) || op_has_sub<typename OpTuple::tail_type>::value;
+	};
+
+	template <>
+	struct op_has_sub<boost::tuples::null_type> {
+		static const bool value = false;
+	};
+
+	template <class OpTuple>
+	struct cm_code_impl2 {
+		template <class CodingTuple, class Cf, class VhTuple>
+		static void run(const CodingTuple &ct, const Cf &cf, const VhTuple &vh_tuple, max_fast_int &retval)
+		{
+			piranha_assert(cf.length() == 1);
+			piranha_assert(cf.begin()->m_key.size() <= ct.get_head().size());
+			typedef typename Cf::term_type::key_type::size_type size_type;
+			for (size_type i = 0; i < cf.begin()->m_key.size(); ++i) {
+				retval += ct.get_head()[i] * vh_tuple.get_head().to_max_fast_int(cf.begin()->m_key[i]);
+			}
+			cm_code_impl2<typename OpTuple::tail_type>::run(ct.get_tail(),cf.begin()->m_cf,vh_tuple.get_tail(),retval);
+		}
+	};
+
+	template <>
+	struct cm_code_impl2<boost::tuples::null_type> {
+		template <class Cf>
+		static void run(const boost::tuples::null_type &, const Cf &, const boost::tuples::null_type &, max_fast_int &) {}
+	};
+
+	template <class OpTuple>
+	struct cm_code_impl1 {
+		template <class CodingTuple, class Term, class VhTuple>
+		static void run(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple, max_fast_int &retval)
+		{
+			piranha_assert(term.m_key.size() <= ct.get_head().size());
+			typedef typename Term::key_type::size_type size_type;
+			// NOTE: again the assumption that the sizes of vector and key are compatible. Need to sort this out...
+			for (size_type i = 0; i < term.m_key.size(); ++i) {
+				retval += ct.get_head()[i] * vh_tuple.get_head().to_max_fast_int(term.m_key[i]);
+			}
+			cm_code_impl2<typename OpTuple::tail_type>::run(ct.get_tail(),term.m_cf,vh_tuple.get_tail(),retval);
+		}
+	};
+
+	// Code term using provided operations tuple type, coding tuple, value handler tuple and appending result to vector of codes v_codes.
+	template <class OpTuple, class CodingTuple, class Term, class VhTuple>
+	inline max_fast_int cm_code(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple)
+	{
+		p_static_check(boost::tuples::length<OpTuple>::value == boost::tuples::length<CodingTuple>::value,"");
+		p_static_check(boost::tuples::length<OpTuple>::value == boost::tuples::length<VhTuple>::value,"");
+		max_fast_int retval(0);
+		cm_code_impl1<OpTuple>::run(ct,term,vh_tuple,retval);
+		return retval;
 	}
 }
 

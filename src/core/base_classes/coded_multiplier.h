@@ -124,11 +124,21 @@ namespace piranha
 				// - m_mp_h must be in the max_fast_int range;
 				// - m_mp_h's width must be in the max_fast_int range.
 				// Use lexical cast for max interoperability between numerical types.
+				// NOTE: here probably we can reduce greatly the number of memory allocations...
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(
 					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_min)),
 					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_max)))) &&
 					boost::numeric::width(m_mp_h) <=
 					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_max))) {
+					// Mark representation as viable.
+					m_gr_is_viable = true;
+					// Downcast multiprecision to fast representation.
+					cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
+					cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
+					m_fast_h.assign(
+						boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(m_mp_h.lower())),
+						boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(m_mp_h.upper()))
+					);
 				}
 			}
 		protected:
@@ -137,7 +147,7 @@ namespace piranha
 			/// Multiprecision min/max values for the global representation.
 			mp_minmax_type				m_mp_gr;
 			/// Fast min/max values for the global representation.
-			minmax_type				m_fast_gr;
+			fast_minmax_type			m_fast_gr;
 			/// Value handler tuple for the first series.
 			value_handler_type			m_vh1;
 			/// Value handler tuple for the second series.
