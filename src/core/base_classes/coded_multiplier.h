@@ -26,7 +26,6 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <string>
 #include <vector>
 
 #include "../config.h"
@@ -93,13 +92,13 @@ namespace piranha
 			 */
 			void determine_viability()
 			{
+				// Make sure that the series have at least one term.
+				piranha_assert(derived_const_cast->m_terms1.size() > 0 &&
+					derived_const_cast->m_terms2.size() > 0);
 				// Declare and init the min/max types for the two series.
 				minmax_type t1, t2;
 				cm_init_vector_tuple<Series1>(t1,derived_const_cast->m_args_tuple);
 				cm_init_vector_tuple<Series2>(t2,derived_const_cast->m_args_tuple);
-				// Make sure that the series have at least one term.
-				piranha_assert(derived_const_cast->m_terms1.size() > 0 &&
-					derived_const_cast->m_terms2.size() > 0);
 				// Init and test the first series' tuple.
 				typedef typename std::vector<typename Series1::term_type const *>::size_type size_type1;
 				const size_type1 size1 = derived_const_cast->m_terms1.size();
@@ -126,18 +125,18 @@ namespace piranha
 				// Use lexical cast for max interoperability between numerical types.
 				// NOTE: here probably we can reduce greatly the number of memory allocations...
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(
-					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_min)),
-					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_max)))) &&
+					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_min),
+					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max))) &&
 					boost::numeric::width(m_mp_h) <=
-					mp_integer(boost::lexical_cast<std::string>(boost::integer_traits<max_fast_int>::const_max))) {
+					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max)) {
 					// Mark representation as viable.
 					m_gr_is_viable = true;
 					// Downcast multiprecision to fast representation.
 					cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
 					cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
 					m_fast_h.assign(
-						boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(m_mp_h.lower())),
-						boost::lexical_cast<max_fast_int>(boost::lexical_cast<std::string>(m_mp_h.upper()))
+						boost::lexical_cast<max_fast_int>(m_mp_h.lower()),
+						boost::lexical_cast<max_fast_int>(m_mp_h.upper())
 					);
 				}
 			}
@@ -162,8 +161,10 @@ namespace piranha
 			boost::numeric::interval<max_fast_int>	m_fast_h;
 			/// Codes for the first series.
 			std::vector<max_fast_int>		m_codes1;
-			/// Codes for the second series.
-			std::vector<max_fast_int>		m_codes2;
+			/// Codes for the second series, plus.
+			std::vector<max_fast_int>		m_codes2a;
+			/// Codes for the second series, minus.
+			std::vector<max_fast_int>		m_codes2b;
 			/// Density of the first series.
 			double					m_density1;
 			/// Density of the second series.
