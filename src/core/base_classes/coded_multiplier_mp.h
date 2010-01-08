@@ -492,6 +492,7 @@ namespace piranha {
 		template <class CodingTuple, class Cf, class VhTuple>
 		static void run(const CodingTuple &ct, const Cf &cf, const VhTuple &vh_tuple, max_fast_int &retval1, max_fast_int &retval2)
 		{
+			p_static_check((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			piranha_assert(cf.length() == 1);
 			piranha_assert(cf.begin()->m_key.size() <= ct.get_head().size());
 			typedef typename Cf::term_type::key_type::size_type size_type;
@@ -520,6 +521,7 @@ namespace piranha {
 		template <class CodingTuple, class Term, class VhTuple>
 		static void run(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple, max_fast_int &retval1, max_fast_int &retval2)
 		{
+			p_static_check((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			piranha_assert(term.m_key.size() <= ct.get_head().size());
 			typedef typename Term::key_type::size_type size_type;
 			max_fast_int tmp = 0;
