@@ -130,8 +130,9 @@ namespace piranha
 				const size_type p_size1 = packed_size(m_size), p_size2 = packed_size(v.m_size);
 				if (p_size1 != p_size2) {
 					allocator_type a;
+					packed_type *p = a.allocate(p_size2);
 					a.deallocate(m_container.p, p_size1);
-					m_container.p = a.allocate(p_size2);
+					m_container.p = p;
 				}
 				// Perform the copy from v to this.
 				packed_copy(m_container.p, v.m_container.p, p_size2);
