@@ -26,6 +26,7 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <utility>
 #include <vector>
 
 #include "../config.h"
@@ -190,6 +191,9 @@ namespace piranha {
 		// Coding tuple.
 		typedef boost::tuples::cons<std::vector<max_fast_int>,
 			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_coding_tuple> type_coding_tuple;
+		// Decoding tuple: vectors of pairs of max_fast_ints, num and den resp. of the decoding formula.
+		typedef boost::tuples::cons<std::vector<std::pair<max_fast_int,max_fast_int> >,
+			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_decoding_tuple> type_decoding_tuple;
 	};
 
 	template <class Series>
@@ -200,6 +204,7 @@ namespace piranha {
 		typedef boost::tuples::null_type type_value_handler;
 		typedef boost::tuples::null_type type_mp_coding_tuple;
 		typedef boost::tuples::null_type type_coding_tuple;
+		typedef boost::tuples::null_type type_decoding_tuple;
 	};
 
 	template <class Series>
@@ -210,6 +215,7 @@ namespace piranha {
 		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_value_handler type_value_handler;
 		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_mp_coding_tuple type_mp_coding_tuple;
 		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_coding_tuple type_coding_tuple;
+		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_decoding_tuple type_decoding_tuple;
 	};
 
 	template <class Series, class Tuple>
@@ -394,6 +400,7 @@ namespace piranha {
 	template <class MpCt, class MpMinMaxTuple>
 	void compute_mp_coding_tuple(MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
 	{
+		// NOTE: maybe here it can be done better like below in cm_build_decoding_tuple.
 		p_static_check(boost::tuples::length<MpCt>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
 		mp_integer const *prev_value = 0;
 		boost::numeric::interval<mp_integer> const *prev_interval = 0;
@@ -549,6 +556,114 @@ namespace piranha {
 		retval1 = 0;
 		retval2 = 0;
 		cm_code_impl1<OpTuple>::run(ct,term,vh_tuple,retval1,retval2);
+	}
+
+	template <class DecodingTuple>
+	struct cm_build_decoding_tuple_impl {
+		template <class MinMaxTuple>
+		static void run(max_fast_int *prev_range, DecodingTuple &dt, const MinMaxTuple &minmax)
+		{
+			typedef typename DecodingTuple::head_type::size_type size_type;
+			const size_type size = boost::numeric_cast<size_type>(minmax.get_head().size());
+			dt.get_head().resize(size);
+			for (size_type i = 0; i < size; ++i) {
+				dt.get_head()[i].first = (boost::numeric::width(minmax.get_head()[i]) + 1) * (*prev_range);
+				dt.get_head()[i].second = *prev_range;
+				prev_range = &dt.get_head()[i].first;
+			}
+			cm_build_decoding_tuple_impl<typename DecodingTuple::tail_type>::run(prev_range,dt.get_tail(),minmax.get_tail());
+		}
+	};
+
+	template <>
+	struct cm_build_decoding_tuple_impl<boost::tuples::null_type> {
+		static void run(max_fast_int *, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+	};
+
+	// Build decoding tuple from global minmax representation.
+	template <class DecodingTuple, class MinMaxTuple>
+	inline void cm_build_decoding_tuple(DecodingTuple &dt, const MinMaxTuple &minmax)
+	{
+		p_static_check(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
+		max_fast_int prev_range = 1;
+		cm_build_decoding_tuple_impl<DecodingTuple>::run(&prev_range,dt,minmax);
+	}
+
+	template <class DecodingTuple>
+	struct cm_decode_impl2 {
+		template <class FinalCf, class MinMaxTuple, class Cf, class VhTuple, class ArgsTuple>
+		static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Cf &cf,
+			const VhTuple &vh_tuple, const max_fast_int &code, const ArgsTuple &args_tuple)
+		{
+			piranha_assert(cf.empty());
+			typedef typename Cf::term_type term_type;
+			typedef typename term_type::key_type::size_type size_type;
+			piranha_assert(dt.get_head().size() ==
+				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(args_tuple.template get<term_type::key_type::position>().size()));
+			piranha_assert(dt.get_head().size() ==
+				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(gr.get_head().size()));
+			const size_type size = boost::numeric_cast<size_type>(dt.get_head().size());
+			// This term is going to be inserted into the coefficient series.
+			term_type term;
+			term.m_key.resize(size);
+			for (size_type i = 0; i < size; ++i) {
+				const max_fast_int tmp = (code % dt.get_head()[i].first) / dt.get_head()[i].second +
+					gr.get_head()[i].lower();
+				vh_tuple.get_head().post_decode(term.m_key[i],tmp);
+			}
+			// Next recursion will operate on the term-to-be-inserted's coefficient.
+			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.m_cf,vh_tuple.get_tail(),code,args_tuple);
+			cf.insert(term,args_tuple);
+		}
+	};
+
+	template <>
+	struct cm_decode_impl2<boost::tuples::null_type> {
+		template <class Cf, class ArgsTuple>
+		static void run(const Cf &final_cf, const boost::tuples::null_type &, const boost::tuples::null_type &, Cf &cf,
+			const boost::tuples::null_type &, const max_fast_int &, const ArgsTuple &)
+		{
+			// Last iteration simply assigns the final coefficient.
+			cf = final_cf;
+		}
+	};
+
+	template <class DecodingTuple>
+	struct cm_decode_impl1 {
+		// NOTE: here the code is not the shifted one, it is supposed to have been shifted in
+		// the outside calling function.
+		template <class FinalCf, class MinMaxTuple, class Term, class VhTuple, class ArgsTuple>
+		static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Term &term, const VhTuple &vh_tuple,
+			const max_fast_int &code, const ArgsTuple &args_tuple)
+		{
+			piranha_assert(code >= 0);
+			typedef typename Term::key_type::size_type size_type;
+			// Make sure the sizes of the current tuples' elements are consistent.
+			// (De)coding tuple sizes should always be the same as args tuple's.
+			piranha_assert(dt.get_head().size() ==
+				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(args_tuple.template get<Term::key_type::position>().size()));
+			piranha_assert(dt.get_head().size() ==
+				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(gr.get_head().size()));
+			const size_type size = boost::numeric_cast<size_type>(dt.get_head().size());
+			term.m_key.resize(size);
+			for (size_type i = 0; i < size; ++i) {
+				const max_fast_int tmp = (code % dt.get_head()[i].first) / dt.get_head()[i].second +
+					gr.get_head()[i].lower();
+				vh_tuple.get_head().post_decode(term.m_key[i],tmp);
+			}
+			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.m_cf,
+				vh_tuple.get_tail(),code,args_tuple);
+		}
+	};
+
+	// Decode given code into term. final_cf is the last coefficient in the echelon hierarchy, from outwards to inwards.
+	template <class FinalCf, class DecodingTuple, class MinMaxTuple, class Term, class VhTuple, class ArgsTuple>
+	inline void cm_decode(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Term &term, const VhTuple &vh_tuple,
+		const max_fast_int &code, const max_fast_int &min_code, const ArgsTuple &args_tuple)
+	{
+		p_static_check(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<VhTuple>::value,"");
+		p_static_check(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
+		cm_decode_impl1<DecodingTuple>::run(final_cf,dt,gr,term,vh_tuple,code - min_code,args_tuple);
 	}
 }
 
