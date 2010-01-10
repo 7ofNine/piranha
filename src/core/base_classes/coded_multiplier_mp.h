@@ -350,61 +350,38 @@ namespace piranha {
 	template <class MpCt>
 	struct cm_mp_ct_impl {
 		template <class MpMinMaxTuple>
-		static void run(mp_integer const *prev_value, boost::numeric::interval<mp_integer> const *prev_interval,
-			MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
+		static void run(mp_integer *prev_value, MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
 		{
-			p_static_check(boost::tuples::length<MpCt>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
-			// Assume same sizes and size types.
-			piranha_assert(mp_ct.get_head().size() == mp_gt.get_head().size());
 			typedef typename MpCt::head_type::size_type size_type;
-			p_static_check((boost::is_same<size_type,typename MpMinMaxTuple::head_type::size_type>::value),"");
-			for (size_type i = 0; i < mp_ct.get_head().size(); ++i) {
-				if (prev_interval) {
-					piranha_assert(prev_value);
-					// Assign to the current value the previous one.
-					mp_ct.get_head()[i] = *prev_value;
-					// Multiply it by previous interval's width + 1.
-					mp_integer width(boost::numeric::width(*prev_interval));
-					width += 1;
-					mp_ct.get_head()[i] *= width;
-				} else {
-					// This corresponds to the first calculated element of the ct.
-					// It *must* be at the beginning of a vector.
-					piranha_assert(i == 0);
-					piranha_assert(!prev_value);
-					mp_ct.get_head()[i] = 1;
-				}
-				// Assign previous value and interval.
-				prev_interval = &mp_gt.get_head()[i];
-				prev_value = &mp_ct.get_head()[i];
+			// Assume same sizes and size types.
+			// NOTE: here we use the size of mp_gt instead of mp_ct (whose size_type is take as reference) so that we can
+			// detect any outside-range numeric conversion via numeric_cast. The assert makes sure the sizes are consistent.
+			const size_type size = boost::numeric_cast<size_type>(mp_gt.get_head().size());
+			piranha_assert(size == mp_ct.get_head().size());
+			for (size_type i = 0; i < size; ++i) {
+				// Assign to the current value the previous one.
+				mp_ct.get_head()[i] = *prev_value;
+				// Multiply previous value by current minmax interval's width + 1.
+				mp_integer width(boost::numeric::width(mp_gt.get_head()[i]));
+				width += 1;
+				*prev_value *= width;
 			}
-			cm_mp_ct_impl<typename MpCt::tail_type>::run(prev_value,prev_interval,mp_ct.get_tail(),mp_gt.get_tail());
+			cm_mp_ct_impl<typename MpCt::tail_type>::run(prev_value,mp_ct.get_tail(),mp_gt.get_tail());
 		}
 	};
 
 	template <>
 	struct cm_mp_ct_impl<boost::tuples::null_type> {
-		static void run(mp_integer const *prev_value, boost::numeric::interval<mp_integer> const *prev_interval,
-			const boost::tuples::null_type &, const boost::tuples::null_type &)
-		{
-			// Make sure that when we reach here we have computed at least one component of the coding tuple.
-			// Otherwise it means that we are multiplying series with zero arguments and we should not be here.
-			piranha_assert(prev_value);
-			piranha_assert(prev_interval);
-			(void)prev_value;
-			(void)prev_interval;
-		}
+		static void run(mp_integer *, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
 
 	// Compute coding tuple from tuple of multi-precision minmax vectors.
 	template <class MpCt, class MpMinMaxTuple>
 	void compute_mp_coding_tuple(MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
 	{
-		// NOTE: maybe here it can be done better like below in cm_build_decoding_tuple.
 		p_static_check(boost::tuples::length<MpCt>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
-		mp_integer const *prev_value = 0;
-		boost::numeric::interval<mp_integer> const *prev_interval = 0;
-		cm_mp_ct_impl<MpCt>::run(prev_value,prev_interval,mp_ct,mp_gt);
+		mp_integer prev_value(1);
+		cm_mp_ct_impl<MpCt>::run(&prev_value,mp_ct,mp_gt);
 	}
 
 	template <class Tuple1, class Tuple2>
