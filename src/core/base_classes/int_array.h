@@ -288,8 +288,15 @@ namespace piranha
 				}
 			}
 			// Vector-like interface.
+			// NOTE: use size_type here instead of size_t?
 			/// Array-like operator[], const version.
 			const value_type &operator[](const std::size_t &n) const
+			{
+				piranha_assert(n < m_size);
+				return m_container.v[n];
+			}
+			/// Array-like operator[], mutable version.
+			value_type &operator[](const std::size_t &n)
 			{
 				piranha_assert(n < m_size);
 				return m_container.v[n];
@@ -299,7 +306,27 @@ namespace piranha
 			{
 				return m_size;
 			}
-			bool revlex_comparison(const Derived &a2) const
+			/// Resize the container.
+			/**
+			 * The content will be unchanged to the minimum of the old and new sizes.
+			 */
+			void resize(const size_type &new_size)
+			{
+				if (m_size == new_size) {
+					return;
+				}
+				container_type new_container;
+				new_container.p = pack_init(new_size);
+				// Copy to the minimum of the new sizes.
+				const size_type old_p_size = packed_size(m_size);
+				packed_copy(new_container.p, m_container.p,
+					std::min<size_type>(old_p_size, packed_size(new_size)));
+				// Destroy & assign new.
+				allocator_type().deallocate(m_container.p, old_p_size);
+				m_container.p = new_container.p;
+				m_size = new_size;
+			}
+			bool revlex_comparison(const int_array &a2) const
 			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
@@ -312,7 +339,7 @@ namespace piranha
 				}
 				return false;
 			}
-			bool lex_comparison(const Derived &a2) const
+			bool lex_comparison(const int_array &a2) const
 			{
 				piranha_assert(m_size == a2.m_size);
 				const value_type *ptr1 = m_container.v, *ptr2 = a2.m_container.v;
@@ -326,12 +353,6 @@ namespace piranha
 				return false;
 			}
 		protected:
-			/// Array-like operator[], mutable version.
-			value_type &operator[](const std::size_t &n)
-			{
-				piranha_assert(n < m_size);
-				return m_container.v[n];
-			}
 			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const
 			{
@@ -358,26 +379,6 @@ namespace piranha
 					}
 				}
 				return true;
-			}
-			/// Resize the container.
-			/**
-			 * The existing elements are copied over.
-			 */
-			void resize(const size_type &new_size)
-			{
-				if (m_size == new_size) {
-					return;
-				}
-				container_type new_container;
-				new_container.p = pack_init(new_size);
-				// Copy to the minimum of the new sizes.
-				const size_type old_p_size = packed_size(m_size);
-				packed_copy(new_container.p, m_container.p,
-					std::min<size_type>(old_p_size, packed_size(new_size)));
-				// Destroy & assign new.
-				allocator_type().deallocate(m_container.p, old_p_size);
-				m_container.p = new_container.p;
-				m_size = new_size;
 			}
 			/// Hash value.
 			/**
