@@ -129,6 +129,42 @@ namespace piranha
 			{
 				return m_ptr[n];
 			}
+			/// Element setter.
+			value_type &operator[](const size_type &n)
+			{
+				return m_ptr[n];
+			}
+			/// Resize to new_size.
+			/**
+			 * Content will be unchanged to the minimum of old and new size.
+			 */
+			void resize(const size_type &new_size)
+			{
+				if (new_size == m_size) {
+					return;
+				}
+				value_type *new_elements = 0;
+				if (new_size > 0) {
+					allocator_type a;
+					new_elements = a.allocate(new_size);
+					const size_type min_size = std::min(new_size,m_size);
+					// Copy over old elements.
+					for (size_type i = 0; i < min_size; ++i) {
+						a.construct(new_elements + i, m_ptr[i]);
+					}
+					// Default-construct the remaining elements.
+					const value_type tmp(0);
+					for (size_type i = min_size; i < new_size; ++i) {
+						a.construct(new_elements + i, tmp);
+					}
+				}
+				// Destroy current elements.
+				destroy_elements();
+				deallocate_memory();
+				// Assign data members.
+				m_ptr = new_elements;
+				m_size = new_size;
+			}
 			/// Swap with other q_array.
 			void swap(q_array &other)
 			{
@@ -258,11 +294,6 @@ namespace piranha
 				return false;
 			}
 		protected:
-			/// Element setter.
-			value_type &operator[](const size_type &n)
-			{
-				return m_ptr[n];
-			}
 			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const
 			{
@@ -286,37 +317,6 @@ namespace piranha
 					}
 				}
 				return true;
-			}
-			/// Resize to new_size.
-			/**
-			 * Content will be unchanged to the minimum of old and new size.
-			 */
-			void resize(const size_type &new_size)
-			{
-				if (new_size == m_size) {
-					return;
-				}
-				value_type *new_elements = 0;
-				if (new_size > 0) {
-					allocator_type a;
-					new_elements = a.allocate(new_size);
-					const size_type min_size = std::min(new_size,m_size);
-					// Copy over old elements.
-					for (size_type i = 0; i < min_size; ++i) {
-						a.construct(new_elements + i, m_ptr[i]);
-					}
-					// Default-construct the remaining elements.
-					const value_type tmp(0);
-					for (size_type i = min_size; i < new_size; ++i) {
-						a.construct(new_elements + i, tmp);
-					}
-				}
-				// Destroy current elements.
-				destroy_elements();
-				deallocate_memory();
-				// Assign data members.
-				m_ptr = new_elements;
-				m_size = new_size;
 			}
 			/// Hash value.
 			std::size_t elements_hasher() const
