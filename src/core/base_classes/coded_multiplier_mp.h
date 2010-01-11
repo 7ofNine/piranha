@@ -24,6 +24,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
+#include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <utility>
@@ -37,17 +38,21 @@
 // Meta-programming methods for coded multiplier.
 
 namespace piranha {
-	// Default value handler class.
+	// Default value handler class. Suitable for use with POD integral types.
 	template <class T>
 	struct cm_value_handler
 	{
+		// Make really sure we use this only with integral types.
+		p_static_check(boost::is_integral<T>::value,"");
 		// Assign to the minmax vector the values in the array key.
 		template <class Key>
 		void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
 		{
 			p_static_check((boost::is_same<T,typename Key::value_type>::value),"");
-			piranha_assert(key.size() <= minmax.size());
-			for (typename Key::size_type i = 0; i < key.size(); ++i) {
+			typedef typename Key::size_type size_type;
+			const size_type size = key.size();
+			piranha_assert(size <= minmax.size());
+			for (size_type i = 0; i < size; ++i) {
 				minmax[i] = key[i];
 			}
 		}
@@ -57,8 +62,10 @@ namespace piranha {
 		void test(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
 		{
 			p_static_check((boost::is_same<T,typename Key::value_type>::value),"");
-			piranha_assert(key.size() <= minmax.size());
-			for (typename Key::size_type i = 0; i < key.size(); ++i) {
+			typedef typename Key::size_type size_type;
+			const size_type size = key.size();
+			piranha_assert(size <= minmax.size());
+			for (size_type i = 0; i < size; ++i) {
 				if (key[i] < minmax[i].lower()) {
 					minmax[i].assign(key[i],minmax[i].upper());
 				} else if (key[i] > minmax[i].upper()) {
@@ -70,9 +77,17 @@ namespace piranha {
 		static void harmonize(cm_value_handler &, std::vector<boost::numeric::interval<T> > &,
 			cm_value_handler &, std::vector<boost::numeric::interval<T> > &) {}
 		// Convert to max_fast_int.
+		// NOTE: this is used in coding, so it is probably harmless performance-wise to leave here the safe numeric_cast.
 		max_fast_int to_max_fast_int(const T &x) const
 		{
 			return boost::numeric_cast<max_fast_int>(x);
+		}
+		// Post-decode hook.
+		// NOTE: here we use implicit conversion because we know from the global representation analysis
+		// that we won't have out-of-range conversions.
+		void post_decode(T &value, const max_fast_int &decoded) const
+		{
+			value = decoded;
 		}
 	};
 
@@ -87,8 +102,10 @@ namespace piranha {
 		void assign(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
 		{
 			p_static_check((boost::is_same<mp_rational,typename Key::value_type>::value),"");
-			piranha_assert(key.size() <= minmax.size());
-			for (typename Key::size_type i = 0; i < key.size(); ++i) {
+			typedef typename Key::size_type size_type;
+			const size_type size = key.size();
+			piranha_assert(size <= minmax.size());
+			for (size_type i = 0; i < size; ++i) {
 				compute_new_lcd_and_update(minmax,key[i].get_den());
 				// Assign current value.
 				minmax[i] = key[i];
@@ -103,8 +120,10 @@ namespace piranha {
 		void test(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
 		{
 			p_static_check((boost::is_same<mp_rational,typename Key::value_type>::value),"");
-			piranha_assert(key.size() <= minmax.size());
-			for (typename Key::size_type i = 0; i < key.size(); ++i) {
+			typedef typename Key::size_type size_type;
+			const size_type size = key.size();
+			piranha_assert(size <= minmax.size());
+			for (size_type i = 0; i < size; ++i) {
 				// Compute the new lcd and update the current minmax_vector.
 				compute_new_lcd_and_update(minmax,key[i].get_den());
 				// Assign tmp value.
@@ -134,14 +153,16 @@ namespace piranha {
 		{
 			return boost::lexical_cast<max_fast_int>(q * m_lcd);
 		}
+		// Post-decode hook.
+		void post_decode(mp_rational &value, const max_fast_int &decoded) const
+		{
+			value = boost::lexical_cast<mp_rational>(decoded);
+			value /= m_lcd;
+		}
 		// Store current lcd into m_old_lcd, compute lcd between current lcd and input argument value,
 		// store it into m_lcd and update the minmax vector to take into account the new lcd if needed.
 		void compute_new_lcd_and_update(std::vector<boost::numeric::interval<mp_rational> > &minmax, const mp_integer &value)
 		{
-			// NOTE: here we assume that std::vector's size is greater than or equal to the corresponding key size.
-			// This is probably "practically" true everywhere, but we should put a static assert on size_type
-			// into key arrays, just in case. Or maybe wherever we make this assumption? Mmmh... Maybe we should derive
-			// key arrays from common base class and put static checks in there, like range, unsignedness, etc.
 			typedef std::vector<boost::numeric::interval<mp_rational> >::size_type size_type;
 			// Store the old lcd.
 			m_old_lcd = m_lcd;
@@ -223,7 +244,8 @@ namespace piranha {
 		template <class ArgsTuple>
 		static void run(const ArgsTuple &args_tuple, Tuple &t)
 		{
-			t.get_head().resize(args_tuple.template get<Series::term_type::key_type::position>().size());
+			typedef typename Tuple::head_type::size_type size_type;
+			t.get_head().resize(boost::numeric_cast<size_type>(args_tuple.template get<Series::term_type::key_type::position>().size()));
 			cm_init_vector_tuples_impl<typename Series::term_type::cf_type,typename Tuple::tail_type>::run(args_tuple,t.get_tail());
 		}
 	};
@@ -307,14 +329,14 @@ namespace piranha {
 			p_static_check(boost::tuples::length<OpTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
 			p_static_check(boost::tuples::length<OpTuple>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
 			p_static_check(boost::tuples::length<OpTuple>::value == boost::tuples::length<ValueHandlerTuple>::value,"");
-			p_static_check((boost::is_same<typename MinMaxTuple::head_type::size_type,
-				typename MpMinMaxTuple::head_type::size_type>::value),"");
+			typedef typename MinMaxTuple::head_type::size_type size_type;
 			piranha_assert(minmax1.get_head().size() == minmax2.get_head().size() && 
 				global_minmax.get_head().size() == minmax2.get_head().size());
 			// Harmonize the value handler tuples.
 			ValueHandlerTuple::head_type::harmonize(vh1.get_head(),minmax1.get_head(),vh2.get_head(),minmax2.get_head());
 			boost::numeric::interval<mp_integer> tmp1, tmp2;
-			for (typename MinMaxTuple::head_type::size_type i = 0; i < minmax1.get_head().size(); ++i) {
+			const size_type size = minmax1.get_head().size();
+			for (size_type i = 0; i < size; ++i) {
 				// Transform the current intervals into mp intervals.
 				tmp1.assign(boost::lexical_cast<mp_integer>(minmax1.get_head()[i].lower()),
 					boost::lexical_cast<mp_integer>(minmax1.get_head()[i].upper()));
@@ -353,11 +375,9 @@ namespace piranha {
 		static void run(mp_integer *prev_value, MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
 		{
 			typedef typename MpCt::head_type::size_type size_type;
-			// Assume same sizes and size types.
-			// NOTE: here we use the size of mp_gt instead of mp_ct (whose size_type is take as reference) so that we can
-			// detect any outside-range numeric conversion via numeric_cast. The assert makes sure the sizes are consistent.
-			const size_type size = boost::numeric_cast<size_type>(mp_gt.get_head().size());
-			piranha_assert(size == mp_ct.get_head().size());
+			// Assume same sizes.
+			const size_type size = mp_ct.get_head().size();
+			piranha_assert(size == mp_gt.get_head().size());
 			for (size_type i = 0; i < size; ++i) {
 				// Assign to the current value the previous one.
 				mp_ct.get_head()[i] = *prev_value;
@@ -389,11 +409,11 @@ namespace piranha {
 		p_static_check(boost::tuples::length<Tuple1>::value == boost::tuples::length<Tuple2>::value,"");
 		typedef typename Tuple1::head_type::value_type value_type;
 		typedef typename Tuple1::head_type::size_type size_type;
-		p_static_check((boost::is_same<size_type,typename Tuple2::head_type::size_type>::value),"");
 		static void run(const Tuple1 &t1, const Tuple2 &t2, value_type &retval)
 		{
-			piranha_assert(t1.get_head().size() == t2.get_head().size());
-			for (size_type i = 0; i < t1.get_head().size(); ++i) {
+			const size_type size = t1.get_head().size();
+			piranha_assert(size == t2.get_head().size());
+			for (size_type i = 0; i < size; ++i) {
 				retval += t1.get_head()[i] * t2.get_head()[i];
 			}
 			tuple_vector_dot_impl<typename Tuple1::tail_type, typename Tuple2::tail_type>::run(
@@ -426,9 +446,8 @@ namespace piranha {
 		static void run_impl(const std::vector<mp_integer> &mp_vector, std::vector<max_fast_int> &fast_vector)
 		{
 			typedef std::vector<mp_integer>::size_type size_type;
-			p_static_check((boost::is_same<size_type,std::vector<max_fast_int>::size_type>::value),"");
-			piranha_assert(mp_vector.size() == fast_vector.size());
 			const size_type size = mp_vector.size();
+			piranha_assert(size == fast_vector.size());
 			for (size_type i = 0; i < size; ++i) {
 				fast_vector[i] = boost::lexical_cast<max_fast_int>(mp_vector[i]);
 			}
@@ -437,9 +456,8 @@ namespace piranha {
 			std::vector<boost::numeric::interval<max_fast_int> > &fast_vector)
 		{
 			typedef std::vector<boost::numeric::interval<mp_integer> >::size_type size_type;
-			p_static_check((boost::is_same<size_type,std::vector<boost::numeric::interval<max_fast_int> >::size_type>::value),"");
-			piranha_assert(mp_vector.size() == fast_vector.size());
 			const size_type size = mp_vector.size();
+			piranha_assert(size == fast_vector.size());
 			for (size_type i = 0; i < size; ++i) {
 				fast_vector[i].assign(boost::lexical_cast<max_fast_int>(mp_vector[i].lower()),
 				boost::lexical_cast<max_fast_int>(mp_vector[i].upper()));
@@ -478,10 +496,11 @@ namespace piranha {
 		{
 			p_static_check((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			piranha_assert(cf.length() == 1);
-			piranha_assert(cf.begin()->m_key.size() <= ct.get_head().size());
 			typedef typename Cf::term_type::key_type::size_type size_type;
+			const size_type size = cf.begin()->m_key.size();
+			piranha_assert(size <= ct.get_head().size());
 			max_fast_int tmp = 0;
-			for (size_type i = 0; i < cf.begin()->m_key.size(); ++i) {
+			for (size_type i = 0; i < size; ++i) {
 				tmp = ct.get_head()[i] * vh_tuple.get_head().to_max_fast_int(cf.begin()->m_key[i]);
 				retval1 += tmp;
 				if (!OpTuple::head_type::value) {
@@ -575,11 +594,9 @@ namespace piranha {
 			piranha_assert(cf.empty());
 			typedef typename Cf::term_type term_type;
 			typedef typename term_type::key_type::size_type size_type;
-			piranha_assert(dt.get_head().size() ==
-				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(args_tuple.template get<term_type::key_type::position>().size()));
-			piranha_assert(dt.get_head().size() ==
-				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(gr.get_head().size()));
-			const size_type size = boost::numeric_cast<size_type>(dt.get_head().size());
+			piranha_assert(dt.get_head().size() == args_tuple.template get<term_type::key_type::position>().size());
+			piranha_assert(dt.get_head().size() == gr.get_head().size());
+			const size_type size = dt.get_head().size();
 			// This term is going to be inserted into the coefficient series.
 			term_type term;
 			term.m_key.resize(size);
@@ -617,11 +634,9 @@ namespace piranha {
 			typedef typename Term::key_type::size_type size_type;
 			// Make sure the sizes of the current tuples' elements are consistent.
 			// (De)coding tuple sizes should always be the same as args tuple's.
-			piranha_assert(dt.get_head().size() ==
-				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(args_tuple.template get<Term::key_type::position>().size()));
-			piranha_assert(dt.get_head().size() ==
-				boost::numeric_cast<typename DecodingTuple::head_type::size_type>(gr.get_head().size()));
-			const size_type size = boost::numeric_cast<size_type>(dt.get_head().size());
+			piranha_assert(dt.get_head().size() == args_tuple.template get<Term::key_type::position>().size());
+			piranha_assert(dt.get_head().size() == gr.get_head().size());
+			const size_type size = dt.get_head().size();
 			term.m_key.resize(size);
 			for (size_type i = 0; i < size; ++i) {
 				const max_fast_int tmp = (code % dt.get_head()[i].first) / dt.get_head()[i].second +
