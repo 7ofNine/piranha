@@ -23,9 +23,9 @@
 
 #include <complex>
 
+#include "../core/base_classes/series_multiplier.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
 #include "../core/polynomial_common/q_expo_array.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/polynomial/polynomial.h"
 #include "../core/truncators/power_series.h"
 
@@ -38,7 +38,7 @@ namespace manipulators
 	<
 		mpq_cf,
 		q_expo_array<0>::type,
-		polynomial_multiplier,
+		series_multiplier,
 		truncators::power_series
 	> qqpoly;
 
