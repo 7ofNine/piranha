@@ -25,7 +25,6 @@
 #include <cstddef>
 #include <cstdlib> // For getenv in Windows.
 #include <cstring>
-#include <gmp.h>
 
 #include "core/config.h"
 #include "core/exceptions.h"
@@ -35,35 +34,6 @@
 
 namespace piranha
 {
-	typedef std_counting_allocator<char> gmp_allocator;
-
-	extern "C" {
-	static inline void *gmp_alloc_func(std::size_t size)
-	{
-		gmp_allocator a;
-		return static_cast<void *>(a.allocate(size));
-	}
-
-	static inline void *gmp_realloc_func(void *ptr, std::size_t old_size, std::size_t new_size)
-	{
-		// Return the previous pointer if size does not change.
-		if (old_size == new_size) {
-			return ptr;
-		}
-		gmp_allocator a;
-		void *retval = static_cast<void *>(a.allocate(new_size));
-		memcpy(retval, static_cast<void const *>(ptr), std::min<std::size_t>(old_size,new_size));
-		a.deallocate(static_cast<char *>(ptr),old_size);
-		return retval;
-	}
-
-	static inline void gmp_free_func(void *ptr, std::size_t size)
-	{
-		gmp_allocator a;
-		a.deallocate(static_cast<char *>(ptr),size);
-	}
-	}
-
 	static inline std::string get_env_variable(const char *str)
 	{
 		if (getenv(str) != 0) {
@@ -131,8 +101,6 @@ namespace piranha
 		std::cout << "_______________________________" << '\n' << '\n';
 		// Setup cout.
 		settings::setup_stream(std::cout);
-		// Setup GMP's memory allocation functions.
-		mp_set_memory_functions(gmp_alloc_func, gmp_realloc_func, gmp_free_func);
 	}
 
 	/// Set path to theories of motion.
