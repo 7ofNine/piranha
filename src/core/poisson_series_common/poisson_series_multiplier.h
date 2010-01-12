@@ -40,6 +40,7 @@
 #include "../memory.h"
 #include "../settings.h" // For debug.
 #include "../type_traits.h" // For lightweight attribute.
+#include "../utils.h"
 
 namespace piranha
 {
@@ -79,6 +80,9 @@ namespace piranha
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
+						// Cache term pointers.
+						utils::cache_terms_pointers(this->m_s1,this->m_terms1);
+						utils::cache_terms_pointers(this->m_s2,this->m_terms2);
 						// NOTE: hard coded value of 1000.
 						// NOTE: share in a coded multiplier toolbox?
 						if (!is_lightweight<cf_type1>::value || double(this->m_size1) * double(this->m_size2) < 1000) {

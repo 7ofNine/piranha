@@ -129,7 +129,8 @@ namespace piranha
 					template <class Series, class ArgsTuple2>
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
-						std::vector<typename Series::term_type const *> retval(utils::cache_terms_pointers(s));
+						std::vector<typename Series::term_type const *> retval;
+						utils::cache_terms_pointers(s,retval);
 						if (m_truncation_level == 0) {
 							piranha_throw(value_error,"cannot establish series ordering, norm truncator is not active");
 						}

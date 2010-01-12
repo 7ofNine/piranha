@@ -271,7 +271,7 @@ namespace piranha
 					// Reverse the series, we want to start multiplication from the least significant terms.
 					std::reverse(cache.begin(),cache.end());
 				} catch (const value_error &) {
-					cache = utils::cache_terms_pointers(*derived_const_cast);
+					utils::cache_terms_pointers(*derived_const_cast,cache);
 				}
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.

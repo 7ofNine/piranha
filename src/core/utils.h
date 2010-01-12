@@ -135,16 +135,16 @@ namespace piranha
 			}
 			/// Cache const pointers to terms of a series in a vector.
 			template <class Series>
-			static std::vector<typename Series::term_type const *> cache_terms_pointers(const Series &s) {
+			static void cache_terms_pointers(const Series &s, std::vector<typename Series::term_type const *> &retval)
+			{
 				typedef typename Series::term_type term_type;
 				typedef typename Series::const_iterator const_iterator;
-				std::vector<term_type const *> retval;
+				piranha_assert(retval.empty());
 				retval.reserve(s.length());
 				const const_iterator it_f = s.end();
 				for (const_iterator it = s.begin(); it != it_f; ++it) {
 					retval.push_back(&(*it));
 				}
-				return retval;
 			}
 		private:
 			/// Check whether a string is valid.
