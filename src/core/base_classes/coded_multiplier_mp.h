@@ -89,6 +89,11 @@ namespace piranha {
 		{
 			value = decoded;
 		}
+		// Comparison operator is always true by default.
+		bool operator==(const cm_value_handler &) const
+		{
+			return true;
+		}
 	};
 
 	// Value handler class for rationals.
@@ -158,6 +163,11 @@ namespace piranha {
 		{
 			value = boost::lexical_cast<mp_rational>(decoded);
 			value /= m_lcd;
+		}
+		// Comparison will test the lcd.
+		bool operator==(const cm_value_handler &other) const
+		{
+			return (m_lcd == other.m_lcd);
 		}
 		// Store current lcd into m_old_lcd, compute lcd between current lcd and input argument value,
 		// store it into m_lcd and update the minmax vector to take into account the new lcd if needed.
@@ -489,7 +499,7 @@ namespace piranha {
 		static const bool value = false;
 	};
 
-	template <class OpTuple>
+	template <class OpTuple, bool SubRequested>
 	struct cm_code_impl2 {
 		template <class CodingTuple, class Cf, class VhTuple>
 		static void run(const CodingTuple &ct, const Cf &cf, const VhTuple &vh_tuple, max_fast_int &retval1, max_fast_int &retval2)
@@ -505,16 +515,16 @@ namespace piranha {
 				retval1 += tmp;
 				if (!OpTuple::head_type::value) {
 					retval2 -= tmp;
-				} else {
+				} else if (SubRequested) {
 					retval2 += tmp;
 				}
 			}
-			cm_code_impl2<typename OpTuple::tail_type>::run(ct.get_tail(),cf.begin()->m_cf,vh_tuple.get_tail(),retval1,retval2);
+			cm_code_impl2<typename OpTuple::tail_type,SubRequested>::run(ct.get_tail(),cf.begin()->m_cf,vh_tuple.get_tail(),retval1,retval2);
 		}
 	};
 
-	template <>
-	struct cm_code_impl2<boost::tuples::null_type> {
+	template <bool SubRequested>
+	struct cm_code_impl2<boost::tuples::null_type,SubRequested> {
 		template <class Cf>
 		static void run(const boost::tuples::null_type &, const Cf &, const boost::tuples::null_type &, const max_fast_int &, const max_fast_int &) {}
 	};
@@ -526,6 +536,7 @@ namespace piranha {
 		{
 			p_static_check((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			piranha_assert(term.m_key.size() <= ct.get_head().size());
+			static const bool sub_requested = op_has_sub<OpTuple>::value;
 			typedef typename Term::key_type::size_type size_type;
 			max_fast_int tmp = 0;
 			// NOTE: again the assumption that the sizes of vector and key are compatible. Need to sort this out...
@@ -534,11 +545,11 @@ namespace piranha {
 				retval1 += tmp;
 				if (!OpTuple::head_type::value) {
 					retval2 -= tmp;
-				} else {
+				} else if (sub_requested) {
 					retval2 += tmp;
 				}
 			}
-			cm_code_impl2<typename OpTuple::tail_type>::run(ct.get_tail(),term.m_cf,vh_tuple.get_tail(),retval1,retval2);
+			cm_code_impl2<typename OpTuple::tail_type,sub_requested>::run(ct.get_tail(),term.m_cf,vh_tuple.get_tail(),retval1,retval2);
 		}
 	};
 
