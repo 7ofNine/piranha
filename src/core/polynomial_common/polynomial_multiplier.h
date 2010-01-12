@@ -24,8 +24,12 @@
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/bind.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/numeric/interval.hpp>
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <cstddef>
 #include <exception>
@@ -35,7 +39,7 @@
 #include <vector>
 
 #include "../base_classes/base_series_multiplier.h"
-#include "../base_classes/coded_series_multiplier.h"
+#include "../base_classes/coded_multiplier.h"
 #include "../base_classes/null_truncator.h"
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
@@ -102,12 +106,12 @@ namespace piranha
 			class get_type:
 				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
 					get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
+				public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >
 			{
 					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
 						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
-					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
-					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
+					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> > coded_ancestor;
+					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
 					typedef typename Series1::const_iterator const_iterator1;
 					typedef typename Series2::const_iterator const_iterator2;
 					typedef typename ancestor::term_type1 term_type1;
@@ -138,10 +142,8 @@ namespace piranha
 						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 						// coefficients and coded keys.
 						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
-						this->find_input_min_max();
-						calculate_result_min_max();
 						this->determine_viability();
-						if (!this->m_cr_is_viable) {
+						if (!this->m_gr_is_viable) {
 							__PDEBUG(std::cout << "Polynomial not suitable for coded representation, going for plain polynomial multiplication\n");
 							this->perform_plain_multiplication();
 							return;
@@ -162,7 +164,6 @@ namespace piranha
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc)
 					{
-						this->code_keys();
 						const term_type1 **t1 = &this->m_terms1[0];
 						const term_type2 **t2 = &this->m_terms2[0];
 						// Cache the coefficients.
@@ -183,36 +184,6 @@ namespace piranha
 							__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
 							perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 						}
-					}
-					// TODO: better rename result_min_max here and everywhere. It is not really the min/max
-					// values for the result, because the min/max values of the input series are also taken
-					// into account to establish the codification parameters for the input series _and_
-					// the resulting series.
-					void calculate_result_min_max()
-					{
-						std::vector<mp_integer> tmp_vec(6);
-						std::pair<typename std::vector<mp_integer>::const_iterator,
-							std::vector<mp_integer>::const_iterator> min_max;
-						for (std::size_t i = 0; i < this->m_size; ++i) {
-							tmp_vec[0] = this->m_min_max1[i].second;
-							tmp_vec[0] += this->m_min_max2[i].second;
-							tmp_vec[1] = this->m_min_max1[i].first;
-							tmp_vec[1] += this->m_min_max2[i].first;
-							tmp_vec[2] = this->m_min_max1[i].first;
-							tmp_vec[3] = this->m_min_max2[i].first;
-							tmp_vec[4] = this->m_min_max1[i].second;
-							tmp_vec[5] = this->m_min_max2[i].second;
-							min_max = boost::minmax_element(tmp_vec.begin(), tmp_vec.end());
-							this->m_res_min_max[i].first = *(min_max.first);
-							this->m_res_min_max[i].second = *(min_max.second);
-						}
-						__PDEBUG(
-							std::cout << "Mult limits are:\n";
-						for (std::size_t i = 0; i < this->m_res_min_max.size(); ++i) {
-						std::cout << this->m_res_min_max[i].first << ',' <<
-							this->m_res_min_max[i].second << '\n';
-						}
-						);
 					}
 					template <class GenericTruncator>
 					struct vector_functor {
@@ -248,10 +219,9 @@ namespace piranha
 					{
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication.
-						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
-						// coded_ancestor::m_h_min = 1, coded_ancestor::m_h_max = 2 --> n of codes = 2.
-						piranha_assert(this->m_h_max - this->m_h_min + 1 >= 0);
-						const std::size_t n_codes = static_cast<std::size_t>(this->m_h_max - this->m_h_min + 1);
+						// The +1 is needed because we need the number of possible codes between min and max.
+						piranha_assert(boost::numeric::width(this->m_fast_h) + 1 >= 0);
+						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 						try {
 							vc.resize(n_codes);
 						} catch (const std::bad_alloc &) {
@@ -267,9 +237,9 @@ namespace piranha
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
 						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
-						cf_type1 *vc_res =  &vc[0] - this->m_h_min;
+						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 						// Find out a suitable block size.
 						const std::size_t block_size = 2 <<
 							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / sizeof(cf_type1)))) - 1);
@@ -278,11 +248,11 @@ namespace piranha
 						typedef vector_functor<GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
-const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+// const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						if (trunc.is_effective() || (this->m_size1 * this->m_size2) <= 400 || nthread == 1) {
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
-//std::cout << "using " << nthread << " threads\n";
+// std::cout << "using " << nthread << " threads\n";
 							boost::thread_group tg;
 							boost::barrier b(nthread);
 							for (std::size_t i = 0; i < nthread; ++i) {
@@ -290,19 +260,16 @@ const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_
 							}
 							tg.join_all();
 						}
-std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+// std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done multiplying\n");
-						const max_fast_int i_f = this->m_h_max;
+						const max_fast_int i_f = this->m_fast_h.upper();
 						// Decode and insert the results into return value.
-						term_type1 tmp_term;
-						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							// NOTE: wouldn't it be better if insert() were smart enough to do these checks first
-							// and reduce its workload?
 							if (!vc_res[i].is_ignorable(args_tuple)) {
-								tmp_term.m_cf = vc_res[i];
-								coded_ancestor::decode(tmp_term.m_key, i);
+								term_type1 tmp_term;
+								this->decode(vc_res[i], i,tmp_term);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
@@ -359,10 +326,11 @@ std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::loc
 						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
+						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 						const std::size_t size_hint = static_cast<std::size_t>(
-							std::max<double>(this->m_density1,this->m_density2) * this->m_h_tot);
+							std::max<double>(this->m_density1,this->m_density2) * n_codes);
 						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2[0];
+						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
@@ -378,12 +346,11 @@ const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_
 std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
-						term_type1 tmp_term;
 						// TODO: add debug info about cms' size here.
 						const c_iterator c_it_f = cms.end();
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
-							tmp_term.m_cf = c_it->m_cf;
-							coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+							term_type1 tmp_term;
+							this->decode(c_it->m_cf,c_it->m_ckey,tmp_term);
 							if (!tmp_term.is_canonical(args_tuple)) {
 								tmp_term.canonicalise(args_tuple);
 							}
