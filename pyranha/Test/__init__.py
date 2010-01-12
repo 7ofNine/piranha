@@ -168,7 +168,6 @@ class series_sf_test02(unittest.TestCase):
 		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
 			x = t(psym('x'))
 			for n in range(0,50):
-				print n
 				self.assertEqual((-x).legendrePn(n),cs_phase(n) * x.legendrePn(n))
 				self.assertEqual(t(1).legendrePn(n),1)
 				# TODO: modify this when we implement substitution by complex series.
