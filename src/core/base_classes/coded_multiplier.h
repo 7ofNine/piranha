@@ -21,10 +21,14 @@
 #ifndef PIRANHA_CODED_MULTIPLIER_H
 #define PIRANHA_CODED_MULTIPLIER_H
 
+#include <algorithm>
+#include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
 #include <boost/type_traits/is_same.hpp>
 #include <vector>
 
@@ -64,10 +68,28 @@ namespace piranha
 			// Coding tuples.
 			typedef typename cm_tuple<Series1>::type_mp_coding_tuple mp_coding_tuple_type;
 			typedef typename cm_tuple<Series1>::type_coding_tuple fast_coding_tuple_type;
+			// Decoding tuple.
+			typedef typename cm_tuple<Series1>::type_decoding_tuple decoding_tuple_type;
 			// These static checks makes sure that the two series have compatible types in the echelon
 			// hierarchy, apart from the numerical coefficients.
 			p_static_check((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
 			p_static_check((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
+		public:
+			template <class Cf, class Ckey>
+			struct coded_term_type {
+				coded_term_type():m_cf(),m_ckey() {}
+				coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
+				bool operator==(const coded_term_type &t) const
+				{
+					return (m_ckey == t.m_ckey);
+				}
+				std::size_t hash_value() const
+				{
+					return boost::hash<Ckey>()(m_ckey);
+				}
+				mutable Cf	m_cf;
+				Ckey		m_ckey;
+			};
 		protected:
 			/// Default constructor.
 			/**
@@ -102,19 +124,24 @@ namespace piranha
 				// Init and test the first series' tuple.
 				typedef typename std::vector<typename Series1::term_type const *>::size_type size_type1;
 				const size_type1 size1 = derived_const_cast->m_terms1.size();
-				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms1[0],t1,m_vh1);
+				// Value handler tuples.
+				value_handler_type vh1, vh2;
+				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms1[0],t1,vh1);
 				for (size_type1 i = 1; i < size1; ++i) {
-					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms1[i],t1,m_vh1);
+					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms1[i],t1,vh1);
 				}
 				// Init and test the second series' tuple.
 				typedef typename std::vector<typename Series2::term_type const *>::size_type size_type2;
 				const size_type2 size2 = derived_const_cast->m_terms2.size();
-				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms2[0],t2,m_vh2);
+				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms2[0],t2,vh2);
 				for (size_type2 i = 1; i < size2; ++i) {
-					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms2[i],t2,m_vh2);
+					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms2[i],t2,vh2);
 				}
 				// Now compute the global representation in multiprecision.
-				cm_global_minmax<OpTuple>::run(t1,m_vh1,t2,m_vh2,m_mp_gr);
+				cm_global_minmax<OpTuple>::run(t1,vh1,t2,vh2,m_mp_gr);
+				// Assign the global value handler tuple.
+				piranha_assert(vh1 == vh2);
+				m_vh = vh1;
 				// Compute the multiprecision coding tuple.
 				compute_mp_coding_tuple(m_mp_ct,m_mp_gr);
 				// Compute multiprecision codes range.
@@ -138,7 +165,61 @@ namespace piranha
 						boost::lexical_cast<max_fast_int>(m_mp_h.lower()),
 						boost::lexical_cast<max_fast_int>(m_mp_h.upper())
 					);
+					// Build decoding tuple.
+					cm_build_decoding_tuple(m_dt,m_fast_gr);
+					// Establish if subtraction is requested or not.
+					static const bool sub_requested = op_has_sub<OpTuple>::value;
+					// Resize codes vectors.
+					typedef std::vector<max_fast_int>::size_type size_type;
+					const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size()),
+						csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
+					m_codes1.resize(csize1);
+					m_codes2a.resize(csize2);
+					if (sub_requested) {
+						m_codes2b.resize(csize2);
+					}
+					// Now fill in the codes.
+					max_fast_int code_a = 0, code_b = 0;
+					for (size_type i = 0; i < csize1; ++i) {
+						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms1[i],m_vh,code_a,code_b);
+						m_codes1[i] = code_a;
+					}
+					for (size_type i = 0; i < csize2; ++i) {
+						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms2[i],m_vh,code_a,code_b);
+						m_codes2a[i] = code_a;
+						if (sub_requested) {
+							m_codes2b[i] = code_b;
+						}
+					}
+					// Compute densities.
+					const max_fast_int w = boost::numeric::width(m_fast_h) + 1;
+					m_density1 = static_cast<double>(csize1) / w;
+					m_density2 = static_cast<double>(csize2) / w;
 				}
+			}
+			/// Decode.
+			/**
+			 * Decode given code into return value term, using final_cf as the coefficient at the end of the echelon recursion.
+			 */
+			template <class FinalCf>
+			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::term_type &term) const
+			{
+				cm_decode(final_cf,m_dt,m_fast_gr,term,m_vh,code,m_fast_h.lower(),derived_const_cast->m_args_tuple);
+			}
+			/// Determine whether coded representation is sparse.
+			/**
+			 * Must be called only if representation is viable, otherwise runtime assertion will fail. Density is compared
+			 * against value hard-coded internally.
+			 */
+			bool is_sparse() const
+			{
+				// Magic value established empirically. Possibly subject to tuning in the future.
+				static const double limit = 1E-4;
+				// We don't want this to be called if we haven't established the suitability
+				// of the coded representation first.
+				piranha_assert(m_gr_is_viable);
+				const double max_density = std::max<double>(m_density1,m_density2);
+				return (max_density < limit);
 			}
 		protected:
 			/// Is global coded representation viable?
@@ -147,14 +228,14 @@ namespace piranha
 			mp_minmax_type				m_mp_gr;
 			/// Fast min/max values for the global representation.
 			fast_minmax_type			m_fast_gr;
-			/// Value handler tuple for the first series.
-			value_handler_type			m_vh1;
-			/// Value handler tuple for the second series.
-			value_handler_type			m_vh2;
+			/// Global value handler tuple.
+			value_handler_type			m_vh;
 			/// Multiprecision coding tuple.
 			mp_coding_tuple_type			m_mp_ct;
 			/// Fast coding tuple.
 			fast_coding_tuple_type			m_fast_ct;
+			/// Decoding tuple.
+			decoding_tuple_type			m_dt;
 			/// Multiprecision codes range.
 			boost::numeric::interval<mp_integer>	m_mp_h;
 			/// Fast codes range.
