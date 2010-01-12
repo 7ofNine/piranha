@@ -173,22 +173,22 @@ namespace piranha
 					typedef std::vector<max_fast_int>::size_type size_type;
 					const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size()),
 						csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
-					m_codes1.resize(csize1);
-					m_codes2a.resize(csize2);
+					m_ckeys1.resize(csize1);
+					m_ckeys2a.resize(csize2);
 					if (sub_requested) {
-						m_codes2b.resize(csize2);
+						m_ckeys2b.resize(csize2);
 					}
 					// Now fill in the codes.
 					max_fast_int code_a = 0, code_b = 0;
 					for (size_type i = 0; i < csize1; ++i) {
 						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms1[i],m_vh,code_a,code_b);
-						m_codes1[i] = code_a;
+						m_ckeys1[i] = code_a;
 					}
 					for (size_type i = 0; i < csize2; ++i) {
 						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms2[i],m_vh,code_a,code_b);
-						m_codes2a[i] = code_a;
+						m_ckeys2a[i] = code_a;
 						if (sub_requested) {
-							m_codes2b[i] = code_b;
+							m_ckeys2b[i] = code_b;
 						}
 					}
 					// Compute densities.
@@ -241,11 +241,11 @@ namespace piranha
 			/// Fast codes range.
 			boost::numeric::interval<max_fast_int>	m_fast_h;
 			/// Codes for the first series.
-			std::vector<max_fast_int>		m_codes1;
+			std::vector<max_fast_int>		m_ckeys1;
 			/// Codes for the second series, plus.
-			std::vector<max_fast_int>		m_codes2a;
+			std::vector<max_fast_int>		m_ckeys2a;
 			/// Codes for the second series, minus.
-			std::vector<max_fast_int>		m_codes2b;
+			std::vector<max_fast_int>		m_ckeys2b;
 			/// Density of the first series.
 			double					m_density1;
 			/// Density of the second series.
