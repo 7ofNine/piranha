@@ -171,8 +171,7 @@ namespace piranha
 					static const bool sub_requested = op_has_sub<OpTuple>::value;
 					// Resize codes vectors.
 					typedef std::vector<max_fast_int>::size_type size_type;
-					const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size()),
-						csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
+					const size_type csize1 = boost::numeric_cast<size_type>(size1), csize2 = boost::numeric_cast<size_type>(size2);
 					m_ckeys1.resize(csize1);
 					m_ckeys2a.resize(csize2);
 					if (sub_requested) {
