@@ -249,9 +249,9 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 						// Find out a suitable block size.
-						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / sizeof(cf_type1)))) - 1);
+						const std::size_t block_size = this->template compute_block_size<sizeof(cf_type1)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+// std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						typedef vector_functor<GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
@@ -272,11 +272,11 @@ namespace piranha
 						__PDEBUG(std::cout << "Done multiplying\n");
 						const max_fast_int i_f = this->m_fast_h.upper();
 						// Decode and insert the results into return value.
+						term_type1 tmp_term;
 						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res[i].is_ignorable(args_tuple)) {
-								term_type1 tmp_term;
 								this->decode(vc_res[i], i,tmp_term);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
@@ -342,8 +342,7 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
-						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
+						const std::size_t block_size = this->template compute_block_size<sizeof(cterm)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 // std::cout << "Block size: " << block_size << '\n';
 						cterm tmp_cterm;
@@ -356,8 +355,8 @@ namespace piranha
 						// Decode and insert into retval.
 						// TODO: add debug info about cms' size here.
 						const c_iterator c_it_f = cms.end();
+						term_type1 tmp_term;
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
-							term_type1 tmp_term;
 							this->decode(c_it->m_cf,c_it->m_ckey,tmp_term);
 							if (!tmp_term.is_canonical(args_tuple)) {
 								tmp_term.canonicalise(args_tuple);

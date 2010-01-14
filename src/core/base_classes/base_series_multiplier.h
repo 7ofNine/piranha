@@ -70,6 +70,23 @@ namespace piranha
 					return t->m_cf;
 				}
 			};
+			/// Compute block size for multiplication.
+			/**
+			 * Resulting block size depends on the cache memory available, and will always be in the [16,8192] range. N is
+			 * the size of the base storage unit type used to store the result of the multiplication (e.g., coefficient type in vector coded, coded hash table
+			 * term in the sparse hashed multiplication, etc.).
+			 */
+			template <std::size_t N>
+			static std::size_t compute_block_size()
+			{
+				// NOTE: this function is used typically considering only the output storage requirements, since storage of input series
+				//       will be a small fraction of storage for the output series.
+				p_static_check(N > 0,"");
+				const std::size_t shift = boost::numeric_cast<std::size_t>(
+					std::log(std::max<double>(16.,std::sqrt((settings::cache_size * 1024) / N))) / std::log(2.) - 1
+				);
+				return (std::size_t(2) << std::min<std::size_t>(std::size_t(12),shift));
+			}
 			template <class Functor>
 			static void blocked_multiplication(const std::size_t &block_size, const std::size_t &size1, const std::size_t &size2, Functor &m)
 			{
@@ -186,9 +203,8 @@ namespace piranha
 					const term_type1 **t1 = &m_terms1[0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
-					const std::size_t block_size = 2 << (
-							(std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) /
-							((sizeof(term_type1) + sizeof(term_type2) + boost::tuples::length<mult_res>::value * sizeof(term_type1)))))) - 1);
+					const std::size_t block_size = compute_block_size
+						<boost::tuples::length<mult_res>::value * sizeof(term_type1)>();
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
 				base_series_multiplier		&m_mult;
