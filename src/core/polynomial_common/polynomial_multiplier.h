@@ -164,7 +164,11 @@ namespace piranha
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc)
 					{
-						this->code_keys();
+						// Code terms.
+						// NOTE: it is important to code here since at this point we already have sorted input series,
+						//       if necessary.
+						this->code_terms();
+						// Shortcuts.
 						const term_type1 **t1 = &this->m_terms1[0];
 						const term_type2 **t2 = &this->m_terms2[0];
 						// Cache the coefficients.
@@ -234,17 +238,20 @@ namespace piranha
 						}
 						__PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
 						// Define the base pointers for storing the results of multiplication.
-						// Please note that even if here it seems like we are going to write outside allocated memory,
-						// the indices from the analysis of the coded series will prevent out-of-boundaries
-						// reads/writes.
+						// NOTE: even if here it seems like we are going to write outside allocated memory,
+						//       the indices from the analysis of the coded series will prevent out-of-boundaries
+						//       reads/writes. The thing works like this: we have ncodes slots allocated, so memory
+						//       indices in [0,ncodes - 1]. But since we are doing arithmetics on shifted codes, the
+						//       code range is [-h_min,ncodes - 1 - h_min]. So we shift the baseline memory location
+						//       so that we can use shifted codes directly as indices.
 						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 						// Find out a suitable block size.
-						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / sizeof(cf_type1)))) - 1);
+						const std::size_t block_size = this->template compute_block_size<sizeof(cf_type1)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+// std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						typedef vector_functor<GenericTruncator> vf_type;
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
@@ -266,12 +273,11 @@ namespace piranha
 						const max_fast_int i_f = this->m_fast_h.upper();
 						// Decode and insert the results into return value.
 						term_type1 tmp_term;
-						for (max_fast_int i = this->m_h_min; i <= i_f; ++i) {
+						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) {
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res[i].is_ignorable(args_tuple)) {
-								tmp_term.m_cf = vc_res[i];
-								coded_ancestor::decode(tmp_term.m_key, i);
+								this->decode(vc_res[i], i,tmp_term);
 								if (!tmp_term.is_canonical(args_tuple)) {
 									tmp_term.canonicalise(args_tuple);
 								}
@@ -336,23 +342,22 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
-						const std::size_t block_size = 2 <<
-							((std::size_t)log2(std::max(16.,std::sqrt((settings::cache_size * 1024) / (sizeof(cterm))))) - 1);
+						const std::size_t block_size = this->template compute_block_size<sizeof(cterm)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
-std::cout << "Block size: " << block_size << '\n';
+// std::cout << "Block size: " << block_size << '\n';
 						cterm tmp_cterm;
-const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+// const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						hash_functor<cterm,max_fast_int,GenericTruncator,csht>
 							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
-std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+// std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						// TODO: add debug info about cms' size here.
 						const c_iterator c_it_f = cms.end();
+						term_type1 tmp_term;
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
-							tmp_term.m_cf = c_it->m_cf;
-							coded_ancestor::decode(tmp_term.m_key, c_it->m_ckey);
+							this->decode(c_it->m_cf,c_it->m_ckey,tmp_term);
 							if (!tmp_term.is_canonical(args_tuple)) {
 								tmp_term.canonicalise(args_tuple);
 							}
