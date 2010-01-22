@@ -158,49 +158,44 @@ namespace piranha
 					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max)) {
 					// Mark representation as viable.
 					m_gr_is_viable = true;
-				}
-			}
-			/// Code terms.
-			void code_terms()
-			{
-				piranha_assert(m_gr_is_viable);
-				// Downcast multiprecision to fast representation.
-				cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
-				cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
-				m_fast_h.assign(
-					boost::lexical_cast<max_fast_int>(m_mp_h.lower()),
-					boost::lexical_cast<max_fast_int>(m_mp_h.upper())
-				);
-				// Build decoding tuple.
-				cm_build_decoding_tuple(m_dt,m_fast_gr);
-				// Establish if subtraction is requested or not.
-				static const bool sub_requested = op_has_sub<OpTuple>::value;
-				// Resize codes vectors.
-				typedef std::vector<max_fast_int>::size_type size_type;
-				const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size()),
-					csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
-				m_ckeys1.resize(csize1);
-				m_ckeys2a.resize(csize2);
-				if (sub_requested) {
-					m_ckeys2b.resize(csize2);
-				}
-				// Now fill in the codes.
-				max_fast_int code_a = 0, code_b = 0;
-				for (size_type i = 0; i < csize1; ++i) {
-					cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms1[i],m_vh,code_a,code_b);
-					m_ckeys1[i] = code_a;
-				}
-				for (size_type i = 0; i < csize2; ++i) {
-					cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms2[i],m_vh,code_a,code_b);
-					m_ckeys2a[i] = code_a;
+					// Downcast multiprecision to fast representation.
+					cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
+					cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
+					m_fast_h.assign(
+						boost::lexical_cast<max_fast_int>(m_mp_h.lower()),
+						boost::lexical_cast<max_fast_int>(m_mp_h.upper())
+					);
+					// Build decoding tuple.
+					cm_build_decoding_tuple(m_dt,m_fast_gr);
+					// Establish if subtraction is requested or not.
+					static const bool sub_requested = op_has_sub<OpTuple>::value;
+					// Resize codes vectors.
+					typedef std::vector<max_fast_int>::size_type size_type;
+					const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size()),
+						csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
+					m_ckeys1.resize(csize1);
+					m_ckeys2a.resize(csize2);
 					if (sub_requested) {
-						m_ckeys2b[i] = code_b;
+						m_ckeys2b.resize(csize2);
 					}
+					// Now fill in the codes.
+					max_fast_int code_a = 0, code_b = 0;
+					for (size_type i = 0; i < csize1; ++i) {
+						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms1[i],m_vh,code_a,code_b);
+						m_ckeys1[i] = code_a;
+					}
+					for (size_type i = 0; i < csize2; ++i) {
+						cm_code<OpTuple>(m_fast_ct,*derived_const_cast->m_terms2[i],m_vh,code_a,code_b);
+						m_ckeys2a[i] = code_a;
+						if (sub_requested) {
+							m_ckeys2b[i] = code_b;
+						}
+					}
+					// Compute densities.
+					const max_fast_int w = boost::numeric::width(m_fast_h) + 1;
+					m_density1 = static_cast<double>(csize1) / w;
+					m_density2 = static_cast<double>(csize2) / w;
 				}
-				// Compute densities.
-				const max_fast_int w = boost::numeric::width(m_fast_h) + 1;
-				m_density1 = static_cast<double>(csize1) / w;
-				m_density2 = static_cast<double>(csize2) / w;
 			}
 			/// Decode.
 			/**
