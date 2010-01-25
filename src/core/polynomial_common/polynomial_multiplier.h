@@ -59,12 +59,14 @@ namespace piranha
 		const std::size_t &thread_n, boost::barrier *b, Functor &m)
 	{
 		piranha_assert(block_size > 0 && thread_n > 0 && thread_id < thread_n);
+		// Numerical limits check. We need an extra block size buffer at the end to make sure we are able to
+		// represent all indices and sizes.
+		piranha_assert(size1 < boost::integer_traits<std::size_t>::const_max - block_size && size2 < boost::integer_traits<std::size_t>::const_max - block_size);
 		// Number of blocks of dimension block_size.
 		const std::size_t nrblocks1 = size1 / block_size, nrblocks2 = size2 / block_size;
 		// Size of the last "irregular" two blocks.
 		const std::size_t ib_size1 = size1 % block_size, ib_size2 = size2 % block_size;
 		// Total number of blocks.
-		piranha_assert(nrblocks1 < boost::integer_traits<std::size_t>::const_max && nrblocks2 < boost::integer_traits<std::size_t>::const_max);
 		const std::size_t nblocks1 = nrblocks1 + (ib_size1 != 0), nblocks2 = nrblocks2 + (ib_size2 != 0);
 		// Number of block iterations: for the first series we want to jump every n_thread blocks
 		// (also maybe going past the series end), while for the second series we want to iterate
