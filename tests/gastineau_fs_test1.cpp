@@ -31,11 +31,10 @@ typedef dfs stype;
 
 int main()
 {
-settings::debug(true);
-  stype elp3("elp3.fs"), elp3a(elp3);
-  for (size_t i = 0; i < 20; ++i)
-  {
-    std::cout << (elp3*elp3a).length() << std::endl;
-  }
-  return 0;
+	stype elp3("elp3.dfs");
+	elp3 = elp3.pow(3);
+	stype elp3a(elp3);
+	elp3 * elp3a;
+	std::cout << elp3.length() << '\n';
+	std::cout << elp3a.length() << '\n';
 }
