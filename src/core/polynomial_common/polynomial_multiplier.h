@@ -24,6 +24,7 @@
 #include <algorithm> // For std::max.
 #include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/bind.hpp>
+#include <boost/integer_traits.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/thread/barrier.hpp>
@@ -63,6 +64,7 @@ namespace piranha
 		// Size of the last "irregular" two blocks.
 		const std::size_t ib_size1 = size1 % block_size, ib_size2 = size2 % block_size;
 		// Total number of blocks.
+		piranha_assert(nrblocks1 < boost::integer_traits<std::size_t>::const_max && nrblocks2 < boost::integer_traits<std::size_t>::const_max);
 		const std::size_t nblocks1 = nrblocks1 + (ib_size1 != 0), nblocks2 = nrblocks2 + (ib_size2 != 0);
 		// Number of block iterations: for the first series we want to jump every n_thread blocks
 		// (also maybe going past the series end), while for the second series we want to iterate
