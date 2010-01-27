@@ -134,7 +134,7 @@ namespace piranha
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					/// Arrow operator.
-					key_type *operator->()
+					value_type *operator->()
 					{
 						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
 						piranha_assert(m_bucket_index < bucket_size);
