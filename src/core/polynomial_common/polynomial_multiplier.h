@@ -42,7 +42,7 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
 #include "../base_classes/null_truncator.h"
-#include "../coded_series_hash_table.h"
+#include "../coded_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -190,6 +190,8 @@ namespace piranha
 							vec_res = perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 						}
 						if (!vec_res) {
+							// We need to shift codes in order to make sure all codes are non-negative.
+							this->shift_codes();
 							__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
 							perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 						}
@@ -291,9 +293,9 @@ namespace piranha
 						__PDEBUG(std::cout << "Done polynomial vector coded.\n");
 						return true;
 					}
-					template <class Cterm, class Ckey, class GenericTruncator, class HashSet>
+					template <class Cf, class Ckey, class GenericTruncator, class HashSet>
 					struct hash_functor {
-						hash_functor(Cterm &cterm, const cf_type1 *tc1, const cf_type2 *tc2,
+						hash_functor(std::pair<Cf,Ckey> &cterm, const cf_type1 *tc1, const cf_type2 *tc2,
 							const term_type1 **t1, const term_type2 **t2,
 							const Ckey *ck1, const Ckey *ck2,
 							const GenericTruncator &trunc, HashSet *cms, const ArgsTuple &args_tuple):
@@ -305,21 +307,21 @@ namespace piranha
 							if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
 								return false;
 							}
-							m_cterm.m_ckey = m_ck1[i];
-							m_cterm.m_ckey += m_ck2[j];
-							const std::pair<bool,c_iterator> res = m_cms->find(m_cterm);
+							m_cterm.second = m_ck1[i];
+							m_cterm.second += m_ck2[j];
+							std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
 							if (res.first) {
-								res.second->m_cf.addmul(m_tc1[i],m_tc2[j],m_args_tuple);
+								res.second->first.addmul(m_tc1[i],m_tc2[j],m_args_tuple);
 							} else {
 								// Assign to the temporary term the old cf (new_key is already assigned).
-								m_cterm.m_cf = m_tc1[i];
+								m_cterm.first = m_tc1[i];
 								// Multiply the old term by the second term.
-								m_cterm.m_cf.mult_by(m_tc2[j],m_args_tuple);
+								m_cterm.first.mult_by(m_tc2[j],m_args_tuple);
 								m_cms->insert(m_cterm,res.second);
 							}
 							return true;
 						}
-						Cterm			&m_cterm;
+						std::pair<Cf,Ckey>	&m_cterm;
 						const cf_type1		*m_tc1;
 						const cf_type2		*m_tc2;
 						const term_type1	**m_t1;
@@ -334,8 +336,7 @@ namespace piranha
 					void perform_hash_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
 						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
 					{
-						typedef typename coded_ancestor::template coded_term_type<cf_type1,max_fast_int> cterm;
-						typedef coded_series_hash_table<cterm, std::allocator<char> > csht;
+						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
@@ -346,22 +347,22 @@ namespace piranha
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
-						const std::size_t block_size = this->template compute_block_size<sizeof(cterm)>();
+						const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 // std::cout << "Block size: " << block_size << '\n';
-						cterm tmp_cterm;
-// const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-						hash_functor<cterm,max_fast_int,GenericTruncator,csht>
-							hm(tmp_cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
+const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+						std::pair<cf_type1,max_fast_int> cterm;
+						hash_functor<cf_type1,max_fast_int,GenericTruncator,csht>
+							hm(cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
-// std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						// TODO: add debug info about cms' size here.
 						const c_iterator c_it_f = cms.end();
 						term_type1 tmp_term;
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
-							this->decode(c_it->m_cf,c_it->m_ckey,tmp_term);
+							this->decode(c_it->first,c_it->second,tmp_term);
 							if (!tmp_term.is_canonical(args_tuple)) {
 								tmp_term.canonicalise(args_tuple);
 							}
