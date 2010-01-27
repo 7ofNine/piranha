@@ -126,28 +126,12 @@ namespace piranha
 						return *this;
 					}
 					/// Dereferentiation operator.
-					const value_type &operator*() const
-					{
-						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
-						piranha_assert(m_bucket_index < bucket_size);
-						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
-						return m_ht->m_container[m_vector_index].t[m_bucket_index];
-					}
-					/// Dereferentiation operator.
 					value_type &operator*()
 					{
 						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
-					}
-					/// Arrow operator.
-					const key_type *operator->() const
-					{
-						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
-						piranha_assert(m_bucket_index < bucket_size);
-						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
-						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					/// Arrow operator.
 					key_type *operator->()
@@ -166,7 +150,7 @@ namespace piranha
 					/// Inequality operator.
 					bool operator!=(const iterator &it2) const
 					{
-						return !(*this == it2);
+						return !operator==(it2);
 					}
 				private:
 					// Advance to the next element.
@@ -189,9 +173,9 @@ namespace piranha
 						}
 					}
 				private:
-					coded_hash_table		*m_ht;
-					std::size_t			m_vector_index;
-					bucket_size_type		m_bucket_index;
+					coded_hash_table	*m_ht;
+					std::size_t		m_vector_index;
+					bucket_size_type	m_bucket_index;
 			};
 			/// Default constructor.
 			/**
@@ -218,20 +202,9 @@ namespace piranha
 					<< sizes[m_size_policy][m_size_index] << '\n';)
 std::cout << "On destruction, the vector size of coded_hash_table was: "
 					<< sizes[m_size_policy][m_size_index] << '\n';
+std::cout << "On destruction, the load factor was: "
+					<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n';
 				destroy();
-			}
-			/// Return an iterator to the first element of the table.
-			/**
-			 * If the series is empty, the end() iterator is returned.
-			 */
-			iterator begin() const
-			{
-				return iterator(this);
-			}
-			/// Return an iterator to the end of the table.
-			iterator end() const
-			{
-				return iterator(this, sizes[m_size_policy][m_size_index], 0);
 			}
 			/// Return an iterator to the first element of the table.
 			/**
