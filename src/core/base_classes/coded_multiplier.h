@@ -226,6 +226,29 @@ namespace piranha
 				const double max_density = std::max<double>(m_density1,m_density2);
 				return (max_density < limit);
 			}
+			/// Shift codes.
+			/**
+			 * Move all the the codes so that the minimum code of the representation is 0.
+			 */
+			void shift_codes()
+			{
+				piranha_assert(m_gr_is_viable);
+				typedef std::vector<max_fast_int>::size_type size_type;
+				const size_type size1 = m_ckeys1.size(), size2a = m_ckeys2a.size(), size2b = m_ckeys2b.size();
+				const max_fast_int chi = m_fast_h.lower();
+				for (size_type i = 0; i < size1; ++i) {
+					m_ckeys1[i] -= chi;
+					piranha_assert(m_ckeys1[i] >= 0);
+				}
+				for (size_type i = 0; i < size2a; ++i) {
+					m_ckeys2a[i] -= chi;
+					piranha_assert(m_ckeys2a[i] >= 0);
+				}
+				for (size_type i = 0; i < size2b; ++i) {
+					m_ckeys2b[i] -= chi;
+					piranha_assert(m_ckeys2b[i] >= 0);
+				}
+			}
 		protected:
 			/// Is global coded representation viable?
 			bool					m_gr_is_viable;
