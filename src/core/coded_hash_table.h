@@ -75,8 +75,9 @@ namespace piranha
 			// Configuration options.
 			/// Bucket size.
 			static const std::size_t bucket_size		= 5;
+			/// Minimum size index.
 			static const std::size_t min_size_index		= 0;
-			// Maximum number of buckets probed outside the native bucket.
+			/// Maximum number of buckets probed outside the native bucket.
 			static const std::size_t probe_size		= 40;
 			// Configuration options end here.
 			static const std::size_t sizes_size =
@@ -247,7 +248,7 @@ std::cout << "On destruction, the load factor was: "
 				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
 				// Start looking from the next bucket.
 				std::size_t new_vector_pos = vector_pos + 1;
-				for (std::size_t n = 0; n < probe_size; ++n) {
+				for (std::size_t n = 0; n < probe_size; ++n, ++new_vector_pos) {
 					// Break out if we are at the end of the table.
 					if (new_vector_pos == vector_size) {
 						break;
@@ -262,8 +263,6 @@ std::cout << "On destruction, the load factor was: "
 							return std::make_pair(true,iterator(this, new_vector_pos, i));
 						}
 					}
-					// Increment vector index.
-					++new_vector_pos;
 				}
 				// Either we exhausted the linear probe sequence or we are at the end of the table. Return (false,end()).
 				return std::make_pair(false,end());
@@ -371,7 +370,7 @@ std::cout << "On destruction, the load factor was: "
 				// Try insert into the next bucket(s).
 				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
 				std::size_t new_vector_pos = vector_pos + 1;
-				for (std::size_t n = 0; n < probe_size; ++n) {
+				for (std::size_t n = 0; n < probe_size; ++n, ++new_vector_pos) {
 					if (new_vector_pos == vector_size) {
 						break;
 					}
@@ -384,8 +383,6 @@ std::cout << "On destruction, the load factor was: "
 							return true;
 						}
 					}
-					// Increment vector index.
-					++new_vector_pos;
 				}
 				// We were not able to insert.
 				return false;
