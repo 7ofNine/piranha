@@ -25,8 +25,11 @@
 #include <boost/cstdint.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <cstddef>
+#include <exception>
 #include <utility> // For std::pair.
+#include <vector>
 
 #include "config.h"
 #include "exceptions.h"
@@ -67,9 +70,11 @@ namespace piranha
 					/// Array of coefficient-code pairs.
 					value_type t[N];
 			};
-			/// Size policy: power-of-two and prime sizes are available.
+			/// Size policy.
 			enum size_policy {
+				/// Power of two sizes.
 				pow2	= 0,
+				/// Prime sizes.
 				prime	= 1
 			};
 			// Configuration options.
@@ -78,7 +83,7 @@ namespace piranha
 			/// Minimum size index.
 			static const std::size_t min_size_index		= 0;
 			/// Maximum number of buckets probed outside the native bucket.
-			static const std::size_t probe_size		= 40;
+			static const std::size_t probe_size		= 100;
 			// Configuration options end here.
 			static const std::size_t sizes_size =
 #ifdef _PIRANHA_64BIT
@@ -93,10 +98,12 @@ namespace piranha
 			static const std::size_t sizes[2][sizes_size];
 			/// Alias for the bucket type.
 			typedef bucket<bucket_size> bucket_type;
-			/// Alias for the bucket size type.
-			typedef typename bucket<bucket_size>::size_type bucket_size_type;
-			/// Alias for the allocator.
-			typedef typename Allocator::template rebind<bucket_type>::other allocator_type;
+			/// Bucket size type.
+			typedef typename bucket_type::size_type bucket_size_type;
+			/// Internal container type.
+			typedef std::vector<bucket_type,typename Allocator::template rebind<bucket_type>::other> container_type;
+			/// Size type.
+			typedef typename container_type::size_type size_type;
 			/// Iterator class.
 			class iterator
 			{
@@ -105,6 +112,8 @@ namespace piranha
 					/**
 					 * The iterator will point to the first element or to the end of the table, if
 					 * the table is empty.
+					 *
+					 * @param[in] p pointer to the hash table.
 					 */
 					iterator(coded_hash_table *p): m_ht(p), m_vector_index(0), m_bucket_index(0)
 					{
@@ -116,39 +125,62 @@ namespace piranha
 					/// Constructor from coded_hash_table, and vector-bucket indices.
 					/**
 					 * No checks are performed on the values supplied to the constructor.
+					 *
+					 * @param[in] p pointer to the hash table.
+					 * @param[in] vi vector index.
+					 * @param[in] bi bucket index.
 					 */
-					iterator(coded_hash_table *p, const std::size_t &vi, const bucket_size_type &bi):
+					iterator(coded_hash_table *p, const size_type &vi, const bucket_size_type &bi):
 						m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
 				public:
 					/// Prefix increment.
+					/**
+					 * @return reference to this.
+					 */
 					iterator &operator++()
 					{
 						next();
 						return *this;
 					}
 					/// Dereferentiation operator.
+					/**
+					 * @return reference to this.
+					 */
 					value_type &operator*()
 					{
-						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
+						piranha_assert(m_vector_index < m_ht->m_container.size());
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					/// Arrow operator.
+					/**
+					 * @return pointer to this.
+					 */
 					value_type *operator->()
 					{
-						piranha_assert(m_vector_index < sizes[m_ht->m_size_policy][m_ht->m_size_index]);
+						piranha_assert(m_vector_index < m_ht->m_container.size());
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
 						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
 					/// Equality operator.
+					/**
+					 * @param[in] it2 other iterator.
+					 *
+					 * @return true if the iterators point to the same bucket in the same hash table.
+					 */
 					bool operator==(const iterator &it2) const
 					{
 						return (m_ht == it2.m_ht && m_vector_index == it2.m_vector_index &&
 							m_bucket_index == it2.m_bucket_index);
 					}
 					/// Inequality operator.
+					/**
+					 * @param[in] it2 other iterator.
+					 *
+					 * @return opposite of operator==().
+					 */
 					bool operator!=(const iterator &it2) const
 					{
 						return !operator==(it2);
@@ -157,7 +189,7 @@ namespace piranha
 					// Advance to the next element.
 					void next()
 					{
-						const std::size_t vector_size = sizes[m_ht->m_size_policy][m_ht->m_size_index];
+						const size_type vector_size = m_ht->m_container.size();
 						while (true) {
 							// Go to the next bucket if we are at the last element of the current one.
 							if (m_bucket_index == bucket_size - 1) {
@@ -175,60 +207,69 @@ namespace piranha
 					}
 				private:
 					coded_hash_table	*m_ht;
-					std::size_t		m_vector_index;
+					size_type		m_vector_index;
 					bucket_size_type	m_bucket_index;
 			};
 			/// Default constructor.
 			/**
 			 * Sets the size policy to pow2.
 			 */
-			coded_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0)
-			{
-				init();
-			}
+			coded_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0),
+				m_container(boost::numeric_cast<size_type>(sizes[m_size_policy][m_size_index]))
+			{}
 			// NOTE: remove?
 			/// Constructor with size hint.
 			/**
 			 * Sets the size policy to pow2. The hash table size is set to a value close to the provided size hint.
+			 *
+			 * @param[in] size_hint size hint for the hash table.
 			 */
 			coded_hash_table(const std::size_t &size_hint):
-				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0)
-			{
-				init();
-			}
+				m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0),
+				m_container(boost::numeric_cast<size_type>(sizes[m_size_policy][m_size_index]))
+			{}
 			/// Destructor.
 			~coded_hash_table()
 			{
 				__PDEBUG(std::cout << "On destruction, the vector size of coded_hash_table was: "
-					<< sizes[m_size_policy][m_size_index] << '\n';)
-std::cout << "On destruction, the vector size of coded_hash_table was: "
-					<< sizes[m_size_policy][m_size_index] << '\n';
-std::cout << "On destruction, the load factor was: "
-					<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n';
-				destroy();
+					<< sizes[m_size_policy][m_size_index] << '\n');
+				__PDEBUG(std::cout << "On destruction, the load factor was: "
+					<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n');
+				piranha_assert(sizes[m_size_policy][m_size_index] == m_container.size());
 			}
 			/// Return an iterator to the first element of the table.
 			/**
-			 * If the series is empty, the end() iterator is returned.
+			 * If the table is empty, the end() iterator is returned.
+			 *
+			 * @return iterator to the beginning of the table.
 			 */
 			iterator begin()
 			{
 				return iterator(this);
 			}
 			/// Return an iterator to the end of the table.
+			/**
+			 *
+			 * @return iterator to the end of the series.
+			 */
 			iterator end()
 			{
-				return iterator(this, sizes[m_size_policy][m_size_index], 0);
+				return iterator(this,m_container.size(),0);
 			}
 			/// Locate element based on key.
 			/**
 			 * If the element is found, then return (true,position). Otherwise return (false, first empty slot). Note that in the latter
 			 * case, the first empty slot can be the table's end.
+			 *
+			 * @param[in] key value key.
+			 *
+			 * @return pair containing the result of the operation.
 			 */
 			std::pair<bool,iterator> find(const key_type &key)
 			{
-				const std::size_t vector_pos = get_position(boost::hash<key_type>()(key),m_size_index,m_size_policy);
-				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
+				const size_type vector_size = m_container.size(),
+					vector_pos = get_position(boost::hash<key_type>()(key),vector_size,m_size_policy);
+				piranha_assert(vector_pos < vector_size);
 				const bucket_type &bucket = m_container[vector_pos];
 				// Now examine all elements in the bucket.
 				for (bucket_size_type i = 0; i < bucket_size; ++i) {
@@ -245,10 +286,9 @@ std::cout << "On destruction, the load factor was: "
 					// No bucket end and no match, continue to the next bucket element.
 				}
 				// We examined all the elements in the (full) destination bucket, found no match. Start linear probing.
-				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
 				// Start looking from the next bucket.
-				std::size_t new_vector_pos = vector_pos + 1;
-				for (std::size_t n = 0; n < probe_size; ++n, ++new_vector_pos) {
+				size_type new_vector_pos = vector_pos + 1;
+				for (size_type n = 0; n < probe_size; ++n, ++new_vector_pos) {
 					// Break out if we are at the end of the table.
 					if (new_vector_pos == vector_size) {
 						break;
@@ -267,12 +307,14 @@ std::cout << "On destruction, the load factor was: "
 				// Either we exhausted the linear probe sequence or we are at the end of the table. Return (false,end()).
 				return std::make_pair(false,end());
 			}
-			// TODO: rename to insert_new.
 			/// Insert new value into the hash table at the position specified by iterator.
 			/**
 			 * Iterator must point either to an empty slot or to the end of the table. Value is assumed not to be already present in the table.
+			 *
+			 * @param[in] v value_type to be inserted.
+			 * @param[in] it insertion point.
 			 */
-			void insert(const value_type &v, const iterator &it)
+			void insert_new(const value_type &v, const iterator &it)
 			{
 				if (unlikely(!attempt_insertion(v,it))) {
 					iterator tmp(it);
@@ -285,26 +327,27 @@ std::cout << "On destruction, the load factor was: "
 				}
 			}
 			/// Return the number of elements stored in the hash table.
-			std::size_t size() const
+			/**
+			 * @return the number of items in the hash table.
+			 */
+			size_type size() const
 			{
 				return m_length;
 			}
 		private:
 			// Convert hash value into position.
-			static std::size_t get_position(const std::size_t &hash, const std::size_t &size_index, const size_policy &sp)
+			static size_type get_position(const std::size_t &hash, const size_type &size, const size_policy &sp)
 			{
 				switch (sp) {
 					case pow2:
-						return (hash & (sizes[pow2][size_index] - 1));
+						return (hash & (size - 1));
 					case prime:
-						return (hash % sizes[prime][size_index]);
+						return (hash % size);
 				}
-				piranha_assert(false);
-				return 0;
 			}
 			// TODO: remove?
 			// Find hash table size from hint.
-			std::size_t find_upper_size_index(const std::size_t &size) const
+			size_type find_upper_size_index(const std::size_t &size) const
 			{
 				for (std::size_t retval = 0; retval < sizes_size; ++retval) {
 					if (sizes[m_size_policy][retval] >= size) {
@@ -313,38 +356,17 @@ std::cout << "On destruction, the load factor was: "
 				}
 				return min_size_index;
 			}
-			// Allocate and default-construct according to m_size_index.
-			void init()
-			{
-				const std::size_t size = sizes[m_size_policy][m_size_index];
-				const bucket_type bucket;
-				allocator_type a;
-				m_container = a.allocate(size);
-				for (std::size_t i = 0; i < size; ++i) {
-					a.construct(m_container + i, bucket);
-				}
-			}
-			// Destroy and deallocate.
-			void destroy()
-			{
-				const std::size_t size = sizes[m_size_policy][m_size_index];
-				allocator_type a;
-				for (std::size_t i = 0; i < size; ++i) {
-					a.destroy(m_container + i);
-				}
-				a.deallocate(m_container, size);
-			}
 			// Attempt insertion and return the outcome. Iterator must point either to an empty slot or to the end of the table.
 			bool attempt_insertion(const value_type &v, const iterator &it)
 			{
-				const std::size_t vector_index = it.m_vector_index;
+				const size_type vector_size = m_container.size(), vector_index = it.m_vector_index;
 				// If the iterator is the end, we cannot insert.
-				if (unlikely(vector_index == sizes[m_size_policy][m_size_index])) {
+				if (unlikely(vector_index == vector_size)) {
 					return false;
 				}
 				const bucket_size_type bucket_index = it.m_bucket_index;
 				piranha_assert(bucket_index < bucket_size);
-				piranha_assert(vector_index < sizes[m_size_policy][m_size_index]);
+				piranha_assert(vector_index < vector_size);
 				bucket_type &bucket = m_container[vector_index];
 				// Make sure the slot is not already taken.
 				piranha_assert(bucket.t[bucket_index].second < 0);
@@ -355,8 +377,9 @@ std::cout << "On destruction, the load factor was: "
 			// Insertion routine that won't check for equal key. Used during resizing. Outcome is reported.
 			bool unchecked_insertion(const value_type &v)
 			{
-				const std::size_t vector_pos = get_position(boost::hash<key_type>()(v.second),m_size_index,m_size_policy);
-				piranha_assert(vector_pos < sizes[m_size_policy][m_size_index]);
+				const size_type vector_size = m_container.size(),
+					vector_pos = get_position(boost::hash<key_type>()(v.second),vector_size,m_size_policy);
+				piranha_assert(vector_pos < vector_size);
 				bucket_type &bucket = m_container[vector_pos];
 				// Now check for an available slot in the bucket.
 				for (bucket_size_type i = 0; i < bucket_size; ++i) {
@@ -368,9 +391,8 @@ std::cout << "On destruction, the load factor was: "
 					}
 				}
 				// Try insert into the next bucket(s).
-				const std::size_t vector_size = sizes[m_size_policy][m_size_index];
-				std::size_t new_vector_pos = vector_pos + 1;
-				for (std::size_t n = 0; n < probe_size; ++n, ++new_vector_pos) {
+				size_type new_vector_pos = vector_pos + 1;
+				for (size_type n = 0; n < probe_size; ++n, ++new_vector_pos) {
 					if (new_vector_pos == vector_size) {
 						break;
 					}
@@ -390,31 +412,31 @@ std::cout << "On destruction, the load factor was: "
 			// Increase size of the container to the next size.
 			void increase_size()
 			{
-				const double load_factor = static_cast<double>(m_length) / sizes[m_size_policy][m_size_index];
+				const double load_factor = static_cast<double>(m_length) / (static_cast<double>(m_container.size()) * bucket_size);
 				__PDEBUG(std::cout << "Increase size requested at load factor: " << load_factor << '\n');
-				coded_hash_table new_ht;
-				new_ht.destroy();
 				// If load factor is too small and we are on pow2 sizes,
 				// we want to switch to prime sizes.
 				static const double min_load_factor = .1;
-				if (new_ht.m_size_policy == pow2 && load_factor < min_load_factor) {
+				size_policy new_size_policy = m_size_policy;
+				if (m_size_policy == pow2 && load_factor < min_load_factor) {
 					__PDEBUG(std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n";)
-					new_ht.m_size_policy = prime;
+					new_size_policy = prime;
 				}
+				coded_hash_table new_ht;
+				new_ht.m_size_policy = new_size_policy;
 				new_ht.m_size_index = m_size_index + 2;
-				new_ht.init();
+				new_ht.m_length = 0;
+				new_ht.m_container.resize(boost::numeric_cast<size_type>(sizes[new_ht.m_size_policy][new_ht.m_size_index]));
+				// Cache quantities.
 				const iterator it_i = begin(), it_f = end();
 				iterator it = it_i;
-				std::size_t count = 0;
+				size_type count = 0;
 				while (it != it_f) {
 					if (!new_ht.unchecked_insertion(*it)) {
 						// NOTICE: here maybe we can use swapping instead of copying. The only problem is that
 						// resizing can fail. In that case, we should swap back everything, if possible, and re-attempt
 						// the resize with a bigger value.
 						__PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
-						// TODO: add check for excessive size here. It must be here to avoid problems
-						// with exception throwing.
-						new_ht.destroy();
 						// If we are able to rebuild less than a fraction of the initial hash table
 						// and we are working in pow2 sizes, switch to prime sizes.
 						static const double rebuild_thresh = .5;
@@ -423,7 +445,14 @@ std::cout << "On destruction, the load factor was: "
 							new_ht.m_size_policy = prime;
 						}
 						++new_ht.m_size_index;
-						new_ht.init();
+						if (new_ht.m_size_index == sizes_size) {
+							// We ran out of possible sizes.
+							piranha_throw(std::overflow_error,"hash table size overflow");
+						}
+						new_ht.m_length = 0;
+						new_ht.m_container.clear();
+						new_ht.m_container.resize(
+							boost::numeric_cast<size_type>(sizes[new_ht.m_size_policy][new_ht.m_size_index]));
 						it = it_i;
 						count = 0;
 					} else {
@@ -432,7 +461,7 @@ std::cout << "On destruction, the load factor was: "
 					}
 				}
 				// Rebuilding complete, swap data members.
-				std::swap(m_container,new_ht.m_container);
+				m_container.swap(new_ht.m_container);
 				std::swap(m_size_index,new_ht.m_size_index);
 				std::swap(m_length,new_ht.m_length);
 				std::swap(m_size_policy,new_ht.m_size_policy);
@@ -440,8 +469,8 @@ std::cout << "On destruction, the load factor was: "
 		private:
 			size_policy		m_size_policy;
 			std::size_t		m_size_index;
-			std::size_t		m_length;
-			bucket_type		*m_container;
+			size_type		m_length;
+			container_type		m_container;
 	};
 
 	template <class Cf, class Code, class Allocator>

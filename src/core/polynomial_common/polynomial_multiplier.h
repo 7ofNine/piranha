@@ -317,7 +317,7 @@ namespace piranha
 								m_cterm.first = m_tc1[i];
 								// Multiply the old term by the second term.
 								m_cterm.first.mult_by(m_tc2[j],m_args_tuple);
-								m_cms->insert(m_cterm,res.second);
+								m_cms->insert_new(m_cterm,res.second);
 							}
 							return true;
 						}
