@@ -22,7 +22,6 @@
 #define PIRANHA_POLYNOMIAL_MULTIPLIER_H
 
 #include <algorithm> // For std::max.
-#include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
 #include <boost/bind.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -35,7 +34,6 @@
 #include <cstddef>
 #include <exception>
 #include <iterator>
-#include <memory> // Drop this when we declare csht with counting allocator externally.
 #include <utility> // For std::pair.
 #include <vector>
 
@@ -98,7 +96,7 @@ namespace piranha
 		}
 	}
 
-	/// Series multiplier specifically tuned for Polynomials.
+	/// Series multiplier specifically tuned for polynomials.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
