@@ -36,21 +36,24 @@
 #include "../type_traits.h"
 #include "toolbox.h"
 
-// Useful shortcuts.
+/// Template parameters list for piranha::base_series (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
+/// Template parameters list for piranha::base_series (implementation form).
 #define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived
 
 namespace piranha
 {
-	template <class Series, int N>
-	struct echelon_level_impl {
-		static const int value = echelon_level_impl<typename Series::next_echelon_type,N + 1>::value;
+	template <class EchelonType, int N = 0>
+	struct echelon_level_impl
+	{
+		static const int value = echelon_level_impl<typename EchelonType::next_echelon_type,N + 1>::value;
 	};
 
 	template <int N>
-	struct echelon_level_impl<null_type,N> {
+	struct echelon_level_impl<null_type,N>
+	{
 		// Offset is 2 because it is a length and because we went one past.
-		static const int value = N - 2;
+		static const int value = N - 1;
 	};
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -74,7 +77,7 @@ namespace piranha
 			/// Next echelon type is term's coefficient.
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
-			static const int echelon_level = echelon_level_impl<Derived,0>::value;
+			static const int echelon_level = echelon_level_impl<next_echelon_type>::value;
 			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
 			typedef typename container_type::const_iterator const_iterator;
 			const_iterator begin() const;
