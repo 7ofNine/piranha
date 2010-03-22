@@ -38,6 +38,7 @@
 
 namespace piranha
 {
+	// TODO: move out in static method? Where is this used?
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::complex<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::complex() const
 	{
