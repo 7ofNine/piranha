@@ -56,6 +56,7 @@
 
 namespace piranha
 {
+	/// Polynomial class.
 	template < E0_SERIES_TP_DECL = std::allocator<char> >
 	class polynomial:
 				public POLYNOMIAL_BASE_ANCESTOR,

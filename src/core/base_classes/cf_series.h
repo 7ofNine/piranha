@@ -52,7 +52,6 @@ namespace piranha
 	class toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >
 	{
 		public:
-			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
 				typedef typename Derived::term_type::cf_type::
@@ -121,7 +120,7 @@ namespace piranha
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &, const ArgsTuple &) const;
 			template <class ArgsTuple>
-			eval_type eval(const double &, const ArgsTuple &) const;
+			typename term_eval_type_determiner<Term>::type eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
 			bool operator==(const Derived &) const;

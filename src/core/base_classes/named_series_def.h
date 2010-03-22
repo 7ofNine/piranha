@@ -63,7 +63,6 @@ namespace piranha
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
-			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout) const;
 			void print_plain(std::ostream &) const;
@@ -74,8 +73,8 @@ namespace piranha
 // 			Derived filter(const Filter &) const;
 			void swap(Derived &);
 			double norm() const;
-			eval_type eval(const double &) const;
-			eval_type eval(const eval_dict &) const;
+			typename term_eval_type_determiner<Term>::type eval(const double &) const;
+			typename term_eval_type_determiner<Term>::type eval(const eval_dict &) const;
 			std::size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);

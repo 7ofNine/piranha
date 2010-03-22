@@ -82,7 +82,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval_type
+	inline typename term_eval_type_determiner<Term>::type
 	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const double &t) const
 	{
 		return derived_const_cast->base_eval(t,m_arguments);
@@ -110,7 +110,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval_type
+	inline typename term_eval_type_determiner<Term>::type
 	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const eval_dict &d) const
 	{
 		if (!check_eval_dict(d,m_arguments)) {
@@ -126,8 +126,9 @@ namespace piranha
 			orig_eval.push_back(std::make_pair(psym(it->first),psym(it->first).get_time_eval()));
 			psym(it->first,it->second);
 		}
-		const eval_type retval(eval(0));
-		// Restor original evaluation vectors.
+		const typename term_eval_type_determiner<Term>::type retval(eval(0));
+		// Restore original evaluation vectors.
+		// NOTE: here RAII here, to be exception safe?
 		for (std::size_t i = 0; i < orig_eval.size(); ++i) {
 			orig_eval[i].first.set_time_eval(orig_eval[i].second);
 		}

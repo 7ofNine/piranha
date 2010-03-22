@@ -84,7 +84,7 @@ namespace piranha
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
 			static const int echelon_level = echelon_level_impl<next_echelon_type>::value;
-			typedef typename term_eval_type_determiner<Term>::type base_eval_type;
+			typedef typename term_eval_type_determiner<Term>::type eval_type;
 			typedef typename container_type::const_iterator const_iterator;
 			const_iterator begin() const;
 			const_iterator end() const;
@@ -114,7 +114,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>
-			base_eval_type base_eval(const double &, const ArgsTuple &) const;
+			eval_type base_eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived &base_add(const Derived &, const ArgsTuple &);
 			template <class ArgsTuple>
