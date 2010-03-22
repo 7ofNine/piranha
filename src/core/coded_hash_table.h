@@ -343,6 +343,9 @@ namespace piranha
 						return (hash & (size - 1));
 					case prime:
 						return (hash % size);
+					default:
+						piranha_assert(false);
+						return 0;
 				}
 			}
 			// TODO: remove?
