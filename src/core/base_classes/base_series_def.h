@@ -36,9 +36,9 @@
 #include "../type_traits.h"
 #include "toolbox.h"
 
-/// Template parameters list for piranha::base_series (declaration form).
+// Template parameters list for piranha::base_series (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
-/// Template parameters list for piranha::base_series (implementation form).
+// Template parameters list for piranha::base_series (implementation form).
 #define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived
 
 namespace piranha
@@ -52,7 +52,7 @@ namespace piranha
 	template <int N>
 	struct echelon_level_impl<null_type,N>
 	{
-		// Offset is 2 because it is a length and because we went one past.
+		// Offset is 1 because we went one past.
 		static const int value = N - 1;
 	};
 
@@ -61,7 +61,13 @@ namespace piranha
 
 	/// Base series class.
 	/**
-	 * Term must derive from piranha::base_term class.
+	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
+	 * to be inherited by (at least) either piranha::named_series (for a top-level series) or piranha::cf_series (for a coefficient series).
+	 *
+	 * The methods in this class provide the lowest level of series manipulation, and allow to operate directly on the individual terms of the
+	 * series.
+	 *
+	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	class toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >
@@ -74,7 +80,7 @@ namespace piranha
 			/// Term container.
 			typedef boost::unordered_set<term_type,boost::hash<term_type>,std::equal_to<term_type>,allocator_type>
 				container_type;
-			/// Next echelon type is term's coefficient.
+			/// Next echelon type (term's coefficient).
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
 			static const int echelon_level = echelon_level_impl<next_echelon_type>::value;
