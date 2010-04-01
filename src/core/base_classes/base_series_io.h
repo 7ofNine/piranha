@@ -159,6 +159,10 @@ namespace piranha
 		insert(term_type(typename term_type::cf_type(p, n, args_tuple), typename term_type::key_type(p, n, args_tuple)), args_tuple);
 	}
 
+	/// Begin of the series.
+	/**
+	 * @return iterator to the first term of the series.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
 	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::begin() const
@@ -166,6 +170,10 @@ namespace piranha
 		return m_container.begin();
 	}
 
+	/// End of the series.
+	/**
+	 * @return iterator to the last term of the series.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::const_iterator
 	toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::end() const

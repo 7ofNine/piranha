@@ -84,8 +84,16 @@ namespace piranha
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
 			static const int echelon_level = echelon_level_impl<next_echelon_type>::value;
+			/// Type resulting from series evaluation.
+			/**
+			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
+			 * std::complex<double> in case of series with complex coefficients.
+			 */
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
+			/// Const iterator over the series' terms.
 			typedef typename container_type::const_iterator const_iterator;
+			/// Size type.
+			typedef typename container_type::size_type size_type;
 			const_iterator begin() const;
 			const_iterator end() const;
 			const_iterator find_term(const term_type &) const;
