@@ -21,10 +21,12 @@
 #ifndef PIRANHA_BASE_SERIES_DEF_H
 #define PIRANHA_BASE_SERIES_DEF_H
 
+#include <boost/functional/hash.hpp>
 #include <boost/unordered_set.hpp>
 #include <cstddef>
-#include <functional> // For std::equal_to.
+#include <functional>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "../config.h"
@@ -56,13 +58,20 @@ namespace piranha
 		static const int value = N - 1;
 	};
 
+	// Struct to define the container used in series - like a template typedef.
+	template <class Term>
+	struct series_container
+	{
+		typedef boost::unordered_set<Term,boost::hash<Term>,std::equal_to<Term>,counting_allocator<Term,std::allocator<char> > > type;
+	};
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	struct base_series {};
 
 	/// Base series class.
 	/**
 	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
-	 * to be inherited by (at least) either piranha::named_series (for a top-level series) or piranha::cf_series (for a coefficient series).
+	 * to be inherited together with (at least) either piranha::named_series (for a top-level series) or piranha::cf_series (for a coefficient series).
 	 *
 	 * The methods in this class provide the lowest level of series manipulation, and allow to operate directly on the individual terms of the
 	 * series.
@@ -78,8 +87,11 @@ namespace piranha
 			/// Alias for allocator type.
 			typedef counting_allocator<term_type,Allocator> allocator_type;
 			/// Term container.
-			typedef boost::unordered_set<term_type,boost::hash<term_type>,std::equal_to<term_type>,allocator_type>
-				container_type;
+			/**
+			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
+			 * will be used to provide the hash values for terms.
+			 */
+			typedef typename series_container<term_type>::type container_type;
 			/// Next echelon type (term's coefficient).
 			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.

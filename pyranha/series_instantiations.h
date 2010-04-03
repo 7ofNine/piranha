@@ -39,70 +39,17 @@
 
 namespace pyranha
 {
-	// "Fat" iterator that wraps the iterator of named series, allowing retrieval of coefficient and key
-	// of each term as a 2-vector of named series. Provides safe and useful iterator capabilities for series in Python.
-	// NOT thread-safe.
 	template <class NamedSeries>
-	struct __PIRANHA_VISIBLE named_iterator {
-		typedef typename NamedSeries::const_iterator s_iterator;
-		typedef typename s_iterator::iterator_category iterator_category;
-		typedef std::vector<NamedSeries> value_type;
-		typedef typename s_iterator::difference_type difference_type;
-		typedef value_type * pointer;
-		typedef value_type & reference;
-		named_iterator(const s_iterator &it, const NamedSeries &s):m_it(it),m_s(&s) {}
-		named_iterator &operator=(const named_iterator &n)
-		{
-			if (*this != &n) {
-				m_it = n.m_it;
-				m_s = n.m_s;
-			}
-			return *this;
-		}
-		value_type &operator*() const
-		{
-			if (m_value.size() != 2) {
-				m_value.resize(2);
-			}
-			m_value[0] = m_s->series_from_cf(m_it->m_cf);
-			m_value[1] = m_s->series_from_key(m_it->m_key);
-			return m_value;
-		}
-		bool operator==(const named_iterator &n_it) const
-		{
-			return (m_it == n_it.m_it && m_s == n_it.m_s);
-		}
-		named_iterator &operator++()
-		{
-			++m_it;
-			return *this;
-		}
-		named_iterator operator++(int)
-		{
-			named_iterator retval(m_it,*m_s);
-			++m_it;
-			return retval;
-		}
-		s_iterator 		m_it;
-		const NamedSeries	*m_s;
-		static value_type	m_value;
-	};
-
-	template <class NamedSeries>
-	inline named_iterator<NamedSeries> series_begin(const NamedSeries &s)
+	inline typename NamedSeries::s_iterator series_begin(const NamedSeries &s)
 	{
-		return named_iterator<NamedSeries>(s.begin(),s);
+		return s.s_begin();
 	}
 
 	template <class NamedSeries>
-	inline named_iterator<NamedSeries> series_end(const NamedSeries &s)
+	inline typename NamedSeries::s_iterator series_end(const NamedSeries &s)
 	{
-		return named_iterator<NamedSeries>(s.end(),s);
+		return s.s_end();
 	}
-
-	// Initializer for named_iterator's static member.
-	template <class NamedSeries>
-	std::vector<NamedSeries> named_iterator<NamedSeries>::m_value;
 
 	template <class Series>
 	static inline int py_echelon_level()

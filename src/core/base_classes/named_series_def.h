@@ -21,7 +21,8 @@
 #ifndef PIRANHA_NAMED_SERIES_DEF_H
 #define PIRANHA_NAMED_SERIES_DEF_H
 
-#include <boost/static_assert.hpp>
+#include <boost/functional/hash.hpp>
+#include <boost/iterator/transform_iterator.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/unordered_map.hpp>
 #include <complex>
@@ -38,6 +39,7 @@
 #include "../psym.h"
 #include "../settings.h"
 #include "../type_traits.h"
+#include "base_series_def.h"
 #include "toolbox.h"
 
 #define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
@@ -63,6 +65,24 @@ namespace piranha
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
+		private:
+			struct s_iterator_generator
+			{
+				typedef Derived result_type;
+				Derived operator()(const Term &t) const
+				{
+					Derived retval;
+					retval.m_arguments = m_series.m_arguments;
+					retval.insert(t,retval.m_arguments);
+					return retval;
+				}
+				s_iterator_generator(const Derived &series):m_series(series) {}
+				const Derived &m_series;
+			};
+		public:
+			typedef boost::transform_iterator<s_iterator_generator,typename series_container<Term>::type::const_iterator> s_iterator;
+			s_iterator s_begin() const;
+			s_iterator s_end() const;
 			std::complex<Derived> complex() const;
 			void print(std::ostream &stream = std::cout) const;
 			void print_plain(std::ostream &) const;

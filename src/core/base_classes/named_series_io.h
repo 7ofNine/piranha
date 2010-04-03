@@ -271,6 +271,18 @@ namespace piranha
 		return retval;
 	}
 
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_iterator toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_begin() const
+	{
+		return s_iterator(derived_const_cast->begin(),s_iterator_generator(*derived_const_cast));
+	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_iterator toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_end() const
+	{
+		return s_iterator(derived_const_cast->end(),s_iterator_generator(*derived_const_cast));
+	}
+
 	// Trivial destructor. It's here only to enforce a static check that cannot stay in the class definition.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::~toolbox()

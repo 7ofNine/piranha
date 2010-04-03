@@ -23,9 +23,7 @@
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, \
-				class Multiplier, \
-					class Truncator
+#define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, class Multiplier, class Truncator
 #define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 #include <boost/type_traits/is_same.hpp>
