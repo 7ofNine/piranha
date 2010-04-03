@@ -28,6 +28,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "base_series_def.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -302,32 +303,39 @@ namespace piranha
 		}
 	}
 
+	template <int N>
+	struct series_flattener_tag {};
+
 	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
 	template <int N>
-	struct series_flattener {
-		p_static_check(N > 0,"");
-		template <class CfSeries, class Term, class ArgsTuple>
-		static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &args_tuple)
-		{
-			// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
-			// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
-			piranha_assert(!cf_series.empty());
-			const CfSeries tmp(cf_series);
-			for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
-				cf_series.clear_terms();
-				cf_series.insert(*it,args_tuple);
-				series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,args_tuple);
+	class toolbox<series_flattener_tag<N> >
+	{
+		public:
+			p_static_check(N > 0,"");
+			template <class CfSeries, class Term, class ArgsTuple>
+			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &args_tuple)
+			{
+				// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
+				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
+				piranha_assert(!cf_series.empty());
+				const CfSeries tmp(cf_series);
+				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
+					cf_series.clear_terms();
+					cf_series.insert(*it,args_tuple);
+					toolbox<series_flattener_tag<N - 1> >::run(cf_series.begin()->m_cf,term,out,args_tuple);
+				}
 			}
-		}
 	};
 
 	template <>
-	struct series_flattener<0> {
-		template <class Cf, class Term, class ArgsTuple>
-		static void run(Cf &, Term &term, std::vector<Term> &out, const ArgsTuple &)
-		{
-			out.push_back(term);
-		}
+	class toolbox<series_flattener_tag<0> >
+	{
+		public:
+			template <class Cf, class Term, class ArgsTuple>
+			static void run(Cf &, Term &term, std::vector<Term> &out, const ArgsTuple &)
+			{
+				out.push_back(term);
+			}
 	};
 
 	/// Return a vector of flattened terms.
@@ -346,7 +354,7 @@ namespace piranha
 			// Create the term that will be inserted at the end of the recursion.
 			term = *it;
 			// Start the recursion.
-			series_flattener<echelon_level>::run(term.m_cf,term,retval,args_tuple);
+			toolbox<series_flattener_tag<echelon_level> >::run(term.m_cf,term,retval,args_tuple);
 		}
 		return retval;
 	}

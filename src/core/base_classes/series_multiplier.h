@@ -22,22 +22,20 @@
 #define PIRANHA_SERIES_MULTIPLIER_H
 
 #include "../base_classes/base_series_multiplier.h"
-#include "../utils.h"
+#include "../base_classes/toolbox.h"
 
 namespace piranha
 {
 	/// Generic series multiplier.
-	// NOTE: isn't truncator's "accept" used here?
 	class series_multiplier
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-				get_type<Series1, Series2, ArgsTuple, Truncator> >
+				public toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > >
 			{
-					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+					typedef toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > > ancestor;
 				public:
 					// TODO: which of these are needed? Cleanup also elsewhere when parallel is implemented.
 					typedef Series1 series_type1;
@@ -49,8 +47,7 @@ namespace piranha
 					void perform_multiplication()
 					{
 						// Cache term pointers.
-						utils::cache_terms_pointers(this->m_s1,this->m_terms1);
-						utils::cache_terms_pointers(this->m_s2,this->m_terms2);
+						this->cache_terms_pointers();
 						this->perform_plain_multiplication();
 					}
 			};

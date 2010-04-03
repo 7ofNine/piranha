@@ -84,8 +84,6 @@ namespace piranha
 		public:
 			/// Alias for term type.
 			typedef Term term_type;
-			/// Alias for allocator type.
-			typedef counting_allocator<term_type,Allocator> allocator_type;
 			/// Term container.
 			/**
 			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
@@ -106,8 +104,6 @@ namespace piranha
 			typedef typename container_type::const_iterator const_iterator;
 			/// Size type.
 			typedef typename container_type::size_type size_type;
-			const_iterator begin() const;
-			const_iterator end() const;
 			const_iterator find_term(const term_type &) const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
@@ -127,6 +123,8 @@ namespace piranha
 			template <class Cf, class ArgsTuple>
 			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
 		protected:
+			const_iterator begin() const;
+			const_iterator end() const;
 			bool base_equal_to(const Derived &) const;
 			bool base_equal_to(const double &) const;
 			bool base_equal_to(const mp_rational &) const;
@@ -251,6 +249,8 @@ namespace piranha
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
+			template <class Iterator>
+			struct it_getter;
 		private:
 			container_type m_container;
 	};
@@ -272,19 +272,20 @@ namespace piranha
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name > >
 
-	// NOTE: move these just where they are used?
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator>
-	struct it_getter {
+	struct toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::it_getter {
 		static const Iterator &get(const Iterator &it)
 		{
 			return it;
 		}
 	};
 
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TermPointer>
-	struct it_getter<TermPointer *> {
+	struct toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::it_getter<TermPointer *> {
 		static const TermPointer get(const TermPointer *p)
 		{
 			return *p;

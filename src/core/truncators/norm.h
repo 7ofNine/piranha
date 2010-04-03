@@ -22,10 +22,12 @@
 #define PIRANHA_NORM_TRUNCATOR_H
 
 #include <algorithm>
+#include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
 #include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <vector>
 
 #include "../base_classes/toolbox.h"
@@ -130,7 +132,8 @@ namespace piranha
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
 						std::vector<typename Series::term_type const *> retval;
-						utils::cache_terms_pointers(s,retval);
+						std::transform(s.begin(),s.end(),std::insert_iterator<std::vector<typename Series::term_type const *> >(retval,retval.begin()),
+							&boost::lambda::_1);
 						if (m_truncation_level == 0) {
 							piranha_throw(value_error,"cannot establish series ordering, norm truncator is not active");
 						}

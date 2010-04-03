@@ -22,9 +22,11 @@
 #define PIRANHA_COMMON_POISSON_SERIES_TOOLBOX_H
 
 #include <algorithm> // For sorting.
+#include <boost/lambda/lambda.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <complex>
 #include <cstddef>
+#include <iterator>
 #include <string>
 #include <utility>
 #include <vector>
@@ -36,7 +38,6 @@
 #include "../mp.h"
 #include "../ntuple.h"
 #include "../psym.h"
-#include "../utils.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -271,7 +272,10 @@ namespace piranha
 					// Reverse the series, we want to start multiplication from the least significant terms.
 					std::reverse(cache.begin(),cache.end());
 				} catch (const value_error &) {
-					utils::cache_terms_pointers(*derived_const_cast,cache);
+					// Cache term pointers.
+					std::transform(derived_const_cast->begin(),derived_const_cast->end(),
+						std::insert_iterator<std::vector<term_type const *> >(cache,cache.begin()),
+						&(boost::lambda::_1));
 				}
 				// Get the term that has unity trig vector and whose coefficient is a linear polynomial with integer
 				// coefficients or a linear polynomial with integer coefficients and a single coefficient.

@@ -22,7 +22,8 @@
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
 #include <algorithm>
-#include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication.
+#include <boost/algorithm/minmax_element.hpp> // To calculate limits of multiplication. TODO: remove this when we update the multiplier.
+#include <boost/lambda/lambda.hpp>
 #include <cmath>
 #include <cstddef>
 #include <exception>
@@ -33,6 +34,7 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/null_truncator.h"
+#include "../base_classes/toolbox.h"
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -40,7 +42,6 @@
 #include "../memory.h"
 #include "../settings.h" // For debug.
 #include "../type_traits.h" // For lightweight attribute.
-#include "../utils.h"
 
 namespace piranha
 {
@@ -54,12 +55,12 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+				public toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator,
+				get_type<Series1, Series2, ArgsTuple, Truncator> > > ,
 				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
-					typedef base_series_multiplier < Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+					typedef toolbox<base_series_multiplier_tag< Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > > ancestor;
 					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
 					typedef typename Series1::const_iterator const_iterator1;
@@ -81,8 +82,7 @@ namespace piranha
 					void perform_multiplication()
 					{
 						// Cache term pointers.
-						utils::cache_terms_pointers(this->m_s1,this->m_terms1);
-						utils::cache_terms_pointers(this->m_s2,this->m_terms2);
+						this->cache_terms_pointers();
 						// NOTE: hard coded value of 1000.
 						// NOTE: share in a coded multiplier toolbox?
 						if (!is_lightweight<cf_type1>::value || double(this->m_size1) * double(this->m_size2) < 1000) {
@@ -129,8 +129,8 @@ namespace piranha
 						std::vector<cf_type2> cf2_cache;
 						std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
 						std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
-						std::transform(this->m_terms1.begin(),this->m_terms1.end(),i_it1,typename ancestor::template ptr_cf_extractor<term_type1>());
-						std::transform(this->m_terms2.begin(),this->m_terms2.end(),i_it2,typename ancestor::template ptr_cf_extractor<term_type2>());
+						std::transform(this->m_terms1.begin(),this->m_terms1.end(),i_it1,(boost::lambda::_1 ->* &term_type1::m_cf));
+						std::transform(this->m_terms2.begin(),this->m_terms2.end(),i_it2,(boost::lambda::_1 ->* &term_type2::m_cf));
 						bool vec_res;
 						if (this->is_sparse()) {
 							vec_res = false;

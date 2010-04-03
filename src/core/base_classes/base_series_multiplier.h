@@ -22,15 +22,19 @@
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
 #include <algorithm>
+#include <boost/lambda/lambda.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
 #include <cmath>
 #include <cstddef>
+#include <iterator>
 #include <vector>
 
 #include "../base_classes/null_truncator.h"
+#include "../base_classes/toolbox.h"
 #include "../config.h"
+#include "../exceptions.h"
 #include "../settings.h"
 #include "base_series_multiplier_mp.h"
 
@@ -39,12 +43,15 @@
 
 namespace piranha
 {
+	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
+	struct base_series_multiplier_tag {};
+
 	/// Base series multiplier.
 	/**
 	 * This class is meant to be extended to build specific multipliers.
 	 */
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
-	class base_series_multiplier
+	class toolbox<base_series_multiplier_tag<Series1,Series2,ArgsTuple,Truncator,Derived> >
 	{
 			friend class base_insert_multiplication_result;
 		protected:
@@ -62,13 +69,6 @@ namespace piranha
 					{
 						return (t1->m_key.revlex_comparison(t2->m_key));
 					}
-			};
-			template <class Term>
-			struct ptr_cf_extractor
-			{
-				const typename Term::cf_type &operator()(const Term *t) {
-					return t->m_cf;
-				}
 			};
 			/// Compute block size for multiplication.
 			/**
@@ -134,8 +134,19 @@ namespace piranha
 					}
 				}
 			}
+			/// Cache pointers to series' terms in the internal storage.
+			void cache_terms_pointers()
+			{
+				piranha_assert(m_terms1.empty() && m_terms2.empty());
+				std::transform(m_s1.begin(),m_s1.end(),
+					std::insert_iterator<std::vector<typename Series1::term_type const *> >(m_terms1,m_terms1.begin()),
+					&(boost::lambda::_1));
+				std::transform(m_s2.begin(),m_s2.end(),
+					std::insert_iterator<std::vector<typename Series2::term_type const *> >(m_terms2,m_terms2.begin()),
+					&(boost::lambda::_1));
+			}
 		public:
-			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+			toolbox(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 				m_size2(m_s2.length()), m_retval(retval)
 			{
@@ -171,10 +182,10 @@ namespace piranha
 				const ArgsTuple		&m_args_tuple;
 			};
 			struct plain_worker {
-				plain_worker(base_series_multiplier &mult, Series1 &retval):
+				plain_worker(toolbox &mult, Series1 &retval):
 					m_mult(mult),m_retval(retval),m_terms1(mult.m_terms1)
 				{}
-				plain_worker(base_series_multiplier &mult, Series1 &retval,
+				plain_worker(toolbox &mult, Series1 &retval,
 					std::vector<std::vector<term_type1 const *> > &split1, const std::size_t &idx):
 					m_mult(mult),m_retval(retval),m_terms1(split1[idx])
 				{}
@@ -207,7 +218,7 @@ namespace piranha
 						<boost::tuples::length<mult_res>::value * sizeof(term_type1)>();
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
-				base_series_multiplier		&m_mult;
+				toolbox				&m_mult;
 				Series1				&m_retval;
 				std::vector<term_type1 const *>	&m_terms1;
 			};
@@ -247,6 +258,7 @@ namespace piranha
 				}
 			}
 		public:
+			// TODO: make these protected?
 			// References to the series.
 			const Series1					&m_s1;
 			const Series2					&m_s2;

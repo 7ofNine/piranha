@@ -22,10 +22,12 @@
 #define PIRANHA_DEGREE_TRUNCATOR_H
 
 #include <algorithm> // For sorting.
+#include <boost/lambda/lambda.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <cmath> // For std::ceil.
 #include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <utility>
 #include <vector>
 
@@ -36,15 +38,14 @@
 #include "../ntuple.h"
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
-#include "../utils.h"
 
 namespace piranha
 {
-	struct degree_ {};
+	struct degree_truncator_tag {};
 
 	/// Truncator based on the minium degree of the series.
 	template <>
-	class __PIRANHA_VISIBLE toolbox<degree_>
+	class __PIRANHA_VISIBLE toolbox<degree_truncator_tag>
 	{
 			enum mode {
 				deg,
@@ -210,7 +211,8 @@ namespace piranha
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
 						std::vector<typename Series::term_type const *> retval;
-						utils::cache_terms_pointers(s,retval);
+						std::transform(s.begin(),s.end(),std::insert_iterator<std::vector<typename Series::term_type const *> >(retval,retval.begin()),
+							&boost::lambda::_1);
 						switch (m_mode) {
 							case deg:
 								std::sort(retval.begin(),retval.end(),order_comparison<Series::expo_term_position>());
@@ -292,7 +294,7 @@ namespace piranha
 
 namespace truncators
 {
-	typedef toolbox<degree_> degree;
+	typedef toolbox<degree_truncator_tag> degree;
 }
 }
 
