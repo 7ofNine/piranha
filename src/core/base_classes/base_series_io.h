@@ -33,6 +33,7 @@
 #include "../settings.h"
 #include "base_series_def.h"
 #include "series_factory.h"
+#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -193,7 +194,7 @@ namespace piranha
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_series_from_key(const Key &key, const ArgsTuple &args_tuple)
 	{
 		Derived retval;
-		series_from_key_impl<Key, typename term_type::key_type>::run(retval,key,args_tuple);
+		toolbox<series_from_key_impl_tag<Key, typename term_type::key_type> >::run(retval,key,args_tuple);
 		return retval;
 	}
 
@@ -207,7 +208,7 @@ namespace piranha
 	inline Derived toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_series_from_cf(const Cf &cf, const ArgsTuple &args_tuple)
 	{
 		Derived retval;
-		series_from_cf_impl<Cf, typename term_type::cf_type>::run(retval,cf,args_tuple);
+		toolbox<series_from_cf_impl_tag<Cf, typename term_type::cf_type> >::run(retval,cf,args_tuple);
 		return retval;
 	}
 }

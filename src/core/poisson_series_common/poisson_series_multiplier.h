@@ -45,12 +45,15 @@
 
 namespace piranha
 {
+	struct poisson_series_multiplier_tag {};
+
 	/// Series multiplier specifically tuned for Poisson series.
 	/**
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	class poisson_series_multiplier
+	template <>
+	class toolbox<poisson_series_multiplier_tag>
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
@@ -449,6 +452,8 @@ namespace piranha
 					std::vector<char>	m_flavours2;
 			};
 	};
+
+	typedef toolbox<poisson_series_multiplier_tag> poisson_series_multiplier;
 }
 
 #endif

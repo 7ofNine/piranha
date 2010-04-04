@@ -97,12 +97,15 @@ namespace piranha
 		}
 	}
 
+	struct polynomial_multiplier_tag {};
+
 	/// Series multiplier specifically tuned for polynomials.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	class polynomial_multiplier
+	template <>
+	class toolbox<polynomial_multiplier_tag>
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
@@ -370,6 +373,8 @@ std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::loc
 					}
 			};
 	};
+
+	typedef toolbox<polynomial_multiplier_tag> polynomial_multiplier;
 }
 
 #endif

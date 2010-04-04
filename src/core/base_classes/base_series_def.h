@@ -104,12 +104,6 @@ namespace piranha
 			typedef typename container_type::const_iterator const_iterator;
 			/// Size type.
 			typedef typename container_type::size_type size_type;
-			template <bool, bool, class Term2, class ArgsTuple>
-			void insert(const Term2 &, const ArgsTuple &);
-			template <class Term2, class ArgsTuple>
-			void insert(const Term2 &, const ArgsTuple &);
-			template <class Iterator, class ArgsTuple>
-			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void term_erase(const const_iterator &, const ArgsTuple &);
 			void clear_terms();
@@ -118,6 +112,12 @@ namespace piranha
 			bool is_single_cf() const;
 			std::size_t atoms() const;
 		protected:
+			template <bool, bool, class Term2, class ArgsTuple>
+			void insert(const Term2 &, const ArgsTuple &);
+			template <class Term2, class ArgsTuple>
+			void insert(const Term2 &, const ArgsTuple &);
+			template <class Iterator, class ArgsTuple>
+			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
 			const_iterator begin() const;
 			const_iterator end() const;
 			template <class Key, class ArgsTuple>
@@ -274,18 +274,18 @@ namespace piranha
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator>
-	struct toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::it_getter {
+	struct it_getter
+	{
 		static const Iterator &get(const Iterator &it)
 		{
 			return it;
 		}
 	};
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TermPointer>
-	struct toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::it_getter<TermPointer *> {
+	struct it_getter<TermPointer *>
+	{
 		static const TermPointer get(const TermPointer *p)
 		{
 			return *p;

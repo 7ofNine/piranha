@@ -21,24 +21,29 @@
 #ifndef PIRANHA_SERIES_FACTORY_H
 #define PIRANHA_SERIES_FACTORY_H
 
+#include "toolbox.h"
+
 namespace piranha
 {
 	template <class RequestedKey, class SeriesKey>
-	struct series_from_key_impl
+	struct series_from_key_impl_tag {};
+
+	template <class RequestedKey, class SeriesKey>
+	struct toolbox<series_from_key_impl_tag<RequestedKey,SeriesKey> >
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &args_tuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			series_from_key_impl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
+			toolbox<series_from_key_impl_tag<RequestedKey,typename cf_series_type::term_type::key_type> >::run(
 				cf_series,key,args_tuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
 		}
 	};
 
 	template <class Key>
-	struct series_from_key_impl<Key,Key>
+	struct toolbox<series_from_key_impl_tag<Key,Key> >
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Key &key, const ArgsTuple &args_tuple)
@@ -47,22 +52,25 @@ namespace piranha
 		}
 	};
 
+	template <class RequestedKey, class SeriesKey>
+	struct series_from_cf_impl_tag {};
+
 	template <class RequestedCf, class SeriesCf>
-	struct series_from_cf_impl
+	struct toolbox<series_from_cf_impl_tag<RequestedCf,SeriesCf> >
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &args_tuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			series_from_cf_impl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
+			toolbox<series_from_cf_impl_tag<RequestedCf,typename cf_series_type::term_type::cf_type> >::run(
 				cf_series,cf,args_tuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
 		}
 	};
 
 	template <class Cf>
-	struct series_from_cf_impl<Cf,Cf>
+	struct toolbox<series_from_cf_impl_tag<Cf,Cf> >
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &args_tuple)
