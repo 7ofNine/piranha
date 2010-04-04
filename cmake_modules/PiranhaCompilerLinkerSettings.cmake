@@ -45,7 +45,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 		#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 	ENDIF(HAVE_CPP0X_SUPPORT)
 	# Extra warnings for the GCC compiler.
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization -Wno-strict-aliasing -Wno-write-strings")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization -fno-strict-aliasing")
 	ADD_DEFINITIONS(-D_GNU_SOURCE -D_REENTRANT)
 	# Atomic builtins for GCC.
 	TRY_COMPILE(WORKING_ATOMIC_BUILTINS ${CMAKE_BINARY_DIR}/compile_tests/ ${CMAKE_SOURCE_DIR}/cmake_modules/gcc_atomic_builtins_test.cpp COMPILE_DEFINITIONS ${CMAKE_CCXX_FLAGS})
