@@ -104,7 +104,6 @@ namespace piranha
 			typedef typename container_type::const_iterator const_iterator;
 			/// Size type.
 			typedef typename container_type::size_type size_type;
-			const_iterator find_term(const term_type &) const;
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
@@ -118,13 +117,14 @@ namespace piranha
 			bool empty() const;
 			bool is_single_cf() const;
 			std::size_t atoms() const;
+		protected:
+			const_iterator begin() const;
+			const_iterator end() const;
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
 			template <class Cf, class ArgsTuple>
 			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
-		protected:
-			const_iterator begin() const;
-			const_iterator end() const;
+			const_iterator find_term(const term_type &) const;
 			bool base_equal_to(const Derived &) const;
 			bool base_equal_to(const double &) const;
 			bool base_equal_to(const mp_rational &) const;

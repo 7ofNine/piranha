@@ -37,6 +37,7 @@
 #include "../settings.h"
 #include "../utils.h" // Lexical converter.
 #include "numerical_container_complex_toolbox.h"
+#include "toolbox.h"
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -64,13 +65,16 @@ namespace piranha
 		}
 	};
 
+	template <class T, class Derived>
+	struct numerical_container_tag {};
+
 	/// Numerical container class.
 	/**
 	 * This class can be used as a base class for coefficients that consist of a
 	 * numerical entity (double, MP classes, etc.).
 	 */
 	template <class T, class Derived>
-	class numerical_container
+	class toolbox<numerical_container_tag<T,Derived> >
 	{
 			friend class numerical_container_complex_toolbox<Derived>;
 		public:
@@ -89,29 +93,29 @@ namespace piranha
 				typedef SubCachesCons type;
 			};
 			/// Default constructor, initialises internal value to 0.
-			explicit numerical_container(): m_value(0) {}
+			explicit toolbox(): m_value(0) {}
 			/// Constructor from string.
 			/**
 			 * Will call boost::lexical_converter internally.
 			 */
 			template <class ArgsTuple>
-			explicit numerical_container(const std::string &s, const ArgsTuple &):
+			explicit toolbox(const std::string &s, const ArgsTuple &):
 				m_value(utils::lexical_converter<T>(s)) {}
 			/// Constructor from double.
 			template <class ArgsTuple>
-			explicit numerical_container(const double &x, const ArgsTuple &): m_value(x) {}
+			explicit toolbox(const double &x, const ArgsTuple &): m_value(x) {}
 			/// Constructor from piranha::mp_rational.
 			template <class ArgsTuple>
-			explicit numerical_container(const mp_rational &q, const ArgsTuple &): m_value(q) {}
+			explicit toolbox(const mp_rational &q, const ArgsTuple &): m_value(q) {}
 			/// Constructor from piranha::mp_integer.
 			template <class ArgsTuple>
-			explicit numerical_container(const mp_integer &z, const ArgsTuple &): m_value(z) {}
+			explicit toolbox(const mp_integer &z, const ArgsTuple &): m_value(z) {}
 			/// Ctor from psym.
 			/**
 			 * Sets internal value to one.
 			 */
 			template <class ArgsTuple>
-			explicit numerical_container(const psym &, const int &, const ArgsTuple &): m_value(1) {}
+			explicit toolbox(const psym &, const int &, const ArgsTuple &): m_value(1) {}
 			/// Print in plain mode.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
@@ -330,16 +334,16 @@ namespace std
 {
 	// Overloads for I/O operators.
 	template <class T, class Derived>
-	inline istream &operator>>(istream &is, piranha::numerical_container<T, Derived> &nc)
+	inline istream &operator>>(istream &is, piranha::toolbox<piranha::numerical_container_tag<T, Derived> > &nc)
 	{
 		string tmp;
 		getline(is, tmp);
-		nc = piranha::numerical_container<T, Derived>(piranha::utils::lexical_converter<T>(tmp));
+		nc = piranha::toolbox<piranha::numerical_container_tag<T, Derived> >(piranha::utils::lexical_converter<T>(tmp));
 		return is;
 	}
 
 	template <class T, class Derived>
-	inline ostream &operator<<(ostream &os, const piranha::numerical_container<T, Derived> &nc)
+	inline ostream &operator<<(ostream &os, const piranha::toolbox<piranha::numerical_container_tag<T, Derived> > &nc)
 	{
 		os << nc.value();
 		return os;
