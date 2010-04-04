@@ -65,6 +65,26 @@ namespace piranha
 		typedef boost::unordered_set<Term,boost::hash<Term>,std::equal_to<Term>,counting_allocator<Term,std::allocator<char> > > type;
 	};
 
+	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
+	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
+	template <class Iterator>
+	struct it_getter
+	{
+		static const Iterator &get(const Iterator &it)
+		{
+			return it;
+		}
+	};
+
+	template <class TermPointer>
+	struct it_getter<TermPointer *>
+	{
+		static const TermPointer get(const TermPointer *p)
+		{
+			return *p;
+		}
+	};
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	struct base_series {};
 
@@ -104,14 +124,14 @@ namespace piranha
 			typedef typename container_type::const_iterator const_iterator;
 			/// Size type.
 			typedef typename container_type::size_type size_type;
+			size_type length() const;
+			bool empty() const;
+			bool is_single_cf() const;
+			size_type atoms() const;
+		protected:
 			template <class ArgsTuple>
 			void term_erase(const const_iterator &, const ArgsTuple &);
 			void clear_terms();
-			std::size_t length() const;
-			bool empty() const;
-			bool is_single_cf() const;
-			std::size_t atoms() const;
-		protected:
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Term2, class ArgsTuple>
@@ -249,8 +269,6 @@ namespace piranha
 			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
-			template <class Iterator>
-			struct it_getter;
 		private:
 			container_type m_container;
 	};
@@ -271,26 +289,6 @@ namespace piranha
 #define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::toolbox<piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name > >
-
-	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
-	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
-	template <class Iterator>
-	struct it_getter
-	{
-		static const Iterator &get(const Iterator &it)
-		{
-			return it;
-		}
-	};
-
-	template <class TermPointer>
-	struct it_getter<TermPointer *>
-	{
-		static const TermPointer get(const TermPointer *p)
-		{
-			return *p;
-		}
-	};
 }
 
 #endif
