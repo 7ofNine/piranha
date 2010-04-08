@@ -33,6 +33,10 @@
 
 namespace piranha
 {
+	/// Return true if series is a singleton coefficient.
+	/**
+	 * @return true if series has length one and the key of the only term is equivalent to unity, false otherwise.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::is_single_cf() const
 	{
@@ -66,7 +70,10 @@ namespace piranha
 		return retval;
 	}
 
-	/// Return the number of terms of the series.
+	/// Length of the series.
+	/**
+	 * @return number of terms in the series.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::size_type toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::length() const
 	{
@@ -74,6 +81,9 @@ namespace piranha
 	}
 
 	/// Is series empty?
+	/**
+	 * @return true if the series has zero terms, false otherwise.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::empty() const
 	{
@@ -96,6 +106,10 @@ namespace piranha
 	/**
 	 * Please note that this method has no knowledge about arguments: all comparisons performed here on coefficients and keys
 	 * assume that the arguments tuples of this and other have been merged.
+	 *
+	 * @param[in] other series this will be compared to.
+	 *
+	 * @return false if: lengths of series differ or at least one term of this series is not found in other, true otherwise.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const Derived &other) const
