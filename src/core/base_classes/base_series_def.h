@@ -143,7 +143,7 @@ namespace piranha
 			template <class Cf, class ArgsTuple>
 			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
-			void base_series_from_number(const Number &, const ArgsTuple &);
+			static Derived base_series_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
 			//@}

@@ -194,17 +194,17 @@ public: \
 	} \
 	explicit series_name(const double &x) \
 	{ \
-		this->base_series_from_number(x,this->m_arguments); \
+		*this = base_series_from_number(x,this->m_arguments); \
 		this->trim(); \
 	} \
 	explicit series_name(const piranha::mp_rational &q) \
 	{ \
-		this->base_series_from_number(q,this->m_arguments); \
+		*this = base_series_from_number(q,this->m_arguments); \
 		this->trim(); \
 	} \
 	explicit series_name(const piranha::mp_integer &z) \
 	{ \
-		this->base_series_from_number(z,this->m_arguments); \
+		*this = base_series_from_number(z,this->m_arguments); \
 		this->trim(); \
 	}
 }
