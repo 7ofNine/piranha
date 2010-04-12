@@ -66,7 +66,7 @@ namespace pyranha
 		static void run(Vector &retval, const Tuple &tuple)
 		{
 			retval.push_back(tuple.get_head());
-			py_tuple_to_vector<typename Tuple::tail_type>::template run(retval,tuple.get_tail());
+			py_tuple_to_vector<typename Tuple::tail_type>::run(retval,tuple.get_tail());
 		}
 	};
 
