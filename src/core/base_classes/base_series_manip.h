@@ -163,7 +163,7 @@ namespace piranha
 			}
 			// Check if the new coefficient can be ignored.
 			if (it->m_cf.is_ignorable(args_tuple)) {
-				term_erase(it, args_tuple);
+				erase_term(it);
 			}
 		}
 	}
@@ -182,9 +182,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::term_erase(const const_iterator &it,
-			const ArgsTuple &)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::erase_term(const const_iterator &it)
 	{
 		m_container.erase(it);
 	}

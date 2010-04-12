@@ -271,7 +271,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::ll_partial(const Derived &in, Series &out,
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_partial(const Derived &in, Series &out,
 		const PosTuple &pos_tuple, const ArgsTuple &args_tuple)
 	{
 		p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
@@ -304,7 +304,7 @@ namespace piranha
 		Derived retval(*derived_const_cast);
 		for (; n > 0; --n) {
 			Derived tmp;
-			ll_partial(retval,tmp,pos_tuple,args_tuple);
+			base_partial(retval,tmp,pos_tuple,args_tuple);
 			tmp.base_swap(retval);
 		}
 		return retval;

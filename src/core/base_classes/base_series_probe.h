@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_PROBE_H
 
 #include <cmath> // For std::abs.
+#include <complex>
 
 #include "../exceptions.h"
 #include "../mp.h"
@@ -102,7 +103,7 @@ namespace piranha
 		return retval;
 	}
 
-	/// Test for equality.
+	/// Base series equality test.
 	/**
 	 * Please note that this method has no knowledge about arguments: all comparisons performed here on coefficients and keys
 	 * assume that the arguments tuples of this and other have been merged.
@@ -127,18 +128,44 @@ namespace piranha
 		return true;
 	}
 
+	// Helper functor to check generically if a number, scalar or complex, is zero.
+	template <class T>
+	struct numerical_comparison_zero_check
+	{
+		bool operator()(const T &value) const
+		{
+			return value == 0;
+		}
+	};
+
+	template <class T>
+	struct numerical_comparison_zero_check<std::complex<T> >
+	{
+		bool operator()(const std::complex<T> &value) const
+		{
+			return value.real() == 0 && value.imag() == 0;
+		}
+	};
+
+	/// Base generic numerical equality test.
+	/**
+	 * Will return true in the following cases:
+	 *
+	 * - input argument is zero and series is empty,
+	 * - series is singleton coefficient equal to x.
+	 *
+	 * Otherwise, false will be returned.
+	 *
+	 * @param[in] x numerical quantity.
+	 *
+	 * @return true if series is mathematically equivalent to the input numerical quantity.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::generic_numerical_comparison(const Number &x) const
 	{
-		// Use std::abs() to cope with complex numbers. In case of mp classes this could throw value_error,
-		// so handle this.
-		try {
-			if (std::abs(x) == 0) {
-				return empty();
-			}
-		} catch (const value_error &) {
-			// Don't do anything, continue the flow.
+		if (numerical_comparison_zero_check<Number>()(x)) {
+			return empty();
 		}
 		if (!is_single_cf()) {
 			return false;
@@ -146,18 +173,36 @@ namespace piranha
 		return (begin()->m_cf == x);
 	}
 
+	/// Base numerical equality test.
+	/**
+	 * @param[in] x argument of comparison.
+	 *
+	 * @return generic_numerical_comparison() on x.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const double &x) const
 	{
 		return generic_numerical_comparison(x);
 	}
 
+	/// Base numerical equality test.
+	/**
+	 * @param[in] q argument of comparison.
+	 *
+	 * @return generic_numerical_comparison() on q.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const mp_rational &q) const
 	{
 		return generic_numerical_comparison(q);
 	}
 
+	/// Base numerical equality test.
+	/**
+	 * @param[in] z argument of comparison.
+	 *
+	 * @return generic_numerical_comparison() on z.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_equal_to(const mp_integer &z) const
 	{

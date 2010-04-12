@@ -120,17 +120,36 @@ namespace piranha
 			 * std::complex<double> in case of series with complex coefficients.
 			 */
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
+			/// Term separator in textual series representation.
+			static const char separator = Separator;
 			/// Const iterator over the series' terms.
 			typedef typename container_type::const_iterator const_iterator;
 			/// Size type.
 			typedef typename container_type::size_type size_type;
+			/** @name Series properties. */
+			//@{
 			size_type length() const;
 			bool empty() const;
 			bool is_single_cf() const;
 			size_type atoms() const;
+			//@}
 		protected:
+			/** @name Construction methods.
+			 * These methods are meant to be used to build the constructors of the final classes.
+			 */
+			//@{
+			template <class Key, class ArgsTuple>
+			static Derived base_series_from_key(const Key &, const ArgsTuple &);
+			template <class Cf, class ArgsTuple>
+			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
+			template <class Number, class ArgsTuple>
+			void base_series_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
-			void term_erase(const const_iterator &, const ArgsTuple &);
+			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
+			//@}
+			/** @name Series manipulation. */
+			//@{
+			void erase_term(const const_iterator &);
 			void clear_terms();
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
@@ -138,17 +157,29 @@ namespace piranha
 			void insert(const Term2 &, const ArgsTuple &);
 			template <class Iterator, class ArgsTuple>
 			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
+			void base_swap(Derived &);
+			//@}
+			/** @name Terms accessors. */
+			//@{
+			const_iterator find_term(const term_type &) const;
 			const_iterator begin() const;
 			const_iterator end() const;
-			template <class Key, class ArgsTuple>
-			static Derived base_series_from_key(const Key &, const ArgsTuple &);
-			template <class Cf, class ArgsTuple>
-			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
-			const_iterator find_term(const term_type &) const;
+			//@}
+			/** @name Base comparison methods. */
+			//@{
 			bool base_equal_to(const Derived &) const;
 			bool base_equal_to(const double &) const;
 			bool base_equal_to(const mp_rational &) const;
 			bool base_equal_to(const mp_integer &) const;
+			template <class Number>
+			bool generic_numerical_comparison(const Number &) const;
+			//@}
+			/** @name Base maths. */
+			//@{
+			template <class T, class ArgsTuple>
+			void multiply_coefficients_by(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			void divide_coefficients_by(const T &, const ArgsTuple &);
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -191,10 +222,13 @@ namespace piranha
 			Derived base_pow(const mp_rational &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			Derived base_root(const int &, const ArgsTuple &) const;
+			template <class Series, class PosTuple, class ArgsTuple>
+			static void base_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(int, const PosTuple &, const ArgsTuple &) const;
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(const PosTuple &, const ArgsTuple &) const;
+			//@}
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
 				template <class RetSeries, class Element, class PosTuple, class SubCaches,
@@ -204,22 +238,15 @@ namespace piranha
 					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
 				}
 			};
-			static const char separator = Separator;
-			// Check that the separators do not conflict.
-			p_static_check(separator != term_type::separator, "");
-			template <class Number, class ArgsTuple>
-			void construct_from_number(const Number &, const ArgsTuple &);
-			template <class ArgsTuple>
-			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
+			/** @name Base output streaming methods. */
+			//@{
 			template <class ArgsTuple>
 			void print_terms_plain(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			void print_terms_tex(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
-			void base_swap(Derived &);
-			template <class Number>
-			bool generic_numerical_comparison(const Number &) const;
+			//@}
 			template <class Layout, class ArgsTuple>
 			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
 			template <bool, class Derived2, class ArgsTuple>
@@ -228,10 +255,6 @@ namespace piranha
 			void trim_test_terms(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
-			template <class T, class ArgsTuple>
-			void multiply_coefficients_by(const T &, const ArgsTuple &);
-			template <class T, class ArgsTuple>
-			void divide_coefficients_by(const T &, const ArgsTuple &);
 			template <bool, class Number, class ArgsTuple>
 			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
@@ -244,8 +267,6 @@ namespace piranha
 			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
-			template <class Series, class PosTuple, class ArgsTuple>
-			static void ll_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
 			template <class Series, class ArgsTuple>
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
 			template <class ArgsTuple>

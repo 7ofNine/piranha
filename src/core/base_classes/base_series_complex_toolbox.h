@@ -38,8 +38,8 @@ namespace piranha
 	template <class RealDerived>
 	class toolbox<base_series_complex<RealDerived> >
 	{
-			typedef std::complex<RealDerived> Derived;
 		public:
+			typedef std::complex<RealDerived> Derived;
 			typedef RealDerived value_type;
 		protected:
 			bool base_equal_to_complex_number(const std::complex<double> &cx) const {

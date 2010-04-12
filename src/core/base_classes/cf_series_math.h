@@ -167,7 +167,7 @@ namespace piranha
 	inline Series toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		Series retval;
-		Derived::ll_partial(*derived_const_cast,retval,pos_tuple,args_tuple);
+		Derived::base_partial(*derived_const_cast,retval,pos_tuple,args_tuple);
 		return retval;
 	}
 }

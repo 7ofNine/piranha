@@ -40,10 +40,19 @@
 
 namespace piranha
 {
-	/// Construct from numerical quantity.
+	/// Construct series from numerical quantity.
+	/**
+	 * Equivalent to creating the series with base_series_from_cf() with coefficient type term_type::cf_type, and the coefficient being
+	 * constructed with the provided number.
+	 *
+	 * @param[in] x number used for series construction.
+	 * @param[in] args_tuple arguments tuple of the series.
+	 *
+	 * @throws piranha::assertion_error if empty() returns false.
+	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::construct_from_number(const Number &x, const ArgsTuple &args_tuple)
+	inline void toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >::base_series_from_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		// Make sure we are being called from an empty series.
 		piranha_assert(empty());
