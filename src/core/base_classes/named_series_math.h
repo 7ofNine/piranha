@@ -21,6 +21,7 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
+#include <boost/utility.hpp>
 #include <cstddef>
 #include <vector>
 
@@ -41,7 +42,9 @@ namespace piranha
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_with_series(const Derived2 &s2)
 	{
 		// If we are merging with self, create a copy and call recursively.
-		if ((void *)derived_cast == (void *)(&s2)) {
+		if ((void *)(boost::addressof(*derived_cast)) ==
+			(void *)(boost::addressof(s2)))
+		{
 			__PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
 			merge_with_series<Sign>(Derived(*derived_const_cast));
 		} else {
@@ -65,30 +68,24 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	template <bool Sign, class Number>
-	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::merge_number_helper(const Number &x)
-	{
-		derived_cast->template merge_with_number<Sign>(x, m_arguments);
-		trim();
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const double &x)
 	{
-		return merge_number_helper<true>(x);
+		derived_cast->base_add(x,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const mp_rational &q)
 	{
-		return merge_number_helper<true>(q);
+		return derived_cast->base_add(q,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator+=(const mp_integer &z)
 	{
-		return merge_number_helper<true>(z);
+		return derived_cast->base_add(z,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -100,19 +97,22 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const double &x)
 	{
-		return merge_number_helper<false>(x);
+		derived_cast->base_subtract(x,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const mp_rational &q)
 	{
-		return merge_number_helper<false>(q);
+		derived_cast->base_subtract(q,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived &toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator-=(const mp_integer &z)
 	{
-		return merge_number_helper<false>(z);
+		derived_cast->base_subtract(z,m_arguments);
+		return *derived_cast;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

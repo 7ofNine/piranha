@@ -101,13 +101,13 @@ namespace piranha
 				return !(*this == cx);
 			}
 			Derived &operator+=(const std::complex<double> &cx) {
-				return derived_cast->template merge_number_helper<true>(cx);
+				return derived_cast->template merge_with_number<true>(cx,derived_cast->m_arguments);
 			}
 			Derived &operator+=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<true>(r);
 			}
 			Derived &operator-=(const std::complex<double> &cx) {
-				return derived_cast->template merge_number_helper<false>(cx);
+				return derived_cast->template merge_with_number<false>(cx,derived_cast->m_arguments);
 			}
 			Derived &operator-=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<false>(r);

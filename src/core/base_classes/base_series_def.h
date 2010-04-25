@@ -45,6 +45,7 @@
 
 namespace piranha
 {
+	// Implementation of echelon level determination.
 	template <class EchelonType, int N = 0>
 	struct echelon_level_impl
 	{
@@ -158,6 +159,22 @@ namespace piranha
 			template <class Iterator, class ArgsTuple>
 			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
 			void base_swap(Derived &);
+			template <class Series, class ArgsTuple>
+			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
+			template <class Layout, class ArgsTuple>
+			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
+			template <bool, class Derived2, class ArgsTuple>
+			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
+			template <class TrimFlags>
+			void trim_test_terms(TrimFlags &) const;
+			template <class TrimFlags, class ArgsTuple>
+			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
+			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
+			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
+			template <bool, class Number, class ArgsTuple>
+			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			//@}
 			/** @name Terms accessors. */
 			//@{
@@ -221,6 +238,14 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived base_pow(const mp_rational &, const ArgsTuple &) const;
 			template <class ArgsTuple>
+			Derived natural_power(const std::size_t &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived negative_integer_power(const int &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived real_power(const double &, const ArgsTuple &) const;
+			template <class ArgsTuple>
+			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
+			template <class ArgsTuple>
 			Derived base_root(const int &, const ArgsTuple &) const;
 			template <class Series, class PosTuple, class ArgsTuple>
 			static void base_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
@@ -231,10 +256,10 @@ namespace piranha
 			//@}
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
-				template <class RetSeries, class Element, class PosTuple, class SubCaches,
-					class ArgsTuple>
+				template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
 				static RetSeries run(const Element &e, const PosTuple &pos_tuple,
-					SubCaches &sub_caches, const ArgsTuple &args_tuple) {
+					SubCaches &sub_caches, const ArgsTuple &args_tuple)
+				{
 					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
 				}
 			};
@@ -247,30 +272,6 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
 			//@}
-			template <class Layout, class ArgsTuple>
-			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
-			template <bool, class Derived2, class ArgsTuple>
-			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
-			template <class TrimFlags>
-			void trim_test_terms(TrimFlags &) const;
-			template <class TrimFlags, class ArgsTuple>
-			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
-			template <bool, class Number, class ArgsTuple>
-			Derived &merge_with_number(const Number &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived natural_power(const std::size_t &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived negative_integer_power(const int &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived real_power(const double &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
-			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
-			template <class Series, class ArgsTuple>
-			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
 		private:
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;

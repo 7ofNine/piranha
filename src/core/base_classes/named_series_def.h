@@ -151,8 +151,6 @@ namespace piranha
 			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>
 			Derived &mult_by_series(const Derived2 &);
-			template <bool, class Number>
-			Derived &merge_number_helper(const Number &);
 			template <class Number>
 			Derived &mult_number_helper(const Number &);
 			template <class Number>
