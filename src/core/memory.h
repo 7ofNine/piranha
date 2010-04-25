@@ -39,13 +39,17 @@
 
 namespace piranha
 {
+	// TODO: get rid of the T parameter, std_counting_allocator and friends.
 	/// STL-compatible allocator that decorates an existing allocator by adding a counting mechanism for the number of allocated bytes.
 	/**
-	 * The counting mechanism is thread-safe through the use of atomic operations.
+	 * The counting mechanism is thread-safe through the use of atomic operations. The counting is approximate, in the sense that while concurrent
+	 * allocations are taking place it is not guaranteed that in each moment the count reflects exactly the number of allocated bytes.
 	 */
 	template <class T, class Allocator>
 	class counting_allocator: public base_counting_allocator
 	{
+			template <class U, class Allocator2>
+			friend class counting_allocator;
 			typedef typename Allocator::template rebind<T>::other alloc;
 			p_static_check((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
 		public:
@@ -61,10 +65,9 @@ namespace piranha
 				typedef counting_allocator<U,Allocator> other;
 			};
 			counting_allocator():m_alloc() {}
-			counting_allocator(const counting_allocator &):m_alloc() {}
+			counting_allocator(const counting_allocator &a):m_alloc(a.m_alloc) {}
 			template <class U>
-			counting_allocator(const counting_allocator<U,Allocator> &):m_alloc() {}
-			~counting_allocator() {}
+			counting_allocator(const counting_allocator<U,Allocator> &a):m_alloc(a.m_alloc) {}
 			pointer address(reference x)
 			{
 				return m_alloc.address(x);
@@ -75,6 +78,7 @@ namespace piranha
 			}
 			pointer allocate(const size_type &n, const void *hint = 0)
 			{
+				// TODO: guard overflow here?
 				const std::size_t add = n * sizeof(value_type), cur = m_counter.get_value(),
 					l = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
@@ -93,7 +97,7 @@ namespace piranha
 			}
 			size_type max_size() const
 			{
-				return boost::integer_traits<size_type>::const_max / sizeof(value_type);
+				return m_alloc.max_size();
 			}
 			void construct(pointer p, const value_type &val)
 			{
@@ -103,21 +107,17 @@ namespace piranha
 			{
 				m_alloc.destroy(p);
 			}
+			bool operator==(const counting_allocator &c) const
+			{
+				return (m_alloc == c.m_alloc);
+			}
+			bool operator!=(const counting_allocator &c) const
+			{
+				return (m_alloc != c.m_alloc);
+			}
 		private:
 			alloc m_alloc;
 	};
-
-	template <class T, class Allocator>
-	inline bool operator==(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &)
-	{
-		return true;
-	}
-
-	template <class T, class Allocator>
-	inline bool operator!=(const counting_allocator<T,Allocator> &, const counting_allocator<T,Allocator> &)
-	{
-		return false;
-	}
 
 	template <class T>
 	class std_counting_allocator: public counting_allocator<T,std::allocator<char> > {};
@@ -238,6 +238,7 @@ namespace piranha
 			}
 			size_type max_size() const
 			{
+				// TODO: replace with boost numerical limits for integers.
 				return std::size_t(-1) / sizeof(value_type);
 			}
 			void construct(pointer p, const T &value)
