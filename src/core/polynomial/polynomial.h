@@ -84,14 +84,6 @@ namespace piranha
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
-
-	/// is_ring_exact type trait specialisation for polynomial.
-	template <E0_SERIES_TP_DECL>
-	struct is_ring_exact<POLYNOMIAL>: boost::integral_constant<bool,series_trait<POLYNOMIAL,is_ring_exact,true>::value>::type {};
-
-	/// is_divint_exact type trait specialisation for polynomial.
-	template <E0_SERIES_TP_DECL>
-	struct is_divint_exact<POLYNOMIAL>: boost::integral_constant<bool,series_trait<POLYNOMIAL,is_divint_exact,false>::value>::type {};
 }
 
 #define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::monomial)

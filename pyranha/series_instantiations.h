@@ -57,10 +57,10 @@ namespace pyranha
 		return Series::echelon_level;
 	}
 
-	template <class Series, template <class> class TypeTrait>
+	template <class TypeTrait>
 	static inline bool py_type_trait()
 	{
-		return TypeTrait<Series>::value;
+		return TypeTrait::value;
 	}
 
 	template <class Series>
@@ -106,15 +106,15 @@ namespace pyranha
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
 		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
 		if (piranha::is_ring_exact<T>::value) {
-			inst.add_static_property("is_ring_exact", &py_type_trait<T,piranha::is_ring_exact>,
+			inst.add_static_property("is_ring_exact", &py_type_trait<piranha::is_ring_exact<T> >,
 				"is_ring_exact type trait for the series.");
 		}
 		if (piranha::is_trig_exact<T>::value) {
-			inst.add_static_property("is_trig_exact", &py_type_trait<T,piranha::is_trig_exact>,
+			inst.add_static_property("is_trig_exact", &py_type_trait<piranha::is_trig_exact<T> >,
 				"is_trig_exact type trait for the series.");
 		}
 		if (piranha::is_divint_exact<T>::value) {
-			inst.add_static_property("is_divint_exact", &py_type_trait<T,piranha::is_divint_exact>,
+			inst.add_static_property("is_divint_exact", &py_type_trait<piranha::is_divint_exact<T> >,
 				"is_divint_exact type trait for the series.");
 		}
 		if (py_is_complex_impl<T>::value) {

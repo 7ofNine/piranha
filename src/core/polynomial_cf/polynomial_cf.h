@@ -75,14 +75,6 @@ namespace piranha
 				this->base_construct_from_psym(p, n, a);
 			}
 	};
-
-	/// is_ring_exact type trait specialisation for polynomial_cf.
-	template <E0_SERIES_TP_DECL>
-	struct is_ring_exact<POLYNOMIAL_CF>: boost::integral_constant<bool,series_trait<POLYNOMIAL_CF,is_ring_exact,true>::value>::type {};
-
-	/// is_divint_exact type trait specialisation for polynomial_cf.
-	template <E0_SERIES_TP_DECL>
-	struct is_divint_exact<POLYNOMIAL_CF>: boost::integral_constant<bool,series_trait<POLYNOMIAL_CF,is_divint_exact,false>::value>::type {};
 }
 
 #define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_CF_SERIES_TERM(piranha::monomial,'!')

@@ -22,7 +22,12 @@
 #define PIRANHA_TYPE_TRAITS_H
 
 #include <boost/type_traits/integral_constant.hpp>
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <complex>
+
+#include "base_classes/base_series_tag.h"
 
 namespace piranha
 {
@@ -72,7 +77,7 @@ namespace piranha
 	template <class>
 	struct is_lightweight: boost::false_type {};
 
-	/// is_lightweight type trait specialization for complex types.
+	/// is_lightweight type trait specialisation for complex types.
 	/**
 	 * Inherits the type trait from the value_type of the complex class.
 	 */
@@ -84,75 +89,83 @@ namespace piranha
 	 * Used to determine whether ring operations (add, sub and mult) with the class are exact (e.g., integer and
 	 * rational types) or not (e.g., floating-point types). Defaults to false.
 	 */
-	template <class>
+	template <class, class Enable = void>
 	struct is_ring_exact: boost::false_type {};
 
-	/// is_ring_exact type trait specialization for complex types.
+	/// is_ring_exact type trait specialisation for non-series complex types.
 	/**
-	 * Inherits the type trait from the value_type of the complex class.
+	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
+	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_ring_exact<std::complex<T> >: is_ring_exact<T>::type {};
+	struct is_ring_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<base_series_tag,T>::value>::type>:
+		is_ring_exact<typename T::value_type>
+	{};
+
+	/// is_ring_exact type trait specialisation for series.
+	/**
+	 * Will be true if coefficient and key are ring exact.
+	 */
+	template <class T>
+	struct is_ring_exact<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		static const bool value = is_ring_exact<typename T::term_type::cf_type>::value && is_ring_exact<typename T::term_type::key_type>::value;
+	};
 
 	/// Default type trait for trigonometric classes.
 	/**
 	 * Used to determine whether the class can represent basic trigonometric functions
 	 * (sin and cos) exactly. Defaults to false.
 	 */
-	template <class>
+	template <class, class Enable = void>
 	struct is_trig_exact: boost::false_type {};
 
-	/// is_trig_exact type trait specialization for complex types.
+	/// is_trig_exact type trait specialisation for non-series complex types.
 	/**
-	 * Inherits the type trait from the value_type of the complex class.
+	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
+	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_trig_exact<std::complex<T> >: is_trig_exact<T>::type {};
+	struct is_trig_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<base_series_tag,T>::value>::type>:
+		is_trig_exact<typename T::value_type>
+	{};
+
+	/// is_trig_exact type trait specialisation for series.
+	/**
+	 * Will be true if either coefficient or key are trig exact.
+	 */
+	template <class T>
+	struct is_trig_exact<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		static const bool value = is_trig_exact<typename T::term_type::cf_type>::value || is_trig_exact<typename T::term_type::key_type>::value;
+	};
 
 	/// Default type trait for classes dividable by int.
 	/**
 	 * Used to determine whether the class can be divided exactly by an int
 	 * (e.g., rationals). Defaults to false.
 	 */
-	template <class>
+	template <class, class Enable = void>
 	struct is_divint_exact: boost::false_type {};
 
-	/// is_divint_exact type trait specialization for complex types.
+	/// is_divint_exact type trait specialisation for non-series complex types.
 	/**
-	 * Inherits the type trait from the value_type of the complex class.
+	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
+	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_divint_exact<std::complex<T> >: is_divint_exact<T>::type {};
+	struct is_divint_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<base_series_tag,T>::value>::type>:
+		is_divint_exact<typename T::value_type>
+	{};
 
-	// Recursively examine the echelon hierarchy of a series: if TypeTrait is true for all elements
-	// of the hierarchy, then value is also true, otherwise it is false.
-	template<class Series, int N, template <class> class TypeTrait, bool IsAnd>
-	struct series_trait_impl {
-		static const bool value =
-			IsAnd ?
-				(series_trait_impl<typename Series::term_type::cf_type,N - 1,TypeTrait,IsAnd>::value &&
-				TypeTrait<typename Series::term_type::key_type>::value)
-			:
-				(series_trait_impl<typename Series::term_type::cf_type,N - 1,TypeTrait,IsAnd>::value ||
-				TypeTrait<typename Series::term_type::key_type>::value)
-			;
-	};
-
-	template<class Cf, template <class> class TypeTrait, bool IsAnd>
-	struct series_trait_impl<Cf,0,TypeTrait,IsAnd> {
-		static const bool value = TypeTrait<Cf>::value;
-	};
-
-	/// Type-trait helper for series.
+	/// is_divint_exact type trait specialisation for series.
 	/**
-	 * This struct defines a static const boolean value in the following way: if all (or any) of the elements of the series hierarchy
-	 * have satisfied the type trait TypeTrait, then value is true, otherwise value is false.
-	 * The choice between logical OR and logical AND is dictated by the boolean flag IsAnd.
+	 * Will be true if either coefficient or key are divint exact.
 	 */
-	template <class Series, template <class> class TypeTrait, bool IsAnd>
-	struct series_trait {
-		/// Static boolean value.
-		static const bool value = series_trait_impl<Series,Series::echelon_level + 1,TypeTrait,IsAnd>::value;
+	template <class T>
+	struct is_divint_exact<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		static const bool value = is_divint_exact<typename T::term_type::cf_type>::value || is_divint_exact<typename T::term_type::key_type>::value;
 	};
 }
 

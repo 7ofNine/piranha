@@ -37,6 +37,7 @@
 #include "../psym.h"
 #include "../type_traits.h"
 #include "base_series_mp.h"
+#include "base_series_tag.h"
 
 // Template parameters list for piranha::base_series (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
@@ -97,7 +98,7 @@ namespace piranha
 	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	class base_series
+	class base_series: base_series_tag
 	{
 			// Befriend meta-programming classes.
 			template <class RequestedCf, class SeriesCf>
@@ -139,7 +140,7 @@ namespace piranha
 			size_type atoms() const;
 			//@}
 		//protected:
-			/** @name Static construction methods. */
+			/** @name Construction/destruction. */
 			//@{
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
@@ -149,6 +150,7 @@ namespace piranha
 			static Derived base_series_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
+			~base_series();
 			//@}
 			/** @name Series manipulation. */
 			//@{

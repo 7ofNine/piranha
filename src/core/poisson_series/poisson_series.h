@@ -89,18 +89,6 @@ namespace piranha
 			using common_poisson_series< POISSON_SERIES >::sub;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
-
-	/// is_ring_exact type trait specialisation for poisson_series.
-	template <E1_SERIES_TP_DECL>
-	struct is_ring_exact<POISSON_SERIES>: boost::integral_constant<bool,series_trait<POISSON_SERIES,is_ring_exact,true>::value>::type {};
-
-	/// is_trig_exact type trait specialisation for poisson_series.
-	template <E1_SERIES_TP_DECL>
-	struct is_trig_exact<POISSON_SERIES>: boost::integral_constant<bool,series_trait<POISSON_SERIES,is_trig_exact,false>::value>::type {};
-
-	/// is_divint_exact type trait specialisation for poisson_series.
-	template <E1_SERIES_TP_DECL>
-	struct is_divint_exact<POISSON_SERIES>: boost::integral_constant<bool,series_trait<POISSON_SERIES,is_divint_exact,false>::value>::type {};
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>

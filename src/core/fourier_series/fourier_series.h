@@ -86,18 +86,6 @@ namespace piranha
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
-
-	/// is_ring_exact type trait specialisation for fourier_series.
-	template <E0_SERIES_TP_DECL>
-	struct is_ring_exact<FOURIER_SERIES>: boost::integral_constant<bool,series_trait<FOURIER_SERIES,is_ring_exact,true>::value>::type {};
-
-	/// is_trig_exact type trait specialisation for fourier_series.
-	template <E0_SERIES_TP_DECL>
-	struct is_trig_exact<FOURIER_SERIES>: boost::integral_constant<bool,series_trait<FOURIER_SERIES,is_trig_exact,false>::value>::type {};
-
-	/// is_divint_exact type trait specialisation for fourier_series.
-	template <E0_SERIES_TP_DECL>
-	struct is_divint_exact<FOURIER_SERIES>: boost::integral_constant<bool,series_trait<FOURIER_SERIES,is_divint_exact,false>::value>::type {};
 }
 
 #define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::fourier_series_term)

@@ -23,16 +23,19 @@
 
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <cstddef>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "base_series_def.h"
 #include "base_series_mp.h"
+#include "base_series_tag.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -215,6 +218,16 @@ namespace piranha
 		Derived retval;
 		series_from_cf_impl<Cf, typename term_type::cf_type>::run(retval,cf,args_tuple);
 		return retval;
+	}
+
+	/// Trivial destructor.
+	/**
+	 * No side effects. Contains compile-time checks.
+	 */
+	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	inline base_series<__PIRANHA_BASE_SERIES_TP>::~base_series()
+	{
+		p_static_check((boost::is_base_of<base_series_tag,Derived>::value),"Final series class must derive from base_series class.");
 	}
 }
 
