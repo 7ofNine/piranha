@@ -32,7 +32,6 @@
 #include "../config.h"
 #include "../math.h"
 #include "../mp.h"
-#include "../null_type.h"
 #include "../psym.h"
 #include "../settings.h"
 #include "../utils.h" // Lexical converter.
@@ -78,8 +77,6 @@ namespace piranha
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
 			/// Alias for internal type.
 			typedef T numerical_type;
-			/// Numerical coefficient is a terminator for echelon recursion.
-			typedef null_type next_echelon_type;
 			template <class, class SubCachesCons, class>
 			struct sub_cache_selector {
 				typedef SubCachesCons type;

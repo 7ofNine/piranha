@@ -26,7 +26,6 @@
 
 #include "../exceptions.h"
 #include "../mp.h"
-#include "../null_type.h"
 #include "base_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)

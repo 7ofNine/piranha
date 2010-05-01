@@ -22,7 +22,9 @@
 #define PIRANHA_BASE_SERIES_DEF_H
 
 #include <boost/functional/hash.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/unordered_set.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cstddef>
 #include <functional>
 #include <iostream>
@@ -33,7 +35,6 @@
 #include "../exceptions.h"
 #include "../memory.h"
 #include "../mp.h"
-#include "../null_type.h"
 #include "../psym.h"
 #include "../type_traits.h"
 #include "base_series_mp.h"
@@ -47,17 +48,16 @@
 namespace piranha
 {
 	// Implementation of echelon level determination.
-	template <class EchelonType, int N = 0>
+	template <class CfSeries, class Enable = void>
 	struct echelon_level_impl
 	{
-		static const int value = echelon_level_impl<typename EchelonType::next_echelon_type,N + 1>::value;
+		static const int value = echelon_level_impl<typename CfSeries::term_type::cf_type>::value + 1;
 	};
 
-	template <int N>
-	struct echelon_level_impl<null_type,N>
+	template <class FinalCf>
+	struct echelon_level_impl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<base_series_tag,FinalCf>::value>::type>
 	{
-		// Offset is 1 because we went one past.
-		static const int value = N - 1;
+		static const int value = 0;
 	};
 
 	// Struct to define the container used in series - like a template typedef.
@@ -116,10 +116,8 @@ namespace piranha
 			 * will be used to provide the hash values for terms.
 			 */
 			typedef typename series_container<term_type>::type container_type;
-			/// Next echelon type (term's coefficient).
-			typedef typename term_type::cf_type next_echelon_type;
 			/// Echelon level.
-			static const int echelon_level = echelon_level_impl<next_echelon_type>::value;
+			static const int echelon_level = echelon_level_impl<typename term_type::cf_type>::value;
 			/// Type resulting from series evaluation.
 			/**
 			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
