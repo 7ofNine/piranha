@@ -26,7 +26,6 @@
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
-#include "../base_classes/toolbox.h"
 #include "../mp.h"
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -36,10 +35,10 @@ namespace piranha
 	/**
 	 * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::base_series.
 	 */
-	class mpz_cf: public toolbox<numerical_container_tag<mp_integer, mpz_cf> >
+	class mpz_cf: public numerical_container<mp_integer, mpz_cf>
 	{
 			// Alias for the parent class.
-			typedef toolbox<numerical_container_tag<mp_integer, mpz_cf> > ancestor;
+			typedef numerical_container<mp_integer, mpz_cf> ancestor;
 		public:
 			typedef mp_integer numerical_type;
 			// Ctors
@@ -73,10 +72,10 @@ namespace std
 {
 	template <>
 	class complex<piranha::mpz_cf>:
-		public piranha::toolbox<piranha::numerical_container_tag<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> > >,
+		public piranha::numerical_container<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> >,
 		public piranha::numerical_container_complex_toolbox<piranha::mpz_cf>
 	{
-			typedef piranha::toolbox<piranha::numerical_container_tag<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> > > ancestor;
+			typedef piranha::numerical_container<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::mpz_cf> complex_toolbox;
 			friend class piranha::numerical_container_complex_toolbox<piranha::mpz_cf>;
 		public:

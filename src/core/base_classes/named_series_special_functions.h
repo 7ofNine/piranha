@@ -31,7 +31,6 @@
 #include "../int_power_cache.h"
 #include "../math.h"
 #include "../mp.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -39,30 +38,27 @@
 namespace piranha
 {
 	template <class Derived>
-	struct named_series_special_functions {};
-
-	template <class Derived>
-	class toolbox<named_series_special_functions<Derived> >
+	class named_series_special_functions
 	{
 		public:
 			/// Bessel function of the first kind.
 			Derived besselJ(const int &order) const {
-				Derived retval(derived_const_cast->base_besselJ(order, derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_besselJ(order, derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			Derived dbesselJ(const int &order) const {
-				Derived retval(derived_const_cast->base_dbesselJ(order, derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_dbesselJ(order, derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			Derived besselJ_div_m(const int &order, const int &m) const {
-				Derived retval(derived_const_cast->base_besselJ_div_m(order, m, derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_besselJ_div_m(order, m, derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -71,15 +67,15 @@ namespace piranha
 				if (iter_limit < 0) {
 					piranha_throw(value_error,"iteration limit in hyperF must be non-negative");
 				}
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,iter_limit,derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,iter_limit,derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
 			{
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,-1,derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,-1,derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -88,15 +84,15 @@ namespace piranha
 				if (iter_limit < 0) {
 					piranha_throw(value_error,"iteration limit in dhyperF must be non-negative");
 				}
-				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,iter_limit,derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,iter_limit,derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			Derived dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
 			{
-				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,-1,derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,-1,derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}

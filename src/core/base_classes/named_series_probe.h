@@ -69,21 +69,21 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::is_args_compatible(const Derived2 &ps2) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
 	{
 		// Use getter in second place because we may be interacting with other series type.
 		return named_series_is_args_compatible(m_arguments, ps2.arguments());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline double toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::norm() const
+	inline double named_series<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
 		return derived_const_cast->base_norm(m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename term_eval_type_determiner<Term>::type
-	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const double &t) const
+	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
 		return derived_const_cast->base_eval(t,m_arguments);
 	}
@@ -111,7 +111,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename term_eval_type_determiner<Term>::type
-	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::eval(const eval_dict &d) const
+	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
 	{
 		if (!check_eval_dict(d,m_arguments)) {
 			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
@@ -136,7 +136,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::size_t toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::psi(const int &start, const int &step) const
+	inline std::size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);
 	}
@@ -156,7 +156,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const Derived &other) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const Derived &other) const
 	{
 		// If the sizes of the arguments tuples do not coincide, series are different.
 		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) {
@@ -196,43 +196,43 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const Derived &other) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const Derived &other) const
 	{
 		return !(*this == other);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const double &x) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const double &x) const
 	{
 		return derived_const_cast->base_equal_to(x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const double &x) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const double &x) const
 	{
 		return !(*this == x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const mp_rational &q) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const mp_rational &q) const
 	{
 		return derived_const_cast->base_equal_to(q);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const mp_rational &q) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const mp_rational &q) const
 	{
 		return !(*this == q);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator==(const mp_integer &q) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const mp_integer &q) const
 	{
 		return derived_const_cast->base_equal_to(q);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::operator!=(const mp_integer &q) const
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const mp_integer &q) const
 	{
 		return !(*this == q);
 	}

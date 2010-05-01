@@ -25,19 +25,15 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
-	struct base_power_series {};
-
 	/// Power series toolbox.
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
-	class toolbox<base_power_series<ExpoArgsPosition,ExpoTermPosition,Degree,Derived> >
+	class base_power_series
 	{
 			p_static_check(ExpoArgsPosition >= 0, "Invalid expo args position.");
 			template <class Term>
@@ -105,7 +101,7 @@ namespace piranha
 						));
 				return result->template get<ExpoTermPosition>().order();
 			}
-		protected:
+		//protected:
 			/// Get the degree of the power series for specific variables.
 			template <class PosTuple>
 			Degree base_partial_degree(const PosTuple &pos_tuple) const {

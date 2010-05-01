@@ -40,7 +40,6 @@
 #include "../settings.h"
 #include "../type_traits.h"
 #include "base_series_def.h"
-#include "toolbox.h"
 
 #define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
 #define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Term,Derived
@@ -50,9 +49,6 @@ namespace piranha
 	/// Dictionary for evaluation.
 	typedef boost::unordered_map<std::string, double> eval_dict;
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	struct named_series {};
-
 	/// Named series toolbox.
 	/**
 	 * Toolbox for generating series with arguments.
@@ -60,7 +56,7 @@ namespace piranha
 	 * called "name" naming the arguments of the series.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	class toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >
+	class named_series
 	{
 		public:
 			typedef ArgsDescr arguments_description;
@@ -134,11 +130,11 @@ namespace piranha
 			Derived series_from_cf(const Cf &) const;
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
 			std::vector<Derived> flatten() const;
-			~toolbox();
-		protected:
+			~named_series();
+			//protected:
+			void trim();
 			template <class Derived2>
 			void merge_args(const Derived2 &);
-			void trim();
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
 			void construct_from_file(const std::string &);
@@ -173,12 +169,12 @@ namespace piranha
 
 	// Initialization of static member.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	std::vector<std::string> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::unknown_data;
+	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::toolbox<piranha::named_series<args, term_name, E0_SERIES(series_name) > >
+#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::named_series<args, term_name, E0_SERIES(series_name)>
 
-#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::toolbox<piranha::named_series<boost::tuple<args1,args2>,term_name,series_name > >
+#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::named_series<boost::tuple<args1,args2>,term_name,series_name>
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
 public: \

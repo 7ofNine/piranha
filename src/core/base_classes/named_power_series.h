@@ -26,33 +26,30 @@
 #include <vector>
 
 #include "../psym.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <class Degree, class Derived>
-	struct named_power_series {};
-
 	/// Named power series toolbox.
 	template <class Degree, class Derived>
-	struct toolbox<named_power_series<Degree,Derived> >
+	class named_power_series
 	{
-		Degree partial_degree(const std::vector<std::string> &vs) const
-		{
-			return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));
-		}
-		Degree partial_order(const std::vector<std::string> &vs) const
-		{
-			vector_psym v;
-			v.reserve(vs.size());
-			for (std::size_t i = 0; i < vs.size(); ++i) {
-				v.push_back(psym(vs[i]));
+		public:
+			Degree partial_degree(const std::vector<std::string> &vs) const
+			{
+				return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
 			}
-			return derived_const_cast->base_partial_order(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));
-		}
+			Degree partial_order(const std::vector<std::string> &vs) const
+			{
+				vector_psym v;
+				v.reserve(vs.size());
+				for (std::size_t i = 0; i < vs.size(); ++i) {
+					v.push_back(psym(vs[i]));
+				}
+				return derived_const_cast->base_partial_order(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
+			}
 	};
 }
 

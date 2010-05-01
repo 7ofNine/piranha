@@ -27,7 +27,6 @@
 #include <string>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 
@@ -37,15 +36,11 @@
 namespace piranha
 {
 	template <int TrigPos, class Derived>
-	struct jacobi_anger {
-		typedef toolbox<jacobi_anger<TrigPos,Derived> > type;
-	};
-
-	template <int TrigPos, class Derived>
-	class toolbox<jacobi_anger<TrigPos,Derived> >
+	class jacobi_anger
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
-		protected:
+		//protected:
+		public:
 			template <class Term, class ArgsTuple>
 			static void jacang(const std::vector<Term const *> &v,
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 

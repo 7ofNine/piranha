@@ -25,7 +25,6 @@
 
 #include "../settings.h"
 #include "named_series.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -35,50 +34,47 @@
 namespace piranha
 {
 	template <class RealDerived>
-	struct named_series_complex {};
-
-	template <class RealDerived>
-	class toolbox<named_series_complex<RealDerived> >
+	class named_series_complex
 	{
 			typedef std::complex<RealDerived> Derived;
 		public:
 			RealDerived real() const {
-				RealDerived retval(derived_const_cast->base_real(derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				RealDerived retval(derived_const_cast->base_real(derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
-				RealDerived retval(derived_const_cast->base_imag(derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				RealDerived retval(derived_const_cast->base_imag(derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			void set_real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				derived_cast->base_set_real(r, derived_const_cast->m_arguments);
+				derived_cast->base_set_real(r, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
 			void set_imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				derived_cast->base_set_imag(i, derived_const_cast->m_arguments);
+				derived_cast->base_set_imag(i, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
 			RealDerived abs() const {
-				RealDerived retval = derived_const_cast->base_abs(derived_const_cast->m_arguments);
-				retval.m_arguments = derived_const_cast->m_arguments;
+				RealDerived retval = derived_const_cast->base_abs(derived_const_cast->arguments());
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived abs2() const {
-				RealDerived retval = derived_const_cast->base_abs2(derived_const_cast->m_arguments);
-				retval.m_arguments = derived_const_cast->m_arguments;
+				RealDerived retval = derived_const_cast->base_abs2(derived_const_cast->arguments());
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			Derived conjugate() const {
-				Derived retval = derived_const_cast->base_conjugate(derived_const_cast->m_arguments);
-				retval.m_arguments = derived_const_cast->m_arguments;
+				Derived retval = derived_const_cast->base_conjugate(derived_const_cast->arguments());
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -87,7 +83,7 @@ namespace piranha
 			// done, we would not gain anything.
 			bool operator==(const RealDerived &x) const
 			{
-				return (derived_const_cast->base_imag(derived_const_cast->m_arguments).empty() && real() == x);
+				return (derived_const_cast->base_imag(derived_const_cast->arguments()).empty() && real() == x);
 			}
 			// TODO: remove != operators when using boost::operators.
 			bool operator!=(const RealDerived &x) const
@@ -101,13 +97,13 @@ namespace piranha
 				return !(*this == cx);
 			}
 			Derived &operator+=(const std::complex<double> &cx) {
-				return derived_cast->template merge_with_number<true>(cx,derived_cast->m_arguments);
+				return derived_cast->template merge_with_number<true>(cx,derived_cast->arguments());
 			}
 			Derived &operator+=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<true>(r);
 			}
 			Derived &operator-=(const std::complex<double> &cx) {
-				return derived_cast->template merge_with_number<false>(cx,derived_cast->m_arguments);
+				return derived_cast->template merge_with_number<false>(cx,derived_cast->arguments());
 			}
 			Derived &operator-=(const RealDerived &r) {
 				return derived_cast->template merge_with_series<false>(r);
@@ -123,23 +119,23 @@ namespace piranha
 			}
 		protected:
 			void construct_from_real(const RealDerived &r) {
-				derived_cast->m_arguments = r.m_arguments;
-				derived_cast->base_construct_from_real(r, derived_cast->m_arguments);
+				derived_cast->set_arguments(r.arguments());
+				derived_cast->base_construct_from_real(r, derived_cast->arguments());
 				derived_cast->trim();
 			}
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i) {
-				derived_cast->m_arguments = r.m_arguments;
+				derived_cast->set_arguments(r.arguments());
 				derived_cast->merge_args(i);
-				derived_cast->base_construct_from_real_imag(r, i, derived_cast->m_arguments);
+				derived_cast->base_construct_from_real_imag(r, i, derived_cast->arguments());
 				derived_cast->trim();
 			}
 	};
 
-#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,term_name,series_name) piranha::toolbox<piranha::named_series<args,term_name,COMPLEX_E0_SERIES(series_name) > >
+#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,term_name,series_name) piranha::named_series<args,term_name,COMPLEX_E0_SERIES(series_name)>
 
 #define COMPLEX_NAMED_SERIES_CTORS(real_series) \
 	explicit complex(const complex<double> &cx) { \
-		*this = base_series_from_number(cx,this->m_arguments); \
+		*this = base_series_from_number(cx,this->arguments()); \
 		this->trim(); \
 	} \
 	explicit complex(const real_series &r) { \

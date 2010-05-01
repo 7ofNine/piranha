@@ -26,7 +26,6 @@
 #include <string>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../mp.h"
@@ -37,18 +36,15 @@
 
 namespace piranha
 {
-	template <class Derived>
-	struct binomial_exponentiation {};
-
 	/// Binomial exponentiation toolbox.
 	/**
 	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::rational_power
 	 * and reimplements them using binomial expansion.
 	 */
 	template <class Derived>
-	class toolbox<binomial_exponentiation<Derived> >
+	class binomial_exponentiation
 	{
-		protected:
+		public:
 			/// Real power.
 			template <class ArgsTuple>
 			Derived real_power(const double &y, const ArgsTuple &args_tuple) const

@@ -39,8 +39,8 @@ namespace manipulators
 	typedef poisson_series
 	<
 		mpq_cf,
-		q_expo_array<0>::type,
-		trig_array<16, 1>::type,
+		q_expo_array<0>,
+		trig_array<16, 1>,
 		series_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,

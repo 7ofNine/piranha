@@ -30,19 +30,14 @@
 #include <iterator>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../settings.h"
 #include "../utils.h"
 
-namespace piranha
-{
-	struct norm_;
-
+namespace piranha { namespace truncators {
 	/// Norm-based truncator.
-	template <>
-	class __PIRANHA_VISIBLE toolbox<norm_>
+	class __PIRANHA_VISIBLE norm
 	{
 			template <class ArgsTuple>
 			class norm_comparison
@@ -225,11 +220,6 @@ namespace piranha
 		private:
 			static double m_truncation_level;
 	};
-
-namespace truncators
-{
-	typedef toolbox<norm_> norm;
-}
-}
+} }
 
 #endif

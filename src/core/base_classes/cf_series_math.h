@@ -27,7 +27,7 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::invert_sign(const ArgsTuple &args_tuple)
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &args_tuple)
 	{
 		// TODO: improve performance on this.
 		typedef typename Derived::const_iterator const_iterator;
@@ -45,126 +45,126 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const Derived &s, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const Derived &s, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_add(s,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const double &x, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const double &x, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_add(x,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const mp_rational &q, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const mp_rational &q, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_add(q,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::add(const mp_integer &z, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const mp_integer &z, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_add(z,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const Derived &s, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const Derived &s, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_subtract(s,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const double &x, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const double &x, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_subtract(x,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const mp_rational &q, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const mp_rational &q, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_subtract(q,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::subtract(const mp_integer &z, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const mp_integer &z, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_subtract(z,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const Derived &s, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const Derived &s, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_mult_by(s,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const double &x, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_mult_by(x,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const mp_rational &q, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const mp_rational &q, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_mult_by(q,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::mult_by(const mp_integer &z, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const mp_integer &z, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_mult_by(z,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::divide_by(const double &x, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const double &x, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_divide_by(x,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::divide_by(const mp_rational &q, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const mp_rational &q, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_divide_by(q,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived &toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::divide_by(const mp_integer &z, const ArgsTuple &args_tuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const mp_integer &z, const ArgsTuple &args_tuple)
 	{
 		return derived_cast->base_divide_by(z,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::pow(const double &y, const ArgsTuple &args_tuple) const
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &args_tuple) const
 	{
 		return derived_const_cast->base_pow(y,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::pow(const mp_rational &q, const ArgsTuple &args_tuple) const
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const mp_rational &q, const ArgsTuple &args_tuple) const
 	{
 		return derived_const_cast->base_pow(q,args_tuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline Series toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+	inline Series cf_series<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 	{
 		Series retval;
 		Derived::base_partial(*derived_const_cast,retval,pos_tuple,args_tuple);

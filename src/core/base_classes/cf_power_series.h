@@ -21,28 +21,24 @@
 #ifndef PIRANHA_CF_POWER_SERIES_H
 #define PIRANHA_CF_POWER_SERIES_H
 
-#include "toolbox.h"
-
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <class Degree, class Derived>
-	struct cf_power_series {};
-
 	/// Coefficient power series toolbox.
 	template <class Degree, class Derived>
-	struct toolbox<cf_power_series<Degree,Derived> >
+	class cf_power_series
 	{
-		template <class PosTuple>
-		Degree partial_degree(const PosTuple &pos_tuple) const {
-			return derived_const_cast->base_partial_degree(pos_tuple);
-		}
-		template <class PosTuple>
-		Degree partial_order(const PosTuple &pos_tuple) const {
-			return derived_const_cast->base_partial_order(pos_tuple);
-		}
+		public:
+			template <class PosTuple>
+			Degree partial_degree(const PosTuple &pos_tuple) const {
+				return derived_const_cast->base_partial_degree(pos_tuple);
+			}
+			template <class PosTuple>
+			Degree partial_order(const PosTuple &pos_tuple) const {
+				return derived_const_cast->base_partial_order(pos_tuple);
+			}
 	};
 }
 

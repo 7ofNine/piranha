@@ -23,8 +23,6 @@
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
-#define __PIRANHA_SERIES_MULTIPLICATION_TP_DECL class Derived, class Multiplier, class Truncator
-#define __PIRANHA_SERIES_MULTIPLICATION_TP Derived,Multiplier,Truncator
 
 #include <boost/type_traits/is_same.hpp>
 #include <cstddef>
@@ -32,17 +30,13 @@
 
 #include "../config.h"
 #include "../settings.h"
-#include "toolbox.h"
 
 namespace piranha
 {
-	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
-	struct series_multiplication {};
-
-	template <__PIRANHA_SERIES_MULTIPLICATION_TP_DECL>
-	class toolbox<series_multiplication<__PIRANHA_SERIES_MULTIPLICATION_TP> >
+	template <class Derived, class Multiplier, class Truncator>
+	class series_multiplication
 	{
-		protected:
+		public:
 			template <class ArgsTuple>
 			std::size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
 			{
@@ -98,7 +92,5 @@ namespace piranha
 
 #undef derived_const_cast
 #undef derived_cast
-#undef __PIRANHA_SERIES_MULTIPLICATION_TP_DECL
-#undef __PIRANHA_SERIES_MULTIPLICATION_TP
 
 #endif

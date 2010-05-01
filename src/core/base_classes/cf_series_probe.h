@@ -27,7 +27,7 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::is_insertable(const ArgsTuple &args_tuple) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_insertable(const ArgsTuple &args_tuple) const
 	{
 		return (derived_const_cast->empty() || (derived_const_cast->begin()->m_cf.is_insertable(args_tuple) &&
 			derived_const_cast->begin()->m_key.is_insertable(args_tuple)));
@@ -35,7 +35,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::needs_padding(const ArgsTuple &args_tuple) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::needs_padding(const ArgsTuple &args_tuple) const
 	{
 		return (!derived_const_cast->empty() && (derived_const_cast->begin()->m_cf.needs_padding(args_tuple) ||
 			derived_const_cast->begin()->m_key.needs_padding(args_tuple)));
@@ -43,14 +43,14 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::is_ignorable(const ArgsTuple &) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_ignorable(const ArgsTuple &) const
 	{
 		return (derived_const_cast->empty());
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::norm(const ArgsTuple &args_tuple) const
+	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
 	{
 		return (derived_const_cast->base_norm(args_tuple));
 	}
@@ -58,55 +58,55 @@ namespace piranha
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename term_eval_type_determiner<Term>::type
-		toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::eval(const double &t, const ArgsTuple &args_tuple) const
+		cf_series<__PIRANHA_CF_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		return (derived_const_cast->base_eval(t,args_tuple));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const Derived &other) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const Derived &other) const
 	{
 		return derived_const_cast->base_equal_to(other);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const Derived &other) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const Derived &other) const
 	{
 		return !(*this == other);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const double &x) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const double &x) const
 	{
 		return derived_const_cast->base_equal_to(x);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const double &x) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const double &x) const
 	{
 		return !(*this == x);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const mp_rational &q) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const mp_rational &q) const
 	{
 		return derived_const_cast->base_equal_to(q);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const mp_rational &q) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const mp_rational &q) const
 	{
 		return !(*this == q);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator==(const mp_integer &z) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const mp_integer &z) const
 	{
 		return derived_const_cast->base_equal_to(z);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool toolbox<cf_series<__PIRANHA_CF_SERIES_TP> >::operator!=(const mp_integer &z) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const mp_integer &z) const
 	{
 		return !(*this == z);
 	}

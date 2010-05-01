@@ -26,7 +26,6 @@
 #include <string>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../utils.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -35,16 +34,13 @@
 namespace piranha
 {
 	template <class Derived>
-	struct common_fourier_series {};
-
-	template <class Derived>
-	class toolbox<common_fourier_series<Derived> >
+	class common_fourier_series
 	{
 		public:
 			std::complex<Derived> ei() const
 			{
-				std::complex<Derived> retval(base_ei(derived_const_cast->m_arguments));
-				retval.m_arguments = derived_const_cast->m_arguments;
+				std::complex<Derived> retval(base_ei(derived_const_cast->arguments()));
+				retval.set_arguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -56,7 +52,7 @@ namespace piranha
 			{
 				return ei().imag();
 			}
-		protected:
+		//protected:
 			template <class ArgsTuple>
 			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const
 			{

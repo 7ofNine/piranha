@@ -36,7 +36,7 @@
 #include "../null_type.h"
 #include "../psym.h"
 #include "../type_traits.h"
-#include "toolbox.h"
+#include "base_series_mp.h"
 
 // Template parameters list for piranha::base_series (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
@@ -86,9 +86,6 @@ namespace piranha
 		}
 	};
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	struct base_series {};
-
 	/// Base series class.
 	/**
 	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
@@ -100,8 +97,15 @@ namespace piranha
 	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	class toolbox<base_series<__PIRANHA_BASE_SERIES_TP> >
+	class base_series
 	{
+			// Befriend meta-programming classes.
+			template <class RequestedCf, class SeriesCf>
+			friend struct series_from_cf_impl;
+			template <class RequestedKey, class SeriesKey>
+			friend struct series_from_key_impl;
+			template <int N>
+			friend class series_flattener;
 		public:
 			/// Alias for term type.
 			typedef Term term_type;
@@ -134,10 +138,8 @@ namespace piranha
 			bool is_single_cf() const;
 			size_type atoms() const;
 			//@}
-		protected:
-			/** @name Construction methods.
-			 * These methods are meant to be used to build the constructors of the final classes.
-			 */
+		//protected:
+			/** @name Static construction methods. */
 			//@{
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
@@ -299,8 +301,8 @@ namespace piranha
 #define E0_SERIES_TP Cf,Key,Multiplier,Truncator,Allocator
 #define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
-#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::toolbox<piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
-	Allocator,E0_SERIES(series_name) > >
+#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
+	Allocator,E0_SERIES(series_name) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
 						class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
@@ -308,9 +310,9 @@ namespace piranha
 #define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,Mult0,Trunc0,Allocator>
 #define E1_SERIES(series_name) series_name<E1_SERIES_TP>
 #define E1_SERIES_TERM(term_name,cf_name) term_name< cf_name, Key1, '|', Allocator >
-#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::toolbox<piranha::base_series<term_name< \
+#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
 	cf_name,Key1,'|',Allocator>, \
-	'\n',Allocator,series_name > >
+	'\n',Allocator,series_name >
 }
 
 #endif

@@ -26,7 +26,6 @@
 #include <utility>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../exceptions.h"
 #include "../psym.h"
 
@@ -35,23 +34,20 @@
 
 namespace piranha
 {
-	template <class Derived>
-	struct named_fourier_series {};
-
 	/// Named Fourier series toolbox.
 	template <class Derived>
-	class toolbox<named_fourier_series<Derived> >
+	class named_fourier_series
 	{
 		public:
 			Derived integrate(const std::string &name) const
 			{
 				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
 				const psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->m_arguments);
+				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->arguments());
 				Derived retval;
 				if (pos_tuple.get_head()[0].first) {
-					retval = derived_const_cast->base_integrate(pos_tuple,derived_const_cast->m_arguments);
-					retval.m_arguments = derived_const_cast->m_arguments;
+					retval = derived_const_cast->base_integrate(pos_tuple,derived_const_cast->arguments());
+					retval.set_arguments(derived_const_cast->arguments());
 					retval.trim();
 				} else {
 					piranha_throw(value_error,"cannot integrate fourier series if integration variable is not present among the series' arguments");

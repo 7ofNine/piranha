@@ -23,41 +23,23 @@
 
 #include <boost/tuple/tuple.hpp>
 
-#include "toolbox.h"
-
 namespace piranha
 {
-	struct base_insert_multiplication_result_tag {};
-
-	template <>
-	class toolbox<base_insert_multiplication_result_tag>
-	{
-		protected:
-			template <class SingleRes, class Series, class ArgsTuple>
-			static void insert_single_res(const SingleRes &res, Series &s, const ArgsTuple &args_tuple)
-			{
-				s.insert(res,args_tuple);
-			}
-	};
-
-	template <class ResultTuple>
-	struct insert_multiplication_result_tag {};
-
 	// Traverse the tuple of results of multiplication and insert each result into the multiplication result set.
 	template <class ResultTuple>
-	class toolbox<insert_multiplication_result_tag<ResultTuple> >: public toolbox<base_insert_multiplication_result_tag>
+	class insert_multiplication_result
 	{
 		public:
 			template <class Series, class ArgsTuple>
 			static void run(const ResultTuple &mult_res, Series &s, const ArgsTuple &args_tuple)
 			{
-				insert_single_res(mult_res.get_head(), s, args_tuple);
-				toolbox<insert_multiplication_result_tag<typename ResultTuple::tail_type> >::run(mult_res.get_tail(), s, args_tuple);
+				s.insert(mult_res.get_head(), args_tuple);
+				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, args_tuple);
 			}
 	};
 
 	template <>
-	class toolbox<insert_multiplication_result_tag<boost::tuples::null_type> >
+	class insert_multiplication_result<boost::tuples::null_type>
 	{
 		public:
 			template <class Series, class ArgsTuple>

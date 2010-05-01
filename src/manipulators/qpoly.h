@@ -37,7 +37,7 @@ namespace manipulators
 	typedef polynomial
 	<
 		mpq_cf,
-		expo_array<16, 0>::type,
+		expo_array<16, 0>,
 		polynomial_multiplier,
 		truncators::power_series
 	> qpoly;

@@ -28,7 +28,6 @@
 #include "../exceptions.h"
 #include "../math.h"
 #include "../mp.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -36,12 +35,10 @@
 namespace piranha
 {
 	template <class Derived>
-	struct base_series_special_functions {};
-
-	template <class Derived>
-	class toolbox<base_series_special_functions<Derived> >
+	class base_series_special_functions
 	{
-		protected:
+		//protected:
+		public:
 			template <class ArgsTuple>
 			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
 			{

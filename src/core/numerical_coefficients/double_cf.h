@@ -27,7 +27,6 @@
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
-#include "../base_classes/toolbox.h"
 #include "../exceptions.h"
 #include "../math.h"
 #include "../psym.h"
@@ -81,10 +80,10 @@ namespace piranha
 	 * This class is meant to be used as coefficient in series. It encapsulate a double precision
 	 * numerical value and provides the means for manipulation in the context of a series.
 	 */
-	class double_cf: public toolbox<numerical_container_tag<double, double_cf> >
+	class double_cf: public numerical_container<double, double_cf>
 	{
 			// Alias for the parent class.
-			typedef toolbox<numerical_container_tag<double, double_cf> > ancestor;
+			typedef numerical_container<double, double_cf> ancestor;
 		public:
 			// Ctors.
 			NUMERICAL_CONTAINER_CTORS(double_cf,.to_double())
@@ -117,10 +116,10 @@ namespace std
 {
 	template <>
 	class complex<piranha::double_cf>:
-	public piranha::toolbox<piranha::numerical_container_tag<std::complex<double>, complex<piranha::double_cf> > >,
+	public piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> >,
 				public piranha::numerical_container_complex_toolbox<piranha::double_cf>
 	{
-			typedef piranha::toolbox<piranha::numerical_container_tag<std::complex<double>, complex<piranha::double_cf> > > ancestor;
+			typedef piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
 			friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
 			friend class piranha::double_cf;

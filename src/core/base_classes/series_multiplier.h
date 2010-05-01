@@ -22,7 +22,6 @@
 #define PIRANHA_SERIES_MULTIPLIER_H
 
 #include "../base_classes/base_series_multiplier.h"
-#include "../base_classes/toolbox.h"
 
 namespace piranha
 {
@@ -32,10 +31,10 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > >
+				public base_series_multiplier<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
-					typedef toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > > ancestor;
+					typedef base_series_multiplier<Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 				public:
 					// TODO: which of these are needed? Cleanup also elsewhere when parallel is implemented.
 					typedef Series1 series_type1;

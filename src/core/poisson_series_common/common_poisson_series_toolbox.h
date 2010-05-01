@@ -31,7 +31,6 @@
 #include <utility>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../math.h"
@@ -44,13 +43,10 @@
 
 namespace piranha
 {
-	template <class Derived>
-	struct common_poisson_series {};
-
 	// NOTE: this seems to be valid only for specific position of arguments. Document. Maybe put static const int "trig_index" or something like
 	// that, as we do for power series?
 	template <class Derived>
-	class toolbox<common_poisson_series<Derived> >
+	class common_poisson_series
 	{
 		public:
 			std::complex<Derived> ei() const
@@ -60,11 +56,13 @@ namespace piranha
 				// way to do this is by using named_series::merge_args with a phony series having zero
 				// polynomial arguments and as trigonometric arguments the polynomial arguments of this.
 				Derived copy(*derived_const_cast), tmp;
-				tmp.m_arguments.template get<1>() = derived_const_cast->m_arguments.template get<0>();
+				typename Derived::args_tuple_type tmp_args;
+				tmp_args.template get<1>() = derived_const_cast->arguments().template get<0>();
+				tmp.set_arguments(tmp_args);
 				copy.merge_args(tmp);
 				// Now we can call in the ei method from above.
-				std::complex<Derived> retval(copy.base_ei(copy.m_arguments));
-				retval.m_arguments = copy.arguments();
+				std::complex<Derived> retval(copy.base_ei(copy.arguments()));
+				retval.set_arguments(copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -110,11 +108,11 @@ namespace piranha
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
-					&this_copy.m_arguments);
-				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.m_arguments);
+					&this_copy.arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
-					sub_caches, this_copy.m_arguments));
-				retval.m_arguments = this_copy.m_arguments;
+					sub_caches, this_copy.arguments()));
+				retval.set_arguments(this_copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -137,11 +135,11 @@ namespace piranha
 				s_copy.merge_args(this_copy);
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
-					&this_copy.m_arguments);
-				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.m_arguments);
+					&this_copy.arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
-					sub_caches, this_copy.m_arguments));
-				retval.m_arguments = this_copy.m_arguments;
+					sub_caches, this_copy.arguments()));
+				retval.set_arguments(this_copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -168,7 +166,7 @@ namespace piranha
 			{
 				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
 				const psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->m_arguments);
+				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->arguments());
 				Derived retval;
 				if (pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first) {
 					// If the symbol is present either as a poly arg or a trig arg, invoke the base integration routine.
@@ -176,9 +174,9 @@ namespace piranha
 					// where integration adds a symbol to the list of polynomial symbols.
 					Derived this_copy(*derived_const_cast);
 					this_copy.merge_args(Derived(p));
-					const pos_tuple_type new_pos_tuple = psyms2pos(vector_psym(1,p),this_copy.m_arguments);
-					retval = this_copy.base_integrate(new_pos_tuple,this_copy.m_arguments);
-					retval.m_arguments = this_copy.m_arguments;
+					const pos_tuple_type new_pos_tuple = psyms2pos(vector_psym(1,p),this_copy.arguments());
+					retval = this_copy.base_integrate(new_pos_tuple,this_copy.arguments());
+					retval.set_arguments(this_copy.arguments());
 					retval.trim();
 				} else {
 					// If the symbol is not present at all in the series, just multiply this by the series generated
@@ -188,7 +186,7 @@ namespace piranha
 				}
 				return retval;
 			}
-		protected:
+		//protected:
 			// Integrate supposing that the symbol is present in the Poisson series.
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const

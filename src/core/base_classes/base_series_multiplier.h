@@ -36,22 +36,18 @@
 #include "../settings.h"
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
-#include "toolbox.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
-	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
-	struct base_series_multiplier_tag {};
-
 	/// Base series multiplier.
 	/**
 	 * This class is meant to be extended to build specific multipliers.
 	 */
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
-	class toolbox<base_series_multiplier_tag<Series1,Series2,ArgsTuple,Truncator,Derived> >
+	class base_series_multiplier
 	{
 			friend class base_insert_multiplication_result;
 		protected:
@@ -146,7 +142,7 @@ namespace piranha
 					&(boost::lambda::_1));
 			}
 		public:
-			toolbox(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
+			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
 				m_size2(m_s2.length()), m_retval(retval)
 			{
@@ -171,7 +167,7 @@ namespace piranha
 						return false;
 					}
 					term_type1::multiply(*m_t1[i], *m_t2[j], m_res, m_args_tuple);
-					toolbox<insert_multiplication_result_tag<mult_res> >::run(m_res, m_retval, m_args_tuple);
+					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_args_tuple);
 					return true;
 				}
 				mult_res		&m_res;
@@ -182,10 +178,10 @@ namespace piranha
 				const ArgsTuple		&m_args_tuple;
 			};
 			struct plain_worker {
-				plain_worker(toolbox &mult, Series1 &retval):
+				plain_worker(base_series_multiplier &mult, Series1 &retval):
 					m_mult(mult),m_retval(retval),m_terms1(mult.m_terms1)
 				{}
-				plain_worker(toolbox &mult, Series1 &retval,
+				plain_worker(base_series_multiplier &mult, Series1 &retval,
 					std::vector<std::vector<term_type1 const *> > &split1, const std::size_t &idx):
 					m_mult(mult),m_retval(retval),m_terms1(split1[idx])
 				{}
@@ -218,7 +214,7 @@ namespace piranha
 						<boost::tuples::length<mult_res>::value * sizeof(term_type1)>();
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
-				toolbox				&m_mult;
+				base_series_multiplier		&m_mult;
 				Series1				&m_retval;
 				std::vector<term_type1 const *>	&m_terms1;
 			};

@@ -36,7 +36,6 @@
 #include "../base_classes/named_series.h"
 #include "../base_classes/named_series_complex_toolbox.h"
 #include "../base_classes/named_series_special_functions.h"
-#include "../base_classes/toolbox.h"
 #include "../mp.h"
 #include "../harmonic_series/base_harmonic_series.h"
 #include "../harmonic_series/named_harmonic_series.h"
@@ -50,10 +49,10 @@
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
 #define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>, FOURIER_SERIES_TERM ,piranha::fourier_series)
-#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< FOURIER_SERIES > >
+#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< FOURIER_SERIES>
 #define FOURIER_SERIES_H_DEGREE typename FOURIER_SERIES_TERM::key_type::h_degree_type
-#define FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR piranha::toolbox<piranha::base_fourier_series<0,FOURIER_SERIES > >
-#define FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR piranha::toolbox<piranha::named_fourier_series<FOURIER_SERIES > >
+#define FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR piranha::base_fourier_series<0,FOURIER_SERIES>
+#define FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR piranha::named_fourier_series<FOURIER_SERIES>
 
 namespace piranha
 {
@@ -64,13 +63,13 @@ namespace piranha
 				public FOURIER_SERIES_BINOMIAL_ANCESTOR,
 				public FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR,
 				public FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR,
-				public toolbox<base_harmonic_series<0,1,FOURIER_SERIES_H_DEGREE,FOURIER_SERIES > >,
-				public toolbox<named_harmonic_series<FOURIER_SERIES_H_DEGREE,FOURIER_SERIES > >,
-				public toolbox<common_fourier_series< FOURIER_SERIES > >,
-				public toolbox<series_multiplication< FOURIER_SERIES, Multiplier, Truncator> >,
-				public toolbox<base_series_special_functions< FOURIER_SERIES > >,
-				public toolbox<named_series_special_functions< FOURIER_SERIES > >,
-				public toolbox<jacobi_anger<0, FOURIER_SERIES > >,
+				public base_harmonic_series<0,1,FOURIER_SERIES_H_DEGREE,FOURIER_SERIES>,
+				public named_harmonic_series<FOURIER_SERIES_H_DEGREE,FOURIER_SERIES>,
+				public common_fourier_series< FOURIER_SERIES>,
+				public series_multiplication< FOURIER_SERIES, Multiplier, Truncator>,
+				public base_series_special_functions< FOURIER_SERIES>,
+				public named_series_special_functions< FOURIER_SERIES>,
+				public jacobi_anger<0, FOURIER_SERIES>,
 				boost::ring_operators < FOURIER_SERIES,
 				boost::ring_operators < FOURIER_SERIES, double,
 				boost::dividable < FOURIER_SERIES, double,
@@ -80,12 +79,10 @@ namespace piranha
 				boost::dividable < FOURIER_SERIES, mp_integer
 				> > > > > > >
 	{
-			template <class>
-			friend class toolbox;
+		public:
 			using FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
 			using FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
-		public:
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
@@ -108,12 +105,12 @@ namespace piranha
 #define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex< FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex< FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES > >
+#define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex< FOURIER_SERIES>
+#define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< FOURIER_SERIES>
+#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES>
 #define COMPLEX_FOURIER_SERIES_H_DEGREE typename COMPLEX_FOURIER_SERIES_TERM::key_type::h_degree_type
-#define COMPLEX_FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR piranha::toolbox<piranha::base_fourier_series<0,COMPLEX_FOURIER_SERIES > >
-#define COMPLEX_FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR piranha::toolbox<piranha::named_fourier_series<COMPLEX_FOURIER_SERIES > >
+#define COMPLEX_FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR piranha::base_fourier_series<0,COMPLEX_FOURIER_SERIES>
+#define COMPLEX_FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR piranha::named_fourier_series<COMPLEX_FOURIER_SERIES>
 
 namespace std
 {
@@ -125,12 +122,12 @@ namespace std
 				public COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR,
 				public COMPLEX_FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR,
-				public piranha::toolbox<piranha::base_harmonic_series<0,1,COMPLEX_FOURIER_SERIES_H_DEGREE,COMPLEX_FOURIER_SERIES > >,
-				public piranha::toolbox<piranha::named_harmonic_series<COMPLEX_FOURIER_SERIES_H_DEGREE,COMPLEX_FOURIER_SERIES > >,
-				public piranha::toolbox<piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator> >,
-				public piranha::toolbox<piranha::common_fourier_series < COMPLEX_FOURIER_SERIES > >,
-				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_FOURIER_SERIES > >,
-				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_FOURIER_SERIES > >,
+				public piranha::base_harmonic_series<0,1,COMPLEX_FOURIER_SERIES_H_DEGREE,COMPLEX_FOURIER_SERIES>,
+				public piranha::named_harmonic_series<COMPLEX_FOURIER_SERIES_H_DEGREE,COMPLEX_FOURIER_SERIES>,
+				public piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>,
+				public piranha::common_fourier_series < COMPLEX_FOURIER_SERIES>,
+				public piranha::base_series_special_functions< COMPLEX_FOURIER_SERIES>,
+				public piranha::named_series_special_functions< COMPLEX_FOURIER_SERIES>,
 				public COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,
@@ -144,8 +141,7 @@ namespace std
 				boost::dividable < COMPLEX_FOURIER_SERIES, complex<double>
 				> > > > > > > > > >
 	{
-			template <class>
-			friend class piranha::toolbox;
+		public:
 			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
 			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
@@ -158,7 +154,6 @@ namespace std
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_FOURIER_SERIES_BASE_ANCESTOR::base_divide_by;
-		public:
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR::operator==;
 			using COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX::operator!=;

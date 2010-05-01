@@ -40,7 +40,7 @@ namespace piranha
 {
 	// TODO: move out in static method? Where is this used?
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::complex<Derived> toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::complex() const
+	inline std::complex<Derived> named_series<__PIRANHA_NAMED_SERIES_TP>::complex() const
 	{
 		return std::complex<Derived>(*derived_const_cast);
 	}
@@ -67,7 +67,7 @@ namespace piranha
 	 * This is the same text format used when saving series to file.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_plain(std::ostream &stream) const
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream) const
 	{
 		named_series_print_plain<arguments_description>(stream, m_arguments);
 		stream << "[terms]" << std::endl;
@@ -76,14 +76,14 @@ namespace piranha
 
 	/// Print series to stream in pretty format.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_pretty(std::ostream &stream) const
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_pretty(std::ostream &stream) const
 	{
 		derived_const_cast->print_terms_pretty(stream, m_arguments);
 	}
 
 	/// Print in tex format.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print_tex(std::ostream &stream) const
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print_tex(std::ostream &stream) const
 	{
 		derived_const_cast->print_terms_tex(stream, m_arguments);
 	}
@@ -94,14 +94,14 @@ namespace piranha
 	 * Equivalent to named_series::print_pretty.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::print(std::ostream &out_stream) const
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &out_stream) const
 	{
 		print_pretty(out_stream);
 	}
 
 	/// Construct from file.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::construct_from_file(const std::string &fn)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_file(const std::string &fn)
 	{
 		std::ifstream inf;
 		std::string filename = utils::open_file(fn, inf);
@@ -118,7 +118,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::read_sections(std::ifstream &inf)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_sections(std::ifstream &inf)
 	{
 		std::string temp;
 		while (utils::get_valid_string(inf, temp)) {
@@ -146,7 +146,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::read_arg(std::ifstream &inf, const std::string &name)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_arg(std::ifstream &inf, const std::string &name)
 	{
 		// Temporary attributes for the argument.
 		std::string temp_name, temp_time_eval;
@@ -180,7 +180,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::read_terms(std::ifstream &inf)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::read_terms(std::ifstream &inf)
 	{
 		typedef typename Derived::term_type term_type;
 		std::string temp;
@@ -205,7 +205,7 @@ namespace piranha
 
 	/// Save series to file.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::save_to(const std::string &filename) const
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::save_to(const std::string &filename) const
 	{
 		std::ofstream outf(filename.c_str(), std::ios_base::trunc);
 		if (outf.fail()) {
@@ -220,7 +220,7 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::construct_from_psym(const psym &p)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const psym &p)
 	{
 		piranha_assert(derived_const_cast->empty());
 		append_arg<N>(p);
@@ -228,17 +228,23 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline const typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::args_tuple_type &
-	toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::arguments() const
+	inline const typename named_series<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type &
+	named_series<__PIRANHA_NAMED_SERIES_TP>::arguments() const
 	{
 		return m_arguments;
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::set_arguments(const args_tuple_type &args_tuple)
+	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const args_tuple_type &args_tuple)
 	{
-		if (!derived_const_cast->empty()) {
-			piranha_throw(value_error,"cannot assign arguments to non-empty series");
+		typedef typename Derived::const_iterator const_iterator;
+		const const_iterator it_f = derived_const_cast->end();
+		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+			if (!it->m_cf.is_insertable(args_tuple) || !it->m_key.is_insertable(args_tuple) ||
+				it->m_cf.needs_padding(args_tuple) || it->m_key.needs_padding(args_tuple))
+			{
+				piranha_throw(value_error,"incompatible arguments tuple in set_arguments()");
+			}
 		}
 		m_arguments = args_tuple;
 	}
@@ -249,7 +255,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::series_from_key(const Key &key) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::series_from_key(const Key &key) const
 	{
 		Derived retval(derived_const_cast->base_series_from_key(key,m_arguments));
 		retval.m_arguments = m_arguments;
@@ -263,7 +269,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>
-	inline Derived toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::series_from_cf(const Cf &cf) const
+	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::series_from_cf(const Cf &cf) const
 	{
 		Derived retval(derived_const_cast->base_series_from_cf(cf,m_arguments));
 		retval.m_arguments = m_arguments;
@@ -272,20 +278,20 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_iterator toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_begin() const
+	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::s_iterator named_series<__PIRANHA_NAMED_SERIES_TP>::s_begin() const
 	{
 		return s_iterator(derived_const_cast->begin(),s_iterator_generator(*derived_const_cast));
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_iterator toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::s_end() const
+	inline typename named_series<__PIRANHA_NAMED_SERIES_TP>::s_iterator named_series<__PIRANHA_NAMED_SERIES_TP>::s_end() const
 	{
 		return s_iterator(derived_const_cast->end(),s_iterator_generator(*derived_const_cast));
 	}
 
 	// Trivial destructor. It's here only to enforce a static check that cannot stay in the class definition.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline toolbox<named_series<__PIRANHA_NAMED_SERIES_TP> >::~toolbox()
+	inline named_series<__PIRANHA_NAMED_SERIES_TP>::~named_series()
 	{
 		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1,"");
 	}

@@ -25,7 +25,6 @@
 #include <cstddef>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 
@@ -34,18 +33,16 @@
 
 namespace piranha
 {
-	template <int N, class Derived>
-	struct base_fourier_series {};
-
 	/// Base fourier series toolbox.
 	/**
 	 * N represents the position of trigonometric arguments in the arguments tuple.
 	 */
 	template <int N, class Derived>
-	class toolbox<base_fourier_series<N,Derived> >
+	class base_fourier_series
 	{
 			p_static_check(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
-		protected:
+		//protected:
+		public:
 			// Integrate supposing that the symbol is present in the fourier series..
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const

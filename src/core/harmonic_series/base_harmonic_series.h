@@ -23,7 +23,6 @@
 
 #include <algorithm> // For max_element and min_element.
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 
@@ -34,12 +33,9 @@
 
 namespace piranha
 {
-	template <int ExpoArgsPosition, int ExpoTermPosition, class HDegree, class Derived>
-	struct base_harmonic_series {};
-
 	/// Base harmonic series toolbox.
 	template <int HarmonicArgsPosition, int HarmonicTermPosition, class HDegree, class Derived>
-	class toolbox<base_harmonic_series<HarmonicArgsPosition,HarmonicTermPosition,HDegree,Derived> >
+	class base_harmonic_series
 	{
 			p_static_check(HarmonicArgsPosition >= 0, "Invalid harmonic args position.");
 			template <class Term>
@@ -143,7 +139,7 @@ namespace piranha
 				}
 				return true;
 			}
-		protected:
+		//protected:
 			/// Get the harmonic degree of the series for specific variables.
 			template <class PosTuple>
 			HDegree base_partial_h_degree(const PosTuple &pos_tuple) const {

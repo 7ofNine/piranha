@@ -21,18 +21,13 @@
 #ifndef PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
 #define PIRANHA_CF_SERIES_SPECIAL_FUNCTIONS_H
 
-#include "toolbox.h"
-
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
 	template <class Derived>
-	struct cf_series_special_functions {};
-
-	template <class Derived>
-	class toolbox<cf_series_special_functions<Derived> >
+	class cf_series_special_functions
 	{
 		public:
 			/// Bessel function of the first kind of integer order.

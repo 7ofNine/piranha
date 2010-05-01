@@ -25,7 +25,6 @@
 #include <cstddef>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 
@@ -34,18 +33,16 @@
 
 namespace piranha
 {
-	template <int N, class Derived>
-	struct base_polynomial {};
-
 	/// Base polynomial toolbox.
 	/**
 	 * N represents the position of polynomial arguments in the arguments tuple.
 	 */
 	template <int N, class Derived>
-	class toolbox<base_polynomial<N,Derived> >
+	class base_polynomial
 	{
-			p_static_check(N >= 0, "Invalid argumsnts position in base polynomial toolbox.");
-		protected:
+			p_static_check(N >= 0, "Invalid arguments position in base polynomial toolbox.");
+		//protected:
+		public:
 			// Integrate supposing that the symbol is present in the polynomial.
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const

@@ -32,7 +32,6 @@
 #include <vector>
 
 #include "../base_classes/q_array.h"
-#include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../mp.h"
@@ -45,26 +44,21 @@
 
 namespace piranha
 {
-	template < __PIRANHA_Q_EXPO_ARRAY_TP_DECL = std::allocator<char> >
-	struct q_expo_array {
-		typedef toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > type;
-	};
-
 	/// Rational exponents array.
 	/**
 	 * It wraps a piranha::q_array and adds the
 	 * capabilities needed for exponent manipulation.
 	 */
-	template < __PIRANHA_Q_EXPO_ARRAY_TP_DECL >
-	class toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> >: public q_array<__PIRANHA_Q_EXPO_ARRAY_TP, toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >
+	template < __PIRANHA_Q_EXPO_ARRAY_TP_DECL = std::allocator<char> >
+	class q_expo_array: public q_array<__PIRANHA_Q_EXPO_ARRAY_TP, q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> >
 	{
-			typedef q_array<__PIRANHA_Q_EXPO_ARRAY_TP, toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > > ancestor;
-			friend class q_array<__PIRANHA_Q_EXPO_ARRAY_TP, toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >;
+			typedef q_array<__PIRANHA_Q_EXPO_ARRAY_TP, q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > ancestor;
+			friend class q_array<__PIRANHA_Q_EXPO_ARRAY_TP, q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public q_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type>
+			class sub_cache: public q_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
 					typedef q_power_cache<SubSeries,
-						typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
+						base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
 				public:
 					sub_cache():ancestor() {}
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple) {
@@ -97,10 +91,10 @@ namespace piranha
 			};
 			// Ctors.
 			/// Default ctor.
-			toolbox(): ancestor() {}
+			q_expo_array(): ancestor() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor() {
+			explicit q_expo_array(const std::string &s, const ArgsTuple &): ancestor() {
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
@@ -111,7 +105,7 @@ namespace piranha
 			}
 			/// Ctor from psym.
 			template <class ArgsTuple>
-			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+			explicit q_expo_array(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 			/// Multiplication.
 			template <class QExpoArray, class ResultType>
 			void multiply(const QExpoArray &qe2, ResultType &ret) const
@@ -215,12 +209,12 @@ namespace piranha
 				return (this->elements_are_zero());
 			}
 			/// Equality test.
-			bool operator==(const toolbox &qe2) const
+			bool operator==(const q_expo_array &qe2) const
 			{
 				return this->elements_equal_to(qe2);
 			}
 			/// Inequality test.
-			bool operator<(const toolbox &qe2) const
+			bool operator<(const q_expo_array &qe2) const
 			{
 				return this->lex_comparison(qe2);
 			}
@@ -326,7 +320,7 @@ namespace piranha
 				// and the interesting exponent is not zero.
 				Series retval;
 				if (pos_tuple.template get<ancestor::position>()[0].first && (*this)[pos] != 0) {
-					toolbox copy(*this);
+					q_expo_array copy(*this);
 					// TODO: use decrement operator here.
 					copy[pos] = copy[pos] - 1;
 					retval = Series::base_series_from_key(copy,args_tuple);
@@ -336,13 +330,13 @@ namespace piranha
 			}
 			/// Exponentiation to double.
 			template <class ArgsTuple>
-			toolbox pow(const double &x, const ArgsTuple &args_tuple) const
+			q_expo_array pow(const double &x, const ArgsTuple &args_tuple) const
 			{
 				return pow_impl(x,args_tuple);
 			}
 			/// Exponentiation to rational.
 			template <class ArgsTuple>
-			toolbox pow(const mp_rational &q, const ArgsTuple &args_tuple) const
+			q_expo_array pow(const mp_rational &q, const ArgsTuple &args_tuple) const
 			{
 				return pow_impl(q,args_tuple);
 			}
@@ -360,7 +354,7 @@ namespace piranha
 				} else {
 					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					piranha_assert(pos < this->size());
-					toolbox tmp_ea(*this);
+					q_expo_array tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
 					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, args_tuple));
@@ -380,9 +374,9 @@ namespace piranha
 			}
 		private:
 			template <class T, class ArgsTuple>
-			toolbox pow_impl(const T &x, const ArgsTuple &) const
+			q_expo_array pow_impl(const T &x, const ArgsTuple &) const
 			{
-				toolbox retval(*this);
+				q_expo_array retval(*this);
 				if (x == -1) {
 					retval.invert_sign();
 				} else {
@@ -397,7 +391,7 @@ namespace piranha
 
 	/// is_ring_exact type trait specialisation for q_expo_array.
 	template <__PIRANHA_Q_EXPO_ARRAY_TP_DECL>
-	struct is_ring_exact<toolbox<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> > >: boost::true_type {};
+	struct is_ring_exact<q_expo_array<__PIRANHA_Q_EXPO_ARRAY_TP> >: boost::true_type {};
 }
 
 #undef __PIRANHA_Q_EXPO_ARRAY_TP_DECL

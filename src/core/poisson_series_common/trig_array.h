@@ -33,7 +33,6 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
-#include "../base_classes/toolbox.h"
 #include "../common_functors.h"
 #include "../config.h"
 #include "../exceptions.h"
@@ -51,27 +50,22 @@
 
 namespace piranha
 {
-	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
-	struct trig_array {
-		typedef toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > type;
-	};
-
 	/// Trigonometric array, dynamically sized version.
 	/**
 	 * It wraps a piranha::int_array with signed integer sized Bits, and adds the
 	 * capabilities needed for trigonometric manipulation.
 	 */
-	template < __PIRANHA_TRIG_ARRAY_TP_DECL>
-	class toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: public int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >
+	template < __PIRANHA_TRIG_ARRAY_TP_DECL = std::allocator<char> >
+	class trig_array: public int_array<__PIRANHA_TRIG_ARRAY_TP, trig_array<__PIRANHA_TRIG_ARRAY_TP> >
 	{
-			typedef int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > > ancestor;
-			friend class int_array<__PIRANHA_TRIG_ARRAY_TP, toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >;
+			typedef int_array<__PIRANHA_TRIG_ARRAY_TP, trig_array<__PIRANHA_TRIG_ARRAY_TP> > ancestor;
+			friend class int_array<__PIRANHA_TRIG_ARRAY_TP, trig_array<__PIRANHA_TRIG_ARRAY_TP> >;
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public int_power_cache<std::complex<SubSeries>,
-				typename base_series_arithmetics<std::complex<SubSeries>,ArgsTuple>::type>
+				base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
 			{
 					typedef int_power_cache<std::complex<SubSeries>,
-						typename base_series_arithmetics<std::complex<SubSeries>,ArgsTuple>::type> ancestor;
+						base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
 					enum status {
 						zero,
 						one,
@@ -119,9 +113,9 @@ namespace piranha
 					std::string	m_errmsg;
 			};
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache: public int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type>
+			class ei_sub_cache: public int_power_cache<SubSeries, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
-					typedef int_power_cache<SubSeries, typename base_series_arithmetics<SubSeries,ArgsTuple>::type> ancestor;
+					typedef int_power_cache<SubSeries,base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
 				public:
 					ei_sub_cache():ancestor::int_power_cache() {}
 					// NOTE: here we assume that s has absolute value equal to one, which lets us calculate its
@@ -154,10 +148,10 @@ namespace piranha
 			};
 			// Ctors.
 			/// Default ctor.
-			toolbox(): ancestor() {}
+			trig_array(): ancestor() {}
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit toolbox(const std::string &s, const ArgsTuple &): ancestor() {
+			explicit trig_array(const std::string &s, const ArgsTuple &): ancestor() {
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				// TODO: check here that we are not loading too many multipliers, outside trig_size_t range.
@@ -185,9 +179,9 @@ namespace piranha
 				}
 			}
 			template <class ArgsTuple>
-			explicit toolbox(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
+			explicit trig_array(const psym &p, const int &n, const ArgsTuple &a): ancestor::int_array(p, n, a) {}
 			template <int Pos2>
-			explicit toolbox(const toolbox<trig_array<Bits,Pos2,Allocator> > &ta): ancestor::int_array(ta) {}
+			explicit trig_array(const trig_array<Bits,Pos2,Allocator> &ta): ancestor::int_array(ta) {}
 			// Math.
 			/// Multiplication.
 			/**
@@ -207,7 +201,7 @@ namespace piranha
 			 * @param[out] ret2 second return value.
 			 */
 			template <class TrigArray>
-			void multiply(const TrigArray &t2, toolbox &ret1, toolbox &ret2) const
+			void multiply(const TrigArray &t2, trig_array &ret1, trig_array &ret2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
 			// critical part, so the optimization should be worth the hassle.
@@ -469,11 +463,11 @@ namespace piranha
 				return (!this->m_flavour && this->elements_are_zero());
 			}
 			/// Equality test.
-			bool operator==(const toolbox &t2) const {
+			bool operator==(const trig_array &t2) const {
 				return (this->m_flavour == t2.m_flavour && this->elements_equal_to(t2));
 			}
 			/// Less than.
-			bool operator<(const toolbox &t2) const {
+			bool operator<(const trig_array &t2) const {
 				if (this->m_flavour < t2.m_flavour) {
 					return true;
 				} else if (this->m_flavour > t2.m_flavour) {
@@ -509,7 +503,7 @@ namespace piranha
 				// multiplied by the coefficient in the partial derivation of the whole term.
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) {
-					toolbox copy(*this);
+					trig_array copy(*this);
 					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					// Change the flavour of the resulting key.
 					copy.m_flavour = !this->m_flavour;
@@ -524,11 +518,11 @@ namespace piranha
 			}
 			/// Exponentiation.
 			template <class ArgsTuple>
-			toolbox pow(const double &y, const ArgsTuple &) const {
+			trig_array pow(const double &y, const ArgsTuple &) const {
 				return pow_number(y);
 			}
 			template <class ArgsTuple>
-			toolbox pow(const mp_rational &q, const ArgsTuple &) const {
+			trig_array pow(const mp_rational &q, const ArgsTuple &) const {
 				return pow_number(q);
 			}
 			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
@@ -548,7 +542,7 @@ namespace piranha
 					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					piranha_assert(pos < this->size());
-					toolbox tmp_ta(*this);
+					trig_array tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
 					// NOTE: important: we need key builders here because we may be building RetSeries
@@ -597,7 +591,7 @@ namespace piranha
 					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
 					const int power = static_cast<int>((*this)[pos]);
 					piranha_assert(pos < this->size());
-					toolbox tmp_ta(*this);
+					trig_array tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
@@ -644,9 +638,9 @@ namespace piranha
 				return retval;
 			}
 			template <class Number>
-			toolbox pow_number(const Number &y) const {
+			trig_array pow_number(const Number &y) const {
 				const bool int_zero = this->elements_are_zero();
-				toolbox retval;
+				trig_array retval;
 				if (y < 0) {
 					if (int_zero && !this->m_flavour) {
 						// 0**-y.
@@ -679,11 +673,11 @@ namespace piranha
 
 	/// is_ring_exact type trait specialisation for trig_array.
 	template <__PIRANHA_TRIG_ARRAY_TP_DECL>
-	struct is_ring_exact<toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >: boost::true_type {};
+	struct is_ring_exact<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: boost::true_type {};
 
 	/// is_trig_exact type trait specialisation for trig_array.
 	template <__PIRANHA_TRIG_ARRAY_TP_DECL>
-	struct is_trig_exact<toolbox<trig_array<__PIRANHA_TRIG_ARRAY_TP> > >: boost::true_type {};
+	struct is_trig_exact<trig_array<__PIRANHA_TRIG_ARRAY_TP> >: boost::true_type {};
 }
 
 #undef __PIRANHA_TRIG_ARRAY_TP_DECL

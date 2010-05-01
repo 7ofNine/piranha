@@ -23,7 +23,6 @@
 
 #include <algorithm>
 
-#include "base_classes/toolbox.h"
 #include "exceptions.h"
 
 // NOTE: maybe better move these and the caches into own subdirectory.
@@ -51,12 +50,7 @@ namespace piranha
 
 	template <class T, class ArgsTuple>
 	struct base_series_arithmetics {
-		typedef toolbox<base_series_arithmetics<T,ArgsTuple> > type;
-	};
-
-	template <class T, class ArgsTuple>
-	struct toolbox<base_series_arithmetics<T,ArgsTuple> > {
-		toolbox():m_args_tuple(0) {}
+		base_series_arithmetics():m_args_tuple(0) {}
 		T inv(const T &orig) const
 		{
 			piranha_assert(m_args_tuple);

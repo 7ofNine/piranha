@@ -25,7 +25,6 @@
 #include <utility>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -34,11 +33,8 @@
 namespace piranha
 {
 	template <class Derived>
-	struct common_polynomial_cf {};
-
-	template <class Derived>
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
-	class toolbox<common_polynomial_cf<Derived> >
+	class common_polynomial_cf
 	{
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>

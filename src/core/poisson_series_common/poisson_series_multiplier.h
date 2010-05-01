@@ -34,7 +34,6 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_series_multiplier.h"
 #include "../base_classes/null_truncator.h"
-#include "../base_classes/toolbox.h"
 #include "../coded_series_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -45,25 +44,22 @@
 
 namespace piranha
 {
-	struct poisson_series_multiplier_tag {};
-
 	/// Series multiplier specifically tuned for Poisson series.
 	/**
 	 * This multiplier internally will used coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	template <>
-	class toolbox<poisson_series_multiplier_tag>
+	class poisson_series_multiplier
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public toolbox<base_series_multiplier_tag<Series1, Series2, ArgsTuple, Truncator,
-				get_type<Series1, Series2, ArgsTuple, Truncator> > > ,
+				public base_series_multiplier<Series1, Series2, ArgsTuple, Truncator,
+				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
 				public coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
-					typedef toolbox<base_series_multiplier_tag< Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > > ancestor;
+					typedef base_series_multiplier< Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> > coded_ancestor;
 					friend class coded_series_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator> >;
 					typedef typename Series1::const_iterator const_iterator1;
@@ -452,8 +448,6 @@ namespace piranha
 					std::vector<char>	m_flavours2;
 			};
 	};
-
-	typedef toolbox<poisson_series_multiplier_tag> poisson_series_multiplier;
 }
 
 #endif

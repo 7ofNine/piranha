@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -32,26 +31,24 @@
 
 namespace piranha
 {
-	template <class HDegree, class Derived>
-	struct named_harmonic_series {};
-
 	/// Named harmonic series toolbox.
 	template <class HDegree, class Derived>
-	struct toolbox<named_harmonic_series<HDegree,Derived> >
+	class named_harmonic_series
 	{
-		HDegree partial_h_degree(const std::vector<std::string> &vs) const
-		{
-			return derived_const_cast->base_partial_h_degree(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));
-		}
-		HDegree partial_h_order(const std::vector<std::string> &vs) const
-		{
-			vector_psym v;
-			v.reserve(vs.size());
-			for (size_t i = 0; i < vs.size(); ++i) {
-				v.push_back(psym(vs[i]));
+		public:
+			HDegree partial_h_degree(const std::vector<std::string> &vs) const
+			{
+				return derived_const_cast->base_partial_h_degree(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
 			}
-			return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs),derived_const_cast->m_arguments));
-		}
+			HDegree partial_h_order(const std::vector<std::string> &vs) const
+			{
+				vector_psym v;
+				v.reserve(vs.size());
+				for (size_t i = 0; i < vs.size(); ++i) {
+					v.push_back(psym(vs[i]));
+				}
+				return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
+			}
 	};
 }
 

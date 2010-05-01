@@ -18,32 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_SERIES_FACTORY_H
-#define PIRANHA_SERIES_FACTORY_H
+#ifndef PIRANHA_BASE_SERIES_MP_H
+#define PIRANHA_BASE_SERIES_MP_H
 
-#include "toolbox.h"
+#include <vector>
+
+#include "../config.h"
+#include "../exceptions.h"
 
 namespace piranha
 {
+	// Implementation of factory methods from coefficients and keys.
 	template <class RequestedKey, class SeriesKey>
-	struct series_from_key_impl_tag {};
-
-	template <class RequestedKey, class SeriesKey>
-	struct toolbox<series_from_key_impl_tag<RequestedKey,SeriesKey> >
+	struct series_from_key_impl
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &args_tuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			toolbox<series_from_key_impl_tag<RequestedKey,typename cf_series_type::term_type::key_type> >::run(
+			series_from_key_impl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
 				cf_series,key,args_tuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
 		}
 	};
 
 	template <class Key>
-	struct toolbox<series_from_key_impl_tag<Key,Key> >
+	struct series_from_key_impl<Key,Key>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Key &key, const ArgsTuple &args_tuple)
@@ -52,31 +53,60 @@ namespace piranha
 		}
 	};
 
-	template <class RequestedKey, class SeriesKey>
-	struct series_from_cf_impl_tag {};
-
 	template <class RequestedCf, class SeriesCf>
-	struct toolbox<series_from_cf_impl_tag<RequestedCf,SeriesCf> >
+	struct series_from_cf_impl
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &args_tuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			toolbox<series_from_cf_impl_tag<RequestedCf,typename cf_series_type::term_type::cf_type> >::run(
+			series_from_cf_impl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
 				cf_series,cf,args_tuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
 		}
 	};
 
 	template <class Cf>
-	struct toolbox<series_from_cf_impl_tag<Cf,Cf> >
+	struct series_from_cf_impl<Cf,Cf>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &args_tuple)
 		{
 			retval.insert(typename Series::term_type(cf,typename Series::term_type::key_type()),args_tuple);
 		}
+	};
+
+	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
+	template <int N>
+	class series_flattener
+	{
+		public:
+			p_static_check(N > 0,"");
+			template <class CfSeries, class Term, class ArgsTuple>
+			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &args_tuple)
+			{
+				// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
+				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
+				piranha_assert(!cf_series.empty());
+				const CfSeries tmp(cf_series);
+				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
+					cf_series.clear_terms();
+					cf_series.insert(*it,args_tuple);
+					series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,args_tuple);
+				}
+			}
+	};
+
+	template <>
+	class series_flattener<0>
+	{
+		public:
+			template <class Cf, class Term, class ArgsTuple>
+			static void run(Cf &, Term &term, std::vector<Term> &out, const ArgsTuple &)
+			{
+				out.push_back(term);
+			}
 	};
 }
 

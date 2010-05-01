@@ -41,7 +41,6 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
 #include "../base_classes/null_truncator.h"
-#include "../base_classes/toolbox.h"
 #include "../coded_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -97,25 +96,22 @@ namespace piranha
 		}
 	}
 
-	struct polynomial_multiplier_tag {};
-
 	/// Series multiplier specifically tuned for polynomials.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
 	 * like piranha::base_series_multiplier.
 	 */
-	template <>
-	class toolbox<polynomial_multiplier_tag>
+	class polynomial_multiplier
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public toolbox<base_series_multiplier_tag< Series1, Series2, ArgsTuple, Truncator,
-					get_type<Series1, Series2, ArgsTuple, Truncator> > >,
+				public base_series_multiplier< Series1, Series2, ArgsTuple, Truncator,
+					get_type<Series1, Series2, ArgsTuple, Truncator> >,
 				public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >
 			{
-					typedef toolbox<base_series_multiplier_tag< Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > > ancestor;
+					typedef base_series_multiplier< Series1, Series2, ArgsTuple, Truncator,
+						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> > coded_ancestor;
 					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
 					typedef typename Series1::const_iterator const_iterator1;
@@ -373,8 +369,6 @@ std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::loc
 					}
 			};
 	};
-
-	typedef toolbox<polynomial_multiplier_tag> polynomial_multiplier;
 }
 
 #endif

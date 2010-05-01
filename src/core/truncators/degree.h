@@ -31,7 +31,6 @@
 #include <utility>
 #include <vector>
 
-#include "../base_classes/toolbox.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../mp.h"
@@ -39,13 +38,9 @@
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
 
-namespace piranha
-{
-	struct degree_truncator_tag {};
-
+namespace piranha { namespace truncators {
 	/// Truncator based on the minium degree of the series.
-	template <>
-	class __PIRANHA_VISIBLE toolbox<degree_truncator_tag>
+	class __PIRANHA_VISIBLE degree
 	{
 			enum mode {
 				deg,
@@ -291,11 +286,6 @@ namespace piranha
 			static vector_psym	m_psyms;
 			static mode		m_mode;
 	};
-
-namespace truncators
-{
-	typedef toolbox<degree_truncator_tag> degree;
-}
-}
+} }
 
 #endif

@@ -38,7 +38,6 @@
 #include "../base_classes/base_power_series.h"
 #include "../base_classes/named_power_series.h"
 #include "../base_classes/series_multiplication.h"
-#include "../base_classes/toolbox.h"
 #include "../mp.h"
 #include "../polynomial_common/base_polynomial.h"
 #include "../polynomial_common/monomial.h"
@@ -49,10 +48,10 @@
 #define POLYNOMIAL E0_SERIES(piranha::polynomial)
 #define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::polynomial)
-#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< POLYNOMIAL > >
+#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POLYNOMIAL >
 #define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
-#define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::base_polynomial<0,POLYNOMIAL > >
-#define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::named_polynomial<POLYNOMIAL > >
+#define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::base_polynomial<0,POLYNOMIAL >
+#define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<POLYNOMIAL >
 
 namespace piranha
 {
@@ -64,11 +63,11 @@ namespace piranha
 				public POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR,
 				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR,
-				public toolbox<base_power_series<0,1,POLYNOMIAL_DEGREE,POLYNOMIAL > >,
-				public toolbox<named_power_series< POLYNOMIAL_DEGREE,POLYNOMIAL > >,
-				public toolbox<series_multiplication< POLYNOMIAL, Multiplier, Truncator> >,
-				public toolbox<base_series_special_functions< POLYNOMIAL > >,
-				public toolbox<named_series_special_functions< POLYNOMIAL > >,
+				public base_power_series<0,1,POLYNOMIAL_DEGREE,POLYNOMIAL>,
+				public named_power_series< POLYNOMIAL_DEGREE,POLYNOMIAL>,
+				public series_multiplication< POLYNOMIAL, Multiplier, Truncator>,
+				public base_series_special_functions< POLYNOMIAL>,
+				public named_series_special_functions< POLYNOMIAL>,
 				boost::ring_operators < POLYNOMIAL,
 				boost::ring_operators < POLYNOMIAL, double,
 				boost::dividable < POLYNOMIAL, double,
@@ -78,12 +77,10 @@ namespace piranha
 				boost::dividable < POLYNOMIAL, mp_integer
 				> > > > > > >
 	{
-			template <class>
-			friend class toolbox;
+		public:
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
-		public:
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(polynomial, 0);
 	};
@@ -102,12 +99,12 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
 		COMPLEX_POLYNOMIAL_TERM, piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::toolbox<piranha::base_series_complex<POLYNOMIAL> >
-#define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::toolbox<piranha::named_series_complex<POLYNOMIAL> >
-#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::toolbox<piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL > >
+#define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::base_series_complex<POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex<POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::key_type::degree_type
-#define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::base_polynomial<0,COMPLEX_POLYNOMIAL > >
-#define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::toolbox<piranha::named_polynomial<COMPLEX_POLYNOMIAL > >
+#define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::base_polynomial<0,COMPLEX_POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<COMPLEX_POLYNOMIAL>
 
 namespace std
 {
@@ -120,11 +117,11 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR,
-				public piranha::toolbox<piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator> >,
-				public piranha::toolbox<piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::named_power_series< COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::base_series_special_functions< COMPLEX_POLYNOMIAL > >,
-				public piranha::toolbox<piranha::named_series_special_functions< COMPLEX_POLYNOMIAL > >,
+				public piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>,
+				public piranha::base_power_series<0,1,COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL>,
+				public piranha::named_power_series< COMPLEX_POLYNOMIAL_DEGREE,COMPLEX_POLYNOMIAL>,
+				public piranha::base_series_special_functions< COMPLEX_POLYNOMIAL>,
+				public piranha::named_series_special_functions< COMPLEX_POLYNOMIAL>,
 				boost::ring_operators < COMPLEX_POLYNOMIAL,
 				boost::ring_operators < COMPLEX_POLYNOMIAL, double,
 				boost::dividable < COMPLEX_POLYNOMIAL, double,
@@ -137,8 +134,7 @@ namespace std
 				boost::dividable < COMPLEX_POLYNOMIAL, complex<double>
 				> > > > > > > > > >
 	{
-			template <class>
-			friend class piranha::toolbox;
+		public:
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
@@ -152,7 +148,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_divide_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_divide_by;
-		public:
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator==;
 			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator==;
 			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator!=;
@@ -169,24 +164,6 @@ namespace std
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(POLYNOMIAL);
 	};
-}
-
-// Overload standard math functions for polynomials.
-namespace std
-{
-	template < E0_SERIES_TP_DECL >
-	POLYNOMIAL pow(const POLYNOMIAL &x, const double &y)
-	{
-		POLYNOMIAL retval(x.pow(y));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
-	COMPLEX_POLYNOMIAL pow(const COMPLEX_POLYNOMIAL &x, const double &y)
-	{
-		COMPLEX_POLYNOMIAL retval(x.pow(y));
-		return retval;
-	}
 }
 
 #endif

@@ -23,18 +23,13 @@
 
 #include <complex>
 
-#include "toolbox.h"
-
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
 	template <class RealDerived>
-	struct cf_series_complex {};
-
-	template <class RealDerived>
-	class toolbox<cf_series_complex<RealDerived> >
+	class cf_series_complex
 	{
 			typedef std::complex<RealDerived> Derived;
 		public:
