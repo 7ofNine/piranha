@@ -176,36 +176,4 @@ namespace std
 	};
 }
 
-// Overload standard math functions for Poisson series.
-namespace std
-{
-	template <E1_SERIES_TP_DECL>
-	POISSON_SERIES cos(const POISSON_SERIES &p)
-	{
-		POISSON_SERIES retval = p.cos();
-		return retval;
-	}
-
-	template <E1_SERIES_TP_DECL>
-	POISSON_SERIES sin(const POISSON_SERIES &p)
-	{
-		POISSON_SERIES retval = p.sin();
-		return retval;
-	}
-
-	template <E1_SERIES_TP_DECL>
-	POISSON_SERIES pow(const POISSON_SERIES &x, const double &y)
-	{
-		POISSON_SERIES retval(x.pow(y));
-		return retval;
-	}
-
-	template <E1_SERIES_TP_DECL>
-	COMPLEX_POISSON_SERIES pow(const COMPLEX_POISSON_SERIES &x, const double &y)
-	{
-		COMPLEX_POISSON_SERIES retval(x.pow(y));
-		return retval;
-	}
-}
-
 #endif

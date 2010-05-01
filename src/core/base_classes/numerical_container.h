@@ -324,23 +324,19 @@ namespace piranha
 	explicit derived(const piranha::mp_integer &val, const ArgsTuple &a): ancestor(val __VA_ARGS__ , a) {} \
 	template <class ArgsTuple> \
 	explicit derived(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
-}
 
-// TODO: remove these from std namespace, it is illegal to put them here.
-namespace std
-{
 	// Overloads for I/O operators.
 	template <class T, class Derived>
-	inline istream &operator>>(istream &is, piranha::numerical_container<T, Derived> &nc)
+	inline std::istream &operator>>(std::istream &is, numerical_container<T, Derived> &nc)
 	{
-		string tmp;
-		getline(is, tmp);
-		nc = piranha::numerical_container<T, Derived>(piranha::utils::lexical_converter<T>(tmp));
+		std::string tmp;
+		std::getline(is, tmp);
+		nc = numerical_container<T, Derived>(utils::lexical_converter<T>(tmp));
 		return is;
 	}
 
 	template <class T, class Derived>
-	inline ostream &operator<<(ostream &os, const piranha::numerical_container<T, Derived> &nc)
+	inline std::ostream &operator<<(std::ostream &os, const numerical_container<T, Derived> &nc)
 	{
 		os << nc.value();
 		return os;

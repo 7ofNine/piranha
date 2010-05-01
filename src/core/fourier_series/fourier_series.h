@@ -171,35 +171,4 @@ namespace std
 	};
 }
 
-// Overload standard math functions for Fourier series.
-namespace std
-{
-	// Overload power function for Fourier series.
-	template < E0_SERIES_TP_DECL >
-	FOURIER_SERIES pow(const FOURIER_SERIES &x, const double &y)
-	{
-		FOURIER_SERIES retval(x.pow(y));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
-	COMPLEX_FOURIER_SERIES pow(const COMPLEX_FOURIER_SERIES &x, const double &y)
-	{
-		COMPLEX_FOURIER_SERIES retval(x.pow(y));
-		return retval;
-	}
-
-	template < E0_SERIES_TP_DECL >
-	FOURIER_SERIES cos(const FOURIER_SERIES &x)
-	{
-		return x.cos();
-	}
-
-	template < E0_SERIES_TP_DECL >
-	FOURIER_SERIES sin(const FOURIER_SERIES &x)
-	{
-		return x.sin();
-	}
-}
-
 #endif
