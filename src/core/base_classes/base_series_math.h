@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MATH_H
 
 #include <boost/lexical_cast.hpp>
+#include <boost/utility/addressof.hpp>
 #include <cstddef>
 #include <string>
 
@@ -43,7 +44,7 @@ namespace piranha
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &args_tuple)
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
-		piranha_assert((void *)derived_cast != (void *)&s2);
+		piranha_assert((void *)boost::addressof(*derived_cast) != (void *)boost::addressof(s2));
 		const const_iterator2 it_f = s2.end();
 		for (const_iterator2 it = s2.begin(); it != it_f; ++it) {
 			// No need to check, we are merging from another series.
