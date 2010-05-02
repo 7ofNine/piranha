@@ -97,10 +97,6 @@ namespace piranha
 				retval.base_set_imag(tmp,args_tuple);
 				return retval;
 			}
-			template <class ArgsTuple>
-			Derived &base_divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
-				return divide_by_complex(cx, args_tuple);
-			}
 			// Specialise inversion to use conjugate * inverse of absolute value ** 2. This is useful
 			// when the complex series is a complex exponential of something.
 			template <class ArgsTuple>
@@ -152,15 +148,6 @@ namespace piranha
 					retval.insert(tmp, args_tuple);
 				}
 				return retval;
-			}
-			template <class Complex, class ArgsTuple>
-			Derived &divide_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
-				if (c.real() == 0 && c.imag() == 0) {
-					piranha_throw(zero_division_error,"cannot divide by zero");
-				} else if (c.real() != 1 || c.imag() != 0) {
-					derived_cast->divide_coefficients_by(c, args_tuple);
-				}
-				return *derived_cast;
 			}
 	};
 

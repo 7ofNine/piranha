@@ -22,6 +22,7 @@
 #define PIRANHA_BASE_SERIES_MATH_H
 
 #include <boost/lexical_cast.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/addressof.hpp>
 #include <cstddef>
 #include <complex>
@@ -34,6 +35,7 @@
 #include "../settings.h"
 #include "base_series_def.h"
 #include "base_series_mp.h"
+#include "base_series_tag.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -204,34 +206,20 @@ namespace piranha
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by_number(const Number &x,
 		const ArgsTuple &args_tuple)
 	{
-		if (x == 1) {
-			return *derived_cast;
-		} else if (x == 0) {
+		if (multiply_by_number_helper<Number>::check_zero(x)) {
 			piranha_throw(zero_division_error,"cannot divide by zero");
+		} else if (multiply_by_number_helper<Number>::check_non_unitary(x)) {
+			divide_coefficients_by(x, args_tuple);
 		}
-		divide_coefficients_by(x, args_tuple);
 		return *derived_cast;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const double &x, const ArgsTuple &args_tuple)
+	template <class T, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const T &x, const ArgsTuple &args_tuple)
 	{
+		p_static_check((!boost::is_base_of<base_series_tag,T>::value),"Cannot divide by another series.");
 		return divide_by_number(x, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const mp_rational &q, const ArgsTuple &args_tuple)
-	{
-		return divide_by_number(q, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const mp_integer &z, const ArgsTuple &args_tuple)
-	{
-		return divide_by_number(z, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
