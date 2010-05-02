@@ -132,10 +132,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
 			// Complex overrides.
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_inv;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_add;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_add;
-			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_subtract;
-			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_subtract;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_ANCESTOR::base_mult_by;
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_divide_by;

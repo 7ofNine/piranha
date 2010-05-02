@@ -21,10 +21,13 @@
 #ifndef PIRANHA_BASE_SERIES_MP_H
 #define PIRANHA_BASE_SERIES_MP_H
 
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "base_series_tag.h"
 
 namespace piranha
 {
@@ -107,6 +110,46 @@ namespace piranha
 			{
 				out.push_back(term);
 			}
+	};
+
+	template <class T, class Enable = void>
+	struct base_series_add_selector
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		{
+			return series.template merge_with_number<true>(x, args_tuple);
+		}
+	};
+
+	template <class T>
+	struct base_series_add_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		{
+			return series.template merge_terms<true>(other, args_tuple);
+		}
+	};
+
+	template <class T, class Enable = void>
+	struct base_series_subtract_selector
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		{
+			return series.template merge_with_number<false>(x, args_tuple);
+		}
+	};
+
+	template <class T>
+	struct base_series_subtract_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		{
+			return series.template merge_terms<false>(other, args_tuple);
+		}
 	};
 }
 

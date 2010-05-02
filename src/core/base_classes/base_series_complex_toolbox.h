@@ -50,8 +50,8 @@ namespace piranha
 			}
 			template <class ArgsTuple>
 			void base_set_real(const RealDerived &r, const ArgsTuple &args_tuple) {
-				base_subtract(base_real(args_tuple), args_tuple);
-				base_add(r, args_tuple);
+				derived_cast->base_subtract(base_real(args_tuple), args_tuple);
+				derived_cast->base_add(r, args_tuple);
 			}
 			template <class ArgsTuple>
 			void base_set_imag(const RealDerived &i, const ArgsTuple &args_tuple) {
@@ -96,14 +96,6 @@ namespace piranha
 				tmp.base_mult_by(-1,args_tuple);
 				retval.base_set_imag(tmp,args_tuple);
 				return retval;
-			}
-			template <class ArgsTuple>
-			Derived &base_add(const RealDerived &r, const ArgsTuple &args_tuple) {
-				return derived_cast->template merge_terms<true>(r, args_tuple);
-			}
-			template <class ArgsTuple>
-			Derived &base_subtract(const RealDerived &r, const ArgsTuple &args_tuple) {
-				return derived_cast->template merge_terms<false>(r, args_tuple);
 			}
 			template <class ArgsTuple>
 			Derived &base_mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {

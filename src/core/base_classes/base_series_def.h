@@ -107,6 +107,8 @@ namespace piranha
 			friend struct series_from_key_impl;
 			template <int N>
 			friend class series_flattener;
+			template <class T, class Enable>
+			friend struct base_series_add_selector;
 		public:
 			/// Alias for term type.
 			typedef Term term_type;
@@ -203,22 +205,10 @@ namespace piranha
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>
 			eval_type base_eval(const double &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived &base_add(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_add(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_add(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_add(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_subtract(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_subtract(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_subtract(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_subtract(const Derived &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &base_add(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &base_subtract(const T &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &base_mult_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>

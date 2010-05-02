@@ -32,6 +32,7 @@
 #include "../mp.h"
 #include "../settings.h"
 #include "base_series_def.h"
+#include "base_series_mp.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -131,59 +132,17 @@ namespace piranha
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_add(const Derived &s2, const ArgsTuple &args_tuple)
+	template <class T, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_add(const T &x, const ArgsTuple &args_tuple)
 	{
-		return merge_terms<true>(s2, args_tuple);
+		return base_series_add_selector<T>::run(*derived_cast,x,args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_add(const double &x, const ArgsTuple &args_tuple)
+	template <class T, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_subtract(const T &x, const ArgsTuple &args_tuple)
 	{
-		return merge_with_number<true>(x, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_add(const mp_rational &q, const ArgsTuple &args_tuple)
-	{
-		return merge_with_number<true>(q, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_add(const mp_integer &z, const ArgsTuple &args_tuple)
-	{
-		return merge_with_number<true>(z, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_subtract(const double &x, const ArgsTuple &args_tuple)
-	{
-		return merge_with_number<false>(x, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_subtract(const mp_rational &q, const ArgsTuple &args_tuple)
-	{
-		return merge_with_number<false>(q, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_subtract(const mp_integer &z, const ArgsTuple &args_tuple)
-	{
-		return merge_with_number<false>(z, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_subtract(const Derived &s2, const ArgsTuple &args_tuple)
-	{
-		return merge_terms<false>(s2, args_tuple);
+		return base_series_subtract_selector<T>::run(*derived_cast,x,args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
