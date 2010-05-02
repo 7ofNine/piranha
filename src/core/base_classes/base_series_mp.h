@@ -112,6 +112,9 @@ namespace piranha
 			}
 	};
 
+	// These structs are used to select at compile time which low-level methods in base_series
+	// to call to implement arithmetic operations - based on the type of argument.
+
 	template <class T, class Enable = void>
 	struct base_series_add_selector
 	{
@@ -149,6 +152,27 @@ namespace piranha
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
 		{
 			return series.template merge_terms<false>(other, args_tuple);
+		}
+	};
+
+	template <class T, class Enable = void>
+	struct base_series_multiply_selector
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		{
+			return series.multiply_by_number(x, args_tuple);
+		}
+	};
+
+	template <class T>
+	struct base_series_multiply_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived, class ArgsTuple>
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		{
+			series.multiply_by_series(other, args_tuple);
+			return series;
 		}
 	};
 }

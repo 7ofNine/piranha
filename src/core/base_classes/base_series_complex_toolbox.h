@@ -98,15 +98,6 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			Derived &base_mult_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
-				return mult_by_complex(cx, args_tuple);
-			}
-			template <class ArgsTuple>
-			Derived &base_mult_by(const RealDerived &r, const ArgsTuple &args_tuple) {
-				derived_cast->multiply_by_series(r, args_tuple);
-				return *derived_cast;
-			}
-			template <class ArgsTuple>
 			Derived &base_divide_by(const std::complex<double> &cx, const ArgsTuple &args_tuple) {
 				return divide_by_complex(cx, args_tuple);
 			}
@@ -168,15 +159,6 @@ namespace piranha
 					piranha_throw(zero_division_error,"cannot divide by zero");
 				} else if (c.real() != 1 || c.imag() != 0) {
 					derived_cast->divide_coefficients_by(c, args_tuple);
-				}
-				return *derived_cast;
-			}
-			template <class Complex, class ArgsTuple>
-			Derived &mult_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
-				if (c.real() == 0 && c.imag() == 0) {
-					derived_cast->clear_terms();
-				} else if (c.real() != 1 || c.imag() != 0) {
-					derived_cast->multiply_coefficients_by(c, args_tuple);
 				}
 				return *derived_cast;
 			}

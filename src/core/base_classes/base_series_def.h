@@ -109,6 +109,10 @@ namespace piranha
 			friend class series_flattener;
 			template <class T, class Enable>
 			friend struct base_series_add_selector;
+			template <class T, class Enable>
+			friend struct base_series_subtract_selector;
+			template <class T, class Enable>
+			friend struct base_series_multiply_selector;
 		public:
 			/// Alias for term type.
 			typedef Term term_type;
@@ -209,14 +213,8 @@ namespace piranha
 			Derived &base_add(const T &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
 			Derived &base_subtract(const T &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_mult_by(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_mult_by(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_mult_by(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &base_mult_by(const Derived &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &base_mult_by(const T &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived &base_divide_by(const double &, const ArgsTuple &);
 			template <class ArgsTuple>

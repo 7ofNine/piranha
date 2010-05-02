@@ -24,6 +24,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/utility/addressof.hpp>
 #include <cstddef>
+#include <complex>
 #include <string>
 
 #include "../config.h"
@@ -145,46 +146,50 @@ namespace piranha
 		return base_series_subtract_selector<T>::run(*derived_cast,x,args_tuple);
 	}
 
+	template <class T>
+	struct multiply_by_number_helper
+	{
+		static bool check_zero(const T &x)
+		{
+			return x == 0;
+		}
+		static bool check_non_unitary(const T &x)
+		{
+			return x != 1;
+		}
+	};
+
+	template <class T>
+	struct multiply_by_number_helper<std::complex<T> >
+	{
+		static bool check_zero(const std::complex<T> &c)
+		{
+			return (c.real() == 0 && c.imag() == 0);
+		}
+		static bool check_non_unitary(const std::complex<T> &c)
+		{
+			return (c.real() != 1 || c.imag() != 0);
+		}
+	};
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::multiply_by_number(const Number &x,
 		const ArgsTuple &args_tuple)
 	{
-		if (x == 0) {
+		if (multiply_by_number_helper<Number>::check_zero(x)) {
 			clear_terms();
-		} else if (x != 1) {
+		} else if (multiply_by_number_helper<Number>::check_non_unitary(x)) {
 			multiply_coefficients_by(x, args_tuple);
 		}
 		return *derived_cast;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const double &x, const ArgsTuple &args_tuple)
+	template <class T, class ArgsTuple>
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const T &x, const ArgsTuple &args_tuple)
 	{
-		return multiply_by_number(x, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const mp_rational &q, const ArgsTuple &args_tuple)
-	{
-		return multiply_by_number(q, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const mp_integer &z, const ArgsTuple &args_tuple)
-	{
-		return multiply_by_number(z, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const Derived &s2, const ArgsTuple &args_tuple)
-	{
-		derived_cast->multiply_by_series(s2, args_tuple);
-		return *derived_cast;
+		return base_series_multiply_selector<T>::run(*derived_cast, x, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
