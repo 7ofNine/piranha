@@ -256,15 +256,6 @@ namespace piranha
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(const PosTuple &, const ArgsTuple &) const;
 			//@}
-			// Standard substitution functor. Will call sub() on coefficients and keys.
-			struct sub_functor {
-				template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
-				static RetSeries run(const Element &e, const PosTuple &pos_tuple,
-					SubCaches &sub_caches, const ArgsTuple &args_tuple)
-				{
-					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
-				}
-			};
 			/** @name Base output streaming methods. */
 			//@{
 			template <class ArgsTuple>
@@ -274,6 +265,15 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
 			//@}
+			// Standard substitution functor. Will call sub() on coefficients and keys.
+			struct sub_functor {
+				template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
+				static RetSeries run(const Element &e, const PosTuple &pos_tuple,
+					SubCaches &sub_caches, const ArgsTuple &args_tuple)
+				{
+					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
+				}
+			};
 		private:
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
