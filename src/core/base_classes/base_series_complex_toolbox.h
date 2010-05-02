@@ -118,26 +118,6 @@ namespace piranha
 				retval.base_mult_by(base_abs2(args_tuple).base_pow(-1,args_tuple),args_tuple);
 				return retval;
 			}
-			// Use N = 0 for real, N != 0 for imag.
-			template <int N, class Real, class ArgsTuple>
-			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &args_tuple) {
-				if (N) {
-					return c.imag(args_tuple);
-				} else {
-					return c.real(args_tuple);
-				}
-			}
-			template <int N, class ArgsTuple>
-			RealDerived get_comp(const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator complex_iterator;
-				RealDerived retval;
-				const complex_iterator c_it_f = derived_const_cast->end();
-				for (complex_iterator c_it = derived_const_cast->begin(); c_it != c_it_f; ++c_it) {
-					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->m_cf, args_tuple), c_it->m_key);
-					retval.insert(tmp, args_tuple);
-				}
-				return retval;
-			}
 			template <class ArgsTuple>
 			void base_construct_from_real(const RealDerived &r, const ArgsTuple &args_tuple) {
 				// Make sure we are being called from an empty series.
@@ -162,6 +142,26 @@ namespace piranha
 				}
 			}
 		private:
+			// Use N = 0 for real, N != 0 for imag.
+			template <int N, class Real, class ArgsTuple>
+			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &args_tuple) {
+				if (N) {
+					return c.imag(args_tuple);
+				} else {
+					return c.real(args_tuple);
+				}
+			}
+			template <int N, class ArgsTuple>
+			RealDerived get_comp(const ArgsTuple &args_tuple) const {
+				typedef typename Derived::const_iterator complex_iterator;
+				RealDerived retval;
+				const complex_iterator c_it_f = derived_const_cast->end();
+				for (complex_iterator c_it = derived_const_cast->begin(); c_it != c_it_f; ++c_it) {
+					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->m_cf, args_tuple), c_it->m_key);
+					retval.insert(tmp, args_tuple);
+				}
+				return retval;
+			}
 			template <class Complex, class ArgsTuple>
 			Derived &divide_by_complex(const Complex &c, const ArgsTuple &args_tuple) {
 				if (c.real() == 0 && c.imag() == 0) {
