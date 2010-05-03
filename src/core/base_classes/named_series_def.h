@@ -40,6 +40,7 @@
 #include "../settings.h"
 #include "../type_traits.h"
 #include "base_series_def.h"
+#include "named_series_mp.h"
 
 #define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
 #define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Term,Derived
@@ -58,6 +59,10 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	class named_series
 	{
+			template <class T, class Enable>
+			friend struct named_series_add_selector;
+			template <class T, class Enable>
+			friend struct named_series_subtract_selector;
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
@@ -102,14 +107,10 @@ namespace piranha
 			bool operator!=(const mp_rational &) const;
 			bool operator==(const mp_integer &) const;
 			bool operator!=(const mp_integer &) const;
-			Derived &operator+=(const double &);
-			Derived &operator+=(const mp_rational &);
-			Derived &operator+=(const mp_integer &);
-			Derived &operator+=(const Derived &);
-			Derived &operator-=(const double &);
-			Derived &operator-=(const mp_rational &);
-			Derived &operator-=(const mp_integer &);
-			Derived &operator-=(const Derived &);
+			template <class T>
+			Derived &operator+=(const T &);
+			template <class T>
+			Derived &operator-=(const T &);
 			Derived operator-() const;
 			Derived &operator*=(const double &);
 			Derived &operator*=(const mp_rational &);
@@ -143,8 +144,6 @@ namespace piranha
 			void append_arg(const std::string &, const psym &);
 			template <int N>
 			void append_arg(const psym &);
-			template <bool, class Derived2>
-			Derived &merge_with_series(const Derived2 &);
 			template <class Derived2>
 			Derived &mult_by_series(const Derived2 &);
 			template <class Number>
@@ -161,6 +160,8 @@ namespace piranha
 			bool is_args_compatible(const Derived2 &) const;
 			template <class Derived2>
 			void merge_incompatible_args(const Derived2 &);
+			template <bool, class Derived2>
+			Derived &merge_with_series(const Derived2 &);
 		protected:
 			// Data members.
 			args_tuple_type                 m_arguments;

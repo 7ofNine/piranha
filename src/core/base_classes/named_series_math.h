@@ -49,7 +49,11 @@ namespace piranha
 			merge_with_series<Sign>(Derived(*derived_const_cast));
 		} else {
 			merge_args(s2);
-			derived_cast->template merge_terms<Sign>(s2, m_arguments);
+			if (Sign) {
+				derived_cast->base_add(s2, m_arguments);
+			} else {
+				derived_cast->base_subtract(s2, m_arguments);
+			}
 		}
 		trim();
 		return *derived_cast;
@@ -68,57 +72,17 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const double &x)
+	template <class T>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const T &x)
 	{
-		derived_cast->base_add(x,m_arguments);
-		return *derived_cast;
+		return named_series_add_selector<T>::run(*derived_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const mp_rational &q)
+	template <class T>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const T &x)
 	{
-		return derived_cast->base_add(q,m_arguments);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const mp_integer &z)
-	{
-		return derived_cast->base_add(z,m_arguments);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator+=(const Derived &s2)
-	{
-		return merge_with_series<true>(s2);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const double &x)
-	{
-		derived_cast->base_subtract(x,m_arguments);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const mp_rational &q)
-	{
-		derived_cast->base_subtract(q,m_arguments);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const mp_integer &z)
-	{
-		derived_cast->base_subtract(z,m_arguments);
-		return *derived_cast;
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator-=(const Derived &s2)
-	{
-		return merge_with_series<false>(s2);
+		return named_series_subtract_selector<T>::run(*derived_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
