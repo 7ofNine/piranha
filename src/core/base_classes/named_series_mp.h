@@ -67,6 +67,26 @@ namespace piranha
 			return series.template merge_with_series<false>(other);
 		}
 	};
+
+	template <class T, class Enable = void>
+	struct named_series_multiply_selector
+	{
+		template <class Derived>
+		static Derived &run(Derived &series, const T &x)
+		{
+			return series.mult_number_helper(x);
+		}
+	};
+
+	template <class T>
+	struct named_series_multiply_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived>
+		static Derived &run(Derived &series, const T &other)
+		{
+			return series.mult_by_series(other);
+		}
+	};
 }
 
 #endif

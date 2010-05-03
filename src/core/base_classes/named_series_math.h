@@ -103,27 +103,10 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const double &x)
+	template <class T>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const T &x)
 	{
-		return mult_number_helper(x);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const mp_rational &q)
-	{
-		return mult_number_helper(q);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const mp_integer &z)
-	{
-		return mult_number_helper(z);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator*=(const Derived &s2)
-	{
-		return mult_by_series(s2);
+		return named_series_multiply_selector<T>::run(*derived_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -136,21 +119,10 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const double &x)
+	template <class T>
+	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const T &x)
 	{
 		return divide_number_helper(x);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const mp_rational &q)
-	{
-		return divide_number_helper(q);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived &named_series<__PIRANHA_NAMED_SERIES_TP>::operator/=(const mp_integer &z)
-	{
-		return divide_number_helper(z);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

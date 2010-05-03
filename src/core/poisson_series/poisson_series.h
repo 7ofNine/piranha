@@ -141,10 +141,6 @@ namespace std
 			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator==;
 			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator!=;
 			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator!=;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator*=;
-			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator*=;
-			using COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX::operator/=;
-			using COMPLEX_POISSON_SERIES_NAMED_ANCESTOR::operator/=;
 			using piranha::common_poisson_series< COMPLEX_POISSON_SERIES>::sub;
 			// Ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);

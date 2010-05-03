@@ -96,15 +96,6 @@ namespace piranha
 			bool operator!=(const std::complex<double> &cx) const {
 				return !(*this == cx);
 			}
-			Derived &operator*=(const std::complex<double> &cx) {
-				return derived_cast->mult_number_helper(cx);
-			}
-			Derived &operator*=(const RealDerived &r) {
-				return derived_cast->mult_by_series(r);
-			}
-			Derived &operator/=(const std::complex<double> &cx) {
-				return derived_cast->divide_number_helper(cx);
-			}
 		protected:
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->set_arguments(r.arguments());

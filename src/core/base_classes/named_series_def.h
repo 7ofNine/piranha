@@ -63,6 +63,8 @@ namespace piranha
 			friend struct named_series_add_selector;
 			template <class T, class Enable>
 			friend struct named_series_subtract_selector;
+			template <class T, class Enable>
+			friend struct named_series_multiply_selector;
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
@@ -112,13 +114,10 @@ namespace piranha
 			template <class T>
 			Derived &operator-=(const T &);
 			Derived operator-() const;
-			Derived &operator*=(const double &);
-			Derived &operator*=(const mp_rational &);
-			Derived &operator*=(const mp_integer &);
-			Derived &operator*=(const Derived &);
-			Derived &operator/=(const double &);
-			Derived &operator/=(const mp_rational &);
-			Derived &operator/=(const mp_integer &);
+			template <class T>
+			Derived &operator*=(const T &);
+			template <class T>
+			Derived &operator/=(const T &);
 			Derived pow(const double &) const;
 			Derived pow(const mp_rational &) const;
 			Derived root(const int &) const;
