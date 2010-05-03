@@ -140,6 +140,7 @@ namespace piranha
 			void construct_from_file(const std::string &);
 			template <int N>
 			void construct_from_psym(const psym &);
+		private:
 			void append_arg(const std::string &, const psym &);
 			template <int N>
 			void append_arg(const psym &);
@@ -149,7 +150,6 @@ namespace piranha
 			Derived &mult_number_helper(const Number &);
 			template <class Number>
 			Derived &divide_number_helper(const Number &);
-		private:
 			void print_pretty(std::ostream &) const;
 			void read_from_file(std::ifstream &, const std::string &);
 			void read_sections(std::ifstream &);
