@@ -25,8 +25,8 @@
 #include <complex>
 
 #include "../exceptions.h"
-#include "../mp.h"
 #include "base_series_def.h"
+#include "base_series_mp.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -102,6 +102,7 @@ namespace piranha
 		return retval;
 	}
 
+	// TODO: update docs on equality test methods.
 	/// Base series equality test.
 	/**
 	 * Please note that this method has no knowledge about arguments: all comparisons performed here on coefficients and keys
@@ -112,7 +113,8 @@ namespace piranha
 	 * @return false if: lengths of series differ or at least one term of this series is not found in other, true otherwise.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const Derived &other) const
+	template <class T>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::generic_series_comparison(const T &other) const
 	{
 		if (length() != other.length()) {
 			return false;
@@ -179,33 +181,10 @@ namespace piranha
 	 * @return generic_numerical_comparison() on x.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const double &x) const
+	template <class T>
+	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const T &x) const
 	{
-		return generic_numerical_comparison(x);
-	}
-
-	/// Base numerical equality test.
-	/**
-	 * @param[in] q argument of comparison.
-	 *
-	 * @return generic_numerical_comparison() on q.
-	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const mp_rational &q) const
-	{
-		return generic_numerical_comparison(q);
-	}
-
-	/// Base numerical equality test.
-	/**
-	 * @param[in] z argument of comparison.
-	 *
-	 * @return generic_numerical_comparison() on z.
-	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const mp_integer &z) const
-	{
-		return generic_numerical_comparison(z);
+		return base_series_equal_to_selector<T>::run(*derived_const_cast, x);
 	}
 }
 

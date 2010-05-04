@@ -87,6 +87,26 @@ namespace piranha
 			return series.mult_by_series(other);
 		}
 	};
+
+	template <class T, class Enable = void>
+	struct named_series_equality_selector
+	{
+		template <class Derived>
+		static bool run(const Derived &series, const T &x)
+		{
+			return series.base_equal_to(x);
+		}
+	};
+
+	template <class T>
+	struct named_series_equality_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived>
+		static bool run(const Derived &series, const T &other)
+		{
+			return series.series_comparison(other);
+		}
+	};
 }
 
 #endif

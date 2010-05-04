@@ -31,6 +31,7 @@
 #include "../mp.h"
 #include "../psym.h"
 #include "named_series_def.h"
+#include "named_series_mp.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -156,7 +157,8 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const Derived &other) const
+	template <class T>
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::series_comparison(const T &other) const
 	{
 		// If the sizes of the arguments tuples do not coincide, series are different.
 		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) {
@@ -196,45 +198,17 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const Derived &other) const
+	template <class T>
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const T &x) const
 	{
-		return !(*this == other);
+		return named_series_equality_selector<T>::run(*derived_const_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const double &x) const
+	template <class T>
+	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const T &x) const
 	{
-		return derived_const_cast->base_equal_to(x);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const double &x) const
-	{
-		return !(*this == x);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const mp_rational &q) const
-	{
-		return derived_const_cast->base_equal_to(q);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const mp_rational &q) const
-	{
-		return !(*this == q);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const mp_integer &q) const
-	{
-		return derived_const_cast->base_equal_to(q);
-	}
-
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const mp_integer &q) const
-	{
-		return !(*this == q);
+		return !(operator==(x));
 	}
 }
 

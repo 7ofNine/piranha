@@ -21,8 +21,6 @@
 #ifndef PIRANHA_CF_SERIES_PROBE_H
 #define PIRANHA_CF_SERIES_PROBE_H
 
-#include "../mp.h"
-
 namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -64,51 +62,17 @@ namespace piranha
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const Derived &other) const
-	{
-		return derived_const_cast->base_equal_to(other);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const Derived &other) const
-	{
-		return !(*this == other);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const double &x) const
+	template <class T>
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const T &x) const
 	{
 		return derived_const_cast->base_equal_to(x);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const double &x) const
+	template <class T>
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const T &x) const
 	{
-		return !(*this == x);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const mp_rational &q) const
-	{
-		return derived_const_cast->base_equal_to(q);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const mp_rational &q) const
-	{
-		return !(*this == q);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const mp_integer &z) const
-	{
-		return derived_const_cast->base_equal_to(z);
-	}
-
-	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator!=(const mp_integer &z) const
-	{
-		return !(*this == z);
+		return !(operator==(x));
 	}
 }
 

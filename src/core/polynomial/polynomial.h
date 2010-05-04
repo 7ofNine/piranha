@@ -132,10 +132,6 @@ namespace std
 			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
 			// Complex overrides.
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::base_inv;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator==;
-			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator==;
-			using COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX::operator!=;
-			using COMPLEX_POLYNOMIAL_NAMED_ANCESTOR::operator!=;
 			// Boilerplate and additional ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(POLYNOMIAL);

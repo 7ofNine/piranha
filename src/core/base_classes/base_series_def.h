@@ -113,6 +113,8 @@ namespace piranha
 			friend struct base_series_subtract_selector;
 			template <class T, class Enable>
 			friend struct base_series_multiply_selector;
+			template <class T, class Enable>
+			friend struct base_series_equal_to_selector;
 		public:
 			/// Alias for term type.
 			typedef Term term_type;
@@ -192,12 +194,8 @@ namespace piranha
 			//@}
 			/** @name Base comparison methods. */
 			//@{
-			bool base_equal_to(const Derived &) const;
-			bool base_equal_to(const double &) const;
-			bool base_equal_to(const mp_rational &) const;
-			bool base_equal_to(const mp_integer &) const;
-			template <class Number>
-			bool generic_numerical_comparison(const Number &) const;
+			template <class T>
+			bool base_equal_to(const T &) const;
 			//@}
 			/** @name Base maths. */
 			//@{
@@ -259,6 +257,10 @@ namespace piranha
 				}
 			};
 		private:
+			template <class T>
+			bool generic_series_comparison(const T &) const;
+			template <class Number>
+			bool generic_numerical_comparison(const Number &) const;
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 			template <class Iterator, class ArgsTuple>

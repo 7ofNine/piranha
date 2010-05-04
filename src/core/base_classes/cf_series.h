@@ -79,36 +79,14 @@ namespace piranha
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
-			template <class ArgsTuple>
-			Derived &add(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &add(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &add(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &add(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &subtract(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &subtract(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &subtract(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &subtract(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const Derived &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &mult_by(const mp_integer &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &divide_by(const double &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &divide_by(const mp_rational &, const ArgsTuple &);
-			template <class ArgsTuple>
-			Derived &divide_by(const mp_integer &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &add(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &subtract(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &mult_by(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &divide_by(const T &, const ArgsTuple &);
 			template <class ArgsTuple>
 			Derived pow(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -119,14 +97,10 @@ namespace piranha
 			typename term_eval_type_determiner<Term>::type eval(const double &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;
-			bool operator==(const Derived &) const;
-			bool operator!=(const Derived &) const;
-			bool operator==(const double &) const;
-			bool operator!=(const double &) const;
-			bool operator==(const mp_rational &) const;
-			bool operator!=(const mp_rational &) const;
-			bool operator==(const mp_integer &) const;
-			bool operator!=(const mp_integer &) const;
+			template <class T>
+			bool operator==(const T &) const;
+			template <class T>
+			bool operator!=(const T &) const;
 			template <class Series, class ArgsTuple>
 			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const;
 		protected:

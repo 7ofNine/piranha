@@ -37,9 +37,6 @@ namespace piranha
 		public:
 			typedef std::complex<RealDerived> Derived;
 			typedef RealDerived value_type;
-			bool base_equal_to_complex_number(const std::complex<double> &cx) const {
-				return derived_const_cast->generic_numerical_comparison(cx);
-			}
 			template <class ArgsTuple>
 			RealDerived base_real(const ArgsTuple &args_tuple) const {
 				return get_comp<0>(args_tuple);

@@ -65,6 +65,8 @@ namespace piranha
 			friend struct named_series_subtract_selector;
 			template <class T, class Enable>
 			friend struct named_series_multiply_selector;
+			template <class T, class Enable>
+			friend struct named_series_equality_selector;
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
@@ -101,14 +103,10 @@ namespace piranha
 			std::size_t psi(const int &start = 0, const int &step = 1) const;
 			const args_tuple_type &arguments() const;
 			void set_arguments(const args_tuple_type &);
-			bool operator==(const Derived &) const;
-			bool operator!=(const Derived &) const;
-			bool operator==(const double &) const;
-			bool operator!=(const double &) const;
-			bool operator==(const mp_rational &) const;
-			bool operator!=(const mp_rational &) const;
-			bool operator==(const mp_integer &) const;
-			bool operator!=(const mp_integer &) const;
+			template <class T>
+			bool operator==(const T &) const;
+			template <class T>
+			bool operator!=(const T &) const;
 			template <class T>
 			Derived &operator+=(const T &);
 			template <class T>
@@ -141,6 +139,8 @@ namespace piranha
 			template <int N>
 			void construct_from_psym(const psym &);
 		private:
+			template <class T>
+			bool series_comparison(const T &) const;
 			void append_arg(const std::string &, const psym &);
 			template <int N>
 			void append_arg(const psym &);

@@ -49,40 +49,6 @@ namespace piranha
 			void set_imag(const RealDerived &r, const ArgsTuple &args_tuple) {
 				derived_cast->base_set_imag(r,args_tuple);
 			}
-			template <class ArgsTuple>
-			Derived &mult_by(const RealDerived &cs, const ArgsTuple &a) {
-				return derived_cast->base_mult_by(cs,a);
-			}
-			template <class ArgsTuple>
-			Derived &mult_by(const std::complex<double> &cx, const ArgsTuple &a) {
-				return derived_cast->base_mult_by(cx,a);
-			}
-			template <class ArgsTuple>
-			Derived &add(const RealDerived &cs, const ArgsTuple &a) {
-				return derived_cast->base_add(cs,a);
-			}
-			template <class ArgsTuple>
-			Derived &add(const std::complex<double> &cx, const ArgsTuple &a) {
-				return derived_cast->base_add(cx,a);
-			}
-			template <class ArgsTuple>
-			Derived &subtract(const RealDerived &cs, const ArgsTuple &a) {
-				return derived_cast->base_subtract(cs,a);
-			}
-			template <class ArgsTuple>
-			Derived &subtract(const std::complex<double> &cx, const ArgsTuple &a) {
-				return derived_cast->base_subtract(cx,a);
-			}
-			template <class ArgsTuple>
-			Derived &divide_by(const std::complex<double> &cx, const ArgsTuple &a) {
-				return derived_cast->base_divide_by(cx,a);
-			}
-			bool operator==(const std::complex<double> &cx) const {
-				return derived_const_cast->base_equal_to_complex_number(cx);
-			}
-			bool operator!=(const std::complex<double> &cx) const {
-				return !(*this == cx);
-			}
 	};
 }
 

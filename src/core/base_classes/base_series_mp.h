@@ -175,6 +175,26 @@ namespace piranha
 			return series;
 		}
 	};
+
+	template <class T, class Enable = void>
+	struct base_series_equal_to_selector
+	{
+		template <class Derived>
+		static bool run(const Derived &series, const T &x)
+		{
+			return series.generic_numerical_comparison(x);
+		}
+	};
+
+	template <class T>
+	struct base_series_equal_to_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	{
+		template <class Derived>
+		static bool run(const Derived &series, const T &other)
+		{
+			return series.generic_series_comparison(other);
+		}
+	};
 }
 
 #endif
