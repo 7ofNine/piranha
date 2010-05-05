@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 #define PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <string>
@@ -123,7 +124,7 @@ namespace piranha
 				retval.base_add(tmp, args_tuple);
 				for (std::size_t i = 1; i < n; ++i) {
 					tmp.base_mult_by(y - (double)i + 1, args_tuple);
-					tmp.base_divide_by(i, args_tuple);
+					tmp.base_divide_by(boost::numeric_cast<int>(i), args_tuple);
 					tmp.base_mult_by(XoverA, args_tuple);
 					retval.base_add(tmp, args_tuple);
 				}

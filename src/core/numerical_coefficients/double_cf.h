@@ -23,55 +23,93 @@
 
 #include <boost/numeric/conversion/converter.hpp>
 #include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cmath>
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
+#include "../base_classes/numerical_container_mp.h"
+#include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../exceptions.h"
-#include "../math.h"
+#include "../mp.h"
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
 #include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
-	template <class U>
-	struct in_place_transform<double,U> {
-		static double run(const U &u)
+	// double and complex double will not interoperate with mp types. These template specialisation
+	// will convert mp types to double on the fly.
+	template <>
+	struct numerical_container_value_division<double,mp_rational>
+	{
+		static void run(double &x, const mp_rational &q)
 		{
-			return u.to_double();
+			x /= q.to_double();
 		}
 	};
 
 	template <>
-	struct in_place_transform<double,double> {
-		static const double &run(const double &u)
+	struct numerical_container_value_division<double,mp_integer>
+	{
+		static void run(double &x, const mp_integer &z)
 		{
-			return u;
-		}
-	};
-
-	template <class U>
-	struct in_place_transform<std::complex<double>,U> {
-		static std::complex<double> run(const U &u)
-		{
-			return u.to_double();
+			x /= z.to_double();
 		}
 	};
 
 	template <>
-	struct in_place_transform<std::complex<double>,std::complex<double> > {
-		static const std::complex<double> &run(const std::complex<double> &u)
+	struct numerical_container_value_multiplication<double,mp_rational>
+	{
+		static void run(double &x, const mp_rational &q)
 		{
-			return u;
+			x *= q.to_double();
 		}
 	};
 
 	template <>
-	struct in_place_transform<std::complex<double>,double> {
-		static const double &run(const double &u)
+	struct numerical_container_value_multiplication<double,mp_integer>
+	{
+		static void run(double &x, const mp_integer &z)
 		{
-			return u;
+			x *= z.to_double();
+		}
+	};
+
+	template <>
+	struct numerical_container_value_division<std::complex<double>,mp_rational>
+	{
+		static void run(std::complex<double> &c, const mp_rational &q)
+		{
+			c /= q.to_double();
+		}
+	};
+
+	template <>
+	struct numerical_container_value_division<std::complex<double>,mp_integer>
+	{
+		static void run(std::complex<double> &c, const mp_integer &z)
+		{
+			c /= z.to_double();
+		}
+	};
+
+	template <>
+	struct numerical_container_value_multiplication<std::complex<double>,mp_rational>
+	{
+		static void run(std::complex<double> &c, const mp_rational &q)
+		{
+			c *= q.to_double();
+		}
+	};
+
+	template <>
+	struct numerical_container_value_multiplication<std::complex<double>,mp_integer>
+	{
+		static void run(std::complex<double> &c, const mp_integer &z)
+		{
+			c *= z.to_double();
 		}
 	};
 
@@ -86,22 +124,29 @@ namespace piranha
 			typedef numerical_container<double, double_cf> ancestor;
 		public:
 			// Ctors.
-			NUMERICAL_CONTAINER_CTORS(double_cf,.to_double())
-			int get_int() const {
-				if (!is_integer(m_value)) {
+			explicit double_cf(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit double_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			template <class ArgsTuple>
+			explicit double_cf(const mp_rational &q, const ArgsTuple &args_tuple): ancestor(q.to_double(),args_tuple) {}
+			template <class ArgsTuple>
+			explicit double_cf(const mp_integer &z, const ArgsTuple &args_tuple): ancestor(z.to_double(),args_tuple) {}
+			template <class ArgsTuple>
+			explicit double_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			template <class ArgsTuple>
+			double eval(const double &, const ArgsTuple &) const {
+				return get_value();
+			}
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const
+			{
+				return std::abs(get_value());
+			}
+			int to_int() const {
+				if (!is_integer(get_value())) {
 					piranha_throw(value_error,"cannot convert double coefficient to integer");
 				}
-				return (int)m_value;
-			}
-			/// Bessel function of the first kind.
-			/**
-			 * Uses Boost's math toolkit.
-			 */
-			template <class ArgsTuple>
-			double_cf besselJ(const int &n, const ArgsTuple &) const {
-				double_cf retval;
-				retval.m_value = piranha::besselJ(n, m_value);
-				return retval;
+				return (int)get_value();
 			}
 			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
@@ -116,29 +161,28 @@ namespace std
 {
 	template <>
 	class complex<piranha::double_cf>:
-	public piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> >,
-				public piranha::numerical_container_complex_toolbox<piranha::double_cf>
+	public piranha::numerical_container<complex<double>, complex<piranha::double_cf> >,
+		public piranha::numerical_container_complex_toolbox<piranha::double_cf>
 	{
-			typedef piranha::numerical_container<std::complex<double>, complex<piranha::double_cf> > ancestor;
+			typedef piranha::numerical_container<complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
-			friend class piranha::numerical_container_complex_toolbox<piranha::double_cf>;
-			friend class piranha::double_cf;
 		public:
-			typedef piranha::double_cf value_type;
-			using ancestor::mult_by;
-			using complex_toolbox::mult_by;
-			using ancestor::divide_by;
-			using complex_toolbox::divide_by;
-			using complex_toolbox::print_tex;
-			NUMERICAL_CONTAINER_CTORS(complex,.to_double())
-			COMPLEX_NUMERICAL_CONTAINER_CTORS(.to_complex_double())
+			explicit complex(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
 			template <class ArgsTuple>
-			complex besselJ(const int &n, const ArgsTuple &) {
-				// COMPILER_BUG: same as above :/
-				complex retval;
-				std::complex<double> tmp(piranha::besselJ(n,m_value));
-				retval.m_value = tmp;
-				return retval;
+			explicit complex(const piranha::mp_rational &q, const ArgsTuple &args_tuple): ancestor(q.to_double(),args_tuple) {}
+			template <class ArgsTuple>
+			explicit complex(const piranha::mp_integer &z, const ArgsTuple &args_tuple): ancestor(z.to_double(),args_tuple) {}
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			template <class ArgsTuple>
+			complex<double> eval(const double &, const ArgsTuple &) const {
+				return get_value();
+			}
+			template <class ArgsTuple>
+			double norm(const ArgsTuple &) const {
+				return abs(get_value());
 			}
 	};
 }
@@ -151,7 +195,7 @@ namespace piranha
 	inline std::complex<double_cf> double_cf::ei(const ArgsTuple &) const
 	{
 		std::complex<double_cf> retval;
-		retval.m_value = std::polar(1., m_value);
+		retval.set_value(std::polar(1.,get_value()));
 		return retval;
 	}
 }

@@ -145,6 +145,16 @@ namespace piranha
 		return false;
 	}
 
+	/// Bessel function of the first kind.
+	inline mp_rational besselJ(const int &order, const mp_rational &arg)
+	{
+		if (arg != 0) {
+				piranha_throw(value_error,"cannot compute Bessel function of non-zero rational");
+		}
+		return (order == 0) ? mp_rational(1) : mp_rational(0);
+	}
+
+
 	/* INTEGER CLASS OVERLOADS */
 	/* ----------------------- */
 
@@ -289,6 +299,15 @@ namespace piranha
 		} else {
 			return 1;
 		}
+	}
+
+	/// Bessel function of the first kind.
+	inline mp_integer besselJ(const int &order, const mp_integer &arg)
+	{
+		if (arg != 0) {
+				piranha_throw(value_error,"cannot compute Bessel function of non-zero integer");
+		}
+		return (order == 0) ? mp_integer(1) : mp_integer(0);
 	}
 }
 

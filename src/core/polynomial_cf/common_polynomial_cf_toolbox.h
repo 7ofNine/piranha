@@ -62,7 +62,7 @@ namespace piranha
 						}
 						piranha_assert(i != args_tuple.template get<TargetPos>().size());
 						piranha_assert(i < res.second.size());
-						res.second[i] = it->m_cf.get_int();
+						res.second[i] = it->m_cf.to_int();
 					} else {
 						res.first.push_back(it->m_cf);
 					}

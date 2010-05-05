@@ -26,6 +26,7 @@
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
+#include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../mp.h"
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -40,30 +41,33 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mp_rational, mpq_cf> ancestor;
 		public:
-			typedef mp_rational numerical_type;
-			NUMERICAL_CONTAINER_CTORS(mpq_cf)
+			explicit mpq_cf(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit mpq_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			template <class ArgsTuple>
+			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			/// Override print in Tex mode.
 			template <class ArgsTuple>
 			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
 			{
-				m_value.print_tex(out_stream);
+				get_value().print_tex(out_stream);
 			}
 			// Override norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(m_value.to_double());
+				return std::abs(get_value().to_double());
 			}
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
-				return m_value.to_double();
+				return get_value().to_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (m_value == 0);
+				return (get_value() == 0);
 			}
-			int get_int() const {
-				return m_value.to_int();
+			int to_int() const {
+				return get_value().to_int();
 			}
 			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
@@ -86,38 +90,29 @@ namespace std
 {
 	template <>
 	class complex<piranha::mpq_cf>:
-	public piranha::numerical_container<std::complex<piranha::mp_rational>, complex<piranha::mpq_cf> >,
+	public piranha::numerical_container<complex<piranha::mp_rational>, complex<piranha::mpq_cf> >,
 				public piranha::numerical_container_complex_toolbox<piranha::mpq_cf>
 	{
-			typedef piranha::numerical_container<std::complex<piranha::mp_rational>, complex<piranha::mpq_cf> > ancestor;
+			typedef piranha::numerical_container<complex<piranha::mp_rational>, complex<piranha::mpq_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::mpq_cf> complex_toolbox;
-			friend class piranha::numerical_container_complex_toolbox<piranha::mpq_cf>;
 		public:
-			using complex_toolbox::divide_by;
-			using ancestor::divide_by;
-			using ancestor::mult_by;
-			using complex_toolbox::mult_by;
-			typedef piranha::mpq_cf value_type;
-			NUMERICAL_CONTAINER_CTORS(complex)
-			COMPLEX_NUMERICAL_CONTAINER_CTORS()
+			explicit complex(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(m_value.to_complex_double());
+				return abs(get_value().to_complex_double());
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return m_value.to_complex_double();
+				return get_value().to_complex_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (m_value == 0);
-			}
-			/// Override print in Tex mode.
-			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
-			{
-				m_value.print_tex(out_stream);
+				return (get_value() == 0);
 			}
 	};
 }

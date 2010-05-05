@@ -21,6 +21,8 @@
 #ifndef PIRANHA_CELMEC_TOOLBOX_H
 #define PIRANHA_CELMEC_TOOLBOX_H
 
+#include <boost/numeric/conversion/cast.hpp>
+#include <cstddef>
 #include <string>
 
 #include "../psym.h"
@@ -45,15 +47,15 @@ namespace piranha
 				retval += 1;
 				// Let's find out the upper limit of the r_a development, according to the truncation limits
 				// set in the truncator.
-				const size_t n = e_series.psi();
+				const std::size_t n = e_series.psi();
 				Derived tmp;
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
-					expansion_term /= i;
+					expansion_term /= boost::numeric_cast<int>(i);
 					Derived trig(M_series);
-					trig *= i;
+					trig *= boost::numeric_cast<int>(i);
 					trig = trig.cos();
 					expansion_term *= trig;
 					tmp += expansion_term;
@@ -79,15 +81,15 @@ namespace piranha
 				// First let's build 1/2 e.
 				Derived retval(e_series);
 				retval /= 2;
-				const size_t n = e_series.psi();
+				const std::size_t n = e_series.psi();
 				Derived tmp;
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
-					expansion_term /= i;
+					expansion_term /= boost::numeric_cast<int>(i);
 					Derived trig(M_series);
-					trig *= i;
+					trig *= boost::numeric_cast<int>(i);
 					trig = trig.cos();
 					expansion_term *= trig;
 					tmp += expansion_term;
@@ -98,14 +100,14 @@ namespace piranha
 				return retval;
 			}
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
-				const size_t n = e_series.psi();
+				const std::size_t n = e_series.psi();
 				Derived retval;
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.besselJ_div_m(i,1);
 					Derived trig(M_series);
-					trig *= i;
+					trig *= boost::numeric_cast<int>(i);
 					trig = trig.sin();
 					expansion_term *= trig;
 					retval += expansion_term;
@@ -120,15 +122,15 @@ namespace piranha
 				tmp = tmp.root(2);
 				tmp *= 2;
 				Derived retval;
-				const size_t n = e_series.psi();
+				const std::size_t n = e_series.psi();
 				// Regarding range here: we must perform n iterations for the power series, so starting
 				// from i = 1 we must reach n included.
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
 					Derived trig(M_series);
-					trig *= i;
+					trig *= boost::numeric_cast<int>(i);
 					trig = trig.sin();
 					expansion_term *= trig;
 					retval += expansion_term;
@@ -143,15 +145,15 @@ namespace piranha
 				tmp = 1 - tmp;
 				tmp *= 2;
 				Derived retval;
-				const size_t n = e_series.psi();
+				const std::size_t n = e_series.psi();
 				// See above.
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term(e_series);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.besselJ_div_m(i,1);
-					expansion_term *= i;
+					expansion_term *= boost::numeric_cast<int>(i);
 					Derived trig(M_series);
-					trig *= i;
+					trig *= boost::numeric_cast<int>(i);
 					trig = trig.cos();
 					expansion_term *= trig;
 					retval += expansion_term;
@@ -162,12 +164,12 @@ namespace piranha
 			}
 			static Derived EE(const Derived &e_series, const Derived &M_series) {
 				Derived retval(M_series);
-				const size_t n = e_series.psi(1);
+				const std::size_t n = e_series.psi(1);
 				Derived tmp;
-				for (size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) {
 					Derived expansion_term((e_series * i).besselJ(i));
-					expansion_term /= i;
-					expansion_term *= (M_series * i).sin();
+					expansion_term /= boost::numeric_cast<int>(i);
+					expansion_term *= (M_series * boost::numeric_cast<int>(i)).sin();
 					tmp += expansion_term;
 				}
 				tmp *= 2;

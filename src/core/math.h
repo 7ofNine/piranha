@@ -299,24 +299,26 @@ namespace piranha
 		return (besselJ(order - 1,arg) - besselJ(order + 1, arg)) / 2.;
 	}
 
-	/// Bessel function of the first kind, integer order, complex double-precision argument.
-	inline std::complex<double> besselJ(const int &order, const std::complex<double> &arg)
+	/// Bessel function of the first kind, integer order, complex argument.
+	template <class T>
+	inline std::complex<T> besselJ(const int &order, const std::complex<T> &arg)
 	{
 		if (arg.imag() != 0) {
 			piranha_throw(value_error,"only complex values with null imaginary part can be used as arguments "
 				"for besselJ");
 		}
-		return std::complex<double>(boost::math::cyl_bessel_j(order, arg.real()));
+		return std::complex<T>(besselJ(order, arg.real()));
 	}
 
-	/// First derivative ot the Bessel function of the first kind, integer order, complex double-precision argument.
-	inline std::complex<double> dbesselJ(const int &order, const std::complex<double> &arg)
+	/// First derivative ot the Bessel function of the first kind, integer order, complex argument.
+	template <class T>
+	inline std::complex<T> dbesselJ(const int &order, const std::complex<T> &arg)
 	{
 		if (arg.imag() != 0) {
 			piranha_throw(value_error,"only complex values with null imaginary part can be used as arguments "
 				"for dbesselJ");
 		}
-		return std::complex<double>(dbesselJ(order, arg.real()));
+		return std::complex<T>(dbesselJ(order, arg.real()));
 	}
 
 	/// Modified Bessel function of the first kind, integer order.

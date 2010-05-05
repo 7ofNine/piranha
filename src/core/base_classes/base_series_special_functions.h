@@ -21,6 +21,7 @@
 #ifndef PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 #define PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -99,7 +100,7 @@ namespace piranha
 					for (std::size_t j = 0; j < b_size; ++j) {
 						tmp.base_divide_by(b_list[j] + (int)(i - 1),args_tuple);
 					}
-					tmp.base_divide_by(i,args_tuple);
+					tmp.base_divide_by(boost::numeric_cast<int>(i),args_tuple);
 					tmp.base_mult_by(*derived_const_cast,args_tuple);
 					retval.base_add(tmp,args_tuple);
 				}

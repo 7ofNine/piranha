@@ -26,6 +26,7 @@
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
+#include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../mp.h"
 #include "../type_traits.h" // For lightweight attribute.
 
@@ -40,22 +41,32 @@ namespace piranha
 			// Alias for the parent class.
 			typedef numerical_container<mp_integer, mpz_cf> ancestor;
 		public:
-			typedef mp_integer numerical_type;
-			// Ctors
-			NUMERICAL_CONTAINER_CTORS(mpz_cf)
-			// Override norm and evaluation.
+			explicit mpz_cf(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit mpz_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			template <class ArgsTuple>
+			explicit mpz_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			// Implement norm and evaluation.
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(m_value.to_double());
+				return std::abs(get_value().to_double());
 			}
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
-				return m_value.to_double();
+				return get_value().to_double();
 			}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return (m_value == 0);
+				return (get_value() == 0);
+			}
+			template <class ArgsTuple>
+			mpz_cf besselJ(const int &n, const ArgsTuple &args_tuple) const
+			{
+				if (get_value() != 0) {
+					piranha_throw(value_error,"cannot compute Bessel function of non-zero integer coefficient");
+				}
+				return (n == 0) ? mpz_cf(1,args_tuple) : mpz_cf(0,args_tuple);
 			}
 	};
 
@@ -72,33 +83,29 @@ namespace std
 {
 	template <>
 	class complex<piranha::mpz_cf>:
-		public piranha::numerical_container<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> >,
+		public piranha::numerical_container<complex<piranha::mp_integer>, complex<piranha::mpz_cf> >,
 		public piranha::numerical_container_complex_toolbox<piranha::mpz_cf>
 	{
-			typedef piranha::numerical_container<std::complex<piranha::mp_integer>, complex<piranha::mpz_cf> > ancestor;
+			typedef piranha::numerical_container<complex<piranha::mp_integer>, complex<piranha::mpz_cf> > ancestor;
 			typedef piranha::numerical_container_complex_toolbox<piranha::mpz_cf> complex_toolbox;
-			friend class piranha::numerical_container_complex_toolbox<piranha::mpz_cf>;
 		public:
-			using complex_toolbox::divide_by;
-			using ancestor::divide_by;
-			using ancestor::mult_by;
-			using complex_toolbox::mult_by;
-			using complex_toolbox::print_tex;
-			typedef piranha::mpz_cf value_type;
-			NUMERICAL_CONTAINER_CTORS(complex)
-			COMPLEX_NUMERICAL_CONTAINER_CTORS()
+			explicit complex(): ancestor() {}
+			template <class T, class ArgsTuple>
+			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			template <class ArgsTuple>
+			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
-				return m_value == 0;
+				return get_value() == 0;
 			}
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const {
-				return std::abs(m_value.to_complex_double());
+				return abs(get_value().to_complex_double());
 			}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
-				return m_value.to_complex_double();
+				return get_value().to_complex_double();
 			}
 	};
 }
