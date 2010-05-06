@@ -24,12 +24,14 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <utility>
 #include <vector>
 
+#include "../base_classes/base_series_tag.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
@@ -596,13 +598,14 @@ namespace piranha {
 		cm_build_decoding_tuple_impl<DecodingTuple>::run(&prev_range,dt,minmax);
 	}
 
+	// This struct deals with coefficient series.
 	template <class DecodingTuple>
 	struct cm_decode_impl2 {
 		template <class FinalCf, class MinMaxTuple, class Cf, class VhTuple, class ArgsTuple>
 		static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Cf &cf,
 			const VhTuple &vh_tuple, const max_fast_int &code, const ArgsTuple &args_tuple)
 		{
-			piranha_assert(cf.empty());
+			p_static_check((boost::is_base_of<base_series_tag,Cf>::value),"");
 			typedef typename Cf::term_type term_type;
 			typedef typename term_type::key_type::size_type size_type;
 			piranha_assert(dt.get_head().size() == args_tuple.template get<term_type::key_type::position>().size());
@@ -618,6 +621,9 @@ namespace piranha {
 			}
 			// Next recursion will operate on the term-to-be-inserted's coefficient.
 			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.m_cf,vh_tuple.get_tail(),code,args_tuple);
+			// Before insering, let's make sure to clear up the contents of the coefficient series.
+			cf.clear_terms();
+			// Insert the result.
 			cf.insert(term,args_tuple);
 		}
 	};
