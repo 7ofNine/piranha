@@ -22,7 +22,9 @@
 #define PIRANHA_BASE_SERIES_MP_H
 
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <complex>
 #include <vector>
 
 #include "../config.h"
@@ -155,20 +157,21 @@ namespace piranha
 		}
 	};
 
-	template <class T, class Enable = void>
+	template <class Derived, class T, class Enable = void>
 	struct base_series_multiply_selector
 	{
-		template <class Derived, class ArgsTuple>
+		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
 		{
-			return series.multiply_by_number(x, args_tuple);
+			return series.multiply_coefficients_by(x, args_tuple);
 		}
 	};
 
-	template <class T>
-	struct base_series_multiply_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	template <class Derived, class T>
+	struct base_series_multiply_selector<Derived,T,typename boost::enable_if_c<boost::is_base_of<base_series_tag,T>::value &&
+		(boost::is_same<Derived,T>::value || boost::is_same<Derived,std::complex<T> >::value)>::type>
 	{
-		template <class Derived, class ArgsTuple>
+		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
 		{
 			series.multiply_by_series(other, args_tuple);

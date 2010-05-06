@@ -23,7 +23,11 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/type_traits/is_floating_point.hpp>
+#include <boost/type_traits/is_integral.hpp>
 #include <boost/utility/addressof.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cstddef>
 #include <complex>
 #include <string>
@@ -111,13 +115,6 @@ namespace piranha
 		}
 	}
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class T, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const T &x,
-			const ArgsTuple &args_tuple) {
-		mult_div_coefficients_by<0>(x,args_tuple);
-	}
-
 	/// Merge series with a number.
 	/**
 	 * Term is constructed from coefficient constructed from number and default key,
@@ -148,8 +145,11 @@ namespace piranha
 		return base_series_subtract_selector<T>::run(*derived_cast,x,args_tuple);
 	}
 
-	template <class T>
-	struct multiply_by_number_helper
+	// This helper is needed because the standard complex<> class is missing comparison
+	// operators against scalar types different from complex<>::value_type - whereas this
+	// comparison is instead available in both the mp classes and the numerical coefficient classes.
+	template <class T, class Enable = void>
+	struct multdiv_coefficients_helper
 	{
 		static bool check_zero(const T &x)
 		{
@@ -161,14 +161,20 @@ namespace piranha
 		}
 	};
 
+	// Enable for complex C++ integral and floating point types.
+	// NOTE: it might be possible to use generically the code below exclusively,
+	// but in case T is a series, extraction of real and imaginary part would be
+	// quite a bit more expensive. So this also serves as an optimisation.
 	template <class T>
-	struct multiply_by_number_helper<std::complex<T> >
+	struct multdiv_coefficients_helper<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
+		boost::is_integral<typename T::value_type>::value ||
+		boost::is_floating_point<typename T::value_type>::value)>::type>
 	{
-		static bool check_zero(const std::complex<T> &c)
+		static bool check_zero(const T &c)
 		{
 			return (c.real() == 0 && c.imag() == 0);
 		}
-		static bool check_non_unitary(const std::complex<T> &c)
+		static bool check_non_unitary(const T &c)
 		{
 			return (c.real() != 1 || c.imag() != 0);
 		}
@@ -176,13 +182,13 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::multiply_by_number(const Number &x,
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const Number &x,
 		const ArgsTuple &args_tuple)
 	{
-		if (multiply_by_number_helper<Number>::check_zero(x)) {
+		if (multdiv_coefficients_helper<Number>::check_zero(x)) {
 			clear_terms();
-		} else if (multiply_by_number_helper<Number>::check_non_unitary(x)) {
-			multiply_coefficients_by(x, args_tuple);
+		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) {
+			mult_div_coefficients_by<0>(x,args_tuple);
 		}
 		return *derived_cast;
 	}
@@ -191,25 +197,18 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const T &x, const ArgsTuple &args_tuple)
 	{
-		return base_series_multiply_selector<T>::run(*derived_cast, x, args_tuple);
-	}
-
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class T, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const T &x,
-			const ArgsTuple &args_tuple) {
-		mult_div_coefficients_by<1>(x,args_tuple);
+		return base_series_multiply_selector<Derived,T>::run(*derived_cast, x, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_by_number(const Number &x,
+	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const Number &x,
 		const ArgsTuple &args_tuple)
 	{
-		if (multiply_by_number_helper<Number>::check_zero(x)) {
+		if (multdiv_coefficients_helper<Number>::check_zero(x)) {
 			piranha_throw(zero_division_error,"cannot divide by zero");
-		} else if (multiply_by_number_helper<Number>::check_non_unitary(x)) {
-			divide_coefficients_by(x, args_tuple);
+		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) {
+			mult_div_coefficients_by<1>(x,args_tuple);
 		}
 		return *derived_cast;
 	}
@@ -219,7 +218,7 @@ namespace piranha
 	inline Derived &base_series<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const T &x, const ArgsTuple &args_tuple)
 	{
 		p_static_check((!boost::is_base_of<base_series_tag,T>::value),"Cannot divide by another series.");
-		return divide_by_number(x, args_tuple);
+		return divide_coefficients_by(x, args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

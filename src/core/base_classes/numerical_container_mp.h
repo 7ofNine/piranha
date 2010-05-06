@@ -53,6 +53,15 @@ namespace piranha
 		}
 	};
 
+	template <class T>
+	struct numerical_container_constructor_selector<T,typename boost::enable_if<boost::is_base_of<numerical_container_tag,T> >::type>
+	{
+		static const typename T::numerical_type &run(const T &other)
+		{
+			return other.get_value();
+		}
+	};
+
 	template <class Value>
 	struct numerical_container_print_pretty_selector
 	{
@@ -100,15 +109,6 @@ namespace piranha
 			}
 			numerical_container_print_tex_selector<RealValue>::run(c.imag(),os);
 			os << "\\, \\imath\\right)";
-		}
-	};
-
-	template <class T>
-	struct numerical_container_constructor_selector<T,typename boost::enable_if<boost::is_base_of<numerical_container_tag,T> >::type>
-	{
-		static const typename T::numerical_type &run(const T &other)
-		{
-			return other.get_value();
 		}
 	};
 

@@ -40,6 +40,7 @@
 #include "mp_commons.h"
 
 // TODO: better performance for complex ints using multadd (possibly through stl-like functor) and completion of API:
+// - better handling when building mp_integer from bogus string
 // - full interaction with POD types. Should not be much too effort now to complete...
 // - do not use boost::operator ++ and --, use common impl in mp_commons instead and overload correctly for pre/post increment.
 // - overload std::pow for exponentiation to rational

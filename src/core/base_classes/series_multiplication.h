@@ -73,11 +73,11 @@ namespace piranha
 				}
 				// Optimize the cases of single coefficient series.
 				if (s2.is_single_cf()) {
-					derived_cast->multiply_coefficients_by(s2.begin()->m_cf, args_tuple);
+					derived_cast->base_mult_by(s2.begin()->m_cf, args_tuple);
 				} else if (derived_const_cast->is_single_cf()) {
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
-					tmp.multiply_coefficients_by(derived_const_cast->begin()->m_cf, args_tuple);
+					tmp.base_mult_by(derived_const_cast->begin()->m_cf, args_tuple);
 					derived_cast->base_swap(tmp);
 				} else {
 					Derived retval;

@@ -101,19 +101,19 @@ namespace piranha
 	class base_series: base_series_tag
 	{
 			// Befriend meta-programming classes.
-			template <class RequestedCf, class SeriesCf>
+			template <class, class>
 			friend struct series_from_cf_impl;
-			template <class RequestedKey, class SeriesKey>
+			template <class, class>
 			friend struct series_from_key_impl;
-			template <int N>
+			template <int>
 			friend class series_flattener;
-			template <class T, class Enable>
+			template <class, class>
 			friend struct base_series_add_selector;
-			template <class T, class Enable>
+			template <class, class>
 			friend struct base_series_subtract_selector;
-			template <class T, class Enable>
+			template <class, class, class>
 			friend struct base_series_multiply_selector;
-			template <class T, class Enable>
+			template <class, class>
 			friend struct base_series_equal_to_selector;
 		public:
 			/// Alias for term type.
@@ -175,16 +175,12 @@ namespace piranha
 			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
 			template <class Layout, class ArgsTuple>
 			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
-			template <bool, class Derived2, class ArgsTuple>
-			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
 			template <class TrimFlags>
 			void trim_test_terms(TrimFlags &) const;
 			template <class TrimFlags, class ArgsTuple>
 			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
-			template <bool, class Number, class ArgsTuple>
-			Derived &merge_with_number(const Number &, const ArgsTuple &);
 			//@}
 			/** @name Terms accessors. */
 			//@{
@@ -199,10 +195,6 @@ namespace piranha
 			//@}
 			/** @name Base maths. */
 			//@{
-			template <class T, class ArgsTuple>
-			void multiply_coefficients_by(const T &, const ArgsTuple &);
-			template <class T, class ArgsTuple>
-			void divide_coefficients_by(const T &, const ArgsTuple &);
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
 			template <class ArgsTuple>
@@ -257,6 +249,16 @@ namespace piranha
 				}
 			};
 		private:
+			template <class T, class ArgsTuple>
+			Derived &multiply_coefficients_by(const T &, const ArgsTuple &);
+			template <class T, class ArgsTuple>
+			Derived &divide_coefficients_by(const T &, const ArgsTuple &);
+			template <int, class T, class ArgsTuple>
+			void mult_div_coefficients_by(const T &, const ArgsTuple &);
+			template <bool, class Number, class ArgsTuple>
+			Derived &merge_with_number(const Number &, const ArgsTuple &);
+			template <bool, class Derived2, class ArgsTuple>
+			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
 			template <class T>
 			bool generic_series_comparison(const T &) const;
 			template <class Number>
@@ -271,12 +273,6 @@ namespace piranha
 			void ll_insert(const term_type &, const ArgsTuple &);
 			template <bool, class ArgsTuple>
 			void term_insert_new(const term_type &, const ArgsTuple &);
-			template <int, class T, class ArgsTuple>
-			void mult_div_coefficients_by(const T &, const ArgsTuple &);
-			template <class Number, class ArgsTuple>
-			Derived &multiply_by_number(const Number &, const ArgsTuple &);
-			template <class Number, class ArgsTuple>
-			Derived &divide_by_number(const Number &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 		private:
