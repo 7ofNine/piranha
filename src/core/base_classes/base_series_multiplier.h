@@ -24,8 +24,10 @@
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cmath>
 #include <cstddef>
 #include <iterator>
@@ -35,6 +37,7 @@
 #include "../exceptions.h"
 #include "../settings.h"
 #include "base_series_multiplier_mp.h"
+#include "base_series_tag.h"
 #include "null_truncator.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -42,6 +45,29 @@
 
 namespace piranha
 {
+	template <class Term, class Enable = void>
+	struct key_revlex_comparison_impl
+	{
+		static bool run(const Term *t1, const Term *t2)
+		{
+			return t1->m_key.revlex_comparison(t2->m_key);
+		}
+	};
+
+	template <class Term>
+	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<base_series_tag,typename Term::cf_type> >::type>
+	{
+		static bool run(const Term *t1, const Term *t2)
+		{
+			if (t1->m_key.elements_equal_to(t2->m_key)) {
+				piranha_assert(t1->m_cf.length() == 1 && t2->m_cf.length() == 1);
+				return key_revlex_comparison_impl<typename Term::cf_type::term_type>::run(&(*t1->m_cf.begin()),&(*t2->m_cf.begin()));
+			} else {
+				return t1->m_key.revlex_comparison(t2->m_key);
+			}
+		}
+	};
+
 	/// Base series multiplier.
 	/**
 	 * This class is meant to be extended to build specific multipliers.
@@ -63,7 +89,7 @@ namespace piranha
 					template <class Term>
 					bool operator()(const Term *t1, const Term *t2) const
 					{
-						return (t1->m_key.revlex_comparison(t2->m_key));
+						return key_revlex_comparison_impl<Term>::run(t1,t2);
 					}
 			};
 			/// Compute block size for multiplication.
