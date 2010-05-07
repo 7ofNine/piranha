@@ -28,6 +28,7 @@
 #include <complex>
 
 #include "base_classes/base_series_tag.h"
+#include "config.h"
 
 namespace piranha
 {
@@ -166,6 +167,29 @@ namespace piranha
 	struct is_divint_exact<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
 	{
 		static const bool value = is_divint_exact<typename T::term_type::cf_type>::value || is_divint_exact<typename T::term_type::key_type>::value;
+	};
+
+	template <class CfSeries, class Enable = void>
+	struct final_cf_impl
+	{
+		typedef typename final_cf_impl<typename CfSeries::term_type::cf_type>::type type;
+	};
+
+	template <class Cf>
+	struct final_cf_impl<Cf,typename boost::enable_if_c<!boost::is_base_of<base_series_tag,Cf>::value>::type>
+	{
+		typedef Cf type;
+	};
+
+	/// Final coefficient type.
+	/**
+	 * Coefficient type at the end of the echelon recursion.
+	 */
+	template <class Series>
+	struct final_cf
+	{
+		p_static_check((boost::is_base_of<base_series_tag,Series>::value),"Cannot determine final coefficient of a non-series type.");
+		typedef typename final_cf_impl<typename Series::term_type::cf_type>::type type;
 	};
 }
 
