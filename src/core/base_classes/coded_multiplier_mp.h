@@ -197,7 +197,7 @@ namespace piranha {
 		mp_integer	m_lcd;
 		// Old value of the lcd.
 		mp_integer	m_old_lcd;
-		// Useful temporary rational value.
+		// Useful temporary value.
 		mp_rational	m_tmp;
 	};
 
@@ -364,8 +364,10 @@ namespace piranha {
 				// Perform also subtraction, if requested.
 				if (!OpTuple::head_type::value) {
 					global_minmax.get_head()[i] = boost::numeric::hull(
-						global_minmax.get_head()[i],
-						tmp1 - tmp2
+						boost::numeric::hull(
+							global_minmax.get_head()[i],
+							tmp1 - tmp2
+						),-tmp2
 					);
 				}
 			}
