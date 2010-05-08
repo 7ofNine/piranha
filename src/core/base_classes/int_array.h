@@ -352,6 +352,25 @@ namespace piranha
 				}
 				return false;
 			}
+			/// Equality test.
+			/**
+			 * Tests only the integer elements of the array, not the flavour.
+			 */
+			bool elements_equal_to(const int_array &v) const
+			{
+				const packed_type *ptr1 = m_container.p, *ptr2 = v.m_container.p;
+				if (m_size == v.m_size) {
+					const size_type p_size = packed_size(m_size);
+					for (size_type i = 0; i < p_size; ++i) {
+						if (ptr1[i] != ptr2[i]) {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+				return true;
+			}
 		protected:
 			/// Print to stream the elements separated by the default separator character.
 			void print_elements(std::ostream &out_stream) const
@@ -399,25 +418,6 @@ namespace piranha
 					boost::hash_combine(retval, ptr[i]);
 				}
 				return retval;
-			}
-			/// Equality test.
-			/**
-			 * Tests only the integer elements of the array, not the flavour.
-			 */
-			bool elements_equal_to(const int_array &v) const
-			{
-				const packed_type *ptr1 = m_container.p, *ptr2 = v.m_container.p;
-				if (m_size == v.m_size) {
-					const size_type p_size = packed_size(m_size);
-					for (size_type i = 0; i < p_size; ++i) {
-						if (ptr1[i] != ptr2[i]) {
-							return false;
-						}
-					}
-				} else {
-					return false;
-				}
-				return true;
 			}
 		private:
 			// Number of packed integers. A partially-filled packed integer counts as one.
