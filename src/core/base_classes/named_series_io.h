@@ -295,6 +295,13 @@ namespace piranha
 	{
 		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1,"");
 	}
+
+	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::ostream &operator<<(std::ostream &os, const named_series<__PIRANHA_NAMED_SERIES_TP> &series)
+	{
+		series.print(os);
+		return os;
+	}
 }
 
 #undef derived_const_cast
