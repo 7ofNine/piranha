@@ -23,12 +23,12 @@
 
 #include <complex>
 
-#include "../core/base_classes/series_multiplier.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
 #include "../core/polynomial_common/q_expo_array.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/poisson_series_common/trig_array.h"
 #include "../core/poisson_series/poisson_series.h"
+#include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/truncators/power_series.h"
 
 namespace piranha
@@ -41,7 +41,7 @@ namespace manipulators
 		mpq_cf,
 		q_expo_array<0>,
 		trig_array<16, 1>,
-		series_multiplier,
+		polynomial_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,
 		truncators::power_series

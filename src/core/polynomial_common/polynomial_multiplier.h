@@ -131,9 +131,9 @@ namespace piranha
 					void perform_multiplication()
 					{
 						// Cache term pointers.
-						this->cache_terms_pointers();
+						this->cache_terms_pointers(this->m_s1,this->m_s2);
 						// NOTE: hard coded value of 1000.
-						if (!is_lightweight<cf_type1>::value || double(this->m_size1) * double(this->m_size2) < 1000) {
+						if (!is_lightweight<cf_type1>::value || double(this->m_terms1.size()) * double(this->m_terms2.size()) < 1000) {
 							__PDEBUG(std::cout << "Heavy coefficient or small polynomials, "
 								"going for plain polynomial multiplication\n");
 							this->perform_plain_multiplication();
@@ -246,7 +246,7 @@ namespace piranha
 						//       indices in [0,ncodes - 1]. But since we are doing arithmetics on shifted codes, the
 						//       code range is [-h_min,ncodes - 1 - h_min]. So we shift the baseline memory location
 						//       so that we can use shifted codes directly as indices.
-						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
+						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
@@ -259,7 +259,7 @@ namespace piranha
 						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
 // const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-						if (trunc.is_effective() || (this->m_size1 * this->m_size2) <= 400 || nthread == 1) {
+						if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) {
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
 // std::cout << "using " << nthread << " threads\n";
@@ -338,7 +338,7 @@ namespace piranha
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 						const std::size_t size_hint = static_cast<std::size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * n_codes);
-						const std::size_t size1 = this->m_size1, size2 = this->m_size2;
+						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
@@ -358,7 +358,7 @@ std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::loc
 						const c_iterator c_it_f = cms.end();
 						term_type1 tmp_term;
 						for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it) {
-							this->decode(c_it->first,c_it->second,tmp_term);
+							this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(),tmp_term);
 							if (!tmp_term.is_canonical(args_tuple)) {
 								tmp_term.canonicalise(args_tuple);
 							}

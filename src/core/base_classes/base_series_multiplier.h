@@ -157,22 +157,22 @@ namespace piranha
 				}
 			}
 			/// Cache pointers to series' terms in the internal storage.
-			void cache_terms_pointers()
+			template <class Container1, class Container2>
+			void cache_terms_pointers(const Container1 &c1, const Container2 &c2)
 			{
 				piranha_assert(m_terms1.empty() && m_terms2.empty());
-				std::transform(m_s1.begin(),m_s1.end(),
+				std::transform(c1.begin(),c1.end(),
 					std::insert_iterator<std::vector<typename Series1::term_type const *> >(m_terms1,m_terms1.begin()),
 					&(boost::lambda::_1));
-				std::transform(m_s2.begin(),m_s2.end(),
+				std::transform(c2.begin(),c2.end(),
 					std::insert_iterator<std::vector<typename Series2::term_type const *> >(m_terms2,m_terms2.begin()),
 					&(boost::lambda::_1));
 			}
 		public:
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_size1(m_s1.length()),
-				m_size2(m_s2.length()), m_retval(retval)
+				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_retval(retval)
 			{
-				piranha_assert(m_size1 > 0 && m_size2 > 0);
+				piranha_assert(s1.length() > 0 && s2.length() > 0);
 			}
 			// Plain multiplication.
 			void perform_plain_multiplication()
@@ -232,7 +232,7 @@ namespace piranha
 				{
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
-					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_size2;
+					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_terms2.size();
 					const term_type1 **t1 = &m_terms1[0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
@@ -250,16 +250,16 @@ namespace piranha
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
 				// NOTE: here the number 2500 is a kind of rule-of thumb. Basically multiplications of series < 50 elements
 				// will use just one thread.
-				if (double(m_size1) * double(m_size2) < 2500) {
+				if (double(m_terms1.size()) * double(m_terms2.size()) < 2500) {
 					plain_worker w(*derived_cast,m_retval);
 					w();
 				} else {
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					const std::size_t n = std::min(settings::get_nthread(),m_size1);
+					const std::size_t n = std::min(settings::get_nthread(),m_terms1.size());
 					std::vector<std::vector<term_type1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
-					const std::size_t m = m_size1 / n;
+					const std::size_t m = m_terms1.size() / n;
 					// Iterate up to n - 1 because that's the number up to which we can divide series1 into
 					// regular blocks.
 					for (std::size_t i = 0; i < n - 1; ++i) {
@@ -286,9 +286,6 @@ namespace piranha
 			const Series2					&m_s2;
 			// Reference to the arguments tuple.
 			const ArgsTuple					&m_args_tuple;
-			// Sizes of the series.
-			const std::size_t				m_size1;
-			const std::size_t				m_size2;
 			// Reference to the result.
 			Series1						&m_retval;
 			// Vectors of pointers to the input terms.

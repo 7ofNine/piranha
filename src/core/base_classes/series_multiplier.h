@@ -46,7 +46,7 @@ namespace piranha
 					void perform_multiplication()
 					{
 						// Cache term pointers.
-						this->cache_terms_pointers();
+						this->cache_terms_pointers(this->m_s1,this->m_s2);
 						this->perform_plain_multiplication();
 					}
 			};

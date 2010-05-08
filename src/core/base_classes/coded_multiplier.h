@@ -74,22 +74,6 @@ namespace piranha
 			// hierarchy, apart from the numerical coefficients.
 			p_static_check((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
 			p_static_check((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
-		public:
-			template <class Cf, class Ckey>
-			struct coded_term_type {
-				coded_term_type():m_cf(),m_ckey() {}
-				coded_term_type(const Cf &cf, const Ckey &ckey):m_cf(cf),m_ckey(ckey) {}
-				bool operator==(const coded_term_type &t) const
-				{
-					return (m_ckey == t.m_ckey);
-				}
-				std::size_t hash_value() const
-				{
-					return boost::hash<Ckey>()(m_ckey);
-				}
-				mutable Cf	m_cf;
-				Ckey		m_ckey;
-			};
 		protected:
 			/// Default constructor.
 			/**
@@ -155,7 +139,8 @@ namespace piranha
 					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_min),
 					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max))) &&
 					boost::numeric::width(m_mp_h) <=
-					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max)) {
+					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max) / 2)
+				{
 					// Mark representation as viable.
 					m_gr_is_viable = true;
 				}
