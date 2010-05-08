@@ -70,21 +70,6 @@ namespace piranha
 			typedef std::complex<double> type;
 	};
 
-	/// Default lightweight type trait.
-	/**
-	 * Used to determine if it is worth to cache objects in contiguous memory areas during
-	 * performance-critical sections. Defaults to false.
-	 */
-	template <class>
-	struct is_lightweight: boost::false_type {};
-
-	/// is_lightweight type trait specialisation for complex types.
-	/**
-	 * Inherits the type trait from the value_type of the complex class.
-	 */
-	template <class T>
-	struct is_lightweight<std::complex<T> >: is_lightweight<T>::type {};
-
 	/// Default type trait for exact ring operations.
 	/**
 	 * Used to determine whether ring operations (add, sub and mult) with the class are exact (e.g., integer and

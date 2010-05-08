@@ -21,28 +21,23 @@
 #ifndef PIRANHA_POISSON_SERIES_MULTIPLIER_H
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
-#include <algorithm>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
-#include <cmath>
+#include <boost/tuple/tuple.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 #include <cstddef>
 #include <exception>
-#include <iterator>
 #include <utility> // For std::pair.
 #include <vector>
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
-#include "../base_classes/null_truncator.h"
-#include "../base_classes/base_series_tag.h"
 #include "../coded_hash_table.h"
 #include "../config.h" // For p_static_check.
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../mp.h"
 #include "../settings.h" // For debug.
-#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -58,35 +53,6 @@ namespace piranha
 	struct poisson_series_multiplier_ops_selector<1>
 	{
 		typedef boost::tuple<boost::false_type,boost::true_type> type;
-	};
-
-
-	template <class Cf, class Enable = void>
-	struct final_cf_getter_impl
-	{
-		static const Cf &run(const Cf &cf)
-		{
-			return cf;
-		}
-	};
-
-	template <class CfSeries>
-	struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<base_series_tag,CfSeries> >::type>
-	{
-		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
-		{
-			piranha_assert(cf_series.length() == 1);
-			return final_cf_getter_impl<typename CfSeries::term_type::cf_type>::run(cf_series.begin()->m_cf);
-		}
-	};
-
-	template <class Series>
-	struct final_cf_getter
-	{
-		const typename final_cf<Series>::type &operator()(const typename Series::term_type *term) const
-		{
-			return final_cf_getter_impl<typename Series::term_type::cf_type>::run(term->m_cf);
-		}
 	};
 
 	/// Series multiplier specifically tuned for Poisson series.
@@ -110,8 +76,6 @@ namespace piranha
 						typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type> coded_ancestor;
 					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
 						typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type>;
-					typedef typename Series1::const_iterator const_iterator1;
-					typedef typename Series2::const_iterator const_iterator2;
 					typedef typename ancestor::term_type1 term_type1;
 					typedef typename ancestor::term_type2 term_type2;
 					typedef typename final_cf<Series1>::type cf_type1;
@@ -123,85 +87,13 @@ namespace piranha
 					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 						ancestor(s1, s2, retval, args_tuple) {}
-					/// Perform multiplication and place the result into m_retval.
-					void perform_multiplication()
-					{
-						std::vector<term_type1> f_terms1;
-						std::vector<term_type2> f_terms2;
-						// If echelon level is more than zero we need to flatten out the series.
-						if (Series1::echelon_level) {
-							f_terms1 = this->m_s1.flatten_terms(this->m_args_tuple);
-							f_terms2 = this->m_s2.flatten_terms(this->m_args_tuple);
-							this->cache_terms_pointers(f_terms1,f_terms2);
-						} else {
-							// Cache term pointers.
-							this->cache_terms_pointers(this->m_s1,this->m_s2);
-						}
-						// NOTE: hard coded value of 1000.
-						// TODO: use atoms here instead? Or maybe flattenes sizes? <-- better this one actually.
-						// Or... maybe ditch this at all? In the end this was here mainly for Poisson series without
-						// coding...
-#if 0
-						if (!is_lightweight<cf_type1>::value || double(this->m_terms1.size()) * double(this->m_terms2.size()) < 1000) {
-							__PDEBUG(std::cout << "Heavy coefficient or small series, "
-								"going for plain multiplication\n");
-							this->perform_plain_multiplication();
-							return;
-						}
-#endif
-						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
-						// coefficients and coded keys.
-						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
-						this->determine_viability();
-						if (!this->m_gr_is_viable) {
-std::exit(1);
-							__PDEBUG(std::cout << "Series not suitable for coded representation, going for plain multiplication\n");
-							this->perform_plain_multiplication();
-							return;
-						}
-						if (trunc.is_effective()) {
-							ll_perform_multiplication(trunc);
-						} else {
-							// Sort input series for better cache usage and multi-threaded implementation.
-							typedef typename ancestor::key_revlex_comparison key_revlex_comparison;
-							std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
-							std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
-							ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-								this->m_terms1,this->m_terms2,this->m_args_tuple
-							));
-						}
-					}
-				private:
 					template <class GenericTruncator>
 					void ll_perform_multiplication(const GenericTruncator &trunc)
 					{
-						// Code terms.
-						// NOTE: it is important to code here since at this point we already have sorted input series,
-						//       if necessary.
-						this->code_terms();
 						// We also need flavours here.
 						cache_flavours();
-						// Shortcuts.
-						const term_type1 **t1 = &this->m_terms1[0];
-						const term_type2 **t2 = &this->m_terms2[0];
-						// Cache the coefficients.
-						std::vector<cf_type1> cf1_cache;
-						std::vector<cf_type2> cf2_cache;
-						std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
-						std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
-						std::transform(this->m_terms1.begin(),this->m_terms1.end(),i_it1,final_cf_getter<series_type1>());
-						std::transform(this->m_terms2.begin(),this->m_terms2.end(),i_it2,final_cf_getter<series_type2>());
-						bool vec_res;
-						if (this->is_sparse()) {
-							vec_res = false;
-						} else {
-							vec_res = perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
-						}
-						if (!vec_res) {
-							this->shift_codes();
-							__PDEBUG(std::cout << "Going for hash coded poisson series multiplication\n");
-							perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
-						}
+						// Procede with method from coded ancestor.
+						coded_ancestor::ll_perform_multiplication(trunc);
 					}
 					// Store flavours of the series into own vectors.
 					void cache_flavours()

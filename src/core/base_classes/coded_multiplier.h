@@ -30,13 +30,16 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
 #include <boost/type_traits/is_same.hpp>
+#include <iterator>
 #include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
+#include "../type_traits.h"
 #include "coded_multiplier_mp.h"
+#include "null_truncator.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -74,7 +77,17 @@ namespace piranha
 			// hierarchy, apart from the numerical coefficients.
 			p_static_check((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
 			p_static_check((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
-		protected:
+			// Generalised reverse lexicographic comparison.
+			class key_revlex_comparison
+			{
+				public:
+					template <class Term>
+					bool operator()(const Term *t1, const Term *t2) const
+					{
+						return key_revlex_comparison_impl<Term>::run(t1,t2);
+					}
+			};
+		public:
 			/// Default constructor.
 			/**
 			 * Initialises viability flag to false and sets up data members for future use. Densities are initialised
@@ -91,6 +104,74 @@ namespace piranha
 				cm_init_vector_tuple<Series1>(m_fast_gr,derived_const_cast->m_args_tuple);
 				cm_init_vector_tuple<Series1>(m_mp_ct,derived_const_cast->m_args_tuple);
 				cm_init_vector_tuple<Series1>(m_fast_ct,derived_const_cast->m_args_tuple);
+			}
+			/// Perform multiplication and place the result into m_retval.
+			void perform_multiplication()
+			{
+				std::vector<typename Series1::term_type> f_terms1;
+				std::vector<typename Series2::term_type> f_terms2;
+				// If echelon level is more than zero we need to flatten out the series.
+				if (Series1::echelon_level) {
+					f_terms1 = derived_cast->m_s1.flatten_terms(derived_cast->m_args_tuple);
+					f_terms2 = derived_cast->m_s2.flatten_terms(derived_cast->m_args_tuple);
+					derived_cast->cache_terms_pointers(f_terms1,f_terms2);
+				} else {
+					// Cache term pointers.
+					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
+				}
+				// NOTE: hard coded value of 1000.
+				if (double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000) {
+					derived_cast->perform_plain_multiplication();
+					return;
+				}
+				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
+				// coefficients and coded keys.
+				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_args_tuple);
+				determine_viability();
+				if (!m_gr_is_viable) {
+					derived_cast->perform_plain_multiplication();
+					return;
+				}
+				if (trunc.is_effective()) {
+					derived_cast->ll_perform_multiplication(trunc);
+				} else {
+					// Sort input series for better cache usage and multi-threaded implementation.
+					std::sort(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),key_revlex_comparison());
+					std::sort(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),key_revlex_comparison());
+					derived_cast->ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,typename Derived::args_tuple_type>(
+						derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_args_tuple
+					));
+				}
+			}
+			template <class GenericTruncator>
+			void ll_perform_multiplication(const GenericTruncator &trunc)
+			{
+				typedef typename final_cf<Series1>::type cf_type1;
+				typedef typename final_cf<Series2>::type cf_type2;
+				// Code terms.
+				// NOTE: it is important to code here since at this point we already have sorted input series,
+				//       if necessary.
+				code_terms();
+				// Shortcuts.
+				const typename Series1::term_type **t1 = &derived_cast->m_terms1[0];
+				const typename Series2::term_type **t2 = &derived_cast->m_terms2[0];
+				// Cache the coefficients.
+				std::vector<cf_type1> cf1_cache;
+				std::vector<cf_type2> cf2_cache;
+				std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
+				std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
+				std::transform(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),i_it1,final_cf_getter<Series1>());
+				std::transform(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),i_it2,final_cf_getter<Series2>());
+				bool vec_res;
+				if (is_sparse()) {
+					vec_res = false;
+				} else {
+					vec_res = derived_cast->perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+				}
+				if (!vec_res) {
+					shift_codes();
+					derived_cast->perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+				}
 			}
 			/// Determine whether the global coded representation is viable or not.
 			/**
@@ -132,7 +213,7 @@ namespace piranha
 				tuple_vector_dot(m_mp_gr,m_mp_ct,m_mp_h);
 				// To test whether a representation is viable or not, we need to test for the following things:
 				// - m_mp_h must be in the max_fast_int range;
-				// - m_mp_h's width must be in the max_fast_int range.
+				// - m_mp_h's width must be within halft max_fast_int's range (needed for 2*chi shifting).
 				// Use lexical cast for max interoperability between numerical types.
 				// NOTE: here probably we can reduce greatly the number of memory allocations...
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(

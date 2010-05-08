@@ -40,6 +40,59 @@
 // Meta-programming methods for coded multiplier.
 
 namespace piranha {
+	// Getter method for final coefficient of flattened series term.
+	template <class Cf, class Enable = void>
+	struct final_cf_getter_impl
+	{
+		static const Cf &run(const Cf &cf)
+		{
+			return cf;
+		}
+	};
+
+	template <class CfSeries>
+	struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<base_series_tag,CfSeries> >::type>
+	{
+		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
+		{
+			piranha_assert(cf_series.length() == 1);
+			return final_cf_getter_impl<typename CfSeries::term_type::cf_type>::run(cf_series.begin()->m_cf);
+		}
+	};
+
+	template <class Series>
+	struct final_cf_getter
+	{
+		const typename final_cf<Series>::type &operator()(const typename Series::term_type *term) const
+		{
+			return final_cf_getter_impl<typename Series::term_type::cf_type>::run(term->m_cf);
+		}
+	};
+
+	// Generalised reverse lexicographic ordering implementation.
+	template <class Term, class Enable = void>
+	struct key_revlex_comparison_impl
+	{
+		static bool run(const Term *t1, const Term *t2)
+		{
+			return t1->m_key.revlex_comparison(t2->m_key);
+		}
+	};
+
+	template <class Term>
+	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<base_series_tag,typename Term::cf_type> >::type>
+	{
+		static bool run(const Term *t1, const Term *t2)
+		{
+			if (t1->m_key.elements_equal_to(t2->m_key)) {
+				piranha_assert(t1->m_cf.length() == 1 && t2->m_cf.length() == 1);
+				return key_revlex_comparison_impl<typename Term::cf_type::term_type>::run(&(*t1->m_cf.begin()),&(*t2->m_cf.begin()));
+			} else {
+				return t1->m_key.revlex_comparison(t2->m_key);
+			}
+		}
+	};
+
 	// Default value handler class. Suitable for use with POD integral types.
 	template <class T>
 	struct cm_value_handler

@@ -22,7 +22,6 @@
 #define PIRANHA_DOUBLE_CF_H
 
 #include <boost/numeric/conversion/converter.hpp>
-#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cmath>
@@ -35,7 +34,6 @@
 #include "../mp.h"
 #include "../psym.h"
 #include "../settings.h" // Numerical zero.
-#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -151,10 +149,6 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
 	};
-
-	/// is_lightweight type trait specialisation for double_cf.
-	template <>
-	struct is_lightweight<double_cf>: boost::true_type {};
 }
 
 namespace std

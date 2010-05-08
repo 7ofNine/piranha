@@ -31,23 +31,18 @@
 #include <boost/thread/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/type_traits/integral_constant.hpp>
-#include <cmath>
 #include <cstddef>
 #include <exception>
-#include <iterator>
 #include <utility> // For std::pair.
 #include <vector>
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
-#include "../base_classes/null_truncator.h"
 #include "../coded_hash_table.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
-#include "../mp.h"
 #include "../settings.h" // For debug and cache size.
-#include "../type_traits.h" // For lightweight attribute.
 
 namespace piranha
 {
@@ -114,8 +109,6 @@ namespace piranha
 						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> > coded_ancestor;
 					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
-					typedef typename Series1::const_iterator const_iterator1;
-					typedef typename Series2::const_iterator const_iterator2;
 					typedef typename ancestor::term_type1 term_type1;
 					typedef typename ancestor::term_type2 term_type2;
 					typedef typename term_type1::cf_type cf_type1;
@@ -127,71 +120,6 @@ namespace piranha
 					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 						ancestor(s1, s2, retval, args_tuple) {}
-					/// Perform multiplication and place the result into m_retval.
-					void perform_multiplication()
-					{
-						// Cache term pointers.
-						this->cache_terms_pointers(this->m_s1,this->m_s2);
-						// NOTE: hard coded value of 1000.
-						if (!is_lightweight<cf_type1>::value || double(this->m_terms1.size()) * double(this->m_terms2.size()) < 1000) {
-							__PDEBUG(std::cout << "Heavy coefficient or small polynomials, "
-								"going for plain polynomial multiplication\n");
-							this->perform_plain_multiplication();
-							return;
-						}
-						// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
-						// coefficients and coded keys.
-						const truncator_type trunc(this->m_terms1,this->m_terms2,this->m_args_tuple);
-						this->determine_viability();
-						if (!this->m_gr_is_viable) {
-							__PDEBUG(std::cout << "Polynomial not suitable for coded representation, going for plain polynomial multiplication\n");
-							this->perform_plain_multiplication();
-							return;
-						}
-						if (trunc.is_effective()) {
-							ll_perform_multiplication(trunc);
-						} else {
-							// Sort input series for better cache usage and multi-threaded implementation.
-							typedef typename ancestor::key_revlex_comparison key_revlex_comparison;
-							std::sort(this->m_terms1.begin(),this->m_terms1.end(),key_revlex_comparison());
-							std::sort(this->m_terms2.begin(),this->m_terms2.end(),key_revlex_comparison());
-							ll_perform_multiplication(null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-								this->m_terms1,this->m_terms2,this->m_args_tuple
-							));
-						}
-					}
-				private:
-					template <class GenericTruncator>
-					void ll_perform_multiplication(const GenericTruncator &trunc)
-					{
-						// Code terms.
-						// NOTE: it is important to code here since at this point we already have sorted input series,
-						//       if necessary.
-						this->code_terms();
-						// Shortcuts.
-						const term_type1 **t1 = &this->m_terms1[0];
-						const term_type2 **t2 = &this->m_terms2[0];
-						// Cache the coefficients.
-						// NOTE: c++0x lambdas here.
-						std::vector<cf_type1> cf1_cache;
-						std::vector<cf_type2> cf2_cache;
-						std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
-						std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
-						std::transform(this->m_terms1.begin(),this->m_terms1.end(),i_it1,(boost::lambda::_1 ->* &term_type1::m_cf));
-						std::transform(this->m_terms2.begin(),this->m_terms2.end(),i_it2,(boost::lambda::_1 ->* &term_type2::m_cf));
-						bool vec_res;
-						if (this->is_sparse()) {
-							vec_res = false;
-						} else {
-							vec_res = perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
-						}
-						if (!vec_res) {
-							// We need to shift codes in order to make sure all codes are non-negative.
-							this->shift_codes();
-							__PDEBUG(std::cout << "Going for hash coded polynomial multiplication\n");
-							perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
-						}
-					}
 					template <class GenericTruncator>
 					struct vector_functor {
 						vector_functor(const cf_type1 *tc1, const cf_type2 *tc2,
@@ -346,12 +274,12 @@ namespace piranha
 						const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 // std::cout << "Block size: " << block_size << '\n';
-const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+// const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						std::pair<cf_type1,max_fast_int> cterm;
 						hash_functor<cf_type1,max_fast_int,GenericTruncator,csht>
 							hm(cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
-std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+//std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 						// Decode and insert into retval.
 						// TODO: add debug info about cms' size here.

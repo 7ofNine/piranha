@@ -21,14 +21,14 @@
 #ifndef PIRANHA_MPZ_CF_H
 #define PIRANHA_MPZ_CF_H
 
-#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
 #include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../mp.h"
-#include "../type_traits.h" // For lightweight attribute.
+#include "../type_traits.h"
 
 namespace piranha
 {
@@ -69,10 +69,6 @@ namespace piranha
 				return (n == 0) ? mpz_cf(1,args_tuple) : mpz_cf(0,args_tuple);
 			}
 	};
-
-	/// is_lightweight type trait specialisation for mpz_cf.
-	template <>
-	struct is_lightweight<mpz_cf>: boost::true_type {};
 
 	/// is_ring_exact type trait specialisation for mpz_cf.
 	template <>

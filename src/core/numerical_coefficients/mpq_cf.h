@@ -21,14 +21,14 @@
 #ifndef PIRANHA_MPQ_CF_H
 #define PIRANHA_MPQ_CF_H
 
-#include <boost/type_traits/integral_constant.hpp> // For lightweight attribute.
+#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 
 #include "../base_classes/numerical_container.h"
 #include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../mp.h"
-#include "../type_traits.h" // For lightweight attribute.
+#include "../type_traits.h"
 
 namespace piranha
 {
@@ -72,10 +72,6 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
-
-	/// is_lightweight trait specialisation for mpq_cf.
-	template <>
-	struct is_lightweight<mpq_cf>: boost::true_type {};
 
 	/// is_ring_exact type trait specialisation for mpq_cf.
 	template <>
