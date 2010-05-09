@@ -113,17 +113,10 @@ BOOST_PYTHON_MODULE(_Core)
 	mpz.def(boost::python::self % mp_integer());
 	mpz.def(boost::python::self % int());
 
-	enum_<settings::fp_representation>("fp_representation")
-	.value("scientific", settings::scientific)
-	.value("decimal", settings::decimal)
-	.export_values();
-
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
 	class_setm.add_static_property("debug", &settings::get_debug, &settings::set_debug);
 	class_setm.add_static_property("used_memory", &settings::get_used_memory, "Amount of used memory in bytes.");
 	class_setm.add_static_property("memory_limit", &settings::get_memory_limit, &settings::set_memory_limit);
-	class_setm.add_static_property("digits", &settings::get_digits, &settings::set_digits);
-	class_setm.add_static_property("fp_repr", &settings::get_fp_repr, &settings::set_fp_repr);
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
 	class_setm.add_static_property("nthread", make_function(&settings::get_nthread,return_value_policy<copy_const_reference>()),
 		&settings::set_nthread);

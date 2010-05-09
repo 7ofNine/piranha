@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -36,8 +37,7 @@ namespace piranha
 	void norm::print(std::ostream &stream)
 	{
 		if (m_truncation_level > 0) {
-			settings::setup_stream(stream);
-			stream << "Truncation level: " << m_truncation_level;
+			stream << "Truncation level: " << boost::lexical_cast<std::string>(m_truncation_level);
 		} else {
 			stream << "No truncation level set.";
 		}

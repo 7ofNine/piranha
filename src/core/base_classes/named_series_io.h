@@ -26,6 +26,7 @@
 #include <complex>
 #include <cstddef>
 #include <iostream>
+#include <stdexcept> // For runtime error exception.
 #include <string>
 
 #include "../config.h"
@@ -104,16 +105,13 @@ namespace piranha
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::construct_from_file(const std::string &fn)
 	{
 		std::ifstream inf;
-		std::string filename = utils::open_file(fn, inf);
-		// Read from file
-		if (inf.is_open()) {
-			// Clear the stack of unknown data.
-			unknown_data.clear();
-			read_sections(inf);
-			std::cout << "EOF" << std::endl;
-			// Close file
-			inf.close();
+		inf.open(fn.c_str(), std::ios::in | std::ios::binary);
+		if (inf.fail()) {
+			piranha_throw(std::runtime_error,"unable to open file");
 		}
+		// Clear the stack of unknown data.
+		unknown_data.clear();
+		read_sections(inf);
 		trim();
 	}
 

@@ -32,7 +32,6 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../psym.h"
-#include "../settings.h"
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
@@ -63,7 +62,6 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		settings::setup_stream(stream);
 		const const_iterator it_f = end();
 		const_iterator it = begin();
 		while (it != it_f) {
@@ -84,7 +82,6 @@ namespace piranha
 		std::size_t count = 0;
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
-			settings::setup_stream(tmp_stream);
 			it_getter<Iterator>::get(it)->print_pretty(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
@@ -107,7 +104,6 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		settings::setup_stream(stream);
 		if (empty()) {
 			stream << '0';
 		} else {
@@ -128,7 +124,6 @@ namespace piranha
 
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
-			settings::setup_stream(tmp_stream);
 			it_getter<Iterator>::get(it)->print_tex(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
@@ -145,7 +140,6 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		settings::setup_stream(stream);
 		if (empty()) {
 			stream << '0';
 		} else {

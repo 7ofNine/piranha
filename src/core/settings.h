@@ -21,15 +21,12 @@
 #ifndef PIRANHA_SETTINGS_H
 #define PIRANHA_SETTINGS_H
 
-#include <boost/integer_traits.hpp>
 #include <cstddef>
-#include <iostream>
 #include <string>
 
 #include "base_classes/base_counting_allocator.h"
 #include "config.h"
 #include "exceptions.h"
-#include "integer_typedefs.h"
 #include "math.h" // For static base-2 logarithm.
 
 namespace piranha
@@ -41,10 +38,6 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
-			enum fp_representation {
-				scientific,
-				decimal
-			};
 			static std::size_t get_used_memory()
 			{
 				return base_counting_allocator::count();
@@ -56,12 +49,6 @@ namespace piranha
 			static void set_memory_limit(const std::size_t &limit)
 			{
 				m_memory_limit = limit;
-			}
-			// Getters.
-			/// Get path to theories of motion files.
-			static const std::string &get_path()
-			{
-				return m_path;
 			}
 			/// Get debug flag.
 			static bool get_debug()
@@ -84,21 +71,6 @@ namespace piranha
 			}
 			/// Get Piranha version.
 			static const std::string &get_version();
-			static void set_path(const std::string &);
-			// Getters and setters for I/O.
-			static std::size_t get_digits();
-			static void set_digits(const int &n) {
-				if (n < static_cast<int>(m_min_digits) || n > static_cast<int>(m_max_digits)) {
-					piranha_throw(value_error,"invalid number of digits");
-				} else {
-					m_digits = static_cast<std::size_t>(n);
-				}
-			}
-			static std::size_t get_min_digits();
-			static std::size_t get_max_digits();
-			static void setup_stream(std::ostream &);
-			static fp_representation get_fp_repr();
-			static void set_fp_repr(fp_representation);
 			/// Cache size in kilobytes.
 			static const std::size_t cache_size = _PIRANHA_CACHE_SIZE;
 			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
@@ -123,19 +95,9 @@ namespace piranha
 			/// Numerical zero.
 			static double			m_numerical_zero;
 			/// Path to theories of motion.
-			static std::string		m_path;
-			static std::string		m_default_path;
 			static bool			m_debug;
 			static const std::string	m_version;
 			static startup_class		startup;
-			/// Minimum number of digits for output streams.
-			static const std::size_t	m_min_digits = 0;
-			/// Maximum number of digits for output streams.
-			static const std::size_t	m_max_digits = 50;
-			/// Number of digits to display in output stream.
-			static std::size_t		m_digits;
-			/// Floating point representation.
-			static fp_representation	m_fp_repr;
 			/// Number of threads available.
 			static size_t			m_nthread;
 	};

@@ -18,41 +18,22 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <algorithm>
-#include <boost/algorithm/string/replace.hpp> // For replacing "\" with "/" in Windows.
 #include <boost/thread/thread.hpp>
 #include <climits>
 #include <cstddef>
-#include <cstdlib> // For getenv in Windows.
-#include <cstring>
 
 #include "core/config.h"
 #include "core/exceptions.h"
-#include "core/integer_typedefs.h"
 #include "core/memory.h"
 #include "core/settings.h"
 
 namespace piranha
 {
-	static inline std::string get_env_variable(const char *str)
-	{
-		if (getenv(str) != 0) {
-			return std::string(getenv(str));
-		} else {
-			std::cout << "The environment variable '" << str << "' is not set.\n";
-			return std::string();
-		}
-	}
-
 	// Settings' static members.
 	std::size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_numerical_zero;
-	std::string settings::m_default_path;
-	std::string settings::m_path;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
-	std::size_t settings::m_digits;
-	settings::fp_representation settings::m_fp_repr = settings::scientific;
 	const std::size_t settings::cache_size;
 	bool settings::blocker = false;
 	settings::startup_class settings::startup;
@@ -71,20 +52,6 @@ namespace piranha
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
 		// Init values.
 		m_numerical_zero = 1E-80;
-		m_digits = 15;
-		m_default_path =
-#ifdef _PIRANHA_WIN32
-			// NOTE: this is a bit hackish, but it works. The alternative would be to use
-			// boost::filesystem but it looks like overkill, since it would be used just here.
-			boost::algorithm::replace_all_copy(
-				get_env_variable("ProgramFiles")+std::string("/Piranha @PIRANHA_VERSION@/@THEORIES_INSTALL_PATH@"),
-				std::string("\\"),
-				std::string("/")
-			);
-#else
-			"@PIRANHA_INSTALL_PREFIX@/@THEORIES_INSTALL_PATH@";
-#endif
-		m_path = m_default_path;
 		// Setup number of threads.
 		const std::size_t nthread = boost::thread::hardware_concurrency();
 		if (!nthread) {
@@ -99,58 +66,12 @@ namespace piranha
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
-		// Setup cout.
-		settings::setup_stream(std::cout);
-	}
-
-	/// Set path to theories of motion.
-	void settings::set_path(const std::string &str)
-	{
-		m_path = str;
 	}
 
 	/// Get version.
 	const std::string &settings::get_version()
 	{
 		return m_version;
-	}
-
-	std::size_t settings::get_digits()
-	{
-		return m_digits;
-	}
-
-	std::size_t settings::get_min_digits()
-	{
-		return m_min_digits;
-	}
-
-	std::size_t settings::get_max_digits()
-	{
-		return m_max_digits;
-	}
-
-	void settings::set_fp_repr(fp_representation fpr)
-	{
-		m_fp_repr = fpr;
-	}
-
-	settings::fp_representation settings::get_fp_repr()
-	{
-		return m_fp_repr;
-	}
-
-	void settings::setup_stream(std::ostream &out_stream)
-	{
-		out_stream << std::setprecision(m_digits);
-		switch (m_fp_repr) {
-		case scientific:
-			out_stream << std::scientific;
-			break;
-		case decimal:
-			out_stream << std::fixed;
-			break;
-		}
 	}
 
 	std::size_t settings::get_max_pretty_print_size()

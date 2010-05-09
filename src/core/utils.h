@@ -72,33 +72,6 @@ namespace piranha
 				} while (!is_valid(str));
 				return true;
 			}
-			/// Open a file searching also in the 'theories of motion' directory.
-			/**
-			 * This function returns an empty string if the file was not found, a string with the complete
-			 * file path if the file was found.
-			 * @param[in] fn std::string filename to be opened.
-			 * @param[out] std::ifstream file will be opened on.
-			 */
-			static std::string open_file(const std::string &fn, std::ifstream &inf) {
-				std::string filename = fn;
-				inf.open(filename.c_str(), std::ios::in | std::ios::binary);
-				if (inf.fail()) {
-					inf.close();
-					// Clear ifstream's state (it is done automatically on close() on Linux, but not on
-					// Windows).
-					inf.clear();
-					filename = (settings::get_path() + std::string("/") + filename);
-					inf.open(filename.c_str(), std::ios::in | std::ios::binary);
-					if (inf.fail()) {
-						std::cout << "Error opening file \"" << fn << "\"." << std::endl;
-						std::cout << "Tried also \"" << filename << "\"." << std::endl;
-						inf.close();
-						return std::string();
-					}
-					std::cout << "Found \"" << fn << "\" in theories of motion." << std::endl;
-				}
-				return filename;
-			}
 			/// Convert a string into a vector of numerical values.
 			/**
 			 * @param[in] str std::string to be converted.

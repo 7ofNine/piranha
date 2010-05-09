@@ -22,6 +22,7 @@
 #define PIRANHA_PSYMBOL_H
 
 #include <algorithm>
+#include <boost/lexical_cast.hpp>
 #include <cstddef>
 #include <iostream>
 #include <set>
@@ -46,11 +47,10 @@ namespace piranha
 			// Print to stream.
 			void print(std::ostream &out_stream) const
 			{
-				settings::setup_stream(out_stream);
 				out_stream << "name=" << m_name << '\n';
 				out_stream << "time_eval=";
 				for (std::size_t j = 0; j < m_time_eval.size(); ++j) {
-					out_stream << m_time_eval[j];
+					out_stream << boost::lexical_cast<std::string>(m_time_eval[j]);
 					if (j != m_time_eval.size() - 1) {
 						out_stream << separator;
 					}
