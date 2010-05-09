@@ -110,14 +110,6 @@ namespace piranha
 			void perform_multiplication()
 			{
 				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
-				// NOTE: hard coded value of 1000.
-				if ((algo == settings::automatic && double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000)
-					|| algo == settings::plain)
-				{
-					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
-					derived_cast->perform_plain_multiplication();
-					return;
-				}
 				std::vector<typename Series1::term_type> f_terms1;
 				std::vector<typename Series2::term_type> f_terms2;
 				// If echelon level is more than zero we need to flatten out the series.
@@ -128,6 +120,13 @@ namespace piranha
 				} else {
 					// Cache term pointers.
 					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
+				}
+				// NOTE: hard coded value of 1000.
+				if ((algo == settings::automatic && double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000)
+					|| algo == settings::plain)
+				{
+					derived_cast->perform_plain_multiplication();
+					return;
 				}
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.

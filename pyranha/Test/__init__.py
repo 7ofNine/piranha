@@ -183,6 +183,17 @@ class series_sf_test02(unittest.TestCase):
 					self.assertEqual((2 * n + 1) * x.legendrePn(n),(x.legendrePn(n + 1) - x.legendrePn(n - 1)).partial('x'))
 				# Rodrigues' formula.
 				self.assertEqual(x.legendrePn(n),rational(1) / (integer(2) ** n * integer(n).factorial()) * ((x ** 2 - 1) ** n).partial('x',n))
+			# TODO: modify this when we implement substitution by complex series.
+			if not hasattr(t,'real'):
+				for n in range(0,30):
+					for m in range(0,30):
+						# Orthogonality of Legendre polynomials.
+						tmp = (x.legendrePn(n) * x.legendrePn(m)).integrate('x')
+						self.assertEqual(tmp.sub('x',t(1)) - tmp.sub('x',t(-1)),rational(2,2 * n + 1) * (1 if n == m else 0))
+						# Integration formula for Legendre polynomials.
+						if n != m:
+							self.assertEqual(tmp.sub('x',t(1)) - tmp,(1 - x ** 2) * (x.legendrePn(n) * x.legendrePn(m).partial('x') -
+								x.legendrePn(m) * x.legendrePn(n).partial('x')) / (m * (m + 1) - n * (n + 1)))
 		# Associated Legendre functions.
 		# TODO: Gaunt's formula and odd values of m.
 		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
