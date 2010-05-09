@@ -320,14 +320,17 @@ namespace piranha
 			 */
 			mp_rational root(const int &n_) const
 			{
-				if (m_value < 0) {
-					piranha_throw(value_error,"cannot calculate nth-root of negative rational number");
+				if (m_value < 0 && n_ != 1 && n_ != -1) {
+					piranha_throw(value_error,"cannot calculate root of negative rational number");
 				}
 				mp_rational retval;
 				if (n_ == 0) {
 					piranha_throw(zero_division_error,"cannot calculate zero-th root of rational number");
 				} else if (n_ == 1) {
 					retval = *this;
+					return retval;
+				} else if (n_ == -1) {
+					retval = pow(-1);
 					return retval;
 				}
 				const std::size_t n = (n_ > 0) ? n_ : -n_;
