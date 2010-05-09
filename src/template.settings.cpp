@@ -39,6 +39,7 @@ namespace piranha
 	settings::startup_class settings::startup;
 	std::size_t settings::m_max_pretty_print_size = 500;
 	std::size_t settings::m_nthread = 1;
+	settings::multiplication_algorithm settings::m_mult_algo = settings::automatic;
 
 	settings::startup_class::startup_class()
 	{

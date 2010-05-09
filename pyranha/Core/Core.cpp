@@ -120,6 +120,15 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
 	class_setm.add_static_property("nthread", make_function(&settings::get_nthread,return_value_policy<copy_const_reference>()),
 		&settings::set_nthread);
+	class_setm.add_static_property("multiplication_algorithm", &settings::get_multiplication_algorithm,
+		&settings::set_multiplication_algorithm);
+
+	enum_<settings::multiplication_algorithm>("multiplication_algorithm")
+		.value("automatic", settings::automatic)
+		.value("plain", settings::plain)
+		.value("vector_coded", settings::vector_coded)
+		.value("hash_coded", settings::hash_coded)
+		.export_values();
 
 	// Psym.
 	class_<psym>("psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())

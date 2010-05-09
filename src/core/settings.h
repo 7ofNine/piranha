@@ -38,6 +38,13 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
+			enum multiplication_algorithm
+			{
+				automatic = 0,
+				plain = 1,
+				vector_coded = 2,
+				hash_coded = 3
+			};
 			static std::size_t get_used_memory()
 			{
 				return base_counting_allocator::count();
@@ -79,27 +86,35 @@ namespace piranha
 			static void set_max_pretty_print_size(int);
 			static const std::size_t &get_nthread();
 			static void set_nthread(const int &);
+			static multiplication_algorithm get_multiplication_algorithm()
+			{
+				return m_mult_algo;
+			}
+			static void set_multiplication_algorithm(multiplication_algorithm mult_algo)
+			{
+				if (mult_algo < 0 || mult_algo > 3) {
+					piranha_throw(value_error,"invalid multiplication algorithm");
+				}
+				m_mult_algo = mult_algo;
+			}
 		private:
-			/// Startup class.
-			/**
-			 * Startup class is constructed at piranha invocation and sets default parameters.
-			 */
+			// Startup class.
 			class __PIRANHA_VISIBLE startup_class
 			{
 				public:
 					startup_class();
 			};
 			static std::size_t		m_max_pretty_print_size;
-			/// Memory limit in bytes.
+			// Memory limit in bytes.
 			static std::size_t		m_memory_limit;
-			/// Numerical zero.
+			// Numerical zero.
 			static double			m_numerical_zero;
-			/// Path to theories of motion.
 			static bool			m_debug;
 			static const std::string	m_version;
 			static startup_class		startup;
-			/// Number of threads available.
+			// Number of threads available.
 			static size_t			m_nthread;
+			static multiplication_algorithm	m_mult_algo;
 	};
 }
 

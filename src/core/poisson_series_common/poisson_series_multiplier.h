@@ -239,10 +239,13 @@ namespace piranha
 							const cf_type1 *tc1, const cf_type2 *tc2,
 							const term_type1 **t1, const term_type2 **t2,
 							const Ckey *ck1, const Ckey *ck2a, const Ckey *ck2b,
-							const GenericTruncator &trunc, std::pair<HashSet *,HashSet *> *cms, const ArgsTuple &args_tuple):
+							const GenericTruncator &trunc, std::pair<HashSet *,HashSet *> *cms, Cterm *tmp_term1, Cterm *tmp_term2,
+							const ArgsTuple &args_tuple):
 							m_f1(f1),m_f2(f2),
 							m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),
-							m_trunc(trunc),m_cms(cms),m_args_tuple(args_tuple) {}
+							m_trunc(trunc),m_cms(cms),
+							m_tmp_term1(tmp_term1),m_tmp_term2(tmp_term2),
+							m_args_tuple(args_tuple) {}
 						bool operator()(const std::size_t &i, const std::size_t &j)
 						{
 							typedef typename HashSet::iterator c_iterator;
@@ -252,17 +255,19 @@ namespace piranha
 							// Cache values.
 							const char *f1 = m_f1, *f2 = m_f2;
 							HashSet &cms_cos = *m_cms->first, &cms_sin = *m_cms->second;
-							// TODO: here (and elsewhere, likely), we can avoid an extra copy by working with keys
+							// NOTE: here (and elsewhere, likely), we can avoid an extra copy by working with keys
 							// and cfs instead of terms, generating only one coefficient and change its sign later
-							// if needed - after insertion.
-							// NOTE: cache tmp_term1 from external, as done in vector multiplier?
-							// TODO: we must cache a lot here to avoid allocating memory when creating MP coefficients.
-							Cterm tmp_term1(m_tc1[i], m_ck1[i]);
+							// if needed - after insertion <-- not sure this comment is still relevant....
+							Cterm &tmp_term1 = *m_tmp_term1;
+							tmp_term1.first = m_tc1[i];
+							tmp_term1.second = m_ck1[i];
 							// Handle the coefficient, with positive signs for now.
 							tmp_term1.first.mult_by(m_tc2[j], m_args_tuple);
 							tmp_term1.second += m_ck2b[j];
 							// Create the second term, using the first one's coefficient and the appropriate code.
-							Cterm tmp_term2(tmp_term1.first, m_ck1[i] + m_ck2a[j]);
+							Cterm &tmp_term2 = *m_tmp_term2;
+							tmp_term2.first = tmp_term1.first;
+							tmp_term2.second = m_ck1[i] + m_ck2a[j];
 							piranha_assert(tmp_term1.second >= 0);
 							piranha_assert(tmp_term2.second >= 0);
 							// Now fix flavours and coefficient signs.
@@ -314,6 +319,8 @@ namespace piranha
 						const Ckey			*m_ck2b;
 						const GenericTruncator		&m_trunc;
 						std::pair<HashSet *,HashSet *>	*m_cms;
+						Cterm				*m_tmp_term1;
+						Cterm				*m_tmp_term2;
 						const ArgsTuple			&m_args_tuple;
 					};
 					template <class GenericTruncator>
@@ -334,8 +341,9 @@ namespace piranha
 						// Find out a suitable block size.
 						const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
+						std::pair<cf_type1,max_fast_int> tmp_term1, tmp_term2;
 						hash_functor<std::pair<cf_type1,max_fast_int>,max_fast_int,GenericTruncator,csht>
-							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2a,ck2b,trunc,&res,args_tuple);
+							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2a,ck2b,trunc,&res,&tmp_term1,&tmp_term2,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 						term_type1 tmp_term;

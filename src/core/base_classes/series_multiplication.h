@@ -71,10 +71,11 @@ namespace piranha
 					derived_cast->clear_terms();
 					return;
 				}
+				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
 				// Optimize the cases of single coefficient series.
-				if (s2.is_single_cf()) {
+				if (s2.is_single_cf() && algo == settings::automatic) {
 					derived_cast->base_mult_by(s2.begin()->m_cf, args_tuple);
-				} else if (derived_const_cast->is_single_cf()) {
+				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic) {
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
 					tmp.base_mult_by(derived_const_cast->begin()->m_cf, args_tuple);

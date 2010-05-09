@@ -37,6 +37,7 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
+#include "../settings.h"
 #include "../type_traits.h"
 #include "coded_multiplier_mp.h"
 #include "null_truncator.h"
@@ -108,6 +109,15 @@ namespace piranha
 			/// Perform multiplication and place the result into m_retval.
 			void perform_multiplication()
 			{
+				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
+				// NOTE: hard coded value of 1000.
+				if ((algo == settings::automatic && double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000)
+					|| algo == settings::plain)
+				{
+					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
+					derived_cast->perform_plain_multiplication();
+					return;
+				}
 				std::vector<typename Series1::term_type> f_terms1;
 				std::vector<typename Series2::term_type> f_terms2;
 				// If echelon level is more than zero we need to flatten out the series.
@@ -119,16 +129,14 @@ namespace piranha
 					// Cache term pointers.
 					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
 				}
-				// NOTE: hard coded value of 1000.
-				if (double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000) {
-					derived_cast->perform_plain_multiplication();
-					return;
-				}
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.
 				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_args_tuple);
 				determine_viability();
 				if (!m_gr_is_viable) {
+					if (algo == settings::vector_coded || algo == settings::hash_coded) {
+						piranha_throw(value_error,"coded multiplication requested, but coded representation is infeasible");
+					}
 					derived_cast->perform_plain_multiplication();
 					return;
 				}
@@ -146,6 +154,7 @@ namespace piranha
 			template <class GenericTruncator>
 			void ll_perform_multiplication(const GenericTruncator &trunc)
 			{
+				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
 				typedef typename final_cf<Series1>::type cf_type1;
 				typedef typename final_cf<Series2>::type cf_type2;
 				// Code terms.
@@ -163,12 +172,15 @@ namespace piranha
 				std::transform(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),i_it1,final_cf_getter<Series1>());
 				std::transform(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),i_it2,final_cf_getter<Series2>());
 				bool vec_res;
-				if (is_sparse()) {
+				if ((algo == settings::automatic && is_sparse()) || algo == settings::hash_coded) {
 					vec_res = false;
 				} else {
 					vec_res = derived_cast->perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 				}
 				if (!vec_res) {
+					if (algo == settings::vector_coded) {
+						piranha_throw(value_error,"vector coded multiplication requested, but vectir coded representation is infeasible");
+					}
 					shift_codes();
 					derived_cast->perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
 				}
