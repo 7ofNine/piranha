@@ -252,33 +252,6 @@ namespace piranha
 					}
 				}
 			}
-			/// Codify integers into generalised lexicographic representation.
-			template <class CodingVector, class ArgsTuple>
-			max_fast_int code(const CodingVector &v, const ArgsTuple &) const
-			{
-				// The +1 is because the coding vector contains one extra element at the end.
-				// The assert is >= instead of == beacuse we may code an array smaller than the
-				// coding vector when multiplying series with different numbers of arguments.
-				piranha_assert(v.size() >= static_cast<std::size_t>(m_size) + 1);
-				max_fast_int retval = 0;
-				for (size_type i = 0; i < m_size; ++i) {
-					retval += (v[i] * m_container.v[i]);
-				}
-				return retval;
-			}
-			/// Decode integers from generalised lexicographic representation.
-			template <class CodingVector, class MinMaxVec, class ArgsTuple>
-			void decode(const max_fast_int &n, const CodingVector &cv, const max_fast_int &h_min,
-				const MinMaxVec &mmv, const ArgsTuple &args_tuple)
-			{
-				resize(args_tuple.template get<position>().size());
-				// The -1 is because the coding vector contains one extra element at the end.
-				piranha_assert(cv.size() == static_cast<std::size_t>(m_size) + 1);
-				const max_fast_int tmp = n - h_min;
-				for (size_type i = 0; i < m_size; ++i) {
-					m_container.v[i] = static_cast<value_type>((tmp % cv[i+1]) / cv[i] + mmv[i].first);
-				}
-			}
 			void assign_vector(const std::vector<int> &v)
 			{
 				const size_type size = boost::numeric_cast<size_type>(v.size());
