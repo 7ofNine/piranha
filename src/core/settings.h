@@ -120,7 +120,7 @@ namespace piranha
 
 // Debug mode.
 #ifndef NDEBUG
-#define __PDEBUG(statement) {if (settings::debug()) {statement;}}
+#define __PDEBUG(statement) {if (settings::get_debug()) {statement;}}
 #else
 #define __PDEBUG(statement)
 #endif
