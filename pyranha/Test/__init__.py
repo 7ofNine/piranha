@@ -127,7 +127,6 @@ class series_sf_test01(unittest.TestCase):
 	Exercise known relations involving special functions, part 1.
 	"""
 	def runTest(self):
-		# TODO: integration tests.
 		from pyranha.Core import psym, rational
 		from pyranha.Math import cs_phase
 		from pyranha.Truncators import truncators
@@ -159,7 +158,6 @@ class series_sf_test02(unittest.TestCase):
 	Exercise known relations involving special functions, part 2.
 	"""
 	def runTest(self):
-		# TODO: integration tests, like orthogonality of Legendre polynomials/functions.
 		from pyranha.Core import psym, rational, integer
 		from pyranha.Math import cs_phase
 		from pyranha.Truncators import truncators
@@ -215,9 +213,11 @@ class series_trig_test(unittest.TestCase):
 		from pyranha.Core import psym, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
 		from pyranha.Truncators import truncators
+		from detail import check_order
 		truncators.unset()
 		for limit in [1,2,3,80]:
-			truncators.degree.set(limit)
+			psym('x')
+			truncators.degree.set('x',limit)
 			for t in scalar_trig_exact_series_types:
 				x = t(psym('x'))
 				self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
@@ -240,6 +240,14 @@ class series_trig_test(unittest.TestCase):
 					else:
 						self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
 						self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
+					# Integral formula for Bessel functions.
+					pi, tau = t(psym('pi')), t(psym('tau'))
+					tmp = (tau * n - x * tau.sin()).cos().integrate('tau')
+					self.assert_(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
+						type(t().complex())(-1 + 0j)),x.besselJ(n),limit))
+					tmp = (tau * -n - x * tau.sin()).cos().integrate('tau')
+					self.assert_(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
+						type(t().complex())(-1 + 0j)),x.besselJ(-n),limit))
 
 def suite_series():
 	suite = unittest.TestSuite()
