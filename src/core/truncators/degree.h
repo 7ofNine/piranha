@@ -55,20 +55,7 @@ namespace piranha { namespace truncators {
 				{
 					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
 					const degree_type md1(t1->template get<ExpoTermPos>().order()), md2(t2->template get<ExpoTermPos>().order());
-					if (md1 == md2) {
-						// NOTICE: the idea is that for leading terms with equal
-						// order we choose the ones that have
-						// unity key vector, so that we increase the chance of
-						// being able to perform the expansion.
-						if (t1->m_key.is_unity()) {
-							return true;
-						} else if (t2->m_key.is_unity()) {
-							return false;
-						}
-						return (t1->m_key < t2->m_key);
-					} else {
-						return md1 < md2;
-					}
+					return md1 < md2;
 				}
 			};
 			template <int ExpoTermPos, class PosTuple>
@@ -81,20 +68,7 @@ namespace piranha { namespace truncators {
 					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
 					const degree_type md1(t1->template get<ExpoTermPos>().partial_order(m_pos_tuple)),
 						md2(t2->template get<ExpoTermPos>().partial_order(m_pos_tuple));
-					if (md1 == md2) {
-						// NOTICE: the idea is that for leading terms with equal
-						// order we choose the ones that have
-						// unity key vector, so that we increase the chance of
-						// being able to perform the expansion.
-						if (t1->m_key.is_unity()) {
-							return true;
-						} else if (t2->m_key.is_unity()) {
-							return false;
-						}
-						return (t1->m_key < t2->m_key);
-					} else {
-						return md1 < md2;
-					}
+					return md1 < md2;
 				}
 				const PosTuple &m_pos_tuple;
 			};
