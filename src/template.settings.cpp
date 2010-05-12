@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/thread/thread.hpp>
 #include <climits>
 #include <cstddef>
@@ -31,14 +32,14 @@ namespace piranha
 {
 	// Settings' static members.
 	std::size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
-	double settings::m_numerical_zero;
+	double settings::m_numerical_zero = 1E-80;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
 	const std::size_t settings::cache_size;
 	bool settings::blocker = false;
+	unsigned settings::m_nthread = boost::thread::hardware_concurrency() ? boost::thread::hardware_concurrency() : 1;
 	settings::startup_class settings::startup;
 	std::size_t settings::m_max_pretty_print_size = 500;
-	std::size_t settings::m_nthread = 1;
 	settings::multiplication_algorithm settings::m_mult_algo = settings::automatic;
 
 	settings::startup_class::startup_class()
@@ -51,19 +52,8 @@ namespace piranha
 		// TODO: where is this used? Find out and wipe it.
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
-		// Init values.
-		m_numerical_zero = 1E-80;
-		// Setup number of threads.
-		const std::size_t nthread = boost::thread::hardware_concurrency();
-		if (!nthread) {
-			std::cout << "Unable to detect automatically the number of hardware threads, setting value to 1.\n";
-			set_nthread(1);
-		} else {
-			set_nthread(nthread);
-		}
 		// Startup report.
-		std::cout << "Piranha version: " << m_version << '\n';
-		std::cout << "Number of hardware threads: " << get_nthread() << '\n';
+		std::cout << "Piranha version: " << "@PIRANHA_VERSION@" << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
@@ -86,7 +76,7 @@ namespace piranha
 			piranha_throw(value_error,"invalid max size for pretty printing, "
 				"please insert an integer greater than 10");
 		}
-		m_max_pretty_print_size = n;
+		m_max_pretty_print_size = boost::numeric_cast<std::size_t>(n);
 	}
 
 	void settings::set_nthread(const int &n)
@@ -95,10 +85,10 @@ namespace piranha
 			piranha_throw(value_error,"invalid number of threads, "
 				"please insert an integer greater than 0");
 		}
-		m_nthread = n;
+		m_nthread = boost::numeric_cast<unsigned>(n);
 	}
 
-	const size_t &settings::get_nthread()
+	unsigned settings::get_nthread()
 	{
 		return m_nthread;
 	}

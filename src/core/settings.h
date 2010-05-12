@@ -84,7 +84,7 @@ namespace piranha
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
-			static const std::size_t &get_nthread();
+			static unsigned get_nthread();
 			static void set_nthread(const int &);
 			static multiplication_algorithm get_multiplication_algorithm()
 			{
@@ -113,7 +113,7 @@ namespace piranha
 			static const std::string	m_version;
 			static startup_class		startup;
 			// Number of threads available.
-			static size_t			m_nthread;
+			static unsigned			m_nthread;
 			static multiplication_algorithm	m_mult_algo;
 	};
 }

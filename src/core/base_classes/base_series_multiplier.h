@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
@@ -219,9 +220,10 @@ namespace piranha
 					plain_worker w(*derived_cast,m_retval);
 					w();
 				} else {
+					// TODO: fix numeric casting here.
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					const std::size_t n = std::min(settings::get_nthread(),m_terms1.size());
+					const std::size_t n = std::min(boost::numeric_cast<typename std::vector<term_type1 const *>::size_type>(settings::get_nthread()),m_terms1.size());
 					std::vector<std::vector<term_type1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
 					const std::size_t m = m_terms1.size() / n;

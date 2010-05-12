@@ -313,7 +313,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename ntuple<std::vector<bool>, Derived::echelon_level + 1>::type trim_flags_type;
+		typedef typename ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
 		trim_flags_init<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
 		derived_const_cast->trim_test_terms(trim_flags);

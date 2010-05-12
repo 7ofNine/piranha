@@ -45,6 +45,10 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
+// TODO:
+// - use power of 2 coding for hash coded?
+// - cache usage: determine optimal size at runtime, e.g., inspecting the size of MP coefficients?
+
 namespace piranha
 {
 	/// Toolbox for coded series multiplication.
