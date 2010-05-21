@@ -118,8 +118,7 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("used_memory", &settings::get_used_memory, "Amount of used memory in bytes.");
 	class_setm.add_static_property("memory_limit", &settings::get_memory_limit, &settings::set_memory_limit);
 	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
-	class_setm.add_static_property("nthread", make_function(&settings::get_nthread,return_value_policy<copy_const_reference>()),
-		&settings::set_nthread);
+	class_setm.add_static_property("nthread",&settings::get_nthread,&settings::set_nthread);
 	class_setm.add_static_property("multiplication_algorithm", &settings::get_multiplication_algorithm,
 		&settings::set_multiplication_algorithm);
 
