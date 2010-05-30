@@ -263,6 +263,11 @@ namespace piranha
 			{
 				return (m_container == v2.m_container);
 			}
+			/// Equality test for elements.
+			bool elements_equal_to(const vector_key &v2) const
+			{
+				return (m_container == v2.m_container);
+			}
 		protected:
 			/// Print to stream the elements separated by the separator character.
 			void print_elements(std::ostream &out_stream) const

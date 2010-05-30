@@ -18,39 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_QQPS_H
-#define PIRANHA_QQPS_H
+#ifndef PIRANHA_TRIG_VECTOR_MP_H
+#define PIRANHA_TRIG_VECTOR_MP_H
 
-#include <boost/cstdint.hpp>
-#include <complex>
+#include <iostream>
 
-#include "../core/mp.h"
-#include "../core/harmonic_series/trig_vector.h"
-#include "../core/numerical_coefficients/mpq_cf.h"
-#include "../core/polynomial_common/expo_vector.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series/poisson_series.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
-#include "../core/truncators/power_series.h"
+#include "../mp.h"
 
 namespace piranha
 {
-namespace manipulators
-{
-	/// Rational coefficient Poisson series.
-	typedef poisson_series
-	<
-		mpq_cf,
-		expo_vector<mp_rational,0>,
-		trig_vector<boost::int16_t, 1>,
-		polynomial_multiplier,
-		poisson_series_multiplier,
-		truncators::power_series,
-		truncators::power_series
-	> qqps;
+	inline void trig_vector_print_element_tex(std::ostream &out_stream, const mp_rational &q)
+	{
+		q.print_tex(out_stream);
+	}
 
-	typedef std::complex<qqps> qqpsc;
-}
+	template <class T>
+	inline void trig_vector_print_element_tex(std::ostream &out_stream, const T &x)
+	{
+		out_stream << x;
+	}
+
+	inline double trig_vector_eval_element(const mp_rational &q)
+	{
+		return q.to_double();
+	}
+
+	template <class T>
+	inline double trig_vector_eval_element(const T &x)
+	{
+		return static_cast<double>(x);
+	}
 }
 
 #endif

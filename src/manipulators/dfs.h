@@ -21,12 +21,13 @@
 #ifndef PIRANHA_DFS_H
 #define PIRANHA_DFS_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 
+#include "../core/harmonic_series/trig_vector.h"
 #include "../core/fourier_series/fourier_series.h"
 #include "../core/numerical_coefficients/double_cf.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series_common/trig_array.h"
 #include "../core/truncators/norm.h"
 
 namespace piranha
@@ -36,7 +37,7 @@ namespace manipulators
 	/// Fourier series manipulator.
 	typedef fourier_series
 	<
-		double_cf, trig_array<16, 0>,
+		double_cf, trig_vector<boost::int16_t, 0>,
 		poisson_series_multiplier,
 		truncators::norm
 	> dfs;

@@ -21,6 +21,7 @@
 #ifndef PIRANHA_JACOBI_ANGER_TOOLBOX_H
 #define PIRANHA_JACOBI_ANGER_TOOLBOX_H
 
+#include <algorithm>
 #include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <complex>
@@ -88,16 +89,17 @@ namespace piranha
 					retval.insert(tmp_term, args_tuple);
 				}
 				const std::size_t w = args_tuple.template get<TrigPos>().size();
-				std::vector<int> tmp_trig_mults(w);
+				std::vector<typename std::complex<Derived>::term_type::key_type::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
 				for (std::size_t i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
-					(*it)->m_key.upload_to_vector(tmp_trig_mults);
+					std::copy((*it)->m_key.begin(),(*it)->m_key.end(),tmp_trig_mults.begin());
 					for (std::size_t j = 0; j < w; ++j) {
 						tmp_trig_mults[j] *= i;
 					}
-					tmp_term.m_key.assign_vector(tmp_trig_mults);
+					tmp_term.m_key.resize(boost::numeric_cast<typename std::complex<Derived>::term_type::key_type::size_type>(tmp_trig_mults.size()));
+					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.m_key.begin());
 					if ((*it)->m_key.get_flavour()) {
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
 					} else {

@@ -21,13 +21,14 @@
 #ifndef PIRANHA_DPS_H
 #define PIRANHA_DPS_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 
+#include "../core/harmonic_series/trig_vector.h"
 #include "../core/numerical_coefficients/double_cf.h"
-#include "../core/polynomial_common/expo_array.h"
+#include "../core/polynomial_common/expo_vector.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series_common/trig_array.h"
 #include "../core/poisson_series/poisson_series.h"
 #include "../core/truncators/power_series.h"
 
@@ -38,8 +39,8 @@ namespace manipulators {
 	typedef poisson_series
 	<
 		double_cf,
-		expo_array<16, 0>,
-		trig_array<16, 1>,
+		expo_vector<boost::int16_t, 0>,
+		trig_vector<boost::int16_t, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,
