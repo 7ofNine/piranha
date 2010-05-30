@@ -21,10 +21,12 @@
 #ifndef PIRANHA_QQPS_H
 #define PIRANHA_QQPS_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 
+#include "../core/mp.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
-#include "../core/polynomial_common/q_expo_array.h"
+#include "../core/polynomial_common/expo_vector.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/poisson_series_common/trig_array.h"
 #include "../core/poisson_series/poisson_series.h"
@@ -39,7 +41,7 @@ namespace manipulators
 	typedef poisson_series
 	<
 		mpq_cf,
-		q_expo_array<0>,
+		expo_vector<mp_rational,0>,
 		trig_array<16, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,

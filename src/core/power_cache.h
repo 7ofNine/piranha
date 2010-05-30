@@ -18,61 +18,53 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_Q_POWER_CACHE_H
-#define PIRANHA_Q_POWER_CACHE_H
+#ifndef PIRANHA_POWER_CACHE_H
+#define PIRANHA_POWER_CACHE_H
 
 #include <boost/unordered_map.hpp>
 #include <vector>
 
 #include "exceptions.h"
-#include "mp.h"
 #include "settings.h"
 
 namespace piranha
 {
-	// Computed values are stored in a hash
-	// map and re-used to calculate new values. To use it, simply construct and request the
-	// value with operator[].
-	template <class T, class ArithmeticFunctor>
-	class q_power_cache
+	// Simple natural power cache: will calculate power of objects and store them internally for reuse.
+	template <class Argument, class T, class ArithmeticFunctor>
+	class power_cache
 	{
 		protected:
-			typedef boost::unordered_map<mp_rational,T> container_type;
+			typedef boost::unordered_map<T,Argument> container_type;
 			typedef typename container_type::iterator iterator;
-			typedef ArithmeticFunctor arith_functor_type;
-			q_power_cache():m_container(),m_arith_functor() {}
+			power_cache():m_container(),m_arith_functor() {}
 		public:
-			q_power_cache(const T &x): m_container(), m_arith_functor()
+			power_cache(const Argument &x): m_container(), m_arith_functor()
 			{
-				init(x);
+				m_container[T(1)] = x;
 			}
-			const T &operator[](const mp_rational &q)
+			const Argument &operator[](const T &x)
 			{
-				iterator it = m_container.find(q);
+				iterator it = m_container.find(x);
 				if (it == m_container.end()) {
-					if (q == 0) {
-						m_container[mp_rational(0)] = m_arith_functor.pow(T(),0);
-						return m_container[mp_rational(0)];
+					if (x == 0) {
+						m_container[T(0)] = m_arith_functor.pow(Argument(),0);
+						return m_container[T(0)];
 					} else {
-						return insert_new(q);
+						return insert_new(x);
 					}
 				} else {
 					return it->second;
 				}
 			}
 		private:
-			void init(const T &x)
+			Argument &insert_new(const T &x)
 			{
-				m_container[mp_rational(1)] = x;
-			}
-			T &insert_new(const mp_rational &q)
-			{
-				m_container[q] = m_arith_functor.pow(m_container[mp_rational(1)],q);
-				return m_container[q];
+				m_container[x] = m_arith_functor.pow(m_container[T(1)],x);
+				return m_container[x];
 			}
 		protected:
-			container_type			m_container;
-			const arith_functor_type	m_arith_functor;
+			container_type		m_container;
+			const ArithmeticFunctor	m_arith_functor;
 	};
 }
 

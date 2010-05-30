@@ -34,7 +34,7 @@ int main()
 settings::set_nthread(2);
   psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
-  a = std::pow(a,30);
+  a = a.pow(30);
   poly c(a);
   c+=1;
   a*=c;

@@ -23,8 +23,9 @@
 
 #include <complex>
 
+#include "../core/mp.h"
 #include "../core/numerical_coefficients/mpq_cf.h"
-#include "../core/polynomial_common/q_expo_array.h"
+#include "../core/polynomial_common/expo_vector.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/polynomial/polynomial.h"
 #include "../core/truncators/power_series.h"
@@ -37,7 +38,7 @@ namespace manipulators
 	typedef polynomial
 	<
 		mpq_cf,
-		q_expo_array<0>,
+		expo_vector<mp_rational,0>,
 		polynomial_multiplier,
 		truncators::power_series
 	> qqpoly;

@@ -34,6 +34,7 @@
 #include <vector>
 
 #include "../base_classes/int_array.h"
+#include "../base_classes/vector_key.h"
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../int_power_cache.h"

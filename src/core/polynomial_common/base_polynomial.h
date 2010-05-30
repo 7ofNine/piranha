@@ -21,6 +21,8 @@
 #ifndef PIRANHA_BASE_POLYNOMIAL_H
 #define PIRANHA_BASE_POLYNOMIAL_H
 
+#include <algorithm>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <cstddef>
 #include <vector>
@@ -63,10 +65,11 @@ namespace piranha
 					if (it->m_key[pos] == -1) {
 						piranha_throw(value_error,"exponent is -1 in integrand polynomial, cannot proceed");
 					}
-					it->m_key.upload_to_vector(tmp_expos);
+					std::copy(it->m_key.begin(),it->m_key.end(),tmp_expos.begin());
 					tmp_expos[pos] += 1;
 					typename Derived::term_type tmp(*it);
-					tmp.m_key.assign_vector(tmp_expos);
+					tmp.m_key.resize(boost::numeric_cast<typename Derived::term_type::key_type::size_type>(tmp_expos.size()));
+					std::copy(tmp_expos.begin(),tmp_expos.end(),tmp.m_key.begin());
 					tmp.m_cf.divide_by(it->m_key[pos] + 1,args_tuple);
 					retval.insert(tmp,args_tuple);
 				}

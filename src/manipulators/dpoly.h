@@ -21,10 +21,11 @@
 #ifndef PIRANHA_DPOLY_H
 #define PIRANHA_DPOLY_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/numerical_coefficients/double_cf.h"
-#include "../core/polynomial_common/expo_array.h"
+#include "../core/polynomial_common/expo_vector.h"
 #include "../core/polynomial/polynomial.h"
 #include "../core/polynomial_common/polynomial_multiplier.h"
 #include "../core/truncators/power_series.h"
@@ -37,7 +38,7 @@ namespace manipulators
 	typedef polynomial
 	<
 		double_cf,
-		expo_array<16, 0>,
+		expo_vector<boost::int16_t, 0>,
 		polynomial_multiplier,
 		truncators::power_series
 	> dpoly;

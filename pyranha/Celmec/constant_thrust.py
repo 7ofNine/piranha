@@ -80,11 +80,11 @@ def build_analytical(s0,pert_order):
 	def he_s(Hk):
 		# This will integrate wrt lambda the part of the k-th order of the Hamiltonian that depends on the coordinates
 		# and return the result as the generator for the Lie transform.
-		return integrate(Lam ** 3 * Hk.filtered([lambda t: any(n in t[0] or n in t[1] for n in coord)]),'lam')
-		#return integrate(Lam ** 3 * Hk.filtered(lambda t: t[1].h_order('lam') != 0),'lam')
+		# return integrate(Lam ** 3 * Hk.filtered([lambda t: any(n in t[0] or n in t[1] for n in coord)]),'lam')
+		return integrate(Lam ** 3 * Hk.filtered(lambda t: t[1].h_order('lam') != 0),'lam')
 	# Clear return values.
 	# Replace lambda with delta_lam + lambda_0.
-	ct.H_list = [H.sub('lam',lam + lam0).sub('Q',qqps())]
+	ct.H_list = [H.sub('Q',qqps())]
 	ct.chi_list = []
 	ct.direct = [[Lam, P, Q, lam, p, q]]
 	ct.inverse = [[Lam, P, Q, lam, p, q]]
