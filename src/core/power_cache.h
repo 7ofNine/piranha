@@ -29,7 +29,7 @@
 
 namespace piranha
 {
-	// Simple natural power cache: will calculate power of objects and store them internally for reuse.
+	// Simple power cache: will calculate power of objects and store them internally for reuse.
 	template <class Argument, class T, class ArithmeticFunctor>
 	class power_cache
 	{
@@ -41,6 +41,11 @@ namespace piranha
 			power_cache(const Argument &x): m_container(), m_arith_functor()
 			{
 				m_container[T(1)] = x;
+			}
+			power_cache(const Argument &x_1, const Argument &inv_x): m_container(), m_arith_functor()
+			{
+				m_container[T(1)] = x_1;
+				m_container[T(-1)] = inv_x;
 			}
 			const Argument &operator[](const T &x)
 			{

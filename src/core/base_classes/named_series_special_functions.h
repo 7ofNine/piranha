@@ -28,8 +28,8 @@
 
 #include "../common_functors.h"
 #include "../exceptions.h"
-#include "../int_power_cache.h"
 #include "../math.h"
+#include "../power_cache.h"
 #include "../mp.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -167,8 +167,8 @@ namespace piranha
 					eib2((beta/2).ei());
 				const Derived cos_t(eit.real()), sin_t(eit.imag());
 				std::complex<Derived> final_factor((gamma*(-m)).ei());
-				typedef int_power_cache<Derived,named_series_arithmetics<Derived> > real_cache_type;
-				typedef int_power_cache<std::complex<Derived>,
+				typedef power_cache<Derived,int,named_series_arithmetics<Derived> > real_cache_type;
+				typedef power_cache<std::complex<Derived>,int,
 					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
 				complex_cache_type
 					cp(ei_phi,emi_phi),
