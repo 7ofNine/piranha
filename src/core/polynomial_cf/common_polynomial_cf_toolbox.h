@@ -32,8 +32,8 @@
 
 namespace piranha
 {
-	template <class Derived>
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
+	template <class Derived>
 	class common_polynomial_cf
 	{
 		public:
@@ -43,31 +43,6 @@ namespace piranha
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,SubCachesCons,ArgsTuple>::type,ArgsTuple>::type type;
 			};
-			/// Return a single coefficient and a vector of integers representing the polynomial.
-			template <int TargetPos, class Cf, class ArgsTuple>
-			void get_int_linear_combination(std::pair<std::vector<Cf>, std::vector<int> > &res,
-											const ArgsTuple &args_tuple) const {
-				typedef typename Derived::const_iterator const_iterator;
-				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					const int pos = it->m_key.linear_arg_position();
-					if (pos >= 0) {
-						// Let's find the corresponding symbol in the target vector of arguments.
-						std::size_t i = 0;
-						for (; i < args_tuple.template get<TargetPos>().size(); ++i) {
-							if (args_tuple.template get<0>()[static_cast<std::size_t>(pos)] ==
-									args_tuple.template get<TargetPos>()[i]) {
-								break;
-							}
-						}
-						piranha_assert(i != args_tuple.template get<TargetPos>().size());
-						piranha_assert(i < res.second.size());
-						res.second[i] = it->m_cf.to_int();
-					} else {
-						res.first.push_back(it->m_cf);
-					}
-				}
-			}
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &args_tuple) const
 			{

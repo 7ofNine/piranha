@@ -22,6 +22,7 @@
 #define PIRANHA_JACOBI_ANGER_TOOLBOX_H
 
 #include <algorithm>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <complex>
@@ -40,12 +41,12 @@ namespace piranha
 	class jacobi_anger
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
-		//protected:
 		public:
 			template <class Term, class ArgsTuple>
 			static void jacang(const std::vector<Term const *> &v,
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 
-				std::complex<Derived> &retval, const ArgsTuple &args_tuple) {
+				std::complex<Derived> &retval, const ArgsTuple &args_tuple)
+			{
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				piranha_assert(retval.empty());
 				retval.base_add(1, args_tuple);
@@ -60,9 +61,9 @@ namespace piranha
 					}
 				}
 			}
-		private:
 			template <class Iterator, class ArgsTuple>
-			static std::complex<Derived> jacang_term(const Iterator &it, const ArgsTuple &args_tuple) {
+			static std::complex<Derived> jacang_term(Iterator it, const ArgsTuple &args_tuple)
+			{
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
 				// The Jacobi-Anger development is a development into Bessel functions of the first kind starting
@@ -81,7 +82,7 @@ namespace piranha
 							"The reported error was:\n")+ve.what());
 					}
 				}
-				const std::size_t n = n_;
+				const int n = boost::numeric_cast<int>(n_);
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
@@ -91,7 +92,7 @@ namespace piranha
 				const std::size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<typename std::complex<Derived>::term_type::key_type::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
-				for (std::size_t i = 1; i < n; ++i) {
+				for (int i = 1; i < n; ++i) {
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
 					std::copy((*it)->m_key.begin(),(*it)->m_key.end(),tmp_trig_mults.begin());

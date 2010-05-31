@@ -310,7 +310,7 @@ namespace piranha
 				}
 				return retval;
 			}
-		private:
+		protected:
 			container_type m_container;
 	};
 };

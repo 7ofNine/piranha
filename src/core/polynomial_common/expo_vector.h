@@ -106,10 +106,9 @@ namespace piranha
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
-				this->resize(w);
 				for (size_type i = 0; i < w; ++i)
 				{
-					(*this)[i] = boost::lexical_cast<value_type>(sd[i]);
+					this->m_container.push_back(boost::lexical_cast<value_type>(sd[i]));
 				}
 			}
 			/// Ctor from psym.
@@ -271,38 +270,6 @@ namespace piranha
 			degree_type partial_order(const PosTuple &pos_tuple) const
 			{
 				return partial_degree(pos_tuple);
-			}
-			/// Return the position of the linear argument in the monomial.
-			/**
-			 * It will throw if the monomial is not linear or zero degree.
-			 */
-			int linear_arg_position() const
-			{
-				// TODO: rework return value of this, it is ugly as sin :/
-				bool found_linear = false;
-				bool is_unity = true;
-				int candidate = -1;
-				const size_type size = this->size();
-				for (size_type i = 0; i < size; ++i) {
-					if ((*this)[i] == 1) {
-						is_unity = false;
-						if (found_linear) {
-							found_linear = false;
-							break;
-						} else {
-							candidate = i;
-							found_linear = true;
-						}
-					} else if ((*this)[i] != 0) {
-						is_unity = false;
-						found_linear = false;
-						break;
-					}
-				}
-				if (!found_linear && !is_unity) {
-					piranha_throw(value_error,"monomial is not linear");
-				}
-				return candidate;
 			}
 			/// Calculate partial derivative.
 			template <class Series, class PosTuple, class ArgsTuple>
