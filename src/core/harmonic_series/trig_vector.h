@@ -301,7 +301,6 @@ namespace piranha
 							out_stream << '-';
 						} else {
 							trig_vector_print_element_tex(out_stream,n);
-							out_stream << n;
 						}
 						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
 						printed_something = true;
