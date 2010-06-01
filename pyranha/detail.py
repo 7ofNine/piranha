@@ -143,6 +143,9 @@ def __series_contains(self,name):
 	from pyranha.Core import psym
 	return psym(name) in reduce(lambda a,b: a + b, self.arguments)
 
+def __series_deepcopy(self,memo):
+	return self.__copy__()
+
 def __add_method(module_name,method_name,function):
 	"""
 	Add a method to a manipulator.
@@ -178,6 +181,7 @@ def __enhance_manipulators(manipulators):
 		__add_method(i, "eval", __series_eval)
 		__add_method(i, "__contains__", __series_contains)
 		__add_method(i, "__repr__", __series_repr)
+		__add_method(i, "__deepcopy__", __series_deepcopy)
 
 import pyranha
 
