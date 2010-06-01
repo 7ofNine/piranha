@@ -18,38 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_QQPS_H
-#define PIRANHA_QQPS_H
+#include <boost/python/class.hpp>
+#include <boost/python/module.hpp>
+#include <string>
 
-#include <complex>
+#include "../../src/manipulators/dqps.h"
+#include "../series_instantiations.h"
+#include "../exceptions.h"
 
-#include "../core/mp.h"
-#include "../core/harmonic_series/trig_vector.h"
-#include "../core/numerical_coefficients/mpq_cf.h"
-#include "../core/polynomial_common/expo_vector.h"
-#include "../core/poisson_series_common/poisson_series_multiplier.h"
-#include "../core/poisson_series/poisson_series.h"
-#include "../core/polynomial_common/polynomial_multiplier.h"
-#include "../core/truncators/power_series.h"
+using namespace boost::python;
+using namespace piranha;
+using namespace piranha::manipulators;
+using namespace pyranha;
 
-namespace piranha
+BOOST_PYTHON_MODULE(_Dqps)
 {
-namespace manipulators
-{
-	/// Rational coefficient Poisson series.
-	typedef poisson_series
-	<
-		mpq_cf,
-		expo_vector<mp_rational,0>,
-		trig_vector<mp_rational, 1>,
-		polynomial_multiplier,
-		poisson_series_multiplier,
-		truncators::power_series,
-		truncators::power_series
-	> qqps;
+	translate_exceptions();
 
-	typedef std::complex<qqps> qqpsc;
+	class_<dqps> inst(
+		series_basic_instantiation<dqps>(std::string("dqps"),
+		std::string("Poisson series with double precision rational coefficients and arbitrary-precision rational exponents.")));
+	common_poisson_series_instantiation(inst, "dqps");
+	celmec_instantiation(inst);
+	series_trigonometric_instantiation(inst);
+	series_sub_instantiation<dqps, dqps>(inst);
+	series_ei_sub_instantiation<dqps, dqpsc>(inst);
+	class_<dqpsc> instc(
+		series_basic_instantiation<dqpsc>(std::string("dqpsc"),
+		std::string("Poisson series with complex double precision "
+		"rational coefficients and arbitrary-precision rational exponents.")));
+	common_poisson_series_instantiation(instc, "dqpsc");
+	series_complex_instantiation(instc, inst);
+	series_sub_instantiation<dqpsc, dqps>(instc);
+	series_ei_sub_instantiation<dqpsc, dqpsc>(instc);
 }
-}
-
-#endif

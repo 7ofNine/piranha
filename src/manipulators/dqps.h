@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PIRANHA_QQPS_H
-#define PIRANHA_QQPS_H
+#ifndef PIRANHA_DQPS_H
+#define PIRANHA_DQPS_H
 
+#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/mp.h"
 #include "../core/harmonic_series/trig_vector.h"
-#include "../core/numerical_coefficients/mpq_cf.h"
+#include "../core/numerical_coefficients/double_cf.h"
 #include "../core/polynomial_common/expo_vector.h"
 #include "../core/poisson_series_common/poisson_series_multiplier.h"
 #include "../core/poisson_series/poisson_series.h"
@@ -36,19 +37,18 @@ namespace piranha
 {
 namespace manipulators
 {
-	/// Rational coefficient Poisson series.
 	typedef poisson_series
 	<
-		mpq_cf,
+		double_cf,
 		expo_vector<mp_rational,0>,
-		trig_vector<mp_rational, 1>,
+		trig_vector<boost::int16_t, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,
 		truncators::power_series
-	> qqps;
+	> dqps;
 
-	typedef std::complex<qqps> qqpsc;
+	typedef std::complex<dqps> dqpsc;
 }
 }
 
