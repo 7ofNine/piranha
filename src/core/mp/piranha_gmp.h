@@ -515,7 +515,14 @@ namespace piranha
 			 */
 			explicit mp_integer():m_value(0) {}
 			/// Constructor from std::string.
-			explicit mp_integer(const std::string &str):m_value(str) {}
+			explicit mp_integer(const std::string &str):m_value(0)
+			{
+				try {
+					m_value = mpz_class(str);
+				} catch (const std::invalid_argument &) {
+					piranha_throw(value_error,"invalid string input");
+				}
+			}
 			/// Constructor from C string.
 			explicit mp_integer(const char *str):m_value(str) {}
 			/// Constructor from int.
