@@ -349,6 +349,30 @@ def lieS(eps,gen,arg,p_list,q_list,limit = None):
 		retval += tmp
 	return retval
 
+class lie_cache(object):
+	"""
+	Cache of Lie derivatives. Will remember the Lie derivatives of lower orders and use them to calculate higher order derivatives.
+	"""
+	def __init__(self,gen,arg,p_list,q_list):
+		"""
+		Initialise with generator gen, argument arg, list of momenta names p_list and list of coordinates names q_list.
+		"""
+		from copy import deepcopy
+		self.__gen = deepcopy(gen)
+		self.__p_list = deepcopy(p_list)
+		self.__q_list = deepcopy(q_list)
+		self.__container = [deepcopy(arg)]
+	def __getitem__(self,n):
+		"""
+		Require the Lie derivative of order n.
+		"""
+		if not is_instance(n,int) or n < 0:
+			raise ValueError('Invalid order.')
+		from copy import deepcopy
+		for i in range(n - len(self.__container) + 1):
+			self.__container.append(lieL(self.__gen,self.__container[-1],self.__p_list,self.__q_list))
+		return deepcopy(self.__container[n])
+
 def orbitalR(angles):
 	"""
 	Return the rotation matrix from the orbital plane to the three-dimensional reference plane in which
