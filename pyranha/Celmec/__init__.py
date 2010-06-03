@@ -259,7 +259,7 @@ def mdelaunay2poincare(md):
 
 	Return values: [Lambda,y,z,lambda,x,v]
 	"""
-	from copy import copy
+	from copy import deepcopy
 	from pyranha import manipulators
 	from pyranha.Core import psym
 	from pyranha.Math import root, cos, sin
@@ -271,7 +271,87 @@ def mdelaunay2poincare(md):
 	else:
 		two = 2.
 	sqrt2P, sqrt2Q = root(2,two * P), root(2,two * Q)
-	return [copy(Lam),sqrt2P * cos(p),sqrt2Q * cos(q),copy(lam),sqrt2P * sin(p),sqrt2Q * sin(q)]
+	return [deepcopy(Lam),sqrt2P * cos(p),sqrt2Q * cos(q),deepcopy(lam),sqrt2P * sin(p),sqrt2Q * sin(q)]
+
+def oe2s(oe):
+	"""
+	Transform classical orbital elements into state vector.
+	"""
+	# TODO: proper docs.
+	from scipy.optimize import fsolve
+	from math import sin, cos, sqrt, asin
+	from numpy import dot, concatenate
+	a, e, s, om, Om, M = oe
+	n = sqrt(1. / (a ** 3))
+	E = fsolve(lambda x: x - e * sin(x) - M, 0)
+	i = 2 * asin(s)
+	# Position and velocity in the orbital plane.
+	rp = [a * (cos(E) - e), a * sqrt(1 - e ** 2) * sin(E), 0]
+	vp = [-(n * a * sin(E)) / (1 - e * cos(E)), n * a * sqrt(1 - e ** 2) * cos(E) / (1 - e * cos(E)),0]
+	# Rotate the orbital plane
+	Rxq = orbitalR([om,i,Om])
+	return concatenate((dot(Rxq,rp),dot(Rxq,vp)))
+
+def s2oe(s):
+	"""
+	Transform state vector into classical orbital elements.
+	"""
+	from numpy.linalg import norm
+	from numpy import array, cross, dot
+	from math import acos, atan2, cos, pi, sin, sqrt
+	# Position and velocity.
+	v_r = s[:3]
+	v_v = s[3:]
+	r = norm(v_r)
+	v = norm(v_v)
+	# Angular momentum.
+	v_h = cross(v_r,v_v)
+	h = norm(v_h)
+	# Semi-major axis.
+	a = -1. / (2. * (v * v / 2. - 1. / r))
+	# Eccentricity vector.
+	v_e = cross(v_v,v_h) - array(v_r) / r
+	e = norm(v_e)
+	# s = sin(i/2)
+	s = sqrt((1. - v_h[2] / h) / 2.)
+	# Vector of the ascending node.
+	v_n = [-v_h[1],v_h[0],0]
+	n = norm(v_n)
+	# omega and Omega.
+	if e == 0:
+		om = 0.
+	elif s == 0:
+		om = acos(v_e[0] / e)
+	elif v_e[2] >= 0:
+		om = acos(dot(v_n,v_e) / (n * e))
+	else:
+		om = 2 * pi - acos(dot(v_n,v_e) / (n * e))
+	if s == 0:
+		Om = 0.
+	elif v_n[1] >= 0:
+		Om = acos(v_n[0] / n)
+	else:
+		Om = 2 * pi - acos(v_n[0] / n)
+	# True anomaly.
+	if e == 0 and s == 0:
+		if v_v[0] <= 0:
+			f = acos(v_r[0] / r)
+		else:
+			f = 2 * pi - acos(v_r[0] / r)
+	elif e == 0:
+		if dot(v_n,v_v) <= 0:
+			f = acos(dot(v_n,v_r) / (n * r))
+		else:
+			f = 2 * pi - acos(dot(v_n,v_r) / (n * r))
+	elif dot(v_r,v_v) >= 0:
+		f = acos(dot(v_e,v_r) / (e * r))
+	else:
+		f = 2 * pi - acos(dot(v_e,v_r) / (e * r))
+	# Eccentric anomaly.
+	E = atan2(sqrt(1 - e * e) * sin(f),e + cos(f))
+	# Mean anomaly.
+	M = E - e * sin(E)
+	return [a,e,s,om,Om,M]
 
 def poisson_bra(s1,s2,p_list,q_list):
 	"""
@@ -331,7 +411,7 @@ def lieS(eps,gen,arg,p_list,q_list,limit = None):
 	as lists of names of the canonical momenta and coordinates. The limit of the series expansion,if not specified,
 	is taken from the active truncator.
 	"""
-	from copy import copy
+	from copy import deepcopy
 	if limit is None:
 		n = eps.psi()
 	else:
@@ -340,8 +420,8 @@ def lieS(eps,gen,arg,p_list,q_list,limit = None):
 		n = limit
 	if n == 0:
 		return type(eps)()
-	tmp = copy(arg)
-	retval = copy(arg)
+	tmp = deepcopy(arg)
+	retval = deepcopy(arg)
 	for i in range(1,n):
 		tmp = lieL(gen,tmp,p_list,q_list)
 		tmp *= eps
@@ -366,12 +446,183 @@ class lie_cache(object):
 		"""
 		Require the Lie derivative of order n.
 		"""
-		if not is_instance(n,int) or n < 0:
+		if not isinstance(n,int) or n < 0:
 			raise ValueError('Invalid order.')
 		from copy import deepcopy
 		for i in range(n - len(self.__container) + 1):
 			self.__container.append(lieL(self.__gen,self.__container[-1],self.__p_list,self.__q_list))
 		return deepcopy(self.__container[n])
+
+class lie_theory(object):
+	"""
+	Lie theory class.
+	
+	This class produces a Lie theory given an Hamiltonian, a set of variable names and a list of
+	solvers for the homological equations.
+	
+	Each class deriving from lie_theory must implement the abstract method solve_last().
+	"""
+	from abc import ABCMeta as __abc_meta
+	from abc import abstractmethod as __abs_method
+	__metaclass__ = __abc_meta
+	def __init__(self,H,eps_name,p_names,q_names,he_solvers):
+		"""
+		Construct a Lie theory from:
+		
+		H -- series representing the Hamiltonian
+		eps_name -- name of the variable representing the small quantity (eps)
+		p_names -- list of names of variables representing the momenta
+		q_names -- list of names of variables representing the coordinates
+		he_solvers -- list of callable object representing the homological equation solvers
+		
+		The final order of the theory is given by len(he_solvers). For each order n of the theory,
+		a homological equation solver is intended to take as argument the part of the current Hamiltonian
+		which contains terms in eps ** n and return the generating function for the transformation.
+		"""
+		from copy import deepcopy
+		from pyranha import manipulators
+		from pyranha.Core import psym
+		# Input parameters checks.
+		if not type(H) in manipulators:
+			raise(TypeError('Hamiltonian must be a series.'))
+		self.__H = deepcopy(H)
+		self.__series_type = type(H)
+		if not isinstance(eps_name,str) or not all([isinstance(i,str) for i in p_names]) or not all([isinstance(i,str) for i in q_names]):
+			raise(TypeError('Variable names must be strings.'))
+		self.__eps_name = deepcopy(eps_name)
+		self.__p_names = list(p_names)
+		self.__q_names = list(q_names)
+		if len(self.__p_names) != len(self.__q_names):
+			raise(ValueError('The numbers of momenta and coordinates must be the same.'))
+		if len(self.__p_names) == 0:
+			raise(ValueError('Problem dimension must be strictly positive.'))
+		self.__he_solvers = list(he_solvers)
+		if not all([callable(i) for i in self.__he_solvers]):
+			raise(TypeError('Homological equation solvers must all be callable objects.'))
+		if len(self.__he_solvers) < 1:
+			raise(ValueError('The order of the theory must be at least 1.'))
+		self.__order = len(self.__he_solvers)
+		self.__init_list = None
+		# Run the calculations.
+		self.__compute_theory()
+	def __repr__(self):
+		retval = ''
+		retval += 'Hamiltonian:\n\t' + str(self.__H) + '\n\n'
+		retval += 'Eps:\n\t' + '\'' + str(self.__eps_name) + '\'\n'
+		retval += 'Momenta:\n\t' + str(self.__p_names) + '\n'
+		retval += 'Coordinates:\n\t' + str(self.__q_names) + '\n'
+		retval += 'Order:\n\t' + str(self.__order) + '\n'
+		return retval
+	def __compute_theory(self):
+		from pyranha.Core import psym, integer
+		self.__chi_list = []
+		self.__direct = []
+		self.__inverse = []
+		self.__H_list = [self.__H]
+		eps_series = self.__series_type(psym(self.__eps_name))
+		state_series = [self.__series_type(psym(s)) for s in self.__p_names] + [self.__series_type(psym(s)) for s in self.__q_names]
+		for i in range(0,self.__order):
+			print('\033[1;32mCurrent perturbative order: %d of %d\033[1;m' % (i + 1,self.__order))
+			print('Decomposing current Hamiltonian...')
+			# TODO: fix the filtering.
+			H_split = [self.__H_list[i].filtered([None, lambda t: t[1].degree(self.__eps_name) == j]).sub(self.__eps_name,self.__series_type(1)) for j in range(0,self.__order + 1)]
+			print('Solving homological equation...')
+			chi_n = self.__he_solvers[i](H_split[i + 1])
+			print('Initialising Hamiltonian Lie caches...')
+			H_lie_caches = [lie_cache(chi_n,Hn,self.__p_names,self.__q_names) for Hn in H_split]
+			print('Calculating Hamiltonian...')
+			H_n = self.__series_type(0)
+			for j in range(0,self.__order + 1):
+				tmp = self.__series_type(0)
+				for k in range(0,j / (i + 1) + 1):
+					tmp += H_lie_caches[j - k * (i + 1)][k] / (integer(k).factorial())
+				tmp *= eps_series ** j
+				H_n += tmp
+			self.__H_list.append(H_n)
+			self.__chi_list.append(chi_n)
+			s_limit = self.__order / (i + 1) + 1
+			print('Calculating ' +'\033[1;31mdirect\033[1;m ' +'transformations...')
+			self.__direct.append([lieS(eps_series ** (i + 1),chi_n,x,self.__p_names,self.__q_names,limit = s_limit) for x in state_series])
+			print('Calculating ' +'\033[1;31minverse\033[1;m ' +'transformations...')
+			self.__inverse.append([lieS(eps_series ** (i + 1),-chi_n,x,self.__p_names,self.__q_names,limit = s_limit) for x in state_series])
+			print(H_n.filtered([None, lambda t: t[1].degree(self.__eps_name) < i + 2]))
+	@__abs_method
+	def solve_last(self,init,t):
+		"""
+		Given a dictionary of initial conditions for all symbolic variables, return a dictionary with the value of
+		symbolic variables at time t.
+		
+		init -- dictionary with the values of the symbolic variables at time t = 0
+		t -- time the return dictionary refers to
+		"""
+		pass
+	def set_init(self,init):
+		"""
+		Set initial conditions of the theory.
+		
+		init -- dictionary with the values of the symbolic variables at time t = 0
+		"""
+		from copy import deepcopy
+		s_names = self.__p_names + self.__q_names
+		# Check that init eval dictionary has all the necessary variables.
+		if not all([s in init for s in s_names]):
+			raise(ValueError('Initial conditions are needed for *all* coordinates and momenta.'))
+		init_list = [deepcopy(init)]
+		for i in range(0,self.__order):
+			# Copy the original eval dictionary and transform coordinates and momenta.
+			cur_init = deepcopy(init)
+			for j in range(0,len(s_names)):
+				cur_init[s_names[j]] = self.__inverse[i][j].eval(init_list[-1])
+			init_list.append(cur_init)
+		self.__init_list = init_list
+	def evaluate(self,t):
+		"""
+		Return dictionary of symbolic variables evaluated at time t.
+		
+		t -- time
+		"""
+		from copy import deepcopy
+		if self.__init_list is None:
+			raise(ValueError('Initial conditions have not been set. Please use set_init().'))
+		s_names = self.__p_names + self.__q_names
+		evals = [self.solve_last(self.__init_list[-1],t)]
+		for d in list(reversed(self.__direct)):
+			cur_eval = deepcopy(evals[-1])
+			for j in range(0,len(s_names)):
+				cur_eval[s_names[j]] = d[j].eval(evals[-1])
+			evals.append(cur_eval)
+		return evals[-1]
+	@property
+	def H(self):
+		"""
+		List of Hamiltonians for all the orders of the theory.
+		"""
+		return self.__H_list
+	@property
+	def direct(self):
+		"""
+		List of direct coordinate transformations for all the orders of the theory.
+		"""
+		return self.__direct
+	@property
+	def inverse(self):
+		"""
+		List of inverse coordinate transformations for all the orders of the theory.
+		"""
+		return self.__inverse
+	@property
+	def chi(self):
+		"""
+		List of generating functions for all the orders of the theory.
+		"""
+		return self.__chi_list
+	@property
+	def init_list(self):
+		"""
+		List of initial conditions for all the orders of the theory.
+		"""
+		from copy import deepcopy
+		return deepcopy(self.__init_list)
 
 def orbitalR(angles):
 	"""
