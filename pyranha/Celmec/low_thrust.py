@@ -91,3 +91,85 @@ class lt_divergent(pyranha.Celmec.lie_theory,lt_base):
 		init_list = self.init_list[0]
 		s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],init_list['Q'],init_list['dlam'] + init_list['lam0'],init_list['p'],init_list['q']]))
 		return self._numerical_integrator(s0,tf,n)
+
+class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
+	def __init__(self,order,t,thrust,axis = 0):
+		from pyranha.Core import psym
+		from pyranha import manipulators
+		if not axis in [0,1]:
+			raise ValueError('Invalid axis.')
+		if not t in manipulators:
+			raise TypeError('t must be a series type.')
+		if not isinstance(order,int) or order <= 0 or order > 1:
+			raise ValueError('Invalid order.')
+		# First ctor.
+		lt_base.__init__(self,thrust,axis)
+		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
+		eps_series = t(psym('eps'))
+		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('Q',t(0))
+		# Second ctor.
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
+		# Isolate c1 and its derivatives.
+		self.__c1 = sum(filter(lambda t: t.degree('eps') == 1, self.H[-1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0))
+		self.__c1_Lam = self.__c1.partial('Lam')
+		self.__c1_P = self.__c1.partial('P')
+	def solve_last(self,init,t):
+		from copy import deepcopy
+		from math import sqrt
+		from scipy.integrate import quad
+		from scipy.optimize import fsolve
+		# Value of the hamiltonian in the last set of variables.
+		H_last = self.H[-1].eval(init)
+		# Define functions for evaluation of c1(P) and its derivatives.
+		def c1_P(P):
+			init_copy = deepcopy(init)
+			init_copy['P'] = P
+			return self.__c1.eval(init_copy)
+		def c1_Lam_P(P):
+			init_copy = deepcopy(init)
+			init_copy['P'] = P
+			return self.__c1_Lam.eval(init_copy)
+		def c1_P_P(P):
+			init_copy = deepcopy(init)
+			init_copy['P'] = P
+			return self.__c1_P.eval(init_copy)
+		# cos(p) as a function of P.
+		def cosp_P(P):
+			return (H_last + 1. / (2. * init['Lam'] ** 2)) / (self.thrust * c1_P(P))
+		# Define integrand function.
+		def I_P(P):
+			c1 = c1_P(P)
+			c2p = cosp_P(P) ** 2
+			return 1. / (self.thrust * c1 * sqrt(1. - c2p))
+		# Time as a function of P.
+		def t_P(P):
+			return quad(I_P,init['P'],P)[0]
+		# P as function of time.
+		def P_t(t):
+			return fsolve(lambda P: t_P(P) - t,init['P'])
+		# cos(p) as a function of time.
+		def cosp_t(t):
+			return cosp_P(P_t(t))
+		def lam_t(t):
+			def f(time):
+				P = P_t(time)
+				return c1_Lam_P(P) * cosp_P(P)
+			return init['lam'] + 1. / (init['Lam'] ** 3) * t + self.thrust * quad(f,0,t)[0]
+		def p_t(t):
+			def f(time):
+				P = P_t(time)
+				return c1_P_P(P) * cosp_P(P)
+			return init['p'] + self.thrust * quad(f,0,t)[0]
+		# Build return values.
+		init_copy = deepcopy(init)
+		init_copy['P'] = P_t(t)
+		init_copy['Q'] = 0.
+		init_copy['lam'] = lam_t(t)
+		init_copy['p'] = p_t(t)
+		init_copy['q'] = 0.
+		return init_copy
+	def numerical(self,tf,n):
+		from pyranha.Celmec import mdelaunay2oe, oe2s
+		init_list = self.init_list[0]
+		s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],0,init_list['lam'],init_list['p'],0]))
+		return self._numerical_integrator(s0,tf,n)
