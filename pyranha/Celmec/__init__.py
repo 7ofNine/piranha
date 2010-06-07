@@ -623,6 +623,30 @@ class lie_theory(object):
 		"""
 		from copy import deepcopy
 		return deepcopy(self.__init_list)
+	@property
+	def series_type(self):
+		"""
+		Series type used in the theory.
+		"""
+		return self.__series_type
+	@property
+	def eps_name(self):
+		"""
+		Name of the small quantity.
+		"""
+		return self.__eps_name
+	@property
+	def p_names(self):
+		"""
+		List of names of the momenta.
+		"""
+		return self.__p_names
+	@property
+	def q_names(self):
+		"""
+		List of names of the coordinates.
+		"""
+		return self.__q_names
 
 def orbitalR(angles):
 	"""
