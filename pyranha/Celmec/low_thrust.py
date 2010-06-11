@@ -100,7 +100,7 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 			raise ValueError('Invalid axis.')
 		if not t in manipulators:
 			raise TypeError('t must be a series type.')
-		if not isinstance(order,int) or order <= 0 or order > 1:
+		if not isinstance(order,int) or order <= 0:
 			raise ValueError('Invalid order.')
 		# First ctor.
 		lt_base.__init__(self,thrust,axis)
@@ -110,29 +110,40 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		# Second ctor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
 		# Isolate c1 and its derivatives.
-		self.__c1 = sum(filter(lambda t: t.degree('eps') == 1, self.H[-1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0))
-		self.__c1_Lam = self.__c1.partial('Lam')
-		self.__c1_P = self.__c1.partial('P')
+		self.__c_list = [sum(filter(lambda t: t.degree('eps') == i + 1, self.H[i + 1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0)) for i in range(self.order)]
+		self.__c_Lam_list = [c.partial('Lam') for c in self.__c_list]
+		self.__c_P_list = [c.partial('P') for c in self.__c_list]
+	def cosp_P(self,P,init):
+		from copy import deepcopy
+		if self.order != 1:
+			raise ValueError('Non-unitary order is not allowed.')
+		H = self.H[1].eval(init)
+		H0 = -1. / (2. * init['Lam'] ** 2)
+		init_copy = deepcopy(init)
+		init_copy['P'] = P
+		return (H - H0) / (self.thrust * self.__c_list[0].eval(init_copy))
 	def solve_last(self,init,t):
 		from copy import deepcopy
 		from math import sqrt
 		from scipy.integrate import quad
 		from scipy.optimize import fsolve
+		if self.order != 1:
+			raise ValueError('Cannot solve for non unitary order.')
 		# Value of the hamiltonian in the last set of variables.
-		H_last = self.H[-1].eval(init)
+		H_last = self.H[1].eval(init)
 		# Define functions for evaluation of c1(P) and its derivatives.
 		def c1_P(P):
 			init_copy = deepcopy(init)
 			init_copy['P'] = P
-			return self.__c1.eval(init_copy)
+			return self.__c_list[0].eval(init_copy)
 		def c1_Lam_P(P):
 			init_copy = deepcopy(init)
 			init_copy['P'] = P
-			return self.__c1_Lam.eval(init_copy)
+			return self.__c_Lam_list[0].eval(init_copy)
 		def c1_P_P(P):
 			init_copy = deepcopy(init)
 			init_copy['P'] = P
-			return self.__c1_P.eval(init_copy)
+			return self.__c_P_list[0].eval(init_copy)
 		# cos(p) as a function of P.
 		def cosp_P(P):
 			return (H_last + 1. / (2. * init['Lam'] ** 2)) / (self.thrust * c1_P(P))
@@ -156,6 +167,7 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 				return c1_Lam_P(P) * cosp_P(P)
 			return init['lam'] + 1. / (init['Lam'] ** 3) * t + self.thrust * quad(f,0,t)[0]
 		def p_t(t):
+			# TODO: no need to integrate here... acos with checks?
 			def f(time):
 				P = P_t(time)
 				return c1_P_P(P) * cosp_P(P)

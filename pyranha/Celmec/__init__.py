@@ -647,6 +647,12 @@ class lie_theory(object):
 		List of names of the coordinates.
 		"""
 		return self.__q_names
+	@property
+	def order(self):
+		"""
+		Order of the theory.
+		"""
+		return self.__order
 
 def orbitalR(angles):
 	"""
