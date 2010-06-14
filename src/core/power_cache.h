@@ -64,6 +64,13 @@ namespace piranha
 		private:
 			Argument &insert_new(const T &x)
 			{
+				if (x < 0) {
+					iterator it = m_container.find(T(-1));
+					if (it != m_container.end()) {
+						m_container[x] = m_arith_functor.pow(m_container[T(-1)],-x);
+						return m_container[x];
+					}
+				}
 				m_container[x] = m_arith_functor.pow(m_container[T(1)],x);
 				return m_container[x];
 			}
