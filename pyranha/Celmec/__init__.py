@@ -273,6 +273,21 @@ def mdelaunay2poincare(md):
 	sqrt2P, sqrt2Q = root(2,two * P), root(2,two * Q)
 	return [deepcopy(Lam),sqrt2P * cos(p),sqrt2Q * cos(q),deepcopy(lam),sqrt2P * sin(p),sqrt2Q * sin(q)]
 
+def poincare2mdelaunay(pv):
+	"""
+	Transform Poincare' variables into modified Delaunay orbital elements.
+
+	Return values: [Lambda,P,Q,lambda,p,q]
+	"""
+	from copy import deepcopy
+	from math import sqrt, atan2
+	Lam, y, z, lam, x, v = pv
+	P = (x ** 2 + y ** 2) / 2.
+	Q = (z ** 2 + v ** 2) / 2.
+	p = atan2(x / sqrt(2. * P), y / sqrt(2. * P))
+	q = atan2(v / sqrt(2. * Q), z / sqrt(2. * Q))
+	return deepcopy([Lam,P,Q,lam,p,q])
+
 def oe2s(oe):
 	"""
 	Transform classical orbital elements into state vector.

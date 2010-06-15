@@ -58,6 +58,12 @@ class lt_base(object):
 		# Position vector in space.
 		r = dot(Rxq,ro)
 		return -r[self.__axis]
+	def Hamiltonian(self,cartesian):
+		from math import sqrt
+		x, y, z, vx, vy, vz = cartesian
+		v2 = vx ** 2 + vy ** 2 + vz ** 2
+		r = sqrt(x ** 2 + y ** 2 + z ** 2)
+		return v2 / 2. - 1. / r - self.thrust * cartesian[self.axis]
 	@property
 	def thrust(self):
 		return self.__thrust
@@ -91,6 +97,10 @@ class lt_divergent(pyranha.Celmec.lie_theory,lt_base):
 		init_list = self.init_list[0]
 		s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],init_list['Q'],init_list['dlam'] + init_list['lam0'],init_list['p'],init_list['q']]))
 		return self._numerical_integrator(s0,tf,n)
+	def cartesian(self,t):
+		from pyranha.Celmec import mdelaunay2oe, oe2s
+		tmp = self.evaluate(t)
+		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['dlam'] + tmp['lam0'],tmp['p'],tmp['q']]))
 
 class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 	def __init__(self,order,t,thrust,axis = 0):
@@ -185,3 +195,43 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		init_list = self.init_list[0]
 		s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],0,init_list['lam'],init_list['p'],0]))
 		return self._numerical_integrator(s0,tf,n)
+	def cartesian(self,t):
+		from pyranha.Celmec import mdelaunay2oe, oe2s
+		tmp = self.evaluate(t)
+		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['lam'],tmp['p'],tmp['q']]))
+
+class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
+	def __init__(self,order,t,thrust,axis = 0):
+		from pyranha.Core import psym, rational
+		from pyranha import manipulators
+		from pyranha import truncators
+		if not t in manipulators:
+			raise TypeError('t must be a series type.')
+		if not isinstance(order,int) or order <= 0:
+			raise ValueError('Invalid order.')
+		# First constructor.
+		lt_base.__init__(self,thrust,axis)
+		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
+		lam0, dlam = t(psym('lam0')), t(psym('dlam'))
+		eps_series = t(psym('eps'))
+		two, x, y, z, v = t(psym('two')), t(psym('x')), t(psym('y')), t(psym('z')), t(psym('v'))
+		# Complex type.
+		ct = type(t().complex())
+		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('lam',lam0 + dlam)
+		H = H.ei_sub('p',ct(y * (two * P) ** (-rational(1,2)),x * (two * P) ** (-rational(1,2)))).ei_sub('q',ct(z * (two * Q) ** (-rational(1,2)),v * (two * Q) ** (-rational(1,2)))).sub('P',(x ** 2 + y ** 2) / 2).sub('Q',(z ** 2 + v ** 2) / 2)
+		# Second constructor.
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
+	def solve_last(self,init,t):
+		from copy import deepcopy
+		retval = deepcopy(init)
+		retval['dlam'] = retval['dlam'] + 1. / (retval['Lam'] ** 3) * t
+		return retval
+	def numerical(self,tf,n):
+		from pyranha.Celmec import poincare2mdelaunay, mdelaunay2oe, oe2s
+		init_list = self.init_list[0]
+		s0 = oe2s(mdelaunay2oe(poincare2mdelaunay([init_list['Lam'],init_list['y'],init_list['z'],init_list['dlam'] + init_list['lam0'],init_list['x'],init_list['v']])))
+		return self._numerical_integrator(s0,tf,n)
+	def cartesian(self,t):
+		from pyranha.Celmec import poincare2mdelaunay, mdelaunay2oe, oe2s
+		tmp = self.evaluate(t)
+		return oe2s(mdelaunay2oe(poincare2mdelaunay([tmp['Lam'],tmp['y'],tmp['z'],tmp['dlam'] + tmp['lam0'],tmp['x'],tmp['v']])))
