@@ -597,10 +597,8 @@ class lie_theory(object):
 		t -- time
 		"""
 		from copy import deepcopy
-		if self.__init_list is None:
-			raise(ValueError('Initial conditions have not been set. Please use set_init().'))
 		s_names = self.__p_names + self.__q_names
-		evals = [self.solve_last(self.__init_list[-1],t)]
+		evals = [self.solve_last(self.init_list[-1],t)]
 		for d in list(reversed(self.__direct)):
 			cur_eval = deepcopy(evals[-1])
 			for j in range(0,len(s_names)):
@@ -637,6 +635,8 @@ class lie_theory(object):
 		List of initial conditions for all the orders of the theory.
 		"""
 		from copy import deepcopy
+		if self.__init_list is None:
+			raise(ValueError('Initial conditions have not been set. Please use set_init().'))
 		return deepcopy(self.__init_list)
 	@property
 	def series_type(self):

@@ -20,13 +20,16 @@
 import pyranha.Celmec
 
 class lt_base(object):
-	def __init__(self,thrust,axis):
+	def __init__(self,thrust,axis,trunc_order):
 		if not isinstance(thrust,float) or thrust <= 0:
 			raise ValueError('Invalid thrust.')
 		if not isinstance(axis,int) or not axis in [0,1,2]:
 			raise ValueError('Invalid axis.')
+		if not isinstance(trunc_order,int) or trunc_order < 3:
+			raise ValueError('Invalid truncation order.')
 		self.__thrust = thrust
 		self.__axis = axis
+		self.__trunc_order = trunc_order
 	def _numerical_integrator(self,s0,tf,n):
 		"""
 		Return a list of n state vectors starting from t = 0 to t = tf assuming as initial conditions
@@ -70,23 +73,31 @@ class lt_base(object):
 	@property
 	def axis(self):
 		return self.__axis
+	@property
+	def trunc_order(self):
+		return self.__trunc_order
 
-class lt_divergent(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0):
-		from pyranha.Core import psym
-		from pyranha import manipulators
+class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+		from pyranha.Core import psym, rational
+		from pyranha import manipulators, truncators
 		if not t in manipulators:
 			raise TypeError('t must be a series type.')
 		if not isinstance(order,int) or order <= 0:
 			raise ValueError('Invalid order.')
 		# First constructor.
-		lt_base.__init__(self,thrust,axis)
+		lt_base.__init__(self,thrust,axis,trunc_order)
 		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
 		lam0, dlam = t(psym('lam0')), t(psym('dlam'))
 		eps_series = t(psym('eps'))
+		# Setup the truncators.
+		truncators.unset()
+		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('lam',lam0 + dlam)
 		# Second constructor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['dlam','p','q'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
+		# Reset the truncator on exit.
+		truncators.unset()
 	def solve_last(self,init,t):
 		from copy import deepcopy
 		retval = deepcopy(init)
@@ -102,10 +113,10 @@ class lt_divergent(pyranha.Celmec.lie_theory,lt_base):
 		tmp = self.evaluate(t)
 		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['dlam'] + tmp['lam0'],tmp['p'],tmp['q']]))
 
-class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0):
-		from pyranha.Core import psym
-		from pyranha import manipulators
+class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+		from pyranha.Core import psym, rational
+		from pyranha import manipulators, truncators
 		if not axis in [0,1]:
 			raise ValueError('Invalid axis.')
 		if not t in manipulators:
@@ -113,9 +124,12 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		if not isinstance(order,int) or order <= 0:
 			raise ValueError('Invalid order.')
 		# First ctor.
-		lt_base.__init__(self,thrust,axis)
+		lt_base.__init__(self,thrust,axis,trunc_order)
 		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
 		eps_series = t(psym('eps'))
+		# Setup the truncators.
+		truncators.unset()
+		truncators.degree.set(['P'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('Q',t(0))
 		# Second ctor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
@@ -123,6 +137,8 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		self.__c_list = [sum(filter(lambda t: t.degree('eps') == i + 1, self.H[i + 1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0)) for i in range(self.order)]
 		self.__c_Lam_list = [c.partial('Lam') for c in self.__c_list]
 		self.__c_P_list = [c.partial('P') for c in self.__c_list]
+		# Reset the truncator on exit.
+		truncators.unset()
 	def cosp_P(self,P,init):
 		from copy import deepcopy
 		if self.order != 1:
@@ -201,26 +217,34 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['lam'],tmp['p'],tmp['q']]))
 
 class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
 		from pyranha.Core import psym, rational
-		from pyranha import manipulators
-		from pyranha import truncators
+		from pyranha import manipulators, truncators
 		if not t in manipulators:
 			raise TypeError('t must be a series type.')
 		if not isinstance(order,int) or order <= 0:
 			raise ValueError('Invalid order.')
 		# First constructor.
-		lt_base.__init__(self,thrust,axis)
+		lt_base.__init__(self,thrust,axis,trunc_order)
 		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
 		lam0, dlam = t(psym('lam0')), t(psym('dlam'))
 		eps_series = t(psym('eps'))
 		two, x, y, z, v = t(psym('two')), t(psym('x')), t(psym('y')), t(psym('z')), t(psym('v'))
 		# Complex type.
 		ct = type(t().complex())
+		# Setup the truncators.
+		truncators.unset()
+		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('lam',lam0 + dlam)
+		# Shut off the truncator in order to have an exact conversion to Poincare' variables.
+		truncators.unset()
 		H = H.ei_sub('p',ct(y * (two * P) ** (-rational(1,2)),x * (two * P) ** (-rational(1,2)))).ei_sub('q',ct(z * (two * Q) ** (-rational(1,2)),v * (two * Q) ** (-rational(1,2)))).sub('P',(x ** 2 + y ** 2) / 2).sub('Q',(z ** 2 + v ** 2) / 2)
+		# Re-establish the truncator, this time on Poincare' variables.
+		truncators.degree.set(['x','y','z','v'],self.trunc_order)
 		# Second constructor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
+		# Reset truncator on exit.
+		truncators.unset()
 	def solve_last(self,init,t):
 		from copy import deepcopy
 		retval = deepcopy(init)
