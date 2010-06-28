@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <cstddef>
 #include <iostream>
@@ -73,6 +74,7 @@ namespace piranha
 		}
 	}
 
+	// TODO: rework and fix the printing functions.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
@@ -82,7 +84,7 @@ namespace piranha
 		std::size_t count = 0;
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
-			it_getter<Iterator>::get(it)->print_pretty(tmp_stream,args_tuple);
+			from_iterator<Iterator>::get(it)->print_pretty(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') {
@@ -90,7 +92,9 @@ namespace piranha
 			}
 			count += tmp.size();
 			if (count > max_length) {
-				std::for_each(tmp.begin(), tmp.begin() + max_length - (count - tmp.size()), stream << boost::lambda::_1);
+				std::for_each(tmp.begin(),
+					tmp.begin() + boost::numeric_cast<std::string::iterator::difference_type>(max_length - (count - boost::numeric_cast<std::size_t>(tmp.size()))),
+					stream << boost::lambda::_1);
 				stream << "...";
 				break;
 			}
@@ -109,7 +113,7 @@ namespace piranha
 		} else {
 			try {
 				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
-				generic_print_terms_pretty(stream,&(*s.begin()),&(*s.end()),args_tuple);
+				generic_print_terms_pretty(stream,s.begin(),s.end(),args_tuple);
 			} catch (const value_error &) {
 				generic_print_terms_pretty(stream,begin(),end(),args_tuple);
 			}
@@ -124,7 +128,7 @@ namespace piranha
 
 		for (Iterator it = start; it != end; ++it) {
 			std::ostringstream tmp_stream;
-			it_getter<Iterator>::get(it)->print_tex(tmp_stream,args_tuple);
+			from_iterator<Iterator>::get(it)->print_tex(tmp_stream,args_tuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') {
@@ -145,7 +149,7 @@ namespace piranha
 		} else {
 			try {
 				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
-				generic_print_terms_tex(stream,&(*s.begin()),&(*s.end()),args_tuple);
+				generic_print_terms_tex(stream,s.begin(),s.end(),args_tuple);
 			} catch (const value_error &) {
 				generic_print_terms_tex(stream,begin(),end(),args_tuple);
 			}

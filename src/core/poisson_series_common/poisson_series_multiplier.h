@@ -190,6 +190,7 @@ namespace piranha
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
+						piranha_assert(size1 && size2);
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2a = &this->m_ckeys2a[0], *ck2b = &this->m_ckeys2b[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());

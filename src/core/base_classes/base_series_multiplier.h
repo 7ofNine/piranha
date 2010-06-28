@@ -199,6 +199,7 @@ namespace piranha
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
 					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_terms2.size();
+					piranha_assert(size1 && size2);
 					const term_type1 **t1 = &m_terms1[0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);

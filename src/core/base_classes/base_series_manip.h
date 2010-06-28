@@ -125,7 +125,8 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
 	inline void base_series<__PIRANHA_BASE_SERIES_TP>::insert_range(const Iterator &begin,
-		const Iterator &end, const ArgsTuple &args_tuple) {
+		const Iterator &end, const ArgsTuple &args_tuple)
+	{
 		for (Iterator it = begin; it != end; ++it) {
 			insert(*it,args_tuple);
 		}
@@ -273,7 +274,7 @@ namespace piranha
 		if (n == 0) {
 			try {
 				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
-				generic_base_split(retval,&(*s.begin()),&(*s.end()),args_tuple);
+				generic_base_split(retval,s.begin(),s.end(),args_tuple);
 			} catch (const value_error &) {
 				generic_base_split(retval,begin(),end(),args_tuple);
 			}
@@ -291,8 +292,8 @@ namespace piranha
 		const Iterator &end, const ArgsTuple &args_tuple) const
 	{
 		for (Iterator it = start; it != end; ++it) {
-			Series tmp_cf(Series::base_series_from_cf(it_getter<Iterator>::get(it)->m_cf,args_tuple));
-			Series tmp_key(Series::base_series_from_key(it_getter<Iterator>::get(it)->m_key,args_tuple));
+			Series tmp_cf(Series::base_series_from_cf(from_iterator<Iterator>::get(it)->m_cf,args_tuple));
+			Series tmp_key(Series::base_series_from_key(from_iterator<Iterator>::get(it)->m_key,args_tuple));
 			std::vector<Series> tmp;
 			tmp.reserve(2);
 			tmp.push_back(tmp_cf);

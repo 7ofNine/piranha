@@ -165,6 +165,7 @@ namespace piranha
 				//       if necessary.
 				code_terms();
 				// Shortcuts.
+				piranha_assert(derived_cast->m_terms1.size() && derived_cast->m_terms2.size());
 				const typename Series1::term_type **t1 = &derived_cast->m_terms1[0];
 				const typename Series2::term_type **t2 = &derived_cast->m_terms2[0];
 				// Cache the coefficients.

@@ -233,6 +233,12 @@ namespace piranha
 			{
 				const size_type size = this->size();
 				piranha_assert(size == v2.size());
+				// Shortcut in case there are no elements to compare.
+				if (!size) {
+					return false;
+				}
+				// Now we are certain that the size is at least 1, extract pointer to first element.
+				// C++ standard guarantees that elements in std::vector are in contiguous memory areas.
 				const value_type *ptr1 = &m_container[0], *ptr2 = &(v2.m_container[0]);
 				for (size_type i = size; i > 0; --i) {
 					if (ptr1[i - 1] < ptr2[i - 1]) {
@@ -248,6 +254,9 @@ namespace piranha
 			{
 				const size_type size = this->size();
 				piranha_assert(size == v2.size());
+				if (!size) {
+					return false;
+				}
 				const value_type *ptr1 = &m_container[0], *ptr2 = &(v2.m_container[0]);
 				for (size_type i = 0; i < size; ++i) {
 					if (ptr1[i] < ptr2[i]) {
@@ -283,12 +292,15 @@ namespace piranha
 			}
 			/// Test for zero elements.
 			/**
-			 * Returns true if all elements are zero, false otherwise.
+			 * Returns true if all elements are zero or size is zero, false otherwise.
 			 */
 			bool elements_are_zero() const
 			{
-				const value_type *ptr = &m_container[0];
 				const size_type size = this->size();
+				if (!size) {
+					return true;
+				}
+				const value_type *ptr = &m_container[0];
 				for (size_type i = 0; i < size; ++i) {
 					if (ptr[i] != 0) {
 						return false;
@@ -298,13 +310,17 @@ namespace piranha
 			}
 			/// Hash value.
 			/**
-			 * Will combine the hashes of all elements of the vector.
+			 * Will produce a combined hash of all the elements of the vector using boost::hash_combine.
+			 * An empty vector will produce a hash value of zero.
 			 */
 			std::size_t elements_hasher() const
 			{
 				const size_type size = this->size();
-				const value_type *ptr = &m_container[0];
+				if (!size) {
+					return 0;
+				}
 				std::size_t retval = 0;
+				const value_type *ptr = &m_container[0];
 				for (size_type i = 0; i < size; ++i) {
 					boost::hash_combine(retval,ptr[i]);
 				}

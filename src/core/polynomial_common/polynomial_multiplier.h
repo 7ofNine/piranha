@@ -91,6 +91,48 @@ namespace piranha
 		}
 	}
 
+	template <class Series, class Multiplier, class ArgsTuple>
+	struct vector_decoder
+	{
+		static const std::size_t block_size = 1000;
+		vector_decoder(const typename Series::term_type::cf_type *vc_res, const boost::numeric::interval<max_fast_int> &h,
+			const std::size_t &idx, const std::size_t &n, boost::mutex &mutex, Series &series, const Multiplier &mult, const ArgsTuple &args_tuple):
+			m_vc_res(vc_res),m_h(h),m_idx(idx),m_n(n),m_mutex(mutex),
+			m_series(series),m_mult(mult),m_args_tuple(args_tuple),
+			m_container(boost::numeric_cast<typename std::vector<typename Series::term_type>::size_type>(block_size))
+		{}
+		void operator()()
+		{
+			// TODO avoid overflows as done in vector coded multiplier
+			max_fast_int start_pos = m_h.lower() + boost::numeric_cast<max_fast_int>(m_idx * block_size);
+			while (start_pos < m_h.upper()) {
+				for (max_fast_int i = start_pos; i < start_pos + std::min(boost::numeric_cast<max_fast_int>(block_size),m_h.upper() - start_pos); ++i) {
+					if (!m_vc_res[i].is_ignorable(m_args_tuple)) {
+						m_mult.decode(m_vc_res[i], i,m_container[i - start_pos]);
+						if (!m_container[i - start_pos].is_canonical(m_args_tuple)) {
+							m_container[i - start_pos].canonicalise(m_args_tuple);
+						}
+					}
+				}
+//std::cout << "doing " << start_pos << " to " << start_pos + std::min(boost::numeric_cast<max_fast_int>(block_size),m_h.upper() - start_pos) << '\n';
+				boost::lock_guard<boost::mutex> lock(m_mutex);
+				for (max_fast_int i = start_pos; i < start_pos + std::min(boost::numeric_cast<max_fast_int>(block_size),m_h.upper() - start_pos); ++i) {
+					m_series.insert(m_container[i - start_pos], m_args_tuple);
+				}
+				start_pos += block_size * m_n;
+			}
+		}
+		const typename Series::term_type::cf_type	*m_vc_res;
+		const boost::numeric::interval<max_fast_int>	m_h;
+		const std::size_t				m_idx;
+		const std::size_t				m_n;
+		boost::mutex					&m_mutex;
+		Series						&m_series;
+		const Multiplier				&m_mult;
+		const ArgsTuple					&m_args_tuple;
+		std::vector<typename Series::term_type>		m_container;
+	};
+
 	/// Series multiplier specifically tuned for polynomials.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
@@ -175,6 +217,7 @@ namespace piranha
 						//       code range is [-h_min,ncodes - 1 - h_min]. So we shift the baseline memory location
 						//       so that we can use shifted codes directly as indices.
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
+						piranha_assert(size1 && size2);
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
@@ -267,6 +310,7 @@ namespace piranha
 						const std::size_t size_hint = static_cast<std::size_t>(
 							std::max<double>(this->m_density1,this->m_density2) * n_codes);
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
+						piranha_assert(size1 && size2);
 						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);

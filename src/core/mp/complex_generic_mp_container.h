@@ -429,8 +429,8 @@ namespace piranha
 				}
 				// Finally, we try to build the two components from the split vector,
 				// discarding the positions in which there are the brackets.
-				m_real = T(std::string(&split_v[0][1],&split_v[0][split_v[0].size()]));
-				m_imag = T(std::string(&split_v[1][0],&split_v[1][split_v[1].size() - 1]));
+				m_real = T(std::string(split_v[0].begin() + 1,split_v[0].end()));
+				m_imag = T(std::string(split_v[1].begin(),split_v[1].end() - 1));
 			}
 		protected:
 			T	m_real;

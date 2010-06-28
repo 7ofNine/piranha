@@ -25,6 +25,7 @@
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_pointer.hpp>
 #include <cstddef>
 #include <functional>
 #include <iostream>
@@ -69,21 +70,21 @@ namespace piranha
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
-	template <class Iterator>
-	struct it_getter
+	template <class Iterator, class Enable = void>
+	struct from_iterator
 	{
-		static const Iterator &get(const Iterator &it)
+		static const typename Iterator::value_type *get(const Iterator &it)
 		{
-			return it;
+			return &(*it);
 		}
 	};
 
-	template <class TermPointer>
-	struct it_getter<TermPointer *>
+	template <class Iterator>
+	struct from_iterator<Iterator,typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
 	{
-		static const TermPointer get(const TermPointer *p)
+		static typename Iterator::value_type get(const Iterator &it)
 		{
-			return *p;
+			return *it;
 		}
 	};
 
