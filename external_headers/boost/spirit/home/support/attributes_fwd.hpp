@@ -1,6 +1,6 @@
 /*=============================================================================
-    Copyright (c) 2001-2009 Hartmut Kaiser
-    Copyright (c) 2001-2009 Joel de Guzman
+    Copyright (c) 2001-2010 Hartmut Kaiser
+    Copyright (c) 2001-2010 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +14,21 @@
 
 namespace boost { namespace spirit { namespace traits
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Determine if T is a proxy
+    ///////////////////////////////////////////////////////////////////////////
+    template <typename T, typename Enable = void>
+    struct is_proxy;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Retrieve the attribute type to use from the given type
+    //
+    // This is needed to extract the correct attribute type from proxy classes
+    // as utilized in FUSION_ADAPT_CLASS
+    ///////////////////////////////////////////////////////////////////////////
+    template <typename Attribute, typename Enable = void>
+    struct attribute_type;
+
     ///////////////////////////////////////////////////////////////////////////
     // Determines how we pass attributes to semantic actions. This
     // may be specialized. By default, all attributes are wrapped in
@@ -30,7 +45,7 @@ namespace boost { namespace spirit { namespace traits
 
     ///////////////////////////////////////////////////////////////////////////
     // Sometimes the user needs to transform the attribute types for certain
-    // attributes. This template can be used as a customization point, where 
+    // attributes. This template can be used as a customization point, where
     // the user is able specify specific transformation rules for any attribute
     // type.
     ///////////////////////////////////////////////////////////////////////////
@@ -70,6 +85,9 @@ namespace boost { namespace spirit { namespace traits
     template <typename Container, typename T, typename Enable = void>
     struct push_back_container;
 
+    template <typename Container, typename Enable = void>
+    struct is_empty_container;
+
     ///////////////////////////////////////////////////////////////////////
     // Determine the iterator type of the given container type
     ///////////////////////////////////////////////////////////////////////
@@ -99,7 +117,7 @@ namespace boost { namespace spirit { namespace result_of
     template <typename Exposed, typename Transformed>
     struct pre_transform;
 
-    template <typename T> 
+    template <typename T>
     struct optional_value;
 
     template <typename Container>
@@ -107,9 +125,6 @@ namespace boost { namespace spirit { namespace result_of
 
     template <typename Container>
     struct end;
-
-    template <typename Iterator>
-    struct next;
 
     template <typename Iterator>
     struct deref;

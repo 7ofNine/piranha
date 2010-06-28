@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2009 Hartmut Kaiser
-//  Copyright (c) 2001-2009 Joel de Guzman
+//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2010 Joel de Guzman
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -133,7 +133,10 @@ namespace boost { namespace spirit { namespace karma
             // attribute of this sequence is a single element tuple
             typedef typename attribute<Context>::type_ attr_type_;
             typename traits::wrap_if_not_tuple<Attribute
-              , typename traits::one_element_sequence<attr_type_>::type 
+              , typename mpl::and_<
+                    traits::one_element_sequence<attr_type_>
+                  , mpl::not_<traits::one_element_sequence<Attribute> >
+                >::type 
             >::type attr(attr_);
 
             // return false if *any* of the generators fail

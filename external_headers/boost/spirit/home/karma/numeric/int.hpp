@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2009 Hartmut Kaiser
+//  Copyright (c) 2001-2010 Hartmut Kaiser
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -329,7 +329,7 @@ namespace boost { namespace spirit { namespace karma
 
             typedef any_int_generator<
                 T
-              , typename spirit::detail::get_encoding<
+              , typename spirit::detail::get_encoding_with_case<
                     Modifiers, unused_type, lower || upper>::type
               , typename detail::get_casetag<Modifiers, lower || upper>::type
               , Radix
@@ -380,7 +380,7 @@ namespace boost { namespace spirit { namespace karma
 
             typedef literal_int_generator<
                 T
-              , typename spirit::detail::get_encoding<
+              , typename spirit::detail::get_encoding_with_case<
                     Modifiers, unused_type, lower || upper>::type
               , typename detail::get_casetag<Modifiers, lower || upper>::type
               , Radix, force_sign, false
@@ -437,7 +437,7 @@ namespace boost { namespace spirit { namespace karma
 
             typedef literal_int_generator<
                 T
-              , typename spirit::detail::get_encoding<
+              , typename spirit::detail::get_encoding_with_case<
                     Modifiers, unused_type, lower || upper>::type
               , typename detail::get_casetag<Modifiers, lower || upper>::type
               , 10, false, true

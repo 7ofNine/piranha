@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2009 Hartmut Kaiser
-//  Copyright (c) 2001-2009 Joel de Guzman
+//  Copyright (c) 2001-2010 Hartmut Kaiser
+//  Copyright (c) 2001-2010 Joel de Guzman
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,78 +12,19 @@
 #endif
 
 #include <boost/spirit/home/karma/domain.hpp>
+#include <boost/spirit/home/karma/directive/buffer.hpp>
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/attributes.hpp>
 #include <boost/spirit/home/support/detail/hold_any.hpp>
 #include <boost/spirit/home/karma/detail/output_iterator.hpp>
 #include <boost/spirit/home/support/container.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/mpl/find_if.hpp>
-#include <boost/mpl/deref.hpp>
-#include <boost/mpl/distance.hpp>
-#include <boost/mpl/or.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/variant.hpp>
 #include <boost/detail/workaround.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace karma { namespace detail
 {
-    ///////////////////////////////////////////////////////////////////////////
-    //  A component is compatible to a given Attribute type if the Attribute
-    //  is the same as the expected type of the component
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Expected, typename Attribute>
-    struct attribute_is_compatible 
-      : is_convertible<Attribute, Expected> {};
-
-    template <typename Expected, typename Attribute>
-    struct attribute_is_compatible<Expected, boost::optional<Attribute> >
-      : is_convertible<Attribute, Expected> {};
-
-    template <typename Expected, typename Attribute, typename IsNotVariant>
-    struct compute_compatible_component_variant
-      : mpl::or_<
-          attribute_is_compatible<Expected, Attribute>
-        , is_same<hold_any, Expected> > {};
-
-    template <typename Expected, typename Attribute>
-    struct compute_compatible_component_variant<Expected, Attribute, mpl::false_>
-    {
-        typedef typename traits::variant_type<Attribute>::type variant_type;
-        typedef typename variant_type::types types;
-        typedef typename mpl::end<types>::type end;
-
-        typedef typename 
-            mpl::find_if<types, is_same<Expected, mpl::_1> >::type 
-        iter;
-
-        typedef typename mpl::distance<
-            typename mpl::begin<types>::type, iter
-        >::type distance;
-
-        typedef typename mpl::not_<is_same<iter, end> >::type type;
-        enum { value = type::value };
-    };
-
-    template <typename Expected, typename Attribute>
-    struct compute_compatible_component
-      : compute_compatible_component_variant<Expected, Attribute
-          , typename spirit::traits::not_is_variant<Attribute>::type> {};
-
-    template <typename Expected>
-    struct compute_compatible_component<Expected, unused_type>
-      : mpl::false_ {};
-
-    template <typename Attribute>
-    struct compute_compatible_component<unused_type, Attribute>
-      : mpl::false_ {};
-
-    template <>
-    struct compute_compatible_component<unused_type, unused_type>
-      : mpl::false_ {};
-
     ///////////////////////////////////////////////////////////////////////////
     //  execute a generator if the given Attribute type is compatible
     ///////////////////////////////////////////////////////////////////////////
@@ -136,7 +77,7 @@ namespace boost { namespace spirit { namespace karma { namespace detail
     template <typename Component, typename Attribute, typename Expected>
     struct alternative_generate<Component, Attribute, Expected
       , typename enable_if<
-            compute_compatible_component<Expected, Attribute> >::type>
+            traits::compute_compatible_component<Expected, Attribute> >::type>
     {
         template <typename OutputIterator, typename Context, typename Delimiter>
         static bool
@@ -170,7 +111,7 @@ namespace boost { namespace spirit { namespace karma { namespace detail
             component; // suppresses warning: C4100: 'component' : unreferenced formal parameter
 #endif
             typedef
-                compute_compatible_component<Expected, Attribute>
+                traits::compute_compatible_component<Expected, Attribute>
             component_type;
 
             typedef typename component_type::distance distance_type;
@@ -187,10 +128,7 @@ namespace boost { namespace spirit { namespace karma { namespace detail
                 return false;
 
             // returns true if any of the generators succeed
-            typedef
-                typename mpl::deref<typename component_type::iter>::type
-            compatible_type;
-
+            typedef typename component_type::compatible_type compatible_type;
             return component.generate(sink, ctx, d, get<compatible_type>(attr_));
         }
     };
@@ -229,6 +167,20 @@ namespace boost { namespace spirit { namespace karma { namespace detail
             if (r) 
                 buffering.buffer_copy();
             return r;
+        }
+
+        // avoid double buffering
+        template <typename Component>
+        bool operator()(buffer_directive<Component> const& component)
+        {
+            typedef typename 
+                traits::attribute_of<Component, Context>::type
+            expected_type;
+            typedef alternative_generate<
+                buffer_directive<Component>, Attribute, expected_type>
+            generate;
+
+            return generate::call(component, sink, ctx, delim, attr);
         }
 
         OutputIterator& sink;

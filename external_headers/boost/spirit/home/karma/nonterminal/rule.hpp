@@ -1,5 +1,5 @@
-//  Copyright (c) 2001-2009 Joel de Guzman
-//  Copyright (c) 2001-2009 Hartmut Kaiser
+//  Copyright (c) 2001-2010 Joel de Guzman
+//  Copyright (c) 2001-2010 Hartmut Kaiser
 // 
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying 
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,6 +16,7 @@
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <boost/fusion/include/vector.hpp>
@@ -36,6 +37,11 @@
 #include <boost/spirit/home/karma/detail/output_iterator.hpp>
 #include <boost/spirit/home/karma/nonterminal/detail/generator_binder.hpp>
 #include <boost/spirit/home/karma/nonterminal/detail/parameterized.hpp>
+
+#if defined(BOOST_MSVC)
+# pragma warning(push)
+# pragma warning(disable: 4355) // 'this' : used in base member initializer list warning
+#endif
 
 namespace boost { namespace spirit { namespace karma
 {
@@ -62,24 +68,25 @@ namespace boost { namespace spirit { namespace karma
       , typename T1 = unused_type
       , typename T2 = unused_type
       , typename T3 = unused_type
+      , typename T4 = unused_type
     >
     struct rule
       : proto::extends<
             typename proto::terminal<
-                reference<rule<OutputIterator, T1, T2, T3> const>
+                reference<rule<OutputIterator, T1, T2, T3, T4> const>
             >::type
-          , rule<OutputIterator, T1, T2, T3>
+          , rule<OutputIterator, T1, T2, T3, T4>
         >
-      , generator<rule<OutputIterator, T1, T2, T3> >
+      , generator<rule<OutputIterator, T1, T2, T3, T4> >
     {
         typedef mpl::int_<generator_properties::all_properties> properties;
 
         typedef OutputIterator iterator_type;
-        typedef rule<OutputIterator, T1, T2, T3> this_type;
+        typedef rule<OutputIterator, T1, T2, T3, T4> this_type;
         typedef reference<this_type const> reference_;
         typedef typename proto::terminal<reference_>::type terminal;
         typedef proto::extends<terminal, this_type> base_type;
-        typedef mpl::vector<T1, T2, T3> template_params;
+        typedef mpl::vector<T1, T2, T3, T4> template_params;
 
         // the output iterator is always wrapped by karma
         typedef detail::output_iterator<OutputIterator, properties> 
@@ -96,9 +103,15 @@ namespace boost { namespace spirit { namespace karma
                 karma::domain, template_params>::type
         delimiter_type;
 
+        // The rule's signature
         typedef typename
             spirit::detail::extract_sig<template_params>::type
         sig_type;
+
+        // The rule's encoding type
+        typedef typename
+            spirit::detail::extract_encoding<template_params>::type
+        encoding_type;
 
         // This is the rule's attribute type
         typedef typename
@@ -127,14 +140,22 @@ namespace boost { namespace spirit { namespace karma
             bool(output_iterator&, context_type&, delimiter_type const&)>
         function_type;
 
+        typedef typename
+            mpl::if_<
+                is_same<encoding_type, unused_type>
+              , unused_type
+              , tag::char_code<tag::encoding, encoding_type>
+            >::type
+        encoding_modifier_type;
+
         explicit rule(std::string const& name_ = "unnamed-rule")
-          : base_type(terminal::make(alias()))
+          : base_type(terminal::make(reference_(*this)))
           , name_(name_)
         {
         }
 
         rule(rule const& rhs)
-          : base_type(rhs)
+          : base_type(terminal::make(reference_(*this)))
           , name_(rhs.name_)
           , f(rhs.f)
         {
@@ -142,7 +163,7 @@ namespace boost { namespace spirit { namespace karma
 
         template <typename Expr>
         rule (Expr const& expr, std::string const& name_ = "unnamed-rule")
-          : base_type(terminal::make(alias()))
+          : base_type(terminal::make(reference_(*this)))
           , name_(name_)
         {
             // Report invalid expression error as early as possible.
@@ -150,7 +171,8 @@ namespace boost { namespace spirit { namespace karma
             // the expression (expr) is not a valid spirit karma expression.
             BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
 
-            f = detail::bind_generator<mpl::false_>(compile<karma::domain>(expr));
+            f = detail::bind_generator<mpl::false_>(
+                compile<karma::domain>(expr, encoding_modifier_type()));
         }
 
         rule& operator=(rule const& rhs)
@@ -184,7 +206,8 @@ namespace boost { namespace spirit { namespace karma
             // the expression (expr) is not a valid spirit karma expression.
             BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
 
-            f = detail::bind_generator<mpl::false_>(compile<karma::domain>(expr));
+            f = detail::bind_generator<mpl::false_>(
+                compile<karma::domain>(expr, encoding_modifier_type()));
             return *this;
         }
 
@@ -197,7 +220,8 @@ namespace boost { namespace spirit { namespace karma
             // the expression (expr) is not a valid spirit karma expression.
             BOOST_SPIRIT_ASSERT_MATCH(karma::domain, Expr);
 
-            r.f = detail::bind_generator<mpl::true_>(compile<karma::domain>(expr));
+            r.f = detail::bind_generator<mpl::true_>(
+                compile<karma::domain>(expr, encoding_modifier_type()));
             return r;
         }
 
@@ -236,6 +260,10 @@ namespace boost { namespace spirit { namespace karma
                 // an incompatible delimiter type.
                 if (f(sink, context, delim))
                 {
+                    // do a post-delimit if this is an implied verbatim
+                    if (is_same<delimiter_type, unused_type>::value)
+                        karma::delimit_out(sink, delim);
+
                     return true;
                 }
             }
@@ -266,6 +294,10 @@ namespace boost { namespace spirit { namespace karma
                 // an incompatible delimiter type.
                 if (f(sink, context, delim))
                 {
+                    // do a post-delimit if this is an implied verbatim
+                    if (is_same<delimiter_type, unused_type>::value)
+                        karma::delimit_out(sink, delim);
+
                     return true;
                 }
             }
@@ -299,5 +331,9 @@ namespace boost { namespace spirit { namespace karma
     };
 
 }}}
+
+#if defined(BOOST_MSVC)
+# pragma warning(pop)
+#endif
 
 #endif

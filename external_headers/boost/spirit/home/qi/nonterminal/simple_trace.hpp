@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2001-2009 Joel de Guzman
+    Copyright (c) 2001-2010 Joel de Guzman
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -55,7 +55,7 @@ namespace boost { namespace spirit { namespace qi
                     o << "\\t";
                 else if (c == static_cast<Char>('\v'))
                     o << "\\v";
-                else if (iscntrl(c))
+                else if (c < 127 && iscntrl(c))
                     o << "\\" << std::oct << static_cast<int>(c);
                 else
                     o << static_cast<char>(c);
@@ -114,6 +114,9 @@ namespace boost { namespace spirit { namespace qi
             for (int i = 0; first != last && i != n && *first; ++i, ++first)
                 detail::token_printer(BOOST_SPIRIT_DEBUG_OUT, *first);
             BOOST_SPIRIT_DEBUG_OUT << "</" << tag << '>' << std::endl;
+
+            // $$$ FIXME convert invalid xml characters (e.g. '<') to valid
+            // character entities. $$$
         }
 
         template <typename Iterator, typename Context, typename State>
@@ -139,8 +142,12 @@ namespace boost { namespace spirit { namespace qi
                     print_some("success", indent, first, last);
                     print_indent(indent);
                     BOOST_SPIRIT_DEBUG_OUT
-                        << "<attributes>"
-                        << context.attributes
+                        << "<attributes>";
+                    traits::print_attribute(
+                        BOOST_SPIRIT_DEBUG_OUT,
+                        context.attributes
+                    );
+                    BOOST_SPIRIT_DEBUG_OUT
                         << "</attributes>";
                     if (!fusion::empty(context.locals))
                         BOOST_SPIRIT_DEBUG_OUT

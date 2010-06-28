@@ -1,4 +1,4 @@
-//  Copyright (c) 2001-2009 Hartmut Kaiser
+//  Copyright (c) 2001-2010 Hartmut Kaiser
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -270,7 +270,7 @@ namespace boost { namespace spirit { namespace karma
     };
 
     ///////////////////////////////////////////////////////////////////////////
-    // Parser generators: make_xxx function (objects)
+    // Generator generators: make_xxx function (objects)
     ///////////////////////////////////////////////////////////////////////////
     template <typename Char, typename Modifiers>
     struct make_stream
@@ -283,7 +283,7 @@ namespace boost { namespace spirit { namespace karma
 
         typedef any_stream_generator<
             Char
-          , typename spirit::detail::get_encoding<
+          , typename spirit::detail::get_encoding_with_case<
                 Modifiers, unused_type, lower || upper>::type
           , typename detail::get_casetag<Modifiers, lower || upper>::type
         > result_type;
@@ -322,7 +322,7 @@ namespace boost { namespace spirit { namespace karma
         typedef typename add_const<A0>::type const_attribute;
         typedef lit_stream_generator<
             const_attribute, Char
-          , typename spirit::detail::get_encoding<
+          , typename spirit::detail::get_encoding_with_case<
                 Modifiers, unused_type, lower || upper>::type
           , typename detail::get_casetag<Modifiers, lower || upper>::type
         > result_type;
