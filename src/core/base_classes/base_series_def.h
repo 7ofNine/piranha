@@ -65,7 +65,7 @@ namespace piranha
 	template <class Term>
 	struct series_container
 	{
-		typedef boost::unordered_set<Term,boost::hash<Term>,std::equal_to<Term>,counting_allocator<Term,std::allocator<char> > > type;
+		typedef boost::unordered_set<Term,boost::hash<Term>,std::equal_to<Term>,counting_allocator<Term,std::allocator<Term> > > type;
 	};
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations

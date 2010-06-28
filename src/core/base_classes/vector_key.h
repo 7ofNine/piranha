@@ -27,11 +27,13 @@
 #include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "../memory.h"
 #include "../psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -47,16 +49,16 @@ namespace piranha
 	class vector_key
 	{
 			p_static_check(Position >= 0,"Wrong position.");
-			typedef std::vector<T> container_type;
+			typedef std::vector<T,counting_allocator<T,std::allocator<T> > > container_type;
 		public:
 			/// Type of contained data.
 			typedef T value_type;
 			/// Size type.
-			typedef typename std::vector<T>::size_type size_type;
+			typedef typename container_type::size_type size_type;
 			/// Const iterator
-			typedef typename std::vector<T>::const_iterator const_iterator;
+			typedef typename container_type::const_iterator const_iterator;
 			/// Iterator
-			typedef typename std::vector<T>::iterator iterator;
+			typedef typename container_type::iterator iterator;
 			/// Position in the series' arguments tuple.
 			static const int position = Position;
 			/// Separator for string representation.
