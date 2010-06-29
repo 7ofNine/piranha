@@ -120,6 +120,10 @@ namespace pyranha
 		if (py_is_complex_impl<T>::value) {
 			inst.add_static_property("is_complex", &py_is_complex<T>, "is_complex type trait for the series.");
 		}
+		if (piranha::is_rational_exponent<T>::value) {
+			inst.add_static_property("is_rational_exponent", &py_type_trait<piranha::is_rational_exponent<T> >,
+				"is_rational_exponent type trait for the series.");
+		}
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");

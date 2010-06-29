@@ -249,6 +249,25 @@ class series_trig_test(unittest.TestCase):
 					self.assert_(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
 						type(t().complex())(-1 + 0j)),x.besselJ(-n),limit))
 
+class series_celmec_test(unittest.TestCase):
+	"""
+	Exercise Celestial Mechanics relations, theories, etc.
+	"""
+	def runTest(self):
+		from pyranha import manipulators
+		from pyranha.Core import psym
+		from pyranha.Truncators import truncators
+		from pyranha.Celmec import low_thrust as lt
+		series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex') and hasattr(m,'is_divint_exact'),manipulators)
+		series_types_rat_expo = filter(lambda m: hasattr(m,'is_rational_exponent'),series_types)
+		truncators.unset()
+		for trunc_order in [5,7,9]:
+			for t in series_types_rat_expo:
+				P, Q, p, q, two = t(psym('P')), t(psym('Q')), t(psym('p')), t(psym('q')), t(psym('two'))
+				ltd_mdel = lt.lt_divergent_mdel(2,t,1E-3,verbose = False,trunc_order = trunc_order)
+				ltd_poinc = lt.lt_divergent_poincare(2,t,1E-3,verbose = False,trunc_order = trunc_order)
+				self.assertEqual(ltd_poinc.H[0].sub('y',(two * P).root(2) * p.cos()).sub('x',(two * P).root(2) * p.sin()).sub('z',(two * Q).root(2) * q.cos()).sub('v',(two * Q).root(2) * q.sin()),ltd_mdel.H[0])
+
 def suite_series():
 	suite = unittest.TestSuite()
 	suite.addTest(series_sf_test01())

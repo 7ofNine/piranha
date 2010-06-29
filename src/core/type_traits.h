@@ -24,11 +24,13 @@
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_complex.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <complex>
 
 #include "base_classes/base_series_tag.h"
 #include "config.h"
+#include "mp.h"
 
 namespace piranha
 {
@@ -153,6 +155,22 @@ namespace piranha
 	{
 		static const bool value = is_divint_exact<typename T::term_type::cf_type>::value || is_divint_exact<typename T::term_type::key_type>::value;
 	};
+
+	/// Default type trait for classes which can represent rational exponents.
+	/**
+	 * Used to determine whether the class can represent symbolic quantities raised to rational exponents.
+	 * Defaults to false.
+	 */
+	template <class, class Enable = void>
+	struct is_rational_exponent: boost::false_type {};
+
+	/// is_rational_exponent type trait specialisation for series.
+	/**
+	 * Will be true if series has a degree_type typedef which is rational.
+	 */
+	template <class T>
+	struct is_rational_exponent<T,typename boost::enable_if_c<boost::is_base_of<base_series_tag,T>::value && boost::is_same<typename T::degree_type,mp_rational>::value>::type>:
+	boost::true_type {};
 
 	template <class CfSeries, class Enable = void>
 	struct final_cf_impl
