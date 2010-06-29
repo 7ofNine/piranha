@@ -222,7 +222,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived besselJ(const int &n, const ArgsTuple &args_tuple) const
 			{
-				return Derived(besselJ(n,m_value),args_tuple);
+				return Derived(piranha::besselJ(n,m_value),args_tuple);
 			}
 			/// Get value.
 			const T &get_value() const {
