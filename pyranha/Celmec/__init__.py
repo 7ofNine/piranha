@@ -480,7 +480,7 @@ class lie_theory(object):
 	from abc import ABCMeta as __abc_meta
 	from abc import abstractmethod as __abs_method
 	__metaclass__ = __abc_meta
-	def __init__(self,H,eps_name,p_names,q_names,he_solvers):
+	def __init__(self,H,eps_name,p_names,q_names,he_solvers,verbose = True):
 		"""
 		Construct a Lie theory from:
 		
@@ -497,6 +497,7 @@ class lie_theory(object):
 		from copy import deepcopy
 		from pyranha import manipulators
 		from pyranha.Core import psym
+		self.__verbose = bool(verbose)
 		# Input parameters checks.
 		if not type(H) in manipulators:
 			raise(TypeError('Hamiltonian must be a series.'))
@@ -520,6 +521,9 @@ class lie_theory(object):
 		self.__init_list = None
 		# Run the calculations.
 		self.__compute_theory()
+	def __print(self,args):
+		if self.__verbose:
+			print(args)
 	def __repr__(self):
 		retval = ''
 		retval += 'Hamiltonian:\n\t' + str(self.__H) + '\n\n'
@@ -537,15 +541,15 @@ class lie_theory(object):
 		eps_series = self.__series_type(psym(self.__eps_name))
 		state_series = [self.__series_type(psym(s)) for s in self.__p_names] + [self.__series_type(psym(s)) for s in self.__q_names]
 		for i in range(0,self.__order):
-			print('\033[1;32mCurrent perturbative order: %d of %d\033[1;m' % (i + 1,self.__order))
-			print('Decomposing current Hamiltonian...')
+			self.__print('\033[1;32mCurrent perturbative order: %d of %d\033[1;m' % (i + 1,self.__order))
+			self.__print('Decomposing current Hamiltonian...')
 			# TODO: fix the filtering.
 			H_split = [self.__H_list[i].filtered([None, lambda t: t[1].degree(self.__eps_name) == j]).sub(self.__eps_name,self.__series_type(1)) for j in range(0,self.__order + 1)]
-			print('Solving homological equation...')
+			self.__print('Solving homological equation...')
 			chi_n = self.__he_solvers[i](H_split[i + 1])
-			print('Initialising Hamiltonian Lie caches...')
+			self.__print('Initialising Hamiltonian Lie caches...')
 			H_lie_caches = [lie_cache(chi_n,Hn,self.__p_names,self.__q_names) for Hn in H_split]
-			print('Calculating Hamiltonian...')
+			self.__print('Calculating Hamiltonian...')
 			H_n = self.__series_type(0)
 			for j in range(0,self.__order + 1):
 				tmp = self.__series_type(0)
@@ -556,11 +560,11 @@ class lie_theory(object):
 			self.__H_list.append(H_n)
 			self.__chi_list.append(chi_n)
 			s_limit = self.__order / (i + 1) + 1
-			print('Calculating ' +'\033[1;31mdirect\033[1;m ' +'transformations...')
+			self.__print('Calculating ' +'\033[1;31mdirect\033[1;m ' +'transformations...')
 			self.__direct.append([lieS(eps_series ** (i + 1),chi_n,x,self.__p_names,self.__q_names,limit = s_limit) for x in state_series])
-			print('Calculating ' +'\033[1;31minverse\033[1;m ' +'transformations...')
+			self.__print('Calculating ' +'\033[1;31minverse\033[1;m ' +'transformations...')
 			self.__inverse.append([lieS(eps_series ** (i + 1),-chi_n,x,self.__p_names,self.__q_names,limit = s_limit) for x in state_series])
-			print(H_n.filtered([None, lambda t: t[1].degree(self.__eps_name) < i + 2]))
+			self.__print(H_n.filtered([None, lambda t: t[1].degree(self.__eps_name) < i + 2]))
 	@__abs_method
 	def solve_last(self,init,t):
 		"""
