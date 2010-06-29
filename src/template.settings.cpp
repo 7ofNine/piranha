@@ -55,6 +55,8 @@ namespace piranha
 		// Startup report.
 		std::cout << "Piranha version: " << "@PIRANHA_VERSION@" << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
+		std::cout << "Number of cores detected: " <<
+			(boost::thread::hardware_concurrency() ? boost::thread::hardware_concurrency() : 1) << '\n';
 		std::cout << "Piranha is ready.\n";
 		std::cout << "_______________________________" << '\n' << '\n';
 	}

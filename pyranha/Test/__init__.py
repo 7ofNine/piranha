@@ -273,6 +273,7 @@ def suite_series():
 	suite.addTest(series_sf_test01())
 	suite.addTest(series_sf_test02())
 	suite.addTest(series_trig_test())
+	suite.addTest(series_celmec_test())
 	return suite
 
 def run_full_suite():
