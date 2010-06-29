@@ -115,6 +115,7 @@ class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
 
 class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
 	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+		# TODO: fix for p > pi.
 		from pyranha.Core import psym, rational
 		from pyranha import manipulators, truncators
 		if not axis in [0,1]:
@@ -129,7 +130,7 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
 		eps_series = t(psym('eps'))
 		# Setup the truncators.
 		truncators.unset()
-		truncators.degree.set(['P'],rational(self.trunc_order,2))
+		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('Q',t(0))
 		# Second ctor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
@@ -240,7 +241,7 @@ class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
 		truncators.unset()
 		H = H.ei_sub('p',ct(y * (two * P) ** (-rational(1,2)),x * (two * P) ** (-rational(1,2)))).ei_sub('q',ct(z * (two * Q) ** (-rational(1,2)),v * (two * Q) ** (-rational(1,2)))).sub('P',(x ** 2 + y ** 2) / 2).sub('Q',(z ** 2 + v ** 2) / 2)
 		# Re-establish the truncator, this time on Poincare' variables.
-		truncators.degree.set(['x','y','z','v'],self.trunc_order)
+		truncators.degree.set(['x','y','z','v'],rational(self.trunc_order,2))
 		# Second constructor.
 		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
 		# Reset truncator on exit.
@@ -259,3 +260,26 @@ class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
 		from pyranha.Celmec import poincare2mdelaunay, mdelaunay2oe, oe2s
 		tmp = self.evaluate(t)
 		return oe2s(mdelaunay2oe(poincare2mdelaunay([tmp['Lam'],tmp['y'],tmp['z'],tmp['dlam'] + tmp['lam0'],tmp['x'],tmp['v']])))
+
+class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
+	def __init__(self,order,t,thrust,trunc_order = 5):
+		from pyranha.Core import psym, rational
+		from pyranha import manipulators, truncators
+		if not t in manipulators:
+			raise TypeError('t must be a series type.')
+		if not isinstance(order,int) or order <= 0:
+			raise ValueError('Invalid order.')
+		# First ctor.
+		lt_base.__init__(self,thrust,2,trunc_order)
+		Lam, P, Q, lam, p, q = t(psym('Lam')), t(psym('P')), t(psym('Q')), t(psym('lam')), t(psym('p')), t(psym('q'))
+		eps_series = t(psym('eps'))
+		# Setup the truncators.
+		truncators.unset()
+		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
+		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q])
+		# Second ctor.
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
+		# Reset the truncator on exit.
+		truncators.unset()
+	def solve_last(self,init,t):
+		pass
