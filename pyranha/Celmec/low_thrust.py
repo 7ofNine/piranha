@@ -17,6 +17,8 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+__doc__ = 'Theories of keplerian motion perturbed by constant thrust in a fixed direction.'
+
 import pyranha.Celmec
 
 class lt_base(object):
@@ -78,7 +80,7 @@ class lt_base(object):
 		return self.__trunc_order
 
 class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5, verbose = True):
 		from pyranha.Core import psym, rational
 		from pyranha import manipulators, truncators
 		if not t in manipulators:
@@ -93,9 +95,12 @@ class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
 		# Setup the truncators.
 		truncators.unset()
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
-		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('lam',lam0 + dlam)
+		H1 = self._H1([Lam,P,Q,lam,p,q])
+		truncators.unset()
+		H = - (2 * Lam ** 2) ** -1 + eps_series * H1.sub('lam',lam0 + dlam)
+		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		# Second constructor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['dlam','p','q'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['dlam','p','q'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order,verbose = verbose)
 		# Reset the truncator on exit.
 		truncators.unset()
 	def solve_last(self,init,t):
@@ -114,7 +119,7 @@ class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
 		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['dlam'] + tmp['lam0'],tmp['p'],tmp['q']]))
 
 class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5, verbose = True):
 		# TODO: fix for p > pi.
 		from pyranha.Core import psym, rational
 		from pyranha import manipulators, truncators
@@ -133,7 +138,7 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('Q',t(0))
 		# Second ctor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order, verbose = verbose)
 		# Isolate c1 and its derivatives.
 		self.__c_list = [sum(filter(lambda t: t.degree('eps') == i + 1, self.H[i + 1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0)) for i in range(self.order)]
 		self.__c_Lam_list = [c.partial('Lam') for c in self.__c_list]
@@ -218,7 +223,7 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
 		return oe2s(mdelaunay2oe([tmp['Lam'],tmp['P'],tmp['Q'],tmp['lam'],tmp['p'],tmp['q']]))
 
 class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5):
+	def __init__(self,order,t,thrust,axis = 0, trunc_order = 5, verbose = True):
 		from pyranha.Core import psym, rational
 		from pyranha import manipulators, truncators
 		if not t in manipulators:
@@ -236,14 +241,15 @@ class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
 		# Setup the truncators.
 		truncators.unset()
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
-		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('lam',lam0 + dlam)
-		# Shut off the truncator in order to have an exact conversion to Poincare' variables.
+		H1 = self._H1([Lam,P,Q,lam,p,q])
 		truncators.unset()
-		H = H.ei_sub('p',ct(y * (two * P) ** (-rational(1,2)),x * (two * P) ** (-rational(1,2)))).ei_sub('q',ct(z * (two * Q) ** (-rational(1,2)),v * (two * Q) ** (-rational(1,2)))).sub('P',(x ** 2 + y ** 2) / 2).sub('Q',(z ** 2 + v ** 2) / 2)
+		H = - (2 * Lam ** 2) ** -1 + eps_series * H1.sub('lam',lam0 + dlam)
+		# Exact conversion to Poincare' variables.
+		H = H.ei_sub('p',ct(y * (two * P) ** (-rational(1,2)),x * (two * P) ** (-rational(1,2)))).ei_sub('q',ct(z * (two * Q) ** (-rational(1,2)),v * (two * Q) ** (-rational(1,2)))).sub('P',(x ** 2 + y ** 2) * two ** -1).sub('Q',(z ** 2 + v ** 2) * two ** -1)
 		# Re-establish the truncator, this time on Poincare' variables.
 		truncators.degree.set(['x','y','z','v'],rational(self.trunc_order,2))
 		# Second constructor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order, verbose = verbose)
 		# Reset truncator on exit.
 		truncators.unset()
 	def solve_last(self,init,t):
@@ -262,7 +268,7 @@ class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
 		return oe2s(mdelaunay2oe(poincare2mdelaunay([tmp['Lam'],tmp['y'],tmp['z'],tmp['dlam'] + tmp['lam0'],tmp['x'],tmp['v']])))
 
 class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
-	def __init__(self,order,t,thrust,trunc_order = 5):
+	def __init__(self,order,t,thrust,trunc_order = 5,verbose = True):
 		from pyranha.Core import psym, rational
 		from pyranha import manipulators, truncators
 		if not t in manipulators:
@@ -278,8 +284,8 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q])
 		# Second ctor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order,verbose = verbose)
 		# Reset the truncator on exit.
 		truncators.unset()
 	def solve_last(self,init,t):
-		pass
+		raise NotImplementedError('Solution of this theory has not been implemented.')
