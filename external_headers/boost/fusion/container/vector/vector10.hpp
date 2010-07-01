@@ -53,7 +53,9 @@ namespace boost { namespace fusion
 
         template<typename Sequence>
         vector0(Sequence const& seq)
-        {}
+        {
+	    (void)seq;
+        }
     };
 
 // expand vector1 to vector10

@@ -48,24 +48,10 @@ namespace piranha { namespace truncators {
 					bool operator()(const Term *t1, const Term *t2) const
 					{
 						const double n1(t1->m_cf.norm(m_args_tuple) * t1->m_key.norm(m_args_tuple)), n2(t2->m_cf.norm(m_args_tuple) * t2->m_key.norm(m_args_tuple));
-						if (n1 != n2) {
-							return (n1 > n2);
-						} else {
-							// NOTICE: the idea is that for leading terms with equal
-							// norm we choose the ones that have
-							// unity key vector, so that we increase the chance of
-							// being able to perform the expansion.
-							if (t1->m_key.is_unity()) {
-								return true;
-							} else if (t2->m_key.is_unity()) {
-								return false;
-							}
-							return (t1->m_key < t2->m_key);
-						}
-
+						return n1 > n2;
 					}
 				private:
-					const ArgsTuple	&m_args_tuple;
+					const ArgsTuple &m_args_tuple;
 			};
 		public:
 			template <class Series1, class Series2, class ArgsTuple>
