@@ -71,7 +71,7 @@ namespace piranha
 				//       will be a small fraction of storage for the output series.
 				p_static_check(N > 0,"");
 				const std::size_t shift = boost::numeric_cast<std::size_t>(
-					std::log(std::max<double>(16.,std::sqrt((settings::cache_size * 1024) / N))) / std::log(2.) - 1
+					std::log(std::max<double>(16.,std::sqrt(static_cast<double>((settings::cache_size * 1024) / N)))) / std::log(2.) - 1
 				);
 				return (std::size_t(2) << std::min<std::size_t>(std::size_t(12),shift));
 			}
