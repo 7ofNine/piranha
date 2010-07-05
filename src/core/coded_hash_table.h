@@ -25,6 +25,8 @@
 #include <boost/cstdint.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
+#include <boost/iterator/iterator_categories.hpp>
+#include <boost/iterator/iterator_facade.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <cstddef>
 #include <exception>
@@ -105,8 +107,9 @@ namespace piranha
 			/// Size type.
 			typedef typename container_type::size_type size_type;
 			/// Iterator class.
-			class iterator
+			class iterator: public boost::iterator_facade<iterator,value_type,boost::forward_traversal_tag>
 			{
+					friend class boost::iterator_core_access;
 					friend class coded_hash_table;
 					/// Constructor from coded_hash_table.
 					/**
@@ -119,7 +122,7 @@ namespace piranha
 					{
 						// If the first slot is not taken, find the next one.
 						if (m_ht->m_container[m_vector_index].t[m_bucket_index].second < 0) {
-							next();
+							increment();
 						}
 					}
 					/// Constructor from coded_hash_table, and vector-bucket indices.
@@ -133,61 +136,22 @@ namespace piranha
 					iterator(coded_hash_table *p, const size_type &vi, const bucket_size_type &bi):
 						m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
 				public:
-					/// Prefix increment.
-					/**
-					 * @return reference to this.
-					 */
-					iterator &operator++()
+					iterator():m_ht(0), m_vector_index(0), m_bucket_index(0) {}
+				private:
+					value_type &dereference() const
 					{
-						next();
-						return *this;
-					}
-					/// Dereferentiation operator.
-					/**
-					 * @return reference to this.
-					 */
-					value_type &operator*()
-					{
+						piranha_assert(m_ht);
 						piranha_assert(m_vector_index < m_ht->m_container.size());
 						piranha_assert(m_bucket_index < bucket_size);
 						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
 						return m_ht->m_container[m_vector_index].t[m_bucket_index];
 					}
-					/// Arrow operator.
-					/**
-					 * @return pointer to this.
-					 */
-					value_type *operator->()
-					{
-						piranha_assert(m_vector_index < m_ht->m_container.size());
-						piranha_assert(m_bucket_index < bucket_size);
-						piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
-						return &m_ht->m_container[m_vector_index].t[m_bucket_index];
-					}
-					/// Equality operator.
-					/**
-					 * @param[in] it2 other iterator.
-					 *
-					 * @return true if the iterators point to the same bucket in the same hash table.
-					 */
-					bool operator==(const iterator &it2) const
+					bool equal(const iterator &it2) const
 					{
 						return (m_ht == it2.m_ht && m_vector_index == it2.m_vector_index &&
 							m_bucket_index == it2.m_bucket_index);
 					}
-					/// Inequality operator.
-					/**
-					 * @param[in] it2 other iterator.
-					 *
-					 * @return opposite of operator==().
-					 */
-					bool operator!=(const iterator &it2) const
-					{
-						return !operator==(it2);
-					}
-				private:
-					// Advance to the next element.
-					void next()
+					void increment()
 					{
 						const size_type vector_size = m_ht->m_container.size();
 						while (true) {
