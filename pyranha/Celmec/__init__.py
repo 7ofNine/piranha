@@ -477,9 +477,14 @@ class lie_theory(object):
 	
 	Each class deriving from lie_theory must implement the abstract method solve_last().
 	"""
-	from abc import ABCMeta as __abc_meta
-	from abc import abstractmethod as __abs_method
-	__metaclass__ = __abc_meta
+	def __null_decorator(f):
+		return f
+	try:
+		from abc import ABCMeta as __abc_meta
+		from abc import abstractmethod as __abs_method
+		__metaclass__ = __abc_meta
+	except ImportError:
+		__abs_method = __null_decorator
 	def __init__(self,H,eps_name,p_names,q_names,he_solvers,verbose = True):
 		"""
 		Construct a Lie theory from:
@@ -574,7 +579,7 @@ class lie_theory(object):
 		init -- dictionary with the values of the symbolic variables at time t = 0
 		t -- time the return dictionary refers to
 		"""
-		pass
+		raise NotImplementedError('\'solve_last\' method has not been implemented.')
 	def set_init(self,init):
 		"""
 		Set initial conditions of the theory.
