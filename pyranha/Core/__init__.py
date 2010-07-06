@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -160,6 +160,7 @@ def load(*args):
 			raise NameError("Series type \"" + ext_name + "\" is unknown.")
 
 settings = _Core.__settings()
+stats = _Core.__stats()
 
 def gui():
 	try:

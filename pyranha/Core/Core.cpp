@@ -36,6 +36,7 @@
 #include "../../src/core/mp.h"
 #include "../../src/core/psym.h"
 #include "../../src/core/settings.h"
+#include "../../src/core/stats.h"
 #include "../args_tuple.h"
 #include "../boost_python_container_conversions.h"
 #include "../commons.h"
@@ -69,6 +70,11 @@ static inline std::size_t py_psym_hash(const psym &p)
 static inline void ed_set_item(eval_dict &d, const std::string &n, const double &value)
 {
 	d[n] = value;
+}
+
+static inline std::string py_stats_dump(const stats &)
+{
+	return stats::dump();
 }
 
 // Instantiate the pyranha Core module.
@@ -143,4 +149,8 @@ BOOST_PYTHON_MODULE(_Core)
 		.def("list", &psym::list, "Get list of global psyms").staticmethod("list")
 		.def(self == self)
 		.def(self != self);
+
+	// Stats class.
+	class_<stats>("__stats", "Stats class.", init<>())
+		.def("__repr__",&py_stats_dump);
 }

@@ -24,13 +24,16 @@
 #include <algorithm>
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
+#include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
 #include <boost/type_traits/is_same.hpp>
+#include <cstddef>
 #include <iterator>
+#include <string>
 #include <vector>
 
 #include "../config.h"
@@ -38,6 +41,7 @@
 #include "../integer_typedefs.h"
 #include "../mp.h"
 #include "../settings.h"
+#include "../stats.h"
 #include "../type_traits.h"
 #include "coded_multiplier_mp.h"
 #include "null_truncator.h"
@@ -92,6 +96,28 @@ namespace piranha
 						return key_revlex_comparison_impl<Term>::run(t1,t2);
 					}
 			};
+			enum mult_type
+			{
+				plain,
+				vector,
+				hash
+			};
+			static void trace_mult_type(mult_type type)
+			{
+				std::string name = "";
+				switch (type)
+				{
+					case plain:
+						name = "mult_plain";
+						break;
+					case vector:
+						name = "mult_vector";
+						break;
+					case hash:
+						name = "mult_hash";
+				}
+				stats::trace_stat(name,std::size_t(0),boost::lambda::_1 + 1);
+			}
 		public:
 			/// Default constructor.
 			/**
@@ -130,6 +156,7 @@ namespace piranha
 					|| algo == settings::plain)
 				{
 					derived_cast->perform_plain_multiplication();
+					trace_mult_type(plain);
 					return;
 				}
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
@@ -141,6 +168,7 @@ namespace piranha
 						piranha_throw(value_error,"coded multiplication requested, but coded representation is infeasible");
 					}
 					derived_cast->perform_plain_multiplication();
+					trace_mult_type(plain);
 					return;
 				}
 				if (trunc.is_effective()) {
@@ -187,6 +215,9 @@ namespace piranha
 					}
 					shift_codes();
 					derived_cast->perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+					trace_mult_type(hash);
+				} else {
+					trace_mult_type(vector);
 				}
 			}
 			/// Determine whether the global coded representation is viable or not.

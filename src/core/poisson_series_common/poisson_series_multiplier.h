@@ -21,6 +21,7 @@
 #ifndef PIRANHA_POISSON_SERIES_MULTIPLIER_H
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
+#include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -38,6 +39,7 @@
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../settings.h" // For debug.
+#include "../stats.h"
 
 namespace piranha
 {
@@ -167,6 +169,7 @@ namespace piranha
 					bool perform_vector_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
 						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
 					{
+						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
@@ -328,6 +331,7 @@ namespace piranha
 					void perform_hash_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
 						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
 					{
+						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.

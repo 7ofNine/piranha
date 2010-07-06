@@ -43,6 +43,7 @@
 #include "../integer_typedefs.h"
 #include "../memory.h"
 #include "../settings.h" // For debug and cache size.
+#include "../stats.h"
 
 namespace piranha
 {
@@ -189,9 +190,11 @@ namespace piranha
 						const std::size_t nthread = settings::get_nthread();
 // const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) {
+							stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 							this->blocked_multiplication(block_size,size1,size2,vm);
 						} else {
 // std::cout << "using " << nthread << " threads\n";
+							stats::trace_stat("mult_mt",std::size_t(0),boost::lambda::_1 + 1);
 							boost::thread_group tg;
 							boost::barrier b(nthread);
 							for (std::size_t i = 0; i < nthread; ++i) {
@@ -263,6 +266,7 @@ namespace piranha
 					{
 						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
+						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 						// Let's find a sensible size hint.
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 						const std::size_t size_hint = static_cast<std::size_t>(

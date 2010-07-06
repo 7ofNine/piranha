@@ -35,6 +35,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../settings.h"
+#include "../stats.h"
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
 
@@ -218,9 +219,11 @@ namespace piranha
 				// NOTE: here the number 2500 is a kind of rule-of thumb. Basically multiplications of series < 50 elements
 				// will use just one thread.
 				if (double(m_terms1.size()) * double(m_terms2.size()) < 2500) {
+					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 					plain_worker w(*derived_cast,m_retval);
 					w();
 				} else {
+					stats::trace_stat("mult_mt",std::size_t(0),boost::lambda::_1 + 1);
 					// TODO: fix numeric casting here.
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
