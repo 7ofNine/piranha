@@ -21,9 +21,6 @@
 #ifndef PIRANHA_CONFIG_H
 #define PIRANHA_CONFIG_H
 
-#include <cmath>
-#include <cstdlib>
-
 #ifdef __GNUC__
 #define GCC_VERSION (__GNUC__ * 100000 \
 	 + __GNUC_MINOR__ * 1000 \
@@ -35,9 +32,9 @@
 // Useful macros.
 #define likely(exp)   __builtin_expect(exp,1)
 #define unlikely(exp) __builtin_expect(exp,0)
+
 #else
 
-// Don't do anything special with (un)likely.
 #define likely(exp)   exp
 #define unlikely(exp) exp
 
