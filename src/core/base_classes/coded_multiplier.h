@@ -271,6 +271,10 @@ namespace piranha
 				{
 					// Mark representation as viable.
 					m_gr_is_viable = true;
+					// Log viability.
+					stats::trace_stat("mult_coded_feasible",std::size_t(0),boost::lambda::_1 + 1);
+				} else {
+					stats::trace_stat("mult_coded_unfeasible",std::size_t(0),boost::lambda::_1 + 1);
 				}
 			}
 			/// Code terms.
