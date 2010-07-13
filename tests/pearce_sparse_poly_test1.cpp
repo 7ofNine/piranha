@@ -33,9 +33,9 @@ using namespace piranha;
 int main()
 {
 //settings::set_debug(true);
-	dpoly x(psym("x")), y(psym("y")), z(psym("z")), t(psym("t")), u(psym("u"));
-	dpoly f = (x + y + z*z*2 + t*t*t*3 + u.pow(5)*5 + 1).pow(12);
-	dpoly g = (u + t + z*z*2 + y*y*y*3 + x.pow(5)*5 + 1).pow(12);
+	poly x(psym("x")), y(psym("y")), z(psym("z")), t(psym("t")), u(psym("u"));
+	poly f = (x + y + z*z*2 + t*t*t*3 + u.pow(5)*5 + 1).pow(12);
+	poly g = (u + t + z*z*2 + y*y*y*3 + x.pow(5)*5 + 1).pow(12);
 	f *= g;
 	std::cout << f.length() << '\n';
 	if (f.length() != 5821335) {
