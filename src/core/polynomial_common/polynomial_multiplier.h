@@ -123,11 +123,11 @@ namespace piranha
 						ancestor(s1, s2, retval, args_tuple) {}
 					template <class GenericTruncator>
 					struct vector_functor {
-						vector_functor(const cf_type1 *tc1, const cf_type2 *tc2,
-							const term_type1 **t1, const term_type2 **t2,
-							const max_fast_int *ck1, const max_fast_int *ck2,
+						vector_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+							std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
+							std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
 							const GenericTruncator &trunc, cf_type1 *vc_res, const ArgsTuple &args_tuple):
-							m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2(ck2),m_trunc(trunc),
+							m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2(ck2),m_t1(t1),m_t2(t2),m_trunc(trunc),
 							m_vc_res(vc_res),m_args_tuple(args_tuple) {}
 						bool operator()(const std::size_t &i, const std::size_t &j)
 						{
@@ -139,19 +139,24 @@ namespace piranha
 							m_vc_res[res_index].addmul(m_tc1[i],m_tc2[j],m_args_tuple);
 							return true;
 						}
-						const cf_type1		*m_tc1;
-						const cf_type2		*m_tc2;
-						const term_type1	**m_t1;
-						const term_type2	**m_t2;
-						const max_fast_int	*m_ck1;
-						const max_fast_int	*m_ck2;
-						const GenericTruncator	&m_trunc;
-						cf_type1		*m_vc_res;
-						const ArgsTuple		&m_args_tuple;
+						static void blocks_setup(const std::size_t &cur_idx1_start, const std::size_t &block_size,
+							std::vector<std::size_t> &idx_vector1, std::vector<std::size_t> &idx_vector2)
+						{
+							// TODO: needs sorting if cur_idx1_start is zero.
+						}
+						std::vector<cf_type1>		&m_tc1;
+						std::vector<cf_type2>		&m_tc2;
+						std::vector<max_fast_int>	&m_ck1;
+						std::vector<max_fast_int>	&m_ck2;
+						std::vector<term_type1 const *> &m_t1;
+						std::vector<term_type2 const *> &m_t2;
+						const GenericTruncator		&m_trunc;
+						cf_type1			*m_vc_res;
+						const ArgsTuple			&m_args_tuple;
 					};
 					template <class GenericTruncator>
-					bool perform_vector_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
-						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
+					bool perform_vector_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+						std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const GenericTruncator &trunc)
 					{
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc;
 						// Try to allocate the space for vector coded multiplication.
@@ -177,7 +182,6 @@ namespace piranha
 						//       so that we can use shifted codes directly as indices.
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						piranha_assert(size1 && size2);
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 						// Find out a suitable block size.
@@ -186,7 +190,7 @@ namespace piranha
 // std::cout << "Block size: " << block_size << '\n';
 						// Perform multiplication.
 						typedef vector_functor<GenericTruncator> vf_type;
-						vf_type vm(tc1,tc2,t1,t2,ck1,ck2,trunc,vc_res,args_tuple);
+						vf_type vm(tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,vc_res,args_tuple);
 						const std::size_t nthread = settings::get_nthread();
 // const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) {
@@ -223,11 +227,11 @@ namespace piranha
 					}
 					template <class Cf, class Ckey, class GenericTruncator, class HashSet>
 					struct hash_functor {
-						hash_functor(std::pair<Cf,Ckey> &cterm, const cf_type1 *tc1, const cf_type2 *tc2,
-							const term_type1 **t1, const term_type2 **t2,
-							const Ckey *ck1, const Ckey *ck2,
+						hash_functor(std::pair<Cf,Ckey> &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+							std::vector<Ckey> &ck1, std::vector<Ckey> &ck2,
+							std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 							const GenericTruncator &trunc, HashSet *cms, const ArgsTuple &args_tuple):
-							m_cterm(cterm),m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2(ck2),
+							m_cterm(cterm),m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2(ck2),m_t1(t1),m_t2(t2),
 							m_trunc(trunc),m_cms(cms),m_args_tuple(args_tuple) {}
 						bool operator()(const std::size_t &i, const std::size_t &j)
 						{
@@ -249,20 +253,20 @@ namespace piranha
 							}
 							return true;
 						}
-						std::pair<Cf,Ckey>	&m_cterm;
-						const cf_type1		*m_tc1;
-						const cf_type2		*m_tc2;
-						const term_type1	**m_t1;
-						const term_type2	**m_t2;
-						const Ckey		*m_ck1;
-						const Ckey		*m_ck2;
-						const GenericTruncator	&m_trunc;
-						HashSet			*m_cms;
-						const ArgsTuple		&m_args_tuple;
+						std::pair<Cf,Ckey>		&m_cterm;
+						std::vector<cf_type1>		&m_tc1;
+						std::vector<cf_type2>		&m_tc2;
+						std::vector<Ckey>		&m_ck1;
+						std::vector<Ckey>		&m_ck2;
+						std::vector<const term_type1 *>	&m_t1;
+						std::vector<const term_type2 *> &m_t2;
+						const GenericTruncator		&m_trunc;
+						HashSet				*m_cms;
+						const ArgsTuple			&m_args_tuple;
 					};
 					template <class GenericTruncator>
-					void perform_hash_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
-						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
+					void perform_hash_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+						std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
 					{
 						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
@@ -273,7 +277,6 @@ namespace piranha
 							std::max<double>(this->m_density1,this->m_density2) * n_codes);
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						piranha_assert(size1 && size2);
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2 = &this->m_ckeys2a[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						csht cms(size_hint);
 						// Find out a suitable block size.
@@ -283,7 +286,7 @@ namespace piranha
 // const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 						std::pair<cf_type1,max_fast_int> cterm;
 						hash_functor<cf_type1,max_fast_int,GenericTruncator,csht>
-							hm(cterm,tc1,tc2,t1,t2,ck1,ck2,trunc,&cms,args_tuple);
+							hm(cterm,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,&cms,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
 //std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 						__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");

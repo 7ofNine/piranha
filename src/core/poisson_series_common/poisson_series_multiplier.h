@@ -112,12 +112,12 @@ namespace piranha
 					}
 					template <class GenericTruncator>
 					struct vector_functor {
-						vector_functor(const char *f1, const char *f2,
-							const cf_type1 *tc1, const cf_type2 *tc2,
-							const term_type1 **t1, const term_type2 **t2,
-							const max_fast_int *ck1, const max_fast_int *ck2a, const max_fast_int *ck2b,
+						vector_functor(std::vector<char> &f1, std::vector<char> &f2,
+							std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+							std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2a, std::vector<max_fast_int> &ck2b,
+							std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 							const GenericTruncator &trunc, std::pair<cf_type1 *, cf_type1 *> *vc_res_pair, const ArgsTuple &args_tuple):
-							m_f1(f1),m_f2(f2),m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),m_trunc(trunc),
+							m_f1(f1),m_f2(f2),m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),m_t1(t1),m_t2(t2),m_trunc(trunc),
 							m_vc_res_pair(vc_res_pair),m_args_tuple(args_tuple) {}
 						bool operator()(const std::size_t &i, const std::size_t &j)
 						{
@@ -126,15 +126,14 @@ namespace piranha
 							}
 							// Cache values.
 							cf_type1 *vc_res_cos = m_vc_res_pair->first, *vc_res_sin = m_vc_res_pair->second;
-							const char *f1 = m_f1, *f2 = m_f2;
 							// NOTE: Does it make sense here to define a method for coefficients like:
 							// mult_by_and_insert_into<bool Sign>(cf2,retval,m_args_tuple)
 							// so that we can avoid copying stuff around here and elsewhere?
 							cf_type1 tmp_cf = m_tc1[i];
 							tmp_cf.mult_by(m_tc2[j], m_args_tuple);
 							const max_fast_int index_plus = m_ck1[i] + m_ck2a[j], index_minus = m_ck1[i] + m_ck2b[j];
-							if (f1[i] == f2[j]) {
-								if (f1[i]) {
+							if (m_f1[i] == m_f2[j]) {
+								if (m_f1[i]) {
 									vc_res_cos[index_minus].add(tmp_cf, m_args_tuple);
 									vc_res_cos[index_plus].add(tmp_cf, m_args_tuple);
 								} else {
@@ -142,7 +141,7 @@ namespace piranha
 									vc_res_cos[index_plus].subtract(tmp_cf, m_args_tuple);
 								}
 							} else {
-								if (f1[i]) {
+								if (m_f1[i]) {
 									vc_res_sin[index_minus].subtract(tmp_cf, m_args_tuple);
 									vc_res_sin[index_plus].add(tmp_cf, m_args_tuple);
 								} else {
@@ -152,22 +151,22 @@ namespace piranha
 							}
 							return true;
 						}
-						const char				*m_f1;
-						const char				*m_f2;
-						const cf_type1				*m_tc1;
-						const cf_type2				*m_tc2;
-						const term_type1			**m_t1;
-						const term_type2			**m_t2;
-						const max_fast_int			*m_ck1;
-						const max_fast_int			*m_ck2a;
-						const max_fast_int			*m_ck2b;
+						std::vector<char>			&m_f1;
+						std::vector<char>			&m_f2;
+						std::vector<cf_type1>			&m_tc1;
+						std::vector<cf_type2>			&m_tc2;
+						std::vector<max_fast_int>		&m_ck1;
+						std::vector<max_fast_int>		&m_ck2a;
+						std::vector<max_fast_int>		&m_ck2b;
+						std::vector<const term_type1 *>		&m_t1;
+						std::vector<const term_type2 *>		&m_t2;
 						const GenericTruncator			&m_trunc;
 						std::pair<cf_type1 *, cf_type1 *>	*m_vc_res_pair;
 						const ArgsTuple				&m_args_tuple;
 					};
 					template <class GenericTruncator>
-					bool perform_vector_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
-						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
+					bool perform_vector_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+						std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
 					{
 						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
@@ -194,14 +193,13 @@ namespace piranha
 						// reads/writes.
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						piranha_assert(size1 && size2);
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2a = &this->m_ckeys2a[0], *ck2b = &this->m_ckeys2b[0];
 						const args_tuple_type &args_tuple = this->m_args_tuple;
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
 						// Find out a suitable block size.
 						const std::size_t block_size = this->template compute_block_size<sizeof(cf_type1)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 						// Perform multiplication.
-						vector_functor<GenericTruncator> vm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2a,ck2b,trunc,&res,args_tuple);
+						vector_functor<GenericTruncator> vm(m_flavours1,m_flavours2,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,this->m_ckeys2b,t1,t2,trunc,&res,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,vm);
 						__PDEBUG(std::cout << "Done multiplying\n");
 						// Decode and insert the results into return value.
@@ -239,14 +237,14 @@ namespace piranha
 					}
 					template <class Cterm, class Ckey, class GenericTruncator, class HashSet>
 					struct hash_functor {
-						hash_functor(const char *f1, const char *f2,
-							const cf_type1 *tc1, const cf_type2 *tc2,
-							const term_type1 **t1, const term_type2 **t2,
-							const Ckey *ck1, const Ckey *ck2a, const Ckey *ck2b,
+						hash_functor(std::vector<char> &f1, std::vector<char> &f2,
+							std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+							std::vector<Ckey> &ck1, std::vector<Ckey> &ck2a, std::vector<Ckey> &ck2b,
+							std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 							const GenericTruncator &trunc, std::pair<HashSet *,HashSet *> *cms, Cterm *tmp_term1, Cterm *tmp_term2,
 							const ArgsTuple &args_tuple):
 							m_f1(f1),m_f2(f2),
-							m_tc1(tc1),m_tc2(tc2),m_t1(t1),m_t2(t2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),
+							m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),m_t1(t1),m_t2(t2),
 							m_trunc(trunc),m_cms(cms),
 							m_tmp_term1(tmp_term1),m_tmp_term2(tmp_term2),
 							m_args_tuple(args_tuple) {}
@@ -257,7 +255,6 @@ namespace piranha
 								return false;
 							}
 							// Cache values.
-							const char *f1 = m_f1, *f2 = m_f2;
 							HashSet &cms_cos = *m_cms->first, &cms_sin = *m_cms->second;
 							// NOTE: here (and elsewhere, likely), we can avoid an extra copy by working with keys
 							// and cfs instead of terms, generating only one coefficient and change its sign later
@@ -275,8 +272,8 @@ namespace piranha
 							piranha_assert(tmp_term1.second >= 0);
 							piranha_assert(tmp_term2.second >= 0);
 							// Now fix flavours and coefficient signs.
-							if (f1[i] == f2[j]) {
-								if (!f1[i]) {
+							if (m_f1[i] == m_f2[j]) {
+								if (!m_f1[i]) {
 									tmp_term2.first.invert_sign(m_args_tuple);
 								}
 								// Insert into cosine container.
@@ -293,7 +290,7 @@ namespace piranha
 									cms_cos.insert_new(tmp_term2,res.second);
 								}
 							} else {
-								if (f1[i]) {
+								if (m_f1[i]) {
 									tmp_term1.first.invert_sign(m_args_tuple);
 								}
 								// Insert into sine container.
@@ -312,15 +309,15 @@ namespace piranha
 							}
 							return true;
 						}
-						const char			*m_f1;
-						const char			*m_f2;
-						const cf_type1			*m_tc1;
-						const cf_type2			*m_tc2;
-						const term_type1		**m_t1;
-						const term_type2		**m_t2;
-						const Ckey			*m_ck1;
-						const Ckey			*m_ck2a;
-						const Ckey			*m_ck2b;
+						std::vector<char>		&m_f1;
+						std::vector<char>		&m_f2;
+						std::vector<cf_type1>		&m_tc1;
+						std::vector<cf_type2>		&m_tc2;
+						std::vector<Ckey>		&m_ck1;
+						std::vector<Ckey>		&m_ck2a;
+						std::vector<Ckey>		&m_ck2b;
+						std::vector<const term_type1 *>	&m_t1;
+						std::vector<const term_type2 *>	&m_t2;
 						const GenericTruncator		&m_trunc;
 						std::pair<HashSet *,HashSet *>	*m_cms;
 						Cterm				*m_tmp_term1;
@@ -328,8 +325,8 @@ namespace piranha
 						const ArgsTuple			&m_args_tuple;
 					};
 					template <class GenericTruncator>
-					void perform_hash_coded_multiplication(const cf_type1 *tc1, const cf_type2 *tc2,
-						const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc)
+					void perform_hash_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+						std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
 					{
 						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
@@ -342,13 +339,12 @@ namespace piranha
 						std::pair<csht *, csht *> res(&cms_cos,&cms_sin);
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 						const args_tuple_type &args_tuple = this->m_args_tuple;
-						const max_fast_int *ck1 = &this->m_ckeys1[0], *ck2a = &this->m_ckeys2a[0], *ck2b = &this->m_ckeys2b[0];
 						// Find out a suitable block size.
 						const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 						std::pair<cf_type1,max_fast_int> tmp_term1, tmp_term2;
 						hash_functor<std::pair<cf_type1,max_fast_int>,max_fast_int,GenericTruncator,csht>
-							hm(&m_flavours1[0],&m_flavours2[0],tc1,tc2,t1,t2,ck1,ck2a,ck2b,trunc,&res,&tmp_term1,&tmp_term2,args_tuple);
+							hm(m_flavours1,m_flavours2,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,this->m_ckeys2b,t1,t2,trunc,&res,&tmp_term1,&tmp_term2,args_tuple);
 						this->blocked_multiplication(block_size,size1,size2,hm);
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 						term_type1 tmp_term;

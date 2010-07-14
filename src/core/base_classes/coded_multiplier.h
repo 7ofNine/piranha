@@ -192,10 +192,6 @@ namespace piranha
 				// NOTE: it is important to code here since at this point we already have sorted input series,
 				//       if necessary.
 				code_terms();
-				// Shortcuts.
-				piranha_assert(derived_cast->m_terms1.size() && derived_cast->m_terms2.size());
-				const typename Series1::term_type **t1 = &derived_cast->m_terms1[0];
-				const typename Series2::term_type **t2 = &derived_cast->m_terms2[0];
 				// Cache the coefficients.
 				std::vector<cf_type1> cf1_cache;
 				std::vector<cf_type2> cf2_cache;
@@ -207,14 +203,14 @@ namespace piranha
 				if ((algo == settings::automatic && is_sparse()) || algo == settings::hash_coded) {
 					vec_res = false;
 				} else {
-					vec_res = derived_cast->perform_vector_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+					vec_res = derived_cast->perform_vector_coded_multiplication(cf1_cache,cf2_cache,derived_cast->m_terms1,derived_cast->m_terms2,trunc);
 				}
 				if (!vec_res) {
 					if (algo == settings::vector_coded) {
-						piranha_throw(value_error,"vector coded multiplication requested, but vectir coded representation is infeasible");
+						piranha_throw(value_error,"vector coded multiplication requested, but vector coded representation is infeasible");
 					}
 					shift_codes();
-					derived_cast->perform_hash_coded_multiplication(&cf1_cache[0],&cf2_cache[0],t1,t2,trunc);
+					derived_cast->perform_hash_coded_multiplication(cf1_cache,cf2_cache,derived_cast->m_terms1,derived_cast->m_terms2,trunc);
 					trace_mult_type(hash);
 				} else {
 					trace_mult_type(vector);
