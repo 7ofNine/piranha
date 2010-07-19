@@ -49,51 +49,6 @@
 
 namespace piranha
 {
-	// Threaded vector multiplication.
-	template <class Functor>
-	static inline void threaded_vector_blocked_multiplication(const std::size_t &block_size, const std::size_t &size1, const std::size_t &size2, const std::size_t &thread_id,
-		const std::size_t &thread_n, boost::barrier *b, Functor &m)
-	{
-		piranha_assert(block_size > 0 && thread_n > 0 && thread_id < thread_n);
-		// Numerical limits check. We need an extra block size buffer at the end to make sure we are able to
-		// represent all indices and sizes.
-		piranha_assert(size1 < boost::integer_traits<std::size_t>::const_max - block_size && size2 < boost::integer_traits<std::size_t>::const_max - block_size);
-		// Number of blocks of dimension block_size.
-		const std::size_t nrblocks1 = size1 / block_size, nrblocks2 = size2 / block_size;
-		// Size of the last "irregular" two blocks.
-		const std::size_t ib_size1 = size1 % block_size, ib_size2 = size2 % block_size;
-		// Total number of blocks.
-		const std::size_t nblocks1 = nrblocks1 + (ib_size1 != 0), nblocks2 = nrblocks2 + (ib_size2 != 0);
-		// Number of block iterations: for the first series we want to jump every n_thread blocks
-		// (also maybe going past the series end), while for the second series we want to iterate
-		// over all blocks plus allow also for thread_n - 1 "silent" iterations which are needed
-		// to make sure that at the same time the threads are operating on ordered blocks (which
-		// guarantees that we are writing in isolated areas of the output array).
-		const std::size_t nbi1 = nblocks1 / thread_n + ((nblocks1 % thread_n) != 0),
-			nbi2 = nblocks2 + (thread_n - 1);
-		for (std::size_t n1 = 0; n1 < nbi1; ++n1) {
-			const std::size_t i_start = (thread_id + n1 * thread_n) * block_size;
-			// Here the block size will be zero if we are past the end of the first series, ib_size1 if this is the last block,
-			// block_size if this is a standard block.
-			const std::size_t cur_block_size1 = (i_start >= size1) ? 0 : ((i_start + block_size > size1) ? ib_size1 : block_size);
-			const std::size_t i_end = i_start + cur_block_size1;
-			for (std::size_t n2 = 0; n2 < nbi2; ++n2) {
-				const std::size_t j_start = ((thread_id + n2) % nbi2) * block_size;
-				const std::size_t cur_block_size2 = (j_start >= size2) ? 0 : ((j_start + block_size > size2) ? ib_size2 : block_size);
-				const std::size_t j_end = j_start + cur_block_size2;
-				// NOTE: here maybe we can put a preemptive check on j start/end so that if the inner
-				// cycle is empty we skip this part altogether.
-				for (std::size_t i = i_start; i < i_end; ++i) {
-					for (std::size_t j = j_start; j < j_end; ++j) {
-						m(i,j);
-					}
-				}
-				// Synchronize this thread.
-				b->wait();
-			}
-		}
-	}
-
 	typedef std::pair<std::size_t,std::size_t> block_type;
 	typedef std::vector<block_type> block_sequence;
 
