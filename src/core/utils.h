@@ -118,5 +118,15 @@ namespace piranha
 				return true;
 			}
 	};
+
+/// Iota function.
+template <class Iterator, class T>
+inline static void iota(Iterator first, Iterator last, T value)
+{
+	for (; first != last; ++first, ++value) {
+		*first = value;
+	}
+}
+
 }
 #endif

@@ -45,6 +45,7 @@
 #include "../memory.h"
 #include "../settings.h" // For debug and cache size.
 #include "../stats.h"
+#include "../utils.h" // For iota.
 
 namespace piranha
 {
@@ -244,13 +245,6 @@ namespace piranha
 							const max_fast_int res_index = m_ck1[i] + m_ck2[j];
 							m_vc_res[res_index].addmul(m_tc1[i],m_tc2[j],m_args_tuple);
 							return true;
-						}
-						template <class Iterator, class T>
-						static void iota(Iterator first, Iterator last, T value)
-						{
-							for (; first != last; ++first, ++value) {
-								*first = value;
-							}
 						}
 						void blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size,
 							block_sequence &idx_vector1, block_sequence &idx_vector2)
