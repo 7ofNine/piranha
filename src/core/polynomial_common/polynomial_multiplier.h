@@ -419,8 +419,7 @@ namespace piranha
 								if (tc.size() - cur_idx_start >= idx_vector.size()) {
 									// If the number of remainder terms is at least equal to the number of threads,
 									// let's break it down in (almost) equal parts.
-									const std::size_t new_block_size = (tc.size() - cur_idx_start) / idx_vector.size() +
-										((tc.size() - cur_idx_start) % idx_vector.size() != 0);
+									const std::size_t new_block_size = (tc.size() - cur_idx_start) / idx_vector.size();
 									size_type i = 0;
 									for (; i < idx_vector.size() - 1; ++i) {
 										idx_vector[i].first = cur_idx_start + i * new_block_size;
