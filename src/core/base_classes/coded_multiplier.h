@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
+#include <boost/iterator/permutation_iterator.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -34,6 +35,7 @@
 #include <cstddef>
 #include <iterator>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../config.h"
@@ -55,6 +57,219 @@
 
 namespace piranha
 {
+
+typedef std::pair<std::size_t,std::size_t> block_type;
+typedef std::vector<block_type> block_sequence;
+typedef boost::numeric::interval<max_fast_int,boost::numeric::interval_lib::policies<
+	boost::numeric::interval_lib::rounded_math<max_fast_int>,
+	boost::numeric::interval_lib::checking_base<max_fast_int>
+> > block_interval;
+
+template <class Series1, class Series2, class ArgsTuple, class GenericTruncator, class Derived>
+struct base_coded_functor
+{
+	typedef typename final_cf<Series1>::type cf_type1;
+	typedef typename final_cf<Series2>::type cf_type2;
+	typedef typename Series1::term_type term_type1;
+	typedef typename Series2::term_type term_type2;
+	template <class Functor>
+	struct indirect_sorter
+	{
+		indirect_sorter(const Functor &func, const std::vector<max_fast_int> &v):m_func(func),m_v(v) {}
+		bool operator()(const std::size_t &n1, const std::size_t &n2) const
+		{
+			// TODO numeric casts here, or maybe one large check at the beginning of the coded multiplier?
+			return m_func.get_mem_pos(m_v[n1]) < m_func.get_mem_pos(m_v[n2]);
+		}
+		const Functor			&m_func;
+		const std::vector<max_fast_int>	&m_v;
+	};
+	base_coded_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
+		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
+		const GenericTruncator &trunc, const ArgsTuple &args_tuple):
+		m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2(ck2),m_t1(t1),m_t2(t2),m_trunc(trunc),m_args_tuple(args_tuple)
+	{}
+	void base_blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size,
+		block_sequence &idx_vector1, block_sequence &idx_vector2)
+	{
+		piranha_assert(cur_idx1_start < m_tc1.size());
+		typedef block_sequence::size_type size_type;
+		// Tentatively divide into homogeneous blocks.
+		for (size_type i = 0; i < idx_vector1.size(); ++i) {
+			idx_vector1[i].first = cur_idx1_start + i * block_size;
+			idx_vector1[i].second = idx_vector1[i].first + block_size;
+		}
+		for (size_type i = 0; i < idx_vector2.size(); ++i) {
+			idx_vector2[i].first = i * block_size;
+			idx_vector2[i].second = idx_vector2[i].first + block_size;
+		}
+		// Now we must check the blocks for the following conditions:
+		// 1 - we must not be past the end of the series.
+		// 2 - the macroblocks must not result in overlapping areas in the output structure.
+		// 3 - the upper bound of each block must be different from the lower bound of next block.
+		// ---
+		// 1 - If we are past the end of the series, reduce the block sizes.
+		reduce_macroblock(idx_vector1,m_tc1,cur_idx1_start);
+		reduce_macroblock(idx_vector2,m_tc2,0);
+		// 2 - Check macroblocks mult results do not overlap.
+		derived_cast->adjust_overlapping(idx_vector1,idx_vector2,m_ck1,m_ck2);
+		// 3 - Blocks boundaries check.
+		derived_cast->adjust_block_boundaries(idx_vector1,idx_vector2,m_ck1,m_ck2);
+		// Finally, update the cur_idx1.
+		cur_idx1_start = idx_vector1.back().second;
+// std::cout << "init\n";
+// for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
+// 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
+// }
+// for (std::size_t i = 0; i < idx_vector2.size(); ++i) {
+// 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
+// }
+// std::cout << "blah\n";
+	}
+	bool block2_advance(const block_sequence &idx_vector1, block_sequence &idx_vector2,
+		const std::size_t &block_size, const block_sequence &orig2, std::size_t &wrap_count) const
+	{
+		piranha_assert(idx_vector1.size() == idx_vector2.size() && idx_vector1.size() > 0);
+		if (wrap_count) {
+			piranha_assert(wrap_count < idx_vector2.size());
+			if (wrap_count == idx_vector2.size() - 1) {
+				// This means we are at the end.
+				return false;
+			}
+			// Shift down the blocks.
+			std::copy(idx_vector2.begin() + 1,idx_vector2.end(),idx_vector2.begin());
+			// Get the new block from the originals.
+			idx_vector2.back() = orig2[wrap_count];
+			// Increase the wrap count.
+			++wrap_count;
+		} else {
+			// Shift down the blocks.
+			std::copy(idx_vector2.begin() + 1,idx_vector2.end(),idx_vector2.begin());
+			// Set the new starting point for the last block.
+			idx_vector2.back().first = idx_vector2.back().second;
+			// Add the block size or stop at the end of the series, if necessary.
+			idx_vector2.back().second = std::min<std::size_t>(m_tc2.size(),idx_vector2.back().first + block_size);
+			// Now check if we are at the end of the first phase.
+			if (idx_vector2.front() == block_type(m_tc2.size(),m_tc2.size())) {
+				if (idx_vector2.size() > 1) {
+					// If multi-threaded, insert at the end the first original block.
+					idx_vector2.back() = orig2.front();
+					// Start the wrap count.
+					wrap_count = 1;
+				} else {
+					// In single-threaded, this means we have finished.
+					return false;
+				}
+			} else if (idx_vector2.size() > 1) {
+				// If we are not at the end of the first phase and we are multithreaded, we need to make sure the newly-added
+				// block does not overlap.
+				// NOTE: maybe this function can be replaced by direct check that the last block of first series
+				// by the newly added block in second series do not overlap with the remaining macroblock 1 by remaining
+				// macro block 2.
+				while (sequences_overlap(idx_vector1,idx_vector2)) {
+					piranha_assert(idx_vector2.back().second >= idx_vector2.back().first);
+					idx_vector2.back().second = idx_vector2.back().first +
+						(idx_vector2.back().second - idx_vector2.back().first) / 2;
+				}
+			}
+		}
+		// Make sure we have no overlaps.
+		piranha_assert(!sequences_overlap(idx_vector1,idx_vector2));
+// std::cout << "after advance\n";
+// for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
+// 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
+// }
+// for (std::size_t i = 0; i < idx_vector2.size(); ++i) {
+// 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
+// }
+// std::cout << "blappo\n";
+		return true;
+	}
+	static bool interval_sorter(const block_interval &i1, const block_interval &i2)
+	{
+		return i1.lower() < i2.lower();
+	}
+	bool sequences_overlap(const block_sequence &s1, const block_sequence &s2) const
+	{
+		piranha_assert(s1.size() == s2.size() && s1.size() > 0);
+		typedef std::vector<block_interval>::size_type size_type;
+		std::vector<block_interval> vi;
+		for (size_type i = 0; i < s1.size(); ++i) {
+			std::pair<block_interval,block_interval> tmp(derived_const_cast->blocks_to_intervals(s1[i],s2[i]));
+			if (!boost::numeric::empty(tmp.first)) {
+				vi.push_back(tmp.first);
+			}
+			if (!boost::numeric::empty(tmp.second)) {
+				vi.push_back(tmp.second);
+			}
+		}
+		if (!vi.size()) {
+			return false;
+		}
+		// Sort according to lower bound of the interval.
+		std::sort(vi.begin(),vi.end(),interval_sorter);
+		piranha_assert(vi.size() > 0);
+		// Check that all intervals are disjoint.
+		for (std::vector<block_interval>::size_type i = 0; i < vi.size() - 1; ++i) {
+			if (vi[i].upper() >= vi[i + 1].lower()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	template <class Vector>
+	static void reduce_macroblock(block_sequence &idx_vector, const Vector &tc, const std::size_t &cur_idx_start)
+	{
+		typedef block_sequence::size_type size_type;
+		if (idx_vector.back().second > tc.size()) {
+			if (tc.size() - cur_idx_start >= idx_vector.size()) {
+				// If the number of remainder terms is at least equal to the number of threads,
+				// let's break it down in (almost) equal parts.
+				const std::size_t new_block_size = (tc.size() - cur_idx_start) / idx_vector.size();
+				size_type i = 0;
+				for (; i < idx_vector.size() - 1; ++i) {
+					idx_vector[i].first = cur_idx_start + i * new_block_size;
+					idx_vector[i].second = idx_vector[i].first + new_block_size;
+				}
+				// Last block might be inhomogeneous, handle it separately.
+				idx_vector.back().first = cur_idx_start + i * new_block_size;
+				idx_vector.back().second = tc.size();
+			} else {
+				// If the number of remainder terms r is less than the number of threads,
+				// assign each of the first r terms to a single thread and collapse the remaining blocks.
+				size_type i = 0;
+				for (; i < tc.size() - cur_idx_start; ++i) {
+					idx_vector[i].first = cur_idx_start + i;
+					idx_vector[i].second = idx_vector[i].first + 1;
+				}
+				for (; i < idx_vector.size(); ++i) {
+					idx_vector[i].first = tc.size();
+					idx_vector[i].second = tc.size();
+				}
+			}
+		}
+	}
+	// TODO: rewrite with iterators for genericity? Or maybe provide alternative version.
+	template <class T>
+	static void apply_permutation(const std::vector<std::size_t> &perm, std::vector<T> &v)
+	{
+		typedef boost::permutation_iterator<typename std::vector<T>::iterator,std::vector<std::size_t>::const_iterator> perm_iterator;
+		std::vector<T> other(v.size());
+		std::copy(perm_iterator(v.begin(),perm.begin()),perm_iterator(v.end(),perm.end()),other.begin());
+		other.swap(v);
+	}
+	std::vector<cf_type1>		&m_tc1;
+	std::vector<cf_type2>		&m_tc2;
+	std::vector<max_fast_int>	&m_ck1;
+	std::vector<max_fast_int>	&m_ck2;
+	std::vector<term_type1 const *> &m_t1;
+	std::vector<term_type2 const *> &m_t2;
+	const GenericTruncator		&m_trunc;
+	const ArgsTuple			&m_args_tuple;
+};
+
+
 	/// Toolbox for coded series multiplication.
 	/**
 	 * Intended to be inherited together with piranha::base_series_multiplier. It adds common methods for
