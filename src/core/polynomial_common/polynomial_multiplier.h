@@ -214,6 +214,46 @@ struct polynomial_vector_functor:
 	cf_type1 *m_vc_res;
 };
 
+template <class Series1, class Series2, class ArgsTuple, class GenericTruncator>
+struct polynomial_hash_functor:
+	public base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> >
+{
+	typedef typename final_cf<Series1>::type cf_type1;
+	typedef typename final_cf<Series2>::type cf_type2;
+	typedef typename Series1::term_type term_type1;
+	typedef typename Series2::term_type term_type2;
+	typedef base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> > ancestor;
+	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
+	polynomial_hash_functor(std::pair<cf_type1,max_fast_int> &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
+		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
+		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &args_tuple):
+		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,args_tuple),m_cterm(cterm),m_cms(cms)
+	{}
+	bool operator()(const std::size_t &i, const std::size_t &j)
+	{
+		typedef typename csht_type::iterator c_iterator;
+		if (this->m_trunc.skip(&this->m_t1[i], &this->m_t2[j])) {
+			return false;
+		}
+		m_cterm.second = this->m_ck1[i];
+		m_cterm.second += this->m_ck2[j];
+		std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
+		if (res.first) {
+			res.second->first.addmul(this->m_tc1[i],this->m_tc2[j],this->m_args_tuple);
+		} else {
+			// Assign to the temporary term the old cf (new_key is already assigned).
+			m_cterm.first = this->m_tc1[i];
+			// Multiply the old term by the second term.
+			m_cterm.first.mult_by(this->m_tc2[j],this->m_args_tuple);
+			m_cms->insert_new(m_cterm,res.second);
+		}
+		return true;
+	}
+	std::pair<cf_type1,max_fast_int>	&m_cterm;
+	csht_type				*m_cms;
+};
+
 /// Series multiplier specifically tuned for polynomials.
 /**
  * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
@@ -320,45 +360,6 @@ struct polynomial_multiplier
 				__PDEBUG(std::cout << "Done polynomial vector coded.\n");
 				return true;
 			}
-			template <class Cf, class Ckey, class GenericTruncator, class HashSet>
-			struct hash_functor {
-				hash_functor(std::pair<Cf,Ckey> &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-					std::vector<Ckey> &ck1, std::vector<Ckey> &ck2,
-					std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
-					const GenericTruncator &trunc, HashSet *cms, const ArgsTuple &args_tuple):
-					m_cterm(cterm),m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2(ck2),m_t1(t1),m_t2(t2),
-					m_trunc(trunc),m_cms(cms),m_args_tuple(args_tuple) {}
-				bool operator()(const std::size_t &i, const std::size_t &j)
-				{
-					typedef typename HashSet::iterator c_iterator;
-					if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
-						return false;
-					}
-					m_cterm.second = m_ck1[i];
-					m_cterm.second += m_ck2[j];
-					std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
-					if (res.first) {
-						res.second->first.addmul(m_tc1[i],m_tc2[j],m_args_tuple);
-					} else {
-						// Assign to the temporary term the old cf (new_key is already assigned).
-						m_cterm.first = m_tc1[i];
-						// Multiply the old term by the second term.
-						m_cterm.first.mult_by(m_tc2[j],m_args_tuple);
-						m_cms->insert_new(m_cterm,res.second);
-					}
-					return true;
-				}
-				std::pair<Cf,Ckey>		&m_cterm;
-				std::vector<cf_type1>		&m_tc1;
-				std::vector<cf_type2>		&m_tc2;
-				std::vector<Ckey>		&m_ck1;
-				std::vector<Ckey>		&m_ck2;
-				std::vector<const term_type1 *>	&m_t1;
-				std::vector<const term_type2 *> &m_t2;
-				const GenericTruncator		&m_trunc;
-				HashSet				*m_cms;
-				const ArgsTuple			&m_args_tuple;
-			};
 			template <class GenericTruncator>
 			void perform_hash_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 				std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
@@ -380,7 +381,7 @@ struct polynomial_multiplier
 // std::cout << "Block size: " << block_size << '\n';
 // const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				std::pair<cf_type1,max_fast_int> cterm;
-				hash_functor<cf_type1,max_fast_int,GenericTruncator,csht>
+				polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator>
 					hm(cterm,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,&cms,args_tuple);
 				this->blocked_multiplication(block_size,size1,size2,hm);
 // std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
