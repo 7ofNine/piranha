@@ -54,6 +54,7 @@
 // TODO:
 // - use power of 2 coding for hash coded?
 // - cache usage: determine optimal size at runtime, e.g., inspecting the size of MP coefficients?
+// - numeric cast in coded functor & friends.
 
 namespace piranha
 {
@@ -93,29 +94,29 @@ struct base_coded_functor
 	void base_blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size,
 		block_sequence &idx_vector1, block_sequence &idx_vector2)
 	{
-		piranha_assert(cur_idx1_start < m_tc1.size());
-		typedef block_sequence::size_type size_type;
-		// Tentatively divide into homogeneous blocks.
-		for (size_type i = 0; i < idx_vector1.size(); ++i) {
-			idx_vector1[i].first = cur_idx1_start + i * block_size;
-			idx_vector1[i].second = idx_vector1[i].first + block_size;
-		}
-		for (size_type i = 0; i < idx_vector2.size(); ++i) {
-			idx_vector2[i].first = i * block_size;
-			idx_vector2[i].second = idx_vector2[i].first + block_size;
-		}
-		// Now we must check the blocks for the following conditions:
-		// 1 - we must not be past the end of the series.
-		// 2 - the macroblocks must not result in overlapping areas in the output structure.
-		// 3 - the upper bound of each block must be different from the lower bound of next block.
-		// ---
-		// 1 - If we are past the end of the series, reduce the block sizes.
-		reduce_macroblock(idx_vector1,m_tc1,cur_idx1_start);
-		reduce_macroblock(idx_vector2,m_tc2,0);
-		// 2 - Check macroblocks mult results do not overlap.
-		derived_cast->adjust_overlapping(idx_vector1,idx_vector2,m_ck1,m_ck2);
+		piranha_assert(cur_idx1_start < m_tc1.size() && idx_vector1.size() == idx_vector2.size());
+		std::size_t upper_bound1 = std::min<std::size_t>(m_tc1.size(),cur_idx1_start + idx_vector1.size() * block_size),
+			upper_bound2 = std::min<std::size_t>(m_tc2.size(),idx_vector2.size() * block_size);
+		do {
+			// Now we must check the blocks for the following conditions:
+			// 1 - we must not be past the end of the series.
+			// 2 - the macroblocks must not result in overlapping areas in the output structure.
+			// 3 - the upper bound of each block must be different from the lower bound of next block.
+			// ---
+			// Determine the sequences, given upper and lower bounds.
+			determine_sequence(idx_vector1,cur_idx1_start,upper_bound1);
+			determine_sequence(idx_vector2,0,upper_bound2);
+			// Prepare lower-upper bounds for the next iteration, if any. But we never want to have less than 1 term in the whole sequence.
+			piranha_assert(upper_bound1 > cur_idx1_start);
+			if (idx_vector1.back().second - cur_idx1_start >= 2) {
+				upper_bound1 = cur_idx1_start + (idx_vector1.back().second - cur_idx1_start) / 2;
+			}
+			if (idx_vector2.back().second >= 2) {
+				upper_bound2 = idx_vector2.back().second / 2;
+			}
+		} while (sequences_overlap(idx_vector1,idx_vector2));
 		// 3 - Blocks boundaries check.
-		derived_cast->adjust_block_boundaries(idx_vector1,idx_vector2,m_ck1,m_ck2);
+		adjust_block_boundaries(idx_vector1,idx_vector2);
 		// Finally, update the cur_idx1.
 		cur_idx1_start = idx_vector1.back().second;
 // std::cout << "init\n";
@@ -126,6 +127,24 @@ struct base_coded_functor
 // 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
 // }
 // std::cout << "blah\n";
+	}
+	// Write into s a sequence of blocks ranging from index lower_bound to at most index upper_bound.
+	static void determine_sequence(block_sequence &s, const std::size_t &lower_bound, const std::size_t &upper_bound)
+	{
+		piranha_assert(upper_bound > lower_bound && s.size() > 0);
+		const std::size_t n_blocks = boost::numeric_cast<std::size_t>(s.size()), n_terms = upper_bound - lower_bound;
+		const std::size_t block_size = (n_blocks > n_terms) ? 1 : n_terms / n_blocks;
+		std::size_t i = 0;
+		for (; i < n_blocks - 1; ++i) {
+			s[i].first = std::min<std::size_t>(upper_bound,lower_bound + i * block_size);
+			s[i].second = std::min<std::size_t>(upper_bound,lower_bound + (i + 1) * block_size);
+		}
+		// Handle the last block separately, as it might be non homogeneous.
+		s[i].first = std::min<std::size_t>(upper_bound,lower_bound + i * block_size);
+		s[i].second = upper_bound;
+	}
+	void adjust_block_boundaries(block_sequence &, block_sequence &)
+	{
 	}
 	bool block2_advance(const block_sequence &idx_vector1, block_sequence &idx_vector2,
 		const std::size_t &block_size, const block_sequence &orig2, std::size_t &wrap_count) const
@@ -217,38 +236,6 @@ struct base_coded_functor
 			}
 		}
 		return false;
-	}
-	template <class Vector>
-	static void reduce_macroblock(block_sequence &idx_vector, const Vector &tc, const std::size_t &cur_idx_start)
-	{
-		typedef block_sequence::size_type size_type;
-		if (idx_vector.back().second > tc.size()) {
-			if (tc.size() - cur_idx_start >= idx_vector.size()) {
-				// If the number of remainder terms is at least equal to the number of threads,
-				// let's break it down in (almost) equal parts.
-				const std::size_t new_block_size = (tc.size() - cur_idx_start) / idx_vector.size();
-				size_type i = 0;
-				for (; i < idx_vector.size() - 1; ++i) {
-					idx_vector[i].first = cur_idx_start + i * new_block_size;
-					idx_vector[i].second = idx_vector[i].first + new_block_size;
-				}
-				// Last block might be inhomogeneous, handle it separately.
-				idx_vector.back().first = cur_idx_start + i * new_block_size;
-				idx_vector.back().second = tc.size();
-			} else {
-				// If the number of remainder terms r is less than the number of threads,
-				// assign each of the first r terms to a single thread and collapse the remaining blocks.
-				size_type i = 0;
-				for (; i < tc.size() - cur_idx_start; ++i) {
-					idx_vector[i].first = cur_idx_start + i;
-					idx_vector[i].second = idx_vector[i].first + 1;
-				}
-				for (; i < idx_vector.size(); ++i) {
-					idx_vector[i].first = tc.size();
-					idx_vector[i].second = tc.size();
-				}
-			}
-		}
 	}
 	// TODO: rewrite with iterators for genericity? Or maybe provide alternative version.
 	template <class T>

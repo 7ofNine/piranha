@@ -39,6 +39,10 @@
 
 namespace piranha
 {
+
+// TODO: make sure the size of the vector never goes past max_fast_int, since we are converting size_type -> max_fast_int in the hash coded
+// multiplier, when determining the memory position of the key.
+
 /// Hash table for highly-sparse coded series multiplication.
 template <class Cf, class Code, class Allocator>
 class coded_hash_table
@@ -302,6 +306,11 @@ class coded_hash_table
 		size_type get_memory_position(const key_type &key) const
 		{
 			return get_position(boost::hash<key_type>()(key),m_container.size(),m_size_policy);
+		}
+		/// Return the size of the vector representing the hash table internally.
+		size_type get_vector_size() const
+		{
+			return m_container.size();
 		}
 	private:
 		// Convert hash value into position.

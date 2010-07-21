@@ -167,13 +167,7 @@ struct polynomial_vector_functor:
 		}
 		this->base_blocks_setup(cur_idx1_start,block_size,idx_vector1,idx_vector2);
 	}
-	static void adjust_overlapping(block_sequence &,block_sequence &,
-		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
-	{}
-	static void adjust_block_boundaries(block_sequence &,block_sequence &,
-		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
-	{}
-	const max_fast_int &get_mem_pos(const max_fast_int &n) const
+	static const max_fast_int &get_mem_pos(const max_fast_int &n)
 	{
 		return n;
 	}
@@ -251,15 +245,12 @@ struct polynomial_hash_functor:
 		}
 		return true;
 	}
-	static void adjust_overlapping(block_sequence &,block_sequence &,
-		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
-	{}
-	static void adjust_block_boundaries(block_sequence &,block_sequence &,
-		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
-	{}
-	const max_fast_int &get_mem_pos(const max_fast_int &n) const
+	max_fast_int get_mem_pos(const max_fast_int &n) const
 	{
-		return n;
+		// Assert on the convertibility to max_fast_int. We should be sure because of the logic in coded_hash_table,
+		// but just in case...
+		piranha_assert(boost::numeric_cast<max_fast_int>(m_cms->get_memory_position(n)) >= 0);
+		return m_cms->get_memory_position(n);
 	}
 	// Return the two intervals in indices in the output structure containing the results of
 	// one block-by-block multiplication.
@@ -270,10 +261,19 @@ struct polynomial_hash_functor:
 		if (b1.first == b1.second || b2.first == b2.second) {
 			return std::make_pair(block_interval::empty(),block_interval::empty());
 		}
-		// In case of vector coded, we always end up with a single interval in output.
-		return std::make_pair(block_interval(this->m_ck1[b1.first] + this->m_ck2[b2.first],
-			this->m_ck1[b1.second - 1] + this->m_ck2[b2.second - 1]),
-			block_interval::empty());
+		block_interval tmp(get_mem_pos(this->m_ck1[b1.first]) + get_mem_pos(this->m_ck2[b2.first]),
+			get_mem_pos(this->m_ck1[b1.second - 1]) + get_mem_pos(this->m_ck2[b2.second - 1]));
+		const max_fast_int ht_size = boost::numeric_cast<max_fast_int>(m_cms->get_vector_size());
+		piranha_assert(ht_size > 0 && tmp.lower() >= 0 && tmp.upper() >= 0);
+		if (tmp.lower() >= ht_size || tmp.upper() < ht_size) {
+			piranha_assert(tmp.upper() / 2 < ht_size);
+			return std::make_pair(block_interval(tmp.lower() % ht_size,tmp.upper() % ht_size),block_interval::empty());
+		} else {
+			return std::make_pair(
+				block_interval(tmp.lower(),ht_size - 1),
+				block_interval(0,tmp.upper() % ht_size)
+			);
+		}
 	}
 	cterm_type		&m_cterm;
 	csht_type		*m_cms;
@@ -335,7 +335,7 @@ struct polynomial_multiplier
 				//       code range is [-h_min,ncodes - 1 - h_min]. So we shift the baseline memory location
 				//       so that we can use shifted codes directly as indices.
 				const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
-//std::cout << "sizes: " << size1 << ',' << size2 << '\n';
+// std::cout << "sizes: " << size1 << ',' << size2 << '\n';
 				piranha_assert(size1 && size2);
 				const args_tuple_type &args_tuple = this->m_args_tuple;
 				cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
