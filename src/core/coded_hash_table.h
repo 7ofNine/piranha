@@ -50,8 +50,8 @@ class coded_hash_table
 		typedef std::pair<Cf,Code> value_type;
 		/// Bucket.
 		/**
-			* Bucket size N is fixed at compile time and must be in the ]0,256] range.
-			*/
+		 * Bucket size N is fixed at compile time and must be in the ]0,256] range.
+		 */
 		template <int N>
 		class bucket
 		{
@@ -61,8 +61,8 @@ class coded_hash_table
 				p_static_check(N > 0 && N <= boost::integer_traits<size_type>::const_max, "Invalid bucket size.");
 				/// Default constructor.
 				/**
-					* Will initialise the code of each coefficient to -1.
-					*/
+				 * Will initialise the code of each coefficient to -1.
+				 */
 				bucket() 
 				{
 					for (size_type i = 0; i < N; ++i) {
@@ -95,8 +95,8 @@ class coded_hash_table
 #endif
 		/// List of available sizes for the hash table.
 		/**
-			* The number of available sizes depends on the architecture.
-			*/
+		 * The number of available sizes depends on the architecture.
+		 */
 		static const std::size_t sizes[2][sizes_size];
 		/// Alias for the bucket type.
 		typedef bucket<bucket_size> bucket_type;
@@ -113,11 +113,11 @@ class coded_hash_table
 				friend class coded_hash_table;
 				/// Constructor from coded_hash_table.
 				/**
-					* The iterator will point to the first element or to the end of the table, if
-					* the table is empty.
-					*
-					* @param[in] p pointer to the hash table.
-					*/
+				 * The iterator will point to the first element or to the end of the table, if
+				 * the table is empty.
+				 *
+				 * @param[in] p pointer to the hash table.
+				 */
 				iterator(coded_hash_table *p): m_ht(p), m_vector_index(0), m_bucket_index(0)
 				{
 					// If the first slot is not taken, find the next one.
@@ -127,12 +127,12 @@ class coded_hash_table
 				}
 				/// Constructor from coded_hash_table, and vector-bucket indices.
 				/**
-					* No checks are performed on the values supplied to the constructor.
-					*
-					* @param[in] p pointer to the hash table.
-					* @param[in] vi vector index.
-					* @param[in] bi bucket index.
-					*/
+				 * No checks are performed on the values supplied to the constructor.
+				 *
+				 * @param[in] p pointer to the hash table.
+				 * @param[in] vi vector index.
+				 * @param[in] bi bucket index.
+				 */
 				iterator(coded_hash_table *p, const size_type &vi, const bucket_size_type &bi):
 					m_ht(p), m_vector_index(vi), m_bucket_index(bi) {}
 			public:
@@ -176,18 +176,18 @@ class coded_hash_table
 		};
 		/// Default constructor.
 		/**
-			* Sets the size policy to pow2.
-			*/
+		 * Sets the size policy to pow2.
+		 */
 		coded_hash_table(): m_size_policy(pow2),m_size_index(min_size_index),m_length(0),
 			m_container(boost::numeric_cast<size_type>(sizes[m_size_policy][m_size_index]))
 		{}
 		// NOTE: remove?
 		/// Constructor with size hint.
 		/**
-			* Sets the size policy to pow2. The hash table size is set to a value close to the provided size hint.
-			*
-			* @param[in] size_hint size hint for the hash table.
-			*/
+		 * Sets the size policy to pow2. The hash table size is set to a value close to the provided size hint.
+		 *
+		 * @param[in] size_hint size hint for the hash table.
+		 */
 		coded_hash_table(const std::size_t &size_hint):
 			m_size_policy(pow2),m_size_index(find_upper_size_index(size_hint / bucket_size + 1)),m_length(0),
 			m_container(boost::numeric_cast<size_type>(sizes[m_size_policy][m_size_index]))
@@ -203,32 +203,32 @@ class coded_hash_table
 		}
 		/// Return an iterator to the first element of the table.
 		/**
-			* If the table is empty, the end() iterator is returned.
-			*
-			* @return iterator to the beginning of the table.
-			*/
+		 * If the table is empty, the end() iterator is returned.
+		 *
+		 * @return iterator to the beginning of the table.
+		 */
 		iterator begin()
 		{
 			return iterator(this);
 		}
 		/// Return an iterator to the end of the table.
 		/**
-			*
-			* @return iterator to the end of the series.
-			*/
+		 *
+		 * @return iterator to the end of the series.
+		 */
 		iterator end()
 		{
 			return iterator(this,m_container.size(),0);
 		}
 		/// Locate element based on key.
 		/**
-			* If the element is found, then return (true,position). Otherwise return (false, first empty slot). Note that in the latter
-			* case, the first empty slot can be the table's end.
-			*
-			* @param[in] key value key.
-			*
-			* @return pair containing the result of the operation.
-			*/
+		 * If the element is found, then return (true,position). Otherwise return (false, first empty slot). Note that in the latter
+		 * case, the first empty slot can be the table's end.
+		 *
+		 * @param[in] key value key.
+		 *
+		 * @return pair containing the result of the operation.
+		 */
 		std::pair<bool,iterator> find(const key_type &key)
 		{
 			const size_type vector_size = m_container.size(),
@@ -273,11 +273,11 @@ class coded_hash_table
 		}
 		/// Insert new value into the hash table at the position specified by iterator.
 		/**
-			* Iterator must point either to an empty slot or to the end of the table. Value is assumed not to be already present in the table.
-			*
-			* @param[in] v value_type to be inserted.
-			* @param[in] it insertion point.
-			*/
+		 * Iterator must point either to an empty slot or to the end of the table. Value is assumed not to be already present in the table.
+		 *
+		 * @param[in] v value_type to be inserted.
+		 * @param[in] it insertion point.
+		 */
 		void insert_new(const value_type &v, const iterator &it)
 		{
 			if (unlikely(!attempt_insertion(v,it))) {
@@ -292,11 +292,16 @@ class coded_hash_table
 		}
 		/// Return the number of elements stored in the hash table.
 		/**
-			* @return the number of items in the hash table.
-			*/
+		 * @return the number of items in the hash table.
+		 */
 		size_type size() const
 		{
 			return m_length;
+		}
+		/// Get memory position in which key would be inserted, relative to the table's starting point.
+		size_type get_memory_position(const key_type &key) const
+		{
+			return get_position(boost::hash<key_type>()(key),m_container.size(),m_size_policy);
 		}
 	private:
 		// Convert hash value into position.

@@ -222,13 +222,14 @@ struct polynomial_hash_functor:
 	typedef typename final_cf<Series2>::type cf_type2;
 	typedef typename Series1::term_type term_type1;
 	typedef typename Series2::term_type term_type2;
+	typedef std::pair<cf_type1,max_fast_int> cterm_type;
 	typedef base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> > ancestor;
 	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
-	polynomial_hash_functor(std::pair<cf_type1,max_fast_int> &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+	polynomial_hash_functor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &args_tuple):
-		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,args_tuple),m_cterm(cterm),m_cms(cms)
+		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,args_tuple),m_cterm(cterm),m_cms(cms)/*,m_overflow_terms()*/
 	{}
 	bool operator()(const std::size_t &i, const std::size_t &j)
 	{
@@ -274,8 +275,9 @@ struct polynomial_hash_functor:
 			this->m_ck1[b1.second - 1] + this->m_ck2[b2.second - 1]),
 			block_interval::empty());
 	}
-	std::pair<cf_type1,max_fast_int>	&m_cterm;
-	csht_type				*m_cms;
+	cterm_type		&m_cterm;
+	csht_type		*m_cms;
+	//std::vector<cterm_type>	&m_overflow_terms;
 };
 
 /// Series multiplier specifically tuned for polynomials.
