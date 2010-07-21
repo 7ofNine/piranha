@@ -115,8 +115,9 @@ struct base_coded_functor
 				upper_bound2 = idx_vector2.back().second / 2;
 			}
 		} while (sequences_overlap(idx_vector1,idx_vector2));
-		// 3 - Blocks boundaries check.
-		adjust_block_boundaries(idx_vector1,idx_vector2);
+		// Blocks boundaries check.
+		adjust_block_boundaries(idx_vector1,m_ck1);
+		adjust_block_boundaries(idx_vector2,m_ck2);
 		// Finally, update the cur_idx1.
 		cur_idx1_start = idx_vector1.back().second;
 // std::cout << "init\n";
@@ -128,7 +129,7 @@ struct base_coded_functor
 // }
 // std::cout << "blah\n";
 	}
-	// Write into s a sequence of blocks ranging from index lower_bound to at most index upper_bound.
+	// Write into s a sequence of blocks ranging from index lower_bound to index upper_bound.
 	static void determine_sequence(block_sequence &s, const std::size_t &lower_bound, const std::size_t &upper_bound)
 	{
 		piranha_assert(upper_bound > lower_bound && s.size() > 0);
@@ -143,8 +144,18 @@ struct base_coded_functor
 		s[i].first = std::min<std::size_t>(upper_bound,lower_bound + i * block_size);
 		s[i].second = upper_bound;
 	}
-	void adjust_block_boundaries(block_sequence &, block_sequence &)
+	void adjust_block_boundaries(block_sequence &s, const std::vector<max_fast_int> &ck) const
 	{
+		piranha_assert(s.size() > 0);
+		for (block_sequence::size_type i = 0; i < s.size() - 1; ++i) {
+			// Shrink non-empty blocks whose upper value's memory position is shared with the next block.
+			while (s[i].first != s[i].second && derived_const_cast->get_mem_pos(ck[s[i].second - 1]) ==
+				derived_const_cast->get_mem_pos(ck[s[i + 1].first]))
+			{
+				--s[i].second;
+				--s[i + 1].first;
+			}
+		}
 	}
 	bool block2_advance(const block_sequence &idx_vector1, block_sequence &idx_vector2,
 		const std::size_t &block_size, const block_sequence &orig2, std::size_t &wrap_count) const
