@@ -250,6 +250,30 @@ struct polynomial_hash_functor:
 		}
 		return true;
 	}
+	static void adjust_overlapping(block_sequence &,block_sequence &,
+		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
+	{}
+	static void adjust_block_boundaries(block_sequence &,block_sequence &,
+		const std::vector<max_fast_int> &, const std::vector<max_fast_int> &)
+	{}
+	const max_fast_int &get_mem_pos(const max_fast_int &n) const
+	{
+		return n;
+	}
+	// Return the two intervals in indices in the output structure containing the results of
+	// one block-by-block multiplication.
+	std::pair<block_interval,block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
+	{
+		piranha_assert(b1.first <= b1.second && b2.first <= b2.second);
+		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
+		if (b1.first == b1.second || b2.first == b2.second) {
+			return std::make_pair(block_interval::empty(),block_interval::empty());
+		}
+		// In case of vector coded, we always end up with a single interval in output.
+		return std::make_pair(block_interval(this->m_ck1[b1.first] + this->m_ck2[b2.first],
+			this->m_ck1[b1.second - 1] + this->m_ck2[b2.second - 1]),
+			block_interval::empty());
+	}
 	std::pair<cf_type1,max_fast_int>	&m_cterm;
 	csht_type				*m_cms;
 };
