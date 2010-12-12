@@ -69,6 +69,7 @@
 - meta-programmed checker for delimiters in series hierarchy (i.e., delimiters for keys, cf_series, etc. must not clash).
 - check that there are no other static data that are using the counting allocator, otherwise we could incur into issues when program ends and
   static stuff for counting allocator is destroyed before all memory allocated with it has been reclaimed.
+
 IMMEDIATE:
 - make default choices in numerical container suitable for mp classes and particularise
   double_cf instead; also, implement pow() as template member function in numerical container
