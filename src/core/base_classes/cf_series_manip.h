@@ -36,20 +36,24 @@ namespace piranha
 		}
 		Derived retval;
 		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+        {
 			term_type term(*it);
 			term.m_cf.pad_right(args_tuple);
 			term.m_key.pad_right(args_tuple);
 			retval.insert(term, args_tuple);
 		}
+
 		derived_cast->base_swap(retval);
 	}
+
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
 	{
 		derived_cast->base_swap(s2);
 	}
+
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
@@ -60,12 +64,14 @@ namespace piranha
 		derived_cast->base_swap(retval);
 	}
 
+
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::trim_test(TrimFlags &tf) const
 	{
 		derived_const_cast->trim_test_terms(tf);
 	}
+
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
@@ -76,6 +82,7 @@ namespace piranha
 		return retval;
 	}
 
+
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
@@ -84,11 +91,12 @@ namespace piranha
 		return derived_const_cast->template base_sub<RetSeries,typename Derived::sub_functor>(p, s, a);
 	}
 
+
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &args_tuple) const
 	{
-		derived_const_cast->base_split(retval,n,args_tuple);
+		derived_const_cast->base_split(retval, n, args_tuple);
 	}
 }
 

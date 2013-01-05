@@ -116,10 +116,10 @@ namespace piranha
 	 * This class is meant to be used as coefficient in series. It encapsulate a double precision
 	 * numerical value and provides the means for manipulation in the context of a series.
 	 */
-	class double_cf: public numerical_container<double, double_cf>
+	class double_cf: public NumericalContainer<double, double_cf>
 	{
 			// Alias for the parent class.
-			typedef numerical_container<double, double_cf> ancestor;
+			typedef NumericalContainer<double, double_cf> ancestor;
 		public:
 			// Ctors.
 			explicit double_cf(): ancestor() {}
@@ -155,11 +155,11 @@ namespace std
 {
 	template <>
 	class complex<piranha::double_cf>:
-	public piranha::numerical_container<complex<double>, complex<piranha::double_cf> >,
-		public piranha::numerical_container_complex_toolbox<piranha::double_cf>
+	public piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> >,
+		public piranha::NumericalContainerComplexToolbox<piranha::double_cf>
 	{
-			typedef piranha::numerical_container<complex<double>, complex<piranha::double_cf> > ancestor;
-			typedef piranha::numerical_container_complex_toolbox<piranha::double_cf> complex_toolbox;
+			typedef piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> > ancestor;
+			typedef piranha::NumericalContainerComplexToolbox<piranha::double_cf> complex_toolbox;
 		public:
 			explicit complex(): ancestor() {}
 			template <class T, class ArgsTuple>

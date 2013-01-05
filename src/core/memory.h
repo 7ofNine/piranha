@@ -154,8 +154,11 @@ namespace piranha
 	 */
 	template <class T, int Alignment>
 	class align_mallocator {
+
 			p_static_check(Alignment >= 0 && Alignment < 256,"Invalid alignment value requested.");
+
 		public:
+
 			typedef std::size_t	size_type;
 			typedef std::ptrdiff_t	difference_type;
 			typedef T *		pointer;
@@ -167,42 +170,55 @@ namespace piranha
 			struct rebind {
 				typedef align_mallocator<U,Alignment> other;
 			};
+
 			align_mallocator() {}
+
 			align_mallocator(const align_mallocator&) {}
+
 			template <class U>
 			align_mallocator(const align_mallocator<U,Alignment> &) {}
+
 			~align_mallocator() {}
+
 			pointer address(reference x) const
 			{
 				return &x;
 			}
+
 			const_pointer address(const_reference x) const
 			{
 				return &x;
 			}
+
 			pointer allocate(const size_type &n, const void * = 0)
 			{
 				// Just return 0 if no space is required.
-				if (unlikely(!n)) {
+				if (unlikely(!n)) 
+                {
 					return pointer(0);
 				}
-				if (unlikely(n > max_size())) {
+				if (unlikely(n > max_size())) 
+                {
 					throw std::bad_alloc();
 				}
 				boost::uint8_t *mem_ptr;
-				if (!Alignment) {
+				if (!Alignment) 
+                {
 					// We have not to satisfy any alignment.
-					if ((mem_ptr = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + 1)) != 0) {
+					if ((mem_ptr = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + 1)) != 0) 
+                    {
 						// Store (mem_ptr - "real allocated memory") in *(mem_ptr-1).
 						*mem_ptr = (boost::uint8_t)1;
 						// Return the mem_ptr pointer.
 						return ((pointer)(mem_ptr + 1));
 					}
-				} else {
+				} else 
+                {
 					boost::uint8_t *tmp;
 					// Allocate the required size memory + alignment so we
 					// can realign the data if necessary.
-					if ((tmp = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + Alignment)) != 0) {
+					if ((tmp = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + Alignment)) != 0) 
+                    {
 						// Align the tmp pointer.
 						mem_ptr = (boost::uint8_t *)((ptr_uint_t)(tmp + Alignment - 1) & (~(ptr_uint_t)(Alignment - 1)));
 						// Special case where malloc has already satisfied the alignment
@@ -210,7 +226,8 @@ namespace piranha
 						// (mem_ptr - tmp) in *(mem_ptr-1)
 						// If we do not add alignment to mem_ptr then *(mem_ptr-1) points
 						// to a forbidden memory space.
-						if (mem_ptr == tmp) {
+						if (mem_ptr == tmp) 
+                        {
 							mem_ptr += Alignment;
 						}
 						// (mem_ptr - tmp) is stored in *(mem_ptr-1) so we are able to retrieve
@@ -220,12 +237,15 @@ namespace piranha
 						return ((pointer)mem_ptr);
 					}
 				}
+
 				throw std::bad_alloc();
 			}
+
 			void deallocate(pointer p, const size_type &)
 			{
 				// Take care of zero allocation.
-				if (unlikely(!p)) {
+				if (unlikely(!p)) 
+                {
 					return;
 				}
 				// Aligned pointer.
@@ -236,15 +256,18 @@ namespace piranha
 				// Free the memory.
 				std::free(ptr);
 			}
+
 			size_type max_size() const
 			{
 				// TODO: replace with boost numerical limits for integers.
 				return std::size_t(-1) / sizeof(value_type);
 			}
+
 			void construct(pointer p, const T &value)
 			{
 				::new((void *)p) value_type(value);
 			}
+
 			void destroy(pointer p)
 			{
 				p->~T();
@@ -252,13 +275,13 @@ namespace piranha
 	};
 
 	template <class T, int Alignment>
-	inline bool operator==(const align_mallocator<T,Alignment> &, const align_mallocator<T,Alignment> &)
+	inline bool operator==(const align_mallocator<T, Alignment> &, const align_mallocator<T, Alignment> &)
 	{
 		return true;
 	}
 
 	template <class T, int Alignment>
-	inline bool operator!=(const align_mallocator<T,Alignment> &, const align_mallocator<T,Alignment> &)
+	inline bool operator!=(const align_mallocator<T, Alignment> &, const align_mallocator<T, Alignment> &)
 	{
 		return false;
 	}

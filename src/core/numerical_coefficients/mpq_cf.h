@@ -36,39 +36,53 @@ namespace piranha
 	/**
 	 * Arbitrary-size rational coefficient type, to be used as coefficient in piranha::BaseSeries.
 	 */
-	class mpq_cf: public numerical_container<mp_rational, mpq_cf>
+	class mpq_cf: public NumericalContainer<mp_rational, mpq_cf>
 	{
 			// Alias for the parent class.
-			typedef numerical_container<mp_rational, mpq_cf> ancestor;
+			typedef NumericalContainer<mp_rational, mpq_cf> ancestor;
+
 		public:
+
 			explicit mpq_cf(): ancestor() {}
+
 			template <class T, class ArgsTuple>
-			explicit mpq_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit mpq_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x, args_tuple) {}
+
 			template <class ArgsTuple>
-			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+
 			/// Override print in Tex mode.
 			template <class ArgsTuple>
 			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
 			{
 				get_value().print_tex(out_stream);
 			}
+
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const 
+            {
 				return std::abs(get_value().to_double());
 			}
+
 			template <class ArgsTuple>
-			double eval(const double &, const ArgsTuple &) const {
+			double eval(const double &, const ArgsTuple &) const 
+            {
 				return get_value().to_double();
 			}
+
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const {
+			bool is_ignorable(const ArgsTuple &) const 
+            {
 				return (get_value() == 0);
 			}
-			int to_int() const {
+
+			int to_int() const 
+            {
 				return get_value().to_int();
 			}
+
 			template <class ArgsTuple>
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
@@ -82,29 +96,38 @@ namespace piranha
 	struct is_divint_exact<mpq_cf>: boost::true_type {};
 }
 
+
 namespace std
 {
 	template <>
-	class complex<piranha::mpq_cf>:
-	public piranha::numerical_container<complex<piranha::mp_rational>, complex<piranha::mpq_cf> >,
-				public piranha::numerical_container_complex_toolbox<piranha::mpq_cf>
+	class complex<piranha::mpq_cf>:	public piranha::NumericalContainer<complex<piranha::mp_rational>, complex<piranha::mpq_cf> >,
+				                    public piranha::NumericalContainerComplexToolbox<piranha::mpq_cf>
 	{
-			typedef piranha::numerical_container<complex<piranha::mp_rational>, complex<piranha::mpq_cf> > ancestor;
-			typedef piranha::numerical_container_complex_toolbox<piranha::mpq_cf> complex_toolbox;
+			typedef piranha::NumericalContainer<complex<piranha::mp_rational>, complex<piranha::mpq_cf> > ancestor;
+			typedef piranha::NumericalContainerComplexToolbox<piranha::mpq_cf> complex_toolbox;
+
 		public:
+
 			explicit complex(): ancestor() {}
+
 			template <class T, class ArgsTuple>
-			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x, args_tuple) {}
+
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &) const {
+			double norm(const ArgsTuple &) const 
+            {
 				return abs(get_value().to_complex_double());
 			}
+
 			template <class ArgsTuple>
-			complex<double> eval(const double &, const ArgsTuple &) const {
+			complex<double> eval(const double &, const ArgsTuple &) const 
+            {
 				return get_value().to_complex_double();
 			}
+
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const {
@@ -112,6 +135,7 @@ namespace std
 			}
 	};
 }
+
 
 namespace piranha
 {

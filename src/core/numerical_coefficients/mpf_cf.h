@@ -38,54 +38,68 @@ namespace piranha
 	 *
 	 * A set of operators is provided to enable interoperability with basic numerical data types.
 	 */
-	class mpf_cf: public numerical_container<mpf_class, mpf_cf>
+	class mpf_cf: public NumericalContainer<mpf_class, mpf_cf>
 	{
 			/// Alias for self.
 			typedef mpf_cf self;
 			/// Alias for the parent class.
-			typedef numerical_container<mpf_class, mpf_cf> ancestor;
+			typedef NumericalContainer<mpf_class, mpf_cf> ancestor;
+
 		public:
+
 			// Start implementation of basic pseries coefficient interface.
 			//------------
 			// Ctors and dtor.
 			/// Empty constructor.
-			explicit mpf_cf(): ancestor::numerical_container() {}
+			explicit mpf_cf(): ancestor::NumericalContainer() {}
+
 			/// Constructor from string.
 			template <class ArgsTuple>
-			explicit mpf_cf(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
+			explicit mpf_cf(const std::string &s, const ArgsTuple &a): ancestor::NumericalContainer(s, a) {}
+
 			/// Constructor from integer.
-			explicit mpf_cf(int val): ancestor::numerical_container(val) {}
+			explicit mpf_cf(int val): ancestor::NumericalContainer(val) {}
+
 			/// Constructor from double.
-			explicit mpf_cf(const double &val): ancestor::numerical_container(val) {}
+			explicit mpf_cf(const double &val): ancestor::NumericalContainer(val) {}
+
 			/// Constructor from psym.
 			template <class ArgsTuple>
-			explicit mpf_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::numerical_container(p, n, a) {}
+			explicit mpf_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::NumericalContainer(p, n, a) {}
+
 			// Override norm and evaluation.
 			template <class ArgsTuple>
-			double norm_(const ArgsTuple &) const {
+			double norm_(const ArgsTuple &) const 
+            {
 				return std::abs(g_value().get_d());
 			}
+
 			template <class ArgsTuple>
-			double t_eval(const double &, const ArgsTuple &) const {
+			double t_eval(const double &, const ArgsTuple &) const 
+            {
 				return g_value().get_d();
 			}
 			// End implementation of basic pseries coefficient interface.
 			//------------
+
 			// Start implementation of trigonometric pseries coefficient interface.
 			// Used in:
 			// - trigonometric toolbox,
 			//------------
 			template <class ArgsTuple>
-			self besselJ(int n, const ArgsTuple &) const {
+			self besselJ(int n, const ArgsTuple &) const 
+            {
 				self retval;
 				retval.s_value() = math::besselJ(n, g_value().get_d());
 				return retval;
 			}
+
 			// End implementation of trigonometric pseries coefficient interface.
 			//------------
 			// Start implementation of power-enabled pseries coefficient interface.
 			template <class ArgsTuple>
-			self pow(const double &y, const ArgsTuple &) const {
+			self pow(const double &y, const ArgsTuple &) const 
+            {
 				self retval;
 				retval.s_value() = std::pow(g_value().get_d(), y);
 				return retval;
@@ -98,13 +112,13 @@ namespace std
 {
 	template <>
 	struct complex<piranha::mpf_cf>:
-				public piranha::numerical_container<complex<mpf_class>, complex<piranha::mpf_cf> >,
-				public piranha::numerical_container_complex_toolbox<piranha::mpf_cf> {
+				public piranha::NumericalContainer<complex<mpf_class>, complex<piranha::mpf_cf> >,
+				public piranha::NumericalContainerComplexToolbox<piranha::mpf_cf> {
 private:
-		typedef piranha::numerical_container<complex<mpf_class>, complex<piranha::mpf_cf> > ancestor;
-		typedef piranha::numerical_container_complex_toolbox<piranha::mpf_cf> complex_toolbox;
+		typedef piranha::NumericalContainer<complex<mpf_class>, complex<piranha::mpf_cf> > ancestor;
+		typedef piranha::NumericalContainerComplexToolbox<piranha::mpf_cf> complex_toolbox;
 		typedef complex self;
-		friend class piranha::numerical_container_complex_toolbox<piranha::mpf_cf>;
+		friend class piranha::NumericalContainerComplexToolbox<piranha::mpf_cf>;
 public:
 		typedef piranha::mpf_cf value_type;
 //       using ancestor::swap;
@@ -132,20 +146,20 @@ public:
 		// Start implementation of basic pseries coefficient interface.
 		//------------
 		// Basic ctors and dtor.
-		explicit complex(): ancestor::numerical_container() {}
+		explicit complex(): ancestor::NumericalContainer() {}
 		template <class ArgsTuple>
-		explicit complex(const std::string &s, const ArgsTuple &a): ancestor::numerical_container(s, a) {}
-		explicit complex(int n): ancestor::numerical_container(n) {}
-		explicit complex(const double &x): ancestor::numerical_container(x) {}
-		complex(const complex &c): ancestor::numerical_container(c), complex_toolbox::numerical_container_complex_toolbox(c) {}
+		explicit complex(const std::string &s, const ArgsTuple &a): ancestor::NumericalContainer(s, a) {}
+		explicit complex(int n): ancestor::NumericalContainer(n) {}
+		explicit complex(const double &x): ancestor::NumericalContainer(x) {}
+		complex(const complex &c): ancestor::NumericalContainer(c), complex_toolbox::NumericalContainerComplexToolbox(c) {}
 		// Complex specific contructors.
-		explicit complex(int r, int i): complex_toolbox::numerical_container_complex_toolbox(r, i) {}
-		explicit complex(const std::complex<int> &c): complex_toolbox::numerical_container_complex_toolbox(c) {}
-		explicit complex(const double &r, const double &i): complex_toolbox::numerical_container_complex_toolbox(r, i) {}
-		explicit complex(const std::complex<double> &c): complex_toolbox::numerical_container_complex_toolbox(c) {}
-		explicit complex(const value_type &r): complex_toolbox::numerical_container_complex_toolbox(r) {}
+		explicit complex(int r, int i): complex_toolbox::NumericalContainerComplexToolbox(r, i) {}
+		explicit complex(const std::complex<int> &c): complex_toolbox::NumericalContainerComplexToolbox(c) {}
+		explicit complex(const double &r, const double &i): complex_toolbox::NumericalContainerComplexToolbox(r, i) {}
+		explicit complex(const std::complex<double> &c): complex_toolbox::NumericalContainerComplexToolbox(c) {}
+		explicit complex(const value_type &r): complex_toolbox::NumericalContainerComplexToolbox(r) {}
 		explicit complex(const value_type &r, const value_type &i):
-				complex_toolbox::numerical_container_complex_toolbox(r, i) {}
+				complex_toolbox::NumericalContainerComplexToolbox(r, i) {}
 		// Operators.
 		self &operator=(const self &val2) {
 			return assign_self(val2);

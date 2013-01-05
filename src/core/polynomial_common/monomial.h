@@ -33,6 +33,7 @@ namespace piranha
 	{
 			// Alias for the ancestor.
 			typedef BaseTerm<Cf, Key, Separator, Allocator, Monomial> ancestor;
+
 		public:
 
 			/// Alias for coefficient type.
@@ -41,14 +42,16 @@ namespace piranha
 			typedef Key key_type;
 			/// Result of the multiplication of two monomials.
 			typedef typename boost::tuple<Monomial> multiplication_result;
+
 			PIRANHA_TERM_CTORS(Monomial);
+
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
 			template <class Term1, class Term2, class ArgsTuple>
-			static void multiply(const Term1 &m1, const Term2 &m2,
-								 multiplication_result &res, const ArgsTuple &args_tuple) {
+			static void multiply(const Term1 &m1, const Term2 &m2, multiplication_result &res, const ArgsTuple &args_tuple) 
+            {
 				// Perform the multiplication of exponents.
 				m1.m_key.multiply(m2.m_key, res.template get<0>().m_key);
 				// Handle coefficient multiplication.

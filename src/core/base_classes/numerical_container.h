@@ -38,7 +38,7 @@
 
 // Convenience macros.
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -48,7 +48,7 @@ namespace piranha
 	 * numerical entity (double, MP classes, etc.).
 	 */
 	template <class T, class Derived>
-	class numerical_container: numerical_container_tag
+	class NumericalContainer: numerical_container_tag
 	{
 			template <class, class>
 			friend struct numerical_container_constructor_selector;
@@ -92,14 +92,14 @@ namespace piranha
 			};
 
 			/// Default constructor, initialises internal value to 0.
-			explicit numerical_container(): m_value(0) {}
+			explicit NumericalContainer(): m_value(0) {}
 			
 			/// Constructor from string.
 			/**
 			 * Will call boost::lexical_converter internally.
 			 */
 			template <class ArgsTuple>
-			explicit numerical_container(const std::string &s, const ArgsTuple &):
+			explicit NumericalContainer(const std::string &s, const ArgsTuple &):
 				m_value(boost::lexical_cast<T>(s)) {}
 			
 			/// Ctor from psym.
@@ -107,11 +107,11 @@ namespace piranha
 			 * Sets internal value to one.
 			 */
 			template <class ArgsTuple>
-			explicit numerical_container(const psym &, const int &, const ArgsTuple &): m_value(1) {}
+			explicit NumericalContainer(const psym &, const int &, const ArgsTuple &): m_value(1) {}
 			
 			/// Generic constructor.
 			template <class U, class ArgsTuple>
-			explicit numerical_container(const U &x, const ArgsTuple &):
+			explicit NumericalContainer(const U &x, const ArgsTuple &):
 				m_value(numerical_container_constructor_selector<U>::run(x))
 			{}
 			
@@ -319,16 +319,16 @@ namespace piranha
 
 	// Overloads for I/O operators.
 	template <class T, class Derived>
-	inline std::istream &operator>>(std::istream &is, numerical_container<T, Derived> &nc)
+	inline std::istream &operator>>(std::istream &is, NumericalContainer<T, Derived> &nc)
 	{
 		std::string tmp;
 		std::getline(is, tmp);
-		nc = numerical_container<T, Derived>(boost::lexical_cast<T>(tmp));
+		nc = NumericalContainer<T, Derived>(boost::lexical_cast<T>(tmp));
 		return is;
 	}
 
 	template <class T, class Derived>
-	inline std::ostream &operator<<(std::ostream &os, const numerical_container<T, Derived> &nc)
+	inline std::ostream &operator<<(std::ostream &os, const NumericalContainer<T, Derived> &nc)
 	{
 		os << boost::lexical_cast<std::string>(nc.get_value());
 		return os;

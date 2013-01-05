@@ -33,9 +33,9 @@
 
 namespace piranha
 {
-	/// Toolbox for complex-specific methods of piranha::numerical_container.
+	/// Toolbox for complex-specific methods of piranha::NumericalContainer.
 	template <class RealDerived>
-	class numerical_container_complex_toolbox
+	class NumericalContainerComplexToolbox
 	{
 		public:
 			typedef std::complex<RealDerived> Derived;

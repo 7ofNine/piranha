@@ -31,7 +31,7 @@
 namespace piranha
 {
 	#define derived_const_cast static_cast<Derived const *>(this)
-	#define derived_cast static_cast<Derived *>(this)
+	#define derived_cast       static_cast<Derived *>(this)
 
 	/// Toolbox of useful functions for wrapping GMP-like classes.
 	/**
@@ -39,22 +39,27 @@ namespace piranha
 	 */
 	template <class T, class Derived>
 	class gmp_toolbox {
+
 		public:
-			/// Absolute value.
+		
+            /// Absolute value.
 			Derived abs() const
 			{
 				return (((*derived_const_cast) >= 0) ? (*derived_const_cast) : -(*derived_const_cast));
 			}
+
 			/// Const reference to internal type.
 			const T &get_internal() const
 			{
 				return derived_const_cast->m_value;
 			}
+
 			/// Print to stream.
 			std::ostream &print(std::ostream &s) const
 			{
 				return (s << derived_const_cast->m_value);
 			}
+
 			/// Rising factorial.
 			/**
 			 * @see piranha::generic_r_factorial.
@@ -63,6 +68,7 @@ namespace piranha
 			{
 				return generic_r_factorial(*derived_const_cast,n);
 			}
+
 			/// Falling factorial.
 			/**
 			 * @see piranha::generic_f_factorial.
@@ -71,11 +77,14 @@ namespace piranha
 			{
 				return generic_f_factorial(*derived_const_cast,n);
 			}
+
 			void print_tex(std::ostream &out_stream) const
 			{
 				out_stream << *derived_const_cast;
 			}
+
 		protected:
+
 			template <class U>
 			bool complex_comparison(const std::complex<U> &c) const
 			{

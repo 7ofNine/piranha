@@ -46,7 +46,8 @@ namespace piranha
 		std::vector<std::string> vs;
 		boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
 		const std::size_t length = vs.size();
-		for (std::size_t i = 0; i < length; ++i) {
+		for (std::size_t i = 0; i < length; ++i) 
+        {
 			// Build the term from the string.
 			term_type term(vs[i], args_tuple);
 			// Insert it.
@@ -67,11 +68,14 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		if (derived_const_cast->length() > 1) {
+		if (derived_const_cast->length() > 1) 
+        {
 			stream << '(';
 		}
 		derived_const_cast->print_terms_pretty(stream, args_tuple);
-		if (derived_const_cast->length() > 1) {
+		
+        if (derived_const_cast->length() > 1) 
+        {
 			stream << ')';
 		}
 	}
@@ -81,11 +85,15 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
-		if (derived_const_cast->length() > 1) {
+		if (derived_const_cast->length() > 1) 
+        {
 			stream << "\\left(";
 		}
+
 		derived_const_cast->print_terms_tex(stream, args_tuple);
-		if (derived_const_cast->length() > 1) {
+		
+        if (derived_const_cast->length() > 1) 
+        {
 			stream << "\\right)";
 		}
 	}
