@@ -188,12 +188,12 @@ namespace piranha
 
 #define COMPLEX_E0_SERIES_TERM(term_name) term_name<std::complex<Cf>,Key,'|',Allocator>
 #define COMPLEX_E0_SERIES(series_name) std::complex<E0_SERIES(series_name)>
-#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
+#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::BaseSeries<COMPLEX_E0_SERIES_TERM(term_name),'\n', \
 	Allocator,COMPLEX_E0_SERIES(series_name) >
 
 #define COMPLEX_E1_SERIES_TERM(term_name,cf_name) term_name<std::complex<cf_name>,Key1,'|',Allocator>
 #define COMPLEX_E1_SERIES(series_name) std::complex<E1_SERIES(series_name)>
-#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<COMPLEX_E1_SERIES_TERM(term_name,cf_name), \
+#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::BaseSeries<COMPLEX_E1_SERIES_TERM(term_name,cf_name), \
 	'\n',Allocator,COMPLEX_E1_SERIES(series_name) >
 }
 

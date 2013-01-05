@@ -249,7 +249,7 @@ namespace piranha
 
 	/// Construct series from a key.
 	/**
-	 * @see piranha::base_series::base_series_from_key.
+	 * @see piranha::BaseSeries::base_series_from_key.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
@@ -263,7 +263,7 @@ namespace piranha
 
 	/// Construct series from a cf.
 	/**
-	 * @see piranha::base_series::base_series_from_cf.
+	 * @see piranha::BaseSeries::base_series_from_cf.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>

@@ -34,7 +34,7 @@ namespace piranha
 {
 	/// Multiprecision integer coefficient.
 	/**
-	 * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::base_series.
+	 * Arbitrary-size integer coefficient type, to be used as coefficient in piranha::BaseSeries.
 	 */
 	class mpz_cf: public numerical_container<mp_integer, mpz_cf>
 	{

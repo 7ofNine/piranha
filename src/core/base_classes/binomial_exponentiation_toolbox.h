@@ -39,7 +39,7 @@ namespace piranha
 {
 	/// Binomial exponentiation toolbox.
 	/**
-	 * Overrides base_series::real_power, base_series::negative_integer_power, base_series::rational_power
+	 * Overrides BaseSeries::real_power, BaseSeries::negative_integer_power, BaseSeries::rational_power
 	 * and reimplements them using binomial expansion.
 	 */
 	template <class Derived>
@@ -75,7 +75,7 @@ namespace piranha
 			{
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of empty series and natural power have already
-				// been taken care of in base_series::base_pow.
+				// been taken care of in BaseSeries::base_pow.
 				piranha_assert(v.size() >= 1);
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.

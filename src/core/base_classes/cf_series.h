@@ -42,7 +42,7 @@ namespace piranha
 {
 	/// Toolbox for using a series as a coefficient in another series.
 	/**
-	 * Intended to be inherited by piranha::base_series.
+	 * Intended to be inherited by piranha::BaseSeries.
 	 */
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	class cf_series
@@ -109,7 +109,7 @@ namespace piranha
 	};
 
 	// Useful macro for ctors in coefficient series.
-	// TODO: maybe we can call these base_series ctors and use them in named_series ctors macro too?
+	// TODO: maybe we can call these BaseSeries ctors and use them in named_series ctors macro too?
 #define CF_SERIES_CTORS(series_name) \
 	explicit series_name() {} \
 	template <class ArgsTuple> \
@@ -149,11 +149,11 @@ namespace piranha
 
 #define CF_SERIES_TERM(term_name,separator) term_name<Cf,Key,separator,Allocator>
 #define CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) \
-	piranha::base_series<CF_SERIES_TERM(term_name,term_separator),separator, \
+	piranha::BaseSeries<CF_SERIES_TERM(term_name,term_separator),separator, \
 	Allocator,E0_SERIES(series_name)>
 
 #define COMPLEX_CF_SERIES_TERM(term_name,separator) term_name<std::complex<Cf>,Key,separator,Allocator>
-#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) piranha::base_series< \
+#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name,series_name,term_separator,separator) piranha::BaseSeries< \
 	COMPLEX_CF_SERIES_TERM(term_name,term_separator),separator, Allocator,COMPLEX_E0_SERIES(series_name)>
 }
 

@@ -38,14 +38,14 @@ namespace piranha
 	 * @return true if series has length one and the key of the only term is equivalent to unity, false otherwise.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
 	{
 		return (length() == 1 && begin()->m_key.is_unity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double base_series<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &args_tuple) const
+	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		double retval = 0;
@@ -57,8 +57,8 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::eval_type
-		base_series<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &args_tuple) const
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::eval_type
+		BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		eval_type retval(0);
@@ -75,7 +75,7 @@ namespace piranha
 	 * @return number of terms in the series.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::size_type base_series<__PIRANHA_BASE_SERIES_TP>::length() const
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::length() const
 	{
 		return m_container.size();
 	}
@@ -85,14 +85,14 @@ namespace piranha
 	 * @return true if the series has zero terms, false otherwise.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::empty() const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::empty() const
 	{
 		return m_container.empty();
 	}
 
 	/// Number of atoms in the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::size_type base_series<__PIRANHA_BASE_SERIES_TP>::atoms() const
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
 		size_type retval = 0;
 		const const_iterator it_f = end();
@@ -114,7 +114,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::generic_series_comparison(const T &other) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_series_comparison(const T &other) const
 	{
 		if (length() != other.length()) {
 			return false;
@@ -163,7 +163,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
 	{
 		if (numerical_comparison_zero_check<Number>()(x)) {
 			return empty();
@@ -182,7 +182,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool base_series<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const T &x) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const T &x) const
 	{
 		return base_series_equal_to_selector<T>::run(*derived_const_cast, x);
 	}

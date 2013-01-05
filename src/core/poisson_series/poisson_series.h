@@ -94,7 +94,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,Mult0,Trunc0,Allocator>
 #define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
-#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES>
+#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::BaseSeries<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POISSON_SERIES>

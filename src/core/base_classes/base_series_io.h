@@ -54,14 +54,14 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::base_series_from_number(const Number &x, const ArgsTuple &args_tuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_number(const Number &x, const ArgsTuple &args_tuple)
 	{
 		return base_series_from_cf(typename term_type::cf_type(x,args_tuple),args_tuple);
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		const const_iterator it_f = end();
 		const_iterator it = begin();
@@ -77,7 +77,7 @@ namespace piranha
 	// TODO: rework and fix the printing functions.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
 		const ArgsTuple &args_tuple) const
 	{
 		const std::size_t max_length = settings::get_max_pretty_print_size();
@@ -106,7 +106,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		if (empty()) {
 			stream << '0';
@@ -122,7 +122,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_tex(std::ostream &stream, const Iterator &start, const Iterator &end,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_tex(std::ostream &stream, const Iterator &start, const Iterator &end,
 		const ArgsTuple &args_tuple) const
 	{
 
@@ -142,7 +142,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::print_terms_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
 	{
 		if (empty()) {
 			stream << '0';
@@ -159,7 +159,7 @@ namespace piranha
 	/// Constructor from psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void base_series<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const psym &p, const int &n,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const psym &p, const int &n,
 			const ArgsTuple &args_tuple)
 	{
 		piranha_assert(derived_cast->empty());
@@ -171,8 +171,8 @@ namespace piranha
 	 * @return iterator to the first term of the series.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::begin() const
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
+	BaseSeries<__PIRANHA_BASE_SERIES_TP>::begin() const
 	{
 		return m_container.begin();
 	}
@@ -182,8 +182,8 @@ namespace piranha
 	 * @return iterator to the last term of the series.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename base_series<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	base_series<__PIRANHA_BASE_SERIES_TP>::end() const
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
+	BaseSeries<__PIRANHA_BASE_SERIES_TP>::end() const
 	{
 		return m_container.end();
 	}
@@ -197,7 +197,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Key, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::base_series_from_key(const Key &key, const ArgsTuple &args_tuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_key(const Key &key, const ArgsTuple &args_tuple)
 	{
 		Derived retval;
 		series_from_key_impl<Key, typename term_type::key_type>::run(retval,key,args_tuple);
@@ -211,7 +211,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Cf, class ArgsTuple>
-	inline Derived base_series<__PIRANHA_BASE_SERIES_TP>::base_series_from_cf(const Cf &cf, const ArgsTuple &args_tuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_cf(const Cf &cf, const ArgsTuple &args_tuple)
 	{
 		Derived retval;
 		series_from_cf_impl<Cf, typename term_type::cf_type>::run(retval,cf,args_tuple);
@@ -223,9 +223,9 @@ namespace piranha
 	 * No side effects. Contains compile-time checks.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline base_series<__PIRANHA_BASE_SERIES_TP>::~base_series()
+	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-		p_static_check((boost::is_base_of<base_series_tag,Derived>::value),"Final series class must derive from base_series class.");
+		p_static_check((boost::is_base_of<base_series_tag,Derived>::value),"Final series class must derive from BaseSeries class.");
 	}
 }
 

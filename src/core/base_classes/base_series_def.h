@@ -41,9 +41,9 @@
 #include "base_series_mp.h"
 #include "base_series_tag.h"
 
-// Template parameters list for piranha::base_series (declaration form).
+// Template parameters list for piranha::BaseSeries (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
-// Template parameters list for piranha::base_series (implementation form).
+// Template parameters list for piranha::BaseSeries (implementation form).
 #define __PIRANHA_BASE_SERIES_TP Term, Separator, Allocator, Derived
 
 namespace piranha
@@ -99,7 +99,7 @@ namespace piranha
 	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	class base_series: base_series_tag
+	class BaseSeries: base_series_tag
 	{
 			// Befriend meta-programming classes.
 			template <class, class>
@@ -159,7 +159,7 @@ namespace piranha
 			static Derived base_series_from_number(const Number &, const ArgsTuple &);
 			template <class ArgsTuple>
 			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
-			~base_series();
+			~BaseSeries();
 			//@}
 			/** @name Series manipulation. */
 			//@{
@@ -291,7 +291,7 @@ namespace piranha
 #define E0_SERIES_TP Cf,Key,Multiplier,Truncator,Allocator
 #define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
 #define E0_SERIES(series_name) series_name<E0_SERIES_TP>
-#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::base_series<E0_SERIES_TERM(term_name),'\n', \
+#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::BaseSeries<E0_SERIES_TERM(term_name),'\n', \
 	Allocator,E0_SERIES(series_name) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
@@ -300,7 +300,7 @@ namespace piranha
 #define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,Mult0,Trunc0,Allocator>
 #define E1_SERIES(series_name) series_name<E1_SERIES_TP>
 #define E1_SERIES_TERM(term_name,cf_name) term_name< cf_name, Key1, '|', Allocator >
-#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::base_series<term_name< \
+#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::BaseSeries<term_name< \
 	cf_name,Key1,'|',Allocator>, \
 	'\n',Allocator,series_name >
 }

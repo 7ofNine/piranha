@@ -34,7 +34,7 @@ namespace piranha
 {
 	/// Rational numerical coefficient for series.
 	/**
-	 * Arbitrary-size rational coefficient type, to be used as coefficient in piranha::base_series.
+	 * Arbitrary-size rational coefficient type, to be used as coefficient in piranha::BaseSeries.
 	 */
 	class mpq_cf: public numerical_container<mp_rational, mpq_cf>
 	{

@@ -114,7 +114,7 @@ namespace piranha
 			}
 	};
 
-	// These structs are used to select at compile time which low-level methods in base_series
+	// These structs are used to select at compile time which low-level methods in BaseSeries
 	// to call to implement arithmetic operations - based on the type of argument.
 
 	template <class T, class Enable = void>
