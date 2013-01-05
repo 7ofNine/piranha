@@ -32,7 +32,7 @@
 namespace piranha
 {
 	template <class RealDerived>
-	class base_series_complex
+	class BaseSeriesComplex
 	{
 		public:
 			typedef std::complex<RealDerived> Derived;

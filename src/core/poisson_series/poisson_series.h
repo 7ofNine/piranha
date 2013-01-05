@@ -63,7 +63,7 @@ namespace piranha
 				public POISSON_SERIES_BASE_ANCESTOR,
 				public POISSON_SERIES_NAMED_ANCESTOR,
 				public POISSON_SERIES_BINOMIAL_ANCESTOR,
-				public base_harmonic_series<1,1,POISSON_SERIES_H_DEGREE,POISSON_SERIES>,
+				public BaseHarmonicSeries<1,1,POISSON_SERIES_H_DEGREE,POISSON_SERIES>,
 				public named_harmonic_series<POISSON_SERIES_H_DEGREE,POISSON_SERIES>,
 				public series_multiplication< POISSON_SERIES, Mult1, Trunc1>,
 				public jacobi_anger<1, POISSON_SERIES>,
@@ -97,7 +97,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES>
-#define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex< POISSON_SERIES>
+#define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
@@ -112,7 +112,7 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
-				public piranha::base_harmonic_series<1,1,COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES>,
+				public piranha::BaseHarmonicSeries<1,1,COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES>,
 				public piranha::named_harmonic_series<COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES>,
 				public piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>,
 				public piranha::common_poisson_series< COMPLEX_POISSON_SERIES>,

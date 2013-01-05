@@ -44,7 +44,7 @@
 // Template parameters list for piranha::base_series (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
 // Template parameters list for piranha::base_series (implementation form).
-#define __PIRANHA_BASE_SERIES_TP Term,Separator,Allocator,Derived
+#define __PIRANHA_BASE_SERIES_TP Term, Separator, Allocator, Derived
 
 namespace piranha
 {
@@ -65,7 +65,7 @@ namespace piranha
 	template <class Term>
 	struct series_container
 	{
-		typedef boost::unordered_set<Term,boost::hash<Term>,std::equal_to<Term>,counting_allocator<Term,std::allocator<Term> > > type;
+		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, counting_allocator<Term, std::allocator<Term> > > type;
 	};
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
@@ -80,7 +80,7 @@ namespace piranha
 	};
 
 	template <class Iterator>
-	struct from_iterator<Iterator,typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
+	struct from_iterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
 	{
 		static typename Iterator::value_type get(const Iterator &it)
 		{
@@ -116,7 +116,9 @@ namespace piranha
 			friend struct base_series_multiply_selector;
 			template <class, class>
 			friend struct base_series_equal_to_selector;
+
 		public:
+
 			/// Alias for term type.
 			typedef Term term_type;
 			/// Term container.
@@ -239,6 +241,7 @@ namespace piranha
 			void print_terms_tex(std::ostream &, const ArgsTuple &) const;
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
+
 			//@}
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
@@ -249,7 +252,9 @@ namespace piranha
 					return e.template sub<RetSeries>(pos_tuple, sub_caches, args_tuple);
 				}
 			};
+
 		private:
+
 			template <class T, class ArgsTuple>
 			Derived &multiply_coefficients_by(const T &, const ArgsTuple &);
 			template <class T, class ArgsTuple>
@@ -276,7 +281,9 @@ namespace piranha
 			void term_insert_new(const term_type &, const ArgsTuple &);
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
+
 		private:
+
 			container_type m_container;
 	};
 

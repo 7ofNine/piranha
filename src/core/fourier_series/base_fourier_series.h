@@ -38,12 +38,13 @@ namespace piranha
 	 * N represents the position of trigonometric arguments in the arguments tuple.
 	 */
 	template <int N, class Derived>
-	class base_fourier_series
+	class BaseFourierSeries
 	{
 			p_static_check(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
 
 		//protected:
 		public:
+
 			// Integrate supposing that the symbol is present in the fourier series..
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const

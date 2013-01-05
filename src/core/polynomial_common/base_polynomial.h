@@ -40,7 +40,7 @@ namespace piranha
 	 * N represents the position of polynomial arguments in the arguments tuple.
 	 */
 	template <int N, class Derived>
-	class base_polynomial
+	class BasePolynomial
 	{
 			p_static_check(N >= 0, "Invalid arguments position in base polynomial toolbox.");
 		//protected:
