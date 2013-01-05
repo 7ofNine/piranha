@@ -45,9 +45,9 @@
 #include "fourier_series_term.h"
 #include "named_fourier_series.h"
 
-#define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::fourier_series_term)
+#define FOURIER_SERIES_TERM E0_SERIES_TERM(piranha::FourierSeriesTerm)
 #define FOURIER_SERIES E0_SERIES(piranha::fourier_series)
-#define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
+#define FOURIER_SERIES_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<trig_args_descr>, FOURIER_SERIES_TERM ,piranha::fourier_series)
 #define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< FOURIER_SERIES>
 #define FOURIER_SERIES_H_DEGREE typename FOURIER_SERIES_TERM::key_type::h_degree_type
@@ -88,9 +88,9 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::fourier_series_term)
+#define COMPLEX_FOURIER_SERIES_TERM COMPLEX_E0_SERIES_TERM(piranha::FourierSeriesTerm)
 #define COMPLEX_FOURIER_SERIES COMPLEX_E0_SERIES(piranha::fourier_series)
-#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,piranha::fourier_series)
+#define COMPLEX_FOURIER_SERIES_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::trig_args_descr>, \
 		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::base_series_complex< FOURIER_SERIES>

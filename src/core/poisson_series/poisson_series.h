@@ -49,8 +49,8 @@
 
 #define POISSON_SERIES E1_SERIES(piranha::poisson_series)
 #define POISSON_SERIES_POLYNOMIAL_CF E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
-#define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF)
-#define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::fourier_series_term,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
+#define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::FourierSeriesTerm,POISSON_SERIES_POLYNOMIAL_CF)
+#define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr, piranha::trig_args_descr, POISSON_SERIES_TERM, POISSON_SERIES)
 #define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POISSON_SERIES>
 #define POISSON_SERIES_DEGREE typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
@@ -93,7 +93,7 @@ namespace piranha
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,Mult0,Trunc0,Allocator>
-#define COMPLEX_POISSON_SERIES_TERM piranha::fourier_series_term<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
+#define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
 #define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::base_series<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::named_series<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES>
