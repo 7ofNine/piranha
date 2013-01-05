@@ -29,7 +29,7 @@
 #include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -41,6 +41,7 @@ namespace piranha
 	class base_fourier_series
 	{
 			p_static_check(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
+
 		//protected:
 		public:
 			// Integrate supposing that the symbol is present in the fourier series..
@@ -49,6 +50,7 @@ namespace piranha
 			{
 				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Fourier series integration.");
+
 				typedef typename Derived::const_iterator const_iterator;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
@@ -57,20 +59,28 @@ namespace piranha
 				Derived retval;
 				const std::size_t pos = pos_tuple.template get<N>()[0].second;
 				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					if (it->m_key[pos] == 0) {
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+                {
+					if (it->m_key[pos] == 0) 
+                    {
 						piranha_throw(value_error,"cannot procede with integration, one of the terms of the "
 							" Fourier series does not contain the symbol in its trigonometric arguments.");
 					}
+
 					typename Derived::term_type tmp(*it);
-					if (it->m_key.get_flavour()) {
-						tmp.m_cf.divide_by(it->m_key[pos],args_tuple);
-					} else {
-						tmp.m_cf.divide_by(-it->m_key[pos],args_tuple);
+					if (it->m_key.get_flavour()) 
+                    {
+						tmp.m_cf.divide_by(  it->m_key[pos], args_tuple);
+
+					} else 
+                    {
+						tmp.m_cf.divide_by(- it->m_key[pos], args_tuple);
 					}
+
 					tmp.m_key.set_flavour(!tmp.m_key.get_flavour());
-					retval.insert(tmp,args_tuple);
+					retval.insert(tmp, args_tuple);
 				}
+
 				return retval;
 			}
 	};

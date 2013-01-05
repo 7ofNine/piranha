@@ -39,7 +39,7 @@
 namespace piranha
 {
 	template <int N, class Term>
-	class base_term_get_helper
+	class BaseTermGetHelper
 	{
 		public:
 
@@ -57,7 +57,7 @@ namespace piranha
 	};
 
 	template <class Term>
-	class base_term_get_helper<1, Term>
+	class BaseTermGetHelper<1, Term>
 	{
 		public:
 
@@ -83,10 +83,11 @@ namespace piranha
 	class BaseTerm
 	{
 		public:
+
 			// Meta-programming to get the type of the component.
 			template <int N>
 			struct component {
-				typedef typename base_term_get_helper<N, BaseTerm>::type type;
+				typedef typename BaseTermGetHelper<N, BaseTerm>::type type;
 			};
 
 			/// Alias for coefficient type.
@@ -139,17 +140,17 @@ namespace piranha
 			explicit BaseTerm(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 
 			template <int N>
-			typename base_term_get_helper<N, BaseTerm>::type &get() 
+			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
 			{
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
-				return base_term_get_helper<N, BaseTerm>::run(*this);
+				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
 			template <int N>
-			const typename base_term_get_helper<N, BaseTerm>::type &get() const 
+			const typename BaseTermGetHelper<N, BaseTerm>::type &get() const 
 			{
 				BOOST_STATIC_ASSERT(N == 0 || N == 1);
-				return base_term_get_helper<N, BaseTerm>::run(*this);
+				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
 			void swap(BaseTerm &other) 
