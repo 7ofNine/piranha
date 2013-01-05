@@ -40,8 +40,8 @@ namespace manipulators
 	typedef poisson_series
 	<
 		double_cf,
-		expo_vector<mp_rational,0>,
-		trig_vector<boost::int16_t, 1>,
+		ExpoVector<mp_rational,0>,
+		TrigVector<boost::int16_t, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,

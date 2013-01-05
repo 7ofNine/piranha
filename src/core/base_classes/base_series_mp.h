@@ -73,7 +73,7 @@ namespace piranha
 	};
 
 	template <class Cf>
-	struct series_from_cf_impl<Cf,Cf>
+	struct series_from_cf_impl<Cf, Cf>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &args_tuple)

@@ -39,8 +39,8 @@ namespace manipulators {
 	typedef poisson_series
 	<
 		double_cf,
-		expo_vector<boost::int16_t, 0>,
-		trig_vector<boost::int16_t, 1>,
+		ExpoVector<boost::int16_t, 0>,
+		TrigVector<boost::int16_t, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
 		truncators::power_series,

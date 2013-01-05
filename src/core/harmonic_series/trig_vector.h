@@ -53,9 +53,9 @@ namespace piranha
 {
 	/// Trigonometric vector.
 	template < __PIRANHA_TRIG_VECTOR_TP_DECL >
-	class trig_vector: public vector_key<__PIRANHA_TRIG_VECTOR_TP, trig_vector<__PIRANHA_TRIG_VECTOR_TP> >
+	class TrigVector: public VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> >
 	{
-			typedef vector_key<__PIRANHA_TRIG_VECTOR_TP, trig_vector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
+			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
 			class sub_cache: public power_cache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
@@ -162,12 +162,12 @@ namespace piranha
 
 			// Ctors.
 			/// Default ctor.
-			trig_vector(): ancestor(), m_flavour(true) {}
+			TrigVector(): ancestor(), m_flavour(true) {}
 
 
 			/// Copy ctor from different position.
 			template <int Position2>
-			trig_vector(const trig_vector<T, Position2> &t2): ancestor(), m_flavour(t2.get_flavour())
+			TrigVector(const TrigVector<T, Position2> &t2): ancestor(), m_flavour(t2.get_flavour())
 			{
 				this->resize(t2.size());
 				std::copy(t2.begin(), t2.end() ,this->begin());
@@ -176,7 +176,7 @@ namespace piranha
 
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit trig_vector(const std::string &s, const ArgsTuple &): ancestor(),m_flavour(true)
+			explicit TrigVector(const std::string &s, const ArgsTuple &): ancestor(),m_flavour(true)
 			{
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
@@ -204,7 +204,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			explicit trig_vector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a),m_flavour(true) {}
+			explicit TrigVector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a),m_flavour(true) {}
 			// Math.
 			/// Multiplication.
 			/**
@@ -225,7 +225,7 @@ namespace piranha
 			 */
 
 
-			void multiply(const trig_vector &t2, trig_vector &ret1, trig_vector &ret2) const
+			void multiply(const TrigVector &t2, TrigVector &ret1, TrigVector &ret2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
 			// critical part, so the optimization should be worth the hassle.
@@ -503,7 +503,7 @@ namespace piranha
 
 
 			// Re-implement swap and trim to take into account the flavour.
-			void swap(trig_vector &t2)
+			void swap(TrigVector &t2)
 			{
 				ancestor::swap(t2);
 				std::swap(m_flavour,t2.m_flavour);
@@ -511,9 +511,9 @@ namespace piranha
 
 
 			template <class TrimFlags, class ArgsTuple>
-			trig_vector trim(const TrimFlags &tf, const ArgsTuple &args_tuple) const
+			TrigVector trim(const TrimFlags &tf, const ArgsTuple &args_tuple) const
 			{
-				trig_vector retval(ancestor::trim(tf,args_tuple));
+				TrigVector retval(ancestor::trim(tf,args_tuple));
 				retval.m_flavour = m_flavour;
 				return retval;
 			}
@@ -528,14 +528,14 @@ namespace piranha
 
 
 			/// Equality test.
-			bool operator==(const trig_vector &t2) const
+			bool operator==(const TrigVector &t2) const
 			{
 				return (m_flavour == t2.m_flavour && this->elements_equal_to(t2));
 			}
 
 
 			/// Less than.
-			bool operator<(const trig_vector &t2) const
+			bool operator<(const TrigVector &t2) const
 			{
 				if (m_flavour < t2.m_flavour) {
 					return true;
@@ -569,7 +569,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) 
 				{
-					trig_vector copy(*this);
+					TrigVector copy(*this);
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					// Change the flavour of the resulting key.
 					copy.m_flavour = !m_flavour;
@@ -587,14 +587,14 @@ namespace piranha
 
 			/// Exponentiation.
 			template <class ArgsTuple>
-			trig_vector pow(const double &y, const ArgsTuple &) const
+			TrigVector pow(const double &y, const ArgsTuple &) const
 			{
 				return pow_number(y);
 			}
 
 
 			template <class ArgsTuple>
-			trig_vector pow(const mp_rational &q, const ArgsTuple &) const
+			TrigVector pow(const mp_rational &q, const ArgsTuple &) const
 			{
 				return pow_number(q);
 			}
@@ -609,7 +609,7 @@ namespace piranha
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
-				// of a unitary coefficient and this very trig_vector.
+				// of a unitary coefficient and this very TrigVector.
 				// NOTE: for now we can substitute one symbol at a time.
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
@@ -620,12 +620,12 @@ namespace piranha
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					const value_type &power = (*this)[pos];
 					piranha_assert(pos < this->size());
-					trig_vector tmp_ta(*this);
+					TrigVector tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
 					// NOTE: important: we need key builders here because we may be building RetSeries
-					// whose key is _not_ a trig_vector, in principle, so we cannot build a term consisting
-					// of a trig_vector and unity coefficient and simply insert it.
+					// whose key is _not_ a TrigVector, in principle, so we cannot build a term consisting
+					// of a TrigVector and unity coefficient and simply insert it.
 					// Build the orig_cos series.
 					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
@@ -676,7 +676,7 @@ namespace piranha
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					const value_type &power = (*this)[pos];
 					piranha_assert(pos < this->size());
-					trig_vector tmp_ta(*this);
+					TrigVector tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
@@ -710,10 +710,10 @@ namespace piranha
 
 		private:
 			template <class Number>
-			trig_vector pow_number(const Number &y) const 
+			TrigVector pow_number(const Number &y) const 
 			{
 				const bool int_zero = this->elements_are_zero();
-				trig_vector retval;
+				TrigVector retval;
 				if (y < 0) 
 				{
 					if (int_zero && !m_flavour) 
@@ -758,14 +758,14 @@ namespace piranha
 	};
 
 
-	/// is_ring_exact type trait specialisation for trig_vector.
+	/// is_ring_exact type trait specialisation for TrigVector.
 	template <__PIRANHA_TRIG_VECTOR_TP_DECL>
-	struct is_ring_exact<trig_vector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
+	struct is_ring_exact<TrigVector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
 
 
-	/// is_trig_exact type trait specialisation for trig_vector.
+	/// is_trig_exact type trait specialisation for TrigVector.
 	template <__PIRANHA_TRIG_VECTOR_TP_DECL>
-	struct is_trig_exact<trig_vector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
+	struct is_trig_exact<TrigVector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
 }
 
 #undef __PIRANHA_TRIG_VECTOR_TP_DECL

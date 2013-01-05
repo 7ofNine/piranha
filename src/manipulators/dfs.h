@@ -37,7 +37,7 @@ namespace manipulators
 	/// Fourier series manipulator.
 	typedef fourier_series
 	<
-		double_cf, trig_vector<boost::int16_t, 0>,
+		double_cf, TrigVector<boost::int16_t, 0>,
 		poisson_series_multiplier,
 		truncators::norm
 	> dfs;

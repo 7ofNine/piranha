@@ -38,7 +38,7 @@ namespace manipulators
 	typedef polynomial
 	<
 		mpq_cf,
-		expo_vector<mp_rational,0>,
+		ExpoVector<mp_rational,0>,
 		polynomial_multiplier,
 		truncators::power_series
 	> qqpoly;
