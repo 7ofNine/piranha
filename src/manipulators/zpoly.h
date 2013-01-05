@@ -35,7 +35,7 @@ namespace piranha
 namespace manipulators
 {
 	/// Manipulator of multivariate polynomials with arbitrary-size integer coefficients.
-	typedef polynomial
+	typedef Polynomial
 	<
 		mpz_cf,
 		ExpoVector<boost::int16_t, 0>,

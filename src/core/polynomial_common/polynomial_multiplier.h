@@ -71,6 +71,7 @@ struct threaded_blocked_multiplier
 #endif
 		// Sanity checks.
 		piranha_assert(thread_n > 0 && thread_id < thread_n && (barrier || thread_n == 1));
+
 		// Numerical limits check. We need an extra block size buffer at the end to make sure we are able to
 		// represent all indices and sizes.
 		// TODO: we need to take care of extra thread_n blocks at the end, they must be representable. Maybe not, after all.

@@ -91,7 +91,7 @@ namespace piranha
 	/// Base series class.
 	/**
 	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
-	 * to be inherited together with (at least) either piranha::named_series (for a top-level series) or piranha::cf_series (for a coefficient series).
+	 * to be inherited together with (at least) either piranha::NamedSeries (for a top-level series) or piranha::cf_series (for a coefficient series).
 	 *
 	 * The methods in this class provide the lowest level of series manipulation, and allow to operate directly on the individual terms of the
 	 * series.

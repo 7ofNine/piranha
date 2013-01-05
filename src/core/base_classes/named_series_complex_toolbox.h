@@ -96,7 +96,7 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,term_name,series_name) piranha::named_series<args,term_name,COMPLEX_E0_SERIES(series_name)>
+#define COMPLEX_E0_SERIES_NAMED_ANCESTOR(args,term_name,series_name) piranha::NamedSeries<args,term_name,COMPLEX_E0_SERIES(series_name)>
 
 #define COMPLEX_NAMED_SERIES_CTORS(real_series) \
 	explicit complex(const complex<double> &cx) { \

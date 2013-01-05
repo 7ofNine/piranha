@@ -55,7 +55,7 @@ namespace piranha
 			{
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
-				// way to do this is by using named_series::merge_args with a phony series having zero
+				// way to do this is by using NamedSeries::merge_args with a phony series having zero
 				// polynomial arguments and as trigonometric arguments the polynomial arguments of this.
 				Derived copy(*derived_const_cast), tmp;
 				typename Derived::args_tuple_type tmp_args;

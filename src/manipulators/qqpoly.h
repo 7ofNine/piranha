@@ -35,7 +35,7 @@ namespace piranha
 namespace manipulators
 {
 	/// Manipulator of multivariate polynomials with arbitrary-size rational coefficients.
-	typedef polynomial
+	typedef Polynomial
 	<
 		mpq_cf,
 		ExpoVector<mp_rational,0>,

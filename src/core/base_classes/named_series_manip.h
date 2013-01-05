@@ -56,7 +56,7 @@ namespace piranha
 
 	/// Swap contents of series.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
 	{
 		// Do something only if we are not swapping with self.
 		if (derived_cast != &ps2) {
@@ -94,7 +94,7 @@ namespace piranha
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym &arg)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym &arg)
 	{
 		piranha_assert(derived_const_cast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
@@ -102,7 +102,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym &arg)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym &arg)
 	{
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
 		piranha_assert(derived_const_cast->empty());
@@ -119,7 +119,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
 	{
 		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) {
 			__PDEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
@@ -233,7 +233,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
 	{
 		// Build an empty retval and assign it the same arguments as this.
 		Derived retval;
@@ -311,7 +311,7 @@ namespace piranha
 	};
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void named_series<__PIRANHA_NAMED_SERIES_TP>::trim()
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::trim()
 	{
 		typedef typename ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
@@ -345,7 +345,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
-	inline Derived named_series<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
+	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
@@ -371,7 +371,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<std::vector<Derived> > named_series<__PIRANHA_NAMED_SERIES_TP>::split(const int &n) const
+	inline std::vector<std::vector<Derived> > NamedSeries<__PIRANHA_NAMED_SERIES_TP>::split(const int &n) const
 	{
 		if (n < 0 || n >= boost::tuples::length<args_tuple_type>::value) {
 			piranha_throw(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
@@ -400,7 +400,7 @@ namespace piranha
 	 * will be flattened into the vector \f$ \left[ x\cos a, y\cos a, z \right] \f$.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<Derived> named_series<__PIRANHA_NAMED_SERIES_TP>::flatten() const
+	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
 		const std::vector<typename Derived::term_type> tmp(derived_const_cast->flatten_terms(m_arguments));
 		std::vector<Derived> retval;

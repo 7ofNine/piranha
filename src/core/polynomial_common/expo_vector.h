@@ -44,7 +44,7 @@
 #include "expo_vector_mp.h"
 
 #define __PIRANHA_EXPO_VECTOR_TP_DECL class T, int Pos
-#define __PIRANHA_EXPO_VECTOR_TP T,Pos
+#define __PIRANHA_EXPO_VECTOR_TP T, Pos
 
 namespace piranha
 {

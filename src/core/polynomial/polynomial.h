@@ -45,9 +45,9 @@
 #include "named_polynomial.h"
 
 #define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::Monomial)
-#define POLYNOMIAL E0_SERIES(piranha::polynomial)
-#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial)
-#define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::polynomial)
+#define POLYNOMIAL E0_SERIES(piranha::Polynomial)
+#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
+#define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::Polynomial)
 #define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation<POLYNOMIAL>
 #define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
 #define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0, POLYNOMIAL >
@@ -57,7 +57,7 @@ namespace piranha
 {
 	/// Polynomial class.
 	template < E0_SERIES_TP_DECL = std::allocator<char> >
-	class polynomial:
+	class Polynomial:
 				public POLYNOMIAL_BASE_ANCESTOR,
 				public POLYNOMIAL_NAMED_ANCESTOR,
 				public POLYNOMIAL_BINOMIAL_ANCESTOR,
@@ -83,20 +83,20 @@ namespace piranha
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
 			using POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
 			// Boilerplate.
-			NAMED_SERIES_BOILERPLATE(polynomial, 0);
+			NAMED_SERIES_BOILERPLATE(Polynomial, 0);
 	};
 }
 
 #define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::Monomial)
-#define COMPLEX_POLYNOMIAL COMPLEX_E0_SERIES(piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial)
+#define COMPLEX_POLYNOMIAL COMPLEX_E0_SERIES(piranha::Polynomial)
+#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
 #define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
-		COMPLEX_POLYNOMIAL_TERM, piranha::polynomial)
+		COMPLEX_POLYNOMIAL_TERM, piranha::Polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::key_type::degree_type
-#define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0,COMPLEX_POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0, COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<COMPLEX_POLYNOMIAL>
 
 namespace std

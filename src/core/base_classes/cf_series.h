@@ -138,7 +138,7 @@ namespace piranha
 
 
 	// Useful macro for ctors in coefficient series.
-	// TODO: maybe we can call these BaseSeries ctors and use them in named_series ctors macro too?
+	// TODO: maybe we can call these BaseSeries ctors and use them in NamedSeries ctors macro too?
 #define CF_SERIES_CTORS(series_name) \
 	explicit series_name() {} \
 	template <class ArgsTuple> \

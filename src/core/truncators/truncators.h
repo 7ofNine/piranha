@@ -56,7 +56,7 @@ namespace truncators
 	struct unset_impl {
 		static void run()
 		{
-			truncator_unset<typename boost::mpl::at<truncator_types,boost::mpl::int_<N> >::type>::run();
+			truncator_unset<typename boost::mpl::at<truncator_types, boost::mpl::int_<N> >::type>::run();
 			unset_impl<N-1>::run();
 		}
 	};

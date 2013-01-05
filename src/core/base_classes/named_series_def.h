@@ -43,7 +43,7 @@
 #include "named_series_mp.h"
 
 #define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
-#define __PIRANHA_NAMED_SERIES_TP ArgsDescr,Term,Derived
+#define __PIRANHA_NAMED_SERIES_TP            ArgsDescr, Term, Derived
 
 namespace piranha
 {
@@ -57,7 +57,7 @@ namespace piranha
 	 * called "name" naming the arguments of the series.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	class named_series
+	class NamedSeries
 	{
 			template <class T, class Enable>
 			friend struct named_series_add_selector;
@@ -84,8 +84,10 @@ namespace piranha
 				s_iterator_generator(const Derived &series):m_series(series) {}
 				const Derived &m_series;
 			};
+
 		public:
-			typedef boost::transform_iterator<s_iterator_generator,typename series_container<Term>::type::const_iterator> s_iterator;
+
+			typedef boost::transform_iterator<s_iterator_generator, typename series_container<Term>::type::const_iterator> s_iterator;
 			s_iterator s_begin() const;
 			s_iterator s_end() const;
 			std::complex<Derived> complex() const;
@@ -128,7 +130,7 @@ namespace piranha
 			Derived series_from_cf(const Cf &) const;
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
 			std::vector<Derived> flatten() const;
-			~named_series();
+			~NamedSeries();
 			//protected:
 			void trim();
 			template <class Derived2>
@@ -138,7 +140,9 @@ namespace piranha
 			void construct_from_file(const std::string &);
 			template <int N>
 			void construct_from_psym(const psym &);
+
 		private:
+
 			template <class T>
 			bool series_comparison(const T &) const;
 			void append_arg(const std::string &, const psym &);
@@ -161,7 +165,9 @@ namespace piranha
 			void merge_incompatible_args(const Derived2 &);
 			template <bool, class Derived2>
 			Derived &merge_with_series(const Derived2 &);
+
 		protected:
+
 			// Data members.
 			args_tuple_type                 m_arguments;
 			static std::vector<std::string> unknown_data;
@@ -169,12 +175,12 @@ namespace piranha
 
 	// Initialization of static member.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	std::vector<std::string> named_series<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+	std::vector<std::string> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::named_series<args, term_name, E0_SERIES(series_name)>
+#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::NamedSeries<args, term_name, E0_SERIES(series_name)>
 
-#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::named_series<boost::tuple<args1,args2>,term_name,series_name>
+#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::NamedSeries<boost::tuple<args1,args2>,term_name,series_name>
 
 #define NAMED_SERIES_BOILERPLATE(series_name,N) \
 public: \

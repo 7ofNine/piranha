@@ -35,7 +35,7 @@ namespace piranha
 namespace manipulators 
 {
 	/// Double coefficient multivariate polynomial manipulator.
-	typedef polynomial
+	typedef Polynomial
 	<
 		double_cf,
 		ExpoVector<boost::int16_t, 0>,

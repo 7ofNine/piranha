@@ -70,21 +70,21 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
+	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
 	{
 		// Use getter in second place because we may be interacting with other series type.
 		return named_series_is_args_compatible(m_arguments, ps2.arguments());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline double named_series<__PIRANHA_NAMED_SERIES_TP>::norm() const
+	inline double NamedSeries<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
 		return derived_const_cast->base_norm(m_arguments);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename term_eval_type_determiner<Term>::type
-	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
+	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
 		return derived_const_cast->base_eval(t,m_arguments);
 	}
@@ -112,7 +112,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename term_eval_type_determiner<Term>::type
-	named_series<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
+	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
 	{
 		if (!check_eval_dict(d,m_arguments)) {
 			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
@@ -137,7 +137,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::size_t named_series<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
+	inline std::size_t NamedSeries<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
 	{
 		return derived_const_cast->psi_(start,step,m_arguments);
 	}
@@ -158,7 +158,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::series_comparison(const T &other) const
+	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_comparison(const T &other) const
 	{
 		// If the sizes of the arguments tuples do not coincide, series are different.
 		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) {
@@ -199,14 +199,14 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator==(const T &x) const
+	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator==(const T &x) const
 	{
 		return named_series_equality_selector<T>::run(*derived_const_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool named_series<__PIRANHA_NAMED_SERIES_TP>::operator!=(const T &x) const
+	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator!=(const T &x) const
 	{
 		return !(operator==(x));
 	}

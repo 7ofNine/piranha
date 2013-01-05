@@ -460,6 +460,7 @@ namespace piranha
 			{
 				const size_type w = this->size();
 				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
+
 				double retval = 0.;
 				for (size_type i = 0; i < w; ++i) 
 				{
@@ -472,6 +473,7 @@ namespace piranha
 				if (m_flavour) 
 				{
 					return std::cos(retval);
+
 				} else 
 				{
 					return std::sin(retval);
