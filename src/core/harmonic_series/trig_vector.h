@@ -548,7 +548,7 @@ namespace piranha
 
 			/// Calculate hash_value.
 			/**
-			 * Used by the hash_value overload for piranha::base_term.
+			 * Used by the hash_value overload for piranha::BaseTerm.
 			 */
 			std::size_t hash_value() const
 			{

@@ -42,11 +42,16 @@ namespace piranha
 	class base_term_get_helper
 	{
 		public:
+
 			typedef typename Term::cf_type type;
-			static type &run(Term &t) {
+
+			static type &run(Term &t) 
+            {
 				return t.m_cf;
 			}
-			static const type &run(const Term &t) {
+
+			static const type &run(const Term &t) 
+            {
 				return t.m_cf;
 			}
 	};
@@ -55,28 +60,35 @@ namespace piranha
 	class base_term_get_helper<1, Term>
 	{
 		public:
+
 			typedef typename Term::key_type type;
-			static type &run(Term &t) {
+
+			static type &run(Term &t) 
+            {
 				return t.m_key;
 			}
-			static const type &run(const Term &t) {
+
+			static const type &run(const Term &t) 
+            {
 				return t.m_key;
 			}
 	};
+
 
 	/// Base term class.
 	/**
 	 * Simple composition of coefficient and key classes.
 	 */
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	class base_term
+	class BaseTerm
 	{
 		public:
 			// Meta-programming to get the type of the component.
 			template <int N>
 			struct component {
-				typedef typename base_term_get_helper<N, base_term>::type type;
+				typedef typename base_term_get_helper<N, BaseTerm>::type type;
 			};
+
 			/// Alias for coefficient type.
 			typedef Cf cf_type;
 			/// Alias for key type.
@@ -88,11 +100,12 @@ namespace piranha
 			/**
 			 * Default-initializes coefficient and key.
 			 */
-			explicit base_term(): m_cf(), m_key() {}
+			explicit BaseTerm(): m_cf(), m_key() {}
 			
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit base_term(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() {
+			explicit BaseTerm(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() 
+            {
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
 				if (vs.size() != 2) 
@@ -103,10 +116,12 @@ namespace piranha
 					boost::trim(vs[0]);
 					boost::trim(vs[1]);
 					// Try to build only if the strings actually contain something.
-					if (!vs[0].empty()) {
+					if (!vs[0].empty()) 
+                    {
 						m_cf = cf_type(vs[0], args_tuple);
 					}
-					if (!vs[1].empty()) {
+					if (!vs[1].empty()) 
+                    {
 						m_key = key_type(vs[1], args_tuple);
 					}
 				}
@@ -114,29 +129,30 @@ namespace piranha
 			
 			/// Copy ctor.
 			/**
-			 * Construct from base_term with different coefficient and key.
+			 * Construct from BaseTerm with different coefficient and key.
 			 */
 			template <class Derived2, class ArgsTuple>
-			explicit base_term(const Derived2 &t, const ArgsTuple &args_tuple):
+			explicit BaseTerm(const Derived2 &t, const ArgsTuple &args_tuple):
 					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
 			
 			/// Ctor from coefficient - key pair.
-			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			explicit BaseTerm(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+
 			template <int N>
-			typename base_term_get_helper<N, base_term>::type &get() 
+			typename base_term_get_helper<N, BaseTerm>::type &get() 
 			{
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
-				return base_term_get_helper<N, base_term>::run(*this);
+				return base_term_get_helper<N, BaseTerm>::run(*this);
 			}
 
 			template <int N>
-			const typename base_term_get_helper<N, base_term>::type &get() const 
+			const typename base_term_get_helper<N, BaseTerm>::type &get() const 
 			{
 				BOOST_STATIC_ASSERT(N == 0 || N == 1);
-				return base_term_get_helper<N, base_term>::run(*this);
+				return base_term_get_helper<N, BaseTerm>::run(*this);
 			}
 
-			void swap(base_term &other) 
+			void swap(BaseTerm &other) 
 			{
 				m_cf.swap(other.m_cf);
 				m_key.swap(other.m_key);
@@ -181,13 +197,16 @@ namespace piranha
 				if (m_key.is_unity()) 
 				{
 					m_cf.print_tex(out_stream,args_tuple);
+
 				} else if (m_cf == 1) 
 				{
 					m_key.print_tex(out_stream,args_tuple);
+
 				} else if (m_cf == -1) 
 				{
 					out_stream << '-';
 					m_key.print_tex(out_stream,args_tuple);
+
 				} else 
 				{
 					m_cf.print_tex(out_stream, args_tuple);
@@ -199,7 +218,7 @@ namespace piranha
 			/**
 			 * Equality is defined by the equality of the keys.
 			 */
-			bool operator==(const base_term &t) const 
+			bool operator==(const BaseTerm &t) const 
 			{
 				return (m_key == t.m_key);
 			}
@@ -226,7 +245,7 @@ namespace piranha
 			 * Useful in STL-like containers.
 			 */
 			struct hasher {
-				std::size_t operator()(const base_term &t) const 
+				std::size_t operator()(const BaseTerm &t) const 
 				{
 					return t.m_key.hash_value();
 				}
@@ -245,18 +264,18 @@ namespace piranha
 
 	// Static members initializations.
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	typename base_term<__PIRANHA_BASE_TERM_TP>::allocator_type
-	base_term<__PIRANHA_BASE_TERM_TP>::allocator;
+	typename BaseTerm<__PIRANHA_BASE_TERM_TP>::allocator_type
+	BaseTerm<__PIRANHA_BASE_TERM_TP>::allocator;
 
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	const char base_term<__PIRANHA_BASE_TERM_TP>::separator;
+	const char BaseTerm<__PIRANHA_BASE_TERM_TP>::separator;
 
-	/// Overload of hash_value function for piranha::base_term.
+	/// Overload of hash_value function for piranha::BaseTerm.
 	/**
 	 * The key's hash_value() method is used to calculate the term's hash value.
 	 */
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	inline std::size_t hash_value(const base_term<__PIRANHA_BASE_TERM_TP> &t)
+	inline std::size_t hash_value(const BaseTerm<__PIRANHA_BASE_TERM_TP> &t)
 	{
 		return t.m_key.hash_value();
 	}
