@@ -44,9 +44,9 @@
 #include "../type_traits.h"
 #include "named_polynomial.h"
 
-#define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::monomial)
+#define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::Monomial)
 #define POLYNOMIAL E0_SERIES(piranha::polynomial)
-#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::polynomial)
 #define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POLYNOMIAL >
 #define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
@@ -86,9 +86,9 @@ namespace piranha
 	};
 }
 
-#define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::monomial)
+#define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::Monomial)
 #define COMPLEX_POLYNOMIAL COMPLEX_E0_SERIES(piranha::polynomial)
-#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::monomial,piranha::polynomial)
+#define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::Monomial,piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
 		COMPLEX_POLYNOMIAL_TERM, piranha::polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::base_series_complex<POLYNOMIAL>

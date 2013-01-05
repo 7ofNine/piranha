@@ -29,10 +29,10 @@ namespace piranha
 {
 	/// Monomial class.
 	template <class Cf, class Key, char Separator, class Allocator>
-	class monomial: public BaseTerm<Cf, Key, Separator, Allocator, monomial<Cf, Key, Separator, Allocator> >
+	class Monomial: public BaseTerm<Cf, Key, Separator, Allocator, Monomial<Cf, Key, Separator, Allocator> >
 	{
 			// Alias for the ancestor.
-			typedef BaseTerm<Cf, Key, Separator, Allocator, monomial> ancestor;
+			typedef BaseTerm<Cf, Key, Separator, Allocator, Monomial> ancestor;
 		public:
 
 			/// Alias for coefficient type.
@@ -40,8 +40,8 @@ namespace piranha
 			/// Alias for expo type.
 			typedef Key key_type;
 			/// Result of the multiplication of two monomials.
-			typedef typename boost::tuple<monomial> multiplication_result;
-			PIRANHA_TERM_CTORS(monomial);
+			typedef typename boost::tuple<Monomial> multiplication_result;
+			PIRANHA_TERM_CTORS(Monomial);
 			/// Monomial multiplication.
 			/**
 			 * NOTE: the result of multiplication here _must_ be canonical.
