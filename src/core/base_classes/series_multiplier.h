@@ -41,12 +41,14 @@ namespace piranha
 					typedef Series2 series_type2;
 					typedef ArgsTuple args_tuple_type;
 					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
+
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):ancestor(s1, s2, retval, args_tuple) {}
+
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
 						// Cache term pointers.
-						this->cache_terms_pointers(this->m_s1,this->m_s2);
+						this->cache_terms_pointers(this->m_s1, this->m_s2);
 						this->perform_plain_multiplication();
 					}
 			};

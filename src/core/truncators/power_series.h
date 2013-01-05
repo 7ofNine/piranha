@@ -37,6 +37,7 @@ namespace truncators
 	class power_series
 	{
 		public:
+
 			template <class Series1, class Series2, class ArgsTuple>
 			class get_type:
 				public degree::template get_type<Series1,Series2,ArgsTuple>,
@@ -45,7 +46,9 @@ namespace truncators
 					typedef typename degree::template get_type<Series1,Series2,ArgsTuple> degree_ancestor;
 					typedef typename norm::template get_type<Series1,Series2,ArgsTuple> norm_ancestor;
 					enum selected_truncator {deg_t, norm_t, null_t};
+
 				public:
+
 					typedef get_type type;
 					typedef typename Series1::term_type term_type1;
 					typedef typename Series2::term_type term_type2;
@@ -53,36 +56,47 @@ namespace truncators
 						degree_ancestor(terms1,terms2,args_tuple,false),norm_ancestor(terms1,terms2,args_tuple,false),m_active_truncator(deg_t)
 					{
 						degree_ancestor::init();
-						if (!degree_ancestor::is_effective()) {
+						if (!degree_ancestor::is_effective()) 
+						{
 							norm_ancestor::init();
-							if (!norm_ancestor::is_effective()) {
+							if (!norm_ancestor::is_effective()) 
+							{
 								m_active_truncator = null_t;
-							} else {
+							} else 
+							{
 								m_active_truncator = norm_t;
 							}
-						} else {
+						} else 
+						{
 							m_active_truncator = deg_t;
 						}
 					}
+
+
 					template <class T, class ArgsTuple2>
 					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
-						const ArgsTuple2 &args_tuple) {
+						const ArgsTuple2 &args_tuple) 
+					{
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");
 						try {
 							return degree_ancestor::power_series_iterations(x,start,step_size,args_tuple);
-						}
-						catch (const value_error &ve) {
+						}catch (const value_error &ve) 
+						{
 							msg += std::string(ve.what()) + "\n";
 						}
+
 						try {
 							return norm_ancestor::power_series_iterations(x,start,step_size,args_tuple);
-						}
-						catch (const value_error &ve) {
+						} catch (const value_error &ve) 
+						{
 							msg += std::string(ve.what()) + "\n";
 						}
+
 						piranha_throw(value_error,msg);
 					}
+
+
 					template <class Series, class ArgsTuple2>
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
@@ -99,11 +113,16 @@ namespace truncators
 						}
 						piranha_throw(value_error,msg);
 					}
+
+
 					bool is_effective() const {
 						return m_active_truncator != null_t;
 					}
+
+
 					template <class T, class U>
-					bool skip(const T &x1, const U &x2) const {
+					bool skip(const T &x1, const U &x2) const 
+					{
 						switch (m_active_truncator) {
 							case deg_t:
 								return degree_ancestor::skip(x1,x2);
@@ -112,10 +131,13 @@ namespace truncators
 							case null_t:
 								piranha_assert(false);
 						}
+
 						piranha_assert(false);
 						return false;
 					}
+
 				private:
+					
 					selected_truncator m_active_truncator;
 			};
 	};

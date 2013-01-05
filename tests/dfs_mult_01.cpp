@@ -31,7 +31,7 @@ typedef dfs stype;
 
 int main()
 {
-	settings::debug(true);
+	settings::set_debug(true);
 	stype elp3("elp3.dfs");
 	elp3 *= elp3;
 	std::cout << (elp3*elp3).length() << std::endl;

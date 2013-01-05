@@ -34,7 +34,7 @@ int main()
 	for (size_t i = 0; i < 10000; ++i)
 	{
 		poly a(a_), b(b_);
-		a = std::pow(a,(max_fast_int)20);
+		a = a.pow((max_fast_int)20);
 		poly c(a);
 		c+=(max_fast_int)1;
 		a*=c;

@@ -45,12 +45,14 @@ namespace piranha
 			p_static_check(N >= 0, "Invalid arguments position in base polynomial toolbox.");
 		//protected:
 		public:
+
 			// Integrate supposing that the symbol is present in the polynomial.
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 			{
 				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
+			
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::term_type::key_type::degree_type degree_type;
 				// Make sure that the position tuple contains just one symbol in position N and that
@@ -61,10 +63,14 @@ namespace piranha
 				const std::size_t pos = pos_tuple.template get<N>()[0].second;
 				const const_iterator it_f = derived_const_cast->end();
 				std::vector<degree_type> tmp_expos(args_tuple.template get<N>().size());
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					if (it->m_key[pos] == -1) {
+
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+				{
+					if (it->m_key[pos] == -1) 
+					{
 						piranha_throw(value_error,"exponent is -1 in integrand polynomial, cannot proceed");
 					}
+
 					std::copy(it->m_key.begin(),it->m_key.end(),tmp_expos.begin());
 					tmp_expos[pos] += 1;
 					typename Derived::term_type tmp(*it);
@@ -73,6 +79,7 @@ namespace piranha
 					tmp.m_cf.divide_by(it->m_key[pos] + 1,args_tuple);
 					retval.insert(tmp,args_tuple);
 				}
+
 				return retval;
 			}
 	};

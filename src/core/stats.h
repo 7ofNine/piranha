@@ -39,26 +39,34 @@ class __PIRANHA_VISIBLE stats
 		{
 			m_container[key] = field;
 		}
+
+
 		static std::string get(const std::string &key)
 		{
 			const std::map<std::string,std::string>::const_iterator it = m_container.find(key);
-			if (it == m_container.end()) {
+			if (it == m_container.end()) 
+			{
 				piranha_throw(value_error,"stats field not found");
 			}
 			return it->second;
 		}
+
+
 		template <class T, class Functor>
 		static void trace_stat(const std::string &key, const T &initial, const Functor &f)
 		{
 			T cur_value(initial);
 			try {
 				cur_value = boost::lexical_cast<T>(get(key));
-			} catch (const value_error &) {
+			} catch (const value_error &) 
+			{
 				set(key,boost::lexical_cast<std::string>(initial));
 			}
 			cur_value = f(cur_value);
 			set(key,boost::lexical_cast<std::string>(cur_value));
 		}
+
+
 		static std::string dump()
 		{
 			std::ostringstream oss;
@@ -67,8 +75,10 @@ class __PIRANHA_VISIBLE stats
 			}
 			return oss.str();
 		}
+
 	private:
-		static std::map<std::string,std::string> m_container;
+
+		static std::map<std::string, std::string> m_container;
 };
 
 }

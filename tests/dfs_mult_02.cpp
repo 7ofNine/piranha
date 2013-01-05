@@ -31,7 +31,7 @@ typedef dfs stype;
 
 int main()
 {
-	settings::debug(true);
+	settings::set_debug(true);
 	stype s("sparse.dfs");
 	s *= s;
 	std::cout << s.length() << std::endl;

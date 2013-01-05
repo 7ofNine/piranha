@@ -45,16 +45,20 @@ namespace piranha
 			 * a default-constructed value is returned.
 			 * @param[in] s std::string to be converted.
 			 */
-			template <class T> static T lexical_converter(const std::string &s) {
+			template <class T> static T lexical_converter(const std::string &s) 
+			{
 				T retval;
 				try {
 					retval = boost::lexical_cast<T>(s);
-				} catch (boost::bad_lexical_cast &) {
+				} catch (boost::bad_lexical_cast &) 
+				{
 					std::cout << "Error in lexical_converter, returning default-constructed object." << '\n';
 					retval = T();
 				}
 				return retval;
 			}
+
+
 			/// Read a valid string from a stream.
 			/**
 			 * If the string is empty or a comment (i.e., it starts with '#'), try to fetch another string
@@ -62,59 +66,81 @@ namespace piranha
 			 * @param[in] inf input stream.
 			 * @param[out] str std::string which will contain output string.
 			 */
-			static bool get_valid_string(std::ifstream &inf, std::string &str) {
+			static bool get_valid_string(std::ifstream &inf, std::string &str) 
+			{
 				do {
-					if (inf.eof()) {
+					if (inf.eof()) 
+					{
 						return false;
 					}
 					getline(inf, str, '\n');
 					boost::trim(str);
 				} while (!is_valid(str));
+
 				return true;
 			}
+
+
 			/// Convert a string into a vector of numerical values.
 			/**
 			 * @param[in] str std::string to be converted.
 			 */
 			template <class T>
-			static std::vector<T> str_to_vector(const std::string &str, const std::string &separator) {
-				if (str.empty()) {
+			static std::vector<T> str_to_vector(const std::string &str, const std::string &separator) 
+			{
+				if (str.empty()) 
+				{
 					return std::vector<T>();
 				}
+
 				std::vector<std::string> v;
 				boost::split(v, str, boost::is_any_of(separator));
 				const std::size_t size = v.size();
 				std::vector<T> retval(size);
-				for (std::size_t j = 0; j < size; ++j) {
+				for (std::size_t j = 0; j < size; ++j) 
+				{
 					retval[j] = lexical_converter<T>(v[j]);
 				}
+
 				return retval;
 			}
+
+
 			/// Convert a vector of numerical values into a string
 			/**
 			 * @param[in] v vector_double to be converted.
 			 */
 			template <class T>
-			static std::string vector_to_str(const std::vector<T> &v, const std::string &separator) {
+			static std::string vector_to_str(const std::vector<T> &v, const std::string &separator) 
+			{
 				std::string retval;
 				const std::size_t size = v.size();
-				for (std::size_t i = 0; i < size; ++i) {
+				for (std::size_t i = 0; i < size; ++i) 
+				{
 					retval.append(boost::lexical_cast<std::string>(v[i]));
-					if (i != size - 1) {
+					if (i != size - 1) 
+					{
 						retval.append(separator);
 					}
 				}
+
 				return retval;
 			}
+
 		private:
+
+
 			/// Check whether a string is valid.
 			/**
 			 * Invalid strings are empty or commented.
 			 */
-			static bool is_valid(const std::string &str) {
-				if (str.empty() || str[0] == '#') {
+			static bool is_valid(const std::string &str) 
+			{
+				if (str.empty() || str[0] == '#') 
+				{
 					return false;
 				}
+
 				return true;
 			}
 	};
@@ -123,7 +149,8 @@ namespace piranha
 template <class Iterator, class T>
 inline static void iota(Iterator first, Iterator last, T value)
 {
-	for (; first != last; ++first, ++value) {
+	for (; first != last; ++first, ++value) 
+	{
 		*first = value;
 	}
 }

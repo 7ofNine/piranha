@@ -38,23 +38,31 @@ namespace piranha
 					typedef typename Series1::term_type term_type1;
 					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
+
 					get_type(std::vector<term_type1 const *> &, std::vector<term_type2 const *> &, const ArgsTuple &) {}
+
+
 					template <class Term1, class Term2>
 					bool skip(const Term1 &, const Term2 &) const
 					{
 						return false;
 					}
+
+
 					// Limit of a power series development of a power series.
 					template <class Series, class ArgsTuple2>
 					static size_t power_series_iterations(const Series &, const int &, const int &, const ArgsTuple2 &)
 					{
 						piranha_throw(value_error,"null truncator cannot provide number of iterations for power series");
 					}
+
+
 					bool is_effective() const
 					{
 						return false;
 					}
 			};
+
 			template <class Series, class ArgsTuple2>
 			static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &, const ArgsTuple2 &)
 			{

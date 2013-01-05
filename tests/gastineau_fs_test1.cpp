@@ -31,9 +31,14 @@ typedef dfs stype;
 
 int main()
 {
+	settings::set_debug(true);
 	stype elp3("elp3.dfs");
+	std::cout << "calculate pow 3"<<std::endl << std::flush;
 	elp3 = elp3.pow(3);
+	std::cout << "construct by copy"<<std::endl << std::flush;
 	stype elp3a(elp3);
+	std::cout << "square"<<std::endl << std::flush;
+	truncators::norm::set(1.0E10);
 	elp3 * elp3a;
 	std::cout << elp3.length() << '\n';
 	std::cout << elp3a.length() << '\n';

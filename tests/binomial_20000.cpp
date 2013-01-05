@@ -29,12 +29,24 @@ using namespace piranha;
 
 int main()
 {
-settings::debug(true);
+settings::set_debug(true);
+//settings::set_nthread(16); // temporary: remove
+try{
 	poly x(psym("x")), y(psym("y"));
 	poly res((x+y).pow(2).pow(10000));
 	if (res.length() != 20001) {
 		return 1;
 	}
 	std::cout << res.length() << '\n';
+	}catch(p_base_exception &pex)
+    {
+	    std::cout << pex.what() << std::endl;
+	    return -1;
+    }
+    catch(std::exception &ex)
+    {
+        std::cout << ex.what() << std::endl;
+        return -1;
+    }
 	return 0;
 }

@@ -35,7 +35,7 @@ namespace piranha
 	double settings::m_numerical_zero = 1E-80;
 	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION@";
-	const std::size_t settings::cache_size;
+	const std::size_t settings::cache_size = _PIRANHA_CACHE_SIZE;
 	bool settings::blocker = false;
 	unsigned settings::m_nthread = boost::thread::hardware_concurrency() ? boost::thread::hardware_concurrency() : 1;
 	settings::startup_class settings::startup;
@@ -52,6 +52,7 @@ namespace piranha
 		// TODO: where is this used? Find out and wipe it.
 		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
 		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
+		p_static_check(settings::cache_size > 0 && lg<settings::cache_size>::value > 1, "Invalid value for cache size.");
 		// Startup report.
 		std::cout << "Piranha version: " << "@PIRANHA_VERSION@" << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';

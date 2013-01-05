@@ -32,16 +32,19 @@ namespace piranha
 		q.print_tex(out_stream);
 	}
 
+
 	template <class T>
 	inline void trig_vector_print_element_tex(std::ostream &out_stream, const T &x)
 	{
 		out_stream << x;
 	}
 
+
 	inline double trig_vector_eval_element(const mp_rational &q)
 	{
 		return q.to_double();
 	}
+
 
 	template <class T>
 	inline double trig_vector_eval_element(const T &x)

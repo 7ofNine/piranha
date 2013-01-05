@@ -38,7 +38,9 @@
 #include "../psym.h"
 #include "../settings.h" // For debug messages.
 
-namespace piranha { namespace truncators {
+namespace piranha { 
+namespace truncators {
+
 	/// Truncator based on the minium degree of the series.
 	class __PIRANHA_VISIBLE degree
 	{
@@ -47,6 +49,8 @@ namespace piranha { namespace truncators {
 				p_deg,
 				inactive
 			};
+
+
 			template <int ExpoTermPos>
 			struct order_comparison
 			{
@@ -58,6 +62,8 @@ namespace piranha { namespace truncators {
 					return md1 < md2;
 				}
 			};
+
+
 			template <int ExpoTermPos, class PosTuple>
 			struct partial_order_comparison
 			{
@@ -72,7 +78,9 @@ namespace piranha { namespace truncators {
 				}
 				const PosTuple &m_pos_tuple;
 			};
+
 		public:
+
 			template <class Series1, class Series2, class ArgsTuple>
 			class get_type
 			{
@@ -85,6 +93,7 @@ namespace piranha { namespace truncators {
 					typedef typename Series1::term_type term_type1;
 					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
+
 					get_type(std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const ArgsTuple &args_tuple, bool initialise = true):
 						m_t1(t1),m_t2(t2),m_args_tuple(args_tuple)
 					{
@@ -92,13 +101,16 @@ namespace piranha { namespace truncators {
 						p_static_check(Series1::expo_args_position == Series2::expo_args_position, "");
 						p_static_check(Series1::expo_term_position == Series2::expo_term_position, "");
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
-						if (m_mode == p_deg) {
+						if (m_mode == p_deg) 
+						{
 							m_pos_tuple = psyms2pos(m_psyms,m_args_tuple);
 						}
-						if (initialise) {
+						if (initialise) 
+						{
 							init();
 						}
 					}
+
 					bool skip(const term_type1 **t1, const term_type2 **t2) const
 					{
 						switch (m_mode) {
@@ -116,6 +128,7 @@ namespace piranha { namespace truncators {
 						}
 						return false;
 					}
+
 					// Number of a iterations of a power series development of a power series.
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
@@ -123,17 +136,23 @@ namespace piranha { namespace truncators {
 					static std::size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
 						const ArgsTuple2 &args_tuple)
 					{
-						if (step_size < 1) {
+						if (step_size < 1) 
+						{
 							piranha_throw(value_error,"please use a step size of at least 1");
 						}
-						if (m_mode == inactive) {
+
+						if (m_mode == inactive) 
+						{
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
 								"if no degree limit has been set");
 						}
-						if (s.empty()) {
+
+						if (s.empty()) 
+						{
 							piranha_throw(value_error,"cannot calculate the limit of the power series expansion of "
 								"an empty power series");
 						}
+
 						// order will be either total or partial, depending on the mode.
 						mp_rational order(0);
 						switch (m_mode) {
@@ -146,36 +165,47 @@ namespace piranha { namespace truncators {
 							case inactive:
 								piranha_assert(false);
 						}
-						if (order <= 0) {
+
+						if (order <= 0) 
+						{
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion if the (partial) minimum degree "
 								"of the series is negative or zero");
 						}
-						if (m_degree_limit < 0) {
+
+						if (m_degree_limit < 0) 
+						{
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
 								"if the minimum degree limit is negative");
 						}
+
 						// (mp_rational(limit) / order - start) / step_size + 1;
 						mp_rational tmp(m_degree_limit);
 						tmp /= order;
 						tmp -= start;
 						tmp /= step_size;
 						tmp += 1;
-						if (tmp > 0) {
+						if (tmp > 0) 
+						{
 							// Take the floor of tmp and convert to integer.
 							const int retval = (tmp.get_num() / tmp.get_den()).to_int();
-							if (tmp == retval) {
+							if (tmp == retval) 
+							{
 								// If tmp was an integer in the beginning, we want to take the number
 								// immediately preceding it (or zero).
 								return (retval > 0) ? (retval - 1) : 0;
-							} else {
+							} else 
+							{
 								// If tmp was not an integer, let's take the floor.
 								return retval;
 							}
-						} else {
+						} else 
+						{
 							__PDEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
 							return 0;
 						}
 					}
+
+
 					template <class Series, class ArgsTuple2>
 					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
 					{
@@ -191,9 +221,11 @@ namespace piranha { namespace truncators {
 								typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
 									boost::tuples::length<ArgsTuple2>::value>::type pos_tuple_type;
 								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
-								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) {
+								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
+								{
 									std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
-								} else {
+								} else
+								{
 									piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not "
 										"effective on this series");
 								}
@@ -204,6 +236,8 @@ namespace piranha { namespace truncators {
 						}
 						return retval;
 					}
+
+
 					bool is_effective() const
 					{
 						switch (m_mode) {
@@ -219,7 +253,9 @@ namespace piranha { namespace truncators {
 						piranha_assert(false);
 						return false;
 					}
+
 				protected:
+
 					void init()
 					{
 						switch (m_mode) {
@@ -230,23 +266,27 @@ namespace piranha { namespace truncators {
 							case p_deg:
 								// We need to do the sorting only if the position tuple
 								// contains some elements.
-								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) {
+								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) 
+								{
 									std::sort(m_t1.begin(), m_t1.end(),
-										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
+										partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
 									std::sort(m_t2.begin(), m_t2.end(),
-										partial_order_comparison<expo_term_pos,pos_tuple_type>(m_pos_tuple));
+										partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
 								}
 								break;
 							case inactive:
 								;
 						}
 					}
+
 				private:
+
 					std::vector<term_type1 const *>	&m_t1;
 					std::vector<term_type2 const *>	&m_t2;
 					const ArgsTuple			&m_args_tuple;
 					pos_tuple_type			m_pos_tuple;
 			};
+
 			static void set(const int &);
 			static void set(const mp_rational &);
 			static void set(const std::string &, const int &);
@@ -255,10 +295,12 @@ namespace piranha { namespace truncators {
 			static void set(const std::vector<std::string> &, const mp_rational &);
 			static void unset();
 			static void print(std::ostream &stream = std::cout);
+
 		private:
+
 			static mp_rational	m_degree_limit;
 			static vector_psym	m_psyms;
-			static mode		m_mode;
+			static mode		    m_mode;
 	};
 } }
 

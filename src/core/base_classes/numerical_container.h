@@ -52,35 +52,48 @@ namespace piranha
 	{
 			template <class, class>
 			friend struct numerical_container_constructor_selector;
+
 			template <class, class, class>
 			friend struct numerical_container_equality_selector;
+
 			template <class, class>
 			friend struct numerical_container_add_selector;
+
 			template <class, class>
 			friend struct numerical_container_subtract_selector;
+
 			template <class, class>
 			friend struct numerical_container_multiply_selector;
+
 			template <class, class>
 			friend struct numerical_container_divide_selector;
+
 			template <class>
 			friend struct numerical_container_print_tex_selector;
+
 			template <class>
 			friend struct numerical_container_print_pretty_selector;
+
 		public:
+
 			/// Typedef for evaluation type.
 			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
 			/// Alias for internal type.
 			typedef T numerical_type;
+			
 			template <class, class SubCachesCons, class>
 			struct sub_cache_selector {
 				typedef SubCachesCons type;
 			};
+
 			template <class, class SubCachesCons, class>
 			struct ei_sub_cache_selector {
 				typedef SubCachesCons type;
 			};
+
 			/// Default constructor, initialises internal value to 0.
 			explicit numerical_container(): m_value(0) {}
+			
 			/// Constructor from string.
 			/**
 			 * Will call boost::lexical_converter internally.
@@ -88,133 +101,181 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit numerical_container(const std::string &s, const ArgsTuple &):
 				m_value(boost::lexical_cast<T>(s)) {}
+			
 			/// Ctor from psym.
 			/**
 			 * Sets internal value to one.
 			 */
 			template <class ArgsTuple>
 			explicit numerical_container(const psym &, const int &, const ArgsTuple &): m_value(1) {}
+			
 			/// Generic constructor.
 			template <class U, class ArgsTuple>
 			explicit numerical_container(const U &x, const ArgsTuple &):
 				m_value(numerical_container_constructor_selector<U>::run(x))
 			{}
+			
 			/// Print in plain mode.
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
 				out_stream << boost::lexical_cast<std::string>(m_value);
 			}
+			
 			/// Print in pretty mode. Equivalent to print_plain.
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &) const {
 				numerical_container_print_pretty_selector<T>::run(m_value,out_stream);
 			}
+			
 			/// Print in Tex mode.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &) const {
+			void print_tex(std::ostream &out_stream, const ArgsTuple &) const 
+			{
 				numerical_container_print_tex_selector<T>::run(m_value,out_stream);
 			}
+			
 			/// Swap content using std::swap.
-			Derived &swap(Derived &dc) {
+			Derived &swap(Derived &dc) 
+			{
 				std::swap(m_value, dc.m_value);
 				return *derived_cast;
 			}
+			
 			/// Pad right.
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &) {}
+			
 			/// Apply layout.
 			template <class Layout, class ArgsTuple>
 			void apply_layout(const Layout &, const ArgsTuple &) {}
+			
 			/// Test if trimming is possible.
 			template <class TrimFlags>
 			void trim_test(TrimFlags &) const {}
+			
 			/// Trim.
 			template <class TrimFlags, class ArgsTuple>
-			Derived trim(const TrimFlags &, const ArgsTuple &) const {
+			Derived trim(const TrimFlags &, const ArgsTuple &) const 
+			{
 				return *derived_const_cast;
 			}
+			
 			/// Split.
 			template <class Series, class ArgsTuple>
 			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const
 			{
 				piranha_assert(false);
 			}
+			
 			/// Number of atoms. Returns 1.
 			std::size_t atoms() const {
 				return 1;
 			}
+
 			/// Test for ignorability.
 			/**
 			 * Returns true if norm() is less than settings::get_numerical_zero().
 			 */
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &a) const {
+			bool is_ignorable(const ArgsTuple &a) const 
+			{
 				return (derived_const_cast->norm(a) < settings::get_numerical_zero());
 			}
+			
 			/// Insertability test. Returns true.
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &) const {
+			bool is_insertable(const ArgsTuple &) const 
+			{
 				return true;
 			}
+			
 			/// Padding test. Returns false.
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &) const {
+			bool needs_padding(const ArgsTuple &) const 
+			{
 				return false;
 			}
+			
 			template <class U>
-			bool operator==(const U &x) const {
+			bool operator==(const U &x) const 
+			{
 				return numerical_container_equality_selector<Derived,U>::run(*derived_const_cast,x);
 			}
+
 			template <class U>
-			bool operator!=(const U &x) const {
+			bool operator!=(const U &x) const 
+			{
 				return !operator==(x);
 			}
+
 			// Math.
 			template <class ArgsTuple>
-			void invert_sign(const ArgsTuple &) {
+			void invert_sign(const ArgsTuple &) 
+			{
 				m_value *= -1;
 			}
+
 			template <class U, class ArgsTuple>
-			Derived &add(const U &x, const ArgsTuple &) {
+			Derived &add(const U &x, const ArgsTuple &) 
+			{
 				return numerical_container_add_selector<U>::run(*derived_cast,x);
 			}
+
 			template <class U, class ArgsTuple>
-			Derived &subtract(const U &x, const ArgsTuple &) {
+			Derived &subtract(const U &x, const ArgsTuple &) 
+			{
 				return numerical_container_subtract_selector<U>::run(*derived_cast,x);
 			}
+
 			template <class U, class ArgsTuple>
-			Derived &mult_by(const U &x, const ArgsTuple &) {
+			Derived &mult_by(const U &x, const ArgsTuple &) 
+			{
 				return numerical_container_multiply_selector<U>::run(*derived_cast,x);
 			}
+
 			template <class U, class ArgsTuple>
-			Derived &divide_by(const U &x, const ArgsTuple &) {
+			Derived &divide_by(const U &x, const ArgsTuple &) 
+			{
 				return numerical_container_divide_selector<U>::run(*derived_cast,x);
 			}
+			
 			// Multiply and add.
 			template <class Derived2, class ArgsTuple>
-			void addmul(const Derived &x1, const Derived2 &x2, const ArgsTuple &) {
+			void addmul(const Derived &x1, const Derived2 &x2, const ArgsTuple &) 
+			{
 				multiply_accumulate(m_value,x1.m_value,x2.get_value());
 			}
+
 			template <class Series, class PosTuple, class ArgsTuple>
-			Series partial(const PosTuple &, const ArgsTuple &) const {
+			Series partial(const PosTuple &, const ArgsTuple &) const 
+			{
 				return Series();
 			}
+			
 			template <class ArgsTuple>
-			Derived pow(const double &x, const ArgsTuple &args_tuple) const {
+			Derived pow(const double &x, const ArgsTuple &args_tuple) const 
+			{
 				return generic_pow(x,args_tuple);
 			}
+
 			template <class ArgsTuple>
-			Derived pow(const mp_rational &q, const ArgsTuple &args_tuple) const {
+			Derived pow(const mp_rational &q, const ArgsTuple &args_tuple) const 
+			{
 				return generic_pow(q,args_tuple);
 			}
+			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const {
+			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const 
+			{
 				return RetSeries::base_series_from_cf(*derived_const_cast, args_tuple);
 			}
+			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const {
+			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const 
+			{
 				return sub<RetSeries>(p,s,a);
 			}
+			
 			/// Bessel function of the first kind.
 			/**
 			 * Will use piranha::besselJ internally.
@@ -224,27 +285,37 @@ namespace piranha
 			{
 				return Derived(piranha::besselJ(n,m_value),args_tuple);
 			}
+			
 			/// Get value.
-			const T &get_value() const {
+			const T &get_value() const 
+			{
 				return m_value;
 			}
+			
 			/// Set value.
 			template <class U>
-			void set_value(const U &value) {
+			void set_value(const U &value) 
+			{
 				m_value = value;
 			}
+
 		private:
+
 			template <class Number, class ArgsTuple>
-			Derived generic_pow(const Number &n, const ArgsTuple &) const {
+			Derived generic_pow(const Number &n, const ArgsTuple &) const 
+			{
 				// COMPILER BUG: usual stuff with ubuntu's 4.1.3 compiler :(
 				Derived retval;
 				const numerical_type tmp(std::pow(m_value,n));
 				retval.m_value = tmp;
 				return retval;
 			}
+
 		private:
+
 			T m_value;
 	};
+
 
 	// Overloads for I/O operators.
 	template <class T, class Derived>

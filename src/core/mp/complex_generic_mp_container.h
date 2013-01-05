@@ -41,12 +41,14 @@ namespace piranha
 {
 	template <class T>
 	struct cgmp_helper {
+		
 		template <class U>
 		static void construct(U &u, const T &x)
 		{
 			normal_check(x);
 			u.m_real = x;
 		}
+
 		template <class U>
 		static void assign(U &u, const T &x)
 		{
@@ -54,23 +56,27 @@ namespace piranha
 			u.m_real = x;
 			u.m_imag = 0;
 		}
+
 		template <class U>
 		static bool compare(const U &u, const T &x)
 		{
 			return (u.m_real == x && u.m_imag == 0);
 		}
+
 		template <class U>
 		static void add(U &u, const T &x)
 		{
 			normal_check(x);
 			u.m_real += x;
 		}
+
 		template <class U>
 		static void subtract(U &u, const T &x)
 		{
 			normal_check(x);
 			u.m_real -= x;
 		}
+
 		template <class U>
 		static void mult(U &u, const T &x)
 		{
@@ -78,6 +84,7 @@ namespace piranha
 			u.m_real *= x;
 			u.m_imag *= x;
 		}
+
 		template <class U>
 		static void divide(U &u, const T &x)
 		{

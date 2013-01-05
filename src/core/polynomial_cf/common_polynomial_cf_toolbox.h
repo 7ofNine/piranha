@@ -28,7 +28,7 @@
 #include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -43,6 +43,7 @@ namespace piranha
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,SubCachesCons,ArgsTuple>::type,ArgsTuple>::type type;
 			};
+
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &args_tuple) const
 			{
@@ -50,6 +51,7 @@ namespace piranha
 					p,s,args_tuple
 				);
 			}
+
 			template <class PosTuple, class ArgsTuple>
 			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
 			{

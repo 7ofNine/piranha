@@ -44,6 +44,8 @@ namespace piranha
 					Truncator>::truncator_type::power_series_iterations(*derived_const_cast,
 					start,step,args_tuple);
 			}
+
+
 			template <class Series, class ArgsTuple>
 			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &args_tuple) const
 			{
@@ -52,6 +54,8 @@ namespace piranha
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
 					Truncator>::truncator_type::template get_sorted_pointer_vector<Series,ArgsTuple>(*derived_const_cast,args_tuple);
 			}
+
+
 			// Multiply term-by-term with another series, and place the result into retval.
 			// Preconditions:
 			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
@@ -63,27 +67,35 @@ namespace piranha
 				__PDEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
 					<< s2.length() << '\n');
 				// Don't do anything if this is empty.
-				if (derived_const_cast->empty()) {
+				if (derived_const_cast->empty()) 
+				{
 					return;
 				}
+
 				// If the other series is empty, clear the container and return.
-				if (s2.empty()) {
+				if (s2.empty())
+				{
 					derived_cast->clear_terms();
 					return;
 				}
+
+
 				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
 				// Optimize the cases of single coefficient series.
-				if (s2.is_single_cf() && algo == settings::automatic) {
+				if (s2.is_single_cf() && algo == settings::automatic)
+				{
 					derived_cast->base_mult_by(s2.begin()->m_cf, args_tuple);
-				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic) {
+				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic)
+				{
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
 					tmp.base_mult_by(derived_const_cast->begin()->m_cf, args_tuple);
 					derived_cast->base_swap(tmp);
-				} else {
+				} else
+				{
 					Derived retval;
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
-						m(*derived_const_cast, s2, retval, args_tuple);
+						                          m(*derived_const_cast, s2, retval, args_tuple);
 					m.perform_multiplication();
 					derived_cast->base_swap(retval);
 				}

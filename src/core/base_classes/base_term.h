@@ -34,7 +34,7 @@
 #include "../settings.h"
 
 #define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
-#define __PIRANHA_BASE_TERM_TP Cf,Key,Separator,Allocator,Derived
+#define __PIRANHA_BASE_TERM_TP Cf, Key, Separator, Allocator, Derived
 
 namespace piranha
 {
@@ -83,19 +83,23 @@ namespace piranha
 			typedef Key key_type;
 			/// Alias for allocator type.
 			typedef typename Allocator::template rebind<Derived>::other allocator_type;
+			
 			/// Empty ctor.
 			/**
 			 * Default-initializes coefficient and key.
 			 */
 			explicit base_term(): m_cf(), m_key() {}
+			
 			/// Ctor from string.
 			template <class ArgsTuple>
 			explicit base_term(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() {
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
-				if (vs.size() != 2) {
+				if (vs.size() != 2) 
+				{
 					piranha_throw(value_error,std::string("unable to build term from input '") + str + "'");
-				} else {
+				} else 
+				{
 					boost::trim(vs[0]);
 					boost::trim(vs[1]);
 					// Try to build only if the strings actually contain something.
@@ -107,6 +111,7 @@ namespace piranha
 					}
 				}
 			}
+			
 			/// Copy ctor.
 			/**
 			 * Construct from base_term with different coefficient and key.
@@ -114,96 +119,124 @@ namespace piranha
 			template <class Derived2, class ArgsTuple>
 			explicit base_term(const Derived2 &t, const ArgsTuple &args_tuple):
 					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
+			
 			/// Ctor from coefficient - key pair.
 			explicit base_term(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 			template <int N>
-			typename base_term_get_helper<N, base_term>::type &get() {
+			typename base_term_get_helper<N, base_term>::type &get() 
+			{
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
 				return base_term_get_helper<N, base_term>::run(*this);
 			}
+
 			template <int N>
-			const typename base_term_get_helper<N, base_term>::type &get() const {
+			const typename base_term_get_helper<N, base_term>::type &get() const 
+			{
 				BOOST_STATIC_ASSERT(N == 0 || N == 1);
 				return base_term_get_helper<N, base_term>::run(*this);
 			}
-			void swap(base_term &other) {
+
+			void swap(base_term &other) 
+			{
 				m_cf.swap(other.m_cf);
 				m_key.swap(other.m_key);
 			}
+
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
+			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const 
+			{
 				m_cf.print_plain(out_stream, args_tuple);
 				out_stream << separator;
 				m_key.print_plain(out_stream, args_tuple);
 			}
+			
 			/// Print in pretty format.
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				if (m_key.is_unity()) {
+			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const 
+			{
+				if (m_key.is_unity()) 
+				{
 					m_cf.print_pretty(out_stream,args_tuple);
-				} else if (m_cf == 1) {
+				} else if (m_cf == 1) 
+				{
 					m_key.print_pretty(out_stream,args_tuple);
-				} else if (m_cf == -1) {
+				} else if (m_cf == -1) 
+				{
 					out_stream << '-';
 					m_key.print_pretty(out_stream,args_tuple);
-				} else {
+				} else 
+				{
 					m_cf.print_pretty(out_stream, args_tuple);
 					out_stream << '*';
 					m_key.print_pretty(out_stream, args_tuple);
 				}
 			}
+
 			/// Print in tex format.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const {
-				if (m_key.is_unity()) {
+			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const 
+			{
+				if (m_key.is_unity()) 
+				{
 					m_cf.print_tex(out_stream,args_tuple);
-				} else if (m_cf == 1) {
+				} else if (m_cf == 1) 
+				{
 					m_key.print_tex(out_stream,args_tuple);
-				} else if (m_cf == -1) {
+				} else if (m_cf == -1) 
+				{
 					out_stream << '-';
 					m_key.print_tex(out_stream,args_tuple);
-				} else {
+				} else 
+				{
 					m_cf.print_tex(out_stream, args_tuple);
 					m_key.print_tex(out_stream, args_tuple);
 				}
 			}
+
 			/// Equality test.
 			/**
 			 * Equality is defined by the equality of the keys.
 			 */
-			bool operator==(const base_term &t) const {
+			bool operator==(const base_term &t) const 
+			{
 				return (m_key == t.m_key);
 			}
+
 			/// Check if the term is canonical.
 			/**
 			 * Will always return true, re-implement in derived term if necessary.
 			 */
 			template <class ArgsTuple>
-			bool is_canonical(const ArgsTuple &) const {
+			bool is_canonical(const ArgsTuple &) const 
+			{
 				return true;
 			}
+
 			/// Canonicalise the term.
 			/**
 			 * Won't do anything, re-implement in derived term if necessary.
 			 */
 			template <class ArgsTuple>
 			void canonicalise(const ArgsTuple &) {}
+			
 			/// Hasher functor.
 			/**
 			 * Useful in STL-like containers.
 			 */
 			struct hasher {
-				std::size_t operator()(const base_term &t) const {
+				std::size_t operator()(const base_term &t) const 
+				{
 					return t.m_key.hash_value();
 				}
 			};
+
 			// Data members.
 			/// Coefficient.
 			mutable cf_type		m_cf;
 			/// Key.
-			key_type		m_key;
+			key_type		    m_key;
 			/// Rebound allocator for term type.
 			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.

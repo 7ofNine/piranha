@@ -29,7 +29,7 @@
 #include "../psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -42,13 +42,16 @@ namespace piranha
 			{
 				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
 				const psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1, p), derived_const_cast->arguments());
 				Derived retval;
-				if (pos_tuple.get_head()[0].first) {
+				
+				if (pos_tuple.get_head()[0].first) 
+				{
 					retval = derived_const_cast->base_integrate(pos_tuple,derived_const_cast->arguments());
 					retval.set_arguments(derived_const_cast->arguments());
 					retval.trim();
-				} else {
+				} else 
+				{
 					retval = *derived_const_cast;
 					retval *= Derived(p);
 				}

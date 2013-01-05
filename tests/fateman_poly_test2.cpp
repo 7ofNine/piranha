@@ -30,10 +30,10 @@ typedef dpoly poly;
 
 int main()
 {
-settings::debug(true);
+settings::set_debug(true);
   psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
-  a = std::pow(a,20);
+  a = a.pow(20);
   poly c(a);
   c+=1;
   a*=c;

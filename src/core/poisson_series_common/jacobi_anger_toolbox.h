@@ -42,6 +42,7 @@ namespace piranha
 	{
 			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		public:
+
 			template <class Term, class ArgsTuple>
 			static void jacang(const std::vector<Term const *> &v,
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 
@@ -50,17 +51,22 @@ namespace piranha
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				piranha_assert(retval.empty());
 				retval.base_add(1, args_tuple);
-				if (v.empty()) {
+				if (v.empty()) 
+				{
 					return;
 				}
 				const const_iterator it_f = v.end();
-				for (const_iterator it = v.begin(); it != it_f; ++it) {
+				for (const_iterator it = v.begin(); it != it_f; ++it) 
+				{
 					// Skip the iterator we want to avoid.
-					if (it != it_avoid) {
+					if (it != it_avoid) 
+					{
 						retval.base_mult_by(jacang_term(it, args_tuple), args_tuple);
 					}
 				}
 			}
+
+
 			template <class Iterator, class ArgsTuple>
 			static std::complex<Derived> jacang_term(Iterator it, const ArgsTuple &args_tuple)
 			{
@@ -77,7 +83,8 @@ namespace piranha
 					tmp.insert(tmp_term, args_tuple);
 					try {
 						n_ = tmp.psi_(0,1,args_tuple);
-					} catch (const value_error &ve) {
+					} catch (const value_error &ve) 
+					{
 						piranha_throw(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "
 							"The reported error was:\n")+ve.what());
 					}
@@ -92,25 +99,33 @@ namespace piranha
 				const std::size_t w = args_tuple.template get<TrigPos>().size();
 				std::vector<typename std::complex<Derived>::term_type::key_type::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
-				for (int i = 1; i < n; ++i) {
+				for (int i = 1; i < n; ++i) 
+				{
 					complex_term_type tmp_term;
 					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
 					std::copy((*it)->m_key.begin(),(*it)->m_key.end(),tmp_trig_mults.begin());
-					for (std::size_t j = 0; j < w; ++j) {
+					for (std::size_t j = 0; j < w; ++j) 
+					{
 						tmp_trig_mults[j] *= i;
 					}
+
 					tmp_term.m_key.resize(boost::numeric_cast<typename std::complex<Derived>::term_type::key_type::size_type>(tmp_trig_mults.size()));
 					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.m_key.begin());
-					if ((*it)->m_key.get_flavour()) {
+					if ((*it)->m_key.get_flavour())
+					{
 						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
-					} else {
-						if (i % 2 == 0) {
+					} else 
+					{
+						if (i % 2 == 0) 
+						{
 							tmp_term.m_cf.mult_by(2, args_tuple);
-						} else {
+						} else 
+						{
 							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), args_tuple);
 							tmp_term.m_key.set_flavour(false);
 						}
 					}
+
 					retval.insert(tmp_term, args_tuple);
 					// Update the multiplier for cosine terms.
 					cos_multiplier *= std::complex<double>(0, 1);
