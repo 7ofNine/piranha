@@ -58,9 +58,9 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public power_cache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
+			class sub_cache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
 			{
-					typedef power_cache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
+					typedef PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
 
 					enum status {
 						zero,
@@ -70,13 +70,13 @@ namespace piranha
 
 				public:
 
-					sub_cache():ancestor(),m_status(zero),m_errmsg() {}
+					sub_cache():ancestor(), m_status(zero), m_errmsg() {}
 
 
 					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
 					{
 						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[T(0)] = std::complex<SubSeries>().base_add(1,*args_tuple);
+						this->m_container[T(0)] = std::complex<SubSeries>().base_add(1, *args_tuple);
 						try {
 							std::complex<SubSeries> tmp1(s.base_ei(*args_tuple));
 							this->m_container[T(1)] = tmp1;
@@ -91,6 +91,8 @@ namespace piranha
 							m_errmsg = ve.what();
 						}
 					}
+
+
 					const std::complex<SubSeries> &operator[](const T &n)
 					{
 						switch (m_status) {
@@ -122,10 +124,12 @@ namespace piranha
 
 
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache: public power_cache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class ei_sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
-					typedef power_cache<SubSeries,T,base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
+
 				public:
+
 					ei_sub_cache():ancestor() {}
 
 
@@ -176,7 +180,7 @@ namespace piranha
 
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit TrigVector(const std::string &s, const ArgsTuple &): ancestor(),m_flavour(true)
+			explicit TrigVector(const std::string &s, const ArgsTuple &): ancestor(), m_flavour(true)
 			{
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
@@ -186,16 +190,19 @@ namespace piranha
 					// Flavour is already set to true.
 					return;
 				}
+
 				// Now we know  w >= 1.
 				this->resize(w - 1);
 				for (size_type i = 0; i < w - 1; ++i) 
 				{
 					(*this)[i] = boost::lexical_cast<value_type>(sd[i]);
 				}
+
 				// Take care of flavour.
 				if (*sd.back().c_str() == 's') 
 				{
 					m_flavour = false;
+
 				} else if (*sd.back().c_str() != 'c') 
 				{
 					piranha_throw(value_error,"unknown flavour");
@@ -230,10 +237,13 @@ namespace piranha
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
 			// critical part, so the optimization should be worth the hassle.
 			{
-				const size_type max_w = this->size(), min_w = t2.size();
-				// Assert widths, *this should always come from a regular Poisson series, and its width should hence be
+				const size_type max_w = this->size();
+                const size_type min_w = t2.size();
+				
+                // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 				// already adjusted my merge_args in multiplication routines.
 				piranha_assert(max_w >= min_w);
+
 				// Adjust the width of retvals, if needed.
 				ret1.resize(max_w);
 				ret2.resize(max_w);
@@ -280,10 +290,13 @@ namespace piranha
 				{
 					out_stream << this->separator;
 				}
+
 				if (m_flavour) 
 				{
 					out_stream << 'c';
-				} else {
+
+				} else 
+                {
 					out_stream << 's';
 				}
 			}
@@ -293,9 +306,11 @@ namespace piranha
 			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const
 			{
 				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+
 				if (m_flavour) 
 				{
 					out_stream << "cos(";
+
 				} else 
 				{
 					out_stream << "sin(";
@@ -328,6 +343,7 @@ namespace piranha
 						printed_something = true;
 					}
 				}
+
 				out_stream << ')';
 			}
 
@@ -339,6 +355,7 @@ namespace piranha
 				if (m_flavour) 
 				{
 					out_stream << "\\cos\\left(";
+
 				} else 
 				{
 					out_stream << "\\sin\\left(";

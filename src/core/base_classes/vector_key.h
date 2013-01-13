@@ -387,6 +387,7 @@ namespace piranha
 				{
 					return true;
 				}
+
 				const value_type *ptr = &m_container[0];
 				for (size_type i = 0; i < size; ++i) 
 				{

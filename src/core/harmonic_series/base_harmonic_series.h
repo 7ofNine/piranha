@@ -82,8 +82,7 @@ namespace piranha
 
 				bool operator()(const Term &t1, const Term &t2) const 
 				{
-					return (t1.template get<HarmonicTermPosition>().partial_h_order(m_p) <
-						t2.template get<HarmonicTermPosition>().partial_h_order(m_p));
+					return (t1.template get<HarmonicTermPosition>().partial_h_order(m_p) < t2.template get<HarmonicTermPosition>().partial_h_order(m_p));
 				}
 
 				const PosTuple &m_p;
@@ -91,6 +90,7 @@ namespace piranha
 
 
 		public:
+
 			static const int harmonic_args_position = HarmonicArgsPosition;
 			static const int harmonic_term_position = HarmonicTermPosition;
 			typedef HDegree h_degree_type;
@@ -208,10 +208,9 @@ namespace piranha
 				}
 
 				const typename Derived::const_iterator result(std::min_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							partial_h_order_binary_predicate<typename Derived::term_type,PosTuple>(pos_tuple)
-						));
+							                                   derived_const_cast->begin(),
+							                                   derived_const_cast->end(),
+							                                   partial_h_order_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple) ));
 				
 				return result->template get<HarmonicTermPosition>().partial_h_order(pos_tuple);
 			}

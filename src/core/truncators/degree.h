@@ -111,6 +111,7 @@ namespace truncators {
 						}
 					}
 
+
 					bool skip(const term_type1 **t1, const term_type2 **t2) const
 					{
 						switch (m_mode) {
@@ -128,6 +129,7 @@ namespace truncators {
 						}
 						return false;
 					}
+
 
 					// Number of a iterations of a power series development of a power series.
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
@@ -221,9 +223,11 @@ namespace truncators {
 								typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
 									boost::tuples::length<ArgsTuple2>::value>::type pos_tuple_type;
 								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
+
 								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
 								{
 									std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
+
 								} else
 								{
 									piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not "
@@ -268,10 +272,9 @@ namespace truncators {
 								// contains some elements.
 								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) 
 								{
-									std::sort(m_t1.begin(), m_t1.end(),
-										partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
-									std::sort(m_t2.begin(), m_t2.end(),
-										partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
+									std::sort(m_t1.begin(), m_t1.end(), partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
+
+									std::sort(m_t2.begin(), m_t2.end(), partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
 								}
 								break;
 							case inactive:
@@ -283,9 +286,10 @@ namespace truncators {
 
 					std::vector<term_type1 const *>	&m_t1;
 					std::vector<term_type2 const *>	&m_t2;
-					const ArgsTuple			&m_args_tuple;
-					pos_tuple_type			m_pos_tuple;
+					const ArgsTuple			        &m_args_tuple;
+					pos_tuple_type			         m_pos_tuple;
 			};
+
 
 			static void set(const int &);
 			static void set(const mp_rational &);

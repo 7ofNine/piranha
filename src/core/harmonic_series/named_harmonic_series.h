@@ -36,18 +36,23 @@ namespace piranha
 	class named_harmonic_series
 	{
 		public:
+
 			HDegree partial_h_degree(const std::vector<std::string> &vs) const
 			{
-				return derived_const_cast->base_partial_h_degree(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
+				return derived_const_cast->base_partial_h_degree(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
 			}
+
+
 			HDegree partial_h_order(const std::vector<std::string> &vs) const
 			{
 				vector_psym v;
 				v.reserve(vs.size());
-				for (size_t i = 0; i < vs.size(); ++i) {
+				for (size_t i = 0; i < vs.size(); ++i) 
+                {
 					v.push_back(psym(vs[i]));
 				}
-				return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs),derived_const_cast->arguments()));
+
+				return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
 			}
 	};
 }

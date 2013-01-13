@@ -36,47 +36,67 @@ namespace piranha
 	class base_power_series
 	{
 			p_static_check(ExpoArgsPosition >= 0, "Invalid expo args position.");
+
 			template <class Term>
 			struct degree_binary_predicate
 			{
-				bool operator()(const Term &t1, const Term &t2) const {
+				bool operator()(const Term &t1, const Term &t2) const 
+                {
 					return (t1.template get<ExpoTermPosition>().degree() < t2.template get<ExpoTermPosition>().degree());
 				}
 			};
+
+
 			template <class Term>
 			struct order_binary_predicate
 			{
-				bool operator()(const Term &t1, const Term &t2) const {
+				bool operator()(const Term &t1, const Term &t2) const 
+                {
 					return (t1.template get<ExpoTermPosition>().order() <
 						t2.template get<ExpoTermPosition>().order());
 				}
 			};
+
+
 			template <class Term, class PosTuple>
 			struct partial_degree_binary_predicate
 			{
 				partial_degree_binary_predicate(const PosTuple &p):m_p(p) {}
-				bool operator()(const Term &t1, const Term &t2) const {
+
+				bool operator()(const Term &t1, const Term &t2) const 
+                {
 					return (t1.template get<ExpoTermPosition>().partial_degree(m_p) < t2.template get<ExpoTermPosition>().partial_degree(m_p));
 				}
+
 				const PosTuple &m_p;
 			};
+
+
 			template <class Term, class PosTuple>
 			struct partial_order_binary_predicate
 			{
 				partial_order_binary_predicate(const PosTuple &p):m_p(p) {}
-				bool operator()(const Term &t1, const Term &t2) const {
+
+				bool operator()(const Term &t1, const Term &t2) const 
+                {
 					return (t1.template get<ExpoTermPosition>().partial_order(m_p) <
 						t2.template get<ExpoTermPosition>().partial_order(m_p));
 				}
+
 				const PosTuple &m_p;
 			};
+
 		public:
+
 			static const int expo_args_position = ExpoArgsPosition;
 			static const int expo_term_position = ExpoTermPosition;
 			typedef Degree degree_type;
+
 			/// Get the degree of the power series.
-			Degree degree() const {
-				if (derived_const_cast->empty()) {
+			Degree degree() const 
+            {
+				if (derived_const_cast->empty()) 
+                {
 					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::max_element(
@@ -84,14 +104,19 @@ namespace piranha
 							derived_const_cast->end(),
 							degree_binary_predicate<typename Derived::term_type>()
 						));
+
 				return result->template get<ExpoTermPosition>().degree();
 			}
+
+
 			/// Get the order of the power series.
 			/**
 			 * The order is defined as the minimum degree of the terms composing the series.
 			 */
-			Degree order() const {
-				if (derived_const_cast->empty()) {
+			Degree order() const 
+            {
+				if (derived_const_cast->empty()) 
+                {
 					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::min_element(
@@ -101,11 +126,14 @@ namespace piranha
 						));
 				return result->template get<ExpoTermPosition>().order();
 			}
+
 		//protected:
 			/// Get the degree of the power series for specific variables.
 			template <class PosTuple>
-			Degree base_partial_degree(const PosTuple &pos_tuple) const {
-				if (derived_const_cast->empty()) {
+			Degree base_partial_degree(const PosTuple &pos_tuple) const 
+            {
+				if (derived_const_cast->empty()) 
+                {
 					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::max_element(
@@ -115,10 +143,14 @@ namespace piranha
 						));
 				return result->template get<ExpoTermPosition>().partial_degree(pos_tuple);
 			}
+
+
 			/// Get the mininum degree of the power series for specific variables.
 			template <class PosTuple>
-			Degree base_partial_order(const PosTuple &pos_tuple) const {
-				if (derived_const_cast->empty()) {
+			Degree base_partial_order(const PosTuple &pos_tuple) const 
+            {
+				if (derived_const_cast->empty()) 
+                {
 					return Degree(0);
 				}
 				const typename Derived::const_iterator result(std::min_element(

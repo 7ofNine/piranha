@@ -57,9 +57,9 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public power_cache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
 			{
-					typedef power_cache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
 
 				public:
 

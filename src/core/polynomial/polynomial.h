@@ -44,13 +44,13 @@
 #include "../type_traits.h"
 #include "named_polynomial.h"
 
-#define POLYNOMIAL_TERM E0_SERIES_TERM(piranha::Monomial)
-#define POLYNOMIAL E0_SERIES(piranha::Polynomial)
-#define POLYNOMIAL_BASE_ANCESTOR E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
-#define POLYNOMIAL_NAMED_ANCESTOR E0_SERIES_NAMED_ANCESTOR(boost::tuple<poly_args_descr>, POLYNOMIAL_TERM, piranha::Polynomial)
+#define POLYNOMIAL_TERM              E0_SERIES_TERM(piranha::Monomial)
+#define POLYNOMIAL                   E0_SERIES(piranha::Polynomial)
+#define POLYNOMIAL_BASE_ANCESTOR     E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
+#define POLYNOMIAL_NAMED_ANCESTOR    E0_SERIES_NAMED_ANCESTOR(boost::tuple<PolyArgsDescr>, POLYNOMIAL_TERM, piranha::Polynomial)
 #define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation<POLYNOMIAL>
-#define POLYNOMIAL_DEGREE typename POLYNOMIAL_TERM::key_type::degree_type
-#define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0, POLYNOMIAL >
+#define POLYNOMIAL_DEGREE            typename POLYNOMIAL_TERM::key_type::degree_type
+#define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR  piranha::BasePolynomial<0, POLYNOMIAL >
 #define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<POLYNOMIAL >
 
 namespace piranha
@@ -70,11 +70,11 @@ namespace piranha
 				public named_series_special_functions< POLYNOMIAL>,
 				boost::ring_operators < POLYNOMIAL,
 				boost::ring_operators < POLYNOMIAL, double,
-				boost::dividable < POLYNOMIAL, double,
+				boost::dividable      < POLYNOMIAL, double,
 				boost::ring_operators < POLYNOMIAL, mp_rational,
-				boost::dividable < POLYNOMIAL, mp_rational,
+				boost::dividable      < POLYNOMIAL, mp_rational,
 				boost::ring_operators < POLYNOMIAL, mp_integer,
-				boost::dividable < POLYNOMIAL, mp_integer
+				boost::dividable      < POLYNOMIAL, mp_integer
 				> > > > > > >
 	{
 		public:
@@ -90,7 +90,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_TERM COMPLEX_E0_SERIES_TERM(piranha::Monomial)
 #define COMPLEX_POLYNOMIAL COMPLEX_E0_SERIES(piranha::Polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_ANCESTOR COMPLEX_E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
-#define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::poly_args_descr>, \
+#define COMPLEX_POLYNOMIAL_NAMED_ANCESTOR COMPLEX_E0_SERIES_NAMED_ANCESTOR(boost::tuple<piranha::PolyArgsDescr>, \
 		COMPLEX_POLYNOMIAL_TERM, piranha::Polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex<POLYNOMIAL>

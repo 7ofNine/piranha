@@ -38,6 +38,7 @@ namespace piranha
 	class named_polynomial
 	{
 		public:
+
 			Derived integrate(const std::string &name) const
 			{
 				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
@@ -47,14 +48,16 @@ namespace piranha
 				
 				if (pos_tuple.get_head()[0].first) 
 				{
-					retval = derived_const_cast->base_integrate(pos_tuple,derived_const_cast->arguments());
+					retval = derived_const_cast->base_integrate(pos_tuple, derived_const_cast->arguments());
 					retval.set_arguments(derived_const_cast->arguments());
 					retval.trim();
+
 				} else 
 				{
 					retval = *derived_const_cast;
 					retval *= Derived(p);
 				}
+
 				return retval;
 			}
 	};

@@ -30,7 +30,8 @@ namespace piranha
 	/// Wrapper for tuple of homogeneous types.
 	template <class T, int N>
 	struct ntuple {
-		p_static_check(N > 0,"");
+		p_static_check(N > 0, "");
+
 		typedef boost::tuples::cons < T, typename ntuple < T, N - 1 >::type > type;
 	};
 

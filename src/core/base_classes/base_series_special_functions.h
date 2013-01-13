@@ -161,8 +161,8 @@ namespace piranha
 					new_b[i] += n;
 				}
 
-				Derived retval(base_hyperF(new_a,new_b,iter_limit,args_tuple));
-				retval.base_mult_by(factor,args_tuple);
+				Derived retval(base_hyperF(new_a, new_b, iter_limit, args_tuple));
+				retval.base_mult_by(factor, args_tuple);
 				return retval;
 			}
 
@@ -176,8 +176,8 @@ namespace piranha
 				if (derived_const_cast->is_single_cf()) 
 				{
 					typedef typename Derived::term_type term_type;
-					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_,args_tuple),
-						typename term_type::key_type()),args_tuple);
+					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_, args_tuple),
+						typename term_type::key_type()), args_tuple);
 					return retval;
 				}
 
@@ -185,11 +185,11 @@ namespace piranha
 				const int order = (order_ >= 0) ? order_ : -order_;
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
-				x_2.base_divide_by(2,args_tuple);
-				retval = Derived(x_2).base_mult_by(-1,args_tuple).base_mult_by(x_2,args_tuple)
-					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((std::size_t)1,mp_rational(order) + 1),-1,args_tuple);
-				retval.base_mult_by(x_2.base_pow(order,args_tuple),args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial(),args_tuple);
+				x_2.base_divide_by(2, args_tuple);
+				retval = Derived(x_2).base_mult_by(-1, args_tuple).base_mult_by(x_2, args_tuple)
+					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, args_tuple);
+				retval.base_mult_by(x_2.base_pow(order, args_tuple), args_tuple);
+				retval.base_divide_by(mp_integer(order).factorial(), args_tuple);
 				if (order_ < 0) 
 				{
 					retval.base_mult_by(cs_phase(order_), args_tuple);
@@ -208,8 +208,8 @@ namespace piranha
 				if (!order) 
 				{
 					// Exploit the fact that for order == 0, derivative is -J_1.
-					retval = base_besselJ(1,args_tuple);
-					retval.base_mult_by(-1,args_tuple);
+					retval = base_besselJ(1, args_tuple);
+					retval.base_mult_by(-1, args_tuple);
 					return retval;
 				}
 
@@ -236,7 +236,7 @@ namespace piranha
 				Derived square_x2(retval);
 				square_x2.base_mult_by(square_x2, args_tuple);
 				retval = retval.base_pow(order - 1, args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial(),args_tuple);
+				retval.base_divide_by(mp_integer(order).factorial(), args_tuple);
 				retval.base_mult_by(order, args_tuple);
 				retval.base_divide_by(2, args_tuple);
 				// Now let's proceed to the bulk of the power series expansion.
@@ -254,8 +254,7 @@ namespace piranha
 
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived base_besselJ_div_m(const int &order_, const int &m,
-				const ArgsTuple &args_tuple) const
+			Derived base_besselJ_div_m(const int &order_, const int &m, const ArgsTuple &args_tuple) const
 			{
 				// Take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
@@ -263,18 +262,22 @@ namespace piranha
 				{
 					piranha_throw(zero_division_error,"absolute value of order must not be smaller than m");
 				}
+
 				Derived retval;
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
 				x_2.base_divide_by(2, args_tuple);
+
 				retval = Derived(x_2).base_mult_by(-1, args_tuple).base_mult_by(x_2, args_tuple)
-					.base_hyperF(std::vector<mp_rational>(),std::vector<mp_rational>((std::size_t)1,mp_rational(order) + 1),-1,args_tuple);
-				retval.base_mult_by(derived_const_cast->base_pow(order - m,args_tuple),args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order),args_tuple);
+					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, args_tuple);
+				retval.base_mult_by(derived_const_cast->base_pow(order - m, args_tuple), args_tuple);
+				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order), args_tuple);
+
 				if (order_ < 0) 
 				{
 					retval.base_mult_by(cs_phase(order_), args_tuple);
 				}
+
 				return retval;
 			}
 
@@ -287,7 +290,7 @@ namespace piranha
 				{
 					if (b_list[i] <= 0 && b_list[i].get_den() == 1) 
 					{
-						piranha_throw(zero_division_error,"b_list in hyperF contains a non-positive integer");
+						piranha_throw(zero_division_error, "b_list in hyperF contains a non-positive integer");
 					}
 				}
 			}

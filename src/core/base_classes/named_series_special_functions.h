@@ -167,8 +167,8 @@ namespace piranha
 					eib2((beta/2).ei());
 				const Derived cos_t(eit.real()), sin_t(eit.imag());
 				std::complex<Derived> final_factor((gamma*(-m)).ei());
-				typedef power_cache<Derived,int,named_series_arithmetics<Derived> > real_cache_type;
-				typedef power_cache<std::complex<Derived>,int,
+				typedef PowerCache<Derived,int,named_series_arithmetics<Derived> > real_cache_type;
+				typedef PowerCache<std::complex<Derived>,int,
 					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
 				complex_cache_type
 					cp(ei_phi,emi_phi),

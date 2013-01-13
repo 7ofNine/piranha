@@ -47,14 +47,14 @@
 #include "../poisson_series_common/jacobi_anger_toolbox.h"
 #include "../polynomial_cf/polynomial_cf.h"
 
-#define POISSON_SERIES E1_SERIES(piranha::poisson_series)
-#define POISSON_SERIES_POLYNOMIAL_CF E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
-#define POISSON_SERIES_TERM E1_SERIES_TERM(piranha::FourierSeriesTerm,POISSON_SERIES_POLYNOMIAL_CF)
-#define POISSON_SERIES_BASE_ANCESTOR E1_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,POISSON_SERIES_POLYNOMIAL_CF,POISSON_SERIES)
-#define POISSON_SERIES_NAMED_ANCESTOR E1_SERIES_NAMED_ANCESTOR(piranha::poly_args_descr, piranha::trig_args_descr, POISSON_SERIES_TERM, POISSON_SERIES)
+#define POISSON_SERIES                   E1_SERIES(piranha::poisson_series)
+#define POISSON_SERIES_POLYNOMIAL_CF     E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
+#define POISSON_SERIES_TERM              E1_SERIES_TERM(piranha::FourierSeriesTerm, POISSON_SERIES_POLYNOMIAL_CF)
+#define POISSON_SERIES_BASE_ANCESTOR     E1_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm, POISSON_SERIES_POLYNOMIAL_CF, POISSON_SERIES)
+#define POISSON_SERIES_NAMED_ANCESTOR    E1_SERIES_NAMED_ANCESTOR(piranha::PolyArgsDescr, piranha::TrigArgsDescriptor, POISSON_SERIES_TERM, POISSON_SERIES)
 #define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POISSON_SERIES>
-#define POISSON_SERIES_DEGREE typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
-#define POISSON_SERIES_H_DEGREE typename POISSON_SERIES_TERM::key_type::h_degree_type
+#define POISSON_SERIES_DEGREE            typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
+#define POISSON_SERIES_H_DEGREE          typename POISSON_SERIES_TERM::key_type::h_degree_type
 
 namespace piranha
 {
@@ -63,8 +63,8 @@ namespace piranha
 				public POISSON_SERIES_BASE_ANCESTOR,
 				public POISSON_SERIES_NAMED_ANCESTOR,
 				public POISSON_SERIES_BINOMIAL_ANCESTOR,
-				public BaseHarmonicSeries<1,1,POISSON_SERIES_H_DEGREE,POISSON_SERIES>,
-				public named_harmonic_series<POISSON_SERIES_H_DEGREE,POISSON_SERIES>,
+				public BaseHarmonicSeries<1, 1, POISSON_SERIES_H_DEGREE, POISSON_SERIES>,
+				public named_harmonic_series<POISSON_SERIES_H_DEGREE, POISSON_SERIES>,
 				public series_multiplication< POISSON_SERIES, Mult1, Trunc1>,
 				public jacobi_anger<1, POISSON_SERIES>,
 				public common_poisson_series< POISSON_SERIES>,
@@ -75,11 +75,11 @@ namespace piranha
 				public celmec< POISSON_SERIES>,
 				boost::ring_operators < POISSON_SERIES,
 				boost::ring_operators < POISSON_SERIES, double,
-				boost::dividable < POISSON_SERIES, double,
+				boost::dividable      < POISSON_SERIES, double,
 				boost::ring_operators < POISSON_SERIES, mp_rational,
-				boost::dividable < POISSON_SERIES, mp_rational,
+				boost::dividable      < POISSON_SERIES, mp_rational,
 				boost::ring_operators < POISSON_SERIES, mp_integer,
-				boost::dividable < POISSON_SERIES, mp_integer
+				boost::dividable      < POISSON_SERIES, mp_integer
 				> > > > > > >
 	{
 		public:
@@ -92,10 +92,10 @@ namespace piranha
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
-#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf,Key0,Mult0,Trunc0,Allocator>
-#define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>,Key1,'|',Allocator>
-#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::BaseSeries<COMPLEX_POISSON_SERIES_TERM,'\n',Allocator,COMPLEX_POISSON_SERIES>
-#define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::NamedSeries<boost::tuple<piranha::poly_args_descr,piranha::trig_args_descr>, \
+#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf, Key0, Mult0, Trunc0, Allocator>
+#define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>, Key1, '|', Allocator>
+#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::BaseSeries<COMPLEX_POISSON_SERIES_TERM,'\n', Allocator, COMPLEX_POISSON_SERIES>
+#define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::NamedSeries<boost::tuple<piranha::PolyArgsDescr, piranha::TrigArgsDescriptor>, \
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< POISSON_SERIES>
@@ -112,8 +112,8 @@ namespace std
 				public COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
-				public piranha::BaseHarmonicSeries<1,1,COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES>,
-				public piranha::named_harmonic_series<COMPLEX_POISSON_SERIES_H_DEGREE,COMPLEX_POISSON_SERIES>,
+				public piranha::BaseHarmonicSeries<1, 1, COMPLEX_POISSON_SERIES_H_DEGREE, COMPLEX_POISSON_SERIES>,
+				public piranha::named_harmonic_series<COMPLEX_POISSON_SERIES_H_DEGREE, COMPLEX_POISSON_SERIES>,
 				public piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>,
 				public piranha::common_poisson_series< COMPLEX_POISSON_SERIES>,
 				public piranha::base_power_series<0, 0, COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES>,
@@ -122,14 +122,14 @@ namespace std
 				public piranha::named_series_special_functions< COMPLEX_POISSON_SERIES>,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, double,
-				boost::dividable < COMPLEX_POISSON_SERIES, double,
+				boost::dividable      < COMPLEX_POISSON_SERIES, double,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::mp_rational,
-				boost::dividable < COMPLEX_POISSON_SERIES, piranha::mp_rational,
+				boost::dividable      < COMPLEX_POISSON_SERIES, piranha::mp_rational,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, piranha::mp_integer,
-				boost::dividable < COMPLEX_POISSON_SERIES, piranha::mp_integer,
+				boost::dividable      < COMPLEX_POISSON_SERIES, piranha::mp_integer,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, complex<double>,
-				boost::dividable < COMPLEX_POISSON_SERIES, complex<double>
+				boost::dividable      < COMPLEX_POISSON_SERIES, complex<double>
 				> > > > > > > > > >
 	{
 		public:

@@ -145,6 +145,7 @@ namespace piranha
 
 			template <class T>
 			bool series_comparison(const T &) const;
+
 			void append_arg(const std::string &, const psym &);
 			template <int N>
 			void append_arg(const psym &);
@@ -180,9 +181,9 @@ namespace piranha
 // Useful macros for named series.
 #define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::NamedSeries<args, term_name, E0_SERIES(series_name)>
 
-#define E1_SERIES_NAMED_ANCESTOR(args1,args2, term_name, series_name) piranha::NamedSeries<boost::tuple<args1,args2>,term_name,series_name>
+#define E1_SERIES_NAMED_ANCESTOR(args1, args2, term_name, series_name) piranha::NamedSeries<boost::tuple<args1, args2>, term_name, series_name>
 
-#define NAMED_SERIES_BOILERPLATE(series_name,N) \
+#define NAMED_SERIES_BOILERPLATE(series_name, N) \
 public: \
 	explicit series_name() {} \
 	explicit series_name(const piranha::psym &p) { \

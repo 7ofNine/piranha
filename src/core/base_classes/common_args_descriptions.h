@@ -25,17 +25,17 @@
 
 namespace piranha
 {
-	struct trig_args_descr {
+	struct TrigArgsDescriptor {
 		static const std::string  name;
 	};
 
-	const std::string trig_args_descr::name = "trig";
+	const std::string TrigArgsDescriptor::name = "trig";
 
-	struct poly_args_descr {
+	struct PolyArgsDescr {
 		static const std::string  name;
 	};
 
-	const std::string poly_args_descr::name = "poly";
+	const std::string PolyArgsDescr::name = "poly";
 }
 
 #endif

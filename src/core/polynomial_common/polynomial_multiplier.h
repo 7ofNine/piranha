@@ -381,6 +381,7 @@ struct polynomial_multiplier
 			typedef typename term_type2::cf_type  cf_type2;
 
 		public:
+
 			typedef Series1   series_type1;
 			typedef Series2   series_type2;
 			typedef ArgsTuple args_tuple_type;
@@ -441,11 +442,13 @@ struct polynomial_multiplier
 				bool breakout = false;
 				std::size_t cur_idx1_start = 0;
 				// TODO: probably we need to rethink a bit this, taking into account also the number of threads. Also drop the truncation limitation.
-				if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) {
+				if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) 
+                {
 					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 					threaded_blocked_multiplier<vf_type> t(block_size,size1,size2,0,1,0,cur_idx1_start,breakout,vm,s1,s2);
 					t();
-				} else {
+				} else 
+                {
 					__PDEBUG(std::cout << "using " << nthread << " threads\n");
 					stats::trace_stat("mult_mt", std::size_t(0) ,boost::lambda::_1 + 1);
 					boost::thread_group tg;
@@ -493,18 +496,20 @@ struct polynomial_multiplier
 				const std::size_t size_hint = static_cast<std::size_t>(
 					std::max<double>(this->m_density1,this->m_density2) * n_codes);
 				const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
+
 				piranha_assert(size1 && size2);
+
 				const args_tuple_type &args_tuple = this->m_args_tuple;
 				csht cms(size_hint);
 				// Find out a suitable block size.
-				const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
+				const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1, max_fast_int>)>();
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
  std::cout << "Block size: " << block_size << '\n';
  const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-				std::pair<cf_type1,max_fast_int> cterm;
+				std::pair<cf_type1, max_fast_int> cterm;
 				polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator>
-					hm(cterm,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,&cms,args_tuple);
-				this->blocked_multiplication(block_size,size1,size2,hm);
+					hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, args_tuple);
+				this->blocked_multiplication(block_size, size1, size2, hm);
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 				__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 				// Decode and insert into retval.
@@ -513,7 +518,7 @@ struct polynomial_multiplier
 				term_type1 tmp_term;
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
 				{
-					this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(),tmp_term);
+					this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
 					if (!tmp_term.is_canonical(args_tuple)) 
 					{
 						tmp_term.canonicalise(args_tuple);

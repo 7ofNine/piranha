@@ -295,14 +295,14 @@ namespace piranha
 	Allocator,E0_SERIES(series_name) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
-						class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
-#define E1_SERIES_TP Cf,Key0,Key1,Mult0,Mult1,Trunc0,Trunc1,Allocator
-#define E1_SERIES_COEFFICIENT(cf_name) cf_name<Cf,Key0,Mult0,Trunc0,Allocator>
-#define E1_SERIES(series_name) series_name<E1_SERIES_TP>
-#define E1_SERIES_TERM(term_name,cf_name) term_name< cf_name, Key1, '|', Allocator >
-#define E1_SERIES_BASE_ANCESTOR(term_name,cf_name,series_name) piranha::BaseSeries<term_name< \
-	cf_name,Key1,'|',Allocator>, \
-	'\n',Allocator,series_name >
+						  class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
+#define E1_SERIES_TP      Cf, Key0, Key1, Mult0, Mult1, Trunc0, Trunc1, Allocator
+#define E1_SERIES_COEFFICIENT(cf_name)     cf_name<Cf, Key0, Mult0, Trunc0, Allocator>
+#define E1_SERIES(series_name)             series_name<E1_SERIES_TP>
+#define E1_SERIES_TERM(term_name, cf_name) term_name< cf_name, Key1, '|', Allocator >
+#define E1_SERIES_BASE_ANCESTOR(term_name, cf_name, series_name) piranha::BaseSeries<term_name< \
+	cf_name, Key1, '|', Allocator>, \
+	'\n', Allocator, series_name >
 }
 
 #endif

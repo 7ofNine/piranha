@@ -31,25 +31,26 @@ namespace piranha
 {
 	// Simple power cache: will calculate power of objects and store them internally for reuse.
 	template <class Argument, class T, class ArithmeticFunctor>
-	class power_cache
+	class PowerCache
 	{
 		protected:
-			typedef boost::unordered_map<T,Argument> container_type;
+
+			typedef boost::unordered_map<T, Argument> container_type;
 			typedef typename container_type::iterator iterator;
 
-			power_cache():m_container(), m_arith_functor() {}
+			PowerCache():m_container(), m_arith_functor() {}
 
 		public:
 
-			power_cache(const Argument &x): m_container(), m_arith_functor()
+			PowerCache(const Argument &x): m_container(), m_arith_functor()
 			{
 				m_container[T(1)] = x;
 			}
 
 
-			power_cache(const Argument &x_1, const Argument &inv_x): m_container(), m_arith_functor()
+			PowerCache(const Argument &x_1, const Argument &inv_x): m_container(), m_arith_functor()
 			{
-				m_container[T(1)] = x_1;
+				m_container[T(1)]  = x_1;
 				m_container[T(-1)] = inv_x;
 			}
 
@@ -63,6 +64,7 @@ namespace piranha
 					{
 						m_container[T(0)] = m_arith_functor.pow(Argument(),0);
 						return m_container[T(0)];
+
 					} else 
 					{
 						return insert_new(x);
@@ -75,6 +77,7 @@ namespace piranha
 
 
 		private:
+
 			Argument &insert_new(const T &x)
 			{
 				if (x < 0) 
