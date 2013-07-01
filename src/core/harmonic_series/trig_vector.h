@@ -58,9 +58,9 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> >
+			class sub_cache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> >
 			{
-					typedef PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>,ArgsTuple> > ancestor;
+					typedef PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> > ancestor;
 
 					enum status {
 						zero,
@@ -124,7 +124,7 @@ namespace piranha
 
 
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class ei_sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
 			{
 					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
 
@@ -147,20 +147,20 @@ namespace piranha
 		public:
 
 			typedef typename ancestor::value_type value_type;
-			typedef value_type h_degree_type;
-			typedef typename ancestor::size_type size_type;
-			typedef double eval_type;
+			typedef value_type                    h_degree_type;
+			typedef typename ancestor::size_type  size_type;
+			typedef double                        eval_type;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct sub_cache_selector {
-				typedef boost::tuples::cons<sub_cache<SubSeries,ArgsTuple>,
-					SubCachesCons> type;
+			struct sub_cache_selector 
+			{
+				typedef boost::tuples::cons<sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct ei_sub_cache_selector {
-				typedef boost::tuples::cons<ei_sub_cache<SubSeries,ArgsTuple>,
-					SubCachesCons> type;
+			struct ei_sub_cache_selector 
+			{
+				typedef boost::tuples::cons<ei_sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 
@@ -211,7 +211,9 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			explicit TrigVector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a),m_flavour(true) {}
+			explicit TrigVector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a), m_flavour(true) {}
+
+
 			// Math.
 			/// Multiplication.
 			/**
@@ -230,8 +232,6 @@ namespace piranha
 			 * @param[out] ret1 first return value.
 			 * @param[out] ret2 second return value.
 			 */
-
-
 			void multiply(const TrigVector &t2, TrigVector &ret1, TrigVector &ret2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
@@ -772,7 +772,7 @@ namespace piranha
 			}
 
 		private:
-
+			//true: cos; false: sin  
 			bool m_flavour;
 	};
 

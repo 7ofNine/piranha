@@ -76,6 +76,8 @@ namespace piranha
 				);
 				return (std::size_t(2) << std::min<std::size_t>(std::size_t(12),shift));
 			}
+
+
 			template <class Functor>
 			static void blocked_multiplication(const std::size_t &block_size, const std::size_t &size1, const std::size_t &size2, Functor &m)
 			{
@@ -123,6 +125,8 @@ namespace piranha
 					}
 				}
 			}
+
+
 			/// Cache pointers to series' terms in the internal storage.
 			template <class Container1, class Container2>
 			void cache_terms_pointers(const Container1 &c1, const Container2 &c2)
@@ -135,18 +139,24 @@ namespace piranha
 					std::insert_iterator<std::vector<typename Series2::term_type const *> >(m_terms2,m_terms2.begin()),
 					&(boost::lambda::_1));
 			}
+
 		public:
+
 			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
 				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_retval(retval)
 			{
 				piranha_assert(s1.length() > 0 && s2.length() > 0);
 			}
+
+
 			// Plain multiplication.
 			void perform_plain_multiplication()
 			{
 				perform_plain_threaded_multiplication();
 			}
+
 		private:
+
 			template <class GenericTruncator>
 			struct plain_functor {
 				typedef typename term_type1::multiplication_result mult_res;
@@ -170,6 +180,8 @@ namespace piranha
 				Series1			&m_retval;
 				const ArgsTuple		&m_args_tuple;
 			};
+
+
 			struct plain_worker {
 				plain_worker(base_series_multiplier &mult, Series1 &retval):
 					m_mult(mult),m_retval(retval),m_terms1(mult.m_terms1)
@@ -212,6 +224,8 @@ namespace piranha
 				Series1				&m_retval;
 				std::vector<term_type1 const *>	&m_terms1;
 			};
+
+
 			// Threaded multiplication.
 			void perform_plain_threaded_multiplication()
 			{
@@ -250,6 +264,8 @@ namespace piranha
 					}
 				}
 			}
+
+
 		public:
 			// TODO: make these protected?
 			// References to the series.

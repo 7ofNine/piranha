@@ -41,8 +41,7 @@ namespace piranha
 			std::size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
 			{
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::power_series_iterations(*derived_const_cast,
-					start,step,args_tuple);
+					Truncator>::truncator_type::power_series_iterations(*derived_const_cast, start, step, args_tuple);
 			}
 
 
@@ -52,7 +51,7 @@ namespace piranha
 				static const bool check = boost::is_same<Series,Derived>::value;
 				p_static_check(check,"");
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::template get_sorted_pointer_vector<Series,ArgsTuple>(*derived_const_cast,args_tuple);
+					Truncator>::truncator_type::template get_sorted_pointer_vector<Series, ArgsTuple>(*derived_const_cast, args_tuple);
 			}
 
 

@@ -61,15 +61,20 @@ namespace piranha
 	{
 			template <class T, class Enable>
 			friend struct named_series_add_selector;
+
 			template <class T, class Enable>
 			friend struct named_series_subtract_selector;
+
 			template <class T, class Enable>
 			friend struct named_series_multiply_selector;
+
 			template <class T, class Enable>
 			friend struct named_series_equality_selector;
+
 		public:
 			typedef ArgsDescr arguments_description;
 			typedef typename ntuple<vector_psym,boost::tuples::length<arguments_description>::value>::type args_tuple_type;
+
 		private:
 			struct s_iterator_generator
 			{
@@ -81,6 +86,7 @@ namespace piranha
 					retval.insert(t,retval.m_arguments);
 					return retval;
 				}
+
 				s_iterator_generator(const Derived &series):m_series(series) {}
 				const Derived &m_series;
 			};
@@ -91,9 +97,11 @@ namespace piranha
 			s_iterator s_begin() const;
 			s_iterator s_end() const;
 			std::complex<Derived> complex() const;
+
 			void print(std::ostream &stream = std::cout) const;
 			void print_plain(std::ostream &) const;
 			void print_tex(std::ostream &) const;
+
 			void save_to(const std::string &) const;
 			// Rework this.
 // 			template <class Filter>
@@ -102,36 +110,54 @@ namespace piranha
 			double norm() const;
 			typename term_eval_type_determiner<Term>::type eval(const double &) const;
 			typename term_eval_type_determiner<Term>::type eval(const eval_dict &) const;
-			std::size_t psi(const int &start = 0, const int &step = 1) const;
-			const args_tuple_type &arguments() const;
-			void set_arguments(const args_tuple_type &);
+			
+            std::size_t psi(const int &start = 0, const int &step = 1) const;
+			
+            const args_tuple_type &arguments() const;
+			
+            void set_arguments(const args_tuple_type &);
+
 			template <class T>
 			bool operator==(const T &) const;
+
 			template <class T>
 			bool operator!=(const T &) const;
+
 			template <class T>
 			Derived &operator+=(const T &);
+
 			template <class T>
 			Derived &operator-=(const T &);
+
 			Derived operator-() const;
+
 			template <class T>
 			Derived &operator*=(const T &);
+
 			template <class T>
 			Derived &operator/=(const T &);
+
 			Derived pow(const double &) const;
 			Derived pow(const mp_rational &) const;
 			Derived root(const int &) const;
 			Derived partial(const std::string &, const int &n = 1) const;
+
 			template <class SubSeries>
 			Derived sub(const std::string &, const SubSeries &) const;
+
 			template <class Key>
 			Derived series_from_key(const Key &) const;
+
 			template <class Cf>
 			Derived series_from_cf(const Cf &) const;
+
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
+
 			std::vector<Derived> flatten() const;
-			~NamedSeries();
-			//protected:
+			
+            ~NamedSeries();
+			
+            //protected:
 			void trim();
 			template <class Derived2>
 			void merge_args(const Derived2 &);
@@ -147,25 +173,33 @@ namespace piranha
 			bool series_comparison(const T &) const;
 
 			void append_arg(const std::string &, const psym &);
+
 			template <int N>
 			void append_arg(const psym &);
+
 			template <class Derived2>
-			Derived &mult_by_series(const Derived2 &);
+			Derived & mult_by_series(const Derived2 &);
+
 			template <class Number>
-			Derived &mult_number_helper(const Number &);
+			Derived & mult_number_helper(const Number &);
+
 			template <class Number>
-			Derived &divide_number_helper(const Number &);
+			Derived & divide_number_helper(const Number &);
+
 			void print_pretty(std::ostream &) const;
 			void read_from_file(std::ifstream &, const std::string &);
 			void read_sections(std::ifstream &);
 			void read_arg(std::ifstream &, const std::string &);
 			void read_terms(std::ifstream &);
+
 			template <class Derived2>
 			bool is_args_compatible(const Derived2 &) const;
+
 			template <class Derived2>
 			void merge_incompatible_args(const Derived2 &);
+
 			template <bool, class Derived2>
-			Derived &merge_with_series(const Derived2 &);
+			Derived & merge_with_series(const Derived2 &);
 
 		protected:
 
@@ -195,17 +229,17 @@ public: \
 	} \
 	explicit series_name(const double &x) \
 	{ \
-		*this = base_series_from_number(x,this->m_arguments); \
+		*this = base_series_from_number(x, this->m_arguments); \
 		this->trim(); \
 	} \
 	explicit series_name(const piranha::mp_rational &q) \
 	{ \
-		*this = base_series_from_number(q,this->m_arguments); \
+		*this = base_series_from_number(q, this->m_arguments); \
 		this->trim(); \
 	} \
 	explicit series_name(const piranha::mp_integer &z) \
 	{ \
-		*this = base_series_from_number(z,this->m_arguments); \
+		*this = base_series_from_number(z, this->m_arguments); \
 		this->trim(); \
 	}
 }

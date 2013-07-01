@@ -63,6 +63,7 @@ namespace piranha
 			/// Iterator
 			typedef typename container_type::iterator iterator;
 			/// Position in the series' arguments tuple.
+			// a series has Echelon+1 tuples as keys
 			static const int position = Position;
 			/// Separator for string representation.
 			/**
@@ -416,7 +417,7 @@ namespace piranha
 				const value_type *ptr = &m_container[0];
 				for (size_type i = 0; i < size; ++i) 
 				{
-					boost::hash_combine(retval,ptr[i]);
+					boost::hash_combine(retval, ptr[i]);
 				}
 				return retval;
 			}

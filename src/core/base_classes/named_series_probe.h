@@ -40,26 +40,30 @@ namespace piranha
 {
 	// TMP for arguments compatibility check.
 	template <class ArgsTuple>
-	inline bool named_series_is_args_compatible(const ArgsTuple &a1, const ArgsTuple &a2)
+	inline bool named_series_is_args_compatible(const ArgsTuple & a1, const ArgsTuple & a2)
 	{
 		const std::size_t w = a2.get_head().size();
-		if (unlikely(w > a1.get_head().size())) {
+		if (unlikely(w > a1.get_head().size())) 
+		{
 			return false;
 		}
-		for (std::size_t i = 0; i < w; ++i) {
-			if (unlikely(a1.get_head()[i] != a2.get_head()[i])) {
+		for (std::size_t i = 0; i < w; ++i) 
+		{
+			if (unlikely(a1.get_head()[i] != a2.get_head()[i])) 
+			{
 				return false;
 			}
 		}
 		return named_series_is_args_compatible(a1.get_tail(), a2.get_tail());
 	}
 
+
 	template <>
-	inline bool named_series_is_args_compatible<boost::tuples::null_type>(
-		const boost::tuples::null_type &, const boost::tuples::null_type &)
+	inline bool named_series_is_args_compatible<boost::tuples::null_type>(const boost::tuples::null_type &, const boost::tuples::null_type &)
 	{
 		return true;
 	}
+
 
 	/// Compatibility check for arguments.
 	/**
@@ -76,11 +80,13 @@ namespace piranha
 		return named_series_is_args_compatible(m_arguments, ps2.arguments());
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline double NamedSeries<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
 		return derived_const_cast->base_norm(m_arguments);
 	}
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename term_eval_type_determiner<Term>::type
@@ -114,7 +120,8 @@ namespace piranha
 	inline typename term_eval_type_determiner<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
 	{
-		if (!check_eval_dict(d,m_arguments)) {
+		if (!check_eval_dict(d, m_arguments)) 
+		{
 			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
 		}
 		// Vector of original time evaluation vectors, paired with the corresponding symbol.
@@ -123,14 +130,18 @@ namespace piranha
 		std::vector<std::pair<psym,std::vector<double> > > orig_eval;
 		orig_eval.reserve(d.size());
 		const eval_dict::const_iterator it_f(d.end());
-		for (eval_dict::const_iterator it = d.begin(); it != it_f; ++it) {
-			orig_eval.push_back(std::make_pair(psym(it->first),psym(it->first).get_time_eval()));
-			psym(it->first,it->second);
+
+		for (eval_dict::const_iterator it = d.begin(); it != it_f; ++it)
+        {
+			orig_eval.push_back(std::make_pair(psym(it->first), psym(it->first).get_time_eval()));
+			psym(it->first, it->second);
 		}
 		const typename term_eval_type_determiner<Term>::type retval(eval(0));
+
 		// Restore original evaluation vectors.
 		// NOTE: here RAII here, to be exception safe?
-		for (std::size_t i = 0; i < orig_eval.size(); ++i) {
+		for (std::size_t i = 0; i < orig_eval.size(); ++i)
+        {
 			orig_eval[i].first.set_time_eval(orig_eval[i].second);
 		}
 		return retval;
@@ -139,7 +150,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::size_t NamedSeries<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
 	{
-		return derived_const_cast->psi_(start,step,m_arguments);
+		return derived_const_cast->psi_(start, step, m_arguments);
 	}
 
 	inline bool tuple_vector_same_sizes(const boost::tuples::null_type &, const boost::tuples::null_type &)
@@ -150,29 +161,34 @@ namespace piranha
 	template <class TupleVector1, class TupleVector2>
 	inline bool tuple_vector_same_sizes(const TupleVector1 &tv1, const TupleVector2 &tv2)
 	{
-		if (tv1.get_head().size() != tv2.get_head().size()) {
+		if (tv1.get_head().size() != tv2.get_head().size()) 
+        {
 			return false;
 		}
 		return tuple_vector_same_sizes(tv1.get_tail(), tv2.get_tail());
 	}
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
 	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_comparison(const T &other) const
 	{
 		// If the sizes of the arguments tuples do not coincide, series are different.
-		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) {
+		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) 
+        {
 			return false;
 		}
 		// If arguments tuples are completely identical, just run the base
 		// comparison function.
-		if (m_arguments == other.arguments()) {
+		if (m_arguments == other.arguments()) 
+        {
 			return derived_const_cast->base_equal_to(other);
 		}
 		// If we have same sizes of arguments tuples but they are not identical, then we may have to do
 		// an arguments merge an see if the arguments are permutated or they are really different.
 		// NOTE: this check is repeated in base_equal_to, but doing it here could save a lot of work below.
-		if (derived_const_cast->length() != other.length()) {
+		if (derived_const_cast->length() != other.length())
+        {
 			return false;
 		}
 		// Build a tuple of layouts.
@@ -181,7 +197,8 @@ namespace piranha
 		named_series_get_layout<args_tuple_type>::run(m_arguments, other.arguments(), l);
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,
 		// there are different arguments in this and other. Hence we can return false.
-		if (!tuple_vector_same_sizes(m_arguments,l)) {
+		if (!tuple_vector_same_sizes(m_arguments,l)) 
+        {
 			return false;
 		}
 		// In this last case, the arguments are the same but they are ordered differently. Need to copy
@@ -197,12 +214,14 @@ namespace piranha
 		return tmp.base_equal_to(other);
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
 	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator==(const T &x) const
 	{
-		return named_series_equality_selector<T>::run(*derived_const_cast,x);
+		return named_series_equality_selector<T>::run(*derived_const_cast, x);
 	}
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>

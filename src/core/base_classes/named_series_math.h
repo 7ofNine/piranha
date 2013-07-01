@@ -39,29 +39,35 @@ namespace piranha
 {
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <bool Sign, class Derived2>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_with_series(const Derived2 &s2)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_with_series(const Derived2 &s2)
 	{
 		// If we are merging with self, create a copy and call recursively.
-		if ((void *)(boost::addressof(*derived_cast)) ==
-			(void *)(boost::addressof(s2)))
+		if ((void *)(boost::addressof(*derived_cast)) == (void *)(boost::addressof(s2)))
 		{
 			__PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
 			merge_with_series<Sign>(Derived(*derived_const_cast));
-		} else {
+
+		} else 
+		{
 			merge_args(s2);
-			if (Sign) {
+			if (Sign) 
+			{
 				derived_cast->base_add(s2, m_arguments);
-			} else {
+
+			} else 
+			{
 				derived_cast->base_subtract(s2, m_arguments);
 			}
 		}
+
 		trim();
 		return *derived_cast;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
 	{
 		// First we merge the arguments of the two series.
 		merge_args(s2);
@@ -71,19 +77,22 @@ namespace piranha
 		return *derived_cast;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator+=(const T &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator+=(const T &x)
 	{
 		return named_series_add_selector<T>::run(*derived_cast,x);
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator-=(const T &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator-=(const T &x)
 	{
 		return named_series_subtract_selector<T>::run(*derived_cast,x);
 	}
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator-() const
@@ -93,9 +102,10 @@ namespace piranha
 		return retval;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_number_helper(const Number &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_number_helper(const Number &x)
 	{
 		derived_cast->base_mult_by(x, m_arguments);
 		trim();
@@ -104,26 +114,28 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator*=(const T &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator*=(const T &x)
 	{
 		return named_series_multiply_selector<T>::run(*derived_cast,x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
 	{
 		derived_cast->base_divide_by(x, m_arguments);
 		trim();
 		return *derived_cast;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived &NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator/=(const T &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator/=(const T &x)
 	{
 		return divide_number_helper(x);
 	}
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
@@ -134,6 +146,7 @@ namespace piranha
 		return retval;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const mp_rational &q) const
 	{
@@ -143,6 +156,7 @@ namespace piranha
 		return retval;
 	}
 
+
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::root(const int &n) const
 	{
@@ -151,6 +165,7 @@ namespace piranha
 		retval.trim();
 		return retval;
 	}
+
 
 	/// Partial derivative with respect to a piranha::psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

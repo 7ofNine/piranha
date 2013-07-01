@@ -88,6 +88,8 @@ namespace piranha
 		}
 	};
 
+
+
 	/// Base series class.
 	/**
 	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
@@ -104,16 +106,22 @@ namespace piranha
 			// Befriend meta-programming classes.
 			template <class, class>
 			friend struct series_from_cf_impl;
+
 			template <class, class>
 			friend struct series_from_key_impl;
+
 			template <int>
 			friend class series_flattener;
+
 			template <class, class>
 			friend struct base_series_add_selector;
+
 			template <class, class>
 			friend struct base_series_subtract_selector;
+
 			template <class, class, class>
 			friend struct base_series_multiply_selector;
+
 			template <class, class>
 			friend struct base_series_equal_to_selector;
 
@@ -121,128 +129,176 @@ namespace piranha
 
 			/// Alias for term type.
 			typedef Term term_type;
+
 			/// Term container.
 			/**
 			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
 			 * will be used to provide the hash values for terms.
 			 */
 			typedef typename series_container<term_type>::type container_type;
+
 			/// Echelon level.
 			static const int echelon_level = echelon_level_impl<typename term_type::cf_type>::value;
+
 			/// Type resulting from series evaluation.
 			/**
 			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
 			 * std::complex<double> in case of series with complex coefficients.
 			 */
 			typedef typename term_eval_type_determiner<Term>::type eval_type;
+
 			/// Term separator in textual series representation.
 			static const char separator = Separator;
+
 			/// Const iterator over the series' terms.
 			typedef typename container_type::const_iterator const_iterator;
+
 			/// Size type.
 			typedef typename container_type::size_type size_type;
+
 			/** @name Series properties. */
 			//@{
-			size_type length() const;
-			bool empty() const;
-			bool is_single_cf() const;
-			size_type atoms() const;
+			size_type length()       const;
+			bool      empty()        const;
+			bool      is_single_cf() const;
+			size_type atoms()        const;
 			//@}
+
+
 		//protected:
 			/** @name Construction/destruction. */
 			//@{
+            //defined: base_series_io.h
 			template <class Key, class ArgsTuple>
 			static Derived base_series_from_key(const Key &, const ArgsTuple &);
+
 			template <class Cf, class ArgsTuple>
 			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
+
 			template <class Number, class ArgsTuple>
 			static Derived base_series_from_number(const Number &, const ArgsTuple &);
+
 			template <class ArgsTuple>
 			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
+
 			~BaseSeries();
 			//@}
+
 			/** @name Series manipulation. */
 			//@{
 			void erase_term(const const_iterator &);
+
 			void clear_terms();
+
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
+
 			template <class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
+
 			template <class Iterator, class ArgsTuple>
 			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
+
 			void base_swap(Derived &);
+
 			template <class Series, class ArgsTuple>
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
+
 			template <class Layout, class ArgsTuple>
 			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
+
 			template <class TrimFlags>
 			void trim_test_terms(TrimFlags &) const;
+
 			template <class TrimFlags, class ArgsTuple>
 			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
+
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
-			//@}
+            //@}
+
 			/** @name Terms accessors. */
 			//@{
-			const_iterator find_term(const term_type &) const;
+            const_iterator find_term(const term_type &) const; // definition: base_series_manip.h
 			const_iterator begin() const;
 			const_iterator end() const;
 			//@}
+
 			/** @name Base comparison methods. */
 			//@{
 			template <class T>
 			bool base_equal_to(const T &) const;
+
 			//@}
 			/** @name Base maths. */
 			//@{
 			template <class ArgsTuple>
 			double base_norm(const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			eval_type base_eval(const double &, const ArgsTuple &) const;
+
 			template <class T, class ArgsTuple>
 			Derived &base_add(const T &, const ArgsTuple &);
+
 			template <class T, class ArgsTuple>
 			Derived &base_subtract(const T &, const ArgsTuple &);
+
 			template <class T, class ArgsTuple>
 			Derived &base_mult_by(const T &, const ArgsTuple &);
+
 			template <class T, class ArgsTuple>
 			Derived &base_divide_by(const T &, const ArgsTuple &);
+
 			template <class ArgsTuple>
 			Derived base_inv(const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived base_pow(const double &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived base_pow(const mp_rational &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived natural_power(const std::size_t &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived negative_integer_power(const int &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived real_power(const double &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			Derived base_root(const int &, const ArgsTuple &) const;
+
 			template <class Series, class PosTuple, class ArgsTuple>
 			static void base_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
+
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(int, const PosTuple &, const ArgsTuple &) const;
+
 			template <class PosTuple, class ArgsTuple>
 			Derived base_partial(const PosTuple &, const ArgsTuple &) const;
 			//@}
+
 			/** @name Base output streaming methods. */
 			//@{
 			template <class ArgsTuple>
 			void print_terms_plain(std::ostream &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			void print_terms_tex(std::ostream &, const ArgsTuple &) const;
+
 			template <class ArgsTuple>
 			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
+            //@}
 
-			//@}
 			// Standard substitution functor. Will call sub() on coefficients and keys.
 			struct sub_functor {
 				template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
@@ -257,28 +313,40 @@ namespace piranha
 
 			template <class T, class ArgsTuple>
 			Derived &multiply_coefficients_by(const T &, const ArgsTuple &);
+
 			template <class T, class ArgsTuple>
 			Derived &divide_coefficients_by(const T &, const ArgsTuple &);
+
 			template <int, class T, class ArgsTuple>
 			void mult_div_coefficients_by(const T &, const ArgsTuple &);
+
 			template <bool, class Number, class ArgsTuple>
 			Derived &merge_with_number(const Number &, const ArgsTuple &);
+
 			template <bool, class Derived2, class ArgsTuple>
 			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
+
 			template <class T>
 			bool generic_series_comparison(const T &) const;
+
 			template <class Number>
 			bool generic_numerical_comparison(const Number &) const;
+
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+
 			template <class Iterator, class ArgsTuple>
 			void generic_print_terms_tex(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+
 			template <class Iterator, class Series, class ArgsTuple>
 			void generic_base_split(std::vector<std::vector<Series> > &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+
 			template <bool, class ArgsTuple>
 			void ll_insert(const term_type &, const ArgsTuple &);
+
 			template <bool, class ArgsTuple>
 			void term_insert_new(const term_type &, const ArgsTuple &);
+
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
 

@@ -290,12 +290,14 @@ namespace piranha
 		return retval;
 	}
 
-
+    // empties the container of the BaseSeries object i.e. the container and the series is empty. is that a good idea????
+    //it raises the question of 'what is an empty series?'
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::clear_terms()
 	{
 		m_container.clear();
 	}
+
 
 	// NOTE: can we use the concepts of next_echelon_type and echelon level here? Maybe we can avoid the runtime assert in numerical_cf?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

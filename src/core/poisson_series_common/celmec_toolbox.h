@@ -39,7 +39,8 @@ namespace piranha
 	class celmec
 	{
 		public:
-			static Derived r_a(const Derived &e_series, const Derived &M_series) {
+			static Derived r_a(const Derived &e_series, const Derived &M_series) 
+            {
 				// First let's build 1+1/2 e^2.
 				Derived retval(e_series);
 				retval *= e_series;
@@ -49,7 +50,8 @@ namespace piranha
 				// set in the truncator.
 				const std::size_t n = e_series.psi();
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
@@ -65,10 +67,14 @@ namespace piranha
 				retval += tmp;
 				return retval;
 			}
-			static Derived a_r(const Derived &e, const Derived &M) {
+
+
+			static Derived a_r(const Derived &e, const Derived &M) 
+            {
 				Derived retval;
 				const int iter = e.psi(1);
-				for (int n = 1; n <= iter; ++n) {
+				for (int n = 1; n <= iter; ++n) 
+                {
 					Derived tmp = (M * n).cos();
 					tmp *= (e * n).besselJ(n);
 					retval += tmp;
@@ -77,13 +83,17 @@ namespace piranha
 				retval += 1;
 				return retval;
 			}
-			static Derived cos_E(const Derived &e_series, const Derived &M_series) {
+
+
+			static Derived cos_E(const Derived &e_series, const Derived &M_series) 
+            {
 				// First let's build 1/2 e.
 				Derived retval(e_series);
 				retval /= 2;
 				const std::size_t n = e_series.psi();
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
@@ -94,15 +104,20 @@ namespace piranha
 					expansion_term *= trig;
 					tmp += expansion_term;
 				}
+
 				tmp *= -2;
 				retval += tmp;
 				retval *= -1;
 				return retval;
 			}
-			static Derived sin_E(const Derived &e_series, const Derived &M_series) {
+
+
+			static Derived sin_E(const Derived &e_series, const Derived &M_series) 
+            {
 				const std::size_t n = e_series.psi();
 				Derived retval;
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.besselJ_div_m(i,1);
@@ -112,10 +127,14 @@ namespace piranha
 					expansion_term *= trig;
 					retval += expansion_term;
 				}
+
 				retval *= 2;
 				return retval;
 			}
-			static Derived sin_f(const Derived &e_series, const Derived &M_series) {
+
+
+			static Derived sin_f(const Derived &e_series, const Derived &M_series) 
+            {
 				Derived tmp(e_series);
 				tmp *= e_series;
 				tmp = 1 - tmp;
@@ -125,7 +144,8 @@ namespace piranha
 				const std::size_t n = e_series.psi();
 				// Regarding range here: we must perform n iterations for the power series, so starting
 				// from i = 1 we must reach n included.
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.dbesselJ(i);
@@ -138,7 +158,10 @@ namespace piranha
 				retval *= tmp;
 				return retval;
 			}
-			static Derived cos_f(const Derived &e_series, const Derived &M_series) {
+
+
+			static Derived cos_f(const Derived &e_series, const Derived &M_series) 
+            {
 				// 2*(1-e**2).
 				Derived tmp(e_series);
 				tmp *= e_series;
@@ -147,7 +170,8 @@ namespace piranha
 				Derived retval;
 				const std::size_t n = e_series.psi();
 				// See above.
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
 					expansion_term = expansion_term.besselJ_div_m(i,1);
@@ -158,72 +182,95 @@ namespace piranha
 					expansion_term *= trig;
 					retval += expansion_term;
 				}
+
 				retval *= tmp;
 				retval -= e_series;
 				return retval;
 			}
-			static Derived EE(const Derived &e_series, const Derived &M_series) {
+
+
+			static Derived EE(const Derived &e_series, const Derived &M_series) 
+            {
 				Derived retval(M_series);
 				const std::size_t n = e_series.psi(1);
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) {
+				for (std::size_t i = 1; i <= n; ++i) 
+                {
 					Derived expansion_term((e_series * i).besselJ(i));
 					expansion_term /= boost::numeric_cast<int>(i);
 					expansion_term *= (M_series * boost::numeric_cast<int>(i)).sin();
 					tmp += expansion_term;
 				}
+
 				tmp *= 2;
 				retval += tmp;
 				return retval;
 			}
-			static std::complex<Derived> eipE(const Derived &e, const Derived &M, const int &p) {
+
+
+			static std::complex<Derived> eipE(const Derived &e, const Derived &M, const int &p) 
+            {
 				// S1
 				std::complex<Derived> S1;
 				if (p > 0) {
-					for (int n = 1; n < p; ++n) {
+					for (int n = 1; n < p; ++n) 
+                    {
 						std::complex<Derived> tmp = (M * n).ei();
 						tmp *= (e * n).besselJ(p - n);
 						tmp /= n;
 						tmp *= cs_phase(p - n);
 						S1 += tmp;
 					}
+
 					const int iter = e.psi();
-					for (int n = p; n < p + iter; ++n) {
+					for (int n = p; n < p + iter; ++n) 
+                    {
 						std::complex<Derived> tmp = (M * n).ei();
 						tmp *= (e * n).besselJ(n - p);
 						tmp /= n;
 						S1 += tmp;
 					}
-				} else {
+
+				} else 
+                {
 					const int iter = e.psi(1 - p);
-					for (int n = 1; n <= iter; ++n) {
+					for (int n = 1; n <= iter; ++n) 
+                    {
 						std::complex<Derived> tmp = (M * n).ei();
 						tmp *= (e * n).besselJ(n - p);
 						tmp /= n;
 						S1 += tmp;
 					}
 				}
+
 				S1 *= p;
 				// S2
 				std::complex<Derived> S2;
-				if (p > 0) {
+				if (p > 0) 
+                {
 					const int iter = e.psi(1 + p);
-					for (int n = 1; n <= iter; ++n) {
+					for (int n = 1; n <= iter; ++n)
+                    {
 						std::complex<Derived> tmp = (M * -n).ei();
 						tmp *= (e * -n).besselJ(n + p);
 						tmp *= cs_phase(n + p);
 						tmp /= n;
 						S2 += tmp;
 					}
-				} else {
-					for (int n = 1; n < -p; ++n) {
+
+				} else 
+                {
+					for (int n = 1; n < -p; ++n) 
+                    {
 						std::complex<Derived> tmp = (M * -n).ei();
 						tmp *= (e * -n).besselJ(-n - p);
 						tmp /= n;
 						S2 += tmp;
 					}
+
 					const int iter = e.psi();
-					for (int n = -p; n < -p + iter; ++n) {
+					for (int n = -p; n < -p + iter; ++n) 
+                    {
 						std::complex<Derived> tmp = (M * -n).ei();
 						tmp *= (e * -n).besselJ(n + p);
 						tmp *= cs_phase(n + p);
@@ -231,6 +278,7 @@ namespace piranha
 						S2 += tmp;
 					}
 				}
+
 				S2 *= -p;
 				// c0
 				Derived c0;

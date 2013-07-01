@@ -142,31 +142,40 @@ namespace piranha
 			std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
 			// First we must construct v2's layout wrt to v1.
 			l.resize(size2);
-			for (std::size_t i = 0; i < size2; ++i) {
+			for (std::size_t i = 0; i < size2; ++i) 
+            {
 				// Let's see if current v2's symbol is present in v1.
 				const vector_psym::const_iterator result = std::find(v1.begin(), v1.end(), v2[i]);
-				if (result == v1.end()) {
+				if (result == v1.end()) 
+                {
 					l[i].first = false;
-				} else {
+				} else 
+                {
 					// If present, mark its position.
 					l[i].first = true;
 					l[i].second = result - v1.begin();
 				}
 			}
+
 			// Now we must take care of those elements of v1 that are not represented in
 			// the layout (i.e., they are not in v2)
-			for (std::size_t i = 0; i < size1; ++i) {
+			for (std::size_t i = 0; i < size1; ++i) 
+            {
 				// Look for element index i in the layout.
 				bool found = false;
 				const std::size_t l_size = l.size();
-				for (std::size_t j = 0; j < l_size; ++j) {
-					if (l[j].first && l[j].second == i) {
+				for (std::size_t j = 0; j < l_size; ++j) 
+                {
+					if (l[j].first && l[j].second == i) 
+                    {
 						found = true;
 						break;
 					}
 				}
+
 				// If we did not find it, append it to the layout.
-				if (!found) {
+				if (!found) 
+                {
 					l.push_back(std::pair<bool, std::size_t>(true, i));
 				}
 			}
@@ -174,6 +183,7 @@ namespace piranha
 				a2.get_tail(), layout.get_tail());
 		}
 	};
+
 
 	template <>
 	class named_series_get_layout<boost::tuples::null_type>
@@ -199,8 +209,10 @@ namespace piranha
 			const vector_psym old(v1);
 			// Make space.
 			v1.reserve(l_size);
-			for (std::size_t i = 0; i < l_size; ++i) {
-				if (l[i].first) {
+			for (std::size_t i = 0; i < l_size; ++i) 
+            {
+				if (l[i].first) 
+                {
 					// The argument was present in the old arguments sets. Copy it over.
 					piranha_assert(l[i].second < old.size());
 					if (i < v1.size()) {
@@ -208,20 +220,25 @@ namespace piranha
 					} else {
 						v1.push_back(old[l[i].second]);
 					}
-				} else {
+				} else 
+                {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
 					piranha_assert(i < v2.size());
-					if (i < v1.size()) {
+					if (i < v1.size()) 
+                    {
 						v1[i] = v2[i];
-					} else {
+					} else 
+                    {
 						v1.push_back(v2[i]);
 					}
 				}
 			}
+
 			named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.get_tail(),
 				a2.get_tail(), layout.get_tail());
 		}
 	};
+
 
 	template <>
 	class named_series_apply_layout_to_args<boost::tuples::null_type>
@@ -230,6 +247,7 @@ namespace piranha
 			static void run(const boost::tuples::null_type &, const boost::tuples::null_type &,
 				const boost::tuples::null_type &) {}
 	};
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
@@ -250,14 +268,18 @@ namespace piranha
 		swap(retval);
 	}
 
+
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_flags_init {
-		static void run(TrimFlags &tf, const ArgsTuple &args_tuple) {
+		static void run(TrimFlags &tf, const ArgsTuple &args_tuple)
+        {
 			const std::size_t size = args_tuple.get_head().size();
 			tf.get_head().resize(size);
-			for (std::size_t i = 0; i < size; ++i) {
+			for (std::size_t i = 0; i < size; ++i) 
+            {
 				tf.get_head()[i] = false;
 			}
+
 			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
 				tf.get_tail(),
 				args_tuple.get_tail()
@@ -265,15 +287,18 @@ namespace piranha
 		}
 	};
 
+
 	template <>
 	struct trim_flags_init<boost::tuples::null_type, boost::tuples::null_type> {
 		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
 
+
 	inline bool trim_flags_proceed(const boost::tuples::null_type &)
 	{
 		return false;
 	}
+
 
 	template <class TrimFlags>
 	inline bool trim_flags_proceed(const TrimFlags &tf)
@@ -288,27 +313,34 @@ namespace piranha
 		return trim_flags_proceed(tf.get_tail());
 	}
 
+
 	template <class TrimFlags, class ArgsTuple>
-	struct trim_arguments {
-		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) {
+	struct trim_arguments 
+	{
+		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) 
+		{
 			const std::size_t size = tf.get_head().size();
 			piranha_assert(size == args_tuple.get_head().size());
 			vector_psym new_vector;
-			for (std::size_t i = 0; i < size; ++i) {
-				if (tf.get_head()[i]) {
+			for (std::size_t i = 0; i < size; ++i) 
+			{
+				if (tf.get_head()[i]) 
+				{
 					new_vector.push_back(args_tuple.get_head()[i]);
 				}
 			}
 			new_vector.swap(args_tuple.get_head());
-			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(
-				tf.get_tail(), args_tuple.get_tail());
+			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), args_tuple.get_tail());
 		}
 	};
 
+
 	template <>
-	struct trim_arguments<boost::tuples::null_type, boost::tuples::null_type> {
+	struct trim_arguments<boost::tuples::null_type, boost::tuples::null_type> 
+	{
 		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
+
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::trim()
@@ -317,7 +349,8 @@ namespace piranha
 		trim_flags_type trim_flags;
 		trim_flags_init<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
 		derived_const_cast->trim_test_terms(trim_flags);
-		if (trim_flags_proceed(trim_flags)) {
+		if (trim_flags_proceed(trim_flags)) 
+		{
 			// First let's do the arguments.
 			trim_arguments<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
 			// Let's proceed to the terms now.
@@ -330,10 +363,10 @@ namespace piranha
 	template <class SubCaches, class SubSeries, class ArgsTuple>
 	struct init_sub_caches
 	{
-		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *args_tuple) {
+		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *args_tuple) 
+		{
 			sub_caches.get_head().setup(s,args_tuple);
-			init_sub_caches<typename SubCaches::tail_type,SubSeries,ArgsTuple>::
-				run(sub_caches.get_tail(),s,args_tuple);
+			init_sub_caches<typename SubCaches::tail_type,SubSeries,ArgsTuple>::run(sub_caches.get_tail(),s,args_tuple);
 		}
 	};
 
@@ -351,9 +384,12 @@ namespace piranha
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 			template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
 			::type,args_tuple_type>::type sub_caches_type;
+
 		typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
+
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
+
 		const psym p(name);
 		sub_caches_type sub_caches;
 		Derived this_copy(*derived_const_cast);
@@ -362,9 +398,11 @@ namespace piranha
 		s_copy.merge_args(this_copy);
 		// Init sub caches using s_copy and this_copy.m_arguments.
 		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,&this_copy.m_arguments);
+
 		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),this_copy.m_arguments);
-		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(
-			pos_tuple, sub_caches, this_copy.m_arguments));
+
+		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.m_arguments));
+
 		retval.m_arguments = this_copy.m_arguments;
 		retval.trim();
 		return retval;
@@ -379,7 +417,8 @@ namespace piranha
 		std::vector<std::vector<Derived> > retval;
 		derived_const_cast->base_split(retval,n,m_arguments);
 		const std::size_t size = retval.size();
-		for (std::size_t i = 0; i < size; ++i) {
+		for (std::size_t i = 0; i < size; ++i) 
+		{
 			retval[i][0].m_arguments = m_arguments;
 			retval[i][0].trim();
 			retval[i][1].m_arguments = m_arguments;
@@ -405,7 +444,8 @@ namespace piranha
 		const std::vector<typename Derived::term_type> tmp(derived_const_cast->flatten_terms(m_arguments));
 		std::vector<Derived> retval;
 		const typename std::vector<typename Derived::term_type>::const_iterator it_f(tmp.end());
-		for (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != it_f; ++it) {
+		for (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != it_f; ++it) 
+		{
 			Derived tmp_series;
 			tmp_series.insert(*it,m_arguments);
 			tmp_series.m_arguments = m_arguments;

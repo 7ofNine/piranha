@@ -58,11 +58,11 @@ namespace piranha
 	/// Polynomial class.
 	template < E0_SERIES_TP_DECL = std::allocator<char> >
 	class Polynomial:
-				public POLYNOMIAL_BASE_ANCESTOR,
+				public POLYNOMIAL_BASE_ANCESTOR,     //piranha::BaseSeries<piranha::Monomial<Cf,Key,'|',Allocator>),'\n', Allocator, piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
 				public POLYNOMIAL_NAMED_ANCESTOR,
-				public POLYNOMIAL_BINOMIAL_ANCESTOR,
-				public POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR,
-				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR,
+				public POLYNOMIAL_BINOMIAL_ANCESTOR, //piranha::binomial_exponentiation<piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
+				public POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR, //piranha::BasePolynomial<0, piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
+				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR, //piranha::named_polynomial<piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
 				public base_power_series<0, 1, POLYNOMIAL_DEGREE, POLYNOMIAL>,
 				public named_power_series<POLYNOMIAL_DEGREE, POLYNOMIAL>,
 				public series_multiplication< POLYNOMIAL, Multiplier, Truncator>,

@@ -32,27 +32,29 @@ namespace piranha
 	struct named_series_add_selector
 	{
 		template <class Derived>
-		static Derived &run(Derived &series, const T &x)
+		static Derived & run(Derived &series, const T &x)
 		{
-			return series.base_add(x,series.m_arguments);
+			return series.base_add(x, series.m_arguments);
 		}
 	};
 
 	template <class T>
-	struct named_series_add_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct named_series_add_selector<T, typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
 	{
 		template <class Derived>
-		static Derived &run(Derived &series, const T &other)
+		static Derived & run(Derived & series, const T & other)
 		{
 			return series.template merge_with_series<true>(other);
 		}
 	};
 
+
+
 	template <class T, class Enable = void>
 	struct named_series_subtract_selector
 	{
 		template <class Derived>
-		static Derived &run(Derived &series, const T &x)
+		static Derived & run(Derived &series, const T &x)
 		{
 			return series.base_subtract(x,series.m_arguments);
 		}
@@ -67,6 +69,7 @@ namespace piranha
 			return series.template merge_with_series<false>(other);
 		}
 	};
+	 
 
 	template <class T, class Enable = void>
 	struct named_series_multiply_selector
@@ -77,12 +80,13 @@ namespace piranha
 			return series.mult_number_helper(x);
 		}
 	};
+	 
 
 	template <class T>
 	struct named_series_multiply_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
 	{
 		template <class Derived>
-		static Derived &run(Derived &series, const T &other)
+		static Derived & run(Derived & series, const T & other)
 		{
 			return series.mult_by_series(other);
 		}
@@ -92,14 +96,14 @@ namespace piranha
 	struct named_series_equality_selector
 	{
 		template <class Derived>
-		static bool run(const Derived &series, const T &x)
+		static bool run(const Derived & series, const T & x)
 		{
 			return series.base_equal_to(x);
 		}
 	};
 
 	template <class T>
-	struct named_series_equality_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct named_series_equality_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)

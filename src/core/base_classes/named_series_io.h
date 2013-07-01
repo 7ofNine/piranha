@@ -46,6 +46,7 @@ namespace piranha
 		return std::complex<Derived>(*derived_const_cast);
 	}
 
+
 	// TMP for series printing.
 	template <class ArgsDescr>
 	inline void named_series_print_plain(std::ostream &stream,
@@ -59,6 +60,7 @@ namespace piranha
 
 		named_series_print_plain<typename ArgsDescr::tail_type>(stream, args_tuple.get_tail());
 	}
+
 
 	template <>
 	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &,
@@ -130,18 +132,19 @@ namespace piranha
 		std::string temp;
 		while (utils::get_valid_string(inf, temp)) 
         {
-			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') 
+			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size() - 1] == ']') 
             {
-				std::string sec_name = temp;
-				boost::trim_if(sec_name, boost::is_any_of("[]"));
-				std::cout << "New section found: " << sec_name << std::endl;
+				std::string sectionName = temp;
+				boost::trim_if(sectionName, boost::is_any_of("[]"));
+				std::cout << "New section found: " << sectionName << std::endl;
 				std::vector<std::string> split_v;
-				boost::split(split_v, sec_name, boost::is_any_of("_"));
+				boost::split(split_v, sectionName, boost::is_any_of("_"));
+
 				if (split_v.size() == 2 && split_v[1] == "arg") 
                 {
 					read_arg(inf, split_v[0]);
 
-				} else if (sec_name == "terms") 
+				} else if (sectionName == "terms") 
                 {
 					read_terms(inf);
 					// If we found the data, then we don't want any more sections.
@@ -149,7 +152,7 @@ namespace piranha
 
 				} else 
                 {
-					std::cout << "Found unknown section '" << sec_name << "', ignoring." << std::endl;
+					std::cout << "Found unknown section '" << sectionName << "', ignoring." << std::endl;
 					unknown_data.push_back(temp);
 				}
 			} else 
@@ -279,6 +282,7 @@ namespace piranha
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const args_tuple_type &args_tuple)
 	{
 		typedef typename Derived::const_iterator const_iterator;
+
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
@@ -316,7 +320,7 @@ namespace piranha
 	template <class Cf>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_from_cf(const Cf &cf) const
 	{
-		Derived retval(derived_const_cast->base_series_from_cf(cf,m_arguments));
+		Derived retval(derived_const_cast->base_series_from_cf(cf, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
@@ -341,7 +345,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline NamedSeries<__PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
-		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1,"");
+		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1, "");
 	}
 
 
