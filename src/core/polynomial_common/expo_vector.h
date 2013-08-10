@@ -140,7 +140,8 @@ namespace piranha
 			template <class ResultType>
 			void multiply(const ExpoVector &e2, ResultType &ret) const
 			{
-				const size_type max_w = this->size(), min_w = e2.size();
+				const size_type max_w = this->size();
+				const size_type min_w = e2.size();
 				// Resize, if needed.
 				ret.resize(max_w);
 
@@ -412,9 +413,7 @@ namespace piranha
 					piranha_assert(retval.empty());
 					// NOTICE: series multadd here?
 					retval.base_add(orig, args_tuple);
-					retval.base_mult_by(sub_caches.template get<ancestor::position>()
-						[(*this)[pos]],
-					args_tuple);
+					retval.base_mult_by(sub_caches.template get<ancestor::position>()[(*this)[pos]], args_tuple);
 				}
 				return retval;
 			}

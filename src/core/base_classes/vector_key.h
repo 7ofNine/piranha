@@ -45,6 +45,9 @@ namespace piranha
 	/**
 	 * Series key type that can be represented as a vector of values.
 	 */
+	// T: type of key elements e.g boost::int16_t
+	// Position: echelone level, determines which key it is. Each level has it's own key
+	// Derived:  Derived class, for CRTP, static polymorphism
 	template <class T, int Position, class Derived>
 	class VectorKey
 	{
@@ -85,7 +88,7 @@ namespace piranha
 
 			/// Copy ctor, different position..
 			template <int Position2, class Derived2>
-			explicit VectorKey(const VectorKey<T, Position2, Derived2> &other): m_container(other.m_container) {}
+			VectorKey(const VectorKey<T, Position2, Derived2> &other): m_container(other.m_container) {}
 
 
 			/// Ctor from psym.

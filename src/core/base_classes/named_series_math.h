@@ -116,7 +116,7 @@ namespace piranha
 	template <class T>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator*=(const T &x)
 	{
-		return named_series_multiply_selector<T>::run(*derived_cast,x);
+		return named_series_multiply_selector<T>::run(*derived_cast, x);
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>

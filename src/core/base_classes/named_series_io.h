@@ -176,7 +176,7 @@ namespace piranha
 		while (utils::get_valid_string(inf, temp)) 
         {
 			// If we found a new section, step back the cursor before exiting.
-			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size()-1] == ']') 
+			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size() - 1] == ']') 
             {
 				std::cout << "Finished parsing " << name << " argument." << std::endl;
 				inf.seekg(cur_pos);

@@ -75,18 +75,45 @@ namespace piranha
 	};
 
 
-	/// Base term class.
-	/**
-	 * Simple composition of coefficient and key classes.
-	 */
+	// Base term class.
+	//
+	// Simple composition of coefficient and key classes.
+	//
+	// Cf:   coefficients for series term e.g. double_cf, polynomial_cf
+	// Key:  key i.e. e.g. TrigVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
+	//       last template parameter is actually the echelon level.
+	// Separator: print/read separator between coefficiemt and key e.g.:  '|'
+	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
+	// Derived: CRTP pattern, typically the derived class e.g. FourierSeriesTerm<Cf, Trig, Separator, Allocator>, 
+
+	// Concepts for Cf:  Cf(std::string, ArgsTuple) //constructor
+	//                   Cf(cf2,         ArgsTuple) // constructor from another coefficient of a different kind)
+	//                   Cf.swap(Cf)                // swap method 
+	//                   Cf.print_plain(std::ostream,  ArgsTuple) // print method
+	//                   Cf.print_pretty(std::ostream, ArgsTuple);
+	//                   Cf.print_tex(std::ostream,    ArgsTuple)
+	//                   operator==(int)            // equality to integer 
+	//
+	// Concepts for Key: Key(std::string, ArgsTuple) // constructor
+	//                   Key(key2,       ArgsTuple)  // constructor from another key of a different kind) 
+	//                   Key.swap(Key)               // swap method
+	//                   Key.print_plain(std::ostream,  ArgsTuple) // print method
+	//                   Key.print_pretty(std::ostream, ArgsTuple);
+	//                   Key.print_tex(std::ostream,    ArgsTuple)
+	//                   Key.is_unity()              // method Key value represents one. e.g. cos (0)
+	//                   Key.operator==(Key)         // equality. Bas terms only test the key
+	//	                 Key.hash_value();
+
 	template <__PIRANHA_BASE_TERM_TP_DECL>
 	class BaseTerm
 	{
 		public:
 
 			// Meta-programming to get the type of the component.
+			// Is N actually used for anything?
 			template <int N>
-			struct component {
+			struct component 
+			{
 				typedef typename BaseTermGetHelper<N, BaseTerm>::type type;
 			};
 
@@ -101,21 +128,24 @@ namespace piranha
 			/**
 			 * Default-initializes coefficient and key.
 			 */
-			explicit BaseTerm(): m_cf(), m_key() {}
+			BaseTerm(): m_cf(), m_key() {}
 			
-			/// Ctor from string.
+			// Ctor from string.
+			// str is of type  "cf|key" for separator = "|"
+			//What is ArgsTuple??
 			template <class ArgsTuple>
-			explicit BaseTerm(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() 
+			BaseTerm(const std::string &str, const ArgsTuple &args_tuple): m_cf(), m_key() 
             {
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
+				// should have precisely two components,
 				if (vs.size() != 2) 
 				{
-					piranha_throw(value_error,std::string("unable to build term from input '") + str + "'");
+					piranha_throw(value_error, std::string("unable to build term from input '") + str + "'");
 				} else 
 				{
-					boost::trim(vs[0]);
-					boost::trim(vs[1]);
+					boost::trim(vs[0]); // coefficient
+					boost::trim(vs[1]); // key
 					// Try to build only if the strings actually contain something.
 					if (!vs[0].empty()) 
                     {
@@ -128,16 +158,17 @@ namespace piranha
 				}
 			}
 			
-			/// Copy ctor.
-			/**
-			 * Construct from BaseTerm with different coefficient and key.
-			 */
+			// Copy ctor.
+			//
+			//Construct from BaseTerm with different coefficient and key.
+		    // this requires a constuctor for cf(Derived2::cf_type, ArgsTuple)
+			//                            for key(Derived2::key_type, ArgsTuple) 
 			template <class Derived2, class ArgsTuple>
-			explicit BaseTerm(const Derived2 &t, const ArgsTuple &args_tuple):
-					m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
+			BaseTerm(const Derived2 &t, const ArgsTuple &args_tuple)
+			        : m_cf(t.m_cf, args_tuple), m_key(t.m_key) {}
 			
 			/// Ctor from coefficient - key pair.
-			explicit BaseTerm(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			BaseTerm(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
 
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
@@ -164,9 +195,9 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const 
 			{
-				m_cf.print_plain(out_stream, args_tuple);
+				m_cf.print_plain(out_stream, args_tuple); //print coefficient
 				out_stream << separator;
-				m_key.print_plain(out_stream, args_tuple);
+				m_key.print_plain(out_stream, args_tuple); // print key
 			}
 			
 			/// Print in pretty format.
@@ -175,14 +206,14 @@ namespace piranha
 			{
 				if (m_key.is_unity()) 
 				{
-					m_cf.print_pretty(out_stream,args_tuple);
+					m_cf.print_pretty(out_stream, args_tuple);
 				} else if (m_cf == 1) 
 				{
-					m_key.print_pretty(out_stream,args_tuple);
+					m_key.print_pretty(out_stream, args_tuple);
 				} else if (m_cf == -1) 
 				{
 					out_stream << '-';
-					m_key.print_pretty(out_stream,args_tuple);
+					m_key.print_pretty(out_stream, args_tuple);
 				} else 
 				{
 					m_cf.print_pretty(out_stream, args_tuple);
@@ -197,16 +228,16 @@ namespace piranha
 			{
 				if (m_key.is_unity()) 
 				{
-					m_cf.print_tex(out_stream,args_tuple);
+					m_cf.print_tex(out_stream, args_tuple);
 
 				} else if (m_cf == 1) 
 				{
-					m_key.print_tex(out_stream,args_tuple);
+					m_key.print_tex(out_stream, args_tuple);
 
 				} else if (m_cf == -1) 
 				{
 					out_stream << '-';
-					m_key.print_tex(out_stream,args_tuple);
+					m_key.print_tex(out_stream, args_tuple);
 
 				} else 
 				{
@@ -245,7 +276,8 @@ namespace piranha
 			/**
 			 * Useful in STL-like containers.
 			 */
-			struct hasher {
+			struct hasher 
+			{
 				std::size_t operator()(const BaseTerm &t) const 
 				{
 					return t.m_key.hash_value();

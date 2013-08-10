@@ -71,6 +71,8 @@ namespace piranha
 	};
 	 
 
+	// select which type of multiplicaiton to execute
+	// multiply with a consant
 	template <class T, class Enable = void>
 	struct named_series_multiply_selector
 	{
@@ -81,9 +83,9 @@ namespace piranha
 		}
 	};
 	 
-
+	//multiply with another series
 	template <class T>
-	struct named_series_multiply_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct named_series_multiply_selector<T, typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
 	{
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
@@ -91,7 +93,7 @@ namespace piranha
 			return series.mult_by_series(other);
 		}
 	};
-
+	 
 	template <class T, class Enable = void>
 	struct named_series_equality_selector
 	{

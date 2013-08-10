@@ -40,7 +40,7 @@ namespace piranha
 	// double and complex double will not interoperate with mp types. These template specialisation
 	// will convert mp types to double on the fly.
 	template <>
-	struct numerical_container_value_division<double,mp_rational>
+	struct numerical_container_value_division<double, mp_rational>
 	{
 		static void run(double &x, const mp_rational &q)
 		{

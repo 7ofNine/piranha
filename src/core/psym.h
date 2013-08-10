@@ -40,7 +40,10 @@
 
 namespace piranha
 {
+	// the global "dictionary" of psym(s)
 	struct __PIRANHA_VISIBLE psym_manager {
+
+		//implementation of a psym stored in the psym_manager
 		struct __PIRANHA_VISIBLE psym_impl {
 
 			psym_impl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
@@ -254,7 +257,7 @@ namespace piranha
 				const it_type it = psym_manager::container.find(p);
 				if (it == psym_manager::container.end()) 
 				{
-					const std::pair<it_type,bool> res = psym_manager::container.insert(p);
+					const std::pair<it_type, bool> res = psym_manager::container.insert(p);
 					piranha_assert(res.second);
 					m_it = res.first;
 				} else 
@@ -265,7 +268,7 @@ namespace piranha
 			}
 
 		private:
-			
+			// a psym is an iterator into the set of psym_impl managed in a global set in psym_manager
 			it_type m_it;
 	};
 
