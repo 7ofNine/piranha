@@ -45,17 +45,17 @@ namespace piranha
 			};
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &args_tuple) const
+			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &argsTuple) const
 			{
 				return derived_const_cast->template base_sub<RetSeries,ei_sub_functor>(
-					p,s,args_tuple
+					p,s,argsTuple
 				);
 			}
 
 			template <class PosTuple, class ArgsTuple>
-			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
-				return derived_const_cast->base_integrate(pos_tuple,args_tuple);
+				return derived_const_cast->base_integrate(pos_tuple,argsTuple);
 			}
 	};
 }

@@ -31,10 +31,10 @@ namespace piranha
 	{
 		public:
 			template <class Series, class ArgsTuple>
-			static void run(const ResultTuple &mult_res, Series &s, const ArgsTuple &args_tuple)
+			static void run(const ResultTuple &mult_res, Series &s, const ArgsTuple &argsTuple)
 			{
-				s.insert(mult_res.get_head(), args_tuple);
-				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, args_tuple);
+				s.insert(mult_res.get_head(), argsTuple);
+				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, argsTuple);
 			}
 	};
 

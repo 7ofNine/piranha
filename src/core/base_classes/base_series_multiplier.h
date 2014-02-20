@@ -142,8 +142,8 @@ namespace piranha
 
 		public:
 
-			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-				m_s1(s1), m_s2(s2), m_args_tuple(args_tuple), m_retval(retval)
+			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
+				m_s1(s1), m_s2(s2), m_argsTuple(argsTuple), m_retval(retval)
 			{
 				piranha_assert(s1.length() > 0 && s2.length() > 0);
 			}
@@ -161,16 +161,16 @@ namespace piranha
 			struct plain_functor {
 				typedef typename term_type1::multiplication_result mult_res;
 				plain_functor(mult_res &res,const term_type1 **t1, const term_type2 **t2, const GenericTruncator &trunc,
-					Series1 &retval, const ArgsTuple &args_tuple):m_res(res),m_t1(t1),m_t2(t2),
-					m_trunc(trunc),m_retval(retval),m_args_tuple(args_tuple)
+					Series1 &retval, const ArgsTuple &argsTuple):m_res(res),m_t1(t1),m_t2(t2),
+					m_trunc(trunc),m_retval(retval),m_argsTuple(argsTuple)
 				{}
 				bool operator()(const std::size_t &i, const std::size_t &j)
 				{
 					if (m_trunc.skip(&m_t1[i], &m_t2[j])) {
 						return false;
 					}
-					term_type1::multiply(*m_t1[i], *m_t2[j], m_res, m_args_tuple);
-					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_args_tuple);
+					term_type1::multiply(*m_t1[i], *m_t2[j], m_res, m_argsTuple);
+					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_argsTuple);
 					return true;
 				}
 				mult_res		&m_res;
@@ -178,7 +178,7 @@ namespace piranha
 				const term_type2	**m_t2;
 				const GenericTruncator	&m_trunc;
 				Series1			&m_retval;
-				const ArgsTuple		&m_args_tuple;
+				const ArgsTuple		&m_argsTuple;
 			};
 
 
@@ -193,7 +193,7 @@ namespace piranha
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_terms1,m_mult.m_terms2,m_mult.m_args_tuple);
+					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_terms1,m_mult.m_terms2,m_mult.m_argsTuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
 					if (trunc.is_effective()) {
@@ -201,7 +201,7 @@ namespace piranha
 					} else {
 						plain_implementation(
 							null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-							m_terms1,m_mult.m_terms2,m_mult.m_args_tuple
+							m_terms1,m_mult.m_terms2,m_mult.m_argsTuple
 							)
 						);
 					}
@@ -215,7 +215,7 @@ namespace piranha
 					piranha_assert(size1 && size2);
 					const term_type1 **t1 = &m_terms1[0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
-					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_args_tuple);
+					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_argsTuple);
 					const std::size_t block_size = compute_block_size
 						<boost::tuples::length<mult_res>::value * sizeof(term_type1)>();
 					blocked_multiplication(block_size,size1,size2,pf);
@@ -260,7 +260,7 @@ namespace piranha
 					tg.join_all();
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i) {
-						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_args_tuple);
+						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_argsTuple);
 					}
 				}
 			}
@@ -272,7 +272,7 @@ namespace piranha
 			const Series1					&m_s1;
 			const Series2					&m_s2;
 			// Reference to the arguments tuple.
-			const ArgsTuple					&m_args_tuple;
+			const ArgsTuple					&m_argsTuple;
 			// Reference to the result.
 			Series1						&m_retval;
 			// Vectors of pointers to the input terms.

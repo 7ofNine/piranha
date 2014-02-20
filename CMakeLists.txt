@@ -137,13 +137,13 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/console.xml
 			${WIN_PKG_ROOT}/msvcp71.dll
 			${WIN_PKG_ROOT}/msvcr71.dll
-			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
-			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+#			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+#			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
 		)
 		IF(MINGW)
 			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/libgmp-3.dll ${WIN_PKG_ROOT}/libgmpxx-4.dll)
 		ELSE(MINGW)
-			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/gmp.dll)
+			SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/mpir.dll)
 		ENDIF(MINGW)
 		IF(NOT MINGW)
 			SET(WIN_MSVC_DLL_PATH ${CMAKE_SOURCE_DIR}/windows_package/Microsoft.VC90.CRT)
@@ -213,6 +213,19 @@ IF(BUILD_PYRANHA)
 			${WIN_PKG_ROOT}/npp/plugins/APIs/vhdl.xml
 			DESTINATION npp/plugins/APIs
 		)
+		
+		INSTALL(FILES 
+			${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+#			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+			DESTINATION .ipython/profile_pyranha/startup
+		)
+		
+		INSTALL(FILES 
+			${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+			DESTINATION .
+		)
+
+	
 	ENDIF(WIN32)
 	# Mandatory linking.
 	SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)

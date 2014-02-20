@@ -60,7 +60,7 @@ namespace piranha
 	{
 		// Do something only if we are not swapping with self.
 		if (derived_cast != &ps2) {
-			named_series_swap<args_tuple_type>::run(m_arguments, ps2.m_arguments);
+			named_series_swap<ArgsTupleType>::run(m_arguments, ps2.m_arguments);
 			derived_cast->base_swap(ps2);
 		}
 	}
@@ -70,13 +70,13 @@ namespace piranha
 	template <class ArgsDescr>
 	struct named_series_append_arg {
 
-		static void run(const std::string &s, typename ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &args_tuple,
+		static void run(const std::string &s, typename Ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &argsTuple,
 						const psym &arg)
 		{
 			if (ArgsDescr::head_type::name == s) 
 			{
 				// Check that the argument is not already present in this set.
-				for (vector_psym::iterator it = args_tuple.get_head().begin(); it != args_tuple.get_head().end(); ++it) 
+				for (vector_psym::iterator it = argsTuple.get_head().begin(); it != argsTuple.get_head().end(); ++it) 
 				{
 					if (arg == (*it)) 
 					{
@@ -84,11 +84,11 @@ namespace piranha
 						return;
 					}
 				}
-				args_tuple.get_head().push_back(arg);
+				argsTuple.get_head().push_back(arg);
 
 			} else 
 			{
-				named_series_append_arg<typename ArgsDescr::tail_type>::run(s, args_tuple.get_tail(), arg);
+				named_series_append_arg<typename ArgsDescr::tail_type>::run(s, argsTuple.get_tail(), arg);
 			}
 		}
 	};
@@ -151,11 +151,11 @@ namespace piranha
 
 
 	// Template metaprogramming for getting the relative layout of two series.
-	// used during multiplication. shomehow generates the knowledge whc paramtere is where 
+	// used during multiplication. shomehow generates the knowledge wich parameter is where 
 	template <class ArgsTuple>
 	struct named_series_get_layout {
 
-		static void run(const ArgsTuple &a1, const ArgsTuple &a2, typename ntuple < std::vector<std::pair<bool, std::size_t> >,
+		static void run(const ArgsTuple &a1, const ArgsTuple &a2, typename Ntuple < std::vector<std::pair<bool, std::size_t> >,
 						boost::tuples::length<ArgsTuple>::value >::type &layout) 
 		{
 			// Store frequently-used variables.
@@ -175,7 +175,7 @@ namespace piranha
 					l[i].first = false;
 				} else 
                 {
-					// If present, mark its position.
+					// If present, mark its position in v1
 					l[i].first = true;
 					l[i].second = result - v1.begin();
 				}
@@ -222,7 +222,7 @@ namespace piranha
 	template <class ArgsTuple>
 	struct named_series_apply_layout_to_args {
 
-		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename ntuple < std::vector<std::pair<bool, std::size_t> >,
+		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename Ntuple < std::vector<std::pair<bool, std::size_t> >,
 						boost::tuples::length<ArgsTuple>::value >::type &layout) 
 		{
 			// Store frequently-used variables.
@@ -287,13 +287,13 @@ namespace piranha
 		Derived retval;
 		retval.m_arguments = m_arguments;
 		// Build a tuple of layouts.
-		typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
+		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
 
 		// Get the relative layouts of this wrt ps2 and put the result into l.
-		named_series_get_layout<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
+		named_series_get_layout<ArgsTupleType>::run(retval.m_arguments, ps2.arguments(), l);
 		
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<args_tuple_type>::run(retval.m_arguments, ps2.arguments(), l);
+		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.m_arguments, ps2.arguments(), l);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
 		derived_const_cast->apply_layout_to_terms(l, retval, retval.m_arguments);
@@ -306,16 +306,16 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_flags_init {
 
-		static void run(TrimFlags &tf, const ArgsTuple &args_tuple)
+		static void run(TrimFlags &tf, const ArgsTuple &argsTuple)
         {
-			const std::size_t size = args_tuple.get_head().size();
+			const std::size_t size = argsTuple.get_head().size();
 			tf.get_head().resize(size);
 			for (std::size_t i = 0; i < size; ++i) 
             {
 				tf.get_head()[i] = false;
 			}
 
-			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), args_tuple.get_tail());
+			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
 		}
 	};
 
@@ -352,21 +352,21 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	struct trim_arguments 
 	{
-		static void run(const TrimFlags &tf, ArgsTuple &args_tuple) 
+		static void run(const TrimFlags &tf, ArgsTuple &argsTuple) 
 		{
 			const std::size_t size = tf.get_head().size();
-			piranha_assert(size == args_tuple.get_head().size());
+			piranha_assert(size == argsTuple.get_head().size());
 			vector_psym new_vector;
 			for (std::size_t i = 0; i < size; ++i) 
 			{
 				if (tf.get_head()[i]) 
 				{
-					new_vector.push_back(args_tuple.get_head()[i]);
+					new_vector.push_back(argsTuple.get_head()[i]);
 				}
 			}
 
-			new_vector.swap(args_tuple.get_head());
-			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), args_tuple.get_tail());
+			new_vector.swap(argsTuple.get_head());
+			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
 		}
 	};
 
@@ -381,15 +381,15 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
+		typedef typename Ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
-		trim_flags_init<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
+		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
 		derived_const_cast->trim_test_terms(trim_flags);
 
 		if (trim_flags_proceed(trim_flags)) 
 		{
 			// First let's do the arguments.
-			trim_arguments<trim_flags_type, args_tuple_type>::run(trim_flags, m_arguments);
+			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
 			// Let's proceed to the terms now.
 			Derived tmp;
 			derived_cast->trim_terms(trim_flags, tmp, m_arguments);
@@ -401,10 +401,10 @@ namespace piranha
 	template <class SubCaches, class SubSeries, class ArgsTuple>
 	struct init_sub_caches
 	{
-		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *args_tuple) 
+		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *argsTuple) 
 		{
-			sub_caches.get_head().setup(s,args_tuple);
-			init_sub_caches<typename SubCaches::tail_type, SubSeries,ArgsTuple>::run(sub_caches.get_tail(), s, args_tuple);
+			sub_caches.get_head().setup(s, argsTuple);
+			init_sub_caches<typename SubCaches::tail_type, SubSeries,ArgsTuple>::run(sub_caches.get_tail(), s, argsTuple);
 		}
 	};
 
@@ -422,10 +422,10 @@ namespace piranha
 	{
 		typedef typename Derived::term_type::cf_type::
 			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-			template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
-			::type,args_tuple_type>::type    sub_caches_type;
+			template sub_cache_selector<SubSeries, boost::tuples::null_type,ArgsTupleType>
+			::type, ArgsTupleType>::type    sub_caches_type;
 
-		typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type    pos_tuple_type;
+		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type    pos_tuple_type;
 
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
@@ -438,7 +438,7 @@ namespace piranha
 		s_copy.merge_args(this_copy);
 
 		// Init sub caches using s_copy and this_copy.m_arguments.
-		init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,&this_copy.m_arguments);
+		init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,&this_copy.m_arguments);
 
 		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),this_copy.m_arguments);
 
@@ -453,7 +453,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<std::vector<Derived> > NamedSeries<__PIRANHA_NAMED_SERIES_TP>::split(const int &n) const
 	{
-		if (n < 0 || n >= boost::tuples::length<args_tuple_type>::value) 
+		if (n < 0 || n >= boost::tuples::length<ArgsTupleType>::value) 
 		{
 			piranha_throw(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
 		}

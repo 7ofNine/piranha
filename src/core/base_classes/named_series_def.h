@@ -73,7 +73,7 @@ namespace piranha
 
 		public:
 			typedef ArgsDescr arguments_description;
-			typedef typename ntuple<vector_psym, boost::tuples::length<arguments_description>::value>::type args_tuple_type;
+			typedef typename Ntuple<vector_psym, boost::tuples::length<arguments_description>::value>::type ArgsTupleType;
 
 		private:
 			struct s_iterator_generator
@@ -113,9 +113,9 @@ namespace piranha
 			
             std::size_t psi(const int &start = 0, const int &step = 1) const;
 			
-            const args_tuple_type &arguments() const;
+            const ArgsTupleType &arguments() const;
 			
-            void set_arguments(const args_tuple_type &);
+            void set_arguments(const ArgsTupleType &);
 
 			template <class T>
 			bool operator==(const T &) const;
@@ -204,7 +204,7 @@ namespace piranha
 		protected:
 
 			// Data members.
-			args_tuple_type                 m_arguments;
+			ArgsTupleType                   m_arguments;
 			static std::vector<std::string> unknown_data;
 	};
 

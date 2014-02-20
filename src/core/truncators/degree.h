@@ -84,7 +84,7 @@ namespace truncators {
 			template <class Series1, class Series2, class ArgsTuple>
 			class get_type
 			{
-					typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
+					typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >,
 						boost::tuples::length<ArgsTuple>::value>::type
 						pos_tuple_type;
 					static const int expo_term_pos = Series1::expo_term_position;
@@ -94,8 +94,8 @@ namespace truncators {
 					typedef typename Series2::term_type term_type2;
 					typedef get_type type;
 
-					get_type(std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const ArgsTuple &args_tuple, bool initialise = true):
-						m_t1(t1),m_t2(t2),m_args_tuple(args_tuple)
+					get_type(std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true):
+						m_t1(t1),m_t2(t2),m_argsTuple(argsTuple)
 					{
 						// Some static checks.
 						p_static_check(Series1::expo_args_position == Series2::expo_args_position, "");
@@ -103,7 +103,7 @@ namespace truncators {
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (m_mode == p_deg) 
 						{
-							m_pos_tuple = psyms2pos(m_psyms,m_args_tuple);
+							m_pos_tuple = psyms2pos(m_psyms,m_argsTuple);
 						}
 						if (initialise) 
 						{
@@ -136,7 +136,7 @@ namespace truncators {
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
 					template <class PowerSeries, class ArgsTuple2>
 					static std::size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
-						const ArgsTuple2 &args_tuple)
+						const ArgsTuple2 &argsTuple)
 					{
 						if (step_size < 1) 
 						{
@@ -162,7 +162,7 @@ namespace truncators {
 								order = s.order();
 								break;
 							case p_deg:
-								order = s.base_partial_order(psyms2pos(m_psyms,args_tuple));
+								order = s.base_partial_order(psyms2pos(m_psyms,argsTuple));
 								break;
 							case inactive:
 								piranha_assert(false);
@@ -209,7 +209,7 @@ namespace truncators {
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
 						std::vector<typename Series::term_type const *> retval;
 						std::transform(s.begin(),s.end(),std::insert_iterator<std::vector<typename Series::term_type const *> >(retval,retval.begin()),
@@ -220,9 +220,9 @@ namespace truncators {
 								break;
 							case p_deg:
 								{
-								typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >,
+								typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >,
 									boost::tuples::length<ArgsTuple2>::value>::type pos_tuple_type;
-								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,args_tuple));
+								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,argsTuple));
 
 								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
 								{
@@ -286,7 +286,7 @@ namespace truncators {
 
 					std::vector<term_type1 const *>	&m_t1;
 					std::vector<term_type2 const *>	&m_t2;
-					const ArgsTuple			        &m_args_tuple;
+					const ArgsTuple			        &m_argsTuple;
 					pos_tuple_type			         m_pos_tuple;
 			};
 

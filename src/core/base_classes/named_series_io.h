@@ -50,21 +50,21 @@ namespace piranha
 	// TMP for series printing.
 	template <class ArgsDescr>
 	inline void named_series_print_plain(std::ostream &stream,
-		 const typename ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &args_tuple)
+		 const typename Ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &argsTuple)
 	{
-		for (std::size_t i = 0; i < args_tuple.get_head().size(); ++i) 
+		for (std::size_t i = 0; i < argsTuple.get_head().size(); ++i) 
         {
 			stream << "[" << ArgsDescr::head_type::name << "_arg]" << '\n';
-			args_tuple.get_head()[i].print(stream);
+			argsTuple.get_head()[i].print(stream);
 		}
 
-		named_series_print_plain<typename ArgsDescr::tail_type>(stream, args_tuple.get_tail());
+		named_series_print_plain<typename ArgsDescr::tail_type>(stream, argsTuple.get_tail());
 	}
 
 
 	template <>
 	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &,
-			const ntuple<vector_psym, boost::tuples::length<boost::tuples::null_type>::value>::type &)
+			const Ntuple<vector_psym, boost::tuples::length<boost::tuples::null_type>::value>::type &)
 	{}
 
 
@@ -102,9 +102,9 @@ namespace piranha
 	 * Equivalent to NamedSeries::print_pretty.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &out_stream) const
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &outStream) const
 	{
-		print_pretty(out_stream);
+		print_pretty(outStream);
 	}
 
 
@@ -271,7 +271,7 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline const typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::args_tuple_type &
+	inline const typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::ArgsTupleType &
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::arguments() const
 	{
 		return m_arguments;
@@ -279,21 +279,21 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const args_tuple_type &args_tuple)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const ArgsTupleType &argsTuple)
 	{
 		typedef typename Derived::const_iterator const_iterator;
 
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
-			if (!it->m_cf.is_insertable(args_tuple) || !it->m_key.is_insertable(args_tuple) ||
-				it->m_cf.needs_padding(args_tuple) || it->m_key.needs_padding(args_tuple))
+			if (!it->m_cf.is_insertable(argsTuple) || !it->m_key.is_insertable(argsTuple) ||
+				it->m_cf.needs_padding(argsTuple) || it->m_key.needs_padding(argsTuple))
 			{
 				piranha_throw(value_error,"incompatible arguments tuple in set_arguments()");
 			}
 		}
 
-		m_arguments = args_tuple;
+		m_arguments = argsTuple;
 	}
 
 

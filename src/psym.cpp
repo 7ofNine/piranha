@@ -23,6 +23,6 @@
 namespace piranha
 {
 	// Initialize static member of psym and psyms.
-	psym_manager::container_type psym_manager::container;
-	const std::string psym_manager::psym_impl::separator = ";";
+	PsymManager::container_type PsymManager::container;
+	const std::string PsymManager::PsymImpl::separator = ";";
 }

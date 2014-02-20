@@ -117,21 +117,21 @@ namespace piranha
 			
 			/// Print in plain mode.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &out_stream, const ArgsTuple &) const {
-				out_stream << boost::lexical_cast<std::string>(m_value);
+			void print_plain(std::ostream &outStream, const ArgsTuple &) const {
+				outStream << boost::lexical_cast<std::string>(m_value);
 			}
 			
 			/// Print in pretty mode. Equivalent to print_plain.
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &out_stream, const ArgsTuple &) const {
-				numerical_container_print_pretty_selector<T>::run(m_value,out_stream);
+			void print_pretty(std::ostream &outStream, const ArgsTuple &) const {
+				numerical_container_print_pretty_selector<T>::run(m_value,outStream);
 			}
 			
 			/// Print in Tex mode.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &) const 
+			void print_tex(std::ostream &outStream, const ArgsTuple &) const 
 			{
-				numerical_container_print_tex_selector<T>::run(m_value,out_stream);
+				numerical_container_print_tex_selector<T>::run(m_value,outStream);
 			}
 			
 			/// Swap content using std::swap.
@@ -253,21 +253,21 @@ namespace piranha
 			}
 			
 			template <class ArgsTuple>
-			Derived pow(const double &x, const ArgsTuple &args_tuple) const 
+			Derived pow(const double &x, const ArgsTuple &argsTuple) const 
 			{
-				return generic_pow(x,args_tuple);
+				return generic_pow(x,argsTuple);
 			}
 
 			template <class ArgsTuple>
-			Derived pow(const mp_rational &q, const ArgsTuple &args_tuple) const 
+			Derived pow(const mp_rational &q, const ArgsTuple &argsTuple) const 
 			{
-				return generic_pow(q,args_tuple);
+				return generic_pow(q,argsTuple);
 			}
 			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const 
+			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const 
 			{
-				return RetSeries::base_series_from_cf(*derived_const_cast, args_tuple);
+				return RetSeries::base_series_from_cf(*derived_const_cast, argsTuple);
 			}
 			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
@@ -281,9 +281,9 @@ namespace piranha
 			 * Will use piranha::besselJ internally.
 			 */
 			template <class ArgsTuple>
-			Derived besselJ(const int &n, const ArgsTuple &args_tuple) const
+			Derived besselJ(const int &n, const ArgsTuple &argsTuple) const
 			{
-				return Derived(piranha::besselJ(n,m_value),args_tuple);
+				return Derived(piranha::besselJ(n,m_value),argsTuple);
 			}
 			
 			/// Get value.

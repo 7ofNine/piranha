@@ -38,13 +38,13 @@ namespace piranha
 	struct series_from_key_impl
 	{
 		template <class Series, class ArgsTuple>
-		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &args_tuple)
+		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &argsTuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
 			series_from_key_impl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
-				cf_series,key,args_tuple);
-			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
+				cf_series,key,argsTuple);
+			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
 		}
 	};
 
@@ -52,9 +52,9 @@ namespace piranha
 	struct series_from_key_impl<Key,Key>
 	{
 		template <class Series, class ArgsTuple>
-		static void run(Series &retval, const Key &key, const ArgsTuple &args_tuple)
+		static void run(Series &retval, const Key &key, const ArgsTuple &argsTuple)
 		{
-			retval.insert(typename Series::term_type(typename Series::term_type::cf_type(1,args_tuple),key),args_tuple);
+			retval.insert(typename Series::term_type(typename Series::term_type::cf_type(1,argsTuple),key),argsTuple);
 		}
 	};
 
@@ -62,13 +62,13 @@ namespace piranha
 	struct series_from_cf_impl
 	{
 		template <class Series, class ArgsTuple>
-		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &args_tuple)
+		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &argsTuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
 			series_from_cf_impl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
-				cf_series,cf,args_tuple);
-			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),args_tuple);
+				cf_series,cf,argsTuple);
+			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
 		}
 	};
 
@@ -76,9 +76,9 @@ namespace piranha
 	struct series_from_cf_impl<Cf, Cf>
 	{
 		template <class Series, class ArgsTuple>
-		static void run(Series &retval, const Cf &cf, const ArgsTuple &args_tuple)
+		static void run(Series &retval, const Cf &cf, const ArgsTuple &argsTuple)
 		{
-			retval.insert(typename Series::term_type(cf,typename Series::term_type::key_type()),args_tuple);
+			retval.insert(typename Series::term_type(cf,typename Series::term_type::key_type()),argsTuple);
 		}
 	};
 
@@ -89,7 +89,7 @@ namespace piranha
 		public:
 			p_static_check(N > 0,"");
 			template <class CfSeries, class Term, class ArgsTuple>
-			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &args_tuple)
+			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &argsTuple)
 			{
 				// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
 				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
@@ -97,8 +97,8 @@ namespace piranha
 				const CfSeries tmp(cf_series);
 				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
 					cf_series.clear_terms();
-					cf_series.insert(*it,args_tuple);
-					series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,args_tuple);
+					cf_series.insert(*it,argsTuple);
+					series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,argsTuple);
 				}
 			}
 	};
@@ -121,9 +121,9 @@ namespace piranha
 	struct base_series_add_selector
 	{
 		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_with_number<true>(x, args_tuple);
+			return series.template merge_with_number<true>(x, argsTuple);
 		}
 	};
 
@@ -131,9 +131,9 @@ namespace piranha
 	struct base_series_add_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_terms<true>(other, args_tuple);
+			return series.template merge_terms<true>(other, argsTuple);
 		}
 	};
 
@@ -141,9 +141,9 @@ namespace piranha
 	struct base_series_subtract_selector
 	{
 		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_with_number<false>(x, args_tuple);
+			return series.template merge_with_number<false>(x, argsTuple);
 		}
 	};
 
@@ -151,9 +151,9 @@ namespace piranha
 	struct base_series_subtract_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_terms<false>(other, args_tuple);
+			return series.template merge_terms<false>(other, argsTuple);
 		}
 	};
 
@@ -161,9 +161,9 @@ namespace piranha
 	struct base_series_multiply_selector
 	{
 		template <class ArgsTuple>
-		static Derived &run(Derived &series, const T &x, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.multiply_coefficients_by(x, args_tuple);
+			return series.multiply_coefficients_by(x, argsTuple);
 		}
 	};
 
@@ -172,9 +172,9 @@ namespace piranha
 		(boost::is_same<Derived,T>::value || boost::is_same<Derived,std::complex<T> >::value)>::type>
 	{
 		template <class ArgsTuple>
-		static Derived &run(Derived &series, const T &other, const ArgsTuple &args_tuple)
+		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			series.multiply_by_series(other, args_tuple);
+			series.multiply_by_series(other, argsTuple);
 			return series;
 		}
 	};

@@ -73,17 +73,17 @@ namespace piranha
 					sub_cache():ancestor(), m_status(zero), m_errmsg() {}
 
 
-					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
+					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[T(0)] = std::complex<SubSeries>().base_add(1, *args_tuple);
+						this->m_arith_functor.m_argsTuple = argsTuple;
+						this->m_container[T(0)] = std::complex<SubSeries>().base_add(1, *argsTuple);
 						try {
-							std::complex<SubSeries> tmp1(s.base_ei(*args_tuple));
+							std::complex<SubSeries> tmp1(s.base_ei(*argsTuple));
 							this->m_container[T(1)] = tmp1;
 							m_status = one;
 							SubSeries tmp2(s);
-							tmp2.base_mult_by(-1, *args_tuple);
-							std::complex<SubSeries> tmp3(tmp2.base_ei(*args_tuple));
+							tmp2.base_mult_by(-1, *argsTuple);
+							std::complex<SubSeries> tmp3(tmp2.base_ei(*argsTuple));
 							this->m_container[T(-1)] = tmp3;
 							m_status = full;
 						} catch (const value_error &ve) 
@@ -135,12 +135,12 @@ namespace piranha
 
 					// NOTE: here we assume that s has absolute value equal to one, which lets us calculate its
 					// inverse as conjugate. Note it into the documentation.
-					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
+					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_args_tuple = args_tuple;
-						this->m_container[T(0)] = SubSeries().base_add(1, *args_tuple);
+						this->m_arith_functor.m_argsTuple = argsTuple;
+						this->m_container[T(0)] = SubSeries().base_add(1, *argsTuple);
 						this->m_container[T(1)] = s;
-						this->m_container[T(-1)] = s.base_conjugate(*args_tuple);
+						this->m_container[T(-1)] = s.base_conjugate(*argsTuple);
 					}
 			};
 
@@ -280,40 +280,40 @@ namespace piranha
 
 			// I/O.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
-				(void)args_tuple;
-				this->print_elements(out_stream);
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
+				(void)argsTuple;
+				this->print_elements(outStream);
 				// Print the separator before flavour only if we actually printed something above.
 				if (this->size() != 0) 
 				{
-					out_stream << this->separator;
+					outStream << this->separator;
 				}
 
 				if (m_flavour) 
 				{
-					out_stream << 'c';
+					outStream << 'c';
 
 				} else 
                 {
-					out_stream << 's';
+					outStream << 's';
 				}
 			}
 
 
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 
 				if (m_flavour) 
 				{
-					out_stream << "cos(";
+					outStream << "cos(";
 
 				} else 
 				{
-					out_stream << "sin(";
+					outStream << "sin(";
 				}
 
 				bool printed_something = false;
@@ -326,7 +326,7 @@ namespace piranha
 						// If we already printed something and n is positive we are going to print the sign too.
 						if (printed_something && n > 0) 
 						{
-							out_stream << '+';
+							outStream << '+';
 						}
 						// Take care of printing the multiplier.
 						if (n == 1) 
@@ -334,31 +334,31 @@ namespace piranha
 							;
 						} else if (n == -1) 
 						{
-							out_stream << '-';
+							outStream << '-';
 						} else
 						{
-							out_stream << n << '*';
+							outStream << n << '*';
 						}
-						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
+						outStream << argsTuple.template get<ancestor::position>()[i].get_name();
 						printed_something = true;
 					}
 				}
 
-				out_stream << ')';
+				outStream << ')';
 			}
 
 
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 				if (m_flavour) 
 				{
-					out_stream << "\\cos\\left(";
+					outStream << "\\cos\\left(";
 
 				} else 
 				{
-					out_stream << "\\sin\\left(";
+					outStream << "\\sin\\left(";
 				}
 
 				bool printed_something = false;
@@ -371,7 +371,7 @@ namespace piranha
 						// If we already printed something and n is positive we are going to print the sign too.
 						if (printed_something && n > 0) 
 						{
-							out_stream << '+';
+							outStream << '+';
 						}
 						// Take care of printing the multiplier.
 						if (n == 1) 
@@ -379,16 +379,16 @@ namespace piranha
 							;
 						} else if (n == -1) 
 						{
-							out_stream << '-';
+							outStream << '-';
 						} else 
 						{
-							trig_vector_print_element_tex(out_stream,n);
+							trig_vector_print_element_tex(outStream,n);
 						}
-						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
+						outStream << argsTuple.template get<ancestor::position>()[i].get_name();
 						printed_something = true;
 					}
 				}
-				out_stream << "\\right)";
+				outStream << "\\right)";
 			}
 
 
@@ -458,10 +458,10 @@ namespace piranha
 			 * The norm of a trigonometric part is always one.
 			 */
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &args_tuple) const
+			double norm(const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() >= this->size());
-				(void)args_tuple;
+				piranha_assert(argsTuple.template get<ancestor::position>().size() >= this->size());
+				(void)argsTuple;
 				return 1.;
 			}
 
@@ -473,17 +473,17 @@ namespace piranha
 			 * @param[in] v vector of piranha::psym pointers.
 			 */
 			template <class ArgsTuple>
-			double eval(const double &t, const ArgsTuple &args_tuple) const
+			double eval(const double &t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
-				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
+				piranha_assert(w <= argsTuple.template get<ancestor::position>().size());
 
 				double retval = 0.;
 				for (size_type i = 0; i < w; ++i) 
 				{
 					if ((*this)[i] != 0) 
 					{
-						retval += trig_vector_eval_element((*this)[i]) * args_tuple.template get<ancestor::position>()[i].eval(t);
+						retval += trig_vector_eval_element((*this)[i]) * argsTuple.template get<ancestor::position>()[i].eval(t);
 					}
 				}
 
@@ -530,9 +530,9 @@ namespace piranha
 
 
 			template <class TrimFlags, class ArgsTuple>
-			TrigVector trim(const TrimFlags &tf, const ArgsTuple &args_tuple) const
+			TrigVector trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
 			{
-				TrigVector retval(ancestor::trim(tf,args_tuple));
+				TrigVector retval(ancestor::trim(tf,argsTuple));
 				retval.m_flavour = m_flavour;
 				return retval;
 			}
@@ -579,7 +579,7 @@ namespace piranha
 
 			/// Partial derivative.
 			template <class Series, class PosTuple, class ArgsTuple>
-			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Series partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				Series retval;
 				// Do something only if the argument of the partial derivation is present in the trigonometric vector.
@@ -593,12 +593,12 @@ namespace piranha
 					// Change the flavour of the resulting key.
 					copy.m_flavour = !m_flavour;
 					piranha_assert(pos < this->size());
-					retval = Series::base_series_from_key(copy,args_tuple);
+					retval = Series::base_series_from_key(copy,argsTuple);
 					if (m_flavour) 
 					{
-						retval.base_mult_by(-1,args_tuple);
+						retval.base_mult_by(-1,argsTuple);
 					}
-					retval.base_mult_by((*this)[pos],args_tuple);
+					retval.base_mult_by((*this)[pos],argsTuple);
 				}
 				return retval;
 			}
@@ -619,10 +619,10 @@ namespace piranha
 			}
 
 
-			// NOTE: here args_tuple must be the merge of the series undergoing the substitution and
+			// NOTE: here argsTuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
@@ -633,7 +633,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
-					retval = RetSeries::base_series_from_key(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, argsTuple);
 				} else 
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
@@ -647,33 +647,33 @@ namespace piranha
 					// of a TrigVector and unity coefficient and simply insert it.
 					// Build the orig_cos series.
 					tmp_ta.set_flavour(true);
-					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
+					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					// Build the orig_sin series.
 					tmp_ta.set_flavour(false);
-					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
+					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					piranha_assert(retval.empty());
 					if (this->get_flavour()) 
 					{
-						retval.base_add(orig_cos, args_tuple);
+						retval.base_add(orig_cos, argsTuple);
 						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
-						args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
+						argsTuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
-						args_tuple);
-						retval.base_subtract(orig_sin, args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
+						argsTuple);
+						retval.base_subtract(orig_sin, argsTuple);
 					} else 
 					{
-						retval.base_add(orig_sin, args_tuple);
+						retval.base_add(orig_sin, argsTuple);
 						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
-						args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
+						argsTuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
-						args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
+						argsTuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
-						retval.base_add(orig_cos, args_tuple);
+						retval.base_add(orig_cos, argsTuple);
 					}
 				}
 				return retval;
@@ -681,7 +681,7 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const
+			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
@@ -689,7 +689,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
-					retval = RetSeries::base_series_from_key(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, argsTuple);
 				} else 
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
@@ -698,30 +698,30 @@ namespace piranha
 					TrigVector tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.set_flavour(true);
-					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,args_tuple);
+					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					tmp_ta.set_flavour(false);
-					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,args_tuple);
+					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					piranha_assert(retval.empty());
 					if (m_flavour) 
 					{
-						retval.base_add(orig_cos, args_tuple);
+						retval.base_add(orig_cos, argsTuple);
 						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
-						args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
+						argsTuple);
 						orig_sin.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
-						args_tuple);
-						retval.base_subtract(orig_sin, args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
+						argsTuple);
+						retval.base_subtract(orig_sin, argsTuple);
 					} else 
 					{
-						retval.base_add(orig_sin, args_tuple);
+						retval.base_add(orig_sin, argsTuple);
 						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(args_tuple),
-						args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
+						argsTuple);
 						orig_cos.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(args_tuple),
-						args_tuple);
-						retval.base_add(orig_cos, args_tuple);
+							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
+						argsTuple);
+						retval.base_add(orig_cos, argsTuple);
 					}
 				}
 				return retval;

@@ -82,6 +82,7 @@ def sin_E(e,M):
 def EE(e,M):
 	"""
 	Calculate the elliptic expansion of E in terms of e and M.
+	Excentric Anomaly expressed in excentricity and Mean Anomaly
 	"""
 	__check_uniform_type(e,M)
 	try:

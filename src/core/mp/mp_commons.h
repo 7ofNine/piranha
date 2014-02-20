@@ -78,9 +78,9 @@ namespace piranha
 				return generic_f_factorial(*derived_const_cast,n);
 			}
 
-			void print_tex(std::ostream &out_stream) const
+			void print_tex(std::ostream &outStream) const
 			{
-				out_stream << *derived_const_cast;
+				outStream << *derived_const_cast;
 			}
 
 		protected:

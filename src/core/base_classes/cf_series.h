@@ -41,6 +41,7 @@
 namespace piranha
 {
 	/// Toolbox for using a series as a coefficient in another series.
+	// what is the difference to NamedSeries?
 	/**
 	 * Intended to be inherited by piranha::BaseSeries.
 	 */
@@ -142,9 +143,9 @@ namespace piranha
 #define CF_SERIES_CTORS(series_name) \
 	explicit series_name() {} \
 	template <class ArgsTuple> \
-	explicit series_name(const std::string &s, const ArgsTuple &args_tuple) \
+	explicit series_name(const std::string &s, const ArgsTuple &argsTuple) \
 	{ \
-		this->construct_from_string(s, args_tuple); \
+		this->construct_from_string(s, argsTuple); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \

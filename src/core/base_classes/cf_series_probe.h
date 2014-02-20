@@ -25,18 +25,18 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_insertable(const ArgsTuple &args_tuple) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_insertable(const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->empty() || (derived_const_cast->begin()->m_cf.is_insertable(args_tuple) &&
-			derived_const_cast->begin()->m_key.is_insertable(args_tuple)));
+		return (derived_const_cast->empty() || (derived_const_cast->begin()->m_cf.is_insertable(argsTuple) &&
+			derived_const_cast->begin()->m_key.is_insertable(argsTuple)));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::needs_padding(const ArgsTuple &args_tuple) const
+	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::needs_padding(const ArgsTuple &argsTuple) const
 	{
-		return (!derived_const_cast->empty() && (derived_const_cast->begin()->m_cf.needs_padding(args_tuple) ||
-			derived_const_cast->begin()->m_key.needs_padding(args_tuple)));
+		return (!derived_const_cast->empty() && (derived_const_cast->begin()->m_cf.needs_padding(argsTuple) ||
+			derived_const_cast->begin()->m_key.needs_padding(argsTuple)));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -48,17 +48,17 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &args_tuple) const
+	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->base_norm(args_tuple));
+		return (derived_const_cast->base_norm(argsTuple));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename term_eval_type_determiner<Term>::type
-		cf_series<__PIRANHA_CF_SERIES_TP>::eval(const double &t, const ArgsTuple &args_tuple) const
+		cf_series<__PIRANHA_CF_SERIES_TP>::eval(const double &t, const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->base_eval(t,args_tuple));
+		return (derived_const_cast->base_eval(t,argsTuple));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

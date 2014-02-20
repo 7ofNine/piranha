@@ -52,8 +52,8 @@ namespace truncators
 					typedef get_type type;
 					typedef typename Series1::term_type term_type1;
 					typedef typename Series2::term_type term_type2;
-					get_type(std::vector<term_type1 const *> &terms1, std::vector<term_type2 const *> &terms2, const ArgsTuple &args_tuple):
-						degree_ancestor(terms1,terms2,args_tuple,false),norm_ancestor(terms1,terms2,args_tuple,false),m_active_truncator(deg_t)
+					get_type(std::vector<term_type1 const *> &terms1, std::vector<term_type2 const *> &terms2, const ArgsTuple &argsTuple):
+						degree_ancestor(terms1,terms2,argsTuple,false),norm_ancestor(terms1,terms2,argsTuple,false),m_active_truncator(deg_t)
 					{
 						degree_ancestor::init();
 						if (!degree_ancestor::is_effective()) 
@@ -75,19 +75,19 @@ namespace truncators
 
 					template <class T, class ArgsTuple2>
 					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
-						const ArgsTuple2 &args_tuple) 
+						const ArgsTuple2 &argsTuple) 
 					{
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							"established by the power series truncator. The reported errors were:\n");
 						try {
-							return degree_ancestor::power_series_iterations(x,start,step_size,args_tuple);
+							return degree_ancestor::power_series_iterations(x,start,step_size,argsTuple);
 						}catch (const value_error &ve) 
 						{
 							msg += std::string(ve.what()) + "\n";
 						}
 
 						try {
-							return norm_ancestor::power_series_iterations(x,start,step_size,args_tuple);
+							return norm_ancestor::power_series_iterations(x,start,step_size,argsTuple);
 						} catch (const value_error &ve) 
 						{
 							msg += std::string(ve.what()) + "\n";
@@ -98,16 +98,16 @@ namespace truncators
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &args_tuple)
+					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
 						std::string msg("The power series truncator was not able to establish a series ordering. The reported errors were:\n");
 						try {
-							return degree_ancestor::get_sorted_pointer_vector(s,args_tuple);
+							return degree_ancestor::get_sorted_pointer_vector(s,argsTuple);
 						} catch (const value_error &ve) {
 									msg += std::string(ve.what()) + "\n";
 						}
 						try {
-							return norm_ancestor::get_sorted_pointer_vector(s,args_tuple);
+							return norm_ancestor::get_sorted_pointer_vector(s,argsTuple);
 						} catch (const value_error &ve) {
 									msg += std::string(ve.what()) + "\n";
 						}

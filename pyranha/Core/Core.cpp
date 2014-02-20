@@ -100,7 +100,7 @@ BOOST_PYTHON_MODULE(_Core)
 	ed.def("__setitem__",&ed_set_item);
 
 	// Expose arguments tuples.
-	expose_args_tuples<__PIRANHA_MAX_ECHELON_LEVEL>();
+	expose_argsTuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	// MP classes.
 	class_<mp_rational> mpr(expose_real_mp_class<mp_rational>("rational","Multi-precision rational number."));

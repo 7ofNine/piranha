@@ -46,7 +46,7 @@ namespace piranha
 			explicit mpz_cf(): ancestor() {}
 
 			template <class T, class ArgsTuple>
-			explicit mpz_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit mpz_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 
 			template <class ArgsTuple>
 			explicit mpz_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
@@ -72,14 +72,14 @@ namespace piranha
 			}
 
 			template <class ArgsTuple>
-			mpz_cf besselJ(const int &n, const ArgsTuple &args_tuple) const
+			mpz_cf besselJ(const int &n, const ArgsTuple &argsTuple) const
 			{
 				if (get_value() != 0) 
                 {
 					piranha_throw(value_error,"cannot compute Bessel function of non-zero integer coefficient");
 				}
 
-				return (n == 0) ? mpz_cf(1,args_tuple) : mpz_cf(0,args_tuple);
+				return (n == 0) ? mpz_cf(1,argsTuple) : mpz_cf(0,argsTuple);
 			}
 	};
 
@@ -101,7 +101,7 @@ namespace std
 			explicit complex(): ancestor() {}
 
 			template <class T, class ArgsTuple>
-			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit complex(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}

@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef PYRANHA_ARGS_TUPLE_H
-#define PYRANHA_ARGS_TUPLE_H
+#ifndef PYRANHA_argsTuple_H
+#define PYRANHA_argsTuple_H
 
 #include <boost/lexical_cast.hpp>
 #include <boost/python/class.hpp>
@@ -32,41 +32,41 @@
 
 namespace pyranha
 {
-	inline void args_tuple_py_print_helper(const boost::tuples::null_type &, const std::string) {}
+	inline void argsTuple_py_print_helper(const boost::tuples::null_type &, const std::string) {}
 
 	template <class ArgsTuple>
-	inline void args_tuple_py_print_helper(const ArgsTuple &args_tuple, std::string &out)
+	inline void argsTuple_py_print_helper(const ArgsTuple &argsTuple, std::string &out)
 	{
 		std::ostringstream stream;
-		for (size_t i = 0; i < args_tuple.get_head().size(); ++i) {
-			stream << i << ' ' << args_tuple.get_head()[i].get_name() << '\n';
+		for (size_t i = 0; i < argsTuple.get_head().size(); ++i) {
+			stream << i << ' ' << argsTuple.get_head()[i].get_name() << '\n';
 		}
 		out += stream.str();
-		args_tuple_py_print_helper(args_tuple.get_tail(), out);
+		argsTuple_py_print_helper(argsTuple.get_tail(), out);
 	}
 
 	template <class ArgsTuple>
-	inline std::string py_args_tuple_repr(const ArgsTuple &args_tuple)
+	inline std::string py_argsTuple_repr(const ArgsTuple &argsTuple)
 	{
 		std::string retval;
-		args_tuple_py_print_helper(args_tuple, retval);
+		argsTuple_py_print_helper(argsTuple, retval);
 		return retval;
 	}
 
 	template <int N>
-	inline void expose_args_tuples()
+	inline void expose_argsTuples()
 	{
-		typedef typename piranha::ntuple<piranha::vector_psym, N>::type args_tuple_type;
-		boost::python::class_<args_tuple_type>
-		args_tuple_inst((std::string("__base_args_tuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
+		typedef typename piranha::Ntuple<piranha::vector_psym, N>::type ArgsTupleType;
+		boost::python::class_<ArgsTupleType>
+		argsTuple_inst((std::string("__base_argsTuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
 						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());
-		args_tuple_inst.def(boost::python::init<const args_tuple_type &>());
-		args_tuple_inst.def("__repr__", &py_args_tuple_repr<args_tuple_type>);
-		expose_args_tuples < N - 1 > ();
+		argsTuple_inst.def(boost::python::init<const ArgsTupleType &>());
+		argsTuple_inst.def("__repr__", &py_argsTuple_repr<ArgsTupleType>);
+		expose_argsTuples < N - 1 > ();
 	}
 
 	template <>
-	inline void expose_args_tuples<0>() {}
+	inline void expose_argsTuples<0>() {}
 }
 
 #endif

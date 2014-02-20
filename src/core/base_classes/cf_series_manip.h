@@ -27,21 +27,24 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &args_tuple)
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived::term_type term_type;
 		typedef typename Derived::const_iterator const_iterator;
-		if (derived_const_cast->empty()) {
+		
+		if (derived_const_cast->empty()) 
+		{
 			return;
 		}
+
 		Derived retval;
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
 			term_type term(*it);
-			term.m_cf.pad_right(args_tuple);
-			term.m_key.pad_right(args_tuple);
-			retval.insert(term, args_tuple);
+			term.m_cf.pad_right(argsTuple);
+			term.m_key.pad_right(argsTuple);
+			retval.insert(term, argsTuple);
 		}
 
 		derived_cast->base_swap(retval);
@@ -57,10 +60,10 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const Layout &l, const ArgsTuple &args_tuple)
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const Layout &l, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		derived_cast->apply_layout_to_terms(l, retval, args_tuple);
+		derived_cast->apply_layout_to_terms(l, retval, argsTuple);
 		derived_cast->base_swap(retval);
 	}
 
@@ -75,10 +78,10 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &args_tuple) const
+	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
-		derived_const_cast->trim_terms(tf, retval, args_tuple);
+		derived_const_cast->trim_terms(tf, retval, argsTuple);
 		return retval;
 	}
 
@@ -94,9 +97,9 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &args_tuple) const
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
 	{
-		derived_const_cast->base_split(retval, n, args_tuple);
+		derived_const_cast->base_split(retval, n, argsTuple);
 	}
 }
 

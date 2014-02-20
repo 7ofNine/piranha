@@ -35,6 +35,7 @@ namespace piranha
 			Degree partial_degree(const PosTuple &pos_tuple) const {
 				return derived_const_cast->base_partial_degree(pos_tuple);
 			}
+
 			template <class PosTuple>
 			Degree partial_order(const PosTuple &pos_tuple) const {
 				return derived_const_cast->base_partial_order(pos_tuple);

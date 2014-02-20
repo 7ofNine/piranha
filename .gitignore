@@ -1,0 +1,16 @@
+pyranha/__init__.py
+pyranha/Dfs/__init__.py
+pyranha/Dpoly/__init__.py
+pyranha/Dps/__init__.py
+pyranha/Dqps/__init__.py
+pyranha/Qpoly/__init__.py
+pyranha/Qps/__init__.py
+pyranha/Qqpoly/__init__.py
+pyranha/Qqps/__init__.py
+pyranha/Zpoly/__init__.py
+src/settings.cpp
+src/settings.cpp
+windows_package/changelog.txt
+windows_package/console.xml
+windows_package/license.txt
+windows_package/mpir.dll

@@ -38,28 +38,28 @@ namespace piranha
 	{
 		public:
 			template <class ArgsTuple>
-			std::size_t psi_(const int &start, const int &step, const ArgsTuple &args_tuple) const
+			std::size_t psi_(const int &start, const int &step, const ArgsTuple &argsTuple) const
 			{
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::power_series_iterations(*derived_const_cast, start, step, args_tuple);
+					Truncator>::truncator_type::power_series_iterations(*derived_const_cast, start, step, argsTuple);
 			}
 
 
 			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &args_tuple) const
+			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
 				static const bool check = boost::is_same<Series,Derived>::value;
 				p_static_check(check,"");
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::template get_sorted_pointer_vector<Series, ArgsTuple>(*derived_const_cast, args_tuple);
+					Truncator>::truncator_type::template get_sorted_pointer_vector<Series, ArgsTuple>(*derived_const_cast, argsTuple);
 			}
 
 
 			// Multiply term-by-term with another series, and place the result into retval.
 			// Preconditions:
-			// - args_tuple must be the result of a merging of arguments between the two series being multiplied,
+			// - argsTuple must be the result of a merging of arguments between the two series being multiplied,
 			template <class Derived2, class ArgsTuple>
-			void multiply_by_series(const Derived2 &s2, const ArgsTuple &args_tuple)
+			void multiply_by_series(const Derived2 &s2, const ArgsTuple &argsTuple)
 			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::term_type term_type;
@@ -83,18 +83,18 @@ namespace piranha
 				// Optimize the cases of single coefficient series.
 				if (s2.is_single_cf() && algo == settings::automatic)
 				{
-					derived_cast->base_mult_by(s2.begin()->m_cf, args_tuple);
+					derived_cast->base_mult_by(s2.begin()->m_cf, argsTuple);
 				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic)
 				{
 					Derived tmp;
-					tmp.insert_range(s2.begin(),s2.end(),args_tuple);
-					tmp.base_mult_by(derived_const_cast->begin()->m_cf, args_tuple);
+					tmp.insert_range(s2.begin(),s2.end(),argsTuple);
+					tmp.base_mult_by(derived_const_cast->begin()->m_cf, argsTuple);
 					derived_cast->base_swap(tmp);
 				} else
 				{
 					Derived retval;
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
-						                          m(*derived_const_cast, s2, retval, args_tuple);
+						                          m(*derived_const_cast, s2, retval, argsTuple);
 					m.perform_multiplication();
 					derived_cast->base_swap(retval);
 				}

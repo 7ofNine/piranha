@@ -42,7 +42,7 @@ namespace piranha
 		public:
 
 			template <class ArgsTuple>
-			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
+			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &argsTuple) const
 			{
 				Derived retval;
 				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
@@ -52,7 +52,7 @@ namespace piranha
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) 
 				{
-					retval.base_add(1,args_tuple);
+					retval.base_add(1,argsTuple);
 					return retval;
 				}
 				// If one of the elements in a_list is zero, hyperF will always be 1.
@@ -60,7 +60,7 @@ namespace piranha
 				{
 					if (a_list[i] == 0) 
 					{
-						retval.base_add(1,args_tuple);
+						retval.base_add(1,argsTuple);
 						return retval;
 					}
 				}
@@ -69,7 +69,7 @@ namespace piranha
 				try {
 					// First we try to respect the given iter_limit, if any,
 					// otherwise we call the truncator to see what it has to say.
-					iter_ = (iter_limit >= 0) ? iter_limit : derived_const_cast->psi_(0,1,args_tuple);
+					iter_ = (iter_limit >= 0) ? iter_limit : derived_const_cast->psi_(0,1,argsTuple);
 				} catch (const value_error &) 
 				{
 					// If the truncator fails to establish a limit, we go to see into a_list and b_list
@@ -103,24 +103,24 @@ namespace piranha
 					return retval;
 				}
 
-				retval.base_add(1,args_tuple);
+				retval.base_add(1,argsTuple);
 				Derived tmp;
-				tmp.base_add(1,args_tuple);
+				tmp.base_add(1,argsTuple);
 				for (std::size_t i = 1; i < iter; ++i) 
 				{
 					for (std::size_t j = 0; j < a_size; ++j) 
 					{
-						tmp.base_mult_by(a_list[j] + (int)(i - 1), args_tuple);
+						tmp.base_mult_by(a_list[j] + (int)(i - 1), argsTuple);
 					}
 
 					for (std::size_t j = 0; j < b_size; ++j) 
 					{
-						tmp.base_divide_by(b_list[j] + (int)(i - 1), args_tuple);
+						tmp.base_divide_by(b_list[j] + (int)(i - 1), argsTuple);
 					}
 
-					tmp.base_divide_by(boost::numeric_cast<int>(i), args_tuple);
-					tmp.base_mult_by(*derived_const_cast,args_tuple);
-					retval.base_add(tmp,args_tuple);
+					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
+					tmp.base_mult_by(*derived_const_cast,argsTuple);
+					retval.base_add(tmp,argsTuple);
 				}
 
 				return retval;
@@ -128,7 +128,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			Derived base_dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &args_tuple) const
+			Derived base_dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &argsTuple) const
 			{
 				if (n < 0) 
 				{
@@ -161,23 +161,23 @@ namespace piranha
 					new_b[i] += n;
 				}
 
-				Derived retval(base_hyperF(new_a, new_b, iter_limit, args_tuple));
-				retval.base_mult_by(factor, args_tuple);
+				Derived retval(base_hyperF(new_a, new_b, iter_limit, argsTuple));
+				retval.base_mult_by(factor, argsTuple);
 				return retval;
 			}
 
 
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived base_besselJ(const int &order_, const ArgsTuple &args_tuple) const 
+			Derived base_besselJ(const int &order_, const ArgsTuple &argsTuple) const 
 			{
 				Derived retval;
 				// Dispatch besselJ to coefficient if series consists of a single coefficient.
 				if (derived_const_cast->is_single_cf()) 
 				{
 					typedef typename Derived::term_type term_type;
-					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_, args_tuple),
-						typename term_type::key_type()), args_tuple);
+					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_, argsTuple),
+						typename term_type::key_type()), argsTuple);
 					return retval;
 				}
 
@@ -185,14 +185,14 @@ namespace piranha
 				const int order = (order_ >= 0) ? order_ : -order_;
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
-				x_2.base_divide_by(2, args_tuple);
-				retval = Derived(x_2).base_mult_by(-1, args_tuple).base_mult_by(x_2, args_tuple)
-					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, args_tuple);
-				retval.base_mult_by(x_2.base_pow(order, args_tuple), args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial(), args_tuple);
+				x_2.base_divide_by(2, argsTuple);
+				retval = Derived(x_2).base_mult_by(-1, argsTuple).base_mult_by(x_2, argsTuple)
+					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
+				retval.base_mult_by(x_2.base_pow(order, argsTuple), argsTuple);
+				retval.base_divide_by(mp_integer(order).factorial(), argsTuple);
 				if (order_ < 0) 
 				{
-					retval.base_mult_by(cs_phase(order_), args_tuple);
+					retval.base_mult_by(cs_phase(order_), argsTuple);
 				}
 				return retval;
 			}
@@ -200,7 +200,7 @@ namespace piranha
 
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived base_dbesselJ(const int &order_, const ArgsTuple &args_tuple) const
+			Derived base_dbesselJ(const int &order_, const ArgsTuple &argsTuple) const
 			{
 				// NOTE: we don't user hyperF here because direct series expansion is faster.
 				const int order = (order_ >= 0) ? order_ : -order_;
@@ -208,15 +208,15 @@ namespace piranha
 				if (!order) 
 				{
 					// Exploit the fact that for order == 0, derivative is -J_1.
-					retval = base_besselJ(1, args_tuple);
-					retval.base_mult_by(-1, args_tuple);
+					retval = base_besselJ(1, argsTuple);
+					retval.base_mult_by(-1, argsTuple);
 					return retval;
 				}
 
 				// Get the expansion limit from the truncator.
 				std::size_t limit_;
 				try {
-					limit_ = derived_const_cast->psi_(order - 1, 2, args_tuple);
+					limit_ = derived_const_cast->psi_(order - 1, 2, argsTuple);
 				} catch (const value_error &ve) 
 				{
 					piranha_throw(value_error,std::string("series is unsuitable as argument of the derivative of "
@@ -231,22 +231,22 @@ namespace piranha
 				}
 				// Now we buid the starting point of the power series expansion.
 				retval = *derived_const_cast;
-				retval.base_divide_by(2, args_tuple);
+				retval.base_divide_by(2, argsTuple);
 				// This will be used later.
 				Derived square_x2(retval);
-				square_x2.base_mult_by(square_x2, args_tuple);
-				retval = retval.base_pow(order - 1, args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial(), args_tuple);
-				retval.base_mult_by(order, args_tuple);
-				retval.base_divide_by(2, args_tuple);
+				square_x2.base_mult_by(square_x2, argsTuple);
+				retval = retval.base_pow(order - 1, argsTuple);
+				retval.base_divide_by(mp_integer(order).factorial(), argsTuple);
+				retval.base_mult_by(order, argsTuple);
+				retval.base_divide_by(2, argsTuple);
 				// Now let's proceed to the bulk of the power series expansion.
 				Derived tmp(retval);
 				for (int i = 1; i < (int)limit; ++i) 
 				{
-					tmp.base_mult_by((-1) * (mp_integer(order) + 2 * mp_integer(i)), args_tuple);
-					tmp.base_divide_by((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), args_tuple);
-					tmp.base_mult_by(square_x2, args_tuple);
-					retval.base_add(tmp, args_tuple);
+					tmp.base_mult_by((-1) * (mp_integer(order) + 2 * mp_integer(i)), argsTuple);
+					tmp.base_divide_by((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), argsTuple);
+					tmp.base_mult_by(square_x2, argsTuple);
+					retval.base_add(tmp, argsTuple);
 				}
 				return retval;
 			}
@@ -254,7 +254,7 @@ namespace piranha
 
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived base_besselJ_div_m(const int &order_, const int &m, const ArgsTuple &args_tuple) const
+			Derived base_besselJ_div_m(const int &order_, const int &m, const ArgsTuple &argsTuple) const
 			{
 				// Take care of negative order.
 				const int order = (order_ >= 0) ? order_ : -order_;
@@ -266,16 +266,16 @@ namespace piranha
 				Derived retval;
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
-				x_2.base_divide_by(2, args_tuple);
+				x_2.base_divide_by(2, argsTuple);
 
-				retval = Derived(x_2).base_mult_by(-1, args_tuple).base_mult_by(x_2, args_tuple)
-					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, args_tuple);
-				retval.base_mult_by(derived_const_cast->base_pow(order - m, args_tuple), args_tuple);
-				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order), args_tuple);
+				retval = Derived(x_2).base_mult_by(-1, argsTuple).base_mult_by(x_2, argsTuple)
+					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
+				retval.base_mult_by(derived_const_cast->base_pow(order - m, argsTuple), argsTuple);
+				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order), argsTuple);
 
 				if (order_ < 0) 
 				{
-					retval.base_mult_by(cs_phase(order_), args_tuple);
+					retval.base_mult_by(cs_phase(order_), argsTuple);
 				}
 
 				return retval;

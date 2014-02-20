@@ -31,33 +31,33 @@
 
 namespace piranha
 {
-	inline void expo_vector_print_element_pretty(std::ostream &out_stream, const mp_rational &q)
+	inline void expo_vector_print_element_pretty(std::ostream &outStream, const mp_rational &q)
 	{
 		const bool need_bracket = (q.get_den() != 1);
 		if (need_bracket) {
-			out_stream << '(';
+			outStream << '(';
 		}
-		out_stream << q;
+		outStream << q;
 		if (need_bracket) {
-			out_stream << ')';
+			outStream << ')';
 		}
 	}
 
 	template <class T>
-	inline void expo_vector_print_element_pretty(std::ostream &out_stream, const T &x)
+	inline void expo_vector_print_element_pretty(std::ostream &outStream, const T &x)
 	{
-		out_stream << x;
+		outStream << x;
 	}
 
-	inline void expo_vector_print_element_tex(std::ostream &out_stream, const mp_rational &q)
+	inline void expo_vector_print_element_tex(std::ostream &outStream, const mp_rational &q)
 	{
-		q.print_tex(out_stream);
+		q.print_tex(outStream);
 	}
 
 	template <class T>
-	inline void expo_vector_print_element_tex(std::ostream &out_stream, const T &x)
+	inline void expo_vector_print_element_tex(std::ostream &outStream, const T &x)
 	{
-		out_stream << x;
+		outStream << x;
 	}
 
 	// Default behaviour is to refuse to do anything is expo vector is not unity.

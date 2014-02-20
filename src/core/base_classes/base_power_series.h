@@ -27,7 +27,7 @@
 #include "../exceptions.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -52,8 +52,7 @@ namespace piranha
 			{
 				bool operator()(const Term &t1, const Term &t2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().order() <
-						t2.template get<ExpoTermPosition>().order());
+					return (t1.template get<ExpoTermPosition>().order() < t2.template get<ExpoTermPosition>().order());
 				}
 			};
 
@@ -79,8 +78,7 @@ namespace piranha
 
 				bool operator()(const Term &t1, const Term &t2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().partial_order(m_p) <
-						t2.template get<ExpoTermPosition>().partial_order(m_p));
+					return (t1.template get<ExpoTermPosition>().partial_order(m_p) < t2.template get<ExpoTermPosition>().partial_order(m_p));
 				}
 
 				const PosTuple &m_p;
@@ -139,7 +137,7 @@ namespace piranha
 				const typename Derived::const_iterator result(std::max_element(
 							derived_const_cast->begin(),
 							derived_const_cast->end(),
-							partial_degree_binary_predicate<typename Derived::term_type,PosTuple>(pos_tuple)
+							partial_degree_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple)
 						));
 				return result->template get<ExpoTermPosition>().partial_degree(pos_tuple);
 			}
@@ -156,7 +154,7 @@ namespace piranha
 				const typename Derived::const_iterator result(std::min_element(
 							derived_const_cast->begin(),
 							derived_const_cast->end(),
-							partial_order_binary_predicate<typename Derived::term_type,PosTuple>(pos_tuple)
+							partial_order_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple)
 						));
 				return result->template get<ExpoTermPosition>().partial_order(pos_tuple);
 			}

@@ -66,7 +66,7 @@ namespace pyranha
 		static void run(Vector &retval, const Tuple &tuple)
 		{
 			retval.push_back(tuple.get_head());
-			py_tuple_to_vector<typename Tuple::tail_type>::run(retval,tuple.get_tail());
+			py_tuple_to_vector<typename Tuple::tail_type>::run(retval, tuple.get_tail());
 		}
 	};
 
@@ -81,7 +81,7 @@ namespace pyranha
 	inline std::vector<piranha::vector_psym> py_series_arguments(const Series &s)
 	{
 		std::vector<piranha::vector_psym> retval;
-		py_tuple_to_vector<typename Series::args_tuple_type>::run(retval,s.arguments());
+		py_tuple_to_vector<typename Series::ArgsTupleType>::run(retval, s.arguments());
 		return retval;
 	}
 }

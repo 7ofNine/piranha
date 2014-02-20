@@ -196,8 +196,8 @@ struct polynomial_vector_functor:
 	polynomial_vector_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
-		const GenericTruncator &trunc, cf_type1 *vc_res, const ArgsTuple &args_tuple):
-		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,args_tuple),m_vc_res(vc_res)
+		const GenericTruncator &trunc, cf_type1 *vc_res, const ArgsTuple &argsTuple):
+		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,argsTuple),m_vc_res(vc_res)
 	{}
 
 
@@ -208,7 +208,7 @@ struct polynomial_vector_functor:
 		}
 		// Calculate index of the result.
 		const max_fast_int res_index = this->m_ck1[i] + this->m_ck2[j];
-		m_vc_res[res_index].addmul(this->m_tc1[i],this->m_tc2[j],this->m_args_tuple);
+		m_vc_res[res_index].addmul(this->m_tc1[i],this->m_tc2[j],this->m_argsTuple);
 		return true;
 	}
 
@@ -232,7 +232,7 @@ struct polynomial_vector_functor:
 
 	// Return the two intervals in indices in the output structure containing the results of
 	// one block-by-block multiplication.
-	std::pair<block_interval,block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
+	std::pair<block_interval, block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
 	{
 		piranha_assert(b1.first <= b1.second && b2.first <= b2.second);
 		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
@@ -288,8 +288,8 @@ struct polynomial_hash_functor:
 	polynomial_hash_functor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
-		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &args_tuple):
-		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,args_tuple),m_cterm(cterm),m_cms(cms)/*,m_overflow_terms()*/
+		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &argsTuple):
+		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,argsTuple),m_cterm(cterm),m_cms(cms)/*,m_overflow_terms()*/
 	{}
 
 
@@ -305,13 +305,13 @@ struct polynomial_hash_functor:
 		std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
 		if (res.first)
 		{
-			res.second->first.addmul(this->m_tc1[i],this->m_tc2[j],this->m_args_tuple);
+			res.second->first.addmul(this->m_tc1[i],this->m_tc2[j],this->m_argsTuple);
 		} else
 		{
 			// Assign to the temporary term the old cf (new_key is already assigned).
 			m_cterm.first = this->m_tc1[i];
 			// Multiply the old term by the second term.
-			m_cterm.first.mult_by(this->m_tc2[j],this->m_args_tuple);
+			m_cterm.first.mult_by(this->m_tc2[j],this->m_argsTuple);
 			m_cms->insert_new(m_cterm,res.second);
 		}
 		return true;
@@ -385,11 +385,11 @@ struct polynomial_multiplier
 
 			typedef Series1   series_type1;
 			typedef Series2   series_type2;
-			typedef ArgsTuple args_tuple_type;
+			typedef ArgsTuple ArgsTupleType;
 			typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
 
-			get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):
-				ancestor(s1, s2, retval, args_tuple) {}
+			get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
+				ancestor(s1, s2, retval, argsTuple) {}
 
 
 			template <class GenericTruncator>
@@ -424,7 +424,7 @@ struct polynomial_multiplier
 				const std::size_t size2 = this->m_terms2.size();
  std::cout << "sizes: " << size1 << ',' << size2 << '\n';
 				piranha_assert(size1 && size2);
-				const args_tuple_type &args_tuple = this->m_args_tuple;
+				const ArgsTupleType &argsTuple = this->m_argsTuple;
 				cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 
 				// Find out a suitable block size.
@@ -433,7 +433,7 @@ struct polynomial_multiplier
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 				// Perform multiplication.
 				typedef polynomial_vector_functor<Series1,Series2,ArgsTuple,GenericTruncator> vf_type;
-				vf_type vm(tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,vc_res,args_tuple);
+				vf_type vm(tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,vc_res,argsTuple);
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
 				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
@@ -470,14 +470,14 @@ struct polynomial_multiplier
 				{
 					// Take a shortcut and check for ignorability of the coefficient here.
 					// This way we avoid decodification, and all the series term insertion yadda-yadda.
-					if (!vc_res[i].is_ignorable(args_tuple))
+					if (!vc_res[i].is_ignorable(argsTuple))
 					{
 						this->decode(vc_res[i], i, tmp_term);
-						if (!tmp_term.is_canonical(args_tuple))
+						if (!tmp_term.is_canonical(argsTuple))
 						{
-							tmp_term.canonicalise(args_tuple);
+							tmp_term.canonicalise(argsTuple);
 						}
-						this->m_retval.insert(tmp_term, args_tuple);
+						this->m_retval.insert(tmp_term, argsTuple);
 					}
 				}
 				__PDEBUG(std::cout << "Done polynomial vector coded.\n");
@@ -500,7 +500,7 @@ struct polynomial_multiplier
 
 				piranha_assert(size1 && size2);
 
-				const args_tuple_type &args_tuple = this->m_args_tuple;
+				const ArgsTupleType &argsTuple = this->m_argsTuple;
 				csht cms(size_hint);
 				// Find out a suitable block size.
 				const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1, max_fast_int>)>();
@@ -509,7 +509,7 @@ struct polynomial_multiplier
  const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				std::pair<cf_type1, max_fast_int> cterm;
 				polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator>
-					hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, args_tuple);
+					hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, argsTuple);
 				this->blocked_multiplication(block_size, size1, size2, hm);
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 				__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
@@ -520,11 +520,11 @@ struct polynomial_multiplier
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
 				{
 					this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
-					if (!tmp_term.is_canonical(args_tuple)) 
+					if (!tmp_term.is_canonical(argsTuple)) 
 					{
-						tmp_term.canonicalise(args_tuple);
+						tmp_term.canonicalise(argsTuple);
 					}
-					this->m_retval.insert(tmp_term, args_tuple);
+					this->m_retval.insert(tmp_term, argsTuple);
 				}
 				__PDEBUG(std::cout << "Done polynomial hash coded\n");
 			}

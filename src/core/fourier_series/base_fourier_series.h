@@ -47,7 +47,7 @@ namespace piranha
 
 			// Integrate supposing that the symbol is present in the fourier series..
 			template <typename PosTuple, typename ArgsTuple>
-			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Fourier series integration.");
@@ -71,15 +71,15 @@ namespace piranha
 					typename Derived::term_type tmp(*it);
 					if (it->m_key.get_flavour()) 
                     {
-						tmp.m_cf.divide_by(  it->m_key[pos], args_tuple);
+						tmp.m_cf.divide_by(  it->m_key[pos], argsTuple);
 
 					} else 
                     {
-						tmp.m_cf.divide_by(- it->m_key[pos], args_tuple);
+						tmp.m_cf.divide_by(- it->m_key[pos], argsTuple);
 					}
 
 					tmp.m_key.set_flavour(!tmp.m_key.get_flavour());
-					retval.insert(tmp, args_tuple);
+					retval.insert(tmp, argsTuple);
 				}
 
 				return retval;

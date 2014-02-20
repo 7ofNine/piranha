@@ -45,12 +45,12 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &args_tuple) const
+	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &argsTuple) const
 	{
 		const const_iterator it_f = end();
 		double retval = 0;
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.norm(args_tuple) * it->m_key.norm(args_tuple);
+			retval += it->m_cf.norm(argsTuple) * it->m_key.norm(argsTuple);
 		}
 		return retval;
 	}
@@ -58,13 +58,13 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::eval_type
-		BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &args_tuple) const
+		BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator it_f = end();
 		eval_type retval(0);
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			eval_type tmp(it->m_cf.eval(t, args_tuple));
-			tmp *= it->m_key.eval(t, args_tuple);
+			eval_type tmp(it->m_cf.eval(t, argsTuple));
+			tmp *= it->m_key.eval(t, argsTuple);
 			retval += tmp;
 		}
 		return retval;

@@ -19,12 +19,15 @@ description on what you could do here.
 
 # Most of your config files and extensions will probably start with this import
 
-import IPython.ipapi
-ip = IPython.ipapi.get()
+from IPython import get_ipython
+ip = get_ipython()
+
+#import IPython.ipapi
+#ip = IPython.ipapi.get()
 
 def main():
-	o = ip.options
-	o.system_verbose = 0
+#	o = ip.options
+#	o.system_verbose = 0
 	import pyranha
 	for i in pyranha.__manipulators__:
 		ip.ex("from pyranha import %s" % i)

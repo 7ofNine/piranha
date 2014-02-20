@@ -61,6 +61,8 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections -mno-cygwin")
 		SET(PIRANHA_EXTRA_LINK_FLAGS "${PIRANHA_EXTRA_LINK_FLAGS} --enable-runtime-pseudo-reloc")
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mthreads")
+		#should be build type dependent
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -abc")
 	ELSE(MINGW)
 		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 	ENDIF(MINGW)

@@ -102,18 +102,18 @@ namespace piranha
 	}
 
 	template <class ArgsTuple>
-	static inline bool check_eval_dict(const eval_dict &d, const ArgsTuple &args_tuple)
+	static inline bool check_eval_dict(const eval_dict &d, const ArgsTuple &argsTuple)
 	{
-		const std::size_t size = args_tuple.get_head().size();
+		const std::size_t size = argsTuple.get_head().size();
 		const eval_dict::const_iterator it_f = d.end();
 		for (std::size_t i = 0; i < size; ++i) {
 			// If the dictionary does not contain the symbol's name, return false.
-			if (d.find(args_tuple.get_head()[i].get_name()) == it_f) {
+			if (d.find(argsTuple.get_head()[i].get_name()) == it_f) {
 				return false;
 			}
 		}
 		// Check next tuple position.
-		return check_eval_dict(d,args_tuple.get_tail());
+		return check_eval_dict(d,argsTuple.get_tail());
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
@@ -192,9 +192,9 @@ namespace piranha
 			return false;
 		}
 		// Build a tuple of layouts.
-		typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
+		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
 		// Get the relative layouts of this wrt other and put the result into l.
-		named_series_get_layout<args_tuple_type>::run(m_arguments, other.arguments(), l);
+		named_series_get_layout<ArgsTupleType>::run(m_arguments, other.arguments(), l);
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,
 		// there are different arguments in this and other. Hence we can return false.
 		if (!tuple_vector_same_sizes(m_arguments,l)) 
@@ -207,7 +207,7 @@ namespace piranha
 		Derived tmp;
 		tmp.m_arguments = m_arguments;
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<args_tuple_type>::run(tmp.m_arguments, other.arguments(), l);
+		named_series_apply_layout_to_args<ArgsTupleType>::run(tmp.m_arguments, other.arguments(), l);
 		// Apply the layout to all terms of this and insert them into tmp.
 		derived_const_cast->apply_layout_to_terms(l, tmp, tmp.m_arguments);
 		// Now we can perform the comparison between tmp and other.

@@ -35,7 +35,7 @@
 #include "mp_commons.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -96,6 +96,7 @@ namespace piranha
 
 	template <class T>
 	struct cgmp_helper<std::complex<T> > {
+
 		template <class U>
 		static void construct(U &u, const std::complex<T> &c)
 		{
@@ -103,6 +104,7 @@ namespace piranha
 			u.m_real = c.real();
 			u.m_imag = c.imag();
 		}
+
 		template <class U>
 		static void assign(U &u, const std::complex<T> &c)
 		{
@@ -110,11 +112,13 @@ namespace piranha
 			u.m_real = c.real();
 			u.m_imag = c.imag();
 		}
+
 		template <class U>
 		static bool compare(const U &u, const std::complex<T> &c)
 		{
 			return (u.m_real == c.real() && u.m_imag == c.imag());
 		}
+
 		template <class U>
 		static void add(U &u, const std::complex<T> &c)
 		{
@@ -122,6 +126,7 @@ namespace piranha
 			u.m_real += c.real();
 			u.m_imag += c.imag();
 		}
+
 		template <class U>
 		static void subtract(U &u, const std::complex<T> &c)
 		{
@@ -129,12 +134,14 @@ namespace piranha
 			u.m_real -= c.real();
 			u.m_imag -= c.imag();
 		}
+
 		template <class U>
 		static void mult(U &u, const std::complex<T> &c)
 		{
 			normal_check(c);
 			u.mult_by_complex(c);
 		}
+
 		template <class U>
 		static void divide(U &u, const std::complex<T> &c)
 		{
@@ -142,6 +149,7 @@ namespace piranha
 			u.divide_by_complex(c);
 		}
 	};
+
 
 	/// Generic container helper for complex multi-precision classes.
 	/**
@@ -154,27 +162,36 @@ namespace piranha
 	{
 			template <class U>
 			friend struct cgmp_helper;
+
 		public:
 			/// Get const reference to the real part.
 			const T &real() const
 			{
 				return m_real;
 			}
+
+
 			/// Get const reference to the imaginary part.
 			const T &imag() const
 			{
 				return m_imag;
 			}
+
+
 			/// Set real part.
 			void set_real(const T &real) const
 			{
 				m_real = real;
 			}
+
+
 			/// Set imaginary part.
 			void set_imag(const T &imag) const
 			{
 				m_imag = imag;
 			}
+
+
 			/// Swap content.
 			/**
 			 * Will call std::swap on real and imaginary members.
@@ -184,12 +201,16 @@ namespace piranha
 				std::swap(m_real,other.m_real);
 				std::swap(m_imag,other.m_imag);
 			}
+
+
 			/// Negate in-place.
 			void negate()
 			{
 				m_real.negate();
 				m_imag.negate();
 			}
+
+
 			/// Negated copy.
 			Derived negated() const
 			{
@@ -197,6 +218,8 @@ namespace piranha
 				retval.negate();
 				return retval;
 			}
+
+
 			/// Hash value.
 			/**
 			 * Uses boost::hash_combine to combine the hashes of real and imaginary parts.
@@ -208,6 +231,8 @@ namespace piranha
 				boost::hash_combine(retval, hasher(m_imag));
 				return retval;
 			}
+
+
 			/// Cast to double.
 			/**
 			 * Following Python's behaviour, it will throw type_error.
@@ -217,6 +242,8 @@ namespace piranha
 				piranha_throw(type_error,"cannot convert complex to real floating point");
 				return 0.;
 			}
+
+
 			/// Cast to int.
 			/**
 			 * Following Python's behaviour, it will throw type_error.
@@ -226,6 +253,8 @@ namespace piranha
 				piranha_throw(type_error,"cannot convert complex to real int");
 				return 0;
 			}
+
+
 			/// Cast to complex double.
 			/**
 			 * Will call the to_double() method on real and imaginary part.
@@ -234,6 +263,7 @@ namespace piranha
 			{
 				return std::complex<double>(m_real.to_double(),m_imag.to_double());
 			}
+
 			/// Cast to complex int.
 			/**
 			 * Will call the to_int() method on real and imaginary part.
@@ -242,6 +272,8 @@ namespace piranha
 			{
 				return std::complex<int>(m_real.to_int(),m_imag.to_int());
 			}
+
+
 			/// Absolute value.
 			/**
 			 * Will call abs2() and then will try to compute root(2) on the result.
@@ -251,6 +283,8 @@ namespace piranha
 			{
 				return abs2().root(2);
 			}
+
+
 			/// Binomial coefficient.
 			/**
 			 * Internally it will use the piranha::generic_choose function.
@@ -259,38 +293,47 @@ namespace piranha
 			 */
 			Derived choose(const int &k) const
 			{
-				return generic_choose(*derived_const_cast,k);
+				return generic_choose(*derived_const_cast, k);
 			}
+
+
 			/// Rising factorial.
 			/**
 			 * @see piranha::generic_r_factorial.
 			 */
 			Derived r_factorial(const int &n) const
 			{
-				return generic_r_factorial(*derived_const_cast,n);
+				return generic_r_factorial(*derived_const_cast, n);
 			}
+
+
 			/// Falling factorial.
 			/**
 			 * @see piranha::generic_f_factorial.
 			 */
 			Derived f_factorial(const int &n) const
 			{
-				return generic_f_factorial(*derived_const_cast,n);
+				return generic_f_factorial(*derived_const_cast, n);
 			}
+
+
 			/// Print in Tex format.
-			void print_tex(std::ostream &out_stream) const
+			void print_tex(std::ostream &outStream) const
 			{
-				out_stream << "\\left(";
-				m_real.print_tex(out_stream);
-				if (m_imag >= 0) {
-					out_stream << '+';
+				outStream << "\\left(";
+				m_real.print_tex(outStream);
+
+				if (m_imag >= 0) 
+				{
+					outStream << '+';
 				}
-				m_imag.print_tex(out_stream);
-				out_stream << "\\, \\imath\\right)";
+
+				m_imag.print_tex(outStream);
+				outStream << "\\, \\imath\\right)";
 			}
 		protected:
 			/// Default constructor.
-			explicit complex_generic_mp_container(): m_real(0),m_imag(0) {}
+			explicit complex_generic_mp_container(): m_real(0), m_imag(0) {}
 			/// Generic constructor from single argument.
 			/**
 			 * Argument can be either a scalar or a complex.

@@ -58,7 +58,7 @@ namespace piranha
 				// way to do this is by using NamedSeries::merge_args with a phony series having zero
 				// polynomial arguments and as trigonometric arguments the polynomial arguments of this.
 				Derived copy(*derived_const_cast), tmp;
-				typename Derived::args_tuple_type tmp_args;
+				typename Derived::ArgsTupleType tmp_args;
 				tmp_args.template get<1>() = derived_const_cast->arguments().template get<0>();
 				tmp.set_arguments(tmp_args);
 				copy.merge_args(tmp);
@@ -85,12 +85,12 @@ namespace piranha
 			template <class SubSeries>
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{
-				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
+				typedef typename Derived::ArgsTupleType ArgsTupleType;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-					template sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
-					::type,args_tuple_type>::type sub_caches_type;
+					template sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
+					::type,ArgsTupleType>::type sub_caches_type;
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series substitution.");
@@ -98,7 +98,7 @@ namespace piranha
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments series's polynomial arguments.
-				args_tuple_type tmp_args;
+				ArgsTupleType tmp_args;
 				tmp_args.template get<1>() = series.arguments().template get<0>();
 				tmp.set_arguments(tmp_args);
 				// After the next line, s_copy's args layout is compatible with tmp's.
@@ -106,13 +106,13 @@ namespace piranha
 				// After the next line, this_copy's args layout is compatible with s_copy's
 				this_copy.merge_args(s_copy);
 				// Finally, have s_copy have compatible arguments with this_copy. This is needed because
-				// we will be using this_copy's arguments as args_tuple in all base functions used from now
+				// we will be using this_copy's arguments as argsTuple in all base functions used from now
 				// on, including functions taking s_copy as arguments and which do not know anything about
 				// this_copy.
 				s_copy.merge_args(this_copy);
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
-				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
+				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
 					&this_copy.arguments());
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
@@ -126,12 +126,12 @@ namespace piranha
 			template <class SubSeries>
 			Derived ei_sub(const std::string &name, const SubSeries &series) const
 			{
-				typedef typename Derived::args_tuple_type args_tuple_type;
-				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
+				typedef typename Derived::ArgsTupleType ArgsTupleType;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
 				typedef typename Derived::term_type::cf_type::
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,args_tuple_type>
-					::type,args_tuple_type>::type sub_caches_type;
+					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
+					::type,ArgsTupleType>::type sub_caches_type;
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
@@ -141,7 +141,7 @@ namespace piranha
 				this_copy.merge_args(s_copy);
 				s_copy.merge_args(this_copy);
 				sub_caches_type sub_caches;
-				init_sub_caches<sub_caches_type,SubSeries,args_tuple_type>::run(sub_caches,s_copy,
+				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
 					&this_copy.arguments());
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
@@ -158,16 +158,16 @@ namespace piranha
 			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
-				typename ntuple<vector_psym,1>::type args_tuple(derived_const_cast->arguments().template get<1>());
+				typename Ntuple<vector_psym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
-				retval.set_arguments(args_tuple);
+				retval.set_arguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					if (!it->m_cf.is_single_cf()) {
 						piranha_throw(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
 					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.begin()->m_cf),
-						typename fourier_term::key_type(it->m_key)),args_tuple);
+						typename fourier_term::key_type(it->m_key)),argsTuple);
 				}
 				return retval;
 			}
@@ -175,7 +175,7 @@ namespace piranha
 
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
 				const psym p(name);
 				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->arguments());
 				Derived retval;
@@ -207,7 +207,7 @@ namespace piranha
 		//protected:
 			// Integrate supposing that the symbol is present in the Poisson series.
 			template <typename PosTuple, typename ArgsTuple>
-			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
@@ -240,7 +240,7 @@ namespace piranha
 						typename Derived::term_type tmp(*it);
 						typename Derived::term_type::cf_type tmp_cf(it->m_cf);
 
-						tmp_cf.divide_by(trig_mult, args_tuple);
+						tmp_cf.divide_by(trig_mult, argsTuple);
 						
                         for (mp_integer i(0); i < degree + 1; i += 1) 
                         {
@@ -276,20 +276,20 @@ namespace piranha
 							}
 
 							tmp.m_cf = tmp_cf;
-							tmp.m_cf.mult_by(mult * cs_phase(i),args_tuple);
+							tmp.m_cf.mult_by(mult * cs_phase(i),argsTuple);
 
-							retval.insert(tmp,args_tuple);
+							retval.insert(tmp,argsTuple);
 							
                             // Prepare tmp's cf for next step.
-							tmp_cf = tmp_cf.template partial<typename Derived::term_type::cf_type>(pos_tuple, args_tuple);
-							tmp_cf.divide_by(trig_mult, args_tuple);
+							tmp_cf = tmp_cf.template partial<typename Derived::term_type::cf_type>(pos_tuple, argsTuple);
+							tmp_cf.divide_by(trig_mult, argsTuple);
 						}
 					} else 
                     {
 						typename Derived::term_type tmp(*it);
-						tmp.m_cf = tmp.m_cf.integrate(pos_tuple, args_tuple);
+						tmp.m_cf = tmp.m_cf.integrate(pos_tuple, argsTuple);
 
-						retval.insert(tmp, args_tuple);
+						retval.insert(tmp, argsTuple);
 					}
 				}
 
@@ -301,7 +301,7 @@ namespace piranha
 			// NOTICE: this method assumes that the input args tuple already hase merged in as
 			// trig arguments the poly arguments (see also below).
 			template <class ArgsTuple>
-			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const
+			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
 			{
 				typedef typename std::complex<Derived>::term_type               complex_term_type;
 				typedef typename Derived::term_type                             term_type;
@@ -312,7 +312,7 @@ namespace piranha
 				// Cache and sort the terms according to the criterion defined in the truncator.
 				std::vector<term_type const *> cache;
 				try {
-					cache = derived_const_cast->template get_sorted_series<Derived>(args_tuple);
+					cache = derived_const_cast->template get_sorted_series<Derived>(argsTuple);
 					// Reverse the series, we want to start multiplication from the least significant terms.
 					std::reverse(cache.begin(), cache.end());
 				} catch (const value_error &) {
@@ -335,7 +335,7 @@ namespace piranha
 
 				// Expand using Jacobi-Anger's identity.
 				std::complex<Derived> retval;
-				derived_const_cast->jacang(cache, it_avoid, retval, args_tuple);
+				derived_const_cast->jacang(cache, it_avoid, retval, argsTuple);
 				// Now handle the avoided iterator, if any.
 				if (it_avoid != cache.end()) 
                 {
@@ -373,10 +373,10 @@ namespace piranha
 
 						if (is_exact) 
                         {
-							exact.insert(*it,args_tuple);
+							exact.insert(*it,argsTuple);
 						} else 
                         {
-							residual.insert(*it,args_tuple);
+							residual.insert(*it,argsTuple);
 						}
 					}
 
@@ -386,13 +386,13 @@ namespace piranha
 						std::complex<Derived> tmp_series;
 						// Prepare the terms to be inserted.
 						complex_term_type tmp_term1;
-						tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), args_tuple);
-						tmp_term1.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(args_tuple.template get<1>().size()));
+						tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), argsTuple);
+						tmp_term1.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
 						tmp_term1.m_key.set_flavour(true);
 					
                         complex_term_type tmp_term2;
-						tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), args_tuple);
-						tmp_term2.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(args_tuple.template get<1>().size()));
+						tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), argsTuple);
+						tmp_term2.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
 						tmp_term2.m_key.set_flavour(false);
 
 						// Copy over the exact part from polynomial into trigonometric.
@@ -406,27 +406,27 @@ namespace piranha
 								)
 							);
 
-							piranha_assert(pos_poly < args_tuple.template get<0>().size());
+							piranha_assert(pos_poly < argsTuple.template get<0>().size());
 
 							const size_type pos_trig = boost::numeric_cast<size_type>(
 								std::distance(
-								args_tuple.template get<1>().begin(),
-								std::find_if(args_tuple.template get<1>().begin(),
-								args_tuple.template get<1>().end(),
+								argsTuple.template get<1>().begin(),
+								std::find_if(argsTuple.template get<1>().begin(),
+								argsTuple.template get<1>().end(),
 								boost::lambda::_1 ==
-								args_tuple.template get<0>()[pos_poly])
+								argsTuple.template get<0>()[pos_poly])
 								)
 							);
 
-							piranha_assert(pos_trig < args_tuple.template get<1>().size());
+							piranha_assert(pos_trig < argsTuple.template get<1>().size());
 
 							tmp_term1.m_key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->m_cf.get_value());
 							tmp_term2.m_key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->m_cf.get_value());
 						}
 
-						tmp_series.insert(tmp_term1, args_tuple);
-						tmp_series.insert(tmp_term2, args_tuple);
-						retval.base_mult_by(tmp_series, args_tuple);
+						tmp_series.insert(tmp_term1, argsTuple);
+						tmp_series.insert(tmp_term2, argsTuple);
+						retval.base_mult_by(tmp_series, argsTuple);
 					}
 
 					// Finally, the residual.
@@ -437,7 +437,7 @@ namespace piranha
 						tmp.m_key      = (*it_avoid)->m_key;
 						term_type *ptr = &tmp;
 
-						retval.base_mult_by(derived_const_cast->jacang_term(&ptr, args_tuple), args_tuple);
+						retval.base_mult_by(derived_const_cast->jacang_term(&ptr, argsTuple), argsTuple);
 					}
 				}
 

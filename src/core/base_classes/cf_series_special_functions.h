@@ -32,18 +32,18 @@ namespace piranha
 		public:
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived besselJ(const int &order, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_besselJ(order,args_tuple);
+			Derived besselJ(const int &order, const ArgsTuple &argsTuple) const {
+				return derived_const_cast->base_besselJ(order,argsTuple);
 			}
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived dbesselJ(const int &order, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_dbesselJ(order,args_tuple);
+			Derived dbesselJ(const int &order, const ArgsTuple &argsTuple) const {
+				return derived_const_cast->base_dbesselJ(order,argsTuple);
 			}
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived besselJ_div_m(const int &order, const int &m, const ArgsTuple &args_tuple) const {
-				return derived_const_cast->base_besselJ_div_m(order,m,args_tuple);
+			Derived besselJ_div_m(const int &order, const int &m, const ArgsTuple &argsTuple) const {
+				return derived_const_cast->base_besselJ_div_m(order,m,argsTuple);
 			}
 	};
 }

@@ -57,20 +57,20 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> >
+			class sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
 			{
-					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries,ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
 
 				public:
 
 					sub_cache():ancestor() {}
 
-					void setup(const SubSeries &s, const ArgsTuple *args_tuple)
+					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_args_tuple = args_tuple;
+						this->m_arith_functor.m_argsTuple = argsTuple;
 						// NOTE: move semantics here.
 						SubSeries tmp;
-						tmp.base_add(1,*args_tuple);
+						tmp.base_add(1,*argsTuple);
 						this->m_container[T(0)] = tmp;
 						this->m_container[T(1)] = s;
 					}
@@ -101,7 +101,7 @@ namespace piranha
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector 
             {
-				typedef boost::tuples::cons<sub_cache<SubSeries, ArgsTuple>,	SubCachesCons> type;
+				typedef boost::tuples::cons<sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -165,19 +165,19 @@ namespace piranha
 
 			// I/O.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 
-				(void)args_tuple;
-				this->print_elements(out_stream);
+				(void)argsTuple;
+				this->print_elements(outStream);
 			}
 
 
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 
 				bool printed_something = false;
 				for (size_type i = 0; i < this->size(); ++i) 
@@ -189,16 +189,16 @@ namespace piranha
 						// Prepend the multiplication operator only if we already printed something.
 						if (printed_something) 
                         {
-							out_stream << '*';
+							outStream << '*';
 						}
 
 						// Take care of printing the name of the exponent.
-						out_stream << args_tuple.template get<ancestor::position>()[i].get_name();
+						outStream << argsTuple.template get<ancestor::position>()[i].get_name();
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
-							out_stream << "**";
-							expo_vector_print_element_pretty(out_stream, n);
+							outStream << "**";
+							expo_vector_print_element_pretty(outStream, n);
 						}
 						printed_something = true;
 					}
@@ -207,9 +207,9 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &args_tuple) const
+			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(args_tuple.template get<ancestor::position>().size() == this->size());
+				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 
 				for (size_type i = 0; i < this->size(); ++i) 
                 {
@@ -218,13 +218,13 @@ namespace piranha
 					if (n != 0) 
                     {
 						// Take care of printing the name of the exponent.
-						out_stream << ' ' << args_tuple.template get<ancestor::position>()[i].get_name() << ' ';
+						outStream << ' ' << argsTuple.template get<ancestor::position>()[i].get_name() << ' ';
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
-							out_stream << "^{";
-							expo_vector_print_element_tex(out_stream, n);
-							out_stream << '}';
+							outStream << "^{";
+							expo_vector_print_element_tex(outStream, n);
+							outStream << '}';
 						}
 					}
 				}
@@ -232,15 +232,15 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			double eval(const double &t, const ArgsTuple &args_tuple) const
+			double eval(const double &t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
-				piranha_assert(w <= args_tuple.template get<ancestor::position>().size());
+				piranha_assert(w <= argsTuple.template get<ancestor::position>().size());
 
 				double retval = 1.;
 				for (size_type i = 0; i < w; ++i) 
                 {
-					retval *= std::pow(args_tuple.template get<ancestor::position>()[i].eval(t), (*this)[i]);
+					retval *= std::pow(argsTuple.template get<ancestor::position>()[i].eval(t), (*this)[i]);
 				}
 
 				return retval;
@@ -276,9 +276,9 @@ namespace piranha
 			 * The norm of an exponent array is defined as the absolute value of the evaluation at t = 0.
 			 */
 			template <class ArgsTuple>
-			double norm(const ArgsTuple &args_tuple) const
+			double norm(const ArgsTuple &argsTuple) const
 			{
-				return std::abs(eval(0, args_tuple));
+				return std::abs(eval(0, argsTuple));
 			}
 
 
@@ -345,7 +345,7 @@ namespace piranha
 
 			/// Calculate partial derivative.
 			template <class Series, class PosTuple, class ArgsTuple>
-			Series partial(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Series partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				// TODO: check PosTuple type.
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
@@ -362,8 +362,8 @@ namespace piranha
 					ExpoVector copy(*this);
 					// NOTE: move semantics here?
 					copy[pos] -= 1;
-					retval = Series::base_series_from_key(copy,args_tuple);
-					retval.base_mult_by((*this)[pos],args_tuple);
+					retval = Series::base_series_from_key(copy,argsTuple);
+					retval.base_mult_by((*this)[pos],argsTuple);
 				}
 				return retval;
 			}
@@ -390,7 +390,7 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &args_tuple) const
+			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				// TODO: check on PosTuple.
 				RetSeries retval;
@@ -400,7 +400,7 @@ namespace piranha
 				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
                 {
-					retval = RetSeries::base_series_from_key(*this, args_tuple);
+					retval = RetSeries::base_series_from_key(*this, argsTuple);
 
 				} else 
                 {
@@ -409,20 +409,20 @@ namespace piranha
 					ExpoVector tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
-					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, args_tuple));
+					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, argsTuple));
 					piranha_assert(retval.empty());
 					// NOTICE: series multadd here?
-					retval.base_add(orig, args_tuple);
-					retval.base_mult_by(sub_caches.template get<ancestor::position>()[(*this)[pos]], args_tuple);
+					retval.base_add(orig, argsTuple);
+					retval.base_mult_by(sub_caches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
 				}
 				return retval;
 			}
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &, SubCaches &, const ArgsTuple &args_tuple) const
+			RetSeries ei_sub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const
 			{
-				return RetSeries::base_series_from_key(*this, args_tuple);
+				return RetSeries::base_series_from_key(*this, argsTuple);
 			}
 
 

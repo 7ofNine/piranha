@@ -41,32 +41,32 @@
 namespace piranha
 {
 	// the global "dictionary" of psym(s)
-	struct __PIRANHA_VISIBLE psym_manager {
+	struct __PIRANHA_VISIBLE PsymManager {
 
-		//implementation of a psym stored in the psym_manager
-		struct __PIRANHA_VISIBLE psym_impl {
+		//implementation of a psym stored in the PsymManager
+		struct __PIRANHA_VISIBLE PsymImpl {
 
-			psym_impl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
-				m_name(name),m_time_eval(time_eval) {}
+			PsymImpl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
+				m_name(name), m_time_eval(time_eval) {}
 
 			// Print to stream.
-			void print(std::ostream &out_stream) const
+			void print(std::ostream &outStream) const
 			{
-				out_stream << "name=" << m_name << '\n';
-				out_stream << "time_eval=";
+				outStream << "name = " << m_name << '\n';
+				outStream << "time_eval = ";
 				for (std::size_t j = 0; j < m_time_eval.size(); ++j) 
 				{
-					out_stream << boost::lexical_cast<std::string>(m_time_eval[j]);
+					outStream << boost::lexical_cast<std::string>(m_time_eval[j]);
 					if (j != m_time_eval.size() - 1) 
 					{
-						out_stream << separator;
+						outStream << separator;
 					}
 				}
-				out_stream << '\n';
+				outStream << '\n';
 			}
 
 
-			bool operator<(const psym_impl &other) const
+			bool operator<(const PsymImpl &other) const
 			{
 				return (m_name < other.m_name);
 			}
@@ -86,14 +86,15 @@ namespace piranha
 			}
 
 
-			// Data members.
+			// Data members of PsymImpl
 			const std::string		    m_name;
 			// Mutable because we want to be able to freely change it in the psym manager.
 			mutable std::vector<double>	m_time_eval;
 			static const std::string	separator;
 		};
 
-		typedef std::set<psym_impl> container_type;
+		// PsymManager global storage variable
+		typedef std::set<PsymImpl> container_type;
 		static container_type       container;
 	};
 
@@ -115,8 +116,9 @@ namespace piranha
 	 * where \f$ t \f$ is time.
 	 */
 	class __PIRANHA_VISIBLE psym {
-			typedef psym_manager::container_type::const_iterator it_type;
-			typedef psym_manager::psym_impl psym_impl;
+
+			typedef PsymManager::container_type::const_iterator it_type;
+			typedef PsymManager::PsymImpl PsymImpl;
 
 			struct push_back_to 
 			{
@@ -138,7 +140,7 @@ namespace piranha
 			/// Constructor from name and time evaluation in string form.
 			psym(const std::string &name, const std::string &time_eval)
 			{
-				const psym_impl p(name, utils::str_to_vector<double>(time_eval, psym_impl::separator));
+				const PsymImpl p(name, utils::str_to_vector<double>(time_eval, PsymImpl::separator));
 				construct_from_impl(p);
 			}
 
@@ -150,12 +152,12 @@ namespace piranha
 			 */
 			explicit psym(const std::string &name)
 			{
-				const psym_impl p(name);
+				const PsymImpl p(name);
 
-				const it_type it = psym_manager::container.find(p);
-				if (it == psym_manager::container.end()) 
+				const it_type it = PsymManager::container.find(p);
+				if (it == PsymManager::container.end()) 
 				{
-					const std::pair<it_type, bool> res = psym_manager::container.insert(p);
+					const std::pair<it_type, bool> res = PsymManager::container.insert(p);
 					piranha_assert(res.second);
 					m_it = res.first;
 
@@ -169,7 +171,7 @@ namespace piranha
 			/// Constructor from name and vector.
 			psym(const std::string &name, const std::vector<double> &time_eval)
 			{
-				const psym_impl p(name, time_eval);
+				const PsymImpl p(name, time_eval);
 				construct_from_impl(p);
 			}
 
@@ -177,7 +179,7 @@ namespace piranha
 			/// Constructor from name and constant value.
 			psym(const std::string &name, const double &value)
 			{
-				const psym_impl p(name, std::vector<double>(std::size_t(1), value));
+				const PsymImpl p(name, std::vector<double>(std::size_t(1), value));
 				construct_from_impl(p);
 			}
 
@@ -203,8 +205,8 @@ namespace piranha
 			static vector_psym list()
 			{
 				vector_psym retval;
-				retval.reserve(psym_manager::container.size());
-				std::for_each(psym_manager::container.begin(),psym_manager::container.end(),push_back_to(retval));
+				retval.reserve(PsymManager::container.size());
+				std::for_each(PsymManager::container.begin(), PsymManager::container.end(), push_back_to(retval));
 				return retval;
 			}
 
@@ -247,17 +249,17 @@ namespace piranha
 //            void set_time_eval(const std::string &t) const
 //            {
 //                
-//                m_it->m_time_eval = utils::str_to_vector<double>(t, psym_impl::separator);
+//                m_it->m_time_eval = utils::str_to_vector<double>(t, PsymImpl::separator);
 //            }
 
 		private:
 
-			void construct_from_impl(const psym_impl &p)
+			void construct_from_impl(const PsymImpl &p)
 			{
-				const it_type it = psym_manager::container.find(p);
-				if (it == psym_manager::container.end()) 
+				const it_type it = PsymManager::container.find(p);
+				if (it == PsymManager::container.end()) 
 				{
-					const std::pair<it_type, bool> res = psym_manager::container.insert(p);
+					const std::pair<it_type, bool> res = PsymManager::container.insert(p);
 					piranha_assert(res.second);
 					m_it = res.first;
 				} else 
@@ -268,16 +270,16 @@ namespace piranha
 			}
 
 		private:
-			// a psym is an iterator into the set of psym_impl managed in a global set in psym_manager
+			// a psym is an iterator into the set of PsymImpl managed in a global set in PsymManager
 			it_type m_it;
 	};
 
 	template <class ArgsTuple>
 	struct psyms2pos_impl {
 		template <class PosTuple>
-		static void run(const vector_psym &v, PosTuple &pos_tuple, const ArgsTuple &args_tuple)
+		static void run(const vector_psym &v, PosTuple &pos_tuple, const ArgsTuple &argsTuple)
 		{
-			const std::size_t a_size = args_tuple.get_head().size(), v_size = v.size();
+			const std::size_t a_size = argsTuple.get_head().size(), v_size = v.size();
 			pos_tuple.get_head().reserve(v_size);
 			// For each psymbol, test presence.
 			for (std::size_t i = 0; i < v_size; ++i) 
@@ -286,7 +288,7 @@ namespace piranha
 				pos_tuple.get_head().push_back(std::make_pair(false,std::size_t(0)));
 				for (std::size_t j = 0; j < a_size; ++j) 
 				{
-					if (args_tuple.get_head()[j] == v[i]) 
+					if (argsTuple.get_head()[j] == v[i]) 
 					{
 						pos_tuple.get_head().back().first  = true;
 						pos_tuple.get_head().back().second = j;
@@ -295,7 +297,7 @@ namespace piranha
 					}
 				}
 			}
-			psyms2pos_impl<typename ArgsTuple::tail_type>::run(v,pos_tuple.get_tail(),args_tuple.get_tail());
+			psyms2pos_impl<typename ArgsTuple::tail_type>::run(v,pos_tuple.get_tail(),argsTuple.get_tail());
 		}
 	};
 
@@ -311,15 +313,16 @@ namespace piranha
 	// Return value will be a tuple of vectors, each of size v.size(), containing (presence, position) pairs for the corresponding symbols
 	// in v.
 	template <class ArgsTuple>
-	inline typename ntuple<std::vector<std::pair<bool,std::size_t> >,boost::tuples::length<ArgsTuple>::value>::type psyms2pos(const vector_psym &v, const ArgsTuple &args_tuple)
+	inline typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type  psyms2pos(const vector_psym &v, const ArgsTuple &argsTuple)
 	{
-		typedef typename ntuple<std::vector<std::pair<bool,std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type retval_type;
+		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type retval_type;
+
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		const std::set<psym> uniques_set(v.begin(), v.end());
 		const vector_psym uniques_vector(uniques_set.begin(), uniques_set.end());
 		retval_type retval;
 
-		psyms2pos_impl<ArgsTuple>::run(uniques_vector, retval, args_tuple);
+		psyms2pos_impl<ArgsTuple>::run(uniques_vector, retval, argsTuple);
 
 		return retval;
 	}

@@ -94,8 +94,8 @@ struct base_coded_functor
 	base_coded_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
-		const GenericTruncator &trunc, const ArgsTuple &args_tuple):
-		m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2(ck2), m_t1(t1), m_t2(t2), m_trunc(trunc), m_args_tuple(args_tuple)
+		const GenericTruncator &trunc, const ArgsTuple &argsTuple):
+		m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2(ck2), m_t1(t1), m_t2(t2), m_trunc(trunc), m_argsTuple(argsTuple)
 	{}
 
 
@@ -326,7 +326,7 @@ struct base_coded_functor
 	std::vector<term_type1 const *> &m_t1;
 	std::vector<term_type2 const *> &m_t2;
 	const GenericTruncator		    &m_trunc;
-	const ArgsTuple			        &m_args_tuple;
+	const ArgsTuple			        &m_argsTuple;
 };
 
 
@@ -409,12 +409,12 @@ struct base_coded_functor
 				m_density1(0.),m_density2(0.)
 			{
 				// NOTE: beware the order of inheritance here, make sure to init base_series_multiplier before,
-				//       otherwise m_args_tuple will be uninitialised here.
+				//       otherwise m_argsTuple will be uninitialised here.
 				// Initialise the member tuples.
-				cm_init_vector_tuple<Series1>(m_mp_gr,derived_const_cast->m_args_tuple);
-				cm_init_vector_tuple<Series1>(m_fast_gr,derived_const_cast->m_args_tuple);
-				cm_init_vector_tuple<Series1>(m_mp_ct,derived_const_cast->m_args_tuple);
-				cm_init_vector_tuple<Series1>(m_fast_ct,derived_const_cast->m_args_tuple);
+				cm_init_vector_tuple<Series1>(m_mp_gr,derived_const_cast->m_argsTuple);
+				cm_init_vector_tuple<Series1>(m_fast_gr,derived_const_cast->m_argsTuple);
+				cm_init_vector_tuple<Series1>(m_mp_ct,derived_const_cast->m_argsTuple);
+				cm_init_vector_tuple<Series1>(m_fast_ct,derived_const_cast->m_argsTuple);
 			}
 
 
@@ -427,8 +427,8 @@ struct base_coded_functor
 				// If echelon level is more than zero we need to flatten out the series.
 				if (Series1::echelon_level)
 				{
-					f_terms1 = derived_cast->m_s1.flatten_terms(derived_cast->m_args_tuple);
-					f_terms2 = derived_cast->m_s2.flatten_terms(derived_cast->m_args_tuple);
+					f_terms1 = derived_cast->m_s1.flatten_terms(derived_cast->m_argsTuple);
+					f_terms2 = derived_cast->m_s2.flatten_terms(derived_cast->m_argsTuple);
 					derived_cast->cache_terms_pointers(f_terms1,f_terms2);
 				} else
 				{
@@ -445,7 +445,7 @@ struct base_coded_functor
 				}
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.
-				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_args_tuple);
+				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_argsTuple);
 				determine_viability();
 				if (!m_gr_is_viable)
 				{
@@ -465,8 +465,8 @@ struct base_coded_functor
 					// Sort input series for better cache usage and multi-threaded implementation.
 					std::sort(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),key_revlex_comparison());
 					std::sort(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),key_revlex_comparison());
-					derived_cast->ll_perform_multiplication(null_truncator::template get_type<Series1, Series2, typename Derived::args_tuple_type>(
-						                                                                     derived_cast->m_terms1, derived_cast->m_terms2, derived_cast->m_args_tuple));
+					derived_cast->ll_perform_multiplication(null_truncator::template get_type<Series1, Series2, typename Derived::ArgsTupleType>(
+						                                                                     derived_cast->m_terms1, derived_cast->m_terms2, derived_cast->m_argsTuple));
 				}
 			}
 
@@ -524,8 +524,8 @@ struct base_coded_functor
 					derived_const_cast->m_terms2.size() > 0);
 				// Declare and init the min/max types for the two series.
 				minmax_type t1, t2;
-				cm_init_vector_tuple<Series1>(t1,derived_const_cast->m_args_tuple);
-				cm_init_vector_tuple<Series2>(t2,derived_const_cast->m_args_tuple);
+				cm_init_vector_tuple<Series1>(t1,derived_const_cast->m_argsTuple);
+				cm_init_vector_tuple<Series2>(t2,derived_const_cast->m_argsTuple);
 				// Init and test the first series' tuple.
 				typedef typename std::vector<typename Series1::term_type const *>::size_type size_type1;
 				const size_type1 size1 = derived_const_cast->m_terms1.size();
@@ -629,7 +629,7 @@ struct base_coded_functor
 			template <class FinalCf>
 			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::term_type &term) const
 			{
-				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->m_args_tuple);
+				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->m_argsTuple);
 			}
 
 

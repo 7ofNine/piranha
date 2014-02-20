@@ -62,11 +62,11 @@ namespace piranha
 			// is_canonical has already been tested.
 			/// Canonicalise the term.
 			template <class ArgsTuple>
-			void canonicalise(const ArgsTuple &args_tuple) 
+			void canonicalise(const ArgsTuple &argsTuple) 
             {
-				if (!is_canonical(args_tuple)) 
+				if (!is_canonical(argsTuple)) 
                 {
-					invert_trig_args(args_tuple);
+					invert_trig_args(argsTuple);
 				}
 			}
 
@@ -78,17 +78,17 @@ namespace piranha
 			template <class Term1, class Term2, class ArgsTuple>
 			static void multiply(const Term1 &t1,
 								 const Term2 &t2,
-								 multiplication_result &res, const ArgsTuple &args_tuple) 
+								 multiplication_result &res, const ArgsTuple &argsTuple) 
             {
 				// Perform the trigonometric multiplication.
 				t1.m_key.multiply(t2.m_key, res.template get<0>().m_key, res.template get<1>().m_key);
 				// Handle coefficient multiplication. Do the first coefficient, then assign the second one.
 				// TODO: maybe provide the semantics to coefficients for something like this:
-				// cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,args_tuple),
+				// cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,argsTuple),
 				// so that we can avoid a copy.
 				res.template get<0>().m_cf = t1.m_cf;
-				res.template get<0>().m_cf.mult_by(t2.m_cf, args_tuple);
-				res.template get<0>().m_cf.divide_by(2, args_tuple);
+				res.template get<0>().m_cf.mult_by(t2.m_cf, argsTuple);
+				res.template get<0>().m_cf.divide_by(2, argsTuple);
 				res.template get<1>().m_cf = res.template get<0>().m_cf;
 				// Now adjust the signs according to werner's formulas.
 				if (t1.m_key.get_flavour() == t2.m_key.get_flavour()) 
@@ -97,7 +97,7 @@ namespace piranha
 					res.template get<1>().m_key.set_flavour(true);
 					if (!t1.m_key.get_flavour()) 
                     {
-						res.template get<1>().m_cf.invert_sign(args_tuple);
+						res.template get<1>().m_cf.invert_sign(argsTuple);
 					}
 				} else 
                 {
@@ -105,25 +105,25 @@ namespace piranha
 					res.template get<1>().m_key.set_flavour(false);
 					if (t1.m_key.get_flavour()) 
                     {
-						res.template get<0>().m_cf.invert_sign(args_tuple);
+						res.template get<0>().m_cf.invert_sign(argsTuple);
 					}
 				}
 
 				// Finally, canonicalise the retval terms.
-				res.template get<0>().canonicalise(args_tuple);
-				res.template get<1>().canonicalise(args_tuple);
+				res.template get<0>().canonicalise(argsTuple);
+				res.template get<1>().canonicalise(argsTuple);
 			}
 
 		private:
 
 			// Invert the sign of trigonometric multipliers.
 			template <class ArgsTuple>
-			void invert_trig_args(const ArgsTuple &args_tuple) 
+			void invert_trig_args(const ArgsTuple &argsTuple) 
             {
 				ancestor::m_key.invert_sign();
 				if (!(ancestor::m_key.get_flavour())) 
                 {
-					ancestor::m_cf.invert_sign(args_tuple);
+					ancestor::m_cf.invert_sign(argsTuple);
 				}
 			}
 	};

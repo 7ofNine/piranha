@@ -35,7 +35,7 @@ namespace piranha
 	  */
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &args_tuple)
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived::term_type term_type;
 		const char separator = Derived::separator;
@@ -49,30 +49,30 @@ namespace piranha
 		for (std::size_t i = 0; i < length; ++i) 
         {
 			// Build the term from the string.
-			term_type term(vs[i], args_tuple);
+			term_type term(vs[i], argsTuple);
 			// Insert it.
-			derived_cast->insert(term, args_tuple);
+			derived_cast->insert(term, argsTuple);
 		}
 	}
 
 	/// Print in plain mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
-		derived_const_cast->print_terms_plain(stream, args_tuple);
+		derived_const_cast->print_terms_plain(stream, argsTuple);
 	}
 
 	/// Print in pretty mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_pretty(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_pretty(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (derived_const_cast->length() > 1) 
         {
 			stream << '(';
 		}
-		derived_const_cast->print_terms_pretty(stream, args_tuple);
+		derived_const_cast->print_terms_pretty(stream, argsTuple);
 		
         if (derived_const_cast->length() > 1) 
         {
@@ -83,14 +83,14 @@ namespace piranha
 	/// Print in tex mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_tex(std::ostream &stream, const ArgsTuple &args_tuple) const
+	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_tex(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (derived_const_cast->length() > 1) 
         {
 			stream << "\\left(";
 		}
 
-		derived_const_cast->print_terms_tex(stream, args_tuple);
+		derived_const_cast->print_terms_tex(stream, argsTuple);
 		
         if (derived_const_cast->length() > 1) 
         {

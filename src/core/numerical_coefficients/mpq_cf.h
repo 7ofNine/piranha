@@ -46,16 +46,16 @@ namespace piranha
 			explicit mpq_cf(): ancestor() {}
 
 			template <class T, class ArgsTuple>
-			explicit mpq_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x, args_tuple) {}
+			explicit mpq_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x, argsTuple) {}
 
 			template <class ArgsTuple>
 			explicit mpq_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 
 			/// Override print in Tex mode.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &out_stream, const ArgsTuple &) const
+			void print_tex(std::ostream &outStream, const ArgsTuple &) const
 			{
-				get_value().print_tex(out_stream);
+				get_value().print_tex(outStream);
 			}
 
 			// Override norm and evaluation.
@@ -111,7 +111,7 @@ namespace std
 			explicit complex(): ancestor() {}
 
 			template <class T, class ArgsTuple>
-			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x, args_tuple) {}
+			explicit complex(const T &x, const ArgsTuple &argsTuple): ancestor(x, argsTuple) {}
 
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}

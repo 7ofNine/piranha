@@ -76,12 +76,17 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+
+
 		protected:
+
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->set_arguments(r.arguments());
 				derived_cast->base_construct_from_real(r, derived_cast->arguments());
 				derived_cast->trim();
 			}
+
+
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i)
 			{
 				derived_cast->set_arguments(r.arguments());

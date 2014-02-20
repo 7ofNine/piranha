@@ -39,10 +39,10 @@ namespace piranha
 					// TODO: which of these are needed? Cleanup also elsewhere when parallel is implemented.
 					typedef Series1 series_type1;
 					typedef Series2 series_type2;
-					typedef ArgsTuple args_tuple_type;
-					typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
+					typedef ArgsTuple ArgsTupleType;
+					typedef typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator_type;
 
-					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &args_tuple):ancestor(s1, s2, retval, args_tuple) {}
+					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):ancestor(s1, s2, retval, argsTuple) {}
 
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()

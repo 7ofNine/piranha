@@ -54,7 +54,7 @@ namespace piranha
 			}
 		//protected:
 			template <class ArgsTuple>
-			std::complex<Derived> base_ei(const ArgsTuple &args_tuple) const
+			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
 			{
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
@@ -63,11 +63,11 @@ namespace piranha
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
-						m_cf.ei(args_tuple), key_type()),
-						args_tuple);
+						m_cf.ei(argsTuple), key_type()),
+						argsTuple);
 				} else {
 					// Cache and sort the terms according to the criterion defined in the truncator.
-					std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(args_tuple));
+					std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
 					// Reverse the series, we want to start multiplication from the least significant terms.
 					std::reverse(cache.begin(),cache.end());
 					// Let's find out if there is a constant term. If there is one, it will be skipped
@@ -84,12 +84,12 @@ namespace piranha
 						}
 					}
 					// Expand using Jacobi-Anger's identity.
-					derived_const_cast->jacang(cache, it, retval, args_tuple);
+					derived_const_cast->jacang(cache, it, retval, argsTuple);
 					if (it != it_f) {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
-						tmp.insert(complex_term_type((*it)->m_cf.ei(args_tuple),key_type()),args_tuple);
-						retval.base_mult_by(tmp,args_tuple);
+						tmp.insert(complex_term_type((*it)->m_cf.ei(argsTuple),key_type()),argsTuple);
+						retval.base_mult_by(tmp,argsTuple);
 					}
 				}
 				return retval;

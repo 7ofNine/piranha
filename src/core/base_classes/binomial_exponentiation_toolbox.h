@@ -49,36 +49,36 @@ namespace piranha
 
 			/// Real power.
 			template <class ArgsTuple>
-			Derived real_power(const double &y, const ArgsTuple &args_tuple) const
+			Derived real_power(const double &y, const ArgsTuple &argsTuple) const
 			{
 				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(args_tuple),y,args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y,argsTuple);
 			}
 
 
 			/// Negative integer power.
 			template <class ArgsTuple>
-			Derived negative_integer_power(const int &y, const ArgsTuple &args_tuple) const
+			Derived negative_integer_power(const int &y, const ArgsTuple &argsTuple) const
 			{
 				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(args_tuple),y, args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y, argsTuple);
 			}
 
 
 			/// Rational power.
 			template <class ArgsTuple>
-			Derived rational_power(const mp_rational &q, const ArgsTuple &args_tuple) const
+			Derived rational_power(const mp_rational &q, const ArgsTuple &argsTuple) const
 			{
 				piranha_assert(q != 0 && q != 1);
 				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(args_tuple), q, args_tuple);
+					derived_const_cast->template get_sorted_series<Derived>(argsTuple), q, argsTuple);
 			}
 
 		private:
 
 			template <class Term, class Number, class ArgsTuple>
 			static Derived generic_binomial_power(const std::vector<Term const *> &v,
-				const Number &y, const ArgsTuple &args_tuple)
+				const Number &y, const ArgsTuple &argsTuple)
 			{
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of empty series and natural power have already
@@ -91,19 +91,19 @@ namespace piranha
 				const std::size_t size = v.size();
 				for (std::size_t i = 1; i < size; ++i) 
                 {
-					XoverA.insert(term_type(*v[i]),args_tuple);
+					XoverA.insert(term_type(*v[i]),argsTuple);
 				}
 
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.m_cf.pow(-1,args_tuple), A.m_key.pow(-1,args_tuple));
+				term_type tmp_term(A.m_cf.pow(-1,argsTuple), A.m_key.pow(-1,argsTuple));
 				Derived Ainv;
-				Ainv.insert(tmp_term, args_tuple);
+				Ainv.insert(tmp_term, argsTuple);
 				// Now let's compute X/A.
-				XoverA.base_mult_by(Ainv, args_tuple);
+				XoverA.base_mult_by(Ainv, argsTuple);
 				// Get the expansion limit from the truncator.
 				std::size_t n;
 				try {
-					n = XoverA.psi_(0, 1, args_tuple);
+					n = XoverA.psi_(0, 1, argsTuple);
 				} catch (const value_error &ve) 
                 {
 					piranha_throw(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
@@ -111,13 +111,13 @@ namespace piranha
 						+ ve.what());
 				}
 
-				return binomial_expansion(A, XoverA, y, n, args_tuple);
+				return binomial_expansion(A, XoverA, y, n, argsTuple);
 			}
 
 
 			template <class Term, class Number, class ArgsTuple>
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
-				const Number &y, const std::size_t &n, const ArgsTuple &args_tuple)
+				const Number &y, const std::size_t &n, const ArgsTuple &argsTuple)
 			{
 				typedef typename Derived::term_type term_type;
 
@@ -128,25 +128,25 @@ namespace piranha
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
-				tmp_term.m_cf  = A.m_cf.pow(y, args_tuple);
-				tmp_term.m_key = A.m_key.pow(y, args_tuple);
+				tmp_term.m_cf  = A.m_cf.pow(y, argsTuple);
+				tmp_term.m_key = A.m_key.pow(y, argsTuple);
 				Derived Apowy;
-				Apowy.insert(tmp_term, args_tuple);
+				Apowy.insert(tmp_term, argsTuple);
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
 				Derived tmp;
-				tmp.base_add(1, args_tuple);
-				retval.base_add(tmp, args_tuple);
+				tmp.base_add(1, argsTuple);
+				retval.base_add(tmp, argsTuple);
 				for (std::size_t i = 1; i < n; ++i) 
                 {
-					tmp.base_mult_by(y - (double)i + 1, args_tuple);
-					tmp.base_divide_by(boost::numeric_cast<int>(i), args_tuple);
-					tmp.base_mult_by(XoverA, args_tuple);
-					retval.base_add(tmp, args_tuple);
+					tmp.base_mult_by(y - (double)i + 1, argsTuple);
+					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
+					tmp.base_mult_by(XoverA, argsTuple);
+					retval.base_add(tmp, argsTuple);
 				}
 				// Finally, multiply the result of the summation by A**y.
-				retval.base_mult_by(Apowy, args_tuple);
+				retval.base_mult_by(Apowy, argsTuple);
 				return retval;
 			}
 	};

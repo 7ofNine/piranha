@@ -124,11 +124,11 @@ namespace piranha
 			// Ctors.
 			explicit double_cf(): ancestor() {}
 			template <class T, class ArgsTuple>
-			explicit double_cf(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit double_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 			template <class ArgsTuple>
-			explicit double_cf(const mp_rational &q, const ArgsTuple &args_tuple): ancestor(q.to_double(),args_tuple) {}
+			explicit double_cf(const mp_rational &q, const ArgsTuple &argsTuple): ancestor(q.to_double(),argsTuple) {}
 			template <class ArgsTuple>
-			explicit double_cf(const mp_integer &z, const ArgsTuple &args_tuple): ancestor(z.to_double(),args_tuple) {}
+			explicit double_cf(const mp_integer &z, const ArgsTuple &argsTuple): ancestor(z.to_double(),argsTuple) {}
 			template <class ArgsTuple>
 			explicit double_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			template <class ArgsTuple>
@@ -163,11 +163,11 @@ namespace std
 		public:
 			explicit complex(): ancestor() {}
 			template <class T, class ArgsTuple>
-			explicit complex(const T &x, const ArgsTuple &args_tuple): ancestor(x,args_tuple) {}
+			explicit complex(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 			template <class ArgsTuple>
-			explicit complex(const piranha::mp_rational &q, const ArgsTuple &args_tuple): ancestor(q.to_double(),args_tuple) {}
+			explicit complex(const piranha::mp_rational &q, const ArgsTuple &argsTuple): ancestor(q.to_double(),argsTuple) {}
 			template <class ArgsTuple>
-			explicit complex(const piranha::mp_integer &z, const ArgsTuple &args_tuple): ancestor(z.to_double(),args_tuple) {}
+			explicit complex(const piranha::mp_integer &z, const ArgsTuple &argsTuple): ancestor(z.to_double(),argsTuple) {}
 			template <class ArgsTuple>
 			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			template <class ArgsTuple>

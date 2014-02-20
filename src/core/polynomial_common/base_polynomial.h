@@ -48,7 +48,7 @@ namespace piranha
 
 			// Integrate supposing that the symbol is present in the polynomial.
 			template <typename PosTuple, typename ArgsTuple>
-			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &args_tuple) const
+			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
@@ -62,7 +62,7 @@ namespace piranha
 				Derived retval;
 				const std::size_t pos = pos_tuple.template get<N>()[0].second;
 				const const_iterator it_f = derived_const_cast->end();
-				std::vector<degree_type> tmp_expos(args_tuple.template get<N>().size());
+				std::vector<degree_type> tmp_expos(argsTuple.template get<N>().size());
 
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
 				{
@@ -76,8 +76,8 @@ namespace piranha
 					typename Derived::term_type tmp(*it);
 					tmp.m_key.resize(boost::numeric_cast<typename Derived::term_type::key_type::size_type>(tmp_expos.size()));
 					std::copy(tmp_expos.begin(),tmp_expos.end(),tmp.m_key.begin());
-					tmp.m_cf.divide_by(it->m_key[pos] + 1,args_tuple);
-					retval.insert(tmp,args_tuple);
+					tmp.m_cf.divide_by(it->m_key[pos] + 1,argsTuple);
+					retval.insert(tmp,argsTuple);
 				}
 
 				return retval;

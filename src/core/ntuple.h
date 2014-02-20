@@ -30,21 +30,21 @@ namespace piranha
 	// Wrapper for tuple of homogeneous types.
 	//used for argument types with T= std::vector<psym>
 	template <class T, int N>
-	struct ntuple
+	struct Ntuple
 	{
 		p_static_check(N > 0, "");
 
-		typedef boost::tuples::cons < T, typename ntuple < T, N - 1 >::type > type;
+		typedef boost::tuples::cons < T, typename Ntuple < T, N - 1 >::type > type;
 	};
 
 	template <class T>
-	struct ntuple<T, 1> 
+	struct Ntuple<T, 1> 
 	{
 		typedef boost::tuples::cons<T, boost::tuples::null_type> type;
 	};
 
 	template <class T>
-	struct ntuple<T, 0> 
+	struct Ntuple<T, 0> 
 	{
 		typedef boost::tuples::null_type type;
 	};

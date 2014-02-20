@@ -96,14 +96,14 @@ namespace piranha
 			 * If the position matches input integer n, then resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
-			VectorKey(const psym &p, const int &n, const ArgsTuple &args_tuple): m_container()
+			VectorKey(const psym &p, const int &n, const ArgsTuple &argsTuple): m_container()
 			{
 				(void)p;
-				(void)args_tuple;
+				(void)argsTuple;
 				// Construct only if the positions match.
 				if (n == Position) 
 				{
-					piranha_assert(args_tuple.template get<Position>().size() == 1 && args_tuple.template get<Position>()[0] == p);
+					piranha_assert(argsTuple.template get<Position>().size() == 1 && argsTuple.template get<Position>()[0] == p);
 					m_container.push_back(value_type(1));
 				}
 			}
@@ -116,19 +116,19 @@ namespace piranha
 			}
 
 
-			/// Is padding needed in order to be compatible with args_tuple?
+			/// Is padding needed in order to be compatible with argsTuple?
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &args_tuple) const
+			bool needs_padding(const ArgsTuple &argsTuple) const
 			{
-				return (m_container.size() < args_tuple.template get<Position>().size());
+				return (m_container.size() < argsTuple.template get<Position>().size());
 			}
 
 
-			/// Is this insertion-compatible with args_tuple?
+			/// Is this insertion-compatible with argsTuple?
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &args_tuple) const
+			bool is_insertable(const ArgsTuple &argsTuple) const
 			{
-				return (m_container.size() <= args_tuple.template get<Position>().size());
+				return (m_container.size() <= argsTuple.template get<Position>().size());
 			}
 
 
@@ -144,11 +144,11 @@ namespace piranha
 
 			/// Pad right.
 			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &args_tuple)
+			void pad_right(const ArgsTuple &argsTuple)
 			{
-				piranha_assert(args_tuple.template get<Position>().size() >= m_container.size());
+				piranha_assert(argsTuple.template get<Position>().size() >= m_container.size());
 
-				m_container.resize(boost::numeric_cast<size_type>(args_tuple.template get<Position>().size()));
+				m_container.resize(boost::numeric_cast<size_type>(argsTuple.template get<Position>().size()));
 			}
 
 
@@ -366,15 +366,15 @@ namespace piranha
 		protected:
 
 			/// Print to stream the elements separated by the separator character.
-			void print_elements(std::ostream &out_stream) const
+			void print_elements(std::ostream &outStream) const
 			{
 				const size_type size = this->size();
 				for (size_type i = 0; i < size; ++i) 
 				{
-					out_stream << m_container[i];
+					outStream << m_container[i];
 					// Print the separator iff this is not the last element.
 					if (i != (size - 1)) {
-						out_stream << separator;
+						outStream << separator;
 					}
 				}
 			}

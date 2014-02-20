@@ -46,11 +46,11 @@ namespace piranha
 			template <class Term, class ArgsTuple>
 			static void jacang(const std::vector<Term const *> &v,
 				const typename std::vector<Term const *>::const_iterator &it_avoid, 
-				std::complex<Derived> &retval, const ArgsTuple &args_tuple)
+				std::complex<Derived> &retval, const ArgsTuple &argsTuple)
 			{
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				piranha_assert(retval.empty());
-				retval.base_add(1, args_tuple);
+				retval.base_add(1, argsTuple);
 				if (v.empty()) 
 				{
 					return;
@@ -61,14 +61,14 @@ namespace piranha
 					// Skip the iterator we want to avoid.
 					if (it != it_avoid) 
 					{
-						retval.base_mult_by(jacang_term(it, args_tuple), args_tuple);
+						retval.base_mult_by(jacang_term(it, argsTuple), argsTuple);
 					}
 				}
 			}
 
 
 			template <class Iterator, class ArgsTuple>
-			static std::complex<Derived> jacang_term(Iterator it, const ArgsTuple &args_tuple)
+			static std::complex<Derived> jacang_term(Iterator it, const ArgsTuple &argsTuple)
 			{
 				typedef typename std::complex<Derived>::term_type complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
@@ -79,10 +79,10 @@ namespace piranha
 				{
 					std::complex<Derived> tmp;
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf, args_tuple);
-					tmp.insert(tmp_term, args_tuple);
+					tmp_term.m_cf.set_real((*it)->m_cf, argsTuple);
+					tmp.insert(tmp_term, argsTuple);
 					try {
-						n_ = tmp.psi_(0,1,args_tuple);
+						n_ = tmp.psi_(0,1,argsTuple);
 					} catch (const value_error &ve) 
 					{
 						piranha_throw(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "
@@ -93,16 +93,16 @@ namespace piranha
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(0, args_tuple), args_tuple);
-					retval.insert(tmp_term, args_tuple);
+					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(0, argsTuple), argsTuple);
+					retval.insert(tmp_term, argsTuple);
 				}
-				const std::size_t w = args_tuple.template get<TrigPos>().size();
+				const std::size_t w = argsTuple.template get<TrigPos>().size();
 				std::vector<typename std::complex<Derived>::term_type::key_type::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
 				for (int i = 1; i < n; ++i) 
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, args_tuple), args_tuple);
+					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, argsTuple), argsTuple);
 					std::copy((*it)->m_key.begin(),(*it)->m_key.end(),tmp_trig_mults.begin());
 					for (std::size_t j = 0; j < w; ++j) 
 					{
@@ -113,20 +113,20 @@ namespace piranha
 					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.m_key.begin());
 					if ((*it)->m_key.get_flavour())
 					{
-						tmp_term.m_cf.mult_by(cos_multiplier, args_tuple);
+						tmp_term.m_cf.mult_by(cos_multiplier, argsTuple);
 					} else 
 					{
 						if (i % 2 == 0) 
 						{
-							tmp_term.m_cf.mult_by(2, args_tuple);
+							tmp_term.m_cf.mult_by(2, argsTuple);
 						} else 
 						{
-							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), args_tuple);
+							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), argsTuple);
 							tmp_term.m_key.set_flavour(false);
 						}
 					}
 
-					retval.insert(tmp_term, args_tuple);
+					retval.insert(tmp_term, argsTuple);
 					// Update the multiplier for cosine terms.
 					cos_multiplier *= std::complex<double>(0, 1);
 				}
