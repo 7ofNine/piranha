@@ -8,7 +8,7 @@ SET(SRC_LIST ${SRC_LIST}
 	math.cpp
 	memory.cpp
 	settings.cpp
-	psym.cpp
+	Psym.cpp
 	stats.cpp
 )
 
@@ -83,7 +83,7 @@ ADD_CUSTOM_TARGET(Headers SOURCES ${INCS})
 #				core/type_traits.h
 #				core/stats.h
 #				core/settings.h
-#				core/psym.h
+#				core/Psym.h
 #				core/power_cache.h
 #				core/p_exceptions.h
 #				core/ntuple.h

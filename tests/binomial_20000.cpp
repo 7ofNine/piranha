@@ -32,7 +32,7 @@ int main()
 settings::set_debug(true);
 //settings::set_nthread(16); // temporary: remove
 try{
-	poly x(psym("x")), y(psym("y"));
+	poly x(Psym("x")), y(Psym("y"));
 	poly res((x+y).pow(2).pow(10000));
 	if (res.length() != 20001) {
 		return 1;

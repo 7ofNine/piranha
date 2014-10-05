@@ -93,7 +93,7 @@ namespace pyranha
 		inst.def(boost::python::init<const double &>());
 		inst.def(boost::python::init<const piranha::mp_rational &>());
 		inst.def(boost::python::init<const piranha::mp_integer &>());
-		inst.def(boost::python::init<const piranha::psym &>());
+		inst.def(boost::python::init<const piranha::Psym &>());
 		// Some special methods.
 		inst.def("__copy__", &py_copy<T>);
 		//inst.def("__iter__", boost::python::iterator<T>());

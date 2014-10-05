@@ -44,8 +44,8 @@ namespace manipulators
 		TrigVector<boost::int16_t, 1>,
 		polynomial_multiplier,
 		poisson_series_multiplier,
-		truncators::power_series,
-		truncators::power_series
+		truncators::PowerSeries,
+		truncators::PowerSeries
 	> qps;
 
 	typedef std::complex<qps> qpsc;

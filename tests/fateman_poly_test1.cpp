@@ -32,7 +32,7 @@ int main()
 {
 settings::set_debug(true);
 settings::set_nthread(16);
-  psym x("x"), y("y"), z("z"), t("t");
+  Psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
   a = a.pow(30);
   poly c(a);

@@ -40,7 +40,7 @@ namespace manipulators
 		mpq_cf,
 		ExpoVector<boost::int16_t, 0>,
 		polynomial_multiplier,
-		truncators::power_series
+		truncators::PowerSeries
 	> qpoly;
 
 	typedef std::complex<qpoly> qpolyc;

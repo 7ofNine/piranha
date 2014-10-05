@@ -49,7 +49,7 @@ namespace piranha
 			explicit mpz_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 
 			template <class ArgsTuple>
-			explicit mpz_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			explicit mpz_cf(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 
 			// Implement norm and evaluation.
 			template <class ArgsTuple>
@@ -104,7 +104,7 @@ namespace std
 			explicit complex(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
 
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+			explicit complex(const piranha::Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>

@@ -36,7 +36,7 @@
 #include "../exceptions.h"
 #include "../memory.h"
 #include "../mp.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../type_traits.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
@@ -179,7 +179,7 @@ namespace piranha
 			static Derived base_series_from_number(const Number &, const ArgsTuple &);
 
 			template <class ArgsTuple>
-			void base_construct_from_psym(const psym &, const int &, const ArgsTuple &);
+			void base_construct_from_psym(const Psym &, const int &, const ArgsTuple &);
 
 			~BaseSeries();
 			//@}

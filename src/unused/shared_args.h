@@ -24,7 +24,7 @@
 #include "shared_args_mp.h"
 #include "config.h"
 #include "ntuple.h"
-#include "psym.h"
+#include "Psym.h"
 
 namespace piranha
 {

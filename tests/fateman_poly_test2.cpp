@@ -31,7 +31,7 @@ typedef dpoly poly;
 int main()
 {
 settings::set_debug(true);
-  psym x("x"), y("y"), z("z"), t("t");
+  Psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
   a = a.pow(20);
   poly c(a);

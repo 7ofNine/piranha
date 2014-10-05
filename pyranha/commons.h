@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include "../src/core/psym.h"
+#include "../src/core/Psym.h"
 
 namespace pyranha
 {
@@ -78,9 +78,9 @@ namespace pyranha
 	};
 
 	template <class Series>
-	inline std::vector<piranha::vector_psym> py_series_arguments(const Series &s)
+	inline std::vector<piranha::VectorPsym> py_series_arguments(const Series &s)
 	{
-		std::vector<piranha::vector_psym> retval;
+		std::vector<piranha::VectorPsym> retval;
 		py_tuple_to_vector<typename Series::ArgsTupleType>::run(retval, s.arguments());
 		return retval;
 	}

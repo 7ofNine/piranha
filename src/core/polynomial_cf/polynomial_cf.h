@@ -73,7 +73,7 @@ namespace piranha
 			CF_SERIES_CTORS(polynomial_cf);
 
 			template <class ArgsTuple>
-			explicit polynomial_cf(const psym &p, const int &n, const ArgsTuple &a)
+			explicit polynomial_cf(const Psym &p, const int &n, const ArgsTuple &a)
             {
 				this->base_construct_from_psym(p, n, a);
 			}
@@ -115,7 +115,7 @@ namespace std
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(POLYNOMIAL_CF);
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a) {
+			explicit complex(const piranha::Psym &p, const int &n, const ArgsTuple &a) {
 				this->base_construct_from_psym(p, n, a);
 			}
 	};

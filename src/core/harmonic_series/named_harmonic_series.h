@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "../psym.h"
+#include "../Psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -45,11 +45,11 @@ namespace piranha
 
 			HDegree partial_h_order(const std::vector<std::string> &vs) const
 			{
-				vector_psym v;
+				VectorPsym v;
 				v.reserve(vs.size());
 				for (size_t i = 0; i < vs.size(); ++i) 
                 {
-					v.push_back(psym(vs[i]));
+					v.push_back(Psym(vs[i]));
 				}
 
 				return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));

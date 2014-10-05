@@ -28,7 +28,7 @@
 #include <string>
 
 #include "../src/core/ntuple.h"
-#include "../src/core/psym.h"
+#include "../src/core/Psym.h"
 
 namespace pyranha
 {
@@ -56,7 +56,7 @@ namespace pyranha
 	template <int N>
 	inline void expose_argsTuples()
 	{
-		typedef typename piranha::Ntuple<piranha::vector_psym, N>::type ArgsTupleType;
+		typedef typename piranha::Ntuple<piranha::VectorPsym, N>::type ArgsTupleType;
 		boost::python::class_<ArgsTupleType>
 		argsTuple_inst((std::string("__base_argsTuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
 						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());

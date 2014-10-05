@@ -37,21 +37,23 @@ namespace piranha
 	class series_multiplication
 	{
 		public:
+
 			template <class ArgsTuple>
 			std::size_t psi_(const int &start, const int &step, const ArgsTuple &argsTuple) const
 			{
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::power_series_iterations(*derived_const_cast, start, step, argsTuple);
+					Truncator>::truncator_type::powerSeriesIterations(*derived_const_cast, start, step, argsTuple);
 			}
 
 
 			template <class Series, class ArgsTuple>
 			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
-				static const bool check = boost::is_same<Series,Derived>::value;
-				p_static_check(check,"");
+				static const bool check = boost::is_same<Series, Derived>::value;
+				p_static_check(check, "");
+
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::template get_sorted_pointer_vector<Series, ArgsTuple>(*derived_const_cast, argsTuple);
+					Truncator>::truncator_type::template getSortedPointerVector<Series, ArgsTuple>(*derived_const_cast, argsTuple);
 			}
 
 

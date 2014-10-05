@@ -39,7 +39,7 @@
 #include "../common_functors.h"
 #include "../exceptions.h"
 #include "../power_cache.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../type_traits.h"
 #include "expo_vector_mp.h"
 
@@ -130,9 +130,9 @@ namespace piranha
 			}
 
 
-			/// Ctor from psym.
+			/// Ctor from Psym.
 			template <class ArgsTuple>
-			explicit ExpoVector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+			explicit ExpoVector(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
 
 
 			// Math.

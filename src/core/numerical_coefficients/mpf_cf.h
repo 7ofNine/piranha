@@ -63,7 +63,7 @@ namespace piranha
 			/// Constructor from double.
 			explicit mpf_cf(const double &val): ancestor::NumericalContainer(val) {}
 
-			/// Constructor from psym.
+			/// Constructor from Psym.
 			template <class ArgsTuple>
 			explicit mpf_cf(const psym_p &p, const int &n, const ArgsTuple &a): ancestor::NumericalContainer(p, n, a) {}
 

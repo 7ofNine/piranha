@@ -32,81 +32,88 @@ using namespace piranha::truncators;
 namespace piranha
 { 
 	// Static initialization for degree-based truncation.
-	mp_rational degree::m_degree_limit;
-	degree::mode degree::m_mode = degree::inactive;
-	vector_psym degree::m_psyms;
+	mp_rational            degree::degreeLimit;
+	degree::TruncationMode degree::truncationMode = degree::TruncationInactive;
+	VectorPsym             degree::psyms;
 
 	void degree::unset()
 	{
-		m_mode = inactive;
+		truncationMode = TruncationInactive;
 	}
 
-	void degree::set(const int &n)
+	void degree::set(const int n)
 	{
-		m_degree_limit = n;
-		m_mode = deg;
+		degreeLimit    = n;
+		truncationMode = TruncationDeg;
 	}
 
 	void degree::set(const mp_rational &r)
 	{
-		m_degree_limit = r;
-		m_mode = deg;
+		degreeLimit    = r;
+		truncationMode = TruncationDeg;
 	}
 
-	void degree::set(const std::string &s, const int &n)
+	void degree::set(const std::string &s, const int n)
 	{
-		m_degree_limit = n;
-		m_psyms = names2psyms(std::vector<std::string>(1,s));
-		m_mode = p_deg;
+		degreeLimit    = n;
+		psyms          = names2psyms(std::vector<std::string>(1,s));
+		truncationMode = TruncationPartialDeg;
 	}
 
 	void degree::set(const std::string &s, const mp_rational &r)
 	{
-		m_degree_limit = r;
-		m_psyms = names2psyms(std::vector<std::string>(1,s));
-		m_mode = p_deg;
+		degreeLimit    = r;
+		psyms          = names2psyms(std::vector<std::string>(1,s));
+		truncationMode = TruncationPartialDeg;
 	}
 
-	void degree::set(const std::vector<std::string> &vs, const int &n)
+	void degree::set(const std::vector<std::string> &vs, const int n)
 	{
-		if (!vs.size()) {
+		if (!vs.size())
+        {
 			set(n);
 			return;
 		}
-		m_degree_limit = n;
-		m_psyms = names2psyms(vs);
-		m_mode = p_deg;
+		degreeLimit    = n;
+		psyms          = names2psyms(vs);
+		truncationMode = TruncationPartialDeg;
 	}
 
 	void degree::set(const std::vector<std::string> &vs, const mp_rational &r)
 	{
-		if (!vs.size()) {
+		if (!vs.size())
+        {
 			set(r);
 			return;
 		}
-		m_degree_limit = r;
-		m_psyms = names2psyms(vs);
-		m_mode = p_deg;
+		degreeLimit     = r;
+		psyms           = names2psyms(vs);
+		truncationMode  = TruncationPartialDeg;
 	}
 
-	void degree::print(std::ostream &stream)
-	{
-		switch (m_mode) {
-			case inactive:
-				stream << "No degree limit set.";
-				break;
-			case deg:
-				stream << "Degree limit: " << m_degree_limit;
-				break;
-			case p_deg:
-				stream << "Partial degree limit: " << m_degree_limit << ", Affected symbols: [";
-				for (std::size_t i = 0; i < m_psyms.size(); ++i) {
-					stream << '\'' << m_psyms[i].get_name() << '\'';
-					if (i < m_psyms.size() - 1) {
-						stream << " ";
-					}
-				}
-				stream << ']';
-		}
-	}
+void degree::print(std::ostream &stream)
+{
+	switch (truncationMode)
+    {
+		case TruncationInactive: stream << "No degree limit set.";
+			                     break;
+
+		case TruncationDeg:      stream << "Degree limit: " << degreeLimit;
+			                     break;
+
+		case TruncationPartialDeg:  {   stream << "Partial degree limit: " << degreeLimit << ", Affected symbols: [";
+			                            for (std::size_t i = 0; i < psyms.size(); ++i)
+                                        {
+				                            stream << '\'' << psyms[i].get_name() << '\'';
+
+                                            if (i < psyms.size() - 1)
+                                            {
+					                            stream << " ";
+				                            }
+			                            }
+			                            stream << ']';
+	                                }
+    }
 }
+}
+

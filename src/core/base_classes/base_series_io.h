@@ -32,7 +32,7 @@
 
 #include "../config.h"
 #include "../exceptions.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
@@ -179,10 +179,10 @@ namespace piranha
 	}
 
 
-	/// Constructor from psym and from position in the arguments set.
+	/// Constructor from Psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const psym &p, const int &n,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const Psym &p, const int &n,
 			const ArgsTuple &argsTuple)
 	{
 		piranha_assert(derived_cast->empty());

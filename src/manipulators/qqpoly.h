@@ -40,7 +40,7 @@ namespace manipulators
 		mpq_cf,
 		ExpoVector<mp_rational,0>,
 		polynomial_multiplier,
-		truncators::power_series
+		truncators::PowerSeries
 	> qqpoly;
 
 	typedef std::complex<qqpoly> qqpolyc;

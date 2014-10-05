@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-#include "../psym.h"
+#include "../Psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
@@ -42,8 +42,8 @@ namespace piranha
 			Derived integrate(const std::string &name) const
 			{
 				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
-				const psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1, p), derived_const_cast->arguments());
+				const Psym p(name);
+				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), derived_const_cast->arguments());
 				Derived retval;
 				
 				if (pos_tuple.get_head()[0].first) 

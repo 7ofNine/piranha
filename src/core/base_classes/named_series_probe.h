@@ -29,7 +29,7 @@
 
 #include "../config.h" // For (un)likely
 #include "../mp.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "named_series_def.h"
 #include "named_series_mp.h"
 
@@ -127,14 +127,14 @@ namespace piranha
 		// Vector of original time evaluation vectors, paired with the corresponding symbol.
 		// NOTE: here we allocate dynamically. This can be avoided by fixing a max number of items in time evaluation for psyms
 		// and using static vectors. We should test performance before bothering though.
-		std::vector<std::pair<psym,std::vector<double> > > orig_eval;
+		std::vector<std::pair<Psym,std::vector<double> > > orig_eval;
 		orig_eval.reserve(d.size());
 		const eval_dict::const_iterator it_f(d.end());
 
 		for (eval_dict::const_iterator it = d.begin(); it != it_f; ++it)
         {
-			orig_eval.push_back(std::make_pair(psym(it->first), psym(it->first).get_time_eval()));
-			psym(it->first, it->second);
+			orig_eval.push_back(std::make_pair(Psym(it->first), Psym(it->first).get_time_eval()));
+			Psym(it->first, it->second);
 		}
 		const typename term_eval_type_determiner<Term>::type retval(eval(0));
 

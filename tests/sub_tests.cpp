@@ -30,13 +30,13 @@ int main()
 {
 	{
 		// This one fails if we do not handle correctly argsTuple inside substitution.
-		qps e(psym("e")), ph(psym("ph")), th(psym("th"));
+		qps e(Psym("e")), ph(Psym("ph")), th(Psym("th"));
 		truncators::degree::set(10);
 		(e*th.cos()+1).pow(-1).sub("th",ph.pow(2));
 	}
 
 	int retval = 0;
-	psym x("x"), y("y"), z("z");
+	Psym x("x"), y("y"), z("z");
 	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(40);
 	retval += !(g.sub("x",zpoly(x)+1).sub("x",zpoly(x)-1) == g);
 	retval += (qps(x).cos().ei_sub("x",qpsc(std::complex<double>(1,0))) != 1);

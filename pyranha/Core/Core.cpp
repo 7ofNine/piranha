@@ -34,7 +34,7 @@
 #include "../../src/core/base_classes/named_series_def.h"
 #include "../../src/core/config.h"
 #include "../../src/core/mp.h"
-#include "../../src/core/psym.h"
+#include "../../src/core/Psym.h"
 #include "../../src/core/settings.h"
 #include "../../src/core/stats.h"
 #include "../args_tuple.h"
@@ -47,7 +47,7 @@ using namespace boost::python;
 using namespace piranha;
 using namespace pyranha;
 
-std::string static inline py_psym_repr(const psym &p)
+std::string static inline py_psym_repr(const Psym &p)
 {
 	std::ostringstream stream;
 	stream << "Symbol: '" << p.get_name() << "' - [";
@@ -62,7 +62,7 @@ std::string static inline py_psym_repr(const psym &p)
 	return stream.str();
 }
 
-static inline std::size_t py_psym_hash(const psym &p)
+static inline std::size_t py_psym_hash(const Psym &p)
 {
 	return boost::hash<std::string>()(p.get_name());
 }
@@ -85,9 +85,9 @@ BOOST_PYTHON_MODULE(_Core)
 	// Interop between vectors of some types and Python tuples/lists.
 	to_tuple_mapping<std::vector<std::string> >();
 	from_python_sequence<std::vector<std::string>,variable_capacity_policy>();
-	to_tuple_mapping<vector_psym>();
-	from_python_sequence<vector_psym,variable_capacity_policy>();
-	to_tuple_mapping<std::vector<vector_psym> >();
+	to_tuple_mapping<VectorPsym>();
+	from_python_sequence<VectorPsym,variable_capacity_policy>();
+	to_tuple_mapping<std::vector<VectorPsym> >();
 	to_tuple_mapping<std::vector<double> >();
 	from_python_sequence<std::vector<double>,variable_capacity_policy>();
 	to_tuple_mapping<std::vector<mp_rational> >();
@@ -136,17 +136,17 @@ BOOST_PYTHON_MODULE(_Core)
 		.export_values();
 
 	// Psym.
-	class_<psym>("psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())
+	class_<Psym>("Psym", "Symbol class.", init<const std::string &, const std::vector<double> &>())
 		.def(init<const std::string &, const double &>())
 		.def(init<const std::string &>())
-		.def("__copy__", &py_copy<psym>)
+		.def("__copy__", &py_copy<Psym>)
 		.def("__hash__", &py_psym_hash)
 		.def("__repr__", &py_psym_repr)
-		.def("eval", &psym::eval)
-		.add_property("name", make_function(&psym::get_name,return_value_policy<copy_const_reference>()))
-		.add_property("time_eval", make_function(&psym::get_time_eval,return_value_policy<copy_const_reference>()),
-			&psym::set_time_eval)
-		.def("list", &psym::list, "Get list of global psyms").staticmethod("list")
+		.def("eval", &Psym::eval)
+		.add_property("name", make_function(&Psym::get_name,return_value_policy<copy_const_reference>()))
+		.add_property("time_eval", make_function(&Psym::get_time_eval,return_value_policy<copy_const_reference>()),
+			&Psym::set_time_eval)
+		.def("list", &Psym::list, "Get list of global psyms").staticmethod("list")
 		.def(self == self)
 		.def(self != self);
 

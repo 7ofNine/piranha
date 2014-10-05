@@ -38,7 +38,7 @@
 #include "../math.h"
 #include "../mp.h"
 #include "../ntuple.h"
-#include "../psym.h"
+#include "../Psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -94,7 +94,7 @@ namespace piranha
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series substitution.");
-				const psym p(name);
+				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
 				// Assign as tmp's trig arguments series's polynomial arguments.
@@ -114,7 +114,7 @@ namespace piranha
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
 					&this_copy.arguments());
-				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.arguments()));
 				retval.set_arguments(this_copy.arguments());
@@ -135,7 +135,7 @@ namespace piranha
 				p_static_check(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
-				const psym p(name);
+				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series);
 				this_copy.merge_args(s_copy);
@@ -143,7 +143,7 @@ namespace piranha
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
 					&this_copy.arguments());
-				const pos_tuple_type pos_tuple = psyms2pos(std::vector<psym>(1,p), this_copy.arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
 					sub_caches, this_copy.arguments()));
 				retval.set_arguments(this_copy.arguments());
@@ -158,7 +158,7 @@ namespace piranha
 			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::term_type fourier_term;
-				typename Ntuple<vector_psym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
+				typename Ntuple<VectorPsym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
 				retval.set_arguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
@@ -176,8 +176,8 @@ namespace piranha
 			Derived integrate(const std::string &name) const
 			{
 				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
-				const psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),derived_const_cast->arguments());
+				const Psym p(name);
+				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p),derived_const_cast->arguments());
 				Derived retval;
 
 				if (pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first) 
@@ -187,7 +187,7 @@ namespace piranha
 					// where integration adds a symbol to the list of polynomial symbols.
 					Derived this_copy(*derived_const_cast);
 					this_copy.merge_args(Derived(p));
-					const pos_tuple_type new_pos_tuple = psyms2pos(vector_psym(1,p),this_copy.arguments());
+					const pos_tuple_type new_pos_tuple = psyms2pos(VectorPsym(1,p),this_copy.arguments());
 
 					retval = this_copy.base_integrate(new_pos_tuple,this_copy.arguments());
 					retval.set_arguments(this_copy.arguments());

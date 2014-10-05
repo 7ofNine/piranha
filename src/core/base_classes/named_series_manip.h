@@ -31,37 +31,42 @@
 #include "../config.h" // For (un)likely
 #include "../exceptions.h"
 #include "../ntuple.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "named_series_def.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derivedConstCast static_cast<Derived const *>(this)
+#define derivedCast      static_cast<Derived       *>(this)
 
 namespace piranha
 {
 	// Template metaprogramming for swapping of arguments in named series.
 	template <class ArgsTuple>
 	struct named_series_swap {
-		static void run(ArgsTuple &a1, ArgsTuple &a2) {
+		
+        static void run(ArgsTuple &a1, ArgsTuple &a2)
+        {
 			a1.get_head().swap(a2.get_head());
-			named_series_swap<typename ArgsTuple::tail_type>::run(a1.get_tail(),
-					a2.get_tail());
+			named_series_swap<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail());
 		}
 	};
 
+
 	template <>
 	struct named_series_swap<boost::tuples::null_type> {
+
 		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
+
 
 	/// Swap contents of series.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
 	{
 		// Do something only if we are not swapping with self.
-		if (derived_cast != &ps2) {
+		if (derivedCast != &ps2)
+        {
 			named_series_swap<ArgsTupleType>::run(m_arguments, ps2.m_arguments);
-			derived_cast->base_swap(ps2);
+			derivedCast->base_swap(ps2);
 		}
 	}
 
@@ -70,13 +75,13 @@ namespace piranha
 	template <class ArgsDescr>
 	struct named_series_append_arg {
 
-		static void run(const std::string &s, typename Ntuple<vector_psym, boost::tuples::length<ArgsDescr>::value>::type &argsTuple,
-						const psym &arg)
+		static void run(const std::string &s, typename Ntuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::type &argsTuple,
+						const Psym &arg)
 		{
 			if (ArgsDescr::head_type::name == s) 
 			{
 				// Check that the argument is not already present in this set.
-				for (vector_psym::iterator it = argsTuple.get_head().begin(); it != argsTuple.get_head().end(); ++it) 
+				for (VectorPsym::iterator it = argsTuple.get_head().begin(); it != argsTuple.get_head().end(); ++it) 
 				{
 					if (arg == (*it)) 
 					{
@@ -97,7 +102,7 @@ namespace piranha
 	template <>
 	struct named_series_append_arg<boost::tuples::null_type> {
 
-		static void run(const std::string &s, const boost::tuples::null_type &, const psym &) 
+		static void run(const std::string &s, const boost::tuples::null_type &, const Psym &) 
 		{
 			std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
 		}
@@ -105,21 +110,21 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const psym &arg)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const Psym &arg)
 	{
-		piranha_assert(derived_const_cast->empty());
+		piranha_assert(derivedConstCast->empty());
 		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
 	}
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const psym &arg)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const Psym &arg)
 	{
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
-		piranha_assert(derived_const_cast->empty());
+		piranha_assert(derivedConstCast->empty());
 		// Check that the argument is not already present in this set.
-		for (vector_psym::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it) 
+		for (VectorPsym::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it) 
 		{
 			if (arg == (*it)) 
 			{
@@ -159,8 +164,8 @@ namespace piranha
 						boost::tuples::length<ArgsTuple>::value >::type &layout) 
 		{
 			// Store frequently-used variables.
-			const vector_psym &v1   = a1.get_head(); 
-			const vector_psym &v2   = a2.get_head();
+			const VectorPsym &v1   = a1.get_head(); 
+			const VectorPsym &v2   = a2.get_head();
 			const std::size_t size1 = v1.size(); 
 			const std::size_t size2 = v2.size();
 			std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
@@ -169,7 +174,7 @@ namespace piranha
 			for (std::size_t i = 0; i < size2; ++i) 
             {
 				// Let's see if current v2's symbol is present in v1.
-				const vector_psym::const_iterator result = std::find(v1.begin(), v1.end(), v2[i]);
+				const VectorPsym::const_iterator result = std::find(v1.begin(), v1.end(), v2[i]);
 				if (result == v1.end()) 
                 {
 					l[i].first = false;
@@ -226,14 +231,14 @@ namespace piranha
 						boost::tuples::length<ArgsTuple>::value >::type &layout) 
 		{
 			// Store frequently-used variables.
-			vector_psym       &v1 = a1.get_head();
-			const vector_psym &v2 = a2.get_head();
+			VectorPsym       &v1 = a1.get_head();
+			const VectorPsym &v2 = a2.get_head();
 			const std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
 			const std::size_t l_size = l.size();
 			// The layout must have at least all arguments in v1.
 			piranha_assert(l_size >= v1.size());
 			// Memorize the old vector.
-			const vector_psym old(v1);
+			const VectorPsym old(v1);
 			// Make space.
 			v1.reserve(l_size);
 
@@ -296,7 +301,7 @@ namespace piranha
 		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.m_arguments, ps2.arguments(), l);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derived_const_cast->apply_layout_to_terms(l, retval, retval.m_arguments);
+		derivedConstCast->apply_layout_to_terms(l, retval, retval.m_arguments);
 		
 		// Finally, swap the contents of retval with this.
 		swap(retval);
@@ -356,7 +361,7 @@ namespace piranha
 		{
 			const std::size_t size = tf.get_head().size();
 			piranha_assert(size == argsTuple.get_head().size());
-			vector_psym new_vector;
+			VectorPsym new_vector;
 			for (std::size_t i = 0; i < size; ++i) 
 			{
 				if (tf.get_head()[i]) 
@@ -384,7 +389,7 @@ namespace piranha
 		typedef typename Ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
 		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
-		derived_const_cast->trim_test_terms(trim_flags);
+		derivedConstCast->trim_test_terms(trim_flags);
 
 		if (trim_flags_proceed(trim_flags)) 
 		{
@@ -392,8 +397,8 @@ namespace piranha
 			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
 			// Let's proceed to the terms now.
 			Derived tmp;
-			derived_cast->trim_terms(trim_flags, tmp, m_arguments);
-			derived_cast->base_swap(tmp);
+			derivedCast->trim_terms(trim_flags, tmp, m_arguments);
+			derivedCast->base_swap(tmp);
 		}
 	}
 
@@ -415,7 +420,9 @@ namespace piranha
 		static void run(const boost::tuples::null_type &, const SubSeries &, const ArgsTuple *) {}
 	};
 
-
+    //
+    // substitute series s for argument name name
+    //
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
@@ -430,9 +437,9 @@ namespace piranha
 		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 
-		const psym p(name);
+		const Psym p(name);
 		sub_caches_type sub_caches;
-		Derived this_copy(*derived_const_cast);
+		Derived this_copy(*derivedConstCast);
 		SubSeries s_copy(s);
 		this_copy.merge_args(s_copy);
 		s_copy.merge_args(this_copy);
@@ -440,7 +447,7 @@ namespace piranha
 		// Init sub caches using s_copy and this_copy.m_arguments.
 		init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,&this_copy.m_arguments);
 
-		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),this_copy.m_arguments);
+		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), this_copy.m_arguments);
 
 		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.m_arguments));
 
@@ -459,7 +466,7 @@ namespace piranha
 		}
 
 		std::vector<std::vector<Derived> > retval;
-		derived_const_cast->base_split(retval,n,m_arguments);
+		derivedConstCast->base_split(retval,n,m_arguments);
 		const std::size_t size = retval.size();
 		for (std::size_t i = 0; i < size; ++i) 
 		{
@@ -486,10 +493,10 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
-		const std::vector<typename Derived::term_type> tmp(derived_const_cast->flatten_terms(m_arguments));
+		const std::vector<typename Derived::term_type> tmp(derivedConstCast->flatten_terms(m_arguments));
 		std::vector<Derived> retval;
-		const typename std::vector<typename Derived::term_type>::const_iterator it_f(tmp.end());
-		for (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != it_f; ++it) 
+		const typename std::vector<typename Derived::term_type>::const_iterator itf(tmp.end());
+		for  (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != itf; ++it) 
 		{
 			Derived tmp_series;
 			tmp_series.insert(*it, m_arguments);
@@ -503,7 +510,7 @@ namespace piranha
 	}
 }
 
-#undef derived_const_cast
-#undef derived_cast
+#undef derivedConstCast
+#undef derivedCast
 
 #endif

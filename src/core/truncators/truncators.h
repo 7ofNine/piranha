@@ -35,7 +35,8 @@ namespace piranha
 namespace truncators
 {
 	// Sequence of truncators type. NOTE: add here any new truncator.
-	typedef boost::mpl::vector<norm,degree,power_series> truncator_types;
+	typedef boost::mpl::vector<norm, degree, PowerSeries> truncator_types;
+
 
 	// General functor for calling unset() on a truncator.
 	template <class Truncator>
@@ -46,11 +47,13 @@ namespace truncators
 		}
 	};
 
+
 	// For power series truncators, there is not unset() function to be called.
 	template <>
-	struct truncator_unset<power_series> {
+	struct truncator_unset<PowerSeries> {
 		static void run() {}
 	};
+
 
 	template <int N>
 	struct unset_impl {
@@ -61,10 +64,12 @@ namespace truncators
 		}
 	};
 
+
 	template <>
 	struct unset_impl<-1> {
 		static void run() {}
 	};
+
 
 	/// Unset all available truncators.
 	inline void unset()

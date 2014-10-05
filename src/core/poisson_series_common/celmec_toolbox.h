@@ -25,7 +25,7 @@
 #include <cstddef>
 #include <string>
 
-#include "../psym.h"
+#include "../Psym.h"
 
 namespace piranha
 {

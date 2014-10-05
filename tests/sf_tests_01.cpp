@@ -29,7 +29,7 @@ using namespace piranha;
 int main()
 {
 	int retval = 0;
-	psym x_("x");
+	Psym x_("x");
 	const ps x(x_);
 	truncators::degree::set(80);
 	retval += (x.besselJ(3) != -x.besselJ(-3));

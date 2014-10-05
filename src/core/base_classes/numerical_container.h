@@ -31,7 +31,7 @@
 
 #include "../math.h"
 #include "../mp.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../settings.h"
 #include "numerical_container_mp.h"
 #include "numerical_container_tag.h"
@@ -102,12 +102,12 @@ namespace piranha
 			explicit NumericalContainer(const std::string &s, const ArgsTuple &):
 				m_value(boost::lexical_cast<T>(s)) {}
 			
-			/// Ctor from psym.
+			/// Ctor from Psym.
 			/**
 			 * Sets internal value to one.
 			 */
 			template <class ArgsTuple>
-			explicit NumericalContainer(const psym &, const int &, const ArgsTuple &): m_value(1) {}
+			explicit NumericalContainer(const Psym &, const int &, const ArgsTuple &): m_value(1) {}
 			
 			/// Generic constructor.
 			template <class U, class ArgsTuple>

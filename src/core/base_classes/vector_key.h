@@ -34,7 +34,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
-#include "../psym.h"
+#include "../Psym.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -91,12 +91,12 @@ namespace piranha
 			VectorKey(const VectorKey<T, Position2, Derived2> &other): m_container(other.m_container) {}
 
 
-			/// Ctor from psym.
+			/// Ctor from Psym.
 			/**
 			 * If the position matches input integer n, then resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
-			VectorKey(const psym &p, const int &n, const ArgsTuple &argsTuple): m_container()
+			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): m_container()
 			{
 				(void)p;
 				(void)argsTuple;

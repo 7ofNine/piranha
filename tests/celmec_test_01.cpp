@@ -30,13 +30,19 @@ int main()
 {
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
-	psym e("e"), M("M");
+	Psym e("e"), M("M");
 	truncators::degree::set(10);
 	ps res(ps::r_a(ps(e),ps(M)));
 	std::cout << res.length() << '\n';
 	std::cout << res.atoms() << '\n';
 	retval += (res.length() != 401 || res.atoms() != 80805);
 
+    Psym ep("e'"),Mp("M'");
+    ps resp(ps::a_r(ps(ep), ps(Mp)));
+    ps retp = res*resp;
+    retp.save_to("testxxxx.qps");
+    retp.print(std::cout);
+    return 0;
 	// Identity.
 	truncators::degree::set(20);
 	ps e_s(e), M_s(M);

@@ -18,11 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/psym.h"
+#include "core/Psym.h"
 
 namespace piranha
 {
-	// Initialize static member of psym and psyms.
+	// Initialize static member of Psym and psyms.
 	PsymManager::container_type PsymManager::container;
 	const std::string PsymManager::PsymImpl::separator = ";";
 }

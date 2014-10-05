@@ -35,7 +35,7 @@
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../ntuple.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../settings.h" // For debug messages.
 
 namespace piranha { 
@@ -44,10 +44,11 @@ namespace truncators {
 	/// Truncator based on the minium degree of the series.
 	class __PIRANHA_VISIBLE degree
 	{
-			enum mode {
-				deg,
-				p_deg,
-				inactive
+
+			enum TruncationMode {
+				TruncationDeg        = 0,
+				TruncationPartialDeg = 1,
+				TruncationInactive   = 2,
 			};
 
 
@@ -57,8 +58,11 @@ namespace truncators {
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
-					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
-					const degree_type md1(t1->template get<ExpoTermPos>().order()), md2(t2->template get<ExpoTermPos>().order());
+					typedef typename Term::template component<ExpoTermPos>::type::degree_type DegreeType;
+
+					DegreeType const md1(t1->template get<ExpoTermPos>().order());
+                    DegreeType const md2(t2->template get<ExpoTermPos>().order());
+
 					return md1 < md2;
 				}
 			};
@@ -67,43 +71,49 @@ namespace truncators {
 			template <int ExpoTermPos, class PosTuple>
 			struct partial_order_comparison
 			{
-				partial_order_comparison(const PosTuple &pos_tuple):m_pos_tuple(pos_tuple) {}
+				partial_order_comparison(const PosTuple &posTuple): posTuple(posTuple) {}
+
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
-					typedef typename Term::template component<ExpoTermPos>::type::degree_type degree_type;
-					const degree_type md1(t1->template get<ExpoTermPos>().partial_order(m_pos_tuple)),
-						md2(t2->template get<ExpoTermPos>().partial_order(m_pos_tuple));
-					return md1 < md2;
+					typedef typename Term::template component<ExpoTermPos>::type::degree_type DegreeType;
+
+					DegreeType const md1(t1->template get<ExpoTermPos>().partial_order(posTuple));
+					DegreeType const md2(t2->template get<ExpoTermPos>().partial_order(posTuple));
+
+                    return md1 < md2;
 				}
-				const PosTuple &m_pos_tuple;
+
+				PosTuple const &posTuple;
 			};
+
 
 		public:
 
 			template <class Series1, class Series2, class ArgsTuple>
 			class get_type
 			{
-					typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >,
-						boost::tuples::length<ArgsTuple>::value>::type
-						pos_tuple_type;
+					typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type PosTupleType;
+
 					static const int expo_term_pos = Series1::expo_term_position;
 					static const int expo_args_pos = Series1::expo_args_position;
+
 				public:
-					typedef typename Series1::term_type term_type1;
-					typedef typename Series2::term_type term_type2;
+					typedef typename Series1::term_type TermType1;
+					typedef typename Series2::term_type TermType2;
 					typedef get_type type;
 
-					get_type(std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true):
-						m_t1(t1),m_t2(t2),m_argsTuple(argsTuple)
+					get_type(std::vector<TermType1 const *> &t1, std::vector<TermType2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true)
+                            :m_t1(t1), m_t2(t2), m_argsTuple(argsTuple)
 					{
 						// Some static checks.
 						p_static_check(Series1::expo_args_position == Series2::expo_args_position, "");
 						p_static_check(Series1::expo_term_position == Series2::expo_term_position, "");
+
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
-						if (m_mode == p_deg) 
+						if (truncationMode == TruncationPartialDeg) 
 						{
-							m_pos_tuple = psyms2pos(m_psyms,m_argsTuple);
+							m_pos_tuple = psyms2pos(psyms, m_argsTuple);
 						}
 						if (initialise) 
 						{
@@ -112,21 +122,16 @@ namespace truncators {
 					}
 
 
-					bool skip(const term_type1 **t1, const term_type2 **t2) const
+					bool skip(const TermType1 **t1, const TermType2 **t2) const
 					{
-						switch (m_mode) {
-							case deg:
-								return ((*t1)->template get<expo_term_pos>().order() +
-									(*t2)->template get<expo_term_pos>().order() >=
-									m_degree_limit);
-							case p_deg:
-								return ((*t1)->template get<expo_term_pos>().partial_order(m_pos_tuple) +
-									(*t2)->template get<expo_term_pos>().partial_order(m_pos_tuple) >=
-									m_degree_limit);
-							case inactive:
-								// We should never get there.
-								piranha_assert(false);
-						}
+						switch (truncationMode)
+                        {
+							case TruncationDeg:      return ((*t1)->template get<expo_term_pos>().order() + (*t2)->template get<expo_term_pos>().order() >= degreeLimit);
+
+							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partial_order(m_pos_tuple) + (*t2)->template get<expo_term_pos>().partial_order(m_pos_tuple) >= degreeLimit);
+
+							case TruncationInactive: piranha_assert(false); // We should never get there.
+				 	    }
 						return false;
 					}
 
@@ -135,15 +140,14 @@ namespace truncators {
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
 					template <class PowerSeries, class ArgsTuple2>
-					static std::size_t power_series_iterations(const PowerSeries &s, const int &start, const int &step_size,
-						const ArgsTuple2 &argsTuple)
+					static std::size_t powerSeriesIterations(const PowerSeries &s, const int &start, const int &stepSize, const ArgsTuple2 &argsTuple)
 					{
-						if (step_size < 1) 
+						if (stepSize < 1) 
 						{
 							piranha_throw(value_error,"please use a step size of at least 1");
 						}
 
-						if (m_mode == inactive) 
+						if (truncationMode == TruncationInactive) 
 						{
 							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
 								"if no degree limit has been set");
@@ -157,44 +161,47 @@ namespace truncators {
 
 						// order will be either total or partial, depending on the mode.
 						mp_rational order(0);
-						switch (m_mode) {
-							case deg:
-								order = s.order();
-								break;
-							case p_deg:
-								order = s.base_partial_order(psyms2pos(m_psyms,argsTuple));
-								break;
-							case inactive:
-								piranha_assert(false);
+
+						switch (truncationMode)
+                        {
+							case TruncationDeg:   order = s.order();
+								                  break;
+
+							case TruncationPartialDeg: order = s.base_partial_order(psyms2pos(psyms, argsTuple));
+								        break;
+
+							case TruncationInactive: piranha_assert(false);
 						}
 
 						if (order <= 0) 
 						{
-							piranha_throw(value_error,"cannot calculate the limit of a power series expansion if the (partial) minimum degree "
-								"of the series is negative or zero");
+							piranha_throw(value_error, "cannot calculate the limit of a power series expansion if the (partial) minimum degree of the series is negative or zero");
 						}
 
-						if (m_degree_limit < 0) 
+						if (degreeLimit < 0) 
 						{
-							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
-								"if the minimum degree limit is negative");
+							piranha_throw(value_error, "cannot calculate the limit of a power series expansion if the minimum degree limit is negative");
 						}
+
 
 						// (mp_rational(limit) / order - start) / step_size + 1;
-						mp_rational tmp(m_degree_limit);
+						mp_rational tmp(degreeLimit);
 						tmp /= order;
 						tmp -= start;
-						tmp /= step_size;
+						tmp /= stepSize;
 						tmp += 1;
+
 						if (tmp > 0) 
 						{
 							// Take the floor of tmp and convert to integer.
 							const int retval = (tmp.get_num() / tmp.get_den()).to_int();
+
 							if (tmp == retval) 
 							{
 								// If tmp was an integer in the beginning, we want to take the number
 								// immediately preceding it (or zero).
 								return (retval > 0) ? (retval - 1) : 0;
+
 							} else 
 							{
 								// If tmp was not an integer, let's take the floor.
@@ -209,51 +216,53 @@ namespace truncators {
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &argsTuple)
+					static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
 						std::vector<typename Series::term_type const *> retval;
-						std::transform(s.begin(),s.end(),std::insert_iterator<std::vector<typename Series::term_type const *> >(retval,retval.begin()),
-							&boost::lambda::_1);
-						switch (m_mode) {
-							case deg:
-								std::sort(retval.begin(),retval.end(),order_comparison<Series::expo_term_position>());
-								break;
-							case p_deg:
-								{
-								typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >,
-									boost::tuples::length<ArgsTuple2>::value>::type pos_tuple_type;
-								const pos_tuple_type pos_tuple(psyms2pos(m_psyms,argsTuple));
+						std::transform(s.begin(), s.end(), std::insert_iterator<std::vector<typename Series::term_type const *> >(retval, retval.begin()),	&boost::lambda::_1);
 
-								if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
-								{
-									std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,pos_tuple_type>(pos_tuple));
+						switch (truncationMode)
+                        {
+							case TruncationDeg:   std::sort(retval.begin(),retval.end(),order_comparison<Series::expo_term_position>());
+								        break;
 
-								} else
-								{
-									piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not "
-										"effective on this series");
-								}
-								}
-								break;
-							case inactive:
-								piranha_throw(value_error,"cannot establish series ordering, degree truncator is not active");
+							case TruncationPartialDeg:	{
+								            typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >, boost::tuples::length<ArgsTuple2>::value>::type PosTupleType;
+								            PosTupleType const pos_tuple(psyms2pos(psyms, argsTuple));
+
+								            if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
+								            {
+									            std::sort(retval.begin(), retval.end(),partial_order_comparison<Series::expo_term_position,PosTupleType>(pos_tuple));
+
+								            } else
+								            {
+									            piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not effective on this series");
+								            }
+								        }
+                                        break;
+
+							case TruncationInactive: piranha_throw(value_error,"cannot establish series ordering, degree truncator is not active");
 						}
+
 						return retval;
 					}
 
 
 					bool is_effective() const
 					{
-						switch (m_mode) {
-							case inactive:
-								return false;
-							case deg:
-								return true;
-							case p_deg:
-								// In case of partial degree truncator is effective only if the position tuple
-								// contains some elements.
-								return (m_pos_tuple.template get<expo_args_pos>().size() > 0);
+						switch (truncationMode)
+                        {
+							case TruncationInactive: return false;
+
+							case TruncationDeg:      return true;
+							
+                            case TruncationPartialDeg:    return (m_pos_tuple.template get<expo_args_pos>().size() > 0);
+
+								           // In case of partial degree truncator is effective only if the position tuple
+								           // contains some elements.
+								
 						}
+
 						piranha_assert(false);
 						return false;
 					}
@@ -262,49 +271,48 @@ namespace truncators {
 
 					void init()
 					{
-						switch (m_mode) {
-							case deg:
-								std::sort(m_t1.begin(), m_t1.end(), order_comparison<expo_term_pos>());
-								std::sort(m_t2.begin(), m_t2.end(), order_comparison<expo_term_pos>());
-								break;
-							case p_deg:
-								// We need to do the sorting only if the position tuple
-								// contains some elements.
-								if (m_pos_tuple.template get<expo_args_pos>().size() > 0) 
-								{
-									std::sort(m_t1.begin(), m_t1.end(), partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
+						switch (truncationMode)
+                        {
+							case TruncationDeg:   std::sort(m_t1.begin(), m_t1.end(), order_comparison<expo_term_pos>());
+								        std::sort(m_t2.begin(), m_t2.end(), order_comparison<expo_term_pos>());
+								        break;
 
-									std::sort(m_t2.begin(), m_t2.end(), partial_order_comparison<expo_term_pos, pos_tuple_type>(m_pos_tuple));
-								}
-								break;
-							case inactive:
-								;
+							case TruncationPartialDeg:	// We need to do the sorting only if the position tuple
+								        // contains some elements.
+								        if (m_pos_tuple.template get<expo_args_pos>().size() > 0) 
+								        {
+									        std::sort(m_t1.begin(), m_t1.end(), partial_order_comparison<expo_term_pos, PosTupleType>(m_pos_tuple));
+                                            std::sort(m_t2.begin(), m_t2.end(), partial_order_comparison<expo_term_pos, PosTupleType>(m_pos_tuple));
+								        }
+								        break;
+							case TruncationInactive: ;
+
 						}
 					}
 
 				private:
 
-					std::vector<term_type1 const *>	&m_t1;
-					std::vector<term_type2 const *>	&m_t2;
+					std::vector<TermType1 const *>	&m_t1;
+					std::vector<TermType2 const *>	&m_t2;
 					const ArgsTuple			        &m_argsTuple;
-					pos_tuple_type			         m_pos_tuple;
+					PosTupleType			         m_pos_tuple;
 			};
 
 
-			static void set(const int &);
+			static void set(const int);
 			static void set(const mp_rational &);
-			static void set(const std::string &, const int &);
+			static void set(const std::string &, const int);
 			static void set(const std::string &, const mp_rational &);
-			static void set(const std::vector<std::string> &, const int &);
+			static void set(const std::vector<std::string> &, const int);
 			static void set(const std::vector<std::string> &, const mp_rational &);
 			static void unset();
 			static void print(std::ostream &stream = std::cout);
 
 		private:
 
-			static mp_rational	m_degree_limit;
-			static vector_psym	m_psyms;
-			static mode		    m_mode;
+			static mp_rational	    degreeLimit;
+			static VectorPsym	    psyms;
+			static TruncationMode   truncationMode;
 	};
 } }
 

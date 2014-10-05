@@ -28,7 +28,7 @@
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../ntuple.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../settings.h"
 #include "named_series_def.h"
 
@@ -167,13 +167,13 @@ namespace piranha
 	}
 
 
-	/// Partial derivative with respect to a piranha::psym.
+	/// Partial derivative with respect to a piranha::Psym.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::partial(const std::string &name, const int &n) const
 	{
 		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
-		const psym p(name);
-		const pos_tuple_type pos_tuple = psyms2pos(vector_psym(1,p),m_arguments);
+		const Psym p(name);
+		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p),m_arguments);
 		Derived retval(derived_const_cast->base_partial(n, pos_tuple, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();

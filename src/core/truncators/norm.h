@@ -93,7 +93,7 @@ namespace truncators {
 					// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 					// times smaller.
 					template <class T, class ArgsTuple2>
-					static std::size_t power_series_iterations(const T &x, const int &start, const int &step_size,
+					static std::size_t powerSeriesIterations(const T &x, const int &start, const int &step_size,
 						const ArgsTuple2 &argsTuple)
 					{
 						// NOTE: share this check in some kind of base truncator class?
@@ -132,7 +132,7 @@ namespace truncators {
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> get_sorted_pointer_vector(const Series &s, const ArgsTuple2 &argsTuple)
+					static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
 						std::vector<typename Series::term_type const *> retval;
 

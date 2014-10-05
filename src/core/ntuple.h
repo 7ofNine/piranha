@@ -28,7 +28,7 @@
 namespace piranha
 {
 	// Wrapper for tuple of homogeneous types.
-	//used for argument types with T= std::vector<psym>
+	//used for argument types with T= std::vector<Psym>
 	template <class T, int N>
 	struct Ntuple
 	{

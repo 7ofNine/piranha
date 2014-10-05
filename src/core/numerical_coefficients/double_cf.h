@@ -32,7 +32,7 @@
 #include "../base_classes/numerical_container_complex_toolbox.h"
 #include "../exceptions.h"
 #include "../mp.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../settings.h" // Numerical zero.
 
 namespace piranha
@@ -130,7 +130,7 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit double_cf(const mp_integer &z, const ArgsTuple &argsTuple): ancestor(z.to_double(),argsTuple) {}
 			template <class ArgsTuple>
-			explicit double_cf(const psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			explicit double_cf(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
 				return get_value();
@@ -169,7 +169,7 @@ namespace std
 			template <class ArgsTuple>
 			explicit complex(const piranha::mp_integer &z, const ArgsTuple &argsTuple): ancestor(z.to_double(),argsTuple) {}
 			template <class ArgsTuple>
-			explicit complex(const piranha::psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+			explicit complex(const piranha::Psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
 			template <class ArgsTuple>
 			complex<double> eval(const double &, const ArgsTuple &) const {
 				return get_value();

@@ -36,7 +36,7 @@
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../ntuple.h"
-#include "../psym.h"
+#include "../Psym.h"
 #include "../settings.h"
 #include "../type_traits.h"
 #include "base_series_def.h"
@@ -73,7 +73,7 @@ namespace piranha
 
 		public:
 			typedef ArgsDescr arguments_description;
-			typedef typename Ntuple<vector_psym, boost::tuples::length<arguments_description>::value>::type ArgsTupleType;
+			typedef typename Ntuple<VectorPsym, boost::tuples::length<arguments_description>::value>::type ArgsTupleType;
 
 		private:
 			struct s_iterator_generator
@@ -165,17 +165,17 @@ namespace piranha
 			// with proper friendship in manipulator classes.
 			void construct_from_file(const std::string &);
 			template <int N>
-			void construct_from_psym(const psym &);
+			void construct_from_psym(const Psym &);
 
 		private:
 
 			template <class T>
 			bool series_comparison(const T &) const;
 
-			void append_arg(const std::string &, const psym &);
+			void append_arg(const std::string &, const Psym &);
 
 			template <int N>
-			void append_arg(const psym &);
+			void append_arg(const Psym &);
 
 			template <class Derived2>
 			Derived & mult_by_series(const Derived2 &);
@@ -220,7 +220,7 @@ namespace piranha
 #define NAMED_SERIES_BOILERPLATE(series_name, N) \
 public: \
 	explicit series_name() {} \
-	explicit series_name(const piranha::psym &p) { \
+	explicit series_name(const piranha::Psym &p) { \
 		this->template construct_from_psym<N>(p); \
 	} \
 	explicit series_name(const std::string &filename) \

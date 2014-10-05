@@ -211,7 +211,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			explicit TrigVector(const psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a), m_flavour(true) {}
+			explicit TrigVector(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a), m_flavour(true) {}
 
 
 			// Math.
@@ -470,7 +470,7 @@ namespace piranha
 			/**
 			 * Returns the value assumed by the linear combination of arguments at time t.
 			 * @param[in] t double time of the evaluation.
-			 * @param[in] v vector of piranha::psym pointers.
+			 * @param[in] v vector of piranha::Psym pointers.
 			 */
 			template <class ArgsTuple>
 			double eval(const double &t, const ArgsTuple &argsTuple) const
