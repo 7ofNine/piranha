@@ -91,7 +91,7 @@ namespace truncators {
 		public:
 
 			template <class Series1, class Series2, class ArgsTuple>
-			class get_type
+			class GetType
 			{
 					typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type PosTupleType;
 
@@ -101,9 +101,9 @@ namespace truncators {
 				public:
 					typedef typename Series1::term_type TermType1;
 					typedef typename Series2::term_type TermType2;
-					typedef get_type type;
+					typedef GetType type;
 
-					get_type(std::vector<TermType1 const *> &t1, std::vector<TermType2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true)
+					GetType(std::vector<TermType1 const *> &t1, std::vector<TermType2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true)
                             :m_t1(t1), m_t2(t2), m_argsTuple(argsTuple)
 					{
 						// Some static checks.
@@ -248,7 +248,7 @@ namespace truncators {
 					}
 
 
-					bool is_effective() const
+					bool isEffective() const
 					{
 						switch (truncationMode)
                         {

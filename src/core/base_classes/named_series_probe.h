@@ -77,14 +77,14 @@ namespace piranha
 	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::is_args_compatible(const Derived2 &ps2) const
 	{
 		// Use getter in second place because we may be interacting with other series type.
-		return named_series_is_args_compatible(m_arguments, ps2.arguments());
+		return named_series_is_args_compatible(argumentsTuple, ps2.arguments());
 	}
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline double NamedSeries<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
-		return derived_const_cast->base_norm(m_arguments);
+		return derived_const_cast->base_norm(argumentsTuple);
 	}
 
 
@@ -92,7 +92,7 @@ namespace piranha
 	inline typename term_eval_type_determiner<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
-		return derived_const_cast->base_eval(t,m_arguments);
+		return derived_const_cast->base_eval(t, argumentsTuple);
 	}
 
 	// TMP function for checking that evaluation dictionary has all the elements needed.
@@ -120,7 +120,7 @@ namespace piranha
 	inline typename term_eval_type_determiner<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
 	{
-		if (!check_eval_dict(d, m_arguments)) 
+		if (!check_eval_dict(d, argumentsTuple)) 
 		{
 			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
 		}
@@ -150,7 +150,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::size_t NamedSeries<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
 	{
-		return derived_const_cast->psi_(start, step, m_arguments);
+		return derived_const_cast->psi_(start, step, argumentsTuple);
 	}
 
 	inline bool tuple_vector_same_sizes(const boost::tuples::null_type &, const boost::tuples::null_type &)
@@ -174,13 +174,13 @@ namespace piranha
 	inline bool NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_comparison(const T &other) const
 	{
 		// If the sizes of the arguments tuples do not coincide, series are different.
-		if (!tuple_vector_same_sizes(m_arguments,other.m_arguments)) 
+		if (!tuple_vector_same_sizes(argumentsTuple, other.argumentsTuple)) 
         {
 			return false;
 		}
 		// If arguments tuples are completely identical, just run the base
 		// comparison function.
-		if (m_arguments == other.arguments()) 
+		if (argumentsTuple == other.arguments()) 
         {
 			return derived_const_cast->base_equal_to(other);
 		}
@@ -191,26 +191,32 @@ namespace piranha
         {
 			return false;
 		}
+
 		// Build a tuple of layouts.
 		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
 		// Get the relative layouts of this wrt other and put the result into l.
-		named_series_get_layout<ArgsTupleType>::run(m_arguments, other.arguments(), l);
+		named_series_get_layout<ArgsTupleType>::run(argumentsTuple, other.arguments(), l);
+
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,
 		// there are different arguments in this and other. Hence we can return false.
-		if (!tuple_vector_same_sizes(m_arguments,l)) 
+		if (!tuple_vector_same_sizes(argumentsTuple, l)) 
         {
 			return false;
 		}
+
 		// In this last case, the arguments are the same but they are ordered differently. Need to copy
 		// this into new series with correct ordering and then do the comparison.
 		// Build an empty retval and assign it the same arguments as this.
 		Derived tmp;
-		tmp.m_arguments = m_arguments;
+		tmp.argumentsTuple = argumentsTuple;
+
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<ArgsTupleType>::run(tmp.m_arguments, other.arguments(), l);
-		// Apply the layout to all terms of this and insert them into tmp.
-		derived_const_cast->apply_layout_to_terms(l, tmp, tmp.m_arguments);
-		// Now we can perform the comparison between tmp and other.
+		named_series_apply_layout_to_args<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), l);
+		
+        // Apply the layout to all terms of this and insert them into tmp.
+		derived_const_cast->apply_layout_to_terms(l, tmp, tmp.argumentsTuple);
+		
+        // Now we can perform the comparison between tmp and other.
 		return tmp.base_equal_to(other);
 	}
 

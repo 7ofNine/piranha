@@ -39,10 +39,10 @@ namespace truncators
 		public:
 
 			template <class Series1, class Series2, class ArgsTuple>
-			class get_type:	public degree::template get_type<Series1, Series2, ArgsTuple>,
+			class get_type:	public degree::template GetType<Series1, Series2, ArgsTuple>,
 				            public norm::template   get_type<Series1, Series2, ArgsTuple>
 			{
-					typedef typename degree::template get_type<Series1, Series2, ArgsTuple> DegreeAncestor;
+					typedef typename degree::template GetType<Series1, Series2, ArgsTuple> DegreeAncestor;
 					typedef typename norm::template   get_type<Series1, Series2, ArgsTuple> NormAncestor;
 
 					enum SelectedTruncator {degTruncator, normTruncator, nullTruncator};
@@ -58,11 +58,11 @@ namespace truncators
 					{
 						DegreeAncestor::init();
 					
-                        if(!DegreeAncestor::is_effective()) 
+                        if(!DegreeAncestor::isEffective()) 
 						{
 							NormAncestor::init();
 						
-                            if(!NormAncestor::is_effective()) 
+                            if(!NormAncestor::isEffective()) 
 							{
 								activeTruncator = nullTruncator;
 
@@ -128,7 +128,7 @@ namespace truncators
 					}
 
 
-					bool is_effective() const
+					bool isEffective() const
                     {
 						return activeTruncator != nullTruncator;
 					}

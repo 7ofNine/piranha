@@ -332,7 +332,7 @@ struct base_coded_functor
 
 	/// Toolbox for coded series multiplication.
 	/**
-	 * Intended to be inherited together with piranha::base_series_multiplier. It adds common methods for
+	 * Intended to be inherited together with piranha::BaseSeriesMultiplier. It adds common methods for
 	 * series multiplication through Kronecker codification. Requirements:
 	 * - input series must have at least one term;
 	 * - input series must have at least one argument.
@@ -403,12 +403,12 @@ struct base_coded_functor
 			/**
 			 * Initialises viability flag to false and sets up data members for future use. Densities are initialised
 			 * to zero and m_mp_gr's and m_fast_gr's sizes are initialised according to the arguments tuple stored in
-			 * piranha::base_series_multiplier.
+			 * piranha::BaseSeriesMultiplier.
 			 */
 			coded_multiplier():m_gr_is_viable(false),m_mp_h(mp_integer(0)),m_fast_h(0),
 				m_density1(0.),m_density2(0.)
 			{
-				// NOTE: beware the order of inheritance here, make sure to init base_series_multiplier before,
+				// NOTE: beware the order of inheritance here, make sure to init BaseSeriesMultiplier before,
 				//       otherwise m_argsTuple will be uninitialised here.
 				// Initialise the member tuples.
 				cm_init_vector_tuple<Series1>(m_mp_gr,derived_const_cast->m_argsTuple);
@@ -457,7 +457,7 @@ struct base_coded_functor
 					return;
 				}
 
-				if (trunc.is_effective())
+				if (trunc.isEffective())
 				{
 					derived_cast->ll_perform_multiplication(trunc);
 				} else

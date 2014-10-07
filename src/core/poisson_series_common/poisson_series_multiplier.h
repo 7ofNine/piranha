@@ -60,19 +60,19 @@ namespace piranha
 	/// Series multiplier specifically tuned for Poisson series.
 	/**
 	 * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
-	 * like piranha::base_series_multiplier.
+	 * like piranha::BaseSeriesMultiplier.
 	 */
 	class poisson_series_multiplier
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type:
-				public base_series_multiplier<Series1, Series2, ArgsTuple, Truncator,
+				public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator,
 				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
 				public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
 				typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type>
 			{
-					typedef base_series_multiplier< Series1, Series2, ArgsTuple, Truncator,
+					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator,
 						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
 						typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type> coded_ancestor;

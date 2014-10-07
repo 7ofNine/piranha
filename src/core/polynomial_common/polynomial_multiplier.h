@@ -363,15 +363,15 @@ struct polynomial_hash_functor:
 /// Series multiplier specifically tuned for polynomials.
 /**
  * This multiplier internally will use coded arithmetics if possible, otherwise it will operate just
- * like piranha::base_series_multiplier.
+ * like piranha::BaseSeriesMultiplier.
  */
 struct polynomial_multiplier
 {
 	template <class Series1, class Series2, class ArgsTuple, class Truncator>
-	class get_type: public base_series_multiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >,
+	class get_type: public BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >,
 		            public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> >
 	{
-			typedef base_series_multiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >    ancestor;
+			typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >    ancestor;
 			typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> > coded_ancestor;
 			
 			friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
@@ -443,7 +443,7 @@ struct polynomial_multiplier
 				bool breakout = false;
 				std::size_t cur_idx1_start = 0;
 				// TODO: probably we need to rethink a bit this, taking into account also the number of threads. Also drop the truncation limitation.
-				if (trunc.is_effective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) 
+				if (trunc.isEffective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) 
                 {
 					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 					threaded_blocked_multiplier<vf_type> t(block_size,size1,size2,0,1,0,cur_idx1_start,breakout,vm,s1,s2);

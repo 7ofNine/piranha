@@ -57,7 +57,7 @@ namespace piranha
 					}
 
 
-					bool is_effective() const
+					bool isEffective() const
 					{
 						return false;
 					}

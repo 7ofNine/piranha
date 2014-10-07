@@ -82,8 +82,8 @@ namespace piranha
 				Derived operator()(const Term &t) const
 				{
 					Derived retval;
-					retval.m_arguments = m_series.m_arguments;
-					retval.insert(t,retval.m_arguments);
+					retval.argumentsTuple = m_series.argumentsTuple;
+					retval.insert(t, retval.argumentsTuple);
 					return retval;
 				}
 
@@ -204,7 +204,7 @@ namespace piranha
 		protected:
 
 			// Data members.
-			ArgsTupleType                   m_arguments;
+			ArgsTupleType                   argumentsTuple;
 			static std::vector<std::string> unknown_data;
 	};
 
@@ -213,33 +213,33 @@ namespace piranha
 	std::vector<std::string> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args, term_name, series_name) piranha::NamedSeries<args, term_name, E0_SERIES(series_name)>
+#define E0_SERIES_NAMED_ANCESTOR(args, termName, seriesName) piranha::NamedSeries<args, termName, E0_SERIES(seriesName)>
 
-#define E1_SERIES_NAMED_ANCESTOR(args1, args2, term_name, series_name) piranha::NamedSeries<boost::tuple<args1, args2>, term_name, series_name>
+#define E1_SERIES_NAMED_ANCESTOR(args1, args2, termName, seriesName) piranha::NamedSeries<boost::tuple<args1, args2>, termName, seriesName>
 
-#define NAMED_SERIES_BOILERPLATE(series_name, N) \
+#define NAMED_SERIES_BOILERPLATE(seriesName, N) \
 public: \
-	explicit series_name() {} \
-	explicit series_name(const piranha::Psym &p) { \
+	explicit seriesName() {} \
+	explicit seriesName(const piranha::Psym &p) { \
 		this->template construct_from_psym<N>(p); \
 	} \
-	explicit series_name(const std::string &filename) \
+	explicit seriesName(const std::string &filename) \
 	{ \
 		this->construct_from_file(filename); \
 	} \
-	explicit series_name(const double &x) \
+	explicit seriesName(const double &x) \
 	{ \
-		*this = base_series_from_number(x, this->m_arguments); \
+		*this = base_series_from_number(x, this->argumentsTuple); \
 		this->trim(); \
 	} \
-	explicit series_name(const piranha::mp_rational &q) \
+	explicit seriesName(const piranha::mp_rational &q) \
 	{ \
-		*this = base_series_from_number(q, this->m_arguments); \
+		*this = base_series_from_number(q, this->argumentsTuple); \
 		this->trim(); \
 	} \
-	explicit series_name(const piranha::mp_integer &z) \
+	explicit seriesName(const piranha::mp_integer &z) \
 	{ \
-		*this = base_series_from_number(z, this->m_arguments); \
+		*this = base_series_from_number(z, this->argumentsTuple); \
 		this->trim(); \
 	}
 }

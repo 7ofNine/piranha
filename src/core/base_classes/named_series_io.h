@@ -75,9 +75,9 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream) const
 	{
-		named_series_print_plain<arguments_description>(stream, m_arguments);
+		named_series_print_plain<arguments_description>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
-		derived_const_cast->print_terms_plain(stream, m_arguments);
+		derived_const_cast->print_terms_plain(stream, argumentsTuple);
 	}
 
 
@@ -85,7 +85,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_pretty(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_pretty(stream, m_arguments);
+		derived_const_cast->print_terms_pretty(stream, argumentsTuple);
 	}
 
 
@@ -93,7 +93,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_tex(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_tex(stream, m_arguments);
+		derived_const_cast->print_terms_tex(stream, argumentsTuple);
 	}
 
 
@@ -226,13 +226,13 @@ namespace piranha
 			}
 
 			try {
-				term_type term(temp, m_arguments);
-				if (!term.m_cf.is_insertable(m_arguments) || !term.m_key.is_insertable(m_arguments)) 
+				term_type term(temp, argumentsTuple);
+				if (!term.m_cf.is_insertable(argumentsTuple) || !term.m_key.is_insertable(argumentsTuple)) 
                 {
 					piranha_throw(value_error,"term not insertable in series");
 				}
 
-				derived_cast->insert(term, derived_const_cast->m_arguments);
+				derived_cast->insert(term, derived_const_cast->argumentsTuple);
 
 			} catch (value_error &ve) 
             {
@@ -266,7 +266,7 @@ namespace piranha
 	{
 		piranha_assert(derived_const_cast->empty());
 		append_arg<N>(p);
-		derived_cast->base_construct_from_psym(p, N, m_arguments);
+		derived_cast->base_construct_from_psym(p, N, argumentsTuple);
 	}
 
 
@@ -274,7 +274,7 @@ namespace piranha
 	inline const typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::ArgsTupleType &
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::arguments() const
 	{
-		return m_arguments;
+		return argumentsTuple;
 	}
 
 
@@ -293,7 +293,7 @@ namespace piranha
 			}
 		}
 
-		m_arguments = argsTuple;
+		argumentsTuple = argsTuple;
 	}
 
 

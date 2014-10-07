@@ -49,7 +49,7 @@ namespace piranha
 	 * This class is meant to be extended to build specific multipliers.
 	 */
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
-	class base_series_multiplier
+	class BaseSeriesMultiplier
 	{
 			friend class base_insert_multiplication_result;
 		protected:
@@ -142,7 +142,7 @@ namespace piranha
 
 		public:
 
-			base_series_multiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
+			BaseSeriesMultiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
 				m_s1(s1), m_s2(s2), m_argsTuple(argsTuple), m_retval(retval)
 			{
 				piranha_assert(s1.length() > 0 && s2.length() > 0);
@@ -183,10 +183,10 @@ namespace piranha
 
 
 			struct plain_worker {
-				plain_worker(base_series_multiplier &mult, Series1 &retval):
+				plain_worker(BaseSeriesMultiplier &mult, Series1 &retval):
 					m_mult(mult),m_retval(retval),m_terms1(mult.m_terms1)
 				{}
-				plain_worker(base_series_multiplier &mult, Series1 &retval,
+				plain_worker(BaseSeriesMultiplier &mult, Series1 &retval,
 					std::vector<std::vector<term_type1 const *> > &split1, const std::size_t &idx):
 					m_mult(mult),m_retval(retval),m_terms1(split1[idx])
 				{}
@@ -196,7 +196,7 @@ namespace piranha
 					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_terms1,m_mult.m_terms2,m_mult.m_argsTuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
-					if (trunc.is_effective()) {
+					if (trunc.isEffective()) {
 						plain_implementation(trunc);
 					} else {
 						plain_implementation(
@@ -220,7 +220,7 @@ namespace piranha
 						<boost::tuples::length<mult_res>::value * sizeof(term_type1)>();
 					blocked_multiplication(block_size,size1,size2,pf);
 				}
-				base_series_multiplier		&m_mult;
+				BaseSeriesMultiplier		&m_mult;
 				Series1				&m_retval;
 				std::vector<term_type1 const *>	&m_terms1;
 			};

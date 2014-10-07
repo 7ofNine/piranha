@@ -83,7 +83,7 @@ namespace truncators {
 					}
 
 
-					bool is_effective() const
+					bool isEffective() const
 					{
 						return m_truncation_level != 0;
 					}
@@ -153,7 +153,7 @@ namespace truncators {
 					
 					void init()
 					{
-						if (is_effective()) 
+						if (isEffective()) 
 						{
 							piranha_assert(m_terms1.size() >= 1 && m_terms2.size() >= 1);
 							const norm_comparison<ArgsTuple> cmp(m_argsTuple);

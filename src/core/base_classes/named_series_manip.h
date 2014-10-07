@@ -65,7 +65,7 @@ namespace piranha
 		// Do something only if we are not swapping with self.
 		if (derivedCast != &ps2)
         {
-			named_series_swap<ArgsTupleType>::run(m_arguments, ps2.m_arguments);
+			named_series_swap<ArgsTupleType>::run(argumentsTuple, ps2.argumentsTuple);
 			derivedCast->base_swap(ps2);
 		}
 	}
@@ -113,7 +113,7 @@ namespace piranha
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const Psym &arg)
 	{
 		piranha_assert(derivedConstCast->empty());
-		named_series_append_arg<arguments_description>::run(s, m_arguments, arg);
+		named_series_append_arg<arguments_description>::run(s, argumentsTuple, arg);
 	}
 
 
@@ -124,7 +124,7 @@ namespace piranha
 		p_static_check(N >= 0, "Trying to append argument with invalid index.");
 		piranha_assert(derivedConstCast->empty());
 		// Check that the argument is not already present in this set.
-		for (VectorPsym::iterator it = m_arguments.template get<N>().begin(); it != m_arguments.template get<N>().end(); ++it) 
+		for (VectorPsym::iterator it = argumentsTuple.template get<N>().begin(); it != argumentsTuple.template get<N>().end(); ++it) 
 		{
 			if (arg == (*it)) 
 			{
@@ -133,7 +133,7 @@ namespace piranha
 			}
 		}
 
-		m_arguments.template get<N>().push_back(arg);
+		argumentsTuple.template get<N>().push_back(arg);
 	}
 
 
@@ -290,18 +290,18 @@ namespace piranha
 	{
 		// Build an empty retval and assign it the same arguments as this.
 		Derived retval;
-		retval.m_arguments = m_arguments;
+		retval.argumentsTuple = argumentsTuple;
 		// Build a tuple of layouts.
 		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
 
 		// Get the relative layouts of this wrt ps2 and put the result into l.
-		named_series_get_layout<ArgsTupleType>::run(retval.m_arguments, ps2.arguments(), l);
+		named_series_get_layout<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
 		
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.m_arguments, ps2.arguments(), l);
+		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derivedConstCast->apply_layout_to_terms(l, retval, retval.m_arguments);
+		derivedConstCast->apply_layout_to_terms(l, retval, retval.argumentsTuple);
 		
 		// Finally, swap the contents of retval with this.
 		swap(retval);
@@ -388,16 +388,16 @@ namespace piranha
 	{
 		typedef typename Ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
-		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
+		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
 		derivedConstCast->trim_test_terms(trim_flags);
 
 		if (trim_flags_proceed(trim_flags)) 
 		{
 			// First let's do the arguments.
-			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, m_arguments);
+			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
 			// Let's proceed to the terms now.
 			Derived tmp;
-			derivedCast->trim_terms(trim_flags, tmp, m_arguments);
+			derivedCast->trim_terms(trim_flags, tmp, argumentsTuple);
 			derivedCast->base_swap(tmp);
 		}
 	}
@@ -428,8 +428,8 @@ namespace piranha
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
 	{
 		typedef typename Derived::term_type::cf_type::
-			template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-			template sub_cache_selector<SubSeries, boost::tuples::null_type,ArgsTupleType>
+			template sub_cache_selector<SubSeries, typename Derived::term_type::key_type::
+			template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 			::type, ArgsTupleType>::type    sub_caches_type;
 
 		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type    pos_tuple_type;
@@ -445,13 +445,13 @@ namespace piranha
 		s_copy.merge_args(this_copy);
 
 		// Init sub caches using s_copy and this_copy.m_arguments.
-		init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,&this_copy.m_arguments);
+		init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);
 
-		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), this_copy.m_arguments);
+		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), this_copy.argumentsTuple);
 
-		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.m_arguments));
+		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
 
-		retval.m_arguments = this_copy.m_arguments;
+		retval.argumentsTuple = this_copy.argumentsTuple;
 		retval.trim();
 		return retval;
 	}
@@ -466,13 +466,13 @@ namespace piranha
 		}
 
 		std::vector<std::vector<Derived> > retval;
-		derivedConstCast->base_split(retval,n,m_arguments);
+		derivedConstCast->base_split(retval, n, argumentsTuple);
 		const std::size_t size = retval.size();
 		for (std::size_t i = 0; i < size; ++i) 
 		{
-			retval[i][0].m_arguments = m_arguments;
+			retval[i][0].argumentsTuple = argumentsTuple;
 			retval[i][0].trim();
-			retval[i][1].m_arguments = m_arguments;
+			retval[i][1].argumentsTuple = argumentsTuple;
 			retval[i][1].trim();
 		}
 		return retval;
@@ -493,14 +493,14 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
-		const std::vector<typename Derived::term_type> tmp(derivedConstCast->flatten_terms(m_arguments));
+		const std::vector<typename Derived::term_type> tmp(derivedConstCast->flatten_terms(argumentsTuple));
 		std::vector<Derived> retval;
 		const typename std::vector<typename Derived::term_type>::const_iterator itf(tmp.end());
 		for  (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != itf; ++it) 
 		{
 			Derived tmp_series;
-			tmp_series.insert(*it, m_arguments);
-			tmp_series.m_arguments = m_arguments;
+			tmp_series.insert(*it, argumentsTuple);
+			tmp_series.argumentsTuple = argumentsTuple;
 			tmp_series.trim();
 			retval.push_back(Derived());
 			retval.back().swap(tmp_series);

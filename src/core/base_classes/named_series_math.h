@@ -52,11 +52,11 @@ namespace piranha
 			merge_args(s2);
 			if (Sign) 
 			{
-				derived_cast->base_add(s2, m_arguments);
+				derived_cast->base_add(s2, argumentsTuple);
 
 			} else 
 			{
-				derived_cast->base_subtract(s2, m_arguments);
+				derived_cast->base_subtract(s2, argumentsTuple);
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace piranha
 		// First we merge the arguments of the two series.
 		merge_args(s2);
 		// Then we perform the multiplication.
-		derived_cast->base_mult_by(s2, m_arguments);
+		derived_cast->base_mult_by(s2, argumentsTuple);
 		trim();
 		return *derived_cast;
 	}
@@ -107,7 +107,7 @@ namespace piranha
 	template <class Number>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_number_helper(const Number &x)
 	{
-		derived_cast->base_mult_by(x, m_arguments);
+		derived_cast->base_mult_by(x, argumentsTuple);
 		trim();
 		return *derived_cast;
 	}
@@ -123,7 +123,7 @@ namespace piranha
 	template <class Number>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
 	{
-		derived_cast->base_divide_by(x, m_arguments);
+		derived_cast->base_divide_by(x, argumentsTuple);
 		trim();
 		return *derived_cast;
 	}
@@ -140,8 +140,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
 	{
-		Derived retval(derived_const_cast->base_pow(x, m_arguments));
-		retval.m_arguments = m_arguments;
+		Derived retval(derived_const_cast->base_pow(x, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
 	}
@@ -150,8 +150,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const mp_rational &q) const
 	{
-		Derived retval(derived_const_cast->base_pow(q, m_arguments));
-		retval.m_arguments = m_arguments;
+		Derived retval(derived_const_cast->base_pow(q, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
 	}
@@ -160,8 +160,8 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::root(const int &n) const
 	{
-		Derived retval(derived_const_cast->base_root(n, m_arguments));
-		retval.m_arguments = m_arguments;
+		Derived retval(derived_const_cast->base_root(n, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
 	}
@@ -173,9 +173,9 @@ namespace piranha
 	{
 		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
 		const Psym p(name);
-		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p),m_arguments);
-		Derived retval(derived_const_cast->base_partial(n, pos_tuple, m_arguments));
-		retval.m_arguments = m_arguments;
+		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), argumentsTuple);
+		Derived retval(derived_const_cast->base_partial(n, pos_tuple, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
 	}
