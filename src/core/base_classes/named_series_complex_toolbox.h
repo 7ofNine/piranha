@@ -38,13 +38,13 @@ namespace piranha
 		public:
 			RealDerived real() const {
 				RealDerived retval(derived_const_cast->base_real(derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
 				RealDerived retval(derived_const_cast->base_imag(derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -60,19 +60,19 @@ namespace piranha
 			}
 			RealDerived abs() const {
 				RealDerived retval = derived_const_cast->base_abs(derived_const_cast->arguments());
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived abs2() const {
 				RealDerived retval = derived_const_cast->base_abs2(derived_const_cast->arguments());
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			Derived conjugate() const {
 				Derived retval = derived_const_cast->base_conjugate(derived_const_cast->arguments());
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -81,7 +81,7 @@ namespace piranha
 		protected:
 
 			void construct_from_real(const RealDerived &r) {
-				derived_cast->set_arguments(r.arguments());
+				derived_cast->setArguments(r.arguments());
 				derived_cast->base_construct_from_real(r, derived_cast->arguments());
 				derived_cast->trim();
 			}
@@ -89,7 +89,7 @@ namespace piranha
 
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i)
 			{
-				derived_cast->set_arguments(r.arguments());
+				derived_cast->setArguments(r.arguments());
 				derived_cast->merge_args(i);
 				// NOTE: here we have to copy r and merge its arguments with i, otherwise
 				// there will be arguments mismatches. All series, this, r and i must share the

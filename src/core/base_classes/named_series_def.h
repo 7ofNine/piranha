@@ -60,16 +60,16 @@ namespace piranha
 	class NamedSeries
 	{
 			template <class T, class Enable>
-			friend struct named_series_add_selector;
+			friend struct NamedSeriesAddSelector;
 
 			template <class T, class Enable>
-			friend struct named_series_subtract_selector;
+			friend struct NamedSeriesSubtractSelector;
 
 			template <class T, class Enable>
-			friend struct named_series_multiply_selector;
+			friend struct NamedSeriesMultiplySelector;
 
 			template <class T, class Enable>
-			friend struct named_series_equality_selector;
+			friend struct NamedSeriesEqualitySelector;
 
 		public:
 			typedef ArgsDescr arguments_description;
@@ -93,9 +93,9 @@ namespace piranha
 
 		public:
 
-			typedef boost::transform_iterator<s_iterator_generator, typename series_container<Term>::type::const_iterator> s_iterator;
-			s_iterator s_begin() const;
-			s_iterator s_end() const;
+			typedef boost::transform_iterator<s_iterator_generator, typename SeriesContainer<Term>::type::const_iterator> SeriesIterator;
+			SeriesIterator s_begin() const;
+			SeriesIterator s_end() const;
 			std::complex<Derived> complex() const;
 
 			void print(std::ostream &stream = std::cout) const;
@@ -115,7 +115,7 @@ namespace piranha
 			
             const ArgsTupleType &arguments() const;
 			
-            void set_arguments(const ArgsTupleType &);
+            void setArguments(const ArgsTupleType &);
 
 			template <class T>
 			bool operator==(const T &) const;
@@ -146,10 +146,10 @@ namespace piranha
 			Derived sub(const std::string &, const SubSeries &) const;
 
 			template <class Key>
-			Derived series_from_key(const Key &) const;
+			Derived seriesFromKey(const Key &) const;
 
 			template <class Cf>
-			Derived series_from_cf(const Cf &) const;
+			Derived seriesFromCf(const Cf &) const;
 
 			std::vector<std::vector<Derived> > split(const int &n = 0) const;
 

@@ -31,16 +31,20 @@ namespace piranha
 {
 	// TODO: use std::pow instead of pow method and inv().
 	template <class T>
-	struct named_series_arithmetics
+	struct NamedSeriesArithmetics
 	{
 		T inv(const T &orig) const
 		{
 			return orig.pow(-1);
 		}
+
+
 		void multiply(T &orig, const T &other) const
 		{
 			orig *= other;
 		}
+
+
 		template <class U>
 		T pow(const T &orig, const U &y) const
 		{

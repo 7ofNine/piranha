@@ -40,7 +40,7 @@ namespace piranha
 			std::complex<Derived> ei() const
 			{
 				std::complex<Derived> retval(base_ei(derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}

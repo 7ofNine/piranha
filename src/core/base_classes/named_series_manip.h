@@ -449,10 +449,11 @@ namespace piranha
 
 		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), this_copy.argumentsTuple);
 
-		Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
+		Derived retval(this_copy.template base_sub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
 
 		retval.argumentsTuple = this_copy.argumentsTuple;
 		retval.trim();
+
 		return retval;
 	}
 
@@ -498,12 +499,13 @@ namespace piranha
 		const typename std::vector<typename Derived::term_type>::const_iterator itf(tmp.end());
 		for  (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != itf; ++it) 
 		{
-			Derived tmp_series;
-			tmp_series.insert(*it, argumentsTuple);
-			tmp_series.argumentsTuple = argumentsTuple;
-			tmp_series.trim();
+			Derived tmpSeries;
+			tmpSeries.insert(*it, argumentsTuple);
+			tmpSeries.argumentsTuple = argumentsTuple;
+			tmpSeries.trim();
+
 			retval.push_back(Derived());
-			retval.back().swap(tmp_series);
+			retval.back().swap(tmpSeries);
 		}
 
 		return retval;

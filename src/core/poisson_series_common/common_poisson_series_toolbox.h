@@ -60,11 +60,11 @@ namespace piranha
 				Derived copy(*derived_const_cast), tmp;
 				typename Derived::ArgsTupleType tmp_args;
 				tmp_args.template get<1>() = derived_const_cast->arguments().template get<0>();
-				tmp.set_arguments(tmp_args);
+				tmp.setArguments(tmp_args);
 				copy.merge_args(tmp);
 				// Now we can call in the ei method from above.
 				std::complex<Derived> retval(copy.base_ei(copy.arguments()));
-				retval.set_arguments(copy.arguments());
+				retval.setArguments(copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -100,7 +100,7 @@ namespace piranha
 				// Assign as tmp's trig arguments series's polynomial arguments.
 				ArgsTupleType tmp_args;
 				tmp_args.template get<1>() = series.arguments().template get<0>();
-				tmp.set_arguments(tmp_args);
+				tmp.setArguments(tmp_args);
 				// After the next line, s_copy's args layout is compatible with tmp's.
 				s_copy.merge_args(tmp);
 				// After the next line, this_copy's args layout is compatible with s_copy's
@@ -117,7 +117,7 @@ namespace piranha
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.arguments()));
-				retval.set_arguments(this_copy.arguments());
+				retval.setArguments(this_copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -146,7 +146,7 @@ namespace piranha
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
 					sub_caches, this_copy.arguments()));
-				retval.set_arguments(this_copy.arguments());
+				retval.setArguments(this_copy.arguments());
 				retval.trim();
 				return retval;
 			}
@@ -160,7 +160,7 @@ namespace piranha
 				typedef typename FourierSeries::term_type fourier_term;
 				typename Ntuple<VectorPsym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
-				retval.set_arguments(argsTuple);
+				retval.setArguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 					if (!it->m_cf.is_single_cf()) {
@@ -190,7 +190,7 @@ namespace piranha
 					const pos_tuple_type new_pos_tuple = psyms2pos(VectorPsym(1,p),this_copy.arguments());
 
 					retval = this_copy.base_integrate(new_pos_tuple,this_copy.arguments());
-					retval.set_arguments(this_copy.arguments());
+					retval.setArguments(this_copy.arguments());
 					retval.trim();
 				} else 
                 {

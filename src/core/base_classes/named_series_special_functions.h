@@ -46,7 +46,7 @@ namespace piranha
 			Derived besselJ(const int &order) const 
             {
 				Derived retval(derived_const_cast->base_besselJ(order, derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -56,7 +56,7 @@ namespace piranha
 			Derived dbesselJ(const int &order) const 
             {
 				Derived retval(derived_const_cast->base_dbesselJ(order, derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -66,7 +66,7 @@ namespace piranha
 			Derived besselJ_div_m(const int &order, const int &m) const 
             {
 				Derived retval(derived_const_cast->base_besselJ_div_m(order, m, derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -74,11 +74,13 @@ namespace piranha
 
 			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit) const
 			{
-				if (iter_limit < 0) {
+				if (iter_limit < 0)
+                {
 					piranha_throw(value_error,"iteration limit in hyperF must be non-negative");
 				}
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,iter_limit,derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+
+				Derived retval(derived_const_cast->base_hyperF(a_list, b_list, iter_limit, derived_const_cast->arguments()));
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -86,8 +88,8 @@ namespace piranha
 
 			Derived hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
 			{
-				Derived retval(derived_const_cast->base_hyperF(a_list,b_list,-1,derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				Derived retval(derived_const_cast->base_hyperF(a_list, b_list, -1, derived_const_cast->arguments()));
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -98,8 +100,8 @@ namespace piranha
 				if (iter_limit < 0) {
 					piranha_throw(value_error,"iteration limit in dhyperF must be non-negative");
 				}
-				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,iter_limit,derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				Derived retval(derived_const_cast->base_dhyperF(n, a_list, b_list, iter_limit, derived_const_cast->arguments()));
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -107,8 +109,8 @@ namespace piranha
 
 			Derived dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list) const
 			{
-				Derived retval(derived_const_cast->base_dhyperF(n,a_list,b_list,-1,derived_const_cast->arguments()));
-				retval.set_arguments(derived_const_cast->arguments());
+				Derived retval(derived_const_cast->base_dhyperF(n, a_list, b_list, -1, derived_const_cast->arguments()));
+				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
@@ -121,7 +123,7 @@ namespace piranha
 			 */
 			Derived legendrePnm(const int &n, const int &m) const
 			{
-				return impl_legendrePnm(n,m,0);
+				return impl_legendrePnm(n, m, 0);
 			}
 
 
@@ -132,7 +134,7 @@ namespace piranha
 			 */
 			Derived legendrePnm(const int &n, const int &m, const Derived &self_qc) const
 			{
-				return impl_legendrePnm(n,m,&self_qc);
+				return impl_legendrePnm(n, m, &self_qc);
 			}
 
 
@@ -145,7 +147,7 @@ namespace piranha
 				if (n < 0) {
 					piranha_throw(value_error,"please select a non-negative order");
 				}
-				return legendrePnm(n,0);
+				return legendrePnm(n, 0);
 			}
 
 
@@ -153,7 +155,7 @@ namespace piranha
             {
 				const std::complex<Derived> ei_theta(theta.ei());
 				std::complex<Derived> retval((phi * m).ei());
-				retval *= ei_theta.real().legendrePnm(n,m,ei_theta.imag());
+				retval *= ei_theta.real().legendrePnm(n, m, ei_theta.imag());
 				return retval;
 			}
 
@@ -171,7 +173,7 @@ namespace piranha
 					retval = emi_phi.pow(m);
 				}
 
-				retval *= ei_theta.real().legendrePnm(n,m,ei_theta.imag());
+				retval *= ei_theta.real().legendrePnm(n, m, ei_theta.imag());
 				return retval;
 			}
 
@@ -207,9 +209,9 @@ namespace piranha
 					eib2((beta/2).ei());
 				const Derived cos_t(eit.real()), sin_t(eit.imag());
 				std::complex<Derived> final_factor((gamma*(-m)).ei());
-				typedef PowerCache<Derived,int,named_series_arithmetics<Derived> > real_cache_type;
+				typedef PowerCache<Derived, int, NamedSeriesArithmetics<Derived> > real_cache_type;
 				typedef PowerCache<std::complex<Derived>,int,
-					named_series_arithmetics<std::complex<Derived> > > complex_cache_type;
+					NamedSeriesArithmetics<std::complex<Derived> > > complex_cache_type;
 
 				complex_cache_type
 					cp(ei_phi,emi_phi),

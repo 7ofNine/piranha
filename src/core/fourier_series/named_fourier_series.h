@@ -29,27 +29,30 @@
 #include "../exceptions.h"
 #include "../Psym.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
+#define derivedConstCast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
 	/// Named Fourier series toolbox.
 	template <class Derived>
-	class named_fourier_series
+	class NamedFourierSeries
 	{
 		public:
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type pos_tuple_type;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type PositionTupleType;
 				const Psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p),derived_const_cast->arguments());
+				const PositionTupleType positionTuple = psyms2pos(VectorPsym(1,p), derivedConstCast->arguments());
 				Derived retval;
-				if (pos_tuple.get_head()[0].first) {
-					retval = derived_const_cast->base_integrate(pos_tuple,derived_const_cast->arguments());
-					retval.set_arguments(derived_const_cast->arguments());
+				if (positionTuple.get_head()[0].first)
+                {
+					retval = derivedConstCast->base_integrate(positionTuple, derivedConstCast->arguments());
+					retval.setArguments(derivedConstCast->arguments());
 					retval.trim();
-				} else {
+
+				} else
+                {
 					piranha_throw(value_error,"cannot integrate fourier series if integration variable is not present among the series' arguments");
 				}
 				return retval;
@@ -57,7 +60,7 @@ namespace piranha
 	};
 }
 
-#undef derived_const_cast
+#undef derivedConstCast
 #undef derived_cast
 
 #endif

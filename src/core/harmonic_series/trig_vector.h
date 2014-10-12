@@ -58,7 +58,7 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> >
+			class SubCache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> >
 			{
 					typedef PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> > ancestor;
 
@@ -70,7 +70,7 @@ namespace piranha
 
 				public:
 
-					sub_cache():ancestor(), m_status(zero), m_errmsg() {}
+					SubCache():ancestor(), m_status(zero), m_errmsg() {}
 
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
@@ -154,7 +154,7 @@ namespace piranha
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector 
 			{
-				typedef boost::tuples::cons<sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
+				typedef boost::tuples::cons<SubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -166,12 +166,12 @@ namespace piranha
 
 			// Ctors.
 			/// Default ctor.
-			TrigVector(): ancestor(), m_flavour(true) {}
+			TrigVector(): ancestor(), flavour(true) {}
 
 
 			/// Copy ctor from different position.
 			template <int Position2>
-			TrigVector(const TrigVector<T, Position2> &t2): ancestor(), m_flavour(t2.get_flavour())
+			TrigVector(const TrigVector<T, Position2> &t2): ancestor(), flavour(t2.get_flavour())
 			{
 				this->resize(t2.size());
 				std::copy(t2.begin(), t2.end() ,this->begin());
@@ -180,7 +180,7 @@ namespace piranha
 
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit TrigVector(const std::string &s, const ArgsTuple &): ancestor(), m_flavour(true)
+			explicit TrigVector(const std::string &s, const ArgsTuple &): ancestor(), flavour(true)
 			{
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
@@ -201,7 +201,7 @@ namespace piranha
 				// Take care of flavour.
 				if (*sd.back().c_str() == 's') 
 				{
-					m_flavour = false;
+					flavour = false;
 
 				} else if (*sd.back().c_str() != 'c') 
 				{
@@ -211,7 +211,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			explicit TrigVector(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a), m_flavour(true) {}
+			explicit TrigVector(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a), flavour(true) {}
 
 
 			// Math.
@@ -267,14 +267,14 @@ namespace piranha
 			/// Get flavour.
 			bool get_flavour() const
 			{
-				return m_flavour;
+				return flavour;
 			}
 
 
 			/// Set flavour.
 			void set_flavour(bool f)
 			{
-				m_flavour = f;
+				flavour = f;
 			}
 
 
@@ -291,7 +291,7 @@ namespace piranha
 					outStream << this->separator;
 				}
 
-				if (m_flavour) 
+				if (flavour) 
 				{
 					outStream << 'c';
 
@@ -307,7 +307,7 @@ namespace piranha
 			{
 				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
 
-				if (m_flavour) 
+				if (flavour) 
 				{
 					outStream << "cos(";
 
@@ -352,7 +352,7 @@ namespace piranha
 			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
-				if (m_flavour) 
+				if (flavour) 
 				{
 					outStream << "\\cos\\left(";
 
@@ -394,7 +394,7 @@ namespace piranha
 
 			bool is_unity() const
 			{
-				return (this->elements_are_zero() && m_flavour);
+				return (this->elements_are_zero() && flavour);
 			}
 
 
@@ -487,7 +487,7 @@ namespace piranha
 					}
 				}
 
-				if (m_flavour) 
+				if (flavour) 
 				{
 					return std::cos(retval);
 
@@ -525,7 +525,7 @@ namespace piranha
 			void swap(TrigVector &t2)
 			{
 				ancestor::swap(t2);
-				std::swap(m_flavour,t2.m_flavour);
+				std::swap(flavour,t2.flavour);
 			}
 
 
@@ -533,7 +533,7 @@ namespace piranha
 			TrigVector trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
 			{
 				TrigVector retval(ancestor::trim(tf,argsTuple));
-				retval.m_flavour = m_flavour;
+				retval.flavour = flavour;
 				return retval;
 			}
 
@@ -542,23 +542,23 @@ namespace piranha
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const
 			{
-				return (!m_flavour && this->elements_are_zero());
+				return (!flavour && this->elements_are_zero());
 			}
 
 
 			/// Equality test.
 			bool operator==(const TrigVector &t2) const
 			{
-				return (m_flavour == t2.m_flavour && this->elements_equal_to(t2));
+				return (flavour == t2.flavour && this->elements_equal_to(t2));
 			}
 
 
 			/// Less than.
 			bool operator<(const TrigVector &t2) const
 			{
-				if (m_flavour < t2.m_flavour) {
+				if (flavour < t2.flavour) {
 					return true;
-				} else if (m_flavour > t2.m_flavour) {
+				} else if (flavour > t2.flavour) {
 					return false;
 				}
 				return this->lex_comparison(t2);
@@ -572,7 +572,7 @@ namespace piranha
 			std::size_t hash_value() const
 			{
 				std::size_t retval = this->elements_hasher();
-				boost::hash_combine(retval, m_flavour);
+				boost::hash_combine(retval, flavour);
 				return retval;
 			}
 
@@ -591,10 +591,10 @@ namespace piranha
 					TrigVector copy(*this);
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					// Change the flavour of the resulting key.
-					copy.m_flavour = !m_flavour;
+					copy.flavour = !flavour;
 					piranha_assert(pos < this->size());
 					retval = Series::base_series_from_key(copy,argsTuple);
-					if (m_flavour) 
+					if (flavour) 
 					{
 						retval.base_mult_by(-1,argsTuple);
 					}
@@ -702,7 +702,7 @@ namespace piranha
 					tmp_ta.set_flavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					piranha_assert(retval.empty());
-					if (m_flavour) 
+					if (flavour) 
 					{
 						retval.base_add(orig_cos, argsTuple);
 						retval.base_mult_by(
@@ -735,11 +735,11 @@ namespace piranha
 				TrigVector retval;
 				if (y < 0) 
 				{
-					if (int_zero && !m_flavour) 
+					if (int_zero && !flavour) 
 					{
 						// 0**-y.
 						piranha_throw(zero_division_error,"cannot divide by zero");
-					} else if (int_zero && m_flavour) 
+					} else if (int_zero && flavour) 
 					{
 						// 1**-y == 1. Don't do anything because retval is already initialized properly.
 						;
@@ -754,11 +754,11 @@ namespace piranha
 					;
 				} else 
 				{
-					if (int_zero && !m_flavour) 
+					if (int_zero && !flavour) 
 					{
 						// 0**y == 0.
-						retval.m_flavour = false;
-					} else if (int_zero && m_flavour) 
+						retval.flavour = false;
+					} else if (int_zero && flavour) 
 					{
 						// 1**y == 1. Don't do anything because retval is already initialized properly.
 						;
@@ -773,7 +773,7 @@ namespace piranha
 
 		private:
 			//true: cos; false: sin  
-			bool m_flavour;
+			bool flavour;
 	};
 
 

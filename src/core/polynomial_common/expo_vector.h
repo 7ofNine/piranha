@@ -57,13 +57,13 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
+			class SubCache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
 			{
 					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
 
 				public:
 
-					sub_cache():ancestor() {}
+					SubCache():ancestor() {}
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
@@ -101,7 +101,7 @@ namespace piranha
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector 
             {
-				typedef boost::tuples::cons<sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
+				typedef boost::tuples::cons<SubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>

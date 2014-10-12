@@ -26,11 +26,11 @@
 namespace piranha
 {
 	/// Generic series multiplier.
-	class series_multiplier
+	class SeriesMultiplier
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
-			class get_type:
+			class GetType:
 				public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >
 			{
 					typedef BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator,
@@ -42,7 +42,7 @@ namespace piranha
 					typedef ArgsTuple ArgsTupleType;
 					typedef typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator_type;
 
-					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):ancestor(s1, s2, retval, argsTuple) {}
+					GetType(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):ancestor(s1, s2, retval, argsTuple) {}
 
 					/// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()

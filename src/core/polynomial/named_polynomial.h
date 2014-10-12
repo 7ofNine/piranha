@@ -49,7 +49,7 @@ namespace piranha
 				if (pos_tuple.get_head()[0].first) 
 				{
 					retval = derived_const_cast->base_integrate(pos_tuple, derived_const_cast->arguments());
-					retval.set_arguments(derived_const_cast->arguments());
+					retval.setArguments(derived_const_cast->arguments());
 					retval.trim();
 
 				} else 

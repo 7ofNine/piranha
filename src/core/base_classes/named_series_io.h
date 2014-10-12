@@ -279,7 +279,7 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::set_arguments(const ArgsTupleType &argsTuple)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::setArguments(const ArgsTupleType &argsTuple)
 	{
 		typedef typename Derived::const_iterator const_iterator;
 
@@ -303,7 +303,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
-	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_from_key(const Key &key) const
+	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromKey(const Key &key) const
 	{
 		Derived retval(derived_const_cast->base_series_from_key(key, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -318,7 +318,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>
-	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::series_from_cf(const Cf &cf) const
+	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromCf(const Cf &cf) const
 	{
 		Derived retval(derived_const_cast->base_series_from_cf(cf, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -328,16 +328,16 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_iterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_begin() const
+	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_begin() const
 	{
-		return s_iterator(derived_const_cast->begin(), s_iterator_generator(*derived_const_cast));
+		return SeriesIterator(derived_const_cast->begin(), s_iterator_generator(*derived_const_cast));
 	}
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_iterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_end() const
+	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_end() const
 	{
-		return s_iterator(derived_const_cast->end(), s_iterator_generator(*derived_const_cast));
+		return SeriesIterator(derived_const_cast->end(), s_iterator_generator(*derived_const_cast));
 	}
 
 

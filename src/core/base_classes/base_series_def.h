@@ -50,20 +50,20 @@ namespace piranha
 {
 	// Implementation of echelon level determination.
 	template <class CfSeries, class Enable = void>
-	struct echelon_level_impl
+	struct EchelonLevelImpl
 	{
-		static const int value = echelon_level_impl<typename CfSeries::term_type::cf_type>::value + 1;
+		static const int value = EchelonLevelImpl<typename CfSeries::term_type::cf_type>::value + 1;
 	};
 
 	template <class FinalCf>
-	struct echelon_level_impl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<base_series_tag,FinalCf>::value>::type>
+	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<base_series_tag,FinalCf>::value>::type>
 	{
 		static const int value = 0;
 	};
 
 	// Struct to define the container used in series - like a template typedef.
 	template <class Term>
-	struct series_container
+	struct SeriesContainer
 	{
 		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, counting_allocator<Term, std::allocator<Term> > > type;
 	};
@@ -135,10 +135,10 @@ namespace piranha
 			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
 			 * will be used to provide the hash values for terms.
 			 */
-			typedef typename series_container<term_type>::type container_type;
+			typedef typename SeriesContainer<term_type>::type container_type;
 
 			/// Echelon level.
-			static const int echelon_level = echelon_level_impl<typename term_type::cf_type>::value;
+			static const int echelon_level = EchelonLevelImpl<typename term_type::cf_type>::value;
 
 			/// Type resulting from series evaluation.
 			/**
