@@ -292,7 +292,7 @@ namespace piranha
 		Derived retval;
 		retval.argumentsTuple = argumentsTuple;
 		// Build a tuple of layouts.
-		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
+		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type l;
 
 		// Get the relative layouts of this wrt ps2 and put the result into l.
 		named_series_get_layout<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
@@ -386,7 +386,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename Ntuple<std::vector<char>, Derived::echelon_level + 1>::type trim_flags_type;
+		typedef typename Ntuple<std::vector<char>, Derived::echelonLevel + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
 		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
 		derivedConstCast->trim_test_terms(trim_flags);
@@ -432,7 +432,7 @@ namespace piranha
 			template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 			::type, ArgsTupleType>::type    sub_caches_type;
 
-		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type    pos_tuple_type;
+		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type    pos_tuple_type;
 
 		PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");

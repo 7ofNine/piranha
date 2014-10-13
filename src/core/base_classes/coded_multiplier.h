@@ -341,8 +341,8 @@ struct base_coded_functor
 	class coded_multiplier
 	{
 			// Some static checks.
-			PIRANHA_STATIC_CHECK(Series1::echelon_level == Series2::echelon_level,"");
-			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == Series1::echelon_level + 1,"");
+			PIRANHA_STATIC_CHECK(Series1::echelonLevel == Series2::echelonLevel, "");
+			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == Series1::echelonLevel + 1, "");
 			// Main typedefs, for internal use.
 			// min/max type for input series.
 			typedef typename cm_tuple<Series1>::type_minmax minmax_type;
@@ -425,7 +425,7 @@ struct base_coded_functor
 				std::vector<typename Series1::TermType> f_terms1;
 				std::vector<typename Series2::TermType> f_terms2;
 				// If echelon level is more than zero we need to flatten out the series.
-				if (Series1::echelon_level)
+				if (Series1::echelonLevel)
 				{
 					f_terms1 = derived_cast->m_s1.flatten_terms(derived_cast->m_argsTuple);
 					f_terms2 = derived_cast->m_s2.flatten_terms(derived_cast->m_argsTuple);

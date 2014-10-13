@@ -283,8 +283,8 @@ namespace piranha
 	{
 		typedef typename Derived::const_iterator const_iterator;
 
-		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+		const const_iterator itf = derived_const_cast->end();
+		for (const_iterator it = derived_const_cast->begin(); it != itf; ++it) 
         {
 			if (!it->cf.is_insertable(argsTuple) || !it->key.is_insertable(argsTuple) ||
 				it->cf.needs_padding(argsTuple) || it->key.needs_padding(argsTuple))
@@ -299,13 +299,13 @@ namespace piranha
 
 	/// Construct series from a key.
 	/**
-	 * @see piranha::BaseSeries::base_series_from_key.
+	 * @see piranha::BaseSeries::baseSeriesFromKey.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromKey(const Key &key) const
 	{
-		Derived retval(derived_const_cast->base_series_from_key(key, m_arguments));
+		Derived retval(derived_const_cast->baseSeriesFromKey(key, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
@@ -314,13 +314,13 @@ namespace piranha
 
 	/// Construct series from a cf.
 	/**
-	 * @see piranha::BaseSeries::base_series_from_cf.
+	 * @see piranha::BaseSeries::baseSeriesFromCf.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromCf(const Cf &cf) const
 	{
-		Derived retval(derived_const_cast->base_series_from_cf(cf, m_arguments));
+		Derived retval(derived_const_cast->baseSeriesFromCf(cf, m_arguments));
 		retval.m_arguments = m_arguments;
 		retval.trim();
 		return retval;
@@ -345,7 +345,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline NamedSeries<__PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1, "");
+		PIRANHA_STATIC_CHECK(boost::tuples::length<arguments_description>::value == Derived::echelonLevel + 1, "");
 	}
 
 

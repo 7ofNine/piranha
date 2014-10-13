@@ -53,7 +53,7 @@ namespace piranha
 				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
 			
-				typedef typename Derived::const_iterator ConstIterator;
+				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::TermType::key_type::degree_type DegreeType;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
@@ -63,11 +63,11 @@ namespace piranha
                 Derived retval;
 				
                 const std::size_t position = posTuple.template get<N>()[0].second;
-				const ConstIterator     itf = DerivedConstCast->end();
+				const const_iterator     itf = DerivedConstCast->end();
 
 				std::vector<DegreeType> tmpExponents(argsTuple.template get<N>().size());
 
-				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
 				{
 					if (it->key[position] == -1) 
 					{

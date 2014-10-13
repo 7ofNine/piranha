@@ -69,15 +69,18 @@ namespace piranha
 				// First let's remove the old imaginary part.
 				RealDerived old_i(base_imag(argsTuple));
 				const real_iterator old_i_it_f = old_i.end();
+
 				for (real_iterator i_it = old_i.begin(); i_it != old_i_it_f; ++i_it) 
 				{
 					tmp.key = i_it->key;
 					tmp.cf.set_imag(i_it->cf, argsTuple);
 					derived_cast->template insert<true, false>(tmp, argsTuple);
 				}
+
 				// Now add the new imaginary part.
 				const real_iterator i_it_f = i.end();
-				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
+				
+                for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
 				{
 					tmp.key = i_it->key;
 					tmp.cf.set_imag(i_it->cf, argsTuple);

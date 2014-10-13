@@ -92,7 +92,7 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename term_eval_type_determiner<Term>::type
+	inline typename TermEvalTypeDeterminer<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
 		return derived_const_cast->base_eval(t, argumentsTuple);
@@ -124,7 +124,7 @@ namespace piranha
 	}
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename term_eval_type_determiner<Term>::type
+	inline typename TermEvalTypeDeterminer<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
 	{
 		if (!check_eval_dict(d, argumentsTuple)) 
@@ -145,7 +145,7 @@ namespace piranha
 			Psym(it->first, it->second);
 		}
 
-		const typename term_eval_type_determiner<Term>::type retval(eval(0));
+		const typename TermEvalTypeDeterminer<Term>::type retval(eval(0));
 
 		// Restore original evaluation vectors.
 		// NOTE: here RAII here, to be exception safe?
@@ -208,7 +208,7 @@ namespace piranha
 
 
 		// Build a tuple of layouts.
-		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type l;
+		typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type l;
 		// Get the relative layouts of this wrt other and put the result into l.
 		named_series_get_layout<ArgsTupleType>::run(argumentsTuple, other.arguments(), l);
 

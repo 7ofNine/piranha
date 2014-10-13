@@ -149,7 +149,7 @@ namespace piranha
 			typedef typename ancestor::value_type value_type;
 			typedef value_type                    HarmonicDegreeType;
 			typedef typename ancestor::size_type  size_type;
-			typedef double                        eval_type;
+			typedef double                        EvalType;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector 
@@ -594,7 +594,7 @@ namespace piranha
 					// Change the flavour of the resulting key.
 					copy.flavour = !flavour;
 					PIRANHA_ASSERT(pos < this->size());
-					retval = Series::base_series_from_key(copy,argsTuple);
+					retval = Series::baseSeriesFromKey(copy,argsTuple);
 					if (flavour) 
 					{
 						retval.base_mult_by(-1,argsTuple);
@@ -634,7 +634,7 @@ namespace piranha
 				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
-					retval = RetSeries::base_series_from_key(*this, argsTuple);
+					retval = RetSeries::baseSeriesFromKey(*this, argsTuple);
 				} else 
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
@@ -648,10 +648,10 @@ namespace piranha
 					// of a TrigVector and unity coefficient and simply insert it.
 					// Build the orig_cos series.
 					tmp_ta.setFlavour(true);
-					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
+					RetSeries orig_cos = RetSeries::baseSeriesFromKey(tmp_ta,argsTuple);
 					// Build the orig_sin series.
 					tmp_ta.setFlavour(false);
-					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
+					RetSeries orig_sin = RetSeries::baseSeriesFromKey(tmp_ta,argsTuple);
 					PIRANHA_ASSERT(retval.empty());
 					if (this->getFlavour()) 
 					{
@@ -692,7 +692,7 @@ namespace piranha
 
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
-					retval = RetSeries::base_series_from_key(*this, argsTuple);
+					retval = RetSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
 				{
@@ -704,9 +704,9 @@ namespace piranha
                     TrigVector tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.setFlavour(true);
-					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
+					RetSeries orig_cos = RetSeries::baseSeriesFromKey(tmp_ta,argsTuple);
 					tmp_ta.setFlavour(false);
-					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
+					RetSeries orig_sin = RetSeries::baseSeriesFromKey(tmp_ta,argsTuple);
 
 					PIRANHA_ASSERT(retval.empty());
 					

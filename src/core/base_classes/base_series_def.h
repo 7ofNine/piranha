@@ -55,11 +55,13 @@ namespace piranha
 		static const int value = EchelonLevelImpl<typename CfSeries::TermType::cf_type>::value + 1;
 	};
 
+
 	template <class FinalCf>
 	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag, FinalCf>::value>::type>
 	{
 		static const int value = 0;
 	};
+
 
 	// Struct to define the container used in series - like a template typedef.
 	template <class Term>
@@ -67,6 +69,7 @@ namespace piranha
 	{
 		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > Type;
 	};
+
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
@@ -78,6 +81,7 @@ namespace piranha
 			return &(*it);
 		}
 	};
+
 
 	template <class Iterator>
 	struct FromIterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
@@ -135,26 +139,26 @@ namespace piranha
 			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
 			 * will be used to provide the hash values for terms.
 			 */
-			typedef typename SeriesContainer<TermType>::Type container_type;
+			typedef typename SeriesContainer<TermType>::Type ContainerType;
 
 			/// Echelon level.
-			static const int echelon_level = EchelonLevelImpl<typename TermType::cf_type>::value;
+			static const int echelonLevel = EchelonLevelImpl<typename TermType::cf_type>::value;
 
 			/// Type resulting from series evaluation.
 			/**
 			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
 			 * std::complex<double> in case of series with complex coefficients.
 			 */
-			typedef typename term_eval_type_determiner<Term>::type eval_type;
+			typedef typename TermEvalTypeDeterminer<Term>::type EvalType;
 
 			/// Term separator in textual series representation.
 			static const char separator = Separator;
 
 			/// Const iterator over the series' terms.
-			typedef typename container_type::const_iterator const_iterator;
+			typedef typename ContainerType::const_iterator const_iterator;
 
 			/// Size type.
-			typedef typename container_type::size_type size_type;
+			typedef typename ContainerType::size_type size_type;
 
 			/** @name Series properties. */
 			//@{
@@ -170,10 +174,10 @@ namespace piranha
 			//@{
             //defined: base_series_io.h
 			template <class Key, class ArgsTuple>
-			static Derived base_series_from_key(const Key &, const ArgsTuple &);
+			static Derived baseSeriesFromKey(const Key &, const ArgsTuple &);
 
 			template <class Cf, class ArgsTuple>
-			static Derived base_series_from_cf(const Cf &, const ArgsTuple &);
+			static Derived baseSeriesFromCf(const Cf &, const ArgsTuple &);
 
 			template <class Number, class ArgsTuple>
 			static Derived base_series_from_number(const Number &, const ArgsTuple &);
@@ -239,7 +243,7 @@ namespace piranha
 			double base_norm(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			eval_type base_eval(const double &, const ArgsTuple &) const;
+			EvalType base_eval(const double &, const ArgsTuple &) const;
 
 			template <class T, class ArgsTuple>
 			Derived &base_add(const T &, const ArgsTuple &);
@@ -352,7 +356,7 @@ namespace piranha
 
 		private:
 
-			container_type m_container;
+			ContainerType m_container;
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator

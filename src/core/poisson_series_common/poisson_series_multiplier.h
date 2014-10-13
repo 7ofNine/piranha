@@ -70,14 +70,17 @@ namespace piranha
 				public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator,
 				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
 				public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-				typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type>
+				typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>
 			{
 					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator,
 						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+
 					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-						typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type> coded_ancestor;
+						typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type> coded_ancestor;
+
 					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-						typename poisson_series_multiplier_ops_selector<Series1::echelon_level>::type>;
+						typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>;
+
 					typedef typename ancestor::term_type1 term_type1;
 					typedef typename ancestor::term_type2 term_type2;
 					typedef typename final_cf<Series1>::type cf_type1;

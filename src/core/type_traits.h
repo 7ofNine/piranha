@@ -38,10 +38,10 @@ namespace piranha
 	template <class Cf, class Key> class tetd_helper;
 
 	template <class Term>
-	class term_eval_type_determiner
+	class TermEvalTypeDeterminer
 	{
 		public:
-			typedef typename tetd_helper<typename Term::cf_type::eval_type, typename Term::key_type::eval_type>::type type;
+			typedef typename tetd_helper<typename Term::cf_type::EvalType, typename Term::key_type::EvalType>::type type;
 	};
 
 	template <class CfEval, class KeyEval>

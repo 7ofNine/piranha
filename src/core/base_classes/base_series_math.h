@@ -79,7 +79,8 @@ namespace piranha
 	struct mult_div_coefficients_helper<1>
 	{
 		template <class Cf, class T, class ArgsTuple>
-		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple) {
+		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple)
+        {
 			cf.divideBy(x,argsTuple);
 		}
 	};
@@ -91,12 +92,12 @@ namespace piranha
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::mult_div_coefficients_by(const T &x,
 			const ArgsTuple &argsTuple)
 	{
-		const const_iterator it_f = end();
+		const const_iterator itf = end();
 		bool needs_rebuilding = false;
 		const_iterator it = begin();
-		for (; it != it_f; ++it) 
+		for (; it != itf; ++it) 
 		{
-			mult_div_coefficients_helper<N>::run(it->cf,x,argsTuple);
+			mult_div_coefficients_helper<N>::run(it->cf, x, argsTuple);
 			// If a term becomes ignorable once its coefficient has been multiplied/divided,
 			// set the needs_rebuilding flag to true, increase the iterator and break out.
 			if (it->cf.is_ignorable(argsTuple)) 
@@ -109,19 +110,21 @@ namespace piranha
 
 		// In case we broke out the cycle above, take care of multiplying/dividing the remaining
 		// terms without checking for ignorability.
-		for (; it != it_f; ++it) 
+		for (; it != itf; ++it) 
 		{
-			mult_div_coefficients_helper<N>::run(it->cf,x,argsTuple);
+			mult_div_coefficients_helper<N>::run(it->cf, x, argsTuple);
 		}
+
 		// Rebuild if needed.
 		if (needs_rebuilding) 
 		{
 			// TODO: probably insert range here.
 			Derived new_series;
-			for (it = begin(); it != it_f; ++it) 
+			for (it = begin(); it != itf; ++it) 
 			{
-				new_series.insert(*it,argsTuple);
+				new_series.insert(*it, argsTuple);
 			}
+
 			base_swap(new_series);
 		}
 	}
@@ -252,19 +255,23 @@ namespace piranha
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_partial(const Derived &in, Series &out, const PosTuple &pos_tuple, const ArgsTuple &argsTuple)
 	{
 		PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
-			"Size mismatch between args tuple and pos tuple in partial derivative.");
+			                 "Size mismatch between args tuple and pos tuple in partial derivative.");
 		PIRANHA_ASSERT(out.empty());
 
 		TermType tmp_term1;
         TermType tmp_term2;
-		const const_iterator it_f = in.end();
+		const const_iterator itf = in.end();
 
-		for (const_iterator it = in.begin(); it != it_f; ++it) 
+		for (const_iterator it = in.begin(); it != itf; ++it) 
 		{
 			Series tmp1(it->cf.template partial<Series>(pos_tuple, argsTuple));
-			tmp1.base_mult_by(Series::base_series_from_key(it->key, argsTuple), argsTuple);
+
+			tmp1.base_mult_by(Series::baseSeriesFromKey(it->key, argsTuple), argsTuple);
+
 			Series tmp2(it->key.template partial<Series>(pos_tuple, argsTuple));
-			tmp2.base_mult_by(Series::base_series_from_cf(it->cf, argsTuple), argsTuple);
+
+			tmp2.base_mult_by(Series::baseSeriesFromCf(it->cf, argsTuple), argsTuple);
+
 			out.base_add(tmp1, argsTuple);
 			out.base_add(tmp2, argsTuple);
 		}

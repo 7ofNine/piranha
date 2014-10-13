@@ -133,15 +133,15 @@ namespace piranha
 			 */
 			bool isCosine() const
 			{
-				typedef typename Derived::const_iterator ConstIterator;
+				typedef typename Derived::const_iterator const_iterator;
 
 				if (DerivedConstCast->empty()) 
 				{
 					return false;
 				}
 
-				const ConstIterator itf = DerivedConstCast->end();
-				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				const const_iterator itf = DerivedConstCast->end();
+				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
 				{
 					if (!it->template get<HarmonicTermPosition>().getFlavour()) 
 					{
@@ -159,13 +159,13 @@ namespace piranha
 			 */
 			bool isSine() const
 			{
-				typedef typename Derived::const_iterator ConstIterator;
+				typedef typename Derived::const_iterator const_iterator;
 				if (DerivedConstCast->empty()) 
 				{
 					return false;
 				}
-				const ConstIterator itf = DerivedConstCast->end();
-				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				const const_iterator itf = DerivedConstCast->end();
+				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
 				{
 					if (it->template get<HarmonicTermPosition>().getFlavour()) 
 					{

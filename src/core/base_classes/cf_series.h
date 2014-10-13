@@ -117,7 +117,7 @@ namespace piranha
 			Series partial(const PosTuple &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			typename term_eval_type_determiner<Term>::type eval(const double &, const ArgsTuple &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(const double &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const;

@@ -44,7 +44,7 @@ namespace piranha
 {
 	/// Construct series from numerical quantity.
 	/**
-	 * Equivalent to creating a series from a coefficient with base_series_from_cf() and coefficient type term_type::cf_type, the coefficient being
+	 * Equivalent to creating a series from a coefficient with baseSeriesFromCf() and coefficient type term_type::cf_type, the coefficient being
 	 * constructed with the provided number.
 	 *
 	 * @param[in] x number used for series construction.
@@ -56,7 +56,7 @@ namespace piranha
 	template <class Number, class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_number(const Number &x, const ArgsTuple &argsTuple)
 	{
-		return base_series_from_cf(typename TermType::cf_type(x, argsTuple), argsTuple);
+		return baseSeriesFromCf(typename TermType::cf_type(x, argsTuple), argsTuple);
 	}
 
 
@@ -64,13 +64,13 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
-		const const_iterator it_f = end();
+		const const_iterator itf = end();
 		const_iterator it = begin();
-		while (it != it_f) 
+		while (it != itf) 
         {
 			it->print_plain(stream, argsTuple);
 			++it;
-			if (it != it_f) 
+			if (it != itf) 
             {
 				stream << separator;
 			}
@@ -223,7 +223,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Key, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_key(const Key &key, const ArgsTuple &argsTuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromKey(const Key &key, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
 		SeriesFromKeyImpl<Key, typename TermType::key_type>::run(retval, key, argsTuple);
@@ -238,7 +238,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Cf, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_cf(const Cf &cf, const ArgsTuple &argsTuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromCf(const Cf &cf, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
 		SeriesFromCfImpl<Cf, typename TermType::cf_type>::run(retval, cf, argsTuple);

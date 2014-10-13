@@ -108,8 +108,8 @@ namespace piranha
 // 			Derived filter(const Filter &) const;
 			void swap(Derived &);
 			double norm() const;
-			typename term_eval_type_determiner<Term>::type eval(const double &) const;
-			typename term_eval_type_determiner<Term>::type eval(const eval_dict &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(const double &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(const eval_dict &) const;
 			
             std::size_t psi(const int &start = 0, const int &step = 1) const;
 			

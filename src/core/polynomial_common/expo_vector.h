@@ -96,7 +96,7 @@ namespace piranha
 			typedef typename ancestor::value_type value_type;
 			typedef value_type                    degree_type;
 			typedef typename ancestor::size_type  size_type;
-			typedef double                        eval_type;
+			typedef double                        EvalType;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector 
@@ -362,7 +362,7 @@ namespace piranha
 					ExpoVector copy(*this);
 					// NOTE: move semantics here?
 					copy[pos] -= 1;
-					retval = Series::base_series_from_key(copy,argsTuple);
+					retval = Series::baseSeriesFromKey(copy,argsTuple);
 					retval.base_mult_by((*this)[pos],argsTuple);
 				}
 				return retval;
@@ -400,7 +400,7 @@ namespace piranha
 				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
                 {
-					retval = RetSeries::base_series_from_key(*this, argsTuple);
+					retval = RetSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
                 {
@@ -409,7 +409,7 @@ namespace piranha
 					ExpoVector tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
-					RetSeries orig(RetSeries::base_series_from_key(tmp_ea, argsTuple));
+					RetSeries orig(RetSeries::baseSeriesFromKey(tmp_ea, argsTuple));
 					PIRANHA_ASSERT(retval.empty());
 					// NOTICE: series multadd here?
 					retval.base_add(orig, argsTuple);
@@ -422,7 +422,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const
 			{
-				return RetSeries::base_series_from_key(*this, argsTuple);
+				return RetSeries::baseSeriesFromKey(*this, argsTuple);
 			}
 
 

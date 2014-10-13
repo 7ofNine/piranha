@@ -77,7 +77,7 @@ namespace piranha
 		public:
 
 			/// Typedef for evaluation type.
-			typedef typename numerical_container_eval_type_determiner<T>::type eval_type;
+			typedef typename numerical_container_eval_type_determiner<T>::type EvalType;
 			/// Alias for internal type.
 			typedef T numerical_type;
 			
@@ -267,7 +267,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const 
 			{
-				return RetSeries::base_series_from_cf(*derived_const_cast, argsTuple);
+				return RetSeries::baseSeriesFromCf(*derived_const_cast, argsTuple);
 			}
 			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>

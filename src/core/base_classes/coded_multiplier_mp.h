@@ -317,13 +317,13 @@ namespace piranha {
 
 	template <class Series>
 	struct cm_tuple {
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_minmax type_minmax;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_mp_minmax type_mp_minmax;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_max_fast_int_minmax type_max_fast_int_minmax;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_value_handler type_value_handler;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_mp_coding_tuple type_mp_coding_tuple;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_coding_tuple type_coding_tuple;
-		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_decoding_tuple type_decoding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_minmax type_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_mp_minmax type_mp_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_max_fast_int_minmax type_max_fast_int_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_value_handler type_value_handler;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_mp_coding_tuple type_mp_coding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_coding_tuple type_coding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelonLevel + 1>::type_decoding_tuple type_decoding_tuple;
 	};
 
 	template <class Series, class Tuple>
@@ -337,6 +337,7 @@ namespace piranha {
 		}
 	};
 
+
 	template <class Series>
 	struct cm_init_vector_tuples_impl<Series,boost::tuples::null_type>
 	{
@@ -344,11 +345,12 @@ namespace piranha {
 		static void run(const ArgsTuple &, const boost::tuples::null_type &) {}
 	};
 
+
 	// Initialise the tuples-of-vectors types in coded multiplier with proper vector sizes.
 	template <class Series, class Tuple, class ArgsTuple>
 	inline void cm_init_vector_tuple(Tuple &t, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple>::value == Series::echelon_level + 1, "");
+		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple>::value == Series::echelonLevel + 1, "");
 
 		cm_init_vector_tuples_impl<Series, Tuple>::run(argsTuple, t);
 	}

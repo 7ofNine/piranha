@@ -54,7 +54,7 @@ namespace pyranha
 	template <class Series>
 	static inline int py_echelon_level()
 	{
-		return Series::echelon_level;
+		return Series::echelonLevel;
 	}
 
 	template <class TypeTrait>
@@ -104,7 +104,7 @@ namespace pyranha
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 		inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");
-		inst.add_static_property("echelon_level", &py_echelon_level<T>, "Echelon level of the series.");
+		inst.add_static_property("echelonLevel", &py_echelon_level<T>, "Echelon level of the series.");
 		if (piranha::is_ring_exact<T>::value) {
 			inst.add_static_property("is_ring_exact", &py_type_trait<piranha::is_ring_exact<T> >,
 				"is_ring_exact type trait for the series.");
@@ -127,8 +127,8 @@ namespace pyranha
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("save_to", &T::save_to, "Save to file.");
-		typedef typename T::eval_type (T::*eval_double)(const double &) const;
-		typedef typename T::eval_type (T::*eval_dic)(const piranha::eval_dict &) const;
+		typedef typename T::EvalType (T::*eval_double)(const double &) const;
+		typedef typename T::EvalType (T::*eval_dic)(const piranha::eval_dict &) const;
 		inst.def("__eval__", eval_double(&T::eval), "Evaluate at time arg2.");
 		inst.def("__eval__", eval_dic(&T::eval), "Evaluate using dictionary arg2.");
 		inst.add_property("norm", &T::norm, "Norm.");

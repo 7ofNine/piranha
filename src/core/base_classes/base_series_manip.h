@@ -165,6 +165,7 @@ namespace piranha
 		}
 		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.is_insertable(argsTuple) &&
 			!term.cf.needs_padding(argsTuple) && !term.key.needs_padding(argsTuple) && term.is_canonical(argsTuple));
+
 		const_iterator it(find_term(term));
 		if (it == end()) 
 		{
@@ -228,8 +229,8 @@ namespace piranha
 	template <class Layout, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(const Layout &l, Derived &retval, const ArgsTuple &argsTuple) const
 	{
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) 
+		const const_iterator itf = end();
+		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			TermType term(*it);
 			term.cf.apply_layout(l, argsTuple);
@@ -243,8 +244,8 @@ namespace piranha
 	template <class TrimFlags>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
 	{
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) 
+		const const_iterator itf = end();
+		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			it->cf.trim_test(tf);
 			it->key.trim_test(tf);
@@ -256,14 +257,10 @@ namespace piranha
 	template <class TrimFlags, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval, const ArgsTuple &argsTuple) const
 	{
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) 
+		const const_iterator itf = end();
+		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			retval.insert(
-				TermType(typename TermType::cf_type(it->cf.trim(tf, argsTuple)), 
-                typename TermType::key_type(it->key.trim(tf, argsTuple))),
-				argsTuple
-			);
+			retval.insert(TermType(typename TermType::cf_type(it->cf.trim(tf, argsTuple)), typename TermType::key_type(it->key.trim(tf, argsTuple))), argsTuple);
 		}
 	}
 
@@ -275,12 +272,13 @@ namespace piranha
 		PIRANHA_STATIC_CHECK((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
 
 		RetSeries retval;
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) 
+		const const_iterator itf = end();
+		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			RetSeries tmp = SubFunctor::template run<RetSeries>(it->cf, pos_tuple, sub_caches,argsTuple);
 			// NOTICE: series multadd here?
 			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
+
 			retval.base_add(tmp,argsTuple);
 		}
 
@@ -335,8 +333,8 @@ namespace piranha
 	{
 		for (Iterator it = start; it != end; ++it) 
 		{
-			Series tmp_cf(Series::base_series_from_cf(FromIterator<Iterator>::get(it)->cf, argsTuple));
-			Series tmp_key(Series::base_series_from_key(FromIterator<Iterator>::get(it)->key, argsTuple));
+			Series tmp_cf(Series::baseSeriesFromCf(FromIterator<Iterator>::get(it)->cf, argsTuple));
+			Series tmp_key(Series::baseSeriesFromKey(FromIterator<Iterator>::get(it)->key, argsTuple));
 			std::vector<Series> tmp;
 			tmp.reserve(2);
 			tmp.push_back(tmp_cf);
@@ -357,13 +355,13 @@ namespace piranha
 	{
 		std::vector<TermType> retval;
 		TermType term;
-		const const_iterator it_f(end());
-		for (const_iterator it = begin(); it != it_f; ++it) 
+		const const_iterator itf(end());
+		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			// Create the term that will be inserted at the end of the recursion.
 			term = *it;
 			// Start the recursion.
-			SeriesFlattener<echelon_level>::run(term.cf, term, retval, argsTuple);
+			SeriesFlattener<echelonLevel>::run(term.cf, term, retval, argsTuple);
 		}
 		return retval;
 	}

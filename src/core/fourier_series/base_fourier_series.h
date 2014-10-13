@@ -50,23 +50,23 @@ namespace piranha
 			Derived baseIntegrate(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
-					"Size mismatch between args tuple and pos tuple in Fourier series integration.");
+					                 "Size mismatch between args tuple and pos tuple in Fourier series integration.");
 
-				typedef typename Derived::const_iterator ConstIterator;
+				typedef typename Derived::const_iterator const_iterator;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
 				PIRANHA_ASSERT(posTuple.template get<N>().size() == 1);
 				PIRANHA_ASSERT(posTuple.template get<N>()[0].first);
 				Derived retval;
 				const std::size_t    pos  = posTuple.template get<N>()[0].second;
-				const ConstIterator  itf  = DerivedConstCast->end();
+				const const_iterator  itf  = DerivedConstCast->end();
 
-				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
                 {
 					if (it->key[pos] == 0) 
                     {
-						PIRANHA_THROW(value_error,"cannot procede with integration, one of the terms of the "
-							" Fourier series does not contain the symbol in its trigonometric arguments.");
+						PIRANHA_THROW(value_error,"cannot procede with integration, one of the terms of the"
+							          " Fourier series does not contain the symbol in its trigonometric arguments.");
 					}
 
 					typename Derived::TermType tmp(*it);

@@ -86,7 +86,7 @@ namespace piranha
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type pos_tuple_type;
 				typedef typename Derived::TermType::cf_type::
 					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
@@ -113,11 +113,12 @@ namespace piranha
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
-				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
-				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
-					sub_caches, this_copy.arguments()));
+				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1, p), this_copy.arguments());
+
+				Derived retval(this_copy.template base_sub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
+
 				return retval;
 			}
 
@@ -126,7 +127,7 @@ namespace piranha
 			Derived ei_sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
+				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type pos_tuple_type;
 				typedef typename Derived::TermType::cf_type::
 					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template ei_sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>

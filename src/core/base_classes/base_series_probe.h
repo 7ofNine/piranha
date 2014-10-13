@@ -47,28 +47,35 @@ namespace piranha
 	template <class ArgsTuple>
 	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &argsTuple) const
 	{
-		const const_iterator it_f = end();
+		const const_iterator itf = end();
 		double retval = 0;
-		for (const_iterator it = begin(); it != it_f; ++it) {
+		
+        for (const_iterator it = begin(); it != itf; ++it)
+        {
 			retval += it->cf.norm(argsTuple) * it->key.norm(argsTuple);
 		}
+
 		return retval;
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::eval_type
+	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::EvalType
 		BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &argsTuple) const
 	{
-		const const_iterator it_f = end();
-		eval_type retval(0);
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			eval_type tmp(it->cf.eval(t, argsTuple));
+		const const_iterator itf = end();
+		EvalType retval(0);
+
+		for (const_iterator it = begin(); it != itf; ++it)
+        {
+			EvalType tmp(it->cf.eval(t, argsTuple));
 			tmp *= it->key.eval(t, argsTuple);
 			retval += tmp;
 		}
+
 		return retval;
 	}
+
 
 	/// Length of the series.
 	/**
@@ -80,6 +87,7 @@ namespace piranha
 		return m_container.size();
 	}
 
+
 	/// Is series empty?
 	/**
 	 * @return true if the series has zero terms, false otherwise.
@@ -90,17 +98,21 @@ namespace piranha
 		return m_container.empty();
 	}
 
+
 	/// Number of atoms in the series.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
 		size_type retval = 0;
-		const const_iterator it_f = end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
+		const const_iterator itf = end();
+		for (const_iterator it = begin(); it != itf; ++it)
+        {
 			retval += it->cf.atoms() + it->key.atoms();
 		}
+
 		return retval;
 	}
+
 
 	// TODO: update docs on equality test methods.
 	/// Base series equality test.
@@ -116,18 +128,26 @@ namespace piranha
 	template <class T>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_series_comparison(const T &other) const
 	{
-		if (length() != other.length()) {
+		if (length() != other.length())
+        {
 			return false;
 		}
-		const const_iterator it_f = end(), it_f_other = other.end();
-		for (const_iterator it = begin(); it != it_f; ++it) {
-			const_iterator it_other(other.find_term(*it));
-			if (it_other == it_f_other || !(it_other->cf == it->cf)) {
+
+		const const_iterator itf = end();
+        const const_iterator itfOther = other.end();
+		
+        for (const_iterator it = begin(); it != itf; ++it)
+        {
+			const_iterator itOther(other.find_term(*it));
+			if (itOther == itfOther || !(itOther->cf == it->cf))
+            {
 				return false;
 			}
 		}
+
 		return true;
 	}
+
 
 	// Helper functor to check generically if a number, scalar or complex, is zero.
 	template <class T>
@@ -139,6 +159,7 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
 	struct numerical_comparison_zero_check<std::complex<T> >
 	{
@@ -147,6 +168,7 @@ namespace piranha
 			return value.real() == 0 && value.imag() == 0;
 		}
 	};
+
 
 	/// Base generic numerical equality test.
 	/**
@@ -165,14 +187,19 @@ namespace piranha
 	template <class Number>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
 	{
-		if (numerical_comparison_zero_check<Number>()(x)) {
+		if (numerical_comparison_zero_check<Number>()(x))
+        {
 			return empty();
 		}
-		if (!is_single_cf()) {
+
+		if (!is_single_cf())
+        {
 			return false;
 		}
+
 		return (begin()->cf == x);
 	}
+
 
 	/// Base numerical equality test.
 	/**
