@@ -214,7 +214,7 @@ namespace piranha
 
 				typedef typename Derived::const_iterator                     const_iterator;
 				typedef typename Derived::term_type::cf_type::degree_type    degree_type;
-				typedef typename Derived::term_type::key_type::h_degree_type h_degree_type;
+				typedef typename Derived::term_type::key_type::HarmonicDegreeType HarmonicDegreeType;
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
 				// and that the symbol is present in the series.
@@ -236,7 +236,7 @@ namespace piranha
 								"is negative or not an integer");
 						}
 
-						const h_degree_type trig_mult(it->key[pos_tuple.template get<1>()[0].second]);
+						const HarmonicDegreeType trig_mult(it->key[pos_tuple.template get<1>()[0].second]);
 						typename Derived::term_type tmp(*it);
 						typename Derived::term_type::cf_type tmp_cf(it->cf);
 
@@ -365,7 +365,7 @@ namespace piranha
                         {
 							// Try to convert the coefficient.
 							try {
-								boost::lexical_cast<typename term_type::key_type::h_degree_type>(it->cf.get_value());
+								boost::lexical_cast<typename term_type::key_type::HarmonicDegreeType>(it->cf.get_value());
 							} catch (const boost::bad_lexical_cast &) {
 								is_exact = false;
 							}

@@ -394,28 +394,28 @@ namespace pyranha
 	}
 
 	template <class HarmonicSeries>
-	typename HarmonicSeries::h_degree_type p_h_degree_str(const HarmonicSeries &p, const std::string &name)
+	typename HarmonicSeries::HarmonicDegreeType p_h_degree_str(const HarmonicSeries &p, const std::string &name)
 	{
-		return p.partial_h_degree(std::vector<std::string>(1,name));
+		return p.partialHarmonicDegree(std::vector<std::string>(1,name));
 	}
 
 	template <class HarmonicSeries>
-	typename HarmonicSeries::h_degree_type p_h_order_str(const HarmonicSeries &p, const std::string &name)
+	typename HarmonicSeries::HarmonicDegreeType p_h_order_str(const HarmonicSeries &p, const std::string &name)
 	{
-		return p.partial_h_order(std::vector<std::string>(1,name));
+		return p.partialHarmonicOrder(std::vector<std::string>(1,name));
 	}
 
 	template <class T>
 	inline void harmonic_series_instantiation(boost::python::class_<T> &inst)
 	{
 		inst.def("harmonicDegree", &T::harmonicDegree, "(Partial) harmonic degree.");
-		inst.def("harmonicDegree", &T::partial_h_degree);
+		inst.def("harmonicDegree", &T::partialHarmonicDegree);
 		inst.def("harmonicDegree", &p_h_degree_str<T>);
 		inst.def("harmonicOrder", &T::harmonicOrder, "(Partial) harmonic order.");
-		inst.def("harmonicOrder", &T::partial_h_order);
+		inst.def("harmonicOrder", &T::partialHarmonicOrder);
 		inst.def("harmonicOrder", &p_h_order_str<T>);
-		inst.def("is_sine", &T::is_sine, "Return true if series is made only of sine terms.");
-		inst.def("is_cosine", &T::is_cosine, "Return true if series is made only of cosine terms.");
+		inst.def("isSine", &T::isSine, "Return true if series is made only of sine terms.");
+		inst.def("isCosine", &T::isCosine, "Return true if series is made only of cosine terms.");
 	}
 
 	template <class T>

@@ -54,7 +54,7 @@
 #define POISSON_SERIES_NAMED_ANCESTOR    E1_SERIES_NAMED_ANCESTOR(piranha::PolyArgsDescr, piranha::TrigArgsDescriptor, POISSON_SERIES_TERM, POISSON_SERIES)
 #define POISSON_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POISSON_SERIES>
 #define POISSON_SERIES_DEGREE            typename POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
-#define POISSON_SERIES_H_DEGREE          typename POISSON_SERIES_TERM::key_type::h_degree_type
+#define POISSON_SERIES_H_DEGREE          typename POISSON_SERIES_TERM::key_type::HarmonicDegreeType
 
 namespace piranha
 {
@@ -101,7 +101,7 @@ namespace piranha
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POISSON_SERIES>
 #define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::cf_type::term_type::key_type::degree_type
-#define COMPLEX_POISSON_SERIES_H_DEGREE typename COMPLEX_POISSON_SERIES_TERM::key_type::h_degree_type
+#define COMPLEX_POISSON_SERIES_H_DEGREE typename COMPLEX_POISSON_SERIES_TERM::key_type::HarmonicDegreeType
 
 namespace std
 {

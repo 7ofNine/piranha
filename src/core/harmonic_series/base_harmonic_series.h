@@ -26,8 +26,8 @@
 #include "../config.h"
 #include "../exceptions.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast       static_cast<Derived *>(this)
+#define DerivedConstCast static_cast<Derived const *>(this)
+//#define derived_cast       static_cast<Derived *>(this)
 
 // TODO: share implementation with power series class, using templates and functors?
 
@@ -67,7 +67,7 @@ namespace piranha
 
 				bool operator()(const Term &t1, const Term &t2) const 
 				{
-					return (t1.template get<HarmonicTermPosition>().partial_h_degree(posTuple) < t2.template get<HarmonicTermPosition>().partial_h_degree(posTuple));
+					return (t1.template get<HarmonicTermPosition>().partialHarmonicDegree(posTuple) < t2.template get<HarmonicTermPosition>().partialHarmonicDegree(posTuple));
 				}
 
 				const PosTuple &posTuple;
@@ -75,34 +75,35 @@ namespace piranha
 
 
 			template <class Term, class PosTuple>
-			struct partial_h_order_binary_predicate
+			struct PartialHarmonicOrderBinaryPredicate
 			{
-				partial_h_order_binary_predicate(const PosTuple &p):m_p(p) {}
+				PartialHarmonicOrderBinaryPredicate(const PosTuple &p):posTuple(p) {}
 
 				bool operator()(const Term &t1, const Term &t2) const 
 				{
-					return (t1.template get<HarmonicTermPosition>().partial_h_order(m_p) < t2.template get<HarmonicTermPosition>().partial_h_order(m_p));
+					return (t1.template get<HarmonicTermPosition>().partialHarmonicOrder(posTuple) < t2.template get<HarmonicTermPosition>().partialHarmonicOrder(posTuple));
 				}
 
-				const PosTuple &m_p;
+				const PosTuple &posTuple;
 			};
 
 
 		public:
 
-			static const int harmonic_args_position = HarmonicArgsPosition;
-			static const int harmonic_term_position = HarmonicTermPosition;
-			typedef HarmonicDegree h_degree_type;
+			static const int harmonicArgsPosition = HarmonicArgsPosition;
+			static const int harmonicTermPosition = HarmonicTermPosition;
+			typedef HarmonicDegree HarmonicDegreeType;
 			
 			/// Get the harmonic degree.
 			HarmonicDegree harmonicDegree() const 
 			{
-				if (derived_const_cast->empty()) 
+				if (DerivedConstCast->empty()) 
 				{
 					return HarmonicDegree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
-																               HarmonicDegreeBinaryPredicate<typename Derived::term_type>()));
+
+				const typename Derived::const_iterator result(std::max_element(DerivedConstCast->begin(), DerivedConstCast->end(),
+																               HarmonicDegreeBinaryPredicate<typename Derived::term_type>() ));
 
 				return result->template get<HarmonicTermPosition>().harmonicDegree();
 			}
@@ -114,15 +115,13 @@ namespace piranha
 			 */
 			HarmonicDegree harmonicOrder() const 
 			{
-				if (derived_const_cast->empty()) 
+				if (DerivedConstCast->empty()) 
 				{
 					return HarmonicDegree(0);
 				}
-				const typename Derived::const_iterator result(std::min_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							HarmonicOrderBinaryPredicate<typename Derived::term_type>()
-						));
+
+				const typename Derived::const_iterator result(std::min_element(DerivedConstCast->begin(), DerivedConstCast->end(),
+							                                                   HarmonicOrderBinaryPredicate<typename Derived::term_type>() ));
 
 				return result->template get<HarmonicTermPosition>().harmonicOrder();
 			}
@@ -132,16 +131,17 @@ namespace piranha
 			/**
 			 * An empty series will return false.
 			 */
-			bool is_cosine() const
+			bool isCosine() const
 			{
-				typedef typename Derived::const_iterator const_iterator;
+				typedef typename Derived::const_iterator ConstIterator;
 
-				if (derived_const_cast->empty()) 
+				if (DerivedConstCast->empty()) 
 				{
 					return false;
 				}
-				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+
+				const ConstIterator itf = DerivedConstCast->end();
+				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
 				{
 					if (!it->template get<HarmonicTermPosition>().getFlavour()) 
 					{
@@ -157,15 +157,15 @@ namespace piranha
 			/**
 			 * An empty series will return false.
 			 */
-			bool is_sine() const
+			bool isSine() const
 			{
-				typedef typename Derived::const_iterator const_iterator;
-				if (derived_const_cast->empty()) 
+				typedef typename Derived::const_iterator ConstIterator;
+				if (DerivedConstCast->empty()) 
 				{
 					return false;
 				}
-				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+				const ConstIterator itf = DerivedConstCast->end();
+				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
 				{
 					if (it->template get<HarmonicTermPosition>().getFlavour()) 
 					{
@@ -179,42 +179,37 @@ namespace piranha
 		//protected:
 			/// Get the harmonic degree of the series for specific variables.
 			template <class PosTuple>
-			HarmonicDegree base_partial_h_degree(const PosTuple &pos_tuple) const 
+			HarmonicDegree basePartialHarmonicDegree(const PosTuple &posTuple) const 
 			{
-				if (derived_const_cast->empty()) 
+				if (DerivedConstCast->empty()) 
 				{
 					return HarmonicDegree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							PartialHarmonicDegreeBinaryPredicate<typename Derived::term_type,PosTuple>(pos_tuple)
-						));
+				const typename Derived::const_iterator result(std::max_element(DerivedConstCast->begin(), DerivedConstCast->end(),
+							                                                   PartialHarmonicDegreeBinaryPredicate<typename Derived::term_type, PosTuple>(posTuple) ));
 				
-				return result->template get<HarmonicTermPosition>().partial_h_degree(pos_tuple);
+				return result->template get<HarmonicTermPosition>().partialHarmonicDegree(posTuple);
 			}
 
 
 			/// Get the mininum harmonic degree of the series for specific variables.
 			template <class PosTuple>
-			HarmonicDegree base_partial_h_order(const PosTuple &pos_tuple) const 
+			HarmonicDegree basePartialHarmonicOrder(const PosTuple &posTuple) const 
 			{
-				if (derived_const_cast->empty()) 
+				if (DerivedConstCast->empty()) 
 				{
 					return HarmonicDegree(0);
 				}
 
-				const typename Derived::const_iterator result(std::min_element(
-							                                   derived_const_cast->begin(),
-							                                   derived_const_cast->end(),
-							                                   partial_h_order_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple) ));
+				const typename Derived::const_iterator result(std::min_element(DerivedConstCast->begin(), DerivedConstCast->end(),
+							                                                   PartialHarmonicOrderBinaryPredicate<typename Derived::term_type, PosTuple>(posTuple) ));
 				
-				return result->template get<HarmonicTermPosition>().partial_h_order(pos_tuple);
+				return result->template get<HarmonicTermPosition>().partialHarmonicOrder(posTuple);
 			}
 	};
 }
 
-#undef derived_const_cast
-#undef derived_cast
+#undef DerivedConstCast
+//#undef derived_cast
 
 #endif

@@ -37,13 +37,13 @@ namespace piranha
 	{
 		public:
 
-			HDegree partial_h_degree(const std::vector<std::string> &vs) const
+			HDegree partialHarmonicDegree(const std::vector<std::string> &vs) const
 			{
-				return derived_const_cast->base_partial_h_degree(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
+				return derived_const_cast->basePartialHarmonicDegree(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
 			}
 
 
-			HDegree partial_h_order(const std::vector<std::string> &vs) const
+			HDegree partialHarmonicOrder(const std::vector<std::string> &vs) const
 			{
 				VectorPsym v;
 				v.reserve(vs.size());
@@ -52,7 +52,7 @@ namespace piranha
 					v.push_back(Psym(vs[i]));
 				}
 
-				return derived_const_cast->base_partial_h_order(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
+				return derived_const_cast->basePartialHarmonicOrder(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
 			}
 	};
 }

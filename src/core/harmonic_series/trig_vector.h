@@ -147,7 +147,7 @@ namespace piranha
 		public:
 
 			typedef typename ancestor::value_type value_type;
-			typedef value_type                    h_degree_type;
+			typedef value_type                    HarmonicDegreeType;
 			typedef typename ancestor::size_type  size_type;
 			typedef double                        eval_type;
 
@@ -403,9 +403,9 @@ namespace piranha
 			/**
 			 * The total harmonic degree is defined as the summation of the values of the trigonometric multipliers.
 			 */
-			h_degree_type harmonicDegree() const
+			HarmonicDegreeType harmonicDegree() const
 			{
-				return std::accumulate(this->begin(), this->end(), h_degree_type(0));
+				return std::accumulate(this->begin(), this->end(), HarmonicDegreeType(0));
 			}
 
 
@@ -414,11 +414,11 @@ namespace piranha
 			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
 			 */
 			template <class PosTuple>
-			h_degree_type partial_h_degree(const PosTuple &pos_tuple) const
+			HarmonicDegreeType partialHarmonicDegree(const PosTuple &pos_tuple) const
 			{
 				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<ancestor::position>();
 				const size_type w = this->size(), pos_size = boost::numeric_cast<size_type>(pos.size());
-				h_degree_type retval(0);
+				HarmonicDegreeType retval(0);
 				for (size_type i = 0; i < pos_size; ++i) 
 				{
 					// Add up exponents only if they are present and don't try to read outside boundaries
@@ -437,7 +437,7 @@ namespace piranha
 			/**
 			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to harmonicDegree().
 			 */
-			h_degree_type harmonicOrder() const
+			HarmonicDegreeType harmonicOrder() const
 			{
 				return harmonicDegree();
 			}
@@ -445,12 +445,12 @@ namespace piranha
 
 			/// Minimum total harmonic degree of the variables at specified positions pos.
 			/**
-			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to partial_h_degree().
+			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to partialHarmonicDegree().
 			 */
 			template <class PosTuple>
-			h_degree_type partial_h_order(const PosTuple &pos_tuple) const
+			HarmonicDegreeType partialHarmonicOrder(const PosTuple &pos_tuple) const
 			{
-				return partial_h_degree(pos_tuple);
+				return partialHarmonicDegree(pos_tuple);
 			}
 
 
